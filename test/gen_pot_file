@@ -1,0 +1,2 @@
+#!/bin/sh
+./pygettext.py -a -d cnchi -p po -v cnchi.py src/*.py

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAlignment" id="language">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="top_padding">10</property>
+    <property name="left_padding">20</property>
+    <property name="right_padding">20</property>
+    <child>
+      <object class="GtkBox" id="language_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox" id="box2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkLabel" id="label_choose_language">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">&lt;span weight="bold"&gt;Please choose your language:&lt;/span&gt;</property>
+                <property name="use_markup">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="height_request">300</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkTreeView" id="treeview_language">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <signal name="cursor-changed" handler="on_treeview_language_cursor_changed" swapped="no"/>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection1"/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="welcome_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">50</property>
+            <property name="label" translatable="yes">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Integer elementum, leo vitae porta elementum, eros diam
+pretium magna, in tincidunt magna velit at tellus. Praesent
+a tortor nec risus blandit sodales. Mauris tristique semper
+nunc, eget euismod sem vehicula ut. Nam pharetra justo et
+lorem feugiat quis vestibulum arcu malesuada. Vivamus
+tristique augue in nisi iaculis nec sollicitudin eros pharetra.
+Duis id arcu magna, nec convallis mi. In tempor volutpat dictum.
+Vestibulum eros lacus, pharetra vel ultricies quis, sagittis sed orci.
+
+The installation process may resize or erase partitions on your hard disk.
+Be sure to take a full backup of any valuable data before running
+this program.</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
