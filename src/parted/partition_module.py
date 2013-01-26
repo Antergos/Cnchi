@@ -145,6 +145,8 @@ def create_partition(diskob, part_type, geom):
     #A lot of this is similar to Anaconda, but customized to fit our needs
     nstart = geom.start
     nend = geom.end
+    if nstart < 2048:
+        nstart = 2048
     # Just in case you try to create partition larger than disk.
     # This case should be caught in the frontend!
     # Never let user specify a length exceeding the free space.
@@ -179,16 +181,17 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
     #let's use kb = 1000b, mb = 10000000b, etc etc
     dev = diskob.device
     sec_size = dev.sectorSize
+    mb = 1000000 // sec_size 
     length = (size_in_mbytes * 1000000 // sec_size)
     if beginning:
         start_sector = first_sector
         end_sector = start_sector + length - 1
-        if last_sector - end_sector < 5:
+        if last_sector - end_sector < mb:
             end_sector = last_sector
     else:
         end_sector = last_sector
         start_sector = end_sector - length + 1
-        if start_sector - first_sector < 5:
+        if start_sector - first_sector < mb:
             start_sector = first_sector 
     
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)

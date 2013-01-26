@@ -79,6 +79,17 @@ class InstallationAdvanced(Gtk.Box):
         
         self.edit_partition_dialog = self.ui.get_object('partition_dialog')
 
+        use_combo = self.ui.get_object('partition_use_combo')
+        use_combo.remove_all()
+        for fs_name in sorted(fs._names):
+            use_combo.append_text(fs_name)
+        use_combo.set_wrap_width(2)
+
+        mount_combo = self.ui.get_object('partition_mount_combo')
+        mount_combo.remove_all()
+        for mp in sorted(fs._common_mount_points):
+            mount_combo.append_text(mp)
+
         # store here get_devices
         self.disks = None
 
@@ -189,15 +200,19 @@ class InstallationAdvanced(Gtk.Box):
 
     def get_size(self, length, sectorSize):
         size = length * sectorSize
-        size_txt = "%dk" % size
-        
-        if size >= 1000000:
+        #aas# fixing below sizes
+        size_txt = "%db" % size
+        if size >= 1000000000:
+            size /= 1000000000
+            size_txt = "%dG" % size
+
+        elif size >= 1000000:
             size /= 1000000
             size_txt = "%dM" % size
         
-        if size >= 1000:
+        elif size >= 1000:
             size /= 1000
-            size_txt = "%dG" % size
+            size_txt = "%dK" % size
             
         return size_txt
         
@@ -254,44 +269,40 @@ class InstallationAdvanced(Gtk.Box):
                     size_txt = self.get_size(p.geometry.length, dev.sectorSize)
                     
                     label = ""
-                                       
+                    fs_type = ""
+                    mount_point = ""
+                    used = ""
+                    flags = ""
+                    formatable = True
+
+                    path = p.path
+
+                    if p.fileSystem:
+                        fs_type = p.fileSystem.type
+                    else:
+                        fs_type = _("none")
+
+                    if pm.check_mounted(p) and not "swap" in fs_type:
+                        mount_point = self.get_mount_point(p.path)
+
                     if p.type == pm.PARTITION_EXTENDED:
-                        path = p.path
-                        mount_point = ""
                         fs_type = _("extended")
                         formatable = False
-                        used = ""
-                        flags = pm.get_flags(p)
-                        info = fs.get_info(partition_path)
-                        if 'LABEL' in info:
-                            label = info['LABEL']
-                    elif p.type == pm.PARTITION_PRIMARY or p.type == pm.PARTITION_LOGICAL:
-                        path = p.path
-                        fs_type = p.fileSystem.type
-                        formatable = True
+                        
+                    if p.type == pm.PARTITION_FREESPACE:
+                        path = _("free space")
+                        formatable = False
+                    else:
                         used = str(pm.get_used_space(p))
                         flags = pm.get_flags(p)
-
-                        if pm.check_mounted(p):
-                            if "swap" in fs_type:
-                                mount_point = "(swap)"
-                            else:
-                                mount_point = self.get_mount_point(p.path)
-                        else:
-                            mount_point = ""
-
-                        info = fs.get_info(partition_path)
-                        if 'LABEL' in info:
-                            label = info['LABEL']
-                        
-                    elif p.type == pm.PARTITION_FREESPACE:
-                        path = _("free space")
-                        mount_point = ""
-                        fs_type = _("not used")
-                        formatable = True
-                        used = ""
-                        flags = ""
-                    
+                        # cannot get label from staged partition
+                        try:
+                            info = fs.get_info(partition_path)
+                            if 'LABEL' in info:
+                                label = info['LABEL']
+                        except:
+                            label = ""
+                                     
                     row = [path, fs_type, mount_point, label, False, \
                            formatable, size_txt, used, partition_path, \
                            "", p.type]
@@ -426,37 +437,41 @@ class InstallationAdvanced(Gtk.Box):
             p = partitions[partition_path]
 
             # Get the objects from the dialog
-            size_spin = self.ui.get_object('partition_size_spinbutton')
             primary_radio = self.ui.get_object('partition_create_type_primary')
             logical_radio = self.ui.get_object('partition_create_type_logical')
+            primary_radio.set_active(True)
+            logical_radio.set_active(False)
+            
+            primary_count = disk.primaryPartitionCount
+            
+            if primary_count >= disk.maxPrimaryPartitionCount:
+                # no room left for another primary partition
+                primary_radio.set_sensitive(False)
+
             beginning_radio = self.ui.get_object('partition_create_place_beginning')
             end_radio = self.ui.get_object('partition_create_place_end')
-            use_combo = self.ui.get_object('partition_use_combo')
-            format_checkbutton = self.ui.get_object('partition_edit_format_checkbutton')
-            mount_combo = self.ui.get_object('partition_mount_combo')
+            beginning_radio.set_active(True)
+            end_radio.set_active(False)
+            
 
             # prepare size spin
+            #aas# +1 as not to leave unusably small space behind
+            max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
             
-            max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000)
-            
+            size_spin = self.ui.get_object('partition_size_spinbutton')
             size_spin.set_digits(0)
             # value, lower, upper, step_incr, page_incr, page_size
             adjustment = Gtk.Adjustment(max_size_mb, 1, max_size_mb, 1, 10, 0)
             size_spin.set_adjustment(adjustment)
-
-            # use_combo
-
-            use_combo.remove_all()
-            for fs_name in sorted(fs._names):
-                use_combo.append_text(fs_name)
-
-            use_combo.set_wrap_width(2)
-
-            # mount points
+            size_spin.set_value(max_size_mb)
             
-            mount_combo.remove_all()
-            for mp in sorted(fs._common_mount_points):
-                mount_combo.append_text(mp)
+            # label
+            label_entry = self.ui.get_object('partition_label_entry')
+            label_entry.set_text("")
+
+            # mount combo entry
+            mount_combo_entry = self.ui.get_object('combobox-entry4')
+            mount_combo_entry.set_text("")
 
             # finally, show the create partition dialog
 
@@ -465,82 +480,58 @@ class InstallationAdvanced(Gtk.Box):
             if response == Gtk.ResponseType.OK:
                 
                 size = int(size_spin.get_value())
-                
-                size_in_sectors = int((size * 1000000) / dev.sectorSize)
-                
                 print("size : %d" % size)
-                print("size_in_sectors : %d" % size_in_sectors)
-                
-                if beginning_radio.get_active():
-                    start_sector = p.geometry.start
-                else:
-                    start_sector = p.geometry.end - size_in_sectors
-                    
-                print("start sector : %d" % start_sector)
-                                
-                # part_type
-                if primary_radio.get_active():
-                    part_type = pm.PARTITION_PRIMARY
-                else:
-                    part_type = pm.PARTITION_LOGICAL
-                
+
+                beg_var = beginning_radio.get_active()
+
+                start_sector = p.geometry.start
+                end_sector = p.geometry.end
+                              
+                extended = disk.getExtendedPartition()
+                supports_extended = disk.supportsFeature(pm.PARTITION_EXTENDED)
+
+                geometry = pm.geom_builder(disk, start_sector, 
+                                           end_sector, size, beg_var)
+
                 # if the partition is of type LOGICAL, we must search if an
                 # extended partition is already there. If it is, we must add
                 # our logical partition to it, if it's not, we must create
                 # an extended partition and then create our logical partition
                 # inside.
 
-                # Anaconda code follows. Must be adapted.
-    #
-    #        part_type = None
-    #    extended = disk.getExtendedPartition()
-    #    supports_extended = disk.supportsFeature(parted.DISK_TYPE_EXTENDED)
-    #    logical_count = len(disk.getLogicalPartitions())
-    #    max_logicals = disk.getMaxLogicalPartitions()
-    #    primary_count = disk.primaryPartitionCount
+                if primary_radio.get_active():
+                    print("Creating primary partition")
+                    pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
+                elif supports_extended:
+                    if not extended:
+                        print("Creating extended partition")
+                        # Can we make an extended partition? now's our chance.
+                        # Should we use all remaining free space?
+                        # Which geometry should we use here?
+                        pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
 
-        #if primary_count < disk.maxPrimaryPartitionCount:
-    #        if primary_count == disk.maxPrimaryPartitionCount - 1:
-                ## can we make an extended partition? now's our chance.
-                #if not extended and supports_extended:
-    #                part_type = parted.PARTITION_EXTENDED
-                #elif not extended:
-                    ## extended partitions not supported. primary or nothing.
-                    #if not no_primary:
-                        #part_type = parted.PARTITION_NORMAL
-                #else:
-                    ## there is an extended and a free primary
-                    #if not no_primary:
-                        #part_type = parted.PARTITION_NORMAL
-                    #elif logical_count < max_logicals:
-                        ## we have an extended with logical slots, so use one.
-                        #part_type = parted.PARTITION_LOGICAL
-            #else:
-            # there are two or more primary slots left. use one unless we're
-            # not supposed to make primaries.
-        #        if not no_primary:
-                    #part_type = parted.PARTITION_NORMAL
-                #elif extended and logical_count < max_logicals:
-                    #part_type = parted.PARTITION_LOGICAL
-        #elif extended and logical_count < max_logicals:
-            #part_type = parted.PARTITION_LOGICAL
+                        logical_count = len(disk.getLogicalPartitions())
+                        max_logicals = disk.getMaxLogicalPartitions()
+                        
+                        if logical_count < max_logicals:
+                            print("Creating logical partition")
+                            # which geometry should we use here?
+                            pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
+                    else:
+                        logical_count = len(disk.getLogicalPartitions())
+                        max_logicals = disk.getMaxLogicalPartitions()
+                        
+                        if logical_count < max_logicals:
+                            print("Creating logical partition")
+                            pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
                 
-                if part_type == pm.PARTITION_LOGICAL:
-                    # make room for logical partition's metadata
-                    start_sector += disklabel.alignment.grainSize
-                    print("start sector adjusted : %d" % start_sector)
-
-                # TODO: geom_builder has changed, so this call must be changed, too.
-                geometry = pm.geom_builder(disk, start_sector, size_in_sectors)
-
-                pm.create_partition(disk, part_type, geometry)
-
                 # TODO: Don't forget these ones!
                 #use_as
-                #format
+                #label
                 #mount_point
 
                 print("OK!")
+                self.fill_partition_list()
             else:
                 print("Cancel or closed!")
             
@@ -655,7 +646,7 @@ class InstallationAdvanced(Gtk.Box):
         txt = _("Primary")
         button = self.ui.get_object('partition_create_type_primary')
         button.set_label(txt)
-        
+               
         txt = _("Logical")
         button = self.ui.get_object('partition_create_type_logical')
         button.set_label(txt)
@@ -672,12 +663,12 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('partition_use_label')
         label.set_markup(txt)
         
-        txt = _("Format the partition")
-        button = self.ui.get_object('partition_edit_format_checkbutton')
-        button.set_label(txt)
-        
         txt = _("Mount point:")
         label = self.ui.get_object('partition_mount_label')
+        label.set_markup(txt)
+
+        txt = _("Label (optional):")
+        label = self.ui.get_object('partition_label_label')
         label.set_markup(txt)
         
         txt = _("Encryption options...")

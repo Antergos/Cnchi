@@ -19,7 +19,11 @@ TODO (1st gen 2013)
 * Installer_advanced screen:
  - Extracted from Ubiquity. Still far from being finished.
  - Use pyparted to create/delete our partitions.
- - This part is URGENT
+ - Must store the label of "staged" partitions to be created
+   somehow in the class, probably as a dict object.  It was crashing because it
+   was trying to get label of partition that didn't physically exist.  I fixed
+   it to error to showing no label, but we should display the label the user
+   had entered.  
 
 * Timezone screen:
  - Add NTP switch?
