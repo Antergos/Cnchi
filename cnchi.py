@@ -156,10 +156,10 @@ class Main(Gtk.Window):
         self.set_icon_from_file(icon_dir)
 
         # set the first page to show
-        #self.current_page = self.pages["language"]
+        self.current_page = self.pages["language"]
         
         #self.current_page = self.pages["installation_ask"]
-        self.current_page = self.pages["installation_advanced"]
+        #self.current_page = self.pages["installation_advanced"]
         #self.current_page = self.pages["installation_easy"]
         #self.current_page = self.pages["slides"]
         #self.current_page = self.pages["timezone"]

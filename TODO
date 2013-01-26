@@ -36,11 +36,7 @@ TODO (1st gen 2013)
 * User screen:
  - Seems ok.
 
-* Slide screen:
- - It should get info from the installer script.
-   Think how to do this. It's another thread that's created in
-   installer_thread
+* Slide/Installation screen:
+ - Installation process run over pyalpm
  - Should hide close/exit button
- - Make some javascript magic with webkit (now only shows cinnarch web page,
-   in order to test webkit)
 
