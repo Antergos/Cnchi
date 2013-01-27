@@ -64,47 +64,58 @@ class InstallationAdvanced(Gtk.Box):
 
     def __init__(self, params):
 
+        ## Store class parameters
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         
+        ## Call base class
         super().__init__()
 
+        ## Get UI items
         self.ui = Gtk.Builder()
         ui_file = os.path.join(self.ui_dir, "installation_advanced.ui")
         self.ui.add_from_file(ui_file)
 
+        ## Connect UI signals
         self.ui.connect_signals(self)
         
         self.edit_partition_dialog = self.ui.get_object('partition_dialog')
 
+        ## Initialise our create partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo')
         use_combo.remove_all()
         for fs_name in sorted(fs._names):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
+        ## Initialise our create partition dialog mount points' combo.
         mount_combo = self.ui.get_object('partition_mount_combo')
         mount_combo.remove_all()
         for mp in sorted(fs._common_mount_points):
             mount_combo.append_text(mp)
 
-        # store here get_devices
+        ## We will store our devices here
         self.disks = None
 
         self.grub_device_entry = self.ui.get_object('grub_device_entry')      
         self.grub_devices = dict()
-        
+
+        ## Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
         self.partition_list_store = None
         self.prepare_partition_list()
-        
+
+        ## Connect changing selection in the partition list treeview
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
-        
+
+        ## Add ourselves to the parent class
         super().add(self.ui.get_object("installation_advanced"))
 
+    ## Activates/deactivates our buttons depending on which is selected in the
+    ## partition treeview
     def check_buttons(self, selection):
         button_new = self.ui.get_object('partition_button_new')
         button_new.set_sensitive(False)
@@ -127,48 +138,52 @@ class InstallationAdvanced(Gtk.Box):
             else:
                 disks = pm.get_devices()
                 if not path in disks:
-                    # a partition is selected
+                    ## A partition is selected
                     button_delete.set_sensitive(True)    
                     button_edit.set_sensitive(True)
                 else:
-                    # a drive is selected
+                    ## A drive (disk) is selected
                     button_new_label.set_sensitive(True)
                     
 
+    ## Get all devices where we can put our Grub boot code
+    ## Not using partitions (but we'll have to)
     def fill_grub_device_entry(self):       
         self.grub_device_entry.remove_all()
         self.grub_devices.clear()
         
+        ## Just call get_devices once
         if self.disks == None:
-            # just call get_devices once
             self.disks = pm.get_devices()
 
-        #for path in referenceElement.keys()
-        
         for path in sorted(self.disks):
             disk = self.disks[path]
             if disk is not None:
                 dev = disk.device
-                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
+                ## Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
                 size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
                 line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                 self.grub_device_entry.append_text(line)
                 self.grub_devices[line] = dev.path
 
+        ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
 
+    ## Automatically select first entry
     def select_first_combobox_item(self, combobox):
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
 
+    ## Get new selected GRUB device
     def on_select_grub_drive_changed(self, widget):
         line = self.grub_device_entry.get_active_text()
         if line != None:
             self.grub_device = self.grub_devices[line]
-    
+
+    ## Create columns for our treeview
     def prepare_partition_list(self):
-        # create columns for our treeview
+        
         render_text = Gtk.CellRendererText()
         
         render_toggle = Gtk.CellRendererToggle()
@@ -198,6 +213,7 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Flags"), render_text, text=9)
         self.partition_list.append_column(col)   
 
+    ## Helper function to get a disk/partition size in human format
     def get_size(self, length, sectorSize):
         size = length * sectorSize
         #aas# fixing below sizes
@@ -215,10 +231,11 @@ class InstallationAdvanced(Gtk.Box):
             size_txt = "%dK" % size
             
         return size_txt
-        
-    def fill_partition_list(self):
-        # create tree store 'partition_list_store' for our model
 
+    ## Fill the partition list with all the data.
+    def fill_partition_list(self):
+
+        ## We will store our data model in 'partition_list_store'
         if self.partition_list_store != None:
             self.partition_list_store.clear()
         
@@ -237,21 +254,23 @@ class InstallationAdvanced(Gtk.Box):
         self.partition_list_store = \
             Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, str, int)
             
+        ## Be sure to call get_devices once
         if self.disks == None:
-            # just call get_devices once
             self.disks = pm.get_devices()
         
+        ## Here we fill our model
         for disk_path in sorted(self.disks):
             disk = self.disks[disk_path]
             
             if disk is None:
-                # maybe disk without a partition table?
+                # Maybe disk without a partition table?
                 print(disk_path)
                 row = [disk_path, "", "", "", False, False, "", "", "", "", 0]
                 self.partition_list_store.append(None, row)
             else:
                 dev = disk.device
 
+                ## Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
                 
                 row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0]
@@ -259,13 +278,14 @@ class InstallationAdvanced(Gtk.Box):
                 
                 parent = disk_parent
 
-                # create list of partitions for this device (/dev/sda for example)
+                # Create a list of partitions for this device (/dev/sda for example)
                 partitions = pm.get_partitions(disk)
                 partition_list = pm.order_partitions(partitions)
                 
                 for partition_path in partition_list:
                     p = partitions[partition_path]
                     
+                    ## Get partition size
                     size_txt = self.get_size(p.geometry.length, dev.sectorSize)
                     
                     label = ""
@@ -277,25 +297,36 @@ class InstallationAdvanced(Gtk.Box):
 
                     path = p.path
 
+                    ## Get file system
                     if p.fileSystem:
                         fs_type = p.fileSystem.type
                     else:
                         fs_type = _("none")
 
+                    ## Get mount point
                     if pm.check_mounted(p) and not "swap" in fs_type:
                         mount_point = self.get_mount_point(p.path)
 
                     if p.type == pm.PARTITION_EXTENDED:
+                        ## Show 'extended' in file system type column
                         fs_type = _("extended")
                         formatable = False
-                        
+                    
                     if p.type == pm.PARTITION_FREESPACE:
+                        ## Show 'free space' instead of /dev/sda-1    
                         path = _("free space")
                         formatable = False
                     else:
+                        ## Get used space
                         used = str(pm.get_used_space(p))
+                        
+                        ## Get partition flags
                         flags = pm.get_flags(p)
-                        # cannot get label from staged partition
+                        
+                        ## Get partition label
+                        ## Cannot get label from staged partition
+                        ## We should store the partition label when creating
+                        ## a new one (staged partition)
                         try:
                             info = fs.get_info(partition_path)
                             if 'LABEL' in info:
@@ -309,27 +340,38 @@ class InstallationAdvanced(Gtk.Box):
                     tree_iter = self.partition_list_store.append(parent, row)
 
                     if p.type == pm.PARTITION_EXTENDED:
+                        ## If we're an extended partition, all the logical
+                        ## partitions that follow will be shown as children
+                        ## of this one
                         parent = tree_iter
                     elif p.type == pm.PARTITION_PRIMARY:
+                        ## If we're a primary/normal partition, we won't have
+                        ## any children partitions, so the next one will be
+                        ## shown as a brother of this one
                         parent = disk_parent
 
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
-       
+
+    ## Mark a partition to be formatted
     def on_format_cell_toggled(self, widget, path):
         print("on_format_cell_toggled")
         selected_path = Gtk.TreePath(path)
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
         print(self.partition_list_store[path][4])
 
+    ## signal issued when there is a change in file system create partition combobox.
+    ## I don't think we need this one.
     def on_partition_use_combo_changed(self, widget):
         fs_name = widget.get_active_text()
         print("on_partition_use_combo_changed : creating new partition, setting new fs to %s" % fs_name)
 
+    ## TODO: What happends when the user wants to edit a partition?
     def on_partition_list_edit_activate(self, button):
         print("on_partition_list_edit_activate : edit the selected partition")
 
+    ## Delete partition
     def on_partition_list_delete_activate(self, button):
         selection = self.partition_list.get_selection()
         
@@ -340,36 +382,30 @@ class InstallationAdvanced(Gtk.Box):
 
         if tree_iter == None:
             return
-                  
-        #No es pot crear una taula de particions nova quan hi ha
-        # particions actives.  Les particions actives són aquelles
-        # que s'estan utilitzant, com ara un sistema de fitxers muntat
-        # o un espai d'intercanvi habilitat.
-        #Utilitzeu les opcions del menú Partició, com ara «Desmunta»
-        # o «Partició d'intercanvi inactiva», per desactivar totes
-        # les particions d'aquest dispositiu abans de crear una taula
-        # de particions nova.
+
+        ## Get necessary row data
+        row = model[tree_iter]
+
+        size_available = row[6]
+        partition_path = row[8]
+
+        ## Get partition type from the user selection
+        part_type = row[10]
         
+        # Get our parent drive
         parent_iter = model.iter_parent(tree_iter)
-                
-        part_type = model[tree_iter][10]
-        
+
         if part_type == pm.PARTITION_LOGICAL:
+            ## If we are a logical partition, our drive won't be our father
+            ## but our grandpa (we have to skip the extended partition we're in)
             parent_iter = model.iter_parent(parent_iter)
 
         disk_path = model[parent_iter][0]
 
-        logical_partition = False
-        
-        row = model[tree_iter]
-        
-        size_available = row[6]
-        partition_path = row[8]
-
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
+        # Be sure to just call get_devices once
         if self.disks == None:
-            # just call get_devices once
             self.disks = pm.get_devices()
 
         disk = self.disks[disk_path]
@@ -377,15 +413,16 @@ class InstallationAdvanced(Gtk.Box):
         partitions = pm.get_partitions(disk)
         
         part = partitions[partition_path]
-        
+
+        ## Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
-            # Should we ask first?
+            ## We unmount the partition. Should we ask first?
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
-        # Is it worth to show some warning message here?
+        ## Is it worth to show some warning message here?
         pm.delete_partition(disk, part)
         
-        # Update treeview
+        ## Update the partition list treeview
         self.fill_partition_list()
         
     def get_mount_point(self, partition_path):
@@ -401,9 +438,8 @@ class InstallationAdvanced(Gtk.Box):
                     writable = line[3].split(',')[0]
         return fsname
 
+    ## Add a new partition
     def on_partition_list_new_activate(self, button):
-        # print("on_partition_list_new_activate : add a new partition")
-
         selection = self.partition_list.get_selection()
         
         if not selection:
@@ -415,47 +451,63 @@ class InstallationAdvanced(Gtk.Box):
             return
             
         print ("You selected %s" % model[tree_iter][0])
+
+        ## Get necessary row data
+        row = model[tree_iter]
+
+        ## Get partition type from the user selection
+        part_type = row[10]
+
+        ## Check that the user has selected a free space row.
+        if part_type != pm.PARTITION_FREESPACE:
+            return
+
+        size_available = row[6]
+        partition_path = row[8]
+
+        # Get our parent drive
+        parent_iter = model.iter_parent(tree_iter)
         
-        if model[tree_iter][0] == _("free space"):
-            
-            parent_iter = model.iter_parent(tree_iter)
-            
-            disk_path = model[parent_iter][0]
-            
-            row = model[tree_iter]
-            
-            size_available = row[6]
-            partition_path = row[8]
+        parent_part_type = model[parent_iter][10]
 
-            if self.disks == None:
-                self.disks = pm.get_devices()
+        if parent_part_type == pm.PARTITION_EXTENDED:
+            ## We're creating a partition inside an already created extended
+            ## partition. Our drive won't be our father but our grandpa
+            ## (we have to skip the extended partition we're in)
+            parent_iter = model.iter_parent(parent_iter)
+
+        disk_path = model[parent_iter][0]
+
+        # Be sure to just call get_devices once
+        if self.disks == None:
+            self.disks = pm.get_devices()
                 
-            disk = self.disks[disk_path]
-            dev = disk.device
+        disk = self.disks[disk_path]
+        dev = disk.device
             
-            partitions = pm.get_partitions(disk)
-            p = partitions[partition_path]
+        partitions = pm.get_partitions(disk)
+        p = partitions[partition_path]
 
-            # Get the objects from the dialog
-            primary_radio = self.ui.get_object('partition_create_type_primary')
-            logical_radio = self.ui.get_object('partition_create_type_logical')
-            primary_radio.set_active(True)
-            logical_radio.set_active(False)
+        # Get the objects from the dialog
+        primary_radio = self.ui.get_object('partition_create_type_primary')
+        logical_radio = self.ui.get_object('partition_create_type_logical')
+        primary_radio.set_active(True)
+        logical_radio.set_active(False)
+
+        ## Get how many primary partitions are already created on disk
+        primary_count = disk.primaryPartitionCount
             
-            primary_count = disk.primaryPartitionCount
-            
-            if primary_count >= disk.maxPrimaryPartitionCount:
-                # no room left for another primary partition
-                primary_radio.set_sensitive(False)
+        if primary_count >= disk.maxPrimaryPartitionCount:
+            ## No room left for another primary partition
+            primary_radio.set_sensitive(False)
 
             beginning_radio = self.ui.get_object('partition_create_place_beginning')
             end_radio = self.ui.get_object('partition_create_place_end')
             beginning_radio.set_active(True)
             end_radio.set_active(False)
-            
 
-            # prepare size spin
-            #aas# +1 as not to leave unusably small space behind
+            # Prepare size spin
+            # +1 as not to leave unusably small space behind
             max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
             
             size_spin = self.ui.get_object('partition_size_spinbutton')
@@ -478,7 +530,7 @@ class InstallationAdvanced(Gtk.Box):
             response = self.edit_partition_dialog.run()
             
             if response == Gtk.ResponseType.OK:
-                
+                # Get selected size
                 size = int(size_spin.get_value())
                 print("size : %d" % size)
 
@@ -493,11 +545,15 @@ class InstallationAdvanced(Gtk.Box):
                 geometry = pm.geom_builder(disk, start_sector, 
                                            end_sector, size, beg_var)
 
-                # if the partition is of type LOGICAL, we must search if an
+                
+                # If the partition is of type LOGICAL, we must search if an
                 # extended partition is already there. If it is, we must add
                 # our logical partition to it, if it's not, we must create
                 # an extended partition and then create our logical partition
                 # inside.
+                
+                # TODO: Alex proposed a change to this. Let the user decide whether
+                # he wants to create an extended, logical or primary partition
 
                 if primary_radio.get_active():
                     print("Creating primary partition")
@@ -525,36 +581,30 @@ class InstallationAdvanced(Gtk.Box):
                             print("Creating logical partition")
                             pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
                 
-                # TODO: Don't forget these ones!
-                #use_as
-                #label
-                #mount_point
+                # TODO: Store this information. We will need when:
+                # showing treeview partition list
+                # the user accepts all changes
+                # Don't forget these ones : use_as, label, mount_point
 
-                print("OK!")
                 self.fill_partition_list()
-            else:
-                print("Cancel or closed!")
             
             self.edit_partition_dialog.hide()
         
     def on_partition_list_undo_activate(self, button):
         print("on_partition_list_undo_activate")
 
+        ## To undo user changes, we simply reload all devices
+        ## TODO: Remember to also undo use_as, label, mount_point
+        
         self.disks = pm.get_devices()
         
         self.fill_partition_list()
     
+    ## Create a new partition table
     def on_partition_list_new_label_activate(self, button):
         print("on_partition_list_new_label_activate : new partition table")
-        #3 partitions are currently active on device /dev/sda
-        #No es pot crear una taula de particions nova quan hi ha
-        # particions actives.  Les particions actives són aquelles
-        # que s'estan utilitzant, com ara un sistema de fitxers muntat
-        # o un espai d'intercanvi habilitat.
-        #Utilitzeu les opcions del menú Partició, com ara «Desmunta»
-        # o «Partició d'intercanvi inactiva», per desactivar totes
-        # les particions d'aquest dispositiu abans de crear una taula
-        # de particions nova.
+        
+        ## TODO: We should check first if there's any mounted partition (including swap)'
         
         selection = self.partition_list.get_selection()
         
@@ -568,6 +618,7 @@ class InstallationAdvanced(Gtk.Box):
             
         path = model[tree_iter][0]
 
+        ## When creating a partition table, all prior changes will be discarded
         disks = pm.get_devices()
             
         for disk_path in sorted(disks):
@@ -577,37 +628,35 @@ class InstallationAdvanced(Gtk.Box):
 		# FIXME: end it!
 		
 		
-
+    ## Selection changed, call check_buttons to update them
     def on_partition_list_treeview_selection_changed(self, selection):
-        print("on_partition_list_treeview_selection_changed")
-        
         self.check_buttons(selection)
-        
-        #model, tree_iter = selection.get_selected()
-        #if tree_iter != None:
-        #    print ("You selected %s" % model[tree_iter][0])
-        
+
+    ## Called when clicked on the partition list treeview
+    ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_button_press_event(self, widget, event):
-        print("on_partition_list_treeview_button_press_event")
-        #clicked on the partition treeview
-        
+        #print("on_partition_list_treeview_button_press_event")
         #print(event.type)
-        #print(event.x_root)
-        #print(event.y_root)
- 
         return False
 
+    ## Called when a key is pressed when the partition list treeview has focus
+    ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_key_press_event(self, widget, event):
-        print("on_partition_list_treeview_key_press_event")
-        # key pressed while on the partition treeview
+        #print("on_partition_list_treeview_key_press_event")
         return False
 
+    ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
         print("on_partition_list_treeview_row_activated")
+        return False
 
+    ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_popup_menu(self, widget):
         print("on_partition_list_treeview_popup_menu")
+        return False
 
+    ## As the installer language can change anytime the user changes it, we have
+    ## to "retranslate" all our widgets calling this function
     def translate_ui(self):
         txt = _("Cinnarch advanced installation mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
@@ -681,6 +730,7 @@ class InstallationAdvanced(Gtk.Box):
         #self.ui.get_object('cancelbutton1')
         #self.ui.get_object('partition_dialog_okbutton')
 
+    ## Prepare our dialog to show/hide/activate/deactivate what's necessary
     def prepare(self):
         self.fill_grub_device_entry()
 
@@ -721,15 +771,20 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_button_undo')
         button.set_sensitive(True)
 
+    ## The user clicks "Install now!"
     def store_values(self):
         self.start_installation()
 
+    ## Tell which one is our previous page (in our case installation_ask)
     def get_prev_page(self):
         return _prev_page
 
+    ## Tell which one is our next page
     def get_next_page(self):
         return _next_page
 
+    ## Start installation process
+    ## A lot's of TODO's here
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
         print(script_path)
