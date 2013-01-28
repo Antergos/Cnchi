@@ -55,7 +55,7 @@ _ = gettext.gettext
 
 from config import installer_settings
 
-from show_message import show_error
+from show_message import show_error, show_warning
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
