@@ -69,7 +69,10 @@ class InstallationAdvanced(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-        
+        #stage_opts holds info about newly created partitions
+        #format is tuple (label, mountpoint, fs(text), Format)
+        #see its usage in listing, creating, and deleting partitions
+        self.stage_opts = {}
         ## Call base class
         super().__init__()
 
@@ -130,7 +133,7 @@ class InstallationAdvanced(Gtk.Box):
         button_new_label.set_sensitive(False)
 
         model, tree_iter = selection.get_selected()
-
+        diskobj = None
         if tree_iter != None:
             path = model[tree_iter][0]
             if path == _("free space"):
@@ -139,8 +142,15 @@ class InstallationAdvanced(Gtk.Box):
                 disks = pm.get_devices()
                 if not path in disks:
                     ## A partition is selected
-                    button_delete.set_sensitive(True)    
-                    button_edit.set_sensitive(True)
+                    for i in self.all_partitions:
+                        if path in i:
+                            diskobj = i[path].disk.device.path
+                    if diskobj and model[tree_iter][1] == 'extended' and self.diskdic[diskobj]['has_logical']:
+                        button_delete.set_sensitive(False)
+                        button_edit.set_sensitive(False)
+                    else:
+                        button_delete.set_sensitive(True)    
+                        button_edit.set_sensitive(True)
                 else:
                     ## A drive (disk) is selected
                     button_new_label.set_sensitive(True)
@@ -201,7 +211,7 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Label"), render_text, text=3)
         self.partition_list.append_column(col)
         
-        col = Gtk.TreeViewColumn(_("Format?"), render_toggle, active=4, visible=5)
+        col = Gtk.TreeViewColumn(_("Format?"), render_toggle, active=4, visible=5, sensitive=11)
         self.partition_list.append_column(col)
         
         col = Gtk.TreeViewColumn(_("Size"), render_text, text=6)
@@ -234,7 +244,8 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Fill the partition list with all the data.
     def fill_partition_list(self):
-
+        self.diskdic = {}
+        self.all_partitions = []
         ## We will store our data model in 'partition_list_store'
         if self.partition_list_store != None:
             self.partition_list_store.clear()
@@ -250,9 +261,9 @@ class InstallationAdvanced(Gtk.Box):
         # used
         # partition_path
         # flags
-        
+        # formatable_selectable?
         self.partition_list_store = \
-            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, str, int)
+            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, str, int, bool)
             
         ## Be sure to call get_devices once
         if self.disks == None:
@@ -260,12 +271,16 @@ class InstallationAdvanced(Gtk.Box):
         
         ## Here we fill our model
         for disk_path in sorted(self.disks):
+            self.diskdic[disk_path] = {}
+            self.diskdic[disk_path]['has_logical'] = False
+            self.diskdic[disk_path]['has_extended'] = False
+            self.diskdic[disk_path]['mounts'] = []
             disk = self.disks[disk_path]
             
             if disk is None:
                 # Maybe disk without a partition table?
                 print(disk_path)
-                row = [disk_path, "", "", "", False, False, "", "", "", "", 0]
+                row = [disk_path, "", "", "", False, False, "", "", "", "", 0, False]
                 self.partition_list_store.append(None, row)
             else:
                 dev = disk.device
@@ -273,21 +288,21 @@ class InstallationAdvanced(Gtk.Box):
                 ## Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
                 
-                row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0]
+                row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0, False]
                 disk_parent = self.partition_list_store.append(None, row)
                 
                 parent = disk_parent
 
                 # Create a list of partitions for this device (/dev/sda for example)
                 partitions = pm.get_partitions(disk)
-                partition_list = pm.order_partitions(partitions)
-                
+                self.all_partitions.append(partitions)
+                partition_list = pm.order_partitions(partitions) 
                 for partition_path in partition_list:
                     p = partitions[partition_path]
-                    
                     ## Get partition size
                     size_txt = self.get_size(p.geometry.length, dev.sectorSize)
-                    
+                    fmt_enable = False
+                    fmt_active = False
                     label = ""
                     fs_type = ""
                     mount_point = ""
@@ -311,45 +326,52 @@ class InstallationAdvanced(Gtk.Box):
                         ## Show 'extended' in file system type column
                         fs_type = _("extended")
                         formatable = False
-                    
-                    if p.type == pm.PARTITION_FREESPACE:
+                        self.diskdic[disk_path]['has_extended'] = True
+                    elif p.type == pm.PARTITION_LOGICAL:
+                        formatable = True
+                        self.diskdic[disk_path]['has_logical'] = True
+                    if p.type in (pm.PARTITION_FREESPACE,
+                                  pm.PARTITION_FREESPACE_EXTENDED):
                         ## Show 'free space' instead of /dev/sda-1    
                         path = _("free space")
                         formatable = False
                     else:
-                        ## Get used space
-                        used = str(pm.get_used_space(p))
                         
                         ## Get partition flags
                         flags = pm.get_flags(p)
                         
-                        ## Get partition label
-                        ## Cannot get label from staged partition
-                        ## We should store the partition label when creating
-                        ## a new one (staged partition)
-                        try:
+                    if path in self.stage_opts:
+                        (label, mount_point, fs_type, fmt_active) = self.stage_opts[path]           
+                        fmt_enable = False
+                    else:
+                        fmt_enable = True
+                        if 'free' not in path:
+                            used = str(pm.get_used_space(p))
                             info = fs.get_info(partition_path)
                             if 'LABEL' in info:
                                 label = info['LABEL']
-                        except:
-                            label = ""
-                                     
-                    row = [path, fs_type, mount_point, label, False, \
+                    if mount_point:
+                        self.diskdic[disk_path]['mounts'].append(mount_point)
+                    row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
-                           "", p.type]
+                           "", p.type, fmt_enable]
+                    if p.type in (pm.PARTITION_LOGICAL,
+                                  pm.PARTITION_FREESPACE_EXTENDED):
+                        parent = myparent
+                    else:
+                        parent = disk_parent
                     tree_iter = self.partition_list_store.append(parent, row)
 
                     if p.type == pm.PARTITION_EXTENDED:
                         ## If we're an extended partition, all the logical
                         ## partitions that follow will be shown as children
                         ## of this one
-                        parent = tree_iter
-                    elif p.type == pm.PARTITION_PRIMARY:
+                        myparent = tree_iter
+                    #elif p.type == pm.PARTITION_PRIMARY:
                         ## If we're a primary/normal partition, we won't have
                         ## any children partitions, so the next one will be
                         ## shown as a brother of this one
-                        parent = disk_parent
-
+                    #    parent = disk_parent
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
@@ -388,7 +410,8 @@ class InstallationAdvanced(Gtk.Box):
 
         size_available = row[6]
         partition_path = row[8]
-
+        if partition_path in self.stage_opts:
+            del(self.stage_opts[partition_path])
         ## Get partition type from the user selection
         part_type = row[10]
         
@@ -459,7 +482,8 @@ class InstallationAdvanced(Gtk.Box):
         part_type = row[10]
 
         ## Check that the user has selected a free space row.
-        if part_type != pm.PARTITION_FREESPACE:
+        if part_type not in (pm.PARTITION_FREESPACE,
+                             pm.PARTITION_FREESPACE_EXTENDED):
             return
 
         size_available = row[6]
@@ -475,7 +499,9 @@ class InstallationAdvanced(Gtk.Box):
             ## partition. Our drive won't be our father but our grandpa
             ## (we have to skip the extended partition we're in)
             parent_iter = model.iter_parent(parent_iter)
-
+            isbase = False
+        else:
+            isbase = True
         disk_path = model[parent_iter][0]
 
         # Be sure to just call get_devices once
@@ -487,49 +513,75 @@ class InstallationAdvanced(Gtk.Box):
             
         partitions = pm.get_partitions(disk)
         p = partitions[partition_path]
-
+        
+        #added extended, moving extended details up here
         # Get the objects from the dialog
+        extended = disk.getExtendedPartition()
+        supports_extended = disk.supportsFeature(pm.DISK_EXTENDED)
         primary_radio = self.ui.get_object('partition_create_type_primary')
         logical_radio = self.ui.get_object('partition_create_type_logical')
+        extended_radio = self.ui.get_object('partition_create_type_extended')
         primary_radio.set_active(True)
         logical_radio.set_active(False)
-
+        extended_radio.set_active(False)
+        logical_radio.set_visible(True)
+        primary_radio.set_visible(True)
+        extended_radio.set_visible(True)
+        if not supports_extended:
+            extended_radio.set_visible(False)
+        if isbase and extended:
+            logical_radio.set_visible(False)
+            extended_radio.set_visible(False)
+        elif isbase and not extended:
+            logical_radio.set_visible(False)
+        elif not isbase:
+            logical_radio.set_active(True)
+            primary_radio.set_visible(False)
+            extended_radio.set_visible(False)
         ## Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
-            
         if primary_count >= disk.maxPrimaryPartitionCount:
             ## No room left for another primary partition
             primary_radio.set_sensitive(False)
+        
+        beginning_radio = self.ui.get_object('partition_create_place_beginning')
+        end_radio = self.ui.get_object('partition_create_place_end')
+        beginning_radio.set_active(True)
+        end_radio.set_active(False)
 
-            beginning_radio = self.ui.get_object('partition_create_place_beginning')
-            end_radio = self.ui.get_object('partition_create_place_end')
-            beginning_radio.set_active(True)
-            end_radio.set_active(False)
-
-            # Prepare size spin
-            # +1 as not to leave unusably small space behind
-            max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
+        # Prepare size spin
+        # +1 as not to leave unusably small space behind
+        max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
             
-            size_spin = self.ui.get_object('partition_size_spinbutton')
-            size_spin.set_digits(0)
-            # value, lower, upper, step_incr, page_incr, page_size
-            adjustment = Gtk.Adjustment(max_size_mb, 1, max_size_mb, 1, 10, 0)
-            size_spin.set_adjustment(adjustment)
-            size_spin.set_value(max_size_mb)
-            
-            # label
-            label_entry = self.ui.get_object('partition_label_entry')
-            label_entry.set_text("")
+        size_spin = self.ui.get_object('partition_size_spinbutton')
+        size_spin.set_digits(0)
+        # value, lower, upper, step_incr, page_incr, page_size
+        adjustment = Gtk.Adjustment(max_size_mb, 1, max_size_mb, 1, 10, 0)
+        size_spin.set_adjustment(adjustment)
+        size_spin.set_value(max_size_mb)
+          
+        # label
+        label_entry = self.ui.get_object('partition_label_entry')
+        label_entry.set_text("")
 
-            # mount combo entry
-            mount_combo_entry = self.ui.get_object('combobox-entry4')
-            mount_combo_entry.set_text("")
+        #use
+        use_combo = self.ui.get_object('partition_use_combo')
+        use_combo.set_active(3) 
 
-            # finally, show the create partition dialog
+        # mount combo entry
+        mount_combo_entry = self.ui.get_object('combobox-entry4')
+        mount_combo_entry.set_text("")
 
-            response = self.edit_partition_dialog.run()
-            
-            if response == Gtk.ResponseType.OK:
+        # finally, show the create partition dialog
+
+        response = self.edit_partition_dialog.run()
+        if response == Gtk.ResponseType.OK:
+            mylabel = label_entry.get_text()
+            mymount = mount_combo_entry.get_text().strip()
+            if mymount in self.diskdic[disk.device.path]['mounts']:
+                print('Cannot use same mount twice...')
+            else:                
+                myfmt = use_combo.get_active_text()
                 # Get selected size
                 size = int(size_spin.get_value())
                 print("size : %d" % size)
@@ -539,60 +591,44 @@ class InstallationAdvanced(Gtk.Box):
                 start_sector = p.geometry.start
                 end_sector = p.geometry.end
                               
-                extended = disk.getExtendedPartition()
-                supports_extended = disk.supportsFeature(pm.PARTITION_EXTENDED)
-
                 geometry = pm.geom_builder(disk, start_sector, 
                                            end_sector, size, beg_var)
 
                 
-                # If the partition is of type LOGICAL, we must search if an
-                # extended partition is already there. If it is, we must add
-                # our logical partition to it, if it's not, we must create
-                # an extended partition and then create our logical partition
-                # inside.
-                
-                # TODO: Alex proposed a change to this. Let the user decide whether
                 # he wants to create an extended, logical or primary partition
-
                 if primary_radio.get_active():
                     print("Creating primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
-                elif supports_extended:
-                    if not extended:
-                        print("Creating extended partition")
-                        # Can we make an extended partition? now's our chance.
-                        # Should we use all remaining free space?
-                        # Which geometry should we use here?
-                        pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
-
-                        logical_count = len(disk.getLogicalPartitions())
-                        max_logicals = disk.getMaxLogicalPartitions()
-                        
-                        if logical_count < max_logicals:
-                            print("Creating logical partition")
-                            # which geometry should we use here?
-                            pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
-                    else:
-                        logical_count = len(disk.getLogicalPartitions())
-                        max_logicals = disk.getMaxLogicalPartitions()
-                        
-                        if logical_count < max_logicals:
-                            print("Creating logical partition")
-                            pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
+                elif extended_radio.get_active():
+                    print("Creating extended partition")
+                    pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
+                elif logical_radio.get_active():
+                    logical_count = len(list(disk.getLogicalPartitions()))
+                    max_logicals = disk.getMaxLogicalPartitions()        
+                    if logical_count < max_logicals:
+                        print("Creating logical partition")
+                        # which geometry should we use here?
+                        pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
                 
                 # TODO: Store this information. We will need when:
                 # showing treeview partition list
                 # the user accepts all changes
                 # Don't forget these ones : use_as, label, mount_point
-
+                old_parts = []
+                for y in self.all_partitions:
+                    for z in y:
+                        old_parts.append(z)
+                partitions = pm.get_partitions(disk)
+                for e in partitions:
+                    if e not in old_parts:
+                        self.stage_opts[e] = (mylabel, mymount, myfmt, 
+                                              True)
                 self.fill_partition_list()
-            
-            self.edit_partition_dialog.hide()
+        self.edit_partition_dialog.hide()
         
     def on_partition_list_undo_activate(self, button):
         print("on_partition_list_undo_activate")
-
+        self.stage_opts = {}
         ## To undo user changes, we simply reload all devices
         ## TODO: Remember to also undo use_as, label, mount_point
         
@@ -700,6 +736,10 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_create_type_logical')
         button.set_label(txt)
         
+        txt = _("Extended")
+        button = self.ui.get_object('partition_create_type_extended')
+        button.set_label(txt)
+ 
         txt = _("Beginning of this space")
         button = self.ui.get_object('partition_create_place_beginning')
         button.set_label(txt)

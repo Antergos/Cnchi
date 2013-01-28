@@ -37,9 +37,6 @@ PARTITION_FREESPACE_EXTENDED = 5
 PARTITION_METADATA = 8
 PARTITION_PROTECTED = 10
 
-# Disk types
-DISK_EXTENDED = 1
-
 @misc.raise_privileges
 def get_devices():
     device_list = parted.getAllDevices()
