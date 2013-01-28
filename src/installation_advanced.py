@@ -69,10 +69,12 @@ class InstallationAdvanced(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        
         #stage_opts holds info about newly created partitions
         #format is tuple (label, mountpoint, fs(text), Format)
         #see its usage in listing, creating, and deleting partitions
         self.stage_opts = {}
+        
         ## Call base class
         super().__init__()
 
@@ -367,11 +369,7 @@ class InstallationAdvanced(Gtk.Box):
                         ## partitions that follow will be shown as children
                         ## of this one
                         myparent = tree_iter
-                    #elif p.type == pm.PARTITION_PRIMARY:
-                        ## If we're a primary/normal partition, we won't have
-                        ## any children partitions, so the next one will be
-                        ## shown as a brother of this one
-                    #    parent = disk_parent
+
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
@@ -389,7 +387,7 @@ class InstallationAdvanced(Gtk.Box):
         fs_name = widget.get_active_text()
         print("on_partition_use_combo_changed : creating new partition, setting new fs to %s" % fs_name)
 
-    ## TODO: What happends when the user wants to edit a partition?
+    ## TODO: What happens when the user wants to edit a partition?
     def on_partition_list_edit_activate(self, button):
         print("on_partition_list_edit_activate : edit the selected partition")
 
@@ -515,18 +513,21 @@ class InstallationAdvanced(Gtk.Box):
         p = partitions[partition_path]
         
         #added extended, moving extended details up here
+
         # Get the objects from the dialog
         extended = disk.getExtendedPartition()
         supports_extended = disk.supportsFeature(pm.DISK_EXTENDED)
         primary_radio = self.ui.get_object('partition_create_type_primary')
         logical_radio = self.ui.get_object('partition_create_type_logical')
         extended_radio = self.ui.get_object('partition_create_type_extended')
+
         primary_radio.set_active(True)
         logical_radio.set_active(False)
         extended_radio.set_active(False)
         logical_radio.set_visible(True)
         primary_radio.set_visible(True)
         extended_radio.set_visible(True)
+
         if not supports_extended:
             extended_radio.set_visible(False)
         if isbase and extended:
@@ -538,6 +539,7 @@ class InstallationAdvanced(Gtk.Box):
             logical_radio.set_active(True)
             primary_radio.set_visible(False)
             extended_radio.set_visible(False)
+
         ## Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
         if primary_count >= disk.maxPrimaryPartitionCount:
@@ -579,7 +581,8 @@ class InstallationAdvanced(Gtk.Box):
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic[disk.device.path]['mounts']:
-                print('Cannot use same mount twice...')
+                print(_('Cannot use same mount twice...'))
+                show_warning(_('Cannot use same mount twice...'))
             else:                
                 myfmt = use_combo.get_active_text()
                 # Get selected size
@@ -610,10 +613,7 @@ class InstallationAdvanced(Gtk.Box):
                         # which geometry should we use here?
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
                 
-                # TODO: Store this information. We will need when:
-                # showing treeview partition list
-                # the user accepts all changes
-                # Don't forget these ones : use_as, label, mount_point
+                # Store stage partition info in self.stage_opts
                 old_parts = []
                 for y in self.all_partitions:
                     for z in y:
@@ -623,16 +623,18 @@ class InstallationAdvanced(Gtk.Box):
                     if e not in old_parts:
                         self.stage_opts[e] = (mylabel, mymount, myfmt, 
                                               True)
+                ## Update partition list treeview
                 self.fill_partition_list()
+
         self.edit_partition_dialog.hide()
         
     def on_partition_list_undo_activate(self, button):
-        print("on_partition_list_undo_activate")
-        self.stage_opts = {}
-        ## To undo user changes, we simply reload all devices
-        ## TODO: Remember to also undo use_as, label, mount_point
-        
+        #print("on_partition_list_undo_activate")
+        ## To undo user changes, we simply reload all devices        
         self.disks = pm.get_devices()
+
+        ## Also undo stage partitions' options
+        self.stage_opts = {}
         
         self.fill_partition_list()
     
@@ -656,6 +658,9 @@ class InstallationAdvanced(Gtk.Box):
 
         ## When creating a partition table, all prior changes will be discarded
         disks = pm.get_devices()
+
+        ## Also undo stage partitions' options
+        #self.stage_opts = {}
             
         for disk_path in sorted(disks):
             disk = disks[disk_path]
@@ -712,9 +717,9 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_button_new_label')
         button.set_label(txt)
         
-        txt = _("Revert")
-        button = self.ui.get_object('partition_button_undo')
-        button.set_label(txt)
+        #txt = _("Revert")
+        #button = self.ui.get_object('partition_button_undo')
+        #button.set_label(txt)
         
         txt = _("Change...")
         button = self.ui.get_object('partition_button_edit')
