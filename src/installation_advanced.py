@@ -85,8 +85,10 @@ class InstallationAdvanced(Gtk.Box):
 
         ## Connect UI signals
         self.ui.connect_signals(self)
-        
-        self.edit_partition_dialog = self.ui.get_object('partition_dialog')
+
+        ## Load create and edit partition dialogs
+        self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
+        self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
         ## Initialise our create partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo')
@@ -172,11 +174,14 @@ class InstallationAdvanced(Gtk.Box):
             disk = self.disks[path]
             if disk is not None:
                 dev = disk.device
-                ## Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-                line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
-                self.grub_device_entry.append_text(line)
-                self.grub_devices[line] = dev.path
+                ## avoid cdrom and any raid, lvm volumes or encryptfs
+                if not dev.path.startswith("/dev/sr") and \
+                   not dev.path.startswith("/dev/mapper"):
+                    ## Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
+                    size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                    line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
+                    self.grub_device_entry.append_text(line)
+                    self.grub_devices[line] = dev.path
 
         ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
@@ -578,7 +583,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # finally, show the create partition dialog
 
-        response = self.edit_partition_dialog.run()
+        response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
@@ -628,7 +633,7 @@ class InstallationAdvanced(Gtk.Box):
                 ## Update partition list treeview
                 self.fill_partition_list()
 
-        self.edit_partition_dialog.hide()
+        self.create_partition_dialog.hide()
         
     def on_partition_list_undo_activate(self, button):
         #print("on_partition_list_undo_activate")

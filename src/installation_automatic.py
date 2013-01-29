@@ -94,12 +94,15 @@ class InstallationAutomatic(Gtk.Box):
         self.devices = {}
                    
         for dev in device_list:
-            # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-            size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-            line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
-            self.device_store.append_text(line)
-            self.devices[line] = dev.path
-            print(line)
+            ## avoid cdrom and any raid, lvm volumes or encryptfs
+            if not dev.path.startswith("/dev/sr") and \
+               not dev.path.startswith("/dev/mapper"):
+                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
+                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
+                self.device_store.append_text(line)
+                self.devices[line] = dev.path
+                print(line)
 
         self.select_first_combobox_item(self.device_store)
 

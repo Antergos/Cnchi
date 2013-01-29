@@ -137,7 +137,9 @@ class InstallationEasy(Gtk.Box):
         extended = 2
         
         for dev in device_list:
-            if not dev.path.startswith("/dev/sr"):
+            ## avoid cdrom and any raid, lvm volumes or encryptfs
+            if not dev.path.startswith("/dev/sr") and \
+               not dev.path.startswith("/dev/mapper"):
                 try:           
                     disk = parted.Disk(dev)
                     # create list of partitions for this device (p.e. /dev/sda)
