@@ -32,7 +32,10 @@ _common_mount_points = [ '/', '/boot', '/home', '/usr', '/var']
 
 
 def get_info(part):
-    ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
+    try:
+        ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
+    except:
+        ret = ''
     partdic = {}
     i = ret.split()
     for e in i:

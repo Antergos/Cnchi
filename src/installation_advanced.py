@@ -273,6 +273,8 @@ class InstallationAdvanced(Gtk.Box):
         
         ## Here we fill our model
         for disk_path in sorted(self.disks):
+            if '/dev/mapper/arch_' in disk_path:
+                continue
             self.diskdic[disk_path] = {}
             self.diskdic[disk_path]['has_logical'] = False
             self.diskdic[disk_path]['has_extended'] = False
