@@ -27,7 +27,6 @@
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
     <property name="xscale">0</property>
-    <property name="top_padding">20</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>

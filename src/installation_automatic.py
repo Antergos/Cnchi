@@ -110,7 +110,8 @@ class InstallationAutomatic(Gtk.Box):
 
     def on_select_drive_changed(self, widget):
         line = self.device_store.get_active_text()
-        self.auto_device = self.devices[line]
+        if line != None:
+            self.auto_device = self.devices[line]
         print(self.auto_device)
         self.forward_button.set_sensitive(True)
 
