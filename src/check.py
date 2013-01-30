@@ -90,10 +90,14 @@ class Check(Gtk.Box):
                 raise
 
     def has_connection(self):
-        import dbus
-        bus = dbus.SystemBus()
-        manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-        state = self.get_prop(manager, NM, 'state')
+        try:
+            import dbus
+            bus = dbus.SystemBus()
+            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+            state = self.get_prop(manager, NM, 'state')
+        except dbus.exceptions.DBusException:
+            print("check: Can't get network status")
+            return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
     def check_all(self):

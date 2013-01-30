@@ -294,6 +294,10 @@ class AutoTimezoneThread(threading.Thread):
         super(AutoTimezoneThread, self).__init__()
 
         self.coords_queue = coords_queue
+        self.stop_event = threading.Event()
+
+    def stop(self):
+        self.stop_event.set()
 
     def get_prop(self, obj, iface, prop):
         try:
@@ -303,17 +307,23 @@ class AutoTimezoneThread(threading.Thread):
                 return None
             else:
                 raise
-
+        
     def has_connection(self):
-        bus = dbus.SystemBus()
-        manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-        state = self.get_prop(manager, NM, 'state')
+        try:
+            bus = dbus.SystemBus()
+            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+            state = self.get_prop(manager, NM, 'state')
+        except dbus.exceptions.DBusException:
+            print("timezone: Can't get network status")
+            return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
     def run(self):
-        # wait untill there is an Internet connection available
+        # wait until there is an Internet connection available
         while not self.has_connection():
-            time.sleep(10)  # Delay for 10 seconds
+            time.sleep(1)  # Delay 1 second
+            if self.stop_event.is_set():
+                return
 
         # ok, now get our timezone
 
@@ -323,6 +333,7 @@ class AutoTimezoneThread(threading.Thread):
             coords = conn.read().decode('utf-8').strip()
         except:
             coords = 'error'
+        
         if coords != 'error':
             coords = coords.split()
             self.coords_queue.put(coords)
