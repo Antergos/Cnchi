@@ -11,6 +11,6 @@ Graphical Installer for Cinnarch Linux
  * python-cairo
  * hdparm
  * libtimezonemap
- * pywebkitgtk
+ * webkitgtk3
  * parted (and also dosfstools, mtools, ntfs-3g, ntfsprogs)
  * pyparted
