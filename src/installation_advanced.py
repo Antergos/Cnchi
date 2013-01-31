@@ -97,6 +97,13 @@ class InstallationAdvanced(Gtk.Box):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
+        ## Initialise our edit partition dialog filesystems' combo.
+        use_combo = self.ui.get_object('partition_use_combo2')
+        use_combo.remove_all()
+        for fs_name in sorted(fs._names):
+            use_combo.append_text(fs_name)
+        use_combo.set_wrap_width(2)
+
         ## Initialise our create partition dialog mount points' combo.
         mount_combo = self.ui.get_object('partition_mount_combo')
         mount_combo.remove_all()
@@ -396,7 +403,12 @@ class InstallationAdvanced(Gtk.Box):
 
     ## TODO: What happens when the user wants to edit a partition?
     def on_partition_list_edit_activate(self, button):
-        print("on_partition_list_edit_activate : edit the selected partition")
+        #print("on_partition_list_edit_activate : edit the selected partition")
+        response = self.edit_partition_dialog.run()
+        if response == Gtk.ResponseType.OK:
+            pass
+        self.edit_partition_dialog.hide()
+
 
     ## Delete partition
     def on_partition_list_delete_activate(self, button):
