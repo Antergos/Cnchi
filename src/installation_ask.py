@@ -68,7 +68,7 @@ class InstallationAsk(Gtk.Box):
         self.show_all()
 
     def translate_ui(self):
-        txt = _("Choose your prefered type of installation")
+        txt = _("Your preferred installation type")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
@@ -84,7 +84,8 @@ class InstallationAsk(Gtk.Box):
         txt = _("Warning: This will delete all programs, documents, photos, music and any other files on your disk")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
-
+        label.set_line_wrap(True)
+        
         radio = self.ui.get_object("easy_radiobutton")
         radio.set_label(_("Choose where to install Cinnarch (easy)"))
 
@@ -92,6 +93,7 @@ class InstallationAsk(Gtk.Box):
         txt = _("You will have to choose where to install Cinnarch. You will be only asked for the mount points of your root and swap devices.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
+        label.set_line_wrap(True)
 
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Manage your partitions and choose where to install Cinnarch (advanced)"))
@@ -100,6 +102,7 @@ class InstallationAsk(Gtk.Box):
         txt = _("You will be able to create/delete partitions, choose where to install Cinnarch and also choose additional mount points.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
+        label.set_line_wrap(True)
 
     def store_values(self):
         if self.next_page == "installation_automatic":

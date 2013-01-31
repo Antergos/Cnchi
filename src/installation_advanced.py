@@ -531,6 +531,7 @@ class InstallationAdvanced(Gtk.Box):
         primary_radio.set_active(True)
         logical_radio.set_active(False)
         extended_radio.set_active(False)
+        
         logical_radio.set_visible(True)
         primary_radio.set_visible(True)
         extended_radio.set_visible(True)
@@ -779,7 +780,7 @@ class InstallationAdvanced(Gtk.Box):
         txt = _("Install now!")
         self.forward_button.set_label(txt)
 
-        #self.ui.get_object('cancelbutton1')
+        #self.ui.get_object('cancelbutton')
         #self.ui.get_object('partition_dialog_okbutton')
 
     ## Prepare our dialog to show/hide/activate/deactivate what's necessary
