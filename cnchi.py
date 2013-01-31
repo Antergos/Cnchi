@@ -256,6 +256,12 @@ class Main(Gtk.Window):
 
 if __name__ == '__main__':
 
+    major = Gtk.get_major_version()
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+
+    print("Using Gtk version %d.%d%d" % (major,minor,micro))
+
     GObject.threads_init()
     Gdk.threads_init()
 
