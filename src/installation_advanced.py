@@ -291,10 +291,12 @@ class InstallationAdvanced(Gtk.Box):
         for disk_path in sorted(self.disks):
             if '/dev/mapper/arch_' in disk_path:
                 continue
+            
             self.diskdic[disk_path] = {}
             self.diskdic[disk_path]['has_logical'] = False
             self.diskdic[disk_path]['has_extended'] = False
             self.diskdic[disk_path]['mounts'] = []
+            
             disk = self.disks[disk_path]
             
             if disk is None:
@@ -370,11 +372,14 @@ class InstallationAdvanced(Gtk.Box):
                             info = fs.get_info(partition_path)
                             if 'LABEL' in info:
                                 label = info['LABEL']
+            
                     if mount_point:
                         self.diskdic[disk_path]['mounts'].append(mount_point)
+            
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
                            "", p.type, fmt_enable]
+            
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
                         parent = myparent
@@ -391,7 +396,11 @@ class InstallationAdvanced(Gtk.Box):
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
-
+        
+        # check if correct mount points are already defined, so we
+        # can proceed with installation
+        self.check_mount_points()
+        
     ## Mark a partition to be formatted
     def on_format_cell_toggled(self, widget, path):
         print("on_format_cell_toggled")
@@ -449,7 +458,7 @@ class InstallationAdvanced(Gtk.Box):
             self.disks = pm.get_devices()
 
         # Get disk_path and disk
-        disk_path = self.get_disk_path(model, tree_iter)    
+        disk_path = self.get_disk_path_from_selection(model, tree_iter)    
         disk = self.disks[disk_path]
 
         # show edit partition dialog
@@ -463,17 +472,7 @@ class InstallationAdvanced(Gtk.Box):
                 show_warning(_('Cannot use same mount twice...'))
             else:                
                 myfmt = use_combo.get_active_text()
-
-                ## fist, check if its a staged partition
-                if partition_path in self.stage_opts:
-                    self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
-                    #(mylabel, mymount, myfmt, True)
-                else:
-                    ## it's an already created partition
-                    print("TODO : Change current atributes of a partition")
-                
-                    #partitions = pm.get_partitions(disk)
-                    #part = partitions[partition_path]
+                self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
             
         self.edit_partition_dialog.hide()
 
@@ -481,7 +480,7 @@ class InstallationAdvanced(Gtk.Box):
         self.fill_partition_list()
 
     ## This returns the disk path where the selected partition is in
-    def get_disk_path(self, model, tree_iter):
+    def get_disk_path_from_selection(self, model, tree_iter):
         if tree_iter != None and model != None:
             row = model[tree_iter]
             partition_path = row[8]
@@ -513,7 +512,7 @@ class InstallationAdvanced(Gtk.Box):
         if tree_iter == None:
             return
 
-        ## Get necessary row data
+        ## Get row data
         row = model[tree_iter]
 
         size_available = row[6]
@@ -522,7 +521,7 @@ class InstallationAdvanced(Gtk.Box):
         if partition_path in self.stage_opts:
             del(self.stage_opts[partition_path])
         
-        disk_path = self.get_disk_path(model, tree_iter)
+        disk_path = self.get_disk_path_from_selection(model, tree_iter)
 
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
@@ -701,7 +700,6 @@ class InstallationAdvanced(Gtk.Box):
                 geometry = pm.geom_builder(disk, start_sector, 
                                            end_sector, size, beg_var)
 
-                
                 # user wants to create an extended, logical or primary partition
                 if primary_radio.get_active():
                     print("Creating primary partition")
@@ -761,7 +759,7 @@ class InstallationAdvanced(Gtk.Box):
         path = model[tree_iter][0]
 
         ## When creating a partition table, all prior changes will be discarded
-        disks = pm.get_devices()
+        #disks = pm.get_devices()
 
         ## Also undo stage partitions' options
         #self.stage_opts = {}
@@ -917,9 +915,7 @@ class InstallationAdvanced(Gtk.Box):
         image.hide()
         
         label = self.ui.get_object('part_advanced_warning_message')
-        label.hide()
-        
-        self.forward_button.set_sensitive(False)
+        label.hide()      
 
         button = self.ui.get_object('partition_button_new')
         button.set_sensitive(False)
@@ -935,9 +931,51 @@ class InstallationAdvanced(Gtk.Box):
 
         button = self.ui.get_object('partition_button_undo')
         button.set_sensitive(True)
+        
+        self.forward_button.set_sensitive(False)
+
+    def check_mount_points(self):
+        # TODO: CHECK IT!
+        ## at least root (/) partition must be defined
+        self.forward_button.set_sensitive(False)
+
+        for disk_path in self.diskdic:
+            mounts = self.diskdic[disk_path]['mounts']
+            if "/" in mounts:
+                self.forward_button.set_sensitive(True)
+
+        for part_path in self.stage_opts:
+            (lbl, mnt, fs, fmt) = self.stage_opts[part_path]
+            if mnt == "/":
+                self.forward_button.set_sensitive(True)
 
     ## The user clicks "Install now!"
     def store_values(self):
+        '''        
+        for partition_path in self.stage_opts:
+        
+        mylabel = label_entry.get_text()
+        mymount = mount_combo_entry.get_text().strip()
+        if mymount in self.diskdic[disk.device.path]['mounts']:
+            print(_('Cannot use same mount twice...'))
+            show_warning(_('Cannot use same mount twice...'))
+        else:                
+            myfmt = use_combo.get_active_text()
+            self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
+        '''
+        
+        if self.disks != None:
+            #for path in self.stage_opts:
+            #    (lbl, mnt, fs, fmt) = self.stage_opts[path]
+            
+            for disk_path in self.disks:
+                disk = self.disks[disk_path]
+                #finalize_changes(disk)
+                print(disk_path)
+            
+        
+        
+        
         self.start_installation()
 
     ## Tell which one is our previous page (in our case installation_ask)
