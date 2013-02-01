@@ -104,13 +104,14 @@ class Keymap(Gtk.Box):
         self.show_all()
 
     def fix_countries(self, country):
-        # don't know how to fix this. There are some countries that do not
+        # Don't know how to fix this.
+        # There are some countries that do not
         # match. Convert them here manually
+        # More countries should be added here
 
         if country == "United States":
             country = "USA"
-
-        if country == "Russian Federation":
+        elif country == "Russian Federation":
             country = "Russia"
 
         return country

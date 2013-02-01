@@ -104,11 +104,15 @@ class InstallationAdvanced(Gtk.Box):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
-        ## Initialise our create partition dialog mount points' combo.
-        mount_combo = self.ui.get_object('partition_mount_combo')
-        mount_combo.remove_all()
-        for mp in sorted(fs._common_mount_points):
-            mount_combo.append_text(mp)
+        ## Initialise our create and edit partition dialog mount points' combo.
+        mount_combos = []
+        mount_combos.append(self.ui.get_object('partition_mount_combo'))
+        mount_combos.append(self.ui.get_object('partition_mount_combo2'))
+        
+        for combo in mount_combos:
+            combo.remove_all()
+            for mp in sorted(fs._common_mount_points):
+                combo.append_text(mp)
 
         ## We will store our devices here
         self.disks = None
@@ -395,20 +399,107 @@ class InstallationAdvanced(Gtk.Box):
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
         print(self.partition_list_store[path][4])
 
-    ## signal issued when there is a change in file system create partition combobox.
-    ## I don't think we need this one.
-    def on_partition_use_combo_changed(self, widget):
-        fs_name = widget.get_active_text()
-        print("on_partition_use_combo_changed : creating new partition, setting new fs to %s" % fs_name)
-
-    ## TODO: What happens when the user wants to edit a partition?
+    ## The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
         #print("on_partition_list_edit_activate : edit the selected partition")
+
+        selection = self.partition_list.get_selection()
+        
+        if not selection:
+            return
+            
+        model, tree_iter = selection.get_selected()
+
+        if tree_iter == None:
+            return
+            
+        print ("You selected %s" % model[tree_iter][0])
+
+        ## Get necessary row data
+        row = model[tree_iter]
+
+        fs = row[1]
+        mount_point = row[2]
+        label = row[3]
+        partition_path = row[8]
+        
+        # set fs in dialog combobox
+        use_combo = self.ui.get_object('partition_use_combo2')
+        use_combo_model = use_combo.get_model()
+        use_combo_iter = use_combo_model.get_iter_first()
+
+        while use_combo_iter != None:
+            use_combo_row = use_combo_model[use_combo_iter]
+            if use_combo_row[0] in fs:
+                use_combo.set_active_iter(use_combo_iter)
+                use_combo_iter = None
+            else:
+                use_combo_iter = use_combo_model.iter_next(use_combo_iter)
+
+        # set mount point in dialog combobox
+        mount_combo_entry = self.ui.get_object('combobox-entry2')
+        mount_combo_entry.set_text(mount_point)
+        
+        # set label entry
+        label_entry = self.ui.get_object('partition_label_entry2')
+        label_entry.set_text(label)
+
+        # Be sure to just call get_devices once
+        if self.disks == None:
+            self.disks = pm.get_devices()
+
+        # Get disk_path and disk
+        disk_path = self.get_disk_path(model, tree_iter)    
+        disk = self.disks[disk_path]
+
+        # show edit partition dialog
         response = self.edit_partition_dialog.run()
+        
         if response == Gtk.ResponseType.OK:
-            pass
+            mylabel = label_entry.get_text()
+            mymount = mount_combo_entry.get_text().strip()
+            if mymount in self.diskdic[disk.device.path]['mounts']:
+                print(_('Cannot use same mount twice...'))
+                show_warning(_('Cannot use same mount twice...'))
+            else:                
+                myfmt = use_combo.get_active_text()
+
+                ## fist, check if its a staged partition
+                if partition_path in self.stage_opts:
+                    self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
+                    #(mylabel, mymount, myfmt, True)
+                else:
+                    ## it's an already created partition
+                    print("TODO : Change current atributes of a partition")
+                
+                    #partitions = pm.get_partitions(disk)
+                    #part = partitions[partition_path]
+            
         self.edit_partition_dialog.hide()
 
+        ## Update the partition list treeview
+        self.fill_partition_list()
+
+    ## This returns the disk path where the selected partition is in
+    def get_disk_path(self, model, tree_iter):
+        if tree_iter != None and model != None:
+            row = model[tree_iter]
+            partition_path = row[8]
+            
+            ## Get partition type from the user selection
+            part_type = row[10]
+            
+            # Get our parent drive
+            parent_iter = model.iter_parent(tree_iter)
+
+            if part_type == pm.PARTITION_LOGICAL:
+                ## If we are a logical partition, our drive won't be our father
+                ## but our grandpa (we have to skip the extended partition we're in)
+                parent_iter = model.iter_parent(parent_iter)
+
+            return model[parent_iter][0]
+        else:
+            return None
 
     ## Delete partition
     def on_partition_list_delete_activate(self, button):
@@ -427,20 +518,11 @@ class InstallationAdvanced(Gtk.Box):
 
         size_available = row[6]
         partition_path = row[8]
+        
         if partition_path in self.stage_opts:
             del(self.stage_opts[partition_path])
-        ## Get partition type from the user selection
-        part_type = row[10]
         
-        # Get our parent drive
-        parent_iter = model.iter_parent(tree_iter)
-
-        if part_type == pm.PARTITION_LOGICAL:
-            ## If we are a logical partition, our drive won't be our father
-            ## but our grandpa (we have to skip the extended partition we're in)
-            parent_iter = model.iter_parent(parent_iter)
-
-        disk_path = model[parent_iter][0]
+        disk_path = self.get_disk_path(model, tree_iter)
 
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
@@ -519,6 +601,7 @@ class InstallationAdvanced(Gtk.Box):
             isbase = False
         else:
             isbase = True
+            
         disk_path = model[parent_iter][0]
 
         # Be sure to just call get_devices once
@@ -550,6 +633,7 @@ class InstallationAdvanced(Gtk.Box):
 
         if not supports_extended:
             extended_radio.set_visible(False)
+        
         if isbase and extended:
             logical_radio.set_visible(False)
             extended_radio.set_visible(False)
@@ -591,7 +675,7 @@ class InstallationAdvanced(Gtk.Box):
         use_combo.set_active(3) 
 
         # mount combo entry
-        mount_combo_entry = self.ui.get_object('combobox-entry4')
+        mount_combo_entry = self.ui.get_object('combobox-entry')
         mount_combo_entry.set_text("")
 
         # finally, show the create partition dialog
@@ -618,7 +702,7 @@ class InstallationAdvanced(Gtk.Box):
                                            end_sector, size, beg_var)
 
                 
-                # he wants to create an extended, logical or primary partition
+                # user wants to create an extended, logical or primary partition
                 if primary_radio.get_active():
                     print("Creating primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
@@ -719,7 +803,7 @@ class InstallationAdvanced(Gtk.Box):
     ## As the installer language can change anytime the user changes it, we have
     ## to "retranslate" all our widgets calling this function
     def translate_ui(self):
-        txt = _("Cinnarch advanced installation mode")
+        txt = _("Advanced installation mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
@@ -744,7 +828,8 @@ class InstallationAdvanced(Gtk.Box):
         txt = _("Change...")
         button = self.ui.get_object('partition_button_edit')
         button.set_label(txt)
-        
+
+        ## Translate dialog "Create partition"
         txt = _("Size:")
         label = self.ui.get_object('partition_size_label')
         label.set_markup(txt)
@@ -789,11 +874,26 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_encryption_settings')
         button.set_label(txt)
         
+        ## Translate dialog "Edit partition"
+        txt = _("Use as:")
+        label = self.ui.get_object('partition_use_label2')
+        label.set_markup(txt)
+        
+        txt = _("Mount point:")
+        label = self.ui.get_object('partition_mount_label2')
+        label.set_markup(txt)
+
+        txt = _("Label (optional):")
+        label = self.ui.get_object('partition_label_label2')
+        label.set_markup(txt)
+
+        ## Change "Next" button text
         txt = _("Install now!")
         self.forward_button.set_label(txt)
 
         #self.ui.get_object('cancelbutton')
         #self.ui.get_object('partition_dialog_okbutton')
+        
 
     ## Prepare our dialog to show/hide/activate/deactivate what's necessary
     def prepare(self):

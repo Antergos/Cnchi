@@ -77,7 +77,6 @@
                 <accessibility>
                   <relation type="labelled-by" target="partition_use_label2"/>
                 </accessibility>
-                <signal name="changed" handler="on_partition_use_combo_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -406,7 +405,7 @@
   </object>
   <object class="GtkDialog" id="edit_partition_dialog">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Create partition</property>
+    <property name="title" translatable="yes">Edit partition</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
@@ -435,7 +434,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">0</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
@@ -449,11 +448,10 @@
                 <accessibility>
                   <relation type="labelled-by" target="partition_use_label2"/>
                 </accessibility>
-                <signal name="changed" handler="on_partition_use_combo_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">0</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
@@ -468,7 +466,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">2</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
@@ -483,7 +481,7 @@
                   <relation type="labelled-by" target="partition_mount_label2"/>
                 </accessibility>
                 <child internal-child="entry">
-                  <object class="GtkEntry" id="combobox-entry4">
+                  <object class="GtkEntry" id="combobox-entry2">
                     <property name="can_focus">True</property>
                     <property name="invisible_char">•</property>
                   </object>
@@ -491,7 +489,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">2</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
@@ -504,7 +502,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">1</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
@@ -517,28 +515,10 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">1</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>
