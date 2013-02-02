@@ -193,7 +193,7 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
-
+        
         ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
 
@@ -931,12 +931,11 @@ class InstallationAdvanced(Gtk.Box):
 
         button = self.ui.get_object('partition_button_undo')
         button.set_sensitive(True)
-        
-        self.forward_button.set_sensitive(False)
 
     def check_mount_points(self):
         # TODO: CHECK IT!
         ## at least root (/) partition must be defined
+
         self.forward_button.set_sensitive(False)
 
         for disk_path in self.diskdic:
@@ -964,6 +963,7 @@ class InstallationAdvanced(Gtk.Box):
             self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
         '''
         
+        '''
         if self.disks != None:
             #for path in self.stage_opts:
             #    (lbl, mnt, fs, fmt) = self.stage_opts[path]
@@ -972,11 +972,12 @@ class InstallationAdvanced(Gtk.Box):
                 disk = self.disks[disk_path]
                 #finalize_changes(disk)
                 print(disk_path)
+        '''
             
         
         
         
-        self.start_installation()
+        ##self.start_installation()
 
     ## Tell which one is our previous page (in our case installation_ask)
     def get_prev_page(self):
