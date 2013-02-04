@@ -20,6 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
+#  Cinnarch Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
+#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
+#   Gustau Castells (karasu) <karasu.cinnarch.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
+#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
+#   Alex Skinner (skinner) <skinner.cinnarch.com>
 
 import xml.etree.ElementTree as etree
 
@@ -383,6 +390,7 @@ class InstallationAdvanced(Gtk.Box):
                                 if (disk_path, p.geometry.start) in self.used_dic:
                                     used = self.used_dic[(disk_path, p.geometry.start)]
                                 else:
+                                    # I don't like this... (karasu)
                                     used = '0b'
                             info = fs.get_info(partition_path)
                             if 'LABEL' in info:
@@ -755,38 +763,7 @@ class InstallationAdvanced(Gtk.Box):
         self.stage_opts = {}
         
         self.fill_partition_list()
-    
-    ## Create a new partition table
-    def on_partition_list_new_label_activate(self, button):
-        print("on_partition_list_new_label_activate : new partition table")
-        
-        ## TODO: We should check first if there's any mounted partition (including swap)'
-        
-        selection = self.partition_list.get_selection()
-        
-        if not selection:
-            return
-            
-        model, tree_iter = selection.get_selected()
-
-        if tree_iter == None:
-            return
-            
-        path = model[tree_iter][0]
-
-        ## When creating a partition table, all prior changes will be discarded
-        #disks = pm.get_devices()
-
-        ## Also undo stage partitions' options
-        #self.stage_opts = {}
-            
-        for disk_path in sorted(disks):
-            disk = disks[disk_path]
-            #dev = disk.device
-		
-		# FIXME: end it!
-		
-		
+    		
     ## Selection changed, call check_buttons to update them
     def on_partition_list_treeview_selection_changed(self, selection):
         self.check_buttons(selection)
@@ -947,6 +924,36 @@ class InstallationAdvanced(Gtk.Box):
 
         button = self.ui.get_object('partition_button_undo')
         button.set_sensitive(True)
+
+    ## Create a new partition table
+    def on_partition_list_new_label_activate(self, button):
+        print("on_partition_list_new_label_activate : new partition table")
+        
+        ## TODO: We should check first if there's any mounted partition (including swap)'
+        
+        selection = self.partition_list.get_selection()
+        
+        if not selection:
+            return
+            
+        model, tree_iter = selection.get_selected()
+
+        if tree_iter == None:
+            return
+            
+        path = model[tree_iter][0]
+
+        ## When creating a partition table, all prior changes will be discarded
+        #disks = pm.get_devices()
+
+        ## Also undo stage partitions' options
+        #self.stage_opts = {}
+            
+        for disk_path in sorted(disks):
+            disk = disks[disk_path]
+            #dev = disk.device
+		
+		# FIXME: end it!
 
     def check_mount_points(self):
         # TODO: CHECK IT!

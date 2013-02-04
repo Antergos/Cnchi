@@ -20,6 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
+#  Cinnarch Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
+#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
+#   Gustau Castells (karasu) <karasu.cinnarch.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
+#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
+#   Alex Skinner (skinner) <skinner.cinnarch.com>
 
 from gi.repository import Gtk
 
