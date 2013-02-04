@@ -251,7 +251,6 @@ class InstallationAdvanced(Gtk.Box):
     ## Helper function to get a disk/partition size in human format
     def get_size(self, length, sectorSize):
         size = length * sectorSize
-        #aas# fixing below sizes
         size_txt = "%db" % size
         if size >= 1000000000:
             size /= 1000000000
@@ -973,7 +972,15 @@ class InstallationAdvanced(Gtk.Box):
 
     ## The user clicks "Install now!"
     def store_values(self):
-        '''        
+        
+        ## Create staged partitions 
+        '''
+        if self.disks != None:
+            for disk_path in self.disks:
+                disk = self.disks[disk_path]
+                #finalize_changes(disk)
+                print(disk_path)
+        
         for partition_path in self.stage_opts:
         
         mylabel = label_entry.get_text()
