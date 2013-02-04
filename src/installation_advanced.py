@@ -945,12 +945,15 @@ class InstallationAdvanced(Gtk.Box):
 
         ## When creating a partition table, all prior changes will be discarded
         #disks = pm.get_devices()
-
         ## Also undo stage partitions' options
         #self.stage_opts = {}
+
+        # Be sure to just call get_devices once
+        if self.disks == None:
+            self.disks = pm.get_devices()
             
-        for disk_path in sorted(disks):
-            disk = disks[disk_path]
+        for disk_path in sorted(self.disks):
+            disk = self.disks[disk_path]
             #dev = disk.device
 		
 		# FIXME: end it!
