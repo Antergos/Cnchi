@@ -490,6 +490,7 @@ class InstallationAdvanced(Gtk.Box):
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic[disk.device.path]['mounts']:
+                # BUG HERE. THIS IS NOT WORKING AS IT GIVES FALSE POSITIVES
                 print(_('Cannot use same mount twice...'))
                 show_warning(_('Cannot use same mount twice...'))
             else:                
@@ -974,38 +975,23 @@ class InstallationAdvanced(Gtk.Box):
     def store_values(self):
         
         ## Create staged partitions 
-        '''
         if self.disks != None:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
-                #finalize_changes(disk)
-                print(disk_path)
-        
-        for partition_path in self.stage_opts:
-        
-        mylabel = label_entry.get_text()
-        mymount = mount_combo_entry.get_text().strip()
-        if mymount in self.diskdic[disk.device.path]['mounts']:
-            print(_('Cannot use same mount twice...'))
-            show_warning(_('Cannot use same mount twice...'))
-        else:                
-            myfmt = use_combo.get_active_text()
-            self.stage_opts[partition_path] = (mylabel, mymount, myfmt, True)
-        '''
-        
-        '''
-        if self.disks != None:
-            #for path in self.stage_opts:
-            #    (lbl, mnt, fs, fmt) = self.stage_opts[path]
-            
-            for disk_path in self.disks:
-                disk = self.disks[disk_path]
-                #finalize_changes(disk)
-                print(disk_path)
-        '''
-            
-        
-        
+                #pm.finalize_changes(disk)
+                print("Saving changes done in %s" % disk_path)
+
+                ## Now that partitions are created, set fs and label
+                partitions = pm.get_partitions(disk)
+                for partition_path in partitions:
+                    ## Set label, mount point and filesystem of staged partitions
+                    if partition_path in self.stage_opts:
+                        (lbl, mnt, fs, fmt) = self.stage_opts[part_path]
+                        print("Creating fs of type %s in %s with label %s" % (fs, partition_path, lbl))
+                        #(error, msg) = fs.create_fs(partitions[partition_path], fs, lbl)
+                        #print(msg)
+                    else:
+                        print("Partition %s not found in stage_opts" % partition_path)
         
         ##self.start_installation()
 
