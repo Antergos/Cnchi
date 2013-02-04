@@ -374,12 +374,14 @@ class InstallationAdvanced(Gtk.Box):
                         fmt_enable = True
                         if 'free' not in path:
                             if self.first_time < 2:
+                                print('FIRST')
                                 if mount_point:
                                     used = pm.get_used_space(p)
                                 else:
                                     used = self.get_size(used_space.get_used_space(partition_path, fs_type) * p.geometry.length, dev.sectorSize)
                                 self.used_dic[(disk_path, p.geometry.start)] = used
                             else:
+                                print('NOTFIRST')
                                 if (disk_path, p.geometry.start) in self.used_dic:
                                     used = self.used_dic[(disk_path, p.geometry.start)]
                                 else:
