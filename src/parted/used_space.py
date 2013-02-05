@@ -142,7 +142,7 @@ def get_used_btrfs(part):
         x = subprocess.check_output(shlex.split("btrfs filesystem show %s" % part))
     except Exception as e:
         x = None
-        print(e)
+        #print(e)
     if x:
         vsize, usize = (1, 0)
         x = x.decode()

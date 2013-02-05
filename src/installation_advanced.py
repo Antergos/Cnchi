@@ -325,10 +325,10 @@ class InstallationAdvanced(Gtk.Box):
                 # Create a list of partitions for this device (/dev/sda for example)
                 partitions = pm.get_partitions(disk)
                 self.all_partitions.append(partitions)
-                partition_list = pm.order_partitions(partitions) 
+                partition_list = pm.order_partitions(partitions)
                 for partition_path in partition_list:
-                    p = partitions[partition_path]
                     ## Get partition size
+                    p = partitions[partition_path]
                     size_txt = self.get_size(p.geometry.length, dev.sectorSize)
                     fmt_enable = False
                     fmt_active = False
@@ -340,14 +340,17 @@ class InstallationAdvanced(Gtk.Box):
                     formatable = True
 
                     path = p.path
-
+                    
                     ## Get file system
                     if p.fileSystem:
                         fs_type = p.fileSystem.type
                     else:
                         #kludge, btrfs not being detected...
-                        if used_space.is_btrfs(p.path):
-                            fs_type = 'btrfs'
+                        if 'free' not in partition_path and p.path not in self.stage_opts:
+                            if used_space.is_btrfs(p.path):
+                                fs_type = 'btrfs'
+                            else:
+                                fs_type = '?'
                         else:
                             fs_type = _("none")
 
@@ -372,7 +375,6 @@ class InstallationAdvanced(Gtk.Box):
                         
                         ## Get partition flags
                         flags = pm.get_flags(p)
-                        
                     if path in self.stage_opts:
                         (label, mount_point, fs_type, fmt_active) = self.stage_opts[path]           
                         fmt_enable = False
@@ -951,9 +953,16 @@ class InstallationAdvanced(Gtk.Box):
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
-            
-        for disk_path in sorted(self.disks):
-            disk = self.disks[disk_path]
+        disk_sel = self.disks[path]
+        #OK, here's where we start
+        #Ideally, we should give a popup offering types
+        #Because I don't know any better, for now let's just use
+        #'gpt' or 'msdos', with 'msdos' being default
+        new_disk = pm.make_new_disk(path, 'msdos')
+        self.disks[path] = new_disk
+        self.fill_partition_list()
+        #for disk_path in sorted(self.disks):
+            #disk = self.disks[disk_path]
             #dev = disk.device
 		
 		# FIXME: end it!

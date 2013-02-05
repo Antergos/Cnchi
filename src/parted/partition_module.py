@@ -73,10 +73,17 @@ def get_devices():
                 disk_dic[dev.path] = diskob
             except Exception as e:
                 print(e)
+                
                 disk_dic[dev.path] = None
 
     return disk_dic
-        
+
+
+def make_new_disk(dev_path, type):
+    new_dev = parted.Device(dev_path)
+    new_disk = parted.freshDisk(new_dev, type)
+    return(new_disk)
+
 @misc.raise_privileges
 def get_partitions(diskob):
     part_dic = {}
