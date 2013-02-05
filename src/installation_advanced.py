@@ -97,21 +97,29 @@ class InstallationAdvanced(Gtk.Box):
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
-        ## Initialise our create partition dialog filesystems' combo.
+        ## Initialize our create partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo')
         use_combo.remove_all()
         for fs_name in sorted(fs._names):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
-        ## Initialise our edit partition dialog filesystems' combo.
+        ## Initialize our edit partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo2')
         use_combo.remove_all()
         for fs_name in sorted(fs._names):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
-        ## Initialise our create and edit partition dialog mount points' combo.
+        ## Initialize partition_types_combo
+        combo = self.ui.get_object('partition_types_combo')
+        combo.remove_all()
+        combo.append_text("msdos (aka MBR)")
+        combo.append_text("GUID Partition Table (GPT)")
+        ## Automatically select first entry
+        self.select_first_combobox_item(combo)
+
+        ## Initialize our create and edit partition dialog mount points' combo.
         mount_combos = []
         mount_combos.append(self.ui.get_object('partition_mount_combo'))
         mount_combos.append(self.ui.get_object('partition_mount_combo2'))
@@ -879,6 +887,14 @@ class InstallationAdvanced(Gtk.Box):
         txt = _("Label (optional):")
         label = self.ui.get_object('partition_label_label2')
         label.set_markup(txt)
+        
+        ## Create disk partition table dialog
+        txt = _("Partition table type:")
+        label = self.ui.get_object('partition_type_label')
+        label.set_markup(txt)
+
+        dialog = self.ui.get_object("create_table_dialog")    
+        dialog.set_title(_("Create partition table"))
 
         ## Change "Next" button text
         txt = _("Install now!")
@@ -950,20 +966,27 @@ class InstallationAdvanced(Gtk.Box):
             self.disks = pm.get_devices()
 
         disk_sel = self.disks[path]
-
-		print("Creating a new partition table for disk %s" % path)
-
-        # OK, here's where we start
-        # Ideally, we should give a popup offering types
-        # Because I don't know any better, for now let's just use
-        # 'gpt' or 'msdos', with 'msdos' being default
         
-        #Gtk.Dialog
+        dialog = self.ui.get_object("create_table_dialog")
+        response = dialog.run()
         
-        new_disk = pm.make_new_disk(path, 'msdos')
-        self.disks[path] = new_disk
+        if response == Gtk.ResponseType.OK:
+            combo = self.ui.get_object('partition_types_combo')
+            line = combo.get_active_text()
+            if line:
+                ## by default, use msdos type
+                ptype = 'msdos'
 
-        self.fill_partition_list()
+                if "GPT" in line:
+                    ptype = 'gpt'
+
+                print("Creating a new partition table of type %s for disk %s" % (ptype, path))
+                new_disk = pm.make_new_disk(path, ptype)
+                self.disks[path] = new_disk
+                self.fill_partition_list()
+
+        dialog.hide()
+        
 
     def check_mount_points(self):
         # TODO: CHECK IT!
