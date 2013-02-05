@@ -945,27 +945,25 @@ class InstallationAdvanced(Gtk.Box):
             
         path = model[tree_iter][0]
 
-        ## When creating a partition table, all prior changes will be discarded
-        #disks = pm.get_devices()
-        ## Also undo stage partitions' options
-        #self.stage_opts = {}
-
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
+
         disk_sel = self.disks[path]
-        #OK, here's where we start
-        #Ideally, we should give a popup offering types
-        #Because I don't know any better, for now let's just use
-        #'gpt' or 'msdos', with 'msdos' being default
+
+		print("Creating a new partition table for disk %s" % path)
+
+        # OK, here's where we start
+        # Ideally, we should give a popup offering types
+        # Because I don't know any better, for now let's just use
+        # 'gpt' or 'msdos', with 'msdos' being default
+        
+        #Gtk.Dialog
+        
         new_disk = pm.make_new_disk(path, 'msdos')
         self.disks[path] = new_disk
+
         self.fill_partition_list()
-        #for disk_path in sorted(self.disks):
-            #disk = self.disks[disk_path]
-            #dev = disk.device
-		
-		# FIXME: end it!
 
     def check_mount_points(self):
         # TODO: CHECK IT!
