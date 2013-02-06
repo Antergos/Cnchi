@@ -24,10 +24,8 @@ from collections import defaultdict
 import gzip
 import io
 
-
 #_default_filename = "/usr/lib/ubiquity/console-setup/kbdnames.gz"
 _default_filename = "data/kbdnames.gz"
-
 
 class KeyboardNames:
     def __init__(self, filename=_default_filename):

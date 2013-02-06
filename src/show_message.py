@@ -35,7 +35,6 @@ import sys
 from config import installer_settings
 
 import logging
-logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
 def fatal_error(message):
     show_error(message)

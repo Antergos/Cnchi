@@ -2,6 +2,7 @@ TODO (1st gen 2013)
 
 * General:
  - Check all file paths
+ - Logging (it's a mess. It also creates log file with root privileges, is it ok?)
 
 * Language screen:
  - Seems ok.
@@ -13,17 +14,11 @@ TODO (1st gen 2013)
  - More testing is needed
 
 * Installer_easy screen:
- - Should create/adapt installation script to accept root and swap
-   partitions as a parameter
+ - Seems ok.
 
 * Installer_advanced screen:
- - Extracted from Ubiquity. Still far from being finished.
- - Use pyparted to create/delete our partitions.
- - Must store the label of "staged" partitions to be created
-   somehow in the class, probably as a dict object.  It was crashing because it
-   was trying to get label of partition that didn't physically exist.  I fixed
-   it to error to showing no label, but we should display the label the user
-   had entered.  
+ - If you play with the partitioner (create partition, delete it, create it
+   again, delete it again...) in the end it gets confused.
 
 * Timezone screen:
  - Add NTP switch?
@@ -31,12 +26,13 @@ TODO (1st gen 2013)
    system are mounted
 
 * Keyboard screen:
- - Doesn't sort words that have accents
+ - Doesn't sort words that have accents (arcnexus fixed it, needs testing)
 
 * User screen:
  - Seems ok.
 
-* Slide/Installation screen:
- - Installation process run over pyalpm
+* Slide screen:
  - Should hide close/exit button
 
+Also in installer_thread:
+ - Real installation happens here. Getting info from /arch/setup

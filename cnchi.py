@@ -81,6 +81,11 @@ class Main(Gtk.Window):
             fatal_error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
         
+        # check if we're already running
+        tmp_running = "/tmp/.setup-running"
+        if os.path.exists(tmp_running):
+            fatal_error(_('You cannot run two instances of this installer.'))
+                
         super().__init__()
 
         self.ui_dir = installer_settings["UI_DIR"]
@@ -205,9 +210,21 @@ class Main(Gtk.Window):
         # we drop privileges, but where we should do it? before this? ¿?
         misc.drop_privileges()
 
+        tmp_file = open(tmp_running, "wt")
+        tmp_file.write("Cnchi %d\n" % 1234)
+        tmp_file.close()
 
+
+    def remove_temp_files(self):
+         tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+         for t in tmp_files:
+            p = os.path.join("/tmp", t)
+            if os.path.exists(p):
+                os.remove(p)
+         
     def on_exit_button_clicked(self, widget, data=None):
         self.pages["timezone"].thread.stop()
+        self.remove_temp_files()
         Gtk.main_quit()
 
     def progressbar_step(self, add_value):

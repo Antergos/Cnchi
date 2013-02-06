@@ -38,6 +38,7 @@ import os
 from config import installer_settings
 
 import misc
+import logging
 
 import parted
 
@@ -49,6 +50,7 @@ _prev_page = "installation_ask"
 class InstallationEasy(Gtk.Box):
 
     def __init__(self, params):
+        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
         self.title = params['title']
         self.ui_dir = params['ui_dir']

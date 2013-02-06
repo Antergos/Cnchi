@@ -55,7 +55,6 @@ _prev_page = None
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
-
 class Timezone(Gtk.Box):
 
     def __init__(self, params):

@@ -25,7 +25,6 @@ def refresh():
     while Gtk.events_pending():
         Gtk.main_iteration()
 
-
 def draw_round_rect(c, r, x, y, w, h):
     c.move_to(x + r, y)
     c.line_to(x + w - r, y)

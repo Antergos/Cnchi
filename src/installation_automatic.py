@@ -43,7 +43,6 @@ import misc
 from config import installer_settings
 
 import logging
-logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
 import installation_thread
 
@@ -53,6 +52,7 @@ _prev_page = "installation_ask"
 class InstallationAutomatic(Gtk.Box):
 
     def __init__(self, params):
+        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
         self.title = params['title']
         self.ui_dir = params['ui_dir']

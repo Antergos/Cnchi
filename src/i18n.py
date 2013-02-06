@@ -20,17 +20,6 @@
 import gettext
 import misc
 
-# Useful vars for gettext (translations)
-APP = "cnchi"
-DIR = "po"
-
-# Esto permite traducir los textos escritos en el .py (no en glade)
-gettext.textdomain(APP)
-gettext.bindtextdomain(APP, DIR)
-
-# Y con esto podemos marcar las cadenas a traducir de la forma _("cadena")
-_ = gettext.gettext
-
 _language_list = "data/languagelist.data.gz"
 
 def utf8(s, errors="strict"):

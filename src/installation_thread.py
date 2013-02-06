@@ -40,6 +40,7 @@ base_dir = os.path.dirname(__file__) or '.'
 parted_dir = os.path.join(base_dir, 'pacman')
 sys.path.insert(0, parted_dir)
 
+import misc
 import transaction
 
 _autopartition_script = 'auto_partition.sh'
@@ -61,7 +62,8 @@ class InstallationThread(threading.Thread):
         
         self.auto_partition_script_path = \
             os.path.join(installer_settings["CNCHI_DIR"], "scripts", _autopartition_script)
-        
+    
+    @misc.raise_privileges    
     def run(self):
         ## Create and format partitions if we're in automatic mode
         if method == "automatic":
@@ -82,27 +84,37 @@ class InstallationThread(threading.Thread):
         dest_dir = "/INSTALL"
         kernel_pkg = "linux"
         vmlinuz = "vmlinuz-%s" % kernel_pkg
-        initramfs = "initramfs-%s" % kernel_pkg
-        
+        initramfs = "initramfs-%s" % kernel_pkg       
         pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % dest_dir
         
-        chroot_mount(dest_dir)
+        
+        
+        
+        
+        self.chroot_mount(dest_dir)
         
 
         self.running = False
     
     def chroot_mount(self, dest_dir):
-        pass
-    '''
-    [[ -e "${DESTDIR}/sys" ]] || mkdir -m 555 "${DESTDIR}/sys"
-    [[ -e "${DESTDIR}/proc" ]] || mkdir -m 555 "${DESTDIR}/proc"
-    [[ -e "${DESTDIR}/dev" ]] || mkdir "${DESTDIR}/dev"
-    mount -t sysfs sysfs "${DESTDIR}/sys"
-    mount -t proc proc "${DESTDIR}/proc"
-    mount -o bind /dev "${DESTDIR}/dev"
-    chmod 555 "${DESTDIR}/sys"
-    chmod 555 "${DESTDIR}/proc"
-    '''
+        dirs = [ "/sys", "/proc", "/dev" ]
+        for d in dirs:
+            mydir = os.path.join(dest_dir, d)
+            if not os.path.exists(mydir):
+                os.makedirs(mydir)
+
+        mydir = os.path.join(dest_dir, "/sys")
+        subprocess.Popen(["mount", "-t", "sysfs", "sysfs", mydir])
+        subprocess.Popen(["chmod", "555", mydir])
+
+        mydir = os.path.join(dest_dir, "/proc")
+        subprocess.Popen(["mount", "-t", "proc", "proc", mydir])
+        subprocess.Popen(["chmod", "555", mydir])
+
+        mydir = os.path.join(dest_dir, "/dev")
+        subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
+
+        
 
     def is_running(self):
         return self.running

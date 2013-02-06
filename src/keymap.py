@@ -38,7 +38,6 @@ import os
 import keyboard_names
 
 import logging
-logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -46,6 +45,7 @@ _prev_page = "timezone"
 class Keymap(Gtk.Box):
 
     def __init__(self, params):
+        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
 
         self.title = params['title']
         self.ui_dir = params['ui_dir']
