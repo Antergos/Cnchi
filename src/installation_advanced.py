@@ -316,7 +316,7 @@ class InstallationAdvanced(Gtk.Box):
         ## Be sure to call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
-        
+        self.diskdic['mounts'] = []
         ## Here we fill our model
         for disk_path in sorted(self.disks):
             if '/dev/mapper/arch_' in disk_path:
@@ -325,7 +325,6 @@ class InstallationAdvanced(Gtk.Box):
             self.diskdic[disk_path] = {}
             self.diskdic[disk_path]['has_logical'] = False
             self.diskdic[disk_path]['has_extended'] = False
-            self.diskdic[disk_path]['mounts'] = []
             
             disk = self.disks[disk_path]
             
@@ -422,7 +421,7 @@ class InstallationAdvanced(Gtk.Box):
                                 label = info['LABEL']
             
                     if mount_point:
-                        self.diskdic[disk_path]['mounts'].append(mount_point)
+                        self.diskdic['mounts'].append(mount_point)
             
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
@@ -515,11 +514,12 @@ class InstallationAdvanced(Gtk.Box):
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
-            if mymount in self.diskdic[disk.device.path]['mounts']:
-                # BUG HERE. THIS IS NOT WORKING AS IT GIVES FALSE POSITIVES
+            if mymount in self.diskdic['mounts'] and mymount != mount_point:
                 print(_('Cannot use same mount twice...'))
                 show_warning(_('Cannot use same mount twice...'))
-            else:                
+            else:
+                if mount_point:
+                    self.diskdic['mounts'].remove(mount_point)               
                 myfmt = use_combo.get_active_text()
                 if self.gen_partition_uid(path=partition_path) in self.stage_opts:
                     fmtop = True
@@ -567,10 +567,11 @@ class InstallationAdvanced(Gtk.Box):
 
         ## Get row data
         row = model[tree_iter]
-
+        mount_point = row[2]
         size_available = row[6]
         partition_path = row[8]
-        
+        if mount_point in self.diskdic['mounts']:
+            self.diskdic['mounts'].remove(mount_point)
         if self.gen_partition_uid(path=partition_path) in self.stage_opts:
             del(self.stage_opts[self.gen_partition_uid(path=partition_path)])
         
@@ -737,10 +738,12 @@ class InstallationAdvanced(Gtk.Box):
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
-            if mymount in self.diskdic[disk.device.path]['mounts']:
+            if mymount in self.diskdic['mounts']:
                 print(_('Cannot use same mount twice...'))
                 show_warning(_('Cannot use same mount twice...'))
-            else:                
+            else:
+                if mymount:         
+                    self.diskdic['mounts'].append(mymount)       
                 myfmt = use_combo.get_active_text()
                 # Get selected size
                 size = int(size_spin.get_value())
@@ -1002,6 +1005,7 @@ class InstallationAdvanced(Gtk.Box):
                 print("Creating a new partition table of type %s for disk %s" % (ptype, path))
                 new_disk = pm.make_new_disk(path, ptype)
                 self.disks[path] = new_disk
+                self.fill_grub_device_entry()
                 self.fill_partition_list()
 
         dialog.hide()
@@ -1014,7 +1018,7 @@ class InstallationAdvanced(Gtk.Box):
         self.forward_button.set_sensitive(False)
 
         for disk_path in self.diskdic:
-            mounts = self.diskdic[disk_path]['mounts']
+            mounts = self.diskdic['mounts']
             if "/" in mounts:
                 self.forward_button.set_sensitive(True)
 
