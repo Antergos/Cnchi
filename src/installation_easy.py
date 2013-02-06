@@ -161,16 +161,11 @@ class InstallationEasy(Gtk.Box):
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
         print(script_path)
+        
+        mount_devices = {}
+        mount_devices["/"] = self.combobox["root"].get_active_text()
+        mount_devices["swap"] = self.combobox["swap"].get_active_text()
 
-        root_device = self.combobox["root"].get_active_text()
-        swap_device = self.combobox["swap"].get_active_text()
-
-        self.thread = installation_thread.InstallationThread("easy", script_path)
-        self.thread.set_devices(None, self.root_device, self.swap_device)
-        self.thread.start()
-
-        #self.forward_button.set_sensitive(True)
-
-        # simulate button click
-        #self.forward_button.emit("clicked")
-
+        print(mount_devices)
+        self.thread = installation_thread.InstallationThread("easy", mount_devices)
+        #self.thread.start()

@@ -38,22 +38,16 @@ _easy_script = ''
 _manual_script = ''
 
 class InstallationThread(threading.Thread):
-    def __init__(self, method):
+    def __init__(self, method, mount_devices):
         threading.Thread.__init__(self)
 
         self.method = method
-        self.script_path = script_path
+        self.mount_devices = mount_devices
 
         self.running = True
         self.error = False
         
         self.script_path = os.path.join(installer_settings["CNCHI_DIR"], "scripts", _autopartition_script)
-
-    def set_devices(auto_device, root_device=None, swap_device=None, mount_devices=None):
-        self.auto_device = auto_device
-        self.root_device = root_device
-        self.swap_device = swap_device
-        self.mount_devices = mount_devices
         
     def run(self):
         try:

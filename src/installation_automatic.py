@@ -150,7 +150,10 @@ class InstallationAutomatic(Gtk.Box):
         #self.install_progress.set_sensitive(True)
         print(script_path)
         print(self.auto_device)
+        
+        mount_devices = {}
+        mount_devices["automatic"] = self.auto_device
 
-        self.thread = installation_thread.InstallationThread("automatic")
-        self.set_devices(self.auto_device)
-        self.thread.start()
+        print(mount_devices)
+        self.thread = installation_thread.InstallationThread("automatic", mount_devices)
+        #self.thread.start()
