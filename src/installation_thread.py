@@ -41,6 +41,8 @@ parted_dir = os.path.join(base_dir, 'pacman')
 sys.path.insert(0, parted_dir)
 
 import misc
+
+# This must be adapted to our needs
 import transaction
 
 _autopartition_script = 'auto_partition.sh'
@@ -81,37 +83,107 @@ class InstallationThread(threading.Thread):
         
         # Extracted from /arch/setup script
         
-        dest_dir = "/INSTALL"
+        self.dest_dir = "/INSTALL"
         kernel_pkg = "linux"
         vmlinuz = "vmlinuz-%s" % kernel_pkg
         initramfs = "initramfs-%s" % kernel_pkg       
-        pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % dest_dir
+        pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % self.dest_dir
+
+        self.arch = os.uname()[-1]
         
-        
-        
-        
-        
-        self.chroot_mount(dest_dir)
+        self.pacman_conf()
+        self.prepare_pacman()
         
 
         self.running = False
     
-    def chroot_mount(self, dest_dir):
+    # creates temporary pacman.conf file
+    def pacman_conf(self):
+
+        print("Creating pacman.conf for %s architecture" % self.arch)
+        
+        # Common repos
+        
+        tmp_file = open("/tmp/pacman.conf", "wt")
+
+        tmp_file.write("[options]\n")
+        tmp_file.write("Architecture = auto\n")
+        tmp_file.write("SigLevel = PackageOptional\n")
+        tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+        tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
+        tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+
+        tmp_file.write("#### Cinnarch repos start here\n")
+        tmp_file.write("[cinnarch-core]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
+
+        tmp_file.write("[cinnarch-repo]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
+        tmp_file.write("#### Cinnarch repos end here\n\n")
+
+        tmp_file.write("[core]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        tmp_file.write("[extra]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        tmp_file.write("[community]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        # x86_64 repos only
+        if self.arch == 'x86_64':   
+            tmp_file.write("[multilib]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
+    
+        tmp_file.close()
+    
+    # Configures pacman and syncs db on destination system
+    def prepare_pacman(self):
+        pass
+## Set up the necessary directories for pacman use
+#    [[ ! -d "${DESTDIR}/var/cache/pacman/pkg" ]] && mkdir -m 755 -p "${DESTDIR}/var/cache/pacman/pkg"
+#    [[ ! -d "${DESTDIR}/var/lib/pacman" ]] && mkdir -m 755 -p "${DESTDIR}/var/lib/pacman"    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def chroot_mount(self):
         dirs = [ "/sys", "/proc", "/dev" ]
         for d in dirs:
-            mydir = os.path.join(dest_dir, d)
+            mydir = os.path.join(self.dest_dir, d)
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
-        mydir = os.path.join(dest_dir, "/sys")
+        mydir = os.path.join(self.dest_dir, "/sys")
         subprocess.Popen(["mount", "-t", "sysfs", "sysfs", mydir])
         subprocess.Popen(["chmod", "555", mydir])
 
-        mydir = os.path.join(dest_dir, "/proc")
+        mydir = os.path.join(self.dest_dir, "/proc")
         subprocess.Popen(["mount", "-t", "proc", "proc", mydir])
         subprocess.Popen(["chmod", "555", mydir])
 
-        mydir = os.path.join(dest_dir, "/dev")
+        mydir = os.path.join(self.dest_dir, "/dev")
         subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
 
         

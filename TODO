@@ -35,4 +35,6 @@ TODO (1st gen 2013)
  - Should hide close/exit button
 
 Also in installer_thread:
- - Real installation happens here. Getting info from /arch/setup
+ - Real installation happens here.
+ - Adapt transaction.py code to our needs
+ - Get code from /arch/setup script
