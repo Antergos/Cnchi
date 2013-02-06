@@ -124,6 +124,8 @@ def get_partitions(diskob):
         else:
             if f.geometry.start < 2048:
                 f.geometry.start = 2048
+        if f.geometry.end - f.geometry.start < 2:
+            continue
         part_dic['free%s' % str(fcount)] = f
         fcount += 1
     return part_dic
@@ -173,17 +175,17 @@ def create_partition(diskob, part_type, geom):
     if not nalign.isAligned(geom, nstart):
         nstart = nalign.alignNearest(geom, nstart)
     if not nalign.isAligned(geom, nend):
-        nstart = nalign.alignNearest(geom, nend)
+        nend = nalign.alignDown(geom, nend)
     if part_type == 1:
         nstart += nalign.grainSize
-    ngeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
-    if diskob.maxPartitionLength < ngeom.length:
+    mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend-1)
+    maxgeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
+    if diskob.maxPartitionLength < maxgeom.length:
         print('Partition is too large!')
     else:
-        npartition = parted.Partition(disk=diskob, type=part_type, geometry=ngeom)
-        nconstraint = parted.Constraint(exactGeom=ngeom)
+        npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
+        nconstraint = parted.Constraint(minGeom=mingeom, maxGeom=maxgeom)
         ncont = diskob.addPartition(partition=npartition, constraint=nconstraint)
-
 def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
                  beginning=True):
     #OK, two new specs.  First, you must specify the first sector
@@ -198,8 +200,10 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
     #let's use kb = 1000b, mb = 10000000b, etc etc
     dev = diskob.device
     sec_size = dev.sectorSize
-    mb = 1000000 // sec_size 
-    length = (size_in_mbytes * 1000000 // sec_size)
+    mb = 1000000 / sec_size 
+    length = int(size_in_mbytes * 1000000 / sec_size)
+    if length > (last_sector - first_sector + 1):
+        length = last_sector - first_sector + 1
     if beginning:
         start_sector = first_sector
         end_sector = start_sector + length - 1
@@ -210,7 +214,6 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
         start_sector = end_sector - length + 1
         if start_sector - first_sector < mb:
             start_sector = first_sector 
-    
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)
     return ngeom
 

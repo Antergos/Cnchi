@@ -146,7 +146,22 @@ class InstallationAdvanced(Gtk.Box):
 
         ## Add ourselves to the parent class
         super().add(self.ui.get_object("installation_advanced"))
-
+    #function to generate uid by partition object or path
+    def gen_partition_uid(self, p=None, path=None):
+        if path and not p:
+            for zz in self.all_partitions:
+                for yy in zz:
+                    if zz[yy].path == path:
+                        p = zz[yy]
+        try:
+            dev = p.disk.device.path
+        except:
+            dev = 'thinking'
+        ends = p.geometry.end
+        starts = p.geometry.start
+        uid = dev + str(starts) + str(ends)
+        return uid
+                        
     ## Activates/deactivates our buttons depending on which is selected in the
     ## partition treeview
     def check_buttons(self, selection):
@@ -354,9 +369,10 @@ class InstallationAdvanced(Gtk.Box):
                         fs_type = p.fileSystem.type
                     else:
                         #kludge, btrfs not being detected...
-                        if 'free' not in partition_path and p.path not in self.stage_opts:
-                            if used_space.is_btrfs(p.path):
-                                fs_type = 'btrfs'
+                        if 'free' not in partition_path:
+                            if self.gen_partition_uid(p=p) not in self.stage_opts:
+                                if used_space.is_btrfs(p.path):
+                                    fs_type = 'btrfs'
                             else:
                                 fs_type = '?'
                         else:
@@ -383,8 +399,8 @@ class InstallationAdvanced(Gtk.Box):
                         
                         ## Get partition flags
                         flags = pm.get_flags(p)
-                    if path in self.stage_opts:
-                        (label, mount_point, fs_type, fmt_active) = self.stage_opts[path]           
+                    if self.gen_partition_uid(p=p) in self.stage_opts:
+                        (label, mount_point, fs_type, fmt_active) = self.stage_opts[self.gen_partition_uid(p=p)]           
                         fmt_enable = False
                     else:
                         fmt_enable = True
@@ -463,7 +479,7 @@ class InstallationAdvanced(Gtk.Box):
         mount_point = row[2]
         label = row[3]
         partition_path = row[8]
-        
+        print(partition_path) 
         # set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
         use_combo_model = use_combo.get_model()
@@ -505,7 +521,11 @@ class InstallationAdvanced(Gtk.Box):
                 show_warning(_('Cannot use same mount twice...'))
             else:                
                 myfmt = use_combo.get_active_text()
-                self.stage_opts[partition_path] = (mylabel, mymount, myfmt, False)
+                if self.gen_partition_uid(path=partition_path) in self.stage_opts:
+                    fmtop = True
+                else:
+                    fmtop = False
+                self.stage_opts[self.gen_partition_uid(path=partition_path)] = (mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
 
@@ -551,8 +571,8 @@ class InstallationAdvanced(Gtk.Box):
         size_available = row[6]
         partition_path = row[8]
         
-        if partition_path in self.stage_opts:
-            del(self.stage_opts[partition_path])
+        if self.gen_partition_uid(path=partition_path) in self.stage_opts:
+            del(self.stage_opts[self.gen_partition_uid(path=partition_path)])
         
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
 
@@ -730,7 +750,7 @@ class InstallationAdvanced(Gtk.Box):
 
                 start_sector = p.geometry.start
                 end_sector = p.geometry.end
-                              
+                print(start_sector, end_sector, size, beg_var)              
                 geometry = pm.geom_builder(disk, start_sector, 
                                            end_sector, size, beg_var)
 
@@ -757,8 +777,7 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
-                        self.stage_opts[e] = (mylabel, mymount, myfmt, 
-                                              True)
+                        self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (mylabel, mymount, myfmt, True)
                 ## Update partition list treeview
                 self.fill_partition_list()
 
@@ -1018,8 +1037,8 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
                     ## Set label, mount point and filesystem of staged partitions
-                    if partition_path in self.stage_opts:
-                        (lbl, mnt, fs, fmt) = self.stage_opts[part_path]
+                    if self.gen_partition_uid(path=partition_path) in self.stage_opts:
+                        (lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         print("Creating fs of type %s in %s with label %s" % (fs, partition_path, lbl))
                         #(error, msg) = fs.create_fs(partitions[partition_path], fs, lbl)
                         #print(msg)
