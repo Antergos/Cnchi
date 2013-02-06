@@ -12,5 +12,7 @@ Graphical Installer for Cinnarch Linux
  * hdparm
  * libtimezonemap
  * webkitgtk3
- * parted (and also dosfstools, mtools, ntfs-3g, ntfsprogs)
- * pyparted
+ * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
+ * pyparted (parted)
+ * libalpm
+ * pyalpm

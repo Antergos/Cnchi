@@ -31,12 +31,18 @@
 import threading
 import subprocess
 import os
+import sys
 
 from config import installer_settings
 
-_automatic_script = 'auto_partition.sh'
-_easy_script = ''
-_manual_script = ''
+# Insert the src/pacman directory at the front of the path.
+base_dir = os.path.dirname(__file__) or '.'
+parted_dir = os.path.join(base_dir, 'pacman')
+sys.path.insert(0, parted_dir)
+
+import transaction
+
+_autopartition_script = 'auto_partition.sh'
 
 class InstallationThread(threading.Thread):
     def __init__(self, method, mount_devices):
@@ -44,24 +50,31 @@ class InstallationThread(threading.Thread):
 
         self.method = method
         self.mount_devices = mount_devices
+        
+        self.root = mount_devices["/"]
+        print("Root device : %s" % self.root)
 
         self.running = True
         self.error = False
         
-        self.script_path = os.path.join(installer_settings["CNCHI_DIR"], "scripts", _autopartition_script)
+        self.auto_partition_script_path = \
+            os.path.join(installer_settings["CNCHI_DIR"], "scripts", _autopartition_script)
         
     def run(self):
-        try:
-            #if os.path.exists(self.script_path):
-            #       subprocess.Popen(["/bin/bash", self.script_path, self.auto_device])
-            # copy some files just for testing
-            subprocess.check_call(["/usr/bin/cp", "-Rv", "/usr/share/icons", "/tmp"])
-        except subprocess.FileNotFoundError as e:
-            self.error = True
-            print (_("Can't execute the installation script"))
-        except subprocess.CalledProcessError as e:
-            self.error = True
-            print (_("subprocess CalledProcessError.output = %s") % e.output)
+        ## Create and format partitions if we're in automatic mode
+        if method == "automatic":
+            try:
+                if os.path.exists(self.script_path):
+                       subprocess.Popen(["/bin/bash", self.script_path, self.root])
+            except subprocess.FileNotFoundError as e:
+                self.error = True
+                print (_("Can't execute the auto partition script"))
+            except subprocess.CalledProcessError as e:
+                self.error = True
+                print (_("subprocess CalledProcessError.output = %s") % e.output)
+
+        ## Do real installation here
+        
 
         self.running = False
 

@@ -1,7 +1,7 @@
 #! /usr/bin/python
 # -*-coding:utf-8-*-
 
-from gi.repository import Gtk
+#from gi.repository import Gtk
 
 import pyalpm
 import traceback
