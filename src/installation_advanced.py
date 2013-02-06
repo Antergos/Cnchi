@@ -394,7 +394,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     ## Get mount point
                     if pm.check_mounted(p) and not "swap" in fs_type:
-                        mount_point = self.get_mount_point(p.path)
+                        mount_point, notused_fs, notused_writable = self.get_mount_point(p.path)
 
                     if p.type == pm.PARTITION_EXTENDED:
                         ## Show 'extended' in file system type column
@@ -629,7 +629,7 @@ class InstallationAdvanced(Gtk.Box):
                     fsname = line[1]
                     fstype = line[2]
                     writable = line[3].split(',')[0]
-        return fsname
+        return fsname, fstype, writable
 
 
     ## Add a new partition
@@ -1045,17 +1045,34 @@ class InstallationAdvanced(Gtk.Box):
     def check_mount_points(self):
         ## at least root (/) partition must be defined
 
+        # TODO:
+
         check_ok = False
 
-        for disk_path in self.diskdic:
-            mounts = self.diskdic['mounts']
-            if "/" in mounts:
-                check_ok = True
+        # Be sure to just call get_devices once
+        if self.disks == None:
+            self.disks = pm.get_devices()
+
+        for disk_path in self.disks:
+            disk = self.disks[disk_path]
+            partitions = pm.get_partitions(disk)
+            for partition_path in partitions:
+                p = partitions[partition_path]
+                if pm.check_mounted(p):
+                    mount_point, fs, writable = self.get_mount_point(p.path)
+                    if "/" in mount_point:
+                        # don't allow vfat as / filesystem, it will not work!
+                        # don't allow ntfs as / filesystem, this is stupid!
+                        if "vfat" not in fs and "ntfs" not in fs:
+                            check_ok = True
 
         for part_path in self.stage_opts:
             (lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
-                check_ok = True
+                # don't allow vfat as / filesystem, it will not work!
+                # don't allow ntfs as / filesystem, this is stupid!
+                if "fat" not in fs and "ntfs" not in fs:
+                    check_ok = True
 
         self.forward_button.set_sensitive(check_ok)
 
@@ -1122,7 +1139,7 @@ class InstallationAdvanced(Gtk.Box):
                     (label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
                 elif pm.check_mounted(p):
-                    mount_point = self.get_mount_point(p.path)
+                    mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
                     # TODO: also add swap
         

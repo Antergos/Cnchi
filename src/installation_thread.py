@@ -77,8 +77,32 @@ class InstallationThread(threading.Thread):
 
         ## Do real installation here
         
+        # Extracted from /arch/setup script
+        
+        dest_dir = "/INSTALL"
+        kernel_pkg = "linux"
+        vmlinuz = "vmlinuz-%s" % kernel_pkg
+        initramfs = "initramfs-%s" % kernel_pkg
+        
+        pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % dest_dir
+        
+        chroot_mount(dest_dir)
+        
 
         self.running = False
+    
+    def chroot_mount(self, dest_dir):
+        pass
+    '''
+    [[ -e "${DESTDIR}/sys" ]] || mkdir -m 555 "${DESTDIR}/sys"
+    [[ -e "${DESTDIR}/proc" ]] || mkdir -m 555 "${DESTDIR}/proc"
+    [[ -e "${DESTDIR}/dev" ]] || mkdir "${DESTDIR}/dev"
+    mount -t sysfs sysfs "${DESTDIR}/sys"
+    mount -t proc proc "${DESTDIR}/proc"
+    mount -o bind /dev "${DESTDIR}/dev"
+    chmod 555 "${DESTDIR}/sys"
+    chmod 555 "${DESTDIR}/proc"
+    '''
 
     def is_running(self):
         return self.running
