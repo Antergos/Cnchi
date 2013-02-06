@@ -51,6 +51,8 @@ class InstallationThread(threading.Thread):
         self.method = method
         self.mount_devices = mount_devices
         
+        print(mount_devices)
+        
         self.root = mount_devices["/"]
         print("Root device : %s" % self.root)
 

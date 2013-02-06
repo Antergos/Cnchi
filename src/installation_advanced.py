@@ -1121,8 +1121,10 @@ class InstallationAdvanced(Gtk.Box):
                 if uid in self.stage_opts:
                     (label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
-
-        print(mount_devices)                               
+                elif pm.check_mounted(p):
+                    mount_point = self.get_mount_point(p.path)
+                    mount_devices[mount_point] = partition_path
+                    # TODO: also add swap
+        
         self.thread = installation_thread.InstallationThread("advanced", mount_devices)
         #self.thread.start()
-
