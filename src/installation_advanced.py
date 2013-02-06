@@ -60,6 +60,8 @@ gettext.bindtextdomain(APP, DIR)
 # With this we can use _("string") to translate
 _ = gettext.gettext
 
+import installation_thread
+
 from config import installer_settings
 
 from show_message import show_error, show_warning
@@ -151,9 +153,11 @@ class InstallationAdvanced(Gtk.Box):
         super().add(self.ui.get_object("installation_advanced"))
 
 
-    #function to generate uid by partition object or path
+    ## Function to generate uid by partition object or path
     def gen_partition_uid(self, p=None, path=None):
         if path and not p:
+            if "free" in path:
+                return None
             for zz in self.all_partitions:
                 for yy in zz:
                     if zz[yy].path == path:
@@ -1072,15 +1076,16 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
                     ## Get label, mount point and filesystem of staged partitions
-                    if self.gen_partition_uid(path=partition_path) in self.stage_opts:
-                        (lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
+                    uid = self.gen_partition_uid(path=partition_path)
+                    if uid in self.stage_opts:
+                        (lbl, mnt, fs, fmt) = self.stage_opts[uid]
                         print("Creating fs of type %s in %s with label %s" % (fs, partition_path, lbl))
                         if _debug:
                             print("Debug option is on, not doing any real changes")
                         else:
                             (error, msg) = fs.create_fs(partitions[partition_path], fs, lbl)
                             print(msg)
-                    else:
+                    elif _debug:
                         print("Partition %s not found in stage_opts" % partition_path)
 
         ## TODO : Format old partitions if required by user
@@ -1113,7 +1118,6 @@ class InstallationAdvanced(Gtk.Box):
             for partition_path in partition_list:
                 p = partitions[partition_path]
                 uid = self.gen_partition_uid(p=p)
-                
                 if uid in self.stage_opts:
                     (label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path

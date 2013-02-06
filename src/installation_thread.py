@@ -30,6 +30,7 @@
 
 import threading
 import subprocess
+import os
 
 from config import installer_settings
 
