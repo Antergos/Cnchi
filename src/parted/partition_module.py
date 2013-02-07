@@ -280,7 +280,8 @@ def unset_flag(flagno, part):
 
 def get_flags(part):
     return part.getFlagsAsString
-
+    
+@misc.raise_privileges
 def finalize_changes(diskob):
     diskob.commit()
 

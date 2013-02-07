@@ -44,6 +44,8 @@ import parted
 
 from show_message import show_error
 
+import installation_thread
+
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
@@ -162,8 +164,7 @@ class InstallationEasy(Gtk.Box):
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        print(script_path)
-        
+
         mount_devices = {}
         mount_devices["/"] = self.combobox["root"].get_active_text()
         mount_devices["swap"] = self.combobox["swap"].get_active_text()
