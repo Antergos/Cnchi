@@ -148,7 +148,6 @@ class InstallationAutomatic(Gtk.Box):
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        print(script_path)
         print(self.auto_device)
         
         mount_devices = {}

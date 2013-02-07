@@ -231,7 +231,7 @@ _mkfs() {
         mount -t ${_fstype} ${_device} ${_dest}${_mountpoint} >${LOG} 2>&1
 
         if [[ $? != 0 ]]; then
-            DIALOG --msgbox "Error mounting ${_dest}${_mountpoint}" 0 0
+            echo "Error mounting ${_dest}${_mountpoint}"
             return 1
         fi
         # change permission of base directories to correct permission

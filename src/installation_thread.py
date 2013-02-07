@@ -55,9 +55,6 @@ class InstallationThread(threading.Thread):
         self.mount_devices = mount_devices
         
         print(mount_devices)
-        
-        self.root = mount_devices["/"]
-        print("Root device : %s" % self.root)
 
         self.running = True
         self.error = False
@@ -68,10 +65,12 @@ class InstallationThread(threading.Thread):
     @misc.raise_privileges    
     def run(self):
         ## Create and format partitions if we're in automatic mode
-        if method == "automatic":
+        if installer_settings['partition_mode'] == 'automatic':
             try:
-                if os.path.exists(self.script_path):
-                       subprocess.Popen(["/bin/bash", self.script_path, self.root])
+                if os.path.exists(self.auto_partition_script_path):
+                       self.root = self.mount_devices["automatic"]
+                       print("Root device: %s" % self.root)
+                       subprocess.Popen(["/bin/bash", self.auto_partition_script_path, self.root])
             except subprocess.FileNotFoundError as e:
                 self.error = True
                 print (_("Can't execute the auto partition script"))
@@ -83,7 +82,7 @@ class InstallationThread(threading.Thread):
         
         # Extracted from /arch/setup script
         
-        self.dest_dir = "/INSTALL"
+        self.dest_dir = "/install"
         kernel_pkg = "linux"
         vmlinuz = "vmlinuz-%s" % kernel_pkg
         initramfs = "initramfs-%s" % kernel_pkg       
