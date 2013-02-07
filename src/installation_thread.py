@@ -37,8 +37,8 @@ from config import installer_settings
 
 # Insert the src/pacman directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
-parted_dir = os.path.join(base_dir, 'pacman')
-sys.path.insert(0, parted_dir)
+pacman_dir = os.path.join(base_dir, 'pacman')
+sys.path.insert(0, pacman_dir)
 
 import misc
 

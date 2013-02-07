@@ -439,4 +439,6 @@ autoprepare() {
     S_MKFSAUTO=1
 }
 
+touch /tmp/.auto_partition.lock
 autoprepare $1
+rm /tmp/.auto_partition.lock
