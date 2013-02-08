@@ -45,10 +45,12 @@ import misc
 base_dir = os.path.dirname(__file__) or '.'
 parted_dir = os.path.join(base_dir, 'parted')
 sys.path.insert(0, parted_dir)
+
 # import Alex modules
 import partition_module as pm
 import fs_module as fs
 import used_space
+
 # Useful vars for gettext (translations)
 APP="cnchi"
 DIR="po"
@@ -1142,16 +1144,28 @@ class InstallationAdvanced(Gtk.Box):
         ###########
         #for now, in text#
         changelist = self.get_changes()
-        print('Partition\tNew?\tRelabel?\tFormat?')
+        msg = 'These disks will have partition actions:\n\n'
+        msg.join('Partition\tNew?\tRelabel?\tFormat?\n')
         for ea in changelist:
-            print('\t'.join(ea))
-        print("These disks will have partition actions")
-        print(self.disks_changed)
+            msg.join('\t'.join(ea).join("\n"))
+        msg.join(self.disks_changed)
+        msg.join("\n")
+        print(msg)
         x = input("Continue? Type 'balloons' to continue or you'll exit:")
         if x != 'balloons':
             sys.exit(1)
-                    
-                        
+
+
+        '''
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION,
+            Gtk.ButtonsType.YES_NO, "Cinnarch")
+        dialog.format_secondary_text(
+            "And this is the secondary text that explains things.")
+        response = dialog.run()
+        if response != Gtk.ResponseType.YES:
+            return False
+        '''
+        
                          
         ## Create staged partitions 
         if self.disks != None:
@@ -1187,6 +1201,8 @@ class InstallationAdvanced(Gtk.Box):
                         print("Partition %s not found in stage_opts" % partition_path)
 
         self.start_installation()
+        
+        return True
 
     
     ## Tell which one is our previous page (in our case installation_ask)

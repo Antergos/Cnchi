@@ -22,7 +22,7 @@ from pacman import pac_config
 # down_label = interface.get_object('down_label')
 
 class Pac(object):
-    __init__(self, conf):
+    def __init__(self, conf):
         self.t = None
         self.t_lock = False
         self.conflict_to_remove = None
