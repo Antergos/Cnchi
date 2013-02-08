@@ -81,7 +81,9 @@ class InstallationAdvanced(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-        
+        self.disks_changed = []
+        self.my_first_time = True
+        self.orig_label_dic = {}        
         #stage_opts holds info about newly created partitions
         #format is tuple (label, mountpoint, fs(text), Format)
         #see its usage in listing, creating, and deleting partitions
@@ -377,7 +379,8 @@ class InstallationAdvanced(Gtk.Box):
                     formatable = True
 
                     path = p.path
-                    
+                    if self.my_first_time:
+                        self.orig_label_dic[p.path] = label 
                     ## Get file system
                     if p.fileSystem:
                         fs_type = p.fileSystem.type
@@ -391,11 +394,12 @@ class InstallationAdvanced(Gtk.Box):
                                 fs_type = '?'
                         else:
                             fs_type = _("none")
-
+                    # Commenting out.  Nothing should be mounted...
                     ## Get mount point
-                    if pm.check_mounted(p) and not "swap" in fs_type:
-                        mount_point, notused_fs, notused_writable = self.get_mount_point(p.path)
-
+                    #if pm.check_mounted(p) and not "swap" in fs_type:
+                    #    mount_point, notused_fs, notused_writable = self.get_mount_point(p.path)
+                    if 'swap' in fs_type:
+                        fs_type = 'swap'
                     if p.type == pm.PARTITION_EXTENDED:
                         ## Show 'extended' in file system type column
                         fs_type = _("extended")
@@ -414,8 +418,8 @@ class InstallationAdvanced(Gtk.Box):
                         ## Get partition flags
                         flags = pm.get_flags(p)
                     if self.gen_partition_uid(p=p) in self.stage_opts:
-                        (label, mount_point, fs_type, fmt_active) = self.stage_opts[self.gen_partition_uid(p=p)]           
-                        fmt_enable = False
+                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[self.gen_partition_uid(p=p)]           
+                        fmt_enable = not is_new
                     else:
                         fmt_enable = True
                         if 'free' not in path:
@@ -453,7 +457,7 @@ class InstallationAdvanced(Gtk.Box):
                         ## partitions that follow will be shown as children
                         ## of this one
                         myparent = tree_iter
-
+        self.my_first_time = False
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
@@ -468,7 +472,19 @@ class InstallationAdvanced(Gtk.Box):
         print("on_format_cell_toggled")
         selected_path = Gtk.TreePath(path)
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
-        print(self.partition_list_store[path][4])
+        # disc path or partition path or "free space",
+        # fs_type
+        # label
+        # part_name
+        # formatable_active
+        # formatable_visible
+        # size
+        # used
+        # partition_path
+        # flags
+        # formatable_selectable?
+        amnew = False
+        self.stage_opts[self.gen_partition_uid(path=self.partition_list_store[path][0])] = (amnew, self.partition_list_store[path][3], self.partition_list_store[path][2], self.partition_list_store[path][1], self.partition_list_store[path][4]) 
 
 
     ## The user wants to edit a partition
@@ -500,7 +516,7 @@ class InstallationAdvanced(Gtk.Box):
 
         while use_combo_iter != None:
             use_combo_row = use_combo_model[use_combo_iter]
-            if use_combo_row[0] in fs:
+            if use_combo_row[0] and use_combo_row[0] in fs:
                 use_combo.set_active_iter(use_combo_iter)
                 use_combo_iter = None
             else:
@@ -536,10 +552,13 @@ class InstallationAdvanced(Gtk.Box):
                     self.diskdic['mounts'].remove(mount_point)               
                 myfmt = use_combo.get_active_text()
                 if self.gen_partition_uid(path=partition_path) in self.stage_opts:
-                    fmtop = True
+                    fmtop = self.stage_opts[self.gen_partition_uid(path=partition_path)][4]
+                    is_new = self.stage_opts[self.gen_partition_uid(path=partition_path)][0]
                 else:
                     fmtop = False
-                self.stage_opts[self.gen_partition_uid(path=partition_path)] = (mylabel, mymount, myfmt, fmtop)
+                    is_new = False
+                
+                self.stage_opts[self.gen_partition_uid(path=partition_path)] = (is_new, mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
 
@@ -571,8 +590,7 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Delete partition
     def on_partition_list_delete_activate(self, button):
-        selection = self.partition_list.get_selection()
-        
+        selection = self.partition_list.get_selection() 
         if not selection:
             return
             
@@ -592,7 +610,7 @@ class InstallationAdvanced(Gtk.Box):
             del(self.stage_opts[self.gen_partition_uid(path=partition_path)])
         
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
-
+        self.disks_changed.append(disk_path)
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
         # Be sure to just call get_devices once
@@ -675,7 +693,7 @@ class InstallationAdvanced(Gtk.Box):
             isbase = True
             
         disk_path = model[parent_iter][0]
-
+        self.disks_changed.append(disk_path)
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
@@ -798,7 +816,7 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
-                        self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (mylabel, mymount, myfmt, True)
+                        self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (True, mylabel, mymount, myfmt, True)
                 ## Update partition list treeview
                 self.fill_partition_list()
 
@@ -809,7 +827,7 @@ class InstallationAdvanced(Gtk.Box):
         #print("on_partition_list_undo_activate")
         ## To undo user changes, we simply reload all devices        
         self.disks = pm.get_devices()
-
+        self.disks_changed = []
         ## Also undo stage partitions' options
         self.stage_opts = {}
         
@@ -1029,12 +1047,9 @@ class InstallationAdvanced(Gtk.Box):
                     ptype = 'gpt'
 
                 print("Creating a new partition table of type %s for disk %s" % (ptype, path))
-                
-                if _debug:
-                    print("Debug option is on, not doing any real changes")
-                else:
-                    new_disk = pm.make_new_disk(path, ptype)
-                    self.disks[path] = new_disk
+                #remove debug, this doesn't actually do anything... 
+                new_disk = pm.make_new_disk(path, ptype)
+                self.disks[path] = new_disk
                 
                 self.fill_grub_device_entry()
                 self.fill_partition_list()
@@ -1052,22 +1067,24 @@ class InstallationAdvanced(Gtk.Box):
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
-
-        for disk_path in self.disks:
-            disk = self.disks[disk_path]
-            partitions = pm.get_partitions(disk)
-            for partition_path in partitions:
-                p = partitions[partition_path]
-                if pm.check_mounted(p):
-                    mount_point, fs, writable = self.get_mount_point(p.path)
-                    if "/" in mount_point:
-                        # don't allow vfat as / filesystem, it will not work!
-                        # don't allow ntfs as / filesystem, this is stupid!
-                        if "vfat" not in fs and "ntfs" not in fs:
-                            check_ok = True
+   # Commenting all this out...no device should be mounted now except install media!
+   #     for disk_path in self.disks:
+   #         disk = self.disks[disk_path]
+   #         if not disk:
+   #             continue
+   #         partitions = pm.get_partitions(disk)
+   #         for partition_path in partitions:
+   #             p = partitions[partition_path]
+   #             if pm.check_mounted(p):
+   #                 mount_point, fs, writable = self.get_mount_point(p.path)
+   #                 if "/" in mount_point:
+   #                     # don't allow vfat as / filesystem, it will not work!
+   #                     # don't allow ntfs as / filesystem, this is stupid!
+   #                     if "vfat" not in fs and "ntfs" not in fs:
+   #                         check_ok = True
 
         for part_path in self.stage_opts:
-            (lbl, mnt, fs, fmt) = self.stage_opts[part_path]
+            (is_new, lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
                 # don't allow vfat as / filesystem, it will not work!
                 # don't allow ntfs as / filesystem, this is stupid!
@@ -1076,9 +1093,62 @@ class InstallationAdvanced(Gtk.Box):
 
         self.forward_button.set_sensitive(check_ok)
 
+    ## Grab all changes for confirmation
+    def get_changes(self):
+        changelist = []
+        #store values as (path, create?, label?, format?)
+        if self.disks:
+            for disk_path in self.disks:
+                disk = self.disks[disk_path]
+                partitions = pm.get_partitions(disk)
+                for p in partitions:
+                    if self.gen_partition_uid(path=p) in self.stage_opts:
+                        if disk.device.busy:
+                            print('Unmount %s!!!' % disk_path)
+                            sys.exit(1)
+                        (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=p)]
+                        if fmt:
+                            fmt = 'Yes'
+                        else:
+                            fmt = 'No'
+                        if is_new:
+                            relabel = 'Yes'
+                            fmt = 'Yes'
+                            createme = 'Yes' 
+                        else:
+                            if p in self.orig_label_dic:
+                                if self.orig_label_dic[p] == lbl:
+                                    relabel = 'No'
+                                else:
+                                    relabel = 'Yes'
+                            createme = 'No' 
+                    else:
+                        relabel = 'No'
+                        fmt = 'No'
+                        createme = 'No'
+                        mnt = ''
+                    changelist.append((p, createme, relabel, fmt))
+            return changelist
+
+
     ## The user clicks "Install now!"
     def store_values(self):
-        
+        ###########
+        #PLEASE PUT SUMMARY WINDOW HERE OF CHANGES
+        ###########
+        #for now, in text#
+        changelist = self.get_changes()
+        print('Partition\tNew?\tRelabel?\tFormat?')
+        for ea in changelist:
+            print('\t'.join(ea))
+        print("These disks will have partition actions")
+        print(self.disks_changed)
+        x = input("Continue? Type 'balloons' to continue or you'll exit:")
+        if x != 'balloons':
+            sys.exit(1)
+                    
+                        
+                         
         ## Create staged partitions 
         if self.disks != None:
             for disk_path in self.disks:
@@ -1086,27 +1156,32 @@ class InstallationAdvanced(Gtk.Box):
                 if _debug:
                     print("Debug option is on, not doing any real changes")
                 else:
-                    pm.finalize_changes(disk)
-                    print("Saving changes done in %s" % disk_path)
-
+                    #only commit changes to disks we've changed!
+                    if disk_path in self.disks_changed:
+                        pm.finalize_changes(disk)
+                        print("Saving changes done in %s" % disk_path)
                 ## Now that partitions are created, set fs and label
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
                     ## Get label, mount point and filesystem of staged partitions
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
-                        (lbl, mnt, fs, fmt) = self.stage_opts[uid]
+                        (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
                         print("Creating fs of type %s in %s with label %s" % (fs, partition_path, lbl))
                         if _debug:
                             print("Debug option is on, not doing any real changes")
                         else:
-                            (error, msg) = fs.create_fs(partitions[partition_path], fs, lbl)
-                            print(msg)
+                             #only format if they want formatting
+                            if fmt:  
+                             #all of fs module takes paths, not partition objs
+                                (error, msg) = fs.create_fs(partition_path, fisy, lbl)
+                                print(msg)
+                            elif partition_path in self.orig_label_dic:
+                                if self.orig_label_dic[partition_path] != lbl:
+                                    fs.label_fs(fisy, partition_path, lbl)
                     elif _debug:
                         print("Partition %s not found in stage_opts" % partition_path)
 
-        ## TODO : Format old partitions if required by user
-        
         self.start_installation()
 
     
@@ -1125,8 +1200,7 @@ class InstallationAdvanced(Gtk.Box):
         ## should we add already mounted partitions to the list of
         ## partitions we will mount in the new system?
         
-        mount_devices = {}
-        
+        mount_devices = {} 
         for disk_path in self.disks:
             disk = self.disks[disk_path]
             partitions = pm.get_partitions(disk)
@@ -1136,7 +1210,7 @@ class InstallationAdvanced(Gtk.Box):
                 p = partitions[partition_path]
                 uid = self.gen_partition_uid(p=p)
                 if uid in self.stage_opts:
-                    (label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                    (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
                 elif pm.check_mounted(p):
                     mount_point, fs, writable = self.get_mount_point(p.path)

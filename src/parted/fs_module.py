@@ -30,6 +30,7 @@
 
 import subprocess
 import shlex
+import misc
 
 _names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
@@ -50,6 +51,7 @@ def get_info(part):
             partdic[e[0]] = e[1]
     return(partdic)
 
+@misc.raise_privileges
 def label_fs(fstype, part, label):
     ladic = {'ext2':'e2label %(part)s %(label)s',
              'ext3':'e2label %(part)s %(label)s',
@@ -74,7 +76,8 @@ def label_fs(fstype, part, label):
         # check_call returns exit code.  0 should mean success
     return ret
 
-def create_fs(part, fstype, label='', other_opts=None):
+@misc.raise_privileges
+def create_fs(part, fstype, label='', other_opts=''):
     #set some default options
     #-m 1 reserves 1% for root, because I think 5% is too much on
     #newer bigger drives.  
@@ -98,7 +101,19 @@ def create_fs(part, fstype, label='', other_opts=None):
     fstype = fstype.lower()
     if not other_opts:
         other_opts = opt_dic[fstype]
-    
+    comdicnolabel = {'ext2':'mkfs.ext2 -c %(other_opts)s %(part)s',
+             'ext3':'mkfs.ext3 -c %(other_opts)s %(part)s',
+             'ext4':'mkfs.ext4 -c %(other_opts)s %(part)s',
+             ' fat16':'mkfs.vfat -c -F 16 %(other_opts) %(part)s',
+             'fat32':'mkfs.vfat -c -F 32 %(other_opts) %(part)s',
+             'ntfs':'mkfs.ntfs %(other_opts)s %(part)s',
+             'jfs':'mkfs.jfs -c %(other_opts)s %(part)s',
+             'reiserfs':'mkfs.reiserfs %(other_opts)s %(part)s',
+             'xfs':'mkfs.xfs %(other_opts)s %(part)s',
+             'btrfs':'mkfs.btrfs %(other_opts)s %(part)s',
+             'swap':'mkswap %(part)s'}
+
+
     comdic = {'ext2':'mkfs.ext2 -c -L %(label)s %(other_opts)s %(part)s',
              'ext3':'mkfs.ext3 -c -L %(label)s %(other_opts)s %(part)s',
              'ext4':'mkfs.ext4 -c -L %(label)s %(other_opts)s %(part)s',
@@ -110,6 +125,8 @@ def create_fs(part, fstype, label='', other_opts=None):
              'xfs':'mkfs.xfs -L %(label)s %(other_opts)s %(part)s',
              'btrfs':'mkfs.btrfs -L %(label)s %(other_opts)s %(part)s',
              'swap':'mkswap %(part)s'}
+    if not label:
+        comdic = comdicnolabel
     try:
         y = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
         ret = (0, y)

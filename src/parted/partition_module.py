@@ -50,7 +50,11 @@ DISK_EXTENDED = 1
 def get_devices():
     device_list = parted.getAllDevices()
     disk_dic = {}
+    myhome = subprocess.check_output(shlex.split('df -P /')).decode()
+    
     for dev in device_list:
+        if dev.path in myhome:
+            continue
         #I left all of the below here but commented out to see some use cases
         #isbusy = in use/mounted.  Needs to flag if 'yes' to prompt user to umount
         #isbusy = dev.busy
@@ -88,11 +92,11 @@ def make_new_disk(dev_path, type):
 def get_partitions(diskob):
     part_dic = {}
     #Do not let user specify more than this number of primary partitions
-    disk_max_pri = diskob.maxPrimaryPartitionCount
+    #disk_max_pri = diskob.maxPrimaryPartitionCount
     #create list of partitions for this device(/dev/sda for example)
     partition_list = diskob.partitions
     dev = diskob.device
-    limiter = 1000
+    #limiter = 1000
     for p in partition_list:
         part_dic[p.path] = p
         #this is start sector, end sector, and length     
