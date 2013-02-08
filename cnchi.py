@@ -242,23 +242,24 @@ class Main(Gtk.Window):
         next_page = self.current_page.get_next_page()
 
         if next_page != None:
-            self.progressbar_step(0.1)
+            stored = self.current_page.store_values()
+            
+            if stored != False:
+                self.progressbar_step(0.1)     
+                self.main_box.remove(self.current_page)
 
-            self.current_page.store_values()
-            self.main_box.remove(self.current_page)
+                self.current_page = self.pages[next_page]
 
-            self.current_page = self.pages[next_page]
+                if self.current_page != None:
+                    self.current_page.prepare()
+                    self.main_box.add(self.current_page)
 
-            if self.current_page != None:
-                self.current_page.prepare()
-                self.main_box.add(self.current_page)
-
-                if self.current_page.get_prev_page() != None:
-                    # there is a previous page, show button
-                    self.backwards_button.show()
-                    self.backwards_button.set_sensitive(True)
-                else:
-                    self.backwards_button.hide()
+                    if self.current_page.get_prev_page() != None:
+                        # there is a previous page, show button
+                        self.backwards_button.show()
+                        self.backwards_button.set_sensitive(True)
+                    else:
+                        self.backwards_button.hide()
 
     def on_backwards_button_clicked(self, widget, data=None):
         prev_page = self.current_page.get_prev_page()

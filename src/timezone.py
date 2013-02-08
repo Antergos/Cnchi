@@ -269,6 +269,8 @@ class Timezone(Gtk.Box):
                 installer_settings["timezone_longitude"] = loc.longitude
             else:
                 installer_settings["timezone_longitude"] = ""
+        
+        return True
 
             # debug
             #logging.debug("timezone_human_zone is " + loc.human_zone)

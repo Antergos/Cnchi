@@ -241,6 +241,8 @@ class Keymap(Gtk.Box):
         logging.debug("keyboard_variant is " + installer_settings["keyboard_variant"])
         print("keyboard_layout is " + installer_settings["keyboard_layout"])
         print("keyboard_variant is " + installer_settings["keyboard_variant"])
+        
+        return True
 
     def get_prev_page(self):
         return _prev_page

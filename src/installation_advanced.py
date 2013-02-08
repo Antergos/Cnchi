@@ -490,7 +490,12 @@ class InstallationAdvanced(Gtk.Box):
         # flags
         # formatable_selectable?
         amnew = False
-        self.stage_opts[self.gen_partition_uid(path=self.partition_list_store[path][0])] = (amnew, self.partition_list_store[path][3], self.partition_list_store[path][2], self.partition_list_store[path][1], self.partition_list_store[path][4]) 
+        self.stage_opts[self.gen_partition_uid(path=self.partition_list_store[path][0])] = \
+            (amnew,
+             self.partition_list_store[path][3],
+             self.partition_list_store[path][2],
+             self.partition_list_store[path][1],
+             self.partition_list_store[path][4]) 
 
 
     ## The user wants to edit a partition
@@ -862,7 +867,8 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
-        print("on_partition_list_treeview_row_activated")
+        #print("on_partition_list_treeview_row_activated")
+        self.on_partition_list_edit_activate(None)
         return False
 
 
@@ -1107,12 +1113,25 @@ class InstallationAdvanced(Gtk.Box):
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
                 partitions = pm.get_partitions(disk)
-                for p in partitions:
-                    if self.gen_partition_uid(path=p) in self.stage_opts:
+                for partition_path in partitions:
+                    if self.gen_partition_uid(path=partition_path) in self.stage_opts:
                         if disk.device.busy:
-                            print('Unmount %s!!!' % disk_path)
-                            sys.exit(1)
-                        (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=p)]
+                            # There's some mounted partition
+                            if pm.check_mounted(partitions[partition_path]):
+                                mount_point, fs, writable = self.get_mount_point(partition_path)
+                                msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n") % (partition_path, mount_point)
+                                dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
+                                    Gtk.ButtonsType.YES_NO, _("Cinnarch Installer"))
+                                dialog.format_secondary_text(msg)
+                                response = dialog.run()
+                                dialog.destroy()
+                                if response != Gtk.ResponseType.YES:
+                                    return []
+                                else:
+                                    # unmount it!
+                                    subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                
+                        (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         if fmt:
                             fmt = 'Yes'
                         else:
@@ -1122,8 +1141,8 @@ class InstallationAdvanced(Gtk.Box):
                             fmt = 'Yes'
                             createme = 'Yes' 
                         else:
-                            if p in self.orig_label_dic:
-                                if self.orig_label_dic[p] == lbl:
+                            if partition_path in self.orig_label_dic:
+                                if self.orig_label_dic[partition_path] == lbl:
                                     relabel = 'No'
                                 else:
                                     relabel = 'Yes'
@@ -1133,39 +1152,32 @@ class InstallationAdvanced(Gtk.Box):
                         fmt = 'No'
                         createme = 'No'
                         mnt = ''
-                    changelist.append((p, createme, relabel, fmt))
+                    changelist.append((partition_path, createme, relabel, fmt))
             return changelist
-
 
     ## The user clicks "Install now!"
     def store_values(self):
-        ###########
-        #PLEASE PUT SUMMARY WINDOW HERE OF CHANGES
-        ###########
-        #for now, in text#
         changelist = self.get_changes()
-        msg = 'These disks will have partition actions:\n\n'
-        msg.join('Partition\tNew?\tRelabel?\tFormat?\n')
-        for ea in changelist:
-            msg.join('\t'.join(ea).join("\n"))
-        msg.join(self.disks_changed)
-        msg.join("\n")
+        if changelist == []:
+            # something wrong has happened or Nothing to change?
+            return False
+            
+        msg = _('These disks will have partition actions:\n\n')
+        msg += _('Partition\tNew?\tRelabel?\tFormat?\n')
+        #for ea in changelist:
+        #    msg += "\t"
+        #    partition_path, createme, relabel, fmt = ea
+        #    msg += "\n"
+
         print(msg)
-        x = input("Continue? Type 'balloons' to continue or you'll exit:")
-        if x != 'balloons':
-            sys.exit(1)
 
-
-        '''
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION,
-            Gtk.ButtonsType.YES_NO, "Cinnarch")
-        dialog.format_secondary_text(
-            "And this is the secondary text that explains things.")
+        dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
+            Gtk.ButtonsType.YES_NO, _("Cinnarch Installer"))
+        dialog.format_secondary_text(msg)
         response = dialog.run()
+        dialog.destroy()
         if response != Gtk.ResponseType.YES:
             return False
-        '''
-        
                          
         ## Create staged partitions 
         if self.disks != None:

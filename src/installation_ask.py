@@ -119,6 +119,7 @@ class InstallationAsk(Gtk.Box):
             installer_settings['partition_mode'] = 'easy'
         else:
             installer_settings['partition_mode'] = 'advanced'
+        return True
 
     def get_next_page(self):
         return self.next_page

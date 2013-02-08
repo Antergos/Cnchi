@@ -135,6 +135,7 @@ class InstallationAutomatic(Gtk.Box):
         #self.forward_button.set_sensitive(True)
         #installer_settings['auto_device'] = self.auto_device
         self.start_installation()
+        return True
 
     def get_prev_page(self):
         return _prev_page

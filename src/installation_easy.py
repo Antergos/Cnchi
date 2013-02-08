@@ -132,6 +132,7 @@ class InstallationEasy(Gtk.Box):
 
     def store_values(self):
         self.start_installation()
+        return True
 
     def get_prev_page(self):
         return _prev_page

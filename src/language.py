@@ -153,6 +153,8 @@ class Language(Gtk.Box):
         logging.debug("language_code is " + installer_settings["language_code"])
         print("language_name is " + installer_settings["language_name"])
         print("language_code is " + installer_settings["language_code"])
+        
+        return True
 
     def prepare(self):
         self.translate_ui()

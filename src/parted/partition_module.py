@@ -190,6 +190,7 @@ def create_partition(diskob, part_type, geom):
         npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
         nconstraint = parted.Constraint(minGeom=mingeom, maxGeom=maxgeom)
         ncont = diskob.addPartition(partition=npartition, constraint=nconstraint)
+
 def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
                  beginning=True):
     #OK, two new specs.  First, you must specify the first sector

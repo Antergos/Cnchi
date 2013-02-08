@@ -170,6 +170,7 @@ class Check(Gtk.Box):
     def store_values(self):
         # remove timer
         self.remove_timer = True
+        return True
 
     def get_prev_page(self):
         return _prev_page

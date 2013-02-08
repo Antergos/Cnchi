@@ -100,7 +100,7 @@ class Slides(Gtk.Box):
         self.exit_button.hide()
 
     def store_values(self):
-        pass
+        return False
 
     def get_prev_page(self):
         return _prev_page
