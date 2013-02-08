@@ -168,8 +168,12 @@ class InstallationAdvanced(Gtk.Box):
             dev = p.disk.device.path
         except:
             dev = 'thinking'
-        ends = p.geometry.end
-        starts = p.geometry.start
+        if p:
+            ends = p.geometry.end
+            starts = p.geometry.start
+        else:
+            ends = 'none'
+            starts = 'none'
         uid = dev + str(starts) + str(ends)
         return uid
                         
