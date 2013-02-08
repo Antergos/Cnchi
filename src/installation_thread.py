@@ -42,8 +42,7 @@ sys.path.insert(0, pacman_dir)
 
 import misc
 
-# This must be adapted to our needs
-import transaction
+import pac
 
 _autopartition_script = 'auto_partition.sh'
 
@@ -89,7 +88,7 @@ class InstallationThread(threading.Thread):
         pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % self.dest_dir
 
         self.arch = os.uname()[-1]
-        
+    
         self.pacman_conf()
         self.prepare_pacman()
         
@@ -102,7 +101,7 @@ class InstallationThread(threading.Thread):
         print("Creating pacman.conf for %s architecture" % self.arch)
         
         # Common repos
-        
+               
         tmp_file = open("/tmp/pacman.conf", "wt")
 
         tmp_file.write("[options]\n")
@@ -141,30 +140,28 @@ class InstallationThread(threading.Thread):
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
     
         tmp_file.close()
+        
+        ## Init pyalpm
+
+        self.pac = pac.Pac("/tmp/pacman.conf")
+    
+    
+    # pacman needs a masterkey before checking signed packages
+    def prepare_pacman_keychain(self):
+        pass
     
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
-        pass
-## Set up the necessary directories for pacman use
-#    [[ ! -d "${DESTDIR}/var/cache/pacman/pkg" ]] && mkdir -m 755 -p "${DESTDIR}/var/cache/pacman/pkg"
-#    [[ ! -d "${DESTDIR}/var/lib/pacman" ]] && mkdir -m 755 -p "${DESTDIR}/var/lib/pacman"    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]
+        
+        for d in dirs:
+            mydir = os.path.join(self.dest_dir, d)
+            if not os.path.exists(mydir):
+                os.makedirs(mydir)
+
+        self.prepare_pacman_keychain()
+        
+        pac.do_refresh()
     
     
     def chroot_mount(self):
