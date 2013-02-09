@@ -389,6 +389,7 @@ class InstallationAdvanced(Gtk.Box):
                     path = p.path
                     if self.my_first_time:
                         self.orig_label_dic[p.path] = label 
+                    
                     ## Get file system
                     if p.fileSystem:
                         fs_type = p.fileSystem.type
@@ -402,29 +403,28 @@ class InstallationAdvanced(Gtk.Box):
                                 fs_type = '?'
                         else:
                             fs_type = _("none")
+                    
                     # Commenting out.  Nothing should be mounted...
                     ## Get mount point
                     #if pm.check_mounted(p) and not "swap" in fs_type:
                     #    mount_point, notused_fs, notused_writable = self.get_mount_point(p.path)
-                    if 'swap' in fs_type:
-                        fs_type = 'swap'
+                    
                     if p.type == pm.PARTITION_EXTENDED:
-                        ## Show 'extended' in file system type column
-                        fs_type = _("extended")
                         formatable = False
                         self.diskdic[disk_path]['has_extended'] = True
                     elif p.type == pm.PARTITION_LOGICAL:
                         formatable = True
                         self.diskdic[disk_path]['has_logical'] = True
+                    
                     if p.type in (pm.PARTITION_FREESPACE,
                                   pm.PARTITION_FREESPACE_EXTENDED):
                         ## Show 'free space' instead of /dev/sda-1    
                         path = _("free space")
                         formatable = False
-                    else:
-                        
+                    else:                        
                         ## Get partition flags
                         flags = pm.get_flags(p)
+                    
                     if self.gen_partition_uid(p=p) in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[self.gen_partition_uid(p=p)]           
                         fmt_enable = not is_new
@@ -449,6 +449,14 @@ class InstallationAdvanced(Gtk.Box):
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
             
+                    if p.type == pm.PARTITION_EXTENDED:
+                        ## Show 'extended' in file system type column
+                        fs_type = _("extended")
+
+                    ## do not show swap version, only the 'swap' word
+                    if 'swap' in fs_type:
+                        fs_type = 'swap'
+
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
                            "", p.type, fmt_enable]
@@ -460,11 +468,12 @@ class InstallationAdvanced(Gtk.Box):
                         parent = disk_parent
                     tree_iter = self.partition_list_store.append(parent, row)
 
+                    ## If we're an extended partition, all the logical
+                    ## partitions that follow will be shown as children
+                    ## of this one
                     if p.type == pm.PARTITION_EXTENDED:
-                        ## If we're an extended partition, all the logical
-                        ## partitions that follow will be shown as children
-                        ## of this one
                         myparent = tree_iter
+        
         self.my_first_time = False
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
@@ -637,9 +646,11 @@ class InstallationAdvanced(Gtk.Box):
         part = partitions[partition_path]
         if (disk.device.path, part.geometry.start) in self.used_dic:
             del self.used_dic[(disk.device.path, part.geometry.start)]
+       
         ## Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
             ## We unmount the partition. Should we ask first?
+            print("Unmounting %s..." % part.path)
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
         ## Is it worth to show some warning message here?
@@ -1133,10 +1144,12 @@ class InstallationAdvanced(Gtk.Box):
                                     subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
+                        
                         if fmt:
                             fmt = 'Yes'
                         else:
                             fmt = 'No'
+                        
                         if is_new:
                             relabel = 'Yes'
                             fmt = 'Yes'
@@ -1153,7 +1166,10 @@ class InstallationAdvanced(Gtk.Box):
                         fmt = 'No'
                         createme = 'No'
                         mnt = ''
-                    changelist.append((partition_path, createme, relabel, fmt))
+                    
+                    if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes':
+                        changelist.append((partition_path, createme, relabel, fmt))
+                    
             return changelist
     
     def show_changes(self, changelist):
@@ -1236,7 +1252,7 @@ class InstallationAdvanced(Gtk.Box):
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
-                        print("Creating fs of type %s in %s with label %s" % (fs, partition_path, lbl))
+                        print("Creating fs of type %s in %s with label %s" % (fisy, partition_path, lbl))
                         if _debug:
                             print("Debug option is on, not doing any real changes")
                         else:
@@ -1253,6 +1269,10 @@ class InstallationAdvanced(Gtk.Box):
 
         self.start_installation()
         
+        ## Restore "Next" button text
+        stock = "gtk-go-forward"
+        self.forward_button.set_label(stock)
+        self.forward_button.set_use_stock(True)
         return True
 
     
