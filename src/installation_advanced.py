@@ -77,7 +77,6 @@ _debug = True
 class InstallationAdvanced(Gtk.Box):
 
     def __init__(self, params):
-        self.first_time = 0
         ## Store class parameters
         self.title = params['title']
         self.ui_dir = params['ui_dir']
@@ -86,11 +85,14 @@ class InstallationAdvanced(Gtk.Box):
         self.disks_changed = []
         self.my_first_time = True
         self.orig_label_dic = {}        
+        self.orig_part_dic = {}
         #stage_opts holds info about newly created partitions
         #format is tuple (label, mountpoint, fs(text), Format)
         #see its usage in listing, creating, and deleting partitions
         self.stage_opts = {}
         self.used_dic = {}
+        #hold deleted partitions that exist now
+        self.to_be_deleted = []
         ## Call base class
         super().__init__()
 
@@ -318,7 +320,6 @@ class InstallationAdvanced(Gtk.Box):
     def fill_partition_list(self):
         self.diskdic = {}
         self.all_partitions = []
-        self.first_time += 1
         ## We will store our data model in 'partition_list_store'
         if self.partition_list_store != None:
             self.partition_list_store.clear()
@@ -387,8 +388,6 @@ class InstallationAdvanced(Gtk.Box):
                     formatable = True
 
                     path = p.path
-                    if self.my_first_time:
-                        self.orig_label_dic[p.path] = label 
                     
                     ## Get file system
                     if p.fileSystem:
@@ -431,7 +430,7 @@ class InstallationAdvanced(Gtk.Box):
                     else:
                         fmt_enable = True
                         if 'free' not in path:
-                            if self.first_time < 2:
+                            if self.my_first_time:
                                 if mount_point:
                                     used = pm.get_used_space(p)
                                 else:
@@ -472,8 +471,10 @@ class InstallationAdvanced(Gtk.Box):
                     ## partitions that follow will be shown as children
                     ## of this one
                     if p.type == pm.PARTITION_EXTENDED:
-                        myparent = tree_iter
-        
+                        myparent = tree_iter 
+                    if self.my_first_time:
+                        self.orig_part_dic[p.path] = self.gen_partition_uid(p)
+                        self.orig_label_dic[p.path] = label
         self.my_first_time = False
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
@@ -507,7 +508,6 @@ class InstallationAdvanced(Gtk.Box):
              self.partition_list_store[path][2],
              self.partition_list_store[path][1],
              self.partition_list_store[path][4]) 
-
 
     ## The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
@@ -620,7 +620,7 @@ class InstallationAdvanced(Gtk.Box):
 
         if tree_iter == None:
             return
-
+        am_new = False
         ## Get row data
         row = model[tree_iter]
         mount_point = row[2]
@@ -629,8 +629,13 @@ class InstallationAdvanced(Gtk.Box):
         if mount_point in self.diskdic['mounts']:
             self.diskdic['mounts'].remove(mount_point)
         if self.gen_partition_uid(path=partition_path) in self.stage_opts:
-            del(self.stage_opts[self.gen_partition_uid(path=partition_path)])
-        
+            am_new = self.stage_opts[self.gen_partition_uid(path=partition_path)][0]
+            del(self.stage_opts[self.gen_partition_uid(path=partition_path)]) 
+        if not am_new:
+            for e in self.orig_part_dic:
+                if self.orig_part_dic[e] == self.gen_partition_uid(path=partition_path):
+                
+                    self.to_be_deleted.append(e)
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
@@ -654,6 +659,7 @@ class InstallationAdvanced(Gtk.Box):
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
         ## Is it worth to show some warning message here?
+        ## No, created delete list as part of confirmation screen.
         pm.delete_partition(disk, part)
         
         ## Update the partition list treeview
@@ -677,10 +683,11 @@ class InstallationAdvanced(Gtk.Box):
     ## Add a new partition
     def on_partition_list_new_activate(self, button):
         selection = self.partition_list.get_selection()
-        
+             
         if not selection:
             return
-            
+        #assume it will be formatted, unless it's extended
+        formatme = True      
         model, tree_iter = selection.get_selected()
 
         if tree_iter == None:
@@ -706,7 +713,7 @@ class InstallationAdvanced(Gtk.Box):
         parent_iter = model.iter_parent(tree_iter)
         
         parent_part_type = model[parent_iter][10]
-
+ 
         if parent_part_type == pm.PARTITION_EXTENDED:
             ## We're creating a partition inside an already created extended
             ## partition. Our drive won't be our father but our grandpa
@@ -822,6 +829,14 @@ class InstallationAdvanced(Gtk.Box):
                     print("Creating primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif extended_radio.get_active():
+                    #No mounting extended partitions...
+                    if mymount:
+                        self.diskdic['mounts'].remove(mymount)
+                        mymount = ''   
+                    #No labeling either..
+                    mylabel = ''
+                    myfmt = ''
+                    formatme = False 
                     print("Creating extended partition")
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif logical_radio.get_active():
@@ -1140,7 +1155,7 @@ class InstallationAdvanced(Gtk.Box):
                             # There's some mounted partition
                             if pm.check_mounted(partitions[partition_path]):
                                 mount_point, fs, writable = self.get_mount_point(partition_path)
-                                msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n") % (partition_path, mount_point)
+                                msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
                                 response = show.question(msg)
                                 if response != Gtk.ResponseType.YES:
                                     return []
@@ -1154,7 +1169,6 @@ class InstallationAdvanced(Gtk.Box):
                             fmt = 'Yes'
                         else:
                             fmt = 'No'
-                        
                         if is_new:
                             relabel = 'Yes'
                             fmt = 'Yes'
@@ -1171,14 +1185,12 @@ class InstallationAdvanced(Gtk.Box):
                         fmt = 'No'
                         createme = 'No'
                         mnt = ''
-                    
-                    if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes':
-                        changelist.append((partition_path, createme, relabel, fmt))
+                    if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
+                        changelist.append((partition_path, createme, relabel, fmt, mnt))
                     
             return changelist
     
     def show_changes(self, changelist):
-        
         if self.show_changes_grid is None:
             vbox = self.ui.get_object("dialog-vbox6")
             grid = Gtk.Grid()           
@@ -1191,7 +1203,19 @@ class InstallationAdvanced(Gtk.Box):
         margin = 8
         
         bold = "<b>%s</b>"
-
+        y = 0
+        for ea in self.to_be_deleted:
+            lbl1 = Gtk.Label(ea, margin=margin)
+            lbl2 = Gtk.Label("will", margin=margin)
+            lbl3 = Gtk.Label("be", margin=margin)
+            lbl4 = Gtk.Label("deleted", margin=margin)
+            lbl5 = Gtk.Label("", margin=margin)
+            grid.attach(lbl1, 0, y, 1, 1)
+            grid.attach(lbl2, 1, y, 1, 1)
+            grid.attach(lbl3, 2, y, 1, 1)
+            grid.attach(lbl4, 3, y, 1, 1)
+            grid.attach(lbl5, 4, y, 1, 1)
+            y += 1
         lbl1 = Gtk.Label(margin=margin)
         lbl1.set_markup(bold % _("Partition"))
         lbl2 = Gtk.Label(margin=margin)
@@ -1200,26 +1224,28 @@ class InstallationAdvanced(Gtk.Box):
         lbl3.set_markup(bold % _("Relabel"))
         lbl4 = Gtk.Label(margin=margin)
         lbl4.set_markup(bold % _("Format"))
-        
-        grid.attach(lbl1, 0, 0, 1, 1)
-        grid.attach(lbl2, 1, 0, 1, 1)
-        grid.attach(lbl3, 2, 0, 1, 1)
-        grid.attach(lbl4, 3, 0, 1, 1)
-        
-        y = 1
-
+        lbl5 = Gtk.Label(margin=margin)
+        lbl5.set_markup(bold % _("Mount"))
+        grid.attach(lbl1, 0, y, 1, 1)
+        grid.attach(lbl2, 1, y, 1, 1)
+        grid.attach(lbl3, 2, y, 1, 1)
+        grid.attach(lbl4, 3, y, 1, 1)
+        grid.attach(lbl5, 4, y, 1, 1)
+        y += 1 
         for ea in changelist:
-            partition_path, createme, relabel, fmt = ea
+            partition_path, createme, relabel, fmt, mnt = ea
             lbl1 = Gtk.Label(partition_path, margin=margin)
             lbl2 = Gtk.Label(createme, margin=margin)
             lbl3 = Gtk.Label(relabel, margin=margin)
             lbl4 = Gtk.Label(fmt, margin=margin)
+            lbl5 = Gtk.Label(mnt, margin=margin)
             # Do not show live environment partitions on dialog
             if not partition_path.startswith('/dev/mapper/arch_'):
                 grid.attach(lbl1, 0, y, 1, 1)
                 grid.attach(lbl2, 1, y, 1, 1)
                 grid.attach(lbl3, 2, y, 1, 1)
                 grid.attach(lbl4, 3, y, 1, 1)
+                grid.attach(lbl5, 4, y, 1, 1)
                 y += 1
             
         dialog = self.ui.get_object("changelist_dialog")
@@ -1255,6 +1281,7 @@ class InstallationAdvanced(Gtk.Box):
                 ## Now that partitions are created, set fs and label
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
+                    print(partition_path)
                     ## Get label, mount point and filesystem of staged partitions
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
@@ -1263,11 +1290,17 @@ class InstallationAdvanced(Gtk.Box):
                         if _debug:
                             print("Debug option is on, not doing any real changes")
                         else:
+                            if mnt == '/':
+                                if not pm.get_flag(partitions[partition_path], 
+                                                   1):
+                                    x = pm.set_flag(1, partitions[partition_path])
+                                    pm.finalize_changes(partitions[partition_path].disk)
                              #only format if they want formatting
                             if fmt:  
                              #all of fs module takes paths, not partition objs
                                 (error, msg) = fs.create_fs(partition_path, fisy, lbl)
                                 print(msg)
+                                print("FORMATTED")
                             elif partition_path in self.orig_label_dic:
                                 if self.orig_label_dic[partition_path] != lbl:
                                     fs.label_fs(fisy, partition_path, lbl)

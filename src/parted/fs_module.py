@@ -101,32 +101,17 @@ def create_fs(part, fstype, label='', other_opts=''):
     fstype = fstype.lower()
     if not other_opts:
         other_opts = opt_dic[fstype]
-    comdicnolabel = {'ext2':'mkfs.ext2 %(other_opts)s %(part)s',
-             'ext3':'mkfs.ext3 %(other_opts)s %(part)s',
-             'ext4':'mkfs.ext4 %(other_opts)s %(part)s',
-             ' fat16':'mkfs.vfat -F 16 %(other_opts) %(part)s',
-             'fat32':'mkfs.vfat -F 32 %(other_opts) %(part)s',
-             'ntfs':'mkfs.ntfs %(other_opts)s %(part)s',
-             'jfs':'mkfs.jfs %(other_opts)s %(part)s',
-             'reiserfs':'mkfs.reiserfs %(other_opts)s %(part)s',
-             'xfs':'mkfs.xfs %(other_opts)s %(part)s',
-             'btrfs':'mkfs.btrfs %(other_opts)s %(part)s',
+    comdic = {'ext2':'mkfs.ext2 -L "%(label)s" %(other_opts)s %(part)s',
+             'ext3':'mkfs.ext3 -L "%(label)s" %(other_opts)s %(part)s',
+             'ext4':'mkfs.ext4 -L "%(label)s" %(other_opts)s %(part)s',
+             'fat16':'mkfs.vfat -n "%(label)s" -F 16 %(other_opts) %(part)s',
+             'fat32':'mkfs.vfat -n "%(label)s" -F 32 %(other_opts) %(part)s',
+             'ntfs':'mkfs.ntfs -L "%(label)s" %(other_opts)s %(part)s',
+             'jfs':'mkfs.jfs -q -L "%(label)s" %(other_opts)s %(part)s',
+             'reiserfs':'mkfs.reiserfs -q -l "%(label)s" %(other_opts)s %(part)s',
+             'xfs':'mkfs.xfs -L "%(label)s" %(other_opts)s %(part)s',
+             'btrfs':'mkfs.btrfs -L "%(label)s" %(other_opts)s %(part)s',
              'swap':'mkswap %(part)s'}
-
-
-    comdic = {'ext2':'mkfs.ext2 -L %(label)s %(other_opts)s %(part)s',
-             'ext3':'mkfs.ext3 -L %(label)s %(other_opts)s %(part)s',
-             'ext4':'mkfs.ext4 -L %(label)s %(other_opts)s %(part)s',
-             'fat16':'mkfs.vfat -n %(label)s -F 16 %(other_opts) %(part)s',
-             'fat32':'mkfs.vfat -n %(label)s -F 32 %(other_opts) %(part)s',
-             'ntfs':'mkfs.ntfs -L %(label)s %(other_opts)s %(part)s',
-             'jfs':'mkfs.jfs -L %(label)s %(other_opts)s %(part)s',
-             'reiserfs':'mkfs.reiserfs -l %(label)s %(other_opts)s %(part)s',
-             'xfs':'mkfs.xfs -L %(label)s %(other_opts)s %(part)s',
-             'btrfs':'mkfs.btrfs -L %(label)s %(other_opts)s %(part)s',
-             'swap':'mkswap %(part)s'}
-    if not label:
-        comdic = comdicnolabel
     try:
         y = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
         ret = (0, y)
