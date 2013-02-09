@@ -1239,14 +1239,12 @@ class InstallationAdvanced(Gtk.Box):
             lbl3 = Gtk.Label(relabel, margin=margin)
             lbl4 = Gtk.Label(fmt, margin=margin)
             lbl5 = Gtk.Label(mnt, margin=margin)
-            # Do not show live environment partitions on dialog
-            if not partition_path.startswith('/dev/mapper/arch_'):
-                grid.attach(lbl1, 0, y, 1, 1)
-                grid.attach(lbl2, 1, y, 1, 1)
-                grid.attach(lbl3, 2, y, 1, 1)
-                grid.attach(lbl4, 3, y, 1, 1)
-                grid.attach(lbl5, 4, y, 1, 1)
-                y += 1
+            grid.attach(lbl1, 0, y, 1, 1)
+            grid.attach(lbl2, 1, y, 1, 1)
+            grid.attach(lbl3, 2, y, 1, 1)
+            grid.attach(lbl4, 3, y, 1, 1)
+            grid.attach(lbl5, 4, y, 1, 1)
+            y += 1
             
         dialog = self.ui.get_object("changelist_dialog")
         dialog.set_title(_('These disks will have partition actions:'))
