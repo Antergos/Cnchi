@@ -42,7 +42,7 @@ import logging
 
 import parted
 
-from show_message import show_error
+import show_message as show
 
 import installation_thread
 
@@ -120,7 +120,7 @@ class InstallationEasy(Gtk.Box):
             print(self.device[name])
             if self.device[op] != "":
                 if self.device[op] == self.device[name]:
-                    show_error(_("You can't select the same device for both mount points!"))
+                    show.error(_("You can't select the same device for both mount points!"))
                     self.forward_button.set_sensitive(False)
                 else:
                     self.forward_button.set_sensitive(True)

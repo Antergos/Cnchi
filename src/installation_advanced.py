@@ -66,7 +66,7 @@ import installation_thread
 
 from config import installer_settings
 
-from show_message import show_error, show_warning
+import show_message as show
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
@@ -153,6 +153,8 @@ class InstallationAdvanced(Gtk.Box):
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
 
+        self.show_changes_grid = None
+        
         ## Add ourselves to the parent class
         super().add(self.ui.get_object("installation_advanced"))
 
@@ -557,7 +559,7 @@ class InstallationAdvanced(Gtk.Box):
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
                 print(_('Cannot use same mount twice...'))
-                show_warning(_('Cannot use same mount twice...'))
+                show.warning(_('Cannot use same mount twice...'))
             else:
                 if mount_point:
                     self.diskdic['mounts'].remove(mount_point)               
@@ -787,7 +789,7 @@ class InstallationAdvanced(Gtk.Box):
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic['mounts']:
                 print(_('Cannot use same mount twice...'))
-                show_warning(_('Cannot use same mount twice...'))
+                show.warning(_('Cannot use same mount twice...'))
             else:
                 if mymount:         
                     self.diskdic['mounts'].append(mymount)       
@@ -1120,11 +1122,7 @@ class InstallationAdvanced(Gtk.Box):
                             if pm.check_mounted(partitions[partition_path]):
                                 mount_point, fs, writable = self.get_mount_point(partition_path)
                                 msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n") % (partition_path, mount_point)
-                                dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
-                                    Gtk.ButtonsType.YES_NO, _("Cinnarch Installer"))
-                                dialog.format_secondary_text(msg)
-                                response = dialog.run()
-                                dialog.destroy()
+                                response = show.question(msg)
                                 if response != Gtk.ResponseType.YES:
                                     return []
                                 else:
@@ -1154,6 +1152,57 @@ class InstallationAdvanced(Gtk.Box):
                         mnt = ''
                     changelist.append((partition_path, createme, relabel, fmt))
             return changelist
+    
+    def show_changes(self, changelist):
+        
+        if self.show_changes_grid is None:
+            vbox = self.ui.get_object("dialog-vbox6")
+            grid = Gtk.Grid()           
+            vbox.pack_start(grid, True, True, 2)
+            self.show_changes_grid = grid
+        else:
+            self.show_changes_grid = Gtk.Grid()
+            grid = self.show_changes_grid
+            
+        margin = 8
+        
+        bold = "<b>%s</b>"
+
+        lbl1 = Gtk.Label(margin=margin)
+        lbl1.set_markup(bold % _("Partition"))
+        lbl2 = Gtk.Label(margin=margin)
+        lbl2.set_markup(bold % _("New"))
+        lbl3 = Gtk.Label(margin=margin)
+        lbl3.set_markup(bold % _("Relabel"))
+        lbl4 = Gtk.Label(margin=margin)
+        lbl4.set_markup(bold % _("Format"))
+        
+        grid.attach(lbl1, 0, 0, 1, 1)
+        grid.attach(lbl2, 1, 0, 1, 1)
+        grid.attach(lbl3, 2, 0, 1, 1)
+        grid.attach(lbl4, 3, 0, 1, 1)
+        
+        y = 1
+
+        for ea in changelist:
+            partition_path, createme, relabel, fmt = ea
+            lbl1 = Gtk.Label(partition_path, margin=margin)
+            lbl2 = Gtk.Label(createme, margin=margin)
+            lbl3 = Gtk.Label(relabel, margin=margin)
+            lbl4 = Gtk.Label(fmt, margin=margin)
+            grid.attach(lbl1, 0, y, 1, 1)
+            grid.attach(lbl2, 1, y, 1, 1)
+            grid.attach(lbl3, 2, y, 1, 1)
+            grid.attach(lbl4, 3, y, 1, 1)
+            y += 1
+            
+        dialog = self.ui.get_object("changelist_dialog")
+        dialog.set_title(_('These disks will have partition actions:'))
+        dialog.show_all()
+        response = dialog.run()
+        dialog.hide()
+        
+        return response
 
     ## The user clicks "Install now!"
     def store_values(self):
@@ -1161,24 +1210,11 @@ class InstallationAdvanced(Gtk.Box):
         if changelist == []:
             # something wrong has happened or Nothing to change?
             return False
-            
-        msg = _('These disks will have partition actions:\n\n')
-        msg += _('Partition\tNew?\tRelabel?\tFormat?\n')
-        #for ea in changelist:
-        #    msg += "\t"
-        #    partition_path, createme, relabel, fmt = ea
-        #    msg += "\n"
-
-        print(msg)
-
-        dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
-            Gtk.ButtonsType.YES_NO, _("Cinnarch Installer"))
-        dialog.format_secondary_text(msg)
-        response = dialog.run()
-        dialog.destroy()
-        if response != Gtk.ResponseType.YES:
+        
+        response = self.show_changes(changelist)
+        if response == Gtk.ResponseType.CANCEL:
             return False
-                         
+
         ## Create staged partitions 
         if self.disks != None:
             for disk_path in self.disks:

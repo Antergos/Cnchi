@@ -37,29 +37,54 @@ from config import installer_settings
 import logging
 
 def fatal_error(message):
-    show_error(message)
+    error(message)
     sys.exit(1)
 
-def show_error(message):
+def error(message):
     print(message)
     logging.error(message)
     msg_dialog = Gtk.MessageDialog(None,\
-     Gtk.DialogFlags.MODAL,\
-     Gtk.MessageType.ERROR,\
-     Gtk.ButtonsType.CLOSE,\
-     _("Cinnarch Installer - Error"))
+        Gtk.DialogFlags.MODAL,\
+        Gtk.MessageType.ERROR,\
+        Gtk.ButtonsType.CLOSE,\
+        _("Cinnarch Installer - Error"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
 
-def show_warning(message):
+def warning(message):
     print(message)
     logging.error(message)
     msg_dialog = Gtk.MessageDialog(None,\
-     Gtk.DialogFlags.MODAL,\
-     Gtk.MessageType.WARNING,\
-     Gtk.ButtonsType.CLOSE,\
-     _("Cinnarch Installer - Warning"))
+        Gtk.DialogFlags.MODAL,\
+        Gtk.MessageType.WARNING,\
+        Gtk.ButtonsType.CLOSE,\
+        _("Cinnarch Installer - Warning"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
+
+def message(message):
+    print(message)
+    logging.info(message)
+    msg_dialog = Gtk.MessageDialog(None,\
+        Gtk.DialogFlags.MODAL,\
+        Gtk.MessageType.INFO,\
+        Gtk.ButtonsType.YES_NO,\
+        _("Cinnarch Installer - Information"))
+    msg_dialog.format_secondary_text(message)
+    msg_dialog.run()
+    msg_dialog.destroy()
+
+def question(message):
+    print(message)
+    logging.info(message)
+    msg_dialog = Gtk.MessageDialog(None,\
+        Gtk.DialogFlags.MODAL,\
+        Gtk.MessageType.QUESTION,\
+        Gtk.ButtonsType.YES_NO,\
+        _("Cinnarch Installer - Question"))
+    msg_dialog.format_secondary_text(message)
+    response = msg_dialog.run()
+    msg_dialog.destroy()
+    return response
