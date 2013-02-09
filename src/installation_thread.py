@@ -161,7 +161,7 @@ class InstallationThread(threading.Thread):
 
         self.prepare_pacman_keychain()
         
-        pac.do_refresh()
+        self.pac.do_refresh()
     
     
     def chroot_mount(self):

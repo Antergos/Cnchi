@@ -6,7 +6,10 @@
 import pyalpm
 import traceback
 import sys
+
 from pacman import pac_config
+
+import show_message as show
 
 # interface = Gtk.Builder()
 # interface.add_from_file('gui/dialogs.glade')
@@ -24,6 +27,7 @@ from pacman import pac_config
 class Pac(object):
     def __init__(self, conf):
         self.t = None
+        self.transaction_desc = []
         self.t_lock = False
         self.conflict_to_remove = None
         self.to_remove = None
@@ -57,7 +61,7 @@ class Pac(object):
             self.t_lock = True
             return _t
         except pyalpm.error:
-            print(traceback.format_exc())
+            show.error(traceback.format_exc())
             return False
 
 
@@ -75,222 +79,214 @@ class Pac(object):
             if pkg.conflicts:
                 targets_conflicts[pkg.name] = pkg.conflicts
         warning = ''
+        
         if targets_replaces:
             for key, value in targets_replaces.items():
                 for name in value:
-                    pkg = config.handle.get_localdb().get_pkg(name)
+                    pkg = self.handle.get_localdb().get_pkg(name)
                     if pkg:
-                        if not pkg.name in conflict_to_remove.keys():
-                            conflict_to_remove[pkg.name] = pkg
+                        if not pkg.name in self.conflict_to_remove.keys():
+                            self.conflict_to_remove[pkg.name] = pkg
                             if warning:
                                 warning = warning + '\n'
                             warning = warning + pkg.name + ' will be replaced by ' + key 
+        
         if targets_conflicts:
             for key, value in targets_conflicts.items():
                 for name in value:
-                    pkg = config.handle.get_localdb().get_pkg(name)
+                    pkg = self.handle.get_localdb().get_pkg(name)
                     if pkg:
-                        if not pkg.name in conflict_to_remove.keys():
-                            conflict_to_remove[pkg.name] = pkg
+                        if not pkg.name in self.conflict_to_remove.keys():
+                            self.conflict_to_remove[pkg.name] = pkg
+        
         if installed_conflicts:
             for key, value in installed_conflicts.items():
                 for name in value:
                     for pkg in t.to_add:
                         if pkg.name == name:
-                            if not pkg.name in conflict_to_remove.keys():
-                                conflict_to_remove[pkg.name] = pkg
-        if conflict_to_remove:
-            WarningDialog.format_secondary_text(warning)
-            response = WarningDialog.run()
-            if response:
-                WarningDialog.hide()
+                            if not pkg.name in self.conflict_to_remove.keys():
+                                self.conflict_to_remove[pkg.name] = pkg
+        if self.conflict_to_remove:
+            show.warning(warning)
 
-def do_refresh():
-	"""Sync databases like pacman -Sy"""
-	global t
-	global t_lock
-	ProgressWindow.show_all()
-	for db in config.handle.get_syncdbs():
-		if t_lock is False:
-			t = init_transaction(config.handle)
-			try:
-				db.update(force=False)
-				t.release()
-				t_lock = False
-			except pyalpm.error:
-				ErrorDialog.format_secondary_text(traceback.format_exc())
-				response = ErrorDialog.run()
-				if response:
-					ErrorDialog.hide()
-				t_lock = False
-				break
-	ProgressWindow.hide()
-	progress_label.set_text('')
-	progress_bar.set_text('')
+    
+    def do_refresh(self):
+        """Sync databases like pacman -Sy"""
+        #ProgressWindow.show_all()
+        for db in self.handle.get_syncdbs():
+            if self.t_lock is False:
+                self.t = init_transaction(config.handle)
+                try:
+                    db.update(force=False)
+                    self.t.release()
+                    self.t_lock = False
+                except pyalpm.error:
+                    show.error(traceback.format_exc())
+                    self.t_lock = False
+                    break
+        #ProgressWindow.hide()
+        #progress_label.set_text('')
+        #progress_bar.set_text('')
 
-def do_sysupgrade():
-	"""Upgrade a system like pacman -Su"""
-	global t
-	global t_lock
-	global to_remove
-	global to_add
-	global to_update
-	if t_lock is False:
-		if do_syncfirst is True:
-			t = init_transaction(config.handle, recurse = True)
-			for pkg in list_first:
-				t.add_pkg(pkg)
-			to_remove = t.to_remove
-			to_add = t.to_add
-			set_transaction_desc('update')
-			response = ConfDialog.run()
-			if response == Gtk.ResponseType.OK:
-				t_finalize(t)
-			if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
-				ProgressWindow.hide()
-				ConfDialog.hide()
-				t.release()
-				t_lock = False
-		else:
-			try:
-				t = init_transaction(config.handle)
-				t.sysupgrade(downgrade=False)
-			except pyalpm.error:
-				ErrorDialog.format_secondary_text(traceback.format_exc())
-				response = ErrorDialog.run()
-				if response:
-					ErrorDialog.hide()
-				t.release()
-				t_lock = False
-			check_conflicts()
-			to_add = t.to_add
-			to_remove = []
-			for pkg in conflict_to_remove.values():
-				to_remove.append(pkg)
-			if len(to_add) + len(to_remove) == 0:
-				t.release()
-				print("Nothing to update")
-			else:
-				t.release()
-				t = init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
-				for pkg in to_add:
-					t.add_pkg(pkg)
-				for pkg in conflict_to_remove.values():
-					t.remove_pkg(pkg)
-				to_remove = t.to_remove
-				to_add = t.to_add
-				set_transaction_desc('update')
-				if len(transaction_desc) != 0:
-					response = ConfDialog.run()
-					if response == Gtk.ResponseType.OK:
-								t_finalize(t)
-					if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
-						ProgressWindow.hide()
-						ConfDialog.hide()
-						t.release()
-						t_lock = False
-				else:
-					t_finalize(t)
-					t.release()
-					t_lock = False
+    def do_sysupgrade(self):
+        """Upgrade a system like pacman -Su"""
+        #global t
+        #global t_lock
+        #global to_remove
+        #global to_add
+        #global to_update
+        if self.t_lock is False:
+            if self.do_syncfirst is True:
+                self.t = init_transaction(self.handle, recurse = True)
+                for pkg in self.list_first:
+                    self.t.add_pkg(pkg)
+                self.to_remove = self.t.to_remove
+                self.to_add = self.t.to_add
+                self.set_transaction_desc('update')
+                
+                response = ConfDialog.run()
+                if response == Gtk.ResponseType.OK:
+                    t_finalize(self.t)
+                if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
+                    ProgressWindow.hide()
+                    ConfDialog.hide()
+                    self.t.release()
+                    self.t_lock = False
+            else:
+                try:
+                    self.t = init_transaction(self.handle)
+                    self.t.sysupgrade(downgrade=False)
+                except pyalpm.error:
+                    show.error(traceback.format_exc())
+                    self.t.release()
+                    self.t_lock = False
+                
+                self.check_conflicts()
+                self.to_add = self.t.to_add
+                self.to_remove = []
+                
+                for pkg in self.conflict_to_remove.values():
+                    self.to_remove.append(pkg)
+                
+                if len(self.to_add) + len(self.to_remove) == 0:
+                    self.t.release()
+                    print("Nothing to update")
+                else:
+                    self.t.release()
+                    self.t = init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
+                    for pkg in self.to_add:
+                        self.t.add_pkg(pkg)
+                    for pkg in self.conflict_to_remove.values():
+                        self.t.remove_pkg(pkg)
+                    self.to_remove = self.t.to_remove
+                    self.to_add = self.t.to_add
+                    self.set_transaction_desc('update')
+                    if len(self.transaction_desc) != 0:
+                        response = ConfDialog.run()
+                        if response == Gtk.ResponseType.OK:
+                                    t_finalize(self.t)
+                        if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
+                            ProgressWindow.hide()
+                            ConfDialog.hide()
+                            self.t.release()
+                            self.t_lock = False
+                    else:
+                        t_finalize(self.t)
+                        self.t.release()
+                        self.t_lock = False
 
-def t_finalize(t):
-	ConfDialog.hide()
-	try:
-		t.prepare()
-	except pyalpm.error:
-		ErrorDialog.format_secondary_text(traceback.format_exc())
-		response = ErrorDialog.run()
-		if response:
-			ErrorDialog.hide()
-		t.release()
-		t_lock = False
-	try:
-		t.commit()
-	except pyalpm.error:
-		ErrorDialog.format_secondary_text(traceback.format_exc())
-		response = ErrorDialog.run()
-		if response:
-			ErrorDialog.hide()
-	ProgressWindow.hide()
+    def t_finalize(self, t):
+        #ConfDialog.hide()
 
-def get_updates():
-	"""Return a list of package objects in local db which can be updated"""
-	global do_syncfirst
-	global list_first
-	if config.syncfirst:
-		for name in config.syncfirst:
-			pkg = config.handle.get_localdb().get_pkg(name)
-			candidate = pyalpm.sync_newversion(pkg, config.handle.get_syncdbs())
-			if candidate:
-				list_first.append(candidate)
-		if list_first:
-			do_syncfirst = True
-			return list_first
-	result = []
-	installed_pkglist = config.handle.get_localdb().pkgcache
-	for pkg in installed_pkglist:
-		candidate = pyalpm.sync_newversion(pkg, config.handle.get_syncdbs())
-		if candidate:
-			result.append(candidate)
-	return result
+        try:
+            t.prepare()
+        except pyalpm.error:
+            show.error(traceback.format_exc())
+            t.release()
+            self.t_lock = False
 
-def get_new_version_available(pkgname):
-	for repo in config.handle.get_syncdbs():
-		pkg = repo.get_pkg(pkgname)
-		if pkg is not None:
-			return pkg.version
-			break
+        try:
+            t.commit()
+        except pyalpm.error:
+            show.error(traceback.format_exc())
 
-def format_size(size):
-	KiB_size = size / 1024
-	if KiB_size < 1000:
-		size_string = '%.1f KiB' % (KiB_size)
-		return size_string
-	else:
-		size_string = '%.2f MiB' % (KiB_size / 1024)
-		return size_string
+        #ProgressWindow.hide()
 
-def set_transaction_desc(mode):
-	global transaction_desc
-	global down_label
-	global to_add
-	global to_remove
-	global to_update
-	transaction_desc.clear()
-	if to_remove:
-		transaction_desc.append(['To remove:', to_remove[0].name])
-		i = 1
-		while i < len(to_remove):
-			transaction_desc.append([' ', to_remove[i].name])
-			i += 1
-		down_label.set_markup('')
-	if to_add:
-		installed_name = []
-		for pkg_object in config.handle.get_localdb().pkgcache:
-			installed_name.append(pkg_object.name)
-		to_add_name = []
-		for pkg_object in to_add:
-			to_add_name.append(pkg_object.name)
-		to_update = sorted(set(installed_name).intersection(to_add_name))
-		to_remove_from_add_name = sorted(set(to_update).intersection(to_add_name))
-		for name in to_remove_from_add_name:
-			to_add_name.remove(name)
-		if to_add_name:
-			transaction_desc.append(['To install:', to_add_name[0]])
-			i = 1
-			while i < len(to_add_name):
-				transaction_desc.append([' ', to_add_name[i]])
-				i += 1
-		if mode == 'normal':
-			if to_update:
-				transaction_desc.append(['To update:', to_update[0]])
-				i = 1
-				while i < len(to_update):
-					transaction_desc.append([' ', to_update[i]])
-					i += 1
-		down_label.set_markup('')
-	#	down_label.set_markup('<b>Total Download size: </b>'+format_size(totaldlcb))
+    def get_updates(self):
+        """Return a list of package objects in local db which can be updated"""
+        if self.pacman_conf.syncfirst:
+            for name in self.pacman_conf.syncfirst:
+                pkg = self.handle.get_localdb().get_pkg(name)
+                candidate = pyalpm.sync_newversion(pkg, self.handle.get_syncdbs())
+                if candidate:
+                    self.list_first.append(candidate)
+            if self.list_first:
+                self.do_syncfirst = True
+                return self.list_first
+        result = []
+        installed_pkglist = self.handle.get_localdb().pkgcache
+        for pkg in installed_pkglist:
+            candidate = pyalpm.sync_newversion(pkg, self.handle.get_syncdbs())
+            if candidate:
+                result.append(candidate)
+        return result
+
+    def get_new_version_available(self, pkgname):
+        for repo in self.handle.get_syncdbs():
+            pkg = repo.get_pkg(pkgname)
+            if pkg is not None:
+                return pkg.version
+                break
+
+    def format_size(self, size):
+        KiB_size = size / 1024
+        if KiB_size < 1000:
+            size_string = '%.1f KiB' % (KiB_size)
+            return size_string
+        else:
+            size_string = '%.2f MiB' % (KiB_size / 1024)
+            return size_string
+
+    def set_transaction_desc(mode):
+        #global transaction_desc
+        #global down_label
+        #global to_add
+        #global to_remove
+        #global to_update
+        self.transaction_desc.clear()
+        if self.to_remove:
+            self.transaction_desc.append(['To remove:', to_remove[0].name])
+            i = 1
+            while i < len(self.to_remove):
+                self.transaction_desc.append([' ', to_remove[i].name])
+                i += 1
+            self.down_label.set_markup('')
+        if self.to_add:
+            installed_name = []
+            for pkg_object in self.handle.get_localdb().pkgcache:
+                installed_name.append(pkg_object.name)
+            to_add_name = []
+            for pkg_object in self.to_add:
+                to_add_name.append(pkg_object.name)
+            self.to_update = sorted(set(installed_name).intersection(to_add_name))
+            to_remove_from_add_name = sorted(set(self.to_update).intersection(to_add_name))
+            for name in to_remove_from_add_name:
+                to_add_name.remove(name)
+            if to_add_name:
+                self.transaction_desc.append(['To install:', to_add_name[0]])
+                i = 1
+                while i < len(to_add_name):
+                    self.transaction_desc.append([' ', to_add_name[i]])
+                    i += 1
+            if mode == 'normal':
+                if self.to_update:
+                    self.transaction_desc.append(['To update:', to_update[0]])
+                    i = 1
+                    while i < len(to_update):
+                        self.transaction_desc.append([' ', to_update[i]])
+                        i += 1
+            self.down_label.set_markup('')
+        #	down_label.set_markup('<b>Total Download size: </b>'+format_size(totaldlcb))
 
 ########################################################################################################################
 # Callbacks
