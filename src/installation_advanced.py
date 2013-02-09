@@ -870,7 +870,10 @@ class InstallationAdvanced(Gtk.Box):
     ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
         #print("on_partition_list_treeview_row_activated")
-        self.on_partition_list_edit_activate(None)
+        
+        #if 
+        #self.on_partition_list_edit_activate(None)
+        
         return False
 
 
