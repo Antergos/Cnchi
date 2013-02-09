@@ -871,9 +871,9 @@ class InstallationAdvanced(Gtk.Box):
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
         #print("on_partition_list_treeview_row_activated")
         
-        #if 
-        #self.on_partition_list_edit_activate(None)
-        
+        button_edit = self.ui.get_object('partition_button_edit')
+        if button_edit.get_sensitive():
+            self.on_partition_list_edit_activate(None)    
         return False
 
 
