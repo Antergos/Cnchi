@@ -171,9 +171,8 @@ class Main(Gtk.Window):
         self.set_icon_from_file(icon_dir)
 
         # set the first page to show
-        #self.current_page = self.pages["language"]
-        
-        self.current_page = self.pages["installation_advanced"]
+        self.current_page = self.pages["language"]
+        #self.current_page = self.pages["installation_advanced"]
 
         self.main_box.add(self.current_page)
 
