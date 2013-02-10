@@ -146,9 +146,12 @@ class InstallationThread(threading.Thread):
         self.pac = pac.Pac("/tmp/pacman.conf")
     
     
-    # pacman needs a masterkey before checking signed packages
+    # add gnupg pacman files to installed system
+    # needs testing, but it seems to be the way to do it now
+    # must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
-        pass
+        import shutil
+        shutil.copy2('/etc/pacman.d/gnupg', '%s/etc/pacman.d' % self.dest_dir)
     
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
