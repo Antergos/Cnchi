@@ -634,10 +634,10 @@ class InstallationAdvanced(Gtk.Box):
         if not am_new:
             for e in self.orig_part_dic:
                 if self.orig_part_dic[e] == self.gen_partition_uid(path=partition_path):
-                
                     self.to_be_deleted.append(e)
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
+
         print ("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
         # Be sure to just call get_devices once
@@ -863,13 +863,17 @@ class InstallationAdvanced(Gtk.Box):
         
 
     def on_partition_list_undo_activate(self, button):
-        #print("on_partition_list_undo_activate")
         ## To undo user changes, we simply reload all devices        
         self.disks = pm.get_devices()
         self.disks_changed = []
-        ## Also undo stage partitions' options
+
+        ## Empty stage partitions' options
         self.stage_opts = {}
         
+        ## Empty to be deleted partitions list
+        self.to_be_deleted = []
+        
+        ## refresh our partition treeview
         self.fill_partition_list()
     		
 
@@ -1115,22 +1119,25 @@ class InstallationAdvanced(Gtk.Box):
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
-   # Commenting all this out...no device should be mounted now except install media!
-   #     for disk_path in self.disks:
-   #         disk = self.disks[disk_path]
-   #         if not disk:
-   #             continue
-   #         partitions = pm.get_partitions(disk)
-   #         for partition_path in partitions:
-   #             p = partitions[partition_path]
-   #             if pm.check_mounted(p):
-   #                 mount_point, fs, writable = self.get_mount_point(p.path)
-   #                 if "/" in mount_point:
-   #                     # don't allow vfat as / filesystem, it will not work!
-   #                     # don't allow ntfs as / filesystem, this is stupid!
-   #                     if "vfat" not in fs and "ntfs" not in fs:
-   #                         check_ok = True
 
+        # Commenting all this out...no device should be mounted now except install media!
+        '''
+        for disk_path in self.disks:
+            disk = self.disks[disk_path]
+            if not disk:
+                continue
+            partitions = pm.get_partitions(disk)
+            for partition_path in partitions:
+                p = partitions[partition_path]
+                if pm.check_mounted(p):
+                    mount_point, fs, writable = self.get_mount_point(p.path)
+                    if "/" in mount_point:
+                        # don't allow vfat as / filesystem, it will not work!
+                        # don't allow ntfs as / filesystem, this is stupid!
+                        if "vfat" not in fs and "ntfs" not in fs:
+                            check_ok = True
+        '''
+        
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
@@ -1190,8 +1197,8 @@ class InstallationAdvanced(Gtk.Box):
                     
             return changelist
     
+    
     def show_changes(self, changelist):
-
         if self.show_changes_grid is not None:
             self.show_changes_grid.destroy()
 
@@ -1205,52 +1212,34 @@ class InstallationAdvanced(Gtk.Box):
         bold = "<b>%s</b>"
         y = 0
 
-        ## First, show partitions that will be deleted
+        ## First, show partitions that will be deleted            
         for ea in self.to_be_deleted:
-            lbl1 = Gtk.Label(ea, margin=margin)
-            lbl2 = Gtk.Label("will", margin=margin)
-            lbl3 = Gtk.Label("be", margin=margin)
-            lbl4 = Gtk.Label("deleted", margin=margin)
-            lbl5 = Gtk.Label("", margin=margin)
-            grid.attach(lbl1, 0, y, 1, 1)
-            grid.attach(lbl2, 1, y, 1, 1)
-            grid.attach(lbl3, 2, y, 1, 1)
-            grid.attach(lbl4, 3, y, 1, 1)
-            grid.attach(lbl5, 4, y, 1, 1)
+            lbl = Gtk.Label(_("Partition %s will be deleted") % ea, margin=margin)
+            lbl.set_alignment(0, 0.5)
+            grid.attach(lbl, 0, y, 4, 1)
             y += 1
 
-        ## Partitions that will be modified (header)
-        lbl1 = Gtk.Label(margin=margin)
-        lbl1.set_markup(bold % _("Partition"))
-        lbl2 = Gtk.Label(margin=margin)
-        lbl2.set_markup(bold % _("New"))
-        lbl3 = Gtk.Label(margin=margin)
-        lbl3.set_markup(bold % _("Relabel"))
-        lbl4 = Gtk.Label(margin=margin)
-        lbl4.set_markup(bold % _("Format"))
-        lbl5 = Gtk.Label(margin=margin)
-        lbl5.set_markup(bold % _("Mount"))
-        grid.attach(lbl1, 0, y, 1, 1)
-        grid.attach(lbl2, 1, y, 1, 1)
-        grid.attach(lbl3, 2, y, 1, 1)
-        grid.attach(lbl4, 3, y, 1, 1)
-        grid.attach(lbl5, 4, y, 1, 1)
-        y += 1 
-        
-        ## Partitions that will be modified
-        for ea in changelist:
-            partition_path, createme, relabel, fmt, mnt = ea
-            lbl1 = Gtk.Label(partition_path, margin=margin)
-            lbl2 = Gtk.Label(createme, margin=margin)
-            lbl3 = Gtk.Label(relabel, margin=margin)
-            lbl4 = Gtk.Label(fmt, margin=margin)
-            lbl5 = Gtk.Label(mnt, margin=margin)
-            grid.attach(lbl1, 0, y, 1, 1)
-            grid.attach(lbl2, 1, y, 1, 1)
-            grid.attach(lbl3, 2, y, 1, 1)
-            grid.attach(lbl4, 3, y, 1, 1)
-            grid.attach(lbl5, 4, y, 1, 1)
-            y += 1
+        if changelist != []:
+            ## Partitions that will be modified (header)        
+            labels = [_("Partition"), _("New"), _("Relabel"), _("Format"), _("Mount")]
+
+            x = 0
+            for txt in labels:
+                lbl = Gtk.Label(margin=margin)
+                lbl.set_markup(bold % txt)
+                grid.attach(lbl, x, y, 1, 1)
+                x += 1        
+            
+            y += 1 
+            
+            ## Partitions that will be modified
+            for ea in changelist:
+                x = 0
+                for txt in ea:
+                    lbl = Gtk.Label(txt, margin=margin)
+                    grid.attach(lbl, x, y, 1, 1)
+                    x += 1
+                y += 1
             
         changelist_dialog = self.ui.get_object("changelist_dialog")
         changelist_dialog.set_title(_('These disks will have partition actions:'))
