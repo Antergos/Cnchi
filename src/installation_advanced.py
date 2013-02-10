@@ -1191,19 +1191,21 @@ class InstallationAdvanced(Gtk.Box):
             return changelist
     
     def show_changes(self, changelist):
-        if self.show_changes_grid is None:
-            vbox = self.ui.get_object("dialog-vbox6")
-            grid = Gtk.Grid()           
-            vbox.pack_start(grid, True, True, 2)
-            self.show_changes_grid = grid
-        else:
-            self.show_changes_grid = Gtk.Grid()
-            grid = self.show_changes_grid
+
+        if self.show_changes_grid is not None:
+            self.show_changes_grid.destroy()
+
+        vbox = self.ui.get_object("dialog-vbox6")
+        grid = Gtk.Grid()           
+        vbox.pack_start(grid, True, True, 2)
+        self.show_changes_grid = grid
             
         margin = 8
         
         bold = "<b>%s</b>"
         y = 0
+
+        ## First, show partitions that will be deleted
         for ea in self.to_be_deleted:
             lbl1 = Gtk.Label(ea, margin=margin)
             lbl2 = Gtk.Label("will", margin=margin)
@@ -1216,6 +1218,8 @@ class InstallationAdvanced(Gtk.Box):
             grid.attach(lbl4, 3, y, 1, 1)
             grid.attach(lbl5, 4, y, 1, 1)
             y += 1
+
+        ## Partitions that will be modified (header)
         lbl1 = Gtk.Label(margin=margin)
         lbl1.set_markup(bold % _("Partition"))
         lbl2 = Gtk.Label(margin=margin)
@@ -1232,6 +1236,8 @@ class InstallationAdvanced(Gtk.Box):
         grid.attach(lbl4, 3, y, 1, 1)
         grid.attach(lbl5, 4, y, 1, 1)
         y += 1 
+        
+        ## Partitions that will be modified
         for ea in changelist:
             partition_path, createme, relabel, fmt, mnt = ea
             lbl1 = Gtk.Label(partition_path, margin=margin)
@@ -1246,11 +1252,11 @@ class InstallationAdvanced(Gtk.Box):
             grid.attach(lbl5, 4, y, 1, 1)
             y += 1
             
-        dialog = self.ui.get_object("changelist_dialog")
-        dialog.set_title(_('These disks will have partition actions:'))
-        dialog.show_all()
-        response = dialog.run()
-        dialog.hide()
+        changelist_dialog = self.ui.get_object("changelist_dialog")
+        changelist_dialog.set_title(_('These disks will have partition actions:'))
+        changelist_dialog.show_all()
+        response = changelist_dialog.run()
+        changelist_dialog.hide()
         
         return response
 
