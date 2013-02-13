@@ -388,6 +388,7 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 self.all_partitions.append(partitions)
                 partition_list = pm.order_partitions(partitions)
+
                 for partition_path in partition_list:
                     ## Get partition size
                     p = partitions[partition_path]
@@ -439,8 +440,9 @@ class InstallationAdvanced(Gtk.Box):
                         ## Get partition flags
                         flags = pm.get_flags(p)
                     
-                    if self.gen_partition_uid(p=p) in self.stage_opts:
-                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[self.gen_partition_uid(p=p)]           
+                    uid = self.gen_partition_uid(p=p)
+                    if uid in self.stage_opts:
+                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
                     else:
                         fmt_enable = True
@@ -473,7 +475,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
-                           "", p.type, fmt_enable, False, False, False, False]
+                           "", p.type, False, False, False, False]
             
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
