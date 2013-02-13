@@ -551,6 +551,8 @@ class InstallationAdvanced(Gtk.Box):
         # set label entry
         label_entry = self.ui.get_object('partition_label_entry2')
         label_entry.set_text(label)
+        
+        # TODO: format entry
 
         # Be sure to just call get_devices once
         if self.disks == None:
@@ -566,6 +568,7 @@ class InstallationAdvanced(Gtk.Box):
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
+
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
                 print(_('Cannot use same mount twice...'))
                 show.warning(_('Cannot use same mount twice...'))
@@ -573,14 +576,15 @@ class InstallationAdvanced(Gtk.Box):
                 if mount_point:
                     self.diskdic['mounts'].remove(mount_point)               
                 myfmt = use_combo.get_active_text()
-                if self.gen_partition_uid(path=partition_path) in self.stage_opts:
-                    fmtop = self.stage_opts[self.gen_partition_uid(path=partition_path)][4]
-                    is_new = self.stage_opts[self.gen_partition_uid(path=partition_path)][0]
+                uid = self.gen_partition_uid(path=partition_path)
+                if uid in self.stage_opts:
+                    is_new = self.stage_opts[uid][0]
+                    fmtop = self.stage_opts[uid][4]
                 else:
-                    fmtop = False
                     is_new = False
-                
-                self.stage_opts[self.gen_partition_uid(path=partition_path)] = (is_new, mylabel, mymount, myfmt, fmtop)
+                    fmtop = False
+
+                self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
 
@@ -1003,6 +1007,10 @@ class InstallationAdvanced(Gtk.Box):
 
         txt = _("Label (optional):")
         label = self.ui.get_object('partition_label_label2')
+        label.set_markup(txt)
+        
+        txt = _("Format:")
+        label = self.ui.get_object('partition_format_label')
         label.set_markup(txt)
         
         ## Create disk partition table dialog
