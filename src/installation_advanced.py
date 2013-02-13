@@ -336,8 +336,13 @@ class InstallationAdvanced(Gtk.Box):
         # partition_path
         # flags
         # formatable_selectable?
+        # ssd_active
+        # ssd_visible
+        # ssd_selectable
+        
         self.partition_list_store = \
-            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, str, int, bool)
+            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, \
+            str, int, bool, bool, bool, bool)
             
         ## Be sure to call get_devices once
         if self.disks == None:
@@ -357,7 +362,8 @@ class InstallationAdvanced(Gtk.Box):
             if disk is None:
                 # Maybe disk without a partition table?
                 print(disk_path)
-                row = [disk_path, "", "", "", False, False, "", "", "", "", 0, False]
+                row = [disk_path, "", "", "", False, False, "", "", "", \
+                    "", 0, False, False, True, True]
                 self.partition_list_store.append(None, row)
             else:
                 dev = disk.device
@@ -365,7 +371,8 @@ class InstallationAdvanced(Gtk.Box):
                 ## Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
                 
-                row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0, False]
+                row = [dev.path, "", "", "", False, False, size_txt, "", \
+                    "", "", 0, False, False, False]
                 disk_parent = self.partition_list_store.append(None, row)
                 
                 parent = disk_parent
@@ -458,7 +465,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
-                           "", p.type, fmt_enable]
+                           "", p.type, fmt_enable, False, False]
             
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
@@ -475,6 +482,7 @@ class InstallationAdvanced(Gtk.Box):
                     if self.my_first_time:
                         self.orig_part_dic[p.path] = self.gen_partition_uid(p)
                         self.orig_label_dic[p.path] = label
+        
         self.my_first_time = False
         # assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
@@ -502,7 +510,8 @@ class InstallationAdvanced(Gtk.Box):
         # flags
         # formatable_selectable?
         amnew = False
-        self.stage_opts[self.gen_partition_uid(path=self.partition_list_store[path][0])] = \
+        uid = self.gen_partition_uid(path=self.partition_list_store[path][0])
+        self.stage_opts[uid] = \
             (amnew,
              self.partition_list_store[path][3],
              self.partition_list_store[path][2],
