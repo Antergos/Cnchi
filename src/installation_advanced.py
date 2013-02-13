@@ -506,7 +506,10 @@ class InstallationAdvanced(Gtk.Box):
     ## Mark a partition to be formatted
     def on_format_or_ssd_cell_toggled(self, widget, path):
         print("on_format_cell_toggled")
+        
         print(widget)
+        print(path)
+        
         format_cell = True
         
         if format_cell:
@@ -577,6 +580,8 @@ class InstallationAdvanced(Gtk.Box):
         # Get disk_path and disk
         disk_path = self.get_disk_path_from_selection(model, tree_iter)    
         disk = self.disks[disk_path]
+        
+        # TODO : Add format checkbox
 
         # show edit partition dialog
         response = self.edit_partition_dialog.run()
