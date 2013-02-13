@@ -270,8 +270,11 @@ class InstallationAdvanced(Gtk.Box):
         
         render_text = Gtk.CellRendererText()
         
-        render_toggle = Gtk.CellRendererToggle()
-        render_toggle.connect("toggled", self.on_format_or_ssd_cell_toggled)
+        format_toggle = Gtk.CellRendererToggle()
+        format_toggle.connect("toggled", self.on_format_cell_toggled)
+
+        ssd_toggle = Gtk.CellRendererToggle()
+        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
         
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
         self.partition_list.append_column(col)
@@ -285,7 +288,7 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Label"), render_text, text=3)
         self.partition_list.append_column(col)
         
-        col = Gtk.TreeViewColumn(_("Format?"), render_toggle, active=4, visible=5, sensitive=11)
+        col = Gtk.TreeViewColumn(_("Format?"), format_toggle, active=4, visible=5, sensitive=11)
         self.partition_list.append_column(col)
         
         col = Gtk.TreeViewColumn(_("Size"), render_text, text=6)
@@ -297,7 +300,7 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Flags"), render_text, text=9)
         self.partition_list.append_column(col)   
         
-        col = Gtk.TreeViewColumn(_("SSD?"), render_toggle, active=12, visible=13, sensitive=14)
+        col = Gtk.TreeViewColumn(_("Solid State Drive (SSD)"), ssd_toggle, active=12, visible=13, sensitive=14)
         self.partition_list.append_column(col)   
 
 
@@ -362,7 +365,6 @@ class InstallationAdvanced(Gtk.Box):
             self.diskdic[disk_path] = {}
             self.diskdic[disk_path]['has_logical'] = False
             self.diskdic[disk_path]['has_extended'] = False
-            
             
             disk = self.disks[disk_path]
             
@@ -506,30 +508,26 @@ class InstallationAdvanced(Gtk.Box):
         
 
     ## Mark a partition to be formatted
-    def on_format_or_ssd_cell_toggled(self, widget, path):
+    def on_format_cell_toggled(self, widget, path):
         print("on_format_cell_toggled")
-        
-        print(widget)
-        print(path)
-        
-        format_cell = True
-        
-        if format_cell:
-            #selected_path = Gtk.TreePath(path)
-            self.partition_list_store[path][4] = not self.partition_list_store[path][4]
-            amnew = False
-            partition_path = self.partition_list_store[path][0]
-            uid = self.gen_partition_uid(path=partition_path)
-            self.stage_opts[uid] = \
-                (amnew,
-                 self.partition_list_store[path][3],
-                 self.partition_list_store[path][2],
-                 self.partition_list_store[path][1],
-                 self.partition_list_store[path][4]) 
-        else:
-            # ssd cell
-            self.partition_list_store[path][12] = not self.partition_list_store[path][12]
-            self.diskdic[disk_path]['ssd'] = self.partition_list_store[path][12]
+        #selected_path = Gtk.TreePath(path)
+        self.partition_list_store[path][4] = not self.partition_list_store[path][4]
+        amnew = False
+        partition_path = self.partition_list_store[path][0]
+        uid = self.gen_partition_uid(path=partition_path)
+        self.stage_opts[uid] = \
+            (amnew,
+             self.partition_list_store[path][3],
+             self.partition_list_store[path][2],
+             self.partition_list_store[path][1],
+             self.partition_list_store[path][4]) 
+
+    ## Mark disk as ssd
+    def on_ssd_cell_toggled(self, widget, path):
+        # ssd cell
+        self.partition_list_store[path][12] = not self.partition_list_store[path][12]
+        disk_path = self.partition_list_store[path][0]
+        self.diskdic[disk_path]['ssd'] = self.partition_list_store[path][12]
 
     ## The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
@@ -909,7 +907,9 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Selection changed, call check_buttons to update them
     def on_partition_list_treeview_selection_changed(self, selection):
+        print("on_partition_list_treeview_selection_changed")
         self.check_buttons(selection)
+        return False
 
 
     ## Called when clicked on the partition list treeview
@@ -927,9 +927,8 @@ class InstallationAdvanced(Gtk.Box):
         return False
 
 
-    ## Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
-        #print("on_partition_list_treeview_row_activated")
+        print("on_partition_list_treeview_row_activated")
         
         button_edit = self.ui.get_object('partition_button_edit')
         button_new = self.ui.get_object('partition_button_new')
