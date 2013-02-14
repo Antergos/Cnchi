@@ -509,7 +509,6 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Mark a partition to be formatted
     def on_format_cell_toggled(self, widget, path):
-        print("on_format_cell_toggled")
         #selected_path = Gtk.TreePath(path)
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
         amnew = False
@@ -907,7 +906,6 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Selection changed, call check_buttons to update them
     def on_partition_list_treeview_selection_changed(self, selection):
-        print("on_partition_list_treeview_selection_changed")
         self.check_buttons(selection)
         return False
 
@@ -928,8 +926,6 @@ class InstallationAdvanced(Gtk.Box):
 
 
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
-        print("on_partition_list_treeview_row_activated")
-        
         button_edit = self.ui.get_object('partition_button_edit')
         button_new = self.ui.get_object('partition_button_new')
 

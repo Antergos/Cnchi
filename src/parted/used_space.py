@@ -31,6 +31,9 @@
 import subprocess
 import shlex
 
+import misc
+
+@misc.raise_privileges
 def get_used_ntfs(part):
     used = 0
     try:
@@ -52,6 +55,7 @@ def get_used_ntfs(part):
         used = (vsize - fsize)/vsize
     return used
 
+@misc.raise_privileges
 def get_used_ext(part):
     used = 0
     try:
@@ -73,6 +77,7 @@ def get_used_ext(part):
         used = (vsize - fsize)/vsize
     return used
 
+@misc.raise_privileges
 def get_used_fat(part):
     used = 0
     try:
@@ -98,6 +103,7 @@ def get_used_fat(part):
         used = (sbyte + (bperc * ucl))/(bperc * cl)
     return used
 
+@misc.raise_privileges
 def get_used_jfs(part):
     used = 0
     try:
@@ -117,6 +123,7 @@ def get_used_jfs(part):
         used = (vsize-fsize)/vsize
     return used
 
+@misc.raise_privileges
 def get_used_reiser(part):
     used = 0
     try:
@@ -136,6 +143,7 @@ def get_used_reiser(part):
         used = (vsize-fsize)/vsize
     return used
 
+@misc.raise_privileges
 def get_used_btrfs(part):
     used = 0
     try:
@@ -172,6 +180,7 @@ def get_used_btrfs(part):
         used = usize/vsize
     return used
 
+@misc.raise_privileges
 def get_used_xfs(part):
     used = 0
     try:
