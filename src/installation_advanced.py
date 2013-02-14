@@ -269,13 +269,7 @@ class InstallationAdvanced(Gtk.Box):
     def prepare_partition_list(self):
         
         render_text = Gtk.CellRendererText()
-        
-        format_toggle = Gtk.CellRendererToggle()
-        format_toggle.connect("toggled", self.on_format_cell_toggled)
-
-        ssd_toggle = Gtk.CellRendererToggle()
-        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
-        
+                
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
         self.partition_list.append_column(col)
         
@@ -288,7 +282,10 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Label"), render_text, text=3)
         self.partition_list.append_column(col)
         
-        col = Gtk.TreeViewColumn(_("Format?"), format_toggle, active=4, visible=5, sensitive=11)
+        format_toggle = Gtk.CellRendererToggle()
+        format_toggle.connect("toggled", self.on_format_cell_toggled)
+
+        col = Gtk.TreeViewColumn(_("Format"), format_toggle, active=4, visible=5, sensitive=11)
         self.partition_list.append_column(col)
         
         col = Gtk.TreeViewColumn(_("Size"), render_text, text=6)
@@ -300,6 +297,9 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("Flags"), render_text, text=9)
         self.partition_list.append_column(col)   
         
+        ssd_toggle = Gtk.CellRendererToggle()
+        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
+
         col = Gtk.TreeViewColumn(_("Solid State Drive (SSD)"), ssd_toggle, active=12, visible=13, sensitive=14)
         self.partition_list.append_column(col)   
 
@@ -477,7 +477,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
-                           "", p.type, False, False, False, False]
+                           "", p.type, True, False, False, False]
             
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
