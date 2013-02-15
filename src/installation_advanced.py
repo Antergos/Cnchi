@@ -548,8 +548,10 @@ class InstallationAdvanced(Gtk.Box):
         fs = row[1]
         mount_point = row[2]
         label = row[3]
+        fmt = row[4]
         partition_path = row[8]
-        print(partition_path) 
+        
+        #print(partition_path) 
         
         # set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
@@ -572,7 +574,9 @@ class InstallationAdvanced(Gtk.Box):
         label_entry = self.ui.get_object('partition_label_entry2')
         label_entry.set_text(label)
         
-        # TODO: format entry
+        # must format?
+        format_check = self.ui.get_object('partition_format_check')
+        format_check.set_active(fmt)
 
         # Be sure to just call get_devices once
         if self.disks == None:
@@ -582,8 +586,6 @@ class InstallationAdvanced(Gtk.Box):
         disk_path = self.get_disk_path_from_selection(model, tree_iter)    
         disk = self.disks[disk_path]
         
-        # TODO : Add format checkbox
-
         # show edit partition dialog
         response = self.edit_partition_dialog.run()
         
@@ -599,12 +601,15 @@ class InstallationAdvanced(Gtk.Box):
                     self.diskdic['mounts'].remove(mount_point)               
                 myfmt = use_combo.get_active_text()
                 uid = self.gen_partition_uid(path=partition_path)
+                fmtop = format_check.get_active()
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
-                    fmtop = self.stage_opts[uid][4]
+                    #fmtop = self.stage_opts[uid][4]
                 else:
                     is_new = False
-                    fmtop = False
+                    #fmtop = False
+
+                # Should we force a format if the partition is new?
 
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
