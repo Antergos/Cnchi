@@ -548,8 +548,10 @@ class InstallationAdvanced(Gtk.Box):
         fs = row[1]
         mount_point = row[2]
         label = row[3]
+        fmt = row[4]
         partition_path = row[8]
-        print(partition_path) 
+
+        #print(partition_path) 
         
         # set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
@@ -572,7 +574,9 @@ class InstallationAdvanced(Gtk.Box):
         label_entry = self.ui.get_object('partition_label_entry2')
         label_entry.set_text(label)
         
-        # TODO: format entry
+        # must format?
+        format_check = self.ui.get_object('partition_format_check')
+        format_check.set_active(fmt)
 
         # Be sure to just call get_devices once
         if self.disks == None:
@@ -581,8 +585,6 @@ class InstallationAdvanced(Gtk.Box):
         # Get disk_path and disk
         disk_path = self.get_disk_path_from_selection(model, tree_iter)    
         disk = self.disks[disk_path]
-        
-        # TODO : Add format checkbox
 
         # show edit partition dialog
         response = self.edit_partition_dialog.run()
@@ -599,12 +601,13 @@ class InstallationAdvanced(Gtk.Box):
                     self.diskdic['mounts'].remove(mount_point)               
                 myfmt = use_combo.get_active_text()
                 uid = self.gen_partition_uid(path=partition_path)
+                fmtop = format_check.get_active()
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
-                    fmtop = self.stage_opts[uid][4]
+                    #fmtop = self.stage_opts[uid][4]
                 else:
                     is_new = False
-                    fmtop = False
+                    #fmtop = False
 
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
@@ -955,10 +958,10 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
         
-        txt = _("TODO: Here goes a warning message")
-        txt = "<span weight='bold'>%s</span>" % txt
-        label = self.ui.get_object('part_advanced_warning_message')
-        label.set_markup(txt)
+        #txt = _("TODO: Here goes a warning message")
+        #txt = "<span weight='bold'>%s</span>" % txt
+        #label = self.ui.get_object('part_advanced_warning_message')
+        #label.set_markup(txt)
         
         txt = _("New partition table")
         button = self.ui.get_object('partition_button_new_label')
@@ -1059,20 +1062,20 @@ class InstallationAdvanced(Gtk.Box):
         self.translate_ui()
         self.show_all()
 
-        label = self.ui.get_object('part_advanced_recalculating_label')
-        label.hide()
+        #label = self.ui.get_object('part_advanced_recalculating_label')
+        #label.hide()
         
-        spinner = self.ui.get_object('part_advanced_recalculating_spinner')
+        spinner = self.ui.get_object('partition_recalculating_spinner')
         spinner.hide()
         
         button = self.ui.get_object('partition_button_lvm')
         button.hide()
         
-        image = self.ui.get_object('part_advanced_warning_image')
-        image.hide()
+        #image = self.ui.get_object('part_advanced_warning_image')
+        #image.hide()
         
-        label = self.ui.get_object('part_advanced_warning_message')
-        label.hide()      
+        #label = self.ui.get_object('part_advanced_warning_message')
+        #label.hide()      
 
         button = self.ui.get_object('partition_button_new')
         button.set_sensitive(False)
@@ -1136,7 +1139,9 @@ class InstallationAdvanced(Gtk.Box):
                 self.fill_partition_list()
 
         dialog.hide()
-        
+
+    def on_partition_list_lvm_activate(self, button):
+        pass
 
     def check_mount_points(self):
         ## at least root (/) partition must be defined
