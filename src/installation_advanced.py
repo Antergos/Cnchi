@@ -550,8 +550,7 @@ class InstallationAdvanced(Gtk.Box):
         label = row[3]
         fmt = row[4]
         partition_path = row[8]
-
-        #print(partition_path) 
+        print(partition_path) 
         
         # set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
@@ -608,6 +607,8 @@ class InstallationAdvanced(Gtk.Box):
                 else:
                     is_new = False
                     #fmtop = False
+
+                # Should we force a format if the partition is new?
 
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
