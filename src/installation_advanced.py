@@ -1378,4 +1378,4 @@ class InstallationAdvanced(Gtk.Box):
                     # TODO: also add swap
         
         self.thread = installation_thread.InstallationThread("advanced", mount_devices)
-        #self.thread.start()
+        self.thread.start()

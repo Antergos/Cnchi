@@ -75,7 +75,7 @@ class Pac(object):
         self.cb['log'] = None
 
         if conf is not None:
-            self.pacman_conf = PacmanConfig(conf)
+            self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
             self.holpkg = None
             self.syncfirst = None

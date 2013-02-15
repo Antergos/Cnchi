@@ -89,14 +89,15 @@ class InstallationThread(threading.Thread):
 
         self.arch = os.uname()[-1]
     
-        self.pacman_conf()
+        self.create_pacman_conf()
         self.prepare_pacman()
         
+        # TODO: everything else!
 
         self.running = False
     
     # creates temporary pacman.conf file
-    def pacman_conf(self):
+    def create_pacman_conf(self):
 
         print("Creating pacman.conf for %s architecture" % self.arch)
         
@@ -144,7 +145,24 @@ class InstallationThread(threading.Thread):
         ## Init pyalpm
 
         self.pac = pac.Pac("/tmp/pacman.conf")
-    
+        
+        # set callback functions
+        '''
+        self.cb['dl'] = None
+        self.cb['totaldl'] = None
+        self.cb['dl'] = None
+        self.cb['event'] = None
+        self.cb['conv'] = None
+        self.cb['progress'] = None
+        self.cb['log'] = None
+        '''
+
+        self.pac.set_callback('dl', self.pacman_cb_dl)
+        
+    # Pacman callback functions
+    def pacman_cb_dl(_target, _transferred, total):
+        pass
+            
     
     # add gnupg pacman files to installed system
     # needs testing, but it seems to be the way to do it now
