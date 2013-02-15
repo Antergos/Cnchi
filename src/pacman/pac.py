@@ -35,6 +35,16 @@ class Pac(object):
         self.to_update = None
         self.do_syncfirst = False
         self.list_first = []
+        
+        # callback functions
+        self.cb = {}
+        self.cb['dl'] = None
+        self.cb['totaldl'] = None
+        self.cb['dl'] = None
+        self.cb['event'] = None
+        self.cb['conv'] = None
+        self.cb['progress'] = None
+        self.cb['log'] = None
 
         if conf is not None:
             self.pacman_conf = PacmanConfig(conf)
@@ -46,15 +56,21 @@ class Pac(object):
             if 'SyncFirst' in self.pacman_conf.options:
                 self.syncfirst = self.pacman_conf.options['SyncFirst']
 
+    def set_callback(self, cb_type, func):
+        if cb_type in self.cb:
+            self.cb[cb_type] = func
+        else:
+            print("Wrong callback function type")
 
     def init_transaction(self, **options):
         # Transaction initialization
-        self.handle.dlcb = self.cb_dl
-        self.handle.totaldlcb = self.totaldlcb
-        self.handle.eventcb = self.cb_event
-        self.handle.questioncb = self.cb_conv
-        self.handle.progresscb = self.cb_progress
-        self.handle.logcb = self.cb_log
+        self.handle.dlcb = self.cb['dl']
+        self.handle.totaldlcb = self.cb['totaldl']
+        self.handle.eventcb = self.cb['event']
+        self.handle.questioncb = self.cb['conv']
+        self.handle.progresscb = self.cb['progress']
+        self.handle.logcb = self.cb['log']
+        
         try:
             _t = handle.init_transaction(**options)
             print(_t.flags)
@@ -130,11 +146,6 @@ class Pac(object):
 
     def do_sysupgrade(self):
         """Upgrade a system like pacman -Su"""
-        #global t
-        #global t_lock
-        #global to_remove
-        #global to_add
-        #global to_update
         if self.t_lock is False:
             if self.do_syncfirst is True:
                 self.t = init_transaction(self.handle, recurse = True)
@@ -248,11 +259,6 @@ class Pac(object):
             return size_string
 
     def set_transaction_desc(mode):
-        #global transaction_desc
-        #global down_label
-        #global to_add
-        #global to_remove
-        #global to_update
         self.transaction_desc.clear()
         if self.to_remove:
             self.transaction_desc.append(['To remove:', to_remove[0].name])
@@ -288,7 +294,7 @@ class Pac(object):
             self.down_label.set_markup('')
         #	down_label.set_markup('<b>Total Download size: </b>'+format_size(totaldlcb))
 
-########################################################################################################################
+'''
 # Callbacks
 event_text = ' '
 def cb_event(ID, event, tupel):
@@ -377,7 +383,4 @@ def cb_progress(_target, _percent, n, i):
 	target = _target+' ('+str(i)+'/'+str(n)+')'
 	progress_bar.set_fraction(_percent/100)
 	progress_bar.set_text(target) 
-
-
-if __name__ == "__main__":
-	True
+'''
