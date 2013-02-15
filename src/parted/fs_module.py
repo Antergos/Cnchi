@@ -118,3 +118,18 @@ def create_fs(part, fstype, label='', other_opts=''):
     except Exception as e:
         ret = (1, e)
     return ret
+    
+@misc.raise_privileges
+def is_ssd(disk_path):
+    ssd = False
+    try:
+        p1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p1.stdout.close()
+        output = p2.communicate()[0].decode()
+        if "Solid State" in output:
+            ssd = True
+    except:
+        print("Can't verify if %s is a Solid State Drive or not" % disk_path)
+    
+    return ssd

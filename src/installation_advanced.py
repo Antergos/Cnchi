@@ -366,13 +366,16 @@ class InstallationAdvanced(Gtk.Box):
             self.diskdic[disk_path]['has_logical'] = False
             self.diskdic[disk_path]['has_extended'] = False
             
+            self.diskdic[disk_path]['ssd'] = fs.is_ssd(disk_path)
+            is_ssd = self.diskdic[disk_path]['ssd']
+            
             disk = self.disks[disk_path]
             
             if disk is None:
                 # Maybe disk without a partition table?
                 print(disk_path)
                 row = [disk_path, "", "", "", False, False, "", "", "", \
-                    "", 0, False, False, False, False]
+                    "", 0, False, is_ssd, False, False]
                 self.partition_list_store.append(None, row)
             else:
                 dev = disk.device
@@ -381,7 +384,7 @@ class InstallationAdvanced(Gtk.Box):
                 size_txt = self.get_size(dev.length, dev.sectorSize)
                 
                 row = [dev.path, "", "", "", False, False, size_txt, "", \
-                    "", "", 0, False, False, True, True]
+                    "", "", 0, False, is_ssd, True, True]
                 disk_parent = self.partition_list_store.append(None, row)
                 
                 parent = disk_parent
