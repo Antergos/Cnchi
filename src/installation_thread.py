@@ -57,8 +57,6 @@ class InstallationThread(threading.Thread):
         self.mount_devices = mount_devices
         print(mount_devices)
 
-        if self.method == 'easy':
-
         self.format_devices = format_devices
 
         self.running = True
@@ -197,13 +195,13 @@ class InstallationThread(threading.Thread):
 
         # Install chinese fonts
         # TODO: check this out, not sure about this vars
-        if installer_settings["locale"] == "zh_TW" or
-           installer_settings["locale"] == "zh_CN" or
+        if installer_settings["locale"] == "zh_TW" or \
+           installer_settings["locale"] == "zh_CN" or \
            installer_settings["language_name"] == "chinese":
             self.packages.append("opendesktop-fonts")
 
     def get_graphic_card():
-        p1 = subprocess.Popen(["hwinfo", "--gfxcard", stdout=subprocess.PIPE)
+        p1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["grep", "Model:[[:space:]]"], stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
         return p2.communicate()[0].decode()
