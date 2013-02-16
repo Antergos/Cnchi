@@ -118,10 +118,16 @@ class InstallationThread(threading.Thread):
                 if "uvesafb" in line:
                     self.packages.append("v86d")
         
+        # Always install base and base-devel
         self.packages.append("base")
         self.packages.append("base-devel")
-        self.packages.append("cinnarch-meta")
+        
+        # TODO: use packages.xml instead of this list
+        
         self.packages.append("libgnomeui")
+        
+        # TODO: Do not use cinnarch-meta!!!
+        self.packages.append("cinnarch-meta")
 
         if installer_settings["use_ntp"]:
             self.packages.append("ntp")
