@@ -142,6 +142,9 @@ class InstallationAdvanced(Gtk.Box):
 
         ## We will store our devices here
         self.disks = None
+        
+        ## we will store if our device is SSD or not
+        self.ssd = {}
 
         self.grub_device_entry = self.ui.get_object('grub_device_entry')      
         self.grub_devices = dict()
@@ -364,10 +367,12 @@ class InstallationAdvanced(Gtk.Box):
             
             self.diskdic[disk_path] = {}
             self.diskdic[disk_path]['has_logical'] = False
-            self.diskdic[disk_path]['has_extended'] = False
+            self.diskdic[disk_path]['has_extended'] = False           
+
+            if disk_path not in self.ssd:
+                self.ssd[disk_path] = fs.is_ssd(disk_path)
             
-            self.diskdic[disk_path]['ssd'] = fs.is_ssd(disk_path)
-            is_ssd = self.diskdic[disk_path]['ssd']
+            is_ssd = self.ssd[disk_path]
             
             disk = self.disks[disk_path]
             
@@ -529,7 +534,7 @@ class InstallationAdvanced(Gtk.Box):
         # ssd cell
         self.partition_list_store[path][12] = not self.partition_list_store[path][12]
         disk_path = self.partition_list_store[path][0]
-        self.diskdic[disk_path]['ssd'] = self.partition_list_store[path][12]
+        self.ssd[disk_path] = self.partition_list_store[path][12]
 
     ## The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
