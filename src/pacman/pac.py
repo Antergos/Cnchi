@@ -158,7 +158,7 @@ class Pac(object):
         #ProgressWindow.show_all()
         for db in self.handle.get_syncdbs():
             if self.t_lock is False:
-                self.t = init_transaction(config.handle)
+                self.t = self.init_transaction(config.handle)
                 try:
                     db.update(force=False)
                     self.t.release()
@@ -175,7 +175,7 @@ class Pac(object):
         """Upgrade a system like pacman -Su"""
         if self.t_lock is False:
             if self.do_syncfirst is True:
-                self.t = init_transaction(self.handle, recurse = True)
+                self.t = self.init_transaction(self.handle, recurse = True)
                 for pkg in self.list_first:
                     self.t.add_pkg(pkg)
                 self.to_remove = self.t.to_remove
@@ -192,7 +192,7 @@ class Pac(object):
                     self.t_lock = False
             else:
                 try:
-                    self.t = init_transaction(self.handle)
+                    self.t = self.init_transaction(self.handle)
                     self.t.sysupgrade(downgrade=False)
                 except pyalpm.error:
                     show.error(traceback.format_exc())
@@ -211,7 +211,7 @@ class Pac(object):
                     print("Nothing to update")
                 else:
                     self.t.release()
-                    self.t = init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
+                    self.t = self.init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
                     for pkg in self.to_add:
                         self.t.add_pkg(pkg)
                     for pkg in self.conflict_to_remove.values():

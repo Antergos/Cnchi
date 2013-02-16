@@ -321,7 +321,7 @@ class InstallationThread(threading.Thread):
     def pacman_cb_log(self, level, line):
         pass
 
-    def pacman_db_progress(self, _target, _percent, n, i):
+    def pacman_cb_progress(self, _target, _percent, n, i):
         pass
     
     # add gnupg pacman files to installed system
@@ -329,9 +329,14 @@ class InstallationThread(threading.Thread):
     # must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
         import shutil
-        dest_path = os.path.join(self.dest_dir, "/etc/pacman.d")
-        shutil.copy2('/etc/pacman.d/gnupg', dest_path)
-    
+        #removed / from etc to make path relative...
+        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/")
+        #use copytree for cp -r
+        try:
+            shutil.copytree('/etc/pacman.d/gnupg', dest_path)
+        except FileExistsError:
+            #ignore if exists
+            pass
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
         dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]

@@ -480,7 +480,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     row = [path, fs_type, mount_point, label, fmt_active, \
                            formatable, size_txt, used, partition_path, \
-                           "", p.type, True, False, False, False]
+                           "", p.type, fmt_enable, False, False, False]
             
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
@@ -889,6 +889,7 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
+                        #Changing back to disabling format box.  
                         self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (True, mylabel, mymount, myfmt, True)
                 ## Update partition list treeview
                 self.fill_partition_list()
