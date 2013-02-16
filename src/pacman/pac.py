@@ -68,7 +68,6 @@ class Pac(object):
         self.cb = {}
         self.cb['dl'] = None
         self.cb['totaldl'] = None
-        self.cb['dl'] = None
         self.cb['event'] = None
         self.cb['conv'] = None
         self.cb['progress'] = None
@@ -286,7 +285,7 @@ class Pac(object):
             size_string = '%.2f MiB' % (KiB_size / 1024)
             return size_string
 
-    def set_transaction_desc(mode):
+    def set_transaction_desc(self, mode):
         self.transaction_desc.clear()
         if self.to_remove:
             self.transaction_desc.append(['To remove:', to_remove[0].name])
@@ -321,6 +320,10 @@ class Pac(object):
                         i += 1
             self.down_label.set_markup('')
         #	down_label.set_markup('<b>Total Download size: </b>'+format_size(totaldlcb))
+
+    def install_packages(self, pkg_names):
+        # TODO
+        pass
 
 '''
 # Callbacks

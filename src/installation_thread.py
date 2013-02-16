@@ -47,13 +47,19 @@ import pac
 _autopartition_script = 'auto_partition.sh'
 
 class InstallationThread(threading.Thread):
-    def __init__(self, method, mount_devices):
+    def __init__(self, mount_devices, format_devices=None):
         threading.Thread.__init__(self)
 
-        self.method = method
-        self.mount_devices = mount_devices
+        self.method = installer_settings['partition_mode']
         
+        print("Installing using '%s' method" % self.method)
+        
+        self.mount_devices = mount_devices
         print(mount_devices)
+
+        if self.method == 'easy':
+
+        self.format_devices = format_devices
 
         self.running = True
         self.error = False
@@ -63,8 +69,8 @@ class InstallationThread(threading.Thread):
     
     @misc.raise_privileges    
     def run(self):
-        ## Create and format partitions if we're in automatic mode
-        if installer_settings['partition_mode'] == 'automatic':
+        ## Create/Format partitions
+        if self.method == 'automatic':
             try:
                 if os.path.exists(self.auto_partition_script_path):
                        self.root = self.mount_devices["automatic"]
@@ -76,10 +82,19 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.error = True
                 print (_("subprocess CalledProcessError.output = %s") % e.output)
+        elif self.method == 'easy' or self.method == 'advanced':
+            # TODO: format partitions using mkfs (format_devices)
+            pass
 
+        if self.error:
+            self.running = False
+            return
+            
         ## Do real installation here
         
         # Extracted from /arch/setup script
+        
+        self.packages = []
         
         self.dest_dir = "/install"
         kernel_pkg = "linux"
@@ -89,13 +104,151 @@ class InstallationThread(threading.Thread):
 
         self.arch = os.uname()[-1]
     
+        self.select_packages()
+        self.install_packages()
+
+
+
+        self.running = False
+
+    def select_packages(self):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        # TODO: everything else!
+        with open('/proc/cmdline') as fp:
+            for line in fp:
+                if "uvesafb" in line:
+                    self.packages.append("v86d")
+        
+        self.packages.append("base")
+        self.packages.append("base-devel")
+        self.packages.append("cinnarch-meta")
+        self.packages.append("libgnomeui")
 
-        self.running = False
+        if installer_settings["use_ntp"]:
+            self.packages.append("ntp")
+
+        graphics = self.get_graphic_card()
+        
+        self.card = ""
+
+        if "ati" in graphics:
+            self.packages.append("xf86-video-ati")
+            self.packages.append("ati-dri")
+            self.card = "ati"
+        
+        if "nvidia" in graphics:
+            self.packages.append("xf86-video-nouveau")
+            self.packages.append("nouveau-dri")
+            self.card = "nvidia"
+        
+        if "intel" in graphics or "lenovo" in graphics:
+            self.packages.append("xf86-video-intel")
+            self.packages.append("intel-dri")
+        
+        if "virtualbox" in graphics:
+            self.packages.append("virtualbox-guest-utils")
+            self.packages.append("virtualbox-guest-modules")
+        
+        if "vmware" in graphics:
+            self.packages.append("xf86-video-vmware")
+        
+        if "via" in graphics:
+            self.packages.append("xf86-video-openchrome")
+        
+        wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
+
+        if "broadcom" in wlan:
+            self.packages.append("broadcom-wl")
+            
+        if os.path.exists("/var/state/dhcp/dhclient.leases"):
+            self.packages.append("dhclient")
+        
+        # Add filesystem packages
+        
+        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+
+        if "ntfs" in fs_types:
+            self.packages.append("ntfs-3g")
+        
+        if "btrfs" in fs_types:
+            self.packages.append("btrfs-progs")
+
+        if "nilfs2" in fs_types:
+            self.packages.append("nilfs-utils")
+
+        if "ext" in fs_types:
+            self.packages.append("e2fsprogs")
+
+        if "reiserfs" in fs_types:
+            self.packages.append("reiserfsprogs")
+
+        if "xfs" in fs_types:
+            self.packages.append("xfsprogs")
+
+        if "jfs" in fs_types:
+            self.packages.append("jfsutils")
+
+        if "vfat" in fs_types:
+            self.packages.append("dosfstools")
+
+        # if raid:
+            #self.packages.append("dmraid")
+
+        # Install chinese fonts
+        # TODO: check this out, not sure about this vars
+        if installer_settings["locale"] == "zh_TW" or
+           installer_settings["locale"] == "zh_CN" or
+           installer_settings["language_name"] == "chinese":
+            self.packages.append("opendesktop-fonts")
+
+    def get_graphic_card():
+        p1 = subprocess.Popen(["hwinfo", "--gfxcard", stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(["grep", "Model:[[:space:]]"], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p1.stdout.close()
+        return p2.communicate()[0].decode()
+        
     
+    
+    
+    
+    
+    def install_packages(self):
+        self.run_pacman()
+        
+        self.chroot_mount()
+        
+        #auto_addons
+        #auto_fstab
+        #auto_mdadm
+        #auto_luks
+        # tear down the chroot environment
+        #chroot_umount
+        
+        pass
+
+
+    def run_pacman(self):
+        # create chroot environment on target system
+        # code straight from mkarchroot
+        self.chroot_mount()
+        
+        self.pac.install_packages(self.packages)
+
+        # ensure the disk is synced
+        #self.sync()
+
+        #self.chroot_umount()
+
+
+
+
+
+
+
+
+
+
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
 
@@ -146,30 +299,40 @@ class InstallationThread(threading.Thread):
 
         self.pac = pac.Pac("/tmp/pacman.conf")
         
-        # set callback functions
-        '''
-        self.cb['dl'] = None
-        self.cb['totaldl'] = None
-        self.cb['dl'] = None
-        self.cb['event'] = None
-        self.cb['conv'] = None
-        self.cb['progress'] = None
-        self.cb['log'] = None
-        '''
-
+        # set pyalpm callback functions
         self.pac.set_callback('dl', self.pacman_cb_dl)
+        self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
+        self.pac.set_callback('event', self.pacman_cb_event)
+        self.pac.set_callback('conv', self.pacman_cb_conv)
+        self.pac.set_callback('progress', self.pacman_cb_progress)
+        self.pac.set_callback('log', self.pacman_cb_log)
         
     # Pacman callback functions
-    def pacman_cb_dl(_target, _transferred, total):
+    def pacman_cb_dl(self, _target, _transferred, total):
         pass
-            
+    
+    def pacman_cb_total_dl(self, _total_size):
+        pass
+
+    def pacman_cb_event(self, ID, event, tupel):
+        pass
+        
+    def pacman_cb_conv(self, *args):
+        pass
+    
+    def pacman_cb_log(self, level, line):
+        pass
+
+    def pacman_db_progress(self, _target, _percent, n, i):
+        pass
     
     # add gnupg pacman files to installed system
     # needs testing, but it seems to be the way to do it now
     # must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
         import shutil
-        shutil.copy2('/etc/pacman.d/gnupg', '%s/etc/pacman.d' % self.dest_dir)
+        dest_path = os.path.join(self.dest_dir, "/etc/pacman.d")
+        shutil.copy2('/etc/pacman.d/gnupg', dest_path)
     
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):

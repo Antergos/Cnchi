@@ -45,8 +45,8 @@ installer_settings  = { \
                 'timezone_comment' : '', \
                 'timezone_latitude' : 0, \
                 'timezone_longitude' : 0, \
-                'activate_ntp' : 1, \
-                'partition_mode' : 'm', \
+                'use_ntp' : True, \
+                'partition_mode' : 'easy', \
                 'auto_device' : '/dev/sda', \
                 'log_file' : '/tmp/cnchi.log', \
                 'fullname' : '', \

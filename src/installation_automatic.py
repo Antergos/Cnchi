@@ -154,6 +154,5 @@ class InstallationAutomatic(Gtk.Box):
         mount_devices = {}
         mount_devices["automatic"] = self.auto_device
 
-        print(mount_devices)
-        self.thread = installation_thread.InstallationThread("automatic", mount_devices)
-        #self.thread.start()
+        self.thread = installation_thread.InstallationThread(mount_devices)
+        self.thread.start()

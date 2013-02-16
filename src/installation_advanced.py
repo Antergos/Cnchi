@@ -1378,7 +1378,10 @@ class InstallationAdvanced(Gtk.Box):
                 elif pm.check_mounted(p):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
-                    # TODO: also add swap
+                    # TODO: also add swap ?
         
-        self.thread = installation_thread.InstallationThread("advanced", mount_devices)
+        # TODO: Also give format information in format_devices
+        format_devices = None
+        
+        self.thread = installation_thread.InstallationThread(mount_devices, format_devices)
         self.thread.start()

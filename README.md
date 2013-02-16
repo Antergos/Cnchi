@@ -15,3 +15,4 @@ Graphical Installer for Cinnarch Linux
  * py3parted (pyparted on python3) -> https://github.com/cinnarch/cinnarch-packages/tree/master/py3parted
  * pacman
  * pyalpm
+ * hwinfo

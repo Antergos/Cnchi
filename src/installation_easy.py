@@ -170,6 +170,15 @@ class InstallationEasy(Gtk.Box):
         mount_devices["/"] = self.combobox["root"].get_active_text()
         mount_devices["swap"] = self.combobox["swap"].get_active_text()
 
-        print(mount_devices)
-        self.thread = installation_thread.InstallationThread("easy", mount_devices)
-        #self.thread.start()
+        # Easy method formats root and swap by default
+        # should we ask the user or directly use ext4 ?
+
+        root = mount_devices["/"]
+        swap = mount_devices["swap"]
+        
+        format_devices = {}
+        format_devices[root] = "ext4"
+        format_devices[swap] = "swap"
+
+        self.thread = installation_thread.InstallationThread(mount_devices, format_devices)
+        self.thread.start()
