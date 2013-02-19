@@ -48,26 +48,19 @@ import show_message as show
 
 class Pac(object):
     def __init__(self, conf):
-        self.ui_dir = installer_settings["UI_DIR"]
-
+        ui_dir = installer_settings["UI_DIR"]
         self.ui = Gtk.Builder()
-        
-        
-        
-        
-        
-#        self.ui.add_from_file('pac.ui')
+        self.ui.add_from_file(os.path.join(ui_dir, 'pac.ui'))
 
-        # ProgressWindow = interface.get_object('ProgressWindow')
-        # progress_bar = interface.get_object('progressbar2')
-        # progress_label = interface.get_object('progresslabel2')
-        # ErrorDialog = interface.get_object('ErrorDialog')
-        # WarningDialog = interface.get_object('WarningDialog')
-        # QuestionDialog = interface.get_object('QuestionDialog')
-        # ConfDialog = interface.get_object('ConfDialog')
-        # transaction_desc = interface.get_object('transaction_desc')
-        # down_label = interface.get_object('down_label')
-
+        self.progress_window = self.ui.get_object('ProgressWindow')
+        self.progress_bar = self.ui.get_object('progressbar2')
+        self.progress_label = self.ui.get_object('progresslabel2')
+        self.error_dialog = self.ui.get_object('ErrorDialog')
+        self.warning_dialog = self.ui.get_object('WarningDialog')
+        self.question_dialog = self.ui.get_object('QuestionDialog')
+        self.config_dialog = self.ui.get_object('ConfDialog')
+        self.transaction_desc = self.ui.get_object('transaction_desc')
+        self.down_label = self.ui.get_object('down_label')
 
         #self.t = None
         #self.transaction_desc = []
@@ -79,8 +72,9 @@ class Pac(object):
         self.to_provide = []
         #self.do_syncfirst = False
         #self.list_first = []
-        self.syncpkgs = OrderedDict()
-        self.localpkgs = OrderedDict()
+        
+        #self.syncpkgs = OrderedDict()
+        #self.localpkgs = OrderedDict()
         
         # callback functions
         self.cb = {}

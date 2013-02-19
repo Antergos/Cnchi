@@ -28,6 +28,9 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
+
+# TODO: MUCH OF THIS SHOULD GO TO PAC.PY
+
 import threading
 import subprocess
 import os
