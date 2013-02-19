@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 #  pac.py
+#
+#  This file has fragments of code from pamac (package manager from Manjaro)
+#  Check it at http://git.manjaro.org/core/pamac
 #  
 #  Copyright 2013 Manjaro (http://manjaro.org)
 #  Copyright 2013 Cinnarch (http://www.cinnarch.com)
@@ -29,40 +32,55 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-#from gi.repository import Gtk
+from gi.repository import Gtk
 
 import pyalpm
 import traceback
 import sys
 
+from collections import OrderedDict
+
 from pacman import pac_config
+
+from config import installer_settings
 
 import show_message as show
 
-# interface = Gtk.Builder()
-# interface.add_from_file('gui/dialogs.glade')
-
-# ProgressWindow = interface.get_object('ProgressWindow')
-# progress_bar = interface.get_object('progressbar2')
-# progress_label = interface.get_object('progresslabel2')
-# ErrorDialog = interface.get_object('ErrorDialog')
-# WarningDialog = interface.get_object('WarningDialog')
-# QuestionDialog = interface.get_object('QuestionDialog')
-# ConfDialog = interface.get_object('ConfDialog')
-# transaction_desc = interface.get_object('transaction_desc')
-# down_label = interface.get_object('down_label')
-
 class Pac(object):
     def __init__(self, conf):
-        self.t = None
-        self.transaction_desc = []
+        self.ui_dir = installer_settings["UI_DIR"]
+
+        self.ui = Gtk.Builder()
+        
+        
+        
+        
+        
+#        self.ui.add_from_file('pac.ui')
+
+        # ProgressWindow = interface.get_object('ProgressWindow')
+        # progress_bar = interface.get_object('progressbar2')
+        # progress_label = interface.get_object('progresslabel2')
+        # ErrorDialog = interface.get_object('ErrorDialog')
+        # WarningDialog = interface.get_object('WarningDialog')
+        # QuestionDialog = interface.get_object('QuestionDialog')
+        # ConfDialog = interface.get_object('ConfDialog')
+        # transaction_desc = interface.get_object('transaction_desc')
+        # down_label = interface.get_object('down_label')
+
+
+        #self.t = None
+        #self.transaction_desc = []
         self.t_lock = False
-        self.conflict_to_remove = None
-        self.to_remove = None
-        self.to_add = None
-        self.to_update = None
-        self.do_syncfirst = False
-        self.list_first = []
+        #self.conflict_to_remove = None
+        self.to_remove = []
+        self.to_add = []
+        self.to_update = []
+        self.to_provide = []
+        #self.do_syncfirst = False
+        #self.list_first = []
+        self.syncpkgs = OrderedDict()
+        self.localpkgs = OrderedDict()
         
         # callback functions
         self.cb = {}

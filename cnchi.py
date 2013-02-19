@@ -41,6 +41,7 @@ src_dir = os.path.join(base_dir, 'src')
 sys.path.insert(0, src_dir)
 
 from config import installer_settings
+
 import language
 import check
 import keymap
