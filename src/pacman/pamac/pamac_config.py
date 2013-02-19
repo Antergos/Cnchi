@@ -184,7 +184,6 @@ class PacmanConfig(object):
 	def __str__(self):
 		return("PacmanConfig(options=%s, repos=%s)" % (str(self.options), str(self.repos)))
 
-# This should be done in installation_thread ¿?
 pacman_conf = PacmanConfig(conf = "/etc/pacman.conf")
 handle = pacman_conf.initialize_alpm()
 holpkg = None
