@@ -82,17 +82,22 @@ class InstallationAdvanced(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.callback_queue = params['callback_queue']
+        
         self.disks_changed = []
         self.my_first_time = True
         self.orig_label_dic = {}        
         self.orig_part_dic = {}
+
         #stage_opts holds info about newly created partitions
         #format is tuple (label, mountpoint, fs(text), Format)
         #see its usage in listing, creating, and deleting partitions
         self.stage_opts = {}
         self.used_dic = {}
+
         #hold deleted partitions that exist now
         self.to_be_deleted = []
+
         ## Call base class
         super().__init__()
 
@@ -1389,5 +1394,5 @@ class InstallationAdvanced(Gtk.Box):
         # TODO: Also give format information in format_devices
         format_devices = None
         
-        self.thread = installation_thread.InstallationThread(mount_devices, format_devices)
+        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices)
         self.thread.start()

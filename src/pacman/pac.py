@@ -32,8 +32,6 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-from gi.repository import Gtk
-
 import pyalpm
 import traceback
 import sys
@@ -48,19 +46,7 @@ import show_message as show
 
 class Pac(object):
     def __init__(self, conf):
-        ui_dir = installer_settings["UI_DIR"]
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(ui_dir, 'pac.ui'))
-
-        self.progress_window = self.ui.get_object('ProgressWindow')
-        self.progress_bar = self.ui.get_object('progressbar2')
-        self.progress_label = self.ui.get_object('progresslabel2')
-        self.error_dialog = self.ui.get_object('ErrorDialog')
-        self.warning_dialog = self.ui.get_object('WarningDialog')
-        self.question_dialog = self.ui.get_object('QuestionDialog')
-        self.config_dialog = self.ui.get_object('ConfDialog')
-        self.transaction_desc = self.ui.get_object('transaction_desc')
-        self.down_label = self.ui.get_object('down_label')
+        
 
         #self.t = None
         #self.transaction_desc = []
@@ -77,6 +63,8 @@ class Pac(object):
         #self.localpkgs = OrderedDict()
         
         # callback functions
+        # TODO: Change this, use the callback queue
+        self.callback_queue = None
         self.cb = {}
         self.cb['dl'] = None
         self.cb['totaldl'] = None
@@ -95,11 +83,8 @@ class Pac(object):
             if 'SyncFirst' in self.pacman_conf.options:
                 self.syncfirst = self.pacman_conf.options['SyncFirst']
 
-    def set_callback(self, cb_type, func):
-        if cb_type in self.cb:
-            self.cb[cb_type] = func
-        else:
-            print("Wrong callback function type")
+    def set_callback_queue(self, callback_queue):
+        self.callback_queue = callback_queue
 
     def init_transaction(self, **options):
         # Transaction initialization
@@ -118,7 +103,6 @@ class Pac(object):
         except pyalpm.error:
             show.error(traceback.format_exc())
             return False
-
 
     def check_conflicts(self):
         self.conflict_to_remove = {}

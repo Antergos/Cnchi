@@ -50,6 +50,8 @@ class Slides(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.exit_button = params['exit_button']
+        
+        self.callback_queue = params['callback_queue']
 
         super().__init__()
 
@@ -81,6 +83,22 @@ class Slides(Gtk.Box):
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
 
         super().add(builder.get_object("slides"))
+        
+        # pac gui part (used to report pacman messages)
+        
+        self.pac_ui = Gtk.Builder()
+        self.pac_ui.add_from_file(os.path.join(self.ui_dir, 'pac.ui'))
+
+        self.progress_window = self.pac_ui.get_object('ProgressWindow')
+        self.progress_bar = self.pac_ui.get_object('progressbar2')
+        self.progress_label = self.pac_ui.get_object('progresslabel2')
+        self.error_dialog = self.pac_ui.get_object('ErrorDialog')
+        self.warning_dialog = self.pac_ui.get_object('WarningDialog')
+        self.question_dialog = self.pac_ui.get_object('QuestionDialog')
+        self.config_dialog = self.pac_ui.get_object('ConfDialog')
+        self.transaction_desc = self.pac_ui.get_object('transaction_desc')
+        self.down_label = self.pac_ui.get_object('down_label')
+        
 
     def translate_ui(self):
         txt = _("Learn more about Cinnarch")

@@ -58,6 +58,7 @@ class InstallationEasy(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.callback_queue = params['callback_queue']
 
         super().__init__()
         self.ui = Gtk.Builder()
@@ -180,5 +181,5 @@ class InstallationEasy(Gtk.Box):
         format_devices[root] = "ext4"
         format_devices[swap] = "swap"
 
-        self.thread = installation_thread.InstallationThread(mount_devices, format_devices)
+        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices)
         self.thread.start()

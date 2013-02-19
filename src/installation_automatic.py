@@ -58,7 +58,8 @@ class InstallationAutomatic(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-
+        self.callback_queue = params['callback_queue']
+        
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_automatic.ui"))
@@ -154,5 +155,5 @@ class InstallationAutomatic(Gtk.Box):
         mount_devices = {}
         mount_devices["automatic"] = self.auto_device
 
-        self.thread = installation_thread.InstallationThread(mount_devices)
+        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices)
         self.thread.start()

@@ -54,6 +54,8 @@ import user_info
 import slides
 import misc
 
+import queue
+
 from show_message import fatal_error
 
 # Useful vars for gettext (translations)
@@ -133,6 +135,10 @@ class Main(Gtk.Window):
         self.forward_button = self.ui.get_object("forward_button")
         self.exit_button = self.ui.get_object("exit_button")
         self.backwards_button = self.ui.get_object("backwards_button")
+        
+        # Create a queue. Will be used to report pacman messages (pac.py)
+        # to the main thread (installer_*.py)
+        self.callback_queue = queue.Queue(0)
 
         # load all pages
         # (each one is a screen, a step in the install process)
@@ -145,7 +151,8 @@ class Main(Gtk.Window):
         params['forward_button'] = self.forward_button
         params['backwards_button'] = self.backwards_button
         params['exit_button'] = self.exit_button
-
+        params['callback_queue'] = self.callback_queue
+        
         self.pages["language"] = language.Language(params)
         self.pages["check"] = check.Check(params)
         self.pages["keymap"] = keymap.Keymap(params)

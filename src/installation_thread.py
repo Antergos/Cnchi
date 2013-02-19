@@ -28,9 +28,6 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-
-# TODO: MUCH OF THIS SHOULD GO TO PAC.PY
-
 import threading
 import subprocess
 import os
@@ -50,8 +47,10 @@ import pac
 _autopartition_script = 'auto_partition.sh'
 
 class InstallationThread(threading.Thread):
-    def __init__(self, mount_devices, format_devices=None):
+    def __init__(self, callback_queue, mount_devices, format_devices=None):
         threading.Thread.__init__(self)
+        
+        self.callback_queue = callback_queue
 
         self.method = installer_settings['partition_mode']
         
@@ -65,8 +64,9 @@ class InstallationThread(threading.Thread):
         self.running = True
         self.error = False
         
-        self.auto_partition_script_path = \
-            os.path.join(installer_settings["CNCHI_DIR"], "scripts", _autopartition_script)
+        self.auto_partition_script_path = os.path.join(\
+            installer_settings["CNCHI_DIR"], \
+            "scripts", _autopartition_script)
     
     @misc.raise_privileges    
     def run(self):
@@ -76,13 +76,15 @@ class InstallationThread(threading.Thread):
                 if os.path.exists(self.auto_partition_script_path):
                        self.root = self.mount_devices["automatic"]
                        print("Root device: %s" % self.root)
-                       subprocess.Popen(["/bin/bash", self.auto_partition_script_path, self.root])
+                       subprocess.Popen(["/bin/bash", \
+                                         self.auto_partition_script_path, \
+                                         self.root])
             except subprocess.FileNotFoundError as e:
                 self.error = True
                 print (_("Can't execute the auto partition script"))
             except subprocess.CalledProcessError as e:
                 self.error = True
-                print (_("subprocess CalledProcessError.output = %s") % e.output)
+                print (_("CalledProcessError.output = %s") % e.output)
         elif self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
             pass
@@ -94,7 +96,7 @@ class InstallationThread(threading.Thread):
         ## Do real installation here
         
         # Extracted from /arch/setup script
-        
+
         self.packages = []
         
         self.dest_dir = "/install"
@@ -173,7 +175,8 @@ class InstallationThread(threading.Thread):
         
         # Add filesystem packages
         
-        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
+                                            "-o", "value", "-s", "TYPE"]).decode()
 
         if "ntfs" in fs_types:
             self.packages.append("ntfs-3g")
@@ -210,8 +213,10 @@ class InstallationThread(threading.Thread):
             self.packages.append("opendesktop-fonts")
 
     def get_graphic_card():
-        p1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(["grep", "Model:[[:space:]]"], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
+                              stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(["grep", "Model:[[:space:]]"],\
+                              stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
         return p2.communicate()[0].decode()
         
@@ -262,6 +267,8 @@ class InstallationThread(threading.Thread):
         print("Creating pacman.conf for %s architecture" % self.arch)
         
         # Common repos
+        
+        # Instead of hardcoding pacman.conf, we could use an external file
                
         tmp_file = open("/tmp/pacman.conf", "wt")
 
@@ -306,33 +313,16 @@ class InstallationThread(threading.Thread):
 
         self.pac = pac.Pac("/tmp/pacman.conf")
         
-        # set pyalpm callback functions
-        self.pac.set_callback('dl', self.pacman_cb_dl)
-        self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
-        self.pac.set_callback('event', self.pacman_cb_event)
-        self.pac.set_callback('conv', self.pacman_cb_conv)
-        self.pac.set_callback('progress', self.pacman_cb_progress)
-        self.pac.set_callback('log', self.pacman_cb_log)
+        # set callback queue
+        self.pac.set_callback_queue(self.callback_queue)
         
-    # Pacman callback functions
-    def pacman_cb_dl(self, _target, _transferred, total):
-        pass
-    
-    def pacman_cb_total_dl(self, _total_size):
-        pass
-
-    def pacman_cb_event(self, ID, event, tupel):
-        pass
+        #self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
+        #self.pac.set_callback('event', self.pacman_cb_event)
+        #self.pac.set_callback('conv', self.pacman_cb_conv)
+        #self.pac.set_callback('progress', self.pacman_cb_progress)
+        #self.pac.set_callback('log', self.pacman_cb_log)
         
-    def pacman_cb_conv(self, *args):
-        pass
-    
-    def pacman_cb_log(self, level, line):
-        pass
-
-    def pacman_cb_progress(self, _target, _percent, n, i):
-        pass
-    
+        
     # add gnupg pacman files to installed system
     # needs testing, but it seems to be the way to do it now
     # must be also changed in the CLI Installer
