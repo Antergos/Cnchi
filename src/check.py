@@ -30,8 +30,6 @@
 
 from gi.repository import Gtk, GObject
 
-import dbus
-
 import subprocess
 import os
 import gtkwidgets
@@ -89,6 +87,7 @@ class Check(Gtk.Box):
 
     def get_prop(self, obj, iface, prop):
         try:
+            import dbus
             return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
         except dbus.DBusException as e:
             if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
@@ -123,6 +122,7 @@ class Check(Gtk.Box):
         return False
 
     def on_battery(self):
+        import dbus
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
@@ -183,4 +183,5 @@ class Check(Gtk.Box):
         self.show_all()
         self.forward_button.set_sensitive(self.check_all())
         # set timer
+        print("setting check timer")
         self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)

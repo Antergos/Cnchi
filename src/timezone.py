@@ -35,7 +35,6 @@ import threading
 import multiprocessing
 import queue
 import urllib.request
-import dbus
 import time
 import queue
 import datetime
@@ -314,6 +313,7 @@ class AutoTimezoneThread(threading.Thread):
         self.stop_event.set()
 
     def get_prop(self, obj, iface, prop):
+        import dbus
         try:
             return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
         except dbus.DBusException as e:
@@ -323,6 +323,7 @@ class AutoTimezoneThread(threading.Thread):
                 raise
         
     def has_connection(self):
+        import dbus
         try:
             bus = dbus.SystemBus()
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')

@@ -231,6 +231,7 @@ class Main(Gtk.Window):
     def on_exit_button_clicked(self, widget, data=None):
         self.pages["timezone"].stop_thread()
         self.remove_temp_files()
+        print("Quiting...")
         Gtk.main_quit()
 
     def progressbar_step(self, add_value):
