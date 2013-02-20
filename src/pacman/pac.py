@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #  pac.py
@@ -36,29 +37,39 @@
 import pyalpm
 import traceback
 import sys
+
+import locale
 import gettext
 
-from collections import OrderedDict
+#from collections import OrderedDict
 
-from pacman import pac_config
+# Useful vars for gettext (translations)
+APP = "cnchi"
+DIR = "po"
 
-from config import installer_settings
+if __name__ == '__main__':
+    import queue
+    import pac_config
+else:   
+    from pacman import pac_config
 
-import show_message as show
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
         
         self.callback_queue = callback_queue
-        #self.t = None
-        #self.transaction_desc = []
+        self.t = None
+        self.transaction_desc = []
         self.t_lock = False
-        #self.conflict_to_remove = None
+        self.conflict_to_remove = None
         self.to_remove = []
         self.to_add = []
         self.to_update = []
         self.to_provide = []
-        #self.do_syncfirst = False
+
+        self.total_size = 0
+        
+        self.do_syncfirst = False
         #self.list_first = []
         
         #self.syncpkgs = OrderedDict()
@@ -84,14 +95,15 @@ class Pac(object):
         self.handle.logcb = self.cb_log
         
         try:
-            _t = handle.init_transaction(**options)
+            _t = self.handle.init_transaction(**options)
             print(_t.flags)
             self.t_lock = True
             return _t
         except pyalpm.error:
-            show.error(traceback.format_exc())
+            print(traceback.format_exc())
             return False
 
+    '''
     def check_conflicts(self):
         self.conflict_to_remove = {}
         installed_conflicts = {}
@@ -134,20 +146,20 @@ class Pac(object):
                                 self.conflict_to_remove[pkg.name] = pkg
         if self.conflict_to_remove:
             show.warning(warning)
-
+    '''
     
     def do_refresh(self):
         """Sync databases like pacman -Sy"""
         #ProgressWindow.show_all()
         for db in self.handle.get_syncdbs():
             if self.t_lock is False:
-                self.t = self.init_transaction(config.handle)
+                self.t = self.init_transaction()
                 try:
                     db.update(force=False)
                     self.t.release()
                     self.t_lock = False
                 except pyalpm.error:
-                    show.error(traceback.format_exc())
+                    print(traceback.format_exc())
                     self.t_lock = False
                     break
         #ProgressWindow.hide()
@@ -158,31 +170,33 @@ class Pac(object):
         """Upgrade a system like pacman -Su"""
         if self.t_lock is False:
             if self.do_syncfirst is True:
-                self.t = self.init_transaction(self.handle, recurse = True)
+                self.t = self.init_transaction(recurse = True)
                 for pkg in self.list_first:
                     self.t.add_pkg(pkg)
                 self.to_remove = self.t.to_remove
                 self.to_add = self.t.to_add
                 self.set_transaction_desc('update')
                 
-                response = ConfDialog.run()
-                if response == Gtk.ResponseType.OK:
-                    t_finalize(self.t)
-                if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
-                    ProgressWindow.hide()
-                    ConfDialog.hide()
-                    self.t.release()
-                    self.t_lock = False
+                #response = ConfDialog.run()
+                #if response == Gtk.ResponseType.OK:
+                self.t_finalize()
+                #if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
+                #    ProgressWindow.hide()
+                #    ConfDialog.hide()
+                #    self.t.release()
+                #    self.t_lock = False
             else:
                 try:
-                    self.t = self.init_transaction(self.handle)
+                    self.t = self.init_transaction()
                     self.t.sysupgrade(downgrade=False)
                 except pyalpm.error:
-                    show.error(traceback.format_exc())
+                    print(traceback.format_exc())
                     self.t.release()
                     self.t_lock = False
                 
-                self.check_conflicts()
+                # Kamikaze mode, don't check possible conflicts
+                #self.check_conflicts()
+
                 self.to_add = self.t.to_add
                 self.to_remove = []
                 
@@ -194,7 +208,7 @@ class Pac(object):
                     print(_("Nothing to update"))
                 else:
                     self.t.release()
-                    self.t = self.init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
+                    self.t = self.init_transaction(noconflicts = True, nodeps = True, nodepversion = True)
                     for pkg in self.to_add:
                         self.t.add_pkg(pkg)
                     for pkg in self.conflict_to_remove.values():
@@ -203,36 +217,37 @@ class Pac(object):
                     self.to_add = self.t.to_add
                     self.set_transaction_desc('update')
                     if len(self.transaction_desc) != 0:
-                        response = ConfDialog.run()
-                        if response == Gtk.ResponseType.OK:
-                                    t_finalize(self.t)
-                        if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
-                            ProgressWindow.hide()
-                            ConfDialog.hide()
-                            self.t.release()
-                            self.t_lock = False
+                        #response = ConfDialog.run()
+                        #if response == Gtk.ResponseType.OK:
+                        self.t_finalize(self.t)
+                        #if response == Gtk.ResponseType.CANCEL or Gtk.ResponseType.CLOSE or Gtk.ResponseType.DELETE_EVENT:
+                            #ProgressWindow.hide()
+                            #ConfDialog.hide()
+                            #self.t.release()
+                            #self.t_lock = False
                     else:
-                        t_finalize(self.t)
+                        self.t_finalize()
                         self.t.release()
                         self.t_lock = False
 
-    def t_finalize(self, t):
+    def t_finalize(self):
         #ConfDialog.hide()
 
         try:
-            t.prepare()
+            self.t.prepare()
         except pyalpm.error:
-            show.error(traceback.format_exc())
-            t.release()
+            print(traceback.format_exc())
+            self.t.release()
             self.t_lock = False
 
         try:
-            t.commit()
+            self.t.commit()
         except pyalpm.error:
-            show.error(traceback.format_exc())
+            print(traceback.format_exc())
 
         #ProgressWindow.hide()
 
+    '''
     def get_updates(self):
         """Return a list of package objects in local db which can be updated"""
         if self.pacman_conf.syncfirst:
@@ -251,6 +266,7 @@ class Pac(object):
             if candidate:
                 result.append(candidate)
         return result
+    '''
 
     def get_new_version_available(self, pkgname):
         for repo in self.handle.get_syncdbs():
@@ -305,8 +321,23 @@ class Pac(object):
         #	down_label.set_markup('<b>Total Download size: </b>'+format_size(totaldlcb))
 
     def install_packages(self, pkg_names):
-        # TODO
-        pass
+        self.to_add = []
+        for pkgname in pkg_names:
+            self.to_add.append(pkgname)
+        self.to_remove = []
+        
+        #check_conflicts(transaction_dict.values())
+        
+        if self.to_add:
+            self.t.release()
+            self.t = self.init_transaction(noconflicts = True)
+
+            if self.t is not False:
+                for pkgname in self.to_add:
+                    self.t.add_pkg(pkgname)
+                self.t_finalize()
+            #self.t.release()
+            #self.t_lock = False
 
     # queue operations
     
@@ -379,9 +410,11 @@ class Pac(object):
 
         if level & pyalpm.LOG_ERROR:
             self.error = _("ERROR: %s") % line
-                #t.release()
+            print(line)
+            self.t.release()
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
+            print(line)
         elif level & pyalpm.LOG_DEBUG:
             line = _("DEBUG: %s") % line
             print(line)
@@ -396,7 +429,7 @@ class Pac(object):
         if self.total_size > 0:
             fraction = (_transferred + self.already_transferred) / self.total_size
         size = 0
-        if (t.to_remove or t.to_add):
+        if (self.t.to_remove or self.t.to_add):
             for pkg in t.to_remove+t.to_add:
                 if pkg.name+'-'+pkg.version in _target:
                     size = pkg.size
@@ -416,6 +449,8 @@ class Pac(object):
             self.percent = 0
             self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
 
+        print(self.action)
+        
         self.queue_action(self.action)
         self.queue_icon(self.icon)
         self.queue_target(self.target)
@@ -427,3 +462,22 @@ class Pac(object):
         self.percent = _percent / 100
         self.queue_target(self.target)
         self.queue_percent(str(self.percent))
+
+if __name__ == '__main__':
+    # This allows to translate all py texts (not the glade ones)
+    gettext.textdomain(APP)
+    gettext.bindtextdomain(APP, DIR)
+
+    locale_code, encoding = locale.getdefaultlocale()
+    lang = gettext.translation (APP, DIR, [locale_code], None, True)
+    lang.install()
+
+    # With this we can use _("string") to translate
+    gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
+
+    callback_queue = queue.Queue(0)
+    pac = Pac("/etc/pacman.conf", callback_queue)
+    
+    pac.do_refresh()
+
+    #pac.do_sysupgrade()
