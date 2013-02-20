@@ -85,7 +85,7 @@ class Slides(Gtk.Box):
         super().add(builder.get_object("slides"))
         
         # pac gui part (used to report pacman messages)
-        
+        '''
         self.pac_ui = Gtk.Builder()
         self.pac_ui.add_from_file(os.path.join(self.ui_dir, 'pac.ui'))
 
@@ -98,7 +98,7 @@ class Slides(Gtk.Box):
         self.config_dialog = self.pac_ui.get_object('ConfDialog')
         self.transaction_desc = self.pac_ui.get_object('transaction_desc')
         self.down_label = self.pac_ui.get_object('down_label')
-        
+        '''
 
     def translate_ui(self):
         txt = _("Learn more about Cinnarch")
@@ -116,6 +116,8 @@ class Slides(Gtk.Box):
         self.backwards_button.hide()
         self.forward_button.hide()
         self.exit_button.hide()
+        
+        self.show_install_messages()
 
     def store_values(self):
         return False
@@ -129,3 +131,31 @@ class Slides(Gtk.Box):
     def refresh(self):
         while Gtk.events_pending():
             Gtk.main_iteration()
+
+    def show_install_messages(self):
+        # TODO: Check self.callback_queue and show message
+        # self.callback_queue
+        # self.progress_bar
+        
+        done = False
+        
+        while not done:
+            try:
+                event = self.callback_queue.get(False)
+            except queue.Empty:
+                event = ()
+
+            if len(event) > 0:
+                if event[0] == "action":
+                    print(event[1])
+                    self.info_label.set_markup(event[1])
+                elif event[0] == "icon":
+                    print(event[1])
+                elif event[0] == "target":
+                    print(event[1])
+                elif event[0] == "percent":
+                    print(event[1])
+                elif event[0] == "finished":
+                    done = True
+
+            self.refresh()

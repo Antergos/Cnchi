@@ -37,7 +37,7 @@ import queue
 import urllib.request
 import dbus
 import time
-
+import queue
 import datetime
 
 # Import functions
@@ -97,6 +97,7 @@ class Timezone(Gtk.Box):
         self.tzmap.show()
 
         # thread to try to determine timezone.
+        self.thread = None
         self.start_auto_timezone_thread()
 
         super().add(self.ui.get_object('location'))
@@ -228,9 +229,10 @@ class Timezone(Gtk.Box):
 
         if self.autodetected_coords is None:
             try:
-                self.autodetected_coords = self.auto_timezone_coords.get(timeout=5)
+                self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=5)
+                self.auto_timezone_coords.task_done()
             except queue.Empty:
-                print("Can't autodetect timezone coords")
+                print(_("Can't autodetect timezone coords"))
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
@@ -296,6 +298,10 @@ class Timezone(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+        
+    def stop_thread(self):
+        print("Stoping timezone thread.")
+        self.thread.stop()
 
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):
@@ -331,6 +337,7 @@ class AutoTimezoneThread(threading.Thread):
         while not self.has_connection():
             time.sleep(1)  # Delay 1 second
             if self.stop_event.is_set():
+                self.coords_queue.clear()
                 return
 
         # ok, now get our timezone

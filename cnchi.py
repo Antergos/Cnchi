@@ -229,7 +229,7 @@ class Main(Gtk.Window):
                 os.remove(p)
          
     def on_exit_button_clicked(self, widget, data=None):
-        self.pages["timezone"].thread.stop()
+        self.pages["timezone"].stop_thread()
         self.remove_temp_files()
         Gtk.main_quit()
 

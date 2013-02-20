@@ -111,7 +111,8 @@ class InstallationThread(threading.Thread):
         self.select_packages()
         self.install_packages()
 
-
+        # installation finished (0 means no error)
+        self.callback_queue.put(("finished", 0))
 
         self.running = False
 
