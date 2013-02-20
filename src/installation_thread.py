@@ -32,6 +32,7 @@ import threading
 import subprocess
 import os
 import sys
+import shutil
 
 from config import installer_settings
 
@@ -118,6 +119,8 @@ class InstallationThread(threading.Thread):
         self.create_pacman_conf()
         self.prepare_pacman()
         
+        # TODO: use packages.xml instead of this hardcoded list
+
         with open('/proc/cmdline') as fp:
             for line in fp:
                 if "uvesafb" in line:
@@ -126,9 +129,7 @@ class InstallationThread(threading.Thread):
         # Always install base and base-devel
         self.packages.append("base")
         self.packages.append("base-devel")
-        
-        # TODO: use packages.xml instead of this list
-        
+               
         self.packages.append("libgnomeui")
         
         # TODO: Do not use cinnarch-meta!!!
@@ -230,12 +231,13 @@ class InstallationThread(threading.Thread):
         
         self.chroot_mount()
         
-        #auto_addons
-        #auto_fstab
-        #auto_mdadm
-        #auto_luks
+        #self.auto_addons()
+        #self.auto_fstab()
+        #self.auto_mdadm()
+        #self.auto_luks()
+
         # tear down the chroot environment
-        #chroot_umount
+        #self.chroot_umount()
         
         pass
 
@@ -311,10 +313,7 @@ class InstallationThread(threading.Thread):
         
         ## Init pyalpm
 
-        self.pac = pac.Pac("/tmp/pacman.conf")
-        
-        # set callback queue
-        self.pac.set_callback_queue(self.callback_queue)
+        self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         
         #self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
         #self.pac.set_callback('event', self.pacman_cb_event)
@@ -327,7 +326,6 @@ class InstallationThread(threading.Thread):
     # needs testing, but it seems to be the way to do it now
     # must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
-        import shutil
         #removed / from etc to make path relative...
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/")
         #use copytree for cp -r
@@ -336,6 +334,7 @@ class InstallationThread(threading.Thread):
         except FileExistsError:
             #ignore if exists
             pass
+
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
         dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]

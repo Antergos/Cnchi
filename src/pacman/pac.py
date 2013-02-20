@@ -3,7 +3,8 @@
 #
 #  pac.py
 #
-#  This file has fragments of code from pamac (package manager from Manjaro)
+#  This file has fragments of code from 'pamac'
+#  (pamac is a package manager from Manjaro team)
 #  Check it at http://git.manjaro.org/core/pamac
 #  
 #  Copyright 2013 Manjaro (http://manjaro.org)
@@ -35,6 +36,7 @@
 import pyalpm
 import traceback
 import sys
+import gettext
 
 from collections import OrderedDict
 
@@ -45,9 +47,9 @@ from config import installer_settings
 import show_message as show
 
 class Pac(object):
-    def __init__(self, conf):
+    def __init__(self, conf, callback_queue):
         
-
+        self.callback_queue = callback_queue
         #self.t = None
         #self.transaction_desc = []
         self.t_lock = False
@@ -62,17 +64,6 @@ class Pac(object):
         #self.syncpkgs = OrderedDict()
         #self.localpkgs = OrderedDict()
         
-        # callback functions
-        # TODO: Change this, use the callback queue
-        self.callback_queue = None
-        self.cb = {}
-        self.cb['dl'] = None
-        self.cb['totaldl'] = None
-        self.cb['event'] = None
-        self.cb['conv'] = None
-        self.cb['progress'] = None
-        self.cb['log'] = None
-
         if conf is not None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
@@ -83,17 +74,14 @@ class Pac(object):
             if 'SyncFirst' in self.pacman_conf.options:
                 self.syncfirst = self.pacman_conf.options['SyncFirst']
 
-    def set_callback_queue(self, callback_queue):
-        self.callback_queue = callback_queue
-
     def init_transaction(self, **options):
         # Transaction initialization
-        self.handle.dlcb = self.cb['dl']
-        self.handle.totaldlcb = self.cb['totaldl']
-        self.handle.eventcb = self.cb['event']
-        self.handle.questioncb = self.cb['conv']
-        self.handle.progresscb = self.cb['progress']
-        self.handle.logcb = self.cb['log']
+        self.handle.dlcb = self.cb_dl
+        self.handle.totaldlcb = self.cb_totaldl
+        self.handle.eventcb = self.cb_event
+        self.handle.questioncb = self.cb_conv
+        self.handle.progresscb = self.cb_progress
+        self.handle.logcb = self.cb_log
         
         try:
             _t = handle.init_transaction(**options)
@@ -117,6 +105,7 @@ class Pac(object):
                 targets_replaces[pkg.name] = pkg.replaces
             if pkg.conflicts:
                 targets_conflicts[pkg.name] = pkg.conflicts
+
         warning = ''
         
         if targets_replaces:
@@ -126,9 +115,7 @@ class Pac(object):
                     if pkg:
                         if not pkg.name in self.conflict_to_remove.keys():
                             self.conflict_to_remove[pkg.name] = pkg
-                            if warning:
-                                warning = warning + '\n'
-                            warning = warning + pkg.name + ' will be replaced by ' + key 
+                            warning += _("%s will be replaced by %s\n") % (pkg.name, key)
         
         if targets_conflicts:
             for key, value in targets_conflicts.items():
@@ -204,7 +191,7 @@ class Pac(object):
                 
                 if len(self.to_add) + len(self.to_remove) == 0:
                     self.t.release()
-                    print("Nothing to update")
+                    print(_("Nothing to update"))
                 else:
                     self.t.release()
                     self.t = self.init_transaction(config.handle, noconflicts = True, nodeps = True, nodepversion = True)
@@ -321,93 +308,122 @@ class Pac(object):
         # TODO
         pass
 
-'''
-# Callbacks
-event_text = ' '
-def cb_event(ID, event, tupel):
-	global event_text
-	ProgressWindow.show_all()
-	while Gtk.events_pending():
-		Gtk.main_iteration()
-	for i in [1,3,5,7,9,11,15]:
-		if ID is i:
-			progress_label.set_text(event)
-			break
-		else :
-			progress_label.set_text(' ')
-	if ID is 27:
-		progress_label.set_text('Downloading '+format_size(total_size))
-		print('Downloading a file')
-	if ID is 17:
-		progress_label.set_text('Checking signatures')
-		print('Checking signatures')
-	progress_bar.set_fraction(0.0)
-	progress_bar.set_text('')
-	print(ID,event)
+    # queue operations
+    
+    def queue_action(self, action):
+        self.callback_queue.put(("action", action))
 
-def cb_conv(*args):
-	print("conversation", args)
+    def queue_icon(self, icon):
+        self.callback_queue.put(("icon", icon))
 
-_logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
+    def queue_target(self, target):
+        self.callback_queue.put(("target", target))
 
-def cb_log(level, line):
-	#global t
-	#try:
-	#	_line = str(_line, encoding='utf-8').strip("\n")
-	#except:
-	#	_line = str(_line, encoding='latin-1').strip("\n")
-	if not (level & _logmask):
-		return
-	if level & pyalpm.LOG_ERROR:
-		ErrorDialog.format_secondary_text("ERROR: "+line)
-		response = ErrorDialog.run()
-		if response:
-			ErrorDialog.hide()
-			#t.release()
-	elif level & pyalpm.LOG_WARNING:
-		WarningDialog.format_secondary_text("WARNING: "+line)
-		response = WarningDialog.run()
-		if response:
-			WarningDialog.hide()
-	elif level & pyalpm.LOG_DEBUG:
-		line = "DEBUG: " + line
-		print(line)
-	elif level & pyalpm.LOG_FUNCTION:
-		line = "FUNC: " + line
-		print(line)
-	#sys.stderr.write(line)
+    def queue_percent(self, percent):
+        self.callback_queue.put(("percent", percent))
 
-total_size = 0
-def totaldlcb(_total_size):
-	global total_size
-	total_size = _total_size
+    # Callbacks
+    def cb_event(self, ID, event, tupel):
+        if ID is 1:
+            self.action = _('Checking dependencies...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
+        elif ID is 3:
+            self.action = _('Checking file conflicts...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
+        elif ID is 5:
+            self.action = _('Resolving dependencies...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/setup.png'
+        elif ID is 7:
+            self.action = _('Checking inter conflicts...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
+        elif ID is 9:
+            self.action = _('Installing...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-add.png'
+        elif ID is 11:
+            self.action = _('Removing...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-delete.png'
+        elif ID is 13:
+            self.action = _('Upgrading...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-update.png'
+        elif ID is 15:
+            self.action = _('Checking integrity...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
+            self.already_transferred = 0
+        elif ID is 17:
+            self.action = _('Loading packages files...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
+            print('Loading packages files')
+        elif ID is 26:
+            self.action = _('Configuring...')
+            self.icon = '/usr/share/pamac/icons/24x24/status/setup.png'
+            print(_('Configuring a package'))
+        elif ID is 27:
+            print(_('Downloading a file'))
+        else:
+            self.action = ''
 
-already_transferred = 0
-def cb_dl(_target, _transferred, total):
-	global already_transferred
-	while Gtk.events_pending():
-		Gtk.main_iteration()
-	if total_size > 0:
-		fraction = (_transferred+already_transferred)/total_size
-	size = 0
-	if (to_remove or to_add):
-		for pkg in to_remove+to_add:
-			if pkg.name+'-'+pkg.version in _target:
-				size = pkg.size
-		if _transferred == size:
-			already_transferred += size
-		progress_label.set_text('Downloading '+format_size(total_size))
-		progress_bar.set_text(_target)
-		progress_bar.set_fraction(fraction)
-	else:
-		progress_label.set_text('Refreshing...')
-		progress_bar.set_text(_target)
-		progress_bar.pulse()
+        self.queue_target('')
+        self.queue_percent(str(0))
+        self.queue_action(self.action)
+        self.queue_icon(self.icon)
+        print(ID, event)
 
-def cb_progress(_target, _percent, n, i):
-	while Gtk.events_pending():
-		Gtk.main_iteration()
-	target = _target+' ('+str(i)+'/'+str(n)+')'
-	progress_bar.set_fraction(_percent/100)
-	progress_bar.set_text(target) 
-'''
+    def cb_conv(self, *args):
+        print("conversation", args)
+
+    def cb_log(self, level, line):
+        _logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
+
+        if not (level & _logmask):
+            return
+
+        if level & pyalpm.LOG_ERROR:
+            self.error = _("ERROR: %s") % line
+                #t.release()
+        elif level & pyalpm.LOG_WARNING:
+            self.warning = _("WARNING: %s") % line
+        elif level & pyalpm.LOG_DEBUG:
+            line = _("DEBUG: %s") % line
+            print(line)
+        elif level & pyalpm.LOG_FUNCTION:
+            line = _("FUNC: %s") % line
+            print(line)
+
+    def cb_totaldl(self, _total_size):
+        self.total_size = _total_size
+
+    def cb_dl(self, _target, _transferred, total):
+        if self.total_size > 0:
+            fraction = (_transferred + self.already_transferred) / self.total_size
+        size = 0
+        if (t.to_remove or t.to_add):
+            for pkg in t.to_remove+t.to_add:
+                if pkg.name+'-'+pkg.version in _target:
+                    size = pkg.size
+            if _transferred == size:
+                self.already_transferred += size
+            fsize = common.format_size(self.total_size)
+            self.action = _('Downloading %s') % fsize
+            self.target = _target
+            if fraction > 1:
+                self.percent = 0
+            else:
+                self.percent = fraction
+            self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
+        else:
+            self.action = _('Refreshing...')
+            self.target = _target
+            self.percent = 0
+            self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
+
+        self.queue_action(self.action)
+        self.queue_icon(self.icon)
+        self.queue_target(self.target)
+        self.queue_percent(str(self.percent))
+
+    def cb_progress(self, _target, _percent, n, i):
+        #self.target = _target + ' (' + str(i) + '/' + str(n) + ')'
+        self.target = "%s (%d/%d)" % (_target, i, n)
+        self.percent = _percent / 100
+        self.queue_target(self.target)
+        self.queue_percent(str(self.percent))
