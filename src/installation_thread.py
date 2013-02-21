@@ -33,6 +33,8 @@ import subprocess
 import os
 import sys
 import shutil
+import xml.etree.ElementTree as etree
+from urllib.request import urlopen
 
 from config import installer_settings
 
@@ -122,97 +124,105 @@ class InstallationThread(threading.Thread):
         
         # TODO: use packages.xml instead of this hardcoded list
 
-        with open('/proc/cmdline') as fp:
-            for line in fp:
-                if "uvesafb" in line:
-                    self.packages.append("v86d")
+        packages_xml=urlopen('http://install.cinnarch.com/packages.xml')
+        tree = etree.parse(packages_xml)
+        root = tree.getroot()
+
+        for child in root.iter('base_system'):
+            for base_pkg in child.iter('pkgname'):
+                self.packages.append(base_pkg.text)
+
+        # with open('/proc/cmdline') as fp:
+        #     for line in fp:
+        #         if "uvesafb" in line:
+        #             self.packages.append("v86d")
         
-        # Always install base and base-devel
-        self.packages.append("base")
-        self.packages.append("base-devel")
+        # # Always install base and base-devel
+        # self.packages.append("base")
+        # self.packages.append("base-devel")
                
-        self.packages.append("libgnomeui")
+        # self.packages.append("libgnomeui")
         
-        # TODO: Do not use cinnarch-meta!!!
-        self.packages.append("cinnarch-meta")
+        # # TODO: Do not use cinnarch-meta!!!
+        # self.packages.append("cinnarch-meta")
 
-        if installer_settings["use_ntp"]:
-            self.packages.append("ntp")
+        # if installer_settings["use_ntp"]:
+        #     self.packages.append("ntp")
 
-        graphics = self.get_graphic_card()
+        # graphics = self.get_graphic_card()
         
-        self.card = ""
+        # self.card = ""
 
-        if "ati" in graphics:
-            self.packages.append("xf86-video-ati")
-            self.packages.append("ati-dri")
-            self.card = "ati"
+        # if "ati" in graphics:
+        #     self.packages.append("xf86-video-ati")
+        #     self.packages.append("ati-dri")
+        #     self.card = "ati"
         
-        if "nvidia" in graphics:
-            self.packages.append("xf86-video-nouveau")
-            self.packages.append("nouveau-dri")
-            self.card = "nvidia"
+        # if "nvidia" in graphics:
+        #     self.packages.append("xf86-video-nouveau")
+        #     self.packages.append("nouveau-dri")
+        #     self.card = "nvidia"
         
-        if "intel" in graphics or "lenovo" in graphics:
-            self.packages.append("xf86-video-intel")
-            self.packages.append("intel-dri")
+        # if "intel" in graphics or "lenovo" in graphics:
+        #     self.packages.append("xf86-video-intel")
+        #     self.packages.append("intel-dri")
         
-        if "virtualbox" in graphics:
-            self.packages.append("virtualbox-guest-utils")
-            self.packages.append("virtualbox-guest-modules")
+        # if "virtualbox" in graphics:
+        #     self.packages.append("virtualbox-guest-utils")
+        #     self.packages.append("virtualbox-guest-modules")
         
-        if "vmware" in graphics:
-            self.packages.append("xf86-video-vmware")
+        # if "vmware" in graphics:
+        #     self.packages.append("xf86-video-vmware")
         
-        if "via" in graphics:
-            self.packages.append("xf86-video-openchrome")
+        # if "via" in graphics:
+        #     self.packages.append("xf86-video-openchrome")
         
-        wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
+        # wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
 
-        if "broadcom" in wlan:
-            self.packages.append("broadcom-wl")
+        # if "broadcom" in wlan:
+        #     self.packages.append("broadcom-wl")
             
-        if os.path.exists("/var/state/dhcp/dhclient.leases"):
-            self.packages.append("dhclient")
+        # if os.path.exists("/var/state/dhcp/dhclient.leases"):
+        #     self.packages.append("dhclient")
         
-        # Add filesystem packages
+        # # Add filesystem packages
         
-        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
-                                            "-o", "value", "-s", "TYPE"]).decode()
+        # fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
+        #                                     "-o", "value", "-s", "TYPE"]).decode()
 
-        if "ntfs" in fs_types:
-            self.packages.append("ntfs-3g")
+        # if "ntfs" in fs_types:
+        #     self.packages.append("ntfs-3g")
         
-        if "btrfs" in fs_types:
-            self.packages.append("btrfs-progs")
+        # if "btrfs" in fs_types:
+        #     self.packages.append("btrfs-progs")
 
-        if "nilfs2" in fs_types:
-            self.packages.append("nilfs-utils")
+        # if "nilfs2" in fs_types:
+        #     self.packages.append("nilfs-utils")
 
-        if "ext" in fs_types:
-            self.packages.append("e2fsprogs")
+        # if "ext" in fs_types:
+        #     self.packages.append("e2fsprogs")
 
-        if "reiserfs" in fs_types:
-            self.packages.append("reiserfsprogs")
+        # if "reiserfs" in fs_types:
+        #     self.packages.append("reiserfsprogs")
 
-        if "xfs" in fs_types:
-            self.packages.append("xfsprogs")
+        # if "xfs" in fs_types:
+        #     self.packages.append("xfsprogs")
 
-        if "jfs" in fs_types:
-            self.packages.append("jfsutils")
+        # if "jfs" in fs_types:
+        #     self.packages.append("jfsutils")
 
-        if "vfat" in fs_types:
-            self.packages.append("dosfstools")
+        # if "vfat" in fs_types:
+        #     self.packages.append("dosfstools")
 
-        # if raid:
-            #self.packages.append("dmraid")
+        # # if raid:
+        #     #self.packages.append("dmraid")
 
-        # Install chinese fonts
-        # TODO: check this out, not sure about this vars
-        if installer_settings["locale"] == "zh_TW" or \
-           installer_settings["locale"] == "zh_CN" or \
-           installer_settings["language_name"] == "chinese":
-            self.packages.append("opendesktop-fonts")
+        # # Install chinese fonts
+        # # TODO: check this out, not sure about this vars
+        # if installer_settings["locale"] == "zh_TW" or \
+        #    installer_settings["locale"] == "zh_CN" or \
+        #    installer_settings["language_name"] == "chinese":
+        #     self.packages.append("opendesktop-fonts")
 
     def get_graphic_card():
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
