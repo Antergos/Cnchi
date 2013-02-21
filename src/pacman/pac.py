@@ -393,9 +393,9 @@ class Pac(object):
         else:
             self.action = ''
 
-        self.queue_target('')
-        self.queue_percent(str(0))
         self.queue_action(self.action)
+        self.queue_target('')
+        self.queue_percent(0)
         self.queue_icon(self.icon)
         print(ID, event)
 
@@ -454,14 +454,14 @@ class Pac(object):
         self.queue_action(self.action)
         self.queue_icon(self.icon)
         self.queue_target(self.target)
-        self.queue_percent(str(self.percent))
+        self.queue_percent(self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
         #self.target = _target + ' (' + str(i) + '/' + str(n) + ')'
         self.target = "%s (%d/%d)" % (_target, i, n)
         self.percent = _percent / 100
         self.queue_target(self.target)
-        self.queue_percent(str(self.percent))
+        self.queue_percent(self.percent)
 
 if __name__ == '__main__':
     # This allows to translate all py texts (not the glade ones)

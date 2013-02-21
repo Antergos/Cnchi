@@ -153,8 +153,10 @@ class Slides(Gtk.Box):
                     print(event[1])
                 elif event[0] == "target":
                     print(event[1])
+                    self.info_label.set_markup(event[1])
                 elif event[0] == "percent":
                     print(event[1])
+                    self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
                     done = True
 
