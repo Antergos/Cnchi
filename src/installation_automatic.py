@@ -155,5 +155,12 @@ class InstallationAutomatic(Gtk.Box):
         mount_devices = {}
         mount_devices["automatic"] = self.auto_device
 
-        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices)
+        # TODO: Ask where to install GRUB
+        grub_device = self.auto_device
+        
+        self.thread = installation_thread.InstallationThread( \
+                        self.callback_queue, \
+                        mount_devices, \
+                        grub_device)
+                        
         self.thread.start()

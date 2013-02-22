@@ -119,6 +119,7 @@ class Slides(Gtk.Box):
 
     def show_install_messages(self):
         done = False
+        error = False
         
         while not done:
             try:
@@ -140,5 +141,11 @@ class Slides(Gtk.Box):
                     self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
                     done = True
+                    error = False
+                elif event[0] == "error":
+                    done = True
+                    error = True
 
             self.refresh()
+
+        # TODO: show install error or done message

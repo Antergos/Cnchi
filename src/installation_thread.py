@@ -67,53 +67,17 @@ class InstallationThread(threading.Thread):
         self.ssd = ssd
         self.mount_devices = mount_devices
         self.grub_device = grub_device
+    
         print(mount_devices)
 
         self.format_devices = format_devices
 
         self.running = True
         self.error = False
-        
-        self.auto_partition_script_path = os.path.join(\
-            installer_settings["CNCHI_DIR"], \
-            "scripts", _autopartition_script)
- 
+         
     @misc.raise_privileges    
     def run(self):
-        ## Create/Format partitions
-        # TODO: Check if /boot is in another partition than root!!!!
-        if self.method == 'automatic':
-            try:
-                if os.path.exists(self.auto_partition_script_path):
-                       self.root = self.mount_devices["automatic"]
-                       print("Root device: %s" % self.root)
-                       subprocess.Popen(["/bin/bash", \
-                                         self.auto_partition_script_path, \
-                                         self.root])
-            except subprocess.FileNotFoundError as e:
-                self.error = True
-                print (_("Can't execute the auto partition script"))
-            except subprocess.CalledProcessError as e:
-                self.error = True
-                print (_("CalledProcessError.output = %s") % e.output)
-        elif self.method == 'advanced':
-            if not os.path.exists('/install'):
-                os.mkdir('/install')
-            root_partition = self.mount_devices["/"]
-            subprocess.getoutput('mount %s /install' % root_partition)
-            subprocess.getoutput('mkdir -p /install/var/lib/pacman')
-            subprocess.getoutput('mkdir -p /install/etc/pacman.d/gnupg/')
-            subprocess.getoutput('mkdir -p /install/var/log/') 
-        elif self.method == 'easy' or self.method == 'advanced':
-            # TODO: format partitions using mkfs (format_devices)
-            pass
-
-        if self.error:
-            self.running = False
-            return
-            
-        ## Do real installation here
-
+        # Common vars
         self.packages = []
         
         self.dest_dir = "/install"
@@ -122,6 +86,51 @@ class InstallationThread(threading.Thread):
         self.initramfs = "initramfs-%s" % self.kernel_pkg       
 
         self.arch = os.uname()[-1]
+        
+        ## Create/Format partitions
+        
+        # TODO: Check if /boot is in another partition than root.
+        # (and then mount it)
+        
+        if self.method == 'automatic':
+            script_path = os.path.join(installer_settings["CNCHI_DIR"], \
+                "scripts", _autopartition_script)
+            try:
+                if os.path.exists(script_path):
+                    self.auto_device = self.mount_devices["automatic"]
+                    print("Automatic device: %s" % self.auto_device)
+                    subprocess.Popen(["/bin/bash", \
+                                     script_path, \
+                                     self.auto_device])
+            except subprocess.FileNotFoundError as e:
+                self.error = True
+                txt = _("Can't execute the auto partition script")
+                self.queue_event("error", txt)
+            except subprocess.CalledProcessError as e:
+                self.error = True
+                txt = "CalledProcessError.output = %s" % e.output
+                self.queue_event("error", txt)
+        
+        if self.method == 'advanced':
+            if not os.path.exists(self.dest_dir):
+                os.mkdir(self.dest_dir)
+            root_partition = self.mount_devices["/"]
+            
+            subprocess.Popen(['mount', root_partition, self.dest_dir])
+            subprocess.Popen(['mkdir', "-p", '%s/var/lib/pacman' % self.dest_dir])
+            subprocess.Popen(['mkdir', "-p", '%s/etc/pacman.d/gnupg/' % self.dest_dir])
+            subprocess.Popen(['mkdir', "-p", '%s/var/log/' % self.dest_dir]) 
+        
+        if self.method == 'easy' or self.method == 'advanced':
+            # TODO: format partitions using mkfs (format_devices)
+            pass
+
+        if self.error:
+            self.running = False            
+            return
+            
+        ## Do real installation here
+
     
         # List of tasks
 
@@ -130,8 +139,8 @@ class InstallationThread(threading.Thread):
         self.install_bootloader()
         self.configure_system()
 
-        # installation finished (0 means no error)
-        self.callback_queue.put(("finished", 0))
+        # installation finished ok
+        self.queue_event("finished")
 
         self.running = False
 
@@ -230,7 +239,7 @@ class InstallationThread(threading.Thread):
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
-        if self.is_uvesafb:
+        if self.is_uvesafb():
             for child in root.iter('uvesafb'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -276,7 +285,8 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
         
-        wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
+        wlan = subprocess.check_output(\
+            ["hwinfo", "--wlan", "--short"]).decode()
 
         if "broadcom" in wlan:
             for child in root.iter('broadcom'):
@@ -285,8 +295,8 @@ class InstallationThread(threading.Thread):
         
         # Add filesystem packages
         
-        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
-                                            "-o", "value", "-s", "TYPE"]).decode()
+        fs_types = subprocess.check_output(\
+            ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
         if "ntfs" in fs_types:
             for child in root.iter('ntfs'):
@@ -537,6 +547,10 @@ class InstallationThread(threading.Thread):
                       'enable', \
                       name])
         
+    def queue_event(self, event_type, event_text=""):
+        self.callback_queue.put((event_type, event_text))
+        print("%s : %s" % (event_type, event_text))
+
     def configure_system(self):
         # final install steps
         # set clock, language, timezone
@@ -561,17 +575,6 @@ class InstallationThread(threading.Thread):
         shutil.copy('/etc/pacman.d/mirrorlist', \
                     os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
         
-        # set timezone       
-        if self.wait_true('timezone_done'):
-            zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
-                                         installer_settings["timezone_zone"])
-            process = subprocess.Popen(['chroot', \
-              self.dest_dir, \
-              'ln', \
-              '-s', \
-              zoneinfo_path, \
-              "/etc/localtime"])
-
         # TODO: set uvesa framebuffer if necessary
         if self.is_uvesafb():
             v86d_path = os.path.join(self.dest_dir, "lib/initcpio/hooks/v86d")
@@ -583,22 +586,35 @@ class InstallationThread(threading.Thread):
                 sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
                 '''
 
-        # TODO: use hwdetect to create /etc/mkinitcpio.conf (check auto_hwdetect from arch-setup)
+        # TODO: use hwdetect to create /etc/mkinitcpio.conf
+        # (check auto_hwdetect from arch-setup)
         # Is this really necessary?
         
 
         # Copy important config files to target system
         files = [ "/etc/pacman.conf",
                   "/etc/yaourtrc" ]        
+        
         for path in files:
             shutil.copy(path, os.path.join(self.dest_dir, path))
 
         # enable services      
         self.enable_services([ "lightdm", "NetworkManager" ])
+        
         if installer_settings["use_ntp"]:
             self.enable_services([ "ntpd" ])
 
+        # set timezone       
+        if self.wait_true('timezone_done'):
+            zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
+                                         installer_settings["timezone_zone"])
+            process = subprocess.Popen(['chroot', \
+              self.dest_dir, \
+              'ln', \
+              '-s', \
+              zoneinfo_path, \
+              "/etc/localtime"])
         
-        # TODO: set user parameters (to be done in user.py ¿?)
-        
-
+        # TODO: set user parameters
+        if self.wait_true('user_done'):
+            pass

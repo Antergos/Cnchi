@@ -180,6 +180,14 @@ class InstallationEasy(Gtk.Box):
         format_devices = {}
         format_devices[root] = "ext4"
         format_devices[swap] = "swap"
+        
+        # TODO: Ask where to install GRUB
+        grub_device = mount_devices["/"]
 
-        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices)
+        self.thread = installation_thread.InstallationThread( \
+                        self.callback_queue, \
+                        mount_devices, \
+                        grub_device, \
+                        format_devices)
+        
         self.thread.start()
