@@ -238,9 +238,8 @@ class InstallationThread(threading.Thread):
 
         # Install chinese fonts
         # TODO: check this out, not sure about this vars
-        if installer_settings["locale"] == "zh_TW" or \
-           installer_settings["locale"] == "zh_CN" or \
-           installer_settings["language_name"] == "chinese":
+        if installer_settings["language_code"] == "zh_TW" or \
+           installer_settings["language_code"] == "zh_CN":
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
