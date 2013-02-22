@@ -110,8 +110,11 @@ class InstallationThread(threading.Thread):
 
         self.arch = os.uname()[-1]
     
+        # List of tasks
         self.select_packages()
         self.install_packages()
+        # self.install_bootloader()
+        # self.configure_system()
 
         # installation finished (0 means no error)
         self.callback_queue.put(("finished", 0))
@@ -233,9 +236,6 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # if raid:
-        #     self.packages.append("dmraid")
-
         # Install chinese fonts
         # TODO: check this out, not sure about this vars
         if installer_settings["language_code"] == "zh_TW" or \
@@ -243,6 +243,11 @@ class InstallationThread(threading.Thread):
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
+
+        # Lets start from a basic install, installing grub2 by default
+        for child in root.iter('grub'):
+            for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
 
     def get_graphic_card():
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
@@ -271,7 +276,6 @@ class InstallationThread(threading.Thread):
         #self.chroot_umount()
         
         pass
-
 
     def run_pacman(self):
         # create chroot environment on target system
