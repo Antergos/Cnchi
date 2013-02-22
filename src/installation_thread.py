@@ -122,107 +122,127 @@ class InstallationThread(threading.Thread):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        # TODO: use packages.xml instead of this hardcoded list
+        '''The list of packages is retrieved from an online XML to let us
+        control the pkgname in case of any modification'''
 
         packages_xml=urlopen('http://install.cinnarch.com/packages.xml')
         tree = etree.parse(packages_xml)
         root = tree.getroot()
 
         for child in root.iter('base_system'):
-            for base_pkg in child.iter('pkgname'):
-                self.packages.append(base_pkg.text)
+            for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
 
-        # with open('/proc/cmdline') as fp:
-        #     for line in fp:
-        #         if "uvesafb" in line:
-        #             self.packages.append("v86d")
+        with open('/proc/cmdline') as fp:
+            for line in fp:
+                if "uvesafb" in line:
+                    for child in root.iter('uvesafb'):
+                        for pkg in child.iter('pkgname'):
+                            self.packages.append(pkg.text)
         
-        # # Always install base and base-devel
-        # self.packages.append("base")
-        # self.packages.append("base-devel")
-               
-        # self.packages.append("libgnomeui")
+        if installer_settings["use_ntp"]:
+            for child in root.iter('ntp'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
+
+        graphics = self.get_graphic_card()
         
-        # # TODO: Do not use cinnarch-meta!!!
-        # self.packages.append("cinnarch-meta")
+        self.card = ""
 
-        # if installer_settings["use_ntp"]:
-        #     self.packages.append("ntp")
-
-        # graphics = self.get_graphic_card()
+        if "ati" in graphics:
+            for child in root.iter('ati'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
+            self.card = "ati"
         
-        # self.card = ""
-
-        # if "ati" in graphics:
-        #     self.packages.append("xf86-video-ati")
-        #     self.packages.append("ati-dri")
-        #     self.card = "ati"
+        if "nvidia" in graphics:
+            for child in root.iter('nvidia'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
+            self.card = "nvidia"
         
-        # if "nvidia" in graphics:
-        #     self.packages.append("xf86-video-nouveau")
-        #     self.packages.append("nouveau-dri")
-        #     self.card = "nvidia"
+        if "intel" in graphics or "lenovo" in graphics:
+            for child in root.iter('intel'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # if "intel" in graphics or "lenovo" in graphics:
-        #     self.packages.append("xf86-video-intel")
-        #     self.packages.append("intel-dri")
+        if "virtualbox" in graphics:
+            for child in root.iter('virtualbox'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # if "virtualbox" in graphics:
-        #     self.packages.append("virtualbox-guest-utils")
-        #     self.packages.append("virtualbox-guest-modules")
+        if "vmware" in graphics:
+            for child in root.iter('vmware'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # if "vmware" in graphics:
-        #     self.packages.append("xf86-video-vmware")
+        if "via" in graphics:
+            for child in root.iter('via'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # if "via" in graphics:
-        #     self.packages.append("xf86-video-openchrome")
+        wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
+
+        if "broadcom" in wlan:
+            for child in root.iter('broadcom'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # wlan = subprocess.check_output(["hwinfo", "--wlan", "--short"]).decode()
-
-        # if "broadcom" in wlan:
-        #     self.packages.append("broadcom-wl")
-            
-        # if os.path.exists("/var/state/dhcp/dhclient.leases"):
-        #     self.packages.append("dhclient")
+        # Add filesystem packages
         
-        # # Add filesystem packages
+        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
+                                            "-o", "value", "-s", "TYPE"]).decode()
+
+        if "ntfs" in fs_types:
+            for child in root.iter('ntfs'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
-        # fs_types = subprocess.check_output(["blkid", "-c", "/dev/null",\
-        #                                     "-o", "value", "-s", "TYPE"]).decode()
+        if "btrfs" in fs_types:
+            for child in root.iter('btrfs'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "ntfs" in fs_types:
-        #     self.packages.append("ntfs-3g")
-        
-        # if "btrfs" in fs_types:
-        #     self.packages.append("btrfs-progs")
+        if "nilfs2" in fs_types:
+            for child in root.iter('nilfs2'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "nilfs2" in fs_types:
-        #     self.packages.append("nilfs-utils")
+        if "ext" in fs_types:
+            for child in root.iter('ext'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "ext" in fs_types:
-        #     self.packages.append("e2fsprogs")
+        if "reiserfs" in fs_types:
+            for child in root.iter('reiserfs'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "reiserfs" in fs_types:
-        #     self.packages.append("reiserfsprogs")
+        if "xfs" in fs_types:
+            for child in root.iter('xfs'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "xfs" in fs_types:
-        #     self.packages.append("xfsprogs")
+        if "jfs" in fs_types:
+            for child in root.iter('jfs'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "jfs" in fs_types:
-        #     self.packages.append("jfsutils")
+        if "vfat" in fs_types:
+            for child in root.iter('vfat'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        # if "vfat" in fs_types:
-        #     self.packages.append("dosfstools")
+        # if raid:
+        #     self.packages.append("dmraid")
 
-        # # if raid:
-        #     #self.packages.append("dmraid")
-
-        # # Install chinese fonts
-        # # TODO: check this out, not sure about this vars
-        # if installer_settings["locale"] == "zh_TW" or \
-        #    installer_settings["locale"] == "zh_CN" or \
-        #    installer_settings["language_name"] == "chinese":
-        #     self.packages.append("opendesktop-fonts")
+        # Install chinese fonts
+        # TODO: check this out, not sure about this vars
+        if installer_settings["language_code"] == "zh_TW" or \
+           installer_settings["language_code"] == "zh_CN":
+            for child in root.iter('chinese'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
     def get_graphic_card():
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
