@@ -133,10 +133,6 @@ class Slides(Gtk.Box):
             Gtk.main_iteration()
 
     def show_install_messages(self):
-        # TODO: Check self.callback_queue and show message
-        # self.callback_queue
-        # self.progress_bar
-        
         done = False
         
         while not done:
