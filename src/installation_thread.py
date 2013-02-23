@@ -591,7 +591,8 @@ class InstallationThread(threading.Thread):
         # TODO: use hwdetect to create /etc/mkinitcpio.conf
         # (check auto_hwdetect from arch-setup)
         # Is this really necessary?
-        
+
+        self.queue_event("action", _("Configuring your new system"))
 
         # Copy important config files to target system
         files = [ "/etc/pacman.conf",
@@ -617,4 +618,38 @@ class InstallationThread(threading.Thread):
         
         # TODO: set user parameters
         if self.wait_true('user_done'):
-            pass
+            username = installer_settings['username']
+            sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
+            with open(sudoers_path, "wt") as sudoers:
+                sudoers.write('# Sudoers file')
+                sudoers.write('root ALL=(ALL) ALL')
+                sudoers.write('%s ALL=(ALL) ALL' % username)
+            subprocess.Popen(["chmod", "440", sudoers_path])
+            
+            print(_("Creating new user"))
+            
+            
+            '''
+                cp -rf /etc/skel ${DESTDIR}/etc/  >/dev/null 2>&1
+                rm -rf ${DESTDIR}/etc/skel/Desktop >/dev/null 2>&1
+                chroot ${DESTDIR} useradd -m -s /bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
+                chroot ${DESTDIR} passwd ${USER_NAME} < /tmp/.user_password >/dev/null 2>&1
+                chroot ${DESTDIR} chfn -f "${USER_FULL_NAME}" "${USER_NAME}" >/dev/null 2>&1
+                
+                rm /tmp/.user_password
+
+
+                cp -rf /etc/skel/.config /etc/skel/.gconf /etc/skel/.cache /etc/skel/.local /etc/skel/.gnome2 /etc/skel/.gtkrc-2 ${DESTDIR}/home/${USER_NAME}/ >/dev/null 2>&1
+                chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME} >/dev/null 2>&1
+            '''
+            
+            
+                
+            '''
+            'fullname' : '', \
+            'hostname' : 'cinnarch', \
+            'username' : '', \
+            'password' : '', \
+            'require_password' : True, \
+            'encrypt_home' : False, \
+            '''
