@@ -63,7 +63,8 @@ class Pac(object):
         self.to_add = []
         self.to_update = []
         self.to_provide = []
-
+        
+        self.already_transferred = 0
         self.total_size = 0
         
         self.do_syncfirst = False
@@ -96,7 +97,7 @@ class Pac(object):
             print(traceback.format_exc())
             return False
 
-    # TODO: Fix check_conflicts
+    # TODO: Fix check_conflicts (is this needed?)
     '''
     def check_conflicts(self):
         self.conflict_to_remove = {}
@@ -156,26 +157,6 @@ class Pac(object):
                     self.t_lock = False
                     break
 
-    def t_finalize(self):
-        try:
-            self.t.prepare()
-        except pyalpm.error:
-            print(traceback.format_exc())
-            self.t.release()
-            self.t_lock = False
-
-        try:
-            self.t.commit()
-        except pyalpm.error:
-            print(traceback.format_exc())
-
-    def get_new_version_available(self, pkgname):
-        for repo in self.handle.get_syncdbs():
-            pkg = repo.get_pkg(pkgname)
-            if pkg is not None:
-                return pkg.version
-                break
-
     def format_size(self, size):
         KiB_size = size / 1024
         if KiB_size < 1000:
@@ -184,9 +165,22 @@ class Pac(object):
         else:
             size_string = '%.2f MiB' % (KiB_size / 1024)
             return size_string
-    
+
+    def add_package(self, pkgname):
+        print("searching %s" % pkgname)
+        try:
+            for repo in self.handle.get_syncdbs():
+                pkg = repo.get_pkg(pkgname)
+                if pkg:
+                    print("adding %s" % pkgname)
+                    self.t.add_pkg(pkg)
+                    break
+        except pyalpm.error:
+            error = traceback.format_exc()
+
     def install_packages(self, pkg_names):
         self.to_add = []
+
         for pkgname in pkg_names:
             self.to_add.append(pkgname)
 
@@ -194,21 +188,27 @@ class Pac(object):
 
         # TODO: Fix check_conflicts. Meanwhile (just for testing)
         # we disable it
-       
-        #check_conflicts(transaction_dict.values())
+        #self.check_conflicts(transaction_dict.values())
         
-        if self.to_add:
-            self.t.release()
+        if self.to_add and self.t_lock is False:            
             self.t = self.init_transaction(noconflicts = True)
 
             if self.t is not False:
                 for pkgname in self.to_add:
-                    self.t.add_pkg(pkgname)
-                self.t_finalize()
-            
-            # Don't know if this is necessary
-            #self.t.release()
-            #self.t_lock = False
+                    self.add_package(pkgname)
+                        
+                try:
+                    self.t.prepare()
+                    print('to_add:', self.t.to_add)
+                    print('to_remove:', self.t.to_remove)
+
+                    self.t.commit()
+                    self.t.release()
+                    self.t_lock = False
+                except pyalpm.error:
+                    self.t.release()
+                    self.t_lock = False
+                    print(traceback.format_exc())
     
     def queue_event(self, event_type, event_text):
         self.callback_queue.put((event_type, event_text))
@@ -293,8 +293,8 @@ class Pac(object):
             fraction = (_transferred + self.already_transferred) / self.total_size
         size = 0
         if (self.t.to_remove or self.t.to_add):
-            for pkg in t.to_remove+t.to_add:
-                if pkg.name+'-'+pkg.version in _target:
+            for pkg in t.to_remove + t.to_add:
+                if pkg.name + '-' + pkg.version in _target:
                     size = pkg.size
             if _transferred == size:
                 self.already_transferred += size
@@ -318,7 +318,6 @@ class Pac(object):
         self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
-        #self.target = _target + ' (' + str(i) + '/' + str(n) + ')'
         self.target = "%s (%d/%d)" % (_target, i, n)
         self.percent = _percent / 100
         self.queue_event("target", self.target)
@@ -339,6 +338,9 @@ if __name__ == '__main__':
     callback_queue = queue.Queue(0)
     pac = Pac("/etc/pacman.conf", callback_queue)
     
-    pac.do_refresh()
+    # pac.do_refresh()
 
+    packages = ["bzflag"]
+    
+    pac.install_packages(packages)
 
