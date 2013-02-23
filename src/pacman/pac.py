@@ -211,7 +211,7 @@ class Pac(object):
             #self.t_lock = False
     
     def queue_event(self, event_type, event_text):
-        self.callback_queue((event_type, event_text))
+        self.callback_queue.put((event_type, event_text))
         print("%s : %s" % (event_type, event_text))
          
     # Callback functions 

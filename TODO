@@ -2,7 +2,7 @@ TODO (1st gen 2013)
 
 * General:
  - Check all file paths
- - Logging (it's a mess. It also creates log file with root privileges, is it ok?)
+ - Logging (should convert all print's to log messages)
 
 * Language screen:
  - Seems ok.
@@ -32,9 +32,10 @@ TODO (1st gen 2013)
  - Seems ok.
 
 * Slide screen:
- - Should hide close/exit button
+ - Check that the installer messages and progress show correctly
+ - Show finish message (error or everything ok)
 
-Also in installer_thread:
- - Real installation happens here.
- - Adapt transaction.py code to our needs
- - Get code from /arch/setup script
+Also in installer_thread.py and pac.py:
+ - Adapt pamac (Manjaro) code to our needs
+ - Follow /arch/setup script
+
