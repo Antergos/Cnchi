@@ -96,9 +96,7 @@ class InstallationThread(threading.Thread):
             self.running = False
             return
             
-        ## Do real installation here
-        
-        # Extracted from /arch/setup script
+        ## Do real installation here ###################################
 
         self.packages = []
         
@@ -111,6 +109,7 @@ class InstallationThread(threading.Thread):
         self.arch = os.uname()[-1]
     
         # List of tasks
+
         self.select_packages()
         self.install_packages()
         # self.install_bootloader()
@@ -120,6 +119,85 @@ class InstallationThread(threading.Thread):
         self.callback_queue.put(("finished", 0))
 
         self.running = False
+
+    # creates temporary pacman.conf file
+    def create_pacman_conf(self):
+
+        print("Creating pacman.conf for %s architecture" % self.arch)
+        
+        # Common repos
+        
+        # Instead of hardcoding pacman.conf, we could use an external file
+               
+        tmp_file = open("/tmp/pacman.conf", "wt")
+
+        tmp_file.write("[options]\n")
+        tmp_file.write("Architecture = auto\n")
+        tmp_file.write("SigLevel = PackageOptional\n")
+        tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+        tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
+        tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+
+        tmp_file.write("#### Cinnarch repos start here\n")
+        tmp_file.write("[cinnarch-core]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
+
+        tmp_file.write("[cinnarch-repo]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
+        tmp_file.write("#### Cinnarch repos end here\n\n")
+
+        tmp_file.write("[core]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        tmp_file.write("[extra]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        tmp_file.write("[community]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+        # x86_64 repos only
+        if self.arch == 'x86_64':   
+            tmp_file.write("[multilib]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
+    
+        tmp_file.close()
+        
+        ## Init pyalpm
+
+        self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        
+        
+    # add gnupg pacman files to installed system
+    # needs testing, but it seems to be the way to do it now
+    # must be also changed in the CLI Installer
+    def prepare_pacman_keychain(self):
+        #removed / from etc to make path relative...
+        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/")
+        #use copytree for cp -r
+        try:
+            shutil.copytree('/etc/pacman.d/gnupg', dest_path)
+        except FileExistsError:
+            #ignore if exists
+            pass
+
+    # Configures pacman and syncs db on destination system
+    def prepare_pacman(self):
+        dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]
+        
+        for d in dirs:
+            mydir = os.path.join(self.dest_dir, d)
+            if not os.path.exists(mydir):
+                os.makedirs(mydir)
+
+        self.prepare_pacman_keychain()
+        
+        self.pac.do_refresh()
 
     def select_packages(self):
         self.create_pacman_conf()
@@ -237,7 +315,6 @@ class InstallationThread(threading.Thread):
                     self.packages.append(pkg.text)
 
         # Install chinese fonts
-        # TODO: check this out, not sure about this vars
         if installer_settings["language_code"] == "zh_TW" or \
            installer_settings["language_code"] == "zh_CN":
             for child in root.iter('chinese'):
@@ -256,11 +333,6 @@ class InstallationThread(threading.Thread):
                               stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
         return p2.communicate()[0].decode()
-        
-    
-    
-    
-    
     
     def install_packages(self):
         self.run_pacman()
@@ -298,90 +370,6 @@ class InstallationThread(threading.Thread):
 
 
 
-    # creates temporary pacman.conf file
-    def create_pacman_conf(self):
-
-        print("Creating pacman.conf for %s architecture" % self.arch)
-        
-        # Common repos
-        
-        # Instead of hardcoding pacman.conf, we could use an external file
-               
-        tmp_file = open("/tmp/pacman.conf", "wt")
-
-        tmp_file.write("[options]\n")
-        tmp_file.write("Architecture = auto\n")
-        tmp_file.write("SigLevel = PackageOptional\n")
-        tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-        tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
-        tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
-
-        tmp_file.write("#### Cinnarch repos start here\n")
-        tmp_file.write("[cinnarch-core]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
-
-        tmp_file.write("[cinnarch-repo]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
-        tmp_file.write("#### Cinnarch repos end here\n\n")
-
-        tmp_file.write("[core]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        tmp_file.write("[extra]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        tmp_file.write("[community]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        # x86_64 repos only
-        if self.arch == 'x86_64':   
-            tmp_file.write("[multilib]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
-    
-        tmp_file.close()
-        
-        ## Init pyalpm
-
-        self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        
-        #self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
-        #self.pac.set_callback('event', self.pacman_cb_event)
-        #self.pac.set_callback('conv', self.pacman_cb_conv)
-        #self.pac.set_callback('progress', self.pacman_cb_progress)
-        #self.pac.set_callback('log', self.pacman_cb_log)
-        
-        
-    # add gnupg pacman files to installed system
-    # needs testing, but it seems to be the way to do it now
-    # must be also changed in the CLI Installer
-    def prepare_pacman_keychain(self):
-        #removed / from etc to make path relative...
-        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/")
-        #use copytree for cp -r
-        try:
-            shutil.copytree('/etc/pacman.d/gnupg', dest_path)
-        except FileExistsError:
-            #ignore if exists
-            pass
-
-    # Configures pacman and syncs db on destination system
-    def prepare_pacman(self):
-        dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]
-        
-        for d in dirs:
-            mydir = os.path.join(self.dest_dir, d)
-            if not os.path.exists(mydir):
-                os.makedirs(mydir)
-
-        self.prepare_pacman_keychain()
-        
-        self.pac.do_refresh()
     
     
     def chroot_mount(self):
