@@ -55,6 +55,12 @@ import pac
 
 _autopartition_script = 'auto_partition.sh'
 
+class InstallError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class InstallationThread(threading.Thread):
     def __init__(self, callback_queue, mount_devices, grub_device, format_devices=None, ssd=None):
         threading.Thread.__init__(self)
@@ -74,6 +80,11 @@ class InstallationThread(threading.Thread):
 
         self.running = True
         self.error = False
+    
+    def fatal(self, txt):
+        self.error = True
+        self.running = False
+        self.queue_event("error", txt)
          
     @misc.raise_privileges    
     def run(self):
@@ -103,13 +114,11 @@ class InstallationThread(threading.Thread):
                                      script_path, \
                                      self.auto_device])
             except subprocess.FileNotFoundError as e:
-                self.error = True
-                txt = _("Can't execute the auto partition script")
-                self.queue_event("error", txt)
+                self.fatal(_("Can't execute the auto partition script"))
+                return False
             except subprocess.CalledProcessError as e:
-                self.error = True
-                txt = "CalledProcessError.output = %s" % e.output
-                self.queue_event("error", txt)
+                self.fatal("CalledProcessError.output = %s" % e.output)
+                return False
         
         if self.method == 'advanced':
             if not os.path.exists(self.dest_dir):
@@ -125,92 +134,84 @@ class InstallationThread(threading.Thread):
             # TODO: format partitions using mkfs (format_devices)
             pass
 
-        if self.error:
-            self.running = False            
-            return
-            
         ## Do real installation here
 
-    
-        # List of tasks
-
-        self.select_packages()
-        self.install_packages()
-        self.install_bootloader()
-        self.configure_system()
+        try:
+            self.select_packages()
+            self.install_packages()
+            self.install_bootloader()
+            self.configure_system()
+        except InstallError as e:
+            self.fatal(e.value)
+            return False
 
         # installation finished ok
         self.queue_event("finished")
-
         self.running = False
+        return True
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
-
         print("Creating pacman.conf for %s architecture" % self.arch)
         
         # Common repos
         
         # Instead of hardcoding pacman.conf, we could use an external file
-               
-        tmp_file = open("/tmp/pacman.conf", "wt")
 
-        tmp_file.write("[options]\n")
-        tmp_file.write("Architecture = auto\n")
-        tmp_file.write("SigLevel = PackageOptional\n")
-        tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-        tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
-        tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+        with open("/tmp/pacman.conf", "wt") as tmp_file:
+            tmp_file.write("[options]\n")
+            tmp_file.write("Architecture = auto\n")
+            tmp_file.write("SigLevel = PackageOptional\n")
+            tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+            tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
+            tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 
-        tmp_file.write("[core]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        tmp_file.write("[extra]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        tmp_file.write("[community]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-        # x86_64 repos only
-        if self.arch == 'x86_64':   
-            tmp_file.write("[multilib]\n")
+            tmp_file.write("[core]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-        tmp_file.write("#### Cinnarch repos start here\n")
-        tmp_file.write("[cinnarch-core]\n") 
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
+            tmp_file.write("[extra]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-        tmp_file.write("[cinnarch-repo]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
-        tmp_file.write("#### Cinnarch repos end here\n\n")
+            tmp_file.write("[community]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-        tmp_file.close()
+            # x86_64 repos only
+            if self.arch == 'x86_64':   
+                tmp_file.write("[multilib]\n")
+                tmp_file.write("SigLevel = PackageRequired\n")
+                tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
+
+            tmp_file.write("#### Cinnarch repos start here\n")
+            tmp_file.write("[cinnarch-core]\n") 
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
+
+            tmp_file.write("[cinnarch-repo]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
+            tmp_file.write("#### Cinnarch repos end here\n\n")
         
         ## Init pyalpm
 
         try:
             self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except:
-            print("Can't initialize pyalpm. Aborting...")
-            sys.exit(1)
+            raise InstallError("Can't initialize pyalpm.")
         
-    # add gnupg pacman files to installed system
-    # needs testing, but it seems to be the way to do it now
-    # must be also changed in the CLI Installer
+    # Add gnupg pacman files to installed system
+    # Needs testing, but it seems to be the way to do it now
+    # Must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
-        #removed / from etc to make path relative...
+        # removed / from etc to make path relative...
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
-        #use copytree for cp -r
+        # use copytree for cp -r
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except FileExistsError:
-            #ignore if exists
+            # ignore if exists
             pass
 
     # Configures pacman and syncs db on destination system
@@ -356,7 +357,8 @@ class InstallationThread(threading.Thread):
         p2 = subprocess.Popen(["grep", "Model:[[:space:]]"],\
                               stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
-        return p2.communicate()[0].decode()
+        out, err = p2.communicate()
+        return out.decode()
     
     def is_uvesafb(self):
         process = subprocess.Popen(["grep", "-w", "uvesafb", "/proc/cmdline"])
@@ -432,27 +434,28 @@ class InstallationThread(threading.Thread):
     def auto_fstab(self):
         all_lines = []
         rootssd = 0
-        for e in self.mount_devices:
+        for path in self.mount_devices:
             opts = 'defaults'
-            parti = self.mount_devices[e]
+            parti = self.mount_devices[path]
             info = fs.get_info(parti)
             uuid = info['UUID']
             myfmt = self.format_devices[parti]
-            if e == '/':
+            if path == '/':
                 chk = '1'
             else:
                 chk = '0'
-                #subprocess.getoutput('mkdir -p /install%s' % e)
-                subprocess.Popen(["mkdir", "-p", os.path.join(self.dest_dir, e)])
+                #subprocess.getoutput('mkdir -p /install%s' % path)
+                full_path = os.path.join(self.dest_dir, path)
+                subprocess.Popen(["mkdir", "-p", full_path])
             for i in self.ssd:
-                if i in self.mount_devices[e]:
+                if i in self.mount_devices[path]:
                     if self.ssd[i]:
                         opts = 'defaults,noatime,nodiratime,discard'
-                        if e == '/':
+                        if path == '/':
                             rootssd = 1
                     else:
                         opts = 'defaults'
-            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, e, myfmt, opts, chk))
+            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
         if rootssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
         full_text = '\n'.join(all_lines)
@@ -489,7 +492,6 @@ class InstallationThread(threading.Thread):
         with open(grub_log, 'w') as f:
             # should use .decode() on out before writing to disk?
             f.write(out)
-            f.close()
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         
@@ -508,18 +510,19 @@ class InstallationThread(threading.Thread):
         with open(grub_log, 'a') as f:
             # should use .decode() on out before writing to disk?
             f.write(out)
-            f.close()
 
         self.chroot_umount()
 
-        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
+        core_path = os.path.join(self.dest_dir,\
+                    "boot/grub/i386-pc/core.img")
         
         if os.path.exists(core_path):
             print("GRUB(2) BIOS has been successfully installed.")
         else:
+            # should we stop installation here?
             print("ERROR installing GRUB(2) BIOS.")
 
-    # Wait for an installer_settings' var change with a timeout
+    # Wait for an installer_settings var change with a timeout
     # Timeout is in seconds (by default wait 5 minutes)
     def wait_true(self, var, timeout=300):
         import time
@@ -530,7 +533,8 @@ class InstallationThread(threading.Thread):
         
         print("Waiting for user to fill %s..." % var)
 
-        while installer_settings[var] == False and elapsed_time < timeout:
+        while installer_settings[var] == False and \
+              elapsed_time < timeout:
             elapsed_time = time.time() - start_time
 
         if elapsed_time < timeout:
@@ -543,13 +547,11 @@ class InstallationThread(threading.Thread):
             name += '.service'
             process = subprocess.Popen(['chroot', \
                       self.dest_dir, \
-                      'systemctl', \
-                      'enable', \
-                      name])
+                      'systemctl', 'enable', name])
         
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
-        print("%s : %s" % (event_type, event_text))
+        print("Queued event %s : %s" % (event_type, event_text))
 
     def configure_system(self):
         # final install steps
@@ -600,7 +602,8 @@ class InstallationThread(threading.Thread):
 
         # enable services      
         self.enable_services([ "lightdm", "NetworkManager" ])
-        
+
+        # TODO: we never ask the user about this...
         if installer_settings["use_ntp"]:
             self.enable_services([ "ntpd" ])
 
@@ -610,10 +613,7 @@ class InstallationThread(threading.Thread):
                                          installer_settings["timezone_zone"])
             process = subprocess.Popen(['chroot', \
               self.dest_dir, \
-              'ln', \
-              '-s', \
-              zoneinfo_path, \
-              "/etc/localtime"])
+              'ln', '-s', zoneinfo_path, "/etc/localtime"])
         
         # TODO: set user parameters
         if self.wait_true('user_done'):
