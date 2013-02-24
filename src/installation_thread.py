@@ -120,8 +120,8 @@ class InstallationThread(threading.Thread):
 
         self.select_packages()
         self.install_packages()
-        # self.install_bootloader()
-        # self.configure_system()
+        self.install_bootloader()
+        self.configure_system()
 
         # installation finished (0 means no error)
         self.callback_queue.put(("finished", 0))
@@ -347,16 +347,11 @@ class InstallationThread(threading.Thread):
         
         self.chroot_mount()
         
-        #self.auto_addons()
-        #self.auto_fstab()
-        #self.auto_mdadm()
-        #self.auto_luks()
+        self.auto_fstab()
 
         # tear down the chroot environment
-        #self.chroot_umount()
-        
-        pass
-
+        self.chroot_umount()
+    
     def run_pacman(self):
         # create chroot environment on target system
         # code straight from mkarchroot
@@ -386,6 +381,11 @@ class InstallationThread(threading.Thread):
         tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
         tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
         tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+
+		tmp_file.write("RootDir = %s" % self.dest_dir)
+		tmp_file.write("DBPath = %s/var/lib/pacman" % self.dest_dir)
+		tmp_file.write("GPGDir = %s/etc/pacman.d/gnupg/" % self.dest_dir)
+		tmp_file.write("LogFile = %s/var/log/pacman.log" % self.dest_dir)
 
         tmp_file.write("#### Cinnarch repos start here\n")
         tmp_file.write("[cinnarch-core]\n")
@@ -421,12 +421,6 @@ class InstallationThread(threading.Thread):
 
         self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         
-        #self.pac.set_callback('totaldl', self.pacman_cb_total_dl)
-        #self.pac.set_callback('event', self.pacman_cb_event)
-        #self.pac.set_callback('conv', self.pacman_cb_conv)
-        #self.pac.set_callback('progress', self.pacman_cb_progress)
-        #self.pac.set_callback('log', self.pacman_cb_log)
-        
         
     # add gnupg pacman files to installed system
     # needs testing, but it seems to be the way to do it now
@@ -455,9 +449,9 @@ class InstallationThread(threading.Thread):
         self.pac.do_refresh()   
     
     def chroot_mount(self):
-        dirs = [ "/sys", "/proc", "/dev" ]
+        dirs = [ "sys", "proc", "dev" ]
         for d in dirs:
-            mydir = os.path.join(self.dest_dir, d.lstrip('/'))
+            mydir = os.path.join(self.dest_dir, d)
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
@@ -472,10 +466,34 @@ class InstallationThread(threading.Thread):
         mydir = os.path.join(self.dest_dir, "dev")
         subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
         
+    def chroot_umount(self):
+        dirs = [ "proc", "sys", "dev" ]
+        
+        for d in dirs:
+            mydir = os.path.join(self.dest_dir, d)
+            suprocess.Popen(["umount", mydir])
 
     def is_running(self):
         return self.running
 
     def is_ok(self):
         return not self.error
-        
+
+    def auto_fstab(self):
+        # TODO: create a fstab for the installed system
+        # check auto_fstab from arch-setup
+        pass    
+
+    def install_bootloader(self):
+        # TODO: Install Grub2
+        # check dogrub_config and dogrub_bios from arch-setup
+        pass
+
+    def configure_system(self):
+        # final install steps
+        # set clock, language
+        # run mkinitcpio
+        # populate pacman keyring
+        # setup systemd services
+        # ... check configure_system from arch-setup
+        pass

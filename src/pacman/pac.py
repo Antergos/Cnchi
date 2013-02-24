@@ -39,17 +39,7 @@ import sys
 import locale
 import gettext
 
-# Useful vars for gettext (translations)
-APP = "cnchi"
-DIR = "po"
-
-import queue
-
-if __name__ == '__main__':
-    import pac_config
-else:   
-    from pacman import pac_config
-
+from pacman import pac_config
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
@@ -94,52 +84,6 @@ class Pac(object):
         except pyalpm.error:
             print(traceback.format_exc())
             return False
-
-    # TODO: Fix check_conflicts (is this needed?)
-    '''
-    def check_conflicts(self):
-        self.conflict_to_remove = {}
-        installed_conflicts = {}
-        for pkg in self.handle.get_localdb().pkgcache:
-            if pkg.conflicts:
-                installed_conflicts[pkg.name] = pkg.conflicts
-        targets_conflicts = {}
-        targets_replaces = {}
-        for pkg in self.t.to_add:
-            if pkg.replaces:
-                targets_replaces[pkg.name] = pkg.replaces
-            if pkg.conflicts:
-                targets_conflicts[pkg.name] = pkg.conflicts
-
-        warning = ''
-        
-        if targets_replaces:
-            for key, value in targets_replaces.items():
-                for name in value:
-                    pkg = self.handle.get_localdb().get_pkg(name)
-                    if pkg:
-                        if not pkg.name in self.conflict_to_remove.keys():
-                            self.conflict_to_remove[pkg.name] = pkg
-                            warning += _("%s will be replaced by %s\n") % (pkg.name, key)
-        
-        if targets_conflicts:
-            for key, value in targets_conflicts.items():
-                for name in value:
-                    pkg = self.handle.get_localdb().get_pkg(name)
-                    if pkg:
-                        if not pkg.name in self.conflict_to_remove.keys():
-                            self.conflict_to_remove[pkg.name] = pkg
-        
-        if installed_conflicts:
-            for key, value in installed_conflicts.items():
-                for name in value:
-                    for pkg in t.to_add:
-                        if pkg.name == name:
-                            if not pkg.name in self.conflict_to_remove.keys():
-                                self.conflict_to_remove[pkg.name] = pkg
-        if self.conflict_to_remove:
-            show.warning(warning)
-    '''
     
     # Sync databases like pacman -Sy
     def do_refresh(self):
@@ -184,12 +128,7 @@ class Pac(object):
 
         self.to_remove = []
 
-        # TODO: Fix check_conflicts. Meanwhile (just for testing)
-        # we disable it
-        #self.check_conflicts(transaction_dict.values())
-        
         if self.to_add and self.t_lock is False:    
-            #self.t = self.init_transaction(noconflicts = True)
             self.t = self.init_transaction()
             if self.t is not False:
                 for pkgname in self.to_add:
@@ -336,25 +275,3 @@ class Pac(object):
         self.percent = _percent / 100
         self.queue_event("target", self.target)
         self.queue_event("percent", self.percent)
-
-if __name__ == '__main__':
-    # This allows to translate all py texts (not the glade ones)
-    gettext.textdomain(APP)
-    gettext.bindtextdomain(APP, DIR)
-
-    locale_code, encoding = locale.getdefaultlocale()
-    lang = gettext.translation (APP, DIR, [locale_code], None, True)
-    lang.install()
-
-    # With this we can use _("string") to translate
-    gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
-
-    callback_queue = queue.Queue(0)
-    pac = Pac("/etc/pacman.conf", callback_queue)
-    
-    # pac.do_refresh()
-
-    packages = ["bzflag"]
-    
-    pac.install_packages(packages)
-
