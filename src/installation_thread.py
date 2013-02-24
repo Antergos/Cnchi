@@ -369,16 +369,6 @@ class InstallationThread(threading.Thread):
 
         #self.chroot_umount()
 
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
 
@@ -462,10 +452,7 @@ class InstallationThread(threading.Thread):
 
         self.prepare_pacman_keychain()
         
-        self.pac.do_refresh()
-=======
->>>>>>> 292d9016519c6d0e6702e80704b17a429e4c360c
-    
+        self.pac.do_refresh()   
     
     def chroot_mount(self):
         dirs = [ "/sys", "/proc", "/dev" ]
