@@ -43,6 +43,12 @@ base_dir = os.path.dirname(__file__) or '.'
 pacman_dir = os.path.join(base_dir, 'pacman')
 sys.path.insert(0, pacman_dir)
 
+# Insert the src/parted directory at the front of the path.
+base_dir = os.path.dirname(__file__) or '.'
+parted_dir = os.path.join(base_dir, 'parted')
+sys.path.insert(0, parted_dir)
+
+import fs_module as fs
 import misc
 
 import pac
@@ -50,7 +56,7 @@ import pac
 _autopartition_script = 'auto_partition.sh'
 
 class InstallationThread(threading.Thread):
-    def __init__(self, callback_queue, mount_devices, format_devices=None):
+    def __init__(self, callback_queue, mount_devices, format_devices=None, ssd=None):
         threading.Thread.__init__(self)
         
         self.callback_queue = callback_queue
@@ -58,7 +64,7 @@ class InstallationThread(threading.Thread):
         self.method = installer_settings['partition_mode']
         
         print("Installing using '%s' method" % self.method)
-        
+        self.ssd = ssd
         self.mount_devices = mount_devices
         print(mount_devices)
 
@@ -89,13 +95,13 @@ class InstallationThread(threading.Thread):
                 self.error = True
                 print (_("CalledProcessError.output = %s") % e.output)
         elif self.method == 'advanced':
-            if not os.path.exists('/install'):
-                os.mkdir('/install')
+            if not os.path.exists('/install-cinnarch'):
+                os.mkdir('/install-cinnarch')
             root_partition = self.mount_devices["/"]
-            subprocess.getoutput('mount %s /install' % root_partition)
-            subprocess.getoutput('mkdir -p /install/var/lib/pacman')
-            subprocess.getoutput('mkdir -p /install/etc/pacman.d/gnupg/')
-            subprocess.getoutput('mkdir -p /install/var/log/') 
+            subprocess.getoutput('mount %s /install-cinnarch' % root_partition)
+            subprocess.getoutput('mkdir -p /install-cinnarch/var/lib/pacman')
+            subprocess.getoutput('mkdir -p /install-cinnarch/etc/pacman.d/gnupg/')
+            subprocess.getoutput('mkdir -p /install-cinnarch/var/log/') 
         elif self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
             pass
@@ -108,7 +114,7 @@ class InstallationThread(threading.Thread):
 
         self.packages = []
         
-        self.dest_dir = "/install"
+        self.dest_dir = "/install-cinnarch"
         kernel_pkg = "linux"
         vmlinuz = "vmlinuz-%s" % kernel_pkg
         initramfs = "initramfs-%s" % kernel_pkg       
@@ -217,11 +223,11 @@ class InstallationThread(threading.Thread):
         packages_xml=urlopen('http://install.cinnarch.com/packages.xml')
         tree = etree.parse(packages_xml)
         root = tree.getroot()
-
+        self.packages.append('base')
         for child in root.iter('base_system'):
-            for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
-
+            pass
+            #for pkg in child.iter('pkgname'):
+                #self.packages.append(pkg.text)
         with open('/proc/cmdline') as fp:
             for line in fp:
                 if "uvesafb" in line:
@@ -343,11 +349,12 @@ class InstallationThread(threading.Thread):
         return p2.communicate()[0].decode()
     
     def install_packages(self):
+        #self.chroot_mount()
         self.run_pacman()
-        
-        self.chroot_mount()
-        
         self.auto_fstab()
+        self.copy_files()
+        #self.chroot_mount()
+        #self.auto_fstab()
 
         # tear down the chroot environment
         self.chroot_umount()
@@ -395,10 +402,37 @@ class InstallationThread(threading.Thread):
     def is_ok(self):
         return not self.error
 
+    def copy_files(self):
+        subprocess.getoutput('cp /etc/resolv.conf /install-cinnarch/etc/')
+        subprocess.getoutput('cp /etc/pacman.d/* /install-cinnarch/etc/pacman.d/')
+
     def auto_fstab(self):
-        # TODO: create a fstab for the installed system
-        # check auto_fstab from arch-setup
-        pass    
+        all_lines = []
+        rootssd = 0
+        for e in self.mount_devices:
+            opts = 'defaults'
+            parti = self.mount_devices[e]
+            info = fs.get_info(parti)
+            uuid = info['UUID']
+            myfmt = self.format_devices[parti]
+            if e == '/':
+                chk = '1'
+            else:
+                chk = '0'
+            for i in self.ssd:
+                if i in e:
+                    if self.ssd[i]:
+                        opts = 'defaults,noatime,nodiratime,discard'
+                        if e == '/':
+                            rootssd = 1
+                    else:
+                        opts = 'defaults'
+            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, e, myfmt, opts, chk))
+        if rootssd:
+            all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
+        full_text = '\n'.join(all_lines)
+        with open('/install-cinnarch/etc/fstab','w') as f:
+            f.write(full_text)
 
     def install_bootloader(self):
         # TODO: Install Grub2
