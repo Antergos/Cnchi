@@ -382,10 +382,10 @@ class InstallationThread(threading.Thread):
         tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
         tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 
-		tmp_file.write("RootDir = %s" % self.dest_dir)
-		tmp_file.write("DBPath = %s/var/lib/pacman" % self.dest_dir)
-		tmp_file.write("GPGDir = %s/etc/pacman.d/gnupg/" % self.dest_dir)
-		tmp_file.write("LogFile = %s/var/log/pacman.log" % self.dest_dir)
+        tmp_file.write("RootDir = %s" % self.dest_dir)
+        tmp_file.write("DBPath = %s/var/lib/pacman" % self.dest_dir)
+        tmp_file.write("GPGDir = %s/etc/pacman.d/gnupg/" % self.dest_dir)
+        tmp_file.write("LogFile = %s/var/log/pacman.log" % self.dest_dir)
 
         tmp_file.write("#### Cinnarch repos start here\n")
         tmp_file.write("[cinnarch-core]\n")
