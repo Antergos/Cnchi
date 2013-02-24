@@ -47,7 +47,7 @@
 		<pkgname>gst-libav</pkgname>
 		<pkgname>whois</pkgname>
 		<pkgname>dnsutils</pkgname>
-		<pkgname>gnome-screensaver</pkgname>
+		<pkgname>cinnamon-screensaver</pkgname>
 		<pkgname>brasero</pkgname>
 		<pkgname>gnome-system-monitor</pkgname>
 		<pkgname>pidgin</pkgname>
@@ -67,7 +67,7 @@
 		<pkgname>unrar</pkgname>
 		<pkgname>p7zip</pkgname>
 		<pkgname>gnome-menus2</pkgname>
-		<pkgname>gnome-control-center</pkgname>
+		<pkgname>cinnamon-control-center</pkgname>
 		<pkgname>python2</pkgname>
 		<pkgname>python2-gconf</pkgname>
 		<pkgname>telepathy-logger</pkgname>
