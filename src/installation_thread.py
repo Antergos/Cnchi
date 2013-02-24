@@ -70,7 +70,7 @@ class InstallationThread(threading.Thread):
         self.auto_partition_script_path = os.path.join(\
             installer_settings["CNCHI_DIR"], \
             "scripts", _autopartition_script)
-    
+ 
     @misc.raise_privileges    
     def run(self):
         ## Create/Format partitions
@@ -88,6 +88,14 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.error = True
                 print (_("CalledProcessError.output = %s") % e.output)
+        elif self.method == 'advanced':
+            if not os.path.exists('/install'):
+                os.mkdir('/install')
+            root_partition = self.mount_devices["/"]
+            subprocess.getoutput('mount %s /install' % root_partition)
+            subprocess.getoutput('mkdir -p /install/var/lib/pacman')
+            subprocess.getoutput('mkdir -p /install/etc/pacman.d/gnupg/')
+            subprocess.getoutput('mkdir -p /install/var/log/') 
         elif self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
             pass
@@ -249,7 +257,7 @@ class InstallationThread(threading.Thread):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-    def get_graphic_card():
+    def get_graphic_card(self):
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
                               stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["grep", "Model:[[:space:]]"],\
@@ -375,7 +383,7 @@ class InstallationThread(threading.Thread):
         dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]
         
         for d in dirs:
-            mydir = os.path.join(self.dest_dir, d)
+            mydir = os.path.join(self.dest_dir, d.lstrip('/'))
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
@@ -387,21 +395,20 @@ class InstallationThread(threading.Thread):
     def chroot_mount(self):
         dirs = [ "/sys", "/proc", "/dev" ]
         for d in dirs:
-            mydir = os.path.join(self.dest_dir, d)
+            mydir = os.path.join(self.dest_dir, d.lstrip('/'))
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
-        mydir = os.path.join(self.dest_dir, "/sys")
+        mydir = os.path.join(self.dest_dir, "sys")
         subprocess.Popen(["mount", "-t", "sysfs", "sysfs", mydir])
         subprocess.Popen(["chmod", "555", mydir])
 
-        mydir = os.path.join(self.dest_dir, "/proc")
+        mydir = os.path.join(self.dest_dir, "proc")
         subprocess.Popen(["mount", "-t", "proc", "proc", mydir])
         subprocess.Popen(["chmod", "555", mydir])
 
-        mydir = os.path.join(self.dest_dir, "/dev")
+        mydir = os.path.join(self.dest_dir, "dev")
         subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
-
         
 
     def is_running(self):

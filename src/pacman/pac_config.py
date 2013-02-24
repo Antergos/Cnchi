@@ -140,10 +140,10 @@ class PacmanConfig(object):
 	def __init__(self, conf = None, options = None):
 		self.options = {}
 		self.repos = collections.OrderedDict()
-		self.options["RootDir"] = "/"
-		self.options["DBPath"]  = "/var/lib/pacman"
-		self.options["GPGDir"]  = "/etc/pacman.d/gnupg/"
-		self.options["LogFile"] = "/var/log/pacman.log"
+		self.options["RootDir"] = "/install"
+		self.options["DBPath"]  = "/install/var/lib/pacman"
+		self.options["GPGDir"]  = "/install/etc/pacman.d/gnupg/"
+		self.options["LogFile"] = "/install/var/log/pacman.log"
 		self.options["Architecture"] = os.uname()[-1]
 		if conf is not None:
 			self.load_from_file(conf)

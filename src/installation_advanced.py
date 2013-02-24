@@ -72,7 +72,7 @@ _next_page = "timezone"
 _prev_page = "installation_ask"
 
 # Set this to true to avoid doing any changes on partitions
-_debug = True
+_debug = False
 
 class InstallationAdvanced(Gtk.Box):
 
@@ -420,7 +420,7 @@ class InstallationAdvanced(Gtk.Box):
                     path = p.path
                     
                     ## Get file system
-                    if p.fileSystem:
+                    if p.fileSystem and p.fileSystem.type:
                         fs_type = p.fileSystem.type
                     else:
                         #kludge, btrfs not being detected...
@@ -563,6 +563,7 @@ class InstallationAdvanced(Gtk.Box):
         label = row[3]
         fmt = row[4]
         partition_path = row[8]
+        fmtable = row[11]
         print(partition_path) 
         
         # set fs in dialog combobox
@@ -589,6 +590,7 @@ class InstallationAdvanced(Gtk.Box):
         # must format?
         format_check = self.ui.get_object('partition_format_check')
         format_check.set_active(fmt)
+        format_check.set_sensitive(fmtable)
 
         # Be sure to just call get_devices once
         if self.disks == None:
@@ -856,6 +858,8 @@ class InstallationAdvanced(Gtk.Box):
                 if mymount:         
                     self.diskdic['mounts'].append(mymount)       
                 myfmt = use_combo.get_active_text()
+                if myfmt == None:
+                    myfmt = ""
                 # Get selected size
                 size = int(size_spin.get_value())
                 print("size : %d" % size)

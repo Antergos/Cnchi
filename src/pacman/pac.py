@@ -36,7 +36,6 @@
 import pyalpm
 import traceback
 import sys
-
 import locale
 import gettext
 
@@ -67,7 +66,7 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        self.do_syncfirst = False
+        self.do_syncfirst = True
         
         if conf is not None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
@@ -87,7 +86,6 @@ class Pac(object):
         self.handle.questioncb = self.cb_conv
         self.handle.progresscb = self.cb_progress
         self.handle.logcb = self.cb_log
-        
         try:
             _t = self.handle.init_transaction(**options)
             print(_t.flags)
@@ -107,7 +105,7 @@ class Pac(object):
                 installed_conflicts[pkg.name] = pkg.conflicts
         targets_conflicts = {}
         targets_replaces = {}
-        for pkg in t.to_add:
+        for pkg in self.t.to_add:
             if pkg.replaces:
                 targets_replaces[pkg.name] = pkg.replaces
             if pkg.conflicts:
@@ -190,9 +188,9 @@ class Pac(object):
         # we disable it
         #self.check_conflicts(transaction_dict.values())
         
-        if self.to_add and self.t_lock is False:            
-            self.t = self.init_transaction(noconflicts = True)
-
+        if self.to_add and self.t_lock is False:    
+            #self.t = self.init_transaction(noconflicts = True)
+            self.t = self.init_transaction()
             if self.t is not False:
                 for pkgname in self.to_add:
                     self.add_package(pkgname)
@@ -288,17 +286,33 @@ class Pac(object):
     def cb_totaldl(self, _total_size):
         self.total_size = _total_size
 
+    def get_size(self, size):
+        size_txt = "%db" % size
+        if size >= 1000000000:
+            size /= 1000000000
+            size_txt = "%dG" % size
+
+        elif size >= 1000000:
+            size /= 1000000
+            size_txt = "%dM" % size
+
+        elif size >= 1000:
+            size /= 1000
+            size_txt = "%dK" % size
+
+        return size_txt
+
     def cb_dl(self, _target, _transferred, total):
         if self.total_size > 0:
             fraction = (_transferred + self.already_transferred) / self.total_size
         size = 0
         if (self.t.to_remove or self.t.to_add):
-            for pkg in t.to_remove + t.to_add:
+            for pkg in self.t.to_remove + self.t.to_add:
                 if pkg.name + '-' + pkg.version in _target:
                     size = pkg.size
             if _transferred == size:
                 self.already_transferred += size
-            fsize = common.format_size(self.total_size)
+            fsize = self.get_size(self.total_size)
             self.action = _('Downloading %s') % fsize
             self.target = _target
             if fraction > 1:

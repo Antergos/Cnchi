@@ -225,11 +225,11 @@ class Timezone(Gtk.Box):
         self.populate_zones()
         self.timezone = None
         self.forward_button.set_sensitive(False)
-
+        tr = 0
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=5)
-                self.auto_timezone_coords.task_done()
+                self.auto_timezone_coords.close()
             except queue.Empty:
                 print(_("Can't autodetect timezone coords"))
 
@@ -305,7 +305,6 @@ class Timezone(Gtk.Box):
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):
         super(AutoTimezoneThread, self).__init__()
-
         self.coords_queue = coords_queue
         self.stop_event = threading.Event()
 
@@ -338,7 +337,7 @@ class AutoTimezoneThread(threading.Thread):
         while not self.has_connection():
             time.sleep(1)  # Delay 1 second
             if self.stop_event.is_set():
-                self.coords_queue.clear()
+                #self.coords_queue.clear()
                 return
 
         # ok, now get our timezone
@@ -353,7 +352,6 @@ class AutoTimezoneThread(threading.Thread):
         if coords != 'error':
             coords = coords.split()
             self.coords_queue.put(coords)
-
 
         #### Time and Date window
 #               self.liststore_timezone = Gtk.ListStore(str)
