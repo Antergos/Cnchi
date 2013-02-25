@@ -60,7 +60,7 @@ class Slides(Gtk.Box):
         builder.add_from_file(os.path.join(self.ui_dir, "slides.ui"))
         builder.connect_signals(self)
 
-        self.progressbar = builder.get_object("progressbar")
+        self.progress_bar = builder.get_object("progressbar")
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
@@ -84,22 +84,6 @@ class Slides(Gtk.Box):
 
         super().add(builder.get_object("slides"))
         
-        # pac gui part (used to report pacman messages)
-        '''
-        self.pac_ui = Gtk.Builder()
-        self.pac_ui.add_from_file(os.path.join(self.ui_dir, 'pac.ui'))
-
-        self.progress_window = self.pac_ui.get_object('ProgressWindow')
-        self.progress_bar = self.pac_ui.get_object('progressbar2')
-        self.progress_label = self.pac_ui.get_object('progresslabel2')
-        self.error_dialog = self.pac_ui.get_object('ErrorDialog')
-        self.warning_dialog = self.pac_ui.get_object('WarningDialog')
-        self.question_dialog = self.pac_ui.get_object('QuestionDialog')
-        self.config_dialog = self.pac_ui.get_object('ConfDialog')
-        self.transaction_desc = self.pac_ui.get_object('transaction_desc')
-        self.down_label = self.pac_ui.get_object('down_label')
-        '''
-
     def translate_ui(self):
         txt = _("Learn more about Cinnarch")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
@@ -152,8 +136,7 @@ class Slides(Gtk.Box):
                     self.info_label.set_markup(event[1])
                 elif event[0] == "percent":
                     print(event[1])
-                    # was progress_bar...changing for now?
-                    self.progressbar.set_fraction(event[1])
+                    self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
                     done = True
 
