@@ -347,26 +347,18 @@ class InstallationThread(threading.Thread):
         return p2.communicate()[0].decode()
     
     def install_packages(self):
+        # create chroot environment on target system
         self.chroot_mount()
+        
         self.run_pacman()
         self.auto_fstab()
         self.copy_files()
-        #self.chroot_mount()
-        #self.auto_fstab()
-        # tear down the chroot environment
+
+        # tear down the chroot environment        
         self.chroot_umount()
     
     def run_pacman(self):
-        # create chroot environment on target system
-        # code straight from mkarchroot
-        #self.chroot_mount()
-        
         self.pac.install_packages(self.packages)
-
-        # ensure the disk is synced
-        #self.sync()
-
-        #self.chroot_umount()
     
     def chroot_mount(self):
         dirs = [ "sys", "proc", "dev" ]
