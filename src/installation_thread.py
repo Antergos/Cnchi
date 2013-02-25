@@ -110,15 +110,15 @@ class InstallationThread(threading.Thread):
             self.running = False
             return
             
-        ## Do real installation here ###################################
+        ## Do real installation here
 
         self.packages = []
         
         self.dest_dir = "/install"
-        kernel_pkg = "linux"
-        vmlinuz = "vmlinuz-%s" % kernel_pkg
-        initramfs = "initramfs-%s" % kernel_pkg       
-        pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % self.dest_dir
+        self.kernel_pkg = "linux"
+        self.vmlinuz = "vmlinuz-%s" % kernel_pkg
+        self.initramfs = "initramfs-%s" % kernel_pkg       
+        self.pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % self.dest_dir
 
         self.arch = os.uname()[-1]
     
@@ -392,8 +392,9 @@ class InstallationThread(threading.Thread):
         return not self.error
 
     def copy_files(self):
-        subprocess.getoutput('cp /etc/resolv.conf /install/etc/')
-        subprocess.getoutput('cp /etc/pacman.d/* /install/etc/pacman.d/')
+        subprocess.Popen(["cp", "/etc/resolv.conf", os.path.join(self.dest_dir, "etc")])
+        subprocess.Popen(["cp", "/etc/pacman.d/*", os.path.join(self.dest_dir, "etc/pacman.d")])
+        
 
     def auto_fstab(self):
         all_lines = []
@@ -408,7 +409,8 @@ class InstallationThread(threading.Thread):
                 chk = '1'
             else:
                 chk = '0'
-                subprocess.getoutput('mkdir -p /install%s' % e)
+                #subprocess.getoutput('mkdir -p /install%s' % e)
+                subprocess.Popen(["mkdir", "-p", os.path.join(self.dest_dir, e)])
             for i in self.ssd:
                 if i in self.mount_devices[e]:
                     if self.ssd[i]:
@@ -424,10 +426,270 @@ class InstallationThread(threading.Thread):
         with open('/install/etc/fstab','w') as f:
             f.write(full_text)
 
+    def grub_probe(self, target, device):
+        probe_bin = 'LD_LIBRARY_PATH="%s/usr/lib:%s/lib" %s/usr/sbin/grub-probe' % (self.dest_dir, self.dest_dir, self.dest_dir)
+        dst = os.path.join(self.dest_dir, device)
+        process = subprocess.Popen([probe_bin, '--target="%s"' % target, dst], stdout=subprocess.PIPE)
+        out, err = process.communicate()
+        return out
+        
     def install_bootloader(self):
         # TODO: Install Grub2
         # check dogrub_config and dogrub_bios from arch-setup
-        pass
+        
+        boot = {}
+        boot["fs_uuid"] = self.grub_probe("fs_uuid", "/boot")
+        boot["fs"] = self.grub_probe("fs", "/boot")
+        boot["fs_label"] = self.grub_probe("fs_label", "/boot")
+        boot["drive"] = self.grub_probe("drive", "/boot")
+        boot["hints_string"] = self.grub_probe("hints_string", "/boot")
+
+        root = {}
+        root["fs_uuid"] = self.grub_probe("fs_uuid", "/")
+        root["fs"] = self.grub_probe("fs", "/")
+        root["fs_label"] = self.grub_probe("fs_label", "/")
+        root["device"] = self.grub_probe("device", "/")
+        root["hints_string"] = self.grub_probe("hints_string", "/")
+
+        usr = {}
+        usr["fs_uuid"] = self.grub_probe("fs_uuid", "/usr")
+        usr["fs"] = self.grub_probe("fs", "/usr")
+        usr["fs_label"] = self.grub_probe("fs_label", "/usr")
+        usr["hints_string"] = self.grub_probe("hints_string", "/usr")
+
+        if root["fs_uuid"] == boot["fs_uuid"]:
+            subdir = "/boot"
+        else:
+            subdir = ""
+
+        grub_cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+        
+        try:
+            f = open(grub_cfg, "w")
+        except:
+            return False
+
+        f.write('insmod part_gpt\n')
+        f.write('insmod part_msdos\n')
+
+        # Include fat fs module - required for uefi systems.
+        f.write('insmod fat\n')
+
+        f.write('insmod %s\n' % boot['part_fs'])
+        f.write('insmod %s\n' % root['part_fs'])
+        f.write('insmod %s\n' % usr['part_fs'])
+
+        f.write('insmod search_fs_file\n')
+        f.write('insmod search_fs_uuid\n')
+        f.write('insmod search_label\n')
+
+        f.write('insmod linux\n')
+        f.write('insmod chain\n')
+
+        f.write('set pager="1"\n')
+        f.write('set locale_dir=$prefix/locale\n')
+
+    '''
+if [ -e "\${prefix}/\${grub_cpu}-\${grub_platform}/all_video.mod" ]; then
+    insmod all_video
+else
+    if [ "\${grub_platform}" == "efi" ]; then
+        insmod efi_gop
+        insmod efi_uga
+    fi
+    
+    if [ "\${grub_platform}" == "pc" ]; then
+        insmod vbe
+        insmod vga
+    fi
+    
+    insmod video_bochs
+    insmod video_cirrus
+fi
+
+insmod font
+
+search --fs-uuid --no-floppy --set=usr_part ${USR_PART_HINTS_STRING} ${USR_PART_FS_UUID}
+search --fs-uuid --no-floppy --set=root_part ${ROOT_PART_HINTS_STRING} ${ROOT_PART_FS_UUID}
+
+if [ -e "(\${usr_part})/share/grub/unicode.pf2" ]; then
+    set _fontfile="(\${usr_part})/share/grub/unicode.pf2"
+else
+    if [ -e "(\${root_part})/usr/share/grub/unicode.pf2" ]; then
+        set _fontfile="(\${root_part})/usr/share/grub/unicode.pf2"
+    else
+        if [ -e "\${prefix}/fonts/unicode.pf2" ]; then
+            set _fontfile="\${prefix}/fonts/unicode.pf2"
+        fi
+    fi
+fi
+
+if loadfont "\${_fontfile}" ; then
+    insmod gfxterm
+    set gfxmode="auto"
+    
+    terminal_input console
+    terminal_output gfxterm
+fi
+
+EOF
+    
+    echo "" >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+    sort "/tmp/.device-names" >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+    echo "" >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+    
+    if [[ "${NAME_SCHEME_PARAMETER}" == "FSUUID" ]]; then
+        GRUB_ROOT_DRIVE="search --fs-uuid --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_UUID}"
+        _rootpart="UUID=${ROOT_PART_FS_UUID}"
+        
+    elif [[ "${NAME_SCHEME_PARAMETER}" == "PARTUUID" ]]; then
+        GRUB_ROOT_DRIVE="search --fs-uuid --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_UUID}" # GRUB(2) does not yet support PARTUUID
+        _rootpart="/dev/disk/by-partuuid/${ROOT_PART_GPT_GUID}"
+        
+    elif [[ "${NAME_SCHEME_PARAMETER}" == "FSLABEL" ]]; then
+        GRUB_ROOT_DRIVE="search --label --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_LABEL}"
+        _rootpart="LABEL=${ROOT_PART_FS_LABEL}"
+        
+    elif [[ "${NAME_SCHEME_PARAMETER}" == "PARTLABEL" ]]; then
+        GRUB_ROOT_DRIVE="search --label --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_LABEL}" # GRUB(2) does not yet support PARTLABEL
+        _rootpart="/dev/disk/by-partlabel/${ROOT_PART_GPT_LABEL}"
+        
+    else
+        GRUB_ROOT_DRIVE="set root="${BOOT_PART_DRIVE}""
+        _rootpart="${ROOT_PART_DEVICE}"
+        
+    fi
+    
+    # fallback to device if no label or uuid can be detected, eg. luks device
+    if [[ -z "${ROOT_PART_FS_UUID}" ]] && [[ -z "${ROOT_PART_FS_LABEL}" ]]; then
+        _rootpart="${ROOT_PART_DEVICE}"
+    fi
+    
+    LINUX_UNMOD_COMMAND="linux ${subdir}/${VMLINUZ} root=${_rootpart} ${ROOTFLAGS} rootfstype=${ROOTFS} ${RAIDARRAYS} ${CRYPTSETUP} ro"
+    LINUX_MOD_COMMAND=$(echo "${LINUX_UNMOD_COMMAND}" | sed -e 's#   # #g' | sed -e 's#  # #g')
+    
+    ## create default kernel entry
+    cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+# (${NUMBER}) Cinnarch
+menuentry "Cinnarch" {
+    set gfxpayload="keep"
+    ${GRUB_ROOT_DRIVE}
+    ${LINUX_MOD_COMMAND}
+    initrd ${subdir}/${INITRAMFS}.img
+}
+
+EOF
+    
+    NUMBER=$((${NUMBER}+1))
+    
+    ## create kernel fallback entry
+    cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+# (${NUMBER}) Cinnarch Fallback
+menuentry "Cinnarch Fallback" {
+    set gfxpayload="keep"
+    ${GRUB_ROOT_DRIVE}
+    ${LINUX_MOD_COMMAND}
+    initrd ${subdir}/${INITRAMFS}-fallback.img
+}
+
+EOF
+    
+    NUMBER=$((${NUMBER}+1))
+    
+    cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+if [ "\${grub_platform}" == "efi" ]; then
+    
+    ## UEFI Shell 2.0
+    ## Will work only in grub(2) uefi
+    #menuentry "UEFI \${_UEFI_ARCH} Shell 2.0 - For Spec. Ver. >=2.3 systems" {
+    #    search --fs-uuid --no-floppy --set=root ${UEFISYS_PART_HINTS_STRING} ${UEFISYS_PART_FS_UUID}
+    #    chainloader /efi/tools/shell\${_SPEC_UEFI_ARCH}.efi
+    #}
+    
+    ## UEFI Shell 1.0
+    ## Will work only in grub(2) uefi
+    #menuentry "UEFI \${_UEFI_ARCH} Shell 1.0 - For Spec. Ver. <2.3 systems" {
+    #    search --fs-uuid --no-floppy --set=root ${UEFISYS_PART_HINTS_STRING} ${UEFISYS_PART_FS_UUID}
+    #    chainloader /efi/tools/shell\${_SPEC_UEFI_ARCH}_old.efi
+    #}
+    
+fi
+
+EOF
+    
+    NUMBER=$((${NUMBER}+1))
+    
+    cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+if [ "\${grub_platform}" == "efi" ]; then
+    
+    ## Windows x86_64 UEFI
+    ## Will work only in grub(2) uefi x86_64
+    #menuentry \"Microsoft Windows x86_64 UEFI-GPT\" {
+    #    insmod part_gpt
+    #    insmod fat
+    #    insmod search_fs_uuid
+    #    insmod chain
+    #    search --fs-uuid --no-floppy --set=root ${UEFISYS_PART_HINTS_STRING} ${UEFISYS_PART_FS_UUID}
+    #    chainloader /efi/Microsoft/Boot/bootmgfw.efi
+    #}
+    
+fi
+
+EOF
+    
+    NUMBER=$((${NUMBER}+1))
+    
+    ## TODO: Detect actual Windows installation if any
+    ## create example file for windows
+    cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+if [ "\${grub_platform}" == "pc" ]; then
+    
+    ## Windows BIOS
+    ## Will work only in grub(2) bios
+    #menuentry \"Microsoft Windows 7 BIOS-MBR\" {
+    #    insmod part_msdos
+    #    insmod ntfs
+    #    insmod search_fs_uuid
+    #    insmod ntldr
+    #    search --fs-uuid --no-floppy --set=root 69B235F6749E84CE
+    #    ntldr /bootmgr
+    #}
+    
+fi
+
+EOF
+    
+    ## copy unicode.pf2 font file
+    cp -f "${DESTDIR}/usr/share/grub/unicode.pf2" "${DESTDIR}/${GRUB_PREFIX_DIR}/fonts/unicode.pf2"
+    
+    ## Edit grub.cfg config file
+    # DIALOG --msgbox "You must now review the grub(2) configuration file.\n\nYou will now be put into the editor. After you save your changes, exit the editor." 0 0
+    # geteditor || return 1
+    # "${EDITOR}" "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
+
+    
+    unset BOOT_PART_FS_UUID
+    unset BOOT_PART_FS
+    unset BOOT_PART_FS_LABEL
+    unset BOOT_PART_DRIVE
+    
+    unset ROOT_PART_FS_UUID
+    unset ROOT_PART_FS
+    unset ROOT_PART_FS_LABEL
+    unset ROOT_PART_DEVICE
+    
+    unset GRUB_ROOT_DRIVE
+    unset LINUX_UNMOD_COMMAND
+    unset LINUX_MOD_COMMAND
+    
+    
+}
+        '''
 
     def configure_system(self):
         # final install steps
