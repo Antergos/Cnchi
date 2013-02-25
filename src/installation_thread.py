@@ -95,13 +95,13 @@ class InstallationThread(threading.Thread):
                 self.error = True
                 print (_("CalledProcessError.output = %s") % e.output)
         elif self.method == 'advanced':
-            if not os.path.exists('/install-cinnarch'):
-                os.mkdir('/install-cinnarch')
+            if not os.path.exists('/install'):
+                os.mkdir('/install')
             root_partition = self.mount_devices["/"]
-            subprocess.getoutput('mount %s /install-cinnarch' % root_partition)
-            subprocess.getoutput('mkdir -p /install-cinnarch/var/lib/pacman')
-            subprocess.getoutput('mkdir -p /install-cinnarch/etc/pacman.d/gnupg/')
-            subprocess.getoutput('mkdir -p /install-cinnarch/var/log/') 
+            subprocess.getoutput('mount %s /install' % root_partition)
+            subprocess.getoutput('mkdir -p /install/var/lib/pacman')
+            subprocess.getoutput('mkdir -p /install/etc/pacman.d/gnupg/')
+            subprocess.getoutput('mkdir -p /install/var/log/') 
         elif self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
             pass
@@ -114,7 +114,7 @@ class InstallationThread(threading.Thread):
 
         self.packages = []
         
-        self.dest_dir = "/install-cinnarch"
+        self.dest_dir = "/install"
         kernel_pkg = "linux"
         vmlinuz = "vmlinuz-%s" % kernel_pkg
         initramfs = "initramfs-%s" % kernel_pkg       
@@ -152,16 +152,6 @@ class InstallationThread(threading.Thread):
         tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
         tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 
-        tmp_file.write("#### Cinnarch repos start here\n")
-        tmp_file.write("[cinnarch-core]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
-
-        tmp_file.write("[cinnarch-repo]\n")
-        tmp_file.write("SigLevel = PackageRequired\n")
-        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
-        tmp_file.write("#### Cinnarch repos end here\n\n")
-
         tmp_file.write("[core]\n")
         tmp_file.write("SigLevel = PackageRequired\n")
         tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
@@ -179,7 +169,17 @@ class InstallationThread(threading.Thread):
             tmp_file.write("[multilib]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
-    
+
+        tmp_file.write("#### Cinnarch repos start here\n")
+        tmp_file.write("[cinnarch-core]\n") 
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
+
+        tmp_file.write("[cinnarch-repo]\n")
+        tmp_file.write("SigLevel = PackageRequired\n")
+        tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
+        tmp_file.write("#### Cinnarch repos end here\n\n")
+
         tmp_file.close()
         
         ## Init pyalpm
@@ -223,11 +223,9 @@ class InstallationThread(threading.Thread):
         packages_xml=urlopen('http://install.cinnarch.com/packages.xml')
         tree = etree.parse(packages_xml)
         root = tree.getroot()
-        self.packages.append('base')
         for child in root.iter('base_system'):
-            pass
-            #for pkg in child.iter('pkgname'):
-                #self.packages.append(pkg.text)
+            for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
         with open('/proc/cmdline') as fp:
             for line in fp:
                 if "uvesafb" in line:
@@ -349,20 +347,19 @@ class InstallationThread(threading.Thread):
         return p2.communicate()[0].decode()
     
     def install_packages(self):
-        #self.chroot_mount()
+        self.chroot_mount()
         self.run_pacman()
         self.auto_fstab()
         self.copy_files()
         #self.chroot_mount()
         #self.auto_fstab()
-
         # tear down the chroot environment
         self.chroot_umount()
     
     def run_pacman(self):
         # create chroot environment on target system
         # code straight from mkarchroot
-        self.chroot_mount()
+        #self.chroot_mount()
         
         self.pac.install_packages(self.packages)
 
@@ -394,7 +391,7 @@ class InstallationThread(threading.Thread):
         
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
-            suprocess.Popen(["umount", mydir])
+            subprocess.Popen(["umount", mydir])
 
     def is_running(self):
         return self.running
@@ -403,8 +400,8 @@ class InstallationThread(threading.Thread):
         return not self.error
 
     def copy_files(self):
-        subprocess.getoutput('cp /etc/resolv.conf /install-cinnarch/etc/')
-        subprocess.getoutput('cp /etc/pacman.d/* /install-cinnarch/etc/pacman.d/')
+        subprocess.getoutput('cp /etc/resolv.conf /install/etc/')
+        subprocess.getoutput('cp /etc/pacman.d/* /install/etc/pacman.d/')
 
     def auto_fstab(self):
         all_lines = []
@@ -419,8 +416,9 @@ class InstallationThread(threading.Thread):
                 chk = '1'
             else:
                 chk = '0'
+                subprocess.getoutput('mkdir -p /install%s' % e)
             for i in self.ssd:
-                if i in e:
+                if i in self.mount_devices[e]:
                     if self.ssd[i]:
                         opts = 'defaults,noatime,nodiratime,discard'
                         if e == '/':
@@ -431,7 +429,7 @@ class InstallationThread(threading.Thread):
         if rootssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
         full_text = '\n'.join(all_lines)
-        with open('/install-cinnarch/etc/fstab','w') as f:
+        with open('/install/etc/fstab','w') as f:
             f.write(full_text)
 
     def install_bootloader(self):

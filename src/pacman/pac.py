@@ -61,7 +61,7 @@ class Pac(object):
         if conf is not None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
-            self.holpkg = None
+            self.holdpkg = None
             self.syncfirst = None
             if 'HoldPkg' in self.pacman_conf.options:
                 self.holdpkg = self.pacman_conf.options['HoldPkg']
@@ -117,6 +117,14 @@ class Pac(object):
                     print("adding %s" % pkgname)
                     self.t.add_pkg(pkg)
                     break
+                else:
+                    #this is used for groups.  However, cinnarch repo coming
+                    # first causes errors.  So I just moved them to the back.
+                    l = pyalpm.find_grp_pkgs([repo], pkgname)
+                    if l:
+                        lss = []
+                        for pakg in l:
+                                self.t.add_pkg(pakg)
         except pyalpm.error:
             error = traceback.format_exc()
 

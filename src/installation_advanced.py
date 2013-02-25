@@ -1353,7 +1353,6 @@ class InstallationAdvanced(Gtk.Box):
                                     fs.label_fs(fisy, partition_path, lbl)
                     elif _debug:
                         print("Partition %s not found in stage_opts" % partition_path)
-
         self.start_installation()
         
         ## Restore "Next" button text
@@ -1377,7 +1376,7 @@ class InstallationAdvanced(Gtk.Box):
     def start_installation(self):
         ## should we add already mounted partitions to the list of
         ## partitions we will mount in the new system?
-        
+        format_devices = {} 
         mount_devices = {} 
         for disk_path in self.disks:
             disk = self.disks[disk_path]
@@ -1390,13 +1389,12 @@ class InstallationAdvanced(Gtk.Box):
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
+                    format_devices[partition_path] = fs_type
                 elif pm.check_mounted(p):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
                     # TODO: also add swap ?
         
-        # TODO: Also give format information in format_devices
-        format_devices = None
         
-        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices)
+        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices, self.ssd)
         self.thread.start()
