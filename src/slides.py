@@ -31,6 +31,7 @@
 from gi.repository import Gtk, WebKit
 from config import installer_settings
 import os
+import queue
 
 _scroll_step = 4
 
