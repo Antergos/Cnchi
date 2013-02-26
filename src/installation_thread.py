@@ -191,10 +191,10 @@ class InstallationThread(threading.Thread):
     # must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
         #removed / from etc to make path relative...
-        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/")
+        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
         #use copytree for cp -r
         try:
-            shutil.copytree('/etc/pacman.d/gnupg', dest_path)
+            misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except FileExistsError:
             #ignore if exists
             pass
@@ -391,9 +391,8 @@ class InstallationThread(threading.Thread):
         return not self.error
 
     def copy_files(self):
-        subprocess.Popen(["cp", "/etc/resolv.conf", os.path.join(self.dest_dir, "etc")])
-        subprocess.Popen(["cp", "/etc/pacman.d/*", os.path.join(self.dest_dir, "etc/pacman.d")])
-        
+        #subprocess.Popen(["cp", "/etc/resolv.conf", os.path.join(self.dest_dir, "etc")])
+        pass
 
     def auto_fstab(self):
         all_lines = []
