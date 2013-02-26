@@ -56,7 +56,7 @@ import pac
 _autopartition_script = 'auto_partition.sh'
 
 class InstallationThread(threading.Thread):
-    def __init__(self, callback_queue, mount_devices, format_devices=None, ssd=None):
+    def __init__(self, callback_queue, mount_devices, grub_device, format_devices=None, ssd=None):
         threading.Thread.__init__(self)
         
         self.callback_queue = callback_queue
@@ -66,6 +66,7 @@ class InstallationThread(threading.Thread):
         print("Installing using '%s' method" % self.method)
         self.ssd = ssd
         self.mount_devices = mount_devices
+        self.grub_device = grub_device
         print(mount_devices)
 
         self.format_devices = format_devices
@@ -98,7 +99,6 @@ class InstallationThread(threading.Thread):
         elif self.method == 'advanced':
             if not os.path.exists('/install'):
                 os.mkdir('/install')
-            boot_partition = self.mount_devices["/boot"]
             root_partition = self.mount_devices["/"]
             subprocess.getoutput('mount %s /install' % root_partition)
             subprocess.getoutput('mkdir -p /install/var/lib/pacman')
@@ -127,7 +127,7 @@ class InstallationThread(threading.Thread):
 
         self.select_packages()
         self.install_packages()
-        self.install_bootloader(boot_partition)
+        self.install_bootloader()
         self.configure_system()
 
         # installation finished (0 means no error)
@@ -230,12 +230,10 @@ class InstallationThread(threading.Thread):
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
-        with open('/proc/cmdline') as fp:
-            for line in fp:
-                if "uvesafb" in line:
-                    for child in root.iter('uvesafb'):
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
+        if self.is_uvesafb:
+            for child in root.iter('uvesafb'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
         
         if installer_settings["use_ntp"]:
             for child in root.iter('ntp'):
@@ -363,8 +361,6 @@ class InstallationThread(threading.Thread):
         self.chroot_mount()
         
         self.run_pacman()
-        self.auto_fstab()
-        self.copy_network_config()
 
         # tear down the chroot environment        
         self.chroot_umount()
@@ -460,11 +456,11 @@ class InstallationThread(threading.Thread):
         out, err = process.communicate()
         return out.decode()
         
-    def install_bootloader(self, boot_partition):
+    def install_bootloader(self):
         # TODO: Install Grub2
         # check dogrub_config and dogrub_bios from arch-setup
 
-        print("Installing GRUB(2) BIOS boot loader in %s" % boot_partition)
+        print("Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
         self.chroot_mount()
 
         process = subprocess.Popen(['chroot', \
@@ -475,7 +471,7 @@ class InstallationThread(threading.Thread):
                   '--boot-directory="/boot"', \
                   '--recheck', \
                   '--debug', \
-                  boot_partition])
+                  self.grub_device])
         out, err = process.communicate()
         
         grub_log = '/tmp/grub_bios_install.log'
@@ -549,6 +545,11 @@ class InstallationThread(threading.Thread):
         # setup systemd services
         # ... check configure_system from arch-setup
 
+        # Generate the fstab file        
+        self.auto_fstab()
+        #Copy configured networks in Live medium to target system
+        self.copy_network_config()
+
         # copy cinnarch menu icon
         cinnarch_path = os.path.join(self.dest_dir, "usr/share/cinnarch")
         if not os.path.exists(cinnarch_path):
@@ -585,30 +586,18 @@ class InstallationThread(threading.Thread):
         # TODO: use hwdetect to create /etc/mkinitcpio.conf (check auto_hwdetect from arch-setup)
         # Is this really necessary?
         
-        # Populate keyring and setup systemd scripts (copy setup files)
 
-        files = [ "/usr/bin/pacman-key",
-                  "/usr/lib/systemd/system/lightdm.service",
-                  "/usr/lib/systemd/system/pacman-init.service",
-                  "/etc/pacman.conf",
-                  "/etc/yaourtrc" ]
-        
+        # Copy important config files to target system
+        files = [ "/etc/pacman.conf",
+                  "/etc/yaourtrc" ]        
         for path in files:
             shutil.copy(path, os.path.join(self.dest_dir, path))
 
-        # enable lightdm
-        
-        self.enable_services([ "lightdm", "NetworkManager", "pacman-init" ])
-        
-        '''
-        chroot ${DESTDIR} systemctl enable lightdm.service NetworkManager.service pacman-init.service >/dev/null 2>&1
-        if [[ -f /tmp/use_ntp ]];then
-            chroot ${DESTDIR} systemctl enable ntpd.service >/dev/null 2>&1
-        fi
+        # enable services      
+        self.enable_services([ "lightdm", "NetworkManager" ])
+        if installer_settings["use_ntp"]:
+            self.enable_services([ "ntpd" ])
 
-        cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
-        cp -f /etc/yaourtrc ${DESTDIR}/etc/yaourtrc
-        '''
         
         # TODO: set user parameters (to be done in user.py ¿?)
         

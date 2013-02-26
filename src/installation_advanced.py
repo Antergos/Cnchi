@@ -153,6 +153,7 @@ class InstallationAdvanced(Gtk.Box):
 
         self.grub_device_entry = self.ui.get_object('grub_device_entry')      
         self.grub_devices = dict()
+        self.grub_device = {}
 
         ## Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -254,6 +255,7 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
+                    self.grub_device = self.grub_devices[line]
         
         ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
@@ -1396,5 +1398,5 @@ class InstallationAdvanced(Gtk.Box):
                     # TODO: also add swap ?
         
         
-        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, format_devices, self.ssd)
+        self.thread = installation_thread.InstallationThread(self.callback_queue, mount_devices, self.grub_device, format_devices, self.ssd)
         self.thread.start()
