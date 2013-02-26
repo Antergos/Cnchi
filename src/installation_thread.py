@@ -351,7 +351,7 @@ class InstallationThread(threading.Thread):
         
         self.run_pacman()
         self.auto_fstab()
-        self.copy_files()
+        self.copy_network_config()
 
         # tear down the chroot environment        
         self.chroot_umount()
@@ -390,9 +390,25 @@ class InstallationThread(threading.Thread):
     def is_ok(self):
         return not self.error
 
-    def copy_files(self):
-        #subprocess.Popen(["cp", "/etc/resolv.conf", os.path.join(self.dest_dir, "etc")])
-        pass
+    def copy_network_config(self):
+        source_nm = "/etc/NetworkManager/system-connections/"
+        target_nm = "%s/etc/NetworkManager/system-connections/" % self.destdir
+
+        # Sanity checks.  We don't want to do anything if a network
+        # configuration already exists on the target
+        if os.path.exists(source_nm) and os.path.exists(target_nm):
+            for network in os.listdir(source_nm):
+                # Skip LTSP live
+                if network == "LTSP":
+                    continue
+
+                source_network = os.path.join(source_nm, network)
+                target_network = os.path.join(target_nm, network)
+
+                if os.path.exists(target_network):
+                    continue
+
+                shutil.copy(source_network, target_network)
 
     def auto_fstab(self):
         all_lines = []
