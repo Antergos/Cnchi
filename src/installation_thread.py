@@ -116,9 +116,8 @@ class InstallationThread(threading.Thread):
         
         self.dest_dir = "/install"
         self.kernel_pkg = "linux"
-        self.vmlinuz = "vmlinuz-%s" % kernel_pkg
-        self.initramfs = "initramfs-%s" % kernel_pkg       
-        self.pacman = "powerpill --root %s --config /tmp/pacman.conf --noconfirm --noprogressbar" % self.dest_dir
+        self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
+        self.initramfs = "initramfs-%s" % self.kernel_pkg       
 
         self.arch = os.uname()[-1]
     
