@@ -4,6 +4,8 @@
 	<base_system>
 		<pkgname>base</pkgname> <!-- Group -->
 		<pkgname>base-devel</pkgname> <!-- Group -->
+		<pkgname>cinnarch-keyring</pkgname>
+		<pkgname>cinnarch-mirrorlist</pkgname>
 		<pkgname>haveged</pkgname>
 		<pkgname>crda</pkgname>
 		<pkgname>ipw2200-fw</pkgname>
