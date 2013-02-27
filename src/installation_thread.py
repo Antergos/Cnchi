@@ -80,6 +80,7 @@ class InstallationThread(threading.Thread):
     @misc.raise_privileges    
     def run(self):
         ## Create/Format partitions
+        # TODO: Check if /boot is in another partition than root!!!!
         if self.method == 'automatic':
             try:
                 if os.path.exists(self.auto_partition_script_path):
@@ -97,6 +98,7 @@ class InstallationThread(threading.Thread):
         elif self.method == 'advanced':
             if not os.path.exists('/install'):
                 os.mkdir('/install')
+            boot_partition = self.mount_devices["/boot"]
             root_partition = self.mount_devices["/"]
             subprocess.getoutput('mount %s /install' % root_partition)
             subprocess.getoutput('mkdir -p /install/var/lib/pacman')
@@ -125,7 +127,7 @@ class InstallationThread(threading.Thread):
 
         self.select_packages()
         self.install_packages()
-        self.install_bootloader()
+        self.install_bootloader(boot_partition)
         self.configure_system()
 
         # installation finished (0 means no error)
@@ -183,8 +185,11 @@ class InstallationThread(threading.Thread):
         
         ## Init pyalpm
 
-        self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        
+        try:
+            self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except:
+            print("Can't initialize pyalpm. Aborting...")
+            sys.exit(1)
         
     # add gnupg pacman files to installed system
     # needs testing, but it seems to be the way to do it now
@@ -332,7 +337,7 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # Lets start from a basic install, installing grub2 by default
+        # Lets start from a basic install, installing grub2 (bios) by default
         for child in root.iter('grub'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
@@ -447,11 +452,58 @@ class InstallationThread(threading.Thread):
         out, err = process.communicate()
         return out
         
-    def install_bootloader(self):
+    def install_bootloader(self, boot_partition):
         # TODO: Install Grub2
         # check dogrub_config and dogrub_bios from arch-setup
-        pass
 
+        print("Installing GRUB(2) BIOS boot loader in %s" % boot_partition)
+        self.chroot_mount()
+
+        process = subprocess.Popen(['chroot', \
+                  self.dest_dir, \
+                  '/usr/sbin/grub-install', \
+                  '--directory="/usr/lib/grub/i386-pc"', \
+                  '--target="i386-pc"', \
+                  '--boot-directory="/boot"', \
+                  '--recheck', \
+                  '--debug', \
+                  boot_partition])
+        out, err = process.communicate()
+        
+        grub_log = '/tmp/grub_bios_install.log'
+
+        with open(grub_log, 'w') as f:
+            f.write(out)
+            f.close()
+
+        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
+        
+        if not os.path.exists(grub_d_dir):
+            os.makedirs(grub_d_dir)
+
+        misc.copytree("/arch/10_linux", grub_d_dir)
+
+
+        process = subprocess.Popen(['chroot', \
+                  self.dest_dir, \
+                  '/usr/sbin/grub-mkconfig', \
+                  '-o',
+                  '/boot/grub/grub.cfg'])
+        out, err = process.communicate()
+        
+        with open(grub_log, 'a') as f:
+            f.write(out)
+            f.close()
+
+        self.chroot_umount()
+
+        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
+        
+        if os.path.exists(core_path):
+            print("GRUB(2) BIOS has been successfully installed.")
+        else:
+            print("ERROR installing GRUB(2) BIOS.")
+        
     def configure_system(self):
         # final install steps
         # set clock, language
