@@ -531,6 +531,15 @@ class InstallationThread(threading.Thread):
             return False
         else:
             return True
+
+    def enable_services(self, services):
+        for name in services:
+            name += '.service'
+            process = subprocess.Popen(['chroot', \
+                      self.dest_dir, \
+                      'systemctl', \
+                      'enable', \
+                      name])
         
     def configure_system(self):
         # final install steps
@@ -574,13 +583,24 @@ class InstallationThread(threading.Thread):
                 '''
 
         # TODO: use hwdetect to create /etc/mkinitcpio.conf (check auto_hwdetect from arch-setup)
+        # Is this really necessary?
         
-        # TODO: populate keyring and setup systemd scripts
-        '''
-        cp -f /usr/bin/pacman-key ${DESTDIR}/usr/bin/pacman-key
+        # Populate keyring and setup systemd scripts (copy setup files)
 
-        cp -f /usr/lib/systemd/system/lightdm.service ${DESTDIR}/usr/lib/systemd/system/lightdm.service
-        cp -f /etc/systemd/system/pacman-init.service ${DESTDIR}/usr/lib/systemd/system/pacman-init.service
+        files = [ "/usr/bin/pacman-key",
+                  "/usr/lib/systemd/system/lightdm.service",
+                  "/usr/lib/systemd/system/pacman-init.service",
+                  "/etc/pacman.conf",
+                  "/etc/yaourtrc" ]
+        
+        for path in files:
+            shutil.copy(path, os.path.join(self.dest_dir, path))
+
+        # enable lightdm
+        
+        self.enable_services([ "lightdm", "NetworkManager", "pacman-init" ])
+        
+        '''
         chroot ${DESTDIR} systemctl enable lightdm.service NetworkManager.service pacman-init.service >/dev/null 2>&1
         if [[ -f /tmp/use_ntp ]];then
             chroot ${DESTDIR} systemctl enable ntpd.service >/dev/null 2>&1
