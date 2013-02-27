@@ -157,6 +157,9 @@ class UserInfo(Gtk.Box):
         installer_settings['password'] = self.entry['password'].get_text()
         installer_settings['require_password'] = self.require_password
         installer_settings['encrypt_home'] = self.encrypt_home
+        
+        # this way installer_thread will know all info has been entered
+        installer_settings['user_info_done'] = True
 
     def prepare(self):
         self.translate_ui()

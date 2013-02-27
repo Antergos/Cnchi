@@ -45,6 +45,7 @@ installer_settings  = { \
                 'timezone_comment' : '', \
                 'timezone_latitude' : 0, \
                 'timezone_longitude' : 0, \
+                'timezone_done' : False, \
                 'use_ntp' : True, \
                 'partition_mode' : 'easy', \
                 'auto_device' : '/dev/sda', \
@@ -54,4 +55,5 @@ installer_settings  = { \
                 'username' : '', \
                 'password' : '', \
                 'require_password' : True, \
-                'encrypt_home' : False }
+                'encrypt_home' : False, \
+                'user_info_done' : False}

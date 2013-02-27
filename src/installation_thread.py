@@ -351,9 +351,8 @@ class InstallationThread(threading.Thread):
         return p2.communicate()[0].decode()
     
     def is_uvesafb(self):
-        #grep -w uvesafb /proc/cmdline
-        p = subprocess.Popen(["grep", "-w", "uvesafb", "/proc/cmdline"])
-        out, err = p.comunicate()
+        process = subprocess.Popen(["grep", "-w", "uvesafb", "/proc/cmdline"])
+        out, err = process.comunicate()
         if len(out) > 0:
             return True
         else:
@@ -513,6 +512,25 @@ class InstallationThread(threading.Thread):
             print("GRUB(2) BIOS has been successfully installed.")
         else:
             print("ERROR installing GRUB(2) BIOS.")
+
+    # Wait for an installer_settings' var change with a timeout
+    # Timeout is in seconds (by default wait 5 minutes)
+    def wait_true(self, var, timeout=300):
+        import time
+
+        # set initial time and initial variables
+        start_time = time.time()
+        elapsed_time = 0
+        
+        print("Waiting for user to fill %s..." % var)
+
+        while installer_settings[var] == False and elapsed_time < timeout:
+            elapsed_time = time.time() - start_time
+
+        if elapsed_time < timeout:
+            return False
+        else:
+            return True
         
     def configure_system(self):
         # final install steps
@@ -531,25 +549,29 @@ class InstallationThread(threading.Thread):
 
         # copy mirror list
         shutil.copy('/etc/pacman.d/mirrorlist', \
-                    os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))
+                    os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
         
-        
-        # TODO: set timezone
-        '''
-        if [[ -s  /tmp/.timezone ]]; then
-            DIALOG --infobox $"Setting the timezone: $(cat /tmp/.timezone | sed -e 's/\..*//g') ..." 0 0
-            chroot ${DESTDIR} ln -s /usr/share/zoneinfo/$(cat /tmp/.timezone | sed -e 's/\..*//g') /etc/localtime
-                
-        fi
-        '''
+        # set timezone       
+        if self.wait_true('timezone_done'):
+            zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
+                                         installer_settings["timezone_zone"])
+            process = subprocess.Popen(['chroot', \
+              self.dest_dir, \
+              'ln', \
+              '-s', \
+              zoneinfo_path, \
+              "/etc/localtime"])
 
         # TODO: set uvesa framebuffer if necessary
-        '''
-        if [[ -e ${DESTDIR}/lib/initcpio/hooks/v86d && "$(grep -w uvesafb /proc/cmdline)" ]]; then
-            UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
-            sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
-        fi
-        '''
+        if self.is_uvesafb():
+            v86d_path = os.path.join(self.dest_dir, "lib/initcpio/hooks/v86d")
+            if os.path.exists(v86d_path):
+                # Help? I really don't know what grep/sed are doing here.
+                pass
+                '''
+                UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
+                sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
+                '''
 
         # TODO: use hwdetect to create /etc/mkinitcpio.conf (check auto_hwdetect from arch-setup)
         

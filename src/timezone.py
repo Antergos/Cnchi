@@ -250,6 +250,7 @@ class Timezone(Gtk.Box):
 
     def store_values(self):
         loc = self.tzdb.get_loc(self.timezone)
+        
         if loc:
             installer_settings["timezone_human_zone"] = loc.human_zone
             installer_settings["timezone_country"] = loc.country
@@ -270,27 +271,11 @@ class Timezone(Gtk.Box):
                 installer_settings["timezone_longitude"] = loc.longitude
             else:
                 installer_settings["timezone_longitude"] = ""
+
+        # this way installer_thread will know all info has been entered
+        installer_settings["timezone_done"] = True
         
         return True
-
-            # debug
-            #logging.debug("timezone_human_zone is " + loc.human_zone)
-            #print("timezone_human_zone is " + loc.human_zone)
-            #logging.debug("timezone_country is " + loc.country)
-            #print("timezone_country is " + loc.country)
-            #logging.debug("timezone_zone is " + loc.zone)
-            #print("timezone_zone is " + loc.zone)
-            #logging.debug("timezone_human_country is " + loc.human_country)
-            #print("timezone_human_country is " + loc.human_country)
-            #if loc.comment:
-            #    logging.debug("timezone_comment is " + loc.comment)
-            #    print("timezone_comment is " + loc.comment)
-            #if loc.latitude:
-            #    logging.debug("timezone_latitude is {0}".format(loc.latitude))
-            #    print("timezone_latitude is {0}".format(loc.latitude))
-            #if loc.longitude:
-            #    logging.debug("timezone_longitude is {0}".format(loc.longitude))
-            #    print("timezone_longitude is {0}".format(loc.longitude))
 
     def get_prev_page(self):
         return _prev_page
@@ -299,7 +284,7 @@ class Timezone(Gtk.Box):
         return _next_page
         
     def stop_thread(self):
-        print("Stoping timezone thread.")
+        print("Stoping timezone thread...")
         self.thread.stop()
 
 class AutoTimezoneThread(threading.Thread):
