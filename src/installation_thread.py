@@ -350,6 +350,15 @@ class InstallationThread(threading.Thread):
         p1.stdout.close()
         return p2.communicate()[0].decode()
     
+    def is_uvesafb(self):
+        #grep -w uvesafb /proc/cmdline
+        p = subprocess.Popen(["grep", "-w", "uvesafb", "/proc/cmdline"])
+        out, err = p.comunicate()
+        if len(out) > 0:
+            return True
+        else:
+            return False
+    
     def install_packages(self):
         # create chroot environment on target system
         self.chroot_mount()
@@ -450,7 +459,7 @@ class InstallationThread(threading.Thread):
         dst = os.path.join(self.dest_dir, device)
         process = subprocess.Popen([probe_bin, '--target="%s"' % target, dst], stdout=subprocess.PIPE)
         out, err = process.communicate()
-        return out
+        return out.decode()
         
     def install_bootloader(self, boot_partition):
         # TODO: Install Grub2
@@ -473,6 +482,7 @@ class InstallationThread(threading.Thread):
         grub_log = '/tmp/grub_bios_install.log'
 
         with open(grub_log, 'w') as f:
+            # should use .decode() on out before writing to disk?
             f.write(out)
             f.close()
 
@@ -483,7 +493,6 @@ class InstallationThread(threading.Thread):
 
         misc.copytree("/arch/10_linux", grub_d_dir)
 
-
         process = subprocess.Popen(['chroot', \
                   self.dest_dir, \
                   '/usr/sbin/grub-mkconfig', \
@@ -492,6 +501,7 @@ class InstallationThread(threading.Thread):
         out, err = process.communicate()
         
         with open(grub_log, 'a') as f:
+            # should use .decode() on out before writing to disk?
             f.write(out)
             f.close()
 
@@ -506,9 +516,58 @@ class InstallationThread(threading.Thread):
         
     def configure_system(self):
         # final install steps
-        # set clock, language
+        # set clock, language, timezone
         # run mkinitcpio
         # populate pacman keyring
         # setup systemd services
         # ... check configure_system from arch-setup
-        pass
+
+        # copy cinnarch menu icon
+        cinnarch_path = os.path.join(self.dest_dir, "usr/share/cinnarch")
+        if not os.path.exists(cinnarch_path):
+            os.makedirs(cinnarch_path)
+        shutil.copy('/usr/share/cinnarch/cinnarch_menu.png', \
+                    os.path.join(cinnarch_path, 'cinnarch_menu.png'))
+
+        # copy mirror list
+        shutil.copy('/etc/pacman.d/mirrorlist', \
+                    os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))
+        
+        
+        # TODO: set timezone
+        '''
+        if [[ -s  /tmp/.timezone ]]; then
+            DIALOG --infobox $"Setting the timezone: $(cat /tmp/.timezone | sed -e 's/\..*//g') ..." 0 0
+            chroot ${DESTDIR} ln -s /usr/share/zoneinfo/$(cat /tmp/.timezone | sed -e 's/\..*//g') /etc/localtime
+                
+        fi
+        '''
+
+        # TODO: set uvesa framebuffer if necessary
+        '''
+        if [[ -e ${DESTDIR}/lib/initcpio/hooks/v86d && "$(grep -w uvesafb /proc/cmdline)" ]]; then
+            UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
+            sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
+        fi
+        '''
+
+        # TODO: use hwdetect to create /etc/mkinitcpio.conf (check auto_hwdetect from arch-setup)
+        
+        # TODO: populate keyring and setup systemd scripts
+        '''
+        cp -f /usr/bin/pacman-key ${DESTDIR}/usr/bin/pacman-key
+
+        cp -f /usr/lib/systemd/system/lightdm.service ${DESTDIR}/usr/lib/systemd/system/lightdm.service
+        cp -f /etc/systemd/system/pacman-init.service ${DESTDIR}/usr/lib/systemd/system/pacman-init.service
+        chroot ${DESTDIR} systemctl enable lightdm.service NetworkManager.service pacman-init.service >/dev/null 2>&1
+        if [[ -f /tmp/use_ntp ]];then
+            chroot ${DESTDIR} systemctl enable ntpd.service >/dev/null 2>&1
+        fi
+
+        cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
+        cp -f /etc/yaourtrc ${DESTDIR}/etc/yaourtrc
+        '''
+        
+        # TODO: set user parameters (to be done in user.py ¿?)
+        
+
