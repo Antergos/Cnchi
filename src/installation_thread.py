@@ -110,9 +110,9 @@ class InstallationThread(threading.Thread):
                 if os.path.exists(script_path):
                     self.auto_device = self.mount_devices["automatic"]
                     print("Automatic device: %s" % self.auto_device)
-                    subprocess.Popen(["/bin/bash", \
-                                     script_path, \
+                    process = subprocess.Popen(["/bin/bash", script_path, \
                                      self.auto_device])
+                    out, err = process.communicate()
             except subprocess.FileNotFoundError as e:
                 self.fatal(_("Can't execute the auto partition script"))
                 return False
@@ -126,9 +126,16 @@ class InstallationThread(threading.Thread):
             root_partition = self.mount_devices["/"]
             
             subprocess.Popen(['mount', root_partition, self.dest_dir])
-            subprocess.Popen(['mkdir', "-p", '%s/var/lib/pacman' % self.dest_dir])
-            subprocess.Popen(['mkdir', "-p", '%s/etc/pacman.d/gnupg/' % self.dest_dir])
-            subprocess.Popen(['mkdir', "-p", '%s/var/log/' % self.dest_dir]) 
+            out, err = process.communicate()
+
+            subprocess.Popen(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
+            out, err = process.communicate()
+
+            subprocess.Popen(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
+            out, err = process.communicate()
+
+            subprocess.Popen(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
+            out, err = process.communicate()
         
         if self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
@@ -388,15 +395,25 @@ class InstallationThread(threading.Thread):
                 os.makedirs(mydir)
 
         mydir = os.path.join(self.dest_dir, "sys")
+
         subprocess.Popen(["mount", "-t", "sysfs", "sysfs", mydir])
+        out, err = process.communicate()
+
         subprocess.Popen(["chmod", "555", mydir])
+        out, err = process.communicate()
 
         mydir = os.path.join(self.dest_dir, "proc")
+
         subprocess.Popen(["mount", "-t", "proc", "proc", mydir])
+        out, err = process.communicate()
+
         subprocess.Popen(["chmod", "555", mydir])
+        out, err = process.communicate()
 
         mydir = os.path.join(self.dest_dir, "dev")
+
         subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
+        out, err = process.communicate()
         
     def chroot_umount(self):
         dirs = [ "proc", "sys", "dev" ]
@@ -404,7 +421,17 @@ class InstallationThread(threading.Thread):
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
             subprocess.Popen(["umount", mydir])
+            out, err = process.communicate()
 
+    def chroot(self, cmd):
+        run = ['chroot', self.dest_dir]
+        
+        for c in cmd:
+            run.append(c)
+                
+        process = subprocess.Popen(run)
+        out, err = process.communicate()
+        
     def is_running(self):
         return self.running
 
@@ -447,6 +474,8 @@ class InstallationThread(threading.Thread):
                 #subprocess.getoutput('mkdir -p /install%s' % path)
                 full_path = os.path.join(self.dest_dir, path)
                 subprocess.Popen(["mkdir", "-p", full_path])
+                out, err = process.communicate()
+
             for i in self.ssd:
                 if i in self.mount_devices[path]:
                     if self.ssd[i]:
@@ -455,10 +484,14 @@ class InstallationThread(threading.Thread):
                             rootssd = 1
                     else:
                         opts = 'defaults'
+
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
+
         if rootssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
+
         full_text = '\n'.join(all_lines)
+
         with open('/install/etc/fstab','w') as f:
             f.write(full_text)
 
@@ -476,16 +509,13 @@ class InstallationThread(threading.Thread):
         print("Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
         self.chroot_mount()
 
-        process = subprocess.Popen(['chroot', \
-                  self.dest_dir, \
-                  '/usr/sbin/grub-install', \
+        self.chroot(['/usr/sbin/grub-install', \
                   '--directory="/usr/lib/grub/i386-pc"', \
                   '--target="i386-pc"', \
                   '--boot-directory="/boot"', \
                   '--recheck', \
                   '--debug', \
                   self.grub_device])
-        out, err = process.communicate()
         
         grub_log = '/tmp/grub_bios_install.log'
 
@@ -500,12 +530,8 @@ class InstallationThread(threading.Thread):
 
         misc.copytree("/arch/10_linux", grub_d_dir)
 
-        process = subprocess.Popen(['chroot', \
-                  self.dest_dir, \
-                  '/usr/sbin/grub-mkconfig', \
-                  '-o',
+        self.chroot(['/usr/sbin/grub-mkconfig', '-o', \
                   '/boot/grub/grub.cfg'])
-        out, err = process.communicate()
         
         with open(grub_log, 'a') as f:
             # should use .decode() on out before writing to disk?
@@ -517,10 +543,10 @@ class InstallationThread(threading.Thread):
                     "boot/grub/i386-pc/core.img")
         
         if os.path.exists(core_path):
-            print("GRUB(2) BIOS has been successfully installed.")
+            print(_("GRUB(2) BIOS has been successfully installed."))
         else:
             # should we stop installation here?
-            print("ERROR installing GRUB(2) BIOS.")
+            print(_("ERROR installing GRUB(2) BIOS."))
 
     # Wait for an installer_settings var change with a timeout
     # Timeout is in seconds (by default wait 5 minutes)
@@ -545,14 +571,49 @@ class InstallationThread(threading.Thread):
     def enable_services(self, services):
         for name in services:
             name += '.service'
-            process = subprocess.Popen(['chroot', \
-                      self.dest_dir, \
-                      'systemctl', 'enable', name])
-        
+            self.chroot(['systemctl', 'enable', name])
+
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
         print("Queued event %s : %s" % (event_type, event_text))
 
+    def change_user_password(self, user, new_password):
+        process = subprocess.Popen(('mkpasswd', '-m', 'sha-512', new_password), stdout=subprocess.PIPE)
+        shadow_password = process.communicate()[0].strip()
+
+        if process.returncode != 0:
+            print (_('Error creating password hash for user %s') % user)
+
+        result = subprocess.call(('usermod', '-p', shadow_password, user))
+
+        if result != 0:
+            print (_('Error changing password for user %s\n') % user)
+
+    def auto_timesetting(self):
+        process = subprocess.Popen(["hwclock", "--systohc", "--utc"])
+        shutil.copy("/etc/adjtime", "%s/etc/adjtime" % self.dest_dir)
+
+    # runs mkinitcpio on the target system, displays output
+    def run_mkinitcpio(self):
+        self.chroot_mount()
+        # all mkinitcpio output goes to /tmp/mkinitcpio.log, which we tail into a dialog
+        '''
+    ( \
+    touch /tmp/setup-mkinitcpio-running
+    echo "Initramfs progress ..." > /tmp/initramfs.log; echo >> /tmp/mkinitcpio.log
+    chroot ${DESTDIR} /usr/bin/mkinitcpio -p ${KERNELPKG} >>/tmp/mkinitcpio.log 2>&1
+    echo >> /tmp/mkinitcpio.log
+    rm -f /tmp/setup-mkinitcpio-running
+    ) &
+    sleep 2
+    dialog --backtitle "${TITLE}" --title $"Rebuilding initramfs images ..." --no-kill --tailboxbg "/tmp/mkinitcpio.log" 18 70
+    while [[ -f /tmp/setup-mkinitcpio-running ]]; do
+        /bin/true
+    done
+    chroot_umount
+}
+        '''
+        
     def configure_system(self):
         # final install steps
         # set clock, language, timezone
@@ -612,44 +673,134 @@ class InstallationThread(threading.Thread):
         if self.wait_true('timezone_done'):
             zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
                                          installer_settings["timezone_zone"])
-            process = subprocess.Popen(['chroot', \
-              self.dest_dir, \
-              'ln', '-s', zoneinfo_path, "/etc/localtime"])
+            self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         
         # TODO: set user parameters
         if self.wait_true('user_done'):
             username = installer_settings['username']
+            fullname = installer_settings['fullname']
+            password = installer_settings['password']
+            hostname = installer_settings['hostname']
+            
             sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
             with open(sudoers_path, "wt") as sudoers:
                 sudoers.write('# Sudoers file')
                 sudoers.write('root ALL=(ALL) ALL')
                 sudoers.write('%s ALL=(ALL) ALL' % username)
             subprocess.Popen(["chmod", "440", sudoers_path])
+            out, err = process.communicate()
             
             print(_("Creating new user"))
             
+            try:
+                misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc"))
+            except FileExistsError:
+                # ignore if exists
+                pass
+
+            process = subprocess.Popen(["rm", "-rf", "%s/etc/skel" % self.dest_dir])
+            out, err = process.communicate()
+            
+            self.chroot(['useradd', '-m', '-s', '/bin/bash', \
+                      '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
+                      username])
+
+            self.change_user_password(username, password)
+
+            self.chroot(['chfn', '-f', fullname, username])
+                      
+            home = os.path.join(self.dest_dir, "home", username)
+            skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.cache', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
+            try:
+                for d in skel_dirs:
+                    misc.copytree(d, home)
+            except FileExistsError:
+                # ignore if exists
+                pass
+            
+            self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
+            
+            hostname_path = os.path.join(self.dest_dir, "etc/hostname")
+            if not os.path.exists(hostname_path):
+                with open(hostname_path, "wt") as f:
+                    f.write(hostname)
+
+            # TODO: At this point, installer allows to edit mkinitcpio.conf. What do we do here?
+            
+            # TODO: Should we ask for a password for root? Or we leave it as it is?
+            
+            # Specific user configurations
+            
+            ## Set defaults directories
+            self.chroot(["su", "-c", "xdg-user-dirs-update", username])
+
+            ## Unmute alsa channels
+            self.chroot(["amixer", "-c", "0", "set", "Master", "playback", "100%", "unmute"])
+
+            ## Copy locales
+            # TODO : I think we didn't store locale.gen in /tmp... ¿?¿?¿?
+            shutil.copy("/tmp/locale.gen",  "%s/etc/locale.gen" % self.dest_dir)
+
+            self.auto_timesetting()
+
+            '''
+            # /etc/initcpio.conf
+            # Fix deprecated hooks
+            sed -i 's/ pata//' ${DESTDIR}/etc/mkinitcpio.conf
+            sed -i 's/ scsi//' ${DESTDIR}/etc/mkinitcpio.conf
+            sed -i 's/ sata//' ${DESTDIR}/etc/mkinitcpio.conf
+            sed -i 's/ filesystem/ block filesystem/' ${DESTDIR}/etc/mkinitcpio.conf
+            '''
+
+            self.run_mkinitcpio()
             
             '''
-                cp -rf /etc/skel ${DESTDIR}/etc/  >/dev/null 2>&1
-                rm -rf ${DESTDIR}/etc/skel/Desktop >/dev/null 2>&1
-                chroot ${DESTDIR} useradd -m -s /bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
-                chroot ${DESTDIR} passwd ${USER_NAME} < /tmp/.user_password >/dev/null 2>&1
-                chroot ${DESTDIR} chfn -f "${USER_FULL_NAME}" "${USER_NAME}" >/dev/null 2>&1
-                
-                rm /tmp/.user_password
+            # /etc/locale.gen
+            sleep 2
+            DIALOG --infobox $"Generating locales..." 4 25
+            cp -f /tmp/locale.conf ${DESTDIR}/etc/locale.conf
+            chroot ${DESTDIR} locale-gen >/dev/null 2>&1
 
 
-                cp -rf /etc/skel/.config /etc/skel/.gconf /etc/skel/.cache /etc/skel/.local /etc/skel/.gnome2 /etc/skel/.gtkrc-2 ${DESTDIR}/home/${USER_NAME}/ >/dev/null 2>&1
-                chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME} >/dev/null 2>&1
-            '''
-            
-            
-                
-            '''
-            'fullname' : '', \
-            'hostname' : 'cinnarch', \
-            'username' : '', \
-            'password' : '', \
-            'require_password' : True, \
-            'encrypt_home' : False, \
+            # Set gsettings
+            cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+            mkdir -p ${DESTDIR}/var/run/dbus
+            mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+            chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
+            rm ${DESTDIR}/usr/bin/set-gsettings
+
+            # Fix transmission leftover
+            mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
+
+            # Configure touchpad
+            _set_50-synaptics
+            # cp /etc/X11/xorg.conf.d/10-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/10-synaptics.conf
+
+            # Fix grub locale error
+            chroot ${DESTDIR} cp "/boot/grub/locale/en@quot.mo" "/boot/grub/locale/$(echo ${LOCALE}|cut -b 1-2).mo.gz"
+
+            # Fix QT apps
+            echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
+
+            # Change pantheon-greeter wallpaper
+            chroot ${DESTDIR} unlink /usr/share/backgrounds/cinnarch-default
+            chroot ${DESTDIR} ln -s /usr/share/cinnarch/wallpapers/83II_by_bo0xVn.jpg /usr/share/backgrounds/cinnarch-default
+
+            # Set Cinnarch name in filesystem files
+            cp /etc/arch-release ${DESTDIR}/etc
+            cp /etc/issue ${DESTDIR}/etc
+            cp -f /etc/os-release ${DESTDIR}/etc/os-release
+
+            # Set Adwaita cursor theme
+            chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+            # Fix multilib repo in last release
+            cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
+
+            if [[ $(uname -m) = 'x86_64' ]];then
+                echo "" >> ${DESTDIR}/etc/pacman.conf
+                echo "[multilib]" >> ${DESTDIR}/etc/pacman.conf
+                echo "SigLevel = PackageRequired" >> ${DESTDIR}/etc/pacman.conf
+                echo "Include = /etc/pacman.d/mirrorlist" >> ${DESTDIR}/etc/pacman.conf
+            fi
             '''
