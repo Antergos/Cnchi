@@ -69,12 +69,13 @@ class InstallationThread(threading.Thread):
 
         self.method = installer_settings['partition_mode']
         
-        print("Installing using '%s' method" % self.method)
+        self.queue_event('info', _("Installing using the '%s' method") % self.method)
+        
         self.ssd = ssd
         self.mount_devices = mount_devices
         self.grub_device = grub_device
     
-        print(mount_devices)
+        #print(mount_devices)
 
         self.format_devices = format_devices
 
@@ -84,8 +85,12 @@ class InstallationThread(threading.Thread):
     def queue_fatal_event(self, txt):
         self.error = True
         self.running = False
-        self.queue_event("error", txt)
+        self.queue_event('error', txt)
          
+    def queue_event(self, event_type, event_text=""):
+        self.callback_queue.put((event_type, event_text))
+        print("Queued an event of type %s : %s" % (event_type, event_text))
+
     @misc.raise_privileges    
     def run(self):
         # Common vars
@@ -109,7 +114,7 @@ class InstallationThread(threading.Thread):
             try:
                 if os.path.exists(script_path):
                     self.auto_device = self.mount_devices["automatic"]
-                    print("Automatic device: %s" % self.auto_device)
+                    self.queue_event('debug', "Automatic device: %s" % self.auto_device)
                     subprocess.check_call(["/bin/bash", script_path, \
                                      self.auto_device])
             except subprocess.FileNotFoundError as e:
@@ -159,7 +164,7 @@ class InstallationThread(threading.Thread):
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
-        print("Creating pacman.conf for %s architecture" % self.arch)
+        self.queue_event('debug', "Creating pacman.conf for %s architecture" % self.arch)
         
         # Common repos
         
@@ -482,7 +487,7 @@ class InstallationThread(threading.Thread):
         # TODO: Install Grub2
         # check dogrub_config and dogrub_bios from arch-setup
 
-        print("Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
+        self.queue_event('info', "Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
         self.chroot_mount()
 
         self.chroot(['/usr/sbin/grub-install', \
@@ -515,10 +520,10 @@ class InstallationThread(threading.Thread):
                     "boot/grub/i386-pc/core.img")
         
         if os.path.exists(core_path):
-            print(_("GRUB(2) BIOS has been successfully installed."))
+            self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             # should we stop installation here?
-            print(_("ERROR installing GRUB(2) BIOS."))
+            self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
     # Wait for an installer_settings var change with a timeout
     # Timeout is in seconds (by default wait 5 minutes)
@@ -529,7 +534,7 @@ class InstallationThread(threading.Thread):
         start_time = time.time()
         elapsed_time = 0
         
-        print("Waiting for user to fill %s..." % var)
+        self.queue_event('debug', "Waiting for user to fill %s..." % var)
 
         while installer_settings[var] == False and \
               elapsed_time < timeout:
@@ -545,22 +550,18 @@ class InstallationThread(threading.Thread):
             name += '.service'
             self.chroot(['systemctl', 'enable', name])
 
-    def queue_event(self, event_type, event_text=""):
-        self.callback_queue.put((event_type, event_text))
-        print("Queued an event of type %s : %s" % (event_type, event_text))
-
     def change_user_password(self, user, new_password):
         process = subprocess.Popen(['mkpasswd', '-m', 'sha-512', new_password], stdout=subprocess.PIPE)
         shadow_password = process.communicate()[0].strip()
 
         if process.returncode != 0:
-            print (_('Error creating password hash for user %s') % user)
+            self.queue_event('warning', _('Error creating password hash for user %s') % user)
             return False
 
         result = subprocess.call(['usermod', '-p', shadow_password, user])
 
         if result != 0:
-            print (_('Error changing password for user %s\n') % user)
+            self.queue_event('warning', _('Error changing password for user %s') % user)
             return False
         
         return True
@@ -646,7 +647,7 @@ class InstallationThread(threading.Thread):
             
             subprocess.check_call(["chmod", "440", sudoers_path])
             
-            print(_("Creating new user"))
+            self.queue_event('debug', _("Creating new user"))
             
             try:
                 misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc"))
@@ -688,6 +689,10 @@ class InstallationThread(threading.Thread):
             self.run_mkinitcpio()
             
             # TODO: Should we ask for a password for root? Or we leave it as it is?
+            # we could set the user password to be the root password (i like this!)
+            # Or maybe we could just ask for root password like Fedora? What do you think?
+            
+            self.change_user_password('root', password)
             
             # Specific user configurations
             
@@ -705,6 +710,19 @@ class InstallationThread(threading.Thread):
 
             self.run_mkinitcpio()
             
+            # TODO: Mirrorlist has to be generated using our rank-mirrorlist script
+            # located in /arch and then copy that generated file to the target system.
+            # In the CLI installer I'm running this script when the user opens the installer,
+            # because it has to search for the 5 fastest mirrors, which takes time.
+            
+            # Ok, we should do this before, in another thread
+            
+            #self.search_for_fastest_mirrors()
+
+            
+            # TODO : To set the user locale, we just need to uncoment the
+            # language_code variable value in /install/etc/locale.gen and
+            # execute in chroot locale-gen
             '''
             # /etc/locale.gen
             sleep 2

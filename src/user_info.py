@@ -142,6 +142,8 @@ class UserInfo(Gtk.Box):
             error_label.hide()
 
         self.password_strength.hide()
+        
+        self.login['encrypt'].hide()
 
     def store_values(self):
         #print(self.entry['fullname'].get_text())
@@ -156,7 +158,9 @@ class UserInfo(Gtk.Box):
         installer_settings['username'] = self.entry['username'].get_text()
         installer_settings['password'] = self.entry['password'].get_text()
         installer_settings['require_password'] = self.require_password
-        installer_settings['encrypt_home'] = self.encrypt_home
+        
+        # TODO: Allow to encrypt home directory
+        installer_settings['encrypt_home'] = False
         
         # this way installer_thread will know all info has been entered
         installer_settings['user_info_done'] = True

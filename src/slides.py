@@ -32,6 +32,7 @@ from gi.repository import Gtk, WebKit
 from config import installer_settings
 import os
 import queue
+import show_message as show
 
 _scroll_step = 4
 
@@ -128,6 +129,14 @@ class Slides(Gtk.Box):
                 event = ()
 
             if len(event) > 0:
+                if event[0] == "debug":
+                    print(event[1])
+                if event[0] == "info":
+                    print(event[1])
+                    self.info_label.set_markup(event[1])
+                if event[0] == "warning":
+                    print(event[1])
+                    self.info_label.set_markup(event[1])
                 if event[0] == "action":
                     print(event[1])
                     self.info_label.set_markup(event[1])
@@ -140,12 +149,14 @@ class Slides(Gtk.Box):
                     print(event[1])
                     self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
+                    self.info_label.set_markup(_("Installation finished!"))
                     done = True
                     error = False
                 elif event[0] == "error":
-                    done = True
-                    error = True
+                    self.info_label.set_markup(event[1])
+                    show.fatal_error(event[1])
 
             self.refresh()
 
-        # TODO: show install error or done message
+        show.message(_("Installation finished!"))
+        self.exit_button.show()
