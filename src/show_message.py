@@ -31,6 +31,7 @@
 from gi.repository import Gtk
 
 import sys
+import os
 
 from config import installer_settings
 
@@ -40,6 +41,10 @@ import queue
 _show_event_queue_messages = True
 
 def fatal_error(message):
+    # Remove /tmp/.setup-running
+    p = "/tmp/.setup-running"
+    if os.path.exists(p):
+        os.remove(p)
     error(message)
     sys.exit(1)
 
@@ -100,7 +105,7 @@ def event_from_callback_queue(event_queue):
             event = ()
         
         if len(event) > 0:
-            show.queue_event(event)
+            queue_event(event)
         
     return True
 
@@ -134,7 +139,7 @@ def queue_event(event):
             print(install_ok)
         elif event[0] == "error":
             logging.error(event[1])
-            show.fatal_error(event[1])
+            fatal_error(event[1])
             return False
     
     return True
