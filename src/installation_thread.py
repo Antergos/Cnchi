@@ -124,24 +124,42 @@ class InstallationThread(threading.Thread):
                 self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
                 return False
         
-        if self.method == 'advanced':
-            if not os.path.exists(self.dest_dir):
-                os.mkdir(self.dest_dir)
-            root_partition = self.mount_devices["/"]
-            
-            try:
-                subprocess.check_call(['mount', root_partition, self.dest_dir])
-                subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
-                subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
-                subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
-            except subprocess.CalledProcessError as e:
-                self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
-                return False
-                
-        
         if self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
             pass
+
+        # Create the directory where we will mount our new root partition
+        if not os.path.exists(self.dest_dir):
+            os.mkdir(self.dest_dir)
+            
+        if self.method == 'automatic':
+            # In automatic install we have (Alex F, check this out please!)
+            # /dev/sdX1 boot
+            # /dev/sdX2 swap
+            # /dev/sdX3 root
+            boot_partition = self.auto_device + "1"
+            root_partition = self.auto_device + "3"
+        elif self.method == 'easy':
+            # we don't create a specific boot partition in easy mode (this could change in the future)
+            boot_partition = ""
+            root_partition = self.mount_devices["/"]
+        elif self.method == 'advanced':
+            boot_partition = self.mount_devices["/boot"]
+            root_partition = self.mount_devices["/"]
+            
+        try:
+            subprocess.check_call(['mount', root_partition, self.dest_dir])
+            subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
+            subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
+            subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
+            
+            # We also mount the boot partition if it's needed
+            subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir]) 
+            if len(boot_partition) > 0:
+                subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
+        except subprocess.CalledProcessError as e:
+            self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+            return False
 
         ## Do real installation here
 
