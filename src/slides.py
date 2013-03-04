@@ -28,7 +28,7 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-from gi.repository import Gtk, WebKit
+from gi.repository import Gtk, WebKit, GLib
 from config import installer_settings
 import os
 import queue
@@ -105,7 +105,16 @@ class Slides(Gtk.Box):
         self.forward_button.hide()
         self.exit_button.hide()
         
-        self.show_install_messages()
+        self.install_ok = _("Installation finished!")
+        
+        # stop show_message. We will manage our installer messages here
+        # (this is used to be able to shown installer messages in
+        #  timezone, keymap and user_info screens)
+        show._show_event_queue_messages = False
+
+        # let show_install_messages manage installer messages
+        GLib.idle_add(self.show_install_messages)
+
 
     def store_values(self):
         return False
@@ -121,41 +130,33 @@ class Slides(Gtk.Box):
             Gtk.main_iteration()
 
     def show_install_messages(self):
-        done = False
-        error = False
+        try:
+            event = self.callback_queue.get_nowait()
+        except queue.Empty:
+            event = ()
 
-        install_ok = _("Installation finished!")
-
-        # stop show_message. We will manage our installer messages here
-        show._show_event_queue_messages = False
-        
-        while not done:
-            try:
-                event = self.callback_queue.get(False)
-            except queue.Empty:
-                event = ()
-                
+        if len(event) > 0:
             show.queue_event(event)
-
-            if len(event) > 0:
-                if event[0] == "info":
-                    self.info_label.set_markup(event[1])
-                elif event[0] == "warning":
-                    self.info_label.set_markup(event[1])
-                elif event[0] == "action":
-                    self.info_label.set_markup(event[1])
-                elif event[0] == "target":
-                    self.info_label.set_markup(event[1])
-                elif event[0] == "percent":
-                    self.progress_bar.set_fraction(event[1])
-                elif event[0] == "finished":
-                    self.info_label.set_markup(install_ok)
-                    show.message(install_ok)
-                    done = True
-                    error = False
-                elif event[0] == "error":
-                    show.fatal_error(event[1])
-
-            self.refresh()
-
-        self.exit_button.show()
+            
+            if event[0] == "info":
+                self.info_label.set_markup(event[1])
+            elif event[0] == "debug":
+                print(event[1])
+            elif event[0] == "warning":
+                self.info_label.set_markup(event[1])
+            elif event[0] == "action":
+                self.info_label.set_markup(event[1])
+            elif event[0] == "target":
+                self.info_label.set_markup(event[1])
+            elif event[0] == "percent":
+                self.progress_bar.set_fraction(event[1])
+            elif event[0] == "finished":
+                self.info_label.set_markup(install_ok)
+                show.message(self.install_ok)
+                self.done = True
+                error = False
+                self.exit_button.show()
+            elif event[0] == "error":
+                show.fatal_error(event[1])
+        
+        return True

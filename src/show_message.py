@@ -100,14 +100,15 @@ def question(message):
 def event_from_callback_queue(event_queue):
     if _show_event_queue_messages:
         try:
-            event = event_queue.get(False)
+            event = event_queue.get_nowait()
         except queue.Empty:
             event = ()
         
         if len(event) > 0:
             queue_event(event)
-        
-    return True
+        return True
+    else:
+        return False
 
 def queue_event(event):
     install_ok = _("Installation finished!")

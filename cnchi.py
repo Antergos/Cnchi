@@ -87,10 +87,11 @@ class Main(Gtk.Window):
         # check if we're already running
         tmp_running = "/tmp/.setup-running"
         if os.path.exists(tmp_running):
-            show.fatal_error(_('You cannot run two instances of this installer.\n\n'
+            show.error(_('You cannot run two instances of this installer.\n\n'
                           'If you are sure that the installer is not already running\n'
                           'you can manually delete the file %s\n'
                           'and run this installer again.') % tmp_running)
+            sys.exit(1)
                 
         super().__init__()
 

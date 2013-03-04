@@ -112,11 +112,12 @@ class InstallationThread(threading.Thread):
             script_path = os.path.join(installer_settings["CNCHI_DIR"], \
                 "scripts", _autopartition_script)
             try:
-                if os.path.exists(script_path):
-                    self.auto_device = self.mount_devices["automatic"]
-                    self.queue_event('debug', "Automatic device: %s" % self.auto_device)
-                    subprocess.check_call(["/bin/bash", script_path, \
-                                     self.auto_device])
+                #if os.path.exists(script_path):
+                self.auto_device = self.mount_devices["automatic"]
+                self.queue_event('debug', "Automatic device: %s" % self.auto_device)
+                self.queue_event('debug', "Running automatic script...")
+                subprocess.check_call(["/bin/bash", script_path, self.auto_device])
+                self.queue_event('debug', "Automatic script done.")
             except subprocess.FileNotFoundError as e:
                 self.queue_fatal_event(_("Can't execute the auto partition script"))
                 return False
@@ -147,27 +148,44 @@ class InstallationThread(threading.Thread):
             boot_partition = self.mount_devices["/boot"]
             root_partition = self.mount_devices["/"]
             
+        if self.method != 'automatic':
+            # not doing this in automatic mode as our script mounts the root and boot devices
+            try:
+                subprocess.check_call(['mount', root_partition, self.dest_dir])
+                # We also mount the boot partition if it's needed
+                subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir]) 
+                if len(boot_partition) > 0:
+                    subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
+            except subprocess.CalledProcessError as e:
+                self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
+                return False
+
         try:
-            subprocess.check_call(['mount', root_partition, self.dest_dir])
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
             subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
             subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
-            
-            # We also mount the boot partition if it's needed
-            subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir]) 
-            if len(boot_partition) > 0:
-                subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
         except subprocess.CalledProcessError as e:
-            self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+            self.queue_fatal_event(_("Can't create necessary directories on destination system"))
             return False
 
         ## Do real installation here
 
         try:
+            self.queue_event('debug', _("Selecting packages..."))
             self.select_packages()
+            self.queue_event('debug', _("Packages selected"))
+            
+            self.queue_event('debug', _("Installing packages..."))
             self.install_packages()
+            self.queue_event('debug', _("Packages installed."))
+
+            self.queue_event('debug', _("Installing bootloader..."))
             self.install_bootloader()
+            self.queue_event('debug', _("Bootloader installed."))
+
+            self.queue_event('debug', _("Configuring system..."))
             self.configure_system()
+            self.queue_event('debug', _("System configured."))
         except subprocess.CalledProcessError as e:
             self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
             return False
