@@ -157,7 +157,7 @@ class Pac(object):
     
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
-        print("%s : %s" % (event_type, event_text))
+        #print("%s : %s" % (event_type, event_text))
          
     # Callback functions 
 
@@ -205,7 +205,7 @@ class Pac(object):
         #self.queue_event("percent", 0)
         #self.queue_event("icon", self.icon)
 
-        print(ID, event)
+        #print(ID, event)
 
     def cb_conv(self, *args):
         print("conversation", args)

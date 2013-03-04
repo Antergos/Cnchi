@@ -285,7 +285,13 @@ class InstallationThread(threading.Thread):
         
         self.queue_event('info', "Getting package list...")
 
-        packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
+        try:
+            packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
+        except URLError as e:
+            # TODO: Should we provide an alternative?
+            self.queue_event('error', "Can't retrieve package list")
+            return False
+            
         tree = etree.parse(packages_xml)
         root = tree.getroot()
         for child in root.iter('base_system'):
@@ -302,7 +308,10 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        graphics = self.get_graphic_card()
+        graphics = self.get_graphics_card()
+        
+        self.queue_event('info', "%s graphics card detected" % graphics)
+        print(graphics)
         
         self.card = ""
 
@@ -407,14 +416,14 @@ class InstallationThread(threading.Thread):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-    def get_graphic_card(self):
+    def get_graphics_card(self):
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
                               stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["grep", "Model:[[:space:]]"],\
                               stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
         out, err = p2.communicate()
-        return out.decode()
+        return out.decode().lower()
     
     def is_uvesafb(self):
         out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
