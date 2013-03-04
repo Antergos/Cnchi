@@ -33,6 +33,7 @@ from config import installer_settings
 import os
 import queue
 import show_message as show
+import logging
 
 _scroll_step = 4
 
@@ -46,7 +47,8 @@ _prev_page = None
 class Slides(Gtk.Box):
 
     def __init__(self, params):
-
+        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
+        
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -121,6 +123,8 @@ class Slides(Gtk.Box):
     def show_install_messages(self):
         done = False
         error = False
+
+        install_ok = _("Installation finished!")
         
         while not done:
             try:
@@ -131,14 +135,17 @@ class Slides(Gtk.Box):
             if len(event) > 0:
                 if event[0] == "debug":
                     print(event[1])
+                    logging.info(event[1])
                 if event[0] == "info":
                     print(event[1])
+                    logging.info(event[1])
                     self.info_label.set_markup(event[1])
                 if event[0] == "warning":
                     print(event[1])
                     self.info_label.set_markup(event[1])
                 if event[0] == "action":
                     print(event[1])
+                    logging.info(event[1])
                     self.info_label.set_markup(event[1])
                 elif event[0] == "icon":
                     print(event[1])
@@ -149,7 +156,9 @@ class Slides(Gtk.Box):
                     print(event[1])
                     self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
-                    self.info_label.set_markup(_("Installation finished!"))
+                    logging.info(install_ok)
+                    self.info_label.set_markup(install_ok)
+                    show.message(install_ok)
                     done = True
                     error = False
                 elif event[0] == "error":
@@ -158,5 +167,4 @@ class Slides(Gtk.Box):
 
             self.refresh()
 
-        show.message(_("Installation finished!"))
         self.exit_button.show()
