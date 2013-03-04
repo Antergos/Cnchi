@@ -171,21 +171,22 @@ class InstallationThread(threading.Thread):
         ## Do real installation here
 
         try:
-            self.queue_event('debug', _("Selecting packages..."))
+            self.queue_event('debug', 'Selecting packages...')
             self.select_packages()
-            self.queue_event('debug', _("Packages selected"))
+            self.queue_event('debug', 'Packages selected')
             
-            self.queue_event('debug', _("Installing packages..."))
+            self.queue_event('debug', 'Installing packages...')
             self.install_packages()
-            self.queue_event('debug', _("Packages installed."))
+            self.queue_event('debug', 'Packages installed.')
 
-            self.queue_event('debug', _("Installing bootloader..."))
+            self.queue_event('debug', 'Installing bootloader...')
             self.install_bootloader()
-            self.queue_event('debug', _("Bootloader installed."))
+            self.queue_event('debug', 'Bootloader installed.')
 
-            self.queue_event('debug', _("Configuring system..."))
+            self.queue_event('debug', 'Configuring system...')
             self.configure_system()
-            self.queue_event('debug', _("System configured."))
+            self.queue_event('debug', 'System configured.')
+            
         except subprocess.CalledProcessError as e:
             self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
             return False
@@ -281,13 +282,16 @@ class InstallationThread(threading.Thread):
         
         '''The list of packages is retrieved from an online XML to let us
         control the pkgname in case of any modification'''
+        
+        self.queue_event('info', "Getting package list...")
 
-        packages_xml=urlopen('http://install.cinnarch.com/packages.xml')
+        packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
         tree = etree.parse(packages_xml)
         root = tree.getroot()
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
+        
         if self.is_uvesafb():
             for child in root.iter('uvesafb'):
                 for pkg in child.iter('pkgname'):
@@ -344,6 +348,8 @@ class InstallationThread(threading.Thread):
         
         # Add filesystem packages
         
+        self.queue_event('debug', "Adding filesystem packages")       
+        
         fs_types = subprocess.check_output(\
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
@@ -386,6 +392,8 @@ class InstallationThread(threading.Thread):
             for child in root.iter('vfat'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
+
+        self.queue_event('debug', 'Installing chinese fonts.')
 
         # Install chinese fonts
         if installer_settings["language_code"] == "zh_TW" or \

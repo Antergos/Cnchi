@@ -201,9 +201,9 @@ class Pac(object):
             self.action = ''
 
         self.queue_event("action", self.action)
-        self.queue_event("target", '')
-        self.queue_event("percent", 0)
-        self.queue_event("icon", self.icon)
+        #self.queue_event("target", '')
+        #self.queue_event("percent", 0)
+        #self.queue_event("icon", self.icon)
 
         print(ID, event)
 
@@ -270,13 +270,14 @@ class Pac(object):
         else:
             self.action = _('Refreshing...')
             self.target = _target
+            # can't we know wich percent has 'refreshed' ?
             self.percent = 0
             self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
 
         self.queue_event("action", self.action)
-        self.queue_event("icon", self.icon)
-        self.queue_event("target", self.target)
-        self.queue_event("percent", self.percent)
+        #self.queue_event("icon", self.icon)
+        #self.queue_event("target", self.target)
+        #self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
         self.target = "%s (%d/%d)" % (_target, i, n)
