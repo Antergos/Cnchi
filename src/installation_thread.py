@@ -81,7 +81,7 @@ class InstallationThread(threading.Thread):
         self.running = True
         self.error = False
     
-    def fatal(self, txt):
+    def queue_fatal_event(self, txt):
         self.error = True
         self.running = False
         self.queue_event("error", txt)
@@ -110,14 +110,13 @@ class InstallationThread(threading.Thread):
                 if os.path.exists(script_path):
                     self.auto_device = self.mount_devices["automatic"]
                     print("Automatic device: %s" % self.auto_device)
-                    process = subprocess.Popen(["/bin/bash", script_path, \
+                    subprocess.check_call(["/bin/bash", script_path, \
                                      self.auto_device])
-                    out, err = process.communicate()
             except subprocess.FileNotFoundError as e:
-                self.fatal(_("Can't execute the auto partition script"))
+                self.queue_fatal_event(_("Can't execute the auto partition script"))
                 return False
             except subprocess.CalledProcessError as e:
-                self.fatal("CalledProcessError.output = %s" % e.output)
+                self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
                 return False
         
         if self.method == 'advanced':
@@ -125,17 +124,15 @@ class InstallationThread(threading.Thread):
                 os.mkdir(self.dest_dir)
             root_partition = self.mount_devices["/"]
             
-            subprocess.Popen(['mount', root_partition, self.dest_dir])
-            out, err = process.communicate()
-
-            subprocess.Popen(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
-            out, err = process.communicate()
-
-            subprocess.Popen(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
-            out, err = process.communicate()
-
-            subprocess.Popen(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
-            out, err = process.communicate()
+            try:
+                subprocess.check_call(['mount', root_partition, self.dest_dir])
+                subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
+                subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
+                subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir]) 
+            except subprocess.CalledProcessError as e:
+                self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+                return False
+                
         
         if self.method == 'easy' or self.method == 'advanced':
             # TODO: format partitions using mkfs (format_devices)
@@ -148,8 +145,11 @@ class InstallationThread(threading.Thread):
             self.install_packages()
             self.install_bootloader()
             self.configure_system()
+        except subprocess.CalledProcessError as e:
+            self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+            return False
         except InstallError as e:
-            self.fatal(e.value)
+            self.queue_fatal_event(e.value)
             return False
 
         # installation finished ok
@@ -368,20 +368,15 @@ class InstallationThread(threading.Thread):
         return out.decode()
     
     def is_uvesafb(self):
-        process = subprocess.Popen(["grep", "-w", "uvesafb", "/proc/cmdline"])
-        out, err = process.comunicate()
+        out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
         if len(out) > 0:
             return True
         else:
             return False
     
     def install_packages(self):
-        # create chroot environment on target system
-        self.chroot_mount()
-        
+        self.chroot_mount()        
         self.run_pacman()
-
-        # tear down the chroot environment        
         self.chroot_umount()
     
     def run_pacman(self):
@@ -396,32 +391,22 @@ class InstallationThread(threading.Thread):
 
         mydir = os.path.join(self.dest_dir, "sys")
 
-        subprocess.Popen(["mount", "-t", "sysfs", "sysfs", mydir])
-        out, err = process.communicate()
-
-        subprocess.Popen(["chmod", "555", mydir])
-        out, err = process.communicate()
+        subprocess.check_call(["mount", "-t", "sysfs", "sysfs", mydir])
+        subprocess.check_call(["chmod", "555", mydir])
 
         mydir = os.path.join(self.dest_dir, "proc")
-
-        subprocess.Popen(["mount", "-t", "proc", "proc", mydir])
-        out, err = process.communicate()
-
-        subprocess.Popen(["chmod", "555", mydir])
-        out, err = process.communicate()
+        subprocess.check_call(["mount", "-t", "proc", "proc", mydir])
+        subprocess.check_call(["chmod", "555", mydir])
 
         mydir = os.path.join(self.dest_dir, "dev")
-
-        subprocess.Popen(["mount", "-o", "bind", "/dev", mydir])
-        out, err = process.communicate()
+        subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
         
     def chroot_umount(self):
         dirs = [ "proc", "sys", "dev" ]
         
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
-            subprocess.Popen(["umount", mydir])
-            out, err = process.communicate()
+            subprocess.check_call(["umount", mydir])
 
     def chroot(self, cmd):
         run = ['chroot', self.dest_dir]
@@ -429,8 +414,8 @@ class InstallationThread(threading.Thread):
         for c in cmd:
             run.append(c)
                 
-        process = subprocess.Popen(run)
-        out, err = process.communicate()
+        subprocess.check_call(run)
+        
         
     def is_running(self):
         return self.running
@@ -471,10 +456,8 @@ class InstallationThread(threading.Thread):
                 chk = '1'
             else:
                 chk = '0'
-                #subprocess.getoutput('mkdir -p /install%s' % path)
                 full_path = os.path.join(self.dest_dir, path)
-                subprocess.Popen(["mkdir", "-p", full_path])
-                out, err = process.communicate()
+                subprocess.check_call(["mkdir", "-p", full_path])
 
             for i in self.ssd:
                 if i in self.mount_devices[path]:
@@ -495,13 +478,6 @@ class InstallationThread(threading.Thread):
         with open('/install/etc/fstab','w') as f:
             f.write(full_text)
 
-    def grub_probe(self, target, device):
-        probe_bin = 'LD_LIBRARY_PATH="%s/usr/lib:%s/lib" %s/usr/sbin/grub-probe' % (self.dest_dir, self.dest_dir, self.dest_dir)
-        dst = os.path.join(self.dest_dir, device)
-        process = subprocess.Popen([probe_bin, '--target="%s"' % target, dst], stdout=subprocess.PIPE)
-        out, err = process.communicate()
-        return out.decode()
-        
     def install_bootloader(self):
         # TODO: Install Grub2
         # check dogrub_config and dogrub_bios from arch-setup
@@ -519,24 +495,20 @@ class InstallationThread(threading.Thread):
         
         grub_log = '/tmp/grub_bios_install.log'
 
-        with open(grub_log, 'w') as f:
-            # should use .decode() on out before writing to disk?
-            f.write(out)
-
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         
         if not os.path.exists(grub_d_dir):
             os.makedirs(grub_d_dir)
 
-        misc.copytree("/arch/10_linux", grub_d_dir)
+        try:
+            misc.copytree("/arch/10_linux", grub_d_dir)
+        except FileExistsError:
+            # ignore if exists
+            pass
 
         self.chroot(['/usr/sbin/grub-mkconfig', '-o', \
                   '/boot/grub/grub.cfg'])
         
-        with open(grub_log, 'a') as f:
-            # should use .decode() on out before writing to disk?
-            f.write(out)
-
         self.chroot_umount()
 
         core_path = os.path.join(self.dest_dir,\
@@ -575,44 +547,33 @@ class InstallationThread(threading.Thread):
 
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
-        print("Queued event %s : %s" % (event_type, event_text))
+        print("Queued an event of type %s : %s" % (event_type, event_text))
 
     def change_user_password(self, user, new_password):
-        process = subprocess.Popen(('mkpasswd', '-m', 'sha-512', new_password), stdout=subprocess.PIPE)
+        process = subprocess.Popen(['mkpasswd', '-m', 'sha-512', new_password], stdout=subprocess.PIPE)
         shadow_password = process.communicate()[0].strip()
 
         if process.returncode != 0:
             print (_('Error creating password hash for user %s') % user)
+            return False
 
-        result = subprocess.call(('usermod', '-p', shadow_password, user))
+        result = subprocess.call(['usermod', '-p', shadow_password, user])
 
         if result != 0:
             print (_('Error changing password for user %s\n') % user)
+            return False
+        
+        return True
 
     def auto_timesetting(self):
-        process = subprocess.Popen(["hwclock", "--systohc", "--utc"])
+        subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy("/etc/adjtime", "%s/etc/adjtime" % self.dest_dir)
 
-    # runs mkinitcpio on the target system, displays output
+    # runs mkinitcpio on the target system
     def run_mkinitcpio(self):
         self.chroot_mount()
-        # all mkinitcpio output goes to /tmp/mkinitcpio.log, which we tail into a dialog
-        '''
-    ( \
-    touch /tmp/setup-mkinitcpio-running
-    echo "Initramfs progress ..." > /tmp/initramfs.log; echo >> /tmp/mkinitcpio.log
-    chroot ${DESTDIR} /usr/bin/mkinitcpio -p ${KERNELPKG} >>/tmp/mkinitcpio.log 2>&1
-    echo >> /tmp/mkinitcpio.log
-    rm -f /tmp/setup-mkinitcpio-running
-    ) &
-    sleep 2
-    dialog --backtitle "${TITLE}" --title $"Rebuilding initramfs images ..." --no-kill --tailboxbg "/tmp/mkinitcpio.log" 18 70
-    while [[ -f /tmp/setup-mkinitcpio-running ]]; do
-        /bin/true
-    done
-    chroot_umount
-}
-        '''
+        self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
+        self.chroot_umount()
         
     def configure_system(self):
         # final install steps
@@ -649,15 +610,10 @@ class InstallationThread(threading.Thread):
                 sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
                 '''
 
-        # TODO: use hwdetect to create /etc/mkinitcpio.conf
-        # (check auto_hwdetect from arch-setup)
-        # Is this really necessary?
-
         self.queue_event("action", _("Configuring your new system"))
 
         # Copy important config files to target system
-        files = [ "/etc/pacman.conf",
-                  "/etc/yaourtrc" ]        
+        files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]        
         
         for path in files:
             shutil.copy(path, os.path.join(self.dest_dir, path))
@@ -687,8 +643,8 @@ class InstallationThread(threading.Thread):
                 sudoers.write('# Sudoers file')
                 sudoers.write('root ALL=(ALL) ALL')
                 sudoers.write('%s ALL=(ALL) ALL' % username)
-            subprocess.Popen(["chmod", "440", sudoers_path])
-            out, err = process.communicate()
+            
+            subprocess.check_call(["chmod", "440", sudoers_path])
             
             print(_("Creating new user"))
             
@@ -698,8 +654,7 @@ class InstallationThread(threading.Thread):
                 # ignore if exists
                 pass
 
-            process = subprocess.Popen(["rm", "-rf", "%s/etc/skel" % self.dest_dir])
-            out, err = process.communicate()
+            process = subprocess.check_call(["rm", "-rf", "%s/etc/skel" % self.dest_dir])
             
             self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                       '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
@@ -725,7 +680,12 @@ class InstallationThread(threading.Thread):
                 with open(hostname_path, "wt") as f:
                     f.write(hostname)
 
-            # TODO: At this point, installer allows to edit mkinitcpio.conf. What do we do here?
+            # TODO: At this point, cli installer allows to edit mkinitcpio.conf.
+            # Let's start without using hwdetect for mkinitcpio.conf.
+            # I think it should work out of the box most of the time.
+            # This way we don't have to fix deprecated hooks.    
+            
+            self.run_mkinitcpio()
             
             # TODO: Should we ask for a password for root? Or we leave it as it is?
             
@@ -743,15 +703,6 @@ class InstallationThread(threading.Thread):
 
             self.auto_timesetting()
 
-            '''
-            # /etc/initcpio.conf
-            # Fix deprecated hooks
-            sed -i 's/ pata//' ${DESTDIR}/etc/mkinitcpio.conf
-            sed -i 's/ scsi//' ${DESTDIR}/etc/mkinitcpio.conf
-            sed -i 's/ sata//' ${DESTDIR}/etc/mkinitcpio.conf
-            sed -i 's/ filesystem/ block filesystem/' ${DESTDIR}/etc/mkinitcpio.conf
-            '''
-
             self.run_mkinitcpio()
             
             '''
@@ -760,15 +711,18 @@ class InstallationThread(threading.Thread):
             DIALOG --infobox $"Generating locales..." 4 25
             cp -f /tmp/locale.conf ${DESTDIR}/etc/locale.conf
             chroot ${DESTDIR} locale-gen >/dev/null 2>&1
+            '''
 
-
+            '''
             # Set gsettings
             cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
             mkdir -p ${DESTDIR}/var/run/dbus
             mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
             chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
             rm ${DESTDIR}/usr/bin/set-gsettings
+            '''
 
+            '''
             # Fix transmission leftover
             mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
 
