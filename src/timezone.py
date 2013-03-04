@@ -39,6 +39,8 @@ import time
 import queue
 import datetime
 
+import show_message as show
+
 # Import functions
 from config import installer_settings
 
@@ -64,7 +66,7 @@ class Timezone(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-
+        
         super().__init__()
 
         self.ui = Gtk.Builder()
@@ -193,7 +195,6 @@ class Timezone(Gtk.Box):
 
     def populate_cities(self, selected_zone):
         if self.old_zone != selected_zone:
-            #print("timezone.populate_cities started!")
             regions = []
             for loc in self.tzdb.locations:
                 zone, region = loc.zone.split('/', 1)
@@ -205,7 +206,6 @@ class Timezone(Gtk.Box):
             for r in regions:
                 tree_model.append([r, r])
             self.old_zone = selected_zone
-            #print("timezone.populate_cities ended!")
 
     def refresh(self):
         while Gtk.events_pending():
@@ -220,7 +220,6 @@ class Timezone(Gtk.Box):
             self.refresh()
 
     def prepare(self):
-        #print("timezone.prepare started!")
         self.translate_ui()
         self.populate_zones()
         self.timezone = None
@@ -239,8 +238,10 @@ class Timezone(Gtk.Box):
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
+        # restore forward button text (from install now! to next)
+        self.forward_button.set_label("gtk-go-forward")
+        
         self.show_all()
-        #print("timezone.prepare ended!")
 
     def start_auto_timezone_thread(self):
         self.auto_timezone_coords = multiprocessing.Queue()

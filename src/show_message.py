@@ -35,6 +35,9 @@ import sys
 from config import installer_settings
 
 import logging
+import queue
+
+_show_event_queue_messages = True
 
 def fatal_error(message):
     error(message)
@@ -88,3 +91,50 @@ def question(message):
     response = msg_dialog.run()
     msg_dialog.destroy()
     return response
+
+def event_from_callback_queue(event_queue):
+    if _show_event_queue_messages:
+        try:
+            event = event_queue.get(False)
+        except queue.Empty:
+            event = ()
+        
+        if len(event) > 0:
+            show.queue_event(event)
+        
+    return True
+
+def queue_event(event):
+    install_ok = _("Installation finished!")
+
+    if len(event) > 0:
+        if event[0] == "debug":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "info":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "warning":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "action":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "icon":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "target":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "percent":
+            print(event[1])
+            logging.info(event[1])
+        elif event[0] == "finished":
+            logging.info(install_ok)
+            print(install_ok)
+        elif event[0] == "error":
+            logging.error(event[1])
+            show.fatal_error(event[1])
+            return False
+    
+    return True

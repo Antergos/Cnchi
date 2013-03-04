@@ -39,6 +39,8 @@ import keyboard_names
 
 import logging
 
+import show_message as show
+
 _next_page = "user_info"
 _prev_page = "timezone"
 

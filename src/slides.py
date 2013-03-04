@@ -125,44 +125,35 @@ class Slides(Gtk.Box):
         error = False
 
         install_ok = _("Installation finished!")
+
+        # stop show_message. We will manage our installer messages here
+        show._show_event_queue_messages = False
         
         while not done:
             try:
                 event = self.callback_queue.get(False)
             except queue.Empty:
                 event = ()
+                
+            show.queue_event(event)
 
             if len(event) > 0:
-                if event[0] == "debug":
-                    print(event[1])
-                    logging.info(event[1])
                 if event[0] == "info":
-                    print(event[1])
-                    logging.info(event[1])
                     self.info_label.set_markup(event[1])
-                if event[0] == "warning":
-                    print(event[1])
+                elif event[0] == "warning":
                     self.info_label.set_markup(event[1])
-                if event[0] == "action":
-                    print(event[1])
-                    logging.info(event[1])
+                elif event[0] == "action":
                     self.info_label.set_markup(event[1])
-                elif event[0] == "icon":
-                    print(event[1])
                 elif event[0] == "target":
-                    print(event[1])
                     self.info_label.set_markup(event[1])
                 elif event[0] == "percent":
-                    print(event[1])
                     self.progress_bar.set_fraction(event[1])
                 elif event[0] == "finished":
-                    logging.info(install_ok)
                     self.info_label.set_markup(install_ok)
                     show.message(install_ok)
                     done = True
                     error = False
                 elif event[0] == "error":
-                    self.info_label.set_markup(event[1])
                     show.fatal_error(event[1])
 
             self.refresh()

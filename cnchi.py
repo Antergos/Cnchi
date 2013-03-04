@@ -28,7 +28,7 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk, GObject, GLib
 import os
 import sys
 
@@ -56,7 +56,7 @@ import misc
 
 import queue
 
-from show_message import fatal_error
+import show_message as show
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
@@ -81,13 +81,13 @@ class Main(Gtk.Window):
         gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
 
         if os.getuid() != 0:
-            fatal_error(_('This installer must be run with administrative'
+            show.fatal_error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
         
         # check if we're already running
         tmp_running = "/tmp/.setup-running"
         if os.path.exists(tmp_running):
-            fatal_error(_('You cannot run two instances of this installer.\n\n'
+            show.fatal_error(_('You cannot run two instances of this installer.\n\n'
                           'If you are sure that the installer is not already running\n'
                           'you can manually delete the file %s\n'
                           'and run this installer again.') % tmp_running)
@@ -220,6 +220,8 @@ class Main(Gtk.Window):
         tmp_file.write("Cnchi %d\n" % 1234)
         tmp_file.close()
 
+        # let show.event_from_callback_queue manage installer messages
+        GLib.idle_add(show.event_from_callback_queue, self.callback_queue)
 
     def remove_temp_files(self):
          tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
