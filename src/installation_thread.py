@@ -265,7 +265,7 @@ class InstallationThread(threading.Thread):
 
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
-        dirs = [ "/var/cache/pacman/pkg", "/var/lib/pacman" ]
+        dirs = [ "var/cache/pacman/pkg", "var/lib/pacman" ]
         
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
@@ -276,6 +276,7 @@ class InstallationThread(threading.Thread):
         
         self.pac.do_refresh()
 
+    # Prepare pacman and get package list from Internet
     def select_packages(self):
         self.create_pacman_conf()
         self.prepare_pacman()
@@ -291,17 +292,24 @@ class InstallationThread(threading.Thread):
             # TODO: Should we provide an alternative?
             self.queue_event('error', "Can't retrieve package list")
             return False
-            
+
         tree = etree.parse(packages_xml)
         root = tree.getroot()
+
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
+
+        self.queue_event('info', "checking is_uvesafb")
+        print("checking is_uvesafb")
         
         if self.is_uvesafb():
             for child in root.iter('uvesafb'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
+
+        self.queue_event('info', "is_uvesafb checked")
+        print("is_uvesafb checked")
         
         if installer_settings["use_ntp"]:
             for child in root.iter('ntp'):
@@ -426,7 +434,11 @@ class InstallationThread(threading.Thread):
         return out.decode().lower()
     
     def is_uvesafb(self):
-        out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
+        try:
+            out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
+        except subprocess.CalledProcessError as e:
+            return False
+                
         if len(out) > 0:
             return True
         else:
