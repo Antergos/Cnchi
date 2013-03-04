@@ -54,6 +54,7 @@ import misc
 import pac
 
 _autopartition_script = 'auto_partition.sh'
+_postinstall_script = 'postinstall.sh'
 
 class InstallError(Exception):
     def __init__(self, value):
@@ -134,7 +135,7 @@ class InstallationThread(threading.Thread):
             os.mkdir(self.dest_dir)
             
         if self.method == 'automatic':
-            # In automatic install we have (Alex F, check this out please!)
+            # In automatic install we have
             # /dev/sdX1 boot
             # /dev/sdX2 swap
             # /dev/sdX3 root
@@ -145,8 +146,8 @@ class InstallationThread(threading.Thread):
             boot_partition = ""
             root_partition = self.mount_devices["/"]
         elif self.method == 'advanced':
-            boot_partition = self.mount_devices["/boot"]
             root_partition = self.mount_devices["/"]
+            boot_partition = self.mount_devices["/boot"]
             
         if self.method != 'automatic':
             # not doing this in automatic mode as our script mounts the root and boot devices
@@ -289,12 +290,16 @@ class InstallationThread(threading.Thread):
         try:
             packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
         except URLError as e:
-            # TODO: Should we provide an alternative?
-            self.queue_event('error', "Can't retrieve package list")
+            # If the installer can't retrieve the remote file, try to install with a local
+            # copy, that may not be update
+            self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
+            packages_xml = os.path.join(installer_settings["DATA_DIR"], 'packages.xml')
             return False
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
+
+        self.queue_event('debug', "Adding base packages")
 
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
@@ -410,7 +415,7 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        self.queue_event('debug', 'Installing chinese fonts.')
+        self.queue_event('debug', 'Selecting chinese fonts.')
 
         # Install chinese fonts
         if installer_settings["language_code"] == "zh_TW" or \
@@ -586,6 +591,13 @@ class InstallationThread(threading.Thread):
         
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
+            chroot ${DESTDIR} cp "/boot/grub/locale/en@quot.mo" "/boot/grub/locale/$(echo ${LOCALE}|cut -b 1-2).mo.gz"
+            try:
+                misc.copytree("/boot/grub/locale/en@quot.mo", "/boot/grub/locale/%s.mo.gz" % language_code[0:2])
+            except FileExistsError:
+                # ignore if exists
+                pass
+
         else:
             # should we stop installation here?
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
@@ -685,7 +697,7 @@ class InstallationThread(threading.Thread):
             shutil.copy(path, os.path.join(self.dest_dir, path))
 
         # enable services      
-        self.enable_services([ "lightdm", "NetworkManager" ])
+        self.enable_services([ "mdm", "NetworkManager" ])
 
         # TODO: we never ask the user about this...
         if installer_settings["use_ntp"]:
@@ -731,7 +743,7 @@ class InstallationThread(threading.Thread):
             self.chroot(['chfn', '-f', fullname, username])
                       
             home = os.path.join(self.dest_dir, "home", username)
-            skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.cache', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
+            skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
             try:
                 for d in skel_dirs:
                     misc.copytree(d, home)
@@ -746,33 +758,25 @@ class InstallationThread(threading.Thread):
                 with open(hostname_path, "wt") as f:
                     f.write(hostname)
 
-            # TODO: At this point, cli installer allows to edit mkinitcpio.conf.
-            # Let's start without using hwdetect for mkinitcpio.conf.
-            # I think it should work out of the box most of the time.
-            # This way we don't have to fix deprecated hooks.    
             
-            self.run_mkinitcpio()
-            
-            # TODO: Should we ask for a password for root? Or we leave it as it is?
-            # we could set the user password to be the root password (i like this!)
-            # Or maybe we could just ask for root password like Fedora? What do you think?
-            
+            # User password is the root password  
             self.change_user_password('root', password)
-            
-            # Specific user configurations
-            
-            ## Set defaults directories
-            self.chroot(["su", "-c", "xdg-user-dirs-update", username])
 
-            ## Unmute alsa channels
-            self.chroot(["amixer", "-c", "0", "set", "Master", "playback", "100%", "unmute"])
-
-            ## Copy locales
-            # TODO : I think we didn't store locale.gen in /tmp... ¿?¿?¿?
-            shutil.copy("/tmp/locale.gen",  "%s/etc/locale.gen" % self.dest_dir)
+            ## Generate locales
+            self.queue_event('info', _("Generating locales"))
+            self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % language_code, "/etc/locale.gen"])
+            self.chroot(['locale-gen'])
+            locale.conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
+            with open(locale.conf_path, "wt") as locale.conf:
+                locale.conf.write('LANG=%s' % language_code)
+                locale.conf.write('LC_COLLATE=C')
 
             self.auto_timesetting()
 
+            # Let's start without using hwdetect for mkinitcpio.conf.
+            # I think it should work out of the box most of the time.
+            # This way we don't have to fix deprecated hooks.    
+            self.queue_event('info', _("Running mkinitcpio"))
             self.run_mkinitcpio()
             
             # TODO: Mirrorlist has to be generated using our rank-mirrorlist script
@@ -783,61 +787,6 @@ class InstallationThread(threading.Thread):
             # Ok, we should do this before, in another thread
             
             #self.search_for_fastest_mirrors()
-
-            
-            # TODO : To set the user locale, we just need to uncoment the
-            # language_code variable value in /install/etc/locale.gen and
-            # execute in chroot locale-gen
-            '''
-            # /etc/locale.gen
-            sleep 2
-            DIALOG --infobox $"Generating locales..." 4 25
-            cp -f /tmp/locale.conf ${DESTDIR}/etc/locale.conf
-            chroot ${DESTDIR} locale-gen >/dev/null 2>&1
-            '''
-
-            '''
-            # Set gsettings
-            cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
-            mkdir -p ${DESTDIR}/var/run/dbus
-            mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-            chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
-            rm ${DESTDIR}/usr/bin/set-gsettings
-            '''
-
-            '''
-            # Fix transmission leftover
-            mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
-
-            # Configure touchpad
-            _set_50-synaptics
-            # cp /etc/X11/xorg.conf.d/10-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/10-synaptics.conf
-
-            # Fix grub locale error
-            chroot ${DESTDIR} cp "/boot/grub/locale/en@quot.mo" "/boot/grub/locale/$(echo ${LOCALE}|cut -b 1-2).mo.gz"
-
-            # Fix QT apps
-            echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
-
-            # Change pantheon-greeter wallpaper
-            chroot ${DESTDIR} unlink /usr/share/backgrounds/cinnarch-default
-            chroot ${DESTDIR} ln -s /usr/share/cinnarch/wallpapers/83II_by_bo0xVn.jpg /usr/share/backgrounds/cinnarch-default
-
-            # Set Cinnarch name in filesystem files
-            cp /etc/arch-release ${DESTDIR}/etc
-            cp /etc/issue ${DESTDIR}/etc
-            cp -f /etc/os-release ${DESTDIR}/etc/os-release
-
-            # Set Adwaita cursor theme
-            chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
-
-            # Fix multilib repo in last release
-            cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
-
-            if [[ $(uname -m) = 'x86_64' ]];then
-                echo "" >> ${DESTDIR}/etc/pacman.conf
-                echo "[multilib]" >> ${DESTDIR}/etc/pacman.conf
-                echo "SigLevel = PackageRequired" >> ${DESTDIR}/etc/pacman.conf
-                echo "Include = /etc/pacman.d/mirrorlist" >> ${DESTDIR}/etc/pacman.conf
-            fi
-            '''
+            script_path_postinstall = os.path.join(installer_settings["CNCHI_DIR"], \
+                "scripts", _postinstall_script)
+            subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.destdir])
