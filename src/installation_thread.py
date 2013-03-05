@@ -147,7 +147,8 @@ class InstallationThread(threading.Thread):
             root_partition = self.mount_devices["/"]
         elif self.method == 'advanced':
             root_partition = self.mount_devices["/"]
-            boot_partition = self.mount_devices["/boot"]
+            if "/boot" in self.mount_devices:
+                boot_partition = self.mount_devices["/boot"]
             
         if self.method != 'automatic':
             # not doing this in automatic mode as our script mounts the root and boot devices
@@ -155,7 +156,7 @@ class InstallationThread(threading.Thread):
                 subprocess.check_call(['mount', root_partition, self.dest_dir])
                 # We also mount the boot partition if it's needed
                 subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir]) 
-                if len(boot_partition) > 0:
+                if "/boot" in self.mount_devices:
                     subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
