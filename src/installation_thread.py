@@ -306,16 +306,16 @@ class InstallationThread(threading.Thread):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-        self.queue_event('info', "checking is_uvesafb")
-        print("checking is_uvesafb")
+        #self.queue_event('info', "checking is_uvesafb")
+        #print("checking is_uvesafb")
         
-        if self.is_uvesafb():
-            for child in root.iter('uvesafb'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+        #if self.is_uvesafb():
+        #    for child in root.iter('uvesafb'):
+        #        for pkg in child.iter('pkgname'):
+        #            self.packages.append(pkg.text)
 
-        self.queue_event('info', "is_uvesafb checked")
-        print("is_uvesafb checked")
+        #self.queue_event('info', "is_uvesafb checked")
+        #print("is_uvesafb checked")
         
         if installer_settings["use_ntp"]:
             for child in root.iter('ntp'):
@@ -439,16 +439,16 @@ class InstallationThread(threading.Thread):
         out, err = p2.communicate()
         return out.decode().lower()
     
-    def is_uvesafb(self):
-        try:
-            out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
-        except subprocess.CalledProcessError as e:
-            return False
-                
-        if len(out) > 0:
-            return True
-        else:
-            return False
+    #def is_uvesafb(self):
+    #    try:
+    #        out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
+    #    except subprocess.CalledProcessError as e:
+    #        return False
+    #            
+    #    if len(out) > 0:
+    #        return True
+    #    else:
+    #        return False
     
     def install_packages(self):
         self.chroot_mount()        
@@ -678,15 +678,15 @@ class InstallationThread(threading.Thread):
                     os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
         
         # TODO: set uvesa framebuffer if necessary
-        if self.is_uvesafb():
-            v86d_path = os.path.join(self.dest_dir, "lib/initcpio/hooks/v86d")
-            if os.path.exists(v86d_path):
-                # Help? I really don't know what grep/sed are doing here.
-                pass
-                '''
-                UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
-                sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
-                '''
+        #if self.is_uvesafb():
+        #    v86d_path = os.path.join(self.dest_dir, "lib/initcpio/hooks/v86d")
+        #    if os.path.exists(v86d_path):
+        #        # Help? I really don't know what grep/sed are doing here.
+        #        pass
+        #        '''
+        #        UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
+        #        sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
+        #        '''
 
         self.queue_event("action", _("Configuring your new system"))
 

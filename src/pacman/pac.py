@@ -260,7 +260,7 @@ class Pac(object):
             if _transferred == size:
                 self.already_transferred += size
             fsize = self.get_size(self.total_size)
-            self.action = _('Downloading %s') % fsize
+            self.action = _('Downloading %s') % _target
             self.target = _target
             if fraction > 1:
                 self.percent = 0
@@ -274,13 +274,15 @@ class Pac(object):
             self.percent = 0
             self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
 
+        #self.queue_event("action", self.action)
         self.queue_event("action", self.action)
+        self.queue_event("percent", self.percent)
         #self.queue_event("icon", self.icon)
         #self.queue_event("target", self.target)
         #self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
-        self.target = "%s (%d/%d)" % (_target, i, n)
+        self.target = "Installing %s (%d/%d)" % (_target, i, n)
         self.percent = _percent / 100
         self.queue_event("target", self.target)
         self.queue_event("percent", self.percent)
