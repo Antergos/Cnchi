@@ -591,7 +591,6 @@ class InstallationThread(threading.Thread):
         
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            chroot ${DESTDIR} cp "/boot/grub/locale/en@quot.mo" "/boot/grub/locale/$(echo ${LOCALE}|cut -b 1-2).mo.gz"
             try:
                 misc.copytree("/boot/grub/locale/en@quot.mo", "/boot/grub/locale/%s.mo.gz" % language_code[0:2])
             except FileExistsError:
