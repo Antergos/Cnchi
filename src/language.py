@@ -68,7 +68,9 @@ class Language(Gtk.Box):
 
         self.translate_ui()
 
+        self.current_locale = locale.getdefaultlocale()[0].split("_")[0]
         self.set_languages_list()
+        self.select_default_row(self.treeview_language, locale.getdefaultlocale()[0])
 
         super().add(self.ui.get_object("language"))
 
@@ -101,7 +103,12 @@ class Language(Gtk.Box):
         print(txt)
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
-
+    
+    def langcode_to_lang(self, display_map):
+        for lang, lang_code in display_map.items():
+            if lang_code[1] == self.current_locale:
+                return lang
+            
 
     def set_languages_list(self):
         liststore_language = Gtk.ListStore(str)
@@ -112,9 +119,11 @@ class Language(Gtk.Box):
         self.treeview_language.append_column(col_languages)
 
         current_language, sorted_choices, display_map = i18n.get_languages()
-
+        current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             liststore_language.append([lang])
+            if current_language == lang:
+                self.select_default_row(self.treeview_language, current_language)
 
     def set_language(self, locale_code):
         if locale_code is None:
@@ -126,8 +135,20 @@ class Language(Gtk.Box):
             self.translate_ui()
         except IOError:
             print("Can't find translation file for the %s language" % (locale_code))
-
-
+    
+    # Select language loaded on boot as default
+    def select_default_row(self, treeview, language):   
+        model = treeview.get_model()
+        iterator = model.iter_children(None)
+        while iterator is not None:
+            if model.get_value(iterator, 0) == language:
+                path = model.get_path(iterator)
+                treeview.get_selection().select_path(path)
+                treeview.scroll_to_cell(
+                    path, use_align=True, row_align=0.5)
+                break
+            iterator = model.iter_next(iterator)
+                
     def on_treeview_language_cursor_changed(self, treeview):
         selected = treeview.get_selection()
         if selected:

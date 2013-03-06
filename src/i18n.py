@@ -85,6 +85,7 @@ def get_languages(current_language_index=-1, only_installable=False):
         language_display_map[trans] = (name, code)
         if i == current_language_index:
             current_language = trans
+            
         i += 1
     languagelist.close()
 
