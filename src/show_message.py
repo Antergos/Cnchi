@@ -133,8 +133,10 @@ def queue_event(event):
             print(event[1])
             logging.info(event[1])
         elif event[0] == "percent":
-            print(event[1])
-            logging.info(event[1])
+            # do not log percent
+            pass
+            #print(event[1])
+            #logging.info(event[1])
         elif event[0] == "finished":
             logging.info(install_ok)
             print(install_ok)
