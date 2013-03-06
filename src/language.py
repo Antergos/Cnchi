@@ -70,7 +70,6 @@ class Language(Gtk.Box):
 
         self.current_locale = locale.getdefaultlocale()[0].split("_")[0]
         self.set_languages_list()
-        self.select_default_row(self.treeview_language, locale.getdefaultlocale()[0])
 
         super().add(self.ui.get_object("language"))
 
