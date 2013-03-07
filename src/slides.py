@@ -108,8 +108,8 @@ class Slides(Gtk.Box):
         show._show_event_queue_messages = False
 
         # let show_install_messages manage installer messages
-        GLib.idle_add(self.manage_events_from_cb_queue)
-
+        #GLib.idle_add(self.manage_events_from_cb_queue)
+        GLib.timeout_add_seconds(2, self.manage_events_from_cb_queue)
 
     def store_values(self):
         return False
