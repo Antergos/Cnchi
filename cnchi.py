@@ -31,7 +31,7 @@
 from gi.repository import Gtk, Gdk, GObject, GLib
 import os
 import sys
-
+import getopt
 import gettext
 import locale
 
@@ -64,6 +64,8 @@ DIR = "po"
 
 _main_window_width = 800
 _main_window_height = 500
+
+_debug = False
 
 class Main(Gtk.Window):
 
@@ -296,6 +298,18 @@ if __name__ == '__main__':
     micro = Gtk.get_micro_version()
 
     print("Cnchi installer. Using Gtk version %d.%d.%d" % (major,minor,micro))
+
+    argv = sys.argv[1:]
+    
+    try:
+        opts, args = getopt.getopt(argv, "d", ["debug"])
+    except getopt.GetoptError:
+        pass
+
+    for opt, arg in opts:
+        if opt == '-d':
+            print("Debug mode on")
+            _debug = True
 
     GObject.threads_init()
     Gdk.threads_init()

@@ -37,7 +37,7 @@ import os
 
 import keyboard_names
 
-import logging
+import log
 
 import show_message as show
 
@@ -47,8 +47,6 @@ _prev_page = "timezone"
 class Keymap(Gtk.Box):
 
     def __init__(self, params):
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -106,9 +104,7 @@ class Keymap(Gtk.Box):
         if found == False:
             self.select_value_in_treeview(self.layout_treeview, "USA")
 
-        # debug
-        logging.debug("keyboard_layout is " + selected_country)
-        print("keyboard_layout is " + selected_country)
+        log.debug(_("keyboard_layout is %s") % selected_country)
 
         self.show_all()
 
@@ -244,10 +240,8 @@ class Keymap(Gtk.Box):
         installer_settings["keyboard_variant"] = keyboard_variant
 
         # debug
-        logging.debug("keyboard_layout is " + installer_settings["keyboard_layout"])
-        logging.debug("keyboard_variant is " + installer_settings["keyboard_variant"])
-        print("keyboard_layout is " + installer_settings["keyboard_layout"])
-        print("keyboard_variant is " + installer_settings["keyboard_variant"])
+        log.debug(_("keyboard_layout is %s") % installer_settings["keyboard_layout"])
+        log.debug(_("keyboard_variant is %s") % installer_settings["keyboard_variant"])
         
         return True
 
