@@ -130,7 +130,7 @@ class Language(Gtk.Box):
             lang.install()
             self.translate_ui()
         except IOError:
-            log.debug("Can't find translation file for the %s language" % (locale_code))
+            log.debug(_("Can't find translation file for the %s language") % locale_code)
     
     # Select language loaded on boot as default
     def select_default_row(self, treeview, language):   

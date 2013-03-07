@@ -33,7 +33,7 @@ from config import installer_settings
 import os
 import queue
 import show_message as show
-import logging
+import log
 
 _scroll_step = 4
 
@@ -47,8 +47,6 @@ _prev_page = None
 class Slides(Gtk.Box):
 
     def __init__(self, params):
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-        
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -104,16 +102,15 @@ class Slides(Gtk.Box):
         self.backwards_button.hide()
         self.forward_button.hide()
         self.exit_button.hide()
-        
-        self.install_ok = _("Installation finished!")
-        
-        # stop show_message. We will manage our installer messages here
+                
+        # stop show.manage_events_from_cb_queue.
+        # We will manage our installer messages here.
         # (this is used to be able to shown installer messages in
         #  timezone, keymap and user_info screens)
         show._show_event_queue_messages = False
 
         # let show_install_messages manage installer messages
-        GLib.idle_add(self.show_install_messages)
+        GLib.idle_add(self.manage_events_from_cb_queue)
 
 
     def store_values(self):
@@ -129,19 +126,21 @@ class Slides(Gtk.Box):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-    def show_install_messages(self):
+    def manage_events_from_cb_queue(self):
         try:
             event = self.callback_queue.get_nowait()
         except queue.Empty:
             event = ()
 
+        install_ok = _("Installation finished!")
+
         if len(event) > 0:
-            show.queue_event(event)
+            show.cb_log_queue_event(event)
             
             if event[0] == "info":
                 self.info_label.set_markup(event[1])
             elif event[0] == "debug":
-                print(event[1])
+                pass
             elif event[0] == "warning":
                 self.info_label.set_markup(event[1])
             elif event[0] == "action":
@@ -151,11 +150,12 @@ class Slides(Gtk.Box):
             elif event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
-                self.info_label.set_markup(self.install_ok)
-                show.message(self.install_ok)
+                self.info_label.set_markup(install_ok)
+                show.message(install_ok)
                 self.done = True
                 error = False
                 self.exit_button.show()
+                return False
             elif event[0] == "error":
                 show.fatal_error(event[1])
         

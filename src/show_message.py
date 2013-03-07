@@ -35,7 +35,7 @@ import os
 
 from config import installer_settings
 
-import logging
+import log
 import queue
 
 _show_event_queue_messages = True
@@ -49,8 +49,7 @@ def fatal_error(message):
     sys.exit(1)
 
 def error(message):
-    print(message)
-    logging.error(message)
+    log.debug(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.ERROR,\
@@ -61,8 +60,7 @@ def error(message):
     msg_dialog.destroy()
 
 def warning(message):
-    print(message)
-    logging.error(message)
+    log.debug(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.WARNING,\
@@ -73,8 +71,7 @@ def warning(message):
     msg_dialog.destroy()
 
 def message(message):
-    print(message)
-    logging.info(message)
+    log.debug(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.INFO,\
@@ -85,8 +82,7 @@ def message(message):
     msg_dialog.destroy()
 
 def question(message):
-    print(message)
-    logging.info(message)
+    log.debug(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.QUESTION,\
@@ -97,7 +93,7 @@ def question(message):
     msg_dialog.destroy()
     return response
 
-def event_from_callback_queue(event_queue):
+def manage_events_from_cb_queue(event_queue):
     if _show_event_queue_messages:
         try:
             event = event_queue.get_nowait()
@@ -105,44 +101,31 @@ def event_from_callback_queue(event_queue):
             event = ()
         
         if len(event) > 0:
-            queue_event(event)
+            if log._debug:
+                cb_queue_event(event)
+            if event[0] == "error":
+                show.fatal_error(event[1])
         return True
     else:
         return False
 
-def queue_event(event):
-    install_ok = _("Installation finished!")
-
+def cb_log_queue_event(event):
     if len(event) > 0:
         if event[0] == "debug":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "info":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "warning":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "action":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "icon":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "target":
-            print(event[1])
-            logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "percent":
-            # do not log percent
-            pass
-            #print(event[1])
-            #logging.info(event[1])
+            log.debug(event[1])
         elif event[0] == "finished":
-            logging.info(install_ok)
-            print(install_ok)
-        elif event[0] == "error":
-            logging.error(event[1])
-            fatal_error(event[1])
-            return False
-    
-    return True
+            log.debug(_("Installation finished!"))
+        elif if event[0] == "error":
+            log.debug(event[1])

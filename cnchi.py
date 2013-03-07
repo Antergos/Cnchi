@@ -223,8 +223,8 @@ class Main(Gtk.Window):
         tmp_file.write("Cnchi %d\n" % 1234)
         tmp_file.close()
 
-        # let show.event_from_callback_queue manage installer messages
-        GLib.idle_add(show.event_from_callback_queue, self.callback_queue)
+        # let show.manage_events_from_cb_queue manage installer events
+        GLib.idle_add(show.manage_events_from_cb_queue, self.callback_queue)
 
     def remove_temp_files(self):
          tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
