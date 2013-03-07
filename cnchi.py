@@ -53,6 +53,7 @@ import installation_advanced
 import user_info
 import slides
 import misc
+import log
 
 import queue
 
@@ -308,7 +309,7 @@ if __name__ == '__main__':
 
     for opt, arg in opts:
         if opt == '-d':
-            _debug = True
+            log._debug = True
             log.debug("Debug mode on")
 
     GObject.threads_init()

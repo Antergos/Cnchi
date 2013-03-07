@@ -119,20 +119,6 @@ class Check(Gtk.Box):
         space = self.has_enough_space()
         self.prepare_sufficient_space.set_state(space)
 
-        if log._debug:
-            if has_internet:
-                log.debug(_("We have Internet connection. Good"))
-            else:
-                log.debug(_("We're don't have Internet connection!"))
-            if on_power:
-                log.debug(_("We're connected to a power source. Good"))
-            else:
-                log.debug(_("We're not connected to a power source!"))
-            if space:
-                log.debug(_("We have enough space in disk. Good"))
-            else:
-                log.debug(_("We don't have enough space in disk!"))
-
         if has_internet and on_power and space:
             return True
 
@@ -187,6 +173,11 @@ class Check(Gtk.Box):
     def store_values(self):
         # remove timer
         self.remove_timer = True
+
+        if log._debug:
+          log.debug(_("We have Internet connection."))
+          log.debug(_("We're connected to a power source."))
+          log.debug(_("We have enough space in disk."))
         
         # Launch rankmirrors script to determine the 5 fastests mirrors
         self.thread = None
