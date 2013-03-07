@@ -102,7 +102,7 @@ def manage_events_from_cb_queue(event_queue):
         
         if len(event) > 0:
             if log._debug:
-                self.cb_log_queue_event(event)
+                cb_log_queue_event(event)
             if event[0] == "error":
                 show.fatal_error(event[1])
         return True

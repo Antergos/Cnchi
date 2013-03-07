@@ -121,7 +121,6 @@ class InstallationAutomatic(Gtk.Box):
         line = self.device_store.get_active_text()
         if line != None:
             self.auto_device = self.devices[line]
-        log.debug(self.auto_device)
         self.forward_button.set_sensitive(True)
 
     def prepare(self):
@@ -133,6 +132,7 @@ class InstallationAutomatic(Gtk.Box):
     def store_values(self):
         #self.forward_button.set_sensitive(True)
         #installer_settings['auto_device'] = self.auto_device
+        log.debug(_("Automatic install using %s device") % self.auto_device)
         self.start_installation()
         return True
 

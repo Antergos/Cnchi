@@ -89,9 +89,7 @@ class Slides(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
-        txt = _("TODO : Show here information about what's happening....")
-        txt = "<span color='darkred'>%s</span>" % txt
-        self.info_label.set_markup(txt)
+        self.set_message(_("Please wait..."))
 
     def prepare(self):
         self.translate_ui()
@@ -123,6 +121,10 @@ class Slides(Gtk.Box):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
+    def set_message(self, txt):
+        txt = "<span color='darkred'>%s</span>" % txt
+        self.info_label.set_markup(txt)
+
     def manage_events_from_cb_queue(self):
         try:
             event = self.callback_queue.get_nowait()
@@ -135,19 +137,19 @@ class Slides(Gtk.Box):
             show.cb_log_queue_event(event)
             
             if event[0] == "info":
-                self.info_label.set_markup(event[1])
+                self.set_message(event[1])
             elif event[0] == "debug":
                 pass
             elif event[0] == "warning":
-                self.info_label.set_markup(event[1])
+                self.set_message(event[1])
             elif event[0] == "action":
-                self.info_label.set_markup(event[1])
+                self.set_message(event[1])
             elif event[0] == "target":
-                self.info_label.set_markup(event[1])
+                self.set_message(event[1])
             elif event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
-                self.info_label.set_markup(install_ok)
+                self.set_message(install_ok)
                 show.message(install_ok)
                 self.done = True
                 error = False
