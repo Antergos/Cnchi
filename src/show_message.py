@@ -127,5 +127,5 @@ def cb_log_queue_event(event):
             log.debug(event[1])
         elif event[0] == "finished":
             log.debug(_("Installation finished!"))
-        elif if event[0] == "error":
+        elif event[0] == "error":
             log.debug(event[1])
