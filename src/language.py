@@ -41,7 +41,7 @@ DIR="po"
 from config import installer_settings
 import i18n
 
-import logging
+import log
 
 _next_page = "check"
 _prev_page = None
@@ -49,9 +49,6 @@ _prev_page = None
 class Language(Gtk.Box):
 
     def __init__(self, params):
-
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -99,7 +96,7 @@ class Language(Gtk.Box):
         label.set_markup(txt)
 
         txt = _("Welcome to Cinnarch!")
-        print(txt)
+        log.debug(txt)        
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
     
@@ -133,7 +130,7 @@ class Language(Gtk.Box):
             lang.install()
             self.translate_ui()
         except IOError:
-            print("Can't find translation file for the %s language" % (locale_code))
+            log.debug("Can't find translation file for the %s language" % (locale_code))
     
     # Select language loaded on boot as default
     def select_default_row(self, treeview, language):   
@@ -169,10 +166,8 @@ class Language(Gtk.Box):
         installer_settings["language_name"] = display_map[language][0]
         installer_settings["language_code"] = display_map[language][1]
 
-        logging.debug("language_name is " + installer_settings["language_name"])
-        logging.debug("language_code is " + installer_settings["language_code"])
-        print("language_name is " + installer_settings["language_name"])
-        print("language_code is " + installer_settings["language_code"])
+        log.debug(_("language_name is %s") % installer_settings["language_name"])
+        log.debug(_("language_code is %s") % installer_settings["language_code"])
         
         return True
 
