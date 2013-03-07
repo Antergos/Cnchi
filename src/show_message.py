@@ -99,8 +99,8 @@ def manage_events_from_cb_queue(event_queue):
         # we delete all the old ones
         try:
             event = event_queue.get_nowait()
-            with self.event_queue.mutex:
-                self.event_queue.queue.clear()
+            with event_queue.mutex:
+                event_queue.queue.clear()
         except queue.Empty:
             event = ()
         
