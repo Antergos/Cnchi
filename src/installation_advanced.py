@@ -1110,7 +1110,7 @@ class InstallationAdvanced(Gtk.Box):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                log.debug_(("Creating a new partition table of type %s for disk %s") % (ptype, path))
+                log.debug(_("Creating a new partition table of type %s for disk %s") % (ptype, path))
                 #remove debug, this doesn't actually do anything... 
                 new_disk = pm.make_new_disk(path, ptype)
                 self.disks[path] = new_disk

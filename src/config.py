@@ -56,4 +56,5 @@ installer_settings  = { \
                 'password' : '', \
                 'require_password' : True, \
                 'encrypt_home' : False, \
-                'user_info_done' : False}
+                'user_info_done' : False, \
+                'rankmirrors_done' : False}

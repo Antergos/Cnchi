@@ -35,6 +35,8 @@ import os
 import gtkwidgets
 import log
 
+from rank_mirrors import AutoRankmirrorsThread
+
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
@@ -185,6 +187,11 @@ class Check(Gtk.Box):
     def store_values(self):
         # remove timer
         self.remove_timer = True
+        
+        # Launch rankmirrors script to determine the 5 fastests mirrors
+        self.thread = None
+        self.thread = AutoRankmirrorsThread()
+        self.thread.start()
         return True
 
     def get_prev_page(self):
