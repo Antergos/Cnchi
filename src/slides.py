@@ -126,8 +126,12 @@ class Slides(Gtk.Box):
         self.info_label.set_markup(txt)
 
     def manage_events_from_cb_queue(self):
+        # We get the last event (LIFO queue) and then
+        # we delete all the old ones
         try:
             event = self.callback_queue.get_nowait()
+            with self.callback_queue.mutex:
+                self.callback_queue.queue.clear()
         except queue.Empty:
             event = ()
 
