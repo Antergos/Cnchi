@@ -34,16 +34,11 @@ import os
 
 from config import installer_settings
 
-import logging
-
 _prev_page = "check"
 
 class InstallationAsk(Gtk.Box):
 
     def __init__(self, params):
-
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']

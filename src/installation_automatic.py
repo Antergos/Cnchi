@@ -42,7 +42,7 @@ import misc
 
 from config import installer_settings
 
-import logging
+import log
 
 import installation_thread
 
@@ -52,8 +52,6 @@ _prev_page = "installation_ask"
 class InstallationAutomatic(Gtk.Box):
 
     def __init__(self, params):
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -110,7 +108,7 @@ class InstallationAutomatic(Gtk.Box):
                 line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                 self.device_store.append_text(line)
                 self.devices[line] = dev.path
-                print(line)
+                log.debug(line)
 
         self.select_first_combobox_item(self.device_store)
 
@@ -123,7 +121,7 @@ class InstallationAutomatic(Gtk.Box):
         line = self.device_store.get_active_text()
         if line != None:
             self.auto_device = self.devices[line]
-        print(self.auto_device)
+        log.debug(self.auto_device)
         self.forward_button.set_sensitive(True)
 
     def prepare(self):
@@ -150,7 +148,7 @@ class InstallationAutomatic(Gtk.Box):
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        print(self.auto_device)
+        log.debug(self.auto_device)
         
         mount_devices = {}
         mount_devices["automatic"] = self.auto_device
