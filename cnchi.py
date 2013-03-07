@@ -219,9 +219,8 @@ class Main(Gtk.Window):
         # we drop privileges, but where we should do it? before this? ¿?
         misc.drop_privileges()
 
-        tmp_file = open(tmp_running, "wt")
-        tmp_file.write("Cnchi %d\n" % 1234)
-        tmp_file.close()
+        with open(tmp_running, "wt") as tmp_file:
+            tmp_file.write("Cnchi %d\n" % 1234)
 
         # let show.manage_events_from_cb_queue manage installer events
         GLib.idle_add(show.manage_events_from_cb_queue, self.callback_queue)
@@ -308,8 +307,8 @@ if __name__ == '__main__':
 
     for opt, arg in opts:
         if opt == '-d':
-            print("Debug mode on")
             _debug = True
+            log.debug("Debug mode on")
 
     GObject.threads_init()
     Gdk.threads_init()

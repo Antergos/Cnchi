@@ -39,7 +39,7 @@ from config import installer_settings
 
 import misc
 import parted
-
+import log
 import show_message as show
 
 import installation_thread
@@ -114,7 +114,7 @@ class InstallationEasy(Gtk.Box):
         
         if tree_iter != None:
             self.device[name] = combobox.get_active_text()
-            print(self.device[name])
+            log.debug(self.device[name])
             if self.device[op] != "":
                 if self.device[op] == self.device[name]:
                     show.error(_("You can't select the same device for both mount points!"))
@@ -158,7 +158,7 @@ class InstallationEasy(Gtk.Box):
                         if p.type != extended:
                             combobox.append_text(p.path)
                 except Exception as e:
-                    print(e)
+                    log.debug(_("In easy install, can't create list of partitions"))
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)

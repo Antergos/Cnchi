@@ -33,6 +33,7 @@ from gi.repository import Gtk, GObject
 import subprocess
 import os
 import gtkwidgets
+import log
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -102,19 +103,33 @@ class Check(Gtk.Box):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            print("check: Can't get network status")
+            log.debug(_("Can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
     def check_all(self):
         has_internet = self.has_connection()
-        self.prepare_network_connection.set_state(has_internet)
+        self.prepare_network_connection.set_state(has_internet)       
 
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)
-
+        
         space = self.has_enough_space()
         self.prepare_sufficient_space.set_state(space)
+
+        if log._debug:
+            if has_internet:
+                log.debug(_("We have Internet connection. Good"))
+            else:
+                log.debug(_("We're don't have Internet connection!"))
+            if on_power:
+                log.debug(_("We're connected to a power source. Good"))
+            else:
+                log.debug(_("We're not connected to a power source!"))
+            if space:
+                log.debug(_("We have enough space in disk. Good"))
+            else:
+                log.debug(_("We don't have enough space in disk!"))
 
         if has_internet and on_power and space:
             return True
@@ -183,5 +198,4 @@ class Check(Gtk.Box):
         self.show_all()
         self.forward_button.set_sensitive(self.check_all())
         # set timer
-        print("setting check timer")
         self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)

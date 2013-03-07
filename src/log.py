@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_advanced.py
+#  log.py
 #  
 #  Copyright 2013 Cinnarch
 #  
@@ -33,9 +33,6 @@ import logging
 _debug = False
 
 logging.basicConfig(filename="/var/log/Cnchi.log", level=logging.DEBUG)
-
-def set_debug(value):
-    _debug = value
 
 def debug(msg):
     if _debug:

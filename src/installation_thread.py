@@ -76,8 +76,6 @@ class InstallationThread(threading.Thread):
         self.mount_devices = mount_devices
         self.grub_device = grub_device
     
-        #print(mount_devices)
-
         self.format_devices = format_devices
 
         self.running = True
@@ -90,7 +88,6 @@ class InstallationThread(threading.Thread):
          
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
-        print("Queued an event of type %s : %s" % (event_type, event_text))
 
     @misc.raise_privileges    
     def run(self):
@@ -308,12 +305,10 @@ class InstallationThread(threading.Thread):
 
         #self.queue_event('info', "checking is_uvesafb")
         #print("checking is_uvesafb")
-        
         #if self.is_uvesafb():
         #    for child in root.iter('uvesafb'):
         #        for pkg in child.iter('pkgname'):
         #            self.packages.append(pkg.text)
-
         #self.queue_event('info', "is_uvesafb checked")
         #print("is_uvesafb checked")
         
@@ -324,8 +319,7 @@ class InstallationThread(threading.Thread):
 
         graphics = self.get_graphics_card()
         
-        self.queue_event('info', "%s graphics card detected" % graphics)
-        print(graphics)
+        self.queue_event('info', _("%s graphics card detected") % graphics)
         
         self.card = ""
 

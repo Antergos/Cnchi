@@ -146,13 +146,6 @@ class UserInfo(Gtk.Box):
         self.login['encrypt'].hide()
 
     def store_values(self):
-        #print(self.entry['fullname'].get_text())
-        #print(self.entry['hostname'].get_text())
-        #print(self.entry['username'].get_text())
-        #print(self.entry['password'].get_text())
-        #print(self.require_password)
-        #print(self.encrypt_home)
-
         installer_settings['fullname'] = self.entry['fullname'].get_text()
         installer_settings['hostname'] = self.entry['hostname'].get_text()
         installer_settings['username'] = self.entry['username'].get_text()

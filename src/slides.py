@@ -67,7 +67,6 @@ class Slides(Gtk.Box):
         self.scrolled_window = builder.get_object("scrolledwindow")
 
         self.webview = WebKit.WebView()
-        #self.webview.open("http://www.cinnarch.com")
         
         html_file = os.path.join(installer_settings["DATA_DIR"], 'slides.html')
         
@@ -75,7 +74,6 @@ class Slides(Gtk.Box):
             with open(html_file) as html_stream:
                 html = html_stream.read(None)
                 data = os.path.join(os.getcwd(), "data")
-                print("file://" + data)
                 self.webview.load_html_string(html, "file://" + data)
         except IOError:
             pass

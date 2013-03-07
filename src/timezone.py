@@ -44,7 +44,7 @@ import show_message as show
 # Import functions
 from config import installer_settings
 
-import logging
+import log
 
 import tz
 
@@ -59,9 +59,6 @@ NM_STATE_CONNECTED_GLOBAL = 70
 class Timezone(Gtk.Box):
 
     def __init__(self, params):
-
-        logging.basicConfig(filename=installer_settings["log_file"], level=logging.DEBUG)
-
         self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -126,22 +123,17 @@ class Timezone(Gtk.Box):
             self.timezone = None
             self.forward_button.set_sensitive(False)
         else:
-            print("location changed to : %s" % self.timezone)
+            log.debug(_("location changed to : %s") % self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
-        #print("timezone.location_changed ended!")
 
     def update_comboboxes(self, timezone):
-        #print("timezone.update_comboboxes started!")
         zone, region = timezone.split('/', 1)
         self.select_combobox_item(self.combobox_zone, zone)
         self.populate_cities(zone)
         self.select_combobox_item(self.combobox_region, region)
-        #print("timezone.update_comboboxes ended!")
 
     def select_combobox_item(self, combobox, item):
-        #print("timezone.select_combobox_item started!")
-
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
 
@@ -153,34 +145,23 @@ class Timezone(Gtk.Box):
             else:
                 tree_iter = tree_model.iter_next(tree_iter)
 
-        #print("timezone.select_combobox_item ended!")
-
     def set_timezone(self, timezone):
-        #print("timezone.set_timezone started!")
         self.timezone = timezone
         self.tzmap.set_timezone(timezone)
         self.forward_button.set_sensitive(True)
-        #print("timezone.set_timezone ended!")
 
     def on_zone_combobox_changed(self, widget):
         new_zone = self.combobox_zone.get_active_text()
         if new_zone is not None:
-            #print("timezone.on_zone_combobox_changed started!")
-            #print("new zone: " + new_zone)
             self.populate_cities(new_zone)
-            #print("timezone.on_zone_combobox_changed ended!")
 
     def on_region_combobox_changed(self, widget):
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
         if new_zone != None and new_region != None:
-            #print("timezone.on_region_combobox_changed started!")
-            #print("new region: " + new_region)
             self.set_timezone("{0}/{1}".format(new_zone, new_region))
-            #print("timezone.on_region_combobox_changed ended!")
 
     def populate_zones(self):
-        #print("timezone.populate_zones started!")
         zones = []
         for loc in self.tzdb.locations:
             zone = loc.zone.split('/', 1)[0]
@@ -191,7 +172,6 @@ class Timezone(Gtk.Box):
         tree_model.clear()
         for z in zones:
             tree_model.append([z, z])
-        #print("timezone.populate_zones ended!")
 
     def populate_cities(self, selected_zone):
         if self.old_zone != selected_zone:
@@ -230,7 +210,7 @@ class Timezone(Gtk.Box):
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=5)
                 self.auto_timezone_coords.close()
             except queue.Empty:
-                print(_("Can't autodetect timezone coords"))
+                log.debug(_("Can't autodetect timezone coordinates"))
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
@@ -285,7 +265,7 @@ class Timezone(Gtk.Box):
         return _next_page
         
     def stop_thread(self):
-        print("Stoping timezone thread...")
+        log.debug(_("Stoping timezone thread..."))
         self.thread.stop()
 
 class AutoTimezoneThread(threading.Thread):
@@ -314,7 +294,7 @@ class AutoTimezoneThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            print("timezone: Can't get network status")
+            log.debug(_("In timezone, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
