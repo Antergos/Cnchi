@@ -65,7 +65,7 @@ class Language(Gtk.Box):
 
         self.translate_ui()
 
-        self.current_locale = locale.getdefaultlocale()[0].split("_")[0]
+        self.current_locale = locale.getdefaultlocale()[0]
         self.set_languages_list()
 
         super().add(self.ui.get_object("language"))
@@ -101,6 +101,10 @@ class Language(Gtk.Box):
         self.title.set_markup(txt)
     
     def langcode_to_lang(self, display_map):
+        # Special cases in which we need the complete current_locale string
+        if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
+            self.current_locale = self.current_locale.split("_")[0]
+    
         for lang, lang_code in display_map.items():
             if lang_code[1] == self.current_locale:
                 return lang
