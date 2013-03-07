@@ -268,7 +268,7 @@ class Pac(object):
                 self.queue_event("percent", self.percent)
             else:
                 self.percent = fraction
-                #self.queue_event("action", self.action)
+                self.queue_event("action", self.action)
                 self.queue_event("percent", self.percent)
             self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
         else:
@@ -286,7 +286,6 @@ class Pac(object):
         else:
             self.target = "Checking and loading packages..."
         self.percent = _percent / 100
-        if _percent == 0:
-            self.queue_event("target", self.target)
+        self.queue_event("target", self.target)
         self.queue_event("percent", self.percent)
 
