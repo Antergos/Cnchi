@@ -224,7 +224,6 @@ class Main(Gtk.Window):
             tmp_file.write("Cnchi %d\n" % 1234)
 
         # let show.manage_events_from_cb_queue manage installer events
-        #GLib.idle_add(show.manage_events_from_cb_queue, self.callback_queue)
         GLib.timeout_add_seconds(2, show.manage_events_from_cb_queue, self.callback_queue)
 
     def remove_temp_files(self):

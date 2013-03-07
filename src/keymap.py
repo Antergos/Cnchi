@@ -160,7 +160,6 @@ class Keymap(Gtk.Box):
             if model[treeiter][0] == value:
                 treeview.set_cursor(index)
                 path = model.get_path(treeiter)
-                #GLib.idle_add(treeview.scroll_to_cell, path, None)
                 GLib.idle_add(self.scroll_to_cell, treeview, path)
                 treeiter = None
                 found = True

@@ -71,9 +71,9 @@ class Language(Gtk.Box):
         super().add(self.ui.get_object("language"))
 
     def translate_ui(self):
-        txt = _("Welcome to the Cinnarch Installer")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.title.set_markup(txt)
+        #txt = _("Welcome to the Cinnarch Installer")
+        #txt = '<span weight="bold" size="large">%s</span>' % txt
+        #self.title.set_markup(txt)
 
         txt = _("Please choose your language:")
         txt = '<span weight="bold">%s</span>' % txt
@@ -96,7 +96,6 @@ class Language(Gtk.Box):
         label.set_markup(txt)
 
         txt = _("Welcome to Cinnarch!")
-        log.debug(txt)        
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
     

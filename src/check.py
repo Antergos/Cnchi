@@ -179,7 +179,7 @@ class Check(Gtk.Box):
           log.debug(_("We're connected to a power source."))
           log.debug(_("We have enough space in disk."))
         
-        # Launch rankmirrors script to determine the 5 fastests mirrors
+        # Launch rankmirrors script to determine the 5 fastest mirrors
         self.thread = None
         self.thread = AutoRankmirrorsThread()
         self.thread.start()
