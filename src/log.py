@@ -32,7 +32,7 @@ import logging
 
 _debug = False
 
-logging.basicConfig(filename="/var/log/Cnchi.log", level=logging.DEBUG)
+logging.basicConfig(filename="/tmp/Cnchi.log", level=logging.DEBUG)
 
 def debug(msg):
     if _debug:
