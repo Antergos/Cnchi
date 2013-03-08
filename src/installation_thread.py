@@ -95,6 +95,11 @@ class InstallationThread(threading.Thread):
         self.packages = []
         
         self.dest_dir = "/install"
+        try:
+            subprocess.check_call(['mkdir', '-p', '%s' % self.dest_dir]) 
+        except subprocess.CalledProcessError as e:
+            self.queue_fatal_event(_("Can't create necessary directory %s") % self.dest_dir)
+            return False
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
         self.initramfs = "initramfs-%s" % self.kernel_pkg       
