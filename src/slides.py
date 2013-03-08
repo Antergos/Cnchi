@@ -79,6 +79,8 @@ class Slides(Gtk.Box):
             pass
         
         self.scrolled_window.add(self.webview)
+        
+        self.install_ok = _("Installation finished!")
 
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
 
@@ -90,6 +92,8 @@ class Slides(Gtk.Box):
         self.title.set_markup(txt)
 
         self.set_message(_("Please wait..."))
+        
+        self.install_ok = _("Installation finished!")
 
     def prepare(self):
         self.translate_ui()
@@ -98,15 +102,6 @@ class Slides(Gtk.Box):
         self.backwards_button.hide()
         self.forward_button.hide()
         self.exit_button.hide()
-                
-        # stop show.manage_events_from_cb_queue.
-        # We will manage our installer messages here.
-        # (this is used to be able to shown installer messages in
-        #  timezone, keymap and user_info screens)
-        show._show_event_queue_messages = False
-
-        # let show_install_messages manage installer messages
-        GLib.timeout_add_seconds(2, self.manage_events_from_cb_queue)
 
     def store_values(self):
         return False
@@ -135,31 +130,19 @@ class Slides(Gtk.Box):
         except queue.Empty:
             event = ()
 
-        install_ok = _("Installation finished!")
-
         if len(event) > 0:
-            show.cb_log_queue_event(event)
+            log.debug(event[1])
             
-            if event[0] == "info":
-                self.set_message(event[1])
-            elif event[0] == "debug":
-                pass
-            elif event[0] == "warning":
-                self.set_message(event[1])
-            elif event[0] == "action":
-                self.set_message(event[1])
-            elif event[0] == "target":
-                self.set_message(event[1])
-            elif event[0] == "percent":
+            if event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
-                self.set_message(install_ok)
-                show.message(install_ok)
-                self.done = True
-                error = False
+                self.set_message(self.install_ok)
+                show.message(self.install_ok)
                 self.exit_button.show()
                 return False
             elif event[0] == "error":
                 show.fatal_error(event[1])
-        
+            else:
+                self.set_message(event[1])
+
         return True

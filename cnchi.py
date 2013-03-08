@@ -225,8 +225,7 @@ class Main(Gtk.Window):
         with open(tmp_running, "wt") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
-        # let show.manage_events_from_cb_queue manage installer events
-        GLib.timeout_add_seconds(2, show.manage_events_from_cb_queue, self.callback_queue)
+        GLib.timeout_add(250, self.pages["slides"].manage_events_from_cb_queue)
 
     def remove_temp_files(self):
          tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
