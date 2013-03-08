@@ -179,8 +179,7 @@ class Main(Gtk.Window):
         self.set_size_request(_main_window_width, _main_window_height);
 
         # set window icon
-        icon_dir = os.path.join(installer_settings["DATA_DIR"],
-                                'cinnarch-icon.png')
+        icon_dir = os.path.join(installer_settings["DATA_DIR"], 'cinnarch-icon.png')
         
         self.set_icon_from_file(icon_dir)
 
@@ -193,8 +192,7 @@ class Main(Gtk.Window):
         # Header style testing
         style_provider = Gtk.CssProvider()
 
-        style_css = os.path.join(installer_settings["DATA_DIR"],
-                                "gtk-style.css")
+        style_css = os.path.join(installer_settings["DATA_DIR"], "gtk-style.css")
 
         css = open(style_css, 'rb')
         css_data = css.read()
@@ -225,7 +223,7 @@ class Main(Gtk.Window):
         with open(tmp_running, "wt") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
-        GLib.timeout_add(250, self.pages["slides"].manage_events_from_cb_queue)
+        GLib.timeout_add(100, self.pages["slides"].manage_events_from_cb_queue)
 
     def remove_temp_files(self):
          tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]

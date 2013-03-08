@@ -246,11 +246,9 @@ class Pac(object):
         if size >= 1000000000:
             size /= 1000000000
             size_txt = "%dG" % size
-
         elif size >= 1000000:
             size /= 1000000
             size_txt = "%dM" % size
-
         elif size >= 1000:
             size /= 1000
             size_txt = "%dK" % size
@@ -293,4 +291,3 @@ class Pac(object):
         self.percent = _percent / 100
         self.queue_event("target", self.target)
         self.queue_event("percent", self.percent)
-
