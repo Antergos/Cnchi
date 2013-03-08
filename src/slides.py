@@ -131,11 +131,10 @@ class Slides(Gtk.Box):
             event = ()
 
         if len(event) > 0:
-            log.debug(event[1])
-            
             if event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
+                log.debug(event[1])
                 self.set_message(self.install_ok)
                 show.message(self.install_ok)
                 self.exit_button.show()
@@ -143,6 +142,7 @@ class Slides(Gtk.Box):
             elif event[0] == "error":
                 show.fatal_error(event[1])
             else:
+                log.debug(event[1])
                 self.set_message(event[1])
 
         return True
