@@ -264,12 +264,8 @@ class Pac(object):
             self.target = _target
             if fraction > 1:
                 self.percent = 0
-                self.queue_event("action", self.action)
-                self.queue_event("percent", self.percent)
             else:
                 self.percent = fraction
-                self.queue_event("action", self.action)
-                self.queue_event("percent", self.percent)
             self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
         else:
             self.action = _('Refreshing %s...') % _target
@@ -277,8 +273,8 @@ class Pac(object):
             # can't we know wich percent has 'refreshed' ?
             self.percent = 0
             self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
-            self.queue_event("action", self.action)
-            self.queue_event("percent", self.percent)
+        self.queue_event("action", self.action)
+        self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
         if _target:
