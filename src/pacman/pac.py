@@ -53,6 +53,9 @@ class Pac(object):
         self.to_update = []
         self.to_provide = []
         
+        self.action = ""
+        self.percent = 0
+        
         self.already_transferred = 0
         self.total_size = 0
         
@@ -144,7 +147,6 @@ class Pac(object):
             if self.t is not False:
                 for pkgname in self.to_add:
                     self.add_package(pkgname)
-                        
                 try:
                     self.t.prepare()
                     self.t.commit()

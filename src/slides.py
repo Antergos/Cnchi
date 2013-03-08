@@ -83,6 +83,8 @@ class Slides(Gtk.Box):
         self.install_ok = _("Installation finished!")
 
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
+        
+        self.shown_events = []
 
         super().add(builder.get_object("slides"))
         
@@ -140,7 +142,9 @@ class Slides(Gtk.Box):
             elif event[0] == "error":
                 show.fatal_error(event[1])
             else:
-                log.debug(event[1])
-                self.set_message(event[1])
+                if event[1] not in self.shown_events:
+                    log.debug(event[1])
+                    self.set_message(event[1])
+                    self.shown_events.append(event[1])
 
         return True
