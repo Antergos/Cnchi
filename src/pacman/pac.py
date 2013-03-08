@@ -78,11 +78,12 @@ class Pac(object):
         self.handle.logcb = self.cb_log
         try:
             _t = self.handle.init_transaction(**options)
-            print(_t.flags)
+            #print(_t.flags)
             self.t_lock = True
             return _t
         except pyalpm.error:
-            print(traceback.format_exc())
+            line = traceback.format_exc()
+            self.queue_event("error", line)
             return False
     
     # Sync databases like pacman -Sy
@@ -95,7 +96,8 @@ class Pac(object):
                     self.t.release()
                     self.t_lock = False
                 except pyalpm.error:
-                    print(traceback.format_exc())
+                    line = traceback.format_exc()
+                    self.queue_event("error", line)
                     self.t_lock = False
                     break
 
@@ -109,12 +111,12 @@ class Pac(object):
             return size_string
 
     def add_package(self, pkgname):
-        print("searching %s" % pkgname)
+        #print("searching %s" % pkgname)
         try:
             for repo in self.handle.get_syncdbs():
                 pkg = repo.get_pkg(pkgname)
                 if pkg:
-                    print("adding %s" % pkgname)
+                    #print("adding %s" % pkgname)
                     self.t.add_pkg(pkg)
                     break
                 else:
@@ -126,7 +128,8 @@ class Pac(object):
                         for pakg in l:
                                 self.t.add_pkg(pakg)
         except pyalpm.error:
-            error = traceback.format_exc()
+            line = traceback.format_exc()
+            self.queue_event("error", line)
 
     def install_packages(self, pkg_names):
         self.to_add = []
@@ -144,16 +147,14 @@ class Pac(object):
                         
                 try:
                     self.t.prepare()
-                    print('to_add:', self.t.to_add)
-                    print('to_remove:', self.t.to_remove)
-
                     self.t.commit()
                     self.t.release()
                     self.t_lock = False
                 except pyalpm.error:
                     self.t.release()
                     self.t_lock = False
-                    print(traceback.format_exc())
+                    line = traceback.format_exc()
+                    self.queue_event("error", line)
     
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
@@ -208,7 +209,8 @@ class Pac(object):
         #print(ID, event)
 
     def cb_conv(self, *args):
-        print("conversation", args)
+        pass
+        #print("conversation", args)
 
     def cb_log(self, level, line):
         # Only manage error and warning messages

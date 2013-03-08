@@ -123,8 +123,8 @@ class Slides(Gtk.Box):
     def manage_events_from_cb_queue(self):
         try:
             event = self.callback_queue.get_nowait()
-            #with self.callback_queue.mutex:
-            #    self.callback_queue.queue.clear()
+            with self.callback_queue.mutex:
+                self.callback_queue.queue.clear()
         except queue.Empty:
             event = ()
 
