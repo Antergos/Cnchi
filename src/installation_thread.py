@@ -302,15 +302,6 @@ class InstallationThread(threading.Thread):
         for child in root.iter('base_system'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
-
-        #self.queue_event('info', "checking is_uvesafb")
-        #print("checking is_uvesafb")
-        #if self.is_uvesafb():
-        #    for child in root.iter('uvesafb'):
-        #        for pkg in child.iter('pkgname'):
-        #            self.packages.append(pkg.text)
-        #self.queue_event('info', "is_uvesafb checked")
-        #print("is_uvesafb checked")
         
         if installer_settings["use_ntp"]:
             for child in root.iter('ntp'):
@@ -319,7 +310,7 @@ class InstallationThread(threading.Thread):
 
         graphics = self.get_graphics_card()
         
-        self.queue_event('info', _("%s graphics card detected") % graphics)
+        #self.queue_event('debug', _("%s graphics card detected") % graphics)
         
         self.card = ""
 
@@ -432,17 +423,6 @@ class InstallationThread(threading.Thread):
         p1.stdout.close()
         out, err = p2.communicate()
         return out.decode().lower()
-    
-    #def is_uvesafb(self):
-    #    try:
-    #        out = subprocess.check_output(["grep", "-w", "uvesafb", "/proc/cmdline"])
-    #    except subprocess.CalledProcessError as e:
-    #        return False
-    #            
-    #    if len(out) > 0:
-    #        return True
-    #    else:
-    #        return False
     
     def install_packages(self):
         self.chroot_mount()        

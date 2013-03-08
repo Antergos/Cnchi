@@ -142,9 +142,9 @@ class Main(Gtk.Window):
         
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
-        #self.callback_queue = queue.Queue(0)
+        self.callback_queue = queue.Queue(0)
         # Doing some tests with a LIFO queue
-        self.callback_queue = queue.LifoQueue(0)
+        #self.callback_queue = queue.LifoQueue(0)
 
         # load all pages
         # (each one is a screen, a step in the install process)
