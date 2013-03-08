@@ -211,6 +211,7 @@ class Pac(object):
         print("conversation", args)
 
     def cb_log(self, level, line):
+        # Only manage error and warning messages
         _logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
 
         if not (level & _logmask):
@@ -220,8 +221,11 @@ class Pac(object):
             self.error = _("ERROR: %s") % line
             print(line)
             self.t.release()
+            self.t_lock = False
+            self.queue_event("error", line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
+            self.queue_event("warning", line)
             print(line)
         elif level & pyalpm.LOG_DEBUG:
             line = _("DEBUG: %s") % line
@@ -250,31 +254,32 @@ class Pac(object):
         return size_txt
 
     def cb_dl(self, _target, _transferred, total):
-        if self.total_size > 0:
-            fraction = (_transferred + self.already_transferred) / self.total_size
-        size = 0
-        if (self.t.to_remove or self.t.to_add):
-            for pkg in self.t.to_remove + self.t.to_add:
-                if pkg.name + '-' + pkg.version in _target:
-                    size = pkg.size
-            if _transferred == size:
-                self.already_transferred += size
-            fsize = self.get_size(self.total_size)
-            self.action = _('Downloading %s') % _target
-            self.target = _target
-            if fraction > 1:
-                self.percent = 0
+        if self.t is not False:
+            if self.total_size > 0:
+                fraction = (_transferred + self.already_transferred) / self.total_size
+            size = 0
+            if self.t.to_remove or self.t.to_add:
+                for pkg in self.t.to_remove + self.t.to_add:
+                    if pkg.name + '-' + pkg.version in _target:
+                        size = pkg.size
+                if _transferred == size:
+                    self.already_transferred += size
+                fsize = self.get_size(self.total_size)
+                self.action = _('Downloading %s') % _target
+                self.target = _target
+                if fraction > 1:
+                    self.percent = 0
+                else:
+                    self.percent = fraction
+                self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
             else:
-                self.percent = fraction
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
-        else:
-            self.action = _('Refreshing %s...') % _target
-            self.target = _target
-            # can't we know wich percent has 'refreshed' ?
-            self.percent = 0
-            self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
-        self.queue_event("action", self.action)
-        self.queue_event("percent", self.percent)
+                self.action = _('Refreshing %s...') % _target
+                self.target = _target
+                # can't we know wich percent has 'refreshed' ?
+                self.percent = 0
+                self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
+            self.queue_event("action", self.action)
+            self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
         if _target:
