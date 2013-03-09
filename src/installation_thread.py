@@ -692,7 +692,7 @@ class InstallationThread(threading.Thread):
             self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         
         # TODO: set user parameters
-        if self.wait_true('user_done'):
+        if self.wait_true('user_info_done'):
             username = installer_settings['username']
             fullname = installer_settings['fullname']
             password = installer_settings['password']
@@ -714,7 +714,7 @@ class InstallationThread(threading.Thread):
                 # ignore if exists
                 pass
 
-            process = subprocess.check_call(["rm", "-rf", "%s/etc/skel" % self.dest_dir])
+            process = subprocess.check_call(["rm", "-rf", "%s/etc/skel/Desktop" % self.dest_dir])
             
             self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                       '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
