@@ -95,11 +95,9 @@ class InstallationThread(threading.Thread):
         self.packages = []
         
         self.dest_dir = "/install"
-        try:
-            subprocess.check_call(['mkdir', '-p', '%s' % self.dest_dir]) 
-        except subprocess.CalledProcessError as e:
-            self.queue_fatal_event(_("Can't create necessary directory %s") % self.dest_dir)
-            return False
+        if not os.path.exists(self.dest_dir):
+            os.makedirs(self.dest_dir)
+
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
         self.initramfs = "initramfs-%s" % self.kernel_pkg       
@@ -576,7 +574,8 @@ class InstallationThread(threading.Thread):
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
             try:
-                shutil.copy2("/boot/grub/locale/en@quot.mo", "/boot/grub/locale/%s.mo.gz" % language_code[0:2])
+                shutil.copy2("%s/boot/grub/locale/en@quot.mo" % self.dest_dir, 
+                             "%s/boot/grub/locale/%s.mo.gz" % (self.dest_dir, installer_settings["language_code"][0:2]))
             except FileExistsError:
                 # ignore if exists
                 pass
@@ -677,7 +676,7 @@ class InstallationThread(threading.Thread):
         files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]        
         
         for path in files:
-            shutil.copy(path, os.path.join(self.dest_dir, path))
+            shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
 
         # enable services      
         self.enable_services([ "mdm", "NetworkManager" ])
