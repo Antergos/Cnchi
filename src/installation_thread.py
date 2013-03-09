@@ -540,11 +540,8 @@ class InstallationThread(threading.Thread):
                   '--target="i386-pc"', \
                   '--boot-directory="/boot"', \
                   '--recheck', \
-                  '--debug', \
                   self.grub_device])
         
-        grub_log = '/tmp/grub_bios_install.log'
-
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         
         if not os.path.exists(grub_d_dir):
@@ -556,8 +553,7 @@ class InstallationThread(threading.Thread):
             # ignore if exists
             pass
 
-        self.chroot(['/usr/sbin/grub-mkconfig', '-o', \
-                  '/boot/grub/grub.cfg'])
+        self.chroot(['/usr/sbin/grub-mkconfig', '-o', '/boot/grub/grub.cfg'])
         
         self.chroot_umount()
 

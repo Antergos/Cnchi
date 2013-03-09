@@ -178,8 +178,9 @@ class Pac(object):
             self.action = _('Checking inter conflicts...')
             self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
         elif ID is 9:
-            self.action = _('Installing...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-add.png'
+            #self.action = _('Installing...')
+            #self.icon = '/usr/share/pamac/icons/24x24/status/package-add.png'
+            self.action = ''
         elif ID is 11:
             self.action = _('Removing...')
             self.icon = '/usr/share/pamac/icons/24x24/status/package-delete.png'
@@ -203,7 +204,8 @@ class Pac(object):
         else:
             self.action = ''
 
-        self.queue_event("action", self.action)
+        if len(self.action) > 0:
+            self.queue_event("action", self.action)
         #self.queue_event("target", '')
         #self.queue_event("percent", 0)
         #self.queue_event("icon", self.icon)
