@@ -463,13 +463,21 @@ class InstallationThread(threading.Thread):
             mydir = os.path.join(self.dest_dir, d)
             subprocess.check_call(["umount", mydir])
 
-    def chroot(self, cmd):
+    def chroot(self, cmd, stdin=None, stdout=None):
         run = ['chroot', self.dest_dir]
         
         for c in cmd:
             run.append(c)
-                
-        subprocess.check_call(run)
+      
+        try:
+            proc = subprocess.Popen(run,
+                                    stdin=stdin,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT)
+            out = proc.communicate()[0]
+        except OSError as e:
+            print("Error running command: %s" % e.strerror)
+            raise
         
         
     def is_running(self):
@@ -480,7 +488,7 @@ class InstallationThread(threading.Thread):
 
     def copy_network_config(self):
         source_nm = "/etc/NetworkManager/system-connections/"
-        target_nm = "%s/etc/NetworkManager/system-connections/" % self.destdir
+        target_nm = "%s/etc/NetworkManager/system-connections/" % self.dest_dir
 
         # Sanity checks.  We don't want to do anything if a network
         # configuration already exists on the target
@@ -540,10 +548,10 @@ class InstallationThread(threading.Thread):
         self.queue_event('info', "Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
         self.chroot_mount()
 
-        self.chroot(['/usr/sbin/grub-install', \
-                  '--directory="/usr/lib/grub/i386-pc"', \
-                  '--target="i386-pc"', \
-                  '--boot-directory="/boot"', \
+        self.chroot(['grub-install', \
+                  '--directory=/usr/lib/grub/i386-pc', \
+                  '--target=i386-pc', \
+                  '--boot-directory=/boot', \
                   '--recheck', \
                   self.grub_device])
         
@@ -553,7 +561,7 @@ class InstallationThread(threading.Thread):
             os.makedirs(grub_d_dir)
 
         try:
-            misc.copytree("/arch/10_linux", grub_d_dir)
+            shutil.copy2("/arch/10_linux", grub_d_dir)
         except FileExistsError:
             # ignore if exists
             pass
@@ -568,7 +576,7 @@ class InstallationThread(threading.Thread):
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
             try:
-                misc.copytree("/boot/grub/locale/en@quot.mo", "/boot/grub/locale/%s.mo.gz" % language_code[0:2])
+                shutil.copy2("/boot/grub/locale/en@quot.mo", "/boot/grub/locale/%s.mo.gz" % language_code[0:2])
             except FileExistsError:
                 # ignore if exists
                 pass
@@ -620,7 +628,7 @@ class InstallationThread(threading.Thread):
 
     def auto_timesetting(self):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
-        shutil.copy("/etc/adjtime", "%s/etc/adjtime" % self.dest_dir)
+        shutil.copy2("/etc/adjtime", "%s/etc/adjtime" % self.dest_dir)
 
     # runs mkinitcpio on the target system
     def run_mkinitcpio(self):
@@ -645,11 +653,11 @@ class InstallationThread(threading.Thread):
         cinnarch_path = os.path.join(self.dest_dir, "usr/share/cinnarch")
         if not os.path.exists(cinnarch_path):
             os.makedirs(cinnarch_path)
-        shutil.copy('/usr/share/cinnarch/cinnarch_menu.png', \
+        shutil.copy2('/usr/share/cinnarch/cinnarch_menu.png', \
                     os.path.join(cinnarch_path, 'cinnarch_menu.png'))
 
         # copy mirror list
-        shutil.copy('/etc/pacman.d/mirrorlist', \
+        shutil.copy2('/etc/pacman.d/mirrorlist', \
                     os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
         
         # TODO: set uvesa framebuffer if necessary
@@ -764,4 +772,4 @@ class InstallationThread(threading.Thread):
             #self.search_for_fastest_mirrors()
             script_path_postinstall = os.path.join(installer_settings["CNCHI_DIR"], \
                 "scripts", _postinstall_script)
-            subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.destdir])
+            subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir])
