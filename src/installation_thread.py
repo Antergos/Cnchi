@@ -627,7 +627,7 @@ class InstallationThread(threading.Thread):
 
     def auto_timesetting(self):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
-        shutil.copy2("/etc/adjtime", "%s/etc/adjtime" % self.dest_dir)
+        shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
     # runs mkinitcpio on the target system
     def run_mkinitcpio(self):
@@ -709,7 +709,7 @@ class InstallationThread(threading.Thread):
             self.queue_event('debug', _("Creating new user"))
             
             try:
-                misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc"))
+                misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc/skel"))
             except FileExistsError:
                 # ignore if exists
                 pass
@@ -746,11 +746,11 @@ class InstallationThread(threading.Thread):
 
             ## Generate locales
             self.queue_event('info', _("Generating locales"))
-            self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % language_code, "/etc/locale.gen"])
+            self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % installer_settings["language_code"], "/etc/locale.gen"])
             self.chroot(['locale-gen'])
             locale.conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
             with open(locale.conf_path, "wt") as locale.conf:
-                locale.conf.write('LANG=%s' % language_code)
+                locale.conf.write('LANG=%s' % installer_settings["language_code"])
                 locale.conf.write('LC_COLLATE=C')
 
             self.auto_timesetting()
