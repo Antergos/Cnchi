@@ -317,7 +317,7 @@ class InstallationThread(threading.Thread):
         
         self.card = ""
 
-        if "ati" in graphics:
+        if "ati " in graphics:
             for child in root.iter('ati'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -344,7 +344,7 @@ class InstallationThread(threading.Thread):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
         
-        if "via" in graphics:
+        if "via " in graphics:
             for child in root.iter('via'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
