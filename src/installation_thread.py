@@ -152,7 +152,7 @@ class InstallationThread(threading.Thread):
             root_partition = self.mount_devices["/"]
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
-            else
+            else:
                 boot_partition = ""
             
         if self.method != 'automatic':
