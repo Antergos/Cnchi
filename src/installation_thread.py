@@ -140,8 +140,10 @@ class InstallationThread(threading.Thread):
             # /dev/sdX1 boot
             # /dev/sdX2 swap
             # /dev/sdX3 root
-            boot_partition = self.auto_device + "1"
-            root_partition = self.auto_device + "3"
+            self.mount_devices["/"] = self.auto_device + "3"
+            self.mount_devices["/boot"] = self.auto_device + "1"
+            boot_partition = self.mount_devices["/boot"]
+            root_partition = self.mount_devices["/"]
         elif self.method == 'easy':
             # we don't create a specific boot partition in easy mode (this could change in the future)
             boot_partition = ""
@@ -150,6 +152,8 @@ class InstallationThread(threading.Thread):
             root_partition = self.mount_devices["/"]
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
+            else
+                boot_partition = ""
             
         if self.method != 'automatic':
             # not doing this in automatic mode as our script mounts the root and boot devices
