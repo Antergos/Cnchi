@@ -29,10 +29,11 @@
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
 from gi.repository import Gtk
+
 import subprocess
 import os
 
-from config import installer_settings
+import config
 
 _prev_page = "check"
 
@@ -43,12 +44,13 @@ class InstallationAsk(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-
+        self.settings = params['settings']
+        
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_ask.ui"))
 
-        partitioner_dir = os.path.join(installer_settings["DATA_DIR"], "partitioner/")
+        partitioner_dir = os.path.join(self.settings.get("DATA_DIR"), "partitioner/")
 
         image = self.ui.get_object("automatic_image")
         image.set_from_file(partitioner_dir + "automatic.png")
@@ -109,11 +111,11 @@ class InstallationAsk(Gtk.Box):
 
     def store_values(self):
         if self.next_page == "installation_automatic":
-            installer_settings['partition_mode'] = 'automatic'
+            self.settings.set('partition_mode', 'automatic')
         elif self.next_page == "installation_easy":
-            installer_settings['partition_mode'] = 'easy'
+            self.settings.set('partition_mode', 'easy')
         else:
-            installer_settings['partition_mode'] = 'advanced'
+            self.settings.set('partition_mode', 'advanced')
         return True
 
     def get_next_page(self):

@@ -31,10 +31,8 @@
 from gi.repository import Gtk
 
 import os
-
 import validation
-
-from config import installer_settings
+import config
 
 _next_page = "slides"
 _prev_page = "keymap"
@@ -47,6 +45,7 @@ class UserInfo(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.settings = params['settings']
 
         super().__init__()
 
@@ -146,17 +145,17 @@ class UserInfo(Gtk.Box):
         self.login['encrypt'].hide()
 
     def store_values(self):
-        installer_settings['fullname'] = self.entry['fullname'].get_text()
-        installer_settings['hostname'] = self.entry['hostname'].get_text()
-        installer_settings['username'] = self.entry['username'].get_text()
-        installer_settings['password'] = self.entry['password'].get_text()
-        installer_settings['require_password'] = self.require_password
+        self.settings.set('fullname', self.entry['fullname'].get_text())
+        self.settings.set('hostname', self.entry['hostname'].get_text())
+        self.settings.set('username', self.entry['username'].get_text())
+        self.settings.set('password', self.entry['password'].get_text())
+        self.settings.set('require_password', self.require_password)
         
         # TODO: Allow to encrypt home directory
-        installer_settings['encrypt_home'] = False
+        self.settings.set('encrypt_home', False)
         
         # this way installer_thread will know all info has been entered
-        installer_settings['user_info_done'] = True
+        self.settings.set('user_info_done', True)
 
     def prepare(self):
         self.translate_ui()

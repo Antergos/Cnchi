@@ -36,7 +36,7 @@ import shutil
 import xml.etree.ElementTree as etree
 from urllib.request import urlopen
 
-from config import installer_settings
+import config
 
 # Insert the src/pacman directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -63,12 +63,13 @@ class InstallError(Exception):
         return repr(self.value)
 
 class InstallationThread(threading.Thread):
-    def __init__(self, callback_queue, mount_devices, grub_device, format_devices=None, ssd=None):
+    def __init__(self, settings, callback_queue, mount_devices, grub_device, format_devices=None, ssd=None):
         threading.Thread.__init__(self)
         
         self.callback_queue = callback_queue
+        self.settings = settings
 
-        self.method = installer_settings['partition_mode']
+        self.method = self.settings.get('partition_mode')
         
         self.queue_event('info', _("Installing using the '%s' method") % self.method)
         
@@ -110,8 +111,8 @@ class InstallationThread(threading.Thread):
         # (and then mount it)
         
         if self.method == 'automatic':
-            script_path = os.path.join(installer_settings["CNCHI_DIR"], \
-                "scripts", _autopartition_script)
+            cnchi_dir = self.settings.get("CNCHI_DIR")
+            script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
             try:
                 #if os.path.exists(script_path):
                 self.auto_device = self.mount_devices["automatic"]
@@ -294,7 +295,8 @@ class InstallationThread(threading.Thread):
             # If the installer can't retrieve the remote file, try to install with a local
             # copy, that may not be update
             self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
-            packages_xml = os.path.join(installer_settings["DATA_DIR"], 'packages.xml')
+            data_dir = self.settings.get("DATA_DIR")
+            packages_xml = os.path.join(data_dir, 'packages.xml')
             return False
 
         tree = etree.parse(packages_xml)
@@ -306,7 +308,7 @@ class InstallationThread(threading.Thread):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
         
-        if installer_settings["use_ntp"]:
+        if self.settings.get("use_ntp"):
             for child in root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -407,8 +409,8 @@ class InstallationThread(threading.Thread):
         self.queue_event('debug', 'Selecting chinese fonts.')
 
         # Install chinese fonts
-        if installer_settings["language_code"] == "zh_TW" or \
-           installer_settings["language_code"] == "zh_CN":
+        lang_code = self.settings.get("language_code")
+        if lang_code == "zh_TW" or lang_code == "zh_CN":
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -560,6 +562,10 @@ class InstallationThread(threading.Thread):
 
         try:
             shutil.copy2("/arch/10_linux", grub_d_dir)
+        except FileNotFoundError:
+            self.chroot_umount()            
+            self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
+            return
         except FileExistsError:
             # ignore if exists
             pass
@@ -574,35 +580,14 @@ class InstallationThread(threading.Thread):
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
             try:
+                code = self.settings.get("language_code")[0:2]
                 shutil.copy2("%s/boot/grub/locale/en@quot.mo" % self.dest_dir, 
-                             "%s/boot/grub/locale/%s.mo.gz" % (self.dest_dir, installer_settings["language_code"][0:2]))
+                             "%s/boot/grub/locale/%s.mo.gz" % (self.dest_dir, code))
             except FileExistsError:
                 # ignore if exists
                 pass
-
         else:
-            # should we stop installation here?
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-
-    # Wait for an installer_settings var change with a timeout
-    # Timeout is in seconds (by default wait 5 minutes)
-    def wait_true(self, var, timeout=300):
-        import time
-
-        # set initial time and initial variables
-        start_time = time.time()
-        elapsed_time = 0
-        
-        self.queue_event('debug', "Waiting for user to fill %s..." % var)
-
-        while installer_settings[var] == False and \
-              elapsed_time < timeout:
-            elapsed_time = time.time() - start_time
-
-        if elapsed_time < timeout:
-            return False
-        else:
-            return True
 
     def enable_services(self, services):
         for name in services:
@@ -682,93 +667,99 @@ class InstallationThread(threading.Thread):
         self.enable_services([ "mdm", "NetworkManager" ])
 
         # TODO: we never ask the user about this...
-        if installer_settings["use_ntp"]:
+        if self.settings.get("use_ntp"):
             self.enable_services([ "ntpd" ])
 
-        # set timezone       
-        if self.wait_true('timezone_done'):
-            zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
-                                         installer_settings["timezone_zone"])
-            self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
+        # Wait FOREVER until the user sets the timezone
+        while self.settings.get('timezone_done') is False:
+            # wait five seconds and try again
+            time.sleep(5)
+
+        # set timezone
+        zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
+                                     self.settings.get("timezone_zone"))
+        self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         
-        # TODO: set user parameters
-        if self.wait_true('user_info_done'):
-            username = installer_settings['username']
-            fullname = installer_settings['fullname']
-            password = installer_settings['password']
-            hostname = installer_settings['hostname']
-            
-            sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
-            with open(sudoers_path, "wt") as sudoers:
-                sudoers.write('# Sudoers file')
-                sudoers.write('root ALL=(ALL) ALL')
-                sudoers.write('%s ALL=(ALL) ALL' % username)
-            
-            subprocess.check_call(["chmod", "440", sudoers_path])
-            
-            self.queue_event('debug', _("Creating new user"))
-            
-            try:
-                misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc/skel"))
-            except FileExistsError:
-                # ignore if exists
-                pass
+        # Wait FOREVER until the user sets his params
+        while self.settings.get('user_info_done') is False:
+            # wait five seconds and try again
+            time.sleep(5)         
 
-            process = subprocess.check_call(["rm", "-rf", "%s/etc/skel/Desktop" % self.dest_dir])
-            
-            self.chroot(['useradd', '-m', '-s', '/bin/bash', \
-                      '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
-                      username])
+        # Set user parameters
+        username = self.settings.get('username')
+        fullname = self.settings.get('fullname')
+        password = self.settings.get('password')
+        hostname = self.settings.get('hostname')
+        
+        sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
+        with open(sudoers_path, "wt") as sudoers:
+            sudoers.write('# Sudoers file')
+            sudoers.write('root ALL=(ALL) ALL')
+            sudoers.write('%s ALL=(ALL) ALL' % username)
+        
+        subprocess.check_call(["chmod", "440", sudoers_path])
+        
+        try:
+            misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc/skel"))
+        except FileExistsError:
+            # ignore if exists
+            pass
 
-            self.change_user_password(username, password)
+        process = subprocess.check_call(["rm", "-rf", "%s/etc/skel/Desktop" % self.dest_dir])
+        
+        self.chroot(['useradd', '-m', '-s', '/bin/bash', \
+                  '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
+                  username])
 
-            self.chroot(['chfn', '-f', fullname, username])
-                      
-            home = os.path.join(self.dest_dir, "home", username)
-            skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
-            try:
-                for d in skel_dirs:
-                    misc.copytree(d, home)
-            except FileExistsError:
-                # ignore if exists
-                pass
-            
-            self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
-            
-            hostname_path = os.path.join(self.dest_dir, "etc/hostname")
-            if not os.path.exists(hostname_path):
-                with open(hostname_path, "wt") as f:
-                    f.write(hostname)
+        self.change_user_password(username, password)
 
-            
-            # User password is the root password  
-            self.change_user_password('root', password)
+        self.chroot(['chfn', '-f', fullname, username])
+                  
+        home = os.path.join(self.dest_dir, "home", username)
+        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
+        try:
+            for d in skel_dirs:
+                misc.copytree(d, home)
+        except FileExistsError:
+            # ignore if exists
+            pass
+        
+        self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
+        
+        hostname_path = os.path.join(self.dest_dir, "etc/hostname")
+        if not os.path.exists(hostname_path):
+            with open(hostname_path, "wt") as f:
+                f.write(hostname)
 
-            ## Generate locales
-            self.queue_event('info', _("Generating locales"))
-            self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % installer_settings["language_code"], "/etc/locale.gen"])
-            self.chroot(['locale-gen'])
-            locale.conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
-            with open(locale.conf_path, "wt") as locale.conf:
-                locale.conf.write('LANG=%s' % installer_settings["language_code"])
-                locale.conf.write('LC_COLLATE=C')
+        
+        # User password is the root password  
+        self.change_user_password('root', password)
 
-            self.auto_timesetting()
+        ## Generate locales
+        lang_code = self.settings.get("language_code")
+        self.queue_event('info', _("Generating locales"))
+        self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % lang_code, "/etc/locale.gen"])
+        self.chroot(['locale-gen'])
+        locale.conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
+        with open(locale.conf_path, "wt") as locale.conf:
+            locale.conf.write('LANG=%s' % lang_code)
+            locale.conf.write('LC_COLLATE=C')
 
-            # Let's start without using hwdetect for mkinitcpio.conf.
-            # I think it should work out of the box most of the time.
-            # This way we don't have to fix deprecated hooks.    
-            self.queue_event('info', _("Running mkinitcpio"))
-            self.run_mkinitcpio()
-            
-            # TODO: Mirrorlist has to be generated using our rank-mirrorlist script
-            # located in /arch and then copy that generated file to the target system.
-            # In the CLI installer I'm running this script when the user opens the installer,
-            # because it has to search for the 5 fastest mirrors, which takes time.
-            
-            # Ok, we should do this before, in another thread
-            
-            #self.search_for_fastest_mirrors()
-            script_path_postinstall = os.path.join(installer_settings["CNCHI_DIR"], \
-                "scripts", _postinstall_script)
-            subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir])
+        self.auto_timesetting()
+
+        # Let's start without using hwdetect for mkinitcpio.conf.
+        # I think it should work out of the box most of the time.
+        # This way we don't have to fix deprecated hooks.    
+        self.queue_event('info', _("Running mkinitcpio"))
+        self.run_mkinitcpio()
+        
+        # TODO: Mirrorlist has to be generated using our rank-mirrorlist script
+        # located in /arch and then copy that generated file to the target system.
+        # In the CLI installer I'm running this script when the user opens the installer,
+        # because it has to search for the 5 fastest mirrors, which takes time.
+        
+        # Ok, we already did this before, in another thread
+        
+        script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
+            "scripts", _postinstall_script)
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir])

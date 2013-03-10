@@ -31,11 +31,8 @@
 import xml.etree.ElementTree as etree
 
 from gi.repository import Gtk
-
 import subprocess
-
 import gettext
-
 import sys
 import os
 import log
@@ -46,26 +43,10 @@ base_dir = os.path.dirname(__file__) or '.'
 parted_dir = os.path.join(base_dir, 'parted')
 sys.path.insert(0, parted_dir)
 
-# import Alex modules
 import partition_module as pm
 import fs_module as fs
 import used_space
-
-# Useful vars for gettext (translations)
-APP="cnchi"
-DIR="po"
-
-# This allows to translate all py texts (not the glade ones)
-gettext.textdomain(APP)
-gettext.bindtextdomain(APP, DIR)
-
-# With this we can use _("string") to translate
-_ = gettext.gettext
-
 import installation_thread
-
-from config import installer_settings
-
 import show_message as show
 
 _next_page = "timezone"
@@ -80,7 +61,8 @@ class InstallationAdvanced(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
-        
+        self.settings = params['settings']
+
         self.disks_changed = []
         self.my_first_time = True
         self.orig_label_dic = {}        
@@ -1345,6 +1327,7 @@ class InstallationAdvanced(Gtk.Box):
                     mount_devices[mount_point] = partition_path
         
         self.thread = installation_thread.InstallationThread( \
+                    self.settings, \
                     self.callback_queue, \
                     mount_devices, \
                     self.grub_device, \

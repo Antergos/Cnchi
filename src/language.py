@@ -38,7 +38,7 @@ APP="cnchi"
 DIR="po"
 
 # Import functions
-from config import installer_settings
+import config
 import i18n
 
 import log
@@ -53,6 +53,7 @@ class Language(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.settings = params['settings']
 
         super().__init__()
 
@@ -166,11 +167,8 @@ class Language(Gtk.Box):
 
         current_language, sorted_choices, display_map = i18n.get_languages()
 
-        installer_settings["language_name"] = display_map[language][0]
-        installer_settings["language_code"] = display_map[language][1]
-
-        log.debug(_("language_name is %s") % installer_settings["language_name"])
-        log.debug(_("language_code is %s") % installer_settings["language_code"])
+        self.settings.set("language_name", display_map[language][0])
+        self.settings.set("language_code", display_map[language][1])
         
         return True
 

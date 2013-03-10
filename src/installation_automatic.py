@@ -35,15 +35,9 @@ import subprocess
 import os
 import sys
 import threading
-
 import parted
-
 import misc
-
-from config import installer_settings
-
 import log
-
 import installation_thread
 
 _next_page = "timezone"
@@ -57,6 +51,7 @@ class InstallationAutomatic(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
+        self.settings = params['settings']
         
         super().__init__()
         self.ui = Gtk.Builder()
@@ -157,6 +152,7 @@ class InstallationAutomatic(Gtk.Box):
         grub_device = self.auto_device
         
         self.thread = installation_thread.InstallationThread( \
+                        self.settings, \
                         self.callback_queue, \
                         mount_devices, \
                         grub_device)

@@ -34,9 +34,6 @@ from gi.repository import Gtk
 
 import sys
 import os
-
-from config import installer_settings
-
 import misc
 import parted
 import log
@@ -55,6 +52,7 @@ class InstallationEasy(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
+        self.settings = params['settings']
 
         super().__init__()
         self.ui = Gtk.Builder()
@@ -181,6 +179,7 @@ class InstallationEasy(Gtk.Box):
         grub_device = mount_devices["/"]
 
         self.thread = installation_thread.InstallationThread( \
+                        self.settings, \
                         self.callback_queue, \
                         mount_devices, \
                         grub_device, \

@@ -38,14 +38,9 @@ import urllib.request
 import time
 import queue
 import datetime
-
 import show_message as show
-
-# Import functions
-from config import installer_settings
-
+import config
 import log
-
 import tz
 
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
@@ -63,6 +58,7 @@ class Timezone(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.settings = params['settings']
         
         super().__init__()
 
@@ -233,28 +229,28 @@ class Timezone(Gtk.Box):
         loc = self.tzdb.get_loc(self.timezone)
         
         if loc:
-            installer_settings["timezone_human_zone"] = loc.human_zone
-            installer_settings["timezone_country"] = loc.country
-            installer_settings["timezone_zone"] = loc.zone
-            installer_settings["timezone_human_country"] = loc.human_country
+            self.settings.set("timezone_human_zone", loc.human_zone)
+            self.settings.set("timezone_country", loc.country)
+            self.settings.set("timezone_zone", loc.zone)
+            self.settings.set("timezone_human_country", loc.human_country)
 
             if loc.comment:
-                installer_settings["timezone_comment"] = loc.comment
+                self.settings.set("timezone_comment", loc.comment)
             else:
-                installer_settings["timezone_comment"] = ""
+                self.settings.set("timezone_comment", "")
 
             if loc.latitude:
-                installer_settings["timezone_latitude"] = loc.latitude
+                self.settings.set("timezone_latitude", loc.latitude)
             else:
-                installer_settings["timezone_latitude"] = ""
+                self.settings.set("timezone_latitude", "")
 
             if loc.longitude:
-                installer_settings["timezone_longitude"] = loc.longitude
+                self.settings.set("timezone_longitude", loc.longitude)
             else:
-                installer_settings["timezone_longitude"] = ""
+                self.settings.set("timezone_longitude", "")
 
         # this way installer_thread will know all info has been entered
-        installer_settings["timezone_done"] = True
+        self.settings.set("timezone_done", True)
         
         return True
 

@@ -28,33 +28,62 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-installer_settings  = { \
-                'CNCHI_DIR' : '/usr/share/cnchi/', \
-                'UI_DIR' : '/usr/share/cnchi/ui/', \
-                'DATA_DIR' : '/usr/share/cnchi/data/', \
-                'TMP_DIR' : '/tmp', \
-                'language_name' : '', \
-                'language_code' : '', \
-                'locale' : '', \
-                'keyboard_layout' : '', \
-                'keyboard_variant' : '', \
-                'timezone_human_zone' : '', \
-                'timezone_country' : '', \
-                'timezone_zone' : '', \
-                'timezone_human_country' : '', \
-                'timezone_comment' : '', \
-                'timezone_latitude' : 0, \
-                'timezone_longitude' : 0, \
-                'timezone_done' : False, \
-                'use_ntp' : True, \
-                'partition_mode' : 'easy', \
-                'auto_device' : '/dev/sda', \
-                'log_file' : '/tmp/cnchi.log', \
-                'fullname' : '', \
-                'hostname' : 'cinnarch', \
-                'username' : '', \
-                'password' : '', \
-                'require_password' : True, \
-                'encrypt_home' : False, \
-                'user_info_done' : False, \
-                'rankmirrors_done' : False}
+import queue
+
+class Settings():
+    def __init__(self):
+        # Create a queue one element size
+        self.settings = queue.Queue(1)
+
+        self.settings.put( { \
+            'CNCHI_DIR' : '/usr/share/cnchi/', \
+            'UI_DIR' : '/usr/share/cnchi/ui/', \
+            'DATA_DIR' : '/usr/share/cnchi/data/', \
+            'TMP_DIR' : '/tmp', \
+            'language_name' : '', \
+            'language_code' : '', \
+            'locale' : '', \
+            'keyboard_layout' : '', \
+            'keyboard_variant' : '', \
+            'timezone_human_zone' : '', \
+            'timezone_country' : '', \
+            'timezone_zone' : '', \
+            'timezone_human_country' : '', \
+            'timezone_comment' : '', \
+            'timezone_latitude' : 0, \
+            'timezone_longitude' : 0, \
+            'timezone_done' : False, \
+            'use_ntp' : True, \
+            'partition_mode' : 'easy', \
+            'auto_device' : '/dev/sda', \
+            'log_file' : '/tmp/cnchi.log', \
+            'fullname' : '', \
+            'hostname' : 'cinnarch', \
+            'username' : '', \
+            'password' : '', \
+            'require_password' : True, \
+            'encrypt_home' : False, \
+            'user_info_done' : False, \
+            'rankmirrors_done' : False })
+
+    def _get_settings(self):
+        gd = self.settings.get()
+        d = gd.copy()
+        self.settings.put(gd)
+        return d
+
+    def _update_settings(self, d):
+        gd = self.settings.get()
+        try:
+            gd.update(d)
+        finally:
+            self.settings.put(gd)
+        
+    def get(self, key):
+        d = self._get_settings()
+        return d[key]
+        
+    def set(self, key, value):
+        d = self._get_settings()
+        d[key] = value
+        self._update_settings(d)

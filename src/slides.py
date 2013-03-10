@@ -29,16 +29,11 @@
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
 from gi.repository import Gtk, WebKit, GLib
-from config import installer_settings
+import config
 import os
 import queue
 import show_message as show
 import log
-
-_scroll_step = 4
-
-_slide_width = 610
-_slide_height = 300
 
 # when we reach this page we can't go neither backwards nor forwards
 _next_page = None
@@ -52,8 +47,8 @@ class Slides(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.exit_button = params['exit_button']
-        
         self.callback_queue = params['callback_queue']
+        self.settings = params['settings']
 
         super().__init__()
 
@@ -68,7 +63,7 @@ class Slides(Gtk.Box):
 
         self.webview = WebKit.WebView()
         
-        html_file = os.path.join(installer_settings["DATA_DIR"], 'slides.html')
+        html_file = os.path.join(self.settings.get("DATA_DIR"), 'slides.html')
         
         try:
             with open(html_file) as html_stream:

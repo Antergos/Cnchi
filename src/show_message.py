@@ -32,11 +32,8 @@ from gi.repository import Gtk
 
 import sys
 import os
-
-from config import installer_settings
-
-import log
 import queue
+import log
 
 _show_event_queue_messages = True
 

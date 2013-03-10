@@ -40,7 +40,7 @@ base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
 sys.path.insert(0, src_dir)
 
-from config import installer_settings
+import config
 
 import language
 import check
@@ -97,20 +97,22 @@ class Main(Gtk.Window):
             sys.exit(1)
                 
         super().__init__()
+        
+        self.settings = config.Settings()
 
-        self.ui_dir = installer_settings["UI_DIR"]
+        self.ui_dir = self.settings.get("UI_DIR")
 
         if not os.path.exists(self.ui_dir):
             cnchi_dir = os.path.join(os.path.dirname(__file__), './')
-            installer_settings["CNCHI_DIR"] = cnchi_dir
+            self.settings.set("CNCHI_DIR", cnchi_dir)
             
             ui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
-            installer_settings["UI_DIR"] =  ui_dir
+            self.settings.set("UI_DIR", ui_dir)
             
             data_dir = os.path.join(os.path.dirname(__file__), 'data/')
-            installer_settings["DATA_DIR"] = data_dir
+            self.settings.set("DATA_DIR", data_dir)
             
-            self.ui_dir = installer_settings["UI_DIR"]
+            self.ui_dir = self.settings.get("UI_DIR")
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")
@@ -123,7 +125,7 @@ class Main(Gtk.Window):
 
         self.logo = self.ui.get_object("logo")
 
-        logo_dir = os.path.join(installer_settings["DATA_DIR"], "logo_mini.png")
+        logo_dir = os.path.join(self.settings.get("DATA_DIR"), "logo_mini.png")
                                 
         self.logo.set_from_file(logo_dir)
 
@@ -158,6 +160,7 @@ class Main(Gtk.Window):
         params['backwards_button'] = self.backwards_button
         params['exit_button'] = self.exit_button
         params['callback_queue'] = self.callback_queue
+        params['settings'] = self.settings
         
         self.pages["language"] = language.Language(params)
         self.pages["check"] = check.Check(params)
@@ -179,7 +182,7 @@ class Main(Gtk.Window):
         self.set_size_request(_main_window_width, _main_window_height);
 
         # set window icon
-        icon_dir = os.path.join(installer_settings["DATA_DIR"], 'cinnarch-icon.png')
+        icon_dir = os.path.join(self.settings.get("DATA_DIR"), 'cinnarch-icon.png')
         
         self.set_icon_from_file(icon_dir)
 
@@ -192,7 +195,7 @@ class Main(Gtk.Window):
         # Header style testing
         style_provider = Gtk.CssProvider()
 
-        style_css = os.path.join(installer_settings["DATA_DIR"], "gtk-style.css")
+        style_css = os.path.join(self.settings.get("DATA_DIR"), "gtk-style.css")
 
         css = open(style_css, 'rb')
         css_data = css.read()

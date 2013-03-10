@@ -31,14 +31,10 @@
 from gi.repository import Gtk, GLib
 
 # Import functions
-from config import installer_settings
-
+import config
 import os
-
 import keyboard_names
-
 import log
-
 import show_message as show
 
 _next_page = "user_info"
@@ -51,6 +47,7 @@ class Keymap(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.settings = params['settings']
 
         super().__init__()
 
@@ -95,7 +92,7 @@ class Keymap(Gtk.Box):
         self.translate_ui()
 
         # select treeview with selected country in previous screen.
-        selected_country = installer_settings["timezone_human_country"]
+        selected_country = self.settings.get("timezone_human_country")
 
         selected_country = self.fix_countries(selected_country)
 
@@ -123,7 +120,7 @@ class Keymap(Gtk.Box):
 
 
     def fill_layout_treeview(self):
-        lang = installer_settings["language_code"]
+        lang = self.settings.get("language_code")
 
         if not keyboard_names.has_language(lang):
             lang = "C"
@@ -185,7 +182,7 @@ class Keymap(Gtk.Box):
                 # store layout selected
                 self.keyboard_layout = keyboard_layout
 
-                lang = installer_settings["language_code"]
+                lang = self.settings.get("language_code")
 
                 if not keyboard_names.has_language(lang):
                     lang = "C"
@@ -234,13 +231,7 @@ class Keymap(Gtk.Box):
             if iter:
                 keyboard_variant = ls.get_value(iter, 0)
 
-        # TODO: Fix this!
-        #installer_settings["keyboard_layout"] = self.keyboard_layout
-        installer_settings["keyboard_variant"] = keyboard_variant
-
-        # debug
-        log.debug(_("keyboard_layout is %s") % installer_settings["keyboard_layout"])
-        log.debug(_("keyboard_variant is %s") % installer_settings["keyboard_variant"])
+        self.settings.set("keyboard_variant", keyboard_variant)
         
         return True
 
