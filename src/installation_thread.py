@@ -518,7 +518,10 @@ class InstallationThread(threading.Thread):
             parti = self.mount_devices[path]
             info = fs.get_info(parti)
             uuid = info['UUID']
+            
+            # ¿?
             myfmt = self.format_devices[parti]
+            
             if path == '/':
                 chk = '1'
             else:
