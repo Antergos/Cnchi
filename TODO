@@ -1,41 +1,24 @@
-TODO (1st gen 2013)
+CNCHI TODO LIST (11 Mar 2013)
 
 * General:
- - Check all file paths
- - Logging (should convert all print's to log messages)
-
-* Language screen:
- - Seems ok.
-
-* Installer_ask screen:
- - Seems ok.
-
-* Installer_automatic screen:
- - More testing is needed
-
-* Installer_easy screen:
- - Seems ok.
+ - Check all file paths (os.path.join)
 
 * Installer_advanced screen:
  - If you play with the partitioner (create partition, delete it, create it
    again, delete it again...) in the end it gets confused.
 
 * Timezone screen:
- - Add NTP switch?
+ - Add NTP switch
  - Modify the locale at the /install directory where partitions with the new
-   system are mounted
+   system are mounted 
 
 * Keyboard screen:
  - Doesn't sort words that have accents (arcnexus fixed it, needs testing)
 
-* User screen:
- - Seems ok.
-
 * Slide screen:
- - Check that the installer messages and progress show correctly
- - Show finish message (error or everything ok)
+ - Not all the installer events (messages) show correctly. pac.py generates
+   too many messages
 
-Also in installer_thread.py and pac.py:
- - Adapt pamac (Manjaro) code to our needs
- - Follow /arch/setup script
-
+* installer-thread.py file:
+ - Function create_fstab doesn't work in automatic install.
+   https://github.com/cinnarch/Cnchi/commit/c900fb56407e303442d94078055277f927ef4c7a
