@@ -512,6 +512,14 @@ class InstallationThread(threading.Thread):
 
     def auto_fstab(self):
         all_lines = []
+        all_lines.append("# /etc/fstab: static file system information.")
+        all_lines.append("#")
+        all_lines.append("# Use 'blkid' to print the universally unique identifier for a")
+        all_lines.append("# device; this may be used with UUID= as a more robust way to name devices")
+        all_lines.append("# that works even if disks are added and removed. See fstab(5).")
+        all_lines.append("#")
+        all_lines.append("# <file system> <mount point>   <type>  <options>       <dump>  <pass>")
+
         rootssd = 0
         for path in self.mount_devices:
             opts = 'defaults'
