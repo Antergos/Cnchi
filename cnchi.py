@@ -42,6 +42,7 @@ sys.path.insert(0, src_dir)
 
 import config
 
+import welcome
 import language
 import check
 import keymap
@@ -162,6 +163,7 @@ class Main(Gtk.Window):
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         
+        self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
         self.pages["check"] = check.Check(params)
         self.pages["keymap"] = keymap.Keymap(params)
