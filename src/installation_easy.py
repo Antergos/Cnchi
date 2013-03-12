@@ -171,9 +171,9 @@ class InstallationEasy(Gtk.Box):
         root = mount_devices["/"]
         swap = mount_devices["swap"]
         
-        format_devices = {}
-        format_devices[root] = "ext4"
-        format_devices[swap] = "swap"
+        fs_devices = {}
+        fs_devices[root] = "ext4"
+        fs_devices[swap] = "swap"
         
         # TODO: Ask where to install GRUB
         grub_device = mount_devices["/"]

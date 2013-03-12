@@ -63,7 +63,7 @@ class InstallError(Exception):
         return repr(self.value)
 
 class InstallationThread(threading.Thread):
-    def __init__(self, settings, callback_queue, mount_devices, grub_device, format_devices=None, ssd=None):
+    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices=None, ssd=None):
         threading.Thread.__init__(self)
         
         self.callback_queue = callback_queue
@@ -77,7 +77,7 @@ class InstallationThread(threading.Thread):
         self.mount_devices = mount_devices
         self.grub_device = grub_device
     
-        self.format_devices = format_devices
+        self.fs_devices = fs_devices
 
         self.running = True
         self.error = False
@@ -114,7 +114,6 @@ class InstallationThread(threading.Thread):
             cnchi_dir = self.settings.get("CNCHI_DIR")
             script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
             try:
-                #if os.path.exists(script_path):
                 self.auto_device = self.mount_devices["automatic"]
                 self.queue_event('debug', "Automatic device: %s" % self.auto_device)
                 self.queue_event('debug', "Running automatic script...")
@@ -126,36 +125,44 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
                 return False
-        
-        if self.method == 'easy' or self.method == 'advanced':
-            # TODO: format partitions using mkfs (format_devices)
-            pass
-
-        # Create the directory where we will mount our new root partition
-        if not os.path.exists(self.dest_dir):
-            os.mkdir(self.dest_dir)
-            
+                    
         if self.method == 'automatic':
             # In automatic install we have
             # /dev/sdX1 boot
             # /dev/sdX2 swap
             # /dev/sdX3 root
-            self.mount_devices["/"] = self.auto_device + "3"
-            self.mount_devices["/boot"] = self.auto_device + "1"
-            boot_partition = self.mount_devices["/boot"]
-            root_partition = self.mount_devices["/"]
-        elif self.method == 'easy':
-            # we don't create a specific boot partition in easy mode (this could change in the future)
-            boot_partition = ""
-            root_partition = self.mount_devices["/"]
-        elif self.method == 'advanced':
+            root_partition = self.auto_device + "3"
+            boot_partition = self.auto_device + "1"
+            self.mount_devices["/"] = root_partition 
+            self.mount_devices["/boot"] = boot_partition
+
+            self.fs_devices = {}
+            self.fs_devices[boot_partition] = "ext2"
+            self.fs_devices[root_partition] = "ext4"
+        
+        if self.method == 'easy' or self.method == 'advanced':
             root_partition = self.mount_devices["/"]
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
-            
-        if self.method != 'automatic':
+
+        if self.method == 'easy':
+            # Easy method formats root by default
+            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
+
+        if self.method == 'advanced':
+            # TODO: format partitions using mkfs (but which ones?)
+            # Is this really necessary? Won't they be previously formatted in
+            # installation_advanced?
+            pass
+
+        # Create the directory where we will mount our new root partition
+        if not os.path.exists(self.dest_dir):
+            os.mkdir(self.dest_dir)
+
+        # Mount root and boot partitions (only if it's needed)
+        if self.method == 'easy' or self.method == 'advanced':
             # not doing this in automatic mode as our script mounts the root and boot devices
             try:
                 subprocess.check_call(['mount', root_partition, self.dest_dir])
@@ -175,8 +182,6 @@ class InstallationThread(threading.Thread):
             self.queue_fatal_event(_("Can't create necessary directories on destination system"))
             return False
 
-        ## Do real installation here
-
         try:
             self.queue_event('debug', 'Selecting packages...')
             self.select_packages()
@@ -192,8 +197,7 @@ class InstallationThread(threading.Thread):
 
             self.queue_event('debug', 'Configuring system...')
             self.configure_system()
-            self.queue_event('debug', 'System configured.')
-            
+            self.queue_event('debug', 'System configured.')            
         except subprocess.CalledProcessError as e:
             self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
             return False
@@ -519,6 +523,7 @@ class InstallationThread(threading.Thread):
         all_lines.append("# that works even if disks are added and removed. See fstab(5).")
         all_lines.append("#")
         all_lines.append("# <file system> <mount point>   <type>  <options>       <dump>  <pass>")
+        all_lines.append("#")
 
         rootssd = 0
         for path in self.mount_devices:
@@ -526,10 +531,8 @@ class InstallationThread(threading.Thread):
             parti = self.mount_devices[path]
             info = fs.get_info(parti)
             uuid = info['UUID']
-            
-            # ¿?
-            myfmt = self.format_devices[parti]
-            
+            myfmt = self.fs_devices[parti]
+
             if path == '/':
                 chk = '1'
             else:
@@ -537,14 +540,14 @@ class InstallationThread(threading.Thread):
                 full_path = os.path.join(self.dest_dir, path)
                 subprocess.check_call(["mkdir", "-p", full_path])
 
+            opts = 'defaults'
+
             for i in self.ssd:
                 if i in self.mount_devices[path]:
                     if self.ssd[i]:
                         opts = 'defaults,noatime,nodiratime,discard'
                         if path == '/':
                             rootssd = 1
-                    else:
-                        opts = 'defaults'
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
 
@@ -589,8 +592,7 @@ class InstallationThread(threading.Thread):
         
         self.chroot_umount()
 
-        core_path = os.path.join(self.dest_dir,\
-                    "boot/grub/i386-pc/core.img")
+        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
         
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
@@ -658,17 +660,6 @@ class InstallationThread(threading.Thread):
         # copy mirror list
         shutil.copy2('/etc/pacman.d/mirrorlist', \
                     os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
-        
-        # TODO: set uvesa framebuffer if necessary
-        #if self.is_uvesafb():
-        #    v86d_path = os.path.join(self.dest_dir, "lib/initcpio/hooks/v86d")
-        #    if os.path.exists(v86d_path):
-        #        # Help? I really don't know what grep/sed are doing here.
-        #        pass
-        #        '''
-        #        UVESAFB="$(grep ^[a-z] /etc/modprobe.d/uvesafb.conf)" 
-        #        sed -i -e "s#options.*#${UVESAFB}#g" ${DESTDIR}/etc/modprobe.d/uvesafb.conf
-        #        '''
 
         self.queue_event("action", _("Configuring your new system"))
 
@@ -745,7 +736,6 @@ class InstallationThread(threading.Thread):
         if not os.path.exists(hostname_path):
             with open(hostname_path, "wt") as f:
                 f.write(hostname)
-
         
         # User password is the root password  
         self.change_user_password('root', password)

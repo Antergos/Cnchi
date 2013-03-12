@@ -1306,9 +1306,9 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Start installation process
     def start_installation(self):
-        ## should we add already mounted partitions to the list of
+        ## TODO: should we add already mounted partitions to the list of
         ## partitions we will mount in the new system?
-        format_devices = {} 
+        fs_devices = {} 
         mount_devices = {} 
         for disk_path in self.disks:
             disk = self.disks[disk_path]
@@ -1321,17 +1321,17 @@ class InstallationAdvanced(Gtk.Box):
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
-                    format_devices[partition_path] = fs_type
+                    fs_devices[partition_path] = fs_type
                 elif pm.check_mounted(p):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
-        
+
         self.thread = installation_thread.InstallationThread( \
                     self.settings, \
                     self.callback_queue, \
                     mount_devices, \
                     self.grub_device, \
-                    format_devices, \
+                    fs_devices, \
                     self.ssd)
                     
         self.thread.start()

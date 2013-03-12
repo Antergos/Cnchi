@@ -20,5 +20,4 @@ CNCHI TODO LIST (11 Mar 2013)
    too many messages
 
 * installer-thread.py file:
- - Function create_fstab doesn't work in automatic install.
-   https://github.com/cinnarch/Cnchi/commit/c900fb56407e303442d94078055277f927ef4c7a
+ - create_fstab needs testing.
