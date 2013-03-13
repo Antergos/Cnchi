@@ -67,16 +67,9 @@ class Welcome(Gtk.Box):
 
         self.translate_ui()
 
-
         super().add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
-        #txt = _("Welcome to the Cinnarch Installer")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-
-        
-
         label = self.ui.get_object("infowelcome_label")
         txt = _("You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n" \
         "If you want to install the system to your PC, use one of the two installer options.")
@@ -86,24 +79,22 @@ class Welcome(Gtk.Box):
         txt = _("Welcome to Cinnarch!")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
-        
+
     @misc.raise_privileges
-    def on_tryit_button_clicked(self, widget, data=None):
+    def remove_temp_files(self):
         tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
         for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
                 os.remove(p)
+        
+    def on_tryit_button_clicked(self, widget, data=None):
+        self.remove_temp_files()
         Gtk.main_quit()
         
-    @misc.raise_privileges
     def on_cli_button_clicked(self, widget, data=None):
         subprocess.Popen(["cinnarch-setup"])
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
-        for t in tmp_files:
-            p = os.path.join("/tmp", t)
-            if os.path.exists(p):
-                os.remove(p)
+        self.remove_temp_files()
         Gtk.main_quit()
 		
     def on_graph_button_clicked(self, widget, data=None):
