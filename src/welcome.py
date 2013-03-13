@@ -98,6 +98,7 @@ class Welcome(Gtk.Box):
         Gtk.main_quit()
 		
     def on_graph_button_clicked(self, widget, data=None):
+        # self.forward_button.emit("clicked")
         pass
 
     def store_values(self):      
