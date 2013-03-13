@@ -44,7 +44,7 @@ import i18n
 import log
 
 _next_page = "check"
-_prev_page = None
+_prev_page = "welcome"
 
 class Language(Gtk.Box):
 

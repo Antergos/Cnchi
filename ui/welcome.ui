@@ -4,22 +4,30 @@
   <object class="GtkAlignment" id="welcome">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="hexpand">True</property>
+    <property name="bottom_padding">10</property>
+    <property name="left_padding">10</property>
+    <property name="right_padding">10</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">16</property>
         <child>
           <object class="GtkBox" id="box2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="spacing">40</property>
+            <property name="homogeneous">True</property>
             <child>
               <object class="GtkBox" id="box3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage" id="image1">
+                  <object class="GtkImage" id="tryit_image">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="stock">gtk-missing-image</property>
@@ -57,7 +65,7 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage" id="image2">
+                  <object class="GtkImage" id="cli_image">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="stock">gtk-missing-image</property>
@@ -95,7 +103,7 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage" id="image3">
+                  <object class="GtkImage" id="graph_image">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="stock">gtk-missing-image</property>

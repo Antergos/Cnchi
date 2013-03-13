@@ -189,8 +189,8 @@ class Main(Gtk.Window):
         self.set_icon_from_file(icon_dir)
 
         # set the first page to show
-        self.current_page = self.pages["language"]
-        #self.current_page = self.pages["installation_advanced"]
+        #self.current_page = self.pages["language"]
+        self.current_page = self.pages["welcome"]
 
         self.main_box.add(self.current_page)
 
@@ -221,6 +221,11 @@ class Main(Gtk.Window):
         # Hide titlebar but show border decoration
         self.get_window().set_accept_focus(True)
         self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
+        
+        # hide progress bar as it's value is zero
+        self.progressbar.set_fraction(0)
+        self.progressbar.hide()
+        self.progressbar_step = 1.0 / len(self.pages)
 
         # we drop privileges, but where we should do it? before this? ¿?
         misc.drop_privileges()
@@ -243,13 +248,17 @@ class Main(Gtk.Window):
         print("Quiting...")
         Gtk.main_quit()
 
-    def progressbar_step(self, add_value):
+    def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value
         if new_value > 1:
             new_value = 1
         if new_value < 0:
             new_value = 0
-        self.progressbar.set_fraction(new_value)
+        self.progressbar.set_fraction(new_value)        
+        if new_value > 0:
+            self.progressbar.show()
+        else:
+            self.progressbar.hide()
 
     def on_forward_button_clicked(self, widget, data=None):
         next_page = self.current_page.get_next_page()
@@ -258,7 +267,7 @@ class Main(Gtk.Window):
             stored = self.current_page.store_values()
             
             if stored != False:
-                self.progressbar_step(0.1)     
+                self.set_progressbar_step(self.progressbar_step)     
                 self.main_box.remove(self.current_page)
 
                 self.current_page = self.pages[next_page]
@@ -278,7 +287,7 @@ class Main(Gtk.Window):
         prev_page = self.current_page.get_prev_page()
 
         if prev_page != None:
-            self.progressbar_step(-0.1)
+            self.set_progressbar_step(-self.progressbar_step)
 
             # if we go backwards, don't store user changes
             #self.current_page.store_values()
