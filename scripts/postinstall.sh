@@ -60,7 +60,7 @@ function postinstall(){
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
 	## Unmute alsa channels
-	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute
+	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
 
 	# Set gsettings
 	cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings

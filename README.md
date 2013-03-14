@@ -16,3 +16,5 @@ Graphical Installer for Cinnarch Linux
  * pacman
  * pyalpm
  * hwinfo
+ * expect (necessary for mkpasswd)
+ * hdparm

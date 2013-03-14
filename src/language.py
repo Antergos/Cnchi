@@ -145,7 +145,7 @@ class Language(Gtk.Box):
                 path = model.get_path(iterator)
                 treeview.get_selection().select_path(path)
                 treeview.scroll_to_cell(
-                    path, use_align=True, row_align=0.5)
+                    path, use_align=False, row_align=0.0, col_align=0.0)
                 break
             iterator = model.iter_next(iterator)
                 
