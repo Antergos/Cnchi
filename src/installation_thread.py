@@ -722,7 +722,7 @@ class InstallationThread(threading.Thread):
         self.chroot(['chfn', '-f', fullname, username])
                   
         home = os.path.join(self.dest_dir, "home", username)
-        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc' '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
+        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
         try:
             for d in skel_dirs:
                 misc.copytree(d, home)
@@ -749,7 +749,7 @@ class InstallationThread(threading.Thread):
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "wt") as locale_conf:
-            locale_conf.write('LANG=%s' % lang_code)
+            locale_conf.write('LANG=%s \n' % lang_code)
             locale_conf.write('LC_COLLATE=C')
 
         self.auto_timesetting()
