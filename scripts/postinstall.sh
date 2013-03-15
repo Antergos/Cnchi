@@ -81,6 +81,9 @@ function postinstall(){
 
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+	
+	# Set default MDM theme
+    sed -i "s#\[greeter\].*#&\n\nGraphicalTheme=Arc-Brave-Userlist\n\n#" ${DESTDIR}/etc/mdm/custom.conf
 }
 
 touch /tmp/.postinstall.lock

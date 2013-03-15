@@ -35,6 +35,7 @@ import sys
 import shutil
 import xml.etree.ElementTree as etree
 from urllib.request import urlopen
+import crypt
 
 import config
 
@@ -612,16 +613,16 @@ class InstallationThread(threading.Thread):
             self.chroot(['systemctl', 'enable', name])
 
     def change_user_password(self, user, new_password):
-        process = subprocess.Popen(['mkpasswd', '-m', 'sha-512', new_password], stdout=subprocess.PIPE)
-        shadow_password = process.communicate()[0].strip()
-
-        if process.returncode != 0:
+    
+        try:
+            shadow_password = crypt.crypt(new_password,"$6$%s$" % user)
+        except:
             self.queue_event('warning', _('Error creating password hash for user %s') % user)
             return False
 
-        result = subprocess.call(['usermod', '-p', shadow_password, user])
-
-        if result != 0:
+        try:
+            self.chroot(['usermod', '-p', shadow_password, user])
+        except:
             self.queue_event('warning', _('Error changing password for user %s') % user)
             return False
         
@@ -722,12 +723,13 @@ class InstallationThread(threading.Thread):
         self.chroot(['chfn', '-f', fullname, username])
                   
         home = os.path.join(self.dest_dir, "home", username)
-        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.gnome2', '/etc/skel/.gtkrc-2']
+        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.Almin-Soft', '/etc/skel/.gtkrc-2.0']
         try:
             for d in skel_dirs:
-                misc.copytree(d, home)
                 if d in ('/etc/skel/.dmrc', '/etc/skel/.gtkrc-2'):
                     shutil.copy2(d, home)
+                else:
+                    misc.copytree(d, home)
         except FileExistsError:
             # ignore if exists
             pass
@@ -744,13 +746,20 @@ class InstallationThread(threading.Thread):
 
         ## Generate locales
         lang_code = self.settings.get("language_code")
+        timezone_zone = self.settings.get("timezone_zone")
+        locale = '%s_%s' % (lang_code, timezone_zone)
         self.queue_event('info', _("Generating locales"))
-        self.chroot(['sed', '-i', '"s/#\(%s.UTF-8\)/\1/"' % lang_code, "/etc/locale.gen"])
+        self.chroot(['sed', '-i', '-r', '"s/#(.*%s.*UTF-8)/\1/g"' % lang_code, "/etc/locale.gen"])
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "wt") as locale_conf:
-            locale_conf.write('LANG=%s \n' % lang_code)
+            locale_conf.write('LANG=%s_%s.UTF-8 \n' % (lang_code, timezone_zone))
             locale_conf.write('LC_COLLATE=C')
+            
+        # Set /etc/vconsole.conf
+        vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
+        with open(vconsole_conf_path, "wt") as vconsole_conf:
+            vconsole_conf.write('KEYMAP=%s \n' % lang_code)
 
         self.auto_timesetting()
 
