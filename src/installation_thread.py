@@ -726,7 +726,7 @@ class InstallationThread(threading.Thread):
         skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.Almin-Soft', '/etc/skel/.gtkrc-2.0']
         try:
             for d in skel_dirs:
-                if d in ('/etc/skel/.dmrc', '/etc/skel/.gtkrc-2'):
+                if d in ('/etc/skel/.dmrc', '/etc/skel/.gtkrc-2.0'):
                     shutil.copy2(d, home)
                 else:
                     misc.copytree(d, home)
