@@ -746,8 +746,8 @@ class InstallationThread(threading.Thread):
 
         ## Generate locales
         lang_code = self.settings.get("language_code")
-        keyboard_variant = self.settings.get("keyboard_variant")
-        locale = '%s_%s' % (lang_code, keyboard_variant)
+        keyboard_layout = self.settings.get("keyboard_layout")
+        locale = '%s_%s' % (lang_code, keyboard_layout)
         self.queue_event('info', _("Generating locales"))
         self.chroot(['sed', '-i', '-r', '"s/#(.*%s.*UTF-8)/\1/g"' % lang_code, "/etc/locale.gen"])
         self.chroot(['locale-gen'])
