@@ -34,6 +34,7 @@ import os
 import queue
 import show_message as show
 import log
+import subprocess
 
 # when we reach this page we can't go neither backwards nor forwards
 _next_page = None
@@ -75,7 +76,8 @@ class Slides(Gtk.Box):
         
         self.scrolled_window.add(self.webview)
         
-        self.install_ok = _("Installation finished!")
+        self.install_ok = _("Installation finished!\n" \
+                            "Do you want to restart your system now?")
 
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
 
@@ -88,7 +90,8 @@ class Slides(Gtk.Box):
 
         self.set_message(_("Please wait..."))
         
-        self.install_ok = _("Installation finished!")
+        self.install_ok = _("Installation finished!\n" \
+                            "Do you want to restart your system now?")
 
     def prepare(self):
         self.translate_ui()
@@ -127,7 +130,17 @@ class Slides(Gtk.Box):
             elif event[0] == "finished":
                 log.debug(event[1])
                 self.set_message(self.install_ok)
-                show.message(self.install_ok)
+                response = show.message(self.install_ok)
+                if response == Gtk.ResponseType.YES:
+                    subp = subprocess.Popen(['reboot'], stdout=subprocess.PIPE)
+                else:
+                    tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+                    for t in tmp_files:
+                        p = os.path.join("/tmp", t)
+                        if os.path.exists(p):
+                            os.remove(p)
+                    Gtk.main_quit()
+                        
                 self.exit_button.show()
                 return False
             elif event[0] == "error":

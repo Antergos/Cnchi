@@ -753,7 +753,7 @@ class InstallationThread(threading.Thread):
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "wt") as locale_conf:
-            locale_conf.write('LANG=%s_%s.UTF-8 \n' % (lang_code, keyboard_variant.upper()))
+            locale_conf.write('LANG=%s_%s.UTF-8 \n' % (lang_code, keyboard_layout.upper()))
             locale_conf.write('LC_COLLATE=C')
             
         # Set /etc/vconsole.conf
