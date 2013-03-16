@@ -231,6 +231,7 @@ class Keymap(Gtk.Box):
             if iter:
                 keyboard_variant = ls.get_value(iter, 0)
 
+        self.settings.set("keyboard_layout", self.keyboard_layout)
         self.settings.set("keyboard_variant", keyboard_variant)
         
         return True
