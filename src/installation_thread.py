@@ -700,9 +700,9 @@ class InstallationThread(threading.Thread):
         
         sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
         with open(sudoers_path, "wt") as sudoers:
-            sudoers.write('# Sudoers file')
-            sudoers.write('root ALL=(ALL) ALL')
-            sudoers.write('%s ALL=(ALL) ALL' % username)
+            sudoers.write('# Sudoers file\n')
+            sudoers.write('root ALL=(ALL) ALL\n')
+            sudoers.write('%s ALL=(ALL) ALL\n' % username)
         
         subprocess.check_call(["chmod", "440", sudoers_path])
         
@@ -746,14 +746,14 @@ class InstallationThread(threading.Thread):
 
         ## Generate locales
         lang_code = self.settings.get("language_code")
-        timezone_zone = self.settings.get("timezone_zone")
+        keyboard_variant = self.settings.get("keyboard_variant")
         locale = '%s_%s' % (lang_code, timezone_zone)
         self.queue_event('info', _("Generating locales"))
         self.chroot(['sed', '-i', '-r', '"s/#(.*%s.*UTF-8)/\1/g"' % lang_code, "/etc/locale.gen"])
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "wt") as locale_conf:
-            locale_conf.write('LANG=%s_%s.UTF-8 \n' % (lang_code, timezone_zone))
+            locale_conf.write('LANG=%s_%s.UTF-8 \n' % (lang_code, keyboard_variant.upper()))
             locale_conf.write('LC_COLLATE=C')
             
         # Set /etc/vconsole.conf
