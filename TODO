@@ -9,8 +9,6 @@ CNCHI TODO LIST (11 Mar 2013)
 
 * Timezone screen:
  - Add NTP switch
- - Modify the locale at the /install directory where partitions with the new
-   system are mounted 
 
 * Keyboard screen:
  - Doesn't sort words that have accents (arcnexus fixed it, needs testing)
