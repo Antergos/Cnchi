@@ -515,6 +515,7 @@ class InstallationThread(threading.Thread):
 
                 shutil.copy(source_network, target_network)
 
+    # TODO: Take care of swap partitions
     def auto_fstab(self):
         all_lines = []
         all_lines.append("# /etc/fstab: static file system information.")
@@ -527,18 +528,24 @@ class InstallationThread(threading.Thread):
         all_lines.append("#")
 
         root_ssd = 0
+
         for path in self.mount_devices:
             opts = 'defaults'
+            chk = '0'
             parti = self.mount_devices[path]
             info = fs.get_info(parti)
             uuid = info['UUID']
-            myfmt = self.fs_devices[parti]
+            if parti in self.fs_devices:
+                myfmt = self.fs_devices[parti]
+            else:
+                # It hasn't any filesystem defined (maybe swap?)
+                # TODO: don't skip it and mount it as it should be if it is a swap partition
+                continue
 
             if path == '/':
                 chk = '1'
                 opts = "rw,relatime,data=ordered"
             else:
-                chk = '0'
                 full_path = os.path.join(self.dest_dir, path)
                 subprocess.check_call(["mkdir", "-p", full_path])
 
@@ -548,7 +555,8 @@ class InstallationThread(threading.Thread):
                         opts = 'defaults,noatime,nodiratime'
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-                        if myfmt == 'ext4' or myfmt == 'btrfs' or myfmt == 'jfs' or myfmt == 'xfs':
+                        # If using a TRIM supported SSD, discard is a valid mount option for swap
+                        if myfmt == 'ext4' or myfmt == 'btrfs' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
                             opts += ',discard'
                         if path == '/':
                             root_ssd = 1
