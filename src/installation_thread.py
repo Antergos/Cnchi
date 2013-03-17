@@ -624,7 +624,6 @@ class InstallationThread(threading.Thread):
             self.chroot(['systemctl', 'enable', name])
 
     def change_user_password(self, user, new_password):
-    
         try:
             shadow_password = crypt.crypt(new_password,"$6$%s$" % user)
         except:
