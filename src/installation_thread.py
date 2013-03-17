@@ -536,23 +536,26 @@ class InstallationThread(threading.Thread):
 
             if path == '/':
                 chk = '1'
+                opts = "rw,relatime,data=ordered"
             else:
                 chk = '0'
                 full_path = os.path.join(self.dest_dir, path)
                 subprocess.check_call(["mkdir", "-p", full_path])
 
-            opts = 'defaults'
-
-            for i in self.ssd:
-                if i in self.mount_devices[path]:
-                    if self.ssd[i]:
-                        opts = 'defaults,noatime,nodiratime,discard'
+            if self.ssd != None:
+                for i in self.ssd:
+                    if i in self.mount_devices[path] and self.ssd[i]:
+                        opts = 'defaults,noatime,nodiratime'
+                        # As of linux kernel version 3.7, the following
+                        # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
+                        if myfmt == 'ext4' or myfmt == 'btrfs' or myfmt == 'jfs' or myfmt == 'xfs':
+                            opts += ',discard'
                         if path == '/':
-                            rootssd = 1
+                            root_ssd = 1
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
 
-        if rootssd:
+        if root_ssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
 
         full_text = '\n'.join(all_lines)
