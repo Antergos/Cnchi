@@ -734,16 +734,30 @@ class InstallationThread(threading.Thread):
         self.chroot(['chfn', '-f', fullname, username])
                   
         home = os.path.join(self.dest_dir, "home", username)
-        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.dmrc', '/etc/skel/.local', '/etc/skel/.Almin-Soft', '/etc/skel/.gtkrc-2.0']
-        try:
-            for d in skel_dirs:
-                if d in ('/etc/skel/.dmrc', '/etc/skel/.gtkrc-2.0'):
-                    shutil.copy2(d, home)
-                else:
-                    misc.copytree(d, home)
-        except FileExistsError:
-            # ignore if exists
-            pass
+        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.local', '/etc/skel/.Almin-Soft']
+        skel_files = [ '/etc/skel/.dmrc', '/etc/skel/.gtkrc-2.0']
+
+        for d in skel_dirs:
+            try:
+                misc.copytree(d, home)
+            except FileExistsError:
+                # ignore if already exists
+                pass
+            except FileNotFoundError:
+                # Even though an user config directory is missing,
+                # we don't want to abort this installation at this point
+                pass
+
+        for d in skel_files:
+            try:
+                shutil.copy2(d, home)
+            except FileExistsError:
+                # ignore if already exists
+                pass
+            except FileNotFoundError:
+                # Even though an user config file is missing,
+                # we don't want to abort this installation at this point
+                pass
         
         self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
         
@@ -787,6 +801,7 @@ class InstallationThread(threading.Thread):
         
         # Ok, we already did this before, in another thread
         
+        # Call post-install script
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
         subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir])
