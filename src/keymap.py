@@ -191,6 +191,7 @@ class Keymap(Gtk.Box):
                 kbd_names._load(lang)
 
                 country_code = kbd_names._layout_by_human[keyboard_layout]
+                self.keyboard_layout = country_code
 
                 variants = kbd_names._variant_by_human
 
