@@ -526,7 +526,7 @@ class InstallationThread(threading.Thread):
         all_lines.append("# <file system> <mount point>   <type>  <options>       <dump>  <pass>")
         all_lines.append("#")
 
-        rootssd = 0
+        root_ssd = 0
         for path in self.mount_devices:
             opts = 'defaults'
             parti = self.mount_devices[path]
