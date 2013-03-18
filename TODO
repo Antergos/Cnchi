@@ -3,6 +3,10 @@ CNCHI TODO LIST (11 Mar 2013)
 * General:
  - Check all file paths (os.path.join)
 
+* Language screen:
+ - We need to have the full locale like "es_ES" in order to set the
+/etc/locale.conf file. In the language screen we just get "es"
+
 * Installer_advanced screen:
  - If you play with the partitioner (create partition, delete it, create it
    again, delete it again...) in the end it gets confused.
@@ -14,8 +18,9 @@ CNCHI TODO LIST (11 Mar 2013)
  - Doesn't sort words that have accents (arcnexus fixed it, needs testing)
 
 * Slide screen:
- - Not all the installer events (messages) show correctly. pac.py generates
+ - Not all the installer events (messages) are shown. pac.py generates
    too many messages
 
 * installer-thread.py file:
  - create_fstab needs testing.
+ - Copy the skel directory directly instead of every folder in it

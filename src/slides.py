@@ -35,6 +35,7 @@ import queue
 import show_message as show
 import log
 import subprocess
+import misc
 
 # when we reach this page we can't go neither backwards nor forwards
 _next_page = None
@@ -132,7 +133,10 @@ class Slides(Gtk.Box):
                 self.set_message(self.install_ok)
                 response = show.message(self.install_ok)
                 if response == Gtk.ResponseType.YES:
-                    subp = subprocess.Popen(['reboot'], stdout=subprocess.PIPE)
+                    # TODO: This needs testing
+                    #subp = subprocess.Popen(['reboot'], stdout=subprocess.PIPE)
+                    with misc.raised_privileges():
+                        subp = subprocess.Popen(['shutdown', '-r', 'now'])
                 else:
                     tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
                     for t in tmp_files:
