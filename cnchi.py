@@ -35,6 +35,9 @@ import getopt
 import gettext
 import locale
 
+_version_hi = 0
+_version_lo = 1
+
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
@@ -303,14 +306,8 @@ class Main(Gtk.Window):
                     # we're at the first page
                     self.backwards_button.hide()
 
-
 if __name__ == '__main__':
-
-    major = Gtk.get_major_version()
-    minor = Gtk.get_minor_version()
-    micro = Gtk.get_micro_version()
-
-    print("Cnchi installer. Using Gtk version %d.%d.%d" % (major,minor,micro))
+    print("Cnchi installer version %d.%d" % (_version_hi, _version_lo))
 
     argv = sys.argv[1:]
     
