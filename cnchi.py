@@ -47,6 +47,7 @@ import config
 
 import welcome
 import language
+import location
 import check
 import keymap
 import timezone
@@ -168,6 +169,7 @@ class Main(Gtk.Window):
         
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
+        self.pages["location"] = location.Location(params)
         self.pages["check"] = check.Check(params)
         self.pages["keymap"] = keymap.Keymap(params)
         self.pages["timezone"] = timezone.Timezone(params)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #  language.py
@@ -43,7 +44,7 @@ import i18n
 
 import log
 
-_next_page = "check"
+_next_page = "location"
 _prev_page = "welcome"
 
 class Language(Gtk.Box):
