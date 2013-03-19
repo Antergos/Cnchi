@@ -116,34 +116,18 @@ class Location(Gtk.Box):
     def fill_treeview(self):
         lang_code = self.settings.get("language_code")
 
-        self.areas = []
+        areas = []
         
         for locale_name in self.locales:
             if lang_code in locale_name:
-                self.areas.append(locale_name)
+                areas.append(self.locales[locale_name])
                 
-        
-        '''
-        kbd_names = keyboard_names.KeyboardNames()
-        kbd_names._load(lang)
-
-        sorted_layouts = []
-
-        # misc.utf8(self.city_entry.get_text())
-
-        for layout in kbd_names._layout_by_human:
-            sorted_layouts.append(layout)
-
-        # FIXME: Doesn't sort well accents, must use utf8
-        sorted_layouts.sort()
-
-        liststore = self.layout_treeview.get_model()
+        liststore = self.treeview.get_model()
 
         liststore.clear()
 
-        for layout in sorted_layouts:
-            liststore.append([layout])
-        '''
+        for area in areas:
+            liststore.append([area])
 
     def select_value_in_treeview(self, treeview, value):
         pass
