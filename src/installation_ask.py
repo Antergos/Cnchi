@@ -68,7 +68,7 @@ class InstallationAsk(Gtk.Box):
         # by default, select automatic installation
         self.next_page = "installation_automatic"
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 

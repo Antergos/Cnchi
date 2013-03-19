@@ -94,7 +94,7 @@ class Slides(Gtk.Box):
         self.install_ok = _("Installation finished!\n" \
                             "Do you want to restart your system now?")
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 

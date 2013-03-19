@@ -120,7 +120,7 @@ class InstallationEasy(Gtk.Box):
                 else:
                     self.forward_button.set_sensitive(True)
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         self.forward_button.set_sensitive(False)

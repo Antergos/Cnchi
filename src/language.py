@@ -173,7 +173,7 @@ class Language(Gtk.Box):
         
         return True
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 

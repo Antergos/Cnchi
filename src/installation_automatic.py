@@ -118,7 +118,7 @@ class InstallationAutomatic(Gtk.Box):
             self.auto_device = self.devices[line]
         self.forward_button.set_sensitive(True)
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.populate_devices()
         self.show_all()

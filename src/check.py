@@ -191,7 +191,7 @@ class Check(Gtk.Box):
     def get_next_page(self):
         return _next_page
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         self.forward_button.set_sensitive(self.check_all())

@@ -157,7 +157,7 @@ class UserInfo(Gtk.Box):
         # this way installer_thread will know all info has been entered
         self.settings.set('user_info_done', True)
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()

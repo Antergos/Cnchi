@@ -218,7 +218,7 @@ class Main(Gtk.Window):
         # show main window
         self.show_all()
 
-        self.current_page.prepare()
+        self.current_page.prepare('forwards')
 
         # hide backwards button
         self.backwards_button.hide()
@@ -278,7 +278,7 @@ class Main(Gtk.Window):
                 self.current_page = self.pages[next_page]
 
                 if self.current_page != None:
-                    self.current_page.prepare()
+                    self.current_page.prepare('forwards')
                     self.main_box.add(self.current_page)
 
                     if self.current_page.get_prev_page() != None:
@@ -301,7 +301,7 @@ class Main(Gtk.Window):
             self.current_page = self.pages[prev_page]
 
             if self.current_page != None:
-                self.current_page.prepare()
+                self.current_page.prepare('backwards')
                 self.main_box.add(self.current_page)
 
                 if self.current_page.get_prev_page() == None:

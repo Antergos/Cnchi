@@ -195,7 +195,7 @@ class Timezone(Gtk.Box):
             window.set_cursor(cursor)
             self.refresh()
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.populate_zones()
         self.timezone = None

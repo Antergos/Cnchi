@@ -129,7 +129,7 @@ class Welcome(Gtk.Box):
         self.forward_button.show()
         return True
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         self.forward_button.hide()

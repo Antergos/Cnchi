@@ -84,7 +84,7 @@ class Keymap(Gtk.Box):
         self.variant_treeview.append_column(col)
         self.variant_treeview.set_model(liststore)
 
-    def prepare(self):
+    def prepare(self, direction):
         self.translate_ui()
         self.fill_layout_treeview()
         self.fill_variant_treeview()

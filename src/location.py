@@ -57,11 +57,12 @@ class Location(Gtk.Box):
 
         self.ui.connect_signals(self)
 
-        self.treeview = self.ui.get_object("treeview1")
-        self.label1 = self.ui.get_object("label1")
-        self.label2 = self.ui.get_object("label2")
-        self.label3 = self.ui.get_object("label3")
+        self.treeview = self.ui.get_object("treeview_countries")
+        self.label_choose_country = self.ui.get_object("label_choose_country")
+        self.label_help = self.ui.get_object("label_help")
 
+        self.treeview_items = 0
+        
         self.create_toolview()
         
         self.load_locales()
@@ -73,27 +74,49 @@ class Location(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
-        txt = _("The selected location will be used to help select the system locale. Normally this should be the country where you live")
-        self.label1.set_markup(txt)
-        
-        txt = _("This is a shortlist of locations based on the language you selected.")
-        self.label2.set_markup(txt)
+        txt = _("The selected location will be used to help select the system locale.\n" \
+            "Normally this should be the country where you live.\n" \
+            "This is a shortlist of locations based on the language you selected.")
+        self.label_help.set_markup(txt)
         
         txt = _("Country, territory or area:")
-        self.label3.set_markup(txt)
-
+        txt = "<span weight='bold'>%s</span>" % txt
+        self.label_choose_country.set_markup(txt)
+        
     def create_toolview(self):
         render = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn("", render, text=0)
         liststore = Gtk.ListStore(str)
         self.treeview.append_column(col)
         self.treeview.set_model(liststore)
+        self.treeview.set_headers_visible(False)
+        
+    def select_first_treeview_item(self):
+        model = self.treeview.get_model()
+        treeiter = model.get_iter(0)
+        self.treeview.set_cursor(0)
+        path = model.get_path(treeiter)
+        GLib.idle_add(self.scroll_to_cell, self.treeview, path)
 
-    def prepare(self):
+    def scroll_to_cell(self, treeview, path):
+        treeview.scroll_to_cell(path)
+        return False
+
+    def prepare(self, direction):
         self.translate_ui()
         self.fill_treeview()
-        self.translate_ui()
-        self.show_all()
+        self.translate_ui()       
+        self.select_first_treeview_item()
+        
+        if self.treeview_items == 1:
+            # If we have only one option, don't bother our beloved user
+            #self.forward_button.clicked()
+            if direction == 'forwards':
+                GLib.idle_add(self.forward_button.clicked)
+            else:
+                GLib.idle_add(self.backwards_button.clicked)
+        else:
+            self.show_all()
         
     def load_locales(self):
         data_dir = self.settings.get("DATA_DIR")  
@@ -140,8 +163,18 @@ class Location(Gtk.Box):
                 areas.append(self.locales[locale_name])
         liststore = self.treeview.get_model()
         liststore.clear()
+        
+        # FIXME: What do we have to do when can't find any country?
+        # Right now we put them all!
+        if len(areas) == 0:
+            for locale_name in self.locales:
+                areas.append(self.locales[locale_name])
+
+        self.treeview_items = len(areas)
+        
         for area in areas:
             liststore.append([area])
+            
 
     def store_values(self):
         selected = self.treeview.get_selection()

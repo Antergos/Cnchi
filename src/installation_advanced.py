@@ -1019,7 +1019,7 @@ class InstallationAdvanced(Gtk.Box):
         #self.ui.get_object('partition_dialog_okbutton')
 
     ## Prepare our dialog to show/hide/activate/deactivate what's necessary
-    def prepare(self):
+    def prepare(self, direction):
         self.fill_grub_device_entry()
 
         self.fill_partition_list() 
