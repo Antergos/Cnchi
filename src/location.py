@@ -66,7 +66,7 @@ class Location(Gtk.Box):
         self.create_toolview()
         
         self.load_locales()
-
+        
         super().add(self.ui.get_object("location"))
 
     def translate_ui(self):
@@ -102,10 +102,15 @@ class Location(Gtk.Box):
         treeview.scroll_to_cell(path)
         return False
 
+    def hide_all(self):
+        #TODO: HIDE ALL CONTROLS
+        # location_box, label_help, label_choose_country, box1
+        # eventbox1, eventbox2, scrolledwindow1, treeview_countries
+        pass
+
     def prepare(self, direction):
-        self.translate_ui()
+        self.hide_all()
         self.fill_treeview()
-        self.translate_ui()       
         self.select_first_treeview_item()
         
         if self.treeview_items == 1:
@@ -116,6 +121,7 @@ class Location(Gtk.Box):
             else:
                 GLib.idle_add(self.backwards_button.clicked)
         else:
+            self.translate_ui()       
             self.show_all()
         
     def load_locales(self):
