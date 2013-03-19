@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  keymap.py
+#  location.py
 #  
 #  Copyright 2013 Cinnarch
 #  
@@ -93,11 +93,10 @@ class Location(Gtk.Box):
         self.translate_ui()
         self.fill_treeview()
         self.translate_ui()
-
         self.show_all()
         
     def load_locales(self):
-        data_dir = self.settings.get("DATA_DIR")
+        data_dir = self.settings.get("DATA_DIR")  
         xml_path = os.path.join(data_dir, "locales.xml")
         
         self.locales = {}
@@ -110,76 +109,51 @@ class Location(Gtk.Box):
                     language_name = item.text
                 elif item.tag == 'locale_name':
                     locale_name = item.text
-            #print(language_name, locale_name)
             self.locales[locale_name] = language_name
+            #print("self.locales[%s]=%s" % (locale_name.encode('utf-8'), language_name.encode('utf-8')))
+            
+        xml_path = os.path.join(data_dir, "iso3366-1.xml")
+        
+        countries = {}
+        
+        tree = etree.parse(xml_path)
+        root = tree.getroot()
+        for child in root:
+            code = child.attrib['value']
+            #print (child.text.encode('utf-8'))
+            name = child.text
+            countries[code] = name
+            #print("countries[%s] = %s" % (code, name.encode('utf-8')))
+            
+        for locale_name in self.locales:
+            language_name = self.locales[locale_name]
+            for country_code in countries:
+                if country_code in language_name:
+                    self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
+                    #print("self.locales[%s]=%s" % (locale_name, self.locales[locale_name].encode('utf-8')))
 
     def fill_treeview(self):
         lang_code = self.settings.get("language_code")
-
         areas = []
-        
         for locale_name in self.locales:
             if lang_code in locale_name:
                 areas.append(self.locales[locale_name])
-                
         liststore = self.treeview.get_model()
-
         liststore.clear()
-
         for area in areas:
             liststore.append([area])
 
-    def select_value_in_treeview(self, treeview, value):
-        pass
-        '''
-        model = treeview.get_model()
-        treeiter = model.get_iter(0)
-
-        index = 0
-
-        found = False
-
-        while treeiter != None:
-            if model[treeiter][0] == value:
-                treeview.set_cursor(index)
-                path = model.get_path(treeiter)
-                GLib.idle_add(self.scroll_to_cell, treeview, path)
-                treeiter = None
-                found = True
-            else:
-                index = index + 1
-                treeiter = model.iter_next(treeiter)
-
-        return found
-        '''
-
-    def scroll_to_cell(self, treeview, path):
-        treeview.scroll_to_cell(path)
-        return False
-
-    def on_keyboardlayout_cursor_changed(self, widget):
-        '''
-        self.fill_variant_treeview()
-        self.forward_button.set_sensitive(True)
-        '''
-        pass
-
     def store_values(self):
-        '''
-        # we've previously stored our layout, now store our variant
-        selected = self.variant_treeview.get_selection()
-
-        keyboard_variant = ""
-
+        selected = self.treeview.get_selection()
         if selected:
             (ls, iter) = selected.get_selected()
             if iter:
-                keyboard_variant = ls.get_value(iter, 0)
-
-        self.settings.set("keyboard_layout", self.keyboard_layout)
-        self.settings.set("keyboard_variant", keyboard_variant)
-        '''
-        
+                country = ls.get_value(iter, 0)
+                lang_code = self.settings.get("language_code")
+                for locale in self.locales:
+                    if self.locales[locale] == country:
+                        self.settings.set("locale", locale)
+                        #print("Setting locale to %s" % locale)
         return True
 
     def get_prev_page(self):
