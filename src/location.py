@@ -92,25 +92,26 @@ class Location(Gtk.Box):
     def prepare(self):
         self.translate_ui()
         self.fill_treeview()
-        self.forward_button.set_sensitive(False)
         self.translate_ui()
 
         self.show_all()
         
     def load_locales(self):
         data_dir = self.settings.get("DATA_DIR")
-        xml_path = os.path.join(data_dir, "")
+        xml_path = os.path.join(data_dir, "locales.xml")
         
         self.locales = {}
         
-        with open(xml_path, "rt") as xml_file:
-            tree = etree.parse(xml_file)
-            root = tree.getroot()
-            for child in root.iter('language'):
-                pass
-                #language_name = child.get('language_name')
-                #locale_name = child.get('locale_name')
-                #self.locales[locale_name] = language_name
+        tree = etree.parse(xml_path)
+        root = tree.getroot()
+        for child in root.iter("language"):
+            for item in child:
+                if item.tag == 'language_name':
+                    language_name = item.text
+                elif item.tag == 'locale_name':
+                    locale_name = item.text
+            #print(language_name, locale_name)
+            self.locales[locale_name] = language_name
 
     def fill_treeview(self):
         lang_code = self.settings.get("language_code")
