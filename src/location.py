@@ -103,24 +103,26 @@ class Location(Gtk.Box):
         return False
 
     def hide_all(self):
-        #TODO: HIDE ALL CONTROLS
-        # location_box, label_help, label_choose_country, box1
-        # eventbox1, eventbox2, scrolledwindow1, treeview_countries
-        pass
+        names = [ "location_box", "label_help", "label_choose_country", \
+                     "box1", "eventbox1", "eventbox2", "scrolledwindow1", \
+                     "treeview_countries" ]
+        for name in names:
+            control = self.ui.get_object(name)
+            if control != None:
+                control.hide()
 
     def prepare(self, direction):
         self.hide_all()
         self.fill_treeview()
-        self.select_first_treeview_item()
         
         if self.treeview_items == 1:
             # If we have only one option, don't bother our beloved user
-            #self.forward_button.clicked()
             if direction == 'forwards':
                 GLib.idle_add(self.forward_button.clicked)
             else:
                 GLib.idle_add(self.backwards_button.clicked)
         else:
+            self.select_first_treeview_item()
             self.translate_ui()       
             self.show_all()
         
