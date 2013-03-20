@@ -117,6 +117,7 @@ class Location(Gtk.Box):
         
         if self.treeview_items == 1:
             # If we have only one option, don't bother our beloved user
+            self.store_values()
             if direction == 'forwards':
                 GLib.idle_add(self.forward_button.clicked)
             else:
@@ -191,13 +192,15 @@ class Location(Gtk.Box):
             if iter:
                 country = ls.get_value(iter, 0)
                 lang_code = self.settings.get("language_code")
-                for locale in self.locales:
-                    if self.locales[locale] == country:
-                        print(locale)
-                        #self.settings.set("locale", locale)
-                        #import locale
-                        #locale.setlocale(locale.LC_ALL, locale)
-                        #log.debug(_("locale changed to : %s") % locale)
+                for mylocale in self.locales:
+                    if self.locales[mylocale] == country:
+                        self.settings.set("locale", mylocale)
+                        try:
+                            import locale
+                            locale.setlocale(locale.LC_ALL, mylocale)
+                            log.debug(_("locale changed to : %s") % mylocale)
+                        except (ImportError, locale.Error):
+                            log.debug(_("Can't change to locale '%s'") % mylocale)
         return True
 
     def get_prev_page(self):
