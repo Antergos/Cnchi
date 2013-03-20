@@ -35,7 +35,7 @@ import config
 import os
 import log
 import show_message as show
-
+import log
 import xml.etree.ElementTree as etree
 
 _next_page = "check"
@@ -193,8 +193,11 @@ class Location(Gtk.Box):
                 lang_code = self.settings.get("language_code")
                 for locale in self.locales:
                     if self.locales[locale] == country:
-                        self.settings.set("locale", locale)
-                        #print("Setting locale to %s" % locale)
+                        print(locale)
+                        #self.settings.set("locale", locale)
+                        #import locale
+                        #locale.setlocale(locale.LC_ALL, locale)
+                        #log.debug(_("locale changed to : %s") % locale)
         return True
 
     def get_prev_page(self):
