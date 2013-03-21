@@ -773,13 +773,13 @@ class InstallationThread(threading.Thread):
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales"))
         
-        self.chroot(['sed', '-i', '-r', '"s/#(.*%s.*)/\1/g"' % locale, "/etc/locale.gen"])
+        self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
         
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "wt") as locale_conf:
             locale_conf.write('LANG=%s \n' % locale)
-            locale_conf.write('LC_COLLATE=C')
+            locale_conf.write('LC_COLLATE=C \n')
             
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
