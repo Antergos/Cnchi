@@ -731,33 +731,13 @@ class InstallationThread(threading.Thread):
         self.change_user_password(username, password)
 
         self.chroot(['chfn', '-f', fullname, username])
-                  
-        home = os.path.join(self.dest_dir, "home", username)
-        skel_dirs = ['/etc/skel/.config', '/etc/skel/.gconf', '/etc/skel/.local', '/etc/skel/.Almin-Soft']
-        skel_files = [ '/etc/skel/.dmrc', '/etc/skel/.gtkrc-2.0']
-
-        for d in skel_dirs:
-            try:
-                misc.copytree(d, home)
-            except FileExistsError:
-                # ignore if already exists
-                pass
-            except FileNotFoundError:
-                # Even though an user config directory is missing,
-                # we don't want to abort this installation at this point
-                pass
-
-        for d in skel_files:
-            try:
-                shutil.copy2(d, home)
-            except FileExistsError:
-                # ignore if already exists
-                pass
-            except FileNotFoundError:
-                # Even though an user config file is missing,
-                # we don't want to abort this installation at this point
-                pass
         
+        try:
+            misc.copytree('/etc/skel', os.path.join(self.dest_dir, "home/%s" % username))
+        except FileExistsError:
+            # ignore if exists
+            pass
+
         self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
         
         hostname_path = os.path.join(self.dest_dir, "etc/hostname")
