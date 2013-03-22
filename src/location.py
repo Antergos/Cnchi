@@ -142,7 +142,6 @@ class Location(Gtk.Box):
                 elif item.tag == 'locale_name':
                     locale_name = item.text
             self.locales[locale_name] = language_name
-            #print("self.locales[%s]=%s" % (locale_name.encode('utf-8'), language_name.encode('utf-8')))
             
         xml_path = os.path.join(data_dir, "iso3366-1.xml")
         
@@ -152,17 +151,14 @@ class Location(Gtk.Box):
         root = tree.getroot()
         for child in root:
             code = child.attrib['value']
-            #print (child.text.encode('utf-8'))
             name = child.text
             countries[code] = name
-            #print("countries[%s] = %s" % (code, name.encode('utf-8')))
             
         for locale_name in self.locales:
             language_name = self.locales[locale_name]
             for country_code in countries:
                 if country_code in language_name:
                     self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
-                    #print("self.locales[%s]=%s" % (locale_name, self.locales[locale_name].encode('utf-8')))
 
     def fill_treeview(self):
         lang_code = self.settings.get("language_code")
@@ -175,6 +171,7 @@ class Location(Gtk.Box):
         
         # FIXME: What do we have to do when can't find any country?
         # Right now we put them all!
+        # Maybe this only happens with esperanto ?
         if len(areas) == 0:
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])

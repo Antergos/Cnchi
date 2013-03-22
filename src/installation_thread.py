@@ -64,7 +64,7 @@ class InstallError(Exception):
         return repr(self.value)
 
 class InstallationThread(threading.Thread):
-    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices=None, ssd=None):
+    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None):
         threading.Thread.__init__(self)
         
         self.callback_queue = callback_queue

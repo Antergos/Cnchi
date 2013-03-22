@@ -178,6 +178,9 @@ class Check(Gtk.Box):
           log.debug(_("We have Internet connection."))
           log.debug(_("We're connected to a power source."))
           log.debug(_("We have enough space in disk."))
+          
+        # Enable forward button
+        self.forward_button.set_sensitive(True)
         
         # Launch rankmirrors script to determine the 5 fastest mirrors
         self.thread = None

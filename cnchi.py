@@ -230,7 +230,7 @@ class Main(Gtk.Window):
         # hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
-        self.progressbar_step = 1.0 / len(self.pages)
+        self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
         # we drop privileges, but where we should do it? before this? ¿?
         misc.drop_privileges()
