@@ -397,6 +397,7 @@ autoprepare() {
         parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE})) $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) >${LOG}
         parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) 100% >${LOG}
     fi
+    partprobe ${DISC}
     if [[ $? -gt 0 ]]; then
         echo "Error partitioning ${DEVICE} (see ${LOG} for details)" 0 0
         printk on

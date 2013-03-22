@@ -183,6 +183,6 @@ class InstallationEasy(Gtk.Box):
                         self.callback_queue, \
                         mount_devices, \
                         grub_device, \
-                        format_devices)
+                        fs_devices)
         
         self.thread.start()

@@ -112,10 +112,10 @@ class InstallationThread(threading.Thread):
         # (and then mount it)
         
         if self.method == 'automatic':
+            self.auto_device = self.mount_devices["/"].replace("3","")
             cnchi_dir = self.settings.get("CNCHI_DIR")
             script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
             try:
-                self.auto_device = self.mount_devices["automatic"]
                 self.queue_event('debug', "Automatic device: %s" % self.auto_device)
                 self.queue_event('debug', "Running automatic script...")
                 subprocess.check_call(["/bin/bash", script_path, self.auto_device])
@@ -127,19 +127,6 @@ class InstallationThread(threading.Thread):
                 self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
                 return False
                     
-        if self.method == 'automatic':
-            # In automatic install we have
-            # /dev/sdX1 boot
-            # /dev/sdX2 swap
-            # /dev/sdX3 root
-            root_partition = self.auto_device + "3"
-            boot_partition = self.auto_device + "1"
-            self.mount_devices["/"] = root_partition 
-            self.mount_devices["/boot"] = boot_partition
-
-            self.fs_devices = {}
-            self.fs_devices[boot_partition] = "ext2"
-            self.fs_devices[root_partition] = "ext4"
         
         if self.method == 'easy' or self.method == 'advanced':
             root_partition = self.mount_devices["/"]

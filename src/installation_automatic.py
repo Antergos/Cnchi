@@ -146,7 +146,14 @@ class InstallationAutomatic(Gtk.Box):
         log.debug(self.auto_device)
         
         mount_devices = {}
-        mount_devices["automatic"] = self.auto_device
+        root_partition = self.auto_device + "3"
+        boot_partition = self.auto_device + "1"
+        mount_devices["/"] = root_partition 
+        mount_devices["/boot"] = boot_partition
+
+        fs_devices = {}
+        fs_devices[boot_partition] = "ext2"
+        fs_devices[root_partition] = "ext4"
 
         # TODO: Ask where to install GRUB
         grub_device = self.auto_device
@@ -155,6 +162,7 @@ class InstallationAutomatic(Gtk.Box):
                         self.settings, \
                         self.callback_queue, \
                         mount_devices, \
-                        grub_device)
+                        grub_device, \
+                        fs_devices)
                         
         self.thread.start()
