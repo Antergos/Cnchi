@@ -174,10 +174,9 @@ class Check(Gtk.Box):
         # remove timer
         self.remove_timer = True
 
-        if log._debug:
-          log.debug(_("We have Internet connection."))
-          log.debug(_("We're connected to a power source."))
-          log.debug(_("We have enough space in disk."))
+        log.debug(_("We have Internet connection."))
+        log.debug(_("We're connected to a power source."))
+        log.debug(_("We have enough space in disk."))
           
         # Enable forward button
         self.forward_button.set_sensitive(True)

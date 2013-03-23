@@ -29,7 +29,7 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 import gettext
 import locale
 import os
@@ -146,10 +146,14 @@ class Language(Gtk.Box):
             if model.get_value(iterator, 0) == language:
                 path = model.get_path(iterator)
                 treeview.get_selection().select_path(path)
-                treeview.scroll_to_cell(
-                    path, use_align=False, row_align=0.0, col_align=0.0)
+                #treeview.scroll_to_cell(path, use_align=False, row_align=0.0, col_align=0.0)
+                GLib.idle_add(self.scroll_to_cell, treeview, path)
                 break
             iterator = model.iter_next(iterator)
+
+    def scroll_to_cell(self, treeview, path):
+        treeview.scroll_to_cell(path)
+        return False
                 
     def on_treeview_language_cursor_changed(self, treeview):
         selected = treeview.get_selection()
@@ -174,8 +178,22 @@ class Language(Gtk.Box):
         
         return True
 
+    def scroll_to_selected_item(self, treeview):
+        selected = treeview.get_selection()
+
+        if selected:
+            (ls, iterator) = selected.get_selected()
+            model = treeview.get_model()
+            path = model.get_path(iterator)
+            treeview.get_selection().select_path(path)
+            GLib.idle_add(self.scroll_to_cell, treeview, path)
+
     def prepare(self, direction):
         self.translate_ui()
+        
+        # scroll language treeview to selected item
+        self.scroll_to_selected_item(self.treeview_language)
+        
         self.show_all()
 
     def get_prev_page(self):

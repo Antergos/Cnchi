@@ -125,7 +125,10 @@ class Location(Gtk.Box):
         else:
             self.select_first_treeview_item()
             self.translate_ui()       
-            self.show_all()
+        
+        # If I don't do this, check page is not shown well when skipping this page (location)
+        # If I do this, we can see location page for a second (it's ugly)
+        self.show_all()
         
     def load_locales(self):
         data_dir = self.settings.get("DATA_DIR")  
@@ -171,7 +174,7 @@ class Location(Gtk.Box):
         
         # FIXME: What do we have to do when can't find any country?
         # Right now we put them all!
-        # Maybe this only happens with esperanto ?
+        # I've observed this with Esperanto and Asturianu at least.
         if len(areas) == 0:
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
