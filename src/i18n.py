@@ -20,7 +20,6 @@
 import gettext
 import misc
 
-_language_list = "data/languagelist.data.gz"
 
 def utf8(s, errors="strict"):
     """Decode a string as UTF-8 if it isn't already Unicode."""
@@ -30,7 +29,7 @@ def utf8(s, errors="strict"):
         return str(s, "utf-8", errors)
 
 # Returns a tuple of (current language, sorted choices, display map).
-def get_languages(current_language_index=-1, only_installable=False):
+def get_languages(language_list="data/languagelist.data.gz", current_language_index=-1, only_installable=False):
     import gzip
     #import icu
 
@@ -44,7 +43,7 @@ def get_languages(current_language_index=-1, only_installable=False):
         with misc.raised_privileges():
             cache = Cache()
 
-    languagelist = gzip.open(_language_list)
+    languagelist = gzip.open(language_list)
     language_display_map = {}
     i = 0
     for line in languagelist:

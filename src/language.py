@@ -68,6 +68,7 @@ class Language(Gtk.Box):
         self.translate_ui()
 
         self.current_locale = locale.getdefaultlocale()[0]
+        self.language_list = self.settings.get("DATA_DIR") + "languagelist.data.gz"
         self.set_languages_list()
 
         super().add(self.ui.get_object("language"))
@@ -119,7 +120,7 @@ class Language(Gtk.Box):
         self.treeview_language.set_model(liststore_language)
         self.treeview_language.append_column(col_languages)
 
-        current_language, sorted_choices, display_map = i18n.get_languages()
+        current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             liststore_language.append([lang])
@@ -155,7 +156,7 @@ class Language(Gtk.Box):
         if selected:
             (ls, iter) = selected.get_selected()
             if iter:
-                current_language, sorted_choices, display_map = i18n.get_languages()
+                current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
                 language = ls.get_value(iter, 0)
                 language_code = display_map[language][1]
                 self.set_language(language_code)
@@ -166,7 +167,7 @@ class Language(Gtk.Box):
         (ls, iter) = selected.get_selected()
         language = ls.get_value(iter,0)
 
-        current_language, sorted_choices, display_map = i18n.get_languages()
+        current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
 
         self.settings.set("language_name", display_map[language][0])
         self.settings.set("language_code", display_map[language][1])
