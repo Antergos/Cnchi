@@ -42,6 +42,8 @@ import show_message as show
 import config
 import log
 import tz
+import dbus
+import subprocess
 
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
@@ -90,9 +92,16 @@ class Timezone(Gtk.Box):
         self.map_window.add(self.tzmap)
         self.tzmap.show()
 
+        # autotimezone thread will store detected coords in this queue
+        self.auto_timezone_coords = multiprocessing.Queue()
+
         # thread to try to determine timezone.
-        self.thread = None
+        self.auto_timezone_thread = None
         self.start_auto_timezone_thread()
+        
+        # thread to generate a pacman mirrorlist based on country code
+        self.mirrorlist_thread = None
+        self.start_mirrorlist_thread()
 
         super().add(self.ui.get_object('location'))
 
@@ -203,8 +212,9 @@ class Timezone(Gtk.Box):
         tr = 0
         if self.autodetected_coords is None:
             try:
-                self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=5)
-                self.auto_timezone_coords.close()
+                self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
+                # Put the coords again in the queue (in case GenerateMirrorList still needs them)
+                self.autodetected_coords.put_nowait(self.autodetected_coords)
             except queue.Empty:
                 log.debug(_("Can't autodetect timezone coordinates"))
 
@@ -220,10 +230,13 @@ class Timezone(Gtk.Box):
         self.show_all()
 
     def start_auto_timezone_thread(self):
-        self.auto_timezone_coords = multiprocessing.Queue()
-        self.update_thread_event = threading.Event()
-        self.thread = AutoTimezoneThread(self.auto_timezone_coords)
-        self.thread.start()
+        self.auto_timezone_thread = AutoTimezoneThread(self.auto_timezone_coords)
+        self.auto_timezone_thread.start()
+
+    def start_mirrorlist_thread(self):
+        scripts_dir = os.path.join(self.settings.get("CNCHI_DIR"), "scripts")
+        self.mirrorlist_thread = GenerateMirrorListThread(self.auto_timezone_coords, scripts_dir)
+        self.mirrorlist_thread.start()
 
     def store_values(self):
         loc = self.tzdb.get_loc(self.timezone)
@@ -261,8 +274,9 @@ class Timezone(Gtk.Box):
         return _next_page
         
     def stop_thread(self):
-        log.debug(_("Stoping timezone thread..."))
-        self.thread.stop()
+        log.debug(_("Stoping timezone threads..."))
+        self.auto_timezone_thread.stop()
+        self.mirrorlist_thread.stop()
 
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):
@@ -274,7 +288,6 @@ class AutoTimezoneThread(threading.Thread):
         self.stop_event.set()
 
     def get_prop(self, obj, iface, prop):
-        import dbus
         try:
             return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
         except dbus.DBusException as e:
@@ -284,7 +297,6 @@ class AutoTimezoneThread(threading.Thread):
                 raise
         
     def has_connection(self):
-        import dbus
         try:
             bus = dbus.SystemBus()
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
@@ -297,9 +309,8 @@ class AutoTimezoneThread(threading.Thread):
     def run(self):
         # wait until there is an Internet connection available
         while not self.has_connection():
-            time.sleep(1)  # Delay 1 second
+            time.sleep(2)  # Delay and try again
             if self.stop_event.is_set():
-                #self.coords_queue.clear()
                 return
 
         # ok, now get our timezone
@@ -315,91 +326,57 @@ class AutoTimezoneThread(threading.Thread):
             coords = coords.split()
             self.coords_queue.put(coords)
 
-        #### Time and Date window
-#               self.liststore_timezone = Gtk.ListStore(str)
-#               self.time_date_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
-#               self.activateInternetsw_box = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
-#               self.time_date_box.set_margin_right(48)
-#               self.time_date_box.set_margin_left(40)
-#               render = Gtk.CellRendererText()
-#               self.col_timezones = Gtk.TreeViewColumn(_("Timezones"),render,text=0)
-#               self.treeview_timezone = Gtk.TreeView(self.liststore_timezone)
+# Creates a mirror list for pacman based on country code
+class GenerateMirrorListThread(threading.Thread):
+    def __init__(self, coords_queue, scripts_dir):
+        super(GenerateMirrorListThread, self).__init__()
+        self.coords_queue = coords_queue
+        self.scripts_dir = scripts_dir
+        self.stop_event = threading.Event()
 
+    def stop(self):
+        self.stop_event.set()
 
-#               self.useInternetsync_label = Gtk.Label()
-#               self.activateInternetsync_label = Gtk.Label()
-#               self.activateInternetsync_sw = Gtk.Switch()
-#               self.activateInternetsync_sw.connect("notify::active", self.activate_ntp)
-#               self.infoInternetsync_label = Gtk.Label()
+    def get_prop(self, obj, iface, prop):
+        try:
+            return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
+        except dbus.DBusException as e:
+            if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
+                return None
+            else:
+                raise
+        
+    def has_connection(self):
+        try:
+            bus = dbus.SystemBus()
+            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+            state = self.get_prop(manager, NM, 'state')
+        except dbus.exceptions.DBusException:
+            log.debug(_("In timezone, can't get network status"))
+            return False
+        return state == NM_STATE_CONNECTED_GLOBAL
 
-#class time_and_date():
-#
-#       def __init__():
-#
-#               tree = etree.parse(installation_config.CNCHI_DIR + "timezones.xml")
-#               root = tree.getroot()
-#
-#               self.header_label.set_text(_("Configure your Time and Date"))
-#               self.main_info_box.pack_end(self.time_date_box, False, True, 0)
-#
-#               self.treeview_timezone.set_model(self.liststore_timezone)
-#               self.treeview_timezone.append_column(self.col_timezones)
-#
-#               for child in root:
-#                       self.liststore_timezone.append([child.find('timezone_name').text])
-#
-#               self.scrolleft.add(self.treeview_timezone)
-#               self.main_info_box.pack_start(self.scrolleft,True,True,0)
-#
-#
-#
-#               self.useInternetsync_label.set_markup(_("<big><b>Use Internet time synchronization (NTP)</b></big>"))
-#               self.useInternetsync_label.set_margin_top(20)
-#
-#               self.activateInternetsync_label.set_markup(_("<big><b>Activate:</b></big>"))
-#               self.activateInternetsync_sw.set_margin_right(80)
-#               self.activateInternetsync_label.set_margin_top(15)
-#               self.activateInternetsync_sw.set_margin_top(15)
-#               self.infoInternetsync_label.set_markup(_("With Internet time synchronization, you are \nensuring the accuracy of your clock system"))
-#               self.infoInternetsync_label.set_margin_top(175)
+    def run(self):
+        # wait until there is an Internet connection available
+        while not self.has_connection():
+            time.sleep(2)  # Delay and try again
+            if self.stop_event.is_set():
+                return
 
+        timezone = ""
+        
+        try:
+            coords = self.coords_queue.get(True)
+            self.coords_queue.put_nowait(coords)
+            tzmap = TimezoneMap.TimezoneMap()
+            timezone = tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+        except queue.Empty:
+            log.debug(_("Can't get the country code used to create a pacman mirrorlist"))
 
-#               self.time_date_box.pack_start(self.useInternetsync_label,False,True,0)
-
-#               self.activateInternetsw_box.pack_start(self.activateInternetsync_label,True,True,0)
-#               self.activateInternetsw_box.pack_start(self.activateInternetsync_sw,False,True,0)
-#               self.time_date_box.pack_start(self.activateInternetsw_box, False, True, 0)
-
-#               self.time_date_box.pack_start(self.infoInternetsync_label,False,True,0)
-
-
-#               self.treeview_timezone.show()
-#               self.time_date_box.show_all()
-
-
-#       def activate_ntp(self, button, active):
-#               global activate_ntp
-#
-#               if button.get_active():
-#                       installation_config.activate_ntp = 1
-#               else:
-#                       installation_config.activate_ntp = 0
-
-#       def get_timezone_value(self):
-#               global timezone_selected
-#               selected = self.treeview_timezone.get_selection()
-
-#               (ls, iter) = selected.get_selected()
-
-#               installation_config.timezone_selected = ls.get_value(iter,0)
-
-
-    # This function has to be changed to set the locale to the /install directory where the partitions
-    # are mounted to install the system
-#       def set_timezone(self):
-#               global timezone_selected
-
-#               if os.path.isfile('/etc/localtime'):
-#                       os.unlink("/etc/localtime")
-
-#               os.symlink('/usr/share/zoneinfo/' + installation_config.timezone_selected, '/etc/localtime')
+        try:
+            script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
+            subprocess.check_call(['/bin/bash', script])
+        except subprocess.CalledProcessError as e:
+            print(_("Couldn't generate mirrorlist for pacman based on country code"))
+        
+        log.debug(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)

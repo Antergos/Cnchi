@@ -1,12 +1,16 @@
 #!/bin/bash
 
+# Downloads the mirrorlist by country, with Server ordered by score.
+# Requires to give it as parameter the country code (e.g. USA -> US),
+# which is not available until Timezone screen.
+
 COUNTRY_MIRRORLIST='/tmp/country-mirrorlist'
 TMP_MIRRORLIST='/tmp/tmp-mirrorlist'
 ORIG_MIRRORLIST='/etc/pacman.d/mirrorlist'
 MIRRORLIST='/tmp/mirrorlist'
 
 function get_mirrorlist(){
-    wget -O ${COUNTRY_MIRRORLIST} https://www.archlinux.org/mirrorlist/?country=${COUNTRY_CODE}&protocol=http&ip_version=4&use_mirror_status=on 2>/dev/null
+    wget -q -O ${COUNTRY_MIRRORLIST} https://www.archlinux.org/mirrorlist/?country=${COUNTRY_CODE}&protocol=http&ip_version=4&use_mirror_status=on 2>/dev/null
 }
 
 function generate_new_mirrorlist(){
