@@ -182,9 +182,9 @@ class Check(Gtk.Box):
         self.forward_button.set_sensitive(True)
         
         ## Launch rankmirrors script to determine the 5 fastest mirrors
-        #self.thread = None
-        #self.thread = AutoRankmirrorsThread()
-        #self.thread.start()
+        self.thread = None
+        self.thread = AutoRankmirrorsThread()
+        self.thread.start()
         return True
 
     def get_prev_page(self):

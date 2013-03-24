@@ -39,7 +39,6 @@ class AutoRankmirrorsThread(threading.Thread):
     def __init__(self):
         super(AutoRankmirrorsThread, self).__init__()
 
-
     def get_prop(self, obj, iface, prop):
         import dbus
         try:
@@ -64,7 +63,7 @@ class AutoRankmirrorsThread(threading.Thread):
     def run(self):
         # wait until there is an Internet connection available
         while not self.has_connection():
-            time.sleep(1)  # Delay 1 second
+            time.sleep(2)  # Delay 
             if self.stop_event.is_set():
                 #self.coords_queue.clear()
                 return
