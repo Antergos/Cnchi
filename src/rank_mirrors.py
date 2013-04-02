@@ -31,14 +31,12 @@
 import threading
 import multiprocessing
 import subprocess
-import config
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
         
 class AutoRankmirrorsThread(threading.Thread):
     def __init__(self):
-        self.settings = settings
         super(AutoRankmirrorsThread, self).__init__()
 
     def get_prop(self, obj, iface, prop):
