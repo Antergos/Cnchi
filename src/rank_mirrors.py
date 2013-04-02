@@ -31,12 +31,14 @@
 import threading
 import multiprocessing
 import subprocess
+import config
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
         
 class AutoRankmirrorsThread(threading.Thread):
     def __init__(self):
+        self.settings = settings
         super(AutoRankmirrorsThread, self).__init__()
 
     def get_prop(self, obj, iface, prop):
@@ -69,7 +71,6 @@ class AutoRankmirrorsThread(threading.Thread):
                 return
 
         # Run rankmirrors command
-
         try:
             subprocess.check_call(['/bin/bash', '/arch/rankmirrors-script'])
         except subprocess.CalledProcessError as e:

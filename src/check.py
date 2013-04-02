@@ -35,7 +35,7 @@ import os
 import gtkwidgets
 import log
 
-#from rank_mirrors import AutoRankmirrorsThread
+from rank_mirrors import AutoRankmirrorsThread
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70

@@ -333,6 +333,7 @@ class GenerateMirrorListThread(threading.Thread):
         self.coords_queue = coords_queue
         self.scripts_dir = scripts_dir
         self.stop_event = threading.Event()
+        self.tzdb = tz.Database()
 
     def stop(self):
         self.stop_event.set()
@@ -370,11 +371,16 @@ class GenerateMirrorListThread(threading.Thread):
             self.coords_queue.put_nowait(coords)
             tzmap = TimezoneMap.TimezoneMap()
             timezone = tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+            loc = self.tzdb.get_loc(self.timezone)
+            country_code = ''
+
+            if loc:
+                country_code = loc.country
         except queue.Empty:
             log.debug(_("Can't get the country code used to create a pacman mirrorlist"))
 
         try:
-            script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
+            script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh", country_code)
             subprocess.check_call(['/bin/bash', script])
         except subprocess.CalledProcessError as e:
             print(_("Couldn't generate mirrorlist for pacman based on country code"))
