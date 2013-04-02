@@ -44,6 +44,7 @@ import log
 import tz
 import dbus
 import subprocess
+from urllib.request import urlopen
 
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
@@ -380,7 +381,15 @@ class GenerateMirrorListThread(threading.Thread):
             log.debug(_("Can't get the country code used to create a pacman mirrorlist"))
 
         try:
-            script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh", country_code)
+            url = 'https://www.archlinux.org/mirrorlist/?country=%s&protocol=http&ip_version=4&use_mirror_status=on' % country_code
+            #country_mirrorlist = urlopen(url)
+            with open('/tmp/country_mirrorlist','wb') as f:
+                f.write(urlopen(url).read())
+        except URLError as e:
+            self.queue_event('error', "Can't retrieve country mirrorlist.")
+
+        try:
+            script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
             subprocess.check_call(['/bin/bash', script])
         except subprocess.CalledProcessError as e:
             print(_("Couldn't generate mirrorlist for pacman based on country code"))

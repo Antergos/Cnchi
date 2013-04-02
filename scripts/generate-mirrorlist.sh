@@ -4,14 +4,11 @@
 # Requires to give it as parameter the country code (e.g. USA -> US),
 # which is not available until Timezone screen.
 
-COUNTRY_MIRRORLIST='/tmp/country-mirrorlist'
-TMP_MIRRORLIST='/tmp/tmp-mirrorlist'
+COUNTRY_MIRRORLIST='/tmp/country_mirrorlist'
+TMP_MIRRORLIST='/tmp/tmp_mirrorlist'
 ORIG_MIRRORLIST='/etc/pacman.d/mirrorlist'
 MIRRORLIST='/tmp/mirrorlist'
 
-function get_mirrorlist(){
-    wget -q -O ${COUNTRY_MIRRORLIST} https://www.archlinux.org/mirrorlist/?country=${COUNTRY_CODE}&protocol=http&ip_version=4&use_mirror_status=on 2>/dev/null
-}
 
 function generate_new_mirrorlist(){
     TOTAL_LINES=`wc -l ${COUNTRY_MIRRORLIST}|cut -f 1 -d ' '`
@@ -29,10 +26,6 @@ function generate_new_mirrorlist(){
     cat ${TMP_MIRRORLIST} ${ORIG_MIRRORLIST} > ${MIRRORLIST}
 }
     
-
-COUNTRY_CODE=$1
-
-get_mirrorlist
 generate_new_mirrorlist
 
 cp ${MIRRORLIST} ${ORIG_MIRRORLIST}
