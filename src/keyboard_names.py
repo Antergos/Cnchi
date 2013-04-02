@@ -25,10 +25,10 @@ import gzip
 import io
 
 #_default_filename = "/usr/lib/ubiquity/console-setup/kbdnames.gz"
-_default_filename = "data/kbdnames.gz"
+#_default_filename = "data/kbdnames.gz"
 
 class KeyboardNames:
-    def __init__(self, filename=_default_filename):
+    def __init__(self, filename):
         self._current_lang = None
         self._filename = filename
         self._clear()
@@ -116,7 +116,7 @@ def _get_keyboard_names():
     """Return a singleton KeyboardNames instance."""
     global _keyboard_names
     if _keyboard_names is None:
-        _keyboard_names = KeyboardNames()
+        _keyboard_names = KeyboardNames(filename = '/usr/share/cnchi/data/kbdnames.gz')
     return _keyboard_names
 
 

@@ -45,6 +45,7 @@ import tz
 import dbus
 import subprocess
 from urllib.request import urlopen
+import misc
 
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
@@ -215,7 +216,7 @@ class Timezone(Gtk.Box):
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
                 # Put the coords again in the queue (in case GenerateMirrorList still needs them)
-                self.autodetected_coords.put_nowait(self.autodetected_coords)
+                #self.autodetected_coords.put_nowait(self.autodetected_coords)
             except queue.Empty:
                 log.debug(_("Can't autodetect timezone coordinates"))
 
@@ -358,6 +359,7 @@ class GenerateMirrorListThread(threading.Thread):
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
+    @misc.raise_privileges
     def run(self):
         # wait until there is an Internet connection available
         while not self.has_connection():

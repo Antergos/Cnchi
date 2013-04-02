@@ -62,6 +62,8 @@ class Keymap(Gtk.Box):
 
         self.create_toolviews()
 
+        self.filename = self.settings.get("DATA_DIR") + "kbdnames.gz"
+
         super().add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
@@ -125,7 +127,7 @@ class Keymap(Gtk.Box):
         if not keyboard_names.has_language(lang):
             lang = "C"
 
-        kbd_names = keyboard_names.KeyboardNames()
+        kbd_names = keyboard_names.KeyboardNames(self.filename)
         kbd_names._load(lang)
 
         sorted_layouts = []
@@ -187,7 +189,7 @@ class Keymap(Gtk.Box):
                 if not keyboard_names.has_language(lang):
                     lang = "C"
 
-                kbd_names = keyboard_names.KeyboardNames()
+                kbd_names = keyboard_names.KeyboardNames(self.filename)
                 kbd_names._load(lang)
 
                 country_code = kbd_names._layout_by_human[keyboard_layout]
