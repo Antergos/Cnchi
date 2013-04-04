@@ -131,18 +131,18 @@ class Slides(Gtk.Box):
             elif event[0] == "finished":
                 log.debug(event[1])
                 self.set_message(self.install_ok)
-                response = show.message(self.install_ok)
+                response = show.question(self.install_ok)
                 if response == Gtk.ResponseType.YES:
-                    # TODO: This needs testing
-                    #subp = subprocess.Popen(['reboot'], stdout=subprocess.PIPE)
-                    with misc.raised_privileges():
-                        subp = subprocess.Popen(['shutdown', '-r', 'now'])
+                    self.reboot()
                 else:
                     tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
                     for t in tmp_files:
                         p = os.path.join("/tmp", t)
                         if os.path.exists(p):
-                            os.remove(p)
+                            # TODO: some of these tmp files are created with sudo privileges
+                            # (this should be fixed) meanwhile, we need sudo privileges to remove them
+                            with misc.raised_privileges():
+                                os.remove(p)
                     Gtk.main_quit()
                         
                 self.exit_button.show()
@@ -157,3 +157,9 @@ class Slides(Gtk.Box):
                     self.callback_queue.queue.clear()
 
         return True
+
+    @misc.raise_privileges
+    def reboot(self):
+        os.system("sync")
+        subprocess.call(["/sbin/reboot", "--reboot", "--force", "--no-wall"])
+

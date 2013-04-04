@@ -240,9 +240,12 @@ class Main(Gtk.Window):
 
         GLib.timeout_add(100, self.pages["slides"].manage_events_from_cb_queue)
 
+    # TODO: some of these tmp files are created with sudo privileges
+    # (this should be fixed) meanwhile, we need sudo privileges to remove them
+    @misc.raise_privileges
     def remove_temp_files(self):
-         tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
-         for t in tmp_files:
+        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+        for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
                 os.remove(p)

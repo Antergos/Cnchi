@@ -72,11 +72,10 @@ def message(message):
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.INFO,\
-        Gtk.ButtonsType.YES_NO,\
+        Gtk.ButtonsType.CLOSE,\
         _("Cinnarch Installer - Information"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
-    msg_dialog.destroy()
 
 def question(message):
     log.debug(message)
