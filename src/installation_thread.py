@@ -634,6 +634,21 @@ class InstallationThread(threading.Thread):
         self.chroot_mount()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
         self.chroot_umount()
+
+    # Uncomment selected locale in /etc/locale.gen
+    def uncomment_locale_gen(self, locale):
+        #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
+            
+        text = []
+        with open("/etc/locale.gen", "rt") as gen:
+            text = gen.readlines()
+        
+        with open("/etc/locale.gen", "wt") as gen:
+            for line in text:
+                if locale in line and line[0] == "#":
+                    # uncomment line
+                    line = line[1:]
+                gen.write(line)
         
     def configure_system(self):
         # final install steps
@@ -740,7 +755,7 @@ class InstallationThread(threading.Thread):
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales"))
         
-        self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
+        self.uncomment_locale_gen(locale)
         
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
