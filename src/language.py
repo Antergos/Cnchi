@@ -83,19 +83,8 @@ class Language(Gtk.Box):
         self.label_choose_language.set_markup(txt)
 
         label = self.ui.get_object("welcome_label")
-        txt = _("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" \
-        "Integer elementum, leo vitae porta elementum, eros diam\n" \
-        "pretium magna, in tincidunt magna velit at tellus. Praesent\n" \
-        "a tortor nec risus blandit sodales. Mauris tristique semper\n" \
-        "nunc, eget euismod sem vehicula ut. Nam pharetra justo et\n" \
-        "lorem feugiat quis vestibulum arcu malesuada. Vivamus\n" \
-        "tristique augue in nisi iaculis nec sollicitudin eros pharetra.\n" \
-        "Duis id arcu magna, nec convallis mi. In tempor volutpat dictum.\n" \
-        "Vestibulum eros lacus, pharetra vel ultricies quis, sagittis sed orci.\n" \
-        "\n" \
-        "The installation process may resize or erase partitions on your hard disk.\n" \
-        "Be sure to take a full backup of any valuable data before running\n" \
-        "this program.")
+        txt = _("This is an Aplha version.\n" \
+        "If you find any bug, please, visit http://bugs.cinnarch.com")
         label.set_markup(txt)
 
         txt = _("Welcome to Cinnarch!")
