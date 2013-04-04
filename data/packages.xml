@@ -37,7 +37,7 @@
 		<pkgname>gnome-bluetooth</pkgname>
 		<pkgname>nemo</pkgname>
 		<pkgname>nemo-fileroller</pkgname>
-		<pkgname>gcalctools</pkgname>
+		<pkgname>gcalctool</pkgname>
 		<pkgname>xdg-user-dirs-gtk</pkgname>
 		<pkgname>gedit</pkgname>
 		<pkgname>alsa-utils</pkgname>
@@ -50,7 +50,7 @@
 		<pkgname>whois</pkgname>
 		<pkgname>dnsutils</pkgname>
 		<pkgname>cinnamon-screensaver</pkgname>
-		<pkgname>brasero</pkgname>
+		<pkgname>xfburn</pkgname>
 		<pkgname>gnome-system-monitor</pkgname>
 		<pkgname>pidgin</pkgname>
 		<pkgname>transmission-cli</pkgname>
@@ -77,30 +77,27 @@
 		<pkgname>gconf</pkgname>
 		<pkgname>gobject-introspection</pkgname>
 		<pkgname>libcanberra</pkgname>
-		<pkgname>libxxf86vm</pkgname>
 		<pkgname>startup-notification</pkgname>
 		<pkgname>zenity</pkgname>
 		<pkgname>muffin</pkgname>
 		<pkgname>cinnamon</pkgname>
 		<pkgname>gnome-panel</pkgname>
-		<pkgname>accountsservice</pkgname>
 		<pkgname>gtk3</pkgname>
-		<pkgname>gnome-common</pkgname>
 		<pkgname>librsvg</pkgname>
 		<pkgname>dbus-glib</pkgname>
 		<pkgname>webkitgtk2</pkgname>
-		<pkgname>libxklavier</pkgname>
-		<pkgname>libxslt</pkgname>
 		<pkgname>python2-distutils-extra</pkgname>
 		<pkgname>libindicator3</pkgname>
 		<pkgname>desktop-file-utils</pkgname>
 		<pkgname>webkitgtk3</pkgname>
 		<pkgname>python2-gobject</pkgname>
-		<pkgname>lightdm</pkgname>
+		<pkgname>mdm</pkgname>
+		<pkgname>mdm-themes</pkgname>
 		<pkgname>net-tools</pkgname>
 		<pkgname>gnome-keyring</pkgname>
 		<pkgname>xf86-input-synaptics</pkgname>
 		<pkgname>libgnomeui</pkgname>
+		<pkgname>gtk-theme-evolve</pkgname>
 	</base_system>
 	<graphics>
 		<nvidia>

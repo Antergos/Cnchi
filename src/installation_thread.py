@@ -640,10 +640,10 @@ class InstallationThread(threading.Thread):
         #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
             
         text = []
-        with open("/etc/locale.gen", "rt") as gen:
+        with open("%s/etc/locale.gen" % self.dest_dir, "rt") as gen:
             text = gen.readlines()
         
-        with open("/etc/locale.gen", "wt") as gen:
+        with open("%s/etc/locale.gen" % self.dest_dir, "wt") as gen:
             for line in text:
                 if locale in line and line[0] == "#":
                     # uncomment line
