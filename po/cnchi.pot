@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-04-04 21:01+CEST\n"
+"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -383,30 +383,26 @@ msgstr ""
 
 #: src/language.py:86
 msgid ""
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"
-"Integer elementum, leo vitae porta elementum, eros diam\n"
-"pretium magna, in tincidunt magna velit at tellus. Praesent\n"
-"a tortor nec risus blandit sodales. Mauris tristique semper\n"
-"nunc, eget euismod sem vehicula ut. Nam pharetra justo et\n"
-"lorem feugiat quis vestibulum arcu malesuada. Vivamus\n"
-"tristique augue in nisi iaculis nec sollicitudin eros pharetra.\n"
-"Duis id arcu magna, nec convallis mi. In tempor volutpat dictum.\n"
-"Vestibulum eros lacus, pharetra vel ultricies quis, sagittis sed orci.\n"
+"<span weight='bold'>This is an Alpha version.</span>\n"
 "\n"
-"The installation process may resize or erase partitions on your hard disk.\n"
-"Be sure to take a full backup of any valuable data before running\n"
-"this program."
+"The Software is provided \"as is\" without warranty of any\n"
+"kind, either express or implied, including without limitation\n"
+"any implied warranties of condition, uninterrupted use,\n"
+"merchantability, fitness for a particular purpose, or\n"
+"non-infringement.\n"
+"\n"
+"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
 msgstr ""
 
-#: src/language.py:101 src/welcome.py:100
+#: src/language.py:95 src/welcome.py:100
 msgid "Welcome to Cinnarch!"
 msgstr ""
 
-#: src/language.py:119
+#: src/language.py:113
 msgid "Languages"
 msgstr ""
 
-#: src/language.py:139
+#: src/language.py:133
 msgid "Can't find translation file for the %s language"
 msgstr ""
 

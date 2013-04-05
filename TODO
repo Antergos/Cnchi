@@ -1,11 +1,8 @@
-CNCHI TODO LIST (11 Mar 2013)
+CNCHI TODO LIST (05 Apr 2013)
 
 * General:
  - Check all file paths (os.path.join)
-
-* Language screen:
- - We need to have the full locale like "es_ES" in order to set the
-/etc/locale.conf file. In the language screen we just get "es"
+ - Check if we can remove subprocess calls to pythonian code
 
 * Installer_advanced screen:
  - If you play with the partitioner (create partition, delete it, create it
@@ -23,4 +20,5 @@ CNCHI TODO LIST (11 Mar 2013)
 
 * installer-thread.py file:
  - create_fstab needs testing.
- - Copy the skel directory directly instead of every folder in it
+ - We forgot to use the user keyboard input choice in the target system. We're setting
+ the keymap choosed from boot
