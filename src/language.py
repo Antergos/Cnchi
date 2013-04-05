@@ -83,8 +83,13 @@ class Language(Gtk.Box):
         self.label_choose_language.set_markup(txt)
 
         label = self.ui.get_object("welcome_label")
-        txt = _("This is an Aplha version.\n" \
-        "If you find any bug, please, visit http://bugs.cinnarch.com")
+        txt = _("<span weight='bold'>This is an Alpha version.</span>\n\n" \
+        "The Software is provided \"as is\" without warranty of any\n" \
+        "kind, either express or implied, including without limitation\n" \
+        "any implied warranties of condition, uninterrupted use,\n" \
+        "merchantability, fitness for a particular purpose, or\n" \
+        "non-infringement.\n\n" \
+        "If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>")
         label.set_markup(txt)
 
         txt = _("Welcome to Cinnarch!")
