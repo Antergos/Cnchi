@@ -59,17 +59,13 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        self.do_syncfirst = True
         
         if conf is not None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
             self.holdpkg = None
-            self.syncfirst = None
             if 'HoldPkg' in self.pacman_conf.options:
                 self.holdpkg = self.pacman_conf.options['HoldPkg']
-            if 'SyncFirst' in self.pacman_conf.options:
-                self.syncfirst = self.pacman_conf.options['SyncFirst']
 
     def init_transaction(self, **options):
         # Transaction initialization

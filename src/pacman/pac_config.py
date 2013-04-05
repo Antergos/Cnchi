@@ -56,7 +56,6 @@ class InvalidSyntax(Warning):
 LIST_OPTIONS = (
     'CacheDir',
     'HoldPkg',
-    'SyncFirst',
     'IgnoreGroup',
     'IgnorePkg',
     'NoExtract',
@@ -80,6 +79,7 @@ BOOLEAN_OPTIONS = (
     'ShowSize',
     'UseDelta',
     'TotalDownload',
+    'Color',
     'CheckSpace',
     'VerbosePkgLists',
     'ILoveCandy'
