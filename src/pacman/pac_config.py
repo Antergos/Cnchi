@@ -71,7 +71,8 @@ SINGLE_OPTIONS = (
     'Architecture',
     'XferCommand',
     'CleanMethod',
-    'SigLevel'
+    'SigLevel',
+    'LocalFileSigLevel'
 )
 
 BOOLEAN_OPTIONS = (
@@ -79,10 +80,10 @@ BOOLEAN_OPTIONS = (
     'ShowSize',
     'UseDelta',
     'TotalDownload',
-    'Color',
     'CheckSpace',
     'VerbosePkgLists',
-    'ILoveCandy'
+    'ILoveCandy',
+    'Color'
 )
 
 def pacman_conf_enumerator(path):
