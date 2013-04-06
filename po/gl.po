@@ -1,0 +1,615 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# 
+# Translators:
+# Alexandre Filgueira <alexfilgueira@cinnarch.com>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: Cinnarch\n"
+"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
+"PO-Revision-Date: 2013-04-06 14:07+0000\n"
+"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
+"Language-Team: Galician (http://www.transifex.com/projects/p/cinnarch/language/gl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cnchi.py:92
+msgid ""
+"This installer must be run with administrative privileges, and cannot "
+"continue without them."
+msgstr "Este instalador debe executarse con privilexios de administrador, e non pode continuar sen eles."
+
+#: cnchi.py:98
+msgid ""
+"You cannot run two instances of this installer.\n"
+"\n"
+"If you are sure that the installer is not already running\n"
+"you can manually delete the file %s\n"
+"and run this installer again."
+msgstr "Non podes executar dúas instancias do instalador.\n\nSe estás seguro de que o instalador non se está executando\npodese eliminar manualmente o ficheiro %s\ne executar o instalador de novo."
+
+#: cnchi.py:186
+msgid "Cinnarch Installer"
+msgstr "Instalador de Cinnarch"
+
+#: src/check.py:70
+msgid "Check your computer"
+msgstr "Comproba a túa computadora"
+
+#: src/check.py:75
+msgid "has at least 3GB available drive space"
+msgstr "ten polo menos 3GB de disco duro dispoñibles"
+
+#: src/check.py:79
+msgid "is plugged in to a power source"
+msgstr "está conectado á corrente eléctrica"
+
+#: src/check.py:83
+msgid "is connected to the Internet"
+msgstr "está conectado ao Internet"
+
+#: src/check.py:87
+msgid "For best results, please ensure that this computer:"
+msgstr "Para os mellores resultados, por favor asegúrse de que esta computadora:"
+
+#: src/check.py:108
+msgid "Can't get network status"
+msgstr "Non se pode ler o estado da red"
+
+#: src/check.py:177
+msgid "We have Internet connection."
+msgstr "Temos conexión a Internet"
+
+#: src/check.py:178
+msgid "We're connected to a power source."
+msgstr "Estamos conectados á corrente eléctrica."
+
+#: src/check.py:179
+msgid "We have enough space in disk."
+msgstr "Temos suficiente espazo en disco."
+
+#: src/installation_advanced.py:192 src/installation_advanced.py:424
+#: src/installation_advanced.py:436
+msgid "free space"
+msgstr "espazo libre"
+
+#: src/installation_advanced.py:256 src/installation_easy.py:90
+msgid "Device"
+msgstr "Dispositivo"
+
+#: src/installation_advanced.py:259
+msgid "Type"
+msgstr "Tipo"
+
+#: src/installation_advanced.py:262 src/installation_easy.py:86
+msgid "Mount point"
+msgstr "Punto de montaxe"
+
+#: src/installation_advanced.py:265
+msgid "Label"
+msgstr "Etiqueta"
+
+#: src/installation_advanced.py:271 src/installation_advanced.py:1221
+msgid "Format"
+msgstr "Formato"
+
+#: src/installation_advanced.py:274
+msgid "Size"
+msgstr "Tamaño"
+
+#: src/installation_advanced.py:277
+msgid "Used"
+msgstr "Empregado"
+
+#: src/installation_advanced.py:280
+msgid "Flags"
+msgstr "Bandeiras"
+
+#: src/installation_advanced.py:286
+msgid "Solid State Drive (SSD)"
+msgstr "Solid State Drive (SSD)"
+
+#: src/installation_advanced.py:407
+msgid "none"
+msgstr "ningún"
+
+#: src/installation_advanced.py:457
+msgid "extended"
+msgstr "extendida"
+
+#: src/installation_advanced.py:579 src/installation_advanced.py:816
+msgid "Cannot use same mount twice..."
+msgstr "Non podes usar o mesmo punto de montaxe dúas veces..."
+
+#: src/installation_advanced.py:835
+msgid "Creating primary partition"
+msgstr "Creando partición primaria"
+
+#: src/installation_advanced.py:846
+msgid "Creating extended partition"
+msgstr "Creando partición extendida"
+
+#: src/installation_advanced.py:852
+msgid "Creating logical partition"
+msgstr "Creando partición lóxica"
+
+#: src/installation_advanced.py:918
+msgid "Advanced installation mode"
+msgstr "Modo de instalación avanzado"
+
+#: src/installation_advanced.py:922
+msgid "Device for boot loader installation:"
+msgstr "Dispositivo para instalación do cargador de arranque:"
+
+#: src/installation_advanced.py:932
+msgid "New partition table"
+msgstr "Nova tabla de partición"
+
+#: src/installation_advanced.py:940
+msgid "Change..."
+msgstr "Cambiar..."
+
+#: src/installation_advanced.py:945
+msgid "Size:"
+msgstr "Tamaño:"
+
+#: src/installation_advanced.py:949
+msgid "Type:"
+msgstr "Tipo:"
+
+#: src/installation_advanced.py:953
+msgid "Primary"
+msgstr "Primaria"
+
+#: src/installation_advanced.py:957
+msgid "Logical"
+msgstr "Lóxica"
+
+#: src/installation_advanced.py:961
+msgid "Extended"
+msgstr "Extendida"
+
+#: src/installation_advanced.py:965
+msgid "Beginning of this space"
+msgstr "Comezo de este espazo"
+
+#: src/installation_advanced.py:969
+msgid "End of this space"
+msgstr "Final de este espazo"
+
+#: src/installation_advanced.py:973 src/installation_advanced.py:990
+msgid "Use as:"
+msgstr "Usar como:"
+
+#: src/installation_advanced.py:977 src/installation_advanced.py:994
+msgid "Mount point:"
+msgstr "Punto de montaxe:"
+
+#: src/installation_advanced.py:981 src/installation_advanced.py:998
+msgid "Label (optional):"
+msgstr "Etiqueta (opcional):"
+
+#: src/installation_advanced.py:985
+msgid "Encryption options..."
+msgstr "Opcións de encriptado..."
+
+#: src/installation_advanced.py:1002
+msgid "Format:"
+msgstr "Formato:"
+
+#: src/installation_advanced.py:1007
+msgid "Partition table type:"
+msgstr "Tipo de tabla de partición:"
+
+#: src/installation_advanced.py:1012
+msgid "Create partition table"
+msgstr "Crear tabla de partición"
+
+#: src/installation_advanced.py:1015 src/installation_automatic.py:87
+#: src/installation_easy.py:98
+msgid "Install now!"
+msgstr "Instalar agora!"
+
+#: src/installation_advanced.py:1095
+msgid "Creating a new partition table of type %s for disk %s"
+msgstr "Creando unha nova tabla de partición de tipo %s para o disco %s"
+
+#: src/installation_advanced.py:1162
+msgid ""
+"%s is mounted in '%s'.\n"
+"To continue it has to be unmounted.\n"
+"Click Yes to unmount, or No to return\n"
+msgstr "%s está montado en '%s'.\nPara continuar, ten que ser desmontado.\nPresione Si para desmontalo, ou Non para regresar\n"
+
+#: src/installation_advanced.py:1214
+msgid "Partition %s will be deleted"
+msgstr "Eliminarase partición %s"
+
+#: src/installation_advanced.py:1221
+msgid "Mount"
+msgstr "Montaxe"
+
+#: src/installation_advanced.py:1221
+msgid "New"
+msgstr "Novo"
+
+#: src/installation_advanced.py:1221
+msgid "Partition"
+msgstr "Partición"
+
+#: src/installation_advanced.py:1221
+msgid "Relabel"
+msgstr "Re-etiquetar"
+
+#: src/installation_advanced.py:1242
+msgid "These disks will have partition actions:"
+msgstr "Estes discos terán accións de partición:"
+
+#: src/installation_advanced.py:1267
+msgid "Saving changes done in %s"
+msgstr "Gardando cambios en %s"
+
+#: src/installation_advanced.py:1276
+msgid "Creating fs of type %s in %s with label %s"
+msgstr "Creando fs de tipo %s en %s con etiqueta %s"
+
+#: src/installation_advanced.py:1287
+msgid "FORMATTED"
+msgstr "FORMATEADO"
+
+#: src/installation_ask.py:76
+msgid "Your preferred installation type"
+msgstr "Teu tipo de instalación preferido"
+
+#: src/installation_ask.py:86
+msgid "Erase disk and install Cinnarch (automatic)"
+msgstr "Borrar disco é instalar Cinnarch (automático)"
+
+#: src/installation_ask.py:89
+msgid ""
+"Warning: This will delete all programs, documents, photos, music and any "
+"other files on your disk"
+msgstr "Aviso: Isto borrará todolos programas, documentos, fotos, música e calquer outro ficheiro no teu disco"
+
+#: src/installation_ask.py:95
+msgid "Choose where to install Cinnarch (easy)"
+msgstr "Escolle dónde instalar Cinnarch (easy)"
+
+#: src/installation_ask.py:98
+msgid ""
+"You will have to choose where to install Cinnarch. You will be only asked "
+"for the mount points of your root and swap devices."
+msgstr "Terás que seleccionar onde instalar Cinnarch. Se che preguntará polos puntos de montaxe da túa raíz e dispositivo swap."
+
+#: src/installation_ask.py:104
+msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
+msgstr "Manexa as túas partición e elixe onde instalar Cinnarch (avanzado)"
+
+#: src/installation_ask.py:107
+msgid ""
+"You will be able to create/delete partitions, choose where to install "
+"Cinnarch and also choose additional mount points."
+msgstr "Poderás crear/eliminar particións, elixir onde instalar Cinnarch e escoller puntos de montaxe opcionais."
+
+#: src/installation_automatic.py:73
+msgid "Cinnarch automatic installation mode"
+msgstr "Modo de instalación automática de Cinnarch"
+
+#: src/installation_automatic.py:77
+msgid "Select drive:"
+msgstr "Selecciona dispositivo"
+
+#: src/installation_automatic.py:81
+msgid ""
+"This installation mode will overwrite everything in your drive. If you are "
+"sure that this is what you want, please choose the drive where you want to "
+"install Cinnarch and click the button below to start the process."
+msgstr "Este modo de instalación sobrescribirá todo no teu dispositivo. Se estás seguro de que isto é o que queres, por favor escolle o dispositivo onde queres instalar Cinnarch e faga click no botón de abaizo para comezar o proceso."
+
+#: src/installation_automatic.py:130
+msgid "Automatic install using %s device"
+msgstr "Instalación automática empregando o dispositivo %s"
+
+#: src/installation_easy.py:82
+msgid "You must inform about these two mount points to install Cinnarch"
+msgstr "Debes informar sobre estes dous puntos de montaxe para instalar Cinnarch"
+
+#: src/installation_easy.py:94
+msgid "Cinnarch easy installation mode"
+msgstr "Modo de instalación sencillo de Cinnarch"
+
+#: src/installation_easy.py:118
+msgid "You can't select the same device for both mount points!"
+msgstr "Non podes seleccionar o mesmo dispositivo para ambos puntos de montaxe"
+
+#: src/installation_easy.py:159
+msgid "In easy install, can't create list of partitions"
+msgstr "En instalación sencilla, non se pode crear listas de particións"
+
+#: src/installation_thread.py:75
+msgid "Installing using the '%s' method"
+msgstr "Instalando empregando o método '%s'"
+
+#: src/installation_thread.py:124
+msgid "Can't execute the auto partition script"
+msgstr "Non se pode executar o script para auto particionado"
+
+#: src/installation_thread.py:162
+msgid "Couldn't mount root and boot partitions"
+msgstr "Non se poden montar partición raiz nin boot"
+
+#: src/installation_thread.py:170
+msgid "Can't create necessary directories on destination system"
+msgstr "Non se pode crear os directorios necesarios no sistema de destino"
+
+#: src/installation_thread.py:584 src/installation_thread.py:606
+msgid "ERROR installing GRUB(2) BIOS."
+msgstr "ERROR instalando GRUB(2) BIOS."
+
+#: src/installation_thread.py:597
+msgid "GRUB(2) BIOS has been successfully installed."
+msgstr "GRUB(2) BIOS instalouse con éxito."
+
+#: src/installation_thread.py:617
+msgid "Error creating password hash for user %s"
+msgstr "Error creando hash de contrasinal para o usuario %s"
+
+#: src/installation_thread.py:623
+msgid "Error changing password for user %s"
+msgstr "Error cambiando a contrasinal do usuario %s"
+
+#: src/installation_thread.py:677
+msgid "Configuring your new system"
+msgstr "Configurando o te novo sistema"
+
+#: src/installation_thread.py:756
+msgid "Generating locales"
+msgstr "Xenerando locales"
+
+#: src/installation_thread.py:776
+msgid "Running mkinitcpio"
+msgstr "Executando mkinitcpio"
+
+#: src/keymap.py:70
+msgid "Select your keyboard layout"
+msgstr "Selecciona o teu mapa de teclado"
+
+#: src/keymap.py:78
+msgid "Layouts"
+msgstr "Mapas de teclado"
+
+#: src/keymap.py:84
+msgid "Variants"
+msgstr "Variantes"
+
+#: src/keymap.py:106
+msgid "keyboard_layout is %s"
+msgstr "keyboard_layout é %s"
+
+#: src/language.py:81
+msgid "Please choose your language:"
+msgstr "Por favor escolla a súa lingua:"
+
+#: src/language.py:86
+msgid ""
+"<span weight='bold'>This is an Alpha version.</span>\n"
+"\n"
+"The Software is provided \"as is\" without warranty of any\n"
+"kind, either express or implied, including without limitation\n"
+"any implied warranties of condition, uninterrupted use,\n"
+"merchantability, fitness for a particular purpose, or\n"
+"non-infringement.\n"
+"\n"
+"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
+msgstr "<span weight='bold'>Esta é unha versión Alpha.</span>\n\nO programa amósase \"como é\" sen garantía de ningun\ntipo, nin expresa ou implícita, incluíndo sen limitación\nningunha garantía implícita de condición, uso ininterrumpido,\ncomercialización, adecuación a unha finalidade específica, ou\nnon infracción.\n\nSe atopas algún error, por favor, visita <a href='https://bugs.cinnarch.com'>https://bugs.cinnarch.com</a>"
+
+#: src/language.py:95 src/welcome.py:100
+msgid "Welcome to Cinnarch!"
+msgstr "Benvido a Cinnarch!"
+
+#: src/language.py:113
+msgid "Languages"
+msgstr "Linguas"
+
+#: src/language.py:133
+msgid "Can't find translation file for the %s language"
+msgstr "Non se pode atopar o arquivo de traducción para o idioma %s"
+
+#: src/location.py:73
+msgid "Select your location"
+msgstr "Selecciona a túa localización"
+
+#: src/location.py:77
+msgid ""
+"The selected location will be used to help select the system locale.\n"
+"Normally this should be the country where you live.\n"
+"This is a shortlist of locations based on the language you selected."
+msgstr "A localización seleccionada empregarase para axudar a seleccionar o idioma do sistema.\nNormalmente é o país onde vives.\nEsta é unha pequena lista de localización baseadas na linguaxe escollida."
+
+#: src/location.py:82
+msgid "Country, territory or area:"
+msgstr "País, territorio ou área:"
+
+#: src/location.py:201
+msgid "locale changed to : %s"
+msgstr "locale cambiou a : %s"
+
+#: src/location.py:203
+msgid "Can't change to locale '%s'"
+msgstr "Non se pode cambiar a locale '%s'"
+
+#: src/rank_mirrors.py:59
+msgid "In rankmirrors, can't get network status"
+msgstr "En rankmirrors, non se pode obter o estado da rede"
+
+#: src/rank_mirrors.py:75
+msgid "Couldn't execute auto mirroring selection"
+msgstr "Non se pode executar a selección de mirror automático"
+
+#: src/show_message.py:54
+msgid "Cinnarch Installer - Error"
+msgstr "Instalador de Cinnarch - Error"
+
+#: src/show_message.py:65
+msgid "Cinnarch Installer - Warning"
+msgstr "Instalador de Cinnarch - Aviso"
+
+#: src/show_message.py:76
+msgid "Cinnarch Installer - Information"
+msgstr "Instalador de Cinnarch - Información"
+
+#: src/show_message.py:86
+msgid "Cinnarch Installer - Question"
+msgstr "Instalador de Cinnarch - Pregunta"
+
+#: src/slides.py:80 src/slides.py:94
+msgid ""
+"Installation finished!\n"
+"Do you want to restart your system now?"
+msgstr "Instalación rematada!\nDesexas reiniciar o sistema agora?"
+
+#: src/slides.py:88
+msgid "Learn more about Cinnarch"
+msgstr "Aprenda máis sobre Cinnarch"
+
+#: src/slides.py:92
+msgid "Please wait..."
+msgstr "Por favor espere..."
+
+#: src/timezone.py:113
+msgid "Where are you?"
+msgstr "Onde estás?"
+
+#: src/timezone.py:118
+msgid "Zone:"
+msgstr "Zona:"
+
+#: src/timezone.py:122
+msgid "Region:"
+msgstr "Rexión:"
+
+#: src/timezone.py:133
+msgid "location changed to : %s"
+msgstr "localización cambiada a: %s"
+
+#: src/timezone.py:221
+msgid "Can't autodetect timezone coordinates"
+msgstr "Non se poden autodetectar as coordinadas da zona horaria"
+
+#: src/timezone.py:279
+msgid "Stoping timezone threads..."
+msgstr "Detendo fíos da zona horaria..."
+
+#: src/timezone.py:307 src/timezone.py:358
+msgid "In timezone, can't get network status"
+msgstr "En timezone, non se pode obter o estado da rede"
+
+#: src/timezone.py:383
+msgid "Can't get the country code used to create a pacman mirrorlist"
+msgstr "Non se pode obter o código do país empregado para crear a lista de mirrors de pacman"
+
+#: src/timezone.py:403
+msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
+msgstr "Descargada unha lista específica de espellos para pacman baseada no código de país %s"
+
+#: src/timezone.py:405
+msgid "Couldn't generate mirrorlist for pacman based on country code"
+msgstr "Non se puido xenerar lista de espellos para pacman baseado no código de país"
+
+#: src/user_info.py:90
+msgid "Your name:"
+msgstr "Teu nome:"
+
+#: src/user_info.py:94
+msgid "Your computer's name:"
+msgstr "O nome da túa computadora:"
+
+#: src/user_info.py:98
+msgid "Pick a username:"
+msgstr "Escolle un nome de usuario:"
+
+#: src/user_info.py:102
+msgid "Choose a password:"
+msgstr "Escolle unha contrasinal:"
+
+#: src/user_info.py:106
+msgid "Confirm your password:"
+msgstr "Confirme a contrasinal:"
+
+#: src/user_info.py:110
+msgid "The name it uses when it talks to other computers."
+msgstr "O nome que emprega para falar con outros computadores."
+
+#: src/user_info.py:114 src/user_info.py:191
+msgid "You must enter a name"
+msgstr "Debes introducir un nome"
+
+#: src/user_info.py:118
+msgid "You must enter a username"
+msgstr "Debes introducir un nome de usuario"
+
+#: src/user_info.py:122
+msgid "You must enter a password"
+msgstr "Debes introducir un contrasinal"
+
+#: src/user_info.py:126
+msgid "Log in automatically"
+msgstr "Acceso automático"
+
+#: src/user_info.py:127
+msgid "Require my password to log in"
+msgstr "Pedir contrasinal para acceder"
+
+#: src/user_info.py:128
+msgid "Encrypt my home folder"
+msgstr "Encriptar o meu home"
+
+#: src/user_info.py:130
+msgid "Who are you?"
+msgstr "Quen eres?"
+
+#: src/user_info.py:207
+msgid "Invalid characters entered"
+msgstr "Introducidos carácteres inválidos"
+
+#: src/user_info.py:211
+msgid "Contains consecutive, initial and/or final dots"
+msgstr "Contén puntos consecutivos, iniciais e/ou finais"
+
+#: src/validation.py:144
+msgid "password is too short"
+msgstr "contrasinal demasiado corto"
+
+#: src/validation.py:147
+msgid "weak password"
+msgstr "contrasinal débil"
+
+#: src/validation.py:150
+msgid "fair password"
+msgstr "contrasinal xusto"
+
+#: src/validation.py:153
+msgid "good password"
+msgstr "bó contrasinal"
+
+#: src/validation.py:156
+msgid "strong password"
+msgstr "contrasinal forte"
+
+#: src/validation.py:171
+msgid "Passwords do not match"
+msgstr "Contrasinais non coinciden"
+
+#: src/welcome.py:95
+msgid ""
+"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
+"If you want to install the system to your PC, use one of the two installer options."
+msgstr "Podes probar Cinnarch sen modificar o teu disco duro, tan só faga click en 'Probalo'.\nSe queres instalar o sistema no teu PC, empregue unha das dúas opcións de instalador."
+
+#: src/welcome.py:120
+msgid "Can't load the CLI installer"
+msgstr "Non se pode cargar o instalador CLI"
