@@ -50,7 +50,7 @@ DISK_EXTENDED = 1
 def get_devices():
     device_list = parted.getAllDevices()
     disk_dic = {}
-    myhome = subprocess.check_output(shlex.split('df -P /')).decode()
+    myhome = subprocess.check_output(shlex.split('df -P /run/archiso/bootmnt')).decode()
     
     for dev in device_list:
         if dev.path in myhome:
@@ -94,6 +94,8 @@ def get_partitions(diskob):
     #Do not let user specify more than this number of primary partitions
     #disk_max_pri = diskob.maxPrimaryPartitionCount
     #create list of partitions for this device(/dev/sda for example)
+    if not diskob:
+        return part_dic
     partition_list = diskob.partitions
     dev = diskob.device
     #limiter = 1000
