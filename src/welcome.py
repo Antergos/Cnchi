@@ -38,7 +38,7 @@ from show_message import warning
 
 # Useful vars for gettext (translations)
 APP="cnchi"
-DIR="po"
+DIR = "/usr/share/locale"
 
 # Import functions
 import config

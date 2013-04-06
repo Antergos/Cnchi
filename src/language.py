@@ -36,7 +36,7 @@ import os
 
 # Useful vars for gettext (translations)
 APP="cnchi"
-DIR="po"
+DIR = "/usr/share/locale"
 
 # Import functions
 import config

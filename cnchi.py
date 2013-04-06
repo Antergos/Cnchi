@@ -66,7 +66,7 @@ import show_message as show
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
-DIR = "po"
+DIR = "/usr/share/locale"
 
 _main_window_width = 800
 _main_window_height = 500

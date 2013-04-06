@@ -12,7 +12,7 @@ import gettext
 
 # Useful vars for gettext (translations)
 APP="cnchi"
-DIR="po"
+DIR = "/usr/share/locale"
 
 # This allows to translate all py texts (not the glade ones)
 gettext.textdomain(APP)
