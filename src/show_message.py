@@ -34,6 +34,7 @@ import sys
 import os
 import queue
 import log
+import misc
 
 _show_event_queue_messages = True
 
