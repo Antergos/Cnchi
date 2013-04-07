@@ -244,14 +244,15 @@ class Main(Gtk.Window):
     # (this should be fixed) meanwhile, we need sudo privileges to remove them
     @misc.raise_privileges
     def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log" ]
         for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
                 os.remove(p)
          
     def on_exit_button_clicked(self, widget, data=None):
-        self.pages["timezone"].stop_thread()
+        #don't worry about this
+        #self.pages["timezone"].stop_thread()
         self.remove_temp_files()
         print("Quiting...")
         Gtk.main_quit()
