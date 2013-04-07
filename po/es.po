@@ -4,13 +4,14 @@
 # Translators:
 # Alexandre Filgueira <alexfilgueira@cinnarch.com>, 2013.
 # Eric Ciurana Marin <kboxercillo@gmail.com>, 2013.
+# Francisco Javier <mail.de.francisco@gmail.com>, 2013.
 # Karasu <karasu@cinnarch.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Cinnarch\n"
-"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
-"PO-Revision-Date: 2013-04-06 14:36+0000\n"
-"Last-Translator: Ifridos <kboxercillo@gmail.com>\n"
+"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
+"PO-Revision-Date: 2013-04-06 20:31+0000\n"
+"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/cinnarch/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +41,7 @@ msgstr "Instalador de Cinnarch"
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr ""
+msgstr "Comprueba tu ordenador"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
@@ -93,7 +94,7 @@ msgstr "Punto de montaje"
 
 #: src/installation_advanced.py:265
 msgid "Label"
-msgstr ""
+msgstr "Etiqueta"
 
 #: src/installation_advanced.py:271 src/installation_advanced.py:1221
 msgid "Format"
@@ -109,7 +110,7 @@ msgstr "Usado"
 
 #: src/installation_advanced.py:280
 msgid "Flags"
-msgstr ""
+msgstr "Banderas"
 
 #: src/installation_advanced.py:286
 msgid "Solid State Drive (SSD)"
@@ -193,7 +194,7 @@ msgstr "Punto de montaje:"
 
 #: src/installation_advanced.py:981 src/installation_advanced.py:998
 msgid "Label (optional):"
-msgstr ""
+msgstr "Etiqueta (opcional):"
 
 #: src/installation_advanced.py:985
 msgid "Encryption options..."
@@ -245,11 +246,11 @@ msgstr "Partición"
 
 #: src/installation_advanced.py:1221
 msgid "Relabel"
-msgstr ""
+msgstr "Renombrar etiqueta"
 
 #: src/installation_advanced.py:1242
 msgid "These disks will have partition actions:"
-msgstr ""
+msgstr "Estos discos van a tener acciones de partición:"
 
 #: src/installation_advanced.py:1267
 msgid "Saving changes done in %s"
@@ -257,7 +258,7 @@ msgstr "Guardando cambios acabado en %s"
 
 #: src/installation_advanced.py:1276
 msgid "Creating fs of type %s in %s with label %s"
-msgstr ""
+msgstr "Creando fs de tipo %s en %s con etiqueta %s"
 
 #: src/installation_advanced.py:1287
 msgid "FORMATTED"
@@ -444,6 +445,74 @@ msgstr "locale cambiado a : %s"
 msgid "Can't change to locale '%s'"
 msgstr "No se puede cambiar el locale a \"%s\""
 
+#: src/pacman/pac.py:165
+msgid "Checking dependencies..."
+msgstr "Comprobando dependencias..."
+
+#: src/pacman/pac.py:168
+msgid "Checking file conflicts..."
+msgstr "Comprobando conflictos de archivos..."
+
+#: src/pacman/pac.py:171
+msgid "Resolving dependencies..."
+msgstr "Resolviendo dependencias..."
+
+#: src/pacman/pac.py:174
+msgid "Checking inter conflicts..."
+msgstr "Comprobando interconflictos..."
+
+#: src/pacman/pac.py:181
+msgid "Removing..."
+msgstr "Removiendo..."
+
+#: src/pacman/pac.py:184
+msgid "Upgrading..."
+msgstr "Actualizando..."
+
+#: src/pacman/pac.py:187
+msgid "Checking integrity..."
+msgstr "Comprobando integridad..."
+
+#: src/pacman/pac.py:191
+msgid "Loading packages files..."
+msgstr "Cargando archivos de paquetes..."
+
+#: src/pacman/pac.py:195
+msgid "Configuring..."
+msgstr "Configurando..."
+
+#: src/pacman/pac.py:197
+msgid "Configuring a package"
+msgstr "Configurando un paquete"
+
+#: src/pacman/pac.py:199
+msgid "Downloading a file"
+msgstr "Descargando un archivo"
+
+#: src/pacman/pac.py:223
+msgid "ERROR: %s"
+msgstr "ERROR: %s"
+
+#: src/pacman/pac.py:229
+msgid "WARNING: %s"
+msgstr "ADVERTENCIA: %s"
+
+#: src/pacman/pac.py:233
+msgid "DEBUG: %s"
+msgstr "DEBUG: %s"
+
+#: src/pacman/pac.py:236
+msgid "FUNC: %s"
+msgstr "FUNC: %s"
+
+#: src/pacman/pac.py:268
+msgid "Downloading %s"
+msgstr "Descargando %s"
+
+#: src/pacman/pac.py:276
+msgid "Refreshing %s..."
+msgstr "Refrescando %s..."
+
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
 msgstr "No se puede obtener el estado de la red en rankmirrors"
@@ -504,7 +573,7 @@ msgstr "No se pueden auto detectar las coordenadas de la zona horaria"
 
 #: src/timezone.py:279
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "Deteniendo subprocesos de zona horaria..."
 
 #: src/timezone.py:307 src/timezone.py:358
 msgid "In timezone, can't get network status"

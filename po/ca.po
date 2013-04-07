@@ -2,13 +2,15 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# Alexandre Filgueira <alexfilgueira@cinnarch.com>, 2013.
 # Gustau Castells <karasu@cinnarch.com>, 2013.
+# tot3lmon <tot3lmon@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Cinnarch\n"
-"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
-"PO-Revision-Date: 2013-04-06 13:14+0000\n"
-"Last-Translator: karasu0 <karasu@cinnarch.com>\n"
+"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
+"PO-Revision-Date: 2013-04-07 15:56+0000\n"
+"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/cinnarch/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -107,7 +109,7 @@ msgstr "Usat"
 
 #: src/installation_advanced.py:280
 msgid "Flags"
-msgstr ""
+msgstr "Banderes"
 
 #: src/installation_advanced.py:286
 msgid "Solid State Drive (SSD)"
@@ -368,7 +370,7 @@ msgstr "Configurant el sistema"
 
 #: src/installation_thread.py:756
 msgid "Generating locales"
-msgstr ""
+msgstr "Generació d'escenaris"
 
 #: src/installation_thread.py:776
 msgid "Running mkinitcpio"
@@ -405,7 +407,7 @@ msgid ""
 "non-infringement.\n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
-msgstr ""
+msgstr "<span weight='bold'>Aquesta és una versió Alpha.</span> ⏎\n⏎\nEl programari es subministra \"tal qual\" sense garantia de cap ⏎\ntipus, ja sigui expressa o implícita, incloent sense limitació ⏎\nqualsevol garantia implícita de la condició, l'ús ininterromput, ⏎\ncomerciabilitat, adequació per a propòsits particulars, o ⏎\nno infracció. ⏎\n⏎\nSi troba cap error, si us plau, visiti <a href='http://bugs.cinnarch.com'> http://bugs.cinnarch.com</a>"
 
 #: src/language.py:95 src/welcome.py:100
 msgid "Welcome to Cinnarch!"
@@ -421,26 +423,94 @@ msgstr "No puc trobar el fitxer de traduccions per l'idioma %s"
 
 #: src/location.py:73
 msgid "Select your location"
-msgstr ""
+msgstr "Seleccioneu la vostra ubicació"
 
 #: src/location.py:77
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "La ubicació seleccionada s'utilitzarà per ajudar a seleccionar la configuració regional del sistema. ⏎\nNormalment aquest ha de ser el país on vostè viu. ⏎\nAquesta és una llista d'ubicacions segons la llengua que seleccioneu."
 
 #: src/location.py:82
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "País, territori o àrea:"
 
 #: src/location.py:201
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "Lloc canviat a: %s"
 
 #: src/location.py:203
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "No es pot canviar a lloc '%s'"
+
+#: src/pacman/pac.py:165
+msgid "Checking dependencies..."
+msgstr "Comprovació de les dependències ..."
+
+#: src/pacman/pac.py:168
+msgid "Checking file conflicts..."
+msgstr "Comprovació de conflictes d'arxius ..."
+
+#: src/pacman/pac.py:171
+msgid "Resolving dependencies..."
+msgstr "Resolent dependències ..."
+
+#: src/pacman/pac.py:174
+msgid "Checking inter conflicts..."
+msgstr "Comprovació dels conflictes interns ..."
+
+#: src/pacman/pac.py:181
+msgid "Removing..."
+msgstr "Extracció de ..."
+
+#: src/pacman/pac.py:184
+msgid "Upgrading..."
+msgstr "Actualització de ..."
+
+#: src/pacman/pac.py:187
+msgid "Checking integrity..."
+msgstr "Comprovació d'integritat ..."
+
+#: src/pacman/pac.py:191
+msgid "Loading packages files..."
+msgstr "Càrrega d'arxius de paquets ..."
+
+#: src/pacman/pac.py:195
+msgid "Configuring..."
+msgstr "Configuració ..."
+
+#: src/pacman/pac.py:197
+msgid "Configuring a package"
+msgstr "Configuració d'un paquet"
+
+#: src/pacman/pac.py:199
+msgid "Downloading a file"
+msgstr "Descarregar un arxiu"
+
+#: src/pacman/pac.py:223
+msgid "ERROR: %s"
+msgstr "ERROR: %s"
+
+#: src/pacman/pac.py:229
+msgid "WARNING: %s"
+msgstr "ADVERTÈNCIA: %s"
+
+#: src/pacman/pac.py:233
+msgid "DEBUG: %s"
+msgstr "DEBUG: %s"
+
+#: src/pacman/pac.py:236
+msgid "FUNC: %s"
+msgstr "FUNC: %s"
+
+#: src/pacman/pac.py:268
+msgid "Downloading %s"
+msgstr "Descarregant %s"
+
+#: src/pacman/pac.py:276
+msgid "Refreshing %s..."
+msgstr "Refrescant %s..."
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
@@ -470,7 +540,7 @@ msgstr "Instal·lador Cinnarch - Pregunta"
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "Instal·lació acabada! ⏎\nVoleu reiniciar ara?"
 
 #: src/slides.py:88
 msgid "Learn more about Cinnarch"
@@ -502,7 +572,7 @@ msgstr "No puc detectar la teva zona horària"
 
 #: src/timezone.py:279
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "Detenció de fils de zona horària ..."
 
 #: src/timezone.py:307 src/timezone.py:358
 msgid "In timezone, can't get network status"
@@ -510,15 +580,15 @@ msgstr "No puc obtenir l'estat de la xarxa a la zona horària"
 
 #: src/timezone.py:383
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "No es pot obtenir el codi de país utilitzat per crear un mirall llista Pacman"
 
 #: src/timezone.py:403
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "Descarregat un mirall llista específic per Pacman basat en codi de país de %s"
 
 #: src/timezone.py:405
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "No s'ha pogut generar mirall llista per Pacman basat en codi de país"
 
 #: src/user_info.py:90
 msgid "Your name:"
@@ -590,7 +660,7 @@ msgstr "La contrasenya és massa dèbil"
 
 #: src/validation.py:150
 msgid "fair password"
-msgstr ""
+msgstr "contrasenya massa dèbil"
 
 #: src/validation.py:153
 msgid "good password"
@@ -602,14 +672,14 @@ msgstr "contrasenya forta"
 
 #: src/validation.py:171
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Les contrasenyes no coincideixen"
 
 #: src/welcome.py:95
 msgid ""
 "You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
-msgstr ""
+msgstr "Vostè pot intentar provar Cinnarch sense modificar el disc dur, simplement feu clic a 'Provar'. ⏎\nSi voleu instal·lar el sistema en el seu PC, utilitzeu una de les dues opcions d'instal·lació."
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "No es pot carregar l'instal·lador CLI"

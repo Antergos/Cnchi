@@ -37,6 +37,7 @@ import log
 
 _show_event_queue_messages = True
 
+@misc.raise_privileges
 def fatal_error(message):
     # Remove /tmp/.setup-running
     p = "/tmp/.setup-running"

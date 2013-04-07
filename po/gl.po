@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cinnarch\n"
-"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
-"PO-Revision-Date: 2013-04-06 14:07+0000\n"
+"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
+"PO-Revision-Date: 2013-04-06 15:30+0000\n"
 "Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/cinnarch/language/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -441,6 +441,74 @@ msgstr "locale cambiou a : %s"
 #: src/location.py:203
 msgid "Can't change to locale '%s'"
 msgstr "Non se pode cambiar a locale '%s'"
+
+#: src/pacman/pac.py:165
+msgid "Checking dependencies..."
+msgstr "Comprobando dependencias..."
+
+#: src/pacman/pac.py:168
+msgid "Checking file conflicts..."
+msgstr "Comprobando conflitos entre ficheiros..."
+
+#: src/pacman/pac.py:171
+msgid "Resolving dependencies..."
+msgstr "Resolvendo dependencias..."
+
+#: src/pacman/pac.py:174
+msgid "Checking inter conflicts..."
+msgstr "Comprobando interconflictos..."
+
+#: src/pacman/pac.py:181
+msgid "Removing..."
+msgstr "Eliminando..."
+
+#: src/pacman/pac.py:184
+msgid "Upgrading..."
+msgstr "Actualizando..."
+
+#: src/pacman/pac.py:187
+msgid "Checking integrity..."
+msgstr "Comprobando integridade..."
+
+#: src/pacman/pac.py:191
+msgid "Loading packages files..."
+msgstr "Cargando ficheiros..."
+
+#: src/pacman/pac.py:195
+msgid "Configuring..."
+msgstr "Configurando..."
+
+#: src/pacman/pac.py:197
+msgid "Configuring a package"
+msgstr "Configurando un paquete"
+
+#: src/pacman/pac.py:199
+msgid "Downloading a file"
+msgstr "Descargando un arquivo"
+
+#: src/pacman/pac.py:223
+msgid "ERROR: %s"
+msgstr "ERROR: %s"
+
+#: src/pacman/pac.py:229
+msgid "WARNING: %s"
+msgstr "Aviso: %s"
+
+#: src/pacman/pac.py:233
+msgid "DEBUG: %s"
+msgstr "DEBUG: %s"
+
+#: src/pacman/pac.py:236
+msgid "FUNC: %s"
+msgstr "FUNC: %s"
+
+#: src/pacman/pac.py:268
+msgid "Downloading %s"
+msgstr "Descargando %s"
+
+#: src/pacman/pac.py:276
+msgid "Refreshing %s..."
+msgstr "Refrescando %s..."
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"

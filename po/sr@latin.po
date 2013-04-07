@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cinnarch\n"
-"POT-Creation-Date: 2013-04-05 11:28+CEST\n"
-"PO-Revision-Date: 2013-04-05 09:28+0000\n"
+"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
+"PO-Revision-Date: 2013-04-06 15:21+0000\n"
 "Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/projects/p/cinnarch/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -439,6 +439,74 @@ msgstr ""
 
 #: src/location.py:203
 msgid "Can't change to locale '%s'"
+msgstr ""
+
+#: src/pacman/pac.py:165
+msgid "Checking dependencies..."
+msgstr ""
+
+#: src/pacman/pac.py:168
+msgid "Checking file conflicts..."
+msgstr ""
+
+#: src/pacman/pac.py:171
+msgid "Resolving dependencies..."
+msgstr ""
+
+#: src/pacman/pac.py:174
+msgid "Checking inter conflicts..."
+msgstr ""
+
+#: src/pacman/pac.py:181
+msgid "Removing..."
+msgstr ""
+
+#: src/pacman/pac.py:184
+msgid "Upgrading..."
+msgstr ""
+
+#: src/pacman/pac.py:187
+msgid "Checking integrity..."
+msgstr ""
+
+#: src/pacman/pac.py:191
+msgid "Loading packages files..."
+msgstr ""
+
+#: src/pacman/pac.py:195
+msgid "Configuring..."
+msgstr ""
+
+#: src/pacman/pac.py:197
+msgid "Configuring a package"
+msgstr ""
+
+#: src/pacman/pac.py:199
+msgid "Downloading a file"
+msgstr ""
+
+#: src/pacman/pac.py:223
+msgid "ERROR: %s"
+msgstr ""
+
+#: src/pacman/pac.py:229
+msgid "WARNING: %s"
+msgstr ""
+
+#: src/pacman/pac.py:233
+msgid "DEBUG: %s"
+msgstr ""
+
+#: src/pacman/pac.py:236
+msgid "FUNC: %s"
+msgstr ""
+
+#: src/pacman/pac.py:268
+msgid "Downloading %s"
+msgstr ""
+
+#: src/pacman/pac.py:276
+msgid "Refreshing %s..."
 msgstr ""
 
 #: src/rank_mirrors.py:59
