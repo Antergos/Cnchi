@@ -135,7 +135,7 @@ class Slides(Gtk.Box):
                 if response == Gtk.ResponseType.YES:
                     self.reboot()
                 else:
-                    tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+                    tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log"]
                     for t in tmp_files:
                         p = os.path.join("/tmp", t)
                         if os.path.exists(p):
