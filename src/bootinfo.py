@@ -29,6 +29,8 @@
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
 import os
+import subprocess
+import re
 
 def get_os(mountname):
     #  If partition is mounted, try to identify the Operating System
@@ -95,8 +97,30 @@ def get_os(mountname):
 
     return OS
 
+
+def get_os_dict():
+    oses = {}
+    
+    with open("/proc/partitions", "rt") as f:
+        for line in f:
+            l = line.split()
+            if len(l) > 0:
+                device = l[3]
+                if "sd" in device and re.search(r'\d+$', device):
+                    # ok, it has sd and ends with a number
+                    device = "/dev/" + device
+                    null = subprocess.DEVNULL
+                    subprocess.call(["mount", device, "/mnt"], stdout=null, stderr=null)
+                    oses[device] = get_os("/mnt")
+                    subprocess.call(["umount", "/mnt"], stdout=null, stderr=null)
+        
+    return oses
+    
 if __name__ == '__main__':
-    print(get_os("/"))
+    oses = {}
+    oses = get_os_dict()
+    print (oses)
+
                 
             
         
