@@ -156,7 +156,12 @@ class InstallationAlongside(Gtk.Box):
         # assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
         self.treeview.expand_all()
-                    
+
+    def on_treeview_cursor_changed(self, widget):
+        print("ROW ACTIVATED")
+        self.forward_button.set_sensitive(True)            
+        return False
+
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
 

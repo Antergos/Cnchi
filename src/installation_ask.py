@@ -92,7 +92,7 @@ class InstallationAsk(Gtk.Box):
         label.set_line_wrap(True)
         
         radio = self.ui.get_object("alongside_radiobutton")
-        radio.set_label(_("Install alongside other OSes"))
+        radio.set_label(_("Install Cinnarch alongside other OSes"))
 
         label = self.ui.get_object("alongside_description")
         txt = _("With this option you will be installing this OS alongside the other OSes you have already installed.")
