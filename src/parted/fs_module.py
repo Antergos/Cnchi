@@ -32,6 +32,8 @@ import subprocess
 import shlex
 import misc
 
+import used_space
+
 _names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
 
@@ -133,3 +135,39 @@ def is_ssd(disk_path):
         print("Can't verify if %s is a Solid State Drive or not" % disk_path)
     
     return ssd
+
+def shrink_fs(device, fs_type, new_size):
+    used_size = get_used_space(part, fstype)
+    
+    fs_type = fs_type.lower()
+    
+    res = False
+    
+    if new_size < used_size:       
+        if 'ntfs' in fs_type:
+            res = resize_ntfs(device, new_size)
+        elif 'fat' in fs_type:
+            res = resize_fat(device, new_size)
+    else:
+        print ("New size must be smaller than old size!")
+        res = False
+    
+    return res
+
+@misc.raise_privileges    
+def resize_ntfs(device, new_size):
+    used = 0
+    #SIZE[k|M|G]        
+    try:
+        x = subprocess.check_output(["ntfsresize", "--size", new_size, part])
+    except Exception as e:
+        x = None
+        print(e)
+        return False
+    
+    return True
+
+@misc.raise_privileges    
+def resize_fat(device, new_size):
+    pass
+    

@@ -120,15 +120,3 @@ if __name__ == '__main__':
     oses = {}
     oses = get_os_dict()
     print (oses)
-
-                
-            
-        
-
-'''
-
-[ -s "${mountname}/etc/issue" ] && OS=$(sed -e 's/\\. //g' -e 's/\\.//g' -e 's/^[ \t]*//' "${mountname}"/etc/issue);
-
-[ -s "${mountname}/etc/slackware-version" ] && OS=$(sed -e 's/\\. //g' -e 's/\\.//g' -e 's/^[ \t]*//' "${mountname}"/etc/slackware-version);
-'''
-    

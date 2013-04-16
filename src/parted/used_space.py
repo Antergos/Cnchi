@@ -52,7 +52,7 @@ def get_used_ntfs(part):
                 vsize = int(z.split(':')[-1].strip())
             elif 'Free Clusters:' in z:
                 fsize = int(z.strip().split()[2])
-        used = (vsize - fsize)/vsize
+        used = (vsize - fsize) / vsize
     return used
 
 @misc.raise_privileges

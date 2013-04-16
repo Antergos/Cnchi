@@ -49,6 +49,8 @@ import used_space
 import installation_thread
 import show_message as show
 
+#import bootinfo
+
 _next_page = "timezone"
 _prev_page = "installation_ask"
 

@@ -301,6 +301,12 @@ def order_partitions(partdic):
     x = sorted(partdic, key=lambda key: partdic[key].geometry.start)
     return x
 
+@misc.raise_privileges    
+def shrink_partition(part, new_size):
+    # TODO: delete partition and create it again with the new size
+    # ALERT: The file system must be shrinked before
+    pass
+
 # ----------------------------------------------------------------------------
 # Usage example
 
