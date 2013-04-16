@@ -38,6 +38,14 @@ import misc
 import parted
 import log
 import show_message as show
+import bootinfo
+
+# Insert the src/parted directory at the front of the path.
+base_dir = os.path.dirname(__file__) or '.'
+parted_dir = os.path.join(base_dir, 'parted')
+sys.path.insert(0, parted_dir)
+
+import partition_module as pm
 
 import installation_thread
 
@@ -58,67 +66,28 @@ class InstallationAlongside(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
 
-        self.label = dict()
-        self.label['info'] = self.ui.get_object("label_info")
-        self.label['mount'] = self.ui.get_object("label_mount")
-        self.label['device'] = self.ui.get_object("label_device")
-        self.label['root'] = self.ui.get_object("label_root")
-        self.label['swap'] = self.ui.get_object("label_swap")
-
-        self.combobox = dict()
-        self.combobox['root'] = self.ui.get_object("comboboxtext_root")
-        self.combobox['swap'] = self.ui.get_object("comboboxtext_swap")
-
-        for name in self.combobox:
-            self.populate_combobox_with_devices(self.combobox[name])
-
         self.ui.connect_signals(self)
+        
+        self.label = self.ui.get_object('label_info')
+        
+        self.treeview = self.ui.get_object("treeview1")
+        self.treeview_store = None
+        self.prepare_treeview()
+        self.populate_treeview()
 
-        super().add(self.ui.get_object("installation_easy"))
-
-        self.device = {'root':"", 'swap':""}
+        super().add(self.ui.get_object("installation_alongside"))
 
     def translate_ui(self):
-        txt = _("You must inform about these two mount points to install Cinnarch")
+        txt = _("Choose next to which OS you want to install Cinnarch")
         txt = '<span size="large">%s</span>' % txt
-        self.label['info'].set_markup(txt)
+        self.label.set_markup(txt)
 
-        txt = _("Mount point")
-        txt = '<b>%s</b>' % txt
-        self.label['mount'].set_markup(txt)
-
-        txt = _("Device")
-        txt = '<b>%s</b>' % txt
-        self.label['device'].set_markup(txt)
-
-        txt = _("Cinnarch easy installation mode")
+        txt = _("Cinnarch alongside another OS")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
         txt = _("Install now!")
         self.forward_button.set_label(txt)
-
-    def on_comboboxtext_root_changed(self, combobox):
-        self.combobox_changed(combobox, "root")
-
-    def on_comboboxtext_swap_changed(self, combobox):
-        self.combobox_changed(combobox, "swap")
-
-    def combobox_changed(self, combobox, name):
-        tree_iter = combobox.get_active_iter()
-        
-        d = {'root':'swap', 'swap':'root'}
-        op = d[name]
-        
-        if tree_iter != None:
-            self.device[name] = combobox.get_active_text()
-            log.debug(self.device[name])
-            if self.device[op] != "":
-                if self.device[op] == self.device[name]:
-                    show.error(_("You can't select the same device for both mount points!"))
-                    self.forward_button.set_sensitive(False)
-                else:
-                    self.forward_button.set_sensitive(True)
 
     def prepare(self, direction):
         self.translate_ui()
@@ -134,14 +103,31 @@ class InstallationAlongside(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+        
+    def prepare_treeview(self):
+        ## Create columns for our treeview
+        render_text = Gtk.CellRendererText()
+                
+        col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
+        self.treeview.append_column(col)
+        
+        col = Gtk.TreeViewColumn(_("Detected OS"), render_text, text=1)
+        self.treeview.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Filesystem"), render_text, text=2)
+        self.treeview.append_column(col)
     
     @misc.raise_privileges
-    def populate_combobox_with_devices(self, combobox):
-        device_list = parted.getAllDevices()
+    def populate_treeview(self):
+        if self.treeview_store != None:
+            self.treeview_store.clear()
 
-        combobox.remove_all()
-        
-        extended = 2
+        self.treeview_store = Gtk.TreeStore(str, str, str)
+
+        oses = {}
+        oses = bootinfo.get_os_dict()
+
+        device_list = parted.getAllDevices()
         
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
@@ -153,11 +139,24 @@ class InstallationAlongside(Gtk.Box):
                     partition_list = disk.partitions
                     
                     for p in partition_list:
-                        if p.type != extended:
-                            combobox.append_text(p.path)
+                        if p.type != pm.PARTITION_EXTENDED:
+                            ## Get file system
+                            fs_type = ""
+                            if p.fileSystem and p.fileSystem.type:
+                                fs_type = p.fileSystem.type
+                            if "swap" not in fs_type:
+                                if p.path in oses:
+                                    row = [ p.path, oses[p.path], fs_type ]
+                                else:
+                                    row = [ p.path, _("unknown"), fs_type ]
+                                self.treeview_store.append(None, row)
                 except Exception as e:
-                    log.debug(_("In easy install, can't create list of partitions"))
+                    log.debug(_("In alongside install, can't create list of partitions"))
 
+        # assign our new model to our treeview
+        self.treeview.set_model(self.treeview_store)
+        self.treeview.expand_all()
+                    
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
 

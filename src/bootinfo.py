@@ -35,7 +35,7 @@ import re
 def get_os(mountname):
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
-    OS = "unknown"
+    OS = _("unknown")
 
     win_dirs = ["windows", "Windows", "WINDOWS"]
     system_dirs = ["System32", "system32"]
@@ -55,12 +55,12 @@ def get_os(mountname):
                             OS = "Windows Vista"
                         elif seven_mark in f:
                             OS = "Windows 7"
-            if OS == "unknown":
+            if OS == _("unknown"):
                 for name in secevent_names:
                     p = os.path.join(mountname, windows, system, "config", name)
                     if os.path.exists(p):
                         OS = "Windows XP"
-    if OS == "unknown":
+    if OS == _("unknown"):
         p = os.path.join(mountname, "ReactOS/system32/config/SecEvent.Evt")
         if os.path.exists(p):
             OS = "ReactOS"
@@ -81,7 +81,7 @@ def get_os(mountname):
 
     # Linuxes
     
-    if OS == "unknown":
+    if OS == _("unknown"):
         linux_names = ["issue", "slackware_version"]
         for name in linux_names:
             p = os.path.join(mountname, "etc", name)
