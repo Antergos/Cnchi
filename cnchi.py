@@ -55,7 +55,7 @@ import keymap
 import timezone
 import installation_ask
 import installation_automatic
-import installation_easy
+import installation_alongside
 import installation_advanced
 import user_info
 import slides
@@ -177,7 +177,7 @@ class Main(Gtk.Window):
         self.pages["timezone"] = timezone.Timezone(params)
         self.pages["installation_ask"] = installation_ask.InstallationAsk(params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(params)
-        self.pages["installation_easy"] = installation_easy.InstallationEasy(params)
+        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(params)
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(params)
         self.pages["user_info"] = user_info.UserInfo(params)
         self.pages["slides"] = slides.Slides(params)

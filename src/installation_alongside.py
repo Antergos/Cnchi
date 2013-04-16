@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_easy.py
+#  installation_alongside.py
 #  
 #  Copyright 2013 Cinnarch
 #  
@@ -44,7 +44,7 @@ import installation_thread
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
-class InstallationEasy(Gtk.Box):
+class InstallationAlongside(Gtk.Box):
 
     def __init__(self, params):
         self.title = params['title']
@@ -56,7 +56,7 @@ class InstallationEasy(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_easy.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
 
         self.label = dict()
         self.label['info'] = self.ui.get_object("label_info")

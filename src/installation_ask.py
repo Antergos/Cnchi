@@ -55,8 +55,8 @@ class InstallationAsk(Gtk.Box):
         image = self.ui.get_object("automatic_image")
         image.set_from_file(partitioner_dir + "automatic.png")
 
-        image = self.ui.get_object("easy_image")
-        image.set_from_file(partitioner_dir + "easy.png")
+        image = self.ui.get_object("alongside_image")
+        image.set_from_file(partitioner_dir + "alongside.png")
 
         image = self.ui.get_object("advanced_image")
         image.set_from_file(partitioner_dir + "advanced.png")
@@ -91,11 +91,11 @@ class InstallationAsk(Gtk.Box):
         label.set_markup(txt)
         label.set_line_wrap(True)
         
-        radio = self.ui.get_object("easy_radiobutton")
-        radio.set_label(_("Choose where to install Cinnarch (easy)"))
+        radio = self.ui.get_object("alongside_radiobutton")
+        radio.set_label(_("Install alongside other OSes"))
 
-        label = self.ui.get_object("easy_description")
-        txt = _("You will have to choose where to install Cinnarch. You will be only asked for the mount points of your root and swap devices.")
+        label = self.ui.get_object("alongside_description")
+        txt = _("With this option you will be installing this OS alongside the other OSes you have already installed.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
@@ -112,8 +112,8 @@ class InstallationAsk(Gtk.Box):
     def store_values(self):
         if self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
-        elif self.next_page == "installation_easy":
-            self.settings.set('partition_mode', 'easy')
+        elif self.next_page == "installation_alongside":
+            self.settings.set('partition_mode', 'alongside')
         else:
             self.settings.set('partition_mode', 'advanced')
         return True
@@ -130,7 +130,7 @@ class InstallationAsk(Gtk.Box):
 
     def on_easy_radiobutton_toggled(self, widget):
         if widget.get_active():
-            self.next_page = "installation_easy"
+            self.next_page = "installation_alongside"
 
     def on_advanced_radiobutton_toggled(self, widget):
         if widget.get_active():
