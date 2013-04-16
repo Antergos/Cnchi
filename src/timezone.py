@@ -35,6 +35,7 @@ import threading
 import multiprocessing
 import queue
 import urllib.request
+import urllib.error
 import time
 import queue
 import datetime
@@ -392,6 +393,7 @@ class GenerateMirrorListThread(threading.Thread):
                 with open('/tmp/country_mirrorlist','wb') as f:
                     f.write(country_mirrorlist)
         except URLError as e:
+            log.debug(e.reason)
             self.queue_event('error', "Can't retrieve country mirrorlist.")
 
         try:
