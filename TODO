@@ -23,9 +23,11 @@ CNCHI TODO LIST (05 Apr 2013)
  - We forgot to use the user keyboard input choice in the target system. We're setting
  the keymap choosed from boot
 
-FUTURE:
+Alongside branch:
 * Autodetect already installed OSes (see bootinfo.py)
 * Add a new install option: install alongside other OSes.
+
+FUTURE:
 * Remove Easy install option?
 * EFI support
 * LVM
