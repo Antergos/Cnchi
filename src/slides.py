@@ -41,6 +41,9 @@ import misc
 _next_page = None
 _prev_page = None
 
+def _(string):
+    pass
+
 class Slides(Gtk.Box):
 
     def __init__(self, params):
@@ -162,4 +165,3 @@ class Slides(Gtk.Box):
     def reboot(self):
         os.system("sync")
         subprocess.call(["/sbin/reboot", "--reboot", "--force", "--no-wall"])
-

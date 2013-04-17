@@ -158,11 +158,12 @@ class InstallationAlongside(Gtk.Box):
         self.treeview.expand_all()
 
     def on_treeview_cursor_changed(self, widget):
-        print("ROW ACTIVATED")
         self.forward_button.set_sensitive(True)            
         return False
 
     def start_installation(self):
+        pass
+        '''
         #self.install_progress.set_sensitive(True)
 
         mount_devices = {}
@@ -190,3 +191,4 @@ class InstallationAlongside(Gtk.Box):
                         fs_devices)
         
         self.thread.start()
+        '''
