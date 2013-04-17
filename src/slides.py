@@ -173,8 +173,14 @@ class TestWindow(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(800, 500)
+        self.ui = Gtk.Builder()
+        self.ui.add_from_file("/usr/share/cnchi/ui/cnchi.ui")
+
+        self.add(self.ui.get_object("main"))
+
+        self.main_box = self.ui.get_object("main_box")
         
-        self.add(box)
+        self.main_box.add(box)
 
 if __name__ == '__main__':
     import gettext
@@ -198,7 +204,7 @@ if __name__ == '__main__':
 
     params = {}
     params['title'] = "TITLE"
-    params['ui_dir'] = "/home/karasu/Cnchi/ui"
+    params['ui_dir'] = "/usr/share/cnchi/ui"
     params['forward_button'] = None
     params['backwards_button'] = None
     params['exit_button'] = None
