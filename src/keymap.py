@@ -124,6 +124,8 @@ class Keymap(Gtk.Box):
     def fill_layout_treeview(self):
         lang = self.settings.get("language_code")
 
+        keyboard_names._default_filename = self.filename
+        
         if not keyboard_names.has_language(lang):
             lang = "C"
 

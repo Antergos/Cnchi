@@ -41,9 +41,6 @@ import misc
 _next_page = None
 _prev_page = None
 
-def _(string):
-    pass
-
 class Slides(Gtk.Box):
 
     def __init__(self, params):
@@ -68,7 +65,10 @@ class Slides(Gtk.Box):
 
         self.webview = WebKit.WebView()
         
-        html_file = os.path.join(self.settings.get("DATA_DIR"), 'slides.html')
+        if self.settings == None:
+            html_file = '/usr/share/cnchi/data/slides.html'
+        else:
+            html_file = os.path.join(self.settings.get("DATA_DIR"), 'slides.html')
         
         try:
             with open(html_file) as html_stream:
@@ -165,3 +165,50 @@ class Slides(Gtk.Box):
     def reboot(self):
         os.system("sync")
         subprocess.call(["/sbin/reboot", "--reboot", "--force", "--no-wall"])
+
+class TestWindow(Gtk.Window):
+    def __init__(self, box):
+        Gtk.Window.__init__(self, title='Cinnarch Installer Test')
+        self.set_title(_('Cinnarch Installer'))
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_resizable(False)
+        self.set_size_request(800, 500)
+        
+        self.add(box)
+
+if __name__ == '__main__':
+    import gettext
+    import locale
+    
+    print("Testing slides screen")
+    
+    APP = "Cinnarch Test Window"
+    DIR = "/usr/share/locale"
+    
+    # This allows to translate all py texts (not the glade ones)
+    gettext.textdomain(APP)
+    gettext.bindtextdomain(APP, DIR)
+
+    locale_code, encoding = locale.getdefaultlocale()
+    lang = gettext.translation (APP, DIR, [locale_code], None, True)
+    lang.install()
+
+    # With this we can use _("string") to translate
+    gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
+
+    params = {}
+    params['title'] = "TITLE"
+    params['ui_dir'] = "/home/karasu/Cnchi/ui"
+    params['forward_button'] = None
+    params['backwards_button'] = None
+    params['exit_button'] = None
+    params['callback_queue'] = None
+    params['settings'] = None
+    
+    slides = Slides(params)
+    
+    w = TestWindow(slides)
+    
+    w.show_all()
+    
+    Gtk.main()
