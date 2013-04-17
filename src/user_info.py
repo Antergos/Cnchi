@@ -188,13 +188,10 @@ class UserInfo(Gtk.Box):
         if len(value) == 0:
             self.ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
             self.ok[element].show()
-            txt = _('You must enter a name')
-            txt = '<small><span color="darkred">%s</span></small>' % (txt)
-            self.error_label[element].set_markup(txt)
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
-
+            print(result)
             if len(result) == 0:
                 self.ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
                 self.ok[element].show()
@@ -209,6 +206,10 @@ class UserInfo(Gtk.Box):
                     self.error_label[element].set_markup(txt)
                 elif validation.NAME_BADDOTS in result:
                     txt = _("Contains consecutive, initial and/or final dots")
+                    txt = "<small><span color='darkred'>%s</span></small>" % txt
+                    self.error_label[element].set_markup(txt)
+                elif validation.NAME_LENGTH in result:
+                    txt = _("Too many characters")
                     txt = "<small><span color='darkred'>%s</span></small>" % txt
                     self.error_label[element].set_markup(txt)
 

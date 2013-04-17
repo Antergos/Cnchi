@@ -16,10 +16,10 @@
 #    along with cnchi; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-# Use the -dev suffix for development releases, it will enable the dummy backend
-cnchi_VERSION = "0.1"
+
+cnchi_VERSION = "0.1.1"
 cnchi_LAST_STABLE = "-"
-cnchi_WEBSITE = "http://www.cnchi.com"
+cnchi_WEBSITE = "http://www.cinnarch.com"
 cnchi_AUTHORS = "faidoc, karasu, skinner, arcnexus, omelchek"
 cnchi_LICENSE = '''
     cnchi is free software; you can redistribute it and/or modify

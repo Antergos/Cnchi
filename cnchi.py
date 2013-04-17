@@ -35,10 +35,6 @@ import getopt
 import gettext
 import locale
 
-# Version 0.1.1
-_version_hi = 0
-_version_lo = 1
-_version_release = 1
 
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -61,6 +57,7 @@ import user_info
 import slides
 import misc
 import log
+import info
 
 import queue
 
@@ -315,7 +312,7 @@ class Main(Gtk.Window):
                     self.backwards_button.hide()
 
 if __name__ == '__main__':
-    print("Cnchi installer version %d.%d.%d" % (_version_hi, _version_lo, _version_release))
+    print("Cnchi installer version %s" % info.cnchi_VERSION)
 
     argv = sys.argv[1:]
     
