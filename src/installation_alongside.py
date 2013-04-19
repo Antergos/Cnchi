@@ -158,11 +158,37 @@ class InstallationAlongside(Gtk.Box):
         self.treeview.expand_all()
 
     def on_treeview_cursor_changed(self, widget):
-        self.forward_button.set_sensitive(True)            
+        selection = self.treeview.get_selection()
+        
+        if not selection:
+            return
+            
+        model, tree_iter = selection.get_selected()
+
+        if tree_iter == None:
+            return
+        
+        self.row = model[tree_iter]
+
+        self.forward_button.set_sensitive(True)
+        
         return False
+        
+    def ask_shrink_size()
+        return 0
 
     def start_installation(self):
-        pass
+        
+        new_size = ask_shrink_size()
+        
+        mount_devices = {}
+        mount_devices["alongside"] = self.row[0]
+        
+        # Alongside method shrinks selected partition
+        # and creates root and swap partition in the available space
+        fs_devices = {}
+        
+        
         '''
         #self.install_progress.set_sensitive(True)
 

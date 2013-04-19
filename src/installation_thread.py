@@ -50,6 +50,7 @@ parted_dir = os.path.join(base_dir, 'parted')
 sys.path.insert(0, parted_dir)
 
 import fs_module as fs
+import partition_module as pm
 import misc
 
 import pac
@@ -126,18 +127,19 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
                 return False
-                    
+
+        if self.method == 'alongside':
+            # Alongside method shrinks selected partition
+            # and creates root and swap partition in the available space
+            # (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
+            boot_partition, root_partition = shrink(self.mount_devices["alongside"])
         
-        if self.method == 'easy' or self.method == 'advanced':
+        if self.method == 'advanced':
             root_partition = self.mount_devices["/"]
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
-
-        if self.method == 'easy':
-            # Easy method formats root by default
-            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
         if self.method == 'advanced':
             # TODO: format partitions using mkfs (but which ones?)
@@ -198,6 +200,20 @@ class InstallationThread(threading.Thread):
         self.running = False
         return True
 
+    
+    
+    
+    def shrink(self, shrink_part)
+        #fs.shrink(device, fs_type, new_size):
+        #pm.shrink(part, new_size):
+
+        #boot_partition, root_partition = shrink(self.mount_devices["alongside"])
+        pass
+
+    
+    
+    
+    
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
         self.queue_event('debug', "Creating pacman.conf for %s architecture" % self.arch)

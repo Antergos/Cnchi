@@ -136,7 +136,7 @@ def is_ssd(disk_path):
     
     return ssd
 
-def shrink_fs(device, fs_type, new_size):
+def shrink(device, fs_type, new_size):
     used_size = get_used_space(part, fstype)
     
     fs_type = fs_type.lower()

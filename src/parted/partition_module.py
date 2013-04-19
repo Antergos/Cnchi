@@ -302,7 +302,8 @@ def order_partitions(partdic):
     return x
 
 @misc.raise_privileges    
-def shrink_partition(part, new_size):
+# shrinks partition part
+def shrink(part, new_size):
     # TODO: delete partition and create it again with the new size
     # ALERT: The file system must be shrinked before
     pass
