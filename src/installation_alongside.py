@@ -75,9 +75,29 @@ class InstallationAlongside(Gtk.Box):
         self.treeview_store = None
         self.prepare_treeview()
         self.populate_treeview()
+        
+        # Init dialog slider
+        self.init_slider()
 
         super().add(self.ui.get_object("installation_alongside"))
 
+    def init_slider(self):
+        dialog = self.ui.get_object("shrink-dialog")
+        slider = self.ui.get_object("scale")
+
+        #slider.add_events(Gdk.EventMask.SCROLL_MASK)
+
+        '''
+        slider.connect("value_changed",
+                self.main.on_volume_changed)
+        slider.connect("button_press_event",
+                self.on_scale_button_press_event)
+        slider.connect("button_release_event",
+                self.on_scale_button_release_event)
+        slider.connect("scroll_event",
+                self.on_scale_scroll_event)
+        '''
+    
     def translate_ui(self):
         txt = _("Choose next to which OS you want to install Cinnarch")
         txt = '<span size="large">%s</span>' % txt
@@ -187,9 +207,6 @@ class InstallationAlongside(Gtk.Box):
         except subprocess.CalledProcessError as e:
             print("CalledProcessError.output = %s" % e.output)
 
-        print("Final min_size: %d" % min_size)
-        print("Final max_size: %d" % max_size)
-        
         if min_size < max_size:
             self.new_size = self.ask_shrink_size(min_size, max_size)
             print("new_size: %d" % self.new_size)
@@ -209,12 +226,22 @@ class InstallationAlongside(Gtk.Box):
         
         # Set scale GtkScale
         # value, lower, upper, step_incr, page_incr, page_size
-        adj = Gtk.Adjustment(min_size, min_size, max_size, 1, 10, 0)
+        #adj = Gtk.Adjustment(max_size, min_size, max_size, 1, 10, 0)
         
-        scale = self.ui.get_object("scale")
-        scale.set_adjustment(adj)
-        scale.set_value(min_size)
+        slider = self.ui.get_object("scale")
+
+        #adj = Gtk.Adjustment(min_size, min_size, max_size, 1, 1, 0)
+        #slider.set_adjustment(adj)
         
+        slider.set_show_fill_level(True)
+        slider.set_fill_level(min_size)
+        slider.set_restrict_to_fill_level(False)
+        slider.set_value(min_size)
+        slider.set_range(0, max_size)
+        
+        
+       
+       
         response = dialog.run()
         
         if response == Gtk.ResponseType.OK:
