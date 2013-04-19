@@ -203,7 +203,7 @@ class Main(Gtk.Window):
         # Header style testing
         style_provider = Gtk.CssProvider()
 
-        style_css = os.path.join(self.settings.get("DATA_DIR"), "gtk-style.css")
+        style_css = os.path.join(self.settings.get("DATA_DIR"), "css", "gtk-style.css")
 
         with open(style_css, 'rb') as css:
             css_data = css.read()

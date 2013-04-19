@@ -30,7 +30,7 @@
 
 import xml.etree.ElementTree as etree
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 import sys
 import os
@@ -84,9 +84,27 @@ class InstallationAlongside(Gtk.Box):
     def init_slider(self):
         dialog = self.ui.get_object("shrink-dialog")
         slider = self.ui.get_object("scale")
+        
+        slider.set_name("myslider")
+        path = os.path.join(self.settings.get("DATA_DIR"), "css", "scale.css")
+        
+        if os.path.exists(path):
+            with open(path, "rb") as css:
+                css_data = css.read()
+            
+            provider = Gtk.CssProvider()
+            
+            provider.load_from_data(css_data)
+
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(), provider,     
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
+        
 
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)
 
+        slider.connect("change-value", self.slider_change_value)
         '''
         slider.connect("value_changed",
                 self.main.on_volume_changed)
@@ -97,6 +115,10 @@ class InstallationAlongside(Gtk.Box):
         slider.connect("scroll_event",
                 self.on_scale_scroll_event)
         '''
+    
+    def slider_change_value(self, slider, scroll, value):
+        slider.set_fill_level(value)
+        return False
     
     def translate_ui(self):
         txt = _("Choose next to which OS you want to install Cinnarch")
@@ -202,8 +224,8 @@ class InstallationAlongside(Gtk.Box):
             x = subprocess.check_output(['df', partition_path]).decode()
             x = x.split('\n')
             x = x[1].split()
-            max_size = int(x[1])
-            min_size = int(x[2])
+            max_size = int(x[1]) / 1000
+            min_size = int(x[2]) / 1000
         except subprocess.CalledProcessError as e:
             print("CalledProcessError.output = %s" % e.output)
 
@@ -230,14 +252,22 @@ class InstallationAlongside(Gtk.Box):
         
         slider = self.ui.get_object("scale")
 
-        #adj = Gtk.Adjustment(min_size, min_size, max_size, 1, 1, 0)
+
+
+
+
+        #adj = Gtk.Adjustment(min_size, max_size, min_size, -1, 1, 0)
         #slider.set_adjustment(adj)
         
         slider.set_show_fill_level(True)
-        slider.set_fill_level(min_size)
+        slider.set_fill_level(max_size)
         slider.set_restrict_to_fill_level(False)
         slider.set_value(min_size)
         slider.set_range(0, max_size)
+        #slider.set_inverted(True)
+        #slider.set_min_slider_size(min_size)
+        #slider.set_direction(Gtk.TextDirection.RTL)
+        
         
         
        
