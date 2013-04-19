@@ -37,7 +37,7 @@ import locale
 
 # Version 0.1.1
 _version_hi = 0
-_version_lo = 1
+_version_lo = 2
 _version_release = 1
 
 # Insert the src directory at the front of the path.
@@ -196,7 +196,6 @@ class Main(Gtk.Window):
         self.set_icon_from_file(icon_dir)
 
         # set the first page to show
-        #self.current_page = self.pages["language"]
         self.current_page = self.pages["welcome"]
 
         self.main_box.add(self.current_page)
@@ -206,9 +205,8 @@ class Main(Gtk.Window):
 
         style_css = os.path.join(self.settings.get("DATA_DIR"), "gtk-style.css")
 
-        css = open(style_css, 'rb')
-        css_data = css.read()
-        css.close()
+        with open(style_css, 'rb') as css:
+            css_data = css.read()
 
         style_provider.load_from_data(css_data)
 
@@ -253,8 +251,6 @@ class Main(Gtk.Window):
                 os.remove(p)
          
     def on_exit_button_clicked(self, widget, data=None):
-        #don't worry about this
-        #self.pages["timezone"].stop_thread()
         self.remove_temp_files()
         print("Quiting...")
         Gtk.main_quit()

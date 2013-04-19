@@ -28,7 +28,7 @@
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import subprocess, sys, os
 import gettext
 import os
@@ -47,7 +47,6 @@ _next_page = "language"
 _prev_page = None
 
 class Welcome(Gtk.Box):
-
     def __init__(self, params):
         self.title = params['title']
         self.ui_dir = params['ui_dir']
@@ -87,7 +86,9 @@ class Welcome(Gtk.Box):
             self.image[key].set_from_file(self.filename[key])
         
         self.translate_ui()
-
+        
+        self.set_name("welcome")
+        
         super().add(self.ui.get_object("welcome"))
 
     def translate_ui(self):

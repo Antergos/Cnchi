@@ -8,6 +8,9 @@
     <property name="bottom_padding">10</property>
     <property name="left_padding">10</property>
     <property name="right_padding">10</property>
+    <style>
+      <class name="welcome"/>
+    </style>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>

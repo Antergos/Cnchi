@@ -30,7 +30,6 @@
 
 import subprocess
 import shlex
-
 import misc
 
 @misc.raise_privileges

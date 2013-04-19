@@ -232,7 +232,9 @@ def check_mounted(part):
         return 0
 
 def get_used_space(part):
-    path = part.path
+    return get_used_space_from_path(part.path)
+
+def get_used_space_from_path(path):
     try:
         x = subprocess.check_output(shlex.split('df -H %s' % path)).decode()
         y = x.split('\n')
@@ -302,8 +304,8 @@ def order_partitions(partdic):
     return x
 
 @misc.raise_privileges    
-# shrinks partition part
 def shrink(part, new_size):
+    # shrinks partition part
     # TODO: delete partition and create it again with the new size
     # ALERT: The file system must be shrinked before
     pass

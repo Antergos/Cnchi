@@ -39,6 +39,7 @@ import parted
 import log
 import show_message as show
 import bootinfo
+import subprocess
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -169,25 +170,70 @@ class InstallationAlongside(Gtk.Box):
             return
         
         self.row = model[tree_iter]
+        
+        partition_path = self.row[0]
+        
+        print("partition_path: ", partition_path)
+        
+        min_size = 0
+        max_size = 0
 
-        self.forward_button.set_sensitive(True)
+        try:
+            x = subprocess.check_output(['df', partition_path]).decode()
+            x = x.split('\n')
+            x = x[1].split()
+            max_size = int(x[1])
+            min_size = int(x[2])
+        except subprocess.CalledProcessError as e:
+            print("CalledProcessError.output = %s" % e.output)
+
+        print("Final min_size: %d" % min_size)
+        print("Final max_size: %d" % max_size)
+        
+        if min_size < max_size:
+            self.new_size = self.ask_shrink_size(min_size, max_size)
+            print("new_size: %d" % self.new_size)
+
+            if self.new_size > 0:
+                self.forward_button.set_sensitive(True)
+        else:
+            # Can't shrink the partition (maybe it's nearly full)
+            # TODO: Show error message but let the user choose
+            # another install method
+            pass
         
         return False
         
-    def ask_shrink_size()
+    def ask_shrink_size(self, min_size, max_size):
+        dialog = self.ui.get_object("shrink-dialog")
+        
+        # Set scale GtkScale
+        # value, lower, upper, step_incr, page_incr, page_size
+        adj = Gtk.Adjustment(min_size, min_size, max_size, 1, 10, 0)
+        
+        scale = self.ui.get_object("scale")
+        scale.set_adjustment(adj)
+        scale.set_value(min_size)
+        
+        response = dialog.run()
+        
+        if response == Gtk.ResponseType.OK:
+            pass
+        
+        dialog.hide()
+
         return 0
 
     def start_installation(self):
-        
-        new_size = ask_shrink_size()
-        
-        mount_devices = {}
-        mount_devices["alongside"] = self.row[0]
-        
         # Alongside method shrinks selected partition
         # and creates root and swap partition in the available space
-        fs_devices = {}
+                
+            
+        mount_devices = {}
+        mount_devices["alongside"] = device
+        mount_devices["new_size"] = self.new_size
         
+        fs_devices = {}
         
         '''
         #self.install_progress.set_sensitive(True)

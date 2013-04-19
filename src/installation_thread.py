@@ -203,7 +203,7 @@ class InstallationThread(threading.Thread):
     
     
     
-    def shrink(self, shrink_part)
+    def shrink(self, shrink_part):
         #fs.shrink(device, fs_type, new_size):
         #pm.shrink(part, new_size):
 
