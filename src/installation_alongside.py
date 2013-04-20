@@ -53,6 +53,9 @@ import installation_thread
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
+# leave at least 3GB for Antergos when shrinking
+_minimum_space_for_antergos = 3000
+
 class InstallationAlongside(Gtk.Box):
 
     def __init__(self, params):
@@ -88,6 +91,8 @@ class InstallationAlongside(Gtk.Box):
         slider.set_name("myslider")
         path = os.path.join(self.settings.get("DATA_DIR"), "css", "scale.css")
         
+        self.available_slider_range = [0, 0]
+        
         if os.path.exists(path):
             with open(path, "rb") as css:
                 css_data = css.read()
@@ -117,8 +122,13 @@ class InstallationAlongside(Gtk.Box):
         '''
     
     def slider_change_value(self, slider, scroll, value):
-        slider.set_fill_level(value)
-        return False
+        if value <= self.available_slider_range[0] or \
+           value >= self.available_slider_range[1]:
+            return True
+        else:
+            slider.set_fill_level(value)
+            self.update_ask_shrink_size_labels(value)
+            return False
     
     def translate_ui(self):
         txt = _("Choose next to which OS you want to install Cinnarch")
@@ -214,101 +224,116 @@ class InstallationAlongside(Gtk.Box):
         self.row = model[tree_iter]
         
         partition_path = self.row[0]
+        other_os_name = self.row[1]
         
-        print("partition_path: ", partition_path)
-        
-        min_size = 0
-        max_size = 0
+        self.min_size = 0
+        self.max_size = 0
+        self.new_size = 0
 
         try:
             x = subprocess.check_output(['df', partition_path]).decode()
             x = x.split('\n')
             x = x[1].split()
-            max_size = int(x[1]) / 1000
-            min_size = int(x[2]) / 1000
+            self.max_size = int(x[1]) / 1000
+            self.min_size = int(x[2]) / 1000
         except subprocess.CalledProcessError as e:
             print("CalledProcessError.output = %s" % e.output)
 
-        if min_size < max_size:
-            self.new_size = self.ask_shrink_size(min_size, max_size)
-            print("new_size: %d" % self.new_size)
-
-            if self.new_size > 0:
-                self.forward_button.set_sensitive(True)
+        if self.min_size + _minimum_space_for_antergos < self.max_size:
+            self.new_size = self.ask_shrink_size(other_os_name)
         else:
             # Can't shrink the partition (maybe it's nearly full)
             # TODO: Show error message but let the user choose
             # another install method
             pass
+
+        if self.new_size > 0:
+            self.forward_button.set_sensitive(True)
+        else:
+            self.forward_button.set_sensitive(False)
         
         return False
+
+    def update_ask_shrink_size_labels(self, new_value):
+        label_other_os_size = self.ui.get_object("label_other_os_size")
+        label_other_os_size.set_markup(str(int(new_value)) + " MB")
+
+        label_antergos_size = self.ui.get_object("label_antergos_size")
+        label_antergos_size.set_markup(str(int(self.max_size - new_value)) + " MB")
         
-    def ask_shrink_size(self, min_size, max_size):
+    def ask_shrink_size(self, other_os_name):
         dialog = self.ui.get_object("shrink-dialog")
-        
-        # Set scale GtkScale
-        # value, lower, upper, step_incr, page_incr, page_size
-        #adj = Gtk.Adjustment(max_size, min_size, max_size, 1, 10, 0)
-        
+                
         slider = self.ui.get_object("scale")
 
+        # leave space for Antergos
+        self.available_slider_range = [ self.min_size, self.max_size - _minimum_space_for_antergos ]
 
-
-
-
-        #adj = Gtk.Adjustment(min_size, max_size, min_size, -1, 1, 0)
-        #slider.set_adjustment(adj)
-        
+        slider.set_fill_level(self.min_size)
         slider.set_show_fill_level(True)
-        slider.set_fill_level(max_size)
         slider.set_restrict_to_fill_level(False)
-        slider.set_value(min_size)
-        slider.set_range(0, max_size)
-        #slider.set_inverted(True)
-        #slider.set_min_slider_size(min_size)
-        #slider.set_direction(Gtk.TextDirection.RTL)
+        slider.set_range(0, self.max_size)
+        slider.set_value(self.min_size)
+        slider.set_draw_value(False)
         
+        label_other_os = self.ui.get_object("label_other_os")
+        txt = "<span weight='bold' size='large'>%s</span>" % other_os_name
+        label_other_os.set_markup(txt)
+
+        label_antergos = self.ui.get_object("label_antergos")
+        txt = "<span weight='bold' size='large'>Antergos</span>"
+        label_antergos.set_markup(txt)
         
-        
-       
+        self.update_ask_shrink_size_labels(self.min_size)
        
         response = dialog.run()
+
+        value = 0
         
         if response == Gtk.ResponseType.OK:
-            pass
+            value = int(slider.get_value()) + 1
         
         dialog.hide()
 
-        return 0
+        return value
 
     def start_installation(self):
         # Alongside method shrinks selected partition
         # and creates root and swap partition in the available space
-                
-            
-        mount_devices = {}
-        mount_devices["alongside"] = device
-        mount_devices["new_size"] = self.new_size
         
-        fs_devices = {}
+        partition_path = self.row[0]
+        device_path = self.row[0][:-1]
+        new_size = self.new_size
         
+        print("partition_path: ", partition_path)
+        print("device_path: ", device_path)
+        print("new_size: ", new_size)
+        
+        # Find out how many primary partitions device has, and also
+        # if there's already an extended partition
+
+
+
+
         '''
-        #self.install_progress.set_sensitive(True)
-
+        # Prepare info for installer_thread
         mount_devices = {}
-        mount_devices["/"] = self.combobox["root"].get_active_text()
-        mount_devices["swap"] = self.combobox["swap"].get_active_text()
-
-        # Easy method formats root and swap by default
-        # should we ask the user or directly use ext4 ?
-
+        mount_devices["/"] =
+        mount_devices["swap"] = 
+        
         root = mount_devices["/"]
         swap = mount_devices["swap"]
         
         fs_devices = {}
         fs_devices[root] = "ext4"
         fs_devices[swap] = "swap"
-        
+        fs_devices[partition_path] = self.row[2]
+        '''
+
+
+
+
+        '''        
         # TODO: Ask where to install GRUB
         grub_device = mount_devices["/"]
 
