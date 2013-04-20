@@ -43,7 +43,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 
-_next_page = "installation_ask"
+_next_page = "desktop_ask"
 _prev_page = "location"
 
 class Check(Gtk.Box):
