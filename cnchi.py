@@ -47,7 +47,6 @@ import welcome
 import language
 import location
 import check
-import desktop_ask
 import keymap
 import timezone
 import installation_ask
@@ -171,7 +170,6 @@ class Main(Gtk.Window):
         self.pages["language"] = language.Language(params)
         self.pages["location"] = location.Location(params)
         self.pages["check"] = check.Check(params)
-        self.pages["desktop_ask"] = desktop_ask.DesktopAsk(params)
         self.pages["keymap"] = keymap.Keymap(params)
         self.pages["timezone"] = timezone.Timezone(params)
         self.pages["installation_ask"] = installation_ask.InstallationAsk(params)
