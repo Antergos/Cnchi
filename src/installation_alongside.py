@@ -306,7 +306,7 @@ class InstallationAlongside(Gtk.Box):
             if d in line:
                 part = line.split()[3]
                 if part != d:
-                    parts.append(part)
+                    parts.append("/dev/" + part)
         return parts
         
 
