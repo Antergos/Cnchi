@@ -296,6 +296,19 @@ class InstallationAlongside(Gtk.Box):
         dialog.hide()
 
         return value
+        
+    def get_partitions(self, device_path):
+        parts = []
+        d = device_path.split("/")[2]
+        with open ("/proc/partitions", "rt") as f:
+            txt = f.readlines()
+        for line in txt:
+            if d in line:
+                part = line.split()[3]
+                if part != d:
+                    parts.append(part)
+        return parts
+        
 
     def start_installation(self):
         # Alongside method shrinks selected partition
@@ -312,7 +325,10 @@ class InstallationAlongside(Gtk.Box):
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
 
-
+        parts = self.get_partitions(device_path)
+        
+        for part in parts:
+            print(part)
 
 
         '''
