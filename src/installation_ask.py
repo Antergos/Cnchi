@@ -35,7 +35,7 @@ import os
 
 import config
 
-_prev_page = "check"
+_prev_page = "desktop_ask"
 
 class InstallationAsk(Gtk.Box):
 

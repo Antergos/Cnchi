@@ -54,6 +54,7 @@ class Settings():
             'timezone_longitude' : 0, \
             'timezone_done' : False, \
             'use_ntp' : True, \
+            'desktop' : 'gnome', \
             'partition_mode' : 'easy', \
             'auto_device' : '/dev/sda', \
             'log_file' : '/tmp/cnchi.log', \
