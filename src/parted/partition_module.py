@@ -176,7 +176,7 @@ def create_partition(diskob, part_type, geom):
     # This case should be caught in the frontend!
     # Never let user specify a length exceeding the free space.
     if nend > diskob.device.length - 1:
-        nend = diskob.device.length -1
+        nend = diskob.device.length - 1
     nalign = diskob.partitionAlignment
     if not nalign.isAligned(geom, nstart):
         nstart = nalign.alignNearest(geom, nstart)
@@ -268,9 +268,9 @@ def get_largest_size(diskob, part):
 74	        PED_PARTITION_DIAG=14,
 75	        PED_PARTITION_LEGACY_BOOT=15
 '''
-#The return value is tuple.  First arg is 0 for success, 1 for fail
-#Secong arg is either None if successful
-#or exception if failure
+# The return value is tuple.  First arg is 0 for success, 1 for fail
+# Second arg is either None if successful
+# or exception if failure
 def set_flag(flagno, part):
     ret = (0, None)
     try:
@@ -304,11 +304,69 @@ def order_partitions(partdic):
     return x
 
 @misc.raise_privileges    
-def shrink(part, new_size):
-    # shrinks partition part
-    # TODO: delete partition and create it again with the new size
-    # ALERT: The file system must be shrinked before
-    pass
+def shrink(device_path, partition_path, new_size_in_mb):
+    # shrinks partition: deletes the partition and creates
+    # two new ones.
+    # ALERT: The file system must be shrinked before!
+
+    disk_dic = get_devices()
+    disk = disk_dic[device_path]
+    
+    part_dic = get_partitions(disk)
+    part = part_dic[partition_path]
+
+    if not check_mounted(part):
+        delete_partition(disk, part)
+    else:
+        print(partition_path + ' is mounted, unmount first')
+        return False
+        
+    # ok, partition deleted. Now we must create the new partitions with
+    # the new size
+    
+    sec_size = disk.sectorSize
+    print("Sec size: ", sec_size)
+
+    # Get old info
+    old_start_sector = part.geometry.start
+    old_end_sector = part.gemotry.end
+    old_length = part.geometry.length
+    old_size_in_mb = old_length * sec_size / (limiter * limiter)
+        #print(startbyte, endbyte)
+        #lets calcule its size in something ppl understand
+        #psize = plength * dev.sectorSize
+        #just calculating it in more sane formats
+        #should probably add in something like
+        #if psizemb < 1000 then display as MB, else as GB
+        #I can't think of a case of less than 1mb partition
+        #psizemb = psize / (limiter * limiter)
+
+
+    old_size_in_mb = 
+    
+    
+    if f.geometry.end < 2048:
+            continue
+        else:
+            if f.geometry.start < 2048:
+                f.geometry.start = 2048
+    
+
+    length = int(new_size_in_mb * 1000000 / sec_size)
+    end_sector = start_sector + length
+    my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
+    #create_partition(disk, 0, my_geometry)
+    print("create_partition ", my_geometry)
+    
+    new_size_in_mb = old_size_in_mb - new_size_in_mb
+    start_sector = end_sector + 1
+    length = int(new_size_in_mb * 1000000 / sec_size)
+    end_sector = start_sector + length
+    my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
+    #create_partition(disk, 0, my_geometry)
+    print("create_partition ", my_geometry)
+
+    #finalize_changes(disk)
 
 # ----------------------------------------------------------------------------
 # Usage example

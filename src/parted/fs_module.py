@@ -136,7 +136,7 @@ def is_ssd(disk_path):
     
     return ssd
 
-def shrink(device, fs_type, new_size):
+def shrink(part, fs_type, new_size_in_mb):
     used_size = get_used_space(part, fstype)
     
     fs_type = fs_type.lower()
@@ -145,9 +145,11 @@ def shrink(device, fs_type, new_size):
     
     if new_size < used_size:       
         if 'ntfs' in fs_type:
-            res = resize_ntfs(device, new_size)
+            res = resize_ntfs(part, new_size_in_mb)
         elif 'fat' in fs_type:
-            res = resize_fat(device, new_size)
+            res = resize_fat(part, new_size_in_mb)
+        elif 'ext' in fs_type:
+            res = resize_ext(part, new_size_in_mb)
     else:
         print ("New size must be smaller than old size!")
         res = False
@@ -155,11 +157,11 @@ def shrink(device, fs_type, new_size):
     return res
 
 @misc.raise_privileges    
-def resize_ntfs(device, new_size):
+def resize_ntfs(device, new_size_in_mb):
     used = 0
     #SIZE[k|M|G]        
     try:
-        x = subprocess.check_output(["ntfsresize", "--size", new_size, part])
+        x = subprocess.check_output(["ntfsresize", "--size", new_size_in_mb+"M", part])
     except Exception as e:
         x = None
         print(e)
@@ -167,7 +169,10 @@ def resize_ntfs(device, new_size):
     
     return True
 
-@misc.raise_privileges    
-def resize_fat(device, new_size):
-    pass
+@misc.raise_privileges
+def resize_fat(device, new_size_in_mb):
+    return False
     
+@misc.raise_privileges
+def resize_ext(device, new_size_in_mb):
+    return False

@@ -179,6 +179,8 @@ class InstallationAlongside(Gtk.Box):
 
         oses = {}
         oses = bootinfo.get_os_dict()
+        
+        self.partitions = {}
 
         device_list = parted.getAllDevices()
         
@@ -203,6 +205,7 @@ class InstallationAlongside(Gtk.Box):
                                 else:
                                     row = [ p.path, _("unknown"), fs_type ]
                                 self.treeview_store.append(None, row)
+                        self.partitions[p.path] = p
                 except Exception as e:
                     log.debug(_("In alongside install, can't create list of partitions"))
 
@@ -297,25 +300,17 @@ class InstallationAlongside(Gtk.Box):
 
         return value
         
-    def get_partitions(self, device_path):
-        parts = []
-        d = device_path.split("/")[2]
-        with open ("/proc/partitions", "rt") as f:
-            txt = f.readlines()
-        for line in txt:
-            if d in line:
-                part = line.split()[3]
-                if part != d:
-                    parts.append("/dev/" + part)
-        return parts
-        
 
     def start_installation(self):
         # Alongside method shrinks selected partition
         # and creates root and swap partition in the available space
         
         partition_path = self.row[0]
+        fs_type = self.row[2]
+
+        # what if path is sda10 (two digits) ? this is wrong
         device_path = self.row[0][:-1]
+
         new_size = self.new_size
         
         print("partition_path: ", partition_path)
@@ -325,11 +320,26 @@ class InstallationAlongside(Gtk.Box):
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
 
-        parts = self.get_partitions(device_path)
+        extended_path = ""
+        primary_partitions = []
         
-        for part in parts:
-            print(part)
-
+        for path in self.partitions:
+            if device_path in path:
+                p = self.partitions[path]
+                if p.type == pm.PARTITION_EXTENDED:
+                    extended_path = path
+                elif p.type == pm.PARTITION_PRIMARY:
+                    primary_partitions.append(path)
+        
+        # If we don't have 3 or 4 primary partitions, we can
+        # create a new one
+        if len(primary_partitions) < 3:
+            # first, shrink file system
+            res = fs.shrink(partition_path, fs_type, new_size)
+            if res:
+                # destroy original partition
+                pass
+            
 
         '''
         # Prepare info for installer_thread
