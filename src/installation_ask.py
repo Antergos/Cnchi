@@ -35,7 +35,7 @@ import os
 
 import config
 
-_prev_page = "desktop_ask"
+_prev_page = "desktop"
 
 class InstallationAsk(Gtk.Box):
 
