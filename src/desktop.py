@@ -57,23 +57,33 @@ class DesktopAsk(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
+        self.desktop_mode = 'vanilla'
 
         self.set_desktop_list()
 
         super().add(self.ui.get_object("desktop"))
 
-    def translate_ui(self, desktop):
-        image = self.ui.get_object("image_desktop")     
+    def translate_ui(self, desktop, desktop_mode):
+        radio = self.ui.get_object("vanilla_radio")
+        radio.set_label(_("Vanilla"))
+        
+        radio = self.ui.get_object("flavoured_radio")
+        radio.set_label(_("Flavoured"))
 
+        image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
         if desktop == 'gnome':
             txt = _("<span weight='bold'>GNOME</span>\n" \
             "Gnome 3 is an easy and elegant way to use your \n" \
             "computer. It is designed to put you in control \n" \
-            "and bring freedom to everybody. GNOME 3 is \n" \
-            "developed by the GNOME community, a diverse, \n" \
-            "international group of contributors that is \n" \
-            "supported by an independent, non-profit foundation.")
+            "and bring freedom to everybody.")
+
+        elif desktop == 'cinnamon':
+            txt = _("<span weight='bold'>CINNAMON</span>\n" \
+            "Cinnamon it's a fork of GNOME Shell, initially \n" \
+            "developed by (and for) Linux Mint. It attempts to \n" \
+            "provide a more traditional user environment based \n" \
+            "on the desktop metaphor, like GNOME 2")
 
         elif desktop == 'xfce':
             txt = _("<span weight='bold'>XFCE</span>\n" \
@@ -85,8 +95,7 @@ class DesktopAsk(Gtk.Box):
         elif desktop == 'lxde':
             txt = _("<span weight='bold'>LXDE</span>\n" \
             "Extremely fast-performing and energy-saving desktop \n" \
-            "environment. Maintained by an international community \n" \
-            "of developers, it comes with a beautiful interface, \n" \
+            "environment. It comes with a beautiful interface, \n" \
             "multi-language support, standard keyboard short cuts \n" \
             "and additional features like tabbed file browsing.")
 
@@ -96,16 +105,40 @@ class DesktopAsk(Gtk.Box):
             "window manager with extensive standards support.\n" \
             "The *box visual style is well known for its \n" \
             "minimalistic appearance.")
+
+        elif desktop == 'enlightment':
+            txt = _("<span weight='bold'>ENLIGHTMENT</span>\n" \
+            "Enlightenment is not just a window manager for Linux/X11 \n" \
+            "and others, but also a whole suite of libraries to help \n" \
+            "you create beautiful user interfaces with much less work")
+
+        elif desktop == 'kde':
+            txt = _("<span weight='bold'>KDE</span>\n" \
+            "The KDE Community is an international technology \n" \
+            "team dedicated to creating a free and user-friendly \n" \
+            "computing experience, offering an advanced graphical \n" \
+            "desktop and a wide variety of applications.")
+
+        elif desktop == 'razor-qt':
+            txt = _("<span weight='bold'>RAZOR-QT</span>\n" \
+            "Razor-qt is an advanced, easy-to-use, and fast desktop \n" \
+            "environment based on Qt technologies. It has been \n" \
+            "tailored for users who value simplicity, speed, and \n" \
+            "an intuitive interface.")
             
         label.set_markup(txt)
-        image.set_from_file(self.desktops_dir + desktop + ".png")
+
+        if desktop_mode == 'vanilla':
+            image.set_from_file(self.desktops_dir + desktop + ".png")
+        else:
+            image.set_from_file(self.desktops_dir + desktop + "-f.png")
 
         txt = _("Select your desktop")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
             
     def prepare(self, direction):
-        self.translate_ui(self.desktop_choice)
+        self.translate_ui(self.desktop_choice, self.desktop_mode)
         self.show_all()
 
 
@@ -118,9 +151,13 @@ class DesktopAsk(Gtk.Box):
         self.treeview_desktop.append_column(col_desktops)
 
         liststore_desktop.append(['Gnome'])
+        liststore_desktop.append(['Cinnamon'])
         liststore_desktop.append(['Xfce'])
         liststore_desktop.append(['Lxde'])
         liststore_desktop.append(['Openbox'])
+        liststore_desktop.append(['Enlightment'])
+        liststore_desktop.append(['KDE'])
+        liststore_desktop.append(['Razor-qt'])
 
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
@@ -128,14 +165,23 @@ class DesktopAsk(Gtk.Box):
 
         if desktop == 'Gnome':
             self.desktop_choice = 'gnome'
+        elif desktop == 'Cinnamon':
+            self.desktop_choice = 'cinnamon'
         elif desktop == 'Xfce':
             self.desktop_choice = 'xfce'
         elif desktop == 'Lxde':
             self.desktop_choice = 'lxde'
         elif desktop == 'Openbox':
             self.desktop_choice = 'openbox'
+        elif desktop == 'Enlightment':
+            self.desktop_choice = 'enlightment'
+        elif desktop == 'KDE':
+            self.desktop_choice = 'kde'
+        elif desktop == 'Razor-qt':
+            self.desktop_choice = 'razor-qt'
 
-        self.translate_ui(self.desktop_choice)
+
+        self.translate_ui(self.desktop_choice, self.desktop_mode)
                 
     def on_treeview_desktop_cursor_changed(self, treeview):
         selected = treeview.get_selection()
@@ -144,14 +190,20 @@ class DesktopAsk(Gtk.Box):
             if iter:
                 desktop = ls.get_value(iter, 0)
                 self.set_desktop(desktop)
+
+    def on_vanilla_radio_toggled(self, widget):
+        if widget.get_active():
+            self.desktop_mode = 'vanilla'
+            self.translate_ui(self.desktop_choice, self.desktop_mode)
+
+    def on_flavoured_radio_toggled(self, widget):
+        if widget.get_active():
+            self.desktop_mode = 'flavoured'
+            self.translate_ui(self.desktop_choice, self.desktop_mode)
         
     def store_values(self):
-        selected = self.treeview_desktop.get_selection()
-
-        (ls, iter) = selected.get_selected()
-        desktop = ls.get_value(iter,0)
-
-        self.settings.set('desktop', desktop)
+        self.settings.set('desktop', self.desktop_choice)
+        self.settings.set('desktop_mode', self.desktop_mode)
 
         return True
 
