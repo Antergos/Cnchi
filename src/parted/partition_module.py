@@ -328,44 +328,29 @@ def shrink(device_path, partition_path, new_size_in_mb):
     print("Sec size: ", sec_size)
 
     # Get old info
-    old_start_sector = part.geometry.start
+    units = 1000000
+    start_sector = part.geometry.start
     old_end_sector = part.gemotry.end
     old_length = part.geometry.length
-    old_size_in_mb = old_length * sec_size / (limiter * limiter)
-        #print(startbyte, endbyte)
-        #lets calcule its size in something ppl understand
-        #psize = plength * dev.sectorSize
-        #just calculating it in more sane formats
-        #should probably add in something like
-        #if psizemb < 1000 then display as MB, else as GB
-        #I can't think of a case of less than 1mb partition
-        #psizemb = psize / (limiter * limiter)
-
-
-    old_size_in_mb = 
-    
-    
-    if f.geometry.end < 2048:
-            continue
-        else:
-            if f.geometry.start < 2048:
-                f.geometry.start = 2048
-    
-
-    length = int(new_size_in_mb * 1000000 / sec_size)
-    end_sector = start_sector + length
-    my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
-    #create_partition(disk, 0, my_geometry)
+    old_size_in_mb =  old_length * sec_size / units
+  
+    # Create new partition (the one for the otherOS)
+    new_length = int(new_size_in_mb * units / sec_size)
+    new_end_sector = start_sector + new_length
+    my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
+    #create_partition(disk, 0, my_geometry)
     
+    
+    # Create new partition (for Antergos)
     new_size_in_mb = old_size_in_mb - new_size_in_mb
-    start_sector = end_sector + 1
-    length = int(new_size_in_mb * 1000000 / sec_size)
-    end_sector = start_sector + length
+    start_sector = new_end_sector + 1
+    end_sector = old_end_sector
     my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
-    #create_partition(disk, 0, my_geometry)
     print("create_partition ", my_geometry)
+    #create_partition(disk, 0, my_geometry)
 
+    # Remember to uncomment this!
     #finalize_changes(disk)
 
 # ----------------------------------------------------------------------------

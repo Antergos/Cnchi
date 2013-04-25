@@ -306,6 +306,7 @@ class InstallationAlongside(Gtk.Box):
         # and creates root and swap partition in the available space
         
         partition_path = self.row[0]
+        otherOS = self.row[1]
         fs_type = self.row[2]
 
         # what if path is sda10 (two digits) ? this is wrong
@@ -331,14 +332,16 @@ class InstallationAlongside(Gtk.Box):
                 elif p.type == pm.PARTITION_PRIMARY:
                     primary_partitions.append(path)
         
-        # If we don't have 3 or 4 primary partitions, we can
-        # create a new one
+        # If we don't have 3 or 4 primary partitions,
+        # we will be able to create a new one
         if len(primary_partitions) < 3:
             # first, shrink file system
             res = fs.shrink(partition_path, fs_type, new_size)
             if res:
-                # destroy original partition
-                pass
+                # destroy original partition and create two new ones
+                pm.shrink(device_path, partition_path, new_size)
+            else:
+                print("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
             
 
         '''
