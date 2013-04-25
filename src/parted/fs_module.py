@@ -32,8 +32,6 @@ import subprocess
 import shlex
 import misc
 
-import used_space
-
 _names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
 
@@ -136,43 +134,48 @@ def is_ssd(disk_path):
     
     return ssd
 
+# To shrink a partition:
+# 1. Shrink fs
+# 2. Shrink partition
+
 def shrink(part, fs_type, new_size_in_mb):
-    used_size = get_used_space(part, fstype)
-    
     fs_type = fs_type.lower()
     
     res = False
     
-    if new_size < used_size:       
-        if 'ntfs' in fs_type:
-            res = resize_ntfs(part, new_size_in_mb)
-        elif 'fat' in fs_type:
-            res = resize_fat(part, new_size_in_mb)
-        elif 'ext' in fs_type:
-            res = resize_ext(part, new_size_in_mb)
+    if 'ntfs' in fs_type:
+        res = resize_ntfs(part, new_size_in_mb)
+    elif 'fat' in fs_type:
+        res = resize_fat(part, new_size_in_mb)
+    elif 'ext' in fs_type:
+        res = resize_ext(part, new_size_in_mb)
     else:
-        print ("New size must be smaller than old size!")
-        res = False
+        print ("Sorry but filesystem %s can't be shrinked" % fs_type)
     
     return res
 
 @misc.raise_privileges    
-def resize_ntfs(device, new_size_in_mb):
-    used = 0
-    #SIZE[k|M|G]        
+def resize_ntfs(part, new_size_in_mb):
+    
+    print("ntfsresize --size %sM %s" % (new_size_in_mb, part))
+    '''   
     try:
         x = subprocess.check_output(["ntfsresize", "--size", new_size_in_mb+"M", part])
     except Exception as e:
         x = None
         print(e)
         return False
+    '''
     
     return True
 
 @misc.raise_privileges
-def resize_fat(device, new_size_in_mb):
+def resize_fat(part, new_size_in_mb):
+    # https://bbs.archlinux.org/viewtopic.php?id=131728
+    # the only Linux tool that was capable of resizing fat32, isn't capable of it anymore?
     return False
     
 @misc.raise_privileges
-def resize_ext(device, new_size_in_mb):
-    return False
+def resize_ext(part, new_size_in_mb):
+    print("resize2fs %s %sM" % (part, new_size_in_mb))
+    return True

@@ -47,6 +47,7 @@ parted_dir = os.path.join(base_dir, 'parted')
 sys.path.insert(0, parted_dir)
 
 import partition_module as pm
+import fs_module as fs
 
 import installation_thread
 
