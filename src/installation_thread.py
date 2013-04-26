@@ -149,6 +149,7 @@ class InstallationThread(threading.Thread):
         if not os.path.exists(self.dest_dir):
             os.mkdir(self.dest_dir)
 
+        # BUG: What about home partition and others than root and boot?
         # Mount root and boot partitions (only if it's needed)
         if self.method == 'easy' or self.method == 'advanced':
             # not doing this in automatic mode as our script mounts the root and boot devices
