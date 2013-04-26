@@ -191,7 +191,7 @@ class UserInfo(Gtk.Box):
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
-            print(result)
+            #print(result)
             if len(result) == 0:
                 self.ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
                 self.ok[element].show()
