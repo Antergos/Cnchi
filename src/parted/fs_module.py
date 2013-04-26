@@ -136,9 +136,13 @@ def is_ssd(disk_path):
 
 # To shrink a partition:
 # 1. Shrink fs
-# 2. Shrink partition
+# 2. Shrink partition (resize)
 
-def shrink(part, fs_type, new_size_in_mb):
+# To expand a partition:
+# 1. Expand partition
+# 2. Expand fs (resize)
+
+def resize(part, fs_type, new_size_in_mb):
     fs_type = fs_type.lower()
     
     res = False

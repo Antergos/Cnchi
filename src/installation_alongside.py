@@ -333,16 +333,21 @@ class InstallationAlongside(Gtk.Box):
                 elif p.type == pm.PARTITION_PRIMARY:
                     primary_partitions.append(path)
         
+        print("extended partition: ", extended_path)
+        print("primary partitions: ", primary_partitions)
+        
         # If we don't have 3 or 4 primary partitions,
         # we will be able to create a new one
         if len(primary_partitions) < 3:
             # first, shrink file system
-            res = fs.shrink(partition_path, fs_type, new_size)
+            res = fs.resize(partition_path, fs_type, new_size)
             if res:
                 # destroy original partition and create two new ones
-                pm.shrink(device_path, partition_path, new_size)
+                pm.split_partition(device_path, partition_path, new_size)
             else:
                 print("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
+        else:
+            print("There're too many primary partitions, can't create a new one")
             
 
         '''

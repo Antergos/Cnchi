@@ -31,6 +31,7 @@
 import parted
 import subprocess
 import shlex
+import os
 
 import misc
 
@@ -50,7 +51,12 @@ DISK_EXTENDED = 1
 def get_devices():
     device_list = parted.getAllDevices()
     disk_dic = {}
-    myhome = subprocess.check_output(shlex.split('df -P /run/archiso/bootmnt')).decode()
+    
+    myhomepath = '/run/archiso/bootmnt'
+    if os.path.exists(myhomepath):
+        myhome = subprocess.check_output(["df", "-P", myhomepath]).decode()
+    else:
+        myhome = ""
     
     for dev in device_list:
         if dev.path in myhome:
@@ -303,11 +309,19 @@ def order_partitions(partdic):
     x = sorted(partdic, key=lambda key: partdic[key].geometry.start)
     return x
 
+# To shrink a partition:
+# 1. Shrink fs
+# 2. Shrink partition (resize)
+
+# To expand a partition:
+# 1. Expand partition
+# 2. Expand fs (resize)
+
 @misc.raise_privileges    
-def shrink(device_path, partition_path, new_size_in_mb):
+def split_partition(device_path, partition_path, new_size_in_mb):
     # shrinks partition: deletes the partition and creates
     # two new ones.
-    # ALERT: The file system must be shrinked before!
+    # ALERT: The file system must be resized before trying this!
 
     disk_dic = get_devices()
     disk = disk_dic[device_path]
