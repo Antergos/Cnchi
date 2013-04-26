@@ -128,14 +128,12 @@ class InstallationThread(threading.Thread):
                 return False
                     
         
-        if self.method == 'easy' or self.method == 'advanced':
+        if self.method == 'easy':
             root_partition = self.mount_devices["/"]
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
-
-        if self.method == 'easy':
             # Easy method formats root by default
             (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
@@ -150,7 +148,7 @@ class InstallationThread(threading.Thread):
             os.mkdir(self.dest_dir)
 
         # Mount root and boot partitions (only if it's needed)
-        if self.method == 'easy' or self.method == 'advanced':
+        if self.method == 'easy':
             # not doing this in automatic mode as our script mounts the root and boot devices
             try:
                 subprocess.check_call(['mount', root_partition, self.dest_dir])
@@ -162,20 +160,18 @@ class InstallationThread(threading.Thread):
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
                 return False
         
-        # In advanced mode, we could have other partitions to mount apart from root and boot
-        # NOT FINISHED
-        '''
+        # In advanced mode, mount all partitions
         if self.method == 'advanced':
-        for path in self.mount_devices:
-            mp = self.mount_devices[path]
-            try:
-                #mount_dir = self.dest_dir + path
-                #mkdir(mount_dir)
-                subprocess.check_call(['mount', mp, mount_in])
-            except subprocess.CalledProcessError as e:
-                self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
-                return False
-        '''
+            for path in self.mount_devices:
+                mp = self.mount_devices[path]
+                try:
+                    mount_dir = self.dest_dir + path
+                    if not os.path.exists(mount_dir):
+                        os.mkdir(mount_dir)
+                    subprocess.check_call(['mount', mp, mount_dir])
+                except subprocess.CalledProcessError as e:
+                    self.queue_fatal_event(_("Couldn't mount %s") % mount_dir)
+                    return False
 
         try:
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
@@ -304,7 +300,7 @@ class InstallationThread(threading.Thread):
             packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
         except URLError as e:
             # If the installer can't retrieve the remote file, try to install with a local
-            # copy, that may not be update
+            # copy, that may not be updated
             self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
             data_dir = self.settings.get("DATA_DIR")
             packages_xml = os.path.join(data_dir, 'packages.xml')
