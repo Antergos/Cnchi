@@ -149,7 +149,6 @@ class InstallationThread(threading.Thread):
         if not os.path.exists(self.dest_dir):
             os.mkdir(self.dest_dir)
 
-        # BUG: What about home partition and others than root and boot?
         # Mount root and boot partitions (only if it's needed)
         if self.method == 'easy' or self.method == 'advanced':
             # not doing this in automatic mode as our script mounts the root and boot devices
@@ -162,6 +161,21 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
                 return False
+        
+        # In advanced mode, we could have other partitions to mount apart from root and boot
+        # NOT FINISHED
+        '''
+        if self.method == 'advanced':
+        for path in self.mount_devices:
+            mp = self.mount_devices[path]
+            try:
+                #mount_dir = self.dest_dir + path
+                #mkdir(mount_dir)
+                subprocess.check_call(['mount', mp, mount_in])
+            except subprocess.CalledProcessError as e:
+                self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
+                return False
+        '''
 
         try:
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
