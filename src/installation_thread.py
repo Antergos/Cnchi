@@ -50,7 +50,6 @@ parted_dir = os.path.join(base_dir, 'parted')
 sys.path.insert(0, parted_dir)
 
 import fs_module as fs
-import partition_module as pm
 import misc
 
 import pac
@@ -140,6 +139,8 @@ class InstallationThread(threading.Thread):
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
+            # Avanced method formats root by default
+            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
         if self.method == 'advanced':
             # TODO: format partitions using mkfs (but which ones?)
@@ -163,6 +164,24 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
                 return False
+        
+        # In advanced mode, mount all partitions (root and boot are already mounted)
+        if self.method == 'advanced':
+            for path in self.mount_devices:
+                mp = self.mount_devices[path]
+                # Root and Boot are already mounted.
+                # Just try to mount all the rest.
+                if mp != root_partition and mp != boot_partition:
+                    try:
+                        mount_dir = self.dest_dir + path
+                        if not os.path.exists(mount_dir):
+                            os.mkdir(mount_dir)
+                        subprocess.check_call(['mount', mp, mount_dir])
+                    except subprocess.CalledProcessError as e:
+                        # we try to continue as root and boot mounted ok
+                        self.queue_event('debug', _("Can't mount %s in %s") % (mp, mount_dir))
+                        # self.queue_fatal_event(_("Couldn't mount %s") % mount_dir)
+                        # return False
 
         try:
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
@@ -200,20 +219,6 @@ class InstallationThread(threading.Thread):
         self.running = False
         return True
 
-    
-    
-    
-    def shrink(self, shrink_part):
-        #fs.shrink(device, fs_type, new_size):
-        #pm.shrink(part, new_size):
-
-        #boot_partition, root_partition = shrink(self.mount_devices["alongside"])
-        pass
-
-    
-    
-    
-    
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
         self.queue_event('debug', "Creating pacman.conf for %s architecture" % self.arch)
@@ -305,7 +310,7 @@ class InstallationThread(threading.Thread):
             packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
         except URLError as e:
             # If the installer can't retrieve the remote file, try to install with a local
-            # copy, that may not be update
+            # copy, that may not be updated
             self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
             data_dir = self.settings.get("DATA_DIR")
             packages_xml = os.path.join(data_dir, 'packages.xml')

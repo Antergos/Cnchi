@@ -35,11 +35,6 @@ import getopt
 import gettext
 import locale
 
-# Version 0.1.1
-_version_hi = 0
-_version_lo = 2
-_version_release = 1
-
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
@@ -61,6 +56,7 @@ import user_info
 import slides
 import misc
 import log
+import info
 
 import queue
 
@@ -240,6 +236,9 @@ class Main(Gtk.Window):
 
         GLib.timeout_add(100, self.pages["slides"].manage_events_from_cb_queue)
 
+    def disable_tryit(self):
+        self.pages["welcome"].disable_tryit()
+
     # TODO: some of these tmp files are created with sudo privileges
     # (this should be fixed) meanwhile, we need sudo privileges to remove them
     @misc.raise_privileges
@@ -311,24 +310,32 @@ class Main(Gtk.Window):
                     self.backwards_button.hide()
 
 if __name__ == '__main__':
-    print("Cnchi installer version %d.%d.%d" % (_version_hi, _version_lo, _version_release))
+    print("Cnchi installer version %s" % info.cnchi_VERSION)
 
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "d", ["debug"])
+        opts, args = getopt.getopt(argv, "dt", ["debug", "disable-tryit"])
     except getopt.GetoptError:
         pass
 
+    disable_tryit = False
+    
     for opt, arg in opts:
         if opt == '-d':
             log._debug = True
             log.debug("Debug mode on")
+        if opt == '-t':
+            disable_tryit = True
+            
 
     GObject.threads_init()
     Gdk.threads_init()
 
     app = Main()
+    
+    if disable_tryit:
+        app.disable_tryit()
 
     Gdk.threads_enter()
     Gtk.main()

@@ -61,7 +61,7 @@ def check_username(name):
     import re
     result = set()
 
-    if len(name) < 1 or len(name) > 8:
+    if len(name) < 1 or len(name) > 40:
         result.add(NAME_LENGTH)
 
     regex = re.compile(r'^[a-z0-9.\-]+$')
