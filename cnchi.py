@@ -35,7 +35,6 @@ import getopt
 import gettext
 import locale
 
-
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')

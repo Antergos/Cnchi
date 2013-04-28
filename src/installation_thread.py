@@ -112,9 +112,6 @@ class InstallationThread(threading.Thread):
         
         ## Create/Format partitions
         
-        # TODO: Check if /boot is in another partition than root.
-        # (and then mount it)
-        
         if self.method == 'automatic':
             self.auto_device = self.mount_devices["/"].replace("3","")
             cnchi_dir = self.settings.get("CNCHI_DIR")
@@ -129,8 +126,7 @@ class InstallationThread(threading.Thread):
                 return False
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
-                return False
-                    
+                return False                  
         
         if self.method == 'easy' or self.method == 'advanced':
             root_partition = self.mount_devices["/"]
@@ -138,9 +134,7 @@ class InstallationThread(threading.Thread):
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
-
-        if self.method == 'easy':
-            # Easy method formats root by default
+            # Easy and avanced methods format root by default
             (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
         if self.method == 'advanced':
@@ -165,6 +159,24 @@ class InstallationThread(threading.Thread):
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
                 return False
+        
+        # In advanced mode, mount all partitions (root and boot are already mounted)
+        if self.method == 'advanced':
+            for path in self.mount_devices:
+                mp = self.mount_devices[path]
+                # Root and Boot are already mounted.
+                # Just try to mount all the rest.
+                if mp != root_partition and mp != boot_partition:
+                    try:
+                        mount_dir = self.dest_dir + path
+                        if not os.path.exists(mount_dir):
+                            os.mkdir(mount_dir)
+                        subprocess.check_call(['mount', mp, mount_dir])
+                    except subprocess.CalledProcessError as e:
+                        # we try to continue as root and boot mounted ok
+                        self.queue_event('debug', _("Can't mount %s in %s") % (mp, mount_dir))
+                        # self.queue_fatal_event(_("Couldn't mount %s") % mount_dir)
+                        # return False
 
         try:
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
@@ -289,7 +301,7 @@ class InstallationThread(threading.Thread):
             packages_xml = urlopen('http://install.antergos.com/packages.xml')
         except URLError as e:
             # If the installer can't retrieve the remote file, try to install with a local
-            # copy, that may not be update
+            # copy, that may not be updated
             self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
             data_dir = self.settings.get("DATA_DIR")
             packages_xml = os.path.join(data_dir, 'packages.xml')
