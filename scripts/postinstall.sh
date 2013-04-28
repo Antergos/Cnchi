@@ -51,16 +51,21 @@ EOF
 
 }
 
-function postinstall(){
-	USER_NAME=$1
-	DESTDIR=$2
-	# Specific user configurations
+function gnome_settings(){
+	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
-	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	# Set gsettings
+	cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-gsettings
+}
 
-	## Unmute alsa channels
-	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
+function cinnamon_settings(){
+	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings
 	cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
@@ -69,21 +74,34 @@ function postinstall(){
 	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
 
+	# copy antergos menu icon
+	cp /usr/share/antergos/antergos_menu.png ${DESTDIR}/usr/share/antergos/antergos_menu.png
+}
+
+function postinstall(){
+	USER_NAME=$1
+	DESTDIR=$2
+	DESKTOP=$3
+	# Specific user configurations
+
+	## Set desktop-specific settings
+	"${DESKTOP}_settings"
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+	## Unmute alsa channels
+	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
+
 	# Fix transmission leftover
 	mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
 
 	# Configure touchpad
 	_set_50-synaptics
 
-	# Set Cinnarch name in filesystem files
+	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
 	cp -f /etc/os-release ${DESTDIR}/etc/os-release
-
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
-	
-	# Set default MDM theme
-    sed -i "s#\[greeter\].*#&\n\nGraphicalTheme=Arc-Brave-Userlist\n\n#" ${DESTDIR}/etc/mdm/custom.conf
 }
 
 touch /tmp/.postinstall.lock

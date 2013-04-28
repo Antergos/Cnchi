@@ -3,7 +3,7 @@
 #
 #  installation_thread.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 import threading
 import subprocess
@@ -77,6 +77,10 @@ class InstallationThread(threading.Thread):
         self.ssd = ssd
         self.mount_devices = mount_devices
         self.grub_device = grub_device
+
+        # Check desktop selected to load packages needed
+        self.desktop = self.settings.get('desktop')
+        self.desktop_manager = 'gdm'
     
         self.fs_devices = fs_devices
 
@@ -232,15 +236,11 @@ class InstallationThread(threading.Thread):
                 tmp_file.write("SigLevel = PackageRequired\n")
                 tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
 
-            tmp_file.write("#### Cinnarch repos start here\n")
-            tmp_file.write("[cinnarch-core]\n") 
+            tmp_file.write("#### Antergos repos start here\n")
+            tmp_file.write("[antergos]\n") 
             tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n\n")
-
-            tmp_file.write("[cinnarch-repo]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/cinnarch-mirrorlist\n")
-            tmp_file.write("#### Cinnarch repos end here\n\n")
+            tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
+            tmp_file.write("#### Antergos repos end here\n\n")
         
         ## Init pyalpm
 
@@ -286,7 +286,7 @@ class InstallationThread(threading.Thread):
         self.queue_event('info', "Getting package list...")
 
         try:
-            packages_xml = urlopen('http://install.cinnarch.com/packages.xml')
+            packages_xml = urlopen('http://install.antergos.com/packages.xml')
         except URLError as e:
             # If the installer can't retrieve the remote file, try to install with a local
             # copy, that may not be update
@@ -300,8 +300,16 @@ class InstallationThread(threading.Thread):
 
         self.queue_event('debug', "Adding base packages")
 
-        for child in root.iter('base_system'):
+        for child in root.iter('common_system'):
             for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
+
+        self.queue_event('debug', "Adding desktop packages")
+
+        for child in root.iter(self.desktop + '_desktop'):
+            for pkg in child.iter('pkgname'):
+                if pkg.attrib.get('desktop-manager'):
+                    self.desktop_manager = pkg.text
                 self.packages.append(pkg.text)
         
         if self.settings.get("use_ntp"):
@@ -310,8 +318,6 @@ class InstallationThread(threading.Thread):
                     self.packages.append(pkg.text)
 
         graphics = self.get_graphics_card()
-        
-        #self.queue_event('debug', _("%s graphics card detected") % graphics)
         
         self.card = ""
 
@@ -663,13 +669,6 @@ class InstallationThread(threading.Thread):
         #Copy configured networks in Live medium to target system
         self.copy_network_config()
 
-        # copy cinnarch menu icon
-        cinnarch_path = os.path.join(self.dest_dir, "usr/share/cinnarch")
-        if not os.path.exists(cinnarch_path):
-            os.makedirs(cinnarch_path)
-        shutil.copy2('/usr/share/cinnarch/cinnarch_menu.png', \
-                    os.path.join(cinnarch_path, 'cinnarch_menu.png'))
-
         # copy mirror list
         shutil.copy2('/etc/pacman.d/mirrorlist', \
                     os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
@@ -683,7 +682,7 @@ class InstallationThread(threading.Thread):
             shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
 
         # enable services      
-        self.enable_services([ "mdm", "NetworkManager" ])
+        self.enable_services([ self.desktop_manager, "NetworkManager" ])
 
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
@@ -786,4 +785,4 @@ class InstallationThread(threading.Thread):
         # Call post-install script
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir])
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop])
