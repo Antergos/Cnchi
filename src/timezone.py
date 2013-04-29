@@ -318,8 +318,7 @@ class AutoTimezoneThread(threading.Thread):
         # ok, now get our timezone
 
         try:
-            # Should this change to geo.antergos.com ?
-            url = "http://geo.cinnarch.com"
+            url = "http://geo.antergos.com"
             conn = urllib.request.urlopen(url)
             coords = conn.read().decode('utf-8').strip()
         except:
