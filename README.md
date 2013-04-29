@@ -1,6 +1,6 @@
 # Cnchi
 
-Graphical Installer for Cinnarch Linux
+Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
 
 ## Dependencies
 
@@ -12,7 +12,7 @@ Graphical Installer for Cinnarch Linux
  * libtimezonemap
  * webkitgtk3
  * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
- * py3parted (pyparted on python3) -> https://github.com/cinnarch/cinnarch-packages/tree/master/py3parted
+ * py3parted (pyparted on python3) -> https://github.com/antergos/antergos-packages/tree/master/py3parted
  * pacman
  * pyalpm
  * hwinfo
