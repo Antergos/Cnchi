@@ -3,7 +3,7 @@
 #
 #  installation_ask.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk
 
@@ -35,7 +35,7 @@ import os
 
 import config
 
-_prev_page = "check"
+_prev_page = "desktop"
 
 class InstallationAsk(Gtk.Box):
 
@@ -83,7 +83,7 @@ class InstallationAsk(Gtk.Box):
         self.forward_button.set_sensitive(True)
 
         radio = self.ui.get_object("automatic_radiobutton")
-        radio.set_label(_("Erase disk and install Cinnarch (automatic)"))
+        radio.set_label(_("Erase disk and install Antergos (automatic)"))
 
         label = self.ui.get_object("automatic_description")
         txt = _("Warning: This will delete all programs, documents, photos, music and any other files on your disk")
@@ -101,10 +101,10 @@ class InstallationAsk(Gtk.Box):
         label.set_line_wrap(True)
 
         radio = self.ui.get_object("advanced_radiobutton")
-        radio.set_label(_("Manage your partitions and choose where to install Cinnarch (advanced)"))
+        radio.set_label(_("Manage your partitions and choose where to install Antergos (advanced)"))
 
         label = self.ui.get_object("advanced_description")
-        txt = _("You will be able to create/delete partitions, choose where to install Cinnarch and also choose additional mount points.")
+        txt = _("You will be able to create/delete partitions, choose where to install Antergos and also choose additional mount points.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAlignment" id="desktop">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="left_padding">20</property>
+    <property name="right_padding">20</property>
+    <child>
+      <object class="GtkBox" id="desktop_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="width_request">250</property>
+            <property name="height_request">290</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">start</property>
+            <property name="margin_top">10</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTreeView" id="treeview_desktop">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <signal name="cursor-changed" handler="on_treeview_desktop_cursor_changed" swapped="no"/>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection"/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="box1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox" id="box2">
+                <property name="width_request">491</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage" id="image_desktop">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">10</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="box3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <child>
+                      <object class="GtkRadioButton" id="vanilla_radio">
+                        <property name="label" translatable="yes">Vanilla</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="xalign">0</property>
+                        <property name="active">True</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="on_vanilla_radio_toggled" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="flavoured_radio">
+                        <property name="label" translatable="yes">Flavoured</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="xalign">0</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="group">vanilla_radio</property>
+                        <signal name="toggled" handler="on_flavoured_radio_toggled" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="desktop_info">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_left">40</property>
+                <property name="hexpand">True</property>
+                <property name="label" translatable="yes">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Integer elementum, leo vitae porta elementum, eros diam
+pretium magna, in tincidunt magna velit at tellus. Praesent
+a tortor nec risus blandit sodales. Mauris tristique semper
+nunc, eget euismod sem vehicula ut. Nam pharetra justo et
+lorem feugiat quis vestibulum arcu malesuada. Vivamus
+tristique augue in nisi iaculis nec sollicitudin eros pharetra.
+Duis id arcu magna, nec convallis mi. In tempor volutpat dictum.
+Vestibulum eros lacus, pharetra vel ultricies quis, sagittis sed orci.
+
+The installation process may resize or erase partitions on your hard disk.
+Be sure to take a full backup of any valuable data before running
+this program.</property>
+                <property name="use_markup">True</property>
+                <property name="justify">fill</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

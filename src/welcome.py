@@ -3,7 +3,7 @@
 #
 #  welcome.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, Gdk
 import subprocess, sys, os
@@ -96,12 +96,12 @@ class Welcome(Gtk.Box):
         
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
-        txt = _("You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n" \
+        txt = _("You can try Antergos without modifying your hard drive, just click on 'Try it'.\n" \
         "If you want to install the system to your PC, use one of the two installer options.")
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
-        txt = _("Welcome to Cinnarch!")
+        txt = _("Welcome to Antergos!")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -118,13 +118,16 @@ class Welcome(Gtk.Box):
         Gtk.main_quit()
         
     def on_cli_button_clicked(self, widget, data=None):
+        if os.path.exists("antergos-setup"):
+            cli_installer = "antergos-setup"
+        else:
+            cli_installer = "cinnarch-setup"
         try:
-            subprocess.Popen(["cinnarch-setup"])
+            subprocess.Popen([cli_installer])
         except:
             warning(_("Can't load the CLI installer"))
         finally:
             self.remove_temp_files()
-        #Gtk.main_quit()
 		
     def on_graph_button_clicked(self, widget, data=None):
         self.forward_button.emit("clicked")
