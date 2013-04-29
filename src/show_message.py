@@ -3,7 +3,7 @@
 #
 #  installation_advanced.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk
 
@@ -53,7 +53,7 @@ def error(message):
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.ERROR,\
         Gtk.ButtonsType.CLOSE,\
-        _("Cinnarch Installer - Error"))
+        _("Antergos Installer - Error"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
@@ -64,7 +64,7 @@ def warning(message):
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.WARNING,\
         Gtk.ButtonsType.CLOSE,\
-        _("Cinnarch Installer - Warning"))
+        _("Antergos Installer - Warning"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
@@ -75,7 +75,7 @@ def message(message):
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.INFO,\
         Gtk.ButtonsType.CLOSE,\
-        _("Cinnarch Installer - Information"))
+        _("Antergos Installer - Information"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
 
@@ -85,7 +85,7 @@ def question(message):
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.QUESTION,\
         Gtk.ButtonsType.YES_NO,\
-        _("Cinnarch Installer - Question"))
+        _("Antergos Installer - Question"))
     msg_dialog.format_secondary_text(message)
     response = msg_dialog.run()
     msg_dialog.destroy()

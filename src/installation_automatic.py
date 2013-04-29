@@ -3,7 +3,7 @@
 #
 #  installation_automatic.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 import xml.etree.ElementTree as etree
 
@@ -70,7 +70,7 @@ class InstallationAutomatic(Gtk.Box):
         self.update_thread_event = threading.Event()
 
     def translate_ui(self):
-        txt = _("Cinnarch automatic installation mode")
+        txt = _("Antergos automatic installation mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -80,7 +80,7 @@ class InstallationAutomatic(Gtk.Box):
         label = self.ui.get_object('text_automatic')
         txt = _("This installation mode will overwrite everything in your drive. "
          "If you are sure that this is what you want, please choose the drive where "
-         "you want to install Cinnarch and click the button below to start the process.")
+         "you want to install Antergos and click the button below to start the process.")
         txt = "<b>%s</b>" % txt
         label.set_markup(txt)
 

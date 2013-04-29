@@ -3,7 +3,7 @@
 #
 #  cnchi.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, Gdk, GObject, GLib
 import os
@@ -129,7 +129,7 @@ class Main(Gtk.Window):
 
         self.logo = self.ui.get_object("logo")
 
-        logo_dir = os.path.join(self.settings.get("DATA_DIR"), "logo_mini.png")
+        logo_dir = os.path.join(self.settings.get("DATA_DIR"), "antergos-logo-mini.png")
                                 
         self.logo.set_from_file(logo_dir)
 
@@ -183,13 +183,13 @@ class Main(Gtk.Window):
         self.connect("delete-event", Gtk.main_quit)
         self.ui.connect_signals(self)
 
-        self.set_title(_('Cinnarch Installer'))
+        self.set_title(_('Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(_main_window_width, _main_window_height);
 
         # set window icon
-        icon_dir = os.path.join(self.settings.get("DATA_DIR"), 'cinnarch-icon.png')
+        icon_dir = os.path.join(self.settings.get("DATA_DIR"), 'antergos-icon.png')
         
         self.set_icon_from_file(icon_dir)
 
@@ -202,11 +202,10 @@ class Main(Gtk.Window):
         # Header style testing
         style_provider = Gtk.CssProvider()
 
-        style_css = os.path.join(self.settings.get("DATA_DIR"), "gtk-style.css")
+        style_css = os.path.join(self.settings.get("DATA_DIR"), "css", "gtk-style.css")
 
-        css = open(style_css, 'rb')
-        css_data = css.read()
-        css.close()
+        with open(style_css, 'rb') as css:
+            css_data = css.read()
 
         style_provider.load_from_data(css_data)
 

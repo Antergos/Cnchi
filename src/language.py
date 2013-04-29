@@ -4,7 +4,7 @@
 #
 #  language.py
 #  
-#  Copyright 2013 Cinnarch
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GLib
 import gettext
@@ -74,7 +74,7 @@ class Language(Gtk.Box):
         super().add(self.ui.get_object("language"))
 
     def translate_ui(self):
-        #txt = _("Welcome to the Cinnarch Installer")
+        #txt = _("Welcome to the Antergos Installer")
         #txt = '<span weight="bold" size="large">%s</span>' % txt
         #self.title.set_markup(txt)
 
@@ -89,10 +89,10 @@ class Language(Gtk.Box):
         "any implied warranties of condition, uninterrupted use,\n" \
         "merchantability, fitness for a particular purpose, or\n" \
         "non-infringement.\n\n" \
-        "If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>")
+        "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         label.set_markup(txt)
 
-        txt = _("Welcome to Cinnarch!")
+        txt = _("Welcome to Antergos!")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
     
