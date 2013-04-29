@@ -1,0 +1,800 @@
+#!/usr/bin/env python3
+# -*- coding: utf8 -*-
+
+# Copyright (C) 2012-2013 Xyne
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# (version 2) as published by the Free Software Foundation.
+#
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+"""
+Powerpill is a wrapper around Pacman that uses pm2ml, aria2c and rsync to speed
+up package downloads. It is a replacement for the long-ago deprecated Perl
+version that became quite popular.
+
+It supports preferential downloads from Pacserve to reduce bandwidth.
+"""
+
+# The code is a bit messy because I cobbled it together from parisync.
+# I intend to clean it up when I have the time and proper motivation.
+
+import glob
+import hashlib
+import json
+import pm2ml
+import shutil
+
+from os import chdir, getcwd, makedirs, unlink
+from os.path import join, isfile, abspath, realpath, getsize, exists
+from pm2ml import build_download_queue, DownloadQueue, download_queue_to_metalink, PacmanConfig
+from Reflector import MirrorStatus
+from subprocess import Popen, PIPE, DEVNULL, call, CalledProcessError
+from sys import argv, stderr, exit
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import urlopen
+
+################################### Globals ####################################
+
+OFFICIAL_REPOSITORIES = MirrorStatus.REPOSITORIES
+POWERPILL_CONFIG = '/etc/powerpill/powerpill.json'
+ARIA2_EXT = '.aria2'
+
+# See the aria2c manual page for details.
+ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
+# See the rsync manual page for details.
+RSYNC_DOWNLOAD_ERROR_EXIT_CODES = (2, 5, 10, 12, 23, 24, 30)
+
+# Arguments that change the Pacman configuration file.
+PACMAN_CONF_OPTS = (
+  ('-b', '--dbpath', 'DBPath'),
+  ('-r', '--root', 'RootDir'),
+  ('--arch', 'Architecture'),
+  ('--cachedir', 'CacheDir'),
+  ('--gpgdir', 'GPGDir'),
+  ('--logfile', 'LogFile'),
+)
+
+# Parameterized Pacman arguments.
+PACMAN_PARAM_OPTS = set((
+  '-b', '--dbpath',
+  '-l', '--list',
+  '-s', '--search',
+  '--arch',
+  '--cachedir',
+  '--config',
+  '--gpgdir',
+  '--ignore',
+  '--ignoregroup',
+  '--logfile',
+  '--print-format'
+))
+
+# Non-download Pacman sync operations.
+PACMAN_OPS = set((
+  '-c', '--clean',
+  '-g', '--groups',
+  '-i', '--info',
+  '-l', '--list',
+  '-p', '--print',
+  '-s', '--search',
+))
+
+############################## Generic Functions ###############################
+
+def die(msg):
+  """
+  Exit with an error message.
+  """
+  stderr.write(msg)
+  exit(1)
+
+
+def expand_args(args):
+  """
+  Expand short arguments.
+
+  Example: ["-Syu"] -> ["-S", "-y", "-u"]
+  """
+  for arg in args:
+    short = False
+    try:
+      short = (arg[0] == '-' and arg[1] != '-')
+    except IndexError:
+      short = True
+    if short:
+      for c in arg[1:]:
+        yield '-' + c
+    else:
+      yield arg
+
+
+
+def digest(fpath):
+  """
+  Return the hexadecimal sha256 digest of the given file.
+  """
+  try:
+    with open(fpath, 'rb') as f:
+      h = hashlib.sha256()
+      block = f.read(h.block_size)
+      while block:
+        h.update(block)
+        block = f.read(h.block_size)
+      return h.hexdigest()
+  except FileNotFoundError:
+    return None
+
+
+
+def parse_args(args=None):
+  """
+  Parse (Pacman) command-line arguments and extract those that control
+  Powerpill.
+  """
+  # Arguments set to None will default to the powerpill configuration file.
+  pargs = {
+    'S' : False,
+    'y' : 0,
+    'u' : 0,
+    'w' : 0,
+    'pacman_config' : None,
+    'powerpill_config' : POWERPILL_CONFIG,
+    'powerpill_clean' : False,
+    'aria2_config' : None,
+    'help' : False,
+    'pacman_config_options' : { 'CacheDir' : list() },
+    'pm2ml_options' : list(),
+    'options' : list(),
+    'args' : list(),
+    'other_operation' : False,
+  }
+  if args is None:
+    args = argv[1:]
+  it = iter(expand_args(args))
+  for arg in it:
+    if arg in ('-S', '--sync'):
+      pargs['S'] = True
+    elif arg in ('-y', '--refresh'):
+      pargs['y'] += 1
+    elif arg in ('-u', '--sysupgrade'):
+      pargs['u'] += 1
+    elif arg in ('-w', '--downloadonly'):
+      pargs['w'] += 1
+    elif arg in ('-h', '--help'):
+      pargs['help'] = True
+
+    elif arg == '--config':
+      try:
+        pargs['pacman_config'] = abspath(next(it))
+      except StopIteration:
+        die('error: no file path given for "--config"\n')
+    elif arg == '--powerpill-config':
+      try:
+        pargs['powerpill_config'] = abspath(next(it))
+      except StopIteration:
+        die('error: no file path given for "--powerpill-config"\n')
+
+    elif arg == '--powerpill-clean':
+      pargs['powerpill_clean'] = True
+
+    elif arg[0] == '-':
+      for conf_opt in PACMAN_CONF_OPTS:
+        if arg in conf_opt:
+          opt = conf_opt[-1]
+          try:
+            val = next(it)
+          except StopIteration:
+            die('error: no argument for option %s\n' % arg)
+          if opt == 'CacheDir':
+            pargs['pacman_config_options'][opt].append(val)
+          else:
+            pargs['pacman_config_options'][opt] = val
+          break
+      else:
+        if arg in PACMAN_OPS:
+          pargs['other_operation'] = True
+        if arg in pm2ml.PACMAN_OPTIONS:
+          name = 'pm2ml_options'
+        else:
+          name = 'options'
+        pargs[name].append(arg)
+        if arg in PACMAN_PARAM_OPTS:
+          try:
+            pargs[name].append(next(it))
+          except StopIteration:
+            die('error: no argument for option %s\n' % arg)
+    else:
+      pargs['args'].append(arg)
+  return pargs
+
+
+
+def unparse_args(pargs):
+  """
+  Convert parsed arguments to a list of Pacman arguments.
+  """
+  # Map configuration file parameters to command-line options.
+  pacman_opts = dict()
+  for opt in PACMAN_CONF_OPTS:
+    pacman_opts[opt[-1]] = opt[-2]
+
+  if pargs['S']:
+    yield '-S'
+  for o in ('y', 'u', 'w'):
+    for i in range(pargs[o]):
+      yield '-' + o
+  if pargs['pacman_config']:
+    yield '--config'
+    yield pargs['pacman_config']
+
+  for k, v in pargs['pacman_config_options'].items():
+    opt = pacman_opts[k]
+    if k == 'CacheDir':
+      for d in v:
+        yield opt
+        yield d
+    else:
+      yield opt
+      yield v
+
+  if pargs['help']:
+    yield '--help'
+  for whatever in pargs['pm2ml_options']:
+    yield whatever
+  for whatever in pargs['options']:
+    yield whatever
+  for whatever in pargs['args']:
+    yield whatever
+
+
+
+def display_help():
+  """
+  Print a help message.
+  """
+  print('''USAGE
+  powerpill [powerpill options] [pacman args]
+
+OPTIONS
+  Powerpill should accept the same arguments as Pacman in most cases, e.g.
+  "powerpill -Syu". See "pacman --help".
+
+  The following additional arguments are supported:
+
+    --powerpill-config <path>
+        The path to a Powerpill configuration file.
+        Default: %s
+
+    --powerpill-clean
+        Clean up leftover .aria2 files from an unrecoverable download. Use this
+        option to resolve aria2c length mismatch errors.
+
+''' % (POWERPILL_CONFIG,))
+
+
+def search_pacserve(pacserve_url):
+  """
+  Search for a package on Pacserve. Return the package URL and a boolean
+  indicating if the server appears to be running.
+  """
+  try:
+    with urlopen(pacserve_url) as f:
+      return f.geturl().replace('/search/', '/request/'), True
+  except HTTPError as e:
+    if e.code == 418:
+      return None, True
+    else:
+      raise e
+  except URLError as e:
+    stderr.write('warning: failed to query Pacserve: %s\n' % e.reason)
+  return None, False
+
+################################# Config Class #################################
+
+class Config(object):
+  """
+  JSON object wrapper for implementing a configuration file.
+  """
+  DEFAULTS = {
+    'aria2' : {
+      'path' : '/usr/bin/aria2c',
+    },
+    'pacman' : {
+      'path' : '/usr/bin/pacman',
+      'config' : '/etc/pacman.conf',
+    },
+    'powerpill' : {
+      'ask' : True,
+      'reflect databases' : False,
+    },
+    'rsync' : {
+      'rsync' : '/usr/bin/rsync',
+    },
+  }
+  def __init__(self, path=None):
+    if path is None:
+      self.obj = dict()
+      self.path = None
+    else:
+      self.load(path)
+
+  def __str__(self):
+    return json.dumps(self.obj, indent='  ', sort_keys=True)
+
+
+  def load(self, path):
+    """
+    Load the configuration file.
+    """
+    with open(path) as f:
+      try:
+        self.obj = json.load(f)
+      except ValueError as e:
+        die("error: failed to load %s [%s]\nCheck the file for syntax errors." % (path, e))
+      self.path = path
+
+  def save(self, path=None):
+    """
+    Save the configuration file.
+    """
+    if path is None:
+      path = self.path
+    if path is None:
+      die('error: no path given for saving configuration file\n')
+    with open(path, 'w') as f:
+      json.dump(self.obj, f, indent='  ', sort_keys=True)
+
+  def get(self, args):
+    """
+    Return the requested entry or None if it does not exist.
+    """
+    obj = self.obj
+    args = args.split('/')
+    for arg in args:
+      try:
+        obj = obj[arg]
+      except KeyError:
+        obj = None
+        break
+    # Get default if not found.
+    if obj is None:
+      obj = self.DEFAULTS
+      for arg in args:
+        try:
+          obj = obj[arg]
+        except KeyError:
+          obj = None
+          break
+    return obj
+
+  def set(self, args, value):
+    """
+    Set the requested entry to the given value.
+    """
+    obj = self.obj
+    args = args.split('/')
+    for arg in args[:-1]:
+      try:
+        obj = obj[arg]
+      except KeyError:
+        obj[arg] = dict()
+        obj = obj[arg]
+    obj[args[-1]] = value
+
+
+
+################################ Lockfile Class ################################
+
+# TODO
+# Maybe merge into Powerpill class.
+
+class Lockfile(object):
+  """
+  Database lock file wrapper.
+  """
+  def __init__(self, path):
+    self.path = abspath(path)
+    self.locked = False
+
+  def __enter__(self):
+    if isfile(self.path):
+      die('error: lock file exists (%s)\n' % self.path)
+    try:
+      with open(self.path, 'w') as f:
+        self.locked = True
+    except PermissionError:
+      die('error: failed to create database lock file (%s) [permission denied]\n' % self.path)
+    except FileNotFoundError:
+      die('error: failed to create database lock file (%s) [database does not exist]\n' % self.path)
+
+  def __exit__(self, typ, val, traceback):
+    if self.locked:
+      unlink(self.path)
+      self.locked = False
+
+
+
+################################## Powerpill ###################################
+
+class Powerpill(object):
+
+  def __init__(self, conf, pacman_conf):
+    self.conf = conf
+    self.pacman_conf = pacman_conf
+    self.db_lock = None
+
+
+  def download_queue_to_rsync_cmd(
+    self,
+    rsync_server,
+    queue,
+    output_dir=None,
+  ):
+    """
+    Convert a download queue to an rsync command list.
+    """
+    cmd = [self.conf.get('rsync/path'), '-aL'] + self.conf.get('rsync/args')
+
+    url = urlparse(rsync_server)
+    host = url.netloc
+    # [1:] to remove initial slash
+    path = url.path[1:].replace('$arch', self.pacman_conf.options['Architecture'])
+
+    host_added = False
+
+    for db, sigs in queue.dbs:
+      db_path = '::' + join(path.replace('$repo', db.name), '%s.db' % db.name)
+      if not host_added:
+        cmd.append(host + db_path)
+        host_added = True
+      else:
+        cmd.append(db_path)
+      if sigs:
+        cmd.append(db_path + '.sig')
+
+    for pkg, urls, sigs in queue.sync_pkgs:
+      pkg_path = '::' + join(path.replace('$repo', pkg.db.name), pkg.filename)
+      if not host_added:
+        cmd.append(host + pkg_path)
+        host_added = True
+      else:
+        cmd.append(pkg_path)
+      if sigs:
+        cmd.append(pkg_path + '.sig')
+
+    if not output_dir:
+      output_dir = '.'
+    cmd.append(output_dir)
+    return cmd
+
+
+
+
+
+  def download(self, pm2ml_args, dbs=False):
+    """
+    Download files specified by pm2ml arguments.
+    """
+    for pkg in self.pacman_conf.options['IgnorePkg']:
+      pm2ml_args.extend(('--ignore', pkg))
+    for grp in self.pacman_conf.options['IgnoreGroup']:
+      pm2ml_args.extend(('--ignoregroup', grp))
+    if self.conf.get('powerpill/ask'):
+      pm2ml_args.append('--ask')
+    if dbs:
+#       pm2ml_args.append('--preference')
+      reflect = self.conf.get('powerpill/reflect databases')
+    else:
+      reflect = True
+    # This must be added last.
+    if reflect and self.conf.get('reflector/args'):
+      pm2ml_args += ['--reflector'] + self.conf.get('reflector/args')
+    pargs, self.pacman_conf, download_queue, not_found, missing_deps = \
+      build_download_queue(pm2ml_args, conf=self.pacman_conf)
+
+    rsync_queue = DownloadQueue()
+    metalink_queue = DownloadQueue()
+
+    if pargs.output_dir:
+      # A FileExistsError will be raised even with exists_ok=True if the mode
+      # does not match the umask-masked mode.
+      try:
+        makedirs(pargs.output_dir, exist_ok=True)
+      except FileExistsError:
+        pass
+      chdir(pargs.output_dir)
+
+    rsync_servers = self.conf.get('rsync/servers')
+    pacserve_server = self.conf.get('pacserve/server')
+
+    for db, sigs in download_queue.dbs:
+      is_local = False
+      for server in db.servers:
+        if server[:7] == 'file://':
+          db_name = db.name + '.db'
+          local_path = join(server[7:], db_name)
+          output_path = join(getcwd(), db_name)
+          try:
+            shutil.copyfile(local_path, output_path)
+            if sigs:
+              shutil.copyfile(local_path+'.sig', output_path+'.sig')
+            is_local = True
+            continue
+          except (shutil.Error, FileNotFoundError):
+            pass
+      if is_local:
+        continue
+      if rsync_servers and db.name in OFFICIAL_REPOSITORIES:
+        rsync_queue.add_db(db, sigs)
+      else:
+        metalink_queue.add_db(db, sigs)
+
+    if pacserve_server:
+      try_pacserve = True
+    else:
+      try_pacserve = False
+
+    for pkg, urls, sigs in download_queue.sync_pkgs:
+#       if self.conf.get('powerpill/checksum'):
+#         # Skip existing files if their checksums are correct.
+#         # TODO
+#         # Eventually add support for checking signatures. There are three ways
+#         # to do this:
+#         # - use the subprocess module to invoke pacman-key
+#         # - package python-gpg and make it a(n optional) dependency
+#         # - wait for pyalpm to wrap pacman-key functionality
+#         #
+#         # I would prefer the latter but I am still waiting for my pacman.conf
+#         # parser patch to be accepted upstream in pyalpm, so I do not think there
+#         # is much active development.
+#
+#         already_downloaded = False
+#         for d in self.pacman_conf.options['CacheDir']:
+#           file_cachepath = join(d, pkg.filename)
+#           sha256 = digest(file_cachepath)
+#           if sha256 is None:
+#             continue
+#           elif sha256 != pkg.sha256sum:
+#             if self.conf.get('powerpill/clean'):
+#               unlink(file_cachepath)
+#               try:
+#                 unlink(file_cachepath + ARIA2_EXT)
+#               except FileNotFoundError:
+#                 pass
+#               # Continue in case there are others.
+#               continue
+#             else:
+#               stderr.write(
+#                 'warning: invalid sha256sum for %s\n> expected %s\n> found    %s\n' \
+#                 % (file_cachepath, pkg.sha256sum, sha256)
+#               )
+#           already_downloaded = True
+#           break
+#         if already_downloaded:
+#           continue
+      is_local = False
+      for server in urls:
+        if server[:7] == 'file://':
+          local_path = server[7:]
+          output_path = join(getcwd(), pkg.filename)
+          try:
+            shutil.copyfile(local_path, output_path)
+            is_local = True
+            continue
+          except (shutil.Error, FileNotFoundError):
+            pass
+      if is_local:
+        continue
+      use_pacserve = False
+      if try_pacserve:
+        found = False
+        pacserve_url = join(pacserve_server, 'search', pkg.db.name, pkg.arch, pkg.filename)
+        found_url, try_pacserve = search_pacserve(pacserve_url)
+        # The local pacserve server likely points to the same cache
+        # directory. The incoming file would be written to the same file
+        # that Pacserve is reading, thus truncating the file. Avoid this
+        # by skipping the file if it has a valid checksum, otherwise remove
+        # it and requery Pacserve.
+        if found_url is not None:
+          use_pacserve = True
+          if found_url.startswith(pacserve_server):
+            unlinked = False
+            for d in self.pacman_conf.options['CacheDir']:
+              file_cachepath = join(d, pkg.filename)
+              sha256 = digest(file_cachepath)
+              if sha256 is None:
+                continue
+              elif sha256 != pkg.sha256sum:
+                unlink(file_cachepath)
+                unlinked = True
+                continue
+              else:
+                found = True
+                break
+            else:
+              # If a file was removed, it may have been the one found by Pacserve.
+              # Requery to be sure. This time we know that a returned local URL
+              # cannot point to the same cached file.
+              if unlinked:
+                found_url, try_pacserve = search_pacserve(pacserve_url)
+                if found_url is None:
+                  use_pacserve = False
+            if found:
+              continue
+          if use_pacserve:
+            urls = [found_url]
+      if not use_pacserve \
+      and not self.conf.get('rsync/db only') \
+      and rsync_servers \
+      and pkg.db.name in OFFICIAL_REPOSITORIES:
+        rsync_queue.add_sync_pkg(pkg, urls, sigs)
+      else:
+        metalink_queue.add_sync_pkg(pkg, urls, sigs)
+
+    metalink_queue.aur_pkgs = download_queue.aur_pkgs
+
+    if metalink_queue:
+      metalink = str(download_queue_to_metalink(metalink_queue)).encode()
+      aria2_cmd = [
+        self.conf.get('aria2/path'),
+        '--metalink-file=-',
+      ] + self.conf.get('aria2/args')
+      aria2c_p = Popen(aria2_cmd, stdin=PIPE)
+      aria2c_p.communicate(input=metalink)
+
+    if rsync_queue:
+      for rsync_server in rsync_servers:
+        rsync_cmd = self.download_queue_to_rsync_cmd(
+          rsync_server,
+          rsync_queue,
+          output_dir=pargs.output_dir
+        )
+        rsync_p = Popen(rsync_cmd)
+        e = rsync_p.wait()
+        if e == 0:
+          # Success
+          break
+        elif e in RSYNC_DOWNLOAD_ERROR_EXIT_CODES:
+          # Server error, try another one.
+          continue
+        else:
+          die('error: rsync exited with %d\n> server: %s\n' % (e, rsync_server))
+      else:
+        # Fall back on Aria2
+        metalink2 = str(download_queue_to_metalink(rsync_queue)).encode()
+        aria2_cmd2 = [
+          self.conf.get('aria2/path'),
+          '--metalink-file=-',
+        ] + self.conf.get('aria2/args')
+        aria2c_p2 = Popen(aria2_cmd2, stdin=PIPE)
+        aria2c_p2.communicate(input=metalink2)
+        e = aria2c_p2.wait()
+        if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+          die('error: aria2c exited with %d\n' % e)
+
+
+    if metalink_queue:
+      e = aria2c_p.wait()
+      if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+        die('error: aria2c exited with %d\n' % e)
+
+
+
+
+  def run_pacman(self, args):
+    """
+    Run Pacman (or equivalent) with the given arguments.
+    """
+    return call([self.conf.get('pacman/path')] + args)
+
+
+
+##################################### Main #####################################
+
+def main(args=None):
+  pargs = parse_args(args)
+
+  if pargs['help']:
+    display_help()
+    return 0
+
+  # Parse this first to get the Pacman config path.
+  powerpill_conf = Config(pargs['powerpill_config'])
+
+  if not pargs['pacman_config']:
+    pargs['pacman_config'] = powerpill_conf.get('pacman/config')
+
+  pacman_conf = PacmanConfig(pargs['pacman_config'])
+
+  # RootDir affects other options, so it must be handled first.
+  try:
+    rootdir = pargs['pacman_config_options']['RootDir']
+    for opt in ('DBPath', 'LogFile'):
+      pacman_conf.options[opt] = join(rootdir, pacman_conf.options[opt][1:])
+  except KeyError:
+    pass
+
+  for k, v in pargs['pacman_config_options'].items():
+    if k == 'RootDir':
+      continue
+    if v:
+      pacman_conf.options[k] = v
+
+  lock = Lockfile(join(pacman_conf.options['DBPath'], 'db.lck'))
+  powerpill = Powerpill(powerpill_conf, pacman_conf)
+
+  # Clean up before doing anything else.
+  if pargs['powerpill_clean']:
+    with lock:
+      for a in glob.iglob(join(pacman_conf.options['DBPath'], 'sync/*' + ARIA2_EXT)):
+        try:
+          print("removing", a)
+          unlink(a)
+        except FileNotFoundError:
+          pass
+      for cachedir in pacman_conf.options['CacheDir']:
+        for a in glob.iglob(join(cachedir, '*' + ARIA2_EXT)):
+          try:
+            print("removing", a)
+            unlink(a)
+          except FileNotFoundError:
+            pass
+    print("cleaning complete")
+    if not pargs['S'] and not pargs['other_operation']:
+      return
+
+  # Jump straight to Pacman if the operation does not involve a download.
+  if pargs['other_operation'] or not (
+    pargs['S'] and (
+      (pargs['u'] or pargs['args']) or pargs['y'] > 0
+    )
+  ):
+    return powerpill.run_pacman(list(unparse_args(pargs)))
+
+  if pargs['y'] > 0:
+    pm2ml_args = ['-yso', join(pacman_conf.options['DBPath'], 'sync')]
+    pm2ml_args.extend(pargs['pm2ml_options'])
+    pm2ml_args.extend(pargs['args'])
+    with lock:
+      powerpill.download(pm2ml_args, dbs=True)
+    pargs['y'] = 0
+
+  if pargs['u'] > 0 or pargs['args']:
+    pm2ml_args = ['-o', pacman_conf.options['CacheDir'][0]]
+    if pargs['u'] > 0:
+      pm2ml_args.append('-u')
+    pm2ml_args.extend(pargs['pm2ml_options'])
+    pm2ml_args.extend(pargs['args'])
+    with lock:
+      powerpill.download(pm2ml_args)
+
+  if pargs['w'] == 0 and (pargs['u'] > 0 or pargs['args']):
+    pacman_args = list(unparse_args(pargs))
+    return powerpill.run_pacman(pacman_args)
+  else:
+    return 0
+
+
+
+
+def run_main(args=None):
+  try:
+    return main(args)
+  except (KeyboardInterrupt, BrokenPipeError):
+    pass
+
+
+
+if __name__ == '__main__':
+  exit(run_main())
