@@ -788,13 +788,6 @@ class InstallationThread(threading.Thread):
         self.queue_event('info', _("Running mkinitcpio"))
         self.run_mkinitcpio()
         
-        # TODO: Mirrorlist has to be generated using our rank-mirrorlist script
-        # located in /arch and then copy that generated file to the target system.
-        # In the CLI installer I'm running this script when the user opens the installer,
-        # because it has to search for the 5 fastest mirrors, which takes time.
-        
-        # Ok, we already did this before, in another thread
-        
         # Call post-install script
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)

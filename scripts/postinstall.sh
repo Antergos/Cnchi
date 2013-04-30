@@ -1,4 +1,4 @@
-_set_50-synaptics() {
+function _set_50-synaptics() {
     cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf 
 # Example xorg.conf.d snippet that assigns the touchpad driver
 # to all touchpads. See xorg.conf.d(5) for more information on
