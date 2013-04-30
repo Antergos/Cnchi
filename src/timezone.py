@@ -376,10 +376,9 @@ class GenerateMirrorListThread(threading.Thread):
             timezone = tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
             loc = self.tzdb.get_loc(timezone)
             country_code = ''
-
             if loc:
                 country_code = loc.country
-        except queue.Empty:
+        except (queue.Empty, IndexError) as e:
             log.debug(_("Can't get the country code used to create a pacman mirrorlist"))
 
         try:

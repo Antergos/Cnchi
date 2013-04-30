@@ -181,6 +181,8 @@ class Location(Gtk.Box):
 
         self.treeview_items = len(areas)
         
+        areas.sort()
+        
         for area in areas:
             liststore.append([area])
             
