@@ -333,6 +333,8 @@ class InstallationAlongside(Gtk.Box):
                 elif p.type == pm.PARTITION_PRIMARY:
                     primary_partitions.append(path)
         
+        primary_partitions.sort()
+        
         print("extended partition: ", extended_path)
         print("primary partitions: ", primary_partitions)
         
