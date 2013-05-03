@@ -59,7 +59,7 @@ function gnome_settings(){
 	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
+	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
 }
 
@@ -67,15 +67,16 @@ function cinnamon_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
+	# copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos_menu.png ${DESTDIR}/usr/share/antergos/antergos_menu.png
+
 	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
+	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
-
-	# copy antergos menu icon
-	cp /usr/share/antergos/antergos_menu.png ${DESTDIR}/usr/share/antergos/antergos_menu.png
 }
 
 function postinstall(){

@@ -1,10 +1,39 @@
 #!/bin/bash
 
+DESKTOP=$1
+
 # Change keyboard layaout
 dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
-# Change default wallpaper
-dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+# Set gtk theme
+dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
+dbus-launch gsettings set org.gnome.desktop.wm.preferences theme Zukitwo
 
-# Set favorite apps
-dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
+if [[ ${DESKTOP} == 'gnome' ]];then
+
+	# Set favorite apps
+	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
+
+	# Change default wallpaper
+	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+
+fi
+
+if [[ ${DESKTOP} == 'cinnamon' ]];then
+
+	# Set menu icon
+	dbus-launch gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos_menu.png"
+
+	# Set favorite apps
+	dbus-launch gsettings set org.cinnamon favorite-apps "['nemo.desktop', 'chromium.desktop', 'xnoise.desktop']"
+
+	# Set overview corner to false
+	dbus-launch gsettings set org.cinnamon overview-corner "['false:false:false', 'false:false:false', 'false:false:false', 'false:false:false']"
+
+	# Set panel launchers
+	dbus-launch gsettings set org.cinnamon panel-launchers "['chromium.desktop', 'nemo.desktop', 'gnome-terminal.desktop']"
+
+	# Set background
+	dbus-launch gsettings set org.cinnamon.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+
+fi
