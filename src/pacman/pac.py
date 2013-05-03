@@ -8,7 +8,7 @@
 #  Check it at http://git.manjaro.org/core/pamac
 #  
 #  Copyright 2013 Manjaro (http://manjaro.org)
-#  Copyright 2013 Cinnarch (http://www.cinnarch.com)
+#  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Cinnarch Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.cinnarch.com>
-#   Raúl Granados (pollitux) <raulgranados.cinnarch.com>
-#   Gustau Castells (karasu) <karasu.cinnarch.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
-#   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
-#   Alex Skinner (skinner) <skinner.cinnarch.com>
+#  Antergos Team:
+#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
+#   Raúl Granados (pollitux) <raulgranados.antergos.com>
+#   Gustau Castells (karasu) <karasu.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
+#   Alex Skinner (skinner) <skinner.antergos.com>
     
 import traceback
 import sys
