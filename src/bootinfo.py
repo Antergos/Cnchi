@@ -32,6 +32,10 @@ import os
 import subprocess
 import re
 
+if __name__ == '__main__':
+    import gettext
+    _ = gettext.gettext
+
 def get_os(mountname):
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
@@ -98,6 +102,29 @@ def get_os(mountname):
     return OS
 
 
+def get_devices_and_their_mount_points():
+    d = {}
+    try:
+        out = subprocess.check_output(["mount"]).decode()
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(e)
+        return d
+
+    out = out.split("\n")
+    
+    for line in out:
+        e = line.split()
+        try:
+            device = e[0]
+            if "sd" in device and re.search(r'\d+$', device):
+                # ok, it has sd and ends with a number
+                d[device] = e[2]
+        except:
+            pass
+
+    return d
+    
+
 def get_os_dict():
     oses = {}
     
@@ -109,12 +136,9 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-                    
-                    # TODO: what if device is already mounted?
-                    
-                    subprocess.call(["mount", device, "/mnt"])
+                    subprocess.call(["mount", device, "/mnt"], stderr=subprocess.DEVNULL)
                     oses[device] = get_os("/mnt")
-                    subprocess.call(["umount", "/mnt"])
+                    subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
     return oses
     
 if __name__ == '__main__':
