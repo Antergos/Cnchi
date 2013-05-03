@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Change keyboard layaout
+dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
+
+# Change default wallpaper
+dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+
+# Set favorite apps
+dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
