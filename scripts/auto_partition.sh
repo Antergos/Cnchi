@@ -378,9 +378,9 @@ autoprepare() {
         # create actual partitions
         sgdisk --set-alignment="2048" --new=1:1M:+${GPT_BIOS_GRUB_PART_SIZE}M --typecode=1:EF02 --change-name=1:BIOS_GRUB ${DEVICE} > ${LOG}
         sgdisk --set-alignment="2048" --new=2:0:+${UEFISYS_PART_SIZE}M --typecode=2:EF00 --change-name=2:UEFI_SYSTEM ${DEVICE} > ${LOG}
-        sgdisk --set-alignment="2048" --new=3:0:+${BOOT_PART_SIZE}M --typecode=3:8300 --attributes=3:set:2 --change-name=3:CINNARCH_BOOT ${DEVICE} > ${LOG}
-        sgdisk --set-alignment="2048" --new=4:0:+${SWAP_PART_SIZE}M --typecode=4:8200 --change-name=4:CINNARCH_SWAP ${DEVICE} > ${LOG}
-        sgdisk --set-alignment="2048" --new=5:0:+${ROOT_PART_SIZE}M --typecode=5:8300 --change-name=5:CINNARCH_ROOT ${DEVICE} > ${LOG}
+        sgdisk --set-alignment="2048" --new=3:0:+${BOOT_PART_SIZE}M --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT ${DEVICE} > ${LOG}
+        sgdisk --set-alignment="2048" --new=4:0:+${SWAP_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_SWAP ${DEVICE} > ${LOG}
+        sgdisk --set-alignment="2048" --new=5:0:+${ROOT_PART_SIZE}M --typecode=5:8300 --change-name=5:ANTERGOS_ROOT ${DEVICE} > ${LOG}
         sgdisk --print ${DEVICE} > ${LOG}
     else
         PART_ROOT="${DEVICE}3"
@@ -411,10 +411,10 @@ autoprepare() {
     ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
     ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
     ## Make sure the "root" partition is defined first in the FSSPECS list
-    FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_CINNARCH 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_CINNARCH 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_CINNARCH"
+    FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
 
     if [[ "${GUIDPARAMETER}" == "yes" ]]; then
-        FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_CINNARCH 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_CINNARCH 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_CINNARCH"
+        FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
     fi
 
     ## make and mount filesystems

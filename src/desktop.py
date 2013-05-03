@@ -152,12 +152,12 @@ class DesktopAsk(Gtk.Box):
 
         liststore_desktop.append(['Gnome'])
         liststore_desktop.append(['Cinnamon'])
-        liststore_desktop.append(['Xfce'])
-        liststore_desktop.append(['Lxde'])
-        liststore_desktop.append(['Openbox'])
-        liststore_desktop.append(['Enlightment'])
-        liststore_desktop.append(['KDE'])
-        liststore_desktop.append(['Razor-qt'])
+        # liststore_desktop.append(['Xfce'])
+        # liststore_desktop.append(['Lxde'])
+        # liststore_desktop.append(['Openbox'])
+        # liststore_desktop.append(['Enlightment'])
+        # liststore_desktop.append(['KDE'])
+        # liststore_desktop.append(['Razor-qt'])
 
         self.select_default_row(self.treeview_desktop, 'Gnome')
 

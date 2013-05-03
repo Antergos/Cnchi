@@ -1,4 +1,4 @@
-_set_50-synaptics() {
+function _set_50-synaptics() {
     cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf 
 # Example xorg.conf.d snippet that assigns the touchpad driver
 # to all touchpads. See xorg.conf.d(5) for more information on
@@ -56,7 +56,7 @@ function gnome_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings
-	cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
@@ -68,7 +68,7 @@ function cinnamon_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings
-	cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
