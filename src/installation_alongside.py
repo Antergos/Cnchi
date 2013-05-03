@@ -99,13 +99,16 @@ class InstallationAlongside(Gtk.Box):
                 css_data = css.read()
             
             provider = Gtk.CssProvider()
-            
-            provider.load_from_data(css_data)
 
-            Gtk.StyleContext.add_provider_for_screen(
-                Gdk.Screen.get_default(), provider,     
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-            )
+            try:
+                provider.load_from_data(css_data)
+
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(), provider,     
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+            except:
+                print(_("Can't load %s css") % path)
         
 
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)

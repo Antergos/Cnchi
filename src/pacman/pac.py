@@ -32,14 +32,20 @@
 #   Kirill Omelchenko (omelcheck) <omelchek.cinnarch.com>
 #   Marc Miralles (arcnexus) <arcnexus.cinnarch.com>
 #   Alex Skinner (skinner) <skinner.cinnarch.com>
-
-import pyalpm
+    
 import traceback
 import sys
 import locale
 import gettext
 
-from pacman import pac_config
+# I use this to test the installer in other distros where libalpm is
+# not available
+try:
+    import pyalpm
+    from pacman import pac_config
+except:
+    print("pyalpm not found, installer will not work")
+
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
