@@ -37,7 +37,7 @@ import shutil
 import xml.etree.ElementTree as etree
 from urllib.request import urlopen
 import crypt
-
+import download
 import config
 
 # Insert the src/pacman directory at the front of the path.
@@ -201,6 +201,10 @@ class InstallationThread(threading.Thread):
             self.select_packages()
             self.queue_event('debug', 'Packages selected')
             
+            self.queue_event('debug', 'Downloading packages...')
+            self.download_packages()
+            self.queue_event('debug', 'Packages downloaded.')
+            
             self.queue_event('debug', 'Installing packages...')
             self.install_packages()
             self.queue_event('debug', 'Packages installed.')
@@ -223,6 +227,11 @@ class InstallationThread(threading.Thread):
         self.queue_event("finished")
         self.running = False
         return True
+
+    def download_packages(self):
+        conf_dir = "/tmp/pacman.conf"
+        cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
+        download.download_packages(self.packages, conf_dir, cache_dir)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):

@@ -31,21 +31,23 @@
 import pm2ml
 import sys
 import subprocess
+import log
 
 ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
-def download_packages(package_names):
-    pacman_conf = "/etc/pacman.conf"
-    pacman_cache = "/var/cache/pacman/pkg"
+def download_packages(package_names, conf_dir=None, cache_dir=None):
+    if conf_dir == None:
+        conf_dir = "/etc/pacman.conf"
+        
+    if cache_dir == None:
+        cache_dir = "/var/cache/pacman/pkg"
     
-    args = str("-c %s" % pacman_conf).split() 
+    args = str("-c %s" % conf_dir).split() 
     args += package_names
     args += ["--noconfirm"]
     args += "-r -p http -l 50".split()
     
     pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-    
-    #print(pargs.output_dir)
     
     metalink = pm2ml.download_queue_to_metalink(
         download_queue,
@@ -53,19 +55,17 @@ def download_packages(package_names):
         set_preference=pargs.preference
     )
 
-    '''
-    print(metalink)
+    log.debug(metalink)
 
     if not_found:
-        sys.stderr.write('Not found:\n')
+        log.debug("Packages not found:")
         for nf in sorted(not_found):
-            sys.stderr.write('  %s\n' % nf)
+            log.debug(nf)
   
     if missing_deps:
-        sys.stderr.write('Unresolved dependencies:\n')
+        log.debug("Unresolved dependencies:")
         for md in sorted(missing_deps):
-            sys.stderr.write('  %s\n' % md)
-    '''
+            log.debug(md)
     
     aria2_args = ["allow-overwrite=true",
         "always-resume=false",
@@ -80,17 +80,17 @@ def download_packages(package_names):
         "min-split-size=5M",
         "split=10",
         "show-console-readout=false",
-        "--dir=%s" % pacman_cache]
+        "--dir=%s" % cache_dir]
     
     aria2_cmd = ['/usr/bin/aria2c', '--metalink-file=-', ] + aria2_args
     
-    #print(aria2_cmd)
+    log.debug(aria2_cmd)
     
     aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
     aria2c_p.communicate(input=str(metalink).encode())
     e = aria2c_p.wait()
-    #if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
-    #    print('error: aria2c exited with %d' % e)
+    if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+        log.debug('error: aria2c exited with %d' % e)
 
 if __name__ == '__main__':
     download_packages(["vim"])
