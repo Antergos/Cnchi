@@ -1,4 +1,5 @@
-function _set_50-synaptics() {
+set_synaptics()
+{
     cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf 
 # Example xorg.conf.d snippet that assigns the touchpad driver
 # to all touchpads. See xorg.conf.d(5) for more information on
@@ -51,7 +52,7 @@ EOF
 
 }
 
-function gnome_settings(){
+gnome_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
@@ -63,7 +64,7 @@ function gnome_settings(){
 	rm ${DESTDIR}/usr/bin/set-gsettings
 }
 
-function cinnamon_settings(){
+cinnamon_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
@@ -79,7 +80,7 @@ function cinnamon_settings(){
 	rm ${DESTDIR}/usr/bin/set-gsettings
 }
 
-function postinstall(){
+postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
 	DESKTOP=$3
@@ -98,7 +99,7 @@ function postinstall(){
 	mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
 
 	# Configure touchpad
-	_set_50-synaptics
+	set_synaptics
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
@@ -106,5 +107,5 @@ function postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2
+postinstall $1 $2 $3
 rm /tmp/.postinstall.lock

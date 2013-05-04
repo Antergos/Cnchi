@@ -70,7 +70,7 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Run rankmirrors command
         try:
-            subprocess.check_call(['/bin/bash', '/arch/rankmirrors-script'])
+            subprocess.check_call(['/bin/bash', '/usr/share/cnchi/scripts/rankmirrors-script'])
         except subprocess.CalledProcessError as e:
             print(_("Couldn't execute auto mirroring selection"))
         
