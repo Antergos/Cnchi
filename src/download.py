@@ -36,15 +36,24 @@ ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
 def download_packages(package_names):
     pacman_conf = "/etc/pacman.conf"
+    pacman_cache = "/var/cache/pacman/pkg"
     
-    pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(package_names)
+    args = str("-c %s" % pacman_conf).split() 
+    args += package_names
+    args += ["--noconfirm"]
+    args += "-r -p http -l 50".split()
+    
+    pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
+    
+    #print(pargs.output_dir)
     
     metalink = pm2ml.download_queue_to_metalink(
         download_queue,
         output_dir=pargs.output_dir,
         set_preference=pargs.preference
     )
-    
+
+    '''
     print(metalink)
 
     if not_found:
@@ -56,7 +65,8 @@ def download_packages(package_names):
         sys.stderr.write('Unresolved dependencies:\n')
         for md in sorted(missing_deps):
             sys.stderr.write('  %s\n' % md)
-            
+    '''
+    
     aria2_args = ["allow-overwrite=true",
         "always-resume=false",
         "auto-file-renaming=false",
@@ -69,19 +79,18 @@ def download_packages(package_names):
         "max-connection-per-server=5",
         "min-split-size=5M",
         "split=10",
-        "show-console-readout=false"]
-
-    
+        "show-console-readout=false",
+        "--dir=%s" % pacman_cache]
     
     aria2_cmd = ['/usr/bin/aria2c', '--metalink-file=-', ] + aria2_args
     
-    print(aria2_cmd)
+    #print(aria2_cmd)
     
     aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
     aria2c_p.communicate(input=str(metalink).encode())
     e = aria2c_p.wait()
-    if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
-        die('error: aria2c exited with %d\n' % e)
+    #if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+    #    print('error: aria2c exited with %d' % e)
 
 if __name__ == '__main__':
     download_packages(["vim"])
