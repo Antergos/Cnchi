@@ -64,11 +64,6 @@ class DesktopAsk(Gtk.Box):
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop, desktop_mode):
-        radio = self.ui.get_object("vanilla_radio")
-        radio.set_label(_("Vanilla"))
-        
-        radio = self.ui.get_object("flavoured_radio")
-        radio.set_label(_("Flavoured"))
 
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
@@ -128,10 +123,7 @@ class DesktopAsk(Gtk.Box):
             
         label.set_markup(txt)
 
-        if desktop_mode == 'vanilla':
-            image.set_from_file(self.desktops_dir + desktop + ".png")
-        else:
-            image.set_from_file(self.desktops_dir + desktop + "-f.png")
+        image.set_from_file(self.desktops_dir + desktop + ".png")
 
         txt = _("Select your desktop")
         txt = "<span weight='bold' size='large'>%s</span>" % txt

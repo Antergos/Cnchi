@@ -67,7 +67,7 @@ gnome_settings(){
 	rm ${DESTDIR}/usr/bin/set-gsettings
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -82,7 +82,7 @@ cinnamon_settings(){
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos_menu.png ${DESTDIR}/usr/share/antergos/antergos_menu.png
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
@@ -96,7 +96,7 @@ cinnamon_settings(){
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -106,9 +106,25 @@ razor_settings(){
 	# Set theme
 	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor
 	echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
-	echo "__userfile__=true" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
-	echo "icon_theme=Faenza" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
-	echo "theme=ambiance" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "__userfile__=true" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "icon_theme=Faenza" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "theme=ambiance" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+
+	# Set panel launchers
+	echo "[quicklaunch]" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\1\desktop=/usr/share/applications/razor-config.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\size=3" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\2\desktop=/usr/share/applications/konsole.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\3\desktop=/usr/share/applications/chromium.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+
+	# Set Wallpaper
+	echo "[razor]" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	echo "screens\size=1" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\wallpaper_type=pixmap" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\wallpaper=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\keep_aspect_ratio=false" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\size=1" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+	
 }
 
 postinstall(){

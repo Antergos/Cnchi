@@ -24,12 +24,6 @@
 		<pkgname>chromium</pkgname>
 		<pkgname>flashplugin</pkgname>
 		<pkgname>alsa-utils</pkgname>
-		<pkgname>gstreamer0.10-bad-plugins</pkgname>
-		<pkgname>gstreamer0.10-base-plugins</pkgname>
-		<pkgname>gstreamer0.10-ffmpeg</pkgname>
-		<pkgname>gstreamer0.10-good-plugins</pkgname>
-		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
-		<pkgname>gst-libav</pkgname>
 		<pkgname>whois</pkgname>
 		<pkgname>dnsutils</pkgname>
 		<pkgname>transmission-cli</pkgname>
@@ -43,13 +37,13 @@
 		<pkgname>xf86-input-synaptics</pkgname>
 		<pkgname>usb_modeswitch</pkgname>
 		<pkgname>modemmanager</pkgname>
-		<pkgname>networkmanager-openvpn</pkgname>
 	</common_system>
 
 	<gnome_desktop>
 		<pkgname>ttf-dejavu</pkgname>
 		<pkgname>ttf-bitstream-vera</pkgname>
 		<pkgname>network-manager-applet</pkgname>
+		<pkgname>networkmanager-openvpn</pkgname>
 		<pkgname>gnome-terminal</pkgname>
 		<pkgname>file-roller</pkgname>
 		<pkgname>evince</pkgname>
@@ -74,12 +68,19 @@
 		<pkgname>gnome-control-center</pkgname>
 		<pkgname>nautilus</pkgname>
 		<pkgname>zukitwo-themes</pkgname>
+		<pkgname>gstreamer0.10-bad-plugins</pkgname>
+		<pkgname>gstreamer0.10-base-plugins</pkgname>
+		<pkgname>gstreamer0.10-ffmpeg</pkgname>
+		<pkgname>gstreamer0.10-good-plugins</pkgname>
+		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
+		<pkgname>gst-libav</pkgname>
 	</gnome_desktop>
 
 	<cinnamon_desktop>
 		<pkgname>ttf-dejavu</pkgname>
 		<pkgname>ttf-bitstream-vera</pkgname>
 		<pkgname>network-manager-applet</pkgname>
+		<pkgname>networkmanager-openvpn</pkgname>
 		<pkgname>gnome-terminal</pkgname>
 		<pkgname>file-roller</pkgname>
 		<pkgname>evince</pkgname>
@@ -97,13 +98,19 @@
 		<pkgname>shotwell</pkgname>
 		<pkgname>gnome-themes-standard</pkgname>
 		<pkgname>hicolor-icon-theme</pkgname>
-		<pkgname dm='true' name='gdm'>gdm</pkgname>
+		<pkgname dm='true' name='lxdm'>lxdm</pkgname>
 		<pkgname>gnome-keyring</pkgname>
 		<pkgname>libgnomeui</pkgname>
 		<pkgname>cinnamon</pkgname>
 		<pkgname>cinnamon-control-center</pkgname>
 		<pkgname>nemo</pkgname>
 		<pkgname>zukitwo-themes</pkgname>
+		<pkgname>gstreamer0.10-bad-plugins</pkgname>
+		<pkgname>gstreamer0.10-base-plugins</pkgname>
+		<pkgname>gstreamer0.10-ffmpeg</pkgname>
+		<pkgname>gstreamer0.10-good-plugins</pkgname>
+		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
+		<pkgname>gst-libav</pkgname>
 	</cinnamon_desktop>
 
 	<razor_desktop>
@@ -113,6 +120,7 @@
 		<pkgname>kdebase-konsole</pkgname>
 		<pkgname>kdeartwork-desktopthemes</pkgname>
 		<pkgname>kdeplasma-applets-networkmanagement</pkgname>
+		<pkgname>kovpn</pkgname>
 		<pkgname>kdepim-knotes</pkgname>
 		<pkgname>kdenetwork-kopete</pkgname>
 		<pkgname>kdegraphics-gwenview</pkgname>
@@ -121,6 +129,7 @@
 		<pkgname>kdeutils-kcalc</pkgname>
 		<pkgname>kdegraphics-ksnapshot</pkgname>
 		<pkgname>transmission-qt</pkgname>
+		<pkgname>phonon-vlc</pkgname>
 	</razor_desktop>
 	
 	<graphics>
