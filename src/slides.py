@@ -31,7 +31,10 @@
 from gi.repository import Gtk, WebKit, GLib
 import config
 import os
+
 import queue
+from multiprocessing import Queue
+
 import show_message as show
 import log
 import subprocess

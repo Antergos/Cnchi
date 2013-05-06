@@ -59,7 +59,8 @@ import misc
 import log
 import info
 
-import queue
+#import queue
+from multiprocessing import Queue
 
 import show_message as show
 
@@ -150,7 +151,8 @@ class Main(Gtk.Window):
         # to the main thread (installer_*.py)
         #self.callback_queue = queue.Queue(0)
         # Doing some tests with a LIFO queue
-        self.callback_queue = queue.LifoQueue(0)
+        #self.callback_queue = queue.LifoQueue(0)
+        self.callback_queue = Queue()
 
         # load all pages
         # (each one is a screen, a step in the install process)

@@ -28,12 +28,14 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-import queue
+#import queue
+from multiprocessing import Queue
 
 class Settings():
     def __init__(self):
         # Create a queue one element size
-        self.settings = queue.Queue(1)
+        #self.settings = queue.Queue(1)
+        self.settings = Queue(1)
 
         self.settings.put( { \
             'CNCHI_DIR' : '/usr/share/cnchi/', \

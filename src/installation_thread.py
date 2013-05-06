@@ -28,7 +28,10 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-import threading
+#import threading
+
+from multiprocessing import Process
+
 import subprocess
 import os
 import sys
@@ -64,9 +67,9 @@ class InstallError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class InstallationThread(threading.Thread):
+class InstallationThread(Process):
     def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None):
-        threading.Thread.__init__(self)
+        Process.__init__(self)
         
         self.callback_queue = callback_queue
         self.settings = settings
