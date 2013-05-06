@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_thread.py
+#  installation_process.py
 #  
 #  Copyright 2013 Antergos
 #  
@@ -27,8 +27,6 @@
 #   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
-
-#import threading
 
 from multiprocessing import Process
 
@@ -67,7 +65,7 @@ class InstallError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class InstallationThread(Process):
+class InstallationProcess(Process):
     def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None):
         Process.__init__(self)
         

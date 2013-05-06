@@ -169,6 +169,8 @@ class Slides(Gtk.Box):
                 
         return True
 
+    # FIXME: pac.py generates too many events. Here we can only
+    # get the newest one and delete all the old ones.
     # Delete all the old events and get the newest one
     def get_newest_event(self):
         event = ()

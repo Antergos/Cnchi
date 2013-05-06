@@ -49,7 +49,7 @@ sys.path.insert(0, parted_dir)
 import partition_module as pm
 import fs_module as fs
 
-import installation_thread
+import installation_process
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
@@ -356,7 +356,7 @@ class InstallationAlongside(Gtk.Box):
             
 
         '''
-        # Prepare info for installer_thread
+        # Prepare info for installer_process
         mount_devices = {}
         mount_devices["/"] =
         mount_devices["swap"] = 
@@ -377,12 +377,12 @@ class InstallationAlongside(Gtk.Box):
         # TODO: Ask where to install GRUB
         grub_device = mount_devices["/"]
 
-        self.thread = installation_thread.InstallationThread( \
+        self.process = installation_process.InstallationProcess( \
                         self.settings, \
                         self.callback_queue, \
                         mount_devices, \
                         grub_device, \
                         fs_devices)
         
-        self.thread.start()
+        self.process.start()
         '''

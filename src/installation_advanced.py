@@ -46,7 +46,7 @@ sys.path.insert(0, parted_dir)
 import partition_module as pm
 import fs_module as fs
 import used_space
-import installation_thread
+import installation_process
 import show_message as show
 
 #import bootinfo
@@ -1328,7 +1328,7 @@ class InstallationAdvanced(Gtk.Box):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
 
-        self.thread = installation_thread.InstallationThread( \
+        self.process = installation_process.InstallationProcess( \
                     self.settings, \
                     self.callback_queue, \
                     mount_devices, \
@@ -1336,4 +1336,4 @@ class InstallationAdvanced(Gtk.Box):
                     fs_devices, \
                     self.ssd)
                     
-        self.thread.start()
+        self.process.start()

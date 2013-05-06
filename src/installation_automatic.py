@@ -34,11 +34,10 @@ from gi.repository import Gtk
 import subprocess
 import os
 import sys
-import threading
 import parted
 import misc
 import log
-import installation_thread
+import installation_process
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
@@ -66,8 +65,7 @@ class InstallationAutomatic(Gtk.Box):
         super().add(self.ui.get_object("installation_automatic"))
 
         self.devices = dict()
-        self.thread = None
-        self.update_thread_event = threading.Event()
+        self.process = None
 
     def translate_ui(self):
         txt = _("Antergos automatic installation mode")
@@ -158,11 +156,11 @@ class InstallationAutomatic(Gtk.Box):
         # TODO: Ask where to install GRUB
         grub_device = self.auto_device
         
-        self.thread = installation_thread.InstallationThread( \
+        self.process = installation_process.InstallationProcess( \
                         self.settings, \
                         self.callback_queue, \
                         mount_devices, \
                         grub_device, \
                         fs_devices)
                         
-        self.thread.start()
+        self.process.start()
