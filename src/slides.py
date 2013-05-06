@@ -128,10 +128,13 @@ class Slides(Gtk.Box):
         self.info_label.set_markup(txt)
 
     def manage_events_from_cb_queue(self):
+        '''
         try:
             event = self.callback_queue.get_nowait()
         except queue.Empty:
             event = ()
+        '''
+        event = self.get_newest_event()
 
         if len(event) > 0:
             if event[0] == "percent":
@@ -165,6 +168,18 @@ class Slides(Gtk.Box):
                 #self.callback_queue.clear()
                 
         return True
+
+    # Delete all the old events and get the newest one
+    def get_newest_event(self):
+        event = ()
+        queue_empty = False
+        while queue_empty == False:
+            try:
+                event = self.callback_queue.get_nowait()
+            except queue.Empty:
+                queue_empty = True
+        return event
+
 
     @misc.raise_privileges
     def reboot(self):
