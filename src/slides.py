@@ -33,7 +33,7 @@ import config
 import os
 
 import queue
-from multiprocessing import Queue
+from multiprocessing import Queue, Lock
 
 import show_message as show
 import log
@@ -87,6 +87,8 @@ class Slides(Gtk.Box):
                             "Do you want to restart your system now?")
 
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
+        
+        self.mutex = Lock()
 
         super().add(builder.get_object("slides"))
         
@@ -156,12 +158,13 @@ class Slides(Gtk.Box):
             elif event[0] == "error":
                 show.fatal_error(event[1])
             else:
+                self.mutex.acquire()
                 log.debug(event[1])
                 self.set_message(event[1])
                 # remove old messages from the event queue 
-                with self.callback_queue.mutex:
-                    self.callback_queue.queue.clear()
-
+                self.callback_queue.queue.clear()
+                self.mutex.release()
+                
         return True
 
     @misc.raise_privileges
