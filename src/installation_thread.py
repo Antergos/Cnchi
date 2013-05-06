@@ -771,6 +771,43 @@ class InstallationThread(threading.Thread):
 
         self.auto_timesetting()
 
+        # Set autologin if selected
+        if self.settings.get('require_password') is False:
+            # Systems with GDM as Desktop Manager
+            if self.desktop_manager == 'gdm':
+                gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+                with open(gdm_conf_path, "wt") as gdm_conf:
+                    gdm_conf.write('# Enable automatic login for user \n')
+                    gdm_conf.write('[daemon] \n')
+                    gdm_conf.write('AutomaticLogin=%s \n' % username)
+                    gdm_conf.write('AutomaticLoginEnable=True \n')
+
+            # Systems with KDM as Desktop Manager
+            elif self.desktop_manager == 'kdm':
+                kdm_conf_path = os.path.join(self.dest_dir, "etc/kde4/kdm/kdmrc")
+                with open(kdm_conf_path, "wt") as kdm_conf:
+                    kdm_conf.write('[X-:0-Core] \n')
+                    kdm_conf.write('AutoLoginEnable=true \n')
+                    kdm_conf.write('AutoLoginLocked=false \n')
+                    kdm_conf.write('AutoLoginUser=%s \n' % username)
+                    kdm_conf.write('ClientLogFile=.xsession-errors \n')
+
+            # Systems with LXDM as Desktop Manager
+            elif self.desktop_manager == 'lxdm':
+                lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+                text = []
+                with open(lxdm_conf_path, "rt") as lxdm_conf:
+                    text = lxdm_conf.readlines()
+        
+                with open(lxdm_conf_path, "wt") as lxdm_conf:
+                    for line in text:
+                        if '# autologin=dgod' in line and line[0] == "#":
+                            # uncomment line
+                            line = '# autologin=%s' % username
+                            line = line[1:]
+                        lxdm_conf.write(line)
+                
+
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.    

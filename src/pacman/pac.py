@@ -146,13 +146,11 @@ class Pac(object):
                 try:
                     self.t.prepare()
                     self.t.commit()
-                    self.t.release()
                     self.t_lock = False
                 except pyalpm.error:
-                    self.t.release()
-                    self.t_lock = False
                     line = traceback.format_exc()
                     self.queue_event("error", line)
+                self.t.release()
     
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
@@ -222,8 +220,6 @@ class Pac(object):
         if level & pyalpm.LOG_ERROR:
             self.error = _("ERROR: %s") % line
             print(line)
-            self.t.release()
-            self.t_lock = False
             self.queue_event("error", line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line

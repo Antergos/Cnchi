@@ -67,7 +67,7 @@ gnome_settings(){
 	rm ${DESTDIR}/usr/bin/set-gsettings
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -96,7 +96,7 @@ cinnamon_settings(){
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -124,6 +124,10 @@ razor_settings(){
 	echo "screens\1\desktops\1\wallpaper=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
 	echo "screens\1\desktops\1\keep_aspect_ratio=false" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
 	echo "screens\1\desktops\size=1" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+
+	# Set Razor in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
 }
 
