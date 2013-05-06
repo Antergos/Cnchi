@@ -56,17 +56,29 @@ gnome_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
+	# Set gsettings input-source
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
+
 	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
+
+	# Set skel directory
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
 cinnamon_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# Set gsettings input-source
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
@@ -78,19 +90,36 @@ cinnamon_settings(){
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
+
+	# Set Cinnamon in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set skel directory
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+}
+
+razor_settings(){
+	# Set theme
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor
+	echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "__userfile__=true" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "icon_theme=Faenza" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "theme=ambiance" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 }
 
 postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
 	DESKTOP=$3
+	LANG_CODE=$4
 	# Specific user configurations
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings"
-
-	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
@@ -107,5 +136,5 @@ postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3
+postinstall $1 $2 $3 $4
 rm /tmp/.postinstall.lock
