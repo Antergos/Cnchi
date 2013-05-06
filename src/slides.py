@@ -88,7 +88,7 @@ class Slides(Gtk.Box):
 
         #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
         
-        self.mutex = Lock()
+        self.lock = Lock()
 
         super().add(builder.get_object("slides"))
         
@@ -158,12 +158,11 @@ class Slides(Gtk.Box):
             elif event[0] == "error":
                 show.fatal_error(event[1])
             else:
-                self.mutex.acquire()
-                log.debug(event[1])
-                self.set_message(event[1])
-                # remove old messages from the event queue 
-                self.callback_queue.queue.clear()
-                self.mutex.release()
+                with self.lock:
+                    log.debug(event[1])
+                    self.set_message(event[1])
+                    # remove old messages from the event queue 
+                    self.callback_queue.clear()
                 
         return True
 
