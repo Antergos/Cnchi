@@ -119,7 +119,7 @@ class DesktopAsk(Gtk.Box):
             "computing experience, offering an advanced graphical \n" \
             "desktop and a wide variety of applications.")
 
-        elif desktop == 'razor-qt':
+        elif desktop == 'razor':
             txt = _("<span weight='bold'>RAZOR-QT</span>\n" \
             "Razor-qt is an advanced, easy-to-use, and fast desktop \n" \
             "environment based on Qt technologies. It has been \n" \
@@ -157,7 +157,7 @@ class DesktopAsk(Gtk.Box):
         # liststore_desktop.append(['Openbox'])
         # liststore_desktop.append(['Enlightment'])
         # liststore_desktop.append(['KDE'])
-        # liststore_desktop.append(['Razor-qt'])
+        liststore_desktop.append(['Razor-qt'])
 
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
@@ -178,7 +178,7 @@ class DesktopAsk(Gtk.Box):
         elif desktop == 'KDE':
             self.desktop_choice = 'kde'
         elif desktop == 'Razor-qt':
-            self.desktop_choice = 'razor-qt'
+            self.desktop_choice = 'razor'
 
 
         self.translate_ui(self.desktop_choice, self.desktop_mode)

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Preliminary xml file for Cnchi. This file is supposed to be in cinnarch server -->
+<!-- Preliminary xml file for Cnchi. This file is supposed to be in antergos server -->
 <packages>
 	<common_system>
 		<pkgname>base</pkgname> <!-- Group -->
 		<pkgname>base-devel</pkgname> <!-- Group -->
-		<pkgname>cinnarch-keyring</pkgname>
-		<pkgname>cinnarch-mirrorlist</pkgname>
+		<pkgname>antergos-keyring</pkgname>
+		<pkgname>antergos-mirrorlist</pkgname>
 		<pkgname>haveged</pkgname>
 		<pkgname>crda</pkgname>
 		<pkgname>ipw2200-fw</pkgname>
@@ -36,52 +36,20 @@
 		<pkgname>libreoffice-installer</pkgname>
 		<pkgname>faenza-hotot-icon</pkgname>
 		<pkgname>faenza-icon-theme</pkgname>
-		<pkgname>cinnarch-wallpapers</pkgname>
+		<pkgname>antergos-wallpapers</pkgname>
 		<pkgname>unzip</pkgname>
 		<pkgname>unrar</pkgname>
 		<pkgname>net-tools</pkgname>
 		<pkgname>xf86-input-synaptics</pkgname>
+		<pkgname>usb_modeswitch</pkgname>
+		<pkgname>modemmanager</pkgname>
+		<pkgname>networkmanager-openvpn</pkgname>
 	</common_system>
 
 	<gnome_desktop>
 		<pkgname>ttf-dejavu</pkgname>
 		<pkgname>ttf-bitstream-vera</pkgname>
 		<pkgname>network-manager-applet</pkgname>
-		<pkgname>usb_modeswitch</pkgname>
-		<pkgname>modemmanager</pkgname>
-		<pkgname>networkmanager-openvpn</pkgname>
-		<pkgname>gnome-terminal</pkgname>
-		<pkgname>file-roller</pkgname>
-		<pkgname>evince</pkgname>
-		<pkgname>gnome-screenshot</pkgname>
-		<pkgname>gnome-bluetooth</pkgname>
-		<pkgname>gcalctool</pkgname>
-		<pkgname>xdg-user-dirs-gtk</pkgname>
-		<pkgname>gedit</pkgname>
-		<pkgname>xfburn</pkgname>
-		<pkgname>gnome-system-monitor</pkgname>
-		<pkgname>empathy</pkgname>
-		<pkgname>transmission-gtk</pkgname>
-		<pkgname>xnoise</pkgname>
-		<pkgname>hotot-gtk3-git</pkgname>
-		<pkgname>shotwell</pkgname>
-		<pkgname>gnome-themes-standard</pkgname>
-		<pkgname>hicolor-icon-theme</pkgname>
-		<pkgname desktop-manager='true'>gdm</pkgname>
-		<pkgname>gnome-keyring</pkgname>
-		<pkgname>libgnomeui</pkgname>
-		<pkgname>gnome-shell</pkgname>
-		<pkgname>gnome-control-center</pkgname>
-		<pkgname>nautilus</pkgname>
-	</gnome_desktop>
-
-	<cinnamon_desktop>
-		<pkgname>ttf-dejavu</pkgname>
-		<pkgname>ttf-bitstream-vera</pkgname>
-		<pkgname>network-manager-applet</pkgname>
-		<pkgname>usb_modeswitch</pkgname>
-		<pkgname>modemmanager</pkgname>
-		<pkgname>networkmanager-openvpn</pkgname>
 		<pkgname>gnome-terminal</pkgname>
 		<pkgname>file-roller</pkgname>
 		<pkgname>evince</pkgname>
@@ -99,13 +67,61 @@
 		<pkgname>shotwell</pkgname>
 		<pkgname>gnome-themes-standard</pkgname>
 		<pkgname>hicolor-icon-theme</pkgname>
-		<pkgname desktop-manager='true'>gdm</pkgname>
+		<pkgname dm='true' name='gdm'>gdm</pkgname>
+		<pkgname>gnome-keyring</pkgname>
+		<pkgname>libgnomeui</pkgname>
+		<pkgname>gnome-shell</pkgname>
+		<pkgname>gnome-control-center</pkgname>
+		<pkgname>nautilus</pkgname>
+		<pkgname>zukitwo-themes</pkgname>
+	</gnome_desktop>
+
+	<cinnamon_desktop>
+		<pkgname>ttf-dejavu</pkgname>
+		<pkgname>ttf-bitstream-vera</pkgname>
+		<pkgname>network-manager-applet</pkgname>
+		<pkgname>gnome-terminal</pkgname>
+		<pkgname>file-roller</pkgname>
+		<pkgname>evince</pkgname>
+		<pkgname>gnome-screenshot</pkgname>
+		<pkgname>gnome-bluetooth</pkgname>
+		<pkgname>gnome-calculator</pkgname>
+		<pkgname>xdg-user-dirs-gtk</pkgname>
+		<pkgname>gedit</pkgname>
+		<pkgname>xfburn</pkgname>
+		<pkgname>gnome-system-monitor</pkgname>
+		<pkgname>empathy</pkgname>
+		<pkgname>transmission-gtk</pkgname>
+		<pkgname>xnoise</pkgname>
+		<pkgname>hotot-gtk3-git</pkgname>
+		<pkgname>shotwell</pkgname>
+		<pkgname>gnome-themes-standard</pkgname>
+		<pkgname>hicolor-icon-theme</pkgname>
+		<pkgname dm='true' name='gdm'>gdm</pkgname>
 		<pkgname>gnome-keyring</pkgname>
 		<pkgname>libgnomeui</pkgname>
 		<pkgname>cinnamon</pkgname>
 		<pkgname>cinnamon-control-center</pkgname>
 		<pkgname>nemo</pkgname>
+		<pkgname>zukitwo-themes</pkgname>
 	</cinnamon_desktop>
+
+	<razor_desktop>
+		<pkgname>razor-qt</pkgname>
+		<pkgname dm='true' name='kdm'>kdebase-workspace</pkgname>
+		<pkgname>qtfm</pkgname>
+		<pkgname>kdebase-konsole</pkgname>
+		<pkgname>kdeartwork-desktopthemes</pkgname>
+		<pkgname>kdeplasma-applets-networkmanagement</pkgname>
+		<pkgname>kdepim-knotes</pkgname>
+		<pkgname>kdenetwork-kopete</pkgname>
+		<pkgname>kdegraphics-gwenview</pkgname>
+		<pkgname>clementine</pkgname>
+		<pkgname>vlc</pkgname>
+		<pkgname>kdeutils-kcalc</pkgname>
+		<pkgname>kdegraphics-ksnapshot</pkgname>
+		<pkgname>transmission-qt</pkgname>
+	</razor_desktop>
 	
 	<graphics>
 		<nvidia>

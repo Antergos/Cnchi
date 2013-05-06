@@ -339,8 +339,10 @@ class InstallationThread(threading.Thread):
 
         for child in root.iter(self.desktop + '_desktop'):
             for pkg in child.iter('pkgname'):
-                if pkg.attrib.get('desktop-manager'):
-                    self.desktop_manager = pkg.text
+                # If package is Desktop Manager, save name to 
+                # activate the correct service
+                if pkg.attrib.get('dm'):
+                    self.desktop_manager = pkg.attrib.get('name')
                 self.packages.append(pkg.text)
         
         if self.settings.get("use_ntp"):
@@ -748,13 +750,6 @@ class InstallationThread(threading.Thread):
         
         subprocess.check_call(["chmod", "440", sudoers_path])
         
-        try:
-            misc.copytree('/etc/skel', os.path.join(self.dest_dir, "etc/skel"))
-        except FileExistsError:
-            # ignore if exists
-            pass
-
-        process = subprocess.check_call(["rm", "-rf", "%s/etc/skel/Desktop" % self.dest_dir])
         
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
@@ -763,12 +758,6 @@ class InstallationThread(threading.Thread):
         self.change_user_password(username, password)
 
         self.chroot(['chfn', '-f', fullname, username])
-        
-        try:
-            misc.copytree('/etc/skel', os.path.join(self.dest_dir, "home/%s" % username))
-        except FileExistsError:
-            # ignore if exists
-            pass
 
         self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
         
@@ -806,7 +795,7 @@ class InstallationThread(threading.Thread):
         self.queue_event('info', _("Running mkinitcpio"))
         self.run_mkinitcpio()
         
-        # Call post-install script
+        # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop])
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, lang_code])

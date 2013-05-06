@@ -1,4 +1,5 @@
-function _set_50-synaptics() {
+set_synaptics()
+{
     cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf 
 # Example xorg.conf.d snippet that assigns the touchpad driver
 # to all touchpads. See xorg.conf.d(5) for more information on
@@ -51,44 +52,74 @@ EOF
 
 }
 
-function gnome_settings(){
+gnome_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# Set gsettings input-source
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
 
 	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
+	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-gsettings
+
+	# Set skel directory
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-function cinnamon_settings(){
+cinnamon_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
-	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
-	mkdir -p ${DESTDIR}/var/run/dbus
-	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
-	rm ${DESTDIR}/usr/bin/set-gsettings
+	# Set gsettings input-source
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
 
 	# copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos_menu.png ${DESTDIR}/usr/share/antergos/antergos_menu.png
+
+	# Set gsettings
+	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-gsettings
+
+	# Set Cinnamon in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set skel directory
+	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.gconf ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-function postinstall(){
+razor_settings(){
+	# Set theme
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor
+	echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "__userfile__=true" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "icon_theme=Faenza" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+	echo "theme=ambiance" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+}
+
+postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
 	DESKTOP=$3
+	LANG_CODE=$4
 	# Specific user configurations
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings"
-
-	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
@@ -97,7 +128,7 @@ function postinstall(){
 	mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
 
 	# Configure touchpad
-	_set_50-synaptics
+	set_synaptics
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
@@ -105,5 +136,5 @@ function postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2
+postinstall $1 $2 $3 $4
 rm /tmp/.postinstall.lock

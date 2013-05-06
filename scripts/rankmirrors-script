@@ -1,0 +1,15 @@
+#!/bin/bash
+
+touch /tmp/.rankmirrors
+
+
+rankmirrors -n 5 /etc/pacman.d/mirrorlist > /tmp/.ranked-mirrorlist 2>&1
+
+                
+echo "# Fastest mirrors selected during installation" > /tmp/.tmp-mirrorlist 2>&1
+tail -n 5 /tmp/.ranked-mirrorlist >> /tmp/.tmp-mirrorlist 2>&1
+cat /tmp/.tmp-mirrorlist /etc/pacman.d/mirrorlist > /tmp/.mirrorlist
+
+cp /tmp/.mirrorlist /etc/pacman.d/mirrorlist 2>&1
+
+rm /tmp/.rankmirrors
