@@ -103,8 +103,9 @@ class Timezone(Gtk.Box):
         self.start_auto_timezone_thread()
         
         # thread to generate a pacman mirrorlist based on country code
+        # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
         self.mirrorlist_thread = None
-        self.start_mirrorlist_thread()
+        #self.start_mirrorlist_thread()
 
         super().add(self.ui.get_object('location'))
 
@@ -276,10 +277,12 @@ class Timezone(Gtk.Box):
     def get_next_page(self):
         return _next_page
         
-    def stop_thread(self):
+    def stop_threads(self):
         log.debug(_("Stoping timezone threads..."))
-        self.auto_timezone_thread.stop()
-        self.mirrorlist_thread.stop()
+        if self.auto_timezone_thread != None:
+            self.auto_timezone_thread.stop()
+        if self.mirrorlist_thread != None:
+            self.mirrorlist_thread.stop()
 
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):
