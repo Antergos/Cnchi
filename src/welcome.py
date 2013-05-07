@@ -117,10 +117,7 @@ class Welcome(Gtk.Box):
         Gtk.main_quit()
         
     def on_cli_button_clicked(self, widget, data=None):
-        if os.path.exists("antergos-setup"):
-            cli_installer = "antergos-setup"
-        else:
-            cli_installer = "cinnarch-setup"
+        cli_installer = "antergos-setup"
         try:
             subprocess.Popen([cli_installer])
         except:
