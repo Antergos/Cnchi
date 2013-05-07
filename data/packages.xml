@@ -128,6 +128,7 @@
 		<pkgname>xfce4-taskmanager</pkgname>
 		<pkgname>network-manager-applet</pkgname>
 		<pkgname>xnoise</pkgname>
+		<pkgname>evince</pkgname>
 		<pkgname>transmission-gtk</pkgname>
 		<pkgname>pidgin</pkgname>
 		<pkgname>gnome-calculator</pkgname>
@@ -138,6 +139,7 @@
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
 		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
+		<pkgname>xdg-user-dirs-gtk</pkgname>
 	</xfce_desktop>
 
 	<razor_desktop>
