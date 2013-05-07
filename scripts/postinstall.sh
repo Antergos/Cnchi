@@ -134,7 +134,7 @@ xfce_settings(){
 
 razor_settings(){
 	# Set theme
-	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
 	echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 	echo "__userfile__=true" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 	echo "icon_theme=Faenza" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
@@ -144,7 +144,7 @@ razor_settings(){
 	echo "[quicklaunch]" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\1\desktop=/usr/share/applications/razor-config.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\size=3" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\2\desktop=/usr/share/applications/konsole.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\2\desktop=/usr/share/applications/kde4/konsole.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\3\desktop=/usr/share/applications/chromium.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 
 	# Set Wallpaper
