@@ -784,7 +784,10 @@ class InstallationThread(threading.Thread):
 
             # Systems with KDM as Desktop Manager
             elif self.desktop_manager == 'kdm':
-                kdm_conf_path = os.path.join(self.dest_dir, "etc/kde4/kdm/kdmrc")
+                kdm_path = os.path.join(self.dest_dir, "etc/kde/kdm")
+                if not os.path.exists(kdm_path):
+                    os.mkdir(kdm_path)
+                kdm_conf_path = os.path.join(kdm_path, "kdmrc")
                 with open(kdm_conf_path, "wt") as kdm_conf:
                     kdm_conf.write('[X-:0-Core] \n')
                     kdm_conf.write('AutoLoginEnable=true \n')

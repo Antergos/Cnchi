@@ -51,29 +51,26 @@ fi
 if [[ ${DESKTOP} == 'xfce' ]];then
 
 	# Set background
-	dbus-launch xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
+	dbus-launch xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -n -t string -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
 
 	# Set theme
-	dbus-launch xfconf-query -c xsettings -p /Net/ThemeName -s "Zukitwo"
-	dbus-launch xfconf-query -c xfwm4 -p /general/theme -s "Zukitwo"
+	dbus-launch xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "Zukitwo"
+	dbus-launch xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Zukitwo"
 
 	# Set icon theme
-	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -s "Faenza-Dark"
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Faenza-Dark"
 
 	# Set compositor
-	dbus-launch xfconf-query -c xfwm4 -p /general/show_frame_shadow -t bool -s "true"
+	dbus-launch xfconf-query -c xfwm4 -p /general/show_frame_shadow -n -t bool -s "true"
 
 	# Set workspaces count
-	dbus-launch xfconf-query -c xfwm4 -p /general/workspace_count -s "2"
+	dbus-launch xfconf-query -c xfwm4 -p /general/workspace_count -n -t int -s 2
 
 	# Set panels
-	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-2/autohide -t bool -s "true"
-	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-1/size -s "25"
-
-	# Set chromium as default browser
-	xdg-settings set default-web-browser chromium.desktop
+	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-2/autohide -n -t bool -s "true"
+	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t int -s 25
 
 	# Set menu logo
-	dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -s "/usr/share/antergos/antergos-menu.png"
+	dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu.png"
 fi
 

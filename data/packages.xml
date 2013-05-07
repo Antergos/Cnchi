@@ -57,7 +57,7 @@
 		<pkgname>empathy</pkgname>
 		<pkgname>transmission-gtk</pkgname>
 		<pkgname>xnoise</pkgname>
-		<pkgname>hotot-gtk3-git</pkgname>
+		<pkgname>hotot-gtk3</pkgname>
 		<pkgname>shotwell</pkgname>
 		<pkgname>gnome-themes-standard</pkgname>
 		<pkgname>hicolor-icon-theme</pkgname>
@@ -94,7 +94,7 @@
 		<pkgname>empathy</pkgname>
 		<pkgname>transmission-gtk</pkgname>
 		<pkgname>xnoise</pkgname>
-		<pkgname>hotot-gtk3-git</pkgname>
+		<pkgname>hotot-gtk3</pkgname>
 		<pkgname>shotwell</pkgname>
 		<pkgname>gnome-themes-standard</pkgname>
 		<pkgname>hicolor-icon-theme</pkgname>
@@ -140,6 +140,7 @@
 		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
 		<pkgname>xdg-user-dirs-gtk</pkgname>
+		<pkgname>hotot-gtk3</pkgname>
 	</xfce_desktop>
 
 	<razor_desktop>
@@ -159,6 +160,7 @@
 		<pkgname>kdegraphics-ksnapshot</pkgname>
 		<pkgname>transmission-qt</pkgname>
 		<pkgname>phonon-vlc</pkgname>
+		<pkgname>hotot-qt</pkgname>
 	</razor_desktop>
 	
 	<graphics>
