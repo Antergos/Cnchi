@@ -35,14 +35,14 @@ import log
 
 ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
-def download_packages(package_names, conf_dir=None, cache_dir=None):
-    if conf_dir == None:
-        conf_dir = "/etc/pacman.conf"
+def download_packages(package_names, conf_file=None, cache_dir=None):
+    if conf_file == None:
+        conf_file = "/etc/pacman.conf"
         
     if cache_dir == None:
         cache_dir = "/var/cache/pacman/pkg"
     
-    args = str("-c %s" % conf_dir).split() 
+    args = str("-c %s" % conf_file).split() 
     args += package_names
     args += ["--noconfirm"]
     args += "-r -p http -l 50".split()
