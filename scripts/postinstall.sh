@@ -57,14 +57,14 @@ gnome_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
 
 	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
-	rm ${DESTDIR}/usr/bin/set-gsettings
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
@@ -78,22 +78,44 @@ cinnamon_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
-	rm ${DESTDIR}/usr/bin/set-gsettings
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+}
+
+xfce_settings(){
+	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+	# Set gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
