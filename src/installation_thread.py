@@ -784,16 +784,19 @@ class InstallationThread(threading.Thread):
 
             # Systems with KDM as Desktop Manager
             elif self.desktop_manager == 'kdm':
-                kdm_path = os.path.join(self.dest_dir, "etc/kde/kdm")
-                if not os.path.exists(kdm_path):
-                    os.mkdir(kdm_path)
-                kdm_conf_path = os.path.join(kdm_path, "kdmrc")
+                kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+                text = []
+                with open(kdm_conf_path, "rt") as kdm_conf:
+                    text = kdm_conf.readlines()
+        
                 with open(kdm_conf_path, "wt") as kdm_conf:
-                    kdm_conf.write('[X-:0-Core] \n')
-                    kdm_conf.write('AutoLoginEnable=true \n')
-                    kdm_conf.write('AutoLoginLocked=false \n')
-                    kdm_conf.write('AutoLoginUser=%s \n' % username)
-                    kdm_conf.write('ClientLogFile=.xsession-errors \n')
+                    for line in text:
+                        if '#AutoLoginEnable=true' in line:
+                            line = '#AutoLoginEnable=true'
+                            line = line[1:]
+                        if 'AutoLoginUser=' in line:
+                            line = 'AutoLoginUser=%s \n' % username
+                        kdm_conf.write(line)
 
             # Systems with LXDM as Desktop Manager
             elif self.desktop_manager == 'lxdm':
