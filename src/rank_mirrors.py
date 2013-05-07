@@ -38,6 +38,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 class AutoRankmirrorsThread(threading.Thread):
     def __init__(self):
         super(AutoRankmirrorsThread, self).__init__()
+        self.rankmirrors_pid = None
 
     def get_prop(self, obj, iface, prop):
         import dbus
@@ -64,13 +65,10 @@ class AutoRankmirrorsThread(threading.Thread):
         # wait until there is an Internet connection available
         while not self.has_connection():
             time.sleep(2)  # Delay 
-            if self.stop_event.is_set():
-                #self.coords_queue.clear()
-                return
 
         # Run rankmirrors command
         try:
-            subprocess.check_call(['/bin/bash', '/usr/share/cnchi/scripts/rankmirrors-script'])
+            self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/rankmirrors-script"]).pid
         except subprocess.CalledProcessError as e:
             print(_("Couldn't execute auto mirroring selection"))
         
