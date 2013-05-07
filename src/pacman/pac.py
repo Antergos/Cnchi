@@ -52,7 +52,6 @@ class Pac(object):
         
         self.callback_queue = callback_queue
         self.t = None
-        self.t_lock = False
         self.conflict_to_remove = None
         self.to_remove = []
         self.to_add = []
@@ -65,76 +64,61 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        
-        if conf is not None:
+        if conf != None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
+            self.handle.dlcb = self.cb_dl
+            self.handle.totaldlcb = self.cb_totaldl
+            self.handle.eventcb = self.cb_event
+            self.handle.questioncb = self.cb_conv
+            self.handle.progresscb = self.cb_progress
+            self.handle.logcb = self.cb_log
             self.holdpkg = None
             if 'HoldPkg' in self.pacman_conf.options:
                 self.holdpkg = self.pacman_conf.options['HoldPkg']
 
     def init_transaction(self, **options):
-        # Transaction initialization
-        self.handle.dlcb = self.cb_dl
-        self.handle.totaldlcb = self.cb_totaldl
-        self.handle.eventcb = self.cb_event
-        self.handle.questioncb = self.cb_conv
-        self.handle.progresscb = self.cb_progress
-        self.handle.logcb = self.cb_log
         try:
             _t = self.handle.init_transaction(**options)
-            #print(_t.flags)
-            self.t_lock = True
+            # print(_t.flags)
             return _t
         except pyalpm.error:
             line = traceback.format_exc()
             self.queue_event("error", line)
-            return False
-    
+            return None
+
+    def release_transaction(self):
+        if self.t != None:
+            try:
+                self.t.release()
+                self.t = None
+            except pyalpm.error:
+                self.queue_event("error", traceback.format_exc())
+        
     # Sync databases like pacman -Sy
     def do_refresh(self):
+        self.release_transaction()
         for db in self.handle.get_syncdbs():
-            if self.t_lock is False:
-                self.t = self.init_transaction()
+            try:
+                self.t = self.init_transaction()                
                 try:
                     db.update(force=False)
-                    self.t.release()
-                    self.t_lock = False
                 except pyalpm.error:
-                    line = traceback.format_exc()
-                    self.queue_event("error", line)
-                    self.t_lock = False
-                    break
+                    self.queue_event("error", traceback.format_exc())
+                finally:
+                    self.t.release()
+                    self.t = None
+            except pyalpm.error:
+                self.queue_event("error", traceback.format_exc())
+                return
 
     def format_size(self, size):
         KiB_size = size / 1024
         if KiB_size < 1000:
             size_string = '%.1f KiB' % KiB_size
-            return size_string
         else:
             size_string = '%.2f MiB' % (KiB_size / 1024)
-            return size_string
-
-    def add_package(self, pkgname):
-        #print("searching %s" % pkgname)
-        try:
-            for repo in self.handle.get_syncdbs():
-                pkg = repo.get_pkg(pkgname)
-                if pkg:
-                    #print("adding %s" % pkgname)
-                    self.t.add_pkg(pkg)
-                    break
-                else:
-                    #this is used for groups.  However, cinnarch repo coming
-                    # first causes errors.  So I just moved them to the back.
-                    l = pyalpm.find_grp_pkgs([repo], pkgname)
-                    if l:
-                        lss = []
-                        for pakg in l:
-                                self.t.add_pkg(pakg)
-        except pyalpm.error:
-            line = traceback.format_exc()
-            self.queue_event("error", line)
+        return size_string
 
     def install_packages(self, pkg_names):
         self.to_add = []
@@ -144,22 +128,42 @@ class Pac(object):
 
         self.to_remove = []
 
-        if self.to_add and self.t_lock is False:    
+        if self.to_add and self.t == None:
             self.t = self.init_transaction()
-            if self.t is not False:
+            if self.t != None:
                 for pkgname in self.to_add:
                     self.add_package(pkgname)
                 try:
                     self.t.prepare()
                     self.t.commit()
-                    self.t.release()
-                    self.t_lock = False
+                    self.release_transaction()
                 except pyalpm.error:
-                    self.t.release()
-                    self.t_lock = False
                     line = traceback.format_exc()
                     self.queue_event("error", line)
     
+    def add_package(self, pkgname):
+        #print("searching %s" % pkgname)
+        if self.t == None:
+            return
+        try:
+            for repo in self.handle.get_syncdbs():
+                pkg = repo.get_pkg(pkgname)
+                if pkg:
+                    #print("adding %s" % pkgname)
+                    self.t.add_pkg(pkg)
+                    break
+                else:
+                    # this is used for groups.  However, cinnarch repo
+                    # coming first causes errors.  Moved them to the back.
+                    l = pyalpm.find_grp_pkgs([repo], pkgname)
+                    if l:
+                        lss = []
+                        for pakg in l:
+                            self.t.add_pkg(pakg)
+        except pyalpm.error:
+            line = traceback.format_exc()
+            self.queue_event("error", line)
+
     def queue_event(self, event_type, event_text=""):
         self.callback_queue.put((event_type, event_text))
         #print("%s : %s" % (event_type, event_text))
@@ -211,7 +215,6 @@ class Pac(object):
         #self.queue_event("target", '')
         #self.queue_event("percent", 0)
         #self.queue_event("icon", self.icon)
-
         #print(ID, event)
 
     def cb_conv(self, *args):
@@ -228,8 +231,7 @@ class Pac(object):
         if level & pyalpm.LOG_ERROR:
             self.error = _("ERROR: %s") % line
             print(line)
-            self.t.release()
-            self.t_lock = False
+            self.release_transaction()
             self.queue_event("error", line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
@@ -260,7 +262,7 @@ class Pac(object):
         return size_txt
 
     def cb_dl(self, _target, _transferred, total):
-        if self.t is not False:
+        if self.t != None:
             if self.total_size > 0:
                 fraction = (_transferred + self.already_transferred) / self.total_size
             size = 0
