@@ -41,7 +41,7 @@ url_prefix = "https://raw.github.com/Antergos/Cnchi/alongside/"
 #url_prefix = "https://raw.github.com/Antergos/Cnchi/master/"
 
 class Updater():
-    def __init__(self):
+    def __init__(self, force_update=False):
         self.web_version = ""
         self.web_files = []
         
@@ -66,8 +66,15 @@ class Updater():
 
             self.web_version = updateInfo['version']
             self.web_files = updateInfo['files']
+        
+        print("web version: %s" % self.web_version)
+        
+        self.force = force_update
             
     def is_web_version_newer(self):
+        if self.force:
+             return True
+             
         #version is always: x.y.z
         cur_ver = info.cnchi_VERSION.split(".")
         web_ver = self.web_version.split(".")
@@ -123,10 +130,11 @@ class Updater():
             print("Checksum error in %s. Download aborted" % name)
             return
         
-        print("checksum ok")
+        print("checksum of %s is ok" % name)
 
 
 if __name__ == '__main__':
-    updater = Updater()
+    # to test updater, let's pretend we have a lower version
+    updater = Updater(force_update=True)
     updater.update()
             
