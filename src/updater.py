@@ -103,7 +103,7 @@ class Updater():
                 if self.download(name, md5) is False:
                     return False
             # replace old files with the new ones
-            #self.replace_old_with_new_versions()                
+            self.replace_old_with_new_versions()                
             return True
         else:
             return False
@@ -157,6 +157,8 @@ class Updater():
             old_name = os.path.join(base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
             new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
             cur_name = os.path.join(base_dir, name)
+            
+            print("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
             
             if os.path.exists(name):
                 os.rename(name, old_name)
