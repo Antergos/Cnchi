@@ -43,13 +43,12 @@ import info
 
 def get_md5(filename):
     md5 = hashlib.md5()
-    with open(filename) as f:
-        while not endOfFile:
-            md5.update(f.read(128))
-    return md5.digest()
+    with open(filename, "rb") as f:
+        for line in f:
+            md5.update(line)
+    return md5.hexdigest()
 
 if __name__ == '__main__':
-
     files = []
     
     for f in os.listdir(base_dir):
@@ -59,16 +58,16 @@ if __name__ == '__main__':
     for f in os.listdir(src_dir):
          if os.path.isfile(os.path.join(src_dir, f)) and f[0] != "." :
              files.append("src/" + f)
-
         
-    txt = '{"version":info.cnchi_VERSION,"files":[\n'
+    txt = '{"version":"%s","files":[\n' % info.cnchi_VERSION
     
     for f in files:
         md5 = get_md5(f)
         txt += '{"name":"%s","md5":"%s"},\n' % (f, md5)
     
     # remove last comma
-    txt = txt[:-1]
+    txt = txt[:-3]
     txt +='}]}\n'
     
-    print(txt)
+    with open("update.nfo", "w") as f:
+        f.write(txt)
