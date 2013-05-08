@@ -32,7 +32,6 @@ import pm2ml
 import sys
 import subprocess
 import log
-import show_message as sm
 
 ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
@@ -51,7 +50,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None):
     try:
         pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
     except:
-        sm.warning(_("Unable to create download queue.\nDownload process won't be able to be accelerated with aria2."))
+        log.warning(_("Unable to create download queue.\nDownload process won't be able to be accelerated with aria2."))
         return
     
     metalink = pm2ml.download_queue_to_metalink(
