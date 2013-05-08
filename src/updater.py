@@ -67,9 +67,9 @@ class Updater():
             self.web_version = updateInfo['version']
             self.web_files = updateInfo['files']
         
-        print("web version: %s" % self.web_version)
-        
-        self.force = force_update
+            print("web version: %s" % self.web_version)
+            
+            self.force = force_update
             
     def is_web_version_newer(self):
         if self.force:
@@ -101,6 +101,7 @@ class Updater():
                 name = f['name']
                 md5 = f['md5']
                 if self.download(name, md5) is False:
+                    # download has failed
                     return False
             # replace old files with the new ones
             self.replace_old_with_new_versions()                
@@ -140,11 +141,7 @@ class Updater():
             print("Checksum error in %s. Download aborted" % name)
             return False
         
-        print("checksum of %s is ok" % name)
-        
         new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
-        
-        print("Saving %s" % new_name)
         
         with open(new_name, "wb") as f:
             f.write(txt)
@@ -152,13 +149,12 @@ class Updater():
         return True
 
     def replace_old_with_new_versions(self):
+        print("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
         for f in self.web_files:
             name = f['name']
             old_name = os.path.join(base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
             new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
             cur_name = os.path.join(base_dir, name)
-            
-            print("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
             
             if os.path.exists(name):
                 os.rename(name, old_name)
