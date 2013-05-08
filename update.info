@@ -15,7 +15,7 @@
 {"name":"src/installation_advanced.py","md5":"38be238c1e615a1aa634e746277bf8e8"},
 {"name":"src/show_message.py","md5":"bd56515977936b90cda5e4d5b5ea91e1"},
 {"name":"src/misc.py","md5":"01548b7618920a3f7ff762310e929e9a"},
-{"name":"src/updater.py","md5":"cd05e3333f804ee263089f348c4a03c4"},
+{"name":"src/updater.py","md5":"a679263a9a016941cfac223301807a01"},
 {"name":"src/log.py","md5":"a28e1314cf9769c1f310326a19860bf2"},
 {"name":"src/user_info.py","md5":"e837d11fd308d1d0edba93cd9a3d023f"},
 {"name":"src/language.py","md5":"018ca605bf6ed16c9ab8d4734abf1298"},
