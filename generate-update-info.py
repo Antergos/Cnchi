@@ -52,11 +52,11 @@ if __name__ == '__main__':
     files = []
     
     for f in os.listdir(base_dir):
-         if os.path.isfile(os.path.join(base_dir, f)) and f[0] != "." :
+         if os.path.isfile(os.path.join(base_dir, f)) and f[0] != "." and f[-3:] == ".py":
              files.append(f)
 
     for f in os.listdir(src_dir):
-         if os.path.isfile(os.path.join(src_dir, f)) and f[0] != "." :
+         if os.path.isfile(os.path.join(src_dir, f)) and f[0] != "."  and f[-3:] == ".py":
              files.append("src/" + f)
         
     txt = '{"version":"%s","files":[\n' % info.cnchi_VERSION

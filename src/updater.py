@@ -34,11 +34,11 @@ from urllib.request import urlopen
 
 import json
 import hashlib
-
+import os
 import info
 
 url_prefix = "https://raw.github.com/Antergos/Cnchi/alongside/"
-#url_prefix = "https://raw.github.com/Antergos/Cnchi/master/"
+#url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
 
 class Updater():
     def __init__(self, force_update=False):
@@ -100,7 +100,13 @@ class Updater():
             for f in self.web_files:
                 name = f['name']
                 md5 = f['md5']
-                self.download(name, md5)
+                if self.download(name, md5) is False:
+                    return False
+            # replace old files with the new ones
+            #self.replace_old_with_new_versions()                
+            return True
+        else:
+            return False
                 
     def get_md5(self, text):
         md5 = hashlib.md5()
@@ -116,25 +122,52 @@ class Updater():
             #.decode('utf-8')
         except urllib.error.HTTPError as e:
             print('Unable to get %s - HTTPError = %s' % (name, e.reason))
+            return False
         except urllib.error.URLError as e:
             print ('Unable to get %s - URLError = %s' % (name, e.reason))
+            return False
         except httplib.error.HTTPException as e:
             print ('Unable to get %s - HTTPException' % name)
+            return False
         except Exception as e:
             import traceback
             print ('Unable to get %s - Exception = %s' % (name, traceback.format_exc()))
+            return False
 
         web_md5 = self.get_md5(txt)
         
         if web_md5 != md5:
             print("Checksum error in %s. Download aborted" % name)
-            return
+            return False
         
         print("checksum of %s is ok" % name)
+        
+        new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
+        
+        print("Saving %s" % new_name)
+        
+        with open(new_name, "wb") as f:
+            f.write(txt)
+
+        return True
+
+    def replace_old_with_new_versions(self):
+        for f in self.web_files:
+            name = f['name']
+            old_name = os.path.join(base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
+            new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
+            cur_name = os.path.join(base_dir, name)
+            
+            if os.path.exists(name):
+                os.rename(name, old_name)
+            
+            if os.path.exists(new_name):
+                os.rename(new_name, cur_name)
 
 
 if __name__ == '__main__':
-    # to test updater, let's pretend we have a lower version
+    src_dir = os.path.dirname(__file__) or '.'
+    base_dir = os.path.join(src_dir, "..")
     updater = Updater(force_update=True)
     updater.update()
             

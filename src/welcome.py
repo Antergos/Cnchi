@@ -91,9 +91,6 @@ class Welcome(Gtk.Box):
         
         super().add(self.ui.get_object("welcome"))
 
-    def disable_tryit(self):
-        self.button['tryit'].set_sensitive(False)
-        
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
         txt = _("You can try Antergos without modifying your hard drive, just click on 'Try it'.\n" \

@@ -58,6 +58,7 @@ import slides
 import misc
 import log
 import info
+import updater
 
 #import queue
 from multiprocessing import Queue
@@ -240,9 +241,6 @@ class Main(Gtk.Window):
 
         GLib.timeout_add(100, self.pages["slides"].manage_events_from_cb_queue)
 
-    def disable_tryit(self):
-        self.pages["welcome"].disable_tryit()
-
     # TODO: some of these tmp files are created with sudo privileges
     # (this should be fixed) meanwhile, we need sudo privileges to remove them
     @misc.raise_privileges
@@ -319,28 +317,25 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "dt", ["debug", "disable-tryit"])
+        opts, args = getopt.getopt(argv, "du", ["debug", "update"])
     except getopt.GetoptError:
         pass
-
-    disable_tryit = False
     
     for opt, arg in opts:
         if opt == '-d':
             log._debug = True
             log.debug("Debug mode on")
-        if opt == '-t':
-            disable_tryit = True
-            
+        if opt == '-u':
+            upd = updater.Updater()
+            if upd.update():
+                print(_("Program updated! Must be restarted"))
+                sys.exit(0)
 
     GObject.threads_init()
     Gdk.threads_init()
 
     app = Main()
     
-    if disable_tryit:
-        app.disable_tryit()
-
     Gdk.threads_enter()
     Gtk.main()
     Gdk.threads_leave()
