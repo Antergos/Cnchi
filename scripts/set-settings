@@ -47,3 +47,30 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
 fi
+
+if [[ ${DESKTOP} == 'xfce' ]];then
+
+	# Set background
+	dbus-launch xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -n -t string -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
+
+	# Set theme
+	dbus-launch xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "Zukitwo"
+	dbus-launch xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Zukitwo"
+
+	# Set icon theme
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Faenza-Dark"
+
+	# Set compositor
+	dbus-launch xfconf-query -c xfwm4 -p /general/show_frame_shadow -n -t bool -s "true"
+
+	# Set workspaces count
+	dbus-launch xfconf-query -c xfwm4 -p /general/workspace_count -n -t int -s 2
+
+	# Set panels
+	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-2/autohide -n -t bool -s "true"
+	dbus-launch xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t int -s 25
+
+	# Set menu logo
+	dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu.png"
+fi
+

@@ -57,17 +57,17 @@ gnome_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
 
 	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
-	rm ${DESTDIR}/usr/bin/set-gsettings
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -78,33 +78,63 @@ cinnamon_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-gsettings
+	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-gsettings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
-	rm ${DESTDIR}/usr/bin/set-gsettings
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
-	cp ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
+xfce_settings(){
+	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+	# Set settings
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/xfce4
+	cp -R ${DESTDIR}/etc/xdg/xfce4/panel ${DESTDIR}/etc/xdg/xfce4/xfconf ${DESTDIR}/etc/xdg/xfce4/helpers.rc ${DESTDIR}/home/${USER_NAME}/.config/xfce4
+	sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${DESTDIR}/home/${USER_NAME}/.config/xfce4/helpers.rc
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+	# Set xfce in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+}
+
 razor_settings(){
 	# Set theme
-	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
 	echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 	echo "__userfile__=true" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 	echo "icon_theme=Faenza" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
@@ -114,7 +144,7 @@ razor_settings(){
 	echo "[quicklaunch]" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\1\desktop=/usr/share/applications/razor-config.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\size=3" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\2\desktop=/usr/share/applications/konsole.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\2\desktop=/usr/share/applications/kde4/konsole.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 	echo "apps\3\desktop=/usr/share/applications/chromium.desktop" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel/panel.conf
 
 	# Set Wallpaper
@@ -124,6 +154,10 @@ razor_settings(){
 	echo "screens\1\desktops\1\wallpaper=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
 	echo "screens\1\desktops\1\keep_aspect_ratio=false" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
 	echo "screens\1\desktops\size=1" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/desktop.conf
+
+	# Set Razor in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
 }
 
@@ -145,6 +179,9 @@ postinstall(){
 
 	# Configure touchpad
 	set_synaptics
+
+	# Set keyboard layout
+	sed -i "s#Identifier \"evdev keyboard catchall\".*#&\n        Option \"XkbLayout\" \"${LANG_CODE}\"#" ${DESTDIR}/etc/X11/xorg.conf.d/10-evdev.conf
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc

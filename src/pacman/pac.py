@@ -209,6 +209,7 @@ class Pac(object):
         #self.queue_event("target", '')
         #self.queue_event("percent", 0)
         #self.queue_event("icon", self.icon)
+
         #print(ID, event)
 
     def cb_conv(self, *args):
@@ -256,7 +257,7 @@ class Pac(object):
         return size_txt
 
     def cb_dl(self, _target, _transferred, total):
-        if self.t != None:
+        if self.t is not False:
             if self.total_size > 0:
                 fraction = (_transferred + self.already_transferred) / self.total_size
             size = 0

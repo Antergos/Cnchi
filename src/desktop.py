@@ -67,58 +67,60 @@ class DesktopAsk(Gtk.Box):
 
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
+        label.set_justify(Gtk.Justification.FILL)
         if desktop == 'gnome':
             txt = _("<span weight='bold'>GNOME</span>\n" \
-            "Gnome 3 is an easy and elegant way to use your \n" \
-            "computer. It is designed to put you in control \n" \
-            "and bring freedom to everybody.")
+            "Gnome 3 is an easy and elegant way to use your " \
+            "computer. It is designed to put you in control " \
+            "and bring freedom to everybody. GNOME 3 is developed " \
+            "by the GNOME community, a diverse, international group of contributors.")
 
         elif desktop == 'cinnamon':
             txt = _("<span weight='bold'>CINNAMON</span>\n" \
-            "Cinnamon it's a fork of GNOME Shell, initially \n" \
-            "developed by (and for) Linux Mint. It attempts to \n" \
-            "provide a more traditional user environment based \n" \
+            "Cinnamon it's a fork of GNOME Shell, initially " \
+            "developed by (and for) Linux Mint. It attempts to " \
+            "provide a more traditional user environment based " \
             "on the desktop metaphor, like GNOME 2")
 
         elif desktop == 'xfce':
             txt = _("<span weight='bold'>XFCE</span>\n" \
-            "Xfce is a lightweight desktop environment \n" \
-            "for UNIX-like operating systems. It aims to \n" \
-            "be fast and low on system resources, while \n" \
+            "Xfce is a lightweight desktop environment " \
+            "for UNIX-like operating systems. It aims to " \
+            "be fast and low on system resources, while " \
             "still being visually appealing and user friendly.")
 
         elif desktop == 'lxde':
             txt = _("<span weight='bold'>LXDE</span>\n" \
-            "Extremely fast-performing and energy-saving desktop \n" \
-            "environment. It comes with a beautiful interface, \n" \
-            "multi-language support, standard keyboard short cuts \n" \
+            "Extremely fast-performing and energy-saving desktop " \
+            "environment. It comes with a beautiful interface, " \
+            "multi-language support, standard keyboard short cuts " \
             "and additional features like tabbed file browsing.")
 
         elif desktop == 'openbox':
             txt = _("<span weight='bold'>OPENBOX</span>\n" \
-            "Openbox is a highly configurable, next generation \n" \
-            "window manager with extensive standards support.\n" \
-            "The *box visual style is well known for its \n" \
+            "Openbox is a highly configurable, next generation " \
+            "window manager with extensive standards support." \
+            "The *box visual style is well known for its " \
             "minimalistic appearance.")
 
         elif desktop == 'enlightment':
             txt = _("<span weight='bold'>ENLIGHTMENT</span>\n" \
-            "Enlightenment is not just a window manager for Linux/X11 \n" \
-            "and others, but also a whole suite of libraries to help \n" \
+            "Enlightenment is not just a window manager for Linux/X11 " \
+            "and others, but also a whole suite of libraries to help " \
             "you create beautiful user interfaces with much less work")
 
         elif desktop == 'kde':
             txt = _("<span weight='bold'>KDE</span>\n" \
-            "The KDE Community is an international technology \n" \
-            "team dedicated to creating a free and user-friendly \n" \
-            "computing experience, offering an advanced graphical \n" \
+            "The KDE Community is an international technology " \
+            "team dedicated to creating a free and user-friendly " \
+            "computing experience, offering an advanced graphical " \
             "desktop and a wide variety of applications.")
 
         elif desktop == 'razor':
             txt = _("<span weight='bold'>RAZOR-QT</span>\n" \
-            "Razor-qt is an advanced, easy-to-use, and fast desktop \n" \
-            "environment based on Qt technologies. It has been \n" \
-            "tailored for users who value simplicity, speed, and \n" \
+            "Razor-qt is an advanced, easy-to-use, and fast desktop " \
+            "environment based on Qt technologies. It has been " \
+            "tailored for users who value simplicity, speed, and " \
             "an intuitive interface.")
             
         label.set_markup(txt)
@@ -144,7 +146,7 @@ class DesktopAsk(Gtk.Box):
 
         liststore_desktop.append(['Gnome'])
         liststore_desktop.append(['Cinnamon'])
-        # liststore_desktop.append(['Xfce'])
+        liststore_desktop.append(['Xfce'])
         # liststore_desktop.append(['Lxde'])
         # liststore_desktop.append(['Openbox'])
         # liststore_desktop.append(['Enlightment'])

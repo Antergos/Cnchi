@@ -43,9 +43,10 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="image_desktop">
-                <property name="width_request">510</property>
+                <property name="width_request">500</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">8</property>
                 <property name="margin_top">10</property>
               </object>
               <packing>
@@ -59,11 +60,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin_left">40</property>
+                <property name="margin_left">35</property>
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Integer elementum, leo vitae porta elementum, eros diam
-pretium magna, in tincidunt magna velit at tellus. Praesent
+Integer elementum, leo vitae porta elementum, eros diam pretium magna, in tincidunt magna velit at tellus. Praesent
 a tortor nec risus blandit sodales. Mauris tristique semper
 nunc, eget euismod sem vehicula ut. Nam pharetra justo et
 lorem feugiat quis vestibulum arcu malesuada. Vivamus
@@ -76,6 +76,7 @@ Be sure to take a full backup of any valuable data before running
 this program.</property>
                 <property name="use_markup">True</property>
                 <property name="justify">fill</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
