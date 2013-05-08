@@ -50,7 +50,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None):
     try:
         pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
     except:
-        log.warning(_("Unable to create download queue.\nDownload process won't be able to be accelerated with aria2."))
+        log.debug(_("Unable to create download queue.\nDownload process won't be accelerated with aria2."))
         return
     
     metalink = pm2ml.download_queue_to_metalink(

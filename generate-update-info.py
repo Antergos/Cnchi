@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  update-info.py
+#  generate-update-info.py
 #  
 #  Copyright 2013 Antergos
 #  
@@ -39,7 +39,7 @@ sys.path.insert(0, src_dir)
 
 import info
 
-# This script generates an update.nfo file used to update Cnchi
+# This script generates an update.info file used to update Cnchi
 
 def get_md5(filename):
     md5 = hashlib.md5()
@@ -69,5 +69,5 @@ if __name__ == '__main__':
     txt = txt[:-3]
     txt +='}]}\n'
     
-    with open("update.nfo", "w") as f:
+    with open("update.info", "w") as f:
         f.write(txt)

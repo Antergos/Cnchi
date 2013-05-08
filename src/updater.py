@@ -34,8 +34,8 @@ from urllib.request import urlopen
 
 import json
 
-#update_nfo_url = "https://raw.github.com/Antergos/Cnchi/master/update.nfo"
-update_nfo_url = "https://raw.github.com/Antergos/Cnchi/alongside/update.nfo"
+#update_nfo_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
+update_nfo_url = "https://raw.github.com/Antergos/Cnchi/alongside/update.info"
 
 class Updater():
     def __init__(self):
