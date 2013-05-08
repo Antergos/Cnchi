@@ -1,180 +1,128 @@
-/* page layout styles */
-*{
-    margin:0;
-    padding:0;
-}
-body {
-    color:#fff;
-    font:14px/1.3 Arial,sans-serif;
+#page{
     overflow: hidden;
 }
 
-/* fade slider */
-.slides {
-    height:300px;
-    /*margin:50px auto;*/
-    overflow:hidden;
-    position:relative;
-    /*width:900px;*/
+.cb-slideshow,
+.cb-slideshow:after { 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 0; 
 }
-.slides ul {
+
+.cb-slideshow li span { 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: transparent;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: none;
+    opacity: 0;
+    z-index: 0;
+	-webkit-backface-visibility: hidden;
+    -webkit-animation: imageAnimation 30s linear infinite 0s;
+}
+
+
+.cb-slideshow li:nth-child(1) span { 
+    background-image: url(/usr/share/cnchi/data/images/1.png) 
+}
+.cb-slideshow li:nth-child(2) span { 
+    background-image: url(/usr/share/cnchi/data/images/2.png) 
+    -webkit-animation-delay: 10s;
+}
+.cb-slideshow li:nth-child(3) span { 
+    background-image: url(/usr/share/cnchi/data/images/3.png) 
+    -webkit-animation-delay: 20s;
+}
+
+
+/* Animation for the slideshow images */
+@-webkit-keyframes imageAnimation { 
+    0% { opacity: 0;
+    -webkit-animation-timing-function: ease-in; }
+    2% { opacity: 1;
+         -webkit-animation-timing-function: ease-out; }
+    80% { opacity: 1 }
+    90% { opacity: 0 }
+    100% { opacity: 0 }
+}
+
+
+/* Show at least something when animations not supported */
+.no-cssanimations .cb-slideshow li span{
+	background-image: url(/usr/share/cnchi/data/images/background.png);
+}
+
+@media screen and (max-width: 1140px) { 
+    .cb-slideshow li div h3 { font-size: 140px }
+}
+@media screen and (max-width: 600px) { 
+    .cb-slideshow li div h3 { font-size: 80px }
+}
+
+
+
+
+
+/* CSS reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+    margin:0;
+    padding:0;
+}
+html,body {
+    margin:0;
+    padding:0;
+}
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+fieldset,img { 
+    border:0;
+}
+input{
+    border:1px solid #b0b0b0;
+    padding:3px 5px 4px;
+    color:#979797;
+    width:190px;
+}
+address,caption,cite,code,dfn,th,var {
+    font-style:normal;
+    font-weight:normal;
+}
+ol,ul {
     list-style:none;
-    position:relative;
+}
+caption,th {
+    text-align:left;
+}
+h1,h2,h3,h4,h5,h6 {
+    font-size:100%;
+    font-weight:normal;
+}
+q:before,q:after {
+    content:'';
+}
+abbr,acronym { border:0;
+}
+/* General Demo Style */
+body{
+    background-image: url(/usr/share/cnchi/data/images/background.png);
+    font-weight: 400;
+    font-size: 15px;
+    color: #aa3e03;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
-/* keyframes #anim_slides */
-@-webkit-keyframes anim_slides {
-    0% {
-        opacity:0;
-    }
-    6% {
-        opacity:1;
-    }
-    24% {
-        opacity:1;
-    }
-    30% {
-        opacity:0;
-    }
-    100% {
-        opacity:0;
-    }
-}
-@-moz-keyframes anim_slides {
-    0% {
-        opacity:0;
-    }
-    6% {
-        opacity:1;
-    }
-    24% {
-        opacity:1;
-    }
-    30% {
-        opacity:0;
-    }
-    100% {
-        opacity:0;
-    }
+a{
+    color: #333;
+    text-decoration: none;
 }
 
-.slides ul li {
-    opacity:0;
-    position:absolute;
-    top:0;
-
-    /* css3 animation */
-    -webkit-animation-name: anim_slides;
-    -webkit-animation-duration: 24.0s;
-    -webkit-animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-direction: normal;
-    -webkit-animation-delay: 0;
-    -webkit-animation-play-state: running;
-    -webkit-animation-fill-mode: forwards;
-
-    -moz-animation-name: anim_slides;
-    -moz-animation-duration: 24.0s;
-    -moz-animation-timing-function: linear;
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-direction: normal;
-    -moz-animation-delay: 0;
-    -moz-animation-play-state: running;
-    -moz-animation-fill-mode: forwards;
-}
-
-/* css3 delays */
-.slides ul  li:nth-child(2), .slides ul  li:nth-child(2) div {
-    -webkit-animation-delay: 8.0s;
-    -moz-animation-delay: 6.0s;
-}
-.slides ul  li:nth-child(3), .slides ul  li:nth-child(3) div {
-    -webkit-animation-delay: 16.0s;
-    -moz-animation-delay: 12.0s;
-}
-.slides ul  li:nth-child(4), .slides ul  li:nth-child(4) div {
-    -webkit-animation-delay: 24.0s;
-    -moz-animation-delay: 18.0s;
-}
-.slides ul li img {
-    display:block;
-}
-
-/* keyframes #anim_titles */
-@-webkit-keyframes anim_titles {
-    0% {
-        left:100%;
-        opacity:0;
-    }
-    5% {
-        left:10%;
-        opacity:1;
-    }
-    20% {
-        left:10%;
-        opacity:1;
-    }
-    25% {
-        left:100%;
-        opacity:0;
-    }
-    100% {
-        left:100%;
-        opacity:0;
-    }
-}
-@-moz-keyframes anim_titles {
-    0% {
-        left:100%;
-        opacity:0;
-    }
-    5% {
-        left:10%;
-        opacity:1;
-    }
-    20% {
-        left:10%;
-        opacity:1;
-    }
-    25% {
-        left:100%;
-        opacity:0;
-    }
-    100% {
-        left:100%;
-        opacity:0;
-    }
-}
-
-.slides ul li div {
-    background-color:#000000;
-    border-radius:10px 10px 10px 10px;
-    box-shadow:0 0 5px #FFFFFF inset;
-    color:#FFFFFF;
-    font-size:26px;
-    left:10%;
-    margin:0 auto;
-    padding:20px;
-    position:absolute;
-    top:50%;
-    width:200px;
-
-    /* css3 animation */
-    -webkit-animation-name: anim_titles;
-    -webkit-animation-duration: 24.0s;
-    -webkit-animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-direction: normal;
-    -webkit-animation-delay: 0;
-    -webkit-animation-play-state: running;
-    -webkit-animation-fill-mode: forwards;
-
-    -moz-animation-name: anim_titles;
-    -moz-animation-duration: 24.0s;
-    -moz-animation-timing-function: linear;
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-direction: normal;
-    -moz-animation-delay: 0;
-    -moz-animation-play-state: running;
-    -moz-animation-fill-mode: forwards;
-}
