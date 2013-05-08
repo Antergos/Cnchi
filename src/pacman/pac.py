@@ -38,14 +38,8 @@ import sys
 import locale
 import gettext
 
-# I use this to test the installer in other distros where libalpm is
-# not available
-try:
-    import pyalpm
-    from pacman import pac_config
-except:
-    print("pyalpm not found, installer will not work")
-
+import pyalpm
+from pacman import pac_config
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
