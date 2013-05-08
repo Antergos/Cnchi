@@ -58,6 +58,22 @@ if __name__ == '__main__':
     for f in os.listdir(src_dir):
          if os.path.isfile(os.path.join(src_dir, f)) and f[0] != "."  and f[-3:] == ".py":
              files.append("src/" + f)
+
+    pacman_dir = os.path.join(src_dir, "pacman")
+    for f in os.listdir(pacman_dir):
+         if os.path.isfile(os.path.join(pacman_dir, f)) and f[0] != "."  and f[-3:] == ".py":
+             files.append("src/pacman/" + f)
+
+    parted_dir = os.path.join(src_dir, "parted")
+    for f in os.listdir(pacman_dir):
+         if os.path.isfile(os.path.join(parted_dir, f)) and f[0] != "."  and f[-3:] == ".py":
+             files.append("src/parted/" + f)
+             
+    # Get all in data dir
+    data_dir = os.path.join(base_dir, "data")
+    for root, dirs, filenames in os.walk(data_dir, topdown=False):
+        for f in filenames:
+            files.append(os.path.join(root[2:], f))
         
     txt = '{"version":"%s","files":[\n' % info.cnchi_VERSION
     
