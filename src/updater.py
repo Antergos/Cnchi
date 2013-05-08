@@ -33,9 +33,12 @@ import urllib.error
 from urllib.request import urlopen
 
 import json
+import hashlib
 
-#update_nfo_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
-update_nfo_url = "https://raw.github.com/Antergos/Cnchi/alongside/update.info"
+import info
+
+url_prefix = "https://raw.github.com/Antergos/Cnchi/alongside/"
+#url_prefix = "https://raw.github.com/Antergos/Cnchi/master/"
 
 class Updater():
     def __init__(self):
@@ -44,7 +47,8 @@ class Updater():
         
         response = ""
         try: 
-            request = urlopen(update_nfo_url)
+            update_info_url = url_prefix + "update.info"
+            request = urlopen(update_info_url)
             response = request.read().decode('utf-8')
                     
         except urllib.HTTPError as e:
@@ -64,18 +68,62 @@ class Updater():
             self.web_files = updateInfo['files']
             
     def is_web_version_newer(self):
-        return True
+        #version is always: x.y.z
+        cur_ver = info.cnchi_VERSION.split(".")
+        web_ver = self.web_version.split(".")
+        
+        cur = [int(cur_ver[0]),int(cur_ver[1]),int(cur_ver[2])]
+        web = [int(web_ver[0]),int(web_ver[1]),int(web_ver[2])]
+        
+        if web[0] > cur[0]:
+            return True
+        
+        if web[0] == cur[0] and web[1] > cur[1]:
+            return True
+        
+        if web[0] == cur[0] and web[1] == cur[1] and web[2] > cur[2]:
+            return True
+            
+        return False
 
     # This will update all files only if necessary
     def update(self):
         if self.is_web_version_newer():
+            print("New version found. Updating installer...")
             for f in self.web_files:
                 name = f['name']
                 md5 = f['md5']
                 self.download(name, md5)
                 
+    def get_md5(self, text):
+        md5 = hashlib.md5()
+        md5.update(text)
+        return md5.hexdigest()
+
     def download(self, name, md5):
-        pass
+        url = url_prefix + name
+        response = ""
+        try: 
+            request = urlopen(url)
+            txt = request.read()
+            #.decode('utf-8')
+        except urllib.error.HTTPError as e:
+            print('Unable to get %s - HTTPError = %s' % (name, e.reason))
+        except urllib.error.URLError as e:
+            print ('Unable to get %s - URLError = %s' % (name, e.reason))
+        except httplib.error.HTTPException as e:
+            print ('Unable to get %s - HTTPException' % name)
+        except Exception as e:
+            import traceback
+            print ('Unable to get %s - Exception = %s' % (name, traceback.format_exc()))
+
+        web_md5 = self.get_md5(txt)
+        
+        if web_md5 != md5:
+            print("Checksum error in %s. Download aborted" % name)
+            return
+        
+        print("checksum ok")
 
 
 if __name__ == '__main__':
