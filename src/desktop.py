@@ -64,7 +64,6 @@ class DesktopAsk(Gtk.Box):
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop, desktop_mode):
-
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
         label.set_justify(Gtk.Justification.FILL)
@@ -135,7 +134,6 @@ class DesktopAsk(Gtk.Box):
         self.translate_ui(self.desktop_choice, self.desktop_mode)
         self.show_all()
 
-
     def set_desktop_list(self):
         liststore_desktop = Gtk.ListStore(str)
 
@@ -156,7 +154,6 @@ class DesktopAsk(Gtk.Box):
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
     def set_desktop(self, desktop):
-
         if desktop == 'Gnome':
             self.desktop_choice = 'gnome'
         elif desktop == 'Cinnamon':
@@ -173,7 +170,6 @@ class DesktopAsk(Gtk.Box):
             self.desktop_choice = 'kde'
         elif desktop == 'Razor-qt':
             self.desktop_choice = 'razor'
-
 
         self.translate_ui(self.desktop_choice, self.desktop_mode)
                 
@@ -198,7 +194,6 @@ class DesktopAsk(Gtk.Box):
     def store_values(self):
         self.settings.set('desktop', self.desktop_choice)
         self.settings.set('desktop_mode', self.desktop_mode)
-
         return True
 
     def select_default_row(self, treeview, desktop):   
@@ -212,11 +207,9 @@ class DesktopAsk(Gtk.Box):
                 break
             iterator = model.iter_next(iterator)
 
-
     def scroll_to_cell(self, treeview, path):
         treeview.scroll_to_cell(path)
         return False
-
 
     def get_prev_page(self):
         return _prev_page

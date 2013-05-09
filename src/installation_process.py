@@ -66,8 +66,10 @@ class InstallError(Exception):
         return repr(self.value)
 
 class InstallationProcess(Process):
-    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None):
+    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None, alternate_package_list=""):
         Process.__init__(self)
+        
+        self.alternate_package_list = alternate_package_list
         
         self.callback_queue = callback_queue
         self.settings = settings
@@ -312,8 +314,8 @@ class InstallationProcess(Process):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        if len(alternate_package_list) > 0:
-            packages_xml = alternate_package_list
+        if len(self.alternate_package_list) > 0:
+            packages_xml = self.alternate_package_list
         else:
             '''The list of packages is retrieved from an online XML to let us
             control the pkgname in case of any modification'''

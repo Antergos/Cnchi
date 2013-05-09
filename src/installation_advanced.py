@@ -64,6 +64,7 @@ class InstallationAdvanced(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
+        self.alternate_package_list = params['alternate_package_list']
 
         self.disks_changed = []
         self.my_first_time = True
@@ -1334,6 +1335,7 @@ class InstallationAdvanced(Gtk.Box):
                     mount_devices, \
                     self.grub_device, \
                     fs_devices, \
-                    self.ssd)
+                    self.ssd, \
+                    self.alternate_package_list)
                     
         self.process.start()

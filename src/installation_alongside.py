@@ -66,6 +66,7 @@ class InstallationAlongside(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
+        self.alternate_package_list = params['alternate_package_list']
 
         super().__init__()
         self.ui = Gtk.Builder()
@@ -382,7 +383,9 @@ class InstallationAlongside(Gtk.Box):
                         self.callback_queue, \
                         mount_devices, \
                         grub_device, \
-                        fs_devices)
+                        fs_devices, \
+                        None, \
+                        self.alternate_package_list)
         
         self.process.start()
         '''

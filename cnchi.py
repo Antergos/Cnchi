@@ -171,6 +171,7 @@ class Main(Gtk.Window):
         params['exit_button'] = self.exit_button
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
+        params['alternate_package_list'] = alternate_package_list
         
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
