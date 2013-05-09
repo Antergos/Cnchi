@@ -40,6 +40,9 @@ base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
 sys.path.insert(0, src_dir)
 
+# Used in installation_process if we pass the packages.xml as an option
+alternate_package_list = ""
+
 import config
 
 import welcome
@@ -317,19 +320,25 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "du", ["debug", "update"])
-    except getopt.GetoptError:
-        pass
+        opts, args = getopt.getopt(argv, "dup:", ["debug", "update", "packages"])
+    except getopt.GetoptError as e:
+        print(str(e))
+        sys.exit(2)
     
     for opt, arg in opts:
-        if opt == '-d':
+        if opt in ('-d', '--debug'):
             log._debug = True
             log.debug("Debug mode on")
-        if opt == '-u':
+        elif opt in ('-u', '--update'):
             upd = updater.Updater()
             if upd.update():
-                print(_("Program updated! Restarting..."))
+                print("Program updated! Restarting...")
                 os.execl(sys.executable, *([sys.executable] + sys.argv))
+        elif opt in ('-p', '--packages'):
+            print("Using %s file as package list" % arg)
+            alternate_package_list = arg
+        else:
+            assert False, "unhandled option"
                 
     GObject.threads_init()
     Gdk.threads_init()

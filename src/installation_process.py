@@ -312,20 +312,22 @@ class InstallationProcess(Process):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        '''The list of packages is retrieved from an online XML to let us
-        control the pkgname in case of any modification'''
-        
-        self.queue_event('info', "Getting package list...")
+        if len(alternate_package_list) > 0:
+            packages_xml = alternate_package_list
+        else:
+            '''The list of packages is retrieved from an online XML to let us
+            control the pkgname in case of any modification'''
+            
+            self.queue_event('info', "Getting package list...")
 
-        try:
-            packages_xml = urlopen('http://install.antergos.com/packages.xml')
-        except URLError as e:
-            # If the installer can't retrieve the remote file, try to install with a local
-            # copy, that may not be updated
-            self.queue_event('error', "Can't retrieve remote package list. Local file instead.")
-            data_dir = self.settings.get("DATA_DIR")
-            packages_xml = os.path.join(data_dir, 'packages.xml')
-            return False
+            try:
+                packages_xml = urlopen('http://install.antergos.com/packages.xml')
+            except URLError as e:
+                # If the installer can't retrieve the remote file, try to install with a local
+                # copy, that may not be updated
+                self.queue_event('debug', _("Can't retrieve remote package list, using a local file instead."))
+                data_dir = self.settings.get("DATA_DIR")
+                packages_xml = os.path.join(data_dir, 'packages.xml')
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
@@ -831,7 +833,6 @@ class InstallationProcess(Process):
                             line = '# autologin=%s' % username
                             line = line[1:]
                         lxdm_conf.write(line)
-                
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
