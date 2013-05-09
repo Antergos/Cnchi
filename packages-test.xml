@@ -163,6 +163,21 @@
 		<pkgname>phonon-vlc</pkgname>
 		<pkgname>hotot-qt</pkgname>
 	</razor_desktop>
+	<openbox_desktop>
+		<pkgname>openbox</pkgname>
+		<pkgname dm='true' name='slim'>slim</pkgname>
+		<pkgname>nitrogen</pkgname>
+		<pkgname>tint2</pkgname>
+		<pkgname>pcmanfm</pkgname>
+		<pkgname>xnoise</pkgname>
+		<pkgname>vlc</pkgname>
+		<pkgname>xdg-user-dirs-gtk</pkgname>
+		<pkgname>hotot-gtk3</pkgname>
+		<pkgname>xfburn</pkgname>
+		<pkgname>epdfview</pkgname>
+		<pkgname>zukitwo-theme-openbox</pkgname>
+		<pkgname>file-roller</pkgname>
+	</openbox_desktop>
 	
 	<graphics>
 		<nvidia>
