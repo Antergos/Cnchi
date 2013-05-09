@@ -2,25 +2,26 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# tot3lmon <tot3lmon@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
+"PO-Revision-Date: 2013-05-02 17:53+0000\n"
+"Last-Translator: tot3lmon <tot3lmon@gmail.com>\n"
+"Language-Team: Catalan (Valencian) (http://www.transifex.com/projects/p/antergos/language/ca@valencia/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: nl\n"
+"Language: ca@valencia\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cnchi.py:92
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "Aquest instal·lador ha de ser corregut amb privilegis administratius, i no pot continuar sense ells."
 
 #: cnchi.py:98
 msgid ""
@@ -29,19 +30,19 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Et No pot córrer dos casos d'aquest instal·lador.⏎\n⏎\nSi ets segur que l'instal·lador no és ja corrent-te⏎\na mà pot eliminar l'arxiu %s⏎\ni córrer aquest instal·lador un altre cop."
 
 #: cnchi.py:186
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Antergos Instal·lador"
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr ""
+msgstr "Comprovar el vostre ordinador"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
-msgstr ""
+msgstr "Ha com a mínim 3GB espai de passeig disponible"
 
 #: src/check.py:79
 msgid "is plugged in to a power source"

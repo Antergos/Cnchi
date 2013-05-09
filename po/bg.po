@@ -2,18 +2,19 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# kirilvel <kirilvelinov@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
+"PO-Revision-Date: 2013-05-08 13:16+0000\n"
+"Last-Translator: kirilvel <kirilvelinov@gmail.com>\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/antergos/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: nl\n"
+"Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cnchi.py:92
@@ -29,11 +30,11 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Вие не можете да пускате две копия на този инсталатор.\n\nАко сте сигурнилисте, че инсталацията не е стартиран %s\nи стартирате тази инсталация отново."
 
 #: cnchi.py:186
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Antergos инсталатор"
 
 #: src/check.py:70
 msgid "Check your computer"

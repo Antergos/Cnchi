@@ -2,13 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# Pieter19 <pieter1911@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: Cinnarch\n"
+"Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/cinnarch/language/pl/)\n"
+"PO-Revision-Date: 2013-04-11 19:16+0000\n"
+"Last-Translator: Pieter19 <pieter1911@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/antergos/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -32,24 +33,24 @@ msgid ""
 msgstr ""
 
 #: cnchi.py:186
-msgid "Cinnarch Installer"
+msgid "Antergos Installer"
 msgstr ""
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr ""
+msgstr "Sprawdź, czy Twój komputer"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
-msgstr ""
+msgstr "ma co najmniej 3GB wolnego miejsca"
 
 #: src/check.py:79
 msgid "is plugged in to a power source"
-msgstr ""
+msgstr "jest podłączony do źródła zasilania"
 
 #: src/check.py:83
 msgid "is connected to the Internet"
-msgstr ""
+msgstr "jest podłączony do internetu"
 
 #: src/check.py:87
 msgid "For best results, please ensure that this computer:"
@@ -78,15 +79,15 @@ msgstr ""
 
 #: src/installation_advanced.py:256 src/installation_easy.py:90
 msgid "Device"
-msgstr ""
+msgstr "Urządzenie"
 
 #: src/installation_advanced.py:259
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: src/installation_advanced.py:262 src/installation_easy.py:86
 msgid "Mount point"
-msgstr ""
+msgstr "Punkt montowania"
 
 #: src/installation_advanced.py:265
 msgid "Label"
@@ -94,51 +95,51 @@ msgstr ""
 
 #: src/installation_advanced.py:271 src/installation_advanced.py:1221
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #: src/installation_advanced.py:274
 msgid "Size"
-msgstr ""
+msgstr "Rozmiar"
 
 #: src/installation_advanced.py:277
 msgid "Used"
-msgstr ""
+msgstr "Używane"
 
 #: src/installation_advanced.py:280
 msgid "Flags"
-msgstr ""
+msgstr "Flagi"
 
 #: src/installation_advanced.py:286
 msgid "Solid State Drive (SSD)"
-msgstr ""
+msgstr "Solid State Drive (SSD)"
 
 #: src/installation_advanced.py:407
 msgid "none"
-msgstr ""
+msgstr "żaden"
 
 #: src/installation_advanced.py:457
 msgid "extended"
-msgstr ""
+msgstr "rozszerzony"
 
 #: src/installation_advanced.py:579 src/installation_advanced.py:816
 msgid "Cannot use same mount twice..."
-msgstr ""
+msgstr "Nie można użyć tego samego punktu montowania dwa razy..."
 
 #: src/installation_advanced.py:835
 msgid "Creating primary partition"
-msgstr ""
+msgstr "Tworzenie partycji podstawowej"
 
 #: src/installation_advanced.py:846
 msgid "Creating extended partition"
-msgstr ""
+msgstr "Tworzenie partycji rozszerzonej"
 
 #: src/installation_advanced.py:852
 msgid "Creating logical partition"
-msgstr ""
+msgstr "Tworzenie partycji logicznej"
 
 #: src/installation_advanced.py:918
 msgid "Advanced installation mode"
-msgstr ""
+msgstr "Tryb instalacji zaawansowanej"
 
 #: src/installation_advanced.py:922
 msgid "Device for boot loader installation:"
@@ -146,47 +147,47 @@ msgstr ""
 
 #: src/installation_advanced.py:932
 msgid "New partition table"
-msgstr ""
+msgstr "Nowa tablica partycji"
 
 #: src/installation_advanced.py:940
 msgid "Change..."
-msgstr ""
+msgstr "Zmień..."
 
 #: src/installation_advanced.py:945
 msgid "Size:"
-msgstr ""
+msgstr "Rozmiar:"
 
 #: src/installation_advanced.py:949
 msgid "Type:"
-msgstr ""
+msgstr "Typ:"
 
 #: src/installation_advanced.py:953
 msgid "Primary"
-msgstr ""
+msgstr "Podstawowy"
 
 #: src/installation_advanced.py:957
 msgid "Logical"
-msgstr ""
+msgstr "Logiczny"
 
 #: src/installation_advanced.py:961
 msgid "Extended"
-msgstr ""
+msgstr "Rozszerzony"
 
 #: src/installation_advanced.py:965
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Początek obszaru"
 
 #: src/installation_advanced.py:969
 msgid "End of this space"
-msgstr ""
+msgstr "Koniec obszaru"
 
 #: src/installation_advanced.py:973 src/installation_advanced.py:990
 msgid "Use as:"
-msgstr ""
+msgstr "Użyj jako:"
 
 #: src/installation_advanced.py:977 src/installation_advanced.py:994
 msgid "Mount point:"
-msgstr ""
+msgstr "Punkt montowania:"
 
 #: src/installation_advanced.py:981 src/installation_advanced.py:998
 msgid "Label (optional):"
@@ -194,28 +195,28 @@ msgstr ""
 
 #: src/installation_advanced.py:985
 msgid "Encryption options..."
-msgstr ""
+msgstr "Opcje szyfrowania..."
 
 #: src/installation_advanced.py:1002
 msgid "Format:"
-msgstr ""
+msgstr "Format:"
 
 #: src/installation_advanced.py:1007
 msgid "Partition table type:"
-msgstr ""
+msgstr "Typ tablicy partycji:"
 
 #: src/installation_advanced.py:1012
 msgid "Create partition table"
-msgstr ""
+msgstr "Utwórz tablicę partycji"
 
 #: src/installation_advanced.py:1015 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
-msgstr ""
+msgstr "Zainstaluj!"
 
 #: src/installation_advanced.py:1095
 msgid "Creating a new partition table of type %s for disk %s"
-msgstr ""
+msgstr "Tworzenie nowej tablicy partycji o typie %s dla dysku %s"
 
 #: src/installation_advanced.py:1162
 msgid ""
@@ -226,23 +227,23 @@ msgstr ""
 
 #: src/installation_advanced.py:1214
 msgid "Partition %s will be deleted"
-msgstr ""
+msgstr "Partycja %s zostanie usunięta"
 
 #: src/installation_advanced.py:1221
 msgid "Mount"
-msgstr ""
+msgstr "Zamontuj"
 
 #: src/installation_advanced.py:1221
 msgid "New"
-msgstr ""
+msgstr "Nowy"
 
 #: src/installation_advanced.py:1221
 msgid "Partition"
-msgstr ""
+msgstr "Partycja"
 
 #: src/installation_advanced.py:1221
 msgid "Relabel"
-msgstr ""
+msgstr "Zmień nazwę"
 
 #: src/installation_advanced.py:1242
 msgid "These disks will have partition actions:"
@@ -258,67 +259,67 @@ msgstr ""
 
 #: src/installation_advanced.py:1287
 msgid "FORMATTED"
-msgstr ""
+msgstr "SFORMATOWANY"
 
 #: src/installation_ask.py:76
 msgid "Your preferred installation type"
-msgstr ""
+msgstr "Preferowany przez Ciebie typ instalacji"
 
 #: src/installation_ask.py:86
-msgid "Erase disk and install Cinnarch (automatic)"
-msgstr ""
+msgid "Erase disk and install Antergos (automatic)"
+msgstr "Wymaż dysk i zainstaluj Antergos (automatycznie)"
 
 #: src/installation_ask.py:89
 msgid ""
 "Warning: This will delete all programs, documents, photos, music and any "
 "other files on your disk"
-msgstr ""
+msgstr "Uwaga: Pozbawi Cię to wszystkich programów, dokumentów, zdjęć, muzyki oraz każdego innego pliku na tym dysku"
 
 #: src/installation_ask.py:95
-msgid "Choose where to install Cinnarch (easy)"
-msgstr ""
+msgid "Choose where to install Antergos (easy)"
+msgstr "Wybierz, gdzie zainstalować Antergos (łatwy)"
 
 #: src/installation_ask.py:98
 msgid ""
-"You will have to choose where to install Cinnarch. You will be only asked "
+"You will have to choose where to install Antergos. You will be only asked "
 "for the mount points of your root and swap devices."
 msgstr ""
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
-msgstr ""
+msgid "Manage your partitions and choose where to install Antergos (advanced)"
+msgstr "Zarządzaj partycjami i wybierz, gdzie zainstalować Antergos (zaawansowany)"
 
 #: src/installation_ask.py:107
 msgid ""
 "You will be able to create/delete partitions, choose where to install "
-"Cinnarch and also choose additional mount points."
-msgstr ""
+"Antergos and also choose additional mount points."
+msgstr "Będziesz miał możliwość do tworzenia/usuwania partycji, ustalania gdzie ma być zainstalowany Antergos oraz wybrania ewentualnych punktów montowania."
 
 #: src/installation_automatic.py:73
-msgid "Cinnarch automatic installation mode"
-msgstr ""
+msgid "Antergos automatic installation mode"
+msgstr "Tryb automatycznej instalacji Antergos"
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
-msgstr ""
+msgstr "Wybierz dysk:"
 
 #: src/installation_automatic.py:81
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
-"install Cinnarch and click the button below to start the process."
-msgstr ""
+"install Antergos and click the button below to start the process."
+msgstr "Ta instalacja nadpisze wszystko na Twoim dysku. Jeśli jesteś pewien co robisz, wybierz, gdzie zainstalować Antergos, a potem kliknij na przycisk niżej, by rozpocząć instalację."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
-msgstr ""
+msgstr "Automatyczna instalacja używając %s"
 
 #: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Cinnarch"
+msgid "You must inform about these two mount points to install Antergos"
 msgstr ""
 
 #: src/installation_easy.py:94
-msgid "Cinnarch easy installation mode"
+msgid "Antergos easy installation mode"
 msgstr ""
 
 #: src/installation_easy.py:118
@@ -403,11 +404,11 @@ msgid ""
 "merchantability, fitness for a particular purpose, or\n"
 "non-infringement.\n"
 "\n"
-"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
+"If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
 #: src/language.py:95 src/welcome.py:100
-msgid "Welcome to Cinnarch!"
+msgid "Welcome to Antergos!"
 msgstr ""
 
 #: src/language.py:113
@@ -518,19 +519,19 @@ msgid "Couldn't execute auto mirroring selection"
 msgstr ""
 
 #: src/show_message.py:54
-msgid "Cinnarch Installer - Error"
+msgid "Antergos Installer - Error"
 msgstr ""
 
 #: src/show_message.py:65
-msgid "Cinnarch Installer - Warning"
+msgid "Antergos Installer - Warning"
 msgstr ""
 
 #: src/show_message.py:76
-msgid "Cinnarch Installer - Information"
+msgid "Antergos Installer - Information"
 msgstr ""
 
 #: src/show_message.py:86
-msgid "Cinnarch Installer - Question"
+msgid "Antergos Installer - Question"
 msgstr ""
 
 #: src/slides.py:80 src/slides.py:94
@@ -540,7 +541,7 @@ msgid ""
 msgstr ""
 
 #: src/slides.py:88
-msgid "Learn more about Cinnarch"
+msgid "Learn more about Antergos"
 msgstr ""
 
 #: src/slides.py:92
@@ -673,7 +674,7 @@ msgstr ""
 
 #: src/welcome.py:95
 msgid ""
-"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
+"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
 msgstr ""
 

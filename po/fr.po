@@ -2,25 +2,26 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# Apos <jeandavidmoisan@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
+"PO-Revision-Date: 2013-04-15 02:37+0000\n"
+"Last-Translator: Apos <jeandavidmoisan@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: cnchi.py:92
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "Ce programme d'installation doit être exécuté avec les droits d'administrateur, et ne peut pas continuer sans eux."
 
 #: cnchi.py:98
 msgid ""
@@ -29,369 +30,369 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Vous ne pouvez pas exécuter deux instances de ce programme d'installation.\nSi vous êtes sûr que l'installateur n'est pas déjà en cours d'exécution, vous pouvez supprimer manuellement le fichier %s et relancer ce programme d'installation."
 
 #: cnchi.py:186
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Installateur Antergos"
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr ""
+msgstr "Vérifiez votre ordinateur"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
-msgstr ""
+msgstr "a au moins 3Go d'espace disque disponible"
 
 #: src/check.py:79
 msgid "is plugged in to a power source"
-msgstr ""
+msgstr "est branché à une source d'alimentation"
 
 #: src/check.py:83
 msgid "is connected to the Internet"
-msgstr ""
+msgstr "a une connexion internet"
 
 #: src/check.py:87
 msgid "For best results, please ensure that this computer:"
-msgstr ""
+msgstr "Pour de meilleurs résultats, veuillez faire en sorte que cet ordinateur:"
 
 #: src/check.py:108
 msgid "Can't get network status"
-msgstr ""
+msgstr "Impossible d'obtenir l'état du réseau"
 
 #: src/check.py:177
 msgid "We have Internet connection."
-msgstr ""
+msgstr "Nous avons une connexion Internet."
 
 #: src/check.py:178
 msgid "We're connected to a power source."
-msgstr ""
+msgstr "Nous sommes connectés à une source d'alimentation."
 
 #: src/check.py:179
 msgid "We have enough space in disk."
-msgstr ""
+msgstr "Nous avons assez d'espace sur le disque."
 
 #: src/installation_advanced.py:192 src/installation_advanced.py:424
 #: src/installation_advanced.py:436
 msgid "free space"
-msgstr ""
+msgstr "espace libre"
 
 #: src/installation_advanced.py:256 src/installation_easy.py:90
 msgid "Device"
-msgstr ""
+msgstr "Périphérique"
 
 #: src/installation_advanced.py:259
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: src/installation_advanced.py:262 src/installation_easy.py:86
 msgid "Mount point"
-msgstr ""
+msgstr "Point de montage"
 
 #: src/installation_advanced.py:265
 msgid "Label"
-msgstr ""
+msgstr "Étiquette"
 
 #: src/installation_advanced.py:271 src/installation_advanced.py:1221
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #: src/installation_advanced.py:274
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 #: src/installation_advanced.py:277
 msgid "Used"
-msgstr ""
+msgstr "Utilisé"
 
 #: src/installation_advanced.py:280
 msgid "Flags"
-msgstr ""
+msgstr "Drapeaux"
 
 #: src/installation_advanced.py:286
 msgid "Solid State Drive (SSD)"
-msgstr ""
+msgstr "Solid State Drive (SSD)"
 
 #: src/installation_advanced.py:407
 msgid "none"
-msgstr ""
+msgstr "aucun"
 
 #: src/installation_advanced.py:457
 msgid "extended"
-msgstr ""
+msgstr "prolongé"
 
 #: src/installation_advanced.py:579 src/installation_advanced.py:816
 msgid "Cannot use same mount twice..."
-msgstr ""
+msgstr "Vous ne pouvez pas utiliser le même point de montage deux fois..."
 
 #: src/installation_advanced.py:835
 msgid "Creating primary partition"
-msgstr ""
+msgstr "Création de la partition primaire"
 
 #: src/installation_advanced.py:846
 msgid "Creating extended partition"
-msgstr ""
+msgstr "Création d'une partition étendue"
 
 #: src/installation_advanced.py:852
 msgid "Creating logical partition"
-msgstr ""
+msgstr "Création d'une partition logique"
 
 #: src/installation_advanced.py:918
 msgid "Advanced installation mode"
-msgstr ""
+msgstr "Mode d'installation avancée"
 
 #: src/installation_advanced.py:922
 msgid "Device for boot loader installation:"
-msgstr ""
+msgstr "Périphérique d'installation du chargeur de démarrage:"
 
 #: src/installation_advanced.py:932
 msgid "New partition table"
-msgstr ""
+msgstr "Nouvelle table de partition"
 
 #: src/installation_advanced.py:940
 msgid "Change..."
-msgstr ""
+msgstr "Changer..."
 
 #: src/installation_advanced.py:945
 msgid "Size:"
-msgstr ""
+msgstr "Taille:"
 
 #: src/installation_advanced.py:949
 msgid "Type:"
-msgstr ""
+msgstr "Type:"
 
 #: src/installation_advanced.py:953
 msgid "Primary"
-msgstr ""
+msgstr "Primaire"
 
 #: src/installation_advanced.py:957
 msgid "Logical"
-msgstr ""
+msgstr "Logique"
 
 #: src/installation_advanced.py:961
 msgid "Extended"
-msgstr ""
+msgstr "Étendue"
 
 #: src/installation_advanced.py:965
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Début de cet espace"
 
 #: src/installation_advanced.py:969
 msgid "End of this space"
-msgstr ""
+msgstr "Fin de cet espace"
 
 #: src/installation_advanced.py:973 src/installation_advanced.py:990
 msgid "Use as:"
-msgstr ""
+msgstr "Utiliser comme:"
 
 #: src/installation_advanced.py:977 src/installation_advanced.py:994
 msgid "Mount point:"
-msgstr ""
+msgstr "Point de montage:"
 
 #: src/installation_advanced.py:981 src/installation_advanced.py:998
 msgid "Label (optional):"
-msgstr ""
+msgstr "Étiquette (facultatif):"
 
 #: src/installation_advanced.py:985
 msgid "Encryption options..."
-msgstr ""
+msgstr "Options de cryptage..."
 
 #: src/installation_advanced.py:1002
 msgid "Format:"
-msgstr ""
+msgstr "Format:"
 
 #: src/installation_advanced.py:1007
 msgid "Partition table type:"
-msgstr ""
+msgstr "Type de table de partition:"
 
 #: src/installation_advanced.py:1012
 msgid "Create partition table"
-msgstr ""
+msgstr "Créer une table de partition"
 
 #: src/installation_advanced.py:1015 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
-msgstr ""
+msgstr "Installer maintenant!"
 
 #: src/installation_advanced.py:1095
 msgid "Creating a new partition table of type %s for disk %s"
-msgstr ""
+msgstr "Création d'une nouvelle table de partitions de type %s  pour le disque %s"
 
 #: src/installation_advanced.py:1162
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s est monté dans '%s'.\nPour continuer il faut la démonter.\nCliquez sur Oui pour démonter, ou Non pour revenir\n"
 
 #: src/installation_advanced.py:1214
 msgid "Partition %s will be deleted"
-msgstr ""
+msgstr "La partition %s sera détruite"
 
 #: src/installation_advanced.py:1221
 msgid "Mount"
-msgstr ""
+msgstr "Monter"
 
 #: src/installation_advanced.py:1221
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #: src/installation_advanced.py:1221
 msgid "Partition"
-msgstr ""
+msgstr "Partition"
 
 #: src/installation_advanced.py:1221
 msgid "Relabel"
-msgstr ""
+msgstr "Réétiqueter"
 
 #: src/installation_advanced.py:1242
 msgid "These disks will have partition actions:"
-msgstr ""
+msgstr "Ces disques ont des actions de partition:"
 
 #: src/installation_advanced.py:1267
 msgid "Saving changes done in %s"
-msgstr ""
+msgstr "Enregistrement des modifications effectuées dans %s"
 
 #: src/installation_advanced.py:1276
 msgid "Creating fs of type %s in %s with label %s"
-msgstr ""
+msgstr "Création fs de type %s dans %s avec comme étiquette %s"
 
 #: src/installation_advanced.py:1287
 msgid "FORMATTED"
-msgstr ""
+msgstr "FORMATÉE"
 
 #: src/installation_ask.py:76
 msgid "Your preferred installation type"
-msgstr ""
+msgstr "Votre type d'installation préférée"
 
 #: src/installation_ask.py:86
 msgid "Erase disk and install Antergos (automatic)"
-msgstr ""
+msgstr "Effacer le disque et installer Antergos (automatique)"
 
 #: src/installation_ask.py:89
 msgid ""
 "Warning: This will delete all programs, documents, photos, music and any "
 "other files on your disk"
-msgstr ""
+msgstr "Attention: Ceci supprimera tous vos programmes, documents, photos, musiques et autres fichiers présents sur votre disque"
 
 #: src/installation_ask.py:95
 msgid "Choose where to install Antergos (easy)"
-msgstr ""
+msgstr "Choisissez l'emplacement d'installation de Antergos (facile)"
 
 #: src/installation_ask.py:98
 msgid ""
 "You will have to choose where to install Antergos. You will be only asked "
 "for the mount points of your root and swap devices."
-msgstr ""
+msgstr "Vous aurez à choisir où installer Antergos. Il vous sera seulement demandé les points de montage de votre racine et les périphériques de swap."
 
 #: src/installation_ask.py:104
 msgid "Manage your partitions and choose where to install Antergos (advanced)"
-msgstr ""
+msgstr "Gérer vos partitions et choisir où installer Antergos (avancé)"
 
 #: src/installation_ask.py:107
 msgid ""
 "You will be able to create/delete partitions, choose where to install "
 "Antergos and also choose additional mount points."
-msgstr ""
+msgstr "Vous serez en mesure de créer / supprimer des partitions, choisissez l'emplacement d'installation de Antergos et choisissez également les points de montage supplémentaires."
 
 #: src/installation_automatic.py:73
 msgid "Antergos automatic installation mode"
-msgstr ""
+msgstr "Mode d'installation automatique de Antergos"
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
-msgstr ""
+msgstr "Sélectionnez le disque:"
 
 #: src/installation_automatic.py:81
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
 "install Antergos and click the button below to start the process."
-msgstr ""
+msgstr "Ce mode d'installation écrasera tout sur votre disque. Si vous êtes sûr que c'est ce que vous souhaitez, veuillez choisir le disque où vous voullez installer Antergos et cliquez sur le bouton ci-dessous pour lancer le processus."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
-msgstr ""
+msgstr "Installation automatique à l'aide du périphérique %s"
 
 #: src/installation_easy.py:82
 msgid "You must inform about these two mount points to install Antergos"
-msgstr ""
+msgstr "Vous devez choisir ces deux points de montage pour pouvoir installer Antergos"
 
 #: src/installation_easy.py:94
 msgid "Antergos easy installation mode"
-msgstr ""
+msgstr "Mode d'installation facile de Antergos"
 
 #: src/installation_easy.py:118
 msgid "You can't select the same device for both mount points!"
-msgstr ""
+msgstr "Vous ne pouvez pas sélectionner le même périphérique pour les deux points de montage!"
 
 #: src/installation_easy.py:159
 msgid "In easy install, can't create list of partitions"
-msgstr ""
+msgstr "Dans l'installation facile, la liste de partitions ne peut pas être créée"
 
 #: src/installation_thread.py:75
 msgid "Installing using the '%s' method"
-msgstr ""
+msgstr "Installation à l'aide de la méthode '%s'"
 
 #: src/installation_thread.py:124
 msgid "Can't execute the auto partition script"
-msgstr ""
+msgstr "Impossible d'exécuter le script de partition automatique"
 
 #: src/installation_thread.py:162
 msgid "Couldn't mount root and boot partitions"
-msgstr ""
+msgstr "Impossible de monter la partition root et boot"
 
 #: src/installation_thread.py:170
 msgid "Can't create necessary directories on destination system"
-msgstr ""
+msgstr "Impossible de créer les répertoires nécessaires sur le système de destination"
 
 #: src/installation_thread.py:584 src/installation_thread.py:606
 msgid "ERROR installing GRUB(2) BIOS."
-msgstr ""
+msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
 
 #: src/installation_thread.py:597
 msgid "GRUB(2) BIOS has been successfully installed."
-msgstr ""
+msgstr "GRUB(2) BIOS a été installé avec succès."
 
 #: src/installation_thread.py:617
 msgid "Error creating password hash for user %s"
-msgstr ""
+msgstr "Erreur de création du hash pour le mot de passe de l'utilisateur %s"
 
 #: src/installation_thread.py:623
 msgid "Error changing password for user %s"
-msgstr ""
+msgstr "Erreur durant le changement du mot de passe de l'utilisateur %s"
 
 #: src/installation_thread.py:677
 msgid "Configuring your new system"
-msgstr ""
+msgstr "Configuration de votre nouveau système"
 
 #: src/installation_thread.py:756
 msgid "Generating locales"
-msgstr ""
+msgstr "Créations des 'locales'"
 
 #: src/installation_thread.py:776
 msgid "Running mkinitcpio"
-msgstr ""
+msgstr "Exécution de mkinitcpio"
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
-msgstr ""
+msgstr "Sélectionnez la disposition de votre clavier"
 
 #: src/keymap.py:78
 msgid "Layouts"
-msgstr ""
+msgstr "Dispositions"
 
 #: src/keymap.py:84
 msgid "Variants"
-msgstr ""
+msgstr "Variantes"
 
 #: src/keymap.py:106
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "keyboard_layout est %s"
 
 #: src/language.py:81
 msgid "Please choose your language:"
-msgstr ""
+msgstr "Veuillez choisir votre langue:"
 
 #: src/language.py:86
 msgid ""
@@ -404,279 +405,279 @@ msgid ""
 "non-infringement.\n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "<span weight='bold'>Ceci est une version Alpha.</span>\nLe Logiciel est fourni \"tel quel\" sans garantie quelle\nqu'elle soit, expresse ou implicite, y compris sans limitation\ntoute garantie implicite de l'état, l'utilisation ininterrompue,\nmarchande, adéquate à un usage particulier, ou\nnon-contrefaçon.\nSi vous trouvez un bug, s'il vous plaît, visitez le site <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:95 src/welcome.py:100
 msgid "Welcome to Antergos!"
-msgstr ""
+msgstr "Bienvenue sur Antergos!"
 
 #: src/language.py:113
 msgid "Languages"
-msgstr ""
+msgstr "Langues"
 
 #: src/language.py:133
 msgid "Can't find translation file for the %s language"
-msgstr ""
+msgstr "Impossible de trouver le fichier de traduction pour la langue %s"
 
 #: src/location.py:73
 msgid "Select your location"
-msgstr ""
+msgstr "Sélectionnez votre emplacement"
 
 #: src/location.py:77
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "L'emplacement choisi sera utilisé pour aider à sélectionner la langue du système.\nNormalement, ce devrait être le pays où vous vivez.\nVoici une liste d'emplacements basée sur la langue que vous avez sélectionnée."
 
 #: src/location.py:82
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "Pays, territoire ou région:"
 
 #: src/location.py:201
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "localisation changée: %s"
 
 #: src/location.py:203
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "Impossible de changer les paramètres régionaux '%s'"
 
 #: src/pacman/pac.py:165
 msgid "Checking dependencies..."
-msgstr ""
+msgstr "Vérification des dépendances..."
 
 #: src/pacman/pac.py:168
 msgid "Checking file conflicts..."
-msgstr ""
+msgstr "Vérification des conflits de fichiers..."
 
 #: src/pacman/pac.py:171
 msgid "Resolving dependencies..."
-msgstr ""
+msgstr "Résolution des dépendances..."
 
 #: src/pacman/pac.py:174
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "Vérification des conflits internes..."
 
 #: src/pacman/pac.py:181
 msgid "Removing..."
-msgstr ""
+msgstr "Suppression..."
 
 #: src/pacman/pac.py:184
 msgid "Upgrading..."
-msgstr ""
+msgstr "Mise à niveau..."
 
 #: src/pacman/pac.py:187
 msgid "Checking integrity..."
-msgstr ""
+msgstr "Vérification de l'intégrité..."
 
 #: src/pacman/pac.py:191
 msgid "Loading packages files..."
-msgstr ""
+msgstr "Chargement des paquets..."
 
 #: src/pacman/pac.py:195
 msgid "Configuring..."
-msgstr ""
+msgstr "Configuration..."
 
 #: src/pacman/pac.py:197
 msgid "Configuring a package"
-msgstr ""
+msgstr "Configuration d'un paquet"
 
 #: src/pacman/pac.py:199
 msgid "Downloading a file"
-msgstr ""
+msgstr "Téléchargement d'un fichier"
 
 #: src/pacman/pac.py:223
 msgid "ERROR: %s"
-msgstr ""
+msgstr "ERREUR: %s"
 
 #: src/pacman/pac.py:229
 msgid "WARNING: %s"
-msgstr ""
+msgstr "ATTENTION: %s"
 
 #: src/pacman/pac.py:233
 msgid "DEBUG: %s"
-msgstr ""
+msgstr "DEBUG: %s"
 
 #: src/pacman/pac.py:236
 msgid "FUNC: %s"
-msgstr ""
+msgstr "FUNC: %s"
 
 #: src/pacman/pac.py:268
 msgid "Downloading %s"
-msgstr ""
+msgstr "Téléchargement %s"
 
 #: src/pacman/pac.py:276
 msgid "Refreshing %s..."
-msgstr ""
+msgstr "Rafraîchissage de %s..."
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
-msgstr ""
+msgstr "Impossible d'obtenir l'état du réseau pour rankmirrors"
 
 #: src/rank_mirrors.py:75
 msgid "Couldn't execute auto mirroring selection"
-msgstr ""
+msgstr "Impossible d'exécuter la sélection automatique des miroirs"
 
 #: src/show_message.py:54
 msgid "Antergos Installer - Error"
-msgstr ""
+msgstr "Installateur Antergos - Erreur"
 
 #: src/show_message.py:65
 msgid "Antergos Installer - Warning"
-msgstr ""
+msgstr "Installateur Antergos - Attention"
 
 #: src/show_message.py:76
 msgid "Antergos Installer - Information"
-msgstr ""
+msgstr "Installateur Antergos - Informations"
 
 #: src/show_message.py:86
 msgid "Antergos Installer - Question"
-msgstr ""
+msgstr "Installateur Antergos - Question"
 
 #: src/slides.py:80 src/slides.py:94
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "Fin de l'installation!\nVoulez-vous redémarrer votre système maintenant?"
 
 #: src/slides.py:88
 msgid "Learn more about Antergos"
-msgstr ""
+msgstr "En savoir plus sur Antergos"
 
 #: src/slides.py:92
 msgid "Please wait..."
-msgstr ""
+msgstr "Patientez s'il vous plaît..."
 
 #: src/timezone.py:113
 msgid "Where are you?"
-msgstr ""
+msgstr "Où êtes-vous?"
 
 #: src/timezone.py:118
 msgid "Zone:"
-msgstr ""
+msgstr "Zone:"
 
 #: src/timezone.py:122
 msgid "Region:"
-msgstr ""
+msgstr "Région:"
 
 #: src/timezone.py:133
 msgid "location changed to : %s"
-msgstr ""
+msgstr "emplacement modifiée: %s"
 
 #: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
-msgstr ""
+msgstr "Impossible de détecter votre fuseau horaire automatiquement"
 
 #: src/timezone.py:279
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "Fermeture du fil d’exécution du fuseau horaire..."
 
 #: src/timezone.py:307 src/timezone.py:358
 msgid "In timezone, can't get network status"
-msgstr ""
+msgstr "Impossible d'obtenir l'état réseau du fuseau horaire"
 
 #: src/timezone.py:383
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "Impossible d'obtenir le code du pays utilisé pour créer le mirrorlist de pacman"
 
 #: src/timezone.py:403
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "Fin du téléchargement d'une mirrorlist spécifique pour pacman basé sur le code du pays %s"
 
 #: src/timezone.py:405
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "Impossible de générer une mirrorlist pour pacman basé sur le code du pays"
 
 #: src/user_info.py:90
 msgid "Your name:"
-msgstr ""
+msgstr "Votre nom:"
 
 #: src/user_info.py:94
 msgid "Your computer's name:"
-msgstr ""
+msgstr "Le nom de votre ordinateur:"
 
 #: src/user_info.py:98
 msgid "Pick a username:"
-msgstr ""
+msgstr "Choisissez un nom d'utilisateur:"
 
 #: src/user_info.py:102
 msgid "Choose a password:"
-msgstr ""
+msgstr "Choisissez un mot de passe:"
 
 #: src/user_info.py:106
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Confirmez votre mot de passe:"
 
 #: src/user_info.py:110
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "Le nom à utiliser pour communiquer avec d'autres ordinateurs"
 
 #: src/user_info.py:114 src/user_info.py:191
 msgid "You must enter a name"
-msgstr ""
+msgstr "Vous devez entrer un nom"
 
 #: src/user_info.py:118
 msgid "You must enter a username"
-msgstr ""
+msgstr "Vous devez entrer un nom d'utilisateur"
 
 #: src/user_info.py:122
 msgid "You must enter a password"
-msgstr ""
+msgstr "Vous devez entrer un mot de passe"
 
 #: src/user_info.py:126
 msgid "Log in automatically"
-msgstr ""
+msgstr "Se connecter automatiquement"
 
 #: src/user_info.py:127
 msgid "Require my password to log in"
-msgstr ""
+msgstr "Exiger mon mot de passe pour se connecter"
 
 #: src/user_info.py:128
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "Crypter le dossier 'home'"
 
 #: src/user_info.py:130
 msgid "Who are you?"
-msgstr ""
+msgstr "Qui êtes-vous?"
 
 #: src/user_info.py:207
 msgid "Invalid characters entered"
-msgstr ""
+msgstr "Caractères non valides entrés"
 
 #: src/user_info.py:211
 msgid "Contains consecutive, initial and/or final dots"
-msgstr ""
+msgstr "Contient des points au début à la fin, et/ou en séquences"
 
 #: src/validation.py:144
 msgid "password is too short"
-msgstr ""
+msgstr "mot de passe trop court"
 
 #: src/validation.py:147
 msgid "weak password"
-msgstr ""
+msgstr "mot de passe faible"
 
 #: src/validation.py:150
 msgid "fair password"
-msgstr ""
+msgstr "mot de passe passable"
 
 #: src/validation.py:153
 msgid "good password"
-msgstr ""
+msgstr "mot de passe correct"
 
 #: src/validation.py:156
 msgid "strong password"
-msgstr ""
+msgstr "mot de passe fort"
 
 #: src/validation.py:171
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Les mots de passe ne correspondent pas"
 
 #: src/welcome.py:95
 msgid ""
 "You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
-msgstr ""
+msgstr "Vous pouvez essayer Antergos sans modifier votre disque dur, cliquez simplement sur \"Essayez-le\".\nSi vous souhaitez installer le système sur votre ordinateur, utilisez l'une des deux options d'installation."
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "Impossible de charger l'installateur CLI"

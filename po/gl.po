@@ -2,14 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
-# Alexandre Filgueira <alexfilgueira@cinnarch.com>, 2013.
+# faidoc <alexfilgueira@antergos.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: Cinnarch\n"
+"Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:30+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: Galician (http://www.transifex.com/projects/p/cinnarch/language/gl/)\n"
+"PO-Revision-Date: 2013-04-11 18:41+0000\n"
+"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
+"Language-Team: Galician (http://www.transifex.com/projects/p/antergos/language/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -33,8 +33,8 @@ msgid ""
 msgstr "Non podes executar dúas instancias do instalador.\n\nSe estás seguro de que o instalador non se está executando\npodese eliminar manualmente o ficheiro %s\ne executar o instalador de novo."
 
 #: cnchi.py:186
-msgid "Cinnarch Installer"
-msgstr "Instalador de Cinnarch"
+msgid "Antergos Installer"
+msgstr "Instalador de Antergos"
 
 #: src/check.py:70
 msgid "Check your computer"
@@ -266,8 +266,8 @@ msgid "Your preferred installation type"
 msgstr "Teu tipo de instalación preferido"
 
 #: src/installation_ask.py:86
-msgid "Erase disk and install Cinnarch (automatic)"
-msgstr "Borrar disco é instalar Cinnarch (automático)"
+msgid "Erase disk and install Antergos (automatic)"
+msgstr "Borrar disco e instalar Antergos (automático)"
 
 #: src/installation_ask.py:89
 msgid ""
@@ -276,28 +276,28 @@ msgid ""
 msgstr "Aviso: Isto borrará todolos programas, documentos, fotos, música e calquer outro ficheiro no teu disco"
 
 #: src/installation_ask.py:95
-msgid "Choose where to install Cinnarch (easy)"
-msgstr "Escolle dónde instalar Cinnarch (easy)"
+msgid "Choose where to install Antergos (easy)"
+msgstr "Escolle dónde instalar Antergos (easy)"
 
 #: src/installation_ask.py:98
 msgid ""
-"You will have to choose where to install Cinnarch. You will be only asked "
+"You will have to choose where to install Antergos. You will be only asked "
 "for the mount points of your root and swap devices."
-msgstr "Terás que seleccionar onde instalar Cinnarch. Se che preguntará polos puntos de montaxe da túa raíz e dispositivo swap."
+msgstr "Terás que seleccionar onde instalar Antergos. Se che preguntará polos puntos de montaxe da túa raíz e dispositivo swap."
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
-msgstr "Manexa as túas partición e elixe onde instalar Cinnarch (avanzado)"
+msgid "Manage your partitions and choose where to install Antergos (advanced)"
+msgstr "Manexa as túas partición e elixe onde instalar Antergos (avanzado)"
 
 #: src/installation_ask.py:107
 msgid ""
 "You will be able to create/delete partitions, choose where to install "
-"Cinnarch and also choose additional mount points."
-msgstr "Poderás crear/eliminar particións, elixir onde instalar Cinnarch e escoller puntos de montaxe opcionais."
+"Antergos and also choose additional mount points."
+msgstr "Poderás crear/eliminar particións, elixir onde instalar Antergos e escoller puntos de montaxe opcionais."
 
 #: src/installation_automatic.py:73
-msgid "Cinnarch automatic installation mode"
-msgstr "Modo de instalación automática de Cinnarch"
+msgid "Antergos automatic installation mode"
+msgstr "Modo de instalación automática de Antergos"
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
@@ -307,20 +307,20 @@ msgstr "Selecciona dispositivo"
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
-"install Cinnarch and click the button below to start the process."
-msgstr "Este modo de instalación sobrescribirá todo no teu dispositivo. Se estás seguro de que isto é o que queres, por favor escolle o dispositivo onde queres instalar Cinnarch e faga click no botón de abaizo para comezar o proceso."
+"install Antergos and click the button below to start the process."
+msgstr "Este modo de instalación sobrescribirá todo no teu dispositivo. Se estás seguro de que isto é o que queres, por favor escolle o dispositivo onde queres instalar Antergos e faga click no botón de abaizo para comezar o proceso."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
 msgstr "Instalación automática empregando o dispositivo %s"
 
 #: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Cinnarch"
-msgstr "Debes informar sobre estes dous puntos de montaxe para instalar Cinnarch"
+msgid "You must inform about these two mount points to install Antergos"
+msgstr "Debes informar sobre estes dous puntos de montaxe para instalar Antergos"
 
 #: src/installation_easy.py:94
-msgid "Cinnarch easy installation mode"
-msgstr "Modo de instalación sencillo de Cinnarch"
+msgid "Antergos easy installation mode"
+msgstr "Modo de instalación sencillo de Antergos"
 
 #: src/installation_easy.py:118
 msgid "You can't select the same device for both mount points!"
@@ -404,12 +404,12 @@ msgid ""
 "merchantability, fitness for a particular purpose, or\n"
 "non-infringement.\n"
 "\n"
-"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
-msgstr "<span weight='bold'>Esta é unha versión Alpha.</span>\n\nO programa amósase \"como é\" sen garantía de ningun\ntipo, nin expresa ou implícita, incluíndo sen limitación\nningunha garantía implícita de condición, uso ininterrumpido,\ncomercialización, adecuación a unha finalidade específica, ou\nnon infracción.\n\nSe atopas algún error, por favor, visita <a href='https://bugs.cinnarch.com'>https://bugs.cinnarch.com</a>"
+"If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
+msgstr "<span weight='bold'>Esta é unha versión Alpha.</span>\n\nO programa amósase \"como é\" sen garantía de ningun\ntipo, nin expresa ou implícita, incluíndo sen limitación\nningunha garantía implícita de condición, uso ininterrumpido,\ncomercialización, adecuación a unha finalidade específica, ou\nnon infracción.\n\nSe atopas algún error, por favor, visita <a href='https://bugs.antergos.com'>https://bugs.antergos.com</a>"
 
 #: src/language.py:95 src/welcome.py:100
-msgid "Welcome to Cinnarch!"
-msgstr "Benvido a Cinnarch!"
+msgid "Welcome to Antergos!"
+msgstr "Benvido a Antergos!"
 
 #: src/language.py:113
 msgid "Languages"
@@ -519,20 +519,20 @@ msgid "Couldn't execute auto mirroring selection"
 msgstr "Non se pode executar a selección de mirror automático"
 
 #: src/show_message.py:54
-msgid "Cinnarch Installer - Error"
-msgstr "Instalador de Cinnarch - Error"
+msgid "Antergos Installer - Error"
+msgstr "Instalador de Antergos - Error"
 
 #: src/show_message.py:65
-msgid "Cinnarch Installer - Warning"
-msgstr "Instalador de Cinnarch - Aviso"
+msgid "Antergos Installer - Warning"
+msgstr "Instalador de Antergos - Aviso"
 
 #: src/show_message.py:76
-msgid "Cinnarch Installer - Information"
-msgstr "Instalador de Cinnarch - Información"
+msgid "Antergos Installer - Information"
+msgstr "Instalador de Antergos - Información"
 
 #: src/show_message.py:86
-msgid "Cinnarch Installer - Question"
-msgstr "Instalador de Cinnarch - Pregunta"
+msgid "Antergos Installer - Question"
+msgstr "Instalador de Antergos - Pregunta"
 
 #: src/slides.py:80 src/slides.py:94
 msgid ""
@@ -541,8 +541,8 @@ msgid ""
 msgstr "Instalación rematada!\nDesexas reiniciar o sistema agora?"
 
 #: src/slides.py:88
-msgid "Learn more about Cinnarch"
-msgstr "Aprenda máis sobre Cinnarch"
+msgid "Learn more about Antergos"
+msgstr "Aprenda máis sobre Antergos"
 
 #: src/slides.py:92
 msgid "Please wait..."
@@ -674,9 +674,9 @@ msgstr "Contrasinais non coinciden"
 
 #: src/welcome.py:95
 msgid ""
-"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
+"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
-msgstr "Podes probar Cinnarch sen modificar o teu disco duro, tan só faga click en 'Probalo'.\nSe queres instalar o sistema no teu PC, empregue unha das dúas opcións de instalador."
+msgstr "Podes probar Antergos sen modificar o teu disco duro, tan só faga click en 'Probalo'.\nSe queres instalar o sistema no teu PC, empregue unha das dúas opcións de instalador."
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"

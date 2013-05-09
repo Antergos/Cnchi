@@ -2,13 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# LinuxVideoRO, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: Cinnarch\n"
+"Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: Romanian (http://www.transifex.com/projects/p/cinnarch/language/ro/)\n"
+"PO-Revision-Date: 2013-04-08 12:53+0000\n"
+"Last-Translator: LinuxVideoRO\n"
+"Language-Team: Romanian (http://www.transifex.com/projects/p/antergos/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -20,7 +21,7 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "Acest program de instalare trebuie rulat drepturi administrative, si nu poate continua fară acestea."
 
 #: cnchi.py:98
 msgid ""
@@ -29,84 +30,84 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Nu puteți rula două instanțe ale acestui program de instalare.\n\nDacă sunteți sigur ca programul de instalare nu rulează deja\nputeți să ștergeți manual fișierul %s\nși să rulați programul de instalare din nou."
 
 #: cnchi.py:186
-msgid "Cinnarch Installer"
-msgstr ""
+msgid "Antergos Installer"
+msgstr "Programul de instalare Antergos"
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr ""
+msgstr "Verificați-vă computerul"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
-msgstr ""
+msgstr "are cel puțin 3GB de spațiu liber pe disc"
 
 #: src/check.py:79
 msgid "is plugged in to a power source"
-msgstr ""
+msgstr "este conectat la o sursa de curent"
 
 #: src/check.py:83
 msgid "is connected to the Internet"
-msgstr ""
+msgstr "este concectat la Internet"
 
 #: src/check.py:87
 msgid "For best results, please ensure that this computer:"
-msgstr ""
+msgstr "Pentru cele mai bune rezultate, va rugam sa va asigurați ca acest computer:"
 
 #: src/check.py:108
 msgid "Can't get network status"
-msgstr ""
+msgstr "Nu se poate obține statusul rețelei"
 
 #: src/check.py:177
 msgid "We have Internet connection."
-msgstr ""
+msgstr "Avem conexiune la Internet."
 
 #: src/check.py:178
 msgid "We're connected to a power source."
-msgstr ""
+msgstr "Suntem conectați la o sursă de curent."
 
 #: src/check.py:179
 msgid "We have enough space in disk."
-msgstr ""
+msgstr "Avem suficient spațiu pe disc."
 
 #: src/installation_advanced.py:192 src/installation_advanced.py:424
 #: src/installation_advanced.py:436
 msgid "free space"
-msgstr ""
+msgstr "spațiu liber"
 
 #: src/installation_advanced.py:256 src/installation_easy.py:90
 msgid "Device"
-msgstr ""
+msgstr "Dispozitiv"
 
 #: src/installation_advanced.py:259
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #: src/installation_advanced.py:262 src/installation_easy.py:86
 msgid "Mount point"
-msgstr ""
+msgstr "Punct de montare"
 
 #: src/installation_advanced.py:265
 msgid "Label"
-msgstr ""
+msgstr "Etichetă"
 
 #: src/installation_advanced.py:271 src/installation_advanced.py:1221
 msgid "Format"
-msgstr ""
+msgstr "Formatați"
 
 #: src/installation_advanced.py:274
 msgid "Size"
-msgstr ""
+msgstr "Dimensiune"
 
 #: src/installation_advanced.py:277
 msgid "Used"
-msgstr ""
+msgstr "Folosit"
 
 #: src/installation_advanced.py:280
 msgid "Flags"
-msgstr ""
+msgstr "Steaguri"
 
 #: src/installation_advanced.py:286
 msgid "Solid State Drive (SSD)"
@@ -114,135 +115,135 @@ msgstr ""
 
 #: src/installation_advanced.py:407
 msgid "none"
-msgstr ""
+msgstr "niciunul"
 
 #: src/installation_advanced.py:457
 msgid "extended"
-msgstr ""
+msgstr "extins"
 
 #: src/installation_advanced.py:579 src/installation_advanced.py:816
 msgid "Cannot use same mount twice..."
-msgstr ""
+msgstr "Nu puteți utiliza aceeași montare de două ori..."
 
 #: src/installation_advanced.py:835
 msgid "Creating primary partition"
-msgstr ""
+msgstr "Creare partiție primară"
 
 #: src/installation_advanced.py:846
 msgid "Creating extended partition"
-msgstr ""
+msgstr "Creare partiție extinsa"
 
 #: src/installation_advanced.py:852
 msgid "Creating logical partition"
-msgstr ""
+msgstr "Creare partiție logică"
 
 #: src/installation_advanced.py:918
 msgid "Advanced installation mode"
-msgstr ""
+msgstr "Mod de instalare avansat"
 
 #: src/installation_advanced.py:922
 msgid "Device for boot loader installation:"
-msgstr ""
+msgstr "Dispozitiv pentru instalarea bootloaderului:"
 
 #: src/installation_advanced.py:932
 msgid "New partition table"
-msgstr ""
+msgstr "Tabela nouă de partiție"
 
 #: src/installation_advanced.py:940
 msgid "Change..."
-msgstr ""
+msgstr "Schimbă..."
 
 #: src/installation_advanced.py:945
 msgid "Size:"
-msgstr ""
+msgstr "Dimensiune:"
 
 #: src/installation_advanced.py:949
 msgid "Type:"
-msgstr ""
+msgstr "Tip:"
 
 #: src/installation_advanced.py:953
 msgid "Primary"
-msgstr ""
+msgstr "Primară"
 
 #: src/installation_advanced.py:957
 msgid "Logical"
-msgstr ""
+msgstr "Logică"
 
 #: src/installation_advanced.py:961
 msgid "Extended"
-msgstr ""
+msgstr "Extinsă"
 
 #: src/installation_advanced.py:965
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Începutul acestui spațiu"
 
 #: src/installation_advanced.py:969
 msgid "End of this space"
-msgstr ""
+msgstr "Sfârșitul acestui spațiu"
 
 #: src/installation_advanced.py:973 src/installation_advanced.py:990
 msgid "Use as:"
-msgstr ""
+msgstr "Folosiți ca:"
 
 #: src/installation_advanced.py:977 src/installation_advanced.py:994
 msgid "Mount point:"
-msgstr ""
+msgstr "Punct de montare:"
 
 #: src/installation_advanced.py:981 src/installation_advanced.py:998
 msgid "Label (optional):"
-msgstr ""
+msgstr "Etichetă (opțional):"
 
 #: src/installation_advanced.py:985
 msgid "Encryption options..."
-msgstr ""
+msgstr "Opțiuni de criptare..."
 
 #: src/installation_advanced.py:1002
 msgid "Format:"
-msgstr ""
+msgstr "Formatați:"
 
 #: src/installation_advanced.py:1007
 msgid "Partition table type:"
-msgstr ""
+msgstr "Tipul tabelei de partiție:"
 
 #: src/installation_advanced.py:1012
 msgid "Create partition table"
-msgstr ""
+msgstr "Creați tabela de partiție:"
 
 #: src/installation_advanced.py:1015 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
-msgstr ""
+msgstr "Instalați acum!"
 
 #: src/installation_advanced.py:1095
 msgid "Creating a new partition table of type %s for disk %s"
-msgstr ""
+msgstr "Creare o nouă tabelă de partiție de tipul %s pentru discul %s"
 
 #: src/installation_advanced.py:1162
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s este montată in '%s'.\nPentru a continua trebuie sa fie demontată.\nClic Da pentru demontare, sau Nu pentru revenire\n"
 
 #: src/installation_advanced.py:1214
 msgid "Partition %s will be deleted"
-msgstr ""
+msgstr "Partiția %s va fi ștearsă"
 
 #: src/installation_advanced.py:1221
 msgid "Mount"
-msgstr ""
+msgstr "Montați"
 
 #: src/installation_advanced.py:1221
 msgid "New"
-msgstr ""
+msgstr "Nouă"
 
 #: src/installation_advanced.py:1221
 msgid "Partition"
-msgstr ""
+msgstr "Partiție"
 
 #: src/installation_advanced.py:1221
 msgid "Relabel"
-msgstr ""
+msgstr "Reetichetare"
 
 #: src/installation_advanced.py:1242
 msgid "These disks will have partition actions:"
@@ -250,96 +251,96 @@ msgstr ""
 
 #: src/installation_advanced.py:1267
 msgid "Saving changes done in %s"
-msgstr ""
+msgstr "Salvare schimbări efectuate in %s"
 
 #: src/installation_advanced.py:1276
 msgid "Creating fs of type %s in %s with label %s"
-msgstr ""
+msgstr "Creare fs de tipul %s in %s cu eticheta %s"
 
 #: src/installation_advanced.py:1287
 msgid "FORMATTED"
-msgstr ""
+msgstr "FORMATATĂ"
 
 #: src/installation_ask.py:76
 msgid "Your preferred installation type"
-msgstr ""
+msgstr "Tipul de instalare preferat"
 
 #: src/installation_ask.py:86
-msgid "Erase disk and install Cinnarch (automatic)"
-msgstr ""
+msgid "Erase disk and install Antergos (automatic)"
+msgstr "Ștergeți discul si instalați Antergos (automată)"
 
 #: src/installation_ask.py:89
 msgid ""
 "Warning: This will delete all programs, documents, photos, music and any "
 "other files on your disk"
-msgstr ""
+msgstr "Avertisment: Aceasta opțiune va șterge toate programele, documentele, pozele, muzica și oricare alte fișiere de pe discul vostru"
 
 #: src/installation_ask.py:95
-msgid "Choose where to install Cinnarch (easy)"
-msgstr ""
+msgid "Choose where to install Antergos (easy)"
+msgstr "Alegeți unde să instalai Antergos (usoară)"
 
 #: src/installation_ask.py:98
 msgid ""
-"You will have to choose where to install Cinnarch. You will be only asked "
+"You will have to choose where to install Antergos. You will be only asked "
 "for the mount points of your root and swap devices."
-msgstr ""
+msgstr "Va trebui sa alegeți unde sa instalați Antergos.Veți fi intrebați doar pentru punctele de montare ale dispozitivelor root și swap."
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
-msgstr ""
+msgid "Manage your partitions and choose where to install Antergos (advanced)"
+msgstr "Administrați-vă patițiile si alegeți unde sa instalați Antergos (avansată)"
 
 #: src/installation_ask.py:107
 msgid ""
 "You will be able to create/delete partitions, choose where to install "
-"Cinnarch and also choose additional mount points."
-msgstr ""
+"Antergos and also choose additional mount points."
+msgstr "Veți putea crea/șterge partiții, alege unde să instalați Antergos și deasemenea sa alegeți puncte de montare adiționale."
 
 #: src/installation_automatic.py:73
-msgid "Cinnarch automatic installation mode"
-msgstr ""
+msgid "Antergos automatic installation mode"
+msgstr "Modul de instalare automat Antergos"
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
-msgstr ""
+msgstr "Selectați discul:"
 
 #: src/installation_automatic.py:81
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
-"install Cinnarch and click the button below to start the process."
-msgstr ""
+"install Antergos and click the button below to start the process."
+msgstr "Acest mod de instalare va suprascrie totul pe dispozitivul vostru. Dacă sunteți siguri ca asta vreți, va rugăm sa alegeți unde sa instalați Antergos și dați clic pe butonu;l de dedesubt pentru a începe procesul."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
 msgstr ""
 
 #: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Cinnarch"
+msgid "You must inform about these two mount points to install Antergos"
 msgstr ""
 
 #: src/installation_easy.py:94
-msgid "Cinnarch easy installation mode"
-msgstr ""
+msgid "Antergos easy installation mode"
+msgstr "Modul de instalare ușor Antergos"
 
 #: src/installation_easy.py:118
 msgid "You can't select the same device for both mount points!"
-msgstr ""
+msgstr "Nu puteți selecta același dispozitiv pentru abmele puncte de montare!"
 
 #: src/installation_easy.py:159
 msgid "In easy install, can't create list of partitions"
-msgstr ""
+msgstr "În instalarea ușoară nu puteti crea listă de partiții"
 
 #: src/installation_thread.py:75
 msgid "Installing using the '%s' method"
-msgstr ""
+msgstr "Instalare folosind metoda '%s'"
 
 #: src/installation_thread.py:124
 msgid "Can't execute the auto partition script"
-msgstr ""
+msgstr "Nu poate fi executat scriptul de autopartiționare"
 
 #: src/installation_thread.py:162
 msgid "Couldn't mount root and boot partitions"
-msgstr ""
+msgstr "Nu pot fi montate partițiile root și boot"
 
 #: src/installation_thread.py:170
 msgid "Can't create necessary directories on destination system"
@@ -347,11 +348,11 @@ msgstr ""
 
 #: src/installation_thread.py:584 src/installation_thread.py:606
 msgid "ERROR installing GRUB(2) BIOS."
-msgstr ""
+msgstr "EROARE la instalarea GRUB(2) BIOS."
 
 #: src/installation_thread.py:597
 msgid "GRUB(2) BIOS has been successfully installed."
-msgstr ""
+msgstr "GRUB(2) BIOS a fost instalat cu succes."
 
 #: src/installation_thread.py:617
 msgid "Error creating password hash for user %s"
@@ -359,11 +360,11 @@ msgstr ""
 
 #: src/installation_thread.py:623
 msgid "Error changing password for user %s"
-msgstr ""
+msgstr "Eroare la schimbarea parolei pentru utilizatorul %s"
 
 #: src/installation_thread.py:677
 msgid "Configuring your new system"
-msgstr ""
+msgstr "Configurarea noului tau sistem"
 
 #: src/installation_thread.py:756
 msgid "Generating locales"
@@ -371,27 +372,27 @@ msgstr ""
 
 #: src/installation_thread.py:776
 msgid "Running mkinitcpio"
-msgstr ""
+msgstr "Rulare mkinitcpio"
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
-msgstr ""
+msgstr "Selectați-va schema tastaturii"
 
 #: src/keymap.py:78
 msgid "Layouts"
-msgstr ""
+msgstr "Scheme"
 
 #: src/keymap.py:84
 msgid "Variants"
-msgstr ""
+msgstr "Variante"
 
 #: src/keymap.py:106
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "schema_tastaturii este %s"
 
 #: src/language.py:81
 msgid "Please choose your language:"
-msgstr ""
+msgstr "Va rugăm să vă alegeți limba:"
 
 #: src/language.py:86
 msgid ""
@@ -403,24 +404,24 @@ msgid ""
 "merchantability, fitness for a particular purpose, or\n"
 "non-infringement.\n"
 "\n"
-"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
+"If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
 #: src/language.py:95 src/welcome.py:100
-msgid "Welcome to Cinnarch!"
-msgstr ""
+msgid "Welcome to Antergos!"
+msgstr "Bun venit in Antergos!"
 
 #: src/language.py:113
 msgid "Languages"
-msgstr ""
+msgstr "Limbi"
 
 #: src/language.py:133
 msgid "Can't find translation file for the %s language"
-msgstr ""
+msgstr "Nu poate fi găsit fișierul de traducere pentru limba %s"
 
 #: src/location.py:73
 msgid "Select your location"
-msgstr ""
+msgstr "Selectați-va locația"
 
 #: src/location.py:77
 msgid ""
@@ -431,7 +432,7 @@ msgstr ""
 
 #: src/location.py:82
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "Țară, teritoriu sau suprafață:"
 
 #: src/location.py:201
 msgid "locale changed to : %s"
@@ -443,11 +444,11 @@ msgstr ""
 
 #: src/pacman/pac.py:165
 msgid "Checking dependencies..."
-msgstr ""
+msgstr "Verificare dependențe..."
 
 #: src/pacman/pac.py:168
 msgid "Checking file conflicts..."
-msgstr ""
+msgstr "Verificare conflicte intre fișiere..."
 
 #: src/pacman/pac.py:171
 msgid "Resolving dependencies..."
@@ -459,7 +460,7 @@ msgstr ""
 
 #: src/pacman/pac.py:181
 msgid "Removing..."
-msgstr ""
+msgstr "Eliminare..."
 
 #: src/pacman/pac.py:184
 msgid "Upgrading..."
@@ -467,7 +468,7 @@ msgstr ""
 
 #: src/pacman/pac.py:187
 msgid "Checking integrity..."
-msgstr ""
+msgstr "Verificare integritate..."
 
 #: src/pacman/pac.py:191
 msgid "Loading packages files..."
@@ -475,27 +476,27 @@ msgstr ""
 
 #: src/pacman/pac.py:195
 msgid "Configuring..."
-msgstr ""
+msgstr "Configurare..."
 
 #: src/pacman/pac.py:197
 msgid "Configuring a package"
-msgstr ""
+msgstr "Configurarea unui pachet"
 
 #: src/pacman/pac.py:199
 msgid "Downloading a file"
-msgstr ""
+msgstr "Descărcarea unui fișier"
 
 #: src/pacman/pac.py:223
 msgid "ERROR: %s"
-msgstr ""
+msgstr "EROARE: %s"
 
 #: src/pacman/pac.py:229
 msgid "WARNING: %s"
-msgstr ""
+msgstr "AVERTISMENT: %s"
 
 #: src/pacman/pac.py:233
 msgid "DEBUG: %s"
-msgstr ""
+msgstr "DEPANARE: %s"
 
 #: src/pacman/pac.py:236
 msgid "FUNC: %s"
@@ -503,11 +504,11 @@ msgstr ""
 
 #: src/pacman/pac.py:268
 msgid "Downloading %s"
-msgstr ""
+msgstr "Descărcare %s"
 
 #: src/pacman/pac.py:276
 msgid "Refreshing %s..."
-msgstr ""
+msgstr "Reîmprospătare %s"
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
@@ -518,50 +519,50 @@ msgid "Couldn't execute auto mirroring selection"
 msgstr ""
 
 #: src/show_message.py:54
-msgid "Cinnarch Installer - Error"
-msgstr ""
+msgid "Antergos Installer - Error"
+msgstr "Programul de instalare Antergos - Eroare"
 
 #: src/show_message.py:65
-msgid "Cinnarch Installer - Warning"
-msgstr ""
+msgid "Antergos Installer - Warning"
+msgstr "Programul de instalare Antergos - Avertisment"
 
 #: src/show_message.py:76
-msgid "Cinnarch Installer - Information"
-msgstr ""
+msgid "Antergos Installer - Information"
+msgstr "Programul de instalare Antergos - Informare"
 
 #: src/show_message.py:86
-msgid "Cinnarch Installer - Question"
-msgstr ""
+msgid "Antergos Installer - Question"
+msgstr "Programul de instalare Antergos - Intrebare"
 
 #: src/slides.py:80 src/slides.py:94
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "Instalare terminată!\nVreți să vă reporniți sistemul acum?"
 
 #: src/slides.py:88
-msgid "Learn more about Cinnarch"
-msgstr ""
+msgid "Learn more about Antergos"
+msgstr "Invăța-ți mai multe despre Antergos"
 
 #: src/slides.py:92
 msgid "Please wait..."
-msgstr ""
+msgstr "Vă rugăm așteptați..."
 
 #: src/timezone.py:113
 msgid "Where are you?"
-msgstr ""
+msgstr "Unde sunteți?"
 
 #: src/timezone.py:118
 msgid "Zone:"
-msgstr ""
+msgstr "Zonă:"
 
 #: src/timezone.py:122
 msgid "Region:"
-msgstr ""
+msgstr "Regiune:"
 
 #: src/timezone.py:133
 msgid "location changed to : %s"
-msgstr ""
+msgstr "locație schimbată in : %s"
 
 #: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
@@ -589,23 +590,23 @@ msgstr ""
 
 #: src/user_info.py:90
 msgid "Your name:"
-msgstr ""
+msgstr "Numele vostru:"
 
 #: src/user_info.py:94
 msgid "Your computer's name:"
-msgstr ""
+msgstr "Numele computerului vostru:"
 
 #: src/user_info.py:98
 msgid "Pick a username:"
-msgstr ""
+msgstr "Alegeți un nume de utilizator:"
 
 #: src/user_info.py:102
 msgid "Choose a password:"
-msgstr ""
+msgstr "Alegeți o parola:"
 
 #: src/user_info.py:106
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Confirmați-vă parola:"
 
 #: src/user_info.py:110
 msgid "The name it uses when it talks to other computers."
@@ -613,35 +614,35 @@ msgstr ""
 
 #: src/user_info.py:114 src/user_info.py:191
 msgid "You must enter a name"
-msgstr ""
+msgstr "Trebuie să introduceți un nume"
 
 #: src/user_info.py:118
 msgid "You must enter a username"
-msgstr ""
+msgstr "Trebuie să introduceți un nume de utilizator"
 
 #: src/user_info.py:122
 msgid "You must enter a password"
-msgstr ""
+msgstr "Trebuie să introduceți o parolă"
 
 #: src/user_info.py:126
 msgid "Log in automatically"
-msgstr ""
+msgstr "Logare automată"
 
 #: src/user_info.py:127
 msgid "Require my password to log in"
-msgstr ""
+msgstr "Cere parola pentru logare"
 
 #: src/user_info.py:128
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "Criptează dosarul acasa"
 
 #: src/user_info.py:130
 msgid "Who are you?"
-msgstr ""
+msgstr "Cine sunteți?"
 
 #: src/user_info.py:207
 msgid "Invalid characters entered"
-msgstr ""
+msgstr "Caractere invalide introduse"
 
 #: src/user_info.py:211
 msgid "Contains consecutive, initial and/or final dots"
@@ -649,34 +650,34 @@ msgstr ""
 
 #: src/validation.py:144
 msgid "password is too short"
-msgstr ""
+msgstr "parola este prea scurtă"
 
 #: src/validation.py:147
 msgid "weak password"
-msgstr ""
+msgstr "parolă slabă"
 
 #: src/validation.py:150
 msgid "fair password"
-msgstr ""
+msgstr "parolă convenabilă"
 
 #: src/validation.py:153
 msgid "good password"
-msgstr ""
+msgstr "parolă bună"
 
 #: src/validation.py:156
 msgid "strong password"
-msgstr ""
+msgstr "parolă puternică"
 
 #: src/validation.py:171
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Parolele nu se potrivesc"
 
 #: src/welcome.py:95
 msgid ""
-"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
+"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
 msgstr ""
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "Nu poate fi incarcat programul de instalare CLI"

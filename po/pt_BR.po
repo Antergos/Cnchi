@@ -4,11 +4,11 @@
 # Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: Cinnarch\n"
+"Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-04-06 17:20+CEST\n"
 "PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/cinnarch/language/pt_BR/)\n"
+"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/antergos/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 
 #: cnchi.py:186
-msgid "Cinnarch Installer"
+msgid "Antergos Installer"
 msgstr ""
 
 #: src/check.py:70
@@ -265,7 +265,7 @@ msgid "Your preferred installation type"
 msgstr ""
 
 #: src/installation_ask.py:86
-msgid "Erase disk and install Cinnarch (automatic)"
+msgid "Erase disk and install Antergos (automatic)"
 msgstr ""
 
 #: src/installation_ask.py:89
@@ -275,27 +275,27 @@ msgid ""
 msgstr ""
 
 #: src/installation_ask.py:95
-msgid "Choose where to install Cinnarch (easy)"
+msgid "Choose where to install Antergos (easy)"
 msgstr ""
 
 #: src/installation_ask.py:98
 msgid ""
-"You will have to choose where to install Cinnarch. You will be only asked "
+"You will have to choose where to install Antergos. You will be only asked "
 "for the mount points of your root and swap devices."
 msgstr ""
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
+msgid "Manage your partitions and choose where to install Antergos (advanced)"
 msgstr ""
 
 #: src/installation_ask.py:107
 msgid ""
 "You will be able to create/delete partitions, choose where to install "
-"Cinnarch and also choose additional mount points."
+"Antergos and also choose additional mount points."
 msgstr ""
 
 #: src/installation_automatic.py:73
-msgid "Cinnarch automatic installation mode"
+msgid "Antergos automatic installation mode"
 msgstr ""
 
 #: src/installation_automatic.py:77
@@ -306,7 +306,7 @@ msgstr ""
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
-"install Cinnarch and click the button below to start the process."
+"install Antergos and click the button below to start the process."
 msgstr ""
 
 #: src/installation_automatic.py:130
@@ -314,11 +314,11 @@ msgid "Automatic install using %s device"
 msgstr ""
 
 #: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Cinnarch"
+msgid "You must inform about these two mount points to install Antergos"
 msgstr ""
 
 #: src/installation_easy.py:94
-msgid "Cinnarch easy installation mode"
+msgid "Antergos easy installation mode"
 msgstr ""
 
 #: src/installation_easy.py:118
@@ -403,11 +403,11 @@ msgid ""
 "merchantability, fitness for a particular purpose, or\n"
 "non-infringement.\n"
 "\n"
-"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
+"If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
 #: src/language.py:95 src/welcome.py:100
-msgid "Welcome to Cinnarch!"
+msgid "Welcome to Antergos!"
 msgstr ""
 
 #: src/language.py:113
@@ -518,19 +518,19 @@ msgid "Couldn't execute auto mirroring selection"
 msgstr ""
 
 #: src/show_message.py:54
-msgid "Cinnarch Installer - Error"
+msgid "Antergos Installer - Error"
 msgstr ""
 
 #: src/show_message.py:65
-msgid "Cinnarch Installer - Warning"
+msgid "Antergos Installer - Warning"
 msgstr ""
 
 #: src/show_message.py:76
-msgid "Cinnarch Installer - Information"
+msgid "Antergos Installer - Information"
 msgstr ""
 
 #: src/show_message.py:86
-msgid "Cinnarch Installer - Question"
+msgid "Antergos Installer - Question"
 msgstr ""
 
 #: src/slides.py:80 src/slides.py:94
@@ -540,7 +540,7 @@ msgid ""
 msgstr ""
 
 #: src/slides.py:88
-msgid "Learn more about Cinnarch"
+msgid "Learn more about Antergos"
 msgstr ""
 
 #: src/slides.py:92
@@ -673,7 +673,7 @@ msgstr ""
 
 #: src/welcome.py:95
 msgid ""
-"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
+"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
 "If you want to install the system to your PC, use one of the two installer options."
 msgstr ""
 
