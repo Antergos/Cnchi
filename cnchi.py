@@ -328,9 +328,9 @@ if __name__ == '__main__':
         if opt == '-u':
             upd = updater.Updater()
             if upd.update():
-                print(_("Program updated! Must be restarted"))
-                sys.exit(0)
-
+                print(_("Program updated! Restarting..."))
+                os.execl(sys.executable, *([sys.executable] + sys.argv))
+                
     GObject.threads_init()
     Gdk.threads_init()
 
