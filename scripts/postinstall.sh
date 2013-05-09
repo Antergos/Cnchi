@@ -111,8 +111,8 @@ xfce_settings(){
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Set settings
-	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/xfce4
-	cp -R ${DESTDIR}/etc/xdg/xfce4/panel ${DESTDIR}/etc/xdg/xfce4/xfconf ${DESTDIR}/etc/xdg/xfce4/helpers.rc ${DESTDIR}/home/${USER_NAME}/.config/xfce4
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/xfce4/xfconf/xfce-perchannel-xml
+	cp -R ${DESTDIR}/etc/xdg/xfce4/panel ${DESTDIR}/etc/xdg/xfce4/helpers.rc ${DESTDIR}/home/${USER_NAME}/.config/xfce4
 	sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${DESTDIR}/home/${USER_NAME}/.config/xfce4/helpers.rc
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
