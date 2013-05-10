@@ -65,6 +65,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     )
 
     log.debug(metalink)
+    
+    with open("/tmp/packages.metalink", "w") as f:
+        f.write(metalink)
 
     if not_found:
         log.debug("Packages not found:")
@@ -76,39 +79,43 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         for md in sorted(missing_deps):
             log.debug(md)
     
-    aria2_args = ["allow-overwrite=true",
+    aria2_args = [
+        "--log=/tmp/download.log",
+        "--max-concurrent-downloads=50",
+        "--metalink-file=/tmp/packages.metalink",
+        "--check-integrity",
+        "--continue=false",
+        
+        "allow-overwrite=true",
         "always-resume=false",
         "auto-file-renaming=false",
-        "check-integrity=true",
         "conditional-get=true",
-        "continue=false",
         "file-allocation=none",
         "log-level=warn",
-        "max-concurrent-downloads=50",
         "max-connection-per-server=5",
         "min-split-size=5M",
         "split=10",
         "show-console-readout=false",
+        "--enable-rpc",
         "--dir=%s" % cache_dir]
     
-    aria2_cmd = ['/usr/bin/aria2c', '--metalink-file=-', ] + aria2_args
+    aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
     
     log.debug(aria2_cmd)
     
-    
+    aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
+    aria2c_p.communicate(input=str(metalink).encode())  
+    pid = 
+    aria2c_pid = Popen(aria2_cmd).pid
     
     s = xmlrpc.client.ServerProxy(aria2_url)
     r = s.aria2.getVersion()
     pprint(r)
-    
-    
-    '''
-    aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
-    aria2c_p.communicate(input=str(metalink).encode())
+
     e = aria2c_p.wait()
     if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
         log.debug('error: aria2c exited with %d' % e)
-    '''
+
 
 if __name__ == '__main__':
     download_packages(["vim"])
