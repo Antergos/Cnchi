@@ -37,8 +37,6 @@ import xmlrpc.client
 
 from pprint import pprint
 
-aria2_url = 'http://localhost:6800/rpc'
-
 ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
 def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):
@@ -68,7 +66,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     log.debug(metalink)
     
     with open("/tmp/packages.metalink", "w") as f:
-        f.write(metalink)
+        f.write(str(metalink))
 
     if not_found:
         log.debug("Packages not found:")
@@ -80,6 +78,10 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         for md in sorted(missing_deps):
             log.debug(md)
     
+    rpc_user = "antergos"
+    rpc_passwd = "antergos"
+    rpc_port = "6800"
+    
     aria2_args = [
         "--log=/tmp/download.log",
         "--max-concurrent-downloads=50",
@@ -89,9 +91,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         "--max-connection-per-server=5",
         "--min-split-size=5M",
         "--enable-rpc",
-        "--rpc-listen-port=6800",
-        "--rpc-user=antergos",
-        "--rpc-passwd=antergos",
+        "--rpc-listen-port=%s" % rpc_port,
+        "--rpc-user=%s" % rpc_user,
+        "--rpc-passwd=%s" % rpc_passwd,
         "--allow-overwrite=true",
         "--always-resume=false",
         "--daemon=true",
@@ -107,19 +109,20 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
     
     log.debug(aria2_cmd)
+
+    aria2c_p = subprocess.Popen(aria2_cmd)
+
+    e = aria2c_p.wait()
+
+    if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+        log.debug('error: aria2c exited with %d' % e)
     
-    #aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
-    #aria2c_p.communicate(input=str(metalink).encode())  
-    #pid = 
-    aria2c_pid = Popen(aria2_cmd).pid
+    aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
     
     s = xmlrpc.client.ServerProxy(aria2_url)
-    r = s.aria2.getVersion()
-    pprint(r)
+    #r = s.aria2.getVersion()
+    #print(r['version'])
 
-    #e = aria2c_p.wait()
-    #if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
-    #    log.debug('error: aria2c exited with %d' % e)
 
 
 if __name__ == '__main__':
