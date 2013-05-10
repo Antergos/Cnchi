@@ -32,10 +32,15 @@ import pm2ml
 import sys
 import subprocess
 import log
+import xmlrpc.client
+
+from pprint import pprint
+
+aria2_url = 'http://localhost:6800/rpc'
 
 ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
-def download_packages(package_names, conf_file=None, cache_dir=None):
+def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):
     if conf_file == None:
         conf_file = "/etc/pacman.conf"
         
@@ -90,11 +95,20 @@ def download_packages(package_names, conf_file=None, cache_dir=None):
     
     log.debug(aria2_cmd)
     
+    
+    
+    s = xmlrpc.client.ServerProxy(aria2_url)
+    r = s.aria2.getVersion()
+    pprint(r)
+    
+    
+    '''
     aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
     aria2c_p.communicate(input=str(metalink).encode())
     e = aria2c_p.wait()
     if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
         log.debug('error: aria2c exited with %d' % e)
+    '''
 
 if __name__ == '__main__':
     download_packages(["vim"])
