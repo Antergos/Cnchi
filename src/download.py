@@ -30,6 +30,7 @@
 
 import pm2ml
 import sys
+import os
 import subprocess
 import log
 import xmlrpc.client
@@ -85,36 +86,40 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         "--metalink-file=/tmp/packages.metalink",
         "--check-integrity",
         "--continue=false",
-        
-        "allow-overwrite=true",
-        "always-resume=false",
-        "auto-file-renaming=false",
-        "conditional-get=true",
-        "file-allocation=none",
-        "log-level=warn",
-        "max-connection-per-server=5",
-        "min-split-size=5M",
-        "split=10",
-        "show-console-readout=false",
+        "--max-connection-per-server=5",
+        "--min-split-size=5M",
         "--enable-rpc",
+        "--rpc-listen-port=6800",
+        "--rpc-user=antergos",
+        "--rpc-passwd=antergos",
+        "--allow-overwrite=true",
+        "--always-resume=false",
+        "--daemon=true",
+        "--log-level=warn",
+        "--show-console-readout=false",
+        "--no-conf",
+        "--quiet",
+        "--stop-with-process=%d" % os.getpid(),
+        "--auto-file-renaming=false",
+        "--conditional-get=true",
         "--dir=%s" % cache_dir]
     
     aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
     
     log.debug(aria2_cmd)
     
-    aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
-    aria2c_p.communicate(input=str(metalink).encode())  
-    pid = 
+    #aria2c_p = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)
+    #aria2c_p.communicate(input=str(metalink).encode())  
+    #pid = 
     aria2c_pid = Popen(aria2_cmd).pid
     
     s = xmlrpc.client.ServerProxy(aria2_url)
     r = s.aria2.getVersion()
     pprint(r)
 
-    e = aria2c_p.wait()
-    if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
-        log.debug('error: aria2c exited with %d' % e)
+    #e = aria2c_p.wait()
+    #if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
+    #    log.debug('error: aria2c exited with %d' % e)
 
 
 if __name__ == '__main__':
