@@ -792,7 +792,7 @@ class InstallationThread(threading.Thread):
                 with open(kdm_conf_path, "wt") as kdm_conf:
                     for line in text:
                         if '#AutoLoginEnable=true' in line:
-                            line = '#AutoLoginEnable=true'
+                            line = '#AutoLoginEnable=true \n'
                             line = line[1:]
                         if 'AutoLoginUser=' in line:
                             line = 'AutoLoginUser=%s \n' % username
