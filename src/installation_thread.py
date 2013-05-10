@@ -777,10 +777,10 @@ class InstallationThread(threading.Thread):
             if self.desktop_manager == 'gdm':
                 gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
                 with open(gdm_conf_path, "wt") as gdm_conf:
-                    gdm_conf.write('# Enable automatic login for user \n')
-                    gdm_conf.write('[daemon] \n')
-                    gdm_conf.write('AutomaticLogin=%s \n' % username)
-                    gdm_conf.write('AutomaticLoginEnable=True \n')
+                    gdm_conf.write('# Enable automatic login for user\n')
+                    gdm_conf.write('[daemon]\n')
+                    gdm_conf.write('AutomaticLogin=%s\n' % username)
+                    gdm_conf.write('AutomaticLoginEnable=True\n')
 
             # Systems with KDM as Desktop Manager
             elif self.desktop_manager == 'kdm':
