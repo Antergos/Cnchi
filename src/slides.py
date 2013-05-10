@@ -85,7 +85,7 @@ class Slides(Gtk.Box):
         super().add(builder.get_object("slides"))
         
     def translate_ui(self):
-        txt = _("Learn more about Antergos")
+        txt = _("Installing Antergos...")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 

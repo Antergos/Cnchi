@@ -91,7 +91,7 @@ class InstallationEasy(Gtk.Box):
         txt = '<b>%s</b>' % txt
         self.label['device'].set_markup(txt)
 
-        txt = _("Antergos easy installation mode")
+        txt = _("Easy installation mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 

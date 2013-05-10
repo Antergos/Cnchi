@@ -285,7 +285,7 @@ class InstallationAdvanced(Gtk.Box):
         ssd_toggle = Gtk.CellRendererToggle()
         ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("Solid State Drive (SSD)"), ssd_toggle, active=12, visible=13, sensitive=14)
+        col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle, active=12, visible=13, sensitive=14)
         self.partition_list.append_column(col)   
 
     ## Helper function to get a disk/partition size in human format

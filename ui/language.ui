@@ -5,7 +5,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="left_padding">20</property>
-    <property name="right_padding">20</property>
+    <property name="right_padding">25</property>
     <child>
       <object class="GtkBox" id="language_box">
         <property name="visible">True</property>
@@ -66,20 +66,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">50</property>
-            <property name="label" translatable="yes">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Integer elementum, leo vitae porta elementum, eros diam
-pretium magna, in tincidunt magna velit at tellus. Praesent
-a tortor nec risus blandit sodales. Mauris tristique semper
-nunc, eget euismod sem vehicula ut. Nam pharetra justo et
-lorem feugiat quis vestibulum arcu malesuada. Vivamus
-tristique augue in nisi iaculis nec sollicitudin eros pharetra.
-Duis id arcu magna, nec convallis mi. In tempor volutpat dictum.
-Vestibulum eros lacus, pharetra vel ultricies quis, sagittis sed orci.
-
-The installation process may resize or erase partitions on your hard disk.
-Be sure to take a full backup of any valuable data before running
-this program.</property>
             <property name="use_markup">True</property>
+            <property name="justify">fill</property>
+            <property name="wrap">True</property>
           </object>
           <packing>
             <property name="expand">False</property>

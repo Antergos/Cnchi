@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-05-09 18:55+CEST\n"
+"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,7 +146,7 @@ msgid "Flags"
 msgstr ""
 
 #: src/installation_advanced.py:288
-msgid "Solid State Drive (SSD)"
+msgid "SSD"
 msgstr ""
 
 #: src/installation_advanced.py:409
@@ -298,7 +298,7 @@ msgid "FORMATTED"
 msgstr ""
 
 #: src/installation_ask.py:76
-msgid "Your preferred installation type"
+msgid "Installation type"
 msgstr ""
 
 #: src/installation_ask.py:86
@@ -306,7 +306,7 @@ msgid "Erase disk and install Antergos (automatic)"
 msgstr ""
 
 #: src/installation_ask.py:89
-msgid "Warning: This will delete all programs, documents, photos, music and any other files on your disk"
+msgid "Warning: This will delete all data on your disk"
 msgstr ""
 
 #: src/installation_ask.py:95
@@ -314,19 +314,19 @@ msgid "Choose where to install Antergos (easy)"
 msgstr ""
 
 #: src/installation_ask.py:98
-msgid "You will have to choose where to install Antergos. You will be only asked for the mount points of your root and swap devices."
+msgid "Set your root and swap mount points."
 msgstr ""
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Antergos (advanced)"
+msgid "Manage your partitions where to install Antergos (advanced)"
 msgstr ""
 
 #: src/installation_ask.py:107
-msgid "You will be able to create/delete partitions, choose where to install Antergos and also choose additional mount points."
+msgid "Create/delete partitions, and also choose additional mount points."
 msgstr ""
 
 #: src/installation_automatic.py:73
-msgid "Antergos automatic installation mode"
+msgid "Automatic installation mode"
 msgstr ""
 
 #: src/installation_automatic.py:77
@@ -346,7 +346,7 @@ msgid "You must inform about these two mount points to install Antergos"
 msgstr ""
 
 #: src/installation_easy.py:94
-msgid "Antergos easy installation mode"
+msgid "Easy installation mode"
 msgstr ""
 
 #: src/installation_easy.py:118
@@ -431,16 +431,12 @@ msgstr ""
 
 #: src/language.py:87
 msgid ""
-"The Software is provided \"as is\" without warranty of any\n"
-"kind, either express or implied, including without limitation\n"
-"any implied warranties of condition, uninterrupted use,\n"
-"merchantability, fitness for a particular purpose, or\n"
-"non-infringement.\n"
+"The Software is provided \"as is\" without warranty of any kind, either express or implied, including without limitation any implied warranties of condition, uninterrupted use, merchantability, fitness for a particular purpose, or non-infringement.\n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
-#: src/language.py:96 src/welcome.py:103
+#: src/language.py:96 src/welcome.py:112
 msgid "Welcome to Antergos!"
 msgstr ""
 
@@ -574,7 +570,7 @@ msgid ""
 msgstr ""
 
 #: src/slides.py:88
-msgid "Learn more about Antergos"
+msgid "Installing Antergos..."
 msgstr ""
 
 #: src/slides.py:92
@@ -711,11 +707,23 @@ msgstr ""
 
 #: src/welcome.py:98
 msgid ""
-"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
-"If you want to install the system to your PC, use one of the two installer options."
+"Try Antergos without modifying your hard drive.\n"
+"Or install it to your PC with one of the two installer options."
 msgstr ""
 
-#: src/welcome.py:124
+#: src/welcome.py:103
+msgid "Try it"
+msgstr ""
+
+#: src/welcome.py:106
+msgid "CLI Installer"
+msgstr ""
+
+#: src/welcome.py:109
+msgid "Graphical Installer"
+msgstr ""
+
+#: src/welcome.py:133
 msgid "Can't load the CLI installer"
 msgstr ""
 
