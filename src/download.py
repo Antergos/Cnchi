@@ -31,13 +31,12 @@
 import pm2ml
 import sys
 import os
+import time
 import subprocess
 import log
 import xmlrpc.client
 
 from pprint import pprint
-
-ARIA2_DOWNLOAD_ERROR_EXIT_CODES = (0, 2, 3, 4, 5)
 
 def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):
     if conf_file == None:
@@ -64,10 +63,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     )
 
     log.debug(metalink)
-    
-    with open("/tmp/packages.metalink", "w") as f:
-        f.write(str(metalink))
-
+        
     if not_found:
         log.debug("Packages not found:")
         for nf in sorted(not_found):
@@ -83,9 +79,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     rpc_port = "6800"
     
     aria2_args = [
-        "--log=/tmp/download.log",
+        "--log=/tmp/download-aria2.log",
         "--max-concurrent-downloads=50",
-        "--metalink-file=/tmp/packages.metalink",
+        #"--metalink-file=/tmp/packages.metalink",
         "--check-integrity",
         "--continue=false",
         "--max-connection-per-server=5",
@@ -94,13 +90,17 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         "--rpc-listen-port=%s" % rpc_port,
         "--rpc-user=%s" % rpc_user,
         "--rpc-passwd=%s" % rpc_passwd,
+        "--rpc-save-upload-metadata=false",
         "--allow-overwrite=true",
         "--always-resume=false",
-        "--daemon=true",
-        "--log-level=warn",
+        "--auto-save-interval=0",
+        "--daemon=false",
+        "--log-level=notice",
         "--show-console-readout=false",
+        "--summary-interval=0",
         "--no-conf",
         "--quiet",
+        "--remove-control-file",
         "--stop-with-process=%d" % os.getpid(),
         "--auto-file-renaming=false",
         "--conditional-get=true",
@@ -111,19 +111,41 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     log.debug(aria2_cmd)
 
     aria2c_p = subprocess.Popen(aria2_cmd)
-
-    e = aria2c_p.wait()
-
-    if e not in ARIA2_DOWNLOAD_ERROR_EXIT_CODES:
-        log.debug('error: aria2c exited with %d' % e)
+    
+    time.sleep(1)
     
     aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
-    
-    s = xmlrpc.client.ServerProxy(aria2_url)
-    #r = s.aria2.getVersion()
-    #print(r['version'])
 
+    try:
+        s = xmlrpc.client.ServerProxy(aria2_url)
+        gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+    except ConnectionRefusedError as e:
+        print("Can't communicate with Aria2. Won't be able to speed up the download")
+        return
+
+    total = 1
+    completed = 0
+    
+    while completed < total:
+        total = 0
+        completed = 0
+        
+        for gid in gids:
+            r = s.aria2.tellStatus(gid, ['gid', 'totalLength', 'completedLength'])
+            total += int(r['totalLength'])
+            completed += int(r['completedLength'])
+
+        action = _('Downloading packages with Aria2...')
+        percent = int(completed * 100.0 / total)
+        
+        log.debug(action,percent)
+        
+        if callback_queue != None:
+            callback_queue.put(('action', action))
+            callback_queue.put(('percent', percent))
+        
+        time.sleep(0.1)
 
 
 if __name__ == '__main__':
-    download_packages(["vim"])
+    download_packages(["vim", "gedit", "zip"])
