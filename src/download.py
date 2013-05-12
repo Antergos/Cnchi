@@ -62,7 +62,10 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         set_preference=pargs.preference
     )
 
-    log.debug(metalink)
+    #log.debug(metalink)
+    
+    with open("/tmp/packages.metalink", "wt") as f:
+        f.write(str(metalink))
         
     if not_found:
         log.debug("Packages not found:")
@@ -87,9 +90,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         "--max-connection-per-server=5",
         "--min-split-size=5M",
         "--enable-rpc",
-        "--rpc-listen-port=%s" % rpc_port,
         "--rpc-user=%s" % rpc_user,
         "--rpc-passwd=%s" % rpc_passwd,
+        "--rpc-listen-port=%s" % rpc_port,
         "--rpc-save-upload-metadata=false",
         "--allow-overwrite=true",
         "--always-resume=false",
@@ -118,9 +121,10 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
-        gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+        gids = s.aria2.addMetalink(xmlrpc.client.Binary(open('/tmp/packages.metalink').read().encode()))
     except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-        print("Can't communicate with Aria2. Won't be able to speed up the download")
+        print("Can't communicate with Aria2. Won't be able to speed up the download:")
+        print(e)
         return
 
     total = 1
