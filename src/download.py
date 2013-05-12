@@ -38,23 +38,17 @@ import xmlrpc.client
 
 from pprint import pprint
 
-def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):
-    if conf_file == None:
-        conf_file = "/etc/pacman.conf"
-        
-    if cache_dir == None:
-        cache_dir = "/var/cache/pacman/pkg"
-    
+def get_metalink(package_name, conf_file, cache_dir):
     args = str("-c %s" % conf_file).split() 
-    args += package_names
+    args += [package_name]
     args += ["--noconfirm"]
     args += "-r -p http -l 50".split()
     
     try:
         pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
     except:
-        log.debug(_("Unable to create download queue.\nDownload process won't be accelerated with aria2."))
-        return
+        log.debug(_("Unable to create download queue for package %s") % package_name)
+        return None
     
     metalink = pm2ml.download_queue_to_metalink(
         download_queue,
@@ -62,20 +56,37 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         set_preference=pargs.preference
     )
 
-    #log.debug(metalink)
-    
-    with open("/tmp/packages.metalink", "wt") as f:
-        f.write(str(metalink))
-        
     if not_found:
-        log.debug("Packages not found:")
+        log.debug(_("Warning! Can't find these packages:"))
         for nf in sorted(not_found):
             log.debug(nf)
   
     if missing_deps:
-        log.debug("Unresolved dependencies:")
+        log.debug(_("Warning! Can't resolve these dependencies:"))
         for md in sorted(missing_deps):
             log.debug(md)
+    
+    return metalink
+
+def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):   
+    if conf_file == None:
+        conf_file = "/etc/pacman.conf"
+        
+    if cache_dir == None:
+        cache_dir = "/var/cache/pacman/pkg"
+
+    metalinks = []
+    for package_name in package_names:
+        metalink = get_metalink(package_name, conf_file, cache_dir)
+        if metalink != None:
+            metalinks.append(metalink)
+
+    if len(metalinks) == 0:
+        log.debug(_("Unable to create download queue.\nDownload process won't be accelerated with aria2."))
+        return
+
+    #with open("/tmp/packages.metalink", "wt") as f:
+    #    f.write(str(metalink))
     
     rpc_user = "antergos"
     rpc_passwd = "antergos"
@@ -121,11 +132,20 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
-        gids = s.aria2.addMetalink(xmlrpc.client.Binary(open('/tmp/packages.metalink').read().encode()))
     except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-        print("Can't communicate with Aria2. Won't be able to speed up the download:")
+        print("Can't connect to Aria2. Won't be able to speed up the download:")
         print(e)
         return
+
+    all_gids = []
+    for metalink in metalinks:
+        try:
+            gid = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+            all_gids.append(gid[0])
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+            print("Can't communicate with Aria2. Won't be able to speed up the download:")
+            print(e)
+            return
 
     total = 1
     completed = 0
@@ -134,7 +154,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         total = 0
         completed = 0
         
-        for gid in gids:
+        for gid in all_gids:
             r = s.aria2.tellStatus(gid, ['gid', 'totalLength', 'completedLength'])
             total += int(r['totalLength'])
             completed += int(r['completedLength'])
