@@ -119,7 +119,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
         gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
-    except ConnectionRefusedError as e:
+    except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
         print("Can't communicate with Aria2. Won't be able to speed up the download")
         return
 
@@ -138,8 +138,6 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         action = _('Downloading packages with Aria2...')
         percent = int(completed * 100.0 / total)
         
-        log.debug(action,percent)
-        
         if callback_queue != None:
             callback_queue.put(('action', action))
             callback_queue.put(('percent', percent))
@@ -148,4 +146,6 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
 
 if __name__ == '__main__':
+    import gettext
+    _ = gettext.gettext
     download_packages(["vim", "gedit", "zip"])
