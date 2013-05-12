@@ -155,17 +155,24 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         completed = 0
         
         for gid in all_gids:
-            r = s.aria2.tellStatus(gid, ['gid', 'totalLength', 'completedLength'])
-            total += int(r['totalLength'])
-            completed += int(r['completedLength'])
+            try:
+                r = s.aria2.tellStatus(gid, ['gid', 'totalLength', 'completedLength'])
+                total += int(r['totalLength'])
+                completed += int(r['completedLength'])
+            except:
+                pass
 
         action = _('Downloading packages with Aria2...')
-        percent = int(completed * 100.0 / total)
+        #percent = int(completed * 100.0 / total)
+        percent = float(completed / total)
         
         if callback_queue != None:
             callback_queue.put(('action', action))
-            callback_queue.put(('percent', percent))
-        
+            callback_queue.put(('percent', percent))        
+        else:
+            log.debug(action)
+            log.debug(percent)
+    
         time.sleep(0.1)
 
 
