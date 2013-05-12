@@ -69,7 +69,7 @@ class InstallationAutomatic(Gtk.Box):
         self.process = None
 
     def translate_ui(self):
-        txt = _("Antergos automatic installation mode")
+        txt = _("Automatic installation mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 

@@ -2,38 +2,39 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# kirilvel <kirilvelinov@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-06 15:21+0000\n"
-"Last-Translator: faidoc <alexfilgueira@antergos.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
+"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
+"PO-Revision-Date: 2013-05-10 19:48+0000\n"
+"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: nl\n"
+"Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cnchi.py:92
+#: cnchi.py:91
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr ""
 
-#: cnchi.py:98
+#: cnchi.py:97
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Вие не можете да пускате две копия на този инсталатор.\n\nАко сте сигурнилисте, че инсталацията не е стартиран %s\nи стартирате тази инсталация отново."
 
 #: cnchi.py:186
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Antergos инсталатор"
 
 #: src/check.py:70
 msgid "Check your computer"
@@ -71,197 +72,261 @@ msgstr ""
 msgid "We have enough space in disk."
 msgstr ""
 
-#: src/installation_advanced.py:192 src/installation_advanced.py:424
-#: src/installation_advanced.py:436
+#: src/desktop.py:72
+msgid ""
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
+"put you in control and bring freedom to everybody. GNOME 3 is developed by "
+"the GNOME community, a diverse, international group of contributors."
+msgstr ""
+
+#: src/desktop.py:79
+msgid ""
+"Cinnamon it's a fork of GNOME Shell, initially developed by (and for) Linux "
+"Mint. It attempts to provide a more traditional user environment based on "
+"the desktop metaphor, like GNOME 2"
+msgstr ""
+
+#: src/desktop.py:86
+msgid ""
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
+"It aims to be fast and low on system resources, while still being visually "
+"appealing and user friendly."
+msgstr ""
+
+#: src/desktop.py:93
+msgid ""
+"Extremely fast-performing and energy-saving desktop environment. It comes "
+"with a beautiful interface, multi-language support, standard keyboard short "
+"cuts and additional features like tabbed file browsing."
+msgstr ""
+
+#: src/desktop.py:100
+msgid ""
+"Openbox is a highly configurable, next generation window manager with "
+"extensive standards support.The *box visual style is well known for its "
+"minimalistic appearance."
+msgstr ""
+
+#: src/desktop.py:107
+msgid ""
+"Enlightenment is not just a window manager for Linux/X11 and others, but "
+"also a whole suite of libraries to help you create beautiful user interfaces"
+" with much less work"
+msgstr ""
+
+#: src/desktop.py:113
+msgid ""
+"The KDE Community is an international technology team dedicated to creating "
+"a free and user-friendly computing experience, offering an advanced "
+"graphical desktop and a wide variety of applications."
+msgstr ""
+
+#: src/desktop.py:120
+msgid ""
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
+"Qt technologies. It has been tailored for users who value simplicity, speed,"
+" and an intuitive interface."
+msgstr ""
+
+#: src/desktop.py:130
+msgid "Select your desktop"
+msgstr ""
+
+#: src/desktop.py:143
+msgid "Desktops"
+msgstr ""
+
+#: src/installation_advanced.py:194 src/installation_advanced.py:426
+#: src/installation_advanced.py:438
 msgid "free space"
 msgstr ""
 
-#: src/installation_advanced.py:256 src/installation_easy.py:90
+#: src/installation_advanced.py:258 src/installation_easy.py:90
 msgid "Device"
 msgstr ""
 
-#: src/installation_advanced.py:259
+#: src/installation_advanced.py:261
 msgid "Type"
 msgstr ""
 
-#: src/installation_advanced.py:262 src/installation_easy.py:86
+#: src/installation_advanced.py:264 src/installation_easy.py:86
 msgid "Mount point"
 msgstr ""
 
-#: src/installation_advanced.py:265
+#: src/installation_advanced.py:267
 msgid "Label"
 msgstr ""
 
-#: src/installation_advanced.py:271 src/installation_advanced.py:1221
+#: src/installation_advanced.py:273 src/installation_advanced.py:1223
 msgid "Format"
 msgstr ""
 
-#: src/installation_advanced.py:274
+#: src/installation_advanced.py:276
 msgid "Size"
 msgstr ""
 
-#: src/installation_advanced.py:277
+#: src/installation_advanced.py:279
 msgid "Used"
 msgstr ""
 
-#: src/installation_advanced.py:280
+#: src/installation_advanced.py:282
 msgid "Flags"
 msgstr ""
 
-#: src/installation_advanced.py:286
-msgid "Solid State Drive (SSD)"
+#: src/installation_advanced.py:288
+msgid "SSD"
 msgstr ""
 
-#: src/installation_advanced.py:407
+#: src/installation_advanced.py:409
 msgid "none"
 msgstr ""
 
-#: src/installation_advanced.py:457
+#: src/installation_advanced.py:459
 msgid "extended"
 msgstr ""
 
-#: src/installation_advanced.py:579 src/installation_advanced.py:816
+#: src/installation_advanced.py:581 src/installation_advanced.py:818
 msgid "Cannot use same mount twice..."
 msgstr ""
 
-#: src/installation_advanced.py:835
+#: src/installation_advanced.py:837
 msgid "Creating primary partition"
 msgstr ""
 
-#: src/installation_advanced.py:846
+#: src/installation_advanced.py:848
 msgid "Creating extended partition"
 msgstr ""
 
-#: src/installation_advanced.py:852
+#: src/installation_advanced.py:854
 msgid "Creating logical partition"
 msgstr ""
 
-#: src/installation_advanced.py:918
+#: src/installation_advanced.py:920
 msgid "Advanced installation mode"
 msgstr ""
 
-#: src/installation_advanced.py:922
+#: src/installation_advanced.py:924
 msgid "Device for boot loader installation:"
 msgstr ""
 
-#: src/installation_advanced.py:932
+#: src/installation_advanced.py:934
 msgid "New partition table"
 msgstr ""
 
-#: src/installation_advanced.py:940
+#: src/installation_advanced.py:942
 msgid "Change..."
 msgstr ""
 
-#: src/installation_advanced.py:945
+#: src/installation_advanced.py:947
 msgid "Size:"
 msgstr ""
 
-#: src/installation_advanced.py:949
+#: src/installation_advanced.py:951
 msgid "Type:"
 msgstr ""
 
-#: src/installation_advanced.py:953
+#: src/installation_advanced.py:955
 msgid "Primary"
 msgstr ""
 
-#: src/installation_advanced.py:957
+#: src/installation_advanced.py:959
 msgid "Logical"
 msgstr ""
 
-#: src/installation_advanced.py:961
+#: src/installation_advanced.py:963
 msgid "Extended"
 msgstr ""
 
-#: src/installation_advanced.py:965
+#: src/installation_advanced.py:967
 msgid "Beginning of this space"
 msgstr ""
 
-#: src/installation_advanced.py:969
+#: src/installation_advanced.py:971
 msgid "End of this space"
 msgstr ""
 
-#: src/installation_advanced.py:973 src/installation_advanced.py:990
+#: src/installation_advanced.py:975 src/installation_advanced.py:992
 msgid "Use as:"
 msgstr ""
 
-#: src/installation_advanced.py:977 src/installation_advanced.py:994
+#: src/installation_advanced.py:979 src/installation_advanced.py:996
 msgid "Mount point:"
 msgstr ""
 
-#: src/installation_advanced.py:981 src/installation_advanced.py:998
+#: src/installation_advanced.py:983 src/installation_advanced.py:1000
 msgid "Label (optional):"
 msgstr ""
 
-#: src/installation_advanced.py:985
+#: src/installation_advanced.py:987
 msgid "Encryption options..."
 msgstr ""
 
-#: src/installation_advanced.py:1002
+#: src/installation_advanced.py:1004
 msgid "Format:"
 msgstr ""
 
-#: src/installation_advanced.py:1007
+#: src/installation_advanced.py:1009
 msgid "Partition table type:"
 msgstr ""
 
-#: src/installation_advanced.py:1012
+#: src/installation_advanced.py:1014
 msgid "Create partition table"
 msgstr ""
 
-#: src/installation_advanced.py:1015 src/installation_automatic.py:87
+#: src/installation_advanced.py:1017 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
 msgstr ""
 
-#: src/installation_advanced.py:1095
+#: src/installation_advanced.py:1097
 msgid "Creating a new partition table of type %s for disk %s"
 msgstr ""
 
-#: src/installation_advanced.py:1162
+#: src/installation_advanced.py:1164
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr ""
 
-#: src/installation_advanced.py:1214
+#: src/installation_advanced.py:1216
 msgid "Partition %s will be deleted"
 msgstr ""
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Mount"
 msgstr ""
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "New"
 msgstr ""
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Partition"
 msgstr ""
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Relabel"
 msgstr ""
 
-#: src/installation_advanced.py:1242
+#: src/installation_advanced.py:1244
 msgid "These disks will have partition actions:"
 msgstr ""
 
-#: src/installation_advanced.py:1267
+#: src/installation_advanced.py:1269
 msgid "Saving changes done in %s"
 msgstr ""
 
-#: src/installation_advanced.py:1276
+#: src/installation_advanced.py:1278
 msgid "Creating fs of type %s in %s with label %s"
 msgstr ""
 
-#: src/installation_advanced.py:1287
+#: src/installation_advanced.py:1289
 msgid "FORMATTED"
 msgstr ""
 
 #: src/installation_ask.py:76
-msgid "Your preferred installation type"
+msgid "Installation type"
 msgstr ""
 
 #: src/installation_ask.py:86
@@ -269,9 +334,7 @@ msgid "Erase disk and install Antergos (automatic)"
 msgstr ""
 
 #: src/installation_ask.py:89
-msgid ""
-"Warning: This will delete all programs, documents, photos, music and any "
-"other files on your disk"
+msgid "Warning: This will delete all data on your disk"
 msgstr ""
 
 #: src/installation_ask.py:95
@@ -279,23 +342,19 @@ msgid "Choose where to install Antergos (easy)"
 msgstr ""
 
 #: src/installation_ask.py:98
-msgid ""
-"You will have to choose where to install Antergos. You will be only asked "
-"for the mount points of your root and swap devices."
+msgid "Set your root and swap mount points."
 msgstr ""
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Antergos (advanced)"
+msgid "Manage your partitions where to install Antergos (advanced)"
 msgstr ""
 
 #: src/installation_ask.py:107
-msgid ""
-"You will be able to create/delete partitions, choose where to install "
-"Antergos and also choose additional mount points."
+msgid "Create/delete partitions, and also choose additional mount points."
 msgstr ""
 
 #: src/installation_automatic.py:73
-msgid "Antergos automatic installation mode"
+msgid "Automatic installation mode"
 msgstr ""
 
 #: src/installation_automatic.py:77
@@ -318,7 +377,7 @@ msgid "You must inform about these two mount points to install Antergos"
 msgstr ""
 
 #: src/installation_easy.py:94
-msgid "Antergos easy installation mode"
+msgid "Easy installation mode"
 msgstr ""
 
 #: src/installation_easy.py:118
@@ -329,47 +388,51 @@ msgstr ""
 msgid "In easy install, can't create list of partitions"
 msgstr ""
 
-#: src/installation_thread.py:75
+#: src/installation_thread.py:76
 msgid "Installing using the '%s' method"
 msgstr ""
 
-#: src/installation_thread.py:124
+#: src/installation_thread.py:126
 msgid "Can't execute the auto partition script"
 msgstr ""
 
-#: src/installation_thread.py:162
+#: src/installation_thread.py:161
 msgid "Couldn't mount root and boot partitions"
 msgstr ""
 
-#: src/installation_thread.py:170
+#: src/installation_thread.py:178
+msgid "Can't mount %s in %s"
+msgstr ""
+
+#: src/installation_thread.py:187
 msgid "Can't create necessary directories on destination system"
 msgstr ""
 
-#: src/installation_thread.py:584 src/installation_thread.py:606
+#: src/installation_thread.py:605 src/installation_thread.py:627
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr ""
 
-#: src/installation_thread.py:597
+#: src/installation_thread.py:618
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr ""
 
-#: src/installation_thread.py:617
+#: src/installation_thread.py:638
 msgid "Error creating password hash for user %s"
 msgstr ""
 
-#: src/installation_thread.py:623
+#: src/installation_thread.py:644
 msgid "Error changing password for user %s"
 msgstr ""
 
-#: src/installation_thread.py:677
+#: src/installation_thread.py:691
 msgid "Configuring your new system"
 msgstr ""
 
-#: src/installation_thread.py:756
+#: src/installation_thread.py:757
 msgid "Generating locales"
 msgstr ""
 
-#: src/installation_thread.py:776
+#: src/installation_thread.py:820
 msgid "Running mkinitcpio"
 msgstr ""
 
@@ -394,27 +457,25 @@ msgid "Please choose your language:"
 msgstr ""
 
 #: src/language.py:86
+msgid "This is an Alpha version."
+msgstr ""
+
+#: src/language.py:87
 msgid ""
-"<span weight='bold'>This is an Alpha version.</span>\n"
-"\n"
-"The Software is provided \"as is\" without warranty of any\n"
-"kind, either express or implied, including without limitation\n"
-"any implied warranties of condition, uninterrupted use,\n"
-"merchantability, fitness for a particular purpose, or\n"
-"non-infringement.\n"
+"The Software is provided \"as is\" without warranty of any kind, either express or implied, including without limitation any implied warranties of condition, uninterrupted use, merchantability, fitness for a particular purpose, or non-infringement.\n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
-#: src/language.py:95 src/welcome.py:100
+#: src/language.py:96 src/welcome.py:112
 msgid "Welcome to Antergos!"
 msgstr ""
 
-#: src/language.py:113
+#: src/language.py:114
 msgid "Languages"
 msgstr ""
 
-#: src/language.py:133
+#: src/language.py:134
 msgid "Can't find translation file for the %s language"
 msgstr ""
 
@@ -433,79 +494,79 @@ msgstr ""
 msgid "Country, territory or area:"
 msgstr ""
 
-#: src/location.py:201
+#: src/location.py:203
 msgid "locale changed to : %s"
 msgstr ""
 
-#: src/location.py:203
+#: src/location.py:205
 msgid "Can't change to locale '%s'"
 msgstr ""
 
-#: src/pacman/pac.py:165
+#: src/pacman/pac.py:163
 msgid "Checking dependencies..."
 msgstr ""
 
-#: src/pacman/pac.py:168
+#: src/pacman/pac.py:166
 msgid "Checking file conflicts..."
 msgstr ""
 
-#: src/pacman/pac.py:171
+#: src/pacman/pac.py:169
 msgid "Resolving dependencies..."
 msgstr ""
 
-#: src/pacman/pac.py:174
+#: src/pacman/pac.py:172
 msgid "Checking inter conflicts..."
 msgstr ""
 
-#: src/pacman/pac.py:181
+#: src/pacman/pac.py:179
 msgid "Removing..."
 msgstr ""
 
-#: src/pacman/pac.py:184
+#: src/pacman/pac.py:182
 msgid "Upgrading..."
 msgstr ""
 
-#: src/pacman/pac.py:187
+#: src/pacman/pac.py:185
 msgid "Checking integrity..."
 msgstr ""
 
-#: src/pacman/pac.py:191
+#: src/pacman/pac.py:189
 msgid "Loading packages files..."
 msgstr ""
 
-#: src/pacman/pac.py:195
+#: src/pacman/pac.py:193
 msgid "Configuring..."
 msgstr ""
 
-#: src/pacman/pac.py:197
+#: src/pacman/pac.py:195
 msgid "Configuring a package"
 msgstr ""
 
-#: src/pacman/pac.py:199
+#: src/pacman/pac.py:197
 msgid "Downloading a file"
 msgstr ""
 
-#: src/pacman/pac.py:223
+#: src/pacman/pac.py:221
 msgid "ERROR: %s"
 msgstr ""
 
-#: src/pacman/pac.py:229
+#: src/pacman/pac.py:225
 msgid "WARNING: %s"
 msgstr ""
 
-#: src/pacman/pac.py:233
+#: src/pacman/pac.py:229
 msgid "DEBUG: %s"
 msgstr ""
 
-#: src/pacman/pac.py:236
+#: src/pacman/pac.py:232
 msgid "FUNC: %s"
 msgstr ""
 
-#: src/pacman/pac.py:268
+#: src/pacman/pac.py:264
 msgid "Downloading %s"
 msgstr ""
 
-#: src/pacman/pac.py:276
+#: src/pacman/pac.py:272
 msgid "Refreshing %s..."
 msgstr ""
 
@@ -517,19 +578,19 @@ msgstr ""
 msgid "Couldn't execute auto mirroring selection"
 msgstr ""
 
-#: src/show_message.py:54
+#: src/show_message.py:56
 msgid "Antergos Installer - Error"
 msgstr ""
 
-#: src/show_message.py:65
+#: src/show_message.py:67
 msgid "Antergos Installer - Warning"
 msgstr ""
 
-#: src/show_message.py:76
+#: src/show_message.py:78
 msgid "Antergos Installer - Information"
 msgstr ""
 
-#: src/show_message.py:86
+#: src/show_message.py:88
 msgid "Antergos Installer - Question"
 msgstr ""
 
@@ -540,7 +601,7 @@ msgid ""
 msgstr ""
 
 #: src/slides.py:88
-msgid "Learn more about Antergos"
+msgid "Installing Antergos..."
 msgstr ""
 
 #: src/slides.py:92
@@ -575,15 +636,15 @@ msgstr ""
 msgid "In timezone, can't get network status"
 msgstr ""
 
-#: src/timezone.py:383
+#: src/timezone.py:382
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr ""
 
-#: src/timezone.py:403
+#: src/timezone.py:402
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
 msgstr ""
 
-#: src/timezone.py:405
+#: src/timezone.py:404
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr ""
 
@@ -611,7 +672,7 @@ msgstr ""
 msgid "The name it uses when it talks to other computers."
 msgstr ""
 
-#: src/user_info.py:114 src/user_info.py:191
+#: src/user_info.py:114
 msgid "You must enter a name"
 msgstr ""
 
@@ -639,12 +700,16 @@ msgstr ""
 msgid "Who are you?"
 msgstr ""
 
-#: src/user_info.py:207
+#: src/user_info.py:204
 msgid "Invalid characters entered"
 msgstr ""
 
-#: src/user_info.py:211
+#: src/user_info.py:208
 msgid "Contains consecutive, initial and/or final dots"
+msgstr ""
+
+#: src/user_info.py:212
+msgid "Too many characters"
 msgstr ""
 
 #: src/validation.py:144
@@ -671,12 +736,24 @@ msgstr ""
 msgid "Passwords do not match"
 msgstr ""
 
-#: src/welcome.py:95
+#: src/welcome.py:98
 msgid ""
-"You can try Antergos without modifying your hard drive, just click on 'Try it'.\n"
-"If you want to install the system to your PC, use one of the two installer options."
+"Try Antergos without modifying your hard drive.\n"
+"Or install it to your PC with one of the two installer options."
 msgstr ""
 
-#: src/welcome.py:120
+#: src/welcome.py:103
+msgid "Try it"
+msgstr ""
+
+#: src/welcome.py:106
+msgid "CLI Installer"
+msgstr ""
+
+#: src/welcome.py:109
+msgid "Graphical Installer"
+msgstr ""
+
+#: src/welcome.py:133
 msgid "Can't load the CLI installer"
 msgstr ""

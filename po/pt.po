@@ -2,14 +2,16 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
-# abdo hamdam <clubvascodagama@yahoo.ca>, 2013.
+# bidu <clubvascodagama@yahoo.ca>, 2013
+# Helder Meneses <helder.meneses@gmail.com>, 2013
+# skinnie <andrepsfaria@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: Cinnarch\n"
-"POT-Creation-Date: 2013-04-06 17:20+CEST\n"
-"PO-Revision-Date: 2013-04-07 00:45+0000\n"
-"Last-Translator: bidu <clubvascodagama@yahoo.ca>\n"
-"Language-Team: Portuguese (http://www.transifex.com/projects/p/cinnarch/language/pt/)\n"
+"Project-Id-Version: Antergos\n"
+"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
+"PO-Revision-Date: 2013-05-10 19:48+0000\n"
+"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -17,13 +19,13 @@ msgstr ""
 "Language: pt\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cnchi.py:92
+#: cnchi.py:91
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "Este instalador apenas pode ser executado com permissões administrativas, e não pode continuar sem as mesmas."
 
-#: cnchi.py:98
+#: cnchi.py:97
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -33,8 +35,8 @@ msgid ""
 msgstr "Não é possível executar duas instâncias do instalador.\nSe você tem certeza que o instalador não está sendo executado você pode excluir manualmente o arquivo %s e executar o instalador novamente."
 
 #: cnchi.py:186
-msgid "Cinnarch Installer"
-msgstr "Instalador Cinnarch"
+msgid "Antergos Installer"
+msgstr "Instalador Antergos"
 
 #: src/check.py:70
 msgid "Check your computer"
@@ -58,7 +60,7 @@ msgstr "Para melhores resultados, por favor, assegure-se que este computador:"
 
 #: src/check.py:108
 msgid "Can't get network status"
-msgstr ""
+msgstr "Não foi possível obter o estado da rede"
 
 #: src/check.py:177
 msgid "We have Internet connection."
@@ -72,232 +74,290 @@ msgstr "Nós estamos conectados a uma fonte de energia."
 msgid "We have enough space in disk."
 msgstr "Nos temos suficiente espaço no disco."
 
-#: src/installation_advanced.py:192 src/installation_advanced.py:424
-#: src/installation_advanced.py:436
+#: src/desktop.py:72
+msgid ""
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
+"put you in control and bring freedom to everybody. GNOME 3 is developed by "
+"the GNOME community, a diverse, international group of contributors."
+msgstr ""
+
+#: src/desktop.py:79
+msgid ""
+"Cinnamon it's a fork of GNOME Shell, initially developed by (and for) Linux "
+"Mint. It attempts to provide a more traditional user environment based on "
+"the desktop metaphor, like GNOME 2"
+msgstr ""
+
+#: src/desktop.py:86
+msgid ""
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
+"It aims to be fast and low on system resources, while still being visually "
+"appealing and user friendly."
+msgstr ""
+
+#: src/desktop.py:93
+msgid ""
+"Extremely fast-performing and energy-saving desktop environment. It comes "
+"with a beautiful interface, multi-language support, standard keyboard short "
+"cuts and additional features like tabbed file browsing."
+msgstr ""
+
+#: src/desktop.py:100
+msgid ""
+"Openbox is a highly configurable, next generation window manager with "
+"extensive standards support.The *box visual style is well known for its "
+"minimalistic appearance."
+msgstr ""
+
+#: src/desktop.py:107
+msgid ""
+"Enlightenment is not just a window manager for Linux/X11 and others, but "
+"also a whole suite of libraries to help you create beautiful user interfaces"
+" with much less work"
+msgstr ""
+
+#: src/desktop.py:113
+msgid ""
+"The KDE Community is an international technology team dedicated to creating "
+"a free and user-friendly computing experience, offering an advanced "
+"graphical desktop and a wide variety of applications."
+msgstr ""
+
+#: src/desktop.py:120
+msgid ""
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
+"Qt technologies. It has been tailored for users who value simplicity, speed,"
+" and an intuitive interface."
+msgstr ""
+
+#: src/desktop.py:130
+msgid "Select your desktop"
+msgstr ""
+
+#: src/desktop.py:143
+msgid "Desktops"
+msgstr ""
+
+#: src/installation_advanced.py:194 src/installation_advanced.py:426
+#: src/installation_advanced.py:438
 msgid "free space"
 msgstr "espaço livre"
 
-#: src/installation_advanced.py:256 src/installation_easy.py:90
+#: src/installation_advanced.py:258 src/installation_easy.py:90
 msgid "Device"
 msgstr "Dispositivo"
 
-#: src/installation_advanced.py:259
+#: src/installation_advanced.py:261
 msgid "Type"
 msgstr "Tipo"
 
-#: src/installation_advanced.py:262 src/installation_easy.py:86
+#: src/installation_advanced.py:264 src/installation_easy.py:86
 msgid "Mount point"
 msgstr "Ponto de montagem"
 
-#: src/installation_advanced.py:265
+#: src/installation_advanced.py:267
 msgid "Label"
 msgstr "Rótulo"
 
-#: src/installation_advanced.py:271 src/installation_advanced.py:1221
+#: src/installation_advanced.py:273 src/installation_advanced.py:1223
 msgid "Format"
 msgstr "Formatar"
 
-#: src/installation_advanced.py:274
+#: src/installation_advanced.py:276
 msgid "Size"
 msgstr "Tamanho"
 
-#: src/installation_advanced.py:277
+#: src/installation_advanced.py:279
 msgid "Used"
 msgstr "Usado"
 
-#: src/installation_advanced.py:280
+#: src/installation_advanced.py:282
 msgid "Flags"
+msgstr "Bandeiras"
+
+#: src/installation_advanced.py:288
+msgid "SSD"
 msgstr ""
 
-#: src/installation_advanced.py:286
-msgid "Solid State Drive (SSD)"
-msgstr "Disco de estado sólido (SSD)"
-
-#: src/installation_advanced.py:407
+#: src/installation_advanced.py:409
 msgid "none"
-msgstr ""
+msgstr "nenhum"
 
-#: src/installation_advanced.py:457
+#: src/installation_advanced.py:459
 msgid "extended"
 msgstr "extendida"
 
-#: src/installation_advanced.py:579 src/installation_advanced.py:816
+#: src/installation_advanced.py:581 src/installation_advanced.py:818
 msgid "Cannot use same mount twice..."
 msgstr "Não use a mesma montagem duas vezes..."
 
-#: src/installation_advanced.py:835
+#: src/installation_advanced.py:837
 msgid "Creating primary partition"
 msgstr "Criando partição primária"
 
-#: src/installation_advanced.py:846
+#: src/installation_advanced.py:848
 msgid "Creating extended partition"
 msgstr "Criando partição extendida"
 
-#: src/installation_advanced.py:852
+#: src/installation_advanced.py:854
 msgid "Creating logical partition"
 msgstr "Criando partição lógica"
 
-#: src/installation_advanced.py:918
+#: src/installation_advanced.py:920
 msgid "Advanced installation mode"
 msgstr "Modo de instalação avançado"
 
-#: src/installation_advanced.py:922
+#: src/installation_advanced.py:924
 msgid "Device for boot loader installation:"
 msgstr "Dispositivo para a instalação do \"boot loader\":"
 
-#: src/installation_advanced.py:932
+#: src/installation_advanced.py:934
 msgid "New partition table"
 msgstr "Nova tabela de partição"
 
-#: src/installation_advanced.py:940
+#: src/installation_advanced.py:942
 msgid "Change..."
-msgstr ""
+msgstr "Mudar..."
 
-#: src/installation_advanced.py:945
+#: src/installation_advanced.py:947
 msgid "Size:"
 msgstr "Tamanho:"
 
-#: src/installation_advanced.py:949
+#: src/installation_advanced.py:951
 msgid "Type:"
 msgstr "Tipo:"
 
-#: src/installation_advanced.py:953
+#: src/installation_advanced.py:955
 msgid "Primary"
 msgstr "Primária"
 
-#: src/installation_advanced.py:957
+#: src/installation_advanced.py:959
 msgid "Logical"
 msgstr "Lógica"
 
-#: src/installation_advanced.py:961
+#: src/installation_advanced.py:963
 msgid "Extended"
 msgstr "Extendida"
 
-#: src/installation_advanced.py:965
+#: src/installation_advanced.py:967
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Inicio deste espaço"
 
-#: src/installation_advanced.py:969
+#: src/installation_advanced.py:971
 msgid "End of this space"
-msgstr ""
+msgstr "Fim deste espaço"
 
-#: src/installation_advanced.py:973 src/installation_advanced.py:990
+#: src/installation_advanced.py:975 src/installation_advanced.py:992
 msgid "Use as:"
 msgstr "Usar como:"
 
-#: src/installation_advanced.py:977 src/installation_advanced.py:994
+#: src/installation_advanced.py:979 src/installation_advanced.py:996
 msgid "Mount point:"
 msgstr "Ponto de montagem:"
 
-#: src/installation_advanced.py:981 src/installation_advanced.py:998
+#: src/installation_advanced.py:983 src/installation_advanced.py:1000
 msgid "Label (optional):"
 msgstr "Rótulo (opcional)"
 
-#: src/installation_advanced.py:985
+#: src/installation_advanced.py:987
 msgid "Encryption options..."
-msgstr ""
+msgstr "Opções de encriptação..."
 
-#: src/installation_advanced.py:1002
+#: src/installation_advanced.py:1004
 msgid "Format:"
 msgstr "Formatar:"
 
-#: src/installation_advanced.py:1007
+#: src/installation_advanced.py:1009
 msgid "Partition table type:"
 msgstr "tipo de tabela de partição:"
 
-#: src/installation_advanced.py:1012
+#: src/installation_advanced.py:1014
 msgid "Create partition table"
 msgstr "Criar tabela de partição"
 
-#: src/installation_advanced.py:1015 src/installation_automatic.py:87
+#: src/installation_advanced.py:1017 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
 msgstr "Instalar agora!"
 
-#: src/installation_advanced.py:1095
+#: src/installation_advanced.py:1097
 msgid "Creating a new partition table of type %s for disk %s"
 msgstr "Criando uma nova tabela de partição tipo %s no disco %s"
 
-#: src/installation_advanced.py:1162
+#: src/installation_advanced.py:1164
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s está montado em '%s'.\nPara continuar precisa de ser desmontado.\nClick Sim para desmontar, ou não para retornar\n"
 
-#: src/installation_advanced.py:1214
+#: src/installation_advanced.py:1216
 msgid "Partition %s will be deleted"
 msgstr "Partição %s será deletada"
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Mount"
 msgstr "Montar"
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "New"
 msgstr "Nova"
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Partition"
 msgstr "Partição"
 
-#: src/installation_advanced.py:1221
+#: src/installation_advanced.py:1223
 msgid "Relabel"
 msgstr "Renomear"
 
-#: src/installation_advanced.py:1242
+#: src/installation_advanced.py:1244
 msgid "These disks will have partition actions:"
-msgstr ""
+msgstr "Os seguintes discos vão ter acções nas partições:"
 
-#: src/installation_advanced.py:1267
+#: src/installation_advanced.py:1269
 msgid "Saving changes done in %s"
-msgstr ""
+msgstr "Guardar alterações efectuadas em %s"
 
-#: src/installation_advanced.py:1276
+#: src/installation_advanced.py:1278
 msgid "Creating fs of type %s in %s with label %s"
 msgstr "Criando fs do tipo %s em %s com rótulo %s"
 
-#: src/installation_advanced.py:1287
+#: src/installation_advanced.py:1289
 msgid "FORMATTED"
 msgstr "FORMATADO"
 
 #: src/installation_ask.py:76
-msgid "Your preferred installation type"
-msgstr "Seu tipo de instalação preferido"
+msgid "Installation type"
+msgstr ""
 
 #: src/installation_ask.py:86
-msgid "Erase disk and install Cinnarch (automatic)"
-msgstr "Apagar disco inteiro e instalar Cinnarch (automático)"
+msgid "Erase disk and install Antergos (automatic)"
+msgstr "Apagar disco inteiro e instalar Antergos (automático)"
 
 #: src/installation_ask.py:89
-msgid ""
-"Warning: This will delete all programs, documents, photos, music and any "
-"other files on your disk"
-msgstr "Atenção: Esta opção apagará todos os programas, fotos, musicas, e quaisquer outros arquivos em seu disco"
+msgid "Warning: This will delete all data on your disk"
+msgstr ""
 
 #: src/installation_ask.py:95
-msgid "Choose where to install Cinnarch (easy)"
-msgstr "Escolha onde instalar o Cinnarch (fácil)"
+msgid "Choose where to install Antergos (easy)"
+msgstr "Escolha onde instalar o Antergos (fácil)"
 
 #: src/installation_ask.py:98
-msgid ""
-"You will have to choose where to install Cinnarch. You will be only asked "
-"for the mount points of your root and swap devices."
-msgstr "Você irá escolher onde instalar o Cinnarch. Você terá apenas que responder aonde serão montados a partição raiz (/) e a partição swap."
+msgid "Set your root and swap mount points."
+msgstr ""
 
 #: src/installation_ask.py:104
-msgid "Manage your partitions and choose where to install Cinnarch (advanced)"
-msgstr "Gerencie suas partições e escolha aonde instalar o Cinnarch (avançado)"
+msgid "Manage your partitions where to install Antergos (advanced)"
+msgstr ""
 
 #: src/installation_ask.py:107
-msgid ""
-"You will be able to create/delete partitions, choose where to install "
-"Cinnarch and also choose additional mount points."
-msgstr "Você será capaz de criar/deletar partições, escolher onde instalar o Cinnarch e também escolher pontos de montagens adicionais."
+msgid "Create/delete partitions, and also choose additional mount points."
+msgstr ""
 
 #: src/installation_automatic.py:73
-msgid "Cinnarch automatic installation mode"
-msgstr "Modo de instalação automático do Cinnarch"
+msgid "Automatic installation mode"
+msgstr ""
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
@@ -307,20 +367,20 @@ msgstr "Selecione o disco:"
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
-"install Cinnarch and click the button below to start the process."
-msgstr "Este modo de instalação sobrescreverá tudo em seu disco. Se você tem certeza de que quer isto, então por favor, escolha o disco no qual você quer instalar o Cinnarch e pressione o botão abaixo para iniciar a instalação."
+"install Antergos and click the button below to start the process."
+msgstr "Este modo de instalação sobrescreverá tudo em seu disco. Se você tem certeza de que quer isto, então por favor, escolha o disco no qual você quer instalar o Antergos e pressione o botão abaixo para iniciar a instalação."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
-msgstr ""
+msgstr "Instalação automática usando %s dispositivo"
 
 #: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Cinnarch"
-msgstr "Você deverá informar estes dois pontos de montagem para instalar o Cinnarch"
+msgid "You must inform about these two mount points to install Antergos"
+msgstr "Você deverá informar estes dois pontos de montagem para instalar o Antergos"
 
 #: src/installation_easy.py:94
-msgid "Cinnarch easy installation mode"
-msgstr "Modo de instalação fácil do Cinnarch"
+msgid "Easy installation mode"
+msgstr ""
 
 #: src/installation_easy.py:118
 msgid "You can't select the same device for both mount points!"
@@ -330,49 +390,53 @@ msgstr "Você não pode selecionar a mesma partição para ambos os pontos de mo
 msgid "In easy install, can't create list of partitions"
 msgstr "No modo de instalação fácil não é possível criar uma lista de partições"
 
-#: src/installation_thread.py:75
+#: src/installation_thread.py:76
 msgid "Installing using the '%s' method"
 msgstr "Usando o método de instalação '%s'"
 
-#: src/installation_thread.py:124
+#: src/installation_thread.py:126
 msgid "Can't execute the auto partition script"
-msgstr ""
+msgstr "Não foi possivel executar o script de auto particionamento"
 
-#: src/installation_thread.py:162
+#: src/installation_thread.py:161
 msgid "Couldn't mount root and boot partitions"
 msgstr "Não foi possível montar as partições de boot e raiz (/)"
 
-#: src/installation_thread.py:170
-msgid "Can't create necessary directories on destination system"
+#: src/installation_thread.py:178
+msgid "Can't mount %s in %s"
 msgstr ""
 
-#: src/installation_thread.py:584 src/installation_thread.py:606
+#: src/installation_thread.py:187
+msgid "Can't create necessary directories on destination system"
+msgstr "Não foi possível criar as directorias necessárias no sistema"
+
+#: src/installation_thread.py:605 src/installation_thread.py:627
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "Erro instalando GRUB(2) BIOS."
 
-#: src/installation_thread.py:597
+#: src/installation_thread.py:618
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS foi instalado com sucesso."
 
-#: src/installation_thread.py:617
+#: src/installation_thread.py:638
 msgid "Error creating password hash for user %s"
-msgstr ""
+msgstr "Erro a criar hash da senha para o utilizador %s"
 
-#: src/installation_thread.py:623
+#: src/installation_thread.py:644
 msgid "Error changing password for user %s"
 msgstr "Erro modificando senha para usuário %s"
 
-#: src/installation_thread.py:677
+#: src/installation_thread.py:691
 msgid "Configuring your new system"
 msgstr "Configurando seu novo sistema"
 
-#: src/installation_thread.py:756
+#: src/installation_thread.py:757
 msgid "Generating locales"
 msgstr "Gerando \"locales\""
 
-#: src/installation_thread.py:776
+#: src/installation_thread.py:820
 msgid "Running mkinitcpio"
-msgstr ""
+msgstr "A correr mkinitcpio"
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
@@ -395,27 +459,25 @@ msgid "Please choose your language:"
 msgstr "Por favor escolha seu idioma:"
 
 #: src/language.py:86
-msgid ""
-"<span weight='bold'>This is an Alpha version.</span>\n"
-"\n"
-"The Software is provided \"as is\" without warranty of any\n"
-"kind, either express or implied, including without limitation\n"
-"any implied warranties of condition, uninterrupted use,\n"
-"merchantability, fitness for a particular purpose, or\n"
-"non-infringement.\n"
-"\n"
-"If you find any bug, please, visit <a href='http://bugs.cinnarch.com'>http://bugs.cinnarch.com</a>"
+msgid "This is an Alpha version."
 msgstr ""
 
-#: src/language.py:95 src/welcome.py:100
-msgid "Welcome to Cinnarch!"
-msgstr "Bem vindo ao Cinnarch!"
+#: src/language.py:87
+msgid ""
+"The Software is provided \"as is\" without warranty of any kind, either express or implied, including without limitation any implied warranties of condition, uninterrupted use, merchantability, fitness for a particular purpose, or non-infringement.\n"
+"\n"
+"If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
+msgstr ""
 
-#: src/language.py:113
+#: src/language.py:96 src/welcome.py:112
+msgid "Welcome to Antergos!"
+msgstr "Bem vindo ao Antergos!"
+
+#: src/language.py:114
 msgid "Languages"
 msgstr "Idiomas"
 
-#: src/language.py:133
+#: src/language.py:134
 msgid "Can't find translation file for the %s language"
 msgstr "Não foi possível encontrar o arquivo de tradução para o idioma% s"
 
@@ -434,105 +496,105 @@ msgstr "A localização selecionada será usada para ajudar a selecionar o siste
 msgid "Country, territory or area:"
 msgstr "País, território ou área:"
 
-#: src/location.py:201
+#: src/location.py:203
 msgid "locale changed to : %s"
 msgstr "Localização modificada para: %s"
 
-#: src/location.py:203
+#: src/location.py:205
 msgid "Can't change to locale '%s'"
 msgstr "Não foi possível mudar a localização para '%s\""
 
-#: src/pacman/pac.py:165
+#: src/pacman/pac.py:163
 msgid "Checking dependencies..."
-msgstr "Checando dependências..."
+msgstr "Verificando dependências..."
 
-#: src/pacman/pac.py:168
+#: src/pacman/pac.py:166
 msgid "Checking file conflicts..."
 msgstr "Checando arquivos conflitantes..."
 
-#: src/pacman/pac.py:171
+#: src/pacman/pac.py:169
 msgid "Resolving dependencies..."
 msgstr "Resolvendo dependências..."
 
-#: src/pacman/pac.py:174
+#: src/pacman/pac.py:172
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "A verificar possiveis conflitos..."
 
-#: src/pacman/pac.py:181
+#: src/pacman/pac.py:179
 msgid "Removing..."
 msgstr "Removendo..."
 
-#: src/pacman/pac.py:184
+#: src/pacman/pac.py:182
 msgid "Upgrading..."
 msgstr "Atualizando..."
 
-#: src/pacman/pac.py:187
+#: src/pacman/pac.py:185
 msgid "Checking integrity..."
-msgstr "Checando integridade..."
+msgstr "Verificando a integridade..."
 
-#: src/pacman/pac.py:191
+#: src/pacman/pac.py:189
 msgid "Loading packages files..."
 msgstr "Carregando pacotes de arquivos..."
 
-#: src/pacman/pac.py:195
+#: src/pacman/pac.py:193
 msgid "Configuring..."
 msgstr "Configurando..."
 
-#: src/pacman/pac.py:197
+#: src/pacman/pac.py:195
 msgid "Configuring a package"
 msgstr "Configurando um pacote"
 
-#: src/pacman/pac.py:199
+#: src/pacman/pac.py:197
 msgid "Downloading a file"
 msgstr "Baixando um arquivo"
 
-#: src/pacman/pac.py:223
+#: src/pacman/pac.py:221
 msgid "ERROR: %s"
 msgstr "Erro: %s"
 
-#: src/pacman/pac.py:229
+#: src/pacman/pac.py:225
 msgid "WARNING: %s"
 msgstr "ATENÇÃO: %s"
 
-#: src/pacman/pac.py:233
+#: src/pacman/pac.py:229
 msgid "DEBUG: %s"
-msgstr ""
+msgstr "DEBUG: %s"
 
-#: src/pacman/pac.py:236
+#: src/pacman/pac.py:232
 msgid "FUNC: %s"
-msgstr ""
+msgstr "FUNC: %s"
 
-#: src/pacman/pac.py:268
+#: src/pacman/pac.py:264
 msgid "Downloading %s"
 msgstr "Baixando %s"
 
-#: src/pacman/pac.py:276
+#: src/pacman/pac.py:272
 msgid "Refreshing %s..."
-msgstr ""
+msgstr "Actualizando %s"
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
-msgstr ""
+msgstr "Não foi possível obter o estado da rede para os servidores da lista"
 
 #: src/rank_mirrors.py:75
 msgid "Couldn't execute auto mirroring selection"
-msgstr ""
+msgstr "Não foi possível executar a selecção automática de endereços de servidor"
 
-#: src/show_message.py:54
-msgid "Cinnarch Installer - Error"
-msgstr "Instalador do Cinnarch - Erro"
+#: src/show_message.py:56
+msgid "Antergos Installer - Error"
+msgstr "Instalador do Antergos - Erro"
 
-#: src/show_message.py:65
-msgid "Cinnarch Installer - Warning"
-msgstr "Instalador do Cinnarch - Atenção"
+#: src/show_message.py:67
+msgid "Antergos Installer - Warning"
+msgstr "Instalador do Antergos - Atenção"
 
-#: src/show_message.py:76
-msgid "Cinnarch Installer - Information"
-msgstr "Instalador do Cinnarch - Informação"
+#: src/show_message.py:78
+msgid "Antergos Installer - Information"
+msgstr "Instalador do Antergos - Informação"
 
-#: src/show_message.py:86
-msgid "Cinnarch Installer - Question"
-msgstr "Instalador do Cinnarch - Perguntas"
+#: src/show_message.py:88
+msgid "Antergos Installer - Question"
+msgstr "Instalador do Antergos - Perguntas"
 
 #: src/slides.py:80 src/slides.py:94
 msgid ""
@@ -541,8 +603,8 @@ msgid ""
 msgstr "Instalação terminada!\nVocê quer reiniciar seu novo sistema agora?"
 
 #: src/slides.py:88
-msgid "Learn more about Cinnarch"
-msgstr "Conheça um pouco mais do Cinnarch"
+msgid "Installing Antergos..."
+msgstr ""
 
 #: src/slides.py:92
 msgid "Please wait..."
@@ -554,7 +616,7 @@ msgstr "Aonde você está?"
 
 #: src/timezone.py:118
 msgid "Zone:"
-msgstr ""
+msgstr "Zona:"
 
 #: src/timezone.py:122
 msgid "Region:"
@@ -570,23 +632,23 @@ msgstr "Não foi possível detectar automaticamente as coordenadas de fuso horá
 
 #: src/timezone.py:279
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "A parar as tarefas de horario local..."
 
 #: src/timezone.py:307 src/timezone.py:358
 msgid "In timezone, can't get network status"
 msgstr "No fuso horário, não foi possível obter o status da rede"
 
-#: src/timezone.py:383
+#: src/timezone.py:382
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "Não foi possivel obter o código do pais necessário para criar a lista de mirrors do pacman"
 
-#: src/timezone.py:403
+#: src/timezone.py:402
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "Foi efectuado o download da lista especifica de servidores baseado no código do páis %s"
 
-#: src/timezone.py:405
+#: src/timezone.py:404
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "Não foi possivel gerar a lista de servidores para o pacman usando o código do país"
 
 #: src/user_info.py:90
 msgid "Your name:"
@@ -612,7 +674,7 @@ msgstr "Confirme sua senha:"
 msgid "The name it uses when it talks to other computers."
 msgstr "O nome que ele usa quando conversa com outros computadores."
 
-#: src/user_info.py:114 src/user_info.py:191
+#: src/user_info.py:114
 msgid "You must enter a name"
 msgstr "Você deve escolher um nome"
 
@@ -640,12 +702,16 @@ msgstr "Criptografar minha pasta home"
 msgid "Who are you?"
 msgstr "Quem é você?"
 
-#: src/user_info.py:207
+#: src/user_info.py:204
 msgid "Invalid characters entered"
 msgstr "Caracteres inseridos são inválidos"
 
-#: src/user_info.py:211
+#: src/user_info.py:208
 msgid "Contains consecutive, initial and/or final dots"
+msgstr "Contem pontos consecutivos, no início ou no fim"
+
+#: src/user_info.py:212
+msgid "Too many characters"
 msgstr ""
 
 #: src/validation.py:144
@@ -658,7 +724,7 @@ msgstr "senha fraca"
 
 #: src/validation.py:150
 msgid "fair password"
-msgstr ""
+msgstr "password mediocre"
 
 #: src/validation.py:153
 msgid "good password"
@@ -672,12 +738,24 @@ msgstr "senha forte"
 msgid "Passwords do not match"
 msgstr "Senhas não coincidem"
 
-#: src/welcome.py:95
+#: src/welcome.py:98
 msgid ""
-"You can try Cinnarch without modifying your hard drive, just click on 'Try it'.\n"
-"If you want to install the system to your PC, use one of the two installer options."
-msgstr "Se você deseja testar o Cinnarch sem modificar seu sistema, apenas pressione \"Try it\"\nSe você deseja instalar o Cinnarch em seu PC, então escolha uma das duas opções de instalador."
+"Try Antergos without modifying your hard drive.\n"
+"Or install it to your PC with one of the two installer options."
+msgstr ""
 
-#: src/welcome.py:120
+#: src/welcome.py:103
+msgid "Try it"
+msgstr ""
+
+#: src/welcome.py:106
+msgid "CLI Installer"
+msgstr ""
+
+#: src/welcome.py:109
+msgid "Graphical Installer"
+msgstr ""
+
+#: src/welcome.py:133
 msgid "Can't load the CLI installer"
 msgstr "Não foi possível carregar o instalador  CLI"

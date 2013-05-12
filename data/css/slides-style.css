@@ -24,23 +24,34 @@
     background-repeat: none;
     opacity: 0;
     z-index: 0;
-	-webkit-backface-visibility: hidden;
-    -webkit-animation: imageAnimation 30s linear infinite 0s;
+    -webkit-backface-visibility: hidden;
+    -webkit-animation: imageAnimation 36s linear infinite 0s;
+    -moz-animation: imageAnimation 36s linear infinite 0s;
+    -o-animation: imageAnimation 36s linear infinite 0s;
+    -ms-animation: imageAnimation 36s linear infinite 0s;
+    animation: imageAnimation 36s linear infinite 0s; 
 }
 
 
 .cb-slideshow li:nth-child(1) span { 
-    background-image: url(/usr/share/cnchi/data/images/1.png) 
+    background-image: url(../images/1.png) 
 }
 .cb-slideshow li:nth-child(2) span { 
-    background-image: url(/usr/share/cnchi/data/images/2.png) 
-    -webkit-animation-delay: 10s;
+    background-image: url(../images/2.png);
+    -webkit-animation-delay: 12s;
+    -moz-animation-delay: 12s;
+    -o-animation-delay: 12s;
+    -ms-animation-delay: 12s;
+    animation-delay: 12s; 
 }
 .cb-slideshow li:nth-child(3) span { 
-    background-image: url(/usr/share/cnchi/data/images/3.png) 
-    -webkit-animation-delay: 20s;
+    background-image: url(../images/3.png);
+    -webkit-animation-delay: 24s;
+    -moz-animation-delay: 24s;
+    -o-animation-delay: 24s;
+    -ms-animation-delay: 24s;
+    animation-delay: 24s; 
 }
-
 
 /* Animation for the slideshow images */
 @-webkit-keyframes imageAnimation { 
@@ -48,24 +59,20 @@
     -webkit-animation-timing-function: ease-in; }
     2% { opacity: 1;
          -webkit-animation-timing-function: ease-out; }
-    80% { opacity: 1 }
-    90% { opacity: 0 }
+    30% { opacity: 1 }
+    34% { opacity: 0 }
     100% { opacity: 0 }
 }
 
-
-/* Show at least something when animations not supported */
-.no-cssanimations .cb-slideshow li span{
-	background-image: url(/usr/share/cnchi/data/images/background.png);
+@keyframes imageAnimation { 
+    0% { opacity: 0;
+    animation-timing-function: ease-in; }
+    2% { opacity: 1;
+         animation-timing-function: ease-out; }
+    30% { opacity: 1 }
+    34% { opacity: 0 }
+    100% { opacity: 0 }
 }
-
-@media screen and (max-width: 1140px) { 
-    .cb-slideshow li div h3 { font-size: 140px }
-}
-@media screen and (max-width: 600px) { 
-    .cb-slideshow li div h3 { font-size: 80px }
-}
-
 
 
 
@@ -79,23 +86,11 @@ html,body {
     margin:0;
     padding:0;
 }
-table {
-    border-collapse:collapse;
-    border-spacing:0;
-}
+
 fieldset,img { 
     border:0;
 }
-input{
-    border:1px solid #b0b0b0;
-    padding:3px 5px 4px;
-    color:#979797;
-    width:190px;
-}
-address,caption,cite,code,dfn,th,var {
-    font-style:normal;
-    font-weight:normal;
-}
+
 ol,ul {
     list-style:none;
 }
@@ -113,7 +108,7 @@ abbr,acronym { border:0;
 }
 /* General Demo Style */
 body{
-    background-image: url(/usr/share/cnchi/data/images/background.png);
+    background-image: url(../images/background.png);
     font-weight: 400;
     font-size: 15px;
     color: #aa3e03;
@@ -125,4 +120,3 @@ a{
     color: #333;
     text-decoration: none;
 }
-

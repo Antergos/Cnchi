@@ -5,7 +5,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
-    <property name="bottom_padding">10</property>
     <property name="left_padding">10</property>
     <property name="right_padding">10</property>
     <style>
@@ -151,6 +150,7 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">You can try Cinnarch without modify your hard drive, just click on "Try it".
 If you want to install the system to your PC, use one of the two installer options.</property>
+            <property name="justify">center</property>
             <attributes>
               <attribute name="font-desc" value="Sans Bold 8"/>
             </attributes>

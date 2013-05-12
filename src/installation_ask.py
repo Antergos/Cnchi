@@ -73,7 +73,7 @@ class InstallationAsk(Gtk.Box):
         self.show_all()
 
     def translate_ui(self):
-        txt = _("Your preferred installation type")
+        txt = _("Installation type")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
@@ -86,13 +86,13 @@ class InstallationAsk(Gtk.Box):
         radio.set_label(_("Erase disk and install Antergos (automatic)"))
 
         label = self.ui.get_object("automatic_description")
-        txt = _("Warning: This will delete all programs, documents, photos, music and any other files on your disk")
+        txt = _("Warning: This will delete all data on your disk")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
         
-        radio = self.ui.get_object("alongside_radiobutton")
-        radio.set_label(_("Install Cinnarch alongside other OSes"))
+        radio = self.ui.get_object("easy_radiobutton")
+        radio.set_label(_("Choose where to install Antergos (easy)"))
 
         label = self.ui.get_object("alongside_description")
         txt = _("With this option you will be installing this OS alongside the other OSes you have already installed.")
@@ -101,10 +101,10 @@ class InstallationAsk(Gtk.Box):
         label.set_line_wrap(True)
 
         radio = self.ui.get_object("advanced_radiobutton")
-        radio.set_label(_("Manage your partitions and choose where to install Antergos (advanced)"))
+        radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))
 
         label = self.ui.get_object("advanced_description")
-        txt = _("You will be able to create/delete partitions, choose where to install Antergos and also choose additional mount points.")
+        txt = _("Create/delete partitions, and also choose additional mount points.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)

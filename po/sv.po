@@ -2,7 +2,7 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
-# terabit <akimlinux@gmail.com>, 2013
+# mats_bjork007 <mats_bjork007@yahoo.se>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
@@ -14,14 +14,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: ms\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cnchi.py:91
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "Pemasang ini mesti dijalankan dengan keizinan pentadbir, dan tidak boleh diteruskan tanpa mereka."
+msgstr "Installationen måste köras med administratörsrättigheter och kan inte fortsätta utan det."
 
 #: cnchi.py:97
 msgid ""
@@ -30,47 +30,47 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Du kan inte köra två installationer samtidigt.\n\nOm du är säker på att installationen inte redan körs kan du manuellt ta bort filen %s och starta om installationen."
 
 #: cnchi.py:186
 msgid "Antergos Installer"
-msgstr "Pemasang Antergos"
+msgstr "Antergos installation"
 
 #: src/check.py:70
 msgid "Check your computer"
-msgstr "Memeriksa komputer anda"
+msgstr "Kontrollera din dator"
 
 #: src/check.py:75
 msgid "has at least 3GB available drive space"
-msgstr "mempunyai sekurang-kurangnya 3GB ruang cakera yang tersedia"
+msgstr "har åtminstone 3GB tillgängligt diskutrymme"
 
 #: src/check.py:79
 msgid "is plugged in to a power source"
-msgstr "sudah diplagkan kepada sumber kuasa"
+msgstr "är inkopplad till en kraftkälla"
 
 #: src/check.py:83
 msgid "is connected to the Internet"
-msgstr "telah disambungkan kepada Internet"
+msgstr "är ansluten till Internet"
 
 #: src/check.py:87
 msgid "For best results, please ensure that this computer:"
-msgstr "Untuk keputusan yang terbaik, sila pastikan bahawa komputer ini:"
+msgstr "För bästa resultat, se till att den här datorn:"
 
 #: src/check.py:108
 msgid "Can't get network status"
-msgstr "Tidak boleh mendapatkan status rangkaian"
+msgstr "Kan inte kontrollera nätverksstatus"
 
 #: src/check.py:177
 msgid "We have Internet connection."
-msgstr "Kami mempunyai sambungan Internet."
+msgstr "Vi har anslutning till internet."
 
 #: src/check.py:178
 msgid "We're connected to a power source."
-msgstr ""
+msgstr "Vi är ansluten till en kraftkälla."
 
 #: src/check.py:179
 msgid "We have enough space in disk."
-msgstr "Kami mempunyai ruang yang cukup dalam cakera."
+msgstr "Vi har tillräckligt med diskutrymme."
 
 #: src/desktop.py:72
 msgid ""
@@ -139,39 +139,39 @@ msgstr ""
 #: src/installation_advanced.py:194 src/installation_advanced.py:426
 #: src/installation_advanced.py:438
 msgid "free space"
-msgstr "ruang bebas"
+msgstr "tillgängligt utrymme"
 
 #: src/installation_advanced.py:258 src/installation_easy.py:90
 msgid "Device"
-msgstr "Peranti"
+msgstr "Enhet"
 
 #: src/installation_advanced.py:261
 msgid "Type"
-msgstr "Jenis"
+msgstr "Typ"
 
 #: src/installation_advanced.py:264 src/installation_easy.py:86
 msgid "Mount point"
-msgstr "Titik lekap"
+msgstr "Monteringspunkt"
 
 #: src/installation_advanced.py:267
 msgid "Label"
-msgstr "Label"
+msgstr "Etikett"
 
 #: src/installation_advanced.py:273 src/installation_advanced.py:1223
 msgid "Format"
-msgstr "Format"
+msgstr "Formattera"
 
 #: src/installation_advanced.py:276
 msgid "Size"
-msgstr "Saiz"
+msgstr "Storlek"
 
 #: src/installation_advanced.py:279
 msgid "Used"
-msgstr "Digunakan"
+msgstr "Använd"
 
 #: src/installation_advanced.py:282
 msgid "Flags"
-msgstr "Penanda "
+msgstr "Flaggor"
 
 #: src/installation_advanced.py:288
 msgid "SSD"
@@ -179,151 +179,151 @@ msgstr ""
 
 #: src/installation_advanced.py:409
 msgid "none"
-msgstr "tiada"
+msgstr "ingen"
 
 #: src/installation_advanced.py:459
 msgid "extended"
-msgstr ""
+msgstr "utökad"
 
 #: src/installation_advanced.py:581 src/installation_advanced.py:818
 msgid "Cannot use same mount twice..."
-msgstr ""
+msgstr "Kan inte använda samma monteringspunkt två gånger..."
 
 #: src/installation_advanced.py:837
 msgid "Creating primary partition"
-msgstr "Mewujudkan partisyen utama"
+msgstr "Skapar primär partition"
 
 #: src/installation_advanced.py:848
 msgid "Creating extended partition"
-msgstr ""
+msgstr "Skapar utökad partition"
 
 #: src/installation_advanced.py:854
 msgid "Creating logical partition"
-msgstr "Mewujudkan logikal partisyen"
+msgstr "Skapar logisk partition"
 
 #: src/installation_advanced.py:920
 msgid "Advanced installation mode"
-msgstr ""
+msgstr "Avancerad installationsmetod"
 
 #: src/installation_advanced.py:924
 msgid "Device for boot loader installation:"
-msgstr "Peranti untuk pemasangan pemuat but:"
+msgstr "Enhet för installation av uppstartsladdaren (boot loader):"
 
 #: src/installation_advanced.py:934
 msgid "New partition table"
-msgstr "Jadual partisyen baru"
+msgstr "Ny partionstabell"
 
 #: src/installation_advanced.py:942
 msgid "Change..."
-msgstr ""
+msgstr "Ändra..."
 
 #: src/installation_advanced.py:947
 msgid "Size:"
-msgstr ""
+msgstr "Storlek:"
 
 #: src/installation_advanced.py:951
 msgid "Type:"
-msgstr ""
+msgstr "Typ:"
 
 #: src/installation_advanced.py:955
 msgid "Primary"
-msgstr "Utama"
+msgstr "Primär"
 
 #: src/installation_advanced.py:959
 msgid "Logical"
-msgstr "Logikal"
+msgstr "Logisk"
 
 #: src/installation_advanced.py:963
 msgid "Extended"
-msgstr ""
+msgstr "Utökad"
 
 #: src/installation_advanced.py:967
 msgid "Beginning of this space"
-msgstr "Permulaan daripada ruang ini"
+msgstr "Början av detta utrymme"
 
 #: src/installation_advanced.py:971
 msgid "End of this space"
-msgstr "Akhir daripada ruang ini"
+msgstr "Slutet av detta utrymme"
 
 #: src/installation_advanced.py:975 src/installation_advanced.py:992
 msgid "Use as:"
-msgstr "Guna sebagai:"
+msgstr "Använd som:"
 
 #: src/installation_advanced.py:979 src/installation_advanced.py:996
 msgid "Mount point:"
-msgstr "Titik lekap:"
+msgstr "Monteringspunkt"
 
 #: src/installation_advanced.py:983 src/installation_advanced.py:1000
 msgid "Label (optional):"
-msgstr "Label (pilihan):"
+msgstr "Etikett (valfritt):"
 
 #: src/installation_advanced.py:987
 msgid "Encryption options..."
-msgstr "Opsyen penyulitan ..."
+msgstr "Krypteringsalternativ..."
 
 #: src/installation_advanced.py:1004
 msgid "Format:"
-msgstr "Format:"
+msgstr "Formattera:"
 
 #: src/installation_advanced.py:1009
 msgid "Partition table type:"
-msgstr "Jenis jadual partisyen:"
+msgstr "Typ av partitionstabell:"
 
 #: src/installation_advanced.py:1014
 msgid "Create partition table"
-msgstr "Buat jadual partisyen"
+msgstr "Skapa partitionstabell"
 
 #: src/installation_advanced.py:1017 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
-msgstr "Pasang sekarang!"
+msgstr "Installera nu!"
 
 #: src/installation_advanced.py:1097
 msgid "Creating a new partition table of type %s for disk %s"
-msgstr "Mewujudkan jadual partisyen baru dari jenis %s untuk cakera %s"
+msgstr "Skapar en ny partitionstabell med typen %s för disk %s"
 
 #: src/installation_advanced.py:1164
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s är monterad i '%s'.\nFör att fortsätta måste den avmonteras.\nKlicka Ja för att avmontera eller Nej för att återgå\n"
 
 #: src/installation_advanced.py:1216
 msgid "Partition %s will be deleted"
-msgstr "Partisyen %s akan dipadamkan"
+msgstr "Partition %s kommer att tas bort"
 
 #: src/installation_advanced.py:1223
 msgid "Mount"
-msgstr "Lekap"
+msgstr "Montera"
 
 #: src/installation_advanced.py:1223
 msgid "New"
-msgstr "Baru"
+msgstr "Ny"
 
 #: src/installation_advanced.py:1223
 msgid "Partition"
-msgstr "Partisyen"
+msgstr "Partition"
 
 #: src/installation_advanced.py:1223
 msgid "Relabel"
-msgstr "Melabel semula"
+msgstr "Ändra etikett"
 
 #: src/installation_advanced.py:1244
 msgid "These disks will have partition actions:"
-msgstr ""
+msgstr "För dessa diskar kommer partitionerna att påverkas:"
 
 #: src/installation_advanced.py:1269
 msgid "Saving changes done in %s"
-msgstr "Perubahan simpanan telah dilakukan di %s"
+msgstr "Sparar ändringar gjorda på %s"
 
 #: src/installation_advanced.py:1278
 msgid "Creating fs of type %s in %s with label %s"
-msgstr "Mewujudkan fs jenis %s di %s dengan label %s"
+msgstr "Skapar filsystem av typen %s i %s med etiketten %s"
 
 #: src/installation_advanced.py:1289
 msgid "FORMATTED"
-msgstr ""
+msgstr "FORMATTERAD"
 
 #: src/installation_ask.py:76
 msgid "Installation type"
@@ -331,7 +331,7 @@ msgstr ""
 
 #: src/installation_ask.py:86
 msgid "Erase disk and install Antergos (automatic)"
-msgstr "Memadam cakera dan memasang Antergos (automatik)"
+msgstr "Radera disken och installera Antergos (automatiskt)"
 
 #: src/installation_ask.py:89
 msgid "Warning: This will delete all data on your disk"
@@ -339,7 +339,7 @@ msgstr ""
 
 #: src/installation_ask.py:95
 msgid "Choose where to install Antergos (easy)"
-msgstr "Pilih di mana untuk memasang Antergos (mudah)"
+msgstr "Välj var du vill installera Antergos (enkel)"
 
 #: src/installation_ask.py:98
 msgid "Set your root and swap mount points."
@@ -359,22 +359,22 @@ msgstr ""
 
 #: src/installation_automatic.py:77
 msgid "Select drive:"
-msgstr "Pilih pemacu:"
+msgstr "Välj enhet:"
 
 #: src/installation_automatic.py:81
 msgid ""
 "This installation mode will overwrite everything in your drive. If you are "
 "sure that this is what you want, please choose the drive where you want to "
 "install Antergos and click the button below to start the process."
-msgstr "Cara pemasangan ini akan menulisganti segala-galanya dalam memandu anda. Jika anda pasti bahawa ini adalah apa yang anda mahu, sila pilih pemacu di mana anda ingin memasang Antergos dan klik butang di bawah untuk memulakan proses tersebut."
+msgstr "Den här installationsmetoden kommer att skriva över allt på din disk. Om du är säker på att det är vad du vill göra, välj den enhet där du vill installera Antergos och klicka på knappen nedan för att starta."
 
 #: src/installation_automatic.py:130
 msgid "Automatic install using %s device"
-msgstr "Memasang automatik menggunakan peranti %s"
+msgstr "Automatisk installation använder enhet %s"
 
 #: src/installation_easy.py:82
 msgid "You must inform about these two mount points to install Antergos"
-msgstr "Anda mesti memaklumkan mengenai kedua-dua titik lekap untuk memasang Antergos"
+msgstr "Du måste ange dessa två montagepunkter för att installera Antergos"
 
 #: src/installation_easy.py:94
 msgid "Easy installation mode"
@@ -382,23 +382,23 @@ msgstr ""
 
 #: src/installation_easy.py:118
 msgid "You can't select the same device for both mount points!"
-msgstr "Anda tidak boleh memilih peranti yang sama untuk kedua-dua titik lekap!"
+msgstr "Du kan inte välja samma enhet för båda montagepunkterna!"
 
 #: src/installation_easy.py:159
 msgid "In easy install, can't create list of partitions"
-msgstr "Dalam pemasangan mudah, tidak boleh membuat senarai partisyen"
+msgstr "Kan inte skapa lista på partitioner i den enkla installationsmetoden"
 
 #: src/installation_thread.py:76
 msgid "Installing using the '%s' method"
-msgstr "Memasang menggunakan kaedah '%s'"
+msgstr "Använder '%s' som metod för installation"
 
 #: src/installation_thread.py:126
 msgid "Can't execute the auto partition script"
-msgstr "Tidak boleh melaksanakan skrip partisyen auto"
+msgstr "Kan inte köra skriptet för automatisk partitionering"
 
 #: src/installation_thread.py:161
 msgid "Couldn't mount root and boot partitions"
-msgstr "Tidak dapat lekap root dan but partisyen"
+msgstr "Kund inte montera root och boot partitionerna"
 
 #: src/installation_thread.py:178
 msgid "Can't mount %s in %s"
@@ -406,55 +406,55 @@ msgstr ""
 
 #: src/installation_thread.py:187
 msgid "Can't create necessary directories on destination system"
-msgstr "Tidak boleh mewujudkan direktori yang diperlukan pada sistem destinasi"
+msgstr "Kan inte skapa nödvändiga kataloger i systemet"
 
 #: src/installation_thread.py:605 src/installation_thread.py:627
 msgid "ERROR installing GRUB(2) BIOS."
-msgstr "RALAT memasang GRUB(2) BIOS."
+msgstr "FEL vid installation av GRUB(2) BIOS."
 
 #: src/installation_thread.py:618
 msgid "GRUB(2) BIOS has been successfully installed."
-msgstr "GRUB(2) BIOS telah berjaya dipasang."
+msgstr "GRUB(2) BIOS har installerats utan problem."
 
 #: src/installation_thread.py:638
 msgid "Error creating password hash for user %s"
-msgstr "Ralat mewujudkan hash kata laluan untuk pengguna %s"
+msgstr "Fel vid skapande av lösenordskryptering för användare %s"
 
 #: src/installation_thread.py:644
 msgid "Error changing password for user %s"
-msgstr "Ralat menukar kata laluan untuk pengguna %s"
+msgstr "Fel när lösenordet ändrades för användare %s"
 
 #: src/installation_thread.py:691
 msgid "Configuring your new system"
-msgstr "Konfigurasi sistem baru anda"
+msgstr "Konfigurerar ditt nya system"
 
 #: src/installation_thread.py:757
 msgid "Generating locales"
-msgstr ""
+msgstr "Genererar språk"
 
 #: src/installation_thread.py:820
 msgid "Running mkinitcpio"
-msgstr "mkinitcpio Berjalan"
+msgstr "Kör mkinitcpio"
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
-msgstr "Pilih susun atur papan kekunci"
+msgstr "Välj layout för ditt tangentbord"
 
 #: src/keymap.py:78
 msgid "Layouts"
-msgstr "Susun atur"
+msgstr "Layouter"
 
 #: src/keymap.py:84
 msgid "Variants"
-msgstr "Varian"
+msgstr "Varianter"
 
 #: src/keymap.py:106
 msgid "keyboard_layout is %s"
-msgstr "susun atur_papan kekunci adalah %s"
+msgstr "Tangentbordslayout är %s"
 
 #: src/language.py:81
 msgid "Please choose your language:"
-msgstr "Sila pilih bahasa anda:"
+msgstr "Välj ditt språk:"
 
 #: src/language.py:86
 msgid "This is an Alpha version."
@@ -469,136 +469,136 @@ msgstr ""
 
 #: src/language.py:96 src/welcome.py:112
 msgid "Welcome to Antergos!"
-msgstr "Selamat datang ke Antergos!"
+msgstr "Välkommen till Antergos!"
 
 #: src/language.py:114
 msgid "Languages"
-msgstr "Bahasa"
+msgstr "Språk"
 
 #: src/language.py:134
 msgid "Can't find translation file for the %s language"
-msgstr "Tidak dapat mencari fail penterjemahan untuk bahasa %s"
+msgstr "Kan inte hitta översättning för det %s språket"
 
 #: src/location.py:73
 msgid "Select your location"
-msgstr "Pilih lokasi anda"
+msgstr "Välj din plats"
 
 #: src/location.py:77
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "Vald plats kommer att användas för att hjälpa till att välja språk.\nNormalt är det landet där du bor.\nDet här är en urvalslista baserad på det språk du valde."
 
 #: src/location.py:82
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "Land, distrikt eller område:"
 
 #: src/location.py:203
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "språk ändrad till : %s"
 
 #: src/location.py:205
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "Kan inte ändra språk till '%s'"
 
 #: src/pacman/pac.py:163
 msgid "Checking dependencies..."
-msgstr ""
+msgstr "Kontrollerar beroenden..."
 
 #: src/pacman/pac.py:166
 msgid "Checking file conflicts..."
-msgstr "Memeriksa konflik fail..."
+msgstr "Kontrollerar filer i konflikt..."
 
 #: src/pacman/pac.py:169
 msgid "Resolving dependencies..."
-msgstr ""
+msgstr "Löser beroenden..."
 
 #: src/pacman/pac.py:172
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "Kontrollerar inbördes konflikter"
 
 #: src/pacman/pac.py:179
 msgid "Removing..."
-msgstr "Membuang..."
+msgstr "Tar bort..."
 
 #: src/pacman/pac.py:182
 msgid "Upgrading..."
-msgstr "Menaiktaraf..."
+msgstr "Uppgraderar..."
 
 #: src/pacman/pac.py:185
 msgid "Checking integrity..."
-msgstr "Memeriksa integriti..."
+msgstr "Kontrollerar integritet..."
 
 #: src/pacman/pac.py:189
 msgid "Loading packages files..."
-msgstr "Memuat fail pakej..."
+msgstr "Laddar paketfiler..."
 
 #: src/pacman/pac.py:193
 msgid "Configuring..."
-msgstr "Mengkonfigurasi..."
+msgstr "Konfigurerar..."
 
 #: src/pacman/pac.py:195
 msgid "Configuring a package"
-msgstr "Konfigurasi pakej"
+msgstr "Konfigurerar ett paket"
 
 #: src/pacman/pac.py:197
 msgid "Downloading a file"
-msgstr "Memuat turun fail"
+msgstr "Laddar ner en fil"
 
 #: src/pacman/pac.py:221
 msgid "ERROR: %s"
-msgstr "RALAT: %s"
+msgstr "FEL: %s"
 
 #: src/pacman/pac.py:225
 msgid "WARNING: %s"
-msgstr "AMARAN: %s"
+msgstr "VARNING: %s"
 
 #: src/pacman/pac.py:229
 msgid "DEBUG: %s"
-msgstr ""
+msgstr "AVLUSA: %s"
 
 #: src/pacman/pac.py:232
 msgid "FUNC: %s"
-msgstr ""
+msgstr "FUNC: %s"
 
 #: src/pacman/pac.py:264
 msgid "Downloading %s"
-msgstr "Memuat turun %s"
+msgstr "Laddar ner %s"
 
 #: src/pacman/pac.py:272
 msgid "Refreshing %s..."
-msgstr "Menyegarkan %s..."
+msgstr "Aktualiserar %s..."
 
 #: src/rank_mirrors.py:59
 msgid "In rankmirrors, can't get network status"
-msgstr "Dalam rankmirrors, Tidak boleh mendapatkan status rangkaian"
+msgstr "Kan inte kontrollera nätverksstatus för rankmirrors"
 
 #: src/rank_mirrors.py:75
 msgid "Couldn't execute auto mirroring selection"
-msgstr ""
+msgstr "Kunde inte utföra automatiskt val av speglingsserver"
 
 #: src/show_message.py:56
 msgid "Antergos Installer - Error"
-msgstr "Pemasang Antergos - Ralat"
+msgstr "Antergos installation - Fel"
 
 #: src/show_message.py:67
 msgid "Antergos Installer - Warning"
-msgstr "Pemasang Antergos - Amaran"
+msgstr "Antergos installation - Varning"
 
 #: src/show_message.py:78
 msgid "Antergos Installer - Information"
-msgstr "Pemasang Antergos - Maklumat"
+msgstr "Antergos installation - information"
 
 #: src/show_message.py:88
 msgid "Antergos Installer - Question"
-msgstr "Pemasang Antergos - Soalan"
+msgstr "Antergos installation - Fråga"
 
 #: src/slides.py:80 src/slides.py:94
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
-msgstr "Pemasangan selesai!⏎\nAdakah anda ingin untuk memulakan semula sistem anda sekarang?"
+msgstr "Installationen är klar!\nVill du starta om ditt system nu?"
 
 #: src/slides.py:88
 msgid "Installing Antergos..."
@@ -606,11 +606,11 @@ msgstr ""
 
 #: src/slides.py:92
 msgid "Please wait..."
-msgstr "Sila tunggu..."
+msgstr "Vänta..."
 
 #: src/timezone.py:113
 msgid "Where are you?"
-msgstr "Di manakah anda?"
+msgstr "Var är du?"
 
 #: src/timezone.py:118
 msgid "Zone:"
@@ -618,95 +618,95 @@ msgstr "Zon:"
 
 #: src/timezone.py:122
 msgid "Region:"
-msgstr ""
+msgstr "Region:"
 
 #: src/timezone.py:133
 msgid "location changed to : %s"
-msgstr "lokasi ditukar kepada: %s"
+msgstr "plats ändrad till : %s"
 
 #: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
-msgstr ""
+msgstr "Kan inte automatiskt känna av koordinaterna för tidszonen"
 
 #: src/timezone.py:279
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "Stoppar trådar för tidszoner..."
 
 #: src/timezone.py:307 src/timezone.py:358
 msgid "In timezone, can't get network status"
-msgstr ""
+msgstr "Kan inte kontrollera nätverksstatus i tidszon"
 
 #: src/timezone.py:382
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "Kan inte få språkkoden som används för att skapa lista över spegelservrar för pacman"
 
 #: src/timezone.py:402
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "Laddade ner en specifik lista över speglingsservrar för pacman baserad på landskoden %s"
 
 #: src/timezone.py:404
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "Kunde inte generera lista på speglingsservrar baserad på landskoden"
 
 #: src/user_info.py:90
 msgid "Your name:"
-msgstr "Nama anda:"
+msgstr "Ditt namn:"
 
 #: src/user_info.py:94
 msgid "Your computer's name:"
-msgstr "Nama kumputer anda:"
+msgstr "Namn på din dator:"
 
 #: src/user_info.py:98
 msgid "Pick a username:"
-msgstr "Pilih nama pengguna:"
+msgstr "Välj ett användarnamn:"
 
 #: src/user_info.py:102
 msgid "Choose a password:"
-msgstr "Pilih kata laluan:"
+msgstr "Välj ett lösenord:"
 
 #: src/user_info.py:106
 msgid "Confirm your password:"
-msgstr "Sahkan kata laluan anda:"
+msgstr "Bekräfta ditt lösenord:"
 
 #: src/user_info.py:110
 msgid "The name it uses when it talks to other computers."
-msgstr ""
+msgstr "Namnet den använder för att prata med andra datorer."
 
 #: src/user_info.py:114
 msgid "You must enter a name"
-msgstr "Anda mesti memasukkan nama"
+msgstr "Du måste ange ett namn"
 
 #: src/user_info.py:118
 msgid "You must enter a username"
-msgstr "Anda mesti memasukkan nama pengguna"
+msgstr "Du måste ange ett användarnamn"
 
 #: src/user_info.py:122
 msgid "You must enter a password"
-msgstr "Anda mesti memasukkan kata laluan"
+msgstr "Du måste ange ett lösenord"
 
 #: src/user_info.py:126
 msgid "Log in automatically"
-msgstr "Log masuk secara automatik"
+msgstr "Logga in automatiskt"
 
 #: src/user_info.py:127
 msgid "Require my password to log in"
-msgstr "Memerlukan kata laluan untuk log masuk"
+msgstr "Kräv mitt lösenord för att logga in"
 
 #: src/user_info.py:128
 msgid "Encrypt my home folder"
-msgstr "Menyulitkan folder utama saya"
+msgstr "Kryptera min hemkatalog"
 
 #: src/user_info.py:130
 msgid "Who are you?"
-msgstr "Siapakah anda?"
+msgstr "Vem är du?"
 
 #: src/user_info.py:204
 msgid "Invalid characters entered"
-msgstr "Aksara yang tidak sah dimasukkan"
+msgstr "Ogiltiga tecken angivna"
 
 #: src/user_info.py:208
 msgid "Contains consecutive, initial and/or final dots"
-msgstr ""
+msgstr "Innehåller punkt efter varandra, i början och/eller i slutet"
 
 #: src/user_info.py:212
 msgid "Too many characters"
@@ -714,27 +714,27 @@ msgstr ""
 
 #: src/validation.py:144
 msgid "password is too short"
-msgstr "kata laluan terlalu singkat"
+msgstr "Lösenordet är för kort"
 
 #: src/validation.py:147
 msgid "weak password"
-msgstr "kata laluan yang lemah"
+msgstr "svagt lösenord"
 
 #: src/validation.py:150
 msgid "fair password"
-msgstr "kata laluan yang sederhana"
+msgstr "dåligt lösenord"
 
 #: src/validation.py:153
 msgid "good password"
-msgstr "kata laluan yang baik"
+msgstr "bra lösenord"
 
 #: src/validation.py:156
 msgid "strong password"
-msgstr "kata laluan yang kukuh"
+msgstr "starkt lösenord"
 
 #: src/validation.py:171
 msgid "Passwords do not match"
-msgstr "Kata laluan tidak sepadan"
+msgstr "Lösenorden stämmer inte överens"
 
 #: src/welcome.py:98
 msgid ""
@@ -756,4 +756,4 @@ msgstr ""
 
 #: src/welcome.py:133
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "Kan inte ladda CLI installeraren"

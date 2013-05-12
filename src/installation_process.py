@@ -800,10 +800,10 @@ class InstallationProcess(Process):
             if self.desktop_manager == 'gdm':
                 gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
                 with open(gdm_conf_path, "wt") as gdm_conf:
-                    gdm_conf.write('# Enable automatic login for user \n')
-                    gdm_conf.write('[daemon] \n')
-                    gdm_conf.write('AutomaticLogin=%s \n' % username)
-                    gdm_conf.write('AutomaticLoginEnable=True \n')
+                    gdm_conf.write('# Enable automatic login for user\n')
+                    gdm_conf.write('[daemon]\n')
+                    gdm_conf.write('AutomaticLogin=%s\n' % username)
+                    gdm_conf.write('AutomaticLoginEnable=True\n')
 
             # Systems with KDM as Desktop Manager
             elif self.desktop_manager == 'kdm':
@@ -815,7 +815,7 @@ class InstallationProcess(Process):
                 with open(kdm_conf_path, "wt") as kdm_conf:
                     for line in text:
                         if '#AutoLoginEnable=true' in line:
-                            line = '#AutoLoginEnable=true'
+                            line = '#AutoLoginEnable=true \n'
                             line = line[1:]
                         if 'AutoLoginUser=' in line:
                             line = 'AutoLoginUser=%s \n' % username

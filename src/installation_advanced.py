@@ -234,7 +234,6 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
-                    self.grub_device = self.grub_devices[line]
         
         ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
@@ -246,7 +245,7 @@ class InstallationAdvanced(Gtk.Box):
         combobox.set_active_iter(tree_iter)
 
     ## Get new selected GRUB device
-    def on_select_grub_drive_changed(self, widget):
+    def on_grub_device_entry_changed(self, widget):
         line = self.grub_device_entry.get_active_text()
         if line != None:
             self.grub_device = self.grub_devices[line]
@@ -286,7 +285,7 @@ class InstallationAdvanced(Gtk.Box):
         ssd_toggle = Gtk.CellRendererToggle()
         ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("Solid State Drive (SSD)"), ssd_toggle, active=12, visible=13, sensitive=14)
+        col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle, active=12, visible=13, sensitive=14)
         self.partition_list.append_column(col)   
 
     ## Helper function to get a disk/partition size in human format
