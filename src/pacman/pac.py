@@ -58,6 +58,8 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
+        self.last_event = ""
+        
         if conf != None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
             self.handle = self.pacman_conf.initialize_alpm()
@@ -159,7 +161,10 @@ class Pac(object):
             self.queue_event("error", line)
 
     def queue_event(self, event_type, event_text=""):
-        self.callback_queue.put((event_type, event_text))
+        new_event = (event_type, event_text)
+        if self.last_event != new_event:
+            self.callback_queue.put()
+            self.last_event = new_event
         #print("%s : %s" % (event_type, event_text))
          
     # Callback functions 
