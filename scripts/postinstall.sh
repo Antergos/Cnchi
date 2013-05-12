@@ -159,6 +159,7 @@ razor_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
 postinstall(){
