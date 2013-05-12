@@ -118,23 +118,21 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir)
 
-    print("Connecting with aria2")
     aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
     except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-        print("Can't connect to Aria2. Won't be able to speed up the download:")
+        print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
         print(e)
         return
 
-    all_gids = []
-
     for package_name in package_names:
-        print("Getting metalink for package %s" % package_name)
+        all_gids = []
+        log.debug(_("Getting metalink for package %s") % package_name)
         metalink = get_metalink(package_name, conf_file, cache_dir)
         if metalink != None:
             try:
-                print("Adding metalink for package %s" % package_name)
+                log.debug(_("Adding metalink for package %s") % package_name)
                 gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
                 for gid in gids:
                     all_gids.append(gid)
@@ -163,19 +161,10 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
                     if callback_queue != None:
                         callback_queue.put(('action', action))
                         callback_queue.put(('percent', percent))        
-                    else:
-                        log.debug(action)
-                        log.debug(percent)
-                    
-                    print(action, percent)
-
                     old_percent = percent
-
-    pprint(all_gids)
-    
 
 
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
-    download_packages(["vim", "gedit", "zip"])
+    download_packages(["vim", "gedit", "zip", "faenza-hotot-icon"])
