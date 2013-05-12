@@ -270,7 +270,7 @@ class InstallationProcess(Process):
                 tmp_file.write("SigLevel = PackageRequired\n")
                 tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
 
-            tmp_file.write("#### Antergos repos start here\n")
+            tmp_file.write("\n\n#### Antergos repos start here\n\n")
             tmp_file.write("[antergos]\n") 
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
@@ -292,9 +292,9 @@ class InstallationProcess(Process):
         # use copytree for cp -r
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
-        except FileExistsError:
-            # ignore if exists
-            pass
+        except (FileExistsError, shutil.Error) as e:
+            # log if error but continue anyway
+            log.debug(e)
 
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):

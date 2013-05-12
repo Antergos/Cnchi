@@ -48,23 +48,25 @@ def get_metalink(package_name, conf_file, cache_dir):
         pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
     except:
         log.debug(_("Unable to create download queue for package %s") % package_name)
-        return None
-    
-    metalink = pm2ml.download_queue_to_metalink(
-        download_queue,
-        output_dir=pargs.output_dir,
-        set_preference=pargs.preference
-    )
+        return None  
 
     if not_found:
         log.debug(_("Warning! Can't find these packages:"))
         for nf in sorted(not_found):
             log.debug(nf)
+        return None
   
     if missing_deps:
         log.debug(_("Warning! Can't resolve these dependencies:"))
         for md in sorted(missing_deps):
             log.debug(md)
+        return None
+
+    metalink = pm2ml.download_queue_to_metalink(
+        download_queue,
+        output_dir=pargs.output_dir,
+        set_preference=pargs.preference
+    )
     
     return metalink
 
@@ -135,10 +137,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         metalink = get_metalink(package_name, conf_file, cache_dir)
         if metalink != None:
             try:
-                gid = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
-                pprint(gid)
-                if len(gid) > 0:
-                    all_gids.append(gid[0])
+                gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+                for gid in gids:
+                    all_gids.append(gid)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                 print("Can't communicate with Aria2. Won't be able to speed up the download:")
                 print(e)
