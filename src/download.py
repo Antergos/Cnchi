@@ -38,133 +38,160 @@ import xmlrpc.client
 
 from pprint import pprint
 
-def run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir):  
-    aria2_args = [
-        "--log=/tmp/download-aria2.log",
-        "--max-concurrent-downloads=50",
-        #"--metalink-file=/tmp/packages.metalink",
-        "--check-integrity",
-        "--continue=false",
-        "--max-connection-per-server=5",
-        "--min-split-size=5M",
-        "--enable-rpc",
-        "--rpc-user=%s" % rpc_user,
-        "--rpc-passwd=%s" % rpc_passwd,
-        "--rpc-listen-port=%s" % rpc_port,
-        "--rpc-save-upload-metadata=false",
-        "--allow-overwrite=true",
-        "--always-resume=false",
-        "--auto-save-interval=0",
-        "--daemon=true",
-        "--log-level=notice",
-        "--show-console-readout=false",
-        "--summary-interval=0",
-        "--no-conf",
-        "--quiet",
-        "--remove-control-file",
-        "--stop-with-process=%d" % os.getpid(),
-        "--auto-file-renaming=false",
-        "--conditional-get=true",
-        "--dir=%s" % cache_dir]
-    
-    aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
-    
-    log.debug(aria2_cmd)
-
-    aria2c_p = subprocess.Popen(aria2_cmd)
-    aria2c_p.wait()
-
-def get_metalink(package_name, conf_file, cache_dir):
-    args = str("-c %s" % conf_file).split() 
-    args += [package_name]
-    args += ["--noconfirm"]
-    args += "-r -p http -l 50".split()
-    
-    try:
-        pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-    except:
-        log.debug(_("Unable to create download queue for package %s") % package_name)
-        return None  
-
-    if not_found:
-        log.debug(_("Warning! Can't find these packages:"))
-        for nf in sorted(not_found):
-            log.debug(nf)
-  
-    if missing_deps:
-        log.debug(_("Warning! Can't resolve these dependencies:"))
-        for md in sorted(missing_deps):
-            log.debug(md)
-  
-    metalink = pm2ml.download_queue_to_metalink(
-        download_queue,
-        output_dir=pargs.output_dir,
-        set_preference=pargs.preference
-    )
-    
-    return metalink
-
-
-def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):       
-    if conf_file == None:
-        conf_file = "/etc/pacman.conf"
-        
-    if cache_dir == None:
-        cache_dir = "/var/cache/pacman/pkg"
-
-    rpc_user = "antergos"
-    rpc_passwd = "antergos"
-    rpc_port = "6800"
-
-    run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir)
-
-    aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
-    try:
-        s = xmlrpc.client.ServerProxy(aria2_url)
-    except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-        print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
-        print(e)
-        return
-
-    for package_name in package_names:
-        all_gids = []
-        log.debug(_("Getting metalink for package %s") % package_name)
-        metalink = get_metalink(package_name, conf_file, cache_dir)
-        if metalink != None:
-            try:
-                log.debug(_("Adding metalink for package %s") % package_name)
-                gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
-                for gid in gids:
-                    all_gids.append(gid)
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-                print("Can't communicate with Aria2. Won't be able to speed up the download:")
-                print(e)
-                return
-
-            total = 1
-            completed = 0
-            old_percent = 0
+class DownloadPackages():
+    def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
+        if conf_file == None:
+            self.conf_file = "/etc/pacman.conf"
+        else:
+            self.conf_file = conf_file
             
-            while completed < total:
+        if cache_dir == None:
+            self.cache_dir = "/var/cache/pacman/pkg"
+        else:
+            self.cache_dir = cache_dir
+            
+        self.callback_queue = callback_queue
+
+        self.last_action = ""
+
+        self.rpc_user = "antergos"
+        self.rpc_passwd = "antergos"
+        self.rpc_port = "6800"
+
+        self.run_aria2_as_daemon()
+
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
+        try:
+            s = xmlrpc.client.ServerProxy(aria2_url)
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+            print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
+            print(e)
+            return
+
+        for package_name in package_names:
+            all_gids = []
+            log.debug(_("Getting metalink for package %s") % package_name)
+            metalink = self.get_metalink(package_name)
+            if metalink != None:
+                try:
+                    log.debug(_("Adding metalink for package %s") % package_name)
+                    gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+                    for gid in gids:
+                        all_gids.append(gid)
+                except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+                    print("Can't communicate with Aria2. Won't be able to speed up the download:")
+                    print(e)
+                    return
+
                 total = 0
                 completed = 0
+                old_percent = 0
                 
                 for gid in all_gids:
-                    r = s.aria2.tellStatus(gid, ['totalLength', 'completedLength'])
+                    r = s.aria2.tellStatus(gid, ['totalLength'])
                     total += int(r['totalLength'])
-                    completed += int(r['completedLength'])
-
+                    
                 action = _("Downloading package '%s'..." % package_name)
-                #percent = int(completed * 100.0 / total)
-                percent = float(completed / total)
-                if percent != old_percent:
-                    if callback_queue != None:
-                        callback_queue.put(('action', action))
-                        callback_queue.put(('percent', percent))        
-                    old_percent = percent
+                self.queue_event('action', action)
 
+                while completed < total:
+                    completed = 0
+                    
+                    for gid in all_gids:
+                        r = s.aria2.tellStatus(gid, ['completedLength'])
+                        completed += int(r['completedLength'])
+
+                    try:
+                        percent = float(completed / total)
+                    except ZeroDivisionError as e:
+                        print(e)
+                        completed = total
+
+                    if percent != old_percent:
+                        self.queue_event('percent', percent)
+                        old_percent = percent
+
+    def run_aria2_as_daemon(self):
+        aria2_args = [
+            "--log=/tmp/download-aria2.log",
+            "--max-concurrent-downloads=50",
+            #"--metalink-file=/tmp/packages.metalink",
+            "--check-integrity",
+            "--continue=false",
+            "--max-connection-per-server=5",
+            "--min-split-size=5M",
+            "--enable-rpc",
+            "--rpc-user=%s" % self.rpc_user,
+            "--rpc-passwd=%s" % self.rpc_passwd,
+            "--rpc-listen-port=%s" % self.rpc_port,
+            "--rpc-save-upload-metadata=false",
+            "--allow-overwrite=true",
+            "--always-resume=false",
+            "--auto-save-interval=0",
+            "--daemon=true",
+            "--log-level=notice",
+            "--show-console-readout=false",
+            "--summary-interval=0",
+            "--no-conf",
+            "--quiet",
+            "--remove-control-file",
+            "--stop-with-process=%d" % os.getpid(),
+            "--auto-file-renaming=false",
+            "--conditional-get=true",
+            "--dir=%s" % self.cache_dir]
+        
+        aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
+        
+        log.debug(aria2_cmd)
+
+        aria2c_p = subprocess.Popen(aria2_cmd)
+        aria2c_p.wait()
+
+    def get_metalink(self, package_name):
+        args = str("-c %s" % self.conf_file).split() 
+        args += [package_name]
+        args += ["--noconfirm"]
+        args += "-r -p http -l 50".split()
+        
+        try:
+            pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
+        except:
+            log.debug(_("Unable to create download queue for package %s") % package_name)
+            return None  
+
+        if not_found:
+            log.debug(_("Warning! Can't find these packages:"))
+            for nf in sorted(not_found):
+                log.debug(nf)
+      
+        if missing_deps:
+            log.debug(_("Warning! Can't resolve these dependencies:"))
+            for md in sorted(missing_deps):
+                log.debug(md)
+      
+        metalink = pm2ml.download_queue_to_metalink(
+            download_queue,
+            output_dir=pargs.output_dir,
+            set_preference=pargs.preference
+        )
+        
+        return metalink
+
+    def queue_event(self, event_type, event_text=""):
+        if event_type == 'action':
+            if self.last_action == event_text:
+                # do not repeat the same event
+                return
+            else:
+                self.last_action = event_text
+                    
+        if self.callback_queue != None:
+            self.callback_queue.put((event_type, event_text))
+        else:
+            log.debug(event_text)
 
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
-    download_packages(["vim", "gedit", "zip", "faenza-hotot-icon"])
+    log._debug = True
+    DownloadPackages(["vim", "gedit", "zip", "faenza-hotot-icon"])

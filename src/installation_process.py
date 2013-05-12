@@ -234,7 +234,7 @@ class InstallationProcess(Process):
     def download_packages(self):
         conf_dir = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        download.download_packages(self.packages, conf_dir, cache_dir, self.callback_queue)
+        download.DownloadPackages(self.packages, conf_dir, cache_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
