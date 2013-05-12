@@ -169,7 +169,6 @@ class Pac(object):
                 self.last_action = event_text
                 
         self.callback_queue.put((event_type, event_text))
-        self.last_event = new_event
         #print("%s : %s" % (event_type, event_text))
          
     # Callback functions 
