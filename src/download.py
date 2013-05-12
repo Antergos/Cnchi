@@ -143,34 +143,36 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
                 print(e)
                 return
 
+            total = 1
+            completed = 0
+            old_percent = 0
+            
+            while completed < total:
+                total = 0
+                completed = 0
+                
+                for gid in all_gids:
+                    r = s.aria2.tellStatus(gid, ['totalLength', 'completedLength'])
+                    total += int(r['totalLength'])
+                    completed += int(r['completedLength'])
+
+                action = _('Downloading %s with Aria2...' % package_name)
+                #percent = int(completed * 100.0 / total)
+                percent = float(completed / total)
+                if percent != old_percent:
+                    if callback_queue != None:
+                        callback_queue.put(('action', action))
+                        callback_queue.put(('percent', percent))        
+                    else:
+                        log.debug(action)
+                        log.debug(percent)
+                    
+                    print(action, percent)
+
+                    old_percent = percent
+
     pprint(all_gids)
     
-    total = 1
-    completed = 0
-    
-    while completed < total:
-        total = 0
-        completed = 0
-        
-        for gid in all_gids:
-            r = s.aria2.tellStatus(gid, ['totalLength', 'completedLength'])
-            total += int(r['totalLength'])
-            completed += int(r['completedLength'])
-
-        action = _('Downloading packages with Aria2...')
-        #percent = int(completed * 100.0 / total)
-        percent = float(completed / total)
-        
-        if callback_queue != None:
-            callback_queue.put(('action', action))
-            callback_queue.put(('percent', percent))        
-        else:
-            log.debug(action)
-            log.debug(percent)
-        
-        #print(action, percent)
-    
-        time.sleep(0.1)
 
 
 if __name__ == '__main__':
