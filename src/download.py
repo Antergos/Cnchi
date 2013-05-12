@@ -94,7 +94,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         "--allow-overwrite=true",
         "--always-resume=false",
         "--auto-save-interval=0",
-        "--daemon=false",
+        "--daemon=true",
         "--log-level=notice",
         "--show-console-readout=false",
         "--summary-interval=0",
@@ -112,7 +112,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     aria2c_p = subprocess.Popen(aria2_cmd)
     
-    time.sleep(1)
+    aria2c_p.wait()
     
     aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
 
