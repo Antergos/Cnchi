@@ -171,7 +171,7 @@ class Slides(Gtk.Box):
 
     # FIXME: pac.py generates too many events. Here we can only
     # get the newest one and delete all the old ones.
-    
+    '''
     # Delete all the old events and get the newest one
     def get_newest_event(self):
         event = ()
@@ -181,6 +181,14 @@ class Slides(Gtk.Box):
                 event = self.callback_queue.get_nowait()
             except queue.Empty:
                 queue_empty = True
+        return event
+    '''
+
+    def get_newest_event(self):
+        try:
+            event = self.callback_queue.get_nowait()
+        except queue.Empty:
+            event = ()
         return event
 
 

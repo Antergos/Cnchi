@@ -156,7 +156,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
                     total += int(r['totalLength'])
                     completed += int(r['completedLength'])
 
-                action = _('Downloading %s with Aria2...' % package_name)
+                action = _('Downloading package '%s'...' % package_name)
                 #percent = int(completed * 100.0 / total)
                 percent = float(completed / total)
                 if percent != old_percent:
