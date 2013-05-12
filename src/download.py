@@ -68,30 +68,8 @@ def get_metalink(package_name, conf_file, cache_dir):
     
     return metalink
 
-def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):   
-    if conf_file == None:
-        conf_file = "/etc/pacman.conf"
-        
-    if cache_dir == None:
-        cache_dir = "/var/cache/pacman/pkg"
 
-    metalinks = []
-    for package_name in package_names:
-        metalink = get_metalink(package_name, conf_file, cache_dir)
-        if metalink != None:
-            metalinks.append(metalink)
-
-    if len(metalinks) == 0:
-        log.debug(_("Unable to create download queue.\nDownload process won't be accelerated with aria2."))
-        return
-
-    #with open("/tmp/packages.metalink", "wt") as f:
-    #    f.write(str(metalink))
-    
-    rpc_user = "antergos"
-    rpc_passwd = "antergos"
-    rpc_port = "6800"
-    
+def run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir):  
     aria2_args = [
         "--log=/tmp/download-aria2.log",
         "--max-concurrent-downloads=50",
@@ -127,9 +105,23 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
     aria2c_p = subprocess.Popen(aria2_cmd)
     
     aria2c_p.wait()
-    
-    aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
 
+
+
+def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):       
+    if conf_file == None:
+        conf_file = "/etc/pacman.conf"
+        
+    if cache_dir == None:
+        cache_dir = "/var/cache/pacman/pkg"
+
+    rpc_user = "antergos"
+    rpc_passwd = "antergos"
+    rpc_port = "6800"
+
+    run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir)
+
+    aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
     except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
@@ -138,14 +130,17 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         return
 
     all_gids = []
-    for metalink in metalinks:
-        try:
-            gid = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
-            all_gids.append(gid[0])
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-            print("Can't communicate with Aria2. Won't be able to speed up the download:")
-            print(e)
-            return
+
+    for package_name in package_names:
+        metalink = get_metalink(package_name, conf_file, cache_dir)
+        if metalink != None:
+            try:
+                gid = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+                all_gids.append(gid[0])
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+                print("Can't communicate with Aria2. Won't be able to speed up the download:")
+                print(e)
+                return
 
     total = 1
     completed = 0
