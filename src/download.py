@@ -136,12 +136,16 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         if metalink != None:
             try:
                 gid = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
-                all_gids.append(gid[0])
+                pprint(gid)
+                if len(gid) > 0:
+                    all_gids.append(gid[0])
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                 print("Can't communicate with Aria2. Won't be able to speed up the download:")
                 print(e)
                 return
 
+    pprint(all_gids)
+    
     total = 1
     completed = 0
     
@@ -150,12 +154,9 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         completed = 0
         
         for gid in all_gids:
-            try:
-                r = s.aria2.tellStatus(gid, ['gid', 'totalLength', 'completedLength'])
-                total += int(r['totalLength'])
-                completed += int(r['completedLength'])
-            except:
-                pass
+            r = s.aria2.tellStatus(gid, ['totalLength', 'completedLength'])
+            total += int(r['totalLength'])
+            completed += int(r['completedLength'])
 
         action = _('Downloading packages with Aria2...')
         #percent = int(completed * 100.0 / total)
@@ -167,6 +168,8 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         else:
             log.debug(action)
             log.debug(percent)
+        #print(action)
+        #print(percent)
     
         time.sleep(0.1)
 
