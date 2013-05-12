@@ -54,14 +54,12 @@ def get_metalink(package_name, conf_file, cache_dir):
         log.debug(_("Warning! Can't find these packages:"))
         for nf in sorted(not_found):
             log.debug(nf)
-        return None
   
     if missing_deps:
         log.debug(_("Warning! Can't resolve these dependencies:"))
         for md in sorted(missing_deps):
             log.debug(md)
-        return None
-
+  
     metalink = pm2ml.download_queue_to_metalink(
         download_queue,
         output_dir=pargs.output_dir,
@@ -104,9 +102,9 @@ def run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir):
     
     log.debug(aria2_cmd)
 
-    aria2c_p = subprocess.Popen(aria2_cmd)
-    
-    aria2c_p.wait()
+    subprocess.call(aria2_cmd)
+    #aria2c_p = subprocess.Popen(aria2_cmd)
+    #aria2c_p.wait()
 
 
 
@@ -123,6 +121,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir)
 
+    print("Connecting with aria2")
     aria2_url = 'http://%s:%s@localhost:%s/rpc' % (rpc_user, rpc_passwd, rpc_port)
     try:
         s = xmlrpc.client.ServerProxy(aria2_url)
@@ -133,6 +132,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     all_gids = []
 
+    print("Passing all metalinks to aria2")
     for package_name in package_names:
         metalink = get_metalink(package_name, conf_file, cache_dir)
         if metalink != None:
@@ -169,8 +169,8 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
         else:
             log.debug(action)
             log.debug(percent)
-        #print(action)
-        #print(percent)
+        
+        print(action, percent)
     
         time.sleep(0.1)
 
