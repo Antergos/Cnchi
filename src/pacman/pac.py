@@ -58,7 +58,7 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        self.last_event = ()
+        self.last_action = ""
         
         if conf != None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
@@ -161,10 +161,15 @@ class Pac(object):
             self.queue_event("error", line)
 
     def queue_event(self, event_type, event_text=""):
-        new_event = (event_type, event_text)
-        if self.last_event != new_event:
-            self.callback_queue.put(new_event)
-            self.last_event = new_event
+        if event_type == 'action':
+            if self.last_action == event_text:
+                # do not repeat the same event
+                return
+            else:
+                self.last_action = event_text
+                
+        self.callback_queue.put((event_type, event_text))
+        self.last_event = new_event
         #print("%s : %s" % (event_type, event_text))
          
     # Callback functions 
@@ -280,14 +285,16 @@ class Pac(object):
                 else:
                     self.percent = fraction
                 self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
+                self.queue_event("action", self.action)
+                self.queue_event("percent", self.percent)
             else:
                 self.action = _('Refreshing %s...') % _target
                 self.target = _target
                 # can't we know wich percent has 'refreshed' ?
                 self.percent = 0
                 self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
-            self.queue_event("action", self.action)
-            self.queue_event("percent", self.percent)
+                self.queue_event("action", self.action)
+                #self.queue_event("percent", self.percent)
 
     def cb_progress(self, _target, _percent, n, i):
         if _target:
