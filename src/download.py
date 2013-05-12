@@ -38,37 +38,6 @@ import xmlrpc.client
 
 from pprint import pprint
 
-def get_metalink(package_name, conf_file, cache_dir):
-    args = str("-c %s" % conf_file).split() 
-    args += [package_name]
-    args += ["--noconfirm"]
-    args += "-r -p http -l 50".split()
-    
-    try:
-        pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-    except:
-        log.debug(_("Unable to create download queue for package %s") % package_name)
-        return None  
-
-    if not_found:
-        log.debug(_("Warning! Can't find these packages:"))
-        for nf in sorted(not_found):
-            log.debug(nf)
-  
-    if missing_deps:
-        log.debug(_("Warning! Can't resolve these dependencies:"))
-        for md in sorted(missing_deps):
-            log.debug(md)
-  
-    metalink = pm2ml.download_queue_to_metalink(
-        download_queue,
-        output_dir=pargs.output_dir,
-        set_preference=pargs.preference
-    )
-    
-    return metalink
-
-
 def run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir):  
     aria2_args = [
         "--log=/tmp/download-aria2.log",
@@ -102,10 +71,38 @@ def run_aria2_as_daemon(rpc_user, rpc_passwd, rpc_port, cache_dir):
     
     log.debug(aria2_cmd)
 
-    subprocess.call(aria2_cmd)
-    #aria2c_p = subprocess.Popen(aria2_cmd)
-    #aria2c_p.wait()
+    aria2c_p = subprocess.Popen(aria2_cmd)
+    aria2c_p.wait()
 
+def get_metalink(package_name, conf_file, cache_dir):
+    args = str("-c %s" % conf_file).split() 
+    args += [package_name]
+    args += ["--noconfirm"]
+    args += "-r -p http -l 50".split()
+    
+    try:
+        pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
+    except:
+        log.debug(_("Unable to create download queue for package %s") % package_name)
+        return None  
+
+    if not_found:
+        log.debug(_("Warning! Can't find these packages:"))
+        for nf in sorted(not_found):
+            log.debug(nf)
+  
+    if missing_deps:
+        log.debug(_("Warning! Can't resolve these dependencies:"))
+        for md in sorted(missing_deps):
+            log.debug(md)
+  
+    metalink = pm2ml.download_queue_to_metalink(
+        download_queue,
+        output_dir=pargs.output_dir,
+        set_preference=pargs.preference
+    )
+    
+    return metalink
 
 
 def download_packages(package_names, conf_file=None, cache_dir=None, callback_queue=None):       
@@ -132,11 +129,12 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
 
     all_gids = []
 
-    print("Passing all metalinks to aria2")
     for package_name in package_names:
+        print("Getting metalink for package %s" % package_name)
         metalink = get_metalink(package_name, conf_file, cache_dir)
         if metalink != None:
             try:
+                print("Adding metalink for package %s" % package_name)
                 gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
                 for gid in gids:
                     all_gids.append(gid)
@@ -170,7 +168,7 @@ def download_packages(package_names, conf_file=None, cache_dir=None, callback_qu
             log.debug(action)
             log.debug(percent)
         
-        print(action, percent)
+        #print(action, percent)
     
         time.sleep(0.1)
 
