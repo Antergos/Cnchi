@@ -58,7 +58,7 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        self.last_event = ""
+        self.last_event = ()
         
         if conf != None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
@@ -163,7 +163,7 @@ class Pac(object):
     def queue_event(self, event_type, event_text=""):
         new_event = (event_type, event_text)
         if self.last_event != new_event:
-            self.callback_queue.put()
+            self.callback_queue.put(new_event)
             self.last_event = new_event
         #print("%s : %s" % (event_type, event_text))
          
@@ -273,7 +273,7 @@ class Pac(object):
                 if _transferred == size:
                     self.already_transferred += size
                 fsize = self.get_size(self.total_size)
-                self.action = _('Downloading %s') % _target
+                self.action = _('Downloading %s...') % _target
                 self.target = _target
                 if fraction > 1:
                     self.percent = 0
