@@ -163,7 +163,7 @@ class Pac(object):
     def queue_event(self, event_type, event_text=""):
         if event_type == 'action':
             if self.last_action == event_text:
-                # do not repeat the same event
+                # do not repeat the same action event
                 return
             else:
                 self.last_action = event_text

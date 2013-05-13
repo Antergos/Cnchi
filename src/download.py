@@ -52,8 +52,6 @@ class DownloadPackages():
             
         self.callback_queue = callback_queue
 
-        self.last_action = ""
-
         self.rpc_user = "antergos"
         self.rpc_passwd = "antergos"
         self.rpc_port = "6800"
@@ -75,7 +73,8 @@ class DownloadPackages():
             if metalink != None:
                 try:
                     log.debug(_("Adding metalink for package %s") % package_name)
-                    gids = s.aria2.addMetalink(xmlrpc.client.Binary(str(metalink).encode()))
+                    binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
+                    gids = s.aria2.addMetalink(binary_metalink)
                     for gid in gids:
                         all_gids.append(gid)
                 except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
@@ -85,31 +84,30 @@ class DownloadPackages():
 
                 total = 0
                 completed = 0
-                old_percent = 0
+                old_percent = -1
                 
                 for gid in all_gids:
                     r = s.aria2.tellStatus(gid, ['totalLength'])
                     total += int(r['totalLength'])
-                    
-                action = _("Downloading package '%s'..." % package_name)
-                self.queue_event('action', action)
 
-                while completed < total:
-                    completed = 0
-                    
-                    for gid in all_gids:
-                        r = s.aria2.tellStatus(gid, ['completedLength'])
-                        completed += int(r['completedLength'])
+                if total > 0:
+                    action = _("Downloading package '%s'..." % package_name)
+                    self.queue_event('action', action)
 
-                    try:
+                    while completed < total:
+                        completed = 0
+                        
+                        for gid in all_gids:
+                            r = s.aria2.tellStatus(gid, ['completedLength'])
+                            completed += int(r['completedLength'])
+
                         percent = float(completed / total)
-                    except ZeroDivisionError as e:
-                        print(e)
-                        completed = total
 
-                    if percent != old_percent:
-                        self.queue_event('percent', percent)
-                        old_percent = percent
+                        if percent != old_percent:
+                            self.queue_event('percent', percent)
+                            old_percent = percent
+            else:
+                log.debug(_("Error creating metalink for package %s") % package_name)
 
     def run_aria2_as_daemon(self):
         aria2_args = [
@@ -178,13 +176,6 @@ class DownloadPackages():
         return metalink
 
     def queue_event(self, event_type, event_text=""):
-        if event_type == 'action':
-            if self.last_action == event_text:
-                # do not repeat the same event
-                return
-            else:
-                self.last_action = event_text
-                    
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
         else:
