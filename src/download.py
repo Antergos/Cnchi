@@ -87,7 +87,7 @@ class DownloadPackages():
                 old_percent = -1
                 
                 for gid in all_gids:
-                    r = s.aria2.tellStatus(gid, ['totalLength'])
+                    r = s.aria2.tellStatus(gid)
                     total += int(r['totalLength'])
 
                 if total > 0:
@@ -98,7 +98,7 @@ class DownloadPackages():
                         completed = 0
                         
                         for gid in all_gids:
-                            r = s.aria2.tellStatus(gid, ['completedLength'])
+                            r = s.aria2.tellStatus(gid)
                             completed += int(r['completedLength'])
 
                         percent = float(completed / total)
@@ -112,11 +112,11 @@ class DownloadPackages():
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=5",
+            "--max-concurrent-downloads=20",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=5",
+            "--max-connection-per-server=4",
             "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
@@ -185,4 +185,12 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
     log._debug = True
-    DownloadPackages(["base", "base-devel", "chromium", "faenza-hotot-icon"])
+    DownloadPackages(\
+    ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
+     "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
+     "wireless_tools", "wpa_actiond", "b43-fwcutter", "ntfs-3g", 
+     "dosfstools", "xorg-server", "xorg-server-utils", "sudo", "pacmanxg4", 
+     "pkgfile", "chromium", "flashplugin", "alsa-utils", "whois", "dnsutils", 
+     "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
+     "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
+     "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])

@@ -293,8 +293,8 @@ class InstallationProcess(Process):
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except (FileExistsError, shutil.Error) as e:
-            # log if error but continue anyway
-            log.debug(e)
+            # print error but continue anyway
+            print(e)
 
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
