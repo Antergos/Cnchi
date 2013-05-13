@@ -112,7 +112,7 @@ class DownloadPackages():
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=50",
+            "--max-concurrent-downloads=5",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
@@ -178,11 +178,11 @@ class DownloadPackages():
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        else:
+        elif event_type != "percent":
             log.debug(event_text)
 
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
     log._debug = True
-    DownloadPackages(["vim", "gedit", "zip", "faenza-hotot-icon"])
+    DownloadPackages(["base", "base-devel", "chromium", "faenza-hotot-icon"])
