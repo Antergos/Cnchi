@@ -770,6 +770,17 @@ class InstallationThread(threading.Thread):
         with open(vconsole_conf_path, "wt") as vconsole_conf:
             vconsole_conf.write('KEYMAP=%s \n' % lang_code)
 
+        # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+        xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
+        with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
+           xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+           xorg_conf_xkb.write('# manually too freely.\n')
+           xorg_conf_xkb.write('Section "InputClass"\n')
+           xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+           xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+           xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % lang_code)
+           xorg_conf_xkb.write('EndSection\n')
+
         self.auto_timesetting()
 
         # Set autologin if selected
