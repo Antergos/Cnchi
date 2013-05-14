@@ -58,17 +58,16 @@ class DownloadPackages():
 
         self.run_aria2_as_daemon()
 
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
+
+        try:
+            s = xmlrpc.client.ServerProxy(aria2_url)
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+            print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
+            print(e)
+            return
 
         for package_name in package_names:
-            
-            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
-            try:
-                s = xmlrpc.client.ServerProxy(aria2_url)
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-                print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
-                print(e)
-                return
-
             all_gids = []
             log.debug(_("Getting metalink for package %s") % package_name)
             metalink = self.get_metalink(package_name)
@@ -93,63 +92,27 @@ class DownloadPackages():
                     total += int(r['totalLength'])
 
                 if total > 0:
-                    action = _("Downloading package '%s'..." % package_name)
+                    action = _("Downloading package '%s'...") % package_name
                     self.queue_event('action', action)
 
-                    while completed < total:
+                    all_gids_completed = False
+                    while all_gids_completed is False:
                         completed = 0
+                        all_gids_completed = True
                         
                         for gid in all_gids:
                             r = s.aria2.tellStatus(gid)
                             completed += int(r['completedLength'])
+                            if r['status'] != "complete":
+                                all_gids_completed = False
 
                         percent = float(completed / total)
 
                         if percent != old_percent:
                             self.queue_event('percent', percent)
                             old_percent = percent
-                
-                for gid in all_gids:
-                    r = s.aria2.tellStatus(gid)
-                    pprint(r)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
-
-
-    def aria2_download(self, metalink_filename):
-        aria2_args = [
-            "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=20",
-            "--metalink-file=%s" % metalink_filename,
-            "--check-integrity",
-            "--continue=false",
-            "--max-connection-per-server=4",
-            "--min-split-size=5M",
-            "--enable-rpc",
-            "--rpc-user=%s" % self.rpc_user,
-            "--rpc-passwd=%s" % self.rpc_passwd,
-            "--rpc-listen-port=%s" % self.rpc_port,
-            "--rpc-save-upload-metadata=false",
-            "--allow-overwrite=true",
-            "--always-resume=false",
-            "--auto-save-interval=0",
-            "--daemon=false",
-            "--log-level=notice",
-            "--show-console-readout=false",
-            "--summary-interval=0",
-            "--no-conf",
-            "--quiet",
-            "--remove-control-file",
-            "--stop-with-process=%d" % os.getpid(),
-            "--auto-file-renaming=false",
-            "--conditional-get=true",
-            "--dir=%s" % self.cache_dir]
-        
-        aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
-        
-        aria2c_p = subprocess.Popen(aria2_cmd)
-        aria2c_p.wait()
-
 
     def run_aria2_as_daemon(self):
         aria2_args = [
@@ -218,7 +181,8 @@ class DownloadPackages():
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        elif event_type != "percent":
+        #elif event_type != "percent":
+        else:
             log.debug(event_text)
 
 if __name__ == '__main__':
