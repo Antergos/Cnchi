@@ -58,15 +58,17 @@ class DownloadPackages():
 
         self.run_aria2_as_daemon()
 
-        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
-        try:
-            s = xmlrpc.client.ServerProxy(aria2_url)
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-            print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
-            print(e)
-            return
 
         for package_name in package_names:
+            
+            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
+            try:
+                s = xmlrpc.client.ServerProxy(aria2_url)
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+                print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
+                print(e)
+                return
+
             all_gids = []
             log.debug(_("Getting metalink for package %s") % package_name)
             metalink = self.get_metalink(package_name)
@@ -106,8 +108,48 @@ class DownloadPackages():
                         if percent != old_percent:
                             self.queue_event('percent', percent)
                             old_percent = percent
+                
+                for gid in all_gids:
+                    r = s.aria2.tellStatus(gid)
+                    pprint(r)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
+
+
+    def aria2_download(self, metalink_filename):
+        aria2_args = [
+            "--log=/tmp/download-aria2.log",
+            "--max-concurrent-downloads=20",
+            "--metalink-file=%s" % metalink_filename,
+            "--check-integrity",
+            "--continue=false",
+            "--max-connection-per-server=4",
+            "--min-split-size=5M",
+            "--enable-rpc",
+            "--rpc-user=%s" % self.rpc_user,
+            "--rpc-passwd=%s" % self.rpc_passwd,
+            "--rpc-listen-port=%s" % self.rpc_port,
+            "--rpc-save-upload-metadata=false",
+            "--allow-overwrite=true",
+            "--always-resume=false",
+            "--auto-save-interval=0",
+            "--daemon=false",
+            "--log-level=notice",
+            "--show-console-readout=false",
+            "--summary-interval=0",
+            "--no-conf",
+            "--quiet",
+            "--remove-control-file",
+            "--stop-with-process=%d" % os.getpid(),
+            "--auto-file-renaming=false",
+            "--conditional-get=true",
+            "--dir=%s" % self.cache_dir]
+        
+        aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
+        
+        aria2c_p = subprocess.Popen(aria2_cmd)
+        aria2c_p.wait()
+
 
     def run_aria2_as_daemon(self):
         aria2_args = [
@@ -140,8 +182,6 @@ class DownloadPackages():
         
         aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
         
-        log.debug(aria2_cmd)
-
         aria2c_p = subprocess.Popen(aria2_cmd)
         aria2c_p.wait()
 
@@ -185,6 +225,18 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
     log._debug = True
+    
+    DownloadPackages(\
+    ["antergos-keyring", "antergos-mirrorlist",
+     "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
+     "wireless_tools", "wpa_actiond", "b43-fwcutter", "ntfs-3g", 
+     "dosfstools", "xorg-server", "xorg-server-utils", "sudo", "pacmanxg4", 
+     "pkgfile", "chromium", "flashplugin", "alsa-utils", "whois", "dnsutils", 
+     "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
+     "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
+     "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
+
+    '''
     DownloadPackages(\
     ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
      "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
@@ -194,3 +246,4 @@ if __name__ == '__main__':
      "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
      "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
      "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
+    '''
