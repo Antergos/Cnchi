@@ -130,11 +130,11 @@ class DownloadPackages():
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=20",
+            "--max-concurrent-downloads=4",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=4",
+            "--max-connection-per-server=2",
             "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
