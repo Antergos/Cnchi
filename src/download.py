@@ -71,7 +71,7 @@ class DownloadPackages():
             all_gids = []
             metalink = self.get_metalink(package_name)
             if metalink != None:
-                meta_path = "/tmp/%s.metalink" % package_name
+                #meta_path = "/tmp/%s.metalink" % package_name
                 #with open(meta_path, "wb") as f:
                 #    f.write(str(metalink).encode())
                 try:
@@ -130,11 +130,11 @@ class DownloadPackages():
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=4",
+            "--max-concurrent-downloads=1",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=2",
+            "--max-connection-per-server=5",
             "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,

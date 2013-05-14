@@ -68,7 +68,8 @@ class Settings():
             'require_password' : True, \
             'encrypt_home' : False, \
             'user_info_done' : False, \
-            'rankmirrors_done' : False })
+            'rankmirrors_done' : False, \
+            'use_aria2' : False })
 
     def _get_settings(self):
         gd = self.settings.get()

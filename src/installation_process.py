@@ -73,7 +73,7 @@ class InstallationProcess(Process):
         
         self.callback_queue = callback_queue
         self.settings = settings
-
+        
         self.method = self.settings.get('partition_mode')
         
         self.queue_event('info', _("Installing using the '%s' method") % self.method)
@@ -210,9 +210,10 @@ class InstallationProcess(Process):
             self.select_packages()
             self.queue_event('debug', 'Packages selected')
             
-            self.queue_event('debug', 'Downloading packages...')
-            self.download_packages()
-            self.queue_event('debug', 'Packages downloaded.')
+            if self.settings.get("use_aria2"):
+                self.queue_event('debug', 'Downloading packages...')
+                self.download_packages()
+                self.queue_event('debug', 'Packages downloaded.')
             
             self.queue_event('debug', 'Installing packages...')
             self.install_packages()
