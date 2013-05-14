@@ -181,9 +181,6 @@ postinstall(){
 	# Configure touchpad
 	set_synaptics
 
-	# Set keyboard layout
-	sed -i "s#Identifier \"evdev keyboard catchall\".*#&\n        Option \"XkbLayout\" \"${LANG_CODE}\"#" ${DESTDIR}/etc/X11/xorg.conf.d/10-evdev.conf
-
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
 	cp -f /etc/os-release ${DESTDIR}/etc/os-release
