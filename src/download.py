@@ -69,15 +69,18 @@ class DownloadPackages():
 
         for package_name in package_names:
             all_gids = []
-            log.debug(_("Getting metalink for package %s") % package_name)
             metalink = self.get_metalink(package_name)
             if metalink != None:
+                meta_path = "/tmp/%s.metalink" % package_name
+                #with open(meta_path, "wb") as f:
+                #    f.write(str(metalink).encode())
                 try:
                     log.debug(_("Adding metalink for package %s") % package_name)
                     binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
                     gids = s.aria2.addMetalink(binary_metalink)
                     for gid in gids:
                         all_gids.append(gid)
+                        print("Added GID %s" % gid)
                 except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                     print("Can't communicate with Aria2. Won't be able to speed up the download:")
                     print(e)
@@ -91,38 +94,36 @@ class DownloadPackages():
                     r = s.aria2.tellStatus(gid)
                     total += int(r['totalLength'])
                     
-                # Possible status:
-                # active, waiting, paused, error, complete, removed
+                #finished_status = [ "complete", "error", "removed" ]
+                unfinished_status = [ "active", "waiting", "paused" ]
 
                 if total > 0:
                     action = _("Downloading package '%s'...") % package_name
                     self.queue_event('action', action)
 
                     all_gids_completed = False
-                    while all_gids_completed is False:
+                    while all_gids_completed == False:
                         completed = 0
                         all_gids_completed = True
                         
                         for gid in all_gids:
                             r = s.aria2.tellStatus(gid)
-                            if r['status'] != "complete":
+                            if r['status'] in unfinished_status:
                                 all_gids_completed = False
-                            if r['status'] == "active" or \
-                               r['status'] == "complete":
+                            else:
                                 completed += int(r['completedLength'])
 
-                            '''
-                            print("")
-                            print("gid: ", gid)
-                            print("status: ", r['status'])
-                            print("completed: ", r['completedLength'])
-                            print("total: ", r['totalLength'])
-                            '''
                         percent = float(completed / total)
 
                         if percent != old_percent:
                             self.queue_event('percent', percent)
                             old_percent = percent
+                    
+                    for g in gids:
+                        print("GID %s COMPLETED!" % g)
+
+                #if os.path.exists(meta_path):
+                #    os.remove(meta_path)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
 
