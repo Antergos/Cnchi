@@ -80,7 +80,6 @@ class DownloadPackages():
                     gids = s.aria2.addMetalink(binary_metalink)
                     for gid in gids:
                         all_gids.append(gid)
-                        print("Added GID %s" % gid)
                 except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                     print("Can't communicate with Aria2. Won't be able to speed up the download:")
                     print(e)
@@ -89,12 +88,16 @@ class DownloadPackages():
                 total = 0
                 completed = 0
                 old_percent = -1
-                
+
                 for gid in all_gids:
                     r = s.aria2.tellStatus(gid)
-                    total += int(r['totalLength'])
+                    totalLength = int(r['totalLength'])
+                    # why sometimes gives 0 as totalLength is a mistery to me
+                    if totalLength == 0:
+                        files = r['files']
+                        totalLength = int(files[0]['length'])
+                    total += totalLength
                     
-                #finished_status = [ "complete", "error", "removed" ]
                 unfinished_status = [ "active", "waiting", "paused" ]
 
                 if total > 0:
@@ -110,20 +113,13 @@ class DownloadPackages():
                             r = s.aria2.tellStatus(gid)
                             if r['status'] in unfinished_status:
                                 all_gids_completed = False
-                            else:
-                                completed += int(r['completedLength'])
+                            completed += int(r['completedLength'])
 
                         percent = float(completed / total)
 
                         if percent != old_percent:
                             self.queue_event('percent', percent)
                             old_percent = percent
-                    
-                    for g in gids:
-                        print("GID %s COMPLETED!" % g)
-
-                #if os.path.exists(meta_path):
-                #    os.remove(meta_path)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
 
@@ -202,7 +198,8 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
     log._debug = True
-    
+
+    '''
     DownloadPackages(\
     ["antergos-keyring", "antergos-mirrorlist",
      "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
@@ -212,8 +209,8 @@ if __name__ == '__main__':
      "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
      "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
      "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
-
     '''
+    
     DownloadPackages(\
     ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
      "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
@@ -223,4 +220,4 @@ if __name__ == '__main__':
      "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
      "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
      "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
-    '''
+
