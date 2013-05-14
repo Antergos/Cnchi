@@ -97,7 +97,8 @@ class Slides(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
-        self.set_message(_("Please wait..."))
+        if len(self.info_label.get_label()) <= 0:
+            self.set_message(_("Please wait..."))
         
         self.install_ok = _("Installation finished!\n" \
                             "Do you want to restart your system now?")
