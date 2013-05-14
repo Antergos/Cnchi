@@ -191,18 +191,22 @@ class Location(Gtk.Box):
         selected = self.treeview.get_selection()
         if selected:
             (ls, iter) = selected.get_selected()
-            if iter:
-                country = ls.get_value(iter, 0)
-                lang_code = self.settings.get("language_code")
-                for mylocale in self.locales:
-                    if self.locales[mylocale] == country:
-                        self.settings.set("locale", mylocale)
-                        try:
-                            import locale
-                            locale.setlocale(locale.LC_ALL, mylocale)
-                            log.debug(_("locale changed to : %s") % mylocale)
-                        except (ImportError, locale.Error):
-                            log.debug(_("Can't change to locale '%s'") % mylocale)
+
+            if not iter:
+                iter = ls.get_iter_first()
+
+            country = ls.get_value(iter, 0)
+            lang_code = self.settings.get("language_code")
+            for mylocale in self.locales:
+                if self.locales[mylocale] == country:
+                    self.settings.set("locale", mylocale)
+                    try:
+                        import locale
+                        locale.setlocale(locale.LC_ALL, mylocale)
+                        log.debug(_("locale changed to : %s") % mylocale)
+                    except (ImportError, locale.Error):
+                        log.debug(_("Can't change to locale '%s'") % mylocale)
+
         return True
 
     def get_prev_page(self):
