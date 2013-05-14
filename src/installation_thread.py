@@ -609,7 +609,7 @@ class InstallationThread(threading.Thread):
             # ignore if exists
             pass
 
-        self.chroot(['/usr/sbin/grub-mkconfig', '-o', '/boot/grub/grub.cfg'])
+        self.chroot(['sh', '-c', 'LANG=%s /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg' % code])
         
         self.chroot_umount()
 
@@ -617,13 +617,6 @@ class InstallationThread(threading.Thread):
         
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            try:
-                code = self.settings.get("language_code")[0:2]
-                shutil.copy2("%s/boot/grub/locale/en@quot.mo" % self.dest_dir, 
-                             "%s/boot/grub/locale/%s.mo.gz" % (self.dest_dir, code))
-            except FileExistsError:
-                # ignore if exists
-                pass
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
