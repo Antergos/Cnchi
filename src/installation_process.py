@@ -161,13 +161,17 @@ class InstallationProcess(Process):
             os.mkdir(self.dest_dir)
 
         # Mount root and boot partitions (only if it's needed)
-        if self.method == 'easy' or self.method == 'advanced':
+        if self.method == 'alongside' or self.method == 'advanced':
             # not doing this in automatic mode as our script mounts the root and boot devices
             try:
+                txt = _("Mounting partition %s into %s directory") % (root_partition, self.dest_dir)
+                self.queue_event('debug', txt)
                 subprocess.check_call(['mount', root_partition, self.dest_dir])
                 # We also mount the boot partition if it's needed
                 subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir]) 
                 if "/boot" in self.mount_devices:
+                    txt = _("Mounting partition %s into %s/boot directory") % (boot_partition, self.dest_dir)
+                    self.queue_event('debug', txt)
                     subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
             except subprocess.CalledProcessError as e:
                 self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
@@ -184,6 +188,8 @@ class InstallationProcess(Process):
                         mount_dir = self.dest_dir + path
                         if not os.path.exists(mount_dir):
                             os.mkdir(mount_dir)
+                        txt = _("Mounting partition %s into %s directory") % (mp, mount_dir)
+                        self.queue_event('debug', txt)
                         subprocess.check_call(['mount', mp, mount_dir])
                     except subprocess.CalledProcessError as e:
                         # we try to continue as root and boot mounted ok

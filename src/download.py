@@ -90,6 +90,9 @@ class DownloadPackages():
                 for gid in all_gids:
                     r = s.aria2.tellStatus(gid)
                     total += int(r['totalLength'])
+                    
+                # Possible status:
+                # active, waiting, paused, error, complete, removed
 
                 if total > 0:
                     action = _("Downloading package '%s'...") % package_name
@@ -102,10 +105,19 @@ class DownloadPackages():
                         
                         for gid in all_gids:
                             r = s.aria2.tellStatus(gid)
-                            completed += int(r['completedLength'])
                             if r['status'] != "complete":
                                 all_gids_completed = False
+                            if r['status'] == "active" or \
+                               r['status'] == "complete":
+                                completed += int(r['completedLength'])
 
+                            '''
+                            print("")
+                            print("gid: ", gid)
+                            print("status: ", r['status'])
+                            print("completed: ", r['completedLength'])
+                            print("total: ", r['totalLength'])
+                            '''
                         percent = float(completed / total)
 
                         if percent != old_percent:
@@ -181,8 +193,8 @@ class DownloadPackages():
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        #elif event_type != "percent":
-        else:
+        elif event_type != "percent":
+        #else:
             log.debug(event_text)
 
 if __name__ == '__main__':
