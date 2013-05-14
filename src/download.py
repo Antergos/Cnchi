@@ -120,17 +120,18 @@ class DownloadPackages():
                         if percent != old_percent:
                             self.queue_event('percent', percent)
                             old_percent = percent
+                    log.debug(_("Package %s downloaded.") % package_name)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
 
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=1",
+            "--max-concurrent-downloads=2",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=5",
+            "--max-connection-per-server=10",
             "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
@@ -191,7 +192,6 @@ class DownloadPackages():
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
         elif event_type != "percent":
-        #else:
             log.debug(event_text)
 
 if __name__ == '__main__':
