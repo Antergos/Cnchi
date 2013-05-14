@@ -813,6 +813,21 @@ class InstallationThread(threading.Thread):
                             line = '# autologin=%s' % username
                             line = line[1:]
                         lxdm_conf.write(line)
+
+            # Systems with LightDM as the Desktop Manager
+            elif self.desktop_manager == 'lightdm':
+                lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+                # Ideally, use configparser for the ini conf file, but just do
+                # a simple text replacement for now
+                text = []
+                with open(lightdm_conf_path, "rt") as lightdm_conf:
+                    text = lightdm_conf.readlines()
+
+                with open(lightdm_conf_path, "wt") as lightdm_conf:
+                    for line in text:
+                        if '#autologin-user=' in line:
+                            line = 'autologin-user=%s\n' % username
+                        lightdm_conf.write(line)
                 
 
         # Let's start without using hwdetect for mkinitcpio.conf.
