@@ -4682,12 +4682,8 @@ configure_system() {
                     DIALOG --inputbox $"Enter your user name (no spaces):" 9 40 2>${ANSWER} || return 1
                     USER_NAME_TMP=$(cat ${ANSWER})
                     USER_NAME=${USER_NAME_TMP,,}
-                    rm -f ${DESTDIR}/etc/sudoers
-                    echo "root ALL=(ALL) ALL" > ${DESTDIR}/etc/sudoers
-                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers
-                    #cp -f /arch/sudoers ${DESTDIR}/etc/sudoers
-                    #sed -i "s|^cinnarch|${USER_NAME}|g" ${DESTDIR}/etc/sudoers
-                    chmod 440 ${DESTDIR}/etc/sudoers
+                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers.d/installer
+                    chmod 440 ${DESTDIR}/etc/sudoers.d/installer
 
                     DIALOG --inputbox $"Enter your full name:" 9 40 2>${ANSWER} || return 1
                     USER_FULL_NAME=$(cat ${ANSWER})
