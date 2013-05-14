@@ -82,6 +82,7 @@ class InstallationThread(threading.Thread):
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
         self.desktop_manager = 'gdm'
+        self.card = []
     
         self.fs_devices = fs_devices
 
@@ -334,24 +335,24 @@ class InstallationThread(threading.Thread):
 
         graphics = self.get_graphics_card()
         
-        self.card = ""
 
         if "ati " in graphics:
             for child in root.iter('ati'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
-            self.card = "ati"
+            self.card.append('ati')
         
         if "nvidia" in graphics:
             for child in root.iter('nvidia'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
-            self.card = "nvidia"
+            self.card.append('nvidia')
         
         if "intel" in graphics or "lenovo" in graphics:
             for child in root.iter('intel'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
+            self.card.append('intel')
         
         if "virtualbox" in graphics:
             for child in root.iter('virtualbox'):
@@ -824,3 +825,13 @@ class InstallationThread(threading.Thread):
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
         subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, lang_code])
+
+        # Set SNA acceleration method on Intel cards to avoid GDM bug
+        if 'intel' in self.card:
+                intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
+                with open(intel_conf_path, "wt") as intel_conf:
+                    intel_conf.write('Section "Device"\n')
+                    intel_conf.write('\tIdentifier  "Intel Graphics"\n')
+                    intel_conf.write('\tDriver      "intel"\n')
+                    intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
+                    intel_conf.write('EndSection\n')

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
+"POT-Creation-Date: 2013-05-12 21:29+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,192 +108,192 @@ msgstr ""
 msgid "Desktops"
 msgstr ""
 
-#: src/installation_advanced.py:194 src/installation_advanced.py:426
-#: src/installation_advanced.py:438
+#: src/installation_advanced.py:194 src/installation_advanced.py:425
+#: src/installation_advanced.py:437
 msgid "free space"
 msgstr ""
 
-#: src/installation_advanced.py:258 src/installation_easy.py:90
+#: src/installation_advanced.py:257 src/installation_easy.py:90
 msgid "Device"
 msgstr ""
 
-#: src/installation_advanced.py:261
+#: src/installation_advanced.py:260
 msgid "Type"
 msgstr ""
 
-#: src/installation_advanced.py:264 src/installation_easy.py:86
+#: src/installation_advanced.py:263 src/installation_easy.py:86
 msgid "Mount point"
 msgstr ""
 
-#: src/installation_advanced.py:267
+#: src/installation_advanced.py:266
 msgid "Label"
 msgstr ""
 
-#: src/installation_advanced.py:273 src/installation_advanced.py:1223
+#: src/installation_advanced.py:272 src/installation_advanced.py:1222
 msgid "Format"
 msgstr ""
 
-#: src/installation_advanced.py:276
+#: src/installation_advanced.py:275
 msgid "Size"
 msgstr ""
 
-#: src/installation_advanced.py:279
+#: src/installation_advanced.py:278
 msgid "Used"
 msgstr ""
 
-#: src/installation_advanced.py:282
+#: src/installation_advanced.py:281
 msgid "Flags"
 msgstr ""
 
-#: src/installation_advanced.py:288
+#: src/installation_advanced.py:287
 msgid "SSD"
 msgstr ""
 
-#: src/installation_advanced.py:409
+#: src/installation_advanced.py:408
 msgid "none"
 msgstr ""
 
-#: src/installation_advanced.py:459
+#: src/installation_advanced.py:458
 msgid "extended"
 msgstr ""
 
-#: src/installation_advanced.py:581 src/installation_advanced.py:818
+#: src/installation_advanced.py:580 src/installation_advanced.py:817
 msgid "Cannot use same mount twice..."
 msgstr ""
 
-#: src/installation_advanced.py:837
+#: src/installation_advanced.py:836
 msgid "Creating primary partition"
 msgstr ""
 
-#: src/installation_advanced.py:848
+#: src/installation_advanced.py:847
 msgid "Creating extended partition"
 msgstr ""
 
-#: src/installation_advanced.py:854
+#: src/installation_advanced.py:853
 msgid "Creating logical partition"
 msgstr ""
 
-#: src/installation_advanced.py:920
+#: src/installation_advanced.py:919
 msgid "Advanced installation mode"
 msgstr ""
 
-#: src/installation_advanced.py:924
+#: src/installation_advanced.py:923
 msgid "Device for boot loader installation:"
 msgstr ""
 
-#: src/installation_advanced.py:934
+#: src/installation_advanced.py:933
 msgid "New partition table"
 msgstr ""
 
-#: src/installation_advanced.py:942
+#: src/installation_advanced.py:941
 msgid "Change..."
 msgstr ""
 
-#: src/installation_advanced.py:947
+#: src/installation_advanced.py:946
 msgid "Size:"
 msgstr ""
 
-#: src/installation_advanced.py:951
+#: src/installation_advanced.py:950
 msgid "Type:"
 msgstr ""
 
-#: src/installation_advanced.py:955
+#: src/installation_advanced.py:954
 msgid "Primary"
 msgstr ""
 
-#: src/installation_advanced.py:959
+#: src/installation_advanced.py:958
 msgid "Logical"
 msgstr ""
 
-#: src/installation_advanced.py:963
+#: src/installation_advanced.py:962
 msgid "Extended"
 msgstr ""
 
-#: src/installation_advanced.py:967
+#: src/installation_advanced.py:966
 msgid "Beginning of this space"
 msgstr ""
 
-#: src/installation_advanced.py:971
+#: src/installation_advanced.py:970
 msgid "End of this space"
 msgstr ""
 
-#: src/installation_advanced.py:975 src/installation_advanced.py:992
+#: src/installation_advanced.py:974 src/installation_advanced.py:991
 msgid "Use as:"
 msgstr ""
 
-#: src/installation_advanced.py:979 src/installation_advanced.py:996
+#: src/installation_advanced.py:978 src/installation_advanced.py:995
 msgid "Mount point:"
 msgstr ""
 
-#: src/installation_advanced.py:983 src/installation_advanced.py:1000
+#: src/installation_advanced.py:982 src/installation_advanced.py:999
 msgid "Label (optional):"
 msgstr ""
 
-#: src/installation_advanced.py:987
+#: src/installation_advanced.py:986
 msgid "Encryption options..."
 msgstr ""
 
-#: src/installation_advanced.py:1004
+#: src/installation_advanced.py:1003
 msgid "Format:"
 msgstr ""
 
-#: src/installation_advanced.py:1009
+#: src/installation_advanced.py:1008
 msgid "Partition table type:"
 msgstr ""
 
-#: src/installation_advanced.py:1014
+#: src/installation_advanced.py:1013
 msgid "Create partition table"
 msgstr ""
 
-#: src/installation_advanced.py:1017 src/installation_automatic.py:87
+#: src/installation_advanced.py:1016 src/installation_automatic.py:87
 #: src/installation_easy.py:98
 msgid "Install now!"
 msgstr ""
 
-#: src/installation_advanced.py:1097
+#: src/installation_advanced.py:1096
 msgid "Creating a new partition table of type %s for disk %s"
 msgstr ""
 
-#: src/installation_advanced.py:1164
+#: src/installation_advanced.py:1163
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr ""
 
-#: src/installation_advanced.py:1216
+#: src/installation_advanced.py:1215
 msgid "Partition %s will be deleted"
 msgstr ""
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1222
 msgid "Mount"
 msgstr ""
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1222
 msgid "New"
 msgstr ""
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1222
 msgid "Partition"
 msgstr ""
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1222
 msgid "Relabel"
 msgstr ""
 
-#: src/installation_advanced.py:1244
+#: src/installation_advanced.py:1243
 msgid "These disks will have partition actions:"
 msgstr ""
 
-#: src/installation_advanced.py:1269
+#: src/installation_advanced.py:1268
 msgid "Saving changes done in %s"
 msgstr ""
 
-#: src/installation_advanced.py:1278
+#: src/installation_advanced.py:1277
 msgid "Creating fs of type %s in %s with label %s"
 msgstr ""
 
-#: src/installation_advanced.py:1289
+#: src/installation_advanced.py:1288
 msgid "FORMATTED"
 msgstr ""
 
