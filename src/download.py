@@ -131,7 +131,7 @@ class DownloadPackages():
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=10",
+            "--max-connection-per-server=1",
             "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
@@ -151,6 +151,7 @@ class DownloadPackages():
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
             "--conditional-get=true",
+            "--rpc-max-request-size=2M",
             "--dir=%s" % self.cache_dir]
         
         aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
