@@ -164,8 +164,7 @@ class Main(Gtk.Window):
         # save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)
         if _use_aria2:
-            log.debug(_("Using aria2 to download packages"))
-
+            log.debug(_("Cnchi will use pm2ml and aria2 to download packages - EXPERIMENTAL"))
 
         # load all pages
         # (each one is a screen, a step in the install process)

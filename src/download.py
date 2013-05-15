@@ -35,8 +35,7 @@ import time
 import subprocess
 import log
 import xmlrpc.client
-
-from pprint import pprint
+#from pprint import pprint
 
 class DownloadPackages():
     def __init__(self, package_names, conf_file=None, cache_dir=None, databases_dir=None, callback_queue=None):
@@ -101,7 +100,7 @@ class DownloadPackages():
                         
                         # Get first uri to get the real package name
                         # (we need to use this if we want to show individual
-                        # packages from metapackages like base or base-devel
+                        # packages from metapackages like base or base-devel)
                         uri = files[0]['uris'][0]['uri']
                         basename = os.path.basename(uri)
                         if basename.endswith(".pkg.tar.xz"):
@@ -156,10 +155,10 @@ class DownloadPackages():
 
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=4",
+            "--max-concurrent-downloads=2",
             "--split=5",
             "--min-split-size=5M",
-            "--max-connection-per-server=4",
+            "--max-connection-per-server=2",
             "--metalink-file=%s" % tmp_metalink,
             "--check-integrity",
             "--continue=false",
@@ -196,10 +195,10 @@ class DownloadPackages():
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=4",
-            "--split=5",
+            "--max-concurrent-downloads=1",
+            "--split=10",
             "--min-split-size=5M",
-            "--max-connection-per-server=4",
+            "--max-connection-per-server=2",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
