@@ -241,7 +241,8 @@ class InstallationProcess(Process):
     def download_packages(self):
         conf_dir = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        download.DownloadPackages(self.packages, conf_dir, cache_dir, self.callback_queue)
+        databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
+        download.DownloadPackages(self.packages, conf_dir, cache_dir, databases_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
@@ -314,7 +315,10 @@ class InstallationProcess(Process):
 
         self.prepare_pacman_keychain()
         
-        self.pac.do_refresh()
+        # If we use aria2, it will update the databases
+        # if not, we have to do it here
+        if not self.settings.get("use_aria2"):
+            self.pac.do_refresh()
 
     # Prepare pacman and get package list from Internet
     def select_packages(self):
