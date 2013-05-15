@@ -70,40 +70,55 @@ class DownloadPackages():
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             gids = self.add_metalink(s, metalink)
-            for gid in gids:
-                total = 0
-                completed = 0
-                old_percent = -1
-                
-                r = s.aria2.tellStatus(gid)               
+            
+            all_gids_done = False
+            
+            while all_gids_done == False:
+                all_gids_done = True
+                for gid in gids:
+                    total = 0
+                    completed = 0
+                    old_percent = -1
+                    
+                    r = s.aria2.tellStatus(gid)               
 
-                if r['status'] == "active":
-                    totalLength = int(r['totalLength'])
-                    # why sometimes gives 0 as totalLength is a mistery to me
-                    if totalLength == 0:
+                    if r['status'] == "active":
+                        all_gids_done = False
+
+                        totalLength = int(r['totalLength'])
+                        # why sometimes gives 0 as totalLength is a mistery to me
                         files = r['files']
-                        totalLength = int(files[0]['length'])
-                    total += totalLength
+                        if totalLength == 0:
+                            totalLength = int(files[0]['length'])
+                        total += totalLength
                         
-                    action = _("Downloading gid '%s' of package '%s'...") % (gid, package_name)
-                    self.queue_event('action', action)
+                        # Get first uri to get the real package name
+                        # (we need to use this if we want to show individual
+                        # packages from metapackages like base or base-devel
+                        uri = files[0]['uris'][0]['uri']
+                        basename = os.path.basename(uri)
+                        if basename.endswith(".pkg.tar.xz"):
+                            basename = basename[:-11]
+                        
+                        action = _("Downloading package '%s'...") % basename
+                        self.queue_event('action', action)
 
-                    while r['status'] == "active" :
-                        r = s.aria2.tellStatus(gid)
-                        completed = int(r['completedLength'])
-                        percent = float(completed / total)
-                        if percent != old_percent:
-                            self.queue_event('percent', percent)
-                            old_percent = percent
-                    #print("GID %s downloaded" % gid)
+                        while r['status'] == "active" :
+                            r = s.aria2.tellStatus(gid)
+                            completed = int(r['completedLength'])
+                            percent = float(completed / total)
+                            if percent != old_percent:
+                                self.queue_event('percent', percent)
+                                old_percent = percent
+                        #print("GID %s downloaded" % gid)
 
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=5",
+            "--max-concurrent-downloads=4",
             "--split=5",
             "--min-split-size=5M",
-            "--max-connection-per-server=1",
+            "--max-connection-per-server=2",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
