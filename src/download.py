@@ -67,8 +67,10 @@ class DownloadPackages():
             print(e)
             return
 
+        # Add all metalinks in pause mode (we start aria2 with --pause)
+        all_gids = []
+        names = {}
         for package_name in package_names:
-            all_gids = []
             metalink = self.get_metalink(package_name)
             if metalink != None:
                 #meta_path = "/tmp/%s.metalink" % package_name
@@ -80,64 +82,73 @@ class DownloadPackages():
                     gids = s.aria2.addMetalink(binary_metalink)
                     for gid in gids:
                         all_gids.append(gid)
+                        names[gid] = package_name
                 except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                     print("Can't communicate with Aria2. Won't be able to speed up the download:")
                     print(e)
                     return
-
-                total = 0
-                completed = 0
-                old_percent = -1
-
-                for gid in all_gids:
-                    r = s.aria2.tellStatus(gid)
-                    totalLength = int(r['totalLength'])
-                    # why sometimes gives 0 as totalLength is a mistery to me
-                    if totalLength == 0:
-                        files = r['files']
-                        totalLength = int(files[0]['length'])
-                    total += totalLength
-                    
-                unfinished_status = [ "active", "waiting", "paused" ]
-
-                if total > 0:
-                    action = _("Downloading package '%s'...") % package_name
-                    self.queue_event('action', action)
-
-                    all_gids_completed = False
-                    while all_gids_completed == False:
-                        completed = 0
-                        all_gids_completed = True
-                        
-                        for gid in all_gids:
-                            r = s.aria2.tellStatus(gid)
-                            if r['status'] in unfinished_status:
-                                all_gids_completed = False
-                            completed += int(r['completedLength'])
-
-                        percent = float(completed / total)
-
-                        if percent != old_percent:
-                            self.queue_event('percent', percent)
-                            old_percent = percent
-                    log.debug(_("Package %s downloaded.") % package_name)
             else:
                 log.debug(_("Error creating metalink for package %s") % package_name)
+        
+        # pause all (just in case)
+        s.aria2.pauseAll()
+
+        # Download gids one by one
+        for gid in all_gids:
+            total = 0
+            completed = 0
+            old_percent = -1
+            
+            # unpause our gid
+            try:
+                s.aria2.unpause(gid)
+            except xmlrpc.client.Fault as e:
+                print(package_name, e)
+            
+            # wait until our gid starts downloading (active status)
+            
+            r = s.aria2.tellStatus(gid)
+            while r['status'] == 'waiting':
+                r = s.aria2.tellStatus(gid)
+                time.sleep(0.1)
+            
+            totalLength = int(r['totalLength'])
+            # why sometimes gives 0 as totalLength is a mistery to me
+            if totalLength == 0:
+                files = r['files']
+                totalLength = int(files[0]['length'])
+            total += totalLength
+                
+            action = _("Downloading package '%s'...") % package_name
+            self.queue_event('action', action)
+
+            while r['status'] == "active" :
+                r = s.aria2.tellStatus(gid)
+                completed = int(r['completedLength'])
+                percent = float(completed / total)
+                if percent != old_percent:
+                    self.queue_event('percent', percent)
+                    old_percent = percent
+
+            log.debug(_("Package %s downloaded.") % package_name)
 
     def run_aria2_as_daemon(self):
         aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=2",
+            "--max-concurrent-downloads=5",
+            "--split=5",
+            "--min-split-size=5M",
+            "--max-connection-per-server=1",
             #"--metalink-file=/tmp/packages.metalink",
             "--check-integrity",
             "--continue=false",
-            "--max-connection-per-server=1",
-            "--min-split-size=5M",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
             "--rpc-passwd=%s" % self.rpc_passwd,
             "--rpc-listen-port=%s" % self.rpc_port,
             "--rpc-save-upload-metadata=false",
+            "--rpc-max-request-size=4M",
+            "--pause",
             "--allow-overwrite=true",
             "--always-resume=false",
             "--auto-save-interval=0",
@@ -151,7 +162,6 @@ class DownloadPackages():
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
             "--conditional-get=true",
-            "--rpc-max-request-size=2M",
             "--dir=%s" % self.cache_dir]
         
         aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
