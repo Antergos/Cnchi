@@ -2008,12 +2008,12 @@ btrfs_parts() {
 
 # choose raid level to use on btrfs device
 btrfs_raid_level() {
-    BTRFS_RAIDLEVELS="NONE - raid0 - raid1 - raid10 - single -"
+    BTRFS_RAIDLEVELS="NONE - raid0 - raid1 - raid5 - raid6 - raid10 - single -"
     BTRFS_RAID_FINISH=""
     BTRFS_LEVEL=""
     BTRFS_DEVICE="${PART}"
     : >/tmp/.btrfs-devices
-    DIALOG --msgbox $"BTRFS RAID OPTIONS:\n\nBTRFS has options to control the raid configuration for data and metadata.\nValid choices are raid0, raid1, raid10 and single.\nsingle means that no duplication of metadata is done, which may be desired when using hardware raid. raid10 requires at least 4 devices.\n\nIf you don't need this feature select NONE." 0 0
+    DIALOG --msgbox "BTRFS RAID OPTIONS:\n\nBTRFS has options to control the raid configuration for data and metadata.\nValid choices are raid0, raid1, raid5, raid6, raid10 and single.\nsingle means that no duplication of metadata is done, which may be desired when using hardware raid.\nraid5 requires at least 3 devices.\nraid6 and raid10 requires at least 4 devices.\n\nIf you don't need this feature select NONE." 0 0
     while [[ "${BTRFS_RAID_FINISH}" != "DONE" ]]; do
         DIALOG --menu $"Select the raid level you want to use" 21 50 9 ${BTRFS_RAIDLEVELS} 2>${ANSWER} || return 1
         BTRFS_LEVEL=$(cat ${ANSWER})
@@ -2044,9 +2044,11 @@ select_btrfs_raid_devices () {
     while [[ "${BTRFS_PART}" != "DONE" ]]; do
         BTRFS_DONE=""
         RAIDNUMBER=$((${RAIDNUMBER} + 1))
-        # RAID10 need 4 devices!
-        [[ "${RAIDNUMBER}" -ge 3 && ! "${BTRFS_LEVEL}" = "raid10" ]] && BTRFS_DONE="DONE _"
-        [[ "${RAIDNUMBER}" -ge 5 && "${BTRFS_LEVEL}" = "raid10" ]] && BTRFS_DONE="DONE _"
+        # RAID5 needs 3 devices
+        # RAID6, RAID10 need 4 devices!
+        [[ "${RAIDNUMBER}" -ge 3 && ! "${BTRFS_LEVEL}" = "raid10" && ! "${BTRFS_LEVEL}" = "raid6" && ! "${BTRFS_LEVEL}" = "raid5" ]] && BTRFS_DONE="DONE _"
+        [[ "${RAIDNUMBER}" -ge 4 && "${BTRFS_LEVEL}" = "raid5" ]] && BTRFS_DONE="DONE _"
+        [[ "${RAIDNUMBER}" -ge 5 && "${BTRFS_LEVEL}" = "raid10" || "${BTRFS_LEVEL}" = "raid6" ]] && BTRFS_DONE="DONE _"
         # clean loop from used partition and options
         BTRFS_PARTS="$(echo ${BTRFS_PARTS} | sed -e "s#${BTRFS_PART}\ _##g")"
         # add more devices
