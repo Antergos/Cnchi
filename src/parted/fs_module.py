@@ -37,7 +37,7 @@ import used_space
 _names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
 
-_common_mount_points = [ '/', '/boot', '/home', '/usr', '/var']
+_common_mount_points = [ '/', '/boot', '/home', '/usr', '/var' ]
 
 @misc.raise_privileges
 def get_info(part):
