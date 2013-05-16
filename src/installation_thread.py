@@ -746,7 +746,7 @@ class InstallationThread(threading.Thread):
         self.change_user_password('root', password)
 
         ## Generate locales
-        lang_code = self.settings.get("language_code")
+        keyboard_layout = self.settings.get("keyboard_layout")
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales"))
         
@@ -761,7 +761,7 @@ class InstallationThread(threading.Thread):
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
         with open(vconsole_conf_path, "wt") as vconsole_conf:
-            vconsole_conf.write('KEYMAP=%s \n' % lang_code)
+            vconsole_conf.write('KEYMAP=%s \n' % keyboard_layout)
 
         # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
         xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
@@ -771,7 +771,7 @@ class InstallationThread(threading.Thread):
            xorg_conf_xkb.write('Section "InputClass"\n')
            xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
            xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-           xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % lang_code)
+           xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
            xorg_conf_xkb.write('EndSection\n')
 
         self.auto_timesetting()
@@ -843,7 +843,7 @@ class InstallationThread(threading.Thread):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, lang_code])
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, keyboard_layout])
 
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:
