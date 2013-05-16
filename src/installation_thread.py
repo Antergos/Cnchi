@@ -136,6 +136,10 @@ class InstallationThread(threading.Thread):
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
+
+            if "swap" in self.mount_devices:
+                swap_partition = self.mount_devices["swap"]
+
             # Easy and avanced methods format root by default
             (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
@@ -168,7 +172,7 @@ class InstallationThread(threading.Thread):
                 mp = self.mount_devices[path]
                 # Root and Boot are already mounted.
                 # Just try to mount all the rest.
-                if mp != root_partition and mp != boot_partition:
+                if mp != root_partition and mp != boot_partition and mp != swap_partition:
                     try:
                         mount_dir = self.dest_dir + path
                         if not os.path.exists(mount_dir):
