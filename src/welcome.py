@@ -96,11 +96,7 @@ class Welcome(Gtk.Box):
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
         txt = _("Try Antergos without modifying your hard drive.\n" \
-        "Or install it to your PC with one of the two installer options.\n\n \
-        **The graphical installer is ALPHA software, and still undergoing \n \
-          development.  It is known NOT to work yet with LVM, RAID, \n \
-          btrfs subvolumes, and other advanced setups.  \n \
-          Please proceed with caution as data loss is possible!")
+        "Or install it to your PC with one of the two installer options.")
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
