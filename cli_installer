@@ -1,17 +1,18 @@
 #!/bin/bash
-INSTALLER_VERSION=0.7.2
+INSTALLER_VERSION=1.1
 
 TEXTDOMAIN=cli_installer
 # we rely on some output which is parsed in english!
 #unset LANG
-source /etc/cinnarch/functions
+source /etc/antergos/functions
 
 ANSWER="/tmp/.setup"
-TITLE=$"Cinnarch Installation - v$INSTALLER_VERSION"
+TITLE=$"Antergos Installation - v$INSTALLER_VERSION"
 # use the first VT not dedicated to a running console
 LOG="/dev/tty6"
 
 # don't use /mnt because it's intended to mount other things there!
+mkdir /install
 DESTDIR="/install"
 EDITOR=""
 _BLKID="blkid -c /dev/null"
@@ -42,9 +43,9 @@ PART_ROOT=""
 ROOTFS=""
 
 # Localization parameters
-CINNARCHVAR="$(kernel_cmdline cinnarchvar lang:en_US,keymap:en_US)"
-KEYMAP="$(echo "$CINNARCHVAR" | cut -d, -f2 | cut -d: -f2)"
-LOCALE="$(echo "$CINNARCHVAR" | cut -d, -f1 | cut -d: -f2)"
+LOCALE=$(get_country)
+KEYMAP=$(get_keyboard)
+KBLAYOUT=$(get_layout)
 
 # Mylex DAC960 PCI RAID controller, Compaq Next Generation Drive Array, 
 # Compaq Intelligent Drive Array
@@ -170,13 +171,13 @@ activate_dmraid()
 activate_lvm2()
 {
     ACTIVATE_LVM2=""
-    if [[ -e /sbin/lvm ]]; then
+    if [[ -e /usr/sbin/lvm ]]; then
         OLD_LVM2_GROUPS=${LVM2_GROUPS}
         OLD_LVM2_VOLUMES=${LVM2_VOLUMES}
         DIALOG --infobox $"Scanning logical volumes..." 0 0
-        /sbin/lvm vgscan --ignorelockingfailure >/dev/null 2>&1
+        /usr/sbin/lvm vgscan --ignorelockingfailure >/dev/null 2>&1
         DIALOG --infobox $"Activating logical volumes..." 0 0
-        /sbin/lvm vgchange --ignorelockingfailure --ignoremonitoring -ay >/dev/null 2>&1
+        /usr/sbin/lvm vgchange --ignorelockingfailure --ignoremonitoring -ay >/dev/null 2>&1
         LVM2_GROUPS="$(vgs -o vg_name --noheading 2>/dev/null)"
         LVM2_VOLUMES="$(lvs -o vg_name,lv_name --noheading --separator - 2>/dev/null)"
         [[ "${OLD_LVM2_GROUPS}" = "${LVM2_GROUPS}" && "${OLD_LVM2_GROUPS}" = "${LVM2_GROUPS}" ]] && ACTIVATE_LVM2="no"
@@ -2371,7 +2372,7 @@ mountpoints() {
     done
 
     DIALOG --msgbox $"Partitions were successfully mounted." 0 0
-    NEXTITEM="5"
+    NEXTITEM="6"
     S_MKFS=1
 }
 
@@ -2548,15 +2549,6 @@ CacheDir = ${DESTDIR}/var/cache/pacman/pkg
 CacheDir = /packages/core-$(uname -m)/pkg
 CacheDir = /packages/core-any/pkg
 
-###### Repos from www.cinnarch.com ######
-[cinnarch-core]
-SigLevel = PackageRequired
-Include = /etc/pacman.d/cinnarch-mirrorlist
-
-[cinnarch-repo]
-SigLevel = PackageRequired
-Include = /etc/pacman.d/cinnarch-mirrorlist
-###### Repos from www.cinnarch.com ######
 
 [core]
 SigLevel = PackageRequired
@@ -2570,6 +2562,12 @@ Include = /etc/pacman.d/mirrorlist
 SigLevel = PackageRequired
 Include = /etc/pacman.d/mirrorlist
 
+###### Repos from www.antergos.com ######
+[antergos]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/antergos-mirrorlist
+###### Repos from www.antergos.com ######
+
 EOF
 
         else
@@ -2581,15 +2579,6 @@ CacheDir = ${DESTDIR}/var/cache/pacman/pkg
 CacheDir = /packages/core-$(uname -m)/pkg
 CacheDir = /packages/core-any/pkg
 
-###### Repos from www.cinnarch.com ######
-[cinnarch-core]
-SigLevel = PackageRequired
-Include = /etc/pacman.d/cinnarch-mirrorlist
-
-[cinnarch-repo]
-SigLevel = PackageRequired
-Include = /etc/pacman.d/cinnarch-mirrorlist
-###### Repos from www.cinnarch.com ######
 
 [core]
 SigLevel = PackageRequired
@@ -2606,6 +2595,12 @@ Include = /etc/pacman.d/mirrorlist
 [multilib]
 SigLevel = PackageRequired
 Include = /etc/pacman.d/mirrorlist
+
+###### Repos from www.antergos.com ######
+[antergos]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/antergos-mirrorlist
+###### Repos from www.antergos.com ######
 
 EOF
 
@@ -2625,10 +2620,10 @@ CacheDir = ${DESTDIR}/var/cache/pacman/pkg
 CacheDir = /packages/core-$(uname -m)/pkg
 CacheDir = /packages/core-any/pkg
 
-###### Repos from www.cinnarch.com ######
-[cinnarch-secinstall]
-Include = /etc/pacman.d/cinnarch-mirrorlist
-###### Repos from www.cinnarch.com ######
+###### Repos from www.antergos.com ######
+[antergos-secinstall]
+Include = /etc/pacman.d/antergos-mirrorlist
+###### Repos from www.antergos.com ######
 
 [core]
 SigLevel = PackageRequired
@@ -2653,10 +2648,10 @@ CacheDir = ${DESTDIR}/var/cache/pacman/pkg
 CacheDir = /packages/core-$(uname -m)/pkg
 CacheDir = /packages/core-any/pkg
 
-###### Repos from www.cinnarch.com ######
-[cinnarch-secinstall]
-Include = /etc/pacman.d/cinnarch-mirrorlist
-###### Repos from www.cinnarch.com ######
+###### Repos from www.antergos.com ######
+[antergos-secinstall]
+Include = /etc/pacman.d/antergos-mirrorlist
+###### Repos from www.antergos.com ######
 
 [core]
 SigLevel = PackageRequired
@@ -2682,19 +2677,9 @@ EOF
 
 # pacman needs a masterkey before checking signed packages
 prepare_pacman_keychain() {
-    # Generate initial keychain, use haveged then no user interaction is required
-    if  [[ -f /var/run/haveged.pid ]]; then
-        kill $(cat /var/run/haveged.pid)
+    if ! [[ -d ${DESTDIR}/etc/pacman.d/gnupg ]]; then
+        cp -ar /etc/pacman.d/gnupg ${DESTDIR}/etc/pacman.d 2>&1
     fi
-    haveged
-    pacman-key --init >/dev/null 2>&1
-    ### HACK: fix accept of master keys!
-    sed -i -e 's#"${GPG_PACMAN\[\@\]}" --quiet --lsign-key "${key_id}"#"${GPG_PACMAN\[\@\]}" --batch --yes --quiet --lsign-key "${key_id}"#g' \
-    /usr/bin/pacman-key
-    pacman-key --populate archlinux cinnarch >/dev/null 2>&1
-    sed -i -e 's#"${GPG_PACMAN\[\@\]}" --batch --yes --quiet --lsign-key "${key_id}"#"${GPG_PACMAN\[\@\]}" --quiet --lsign-key "${key_id}"#g' \
-    /usr/bin/pacman-key
-    kill $(cat /var/run/haveged.pid)
 }
 
 # configures pacman and syncs db on destination system
@@ -2766,7 +2751,7 @@ run_pacman(){
         local _result=''
         local _check=''
         if [[ $(cat /tmp/.pacman-retcode) -ne 0 ]]; then
-            _result=$"Regular installation Failed. \n\nPress Continue to launch a secure installation.\n\nThis will install your system from a controlled repository in case that your problem comes with a breakage in archlinux repositories"
+            _result=$"Installation Failed."
         else
             _result=$"Installation Complete"
             _check='installed'
@@ -2777,7 +2762,6 @@ run_pacman(){
             DIALOG --msgbox "${_result}" 8 50 || return 1
         else
             DIALOG --msgbox "${_result}" 15 60 || return 1
-            pacman_secinstall_conf
             prepare_pacman
 
         fi
@@ -2785,6 +2769,27 @@ run_pacman(){
     # ensure the disk is synced
     sync
     chroot_umount
+}
+
+select_desktop(){
+
+    DESKTOP_SELECTED=""
+    DM_SELECTED=''
+
+    while [[ "${DESKTOP_SELECTED}" = "" ]]; do
+
+        DIALOG --menu $"Select a desktop:" 10 35 3 \
+        "1" "Gnome (Default)" \
+        "2" "Cinnamon" \
+        "3" "Xfce" \
+        "4" "Razor-qt" 2>${ANSWER} || return 1
+        case $(cat ${ANSWER}) in
+            "1") DESKTOP_SELECTED="gnome" ;;
+            "2") DESKTOP_SELECTED="cinnamon" ;;
+            "3") DESKTOP_SELECTED="xfce" ;;
+            "4") DESKTOP_SELECTED="razor" ;;
+        esac
+    done
 }
 
 # select_packages()
@@ -2814,10 +2819,22 @@ select_packages() {
         ! [[ "$(echo ${PACKAGES} | grep -w v86d)" ]] && PACKAGES="${PACKAGES} v86d"
     fi
 
-    #PACKAGES="${PACKAGES} $(cat /run/archiso/bootmnt/arch/pkglist.x86_64.txt)"
 
-    PACKAGES="${PACKAGES} base base-devel cinnarch-meta libgnomeui"
+    if [[ "${DESKTOP_SELECTED}" == 'gnome' ]];then
+        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nautilus gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor empathy transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar gnome-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gnome-shell accountsservice gtk3 gdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes"
+        DM_SELECTED='gdm'
+    elif [[ "${DESKTOP_SELECTED}" == 'cinnamon' ]];then
+        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nemo nemo-fileroller gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor pidgin transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar cinnamon-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gtk3 lxdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes cinnamon-screensaver cinnamon-theme-nadia"
+        DM_SELECTED='lxdm'
+    elif [[ "${DESKTOP_SELECTED}" == 'xfce' ]];then
+        PACKAGES="${PACKAGES} lxdm xfce4 gamin mousepad ristretto thunar-archive-plugin xfburn xfce4-battery-plugin xfce4-datetime-plugin xfce4-notifyd xfce4-screenshooter xfce4-taskmanager network-manager-applet xnoise evince transmission-gtk pidgin gnome-calculator zukitwo-themes gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav xdg-user-dirs-gtk hotot-gtk3 base  base-devel  antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile chromium flashplugin alsa-utils whois dnsutils transmission-cli libreoffice-installer faenza-hotot-icon faenza-icon-theme antergos-wallpapers unzip unrar net-tools xf86-input-synaptics usb_modeswitch modemmanager"
+        DM_SELECTED='lxdm'
+    elif [[ "${DESKTOP_SELECTED}" == 'razor' ]];then
+        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile chromium flashplugin alsa-utils whois dnsutils transmission-cli libreoffice-installer faenza-hotot-icon faenza-icon-theme antergos-wallpapers unzip unrar net-tools xf86-input-synaptics usb_modeswitch modemmanager kdebase-workspace razor-qt qtfm kdebase-konsole kdeartwork-desktopthemes kdeplasma-applets-networkmanagement kovpn kdesdk-kate kdenetwork-kopete kdegraphics-gwenview clementine vlc kdeutils-kcalc kdegraphics-ksnapshot transmission-qt phonon-vlc hotot-qt"
+        DM_SELECTED='kdm'
+    fi
 
+    
     if [[ -f /tmp/use_ntp ]];then
         PACKAGES="${PACKAGES} ntp"
     fi
@@ -2843,6 +2860,13 @@ select_packages() {
     if [[ `echo ${GRAPHIC_CARD}|grep -i 'lenovo[[:space:]]'` != "" ]];then
         PACKAGES="${PACKAGES} xf86-video-intel intel-dri"
         touch /tmp/card_intel
+                cat << EOF > /etc/X11/xorg.conf.d/20-intel.conf
+Section "Device"
+   Identifier  "Intel Graphics"
+   Driver      "intel"
+   Option      "AccelMethod"  "sna"
+EndSection
+EOF
     fi
 
     if [[ `echo ${GRAPHIC_CARD}|grep -i 'virtualbox[[:space:]]'` != "" ]];then
@@ -3145,13 +3169,10 @@ do_uefi_i386() {
 
 do_uefi_efibootmgr() {
     
-    modprobe -q efivars
-    
-    if [[ "$(lsmod | grep ^efivars)" ]]; then
-        chroot_mount
+    chroot_mount
         
-        if [[ -d "${DESTDIR}/sys/firmware/efi/vars" ]]; then
-            cat << EFIBEOF > "${DESTDIR}/efibootmgr_run.sh"
+    if [[ -d "${DESTDIR}/sys/firmware/efi/vars" ]]; then
+        cat << EFIBEOF > "${DESTDIR}/efibootmgr_run.sh"
 #!/usr/bin/env bash
 
 for _bootnum in \$(efibootmgr | grep '^Boot[0-9]' | fgrep -i '${_EFIBOOTMGR_LABEL}' | cut -b5-8) ; do
@@ -3164,18 +3185,14 @@ echo
 
 EFIBEOF
             
-            chmod a+x "${DESTDIR}/efibootmgr_run.sh"
-            chroot "${DESTDIR}" "/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
-            mv "${DESTDIR}/efibootmgr_run.sh" "/tmp/efibootmgr_run.sh"
-        else
-            DIALOG --msgbox $"${DESTDIR}/sys/firmware/efi/vars/ directory not found. Check whether you have booted in UEFI boot mode, manually load efivars kernel module and create a boot entry for ${_EFIBOOTMGR_LABEL} in the UEFI Boot Manager." 0 0
-        fi
-        
-        chroot_umount
-    else
-        DIALOG --msgbox $"efivars kernel module was not loaded properly. Manually load it and create a boot entry for DISC ${_EFIBOOTMGR_DISC} , PART ${_EFIBOOTMGR_PART_NUM} and LOADER \\EFI\\${_EFIBOOTMGR_LOADER_DIR}\\${_EFIBOOTMGR_LOADER_FILE} , in UEFI Boot Manager using efibootmgr." 0 0
-    fi
+        chmod a+x "${DESTDIR}/efibootmgr_run.sh"
+        chroot "${DESTDIR}" "/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
+        mv "${DESTDIR}/efibootmgr_run.sh" "/tmp/efibootmgr_run.sh"
     
+    else
+        DIALOG --msgbox $"${DESTDIR}/sys/firmware/efi/vars/ directory not found. Check whether you have booted in UEFI boot mode and create a boot entry for ${_EFIBOOTMGR_LABEL} in the UEFI Boot Manager." 0 0
+    fi
+    chroot_umount
     unset _EFIBOOTMGR_LABEL
     unset _EFIBOOTMGR_DISC
     unset _EFIBOOTMGR_PART_NUM
@@ -3186,7 +3203,6 @@ EFIBEOF
 
 do_apple_efi_hfs_bless() {
     
-    modprobe -q -r efivars || true
     
     ## Grub upstream bzr mactel branch => http://bzr.savannah.gnu.org/lh/grub/branches/mactel/changes
     ## Fedora's mactel-boot => https://bugzilla.redhat.com/show_bug.cgi?id=755093
@@ -3294,23 +3310,7 @@ CONFEOF
         
         chroot "${DESTDIR}" /usr/bin/systemctl enable efistub_copy.path
         
-        if [[ "${INITSCRIPTS}" = "1" ]]; then
-            PACKAGES="incron"
-            run_pacman
-            PACKAGES=""
-            
-            cat << CONFEOF > "${DESTDIR}/usr/local/bin/efistub_copy.sh"
-/bin/cp -f /boot/${VMLINUZ} /boot/efi/EFI/arch/${_EFISTUB_KERNEL}
-/bin/cp -f /boot/${INITRAMFS}.img /boot/efi/EFI/arch/${_EFISTUB_INITRAMFS}.img
-/bin/cp -f /boot/${INITRAMFS}-fallback.img /boot/efi/EFI/arch/${_EFISTUB_INITRAMFS}-fallback.img
-CONFEOF
-            
-            cat << CONFEOF > "${DESTDIR}/etc/incron.d/efistub_copy.conf"
-/boot/${INITRAMFS}-fallback.img IN_CLOSE_WRITE /usr/local/bin/efistub_copy.sh
-CONFEOF
-            
-            DIALOG --msgbox "Add incrond to the DAEMONS list in /etc/rc.conf ." 0 0
-        fi
+
         
         ###########################
         
@@ -3428,31 +3428,31 @@ dogummiboot_uefi_common() {
     cp -f "${DESTDIR}/usr/lib/gummiboot/gummiboot${_SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/gummiboot/gummiboot${_SPEC_UEFI_ARCH}.efi"
     
     if [[ "${_EFILINUX}" == "1" ]]; then
-        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-lts-main.conf"
-title    Cinnarch LTS via EFILINUX
+        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/antergos-core-lts-main.conf"
+title    Antergos LTS via EFILINUX
 efi      /EFI/efilinux/efilinux${_SPEC_UEFI_ARCH}.efi
 GUMEOF
         
-        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-lts-fallback.conf"
-title    Cinnarch LTS via EFILINUX - fallback initramfs
+        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/antergos-core-lts-fallback.conf"
+title    Antergos LTS via EFILINUX - fallback initramfs
 efi      /EFI/efilinux/efilinux${_SPEC_UEFI_ARCH}.efi
 GUMEOF
         
         cat << GUMEOF > "${DESTDIR}/boot/efi/loader/loader.conf"
 timeout 5
-default cinnarch-core-lts-main
+default antergos-core-lts-main
 GUMEOF
         
     else
-        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-main.conf"
-title    Cinnarch
+        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/antergos-core-main.conf"
+title    Antergos
 linux    /EFI/arch/${_EFISTUB_KERNEL}
 initrd   /EFI/arch/${_EFISTUB_INITRAMFS}.img
 options  ${_PARAMETERS_MOD}
 GUMEOF
         
-        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-fallback.conf"
-title    Cinnarch fallback initramfs
+        cat << GUMEOF > "${DESTDIR}/boot/efi/loader/entries/antergos-core-fallback.conf"
+title    Antergos fallback initramfs
 linux    /EFI/arch/${_EFISTUB_KERNEL}
 initrd   /EFI/arch/${_EFISTUB_INITRAMFS}-fallback.img
 options  ${_PARAMETERS_MOD}
@@ -3460,13 +3460,13 @@ GUMEOF
         
         cat << GUMEOF > "${DESTDIR}/boot/efi/loader/loader.conf"
 timeout 5
-default cinnarch-core-main
+default antergos-core-main
 GUMEOF
         
     fi
     
     if [[ -e "${DESTDIR}/boot/efi/EFIgummiboot/gummiboot${_SPEC_UEFI_ARCH}.efi" ]]; then
-        _BOOTMGR_LABEL="Cinnarch (gummiboot)"
+        _BOOTMGR_LABEL="Antergos (gummiboot)"
         _BOOTMGR_LOADER_DIR="gummiboot"
         _BOOTMGR_LOADER_FILE="gummiboot${_SPEC_UEFI_ARCH}.efi"
         do_uefi_bootmgr_setup
@@ -3477,11 +3477,11 @@ GUMEOF
         geteditor || return 1
         
         if [[ "${_EFILINUX}" == "1" ]]; then
-            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-lts-main.conf"
-            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-lts-fallback.conf"
+            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/antergos-core-lts-main.conf"
+            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/antergos-core-lts-fallback.conf"
         else
-            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-main.conf"
-            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/cinnarch-core-fallback.conf"
+            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/antergos-core-main.conf"
+            "${EDITOR}" "${DESTDIR}/boot/efi/loader/entries/antergos-core-fallback.conf"
         fi
         
         "${EDITOR}" "${DESTDIR}/boot/efi/loader/loader.conf"
@@ -3509,40 +3509,29 @@ dorefind_uefi_common() {
     PACKAGES=""
     
     mkdir -p "${DESTDIR}/boot/efi/EFI/refind/"
-    cp -f "${DESTDIR}/usr/lib/refind/refind${_SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/refind/refind${_SPEC_UEFI_ARCH}.efi"
+    cp -f "${DESTDIR}/usr/lib/refind/refind_${_SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/refind/refind${_SPEC_UEFI_ARCH}.efi"
     cp -r "${DESTDIR}/usr/share/refind/icons" "${DESTDIR}/boot/efi/EFI/refind/icons"
-    
+    cp -r "${DESTDIR}/usr/share/refind/fonts" "${DESTDIR}/boot/efi/EFI/refind/fonts"
+
     mkdir -p "${DESTDIR}/boot/efi/EFI/tools/"
     cp -rf "${DESTDIR}/usr/lib/refind/drivers_${_SPEC_UEFI_ARCH}" "${DESTDIR}/boot/efi/EFI/tools/drivers_${_SPEC_UEFI_ARCH}"
     
     _REFIND_CONFIG="${DESTDIR}/boot/efi/EFI/refind/refind.conf"
     cp -f "${DESTDIR}/usr/lib/refind/config/refind.conf" "${_REFIND_CONFIG}"
 
-    sed 's|^timeout 20|timeout 5|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#hideui singleuser|hideui singleuser|g' -i "${_REFIND_CONFIG}"
     sed 's|^#resolution 1024 768|resolution 1024 768|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#use_graphics_for osx,linux|use_graphics_for osx|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#showtools shell, about, reboot|showtools shell,about,reboot,shutdown,exit|g' -i "${_REFIND_CONFIG}"
     sed 's|^#scan_driver_dirs EFI/tools/drivers,drivers|scan_driver_dirs EFI/tools/drivers_${_SPEC_UEFI_ARCH}|g' -i "${_REFIND_CONFIG}"
     sed 's|^#scanfor internal,external,optical,manual|scanfor manual,internal,external,optical|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#scan_delay 5|scan_delay 1|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#also_scan_dirs boot,EFI/linux/kernels|also_scan_dirs boot|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#dont_scan_dirs EFI/boot|dont_scan_dirs EFI/boot|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#scan_all_linux_kernels|scan_all_linux_kernels|g' -i "${_REFIND_CONFIG}"
-    sed 's|^#max_tags 0|max_tags 0|g' -i "${_REFIND_CONFIG}"
-    
+    sed 's|^#also_scan_dirs boot,ESP2:EFI/linux/kernels|also_scan_dirs boot|g' -i "${_REFIND_CONFIG}"
+
     if [[ "${_EFILINUX}" == "1" ]]; then
         cat << REFINDEOF >> "${_REFIND_CONFIG}"
 
-menuentry "Cinnarch LTS via EFILINUX" {
+menuentry "Antergos LTS via EFILINUX" {
     icon /EFI/refind/icons/os_arch.icns
     loader /EFI/efilinux/efilinux${_SPEC_UEFI_ARCH}.efi
 }
 
-menuentry "Cinnarch LTS via EFILINUX - fallback initramfs" {
-    icon /EFI/refind/icons/os_arch.icns
-    loader /EFI/efilinux/efilinux${_SPEC_UEFI_ARCH}.efi
-}
 
 REFINDEOF
         
@@ -3554,10 +3543,10 @@ REFINDEOF
         
     fi
     
-    if [[ -e "${DESTDIR}/boot/efi/EFI/refind/refind${_SPEC_UEFI_ARCH}.efi" ]]; then
-        _BOOTMGR_LABEL="Cinnarch (rEFInd)"
+    if [[ -e "${DESTDIR}/boot/efi/EFI/refind/refind_${_SPEC_UEFI_ARCH}.efi" ]]; then
+        _BOOTMGR_LABEL="Antergos (rEFInd)"
         _BOOTMGR_LOADER_DIR="refind"
-        _BOOTMGR_LOADER_FILE="refind${_SPEC_UEFI_ARCH}.efi"
+        _BOOTMGR_LOADER_FILE="refind_${_SPEC_UEFI_ARCH}.efi"
         do_uefi_bootmgr_setup
         
         DIALOG --msgbox $"refind-efi has been setup successfully." 0 0
@@ -3576,7 +3565,7 @@ REFINDEOF
             rm -f "${DESTDIR}/boot/efi/EFI/boot/refind.conf"
             rm -rf "${DESTDIR}/boot/efi/EFI/boot/icons"
             
-            cp -f "${DESTDIR}/boot/efi/EFI/refind/refind${_SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${_SPEC_UEFI_ARCH}.efi"
+            cp -f "${DESTDIR}/boot/efi/EFI/refind/refind_${_SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${_SPEC_UEFI_ARCH}.efi"
             cp -f "${_REFIND_CONFIG}" "${DESTDIR}/boot/efi/EFI/boot/refind.conf"
             cp -rf "${DESTDIR}/boot/efi/EFI/refind/icons" "${DESTDIR}/boot/efi/EFI/boot/icons"
         fi
@@ -3805,8 +3794,8 @@ EOF
     ## create default kernel entry
     cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
 
-# (${NUMBER}) Cinnarch
-menuentry "Cinnarch" {
+# (${NUMBER}) Antergos
+menuentry "Antergos" {
     set gfxpayload="keep"
     ${GRUB_ROOT_DRIVE}
     ${LINUX_MOD_COMMAND}
@@ -3820,8 +3809,8 @@ EOF
     ## create kernel fallback entry
     cat << EOF >> "${DESTDIR}/${GRUB_PREFIX_DIR}/grub.cfg"
 
-# (${NUMBER}) Cinnarch Fallback
-menuentry "Cinnarch Fallback" {
+# (${NUMBER}) Antergos Fallback
+menuentry "Antergos Fallback" {
     set gfxpayload="keep"
     ${GRUB_ROOT_DRIVE}
     ${LINUX_MOD_COMMAND}
@@ -4162,7 +4151,7 @@ EOF
     cat "/tmp/grub_uefi_${UEFI_ARCH}_install.log" >> "${LOG}"
     
     if [[ -e "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" ]] && [[ -e "${DESTDIR}/boot/grub/${UEFI_ARCH}-efi/core.efi" ]]; then
-        _BOOTMGR_LABEL="Cinnarch (GRUB)"
+        _BOOTMGR_LABEL="Antergos (GRUB)"
         _BOOTMGR_LOADER_DIR="arch_grub"
         _BOOTMGR_LOADER_FILE="grub${SPEC_UEFI_ARCH}.efi"
         do_uefi_bootmgr_setup
@@ -4279,7 +4268,7 @@ prepare_harddrive() {
                     DIALOG --msgbox $"Click 'OK' when you're done with GParted" 7 55
 
                 else
-                    DIALOG --msgbox $"Gparted is not available in Cinnarch minimum \n\nDownload the regular Cinnarch version to use it." 9 55
+                    DIALOG --msgbox $"Gparted is not available in Antergos minimum \n\nDownload the regular Antergos version to use it." 9 55
                 fi
                 NEXTITEM="5" ;;
             "4")
@@ -4521,7 +4510,7 @@ auto_fb() {
 auto_parameters() {
 
        
-    _do_locales
+    _set_locales
 
 
     if [[ -s  /tmp/.timezone ]]; then
@@ -4555,59 +4544,6 @@ auto_ftpmirror() {
     mv /tmp/.mirrorlist "${DESTDIR}/etc/pacman.d/mirrorlist"
 }
 
-_set_50-synaptics() {
-    cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf 
-# Example xorg.conf.d snippet that assigns the touchpad driver
-# to all touchpads. See xorg.conf.d(5) for more information on
-# InputClass.
-# DO NOT EDIT THIS FILE, your distribution will likely overwrite
-# it when updating. Copy (and rename) this file into
-# /etc/X11/xorg.conf.d first.
-# Additional options may be added in the form of
-#   Option "OptionName" "value"
-#
-Section "InputClass"
-        Identifier "touchpad catchall"
-        Driver "synaptics"
-        MatchIsTouchpad "on"
-        Option "TapButton1" "1"
-        Option "TapButton2" "2"
-        Option "TapButton3" "3"
-# This option is recommend on all Linux systems using evdev, but cannot be
-# enabled by default. See the following link for details:
-# http://who-t.blogspot.com/2010/11/how-to-ignore-configuration-errors.html
-        MatchDevicePath "/dev/input/event*"
-EndSection
-
-Section "InputClass"
-        Identifier "touchpad ignore duplicates"
-        MatchIsTouchpad "on"
-        MatchOS "Linux"
-        MatchDevicePath "/dev/input/mouse*"
-        Option "Ignore" "on"
-EndSection
-
-# This option enables the bottom right corner to be a right button on
-# non-synaptics clickpads.
-# This option is only interpreted by clickpads.
-Section "InputClass"
-        Identifier "Default clickpad buttons"
-        MatchDriver "synaptics"
-        Option "SoftButtonAreas" "50% 0 82% 0 0 0 0 0"
-EndSection
-
-# This option disables software buttons on Apple touchpads.
-# This option is only interpreted by clickpads.
-Section "InputClass"
-        Identifier "Disable clickpad buttons on Apple touchpads"
-        MatchProduct "Apple|bcm5974"
-        MatchDriver "synaptics"
-        Option "SoftButtonAreas" "0 0 0 0 0 0 0 0"
-EndSection
-EOF
-
-}
-
 
 configure_system() {
     destdir_mounts || return 1
@@ -4615,13 +4551,13 @@ configure_system() {
     # only done on first invocation of configure_system and redone on canceled configure system
     if [[ ${S_CONFIG} -eq 0 ]]; then
 
-        mkdir -p ${DESTDIR}/usr/share/cinnarch/
-        cp /usr/share/cinnarch/cinnarch_menu.png ${DESTDIR}/usr/share/cinnarch/cinnarch_menu.png
+        mkdir -p ${DESTDIR}/usr/share/antergos/
+        cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
         auto_ftpmirror
         auto_parameters
         auto_fb
-        auto_hwdetect
+        #auto_hwdetect
     fi
     ## END PREPROCESS ##
     geteditor || return 1
@@ -4630,12 +4566,7 @@ configure_system() {
     CONTROL_USER=0
 
 
-    ## populate keyring
-    cp -f /usr/bin/pacman-key ${DESTDIR}/usr/bin/pacman-key
-
-    cp -f /usr/lib/systemd/system/lightdm.service ${DESTDIR}/usr/lib/systemd/system/lightdm.service
-    cp -f /etc/systemd/system/pacman-init.service ${DESTDIR}/usr/lib/systemd/system/pacman-init.service
-    chroot ${DESTDIR} systemctl enable lightdm.service NetworkManager.service pacman-init.service >/dev/null 2>&1
+    chroot ${DESTDIR} systemctl enable ${DM_SELECTED}.service NetworkManager.service  >/dev/null 2>&1
     if [[ -f /tmp/use_ntp ]];then
         chroot ${DESTDIR} systemctl enable ntpd.service >/dev/null 2>&1
     fi
@@ -4683,11 +4614,8 @@ configure_system() {
                     USER_NAME_TMP=$(cat ${ANSWER})
                     USER_NAME=${USER_NAME_TMP,,}
                     rm -f ${DESTDIR}/etc/sudoers
-                    echo "root ALL=(ALL) ALL" > ${DESTDIR}/etc/sudoers
-                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers
-                    #cp -f /arch/sudoers ${DESTDIR}/etc/sudoers
-                    #sed -i "s|^cinnarch|${USER_NAME}|g" ${DESTDIR}/etc/sudoers
-                    chmod 440 ${DESTDIR}/etc/sudoers
+                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers.d/installer
+                    chmod 440 ${DESTDIR}/etc/sudoers.d/installer
 
                     DIALOG --inputbox $"Enter your full name:" 9 40 2>${ANSWER} || return 1
                     USER_FULL_NAME=$(cat ${ANSWER})
@@ -4711,17 +4639,11 @@ configure_system() {
 
                 DIALOG --infobox $"Creating user..." 4 30
 
-                cp -rf /etc/skel ${DESTDIR}/etc/  >/dev/null 2>&1
-                rm -rf ${DESTDIR}/etc/skel/Desktop >/dev/null 2>&1
                 chroot ${DESTDIR} useradd -m -s /bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
                 chroot ${DESTDIR} passwd ${USER_NAME} < /tmp/.user_password >/dev/null 2>&1
                 chroot ${DESTDIR} chfn -f "${USER_FULL_NAME}" "${USER_NAME}" >/dev/null 2>&1
                 
                 rm /tmp/.user_password
-
-
-                cp -rf /etc/skel/.config /etc/skel/.gconf /etc/skel/.cache /etc/skel/.local /etc/skel/.gnome2 /etc/skel/.gtkrc-2 ${DESTDIR}/home/${USER_NAME}/ >/dev/null 2>&1
-                chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME} >/dev/null 2>&1
 
 
                 CONTROL_USER=1
@@ -4786,12 +4708,6 @@ configure_system() {
 
         ###### USER CONFIGURATIONS  #####
 
-        ## Set defaults directories
-        chroot ${DESTDIR} su -c "xdg-user-dirs-update" ${USER_NAME} || true
-
-        ## Unmute alsa channels
-        chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
-
 
         ## Copy locales
         cp -f /tmp/locale.gen ${DESTDIR}/etc/locale.gen
@@ -4806,7 +4722,7 @@ configure_system() {
         sed -i 's/ pata//' ${DESTDIR}/etc/mkinitcpio.conf
         sed -i 's/ scsi//' ${DESTDIR}/etc/mkinitcpio.conf
         sed -i 's/ sata//' ${DESTDIR}/etc/mkinitcpio.conf
-        sed -i 's/ filesystem/ block filesystem/' ${DESTDIR}/etc/mkinitcpio.conf
+        sed -i 's/usbinput/keyboard/' ${DESTDIR}/etc/mkinitcpio.conf
         run_mkinitcpio
         
         # /etc/locale.gen
@@ -4816,19 +4732,8 @@ configure_system() {
         chroot ${DESTDIR} locale-gen >/dev/null 2>&1
 
 
-        # Set gsettings
-        cp /arch/set-gsettings ${DESTDIR}/usr/bin/set-gsettings
-        mkdir -p ${DESTDIR}/var/run/dbus
-        mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-        chroot ${DESTDIR} su -c "/usr/bin/set-gsettings" ${USER_NAME} >/dev/null 2>&1
-        rm ${DESTDIR}/usr/bin/set-gsettings
-
-        # Fix transmission leftover
-        mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
-
-        # Configure touchpad
-        _set_50-synaptics
-        # cp /etc/X11/xorg.conf.d/10-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/10-synaptics.conf
+        # Set settings
+        sh /usr/share/cnchi/scripts/postinstall.sh ${USER_NAME} ${DESTDIR} ${DESKTOP_SELECTED} ${KBLAYOUT}
 
         # Fix grub locale error
         chroot ${DESTDIR} cp "/boot/grub/locale/en@quot.mo" "/boot/grub/locale/$(echo ${LOCALE}|cut -b 1-2).mo.gz"
@@ -4836,17 +4741,6 @@ configure_system() {
         # Fix QT apps
         echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
 
-        # Change pantheon-greeter wallpaper
-        chroot ${DESTDIR} unlink /usr/share/backgrounds/cinnarch-default
-        chroot ${DESTDIR} ln -s /usr/share/cinnarch/wallpapers/83II_by_bo0xVn.jpg /usr/share/backgrounds/cinnarch-default
-
-        # Set Cinnarch name in filesystem files
-        cp /etc/arch-release ${DESTDIR}/etc
-        cp /etc/issue ${DESTDIR}/etc
-        cp -f /etc/os-release ${DESTDIR}/etc/os-release
-
-        # Set Adwaita cursor theme
-        chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
         # Fix multilib repo in last release
         cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
@@ -4956,6 +4850,7 @@ mainmenu() {
             prepare_harddrive ;;
 
         "3")
+            select_desktop
             select_packages
             install_bootloader ;;
         "4")
@@ -4991,7 +4886,7 @@ mainmenu() {
 #####################
 ## begin execution ##
 if [[ -e /tmp/.setup-running ]]; then
-    DIALOG --yesno $"Wait! \n\nCinnarch Installer is already running somewhere else! \n\nDo you want to start from the beginning?" 0 0 && rm /tmp/.setup-running /tmp/.km-running /tmp/setup-pacman-running /tmp/setup-mkinitcpio-running /tmp/.tz-running /tmp/.setup
+    DIALOG --yesno $"Wait! \n\nAntergos Installer is already running somewhere else! \n\nDo you want to start from the beginning?" 0 0 && rm /tmp/.setup-running /tmp/.km-running /tmp/setup-pacman-running /tmp/setup-mkinitcpio-running /tmp/.tz-running /tmp/.setup
     if [[ -e /tmp/.setup-running ]]; then
         exit 1
     fi
@@ -5010,17 +4905,17 @@ if [[ "$NETWORK_ALIVE" = "" ]];then
 
 
 
-    DIALOG --infobox $"Checking for Cinnarch Installer Updates..." 6 50
-    INSTALLER_VERSION_NET=`curl http://www.cinnarch.com/cinnarch_installer/version 2>/dev/null`
+    DIALOG --infobox $"Checking for Antergos Installer Updates..." 6 50
+    INSTALLER_VERSION_NET=`curl http://install.antergos.com/version 2>/dev/null`
 
     if [[ ${INSTALLER_VERSION} < ${INSTALLER_VERSION_NET} ]];then
-            if [[ ${INSTALLER_VERSION} < 0.5 ]];then
-                DIALOG --msgbox $"Your version is too old. \n\nPlease, download the last Cinnarch Live" 7 50
+            if [[ ${INSTALLER_VERSION} < 0.8 ]];then
+                DIALOG --msgbox $"Your version is too old. \n\nPlease, download the last Antergos Live" 7 50
             else
 
-                ${DLPROG} -O /arch/setup http://www.cinnarch.com/cinnarch_installer/setup 2>/dev/null
+                ${DLPROG} -O /arch/setup http://install.antergos.com/setup 2>/dev/null
             
-                DIALOG --msgbox $"Successfully updated. \n\nPlease, restart Cinnarch Installer" 7 50
+                DIALOG --msgbox $"Successfully updated. \n\nPlease, restart Antergos Installer" 7 50
 
             fi
 
@@ -5030,7 +4925,7 @@ if [[ "$NETWORK_ALIVE" = "" ]];then
 
 
 
-    DIALOG --msgbox $"Welcome to the Cinnarch Installation program.\n\nThe install process is fairly straightforward, and you should run through the options in the order they are presented.\n\nIf you are unfamiliar with partitioning/making filesystems, you may want to consult some documentation before continuing.\n\nYou have Gparted as a visual app for the partition task available with Cinnarch" 18 65
+    DIALOG --msgbox $"Welcome to the Antergos Installation program.\n\nThe install process is fairly straightforward, and you should run through the options in the order they are presented.\n\nIf you are unfamiliar with partitioning/making filesystems, you may want to consult some documentation before continuing.\n\nYou have Gparted as a visual app for the partition task available with Antergos" 18 65
     sh /arch/rankmirrors-script &
 
     while true; do

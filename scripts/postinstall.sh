@@ -159,6 +159,7 @@ razor_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
 postinstall(){
@@ -179,9 +180,6 @@ postinstall(){
 
 	# Configure touchpad
 	set_synaptics
-
-	# Set keyboard layout
-	sed -i "s#Identifier \"evdev keyboard catchall\".*#&\n        Option \"XkbLayout\" \"${LANG_CODE}\"#" ${DESTDIR}/etc/X11/xorg.conf.d/10-evdev.conf
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc

@@ -85,6 +85,7 @@ class InstallationProcess(Process):
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
         self.desktop_manager = 'gdm'
+        self.card = []
     
         self.fs_devices = fs_devices
 
@@ -115,9 +116,6 @@ class InstallationProcess(Process):
         self.arch = os.uname()[-1]
         
         ## Create/Format partitions
-        
-        # TODO: Check if /boot is in another partition than root.
-        # (and then mount it)
         
         if self.method == 'automatic':
             self.auto_device = self.mount_devices["/"].replace("3","")
@@ -368,24 +366,24 @@ class InstallationProcess(Process):
 
         graphics = self.get_graphics_card()
         
-        self.card = ""
 
         if "ati " in graphics:
             for child in root.iter('ati'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
-            self.card = "ati"
+            self.card.append('ati')
         
         if "nvidia" in graphics:
             for child in root.iter('nvidia'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
-            self.card = "nvidia"
+            self.card.append('nvidia')
         
         if "intel" in graphics or "lenovo" in graphics:
             for child in root.iter('intel'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
+            self.card.append('intel')
         
         if "virtualbox" in graphics:
             for child in root.iter('virtualbox'):
@@ -642,7 +640,8 @@ class InstallationProcess(Process):
             # ignore if exists
             pass
 
-        self.chroot(['/usr/sbin/grub-mkconfig', '-o', '/boot/grub/grub.cfg'])
+        locale = self.settings.get("locale")
+        self.chroot(['sh', '-c', 'LANG=%s /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         
         self.chroot_umount()
 
@@ -650,13 +649,6 @@ class InstallationProcess(Process):
         
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            try:
-                code = self.settings.get("language_code")[0:2]
-                shutil.copy2("%s/boot/grub/locale/en@quot.mo" % self.dest_dir, 
-                             "%s/boot/grub/locale/%s.mo.gz" % (self.dest_dir, code))
-            except FileExistsError:
-                # ignore if exists
-                pass
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
@@ -758,10 +750,9 @@ class InstallationProcess(Process):
         password = self.settings.get('password')
         hostname = self.settings.get('hostname')
         
-        sudoers_path = os.path.join(self.dest_dir, "etc/sudoers")
+        sudoers_path = os.path.join(self.dest_dir, \
+                                    "etc/sudoers.d/installer")
         with open(sudoers_path, "wt") as sudoers:
-            sudoers.write('# Sudoers file\n')
-            sudoers.write('root ALL=(ALL) ALL\n')
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         
         subprocess.check_call(["chmod", "440", sudoers_path])
@@ -786,7 +777,7 @@ class InstallationProcess(Process):
         self.change_user_password('root', password)
 
         ## Generate locales
-        lang_code = self.settings.get("language_code")
+        keyboard_layout = self.settings.get("keyboard_layout")
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales"))
         
@@ -801,7 +792,18 @@ class InstallationProcess(Process):
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
         with open(vconsole_conf_path, "wt") as vconsole_conf:
-            vconsole_conf.write('KEYMAP=%s \n' % lang_code)
+            vconsole_conf.write('KEYMAP=%s \n' % keyboard_layout)
+
+        # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+        xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
+        with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
+           xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+           xorg_conf_xkb.write('# manually too freely.\n')
+           xorg_conf_xkb.write('Section "InputClass"\n')
+           xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+           xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+           xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
+           xorg_conf_xkb.write('EndSection\n')
 
         self.auto_timesetting()
 
@@ -847,6 +849,22 @@ class InstallationProcess(Process):
                             line = line[1:]
                         lxdm_conf.write(line)
 
+            # Systems with LightDM as the Desktop Manager
+            elif self.desktop_manager == 'lightdm':
+                lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+                # Ideally, use configparser for the ini conf file, but just do
+                # a simple text replacement for now
+                text = []
+                with open(lightdm_conf_path, "rt") as lightdm_conf:
+                    text = lightdm_conf.readlines()
+
+                with open(lightdm_conf_path, "wt") as lightdm_conf:
+                    for line in text:
+                        if '#autologin-user=' in line:
+                            line = 'autologin-user=%s\n' % username
+                        lightdm_conf.write(line)
+                
+
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.    
@@ -856,4 +874,14 @@ class InstallationProcess(Process):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, lang_code])
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, keyboard_layout])
+
+        # Set SNA acceleration method on Intel cards to avoid GDM bug
+        if 'intel' in self.card:
+                intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
+                with open(intel_conf_path, "wt") as intel_conf:
+                    intel_conf.write('Section "Device"\n')
+                    intel_conf.write('\tIdentifier  "Intel Graphics"\n')
+                    intel_conf.write('\tDriver      "intel"\n')
+                    intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
+                    intel_conf.write('EndSection\n')

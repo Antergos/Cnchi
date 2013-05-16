@@ -593,7 +593,8 @@ class InstallationAdvanced(Gtk.Box):
                     #fmtop = False
 
                 # Should we force a format if the partition is new?
-
+                if myfmt == 'swap':
+                    mymount = 'swap'
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
@@ -822,6 +823,8 @@ class InstallationAdvanced(Gtk.Box):
                 myfmt = use_combo.get_active_text()
                 if myfmt == None:
                     myfmt = ""
+                if myfmt == 'swap':
+                    mymount = 'swap'
                 # Get selected size
                 size = int(size_spin.get_value())
 
