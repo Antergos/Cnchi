@@ -67,7 +67,7 @@ class InstallationAsk(Gtk.Box):
 
         # by default, select automatic installation
         self.next_page = "installation_automatic"
-
+        
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
@@ -93,6 +93,10 @@ class InstallationAsk(Gtk.Box):
         
         radio = self.ui.get_object("alongside_radiobutton")
         radio.set_label(_("Install this OS alongside the other OSes"))
+
+        # alongside is still experimental. Needs a lot of testing.
+        radio.set_sensitive(False)
+
 
         label = self.ui.get_object("alongside_description")
         txt = _("Install this OS alongside the other OSes you have already installed.")
