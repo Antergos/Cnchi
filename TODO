@@ -1,4 +1,4 @@
-CNCHI TODO LIST (05 Apr 2013)
+CNCHI TODO LIST (17 May 2013)
 
 * General:
  - Check all file paths (os.path.join)
@@ -17,11 +17,6 @@ CNCHI TODO LIST (05 Apr 2013)
 * Slide screen:
  - Not all the installer events (messages) are shown. pac.py generates
    too many messages
-
-* installer-thread.py file:
- - create_fstab needs testing.
- - We forgot to use the user keyboard input choice in the target system. We're setting
- the keymap choosed from boot
 
 Alongside branch:
 * Autodetect already installed OSes (see bootinfo.py)
