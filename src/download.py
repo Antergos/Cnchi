@@ -74,49 +74,84 @@ class DownloadPackages():
         
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
+            if metalink == None:
+                log.debug(_("Error creating metalink for package %s") % package_name)
+                continue
+            
             gids = self.add_metalink(s, metalink)
             
+            if len(gids) <= 0:
+                log.debug(_("Error adding metalink for package %s") % package_name)
+                continue
+
             all_gids_done = False
                       
             while all_gids_done == False:
                 all_gids_done = True
+                gids_to_remove = []
                 for gid in gids:
                     total = 0
                     completed = 0
                     old_percent = -1
                     
-                    r = s.aria2.tellStatus(gid)               
+                    #pprint(gid)
+                    
+                    try:
+                        r = s.aria2.tellStatus(gid)
+                    except xmlrpc.client.Fault as e:
+                        print(e)
+                        gids_to_remove.append(gid)
+                        continue
+                    
+                    # remove completed gid's
+                    if r['status'] == "complete":
+                        s.aria2.removeDownloadResult(gid)
+                        gids_to_remove.append(gid)
+                        continue
 
-                    if r['status'] == "active":
-                        all_gids_done = False
+                    # if gid is not active, go to the next gid
+                    if r['status'] != "active":
+                        continue
 
-                        totalLength = int(r['totalLength'])
-                        # why sometimes gives 0 as totalLength is a mistery to me
-                        files = r['files']
-                        if totalLength == 0:
-                            totalLength = int(files[0]['length'])
-                        total += totalLength
+                    all_gids_done = False
 
-                        if total > 0:
-                            # Get first uri to get the real package name
-                            # (we need to use this if we want to show individual
-                            # packages from metapackages like base or base-devel)
-                            uri = files[0]['uris'][0]['uri']
-                            basename = os.path.basename(uri)
-                            if basename.endswith(".pkg.tar.xz"):
-                                basename = basename[:-11]
+                    totalLength = int(r['totalLength'])
+                    # why sometimes gives 0 as totalLength is a mistery to me
+                    files = r['files']
+                    if totalLength == 0:
+                        totalLength = int(files[0]['length'])
+                    total += totalLength
+
+                    if total <= 0:
+                        continue
+                        
+                    # Get first uri to get the real package name
+                    # (we need to use this if we want to show individual
+                    # packages from metapackages like base or base-devel)
+                    uri = files[0]['uris'][0]['uri']
+                    basename = os.path.basename(uri)
+                    if basename.endswith(".pkg.tar.xz"):
+                        basename = basename[:-11]
+                    
+                    action = _("Downloading package '%s'...") % basename
+                    self.queue_event('action', action)
+
+                    while r['status'] == "active" :
+                        r = s.aria2.tellStatus(gid)
+                        completed = int(r['completedLength'])
+                        percent = float(completed / total)
+                        if percent != old_percent:
+                            self.queue_event('percent', percent)
+                            old_percent = percent
                             
-                            action = _("Downloading package '%s'...") % basename
-                            self.queue_event('action', action)
+                gids = self.remove_old_gids(gids, gids_to_remove)
 
-                            while r['status'] == "active" :
-                                r = s.aria2.tellStatus(gid)
-                                completed = int(r['completedLength'])
-                                percent = float(completed / total)
-                                if percent != old_percent:
-                                    self.queue_event('percent', percent)
-                                    old_percent = percent
-                            #print("GID %s downloaded" % gid)
+    def remove_old_gids(self, gids, gids_to_remove):
+        new_gids_list = []
+        for gid in gids:
+            if gid not in gids_to_remove:
+                new_gids_list.append(gid)
+        return new_gids_list
 
     def set_aria2_defaults(self):
         self.rpc_user = "antergos"
@@ -201,8 +236,7 @@ class DownloadPackages():
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                 print("Can't communicate with Aria2. Won't be able to speed up the download:")
                 print(e)
-        else:
-            log.debug(_("Error creating metalink for package %s") % package_name)
+
         return gids
 
 
