@@ -84,11 +84,10 @@ class Language(Gtk.Box):
         
         label = self.ui.get_object("welcome_label")
         txt_bold = _("This is an Alpha version.")
-        txt = _("The Software is provided \"as is\" without warranty of any " \
-        "kind, either express or implied, including without limitation " \
-        "any implied warranties of condition, uninterrupted use, " \
-        "merchantability, fitness for a particular purpose, or " \
-        "non-infringement.\n\n" \
+        txt = _("Still undergoing development. It is known NOT " \
+        "to work yet with LVM, RAID, btrfs subvolumes, and other " \
+        "advanced setups. \n" \
+        "Please proceed with caution as data loss is possible! \n\n" \
         "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         txt = "<span weight='bold'>%s</span>\n\n" % txt_bold + txt
         label.set_markup(txt)

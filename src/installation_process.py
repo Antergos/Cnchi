@@ -145,7 +145,11 @@ class InstallationProcess(Process):
                 boot_partition = self.mount_devices["/boot"]
             else:
                 boot_partition = ""
-            # Avanced method formats root by default
+
+            if "swap" in self.mount_devices:
+                swap_partition = self.mount_devices["swap"]
+
+            # Advanced method formats root by default
             (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
         if self.method == 'advanced':
@@ -181,7 +185,7 @@ class InstallationProcess(Process):
                 mp = self.mount_devices[path]
                 # Root and Boot are already mounted.
                 # Just try to mount all the rest.
-                if mp != root_partition and mp != boot_partition:
+                if mp != root_partition and mp != boot_partition and mp != swap_partition:
                     try:
                         mount_dir = self.dest_dir + path
                         if not os.path.exists(mount_dir):
