@@ -236,7 +236,7 @@ class Keymap(Gtk.Box):
             if iter:
                 keyboard_variant_human = ls.get_value(iter, 0)
 
-        lang = os.environ.get("LANG").strip('.UTF-8')
+        lang = self.settings.get("language_code")
 
         kbd_names = keyboard_names.KeyboardNames(self.filename)
 
