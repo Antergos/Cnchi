@@ -353,7 +353,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     new_end_sector = start_sector + new_length
     my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
-    #create_partition(disk, 0, my_geometry)
+    create_partition(disk, 0, my_geometry)
     
     
     # Create new partition (for Antergos)
@@ -362,10 +362,10 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     end_sector = old_end_sector
     my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
-    #create_partition(disk, 0, my_geometry)
+    create_partition(disk, 0, my_geometry)
 
     # Remember to uncomment this!
-    #finalize_changes(disk)
+    finalize_changes(disk)
 
 # ----------------------------------------------------------------------------
 # Usage example

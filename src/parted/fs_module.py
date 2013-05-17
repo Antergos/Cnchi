@@ -160,16 +160,14 @@ def resize(part, fs_type, new_size_in_mb):
 
 @misc.raise_privileges    
 def resize_ntfs(part, new_size_in_mb):
-    
     print("ntfsresize --size %sM %s" % (new_size_in_mb, part))
-    '''   
+
     try:
         x = subprocess.check_output(["ntfsresize", "--size", new_size_in_mb+"M", part])
     except Exception as e:
         x = None
         print(e)
         return False
-    '''
     
     return True
 
@@ -182,4 +180,12 @@ def resize_fat(part, new_size_in_mb):
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
     print("resize2fs %s %sM" % (part, new_size_in_mb))
+
+    try:
+        x = subprocess.check_output(["resize2fs", part, new_size_in_mb+"M"])
+    except Exception as e:
+        x = None
+        print(e)
+        return False
+
     return True
