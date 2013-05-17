@@ -57,7 +57,10 @@ gnome_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
+	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	else
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
 
 	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
@@ -78,7 +81,10 @@ cinnamon_settings(){
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
-	sed -i "s/'us'/'${LANG_CODE}'/" /usr/share/cnchi/scripts/set-settings
+	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	else
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
@@ -166,7 +172,8 @@ postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
 	DESKTOP=$3
-	LANG_CODE=$4
+	KEYBOARD_LAYOUT=$4
+	KEYBOARD_VARIANT=$5
 	# Specific user configurations
 
 	## Set desktop-specific settings
@@ -187,5 +194,5 @@ postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4
+postinstall $1 $2 $3 $4 $5
 rm /tmp/.postinstall.lock
