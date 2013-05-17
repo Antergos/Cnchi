@@ -56,9 +56,7 @@ class DownloadPackages():
             
         self.callback_queue = callback_queue
 
-        self.rpc_user = "antergos"
-        self.rpc_passwd = "antergos"
-        self.rpc_port = "6800"
+        self.set_aria2_defaults()
 
         self.run_aria2_as_daemon()
 
@@ -70,15 +68,16 @@ class DownloadPackages():
             print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
             print(e)
             return
-            
-        self.update_databases()
+
+        # first, update pacman databases
+        package_names = ["databases"] + package_names
         
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             gids = self.add_metalink(s, metalink)
             
             all_gids_done = False
-            
+                      
             while all_gids_done == False:
                 all_gids_done = True
                 for gid in gids:
@@ -97,69 +96,39 @@ class DownloadPackages():
                         if totalLength == 0:
                             totalLength = int(files[0]['length'])
                         total += totalLength
-                        
-                        # Get first uri to get the real package name
-                        # (we need to use this if we want to show individual
-                        # packages from metapackages like base or base-devel)
-                        uri = files[0]['uris'][0]['uri']
-                        basename = os.path.basename(uri)
-                        if basename.endswith(".pkg.tar.xz"):
-                            basename = basename[:-11]
-                        
-                        action = _("Downloading package '%s'...") % basename
-                        self.queue_event('action', action)
 
-                        while r['status'] == "active" :
-                            r = s.aria2.tellStatus(gid)
-                            completed = int(r['completedLength'])
-                            percent = float(completed / total)
-                            if percent != old_percent:
-                                self.queue_event('percent', percent)
-                                old_percent = percent
-                        #print("GID %s downloaded" % gid)
+                        if total > 0:
+                            # Get first uri to get the real package name
+                            # (we need to use this if we want to show individual
+                            # packages from metapackages like base or base-devel)
+                            uri = files[0]['uris'][0]['uri']
+                            basename = os.path.basename(uri)
+                            if basename.endswith(".pkg.tar.xz"):
+                                basename = basename[:-11]
+                            
+                            action = _("Downloading package '%s'...") % basename
+                            self.queue_event('action', action)
 
-    def update_databases(self):
-        args = str("-c %s" % self.conf_file).split() 
-        args += ["-y"]
-        args += ["--noconfirm"]
-        args += "-r -p http -l 50".split()
+                            while r['status'] == "active" :
+                                r = s.aria2.tellStatus(gid)
+                                completed = int(r['completedLength'])
+                                percent = float(completed / total)
+                                if percent != old_percent:
+                                    self.queue_event('percent', percent)
+                                    old_percent = percent
+                            #print("GID %s downloaded" % gid)
+
+    def set_aria2_defaults(self):
+        self.rpc_user = "antergos"
+        self.rpc_passwd = "antergos"
+        self.rpc_port = "6800"
         
-        try:
-            pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-        except:
-            log.debug(_("Unable to create download queue for pacman databases"))
-            return
-
-        if not_found:
-            log.debug(_("Warning! Can't find these database files:"))
-            for nf in sorted(not_found):
-                log.debug(nf)
-      
-        if missing_deps:
-            log.debug(_("Warning! Can't resolve these dependencies:"))
-            for md in sorted(missing_deps):
-                log.debug(md)
-      
-        metalink = pm2ml.download_queue_to_metalink(
-            download_queue,
-            output_dir=pargs.output_dir,
-            set_preference=pargs.preference
-        )
-        
-        tmp_metalink = "/tmp/databases.metalink"
-        
-        with open(tmp_metalink, "w") as f:
-            f.write(str(metalink))
-            
-        self.queue_event('action', _("Updating pacman databases..."))
-
-        aria2_args = [
+        self.aria2_args = [
             "--log=/tmp/download-aria2.log",
             "--max-concurrent-downloads=2",
             "--split=5",
             "--min-split-size=5M",
             "--max-connection-per-server=2",
-            "--metalink-file=%s" % tmp_metalink,
             "--check-integrity",
             "--continue=false",
             "--enable-rpc",
@@ -168,11 +137,9 @@ class DownloadPackages():
             "--rpc-listen-port=%s" % self.rpc_port,
             "--rpc-save-upload-metadata=false",
             "--rpc-max-request-size=4M",
-            #"--pause",
             "--allow-overwrite=true",
             "--always-resume=false",
             "--auto-save-interval=0",
-            "--daemon=false",
             "--log-level=notice",
             "--show-console-readout=false",
             "--summary-interval=0",
@@ -182,56 +149,23 @@ class DownloadPackages():
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
             "--conditional-get=true",
-            "--dir=%s" % self.databases_dir]
-        
-        aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
-        
-        aria2c_p = subprocess.Popen(aria2_cmd)
-        aria2c_p.wait()
-        
-        if os.path.exists(tmp_metalink):
-            os.remove(tmp_metalink)
-    
-    def run_aria2_as_daemon(self):
-        aria2_args = [
-            "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=1",
-            "--split=10",
-            "--min-split-size=5M",
-            "--max-connection-per-server=2",
             #"--metalink-file=/tmp/packages.metalink",
-            "--check-integrity",
-            "--continue=false",
-            "--enable-rpc",
-            "--rpc-user=%s" % self.rpc_user,
-            "--rpc-passwd=%s" % self.rpc_passwd,
-            "--rpc-listen-port=%s" % self.rpc_port,
-            "--rpc-save-upload-metadata=false",
-            "--rpc-max-request-size=4M",
             #"--pause",
-            "--allow-overwrite=true",
-            "--always-resume=false",
-            "--auto-save-interval=0",
-            "--daemon=true",
-            "--log-level=notice",
-            "--show-console-readout=false",
-            "--summary-interval=0",
-            "--no-conf",
-            "--quiet",
-            "--remove-control-file",
-            "--stop-with-process=%d" % os.getpid(),
-            "--auto-file-renaming=false",
-            "--conditional-get=true",
-            "--dir=%s" % self.cache_dir]
-        
-        aria2_cmd = ['/usr/bin/aria2c', ] + aria2_args
-        
+            "--dir=%s" % self.databases_dir]
+            
+    def run_aria2_as_daemon(self):
+        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
         aria2c_p = subprocess.Popen(aria2_cmd)
         aria2c_p.wait()
 
     def create_metalink(self, package_name):
         args = str("-c %s" % self.conf_file).split() 
-        args += [package_name]
+        
+        if package_name == "databases":
+            args += ["-y"]
+        else:
+            args += [package_name]
+        
         args += ["--noconfirm"]
         args += "-r -p http -l 50".split()
         
@@ -269,15 +203,14 @@ class DownloadPackages():
                 print(e)
         else:
             log.debug(_("Error creating metalink for package %s") % package_name)
-        
         return gids
 
 
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        elif event_type != "percent":
-        #else:
+        #elif event_type != "percent":
+        else:
             log.debug(event_text)
 
 if __name__ == '__main__':
@@ -301,9 +234,19 @@ if __name__ == '__main__':
     ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
      "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
      "wireless_tools", "wpa_actiond", "b43-fwcutter", "ntfs-3g", 
-     "dosfstools", "xorg-server", "xorg-server-utils", "sudo", "pacmanxg4", 
-     "pkgfile", "chromium", "flashplugin", "alsa-utils", "whois", "dnsutils", 
-     "transmission-cli", "libreoffice-installer", "faenza-hotot-icon", 
-     "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar", 
-     "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
-
+     "dosfstools", "xorg-server", "xorg-server-utils", "sudo",
+     "pacmanxg4", "pkgfile", "chromium", "flashplugin", "alsa-utils",
+     "whois", "dnsutils", "transmission-cli", "libreoffice-installer",
+     "faenza-hotot-icon", "faenza-icon-theme", "antergos-wallpapers",
+     "unzip", "unrar", "net-tools", "xf86-input-synaptics",
+     "usb_modeswitch", "modemmanager", "ttf-dejavu", "ttf-bitstream-vera",
+     "network-manager-applet", "networkmanager-openvpn", "gnome-terminal",
+     "file-roller", "evince", "gnome-screenshot", "gnome-bluetooth",
+     "gnome-calculator", "xdg-user-dirs-gtk", "gedit", "xfburn",
+     "gnome-system-monitor", "empathy", "transmission-gtk", "xnoise",
+     "hotot-gtk3", "shotwell", "gnome-themes-standard",
+     "hicolor-icon-theme", "gdm", "gnome-keyring", "libgnomeui",
+     "gnome-shell", "gnome-control-center", "nautilus",	"zukitwo-themes",
+     "gstreamer0.10-bad-plugins", "gstreamer0.10-base-plugins",
+     "gstreamer0.10-ffmpeg", "gstreamer0.10-good-plugins",
+     "gstreamer0.10-ugly-plugins", "gst-libav"])
