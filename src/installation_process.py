@@ -782,6 +782,7 @@ class InstallationProcess(Process):
 
         ## Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales"))
         
@@ -801,13 +802,15 @@ class InstallationProcess(Process):
         # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
         xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
         with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
-           xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
-           xorg_conf_xkb.write('# manually too freely.\n')
-           xorg_conf_xkb.write('Section "InputClass"\n')
-           xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
-           xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-           xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
-           xorg_conf_xkb.write('EndSection\n')
+            xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+            xorg_conf_xkb.write('# manually too freely.\n')
+            xorg_conf_xkb.write('Section "InputClass"\n')
+            xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+            xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+            xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
+            if keyboard_variant != '':
+                xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
+            xorg_conf_xkb.write('EndSection\n')
 
         self.auto_timesetting()
 
@@ -878,7 +881,7 @@ class InstallationProcess(Process):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, keyboard_layout])
+        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:

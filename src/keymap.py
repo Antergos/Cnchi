@@ -125,7 +125,7 @@ class Keymap(Gtk.Box):
         lang = self.settings.get("language_code")
 
         keyboard_names._default_filename = self.filename
-        
+
         if not keyboard_names.has_language(lang):
             lang = "C"
 
@@ -184,7 +184,7 @@ class Keymap(Gtk.Box):
                 keyboard_layout = ls.get_value(iter, 0)
 
                 # store layout selected
-                self.keyboard_layout = keyboard_layout
+                self.keyboard_layout_human = keyboard_layout
 
                 lang = self.settings.get("language_code")
 
@@ -194,7 +194,7 @@ class Keymap(Gtk.Box):
                 kbd_names = keyboard_names.KeyboardNames(self.filename)
                 kbd_names._load(lang)
 
-                country_code = kbd_names._layout_by_human[keyboard_layout]
+                country_code = kbd_names._layout_by_human[self.keyboard_layout_human]
                 self.keyboard_layout = country_code
 
                 variants = kbd_names._variant_by_human
@@ -229,16 +229,28 @@ class Keymap(Gtk.Box):
         # we've previously stored our layout, now store our variant
         selected = self.variant_treeview.get_selection()
 
-        keyboard_variant = ""
+        keyboard_variant_human = ""
 
         if selected:
             (ls, iter) = selected.get_selected()
             if iter:
-                keyboard_variant = ls.get_value(iter, 0)
+                keyboard_variant_human = ls.get_value(iter, 0)
+
+        lang = os.environ.get("LANG").strip('.UTF-8')
+
+        kbd_names = keyboard_names.KeyboardNames(self.filename)
+
+        if not kbd_names.has_language(lang):
+            lang = "C"
+
+        kbd_names._load(lang)
+        country_code = kbd_names._layout_by_human[self.keyboard_layout_human]
+
+        self.keyboard_variant = kbd_names._variant_by_human[country_code][keyboard_variant_human]
 
         self.settings.set("keyboard_layout", self.keyboard_layout)
-        self.settings.set("keyboard_variant", keyboard_variant)
-        
+        self.settings.set("keyboard_variant", self.keyboard_variant)
+
         return True
 
     def get_prev_page(self):
