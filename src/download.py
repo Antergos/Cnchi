@@ -209,8 +209,8 @@ class DownloadPackages():
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        #elif event_type != "percent":
-        else:
+        elif event_type != "percent":
+        #else:
             log.debug(event_text)
 
 if __name__ == '__main__':
