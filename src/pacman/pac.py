@@ -138,7 +138,10 @@ class Pac(object):
                     self.release_transaction()
                 except pyalpm.error:
                     line = traceback.format_exc()
-                    self.queue_event("error", line)
+                    if "pm_errno 25" in line:
+                        pass
+                    else:
+                        self.queue_event("error", line)
     
     def add_package(self, pkgname):
         #print("searching %s" % pkgname)
@@ -156,16 +159,32 @@ class Pac(object):
                 else:
                     # Couldn't find package in repo, 
                     # maybe it's a group of packages.
-                    packages_list = pyalpm.find_grp_pkgs([repo], pkgname)
-                    if packages_list:
-                        for p in packages_list:
-                            if p not in self.listofpackages:
-                                self.listofpackages.append(p)
-                                self.t.add_pkg(p)
+                    group_list = self.select_from_groups([repo], pkgname)
+                    if group_list:
+                        for pkg_group in group_list:
+                            if pkg_group not in self.listofpackages:
+                                self.listofpackages.append(pkg_group)
+                                self.t.add_pkg(pkg_group)
                         break
         except pyalpm.error:
             line = traceback.format_exc()
-            self.queue_event("error", line)
+            if "pm_errno 25" in line:
+                pass
+            else:
+                self.queue_event("error", line)
+
+    def select_from_groups(self, repos, pkg_group):
+        pkgs_in_group = []
+        for repo in repos:
+            grp = repo.read_grp(pkg_group)
+            if grp is None:
+                continue
+            else:
+                name, pkgs = grp
+                for pkg in pkgs:
+                    pkgs_in_group.append(repo.get_pkg(pkg.name))
+
+        return pkgs_in_group
 
     def queue_event(self, event_type, event_text=""):
         if event_type == 'action':
