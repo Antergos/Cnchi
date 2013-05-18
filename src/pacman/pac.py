@@ -52,6 +52,9 @@ class Pac(object):
         self.to_update = []
         self.to_provide = []
         
+        # avoid adding a package that has been added in the past
+        self.listofpackages = []
+        
         self.action = ""
         self.percent = 0
         
@@ -146,7 +149,9 @@ class Pac(object):
                 pkg = repo.get_pkg(pkgname)
                 if pkg:
                     #print("adding %s" % pkgname)
-                    self.t.add_pkg(pkg)
+                    if pkg not in self.listofpackages:
+                        self.listofpackages.append(pkg)
+                        self.t.add_pkg(pkg)
                     break
                 else:
                     # Couldn't find package in repo, 
@@ -154,7 +159,9 @@ class Pac(object):
                     packages_list = pyalpm.find_grp_pkgs([repo], pkgname)
                     if packages_list:
                         for p in packages_list:
-                            self.t.add_pkg(p)
+                            if p not in self.listofpackages:
+                                self.listofpackages.append(p)
+                                self.t.add_pkg(p)
                         break
         except pyalpm.error:
             line = traceback.format_exc()
