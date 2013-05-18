@@ -37,6 +37,8 @@ import log
 import xmlrpc.client
 #from pprint import pprint
 
+_test = False
+
 class DownloadPackages():
     def __init__(self, package_names, conf_file=None, cache_dir=None, databases_dir=None, callback_queue=None):
         if conf_file == None:
@@ -116,7 +118,6 @@ class DownloadPackages():
                     all_gids_done = False
 
                     totalLength = int(r['totalLength'])
-                    # why sometimes gives 0 as totalLength is a mistery to me
                     files = r['files']
                     if totalLength == 0:
                         totalLength = int(files[0]['length'])
@@ -160,12 +161,12 @@ class DownloadPackages():
         
         self.aria2_args = [
             "--log=/tmp/download-aria2.log",
-            "--max-concurrent-downloads=2",
-            "--split=5",
-            "--min-split-size=5M",
-            "--max-connection-per-server=2",
-            "--check-integrity",
-            "--continue=false",
+            #"--max-concurrent-downloads=1",
+            #"--split=5",
+            #"--min-split-size=5M",
+            #"--max-connection-per-server=2",
+            #"--check-integrity",
+            #"--continue=false",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
             "--rpc-passwd=%s" % self.rpc_passwd,
@@ -173,17 +174,17 @@ class DownloadPackages():
             "--rpc-save-upload-metadata=false",
             "--rpc-max-request-size=4M",
             "--allow-overwrite=true",
-            "--always-resume=false",
-            "--auto-save-interval=0",
-            "--log-level=notice",
+            #"--always-resume=false",
+            #"--auto-save-interval=0",
+            #"--log-level=notice",
             "--show-console-readout=false",
-            "--summary-interval=0",
+            #"--summary-interval=0",
             "--no-conf",
             "--quiet",
-            "--remove-control-file",
+            #"--remove-control-file",
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
-            "--conditional-get=true",
+            #"--conditional-get=true",
             #"--metalink-file=/tmp/packages.metalink",
             #"--pause",
             "--dir=%s" % self.databases_dir]
@@ -243,14 +244,14 @@ class DownloadPackages():
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue != None:
             self.callback_queue.put((event_type, event_text))
-        elif event_type != "percent":
-        #else:
+        elif _test == True or event_type != "percent":
             log.debug(event_text)
 
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
     log._debug = True
+    _test = True
 
     '''
     DownloadPackages(\

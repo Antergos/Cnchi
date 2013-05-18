@@ -149,13 +149,13 @@ class Pac(object):
                     self.t.add_pkg(pkg)
                     break
                 else:
-                    # this is used for groups.  However, cinnarch repo
-                    # coming first causes errors.  Moved them to the back.
-                    l = pyalpm.find_grp_pkgs([repo], pkgname)
-                    if l:
-                        lss = []
-                        for pakg in l:
-                            self.t.add_pkg(pakg)
+                    # Couldn't find package in repo, 
+                    # maybe it's a group of packages.
+                    packages_list = pyalpm.find_grp_pkgs([repo], pkgname)
+                    if packages_list:
+                        for p in packages_list:
+                            self.t.add_pkg(p)
+                        break
         except pyalpm.error:
             line = traceback.format_exc()
             self.queue_event("error", line)
