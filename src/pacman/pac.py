@@ -64,7 +64,7 @@ class Pac(object):
         self.already_transferred = 0
         self.total_size = 0
         
-        self.last_action = ""
+        self.last_event = {}
         
         if conf != None:
             self.pacman_conf = pac_config.PacmanConfig(conf)
@@ -190,15 +190,16 @@ class Pac(object):
         return pkgs_in_group
 
     def queue_event(self, event_type, event_text=""):
-        if event_type == 'action':
-            if self.last_action == event_text:
-                # do not repeat the same action event
+        if event_type in self.last_event:
+            if self.last_event[event_type] == event_text:
+                # do not repeat same event
                 return
-            else:
-                self.last_action = event_text
+        
+        self.last_event[event_type] = event_text
+        
         try:
-            print("pac.py: ", event_text)
-            self.callback_queue.put((event_type, event_text), False)
+            print("pac.py: ", event_type, event_text)
+            self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             print("pac.py queue is full")
             
@@ -299,7 +300,7 @@ class Pac(object):
         return size_txt
 
     def cb_dl(self, _target, _transferred, total):
-        if self.t is not False:
+        if self.t != None:
             if self.total_size > 0:
                 fraction = (_transferred + self.already_transferred) / self.total_size
             size = 0
