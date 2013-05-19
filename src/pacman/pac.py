@@ -38,6 +38,9 @@ import sys
 import locale
 import gettext
 
+from multiprocessing import Queue
+import queue
+
 import pyalpm
 from pacman import pac_config
 
@@ -193,8 +196,12 @@ class Pac(object):
                 return
             else:
                 self.last_action = event_text
-                
-        self.callback_queue.put((event_type, event_text))
+        try:
+            print("pac.py: ", event_text)
+            self.callback_queue.put((event_type, event_text), False)
+        except queue.Full:
+            print("pac.py queue is full")
+            
         #print("%s : %s" % (event_type, event_text))
          
     # Callback functions 

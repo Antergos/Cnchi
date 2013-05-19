@@ -29,6 +29,7 @@
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
 from multiprocessing import Process
+import queue
 
 import subprocess
 import os
@@ -98,7 +99,12 @@ class InstallationProcess(Process):
         self.queue_event('error', txt)
          
     def queue_event(self, event_type, event_text=""):
-        self.callback_queue.put((event_type, event_text))
+        try:
+            print("installation_process.py: ", event_text)
+            self.callback_queue.put((event_type, event_text), False)
+        except queue.Full:
+            print("installation_process.py queue is full")
+
 
     @misc.raise_privileges    
     def run(self):
