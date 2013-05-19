@@ -210,37 +210,27 @@ class Pac(object):
     def cb_event(self, ID, event, tupel):
         if ID is 1:
             self.action = _('Checking dependencies...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
         elif ID is 3:
             self.action = _('Checking file conflicts...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
         elif ID is 5:
             self.action = _('Resolving dependencies...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/setup.png'
         elif ID is 7:
             self.action = _('Checking inter conflicts...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
         elif ID is 9:
             #self.action = _('Installing...')
-            #self.icon = '/usr/share/pamac/icons/24x24/status/package-add.png'
             self.action = ''
         elif ID is 11:
             self.action = _('Removing...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-delete.png'
         elif ID is 13:
             self.action = _('Upgrading...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-update.png'
         elif ID is 15:
             self.action = _('Checking integrity...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
             self.already_transferred = 0
         elif ID is 17:
             self.action = _('Loading packages files...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/package-search.png'
             print('Loading packages files')
         elif ID is 26:
             self.action = _('Configuring...')
-            self.icon = '/usr/share/pamac/icons/24x24/status/setup.png'
             print(_('Configuring a package'))
         elif ID is 27:
             print(_('Downloading a file'))
@@ -251,7 +241,6 @@ class Pac(object):
             self.queue_event("action", self.action)
         #self.queue_event("target", '')
         #self.queue_event("percent", 0)
-        #self.queue_event("icon", self.icon)
 
         #print(ID, event)
 
@@ -316,16 +305,14 @@ class Pac(object):
                 if fraction > 1:
                     self.percent = 0
                 else:
-                    self.percent = fraction
-                self.icon = '/usr/share/pamac/icons/24x24/status/package-download.png'
+                    self.percent = "{0:.2f}".format(fraction)
                 self.queue_event("action", self.action)
                 self.queue_event("percent", self.percent)
             else:
                 self.action = _('Refreshing %s...') % _target
                 self.target = _target
-                # can't we know wich percent has 'refreshed' ?
+                # can't we know which percent has 'refreshed' ?
                 self.percent = 0
-                self.icon = '/usr/share/pamac/icons/24x24/status/refresh-cache.png'
                 self.queue_event("action", self.action)
                 #self.queue_event("percent", self.percent)
 
