@@ -108,8 +108,9 @@ class Pac(object):
                 except pyalpm.error:
                     self.queue_event("error", traceback.format_exc())
                 finally:
-                    self.t.release()
-                    self.t = None
+                    if self.t != None:
+                        self.t.release()
+                        self.t = None
             except pyalpm.error:
                 self.queue_event("error", traceback.format_exc())
                 return
