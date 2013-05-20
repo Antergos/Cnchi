@@ -100,11 +100,9 @@ class InstallationProcess(Process):
          
     def queue_event(self, event_type, event_text=""):
         try:
-            print("installation_process.py: ", event_type, event_text)
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
-            print("installation_process.py queue is full")
-
+            pass
 
     @misc.raise_privileges    
     def run(self):

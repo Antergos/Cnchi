@@ -46,9 +46,6 @@ _alternate_package_list = ""
 # Download packages using aria2 downloader
 _use_aria2 = False
 
-# Interprocess message queue maximum size
-_messages_queue_size = 100
-
 import config
 
 import welcome
@@ -163,8 +160,6 @@ class Main(Gtk.Window):
         # Doing some tests with a LIFO queue
         #self.callback_queue = queue.LifoQueue(0)
         self.callback_queue = Queue()
-        #self.callback_queue = Queue(_messages_queue_size)
-        #log.debug(_("Interprocess events queue maximum size set to %d") % int(_messages_queue_size))
 
         # save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)
@@ -337,7 +332,7 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "adqup:", ["aria2", "debug", "queue", "update", "packages"])
+        opts, args = getopt.getopt(argv, "adup:", ["aria2", "debug", "update", "packages"])
     except getopt.GetoptError as e:
         print(str(e))
         sys.exit(2)
@@ -355,8 +350,6 @@ if __name__ == '__main__':
             _alternate_package_list = arg
         elif opt in ('-a', '--aria2'):
             _use_aria2 = True
-        elif opt in ('-q', '--queue'):
-            _messages_queue_size = arg
         else:
             assert False, "unhandled option"
                 

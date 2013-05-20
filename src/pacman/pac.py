@@ -200,15 +200,11 @@ class Pac(object):
         self.last_event[event_type] = event_text
         
         try:
-            print("pac.py: ", event_type, event_text)
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
-            print("pac.py queue is full")
-            
-        #print("%s : %s" % (event_type, event_text))
+            pass
          
     # Callback functions 
-
     def cb_event(self, ID, event, tupel):
         if ID is 1:
             self.action = _('Checking dependencies...')
