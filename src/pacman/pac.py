@@ -37,6 +37,7 @@ import traceback
 import sys
 import locale
 import gettext
+import math
 
 from multiprocessing import Queue
 import queue
@@ -306,7 +307,7 @@ class Pac(object):
                 if fraction > 1:
                     self.percent = 0
                 else:
-                    self.percent = "{0:.2f}".format(fraction)
+                    self.percent = math.floor(fraction * 100) / 100
                 self.queue_event("action", self.action)
                 self.queue_event("percent", self.percent)
             else:
