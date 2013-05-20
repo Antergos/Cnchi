@@ -35,7 +35,7 @@ import time
 import subprocess
 import log
 import xmlrpc.client
-#from pprint import pprint
+import queue
 
 _test = False
 
@@ -56,6 +56,8 @@ class DownloadPackages():
         else:
             self.databases_dir = databases_dir
             
+        self.last_event = {}
+
         self.callback_queue = callback_queue
 
         self.set_aria2_defaults()
@@ -95,8 +97,6 @@ class DownloadPackages():
                     total = 0
                     completed = 0
                     old_percent = -1
-                    
-                    #pprint(gid)
                     
                     try:
                         r = s.aria2.tellStatus(gid)
@@ -240,12 +240,21 @@ class DownloadPackages():
 
         return gids
 
-
     def queue_event(self, event_type, event_text=""):
-        if self.callback_queue != None:
-            self.callback_queue.put((event_type, event_text))
-        elif _test == True or event_type != "percent":
-            log.debug(event_text)
+        if self.callback_queue is None:
+            return
+            
+        if event_type in self.last_event:
+            if self.last_event[event_type] == event_text:
+                # do not repeat same event
+                return
+        
+        self.last_event[event_type] = event_text
+        
+        try:
+            self.callback_queue.put_nowait((event_type, event_text))
+        except queue.Full:
+            pass
 
 if __name__ == '__main__':
     import gettext
