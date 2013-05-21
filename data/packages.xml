@@ -42,7 +42,9 @@
 	<gnome_desktop>
 		<pkgname>ttf-dejavu</pkgname>
 		<pkgname>ttf-bitstream-vera</pkgname>
-		<pkgname>network-manager-applet</pkgname>
+		<pkgname nm='true' name='NetworkManager'>
+            network-manager-applet
+        </pkgname>
 		<pkgname>networkmanager-openvpn</pkgname>
 		<pkgname>gnome-terminal</pkgname>
 		<pkgname>file-roller</pkgname>
@@ -79,7 +81,9 @@
 	<cinnamon_desktop>
 		<pkgname>ttf-dejavu</pkgname>
 		<pkgname>ttf-bitstream-vera</pkgname>
-		<pkgname>network-manager-applet</pkgname>
+		<pkgname nm='true' name='NetworkManager'>
+            network-manager-applet
+        </pkgname>
 		<pkgname>networkmanager-openvpn</pkgname>
 		<pkgname>gnome-terminal</pkgname>
 		<pkgname>file-roller</pkgname>
@@ -128,7 +132,9 @@
 		<pkgname>xfce4-notifyd</pkgname>
 		<pkgname>xfce4-screenshooter</pkgname>
 		<pkgname>xfce4-taskmanager</pkgname>
-		<pkgname>network-manager-applet</pkgname>
+		<pkgname nm='true' name='NetworkManager'>
+            network-manager-applet
+        </pkgname>
 		<pkgname>xnoise</pkgname>
 		<pkgname>evince</pkgname>
 		<pkgname>transmission-gtk</pkgname>
@@ -147,11 +153,15 @@
 
 	<razor_desktop>
 		<pkgname>razor-qt</pkgname>
-		<pkgname dm='true' name='kdm'>kdebase-workspace</pkgname>
+        <pkgname>openbox</pkgname>
+        <pkgname>openbox-themes</pkgname>
+		<pkgname dm='true' name='lxdm'>lxdm</pkgname>
 		<pkgname>qtfm</pkgname>
 		<pkgname>kdebase-konsole</pkgname>
 		<pkgname>kdeartwork-desktopthemes</pkgname>
-		<pkgname>kdeplasma-applets-networkmanagement</pkgname>
+		<pkgname nm='true' name='connman' conflicts='netctl'>
+            qconnman-ui
+        </pkgname>
 		<pkgname>kovpn</pkgname>
 		<pkgname>kdesdk-kate</pkgname>
 		<pkgname>kdenetwork-kopete</pkgname>

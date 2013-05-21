@@ -55,6 +55,10 @@ class Pac(object):
         self.to_add = []
         self.to_update = []
         self.to_provide = []
+        # Packages to be removed
+        # E.g: connman conflicts with netctl(openresolv), which is installed
+        # by default with base group
+        self.conflicts = []
         
         # avoid adding a package that has been added in the past
         self.listofpackages = []
@@ -124,8 +128,9 @@ class Pac(object):
             size_string = '%.2f MiB' % (KiB_size / 1024)
         return size_string
 
-    def install_packages(self, pkg_names):
+    def install_packages(self, pkg_names, conflicts):
         self.to_add = []
+        self.conflicts = conflicts
 
         for pkgname in pkg_names:
             self.to_add.append(pkgname)
@@ -154,23 +159,25 @@ class Pac(object):
             return
         try:
             for repo in self.handle.get_syncdbs():
-                pkg = repo.get_pkg(pkgname)
-                if pkg:
-                    #print("adding %s" % pkgname)
-                    if pkg not in self.listofpackages:
-                        self.listofpackages.append(pkg)
-                        self.t.add_pkg(pkg)
-                    break
-                else:
-                    # Couldn't find package in repo, 
-                    # maybe it's a group of packages.
-                    group_list = self.select_from_groups([repo], pkgname)
-                    if group_list:
-                        for pkg_group in group_list:
-                            if pkg_group not in self.listofpackages:
-                                self.listofpackages.append(pkg_group)
-                                self.t.add_pkg(pkg_group)
+                if pkgname not in self.conflicts:
+                    pkg = repo.get_pkg(pkgname)
+                    if pkg:
+                        #print("adding %s" % pkgname)
+                        if pkg not in self.listofpackages:
+                            self.listofpackages.append(pkg)
+                            self.t.add_pkg(pkg)
                         break
+                    else:
+                        # Couldn't find package in repo, 
+                        # maybe it's a group of packages.
+                        group_list = self.select_from_groups([repo], pkgname)
+                        if group_list:
+                            for pkg_group in group_list:
+                                if pkg_group not in self.listofpackages and \
+                                    pkg_group not in self.conflicts:
+                                    self.listofpackages.append(pkg_group)
+                                    self.t.add_pkg(pkg_group)
+                            break
         except pyalpm.error:
             line = traceback.format_exc()
             if "pm_errno 25" in line:
@@ -187,7 +194,8 @@ class Pac(object):
             else:
                 name, pkgs = grp
                 for pkg in pkgs:
-                    pkgs_in_group.append(repo.get_pkg(pkg.name))
+                    if pkg.name not in self.conflicts:
+                        pkgs_in_group.append(repo.get_pkg(pkg.name))
 
         return pkgs_in_group
 

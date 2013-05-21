@@ -86,8 +86,11 @@ class InstallationProcess(Process):
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
         self.desktop_manager = 'gdm'
+        self.network_manager = 'NetworkManager'
         self.card = []
-    
+        # Packages to be removed
+        self.conflicts = []
+
         self.fs_devices = fs_devices
 
         self.running = True
@@ -365,6 +368,10 @@ class InstallationProcess(Process):
                 # activate the correct service
                 if pkg.attrib.get('dm'):
                     self.desktop_manager = pkg.attrib.get('name')
+                if pkg.attrib.get('nm'):
+                    self.network_manager = pkg.attrib.get('name')
+                if pkg.attrib.get('conflicts'):
+                    self.conflicts.append(pkg.attrib.get('conflicts'))
                 self.packages.append(pkg.text)
         
         if self.settings.get("use_ntp"):
@@ -492,7 +499,7 @@ class InstallationProcess(Process):
         self.chroot_umount()
     
     def run_pacman(self):
-        self.pac.install_packages(self.packages)
+        self.pac.install_packages(self.packages, self.conflicts)
     
     def chroot_mount(self):
         dirs = [ "sys", "proc", "dev" ]
@@ -716,7 +723,8 @@ class InstallationProcess(Process):
         # Generate the fstab file        
         self.auto_fstab()
         #Copy configured networks in Live medium to target system
-        self.copy_network_config()
+        if self.network_manager == 'NetworkManager':
+            self.copy_network_config()
 
         # copy mirror list
         shutil.copy2('/etc/pacman.d/mirrorlist', \
@@ -731,7 +739,7 @@ class InstallationProcess(Process):
             shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
 
         # enable services      
-        self.enable_services([ self.desktop_manager, "NetworkManager" ])
+        self.enable_services([ self.desktop_manager, self.network_manager ])
 
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
