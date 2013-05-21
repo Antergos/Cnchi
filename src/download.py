@@ -176,7 +176,7 @@ class DownloadPackages():
             "--allow-overwrite=true",
             #"--always-resume=false",
             #"--auto-save-interval=0",
-            #"--log-level=notice",
+            "--log-level=notice",
             "--show-console-readout=false",
             #"--summary-interval=0",
             "--no-conf",
