@@ -8,8 +8,8 @@
     <property name="valign">start</property>
     <property name="hexpand">True</property>
     <property name="top_padding">40</property>
-    <property name="left_padding">10</property>
-    <property name="right_padding">10</property>
+    <property name="left_padding">20</property>
+    <property name="right_padding">20</property>
     <child>
       <object class="GtkBox" id="check_vbox">
         <property name="visible">True</property>
@@ -90,36 +90,52 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="third_party_info">
+          <object class="GtkAlignment" id="alignment2">
+            <property name="height_request">95</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">10</property>
-            <property name="margin_right">20</property>
-            <property name="margin_bottom">5</property>
-            <property name="label" translatable="yes">Antergos uses third-party software to play Flash, MP3 and other media. Some of this software is propietary. The software is subject to license terms included with its documentation.</property>
-            <property name="justify">fill</property>
-            <property name="wrap">True</property>
+            <child>
+              <object class="GtkBox" id="third_party_vbox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="third_party_info">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Antergos uses third-party software to play Flash, MP3 and other media. Some of this software is propietary. The software is subject to license terms included with its documentation.</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="third_party_checkbutton">
+                    <property name="label" translatable="yes">Install this third-party software</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="margin_left">20</property>
+                    <property name="margin_top">5</property>
+                    <property name="xalign">0</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkCheckButton" id="third_party_checkbutton">
-            <property name="label" translatable="yes">Install this third-party software</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="margin_left">15</property>
-            <property name="xalign">0</property>
-            <property name="draw_indicator">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
           </packing>
         </child>
       </object>
