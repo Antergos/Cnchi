@@ -48,7 +48,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">7</property>
                 <child>
-                  <object class="StateBox" id="prepare_sufficient_space">
+                  <object class="StateBox" id="prepare_enough_space">
                     <property name="visible">True</property>
                     <property name="label">has at least 3GB available drive space</property>
                   </object>

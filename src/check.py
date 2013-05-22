@@ -72,9 +72,9 @@ class Check(Gtk.Box):
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
-        self.prepare_sufficient_space = self.ui.get_object("prepare_sufficient_space")
+        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         txt = _("has at least 3GB available drive space")
-        self.prepare_sufficient_space.props.label = txt
+        self.prepare_enough_space.props.label = txt
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
@@ -128,7 +128,7 @@ class Check(Gtk.Box):
         self.prepare_power_source.set_state(on_power)
         
         space = self.has_enough_space()
-        self.prepare_sufficient_space.set_state(space)
+        self.prepare_enough_space.set_state(space)
 
         if has_internet and space:
             return True
