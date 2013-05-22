@@ -58,7 +58,6 @@ _prev_page = "installation_ask"
 _minimum_space_for_antergos = 3000
 
 class InstallationAlongside(Gtk.Box):
-
     def __init__(self, params):
         self.title = params['title']
         self.ui_dir = params['ui_dir']

@@ -40,11 +40,16 @@ base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
 sys.path.insert(0, src_dir)
 
+# Global options
+
 # Used in installation_process if we pass the packages.xml as an option
 _alternate_package_list = ""
 
 # Download packages using aria2 downloader
 _use_aria2 = False
+
+# Enable alongside install mode (disabled by default)
+_enable_alongside = False
 
 import config
 
@@ -180,6 +185,7 @@ class Main(Gtk.Window):
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         params['alternate_package_list'] = _alternate_package_list
+        params['enable_alongside'] = _enable_alongside
         
         if len(_alternate_package_list) > 0:
             log.debug(_("Using '%s' file as package list") % _alternate_package_list)
@@ -332,7 +338,8 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "adup:", ["aria2", "debug", "update", "packages"])
+        opts, args = getopt.getopt(argv, "adlup:",
+         ["aria2", "debug", "alongside" "update", "packages"])
     except getopt.GetoptError as e:
         print(str(e))
         sys.exit(2)
@@ -350,6 +357,8 @@ if __name__ == '__main__':
             _alternate_package_list = arg
         elif opt in ('-a', '--aria2'):
             _use_aria2 = True
+        elif opt in ('-l', '--alongisde'):
+            _enable_alongside = True
         else:
             assert False, "unhandled option"
                 

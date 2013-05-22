@@ -45,6 +45,7 @@ class InstallationAsk(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
+        self.enable_alongside = params['enable_alongside']
         
         super().__init__()
         self.ui = Gtk.Builder()
@@ -91,18 +92,19 @@ class InstallationAsk(Gtk.Box):
         label.set_markup(txt)
         label.set_line_wrap(True)
         
+        # alongside is still experimental. Needs a lot of testing.
         radio = self.ui.get_object("alongside_radiobutton")
         radio.set_label(_("Install this OS alongside the other OSes"))
-
-        # alongside is still experimental. Needs a lot of testing.
-        radio.set_sensitive(False)
-
+        if not self.enable_alongside:
+            radio.set_sensitive(False)
 
         label = self.ui.get_object("alongside_description")
         txt = _("Install this OS alongside the other OSes you have already installed.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
+        if not self.enable_alongside:
+            label.set_sensitive(False)
 
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))
