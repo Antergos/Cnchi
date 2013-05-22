@@ -119,7 +119,7 @@ class Check(Gtk.Box):
         space = self.has_enough_space()
         self.prepare_sufficient_space.set_state(space)
 
-        if has_internet and on_power and space:
+        if has_internet and space:
             return True
 
         return False
