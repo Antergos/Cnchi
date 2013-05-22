@@ -872,6 +872,27 @@ class InstallationAdvanced(Gtk.Box):
                 self.fill_partition_list()
 
         self.create_partition_dialog.hide()
+    def on_partition_use_combo_changed(self, selection):
+        fs_selected = selection.get_active_text()
+        p_mount_combo = self.ui.get_object('partition_mount_combo')
+        p_mount_label = self.ui.get_object('partition_mount_label')
+        if fs_selected == 'swap':
+            p_mount_combo.hide()
+            p_mount_label.hide()
+        else:
+            p_mount_combo.show()
+            p_mount_label.show()
+     
+    def on_partition_use_combo2_changed(self,selection):
+        fs_selected = selection.get_active_text()
+        p_mount_combo = self.ui.get_object('partition_mount_combo2')
+        p_mount_label = self.ui.get_object('partition_mount_label2')
+        if fs_selected == 'swap':
+            p_mount_combo.hide()
+            p_mount_label.hide()
+        else:
+            p_mount_combo.show()
+            p_mount_label.show()
 
     def on_partition_list_undo_activate(self, button):
         ## To undo user changes, we simply reload all devices        
