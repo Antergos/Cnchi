@@ -22,7 +22,6 @@
 		<pkgname>pacmanxg4</pkgname>
 		<pkgname>pkgfile</pkgname>
 		<pkgname>chromium</pkgname>
-		<pkgname>flashplugin</pkgname>
 		<pkgname>alsa-utils</pkgname>
 		<pkgname>whois</pkgname>
 		<pkgname>dnsutils</pkgname>
@@ -72,7 +71,6 @@
 		<pkgname>gstreamer0.10-base-plugins</pkgname>
 		<pkgname>gstreamer0.10-ffmpeg</pkgname>
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
-		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
 	</gnome_desktop>
 
@@ -110,7 +108,6 @@
 		<pkgname>gstreamer0.10-base-plugins</pkgname>
 		<pkgname>gstreamer0.10-ffmpeg</pkgname>
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
-		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
 		<pkgname>cinnamon-theme-nadia</pkgname>
 	</cinnamon_desktop>
@@ -139,7 +136,6 @@
 		<pkgname>gstreamer0.10-base-plugins</pkgname>
 		<pkgname>gstreamer0.10-ffmpeg</pkgname>
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
-		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
 		<pkgname>xdg-user-dirs-gtk</pkgname>
 		<pkgname>hotot-gtk3</pkgname>
@@ -166,7 +162,13 @@
 		<pkgname>phonon-vlc</pkgname>
 		<pkgname>hotot-qt</pkgname>
 	</razor_desktop>
-	
+
+	<!-- Third party software. Some of them propietary -->
+	<third_party>
+		<pkgname>flashplugin</pkgname>
+		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
+	</third_party>
+
 	<graphics>
 		<nvidia>
 			<pkgname>xf86-video-nouveau</pkgname>

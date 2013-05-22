@@ -52,6 +52,7 @@ class Check(Gtk.Box):
 
         self.title = params['title']
         self.ui_dir = params['ui_dir']
+        self.settings = params['settings']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
 
@@ -87,6 +88,16 @@ class Check(Gtk.Box):
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.prepare_best_results.set_markup(txt)
+
+        self.third_party_info = self.ui.get_object("third_party_info")
+        txt = _("Antergos uses third-party software to play Flash, MP3 " \
+                "and other media. Some of this software is propietary. The " \
+                "software is subject to license terms included with its documentation.")
+        self.third_party_info.set_label(txt)
+
+        self.third_party_checkbutton = self.ui.get_object("third_party_checkbutton")
+        txt = _("Install this third-party software")
+        self.third_party_checkbutton.set_label(txt)
 
     def get_prop(self, obj, iface, prop):
         try:
@@ -165,6 +176,13 @@ class Check(Gtk.Box):
 
         return False
 
+    def on_third_party_checkbutton_toggled(self, button):
+        current_value = self.settings.get("third_party_software")
+        if current_value is False:
+            self.settings.set("third_party_software", True)
+        else:
+            self.settings.set("third_party_software", False)
+
     def on_timer(self, time):
         if not self.remove_timer:
             self.forward_button.set_sensitive(self.check_all())
@@ -180,7 +198,7 @@ class Check(Gtk.Box):
           
         # Enable forward button
         self.forward_button.set_sensitive(True)
-        
+
         ## Launch rankmirrors script to determine the 5 fastest mirrors
         #self.thread = None
         #self.thread = AutoRankmirrorsThread()
@@ -198,5 +216,6 @@ class Check(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.forward_button.set_sensitive(self.check_all())
+
         # set timer
         self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)

@@ -470,11 +470,18 @@ class InstallationProcess(Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        self.queue_event('debug', 'Selecting chinese fonts.')
+        
+        # Third-party software
+        if self.settings.get("third_party_software") is True:
+            self.queue_event('debug', 'Selecting third-party software.')
+            for child in root.iter('third_party'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
         # Install chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
+            self.queue_event('debug', 'Selecting chinese fonts.')
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)

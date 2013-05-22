@@ -56,6 +56,7 @@ class Settings():
             'timezone_longitude' : 0, \
             'timezone_done' : False, \
             'use_ntp' : True, \
+            'third_party_software' : False, \
             'desktop' : 'gnome', \
             'desktop_mode' : 'vanilla', \
             'partition_mode' : 'easy', \
