@@ -163,6 +163,27 @@
 		<pkgname>hotot-qt</pkgname>
 	</razor_desktop>
 
+	<openbox_desktop>
+        <pkgname>openbox</pkgname>
+        <pkgname>obmenu</pkgname>
+        <pkgname>oblogout</pkgname>
+        <pkgname>obconf</pkgname>
+        <pkgname>obkey</pkgname>
+        <pkgname>lxappearance-obconf</pkgname>
+        <pkgname>python2-xdg</pkgname>
+        <pkgname>tint2</pkgname>
+        <pkgname>volumeicon</pkgname>
+        <pkgname>pcmanfm</pkgname>
+        <pkgname dm='true' name='slim'>slim</pkgname>
+        <pkgname>gmrun</pkgname>
+        <pkgname>nitrogen</pkgname>
+		<pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>lxterminal</pkgname>
+        <pkgname>zukitwo-theme-openbox</pkgname>
+        <pkgname>openbox-menu</pkgname>
+        <pkgname>compton-git</pkgname>
+    </openbox_desktop>
+
 	<!-- Third party software. Some of them propietary -->
 	<third_party>
 		<pkgname>flashplugin</pkgname>
