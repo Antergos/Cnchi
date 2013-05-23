@@ -9,10 +9,7 @@
     <child>
       <object class="GtkBox" id="box1">
         <property name="can_focus">False</property>
-        <property name="margin_top">50</property>
-        <property name="margin_bottom">65</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">40</property>
         <child>
           <object class="GtkLabel" id="text_automatic">
             <property name="visible">True</property>
@@ -60,7 +57,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -73,7 +70,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
             </child>
