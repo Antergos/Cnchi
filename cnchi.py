@@ -40,17 +40,6 @@ base_dir = os.path.dirname(__file__) or '.'
 src_dir = os.path.join(base_dir, 'src')
 sys.path.insert(0, src_dir)
 
-# Global options
-
-# Used in installation_process if we pass the packages.xml as an option
-_alternate_package_list = ""
-
-# Download packages using aria2 downloader
-_use_aria2 = False
-
-# Enable alongside install mode (disabled by default)
-_enable_alongside = False
-
 import config
 
 import welcome
@@ -75,6 +64,21 @@ import updater
 from multiprocessing import Queue
 
 import show_message as show
+
+# Global options #######################################################
+
+# Used in installation_process if we pass the packages.xml as an option
+_alternate_package_list = ""
+
+# Download packages using aria2 downloader
+_use_aria2 = False
+
+# Enable alongside install mode (disabled by default)
+_enable_alongside = False
+
+# Enabled desktops
+#_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
+_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox" ]
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
@@ -130,6 +134,9 @@ class Main(Gtk.Window):
             self.settings.set("DATA_DIR", data_dir)
             
             self.ui_dir = self.settings.get("UI_DIR")
+            
+        # set enabled desktops
+        self.settings.set("desktops", _desktops)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")

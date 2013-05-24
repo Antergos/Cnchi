@@ -182,6 +182,7 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>openbox-menu</pkgname>
         <pkgname>compton-git</pkgname>
+        <pkgname>xorg-xinit</pkgname>
     </openbox_desktop>
 
 	<!-- Third party software. Some of them propietary -->

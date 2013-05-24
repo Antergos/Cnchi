@@ -57,8 +57,8 @@ class Settings():
             'timezone_done' : False, \
             'use_ntp' : True, \
             'third_party_software' : False, \
+            'desktops' : [], \
             'desktop' : 'gnome', \
-            'desktop_mode' : 'vanilla', \
             'partition_mode' : 'easy', \
             'auto_device' : '/dev/sda', \
             'log_file' : '/tmp/cnchi.log', \

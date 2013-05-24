@@ -57,13 +57,24 @@ class DesktopAsk(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
-        self.desktop_mode = 'vanilla'
+        
+        self.enabled_desktops = self.settings.get("desktops")
+               
+        self.desktops = {
+         "gnome":"Gnome",
+         "cinnamon":"Cinnamon",
+         "xfce":"Xfce",
+         "lxde":"Lxde",
+         "openbox":"Openbox",
+         "enlightenment":"Enlightenment (e17)",
+         "kde":"KDE",
+         "razor":"Razor-qt" }
 
         self.set_desktop_list()
 
         super().add(self.ui.get_object("desktop"))
 
-    def translate_ui(self, desktop, desktop_mode):
+    def translate_ui(self, desktop):
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
 
@@ -71,7 +82,7 @@ class DesktopAsk(Gtk.Box):
             txt = _("Gnome 3 is an easy and elegant way to use your " \
             "computer. It is designed to put you in control " \
             "and bring freedom to everybody. GNOME 3 is developed " \
-            "by the GNOME community, a diverse, international group of contributors.")
+            "by the GNOME community.")
             txt = "<span weight='bold'>GNOME</span>\n" + txt
 
         elif desktop == 'cinnamon':
@@ -102,7 +113,7 @@ class DesktopAsk(Gtk.Box):
             "minimalistic appearance.")
             txt = "<span weight='bold'>OPENBOX</span>\n" + txt
 
-        elif desktop == 'enlightment':
+        elif desktop == 'enlightenment':
             txt = _("Enlightenment is not just a window manager for Linux/X11 " \
             "and others, but also a whole suite of libraries to help " \
             "you create beautiful user interfaces with much less work")
@@ -131,47 +142,33 @@ class DesktopAsk(Gtk.Box):
         self.title.set_markup(txt)
             
     def prepare(self, direction):
-        self.translate_ui(self.desktop_choice, self.desktop_mode)
+        self.translate_ui(self.desktop_choice)
         self.show_all()
 
     def set_desktop_list(self):
-        liststore_desktop = Gtk.ListStore(str)
-
         render = Gtk.CellRendererText()
         col_desktops = Gtk.TreeViewColumn(_("Desktops"), render, text=0)
-        self.treeview_desktop.set_model(liststore_desktop)
+        liststore_desktop = Gtk.ListStore(str)
         self.treeview_desktop.append_column(col_desktops)
+        self.treeview_desktop.set_model(liststore_desktop)
 
-        liststore_desktop.append(['Gnome'])
-        liststore_desktop.append(['Cinnamon'])
-        liststore_desktop.append(['Xfce'])
-        # liststore_desktop.append(['Lxde'])
-        # liststore_desktop.append(['Openbox'])
-        # liststore_desktop.append(['Enlightment'])
-        # liststore_desktop.append(['KDE'])
-        liststore_desktop.append(['Razor-qt'])
-
+        names = []
+        for d in self.enabled_desktops:
+            names.append(self.desktops[d])
+        
+        names.sort()
+        
+        for n in names:
+            liststore_desktop.append([n])
+                
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
     def set_desktop(self, desktop):
-        if desktop == 'Gnome':
-            self.desktop_choice = 'gnome'
-        elif desktop == 'Cinnamon':
-            self.desktop_choice = 'cinnamon'
-        elif desktop == 'Xfce':
-            self.desktop_choice = 'xfce'
-        elif desktop == 'Lxde':
-            self.desktop_choice = 'lxde'
-        elif desktop == 'Openbox':
-            self.desktop_choice = 'openbox'
-        elif desktop == 'Enlightment':
-            self.desktop_choice = 'enlightment'
-        elif desktop == 'KDE':
-            self.desktop_choice = 'kde'
-        elif desktop == 'Razor-qt':
-            self.desktop_choice = 'razor'
-
-        self.translate_ui(self.desktop_choice, self.desktop_mode)
+        for k in self.desktops.keys():
+            if self.desktops[k] == desktop:
+                self.desktop_choice = k
+                self.translate_ui(self.desktop_choice)
+                return
                 
     def on_treeview_desktop_cursor_changed(self, treeview):
         selected = treeview.get_selection()
@@ -180,20 +177,10 @@ class DesktopAsk(Gtk.Box):
             if iter:
                 desktop = ls.get_value(iter, 0)
                 self.set_desktop(desktop)
-
-    def on_vanilla_radio_toggled(self, widget):
-        if widget.get_active():
-            self.desktop_mode = 'vanilla'
-            self.translate_ui(self.desktop_choice, self.desktop_mode)
-
-    def on_flavoured_radio_toggled(self, widget):
-        if widget.get_active():
-            self.desktop_mode = 'flavoured'
-            self.translate_ui(self.desktop_choice, self.desktop_mode)
         
     def store_values(self):
         self.settings.set('desktop', self.desktop_choice)
-        self.settings.set('desktop_mode', self.desktop_mode)
+        print(self.desktop_choice)
         return True
 
     def select_default_row(self, treeview, desktop):   
