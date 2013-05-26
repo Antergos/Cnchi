@@ -138,6 +138,36 @@ xfce_settings(){
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 }
 
+openbox_settings(){
+	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+	# Set settings
+    # TODO: get zip file, unzip it and copy all setup files in their right places.
+    #"https://github.com/Antergos/openbox-setup/archive/master.zip"
+	
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+	# Set openbox in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+}
+
 razor_settings(){
 	# Set theme
 	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
