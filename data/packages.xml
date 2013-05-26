@@ -179,10 +179,14 @@
         <pkgname>nitrogen</pkgname>
 		<pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>lxterminal</pkgname>
+        <pkgname>mousepad</pkgname>
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>openbox-menu</pkgname>
-        <pkgname>compton-git</pkgname>
+        <pkgname>compton</pkgname>
         <pkgname>xorg-xinit</pkgname>
+        <pkgname>xorg-xkill</pkgname>
+        <pkgname>audacious</pkgname>
+        <pkgname>slimlock</pkgname>
     </openbox_desktop>
 
 	<!-- Third party software. Some of them propietary -->
