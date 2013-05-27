@@ -900,7 +900,25 @@ class InstallationProcess(Process):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
+        subprocess.check_call(["/bin/bash", script_path_postinstall,
+            username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
+
+        # In openbox "desktop", the postinstall script writes /etc/slim.conf
+        # so we have to modify it here (after running the script).
+        if self.desktop_manager == 'openbox':
+            conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
+            text = []
+            with open(conf_path, "rt") as conf:
+                text = conf.readlines()
+    
+            with open(conf_path, "wt") as conf:
+                for line in text:
+                    if 'auto_login' in line:
+                        line = 'auto_login yes\n'
+                    if 'default_user' in line:
+                        line = 'default_user %s\n' % username
+                    lxdm_conf.write(line)
+
 
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:

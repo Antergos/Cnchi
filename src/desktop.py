@@ -61,14 +61,15 @@ class DesktopAsk(Gtk.Box):
         self.enabled_desktops = self.settings.get("desktops")
                
         self.desktops = {
-         "gnome":"Gnome",
-         "cinnamon":"Cinnamon",
-         "xfce":"Xfce",
-         "lxde":"Lxde",
-         "openbox":"Openbox",
-         "enlightenment":"Enlightenment (e17)",
-         "kde":"KDE",
-         "razor":"Razor-qt" }
+         "gnome" : "Gnome",
+         "cinnamon" : "Cinnamon",
+         "xfce" : "Xfce",
+         "lxde" : "Lxde",
+         "openbox" : "Openbox",
+         "enlightenment" : "Enlightenment (e17)",
+         "kde" : "KDE",
+         "razor" : "Razor-qt",
+         "nox" : "Without X" }
 
         self.set_desktop_list()
 
@@ -132,6 +133,10 @@ class DesktopAsk(Gtk.Box):
             "tailored for users who value simplicity, speed, and " \
             "an intuitive interface.")
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
+            
+        elif desktop == 'nox':
+            txt = _("Don't install any desktop.")
+            txt = "<span weight='bold'>NoX</span>\n" + txt
             
         label.set_markup(txt)
 
