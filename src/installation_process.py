@@ -900,7 +900,7 @@ class InstallationProcess(Process):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall,
+        subprocess.check_call(["/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # In openbox "desktop", the postinstall script writes /etc/slim.conf
