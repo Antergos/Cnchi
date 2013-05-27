@@ -16,27 +16,30 @@
 		<pkgname>b43-fwcutter</pkgname>
 		<pkgname>ntfs-3g</pkgname>
 		<pkgname>dosfstools</pkgname>
-		<pkgname>xorg-server</pkgname>
-		<pkgname>xorg-server-utils</pkgname>
 		<pkgname>sudo</pkgname>
-		<pkgname>pacmanxg4</pkgname>
 		<pkgname>pkgfile</pkgname>
-		<pkgname>chromium</pkgname>
 		<pkgname>alsa-utils</pkgname>
 		<pkgname>whois</pkgname>
 		<pkgname>dnsutils</pkgname>
 		<pkgname>transmission-cli</pkgname>
+		<pkgname>unzip</pkgname>
+		<pkgname>unrar</pkgname>
+		<pkgname>net-tools</pkgname>
+		<pkgname>usb_modeswitch</pkgname>
+		<pkgname>modemmanager</pkgname>
+	</common_system>
+
+	<graphic_system>
+		<pkgname>xorg-server</pkgname>
+		<pkgname>xorg-server-utils</pkgname>
+		<pkgname>pacmanxg4</pkgname>
+		<pkgname>chromium</pkgname>
 		<pkgname>libreoffice-installer</pkgname>
 		<pkgname>faenza-hotot-icon</pkgname>
 		<pkgname>faenza-icon-theme</pkgname>
 		<pkgname>antergos-wallpapers</pkgname>
-		<pkgname>unzip</pkgname>
-		<pkgname>unrar</pkgname>
-		<pkgname>net-tools</pkgname>
 		<pkgname>xf86-input-synaptics</pkgname>
-		<pkgname>usb_modeswitch</pkgname>
-		<pkgname>modemmanager</pkgname>
-	</common_system>
+	</graphic_system>
 
 	<gnome_desktop>
 		<pkgname>ttf-dejavu</pkgname>
@@ -189,7 +192,7 @@
         <pkgname>slimlock</pkgname>
     </openbox_desktop>
 
-	<!-- Third party software. Some of them propietary -->
+	<!-- Third party software. Some of it is propietary -->
 	<third_party>
 		<pkgname>flashplugin</pkgname>
 		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
@@ -222,11 +225,13 @@
 			<pkgname>v86d</pkgname>
 		</uvesafb>
 	</graphics>
+
 	<net>
 		<broadcom>
 			<pkgname>broadcom-wl</pkgname>
 		</broadcom>
 	</net>
+
 	<filesystems>
 		<ntfs>
 			<pkgname>ntfs-3g</pkgname>
@@ -256,16 +261,19 @@
 			<pkgname>dmraid</pkgname>
 		</raid>
 	</filesystems>
+
 	<special_fonts>
 		<chinese>
 			<pkgname>opendesktop-fonts</pkgname>
 		</chinese>
 	</special_fonts>
+
 	<clock_sync>
 		<ntp>
 			<pkgname>ntp</pkgname>
 		</ntp>
 	</clock_sync>
+
 	<bootloaders>
 		<grub>
 			<pkgname>grub-common</pkgname>

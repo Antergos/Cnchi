@@ -360,19 +360,24 @@ class InstallationProcess(Process):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-        self.queue_event('debug', "Adding desktop packages")
+        if self.desktop != "nox":
+            for child in root.iter('graphic_system'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
-        for child in root.iter(self.desktop + '_desktop'):
-            for pkg in child.iter('pkgname'):
-                # If package is Desktop Manager, save name to 
-                # activate the correct service
-                if pkg.attrib.get('dm'):
-                    self.desktop_manager = pkg.attrib.get('name')
-                if pkg.attrib.get('nm'):
-                    self.network_manager = pkg.attrib.get('name')
-                if pkg.attrib.get('conflicts'):
-                    self.conflicts.append(pkg.attrib.get('conflicts'))
-                self.packages.append(pkg.text)
+            self.queue_event('debug', "Adding desktop packages")
+
+            for child in root.iter(self.desktop + '_desktop'):
+                for pkg in child.iter('pkgname'):
+                    # If package is Desktop Manager, save name to 
+                    # activate the correct service
+                    if pkg.attrib.get('dm'):
+                        self.desktop_manager = pkg.attrib.get('name')
+                    if pkg.attrib.get('nm'):
+                        self.network_manager = pkg.attrib.get('name')
+                    if pkg.attrib.get('conflicts'):
+                        self.conflicts.append(pkg.attrib.get('conflicts'))
+                    self.packages.append(pkg.text)
         
         if self.settings.get("use_ntp"):
             for child in root.iter('ntp'):
@@ -750,7 +755,7 @@ class InstallationProcess(Process):
 
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
-            self.enable_services([ "ntpd" ])
+            self.enable_services(["ntpd"])
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
@@ -910,7 +915,6 @@ class InstallationProcess(Process):
             text = []
             with open(conf_path, "rt") as conf:
                 text = conf.readlines()
-    
             with open(conf_path, "wt") as conf:
                 for line in text:
                     if 'auto_login' in line:
@@ -919,13 +923,12 @@ class InstallationProcess(Process):
                         line = 'default_user %s\n' % username
                     lxdm_conf.write(line)
 
-
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:
-                intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
-                with open(intel_conf_path, "wt") as intel_conf:
-                    intel_conf.write('Section "Device"\n')
-                    intel_conf.write('\tIdentifier  "Intel Graphics"\n')
-                    intel_conf.write('\tDriver      "intel"\n')
-                    intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
-                    intel_conf.write('EndSection\n')
+            intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
+            with open(intel_conf_path, "wt") as intel_conf:
+                intel_conf.write('Section "Device"\n')
+                intel_conf.write('\tIdentifier  "Intel Graphics"\n')
+                intel_conf.write('\tDriver      "intel"\n')
+                intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
+                intel_conf.write('EndSection\n')
