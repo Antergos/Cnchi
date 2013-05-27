@@ -77,8 +77,8 @@ _use_aria2 = False
 _enable_alongside = False
 
 # Enabled desktops
-#_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde", "nox" ]
-_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "nox" ]
+#_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
+_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox" ]
 
 # Useful vars for gettext (translations)
 APP = "cnchi"

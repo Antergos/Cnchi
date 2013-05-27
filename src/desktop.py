@@ -53,6 +53,8 @@ class DesktopAsk(Gtk.Box):
 
         self.desktop_info = self.ui.get_object("desktop_info")
         self.treeview_desktop = self.ui.get_object("treeview_desktop")
+        
+        self.no_desktop = self.ui.get_object("no_desktop")
 
         self.ui.connect_signals(self)
 
@@ -68,14 +70,15 @@ class DesktopAsk(Gtk.Box):
          "openbox" : "Openbox",
          "enlightenment" : "Enlightenment (e17)",
          "kde" : "KDE",
-         "razor" : "Razor-qt",
-         "nox" : "Without X" }
+         "razor" : "Razor-qt" }
 
         self.set_desktop_list()
 
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
+        self.no_desktop.set_label(_("Don't install any desktop"))
+        
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
 
@@ -133,10 +136,15 @@ class DesktopAsk(Gtk.Box):
             "tailored for users who value simplicity, speed, and " \
             "an intuitive interface.")
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
-            
-        elif desktop == 'nox':
-            txt = _("Don't install any desktop.")
-            txt = "<span weight='bold'>NoX</span>\n" + txt
+        
+        if desktop == 'nox':
+            txt = _("This will install Antergos as command-line system, " \
+            "without any desktop at all. After the installation you can " \
+            "install the desktop you may see fit.")
+            txt = "<span weight='bold'>Command-line system</span>\n" + txt
+            self.treeview_desktop.set_sensitive(False)
+        else:
+            self.treeview_desktop.set_sensitive(True)
             
         label.set_markup(txt)
 
@@ -152,7 +160,7 @@ class DesktopAsk(Gtk.Box):
 
     def set_desktop_list(self):
         render = Gtk.CellRendererText()
-        col_desktops = Gtk.TreeViewColumn(_("Desktops"), render, text=0)
+        col_desktops = Gtk.TreeViewColumn(_("Select your desktop"), render, text=0)
         liststore_desktop = Gtk.ListStore(str)
         self.treeview_desktop.append_column(col_desktops)
         self.treeview_desktop.set_model(liststore_desktop)
@@ -185,7 +193,6 @@ class DesktopAsk(Gtk.Box):
         
     def store_values(self):
         self.settings.set('desktop', self.desktop_choice)
-        print(self.desktop_choice)
         return True
 
     def select_default_row(self, treeview, desktop):   
@@ -202,6 +209,15 @@ class DesktopAsk(Gtk.Box):
     def scroll_to_cell(self, treeview, path):
         treeview.scroll_to_cell(path)
         return False
+        
+    def on_no_desktop_toggled(self, button):
+        if button.get_active():
+            self.selected_desktop = self.desktop_choice
+            self.desktop_choice = "nox"
+            self.translate_ui(self.desktop_choice)
+        else:
+            self.desktop_choice = self.selected_desktop
+            self.translate_ui(self.desktop_choice)
 
     def get_prev_page(self):
         return _prev_page
