@@ -181,7 +181,7 @@
         <pkgname>gmrun</pkgname>
         <pkgname>nitrogen</pkgname>
 		<pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-        <pkgname>lxterminal</pkgname>
+        <pkgname>sakura</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>openbox-menu</pkgname>
