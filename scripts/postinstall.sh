@@ -214,6 +214,7 @@ razor_settings(){
 }
 
 nox_settings(){
+	echo "Done"
 }
 
 postinstall(){
