@@ -149,6 +149,12 @@ class InstallationProcess(Process):
         
         if self.method == 'advanced':
             root_partition = self.mount_devices["/"]
+            
+            if root_partition in self.fs_devices:
+                root_fs = self.fs_devices[root_partition]
+            else:
+                root_fs = "ext4"
+                
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
             else:
@@ -159,7 +165,7 @@ class InstallationProcess(Process):
 
             # Advanced method formats root by default
             # THIS IS BAD BEHAVIOUR
-            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
+            (error, msg) = fs.create_fs(root_partition, root_fs)
 
         if self.method == 'advanced':
             # TODO: format partitions using mkfs (but which ones?)
