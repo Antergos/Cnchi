@@ -910,7 +910,9 @@ class InstallationProcess(Process):
 
         # In openbox "desktop", the postinstall script writes /etc/slim.conf
         # so we have to modify it here (after running the script).
-        if self.desktop_manager == 'openbox':
+        # Set autologin if selected
+        if self.settings.get('require_password') is False and \
+           self.desktop_manager == 'openbox':
             conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
             text = []
             with open(conf_path, "rt") as conf:
