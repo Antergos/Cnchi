@@ -157,10 +157,12 @@ openbox_settings(){
     cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
     # copy home files
     cp ${DESTDIR}/tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-    chown ${USER_NAME}:users ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
     cp ${DESTDIR}/tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
-    chown ${USER_NAME}:users ${DESTDIR}/home/${USER_NAME}/.xinitrc
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+    
     # copy .config files
+    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
     cp -R ${DESTDIR}/tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
     # copy /etc setup files
     cp -R ${DESTDIR}/tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
@@ -171,12 +173,16 @@ openbox_settings(){
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
+    
+    # remove leftovers
+    rm -f ${DESTDIR}/tmp/master.zip
+    rm -rf ${DESTDIR}/tmp/openbox-setup-master
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	#chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -232,7 +238,10 @@ postinstall(){
 	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
 
 	# Fix transmission leftover
-	mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
+    if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ];
+    then
+	    mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
+    fi
 
 	# Configure touchpad
 	set_synaptics

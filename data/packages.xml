@@ -188,7 +188,7 @@
         <pkgname>compton</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
-        <pkgname>audacious</pkgname>
+        <pkgname>xnoise</pkgname>
         <pkgname>slimlock</pkgname>
     </openbox_desktop>
 
