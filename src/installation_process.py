@@ -676,7 +676,7 @@ class InstallationProcess(Process):
             pass
 
         locale = self.settings.get("locale")
-        self.chroot(['sh', '-c', 'LANG=%s /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         
         self.chroot_umount()
 
