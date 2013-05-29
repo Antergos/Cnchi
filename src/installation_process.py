@@ -143,8 +143,9 @@ class InstallationProcess(Process):
         if self.method == 'alongside':
             # Alongside method shrinks selected partition
             # and creates root and swap partition in the available space
-            # (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
             boot_partition, root_partition = shrink(self.mount_devices["alongside"])
+            # Alongside method formats root by default (as it is always a new partition)
+            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
         
         if self.method == 'advanced':
             root_partition = self.mount_devices["/"]
@@ -157,6 +158,7 @@ class InstallationProcess(Process):
                 swap_partition = self.mount_devices["swap"]
 
             # Advanced method formats root by default
+            # THIS IS BAD BEHAVIOUR
             (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
 
         if self.method == 'advanced':
