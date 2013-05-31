@@ -165,13 +165,8 @@ class InstallationProcess(Process):
 
             # Advanced method formats root by default
             # THIS IS BAD BEHAVIOUR
+            #https://github.com/Antergos/Cnchi/issues/8
             (error, msg) = fs.create_fs(root_partition, root_fs)
-
-        if self.method == 'advanced':
-            # TODO: format partitions using mkfs (but which ones?)
-            # Is this really necessary? Won't they be previously formatted in
-            # installation_advanced?
-            pass
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):

@@ -1199,6 +1199,13 @@ class InstallationAdvanced(Gtk.Box):
                             fmt = 'Yes'
                         else:
                             fmt = 'No'
+                            
+                        # Advanced method formats root by default
+                        # THIS IS BAD BEHAVIOUR
+                        # https://github.com/Antergos/Cnchi/issues/8
+                        if mnt == "/":
+                            fmt = 'Yes'
+                            
                         if is_new:
                             relabel = 'Yes'
                             fmt = 'Yes'
