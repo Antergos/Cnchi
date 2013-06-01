@@ -146,8 +146,8 @@
 
 	<razor_desktop>
 		<pkgname>razor-qt</pkgname>
-        <pkgname>openbox</pkgname>
-        <pkgname>openbox-themes</pkgname>
+                <pkgname>openbox</pkgname>
+                <pkgname>openbox-themes</pkgname>
 		<pkgname dm='true' name='lxdm'>lxdm</pkgname>
 		<pkgname>qtfm</pkgname>
 		<pkgname>kdebase-konsole</pkgname>
@@ -167,30 +167,30 @@
 	</razor_desktop>
 
 	<openbox_desktop>
-        <pkgname>openbox</pkgname>
-        <pkgname>obmenu</pkgname>
-        <pkgname>oblogout</pkgname>
-        <pkgname>obconf</pkgname>
-        <pkgname>obkey</pkgname>
-        <pkgname>lxappearance-obconf</pkgname>
-        <pkgname>python2-xdg</pkgname>
-        <pkgname>tint2</pkgname>
-        <pkgname>volumeicon</pkgname>
-        <pkgname>pcmanfm</pkgname>
-        <pkgname dm='true' name='slim'>slim</pkgname>
-        <pkgname>gmrun</pkgname>
-        <pkgname>nitrogen</pkgname>
+                <pkgname>openbox</pkgname>
+                <pkgname>obmenu</pkgname>
+                <pkgname>oblogout</pkgname>
+                <pkgname>obconf</pkgname>
+                <pkgname>obkey</pkgname>
+                <pkgname>lxappearance-obconf</pkgname>
+                <pkgname>python2-xdg</pkgname>
+                <pkgname>tint2</pkgname>
+                <pkgname>volumeicon</pkgname>
+                <pkgname>pcmanfm</pkgname>
+                <pkgname dm='true' name='slim'>slim</pkgname>
+                <pkgname>gmrun</pkgname>
+                <pkgname>nitrogen</pkgname>
 		<pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-        <pkgname>sakura</pkgname>
-        <pkgname>mousepad</pkgname>
-        <pkgname>zukitwo-theme-openbox</pkgname>
-        <pkgname>openbox-menu</pkgname>
-        <pkgname>compton</pkgname>
-        <pkgname>xorg-xinit</pkgname>
-        <pkgname>xorg-xkill</pkgname>
-        <pkgname>xnoise</pkgname>
-        <pkgname>slimlock</pkgname>
-    </openbox_desktop>
+                <pkgname>sakura</pkgname>
+                <pkgname>mousepad</pkgname>
+                <pkgname>zukitwo-theme-openbox</pkgname>
+                <pkgname>openbox-menu</pkgname>
+                <pkgname>compton</pkgname>
+                <pkgname>xorg-xinit</pkgname>
+                <pkgname>xorg-xkill</pkgname>
+                <pkgname>xnoise</pkgname>
+                <pkgname>slimlock</pkgname>
+        </openbox_desktop>
 
 	<!-- Third party software. Some of it is propietary -->
 	<third_party>

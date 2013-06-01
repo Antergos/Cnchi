@@ -368,7 +368,7 @@ class InstallationProcess(Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-            self.queue_event('debug', "Adding desktop packages")
+            self.queue_event('debug', "Adding desktop '%s' packages" % self.desktop)
 
             for child in root.iter(self.desktop + '_desktop'):
                 for pkg in child.iter('pkgname'):
