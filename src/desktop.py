@@ -31,6 +31,7 @@
 from gi.repository import Gtk, GLib
 import config
 import os
+import log
 
 _next_page = "installation_ask"
 _prev_page = "check"
@@ -193,6 +194,7 @@ class DesktopAsk(Gtk.Box):
         
     def store_values(self):
         self.settings.set('desktop', self.desktop_choice)
+        log.debug(_("Cnchi will install Antergos with the '%s' desktop") % self.desktop_choice)
         return True
 
     def select_default_row(self, treeview, desktop):   
