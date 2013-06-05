@@ -131,7 +131,7 @@ class InstallationProcess(Process):
             try:
                 self.queue_event('debug', "Automatic device: %s" % self.auto_device)
                 self.queue_event('debug', "Running automatic script...")
-                subprocess.check_call(["/bin/bash", script_path, self.auto_device])
+                subprocess.check_call(["/usr/bin/bash", script_path, self.auto_device])
                 self.queue_event('debug', "Automatic script done.")
             except subprocess.FileNotFoundError as e:
                 self.queue_fatal_event(_("Can't execute the auto partition script"))
@@ -789,7 +789,7 @@ class InstallationProcess(Process):
         subprocess.check_call(["chmod", "440", sudoers_path])
         
         
-        self.chroot(['useradd', '-m', '-s', '/bin/bash', \
+        self.chroot(['useradd', '-m', '-s', '/usr/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
 
@@ -908,7 +908,7 @@ class InstallationProcess(Process):
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
-        subprocess.check_call(["/bin/bash", script_path_postinstall, \
+        subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # In openbox "desktop", the postinstall script writes /etc/slim.conf
