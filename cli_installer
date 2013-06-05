@@ -1,5 +1,5 @@
-#!/bin/bash
-INSTALLER_VERSION=1.1
+#!/usr/bin/bash
+INSTALLER_VERSION=1.1.2
 
 TEXTDOMAIN=cli_installer
 # we rely on some output which is parsed in english!
@@ -25,7 +25,7 @@ VMLINUZ="vmlinuz-${KERNELPKG}"
 INITRAMFS="initramfs-${KERNELPKG}"
 
 # detect systemd running
-[[ "$(cat /proc/cmdline | grep -w init=/bin/systemd)" ]] && SYSTEMD="0"
+[[ "$(cat /proc/cmdline | grep -w init=/usr/bin/systemd)" ]] && SYSTEMD="0"
 # abstract the common pacman args
 PACMAN="powerpill --root ${DESTDIR} --config /tmp/pacman.conf --noconfirm --noprogressbar"
 # downloader
@@ -160,9 +160,9 @@ net_interfaces() {
 # activate dmraid devices
 activate_dmraid()
 {
-    if [[ -e /sbin/dmraid ]]; then
+    if [[ -e /usr/bin/dmraid ]]; then
         DIALOG --infobox $"Activating dmraid arrays..." 0 0
-        /sbin/dmraid -ay -I -Z >/dev/null 2>&1
+        /usr/bin/dmraid -ay -I -Z >/dev/null 2>&1
     fi
 }
 
@@ -171,13 +171,13 @@ activate_dmraid()
 activate_lvm2()
 {
     ACTIVATE_LVM2=""
-    if [[ -e /usr/sbin/lvm ]]; then
+    if [[ -e /usr/bin/lvm ]]; then
         OLD_LVM2_GROUPS=${LVM2_GROUPS}
         OLD_LVM2_VOLUMES=${LVM2_VOLUMES}
         DIALOG --infobox $"Scanning logical volumes..." 0 0
-        /usr/sbin/lvm vgscan --ignorelockingfailure >/dev/null 2>&1
+        /usr/bin/lvm vgscan --ignorelockingfailure >/dev/null 2>&1
         DIALOG --infobox $"Activating logical volumes..." 0 0
-        /usr/sbin/lvm vgchange --ignorelockingfailure --ignoremonitoring -ay >/dev/null 2>&1
+        /usr/bin/lvm vgchange --ignorelockingfailure --ignoremonitoring -ay >/dev/null 2>&1
         LVM2_GROUPS="$(vgs -o vg_name --noheading 2>/dev/null)"
         LVM2_VOLUMES="$(lvs -o vg_name,lv_name --noheading --separator - 2>/dev/null)"
         [[ "${OLD_LVM2_GROUPS}" = "${LVM2_GROUPS}" && "${OLD_LVM2_GROUPS}" = "${LVM2_GROUPS}" ]] && ACTIVATE_LVM2="no"
@@ -189,9 +189,9 @@ activate_lvm2()
 activate_raid()
 {
     ACTIVATE_RAID=""
-    if [[ -e /sbin/mdadm ]]; then
+    if [[ -e /usr/bin/mdadm ]]; then
         DIALOG --infobox $"Activating RAID arrays..." 0 0
-        /sbin/mdadm --assemble --scan >/dev/null 2>&1 || ACTIVATE_RAID="no"
+        /usr/bin/mdadm --assemble --scan >/dev/null 2>&1 || ACTIVATE_RAID="no"
     fi
 }
 
@@ -200,7 +200,7 @@ activate_raid()
 activate_luks()
 {
     ACTIVATE_LUKS=""
-    if [[ -e /usr/sbin/cryptsetup ]]; then
+    if [[ -e /usr/bin/cryptsetup ]]; then
         DIALOG --infobox $"Scanning for luks encrypted devices..." 0 0
         if [[ "$(${_BLKID} | grep "TYPE=\"crypto_LUKS\"")" ]]; then
             for PART in $(${_BLKID} | grep "TYPE=\"crypto_LUKS\"" | sed -e 's#:.*##g'); do
@@ -546,14 +546,14 @@ findbootloaderpartitions() {
 # freeze and unfreeze xfs, as hack for grub(2) installing
 freeze_xfs() {
     sync
-    if [[ -x /usr/sbin/xfs_freeze ]]; then
+    if [[ -x /usr/bin/xfs_freeze ]]; then
         if [[ "$(cat /proc/mounts | grep "${DESTDIR}/boot " | grep " xfs ")" ]]; then
-            /usr/sbin/xfs_freeze -f ${DESTDIR}/boot >/dev/null 2>&1
-            /usr/sbin/xfs_freeze -u ${DESTDIR}/boot >/dev/null 2>&1
+            /usr/bin/xfs_freeze -f ${DESTDIR}/boot >/dev/null 2>&1
+            /usr/bin/xfs_freeze -u ${DESTDIR}/boot >/dev/null 2>&1
         fi
         if [[ "$(cat /proc/mounts | grep "${DESTDIR} " | grep " xfs ")" ]]; then
-            /usr/sbin/xfs_freeze -f ${DESTDIR} >/dev/null 2>&1
-            /usr/sbin/xfs_freeze -u ${DESTDIR} >/dev/null 2>&1
+            /usr/bin/xfs_freeze -f ${DESTDIR} >/dev/null 2>&1
+            /usr/bin/xfs_freeze -u ${DESTDIR} >/dev/null 2>&1
         fi
     fi
 }
@@ -2008,12 +2008,12 @@ btrfs_parts() {
 
 # choose raid level to use on btrfs device
 btrfs_raid_level() {
-    BTRFS_RAIDLEVELS="NONE - raid0 - raid1 - raid5 - raid6 - raid10 - single -"
+    BTRFS_RAIDLEVELS="NONE - raid0 - raid1 - raid10 - single -"
     BTRFS_RAID_FINISH=""
     BTRFS_LEVEL=""
     BTRFS_DEVICE="${PART}"
     : >/tmp/.btrfs-devices
-    DIALOG --msgbox "BTRFS RAID OPTIONS:\n\nBTRFS has options to control the raid configuration for data and metadata.\nValid choices are raid0, raid1, raid5, raid6, raid10 and single.\nsingle means that no duplication of metadata is done, which may be desired when using hardware raid.\nraid5 requires at least 3 devices.\nraid6 and raid10 requires at least 4 devices.\n\nIf you don't need this feature select NONE." 0 0
+    DIALOG --msgbox $"BTRFS RAID OPTIONS:\n\nBTRFS has options to control the raid configuration for data and metadata.\nValid choices are raid0, raid1, raid10 and single.\nsingle means that no duplication of metadata is done, which may be desired when using hardware raid. raid10 requires at least 4 devices.\n\nIf you don't need this feature select NONE." 0 0
     while [[ "${BTRFS_RAID_FINISH}" != "DONE" ]]; do
         DIALOG --menu $"Select the raid level you want to use" 21 50 9 ${BTRFS_RAIDLEVELS} 2>${ANSWER} || return 1
         BTRFS_LEVEL=$(cat ${ANSWER})
@@ -2044,11 +2044,9 @@ select_btrfs_raid_devices () {
     while [[ "${BTRFS_PART}" != "DONE" ]]; do
         BTRFS_DONE=""
         RAIDNUMBER=$((${RAIDNUMBER} + 1))
-        # RAID5 needs 3 devices
-        # RAID6, RAID10 need 4 devices!
-        [[ "${RAIDNUMBER}" -ge 3 && ! "${BTRFS_LEVEL}" = "raid10" && ! "${BTRFS_LEVEL}" = "raid6" && ! "${BTRFS_LEVEL}" = "raid5" ]] && BTRFS_DONE="DONE _"
-        [[ "${RAIDNUMBER}" -ge 4 && "${BTRFS_LEVEL}" = "raid5" ]] && BTRFS_DONE="DONE _"
-        [[ "${RAIDNUMBER}" -ge 5 && "${BTRFS_LEVEL}" = "raid10" || "${BTRFS_LEVEL}" = "raid6" ]] && BTRFS_DONE="DONE _"
+        # RAID10 need 4 devices!
+        [[ "${RAIDNUMBER}" -ge 3 && ! "${BTRFS_LEVEL}" = "raid10" ]] && BTRFS_DONE="DONE _"
+        [[ "${RAIDNUMBER}" -ge 5 && "${BTRFS_LEVEL}" = "raid10" ]] && BTRFS_DONE="DONE _"
         # clean loop from used partition and options
         BTRFS_PARTS="$(echo ${BTRFS_PARTS} | sed -e "s#${BTRFS_PART}\ _##g")"
         # add more devices
@@ -2745,7 +2743,7 @@ run_pacman(){
         dialog --backtitle "${TITLE}" --title $" Installing... Please Wait " \
             --no-kill --tailboxbg "/tmp/pacman.log" 18 70 2>${ANSWER}
         while [[ -f /tmp/setup-pacman-running ]]; do
-            /bin/true
+            /usr/bin/true
         done
         kill $(cat ${ANSWER})
 
@@ -2862,13 +2860,6 @@ select_packages() {
     if [[ `echo ${GRAPHIC_CARD}|grep -i 'lenovo[[:space:]]'` != "" ]];then
         PACKAGES="${PACKAGES} xf86-video-intel intel-dri"
         touch /tmp/card_intel
-                cat << EOF > /etc/X11/xorg.conf.d/20-intel.conf
-Section "Device"
-   Identifier  "Intel Graphics"
-   Driver      "intel"
-   Option      "AccelMethod"  "sna"
-EndSection
-EOF
     fi
 
     if [[ `echo ${GRAPHIC_CARD}|grep -i 'virtualbox[[:space:]]'` != "" ]];then
@@ -3188,7 +3179,7 @@ echo
 EFIBEOF
             
         chmod a+x "${DESTDIR}/efibootmgr_run.sh"
-        chroot "${DESTDIR}" "/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
+        chroot "${DESTDIR}" "/usr/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
         mv "${DESTDIR}/efibootmgr_run.sh" "/tmp/efibootmgr_run.sh"
     
     else
@@ -3602,42 +3593,42 @@ dogrub_config() {
 
     ########
     
-    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
-    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
     
-    BOOT_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_label" "${DESTDIR}/boot" 2>/dev/null)"
-    BOOT_PART_DRIVE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="drive" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_label" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_DRIVE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="drive" "${DESTDIR}/boot" 2>/dev/null)"
     
-    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
-    
-    ########
-    
-    ROOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_uuid" "${DESTDIR}/" 2>/dev/null)"
-    ROOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs" "${DESTDIR}/" 2>/dev/null)"
-    
-    ROOT_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_label" "${DESTDIR}/" 2>/dev/null)"
-    ROOT_PART_DEVICE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="device" "${DESTDIR}/" 2>/dev/null)"
-    
-    ROOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="hints_string" "${DESTDIR}/" 2>/dev/null)"
+    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
     
     ########
     
-    USR_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_uuid" "${DESTDIR}/usr" 2>/dev/null)"
-    USR_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs" "${DESTDIR}/usr" 2>/dev/null)"
+    ROOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/" 2>/dev/null)"
+    ROOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/" 2>/dev/null)"
     
-    USR_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_label" "${DESTDIR}/usr" 2>/dev/null)"
+    ROOT_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_label" "${DESTDIR}/" 2>/dev/null)"
+    ROOT_PART_DEVICE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="device" "${DESTDIR}/" 2>/dev/null)"
     
-    USR_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="hints_string" "${DESTDIR}/usr" 2>/dev/null)"
+    ROOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/" 2>/dev/null)"
+    
+    ########
+    
+    USR_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/usr" 2>/dev/null)"
+    USR_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/usr" 2>/dev/null)"
+    
+    USR_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_label" "${DESTDIR}/usr" 2>/dev/null)"
+    
+    USR_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/usr" 2>/dev/null)"
     
     ########
     
     if [[ "${GRUB_UEFI}" == "1" ]]; then
-        UEFISYS_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot/efi" 2>/dev/null)"
+        UEFISYS_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot/efi" 2>/dev/null)"
         
-        UEFISYS_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_label" "${DESTDIR}/boot/efi" 2>/dev/null)"
-        UEFISYS_PART_DRIVE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="drive" "${DESTDIR}/boot/efi" 2>/dev/null)"
+        UEFISYS_PART_FS_LABEL="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_label" "${DESTDIR}/boot/efi" 2>/dev/null)"
+        UEFISYS_PART_DRIVE="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="drive" "${DESTDIR}/boot/efi" 2>/dev/null)"
         
-        UEFISYS_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="hints_string" "${DESTDIR}/boot/efi" 2>/dev/null)"
+        UEFISYS_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/boot/efi" 2>/dev/null)"
     fi
     
     ########
@@ -4023,7 +4014,7 @@ dogrub_bios() {
     freeze_xfs
     chroot_mount
     
-    chroot "${DESTDIR}" "/usr/sbin/grub-install" \
+    chroot "${DESTDIR}" "grub-install" \
         --directory="/usr/lib/grub/i386-pc" \
         --target="i386-pc" \
         --boot-directory="/boot" \
@@ -4071,7 +4062,7 @@ dogrub_uefi_common() {
     
     chroot_mount
     
-    chroot "${DESTDIR}" "/usr/sbin/grub-install" \
+    chroot "${DESTDIR}" "grub-install" \
         --directory="/usr/lib/grub/${UEFI_ARCH}-efi" \
         --target="${UEFI_ARCH}-efi" \
         --efi-directory="/boot/efi" \
@@ -4087,10 +4078,10 @@ dogrub_uefi_common() {
     cp -f "${DESTDIR}/usr/share/locale/en@quot/LC_MESSAGES/grub.mo" "${DESTDIR}/boot/grub/locale/en.mo"
     
     
-    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
-    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
     
-    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/sbin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
     
     [[ -e "${DESTDIR}/boot/grub/grub.cfg" ]] && mv "${DESTDIR}/boot/grub/grub.cfg" "${DESTDIR}/boot/grub/grub.cfg.save"
     
@@ -4231,7 +4222,7 @@ run_mkinitcpio() {
     sleep 2
     dialog --backtitle "${TITLE}" --title $"Rebuilding initramfs images ..." --no-kill --tailboxbg "/tmp/mkinitcpio.log" 18 70
     while [[ -f /tmp/setup-mkinitcpio-running ]]; do
-        /bin/true
+        /usr/bin/true
     done
     chroot_umount
 }
@@ -4266,7 +4257,7 @@ prepare_harddrive() {
                 partition ;;
             "3")
                 if [[ `which gparted` ]];then
-                    /usr/sbin/gparted &>/dev/null &
+                    /usr/bin/gparted &>/dev/null &
                     DIALOG --msgbox $"Click 'OK' when you're done with GParted" 7 55
 
                 else
@@ -4541,7 +4532,7 @@ auto_ftpmirror() {
     # /etc/pacman.d/mirrorlist
     # add installer-selected mirror to the top of the mirrorlist
     while [[ -f '/tmp/.rankmirrors' ]]; do
-        /bin/true
+        /usr/bin/true
     done;
     mv /tmp/.mirrorlist "${DESTDIR}/etc/pacman.d/mirrorlist"
 }
@@ -4616,8 +4607,11 @@ configure_system() {
                     USER_NAME_TMP=$(cat ${ANSWER})
                     USER_NAME=${USER_NAME_TMP,,}
                     rm -f ${DESTDIR}/etc/sudoers
-                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers.d/installer
-                    chmod 440 ${DESTDIR}/etc/sudoers.d/installer
+                    echo "root ALL=(ALL) ALL" > ${DESTDIR}/etc/sudoers
+                    echo "${USER_NAME} ALL=(ALL) ALL" >> ${DESTDIR}/etc/sudoers
+                    #cp -f /arch/sudoers ${DESTDIR}/etc/sudoers
+                    #sed -i "s|^antergos|${USER_NAME}|g" ${DESTDIR}/etc/sudoers
+                    chmod 440 ${DESTDIR}/etc/sudoers
 
                     DIALOG --inputbox $"Enter your full name:" 9 40 2>${ANSWER} || return 1
                     USER_FULL_NAME=$(cat ${ANSWER})
@@ -4641,7 +4635,7 @@ configure_system() {
 
                 DIALOG --infobox $"Creating user..." 4 30
 
-                chroot ${DESTDIR} useradd -m -s /bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
+                chroot ${DESTDIR} useradd -m -s /usr/bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
                 chroot ${DESTDIR} passwd ${USER_NAME} < /tmp/.user_password >/dev/null 2>&1
                 chroot ${DESTDIR} chfn -f "${USER_FULL_NAME}" "${USER_NAME}" >/dev/null 2>&1
                 
