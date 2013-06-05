@@ -55,6 +55,7 @@ class Pac(object):
         self.to_add = []
         self.to_update = []
         self.to_provide = []
+        
         # Packages to be removed
         # E.g: connman conflicts with netctl(openresolv), which is installed
         # by default with base group
@@ -206,6 +207,16 @@ class Pac(object):
                 return
         
         self.last_event[event_type] = event_text
+        
+        if event_type == "error":
+            # format message to show file, function, and line where the error
+            # was issued
+            import inspect
+            # Get the previous frame in the stack, otherwise it would
+            # be this function!!!
+            f = inspect.currentframe().f_back.f_code
+            # Dump the message + the name of this function to the log.
+            event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
         
         try:
             self.callback_queue.put_nowait((event_type, event_text))
