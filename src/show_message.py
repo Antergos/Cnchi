@@ -45,6 +45,7 @@ def fatal_error(message):
     if os.path.exists(p):
         os.remove(p)
     error(message)
+    Gtk.main_quit()
     sys.exit(1)
 
 def error(message):
