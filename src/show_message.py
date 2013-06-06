@@ -30,6 +30,7 @@
 
 from gi.repository import Gtk
 
+import threading
 import sys
 import os
 import queue
