@@ -86,10 +86,6 @@ class Slides(Gtk.Box):
         self.install_ok = _("Installation finished!\n" \
                             "Do you want to restart your system now?")
 
-        #self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
-        
-        #self.lock = Lock()
-
         super().add(builder.get_object("slides"))
         
     def translate_ui(self):
@@ -129,12 +125,6 @@ class Slides(Gtk.Box):
         self.info_label.set_markup(txt)
 
     def manage_events_from_cb_queue(self):
-        '''
-        try:
-            event = self.callback_queue.get_nowait()
-        except queue.Empty:
-            event = ()
-        '''
         event = self.get_newest_event()
 
         if len(event) > 0:
@@ -162,28 +152,10 @@ class Slides(Gtk.Box):
             elif event[0] == "error":
                 show.fatal_error(event[1])
             else:
-                #with self.lock:
                 log.debug(event[1])
                 self.set_message(event[1])
-                # remove old messages from the event queue 
-                #self.callback_queue.clear()
                 
         return True
-
-    # FIXME: pac.py generates too many events. Here we can only
-    # get the newest one and delete all the old ones.
-    '''
-    # Delete all the old events and get the newest one
-    def get_newest_event(self):
-        event = ()
-        queue_empty = False
-        while queue_empty == False:
-            try:
-                event = self.callback_queue.get_nowait()
-            except queue.Empty:
-                queue_empty = True
-        return event
-    '''
 
     def get_newest_event(self):
         try:

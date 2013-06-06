@@ -92,6 +92,8 @@ class InstallationProcess(Process):
         self.conflicts = []
 
         self.fs_devices = fs_devices
+        
+        self.exit = multiprocessing.Event()
 
         self.running = True
         self.error = False
@@ -106,7 +108,10 @@ class InstallationProcess(Process):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
-
+            
+    def stop(self):
+        self.exit.set()
+        
     @misc.raise_privileges    
     def run(self):
         # Common vars
@@ -221,12 +226,12 @@ class InstallationProcess(Process):
             self.queue_event('debug', 'Selecting packages...')
             self.select_packages()
             self.queue_event('debug', 'Packages selected')
-            
+
             if self.settings.get("use_aria2"):
                 self.queue_event('debug', 'Downloading packages...')
                 self.download_packages()
                 self.queue_event('debug', 'Packages downloaded.')
-            
+
             self.queue_event('debug', 'Installing packages...')
             self.install_packages()
             self.queue_event('debug', 'Packages installed.')
@@ -244,10 +249,16 @@ class InstallationProcess(Process):
         except InstallError as e:
             self.queue_fatal_event(e.value)
             return False
+        except:
+            # unknown error
+            self.running = False
+            self.error = True
+            return False
 
         # installation finished ok
         self.queue_event("finished")
         self.running = False
+        self.error = False
         return True
 
     def download_packages(self):

@@ -44,8 +44,14 @@ def fatal_error(message):
     p = "/tmp/.setup-running"
     if os.path.exists(p):
         os.remove(p)
+
+    # dump stacks
+    id2name = dict((th.ident, th.name) for th in threading.enumerate())
+    for threadId, stack in sys._current_frames().items():
+        print(id2name[threadId])
+        traceback.print_stack(f=stack)
+    
     error(message)
-    Gtk.main_quit()
     sys.exit(1)
 
 def error(message):
