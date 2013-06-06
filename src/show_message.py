@@ -36,6 +36,7 @@ import os
 import queue
 import log
 import misc
+import traceback
 
 _show_event_queue_messages = True
 
