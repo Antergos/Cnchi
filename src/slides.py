@@ -88,6 +88,8 @@ class Slides(Gtk.Box):
 
         super().add(builder.get_object("slides"))
         
+        self.fatal_error = False
+        
     def translate_ui(self):
         txt = _("Installing Antergos...")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
@@ -127,7 +129,7 @@ class Slides(Gtk.Box):
     def manage_events_from_cb_queue(self):
         event = self.get_newest_event()
 
-        if len(event) > 0:
+        if len(event) > 0 and self.fatal_error == False:
             if event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
@@ -150,7 +152,9 @@ class Slides(Gtk.Box):
                 self.exit_button.show()
                 return False
             elif event[0] == "error":
+                self.fatal_error = True
                 show.fatal_error(event[1])
+                Gtk.main_quit()
             else:
                 log.debug(event[1])
                 self.set_message(event[1])

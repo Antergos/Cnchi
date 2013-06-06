@@ -30,13 +30,12 @@
 
 from gi.repository import Gtk
 
-import threading
+import multiprocessing
 import sys
 import os
 import queue
 import log
 import misc
-import traceback
 
 _show_event_queue_messages = True
 
@@ -47,11 +46,7 @@ def fatal_error(message):
     if os.path.exists(p):
         os.remove(p)
 
-    # dump stacks
-    id2name = dict((th.ident, th.name) for th in threading.enumerate())
-    for threadId, stack in sys._current_frames().items():
-        print(id2name[threadId])
-        traceback.print_stack(f=stack)
+    multiprocessing.active_children()
     
     error(message)
     sys.exit(1)
