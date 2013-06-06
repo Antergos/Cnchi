@@ -93,8 +93,6 @@ class InstallationProcess(Process):
 
         self.fs_devices = fs_devices
         
-        self.exit = multiprocessing.Event()
-
         self.running = True
         self.error = False
     
@@ -109,9 +107,6 @@ class InstallationProcess(Process):
         except queue.Full:
             pass
             
-    def stop(self):
-        self.exit.set()
-        
     @misc.raise_privileges    
     def run(self):
         # Common vars
