@@ -38,3 +38,6 @@ def debug(msg):
     if _debug:
         print(msg)
         logging.debug(msg)
+
+def exception(msg):
+    logging.exception(msg)

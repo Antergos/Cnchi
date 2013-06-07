@@ -67,7 +67,8 @@ class InstallError(Exception):
         return repr(self.value)
 
 class InstallationProcess(Process):
-    def __init__(self, settings, callback_queue, mount_devices, grub_device, fs_devices, ssd=None, alternate_package_list=""):
+    def __init__(self, settings, callback_queue, mount_devices, \
+                 grub_device, fs_devices, ssd=None, alternate_package_list=""):
         Process.__init__(self)
         
         self.alternate_package_list = alternate_package_list

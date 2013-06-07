@@ -52,7 +52,8 @@ def fatal_error(message):
     sys.exit(1)
 
 def error(message):
-    log.debug(message)
+    #log.debug(message)
+    log.exception(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.ERROR,\
