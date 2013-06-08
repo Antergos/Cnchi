@@ -29,15 +29,17 @@
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
 import logging
-
-_debug = False
+import sys
 
 logging.basicConfig(filename="/tmp/Cnchi.log", level=logging.DEBUG)
+
+_debug = False
 
 def debug(msg):
     if _debug:
         print(msg)
+        sys.stdout.flush()
         logging.debug(msg)
 
-def exception(msg):
-    logging.exception(msg)
+#def exception(msg):
+#    logging.exception(msg)

@@ -154,7 +154,7 @@ class UserInfo(Gtk.Box):
         # TODO: Allow to encrypt home directory
         self.settings.set('encrypt_home', False)
         
-        # this way installer_thread will know all info has been entered
+        # this way installer_process will know all info has been entered
         self.settings.set('user_info_done', True)
 
     def prepare(self, direction):

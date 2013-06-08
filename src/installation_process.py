@@ -28,7 +28,8 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-from multiprocessing import Process
+#from multiprocessing import Process
+import multiprocessing
 import queue
 
 import subprocess
@@ -54,8 +55,8 @@ sys.path.insert(0, parted_dir)
 
 import fs_module as fs
 import misc
-
 import pac
+import log
 
 _autopartition_script = 'auto_partition.sh'
 _postinstall_script = 'postinstall.sh'
@@ -66,11 +67,11 @@ class InstallError(Exception):
     def __str__(self):
         return repr(self.value)
 
-class InstallationProcess(Process):
+class InstallationProcess(multiprocessing.Process):
     def __init__(self, settings, callback_queue, mount_devices, \
                  grub_device, fs_devices, ssd=None, alternate_package_list=""):
-        Process.__init__(self)
-        
+        multiprocessing.Process.__init__(self)
+                
         self.alternate_package_list = alternate_package_list
         
         self.callback_queue = callback_queue
@@ -98,9 +99,14 @@ class InstallationProcess(Process):
         self.error = False
     
     def queue_fatal_event(self, txt):
+        # Queue the fatal event and exit process
         self.error = True
         self.running = False
         self.queue_event('error', txt)
+        log.debug("installation_process.py: wait until queue is empty (is emptied in slides.py), then exit")
+        self.callback_queue.join()
+        log.debug("installation_process.py: exiting installer process...")
+        sys.exit(1)
          
     def queue_event(self, event_type, event_text=""):
         try:
@@ -110,6 +116,9 @@ class InstallationProcess(Process):
             
     @misc.raise_privileges    
     def run(self):
+        p = multiprocessing.current_process()
+        log.debug("Starting: [%d] %s" % (p.pid, p.name))
+        
         # Common vars
         self.packages = []
         

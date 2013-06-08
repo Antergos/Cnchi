@@ -34,6 +34,7 @@ import sys
 import getopt
 import gettext
 import locale
+import multiprocessing
 
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -59,10 +60,6 @@ import misc
 import log
 import info
 import updater
-
-#import queue
-from multiprocessing import Queue
-
 import show_message as show
 
 # Global options #######################################################
@@ -92,7 +89,13 @@ _debug = False
 class Main(Gtk.Window):
 
     def __init__(self):
-       
+        log._debug = _debug
+        
+        p = multiprocessing.current_process()
+        log.debug("Starting: [%d] %s" % (p.pid, p.name))
+        
+        self.settings = config.Settings()        
+
         # This allows to translate all py texts (not the glade ones)
         gettext.textdomain(APP)
         gettext.bindtextdomain(APP, DIR)
@@ -119,8 +122,6 @@ class Main(Gtk.Window):
                 
         super().__init__()
         
-        self.settings = config.Settings()
-
         self.ui_dir = self.settings.get("UI_DIR")
 
         if not os.path.exists(self.ui_dir):
@@ -168,12 +169,13 @@ class Main(Gtk.Window):
         
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
-        self.callback_queue = Queue()
+        #self.callback_queue = multiprocessing.Queue()
+        self.callback_queue = multiprocessing.JoinableQueue()
         
         # Prevent join_thread() from blocking. In particular, this prevents
         # the background thread from being joined automatically when the
         # process exits – see join_thread().
-        self.callback_queue.cancel_join_thread()
+        #self.callback_queue.cancel_join_thread()
 
         # save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)

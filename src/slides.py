@@ -127,7 +127,10 @@ class Slides(Gtk.Box):
         self.info_label.set_markup(txt)
 
     def manage_events_from_cb_queue(self):
-        event = self.get_newest_event()
+        try:
+            event = self.callback_queue.get_nowait()
+        except queue.Empty:
+            event = ()
 
         if len(event) > 0 and self.fatal_error == False:
             if event[0] == "percent":
@@ -147,27 +150,31 @@ class Slides(Gtk.Box):
                             # (this should be fixed) meanwhile, we need sudo privileges to remove them
                             with misc.raised_privileges():
                                 os.remove(p)
+                    self.callback_queue.task_done()
                     Gtk.main_quit()
                         
                 self.exit_button.show()
                 return False
             elif event[0] == "error":
+                self.callback_queue.task_done()
+                # a fatal error has been issued. We empty the queue
+                self.empty_queue()
                 self.fatal_error = True
                 show.fatal_error(event[1])
-                Gtk.main_quit()
             else:
                 log.debug(event[1])
                 self.set_message(event[1])
-                
+                            
+            self.callback_queue.task_done()
         return True
-
-    def get_newest_event(self):
-        try:
-            event = self.callback_queue.get_nowait()
-        except queue.Empty:
-            event = ()
-        return event
-
+        
+    def empty_queue(self):
+        while self.callback_queue.empty() == False:
+            try:
+                event = self.callback_queue.get_nowait()
+                self.callback_queue.task_done()
+            except queue.Empty:
+                return
 
     @misc.raise_privileges
     def reboot(self):

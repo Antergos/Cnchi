@@ -266,7 +266,7 @@ class Timezone(Gtk.Box):
             else:
                 self.settings.set("timezone_longitude", "")
 
-        # this way installer_thread will know all info has been entered
+        # this way installer_process will know all info has been entered
         self.settings.set("timezone_done", True)
         
         return True

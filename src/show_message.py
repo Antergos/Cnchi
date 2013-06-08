@@ -30,12 +30,12 @@
 
 from gi.repository import Gtk
 
-import multiprocessing
 import sys
 import os
 import queue
 import log
 import misc
+import multiprocessing
 
 _show_event_queue_messages = True
 
@@ -47,13 +47,12 @@ def fatal_error(message):
         os.remove(p)
 
     multiprocessing.active_children()
-    
+
     error(message)
     sys.exit(1)
 
 def error(message):
-    #log.debug(message)
-    log.exception(message)
+    log.debug(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.ERROR,\

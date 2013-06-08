@@ -39,6 +39,8 @@ import locale
 import gettext
 import math
 
+import log
+
 from multiprocessing import Queue
 import queue
 
@@ -109,14 +111,10 @@ class Pac(object):
         for db in self.handle.get_syncdbs():
             try:
                 self.t = self.init_transaction()                
-                try:
-                    db.update(force=False)
-                except pyalpm.error:
-                    self.queue_event("error", traceback.format_exc())
-                finally:
-                    if self.t != None:
-                        self.t.release()
-                        self.t = None
+                db.update(force=False)
+                if self.t != None:
+                    self.t.release()
+                    self.t = None
             except pyalpm.error:
                 self.queue_event("error", traceback.format_exc())
                 return
@@ -217,11 +215,21 @@ class Pac(object):
             f = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
-        
+            log.debug(event_text)
+
         try:
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
+        
+        if event_type == "error":
+            # We've queued a fatal event so we must exit installer_process process
+            # wait until queue is empty (is emptied in slides.py), then exit
+            log.debug("wait until queue is empty (is emptied in slides.py), then exit")
+            self.callback_queue.join()
+            log.debug("pac.py: exiting installer process...")
+            sys.exit(1)
+
          
     # Callback functions 
     def cb_event(self, ID, event, tupel):
@@ -274,19 +282,21 @@ class Pac(object):
 
         if level & pyalpm.LOG_ERROR:
             self.error = _("ERROR: %s") % line
-            print(line)
+            #print(line)
             self.release_transaction()
             self.queue_event("error", line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
             self.queue_event("warning", line)
-            print(line)
+            #print(line)
+        '''
         elif level & pyalpm.LOG_DEBUG:
             line = _("DEBUG: %s") % line
             print(line)
         elif level & pyalpm.LOG_FUNCTION:
             line = _("FUNC: %s") % line
             print(line)
+        '''
 
     def cb_totaldl(self, _total_size):
         self.total_size = _total_size
