@@ -62,20 +62,17 @@ import info
 import updater
 import show_message as show
 
-# Global options #######################################################
-
-# Used in installation_process if we pass the packages.xml as an option
-_alternate_package_list = ""
-
-# Download packages using aria2 downloader
-_use_aria2 = False
-
-# Enable alongside install mode (disabled by default)
-_enable_alongside = False
-
 # Enabled desktops
 #_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
 _desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox" ]
+
+# Command line options
+_alternate_package_list = ""
+_use_aria2 = False
+_enable_alongside = False
+_log_level = logging.INFO
+_verbose = False
+_update = False
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
@@ -115,6 +112,10 @@ class Main(Gtk.Window):
             sys.exit(1)
                 
         super().__init__()
+        
+        self.setup_logging()
+        
+        logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
         
         p = multiprocessing.current_process()
         logging.debug("[%d] %s started" % (p.pid, p.name))
@@ -342,9 +343,27 @@ class Main(Gtk.Window):
                     # we're at the first page
                     self.backwards_button.hide()
 
+    def setup_logging(self):
+        logger = logging.getLogger()
+        logger.setLevel(_log_level)
+        # log format
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        # create file handler
+        fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
+        fh.setLevel(_log_level)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+
+        if _verbose:
+            sh = logging.StreamHandler()
+            sh.setLevel(_log_level)
+            sh.setFormatter(formatter)
+            logger.addHandler(sh)
+        
+
 if __name__ == '__main__':
     
-    # Check program args ##########################################
+    # Check program args
     argv = sys.argv[1:]
     
     try:
@@ -353,18 +372,14 @@ if __name__ == '__main__':
     except getopt.GetoptError as e:
         print(str(e))
         sys.exit(2)
-
-    log_level = logging.INFO
-    verbose = False
-    update = False
     
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
-            log_level = logging.DEBUG
+            _log_level = logging.DEBUG
         elif opt in ('-v', '--verbose'):
-            verbose = True
+            _verbose = True
         elif opt in ('-u', '--update'):
-            update = True
+            _update = True
         elif opt in ('-p', '--packages'):
             _alternate_package_list = arg
         elif opt in ('-a', '--aria2'):
@@ -373,36 +388,20 @@ if __name__ == '__main__':
             _enable_alongside = True
         else:
             assert False, "unhandled option"
-
-    # Setup log ##################################################
-    logger = logging.getLogger()
-    logger.setLevel(log_level)
-    # log format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # create file handler
-    fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
-    fh.setLevel(log_level)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-
-    if verbose:
-        sh = logging.StreamHandler()
-        sh.setLevel(log_level)
-        sh.setFormatter(formatter)
-        logger.addHandler(sh)
         
     # Check if program needs to be updated
-    if update:
+    if _update:
         upd = updater.Updater()
         if upd.update():
-            logging.info("Program updated! Restarting...")
+            print("Program updated! Restarting...")
+            # Remove /tmp/.setup-running
+            p = "/tmp/.setup-running"
+            if os.path.exists(p):
+                os.remove(p)
             os.execl(sys.executable, *([sys.executable] + sys.argv))
             sys.exit(0)
 
-    
-    # Start program #############################################
-    logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
-            
+    # Start Gdk stuff and main window app
     GObject.threads_init()
     Gdk.threads_init()
 
