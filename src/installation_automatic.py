@@ -36,7 +36,7 @@ import os
 import sys
 import parted
 import misc
-import log
+import logging
 import installation_process
 
 _next_page = "timezone"
@@ -102,7 +102,7 @@ class InstallationAutomatic(Gtk.Box):
                 line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                 self.device_store.append_text(line)
                 self.devices[line] = dev.path
-                log.debug(line)
+                logging.debug(line)
 
         self.select_first_combobox_item(self.device_store)
 
@@ -126,7 +126,7 @@ class InstallationAutomatic(Gtk.Box):
     def store_values(self):
         #self.forward_button.set_sensitive(True)
         #installer_settings['auto_device'] = self.auto_device
-        log.debug(_("Automatic install using %s device") % self.auto_device)
+        logging.info(_("Automatic install using %s device") % self.auto_device)
         self.start_installation()
         return True
 
@@ -142,7 +142,7 @@ class InstallationAutomatic(Gtk.Box):
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        log.debug(self.auto_device)
+        logging.info(_("Antergos will use %s as installation device") % self.auto_device)
         
         mount_devices = {}
         root_partition = self.auto_device + "3"

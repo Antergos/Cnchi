@@ -41,7 +41,7 @@ import queue
 import datetime
 import show_message as show
 import config
-import log
+import logging
 import tz
 import dbus
 import subprocess
@@ -132,7 +132,7 @@ class Timezone(Gtk.Box):
             self.timezone = None
             self.forward_button.set_sensitive(False)
         else:
-            log.debug(_("location changed to : %s") % self.timezone)
+            logging.info(_("location changed to : %s") % self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
 
@@ -220,7 +220,7 @@ class Timezone(Gtk.Box):
                 # Put the coords again in the queue (in case GenerateMirrorList still needs them)
                 #self.autodetected_coords.put_nowait(self.autodetected_coords)
             except queue.Empty:
-                log.debug(_("Can't autodetect timezone coordinates"))
+                logging.warning(_("Can't autodetect timezone coordinates"))
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
@@ -278,7 +278,7 @@ class Timezone(Gtk.Box):
         return _next_page
         
     def stop_threads(self):
-        log.debug(_("Stoping timezone threads..."))
+        logging.debug(_("Stoping timezone threads..."))
         if self.auto_timezone_thread != None:
             self.auto_timezone_thread.stop()
         if self.mirrorlist_thread != None:
@@ -308,7 +308,7 @@ class AutoTimezoneThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            log.debug(_("In timezone, can't get network status"))
+            loggging.warning(_("In timezone, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -359,7 +359,7 @@ class GenerateMirrorListThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            log.debug(_("In timezone, can't get network status"))
+            logging.warning(_("In timezone, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -383,7 +383,7 @@ class GenerateMirrorListThread(threading.Thread):
             if loc:
                 country_code = loc.country
         except (queue.Empty, IndexError) as e:
-            log.debug(_("Can't get the country code used to create a pacman mirrorlist"))
+            logging.warning(_("Can't get the country code used to create a pacman mirrorlist"))
 
         try:
             url = 'https://www.archlinux.org/mirrorlist/?country=%s&protocol=http&ip_version=4&use_mirror_status=on' % country_code
@@ -395,7 +395,7 @@ class GenerateMirrorListThread(threading.Thread):
                 with open('/tmp/country_mirrorlist','wb') as f:
                     f.write(country_mirrorlist)
         except URLError as e:
-            log.debug(e.reason)
+            logging.error(e.reason)
             self.queue_event('error', "Can't retrieve country mirrorlist.")
 
         try:
@@ -404,8 +404,8 @@ class GenerateMirrorListThread(threading.Thread):
             else:
                 script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
                 subprocess.check_call(['/usr/bin/bash', script])
-                log.debug(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
+                logging.info(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
         except subprocess.CalledProcessError as e:
-            print(_("Couldn't generate mirrorlist for pacman based on country code"))
+            logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
         
         

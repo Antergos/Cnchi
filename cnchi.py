@@ -35,6 +35,7 @@ import getopt
 import gettext
 import locale
 import multiprocessing
+import logging
 
 # Insert the src directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -57,7 +58,6 @@ import installation_advanced
 import user_info
 import slides
 import misc
-import log
 import info
 import updater
 import show_message as show
@@ -89,13 +89,6 @@ _debug = False
 class Main(Gtk.Window):
 
     def __init__(self):
-        log._debug = _debug
-        
-        p = multiprocessing.current_process()
-        log.debug("Starting: [%d] %s" % (p.pid, p.name))
-        
-        self.settings = config.Settings()        
-
         # This allows to translate all py texts (not the glade ones)
         gettext.textdomain(APP)
         gettext.bindtextdomain(APP, DIR)
@@ -107,6 +100,7 @@ class Main(Gtk.Window):
         # With this we can use _("string") to translate
         gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
 
+        # check if we have administrative privileges
         if os.getuid() != 0:
             show.fatal_error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
@@ -122,6 +116,10 @@ class Main(Gtk.Window):
                 
         super().__init__()
         
+        p = multiprocessing.current_process()
+        logging.debug("[%d] %s started" % (p.pid, p.name))
+        
+        self.settings = config.Settings()        
         self.ui_dir = self.settings.get("UI_DIR")
 
         if not os.path.exists(self.ui_dir):
@@ -180,7 +178,7 @@ class Main(Gtk.Window):
         # save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)
         if _use_aria2:
-            log.debug(_("Cnchi will use pm2ml and aria2 to download packages - EXPERIMENTAL"))
+            logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
 
         # load all pages
         # (each one is a screen, a step in the install process)
@@ -199,7 +197,7 @@ class Main(Gtk.Window):
         params['enable_alongside'] = _enable_alongside
         
         if len(_alternate_package_list) > 0:
-            log.debug(_("Using '%s' file as package list") % _alternate_package_list)
+            logging.info(_("Using '%s' file as package list") % _alternate_package_list)
         
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
@@ -277,7 +275,8 @@ class Main(Gtk.Window):
     # (this should be fixed) meanwhile, we need sudo privileges to remove them
     @misc.raise_privileges
     def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log" ]
+        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", \
+                "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log" ]
         for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
@@ -285,7 +284,7 @@ class Main(Gtk.Window):
          
     def on_exit_button_clicked(self, widget, data=None):
         self.remove_temp_files()
-        print("Quiting...")
+        logging.info(_("Quiting installer..."))
         Gtk.main_quit()
 
     def set_progressbar_step(self, add_value):
@@ -344,35 +343,66 @@ class Main(Gtk.Window):
                     self.backwards_button.hide()
 
 if __name__ == '__main__':
-    print("Cnchi installer version %s" % info.cnchi_VERSION)
-
+    
+    # Check program args ##########################################
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "adlup:",
-         ["aria2", "debug", "alongside" "update", "packages"])
+        opts, args = getopt.getopt(argv, "adp:suv",
+         ["aria2", "debug", "packages", "alongside", "update", "verbose"])
     except getopt.GetoptError as e:
         print(str(e))
         sys.exit(2)
+
+    log_level = logging.INFO
+    verbose = False
+    update = False
     
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
-            log._debug = True
-            log.debug("Debug mode on")
+            log_level = logging.DEBUG
+        elif opt in ('-v', '--verbose'):
+            verbose = True
         elif opt in ('-u', '--update'):
-            upd = updater.Updater()
-            if upd.update():
-                print("Program updated! Restarting...")
-                os.execl(sys.executable, *([sys.executable] + sys.argv))
+            update = True
         elif opt in ('-p', '--packages'):
             _alternate_package_list = arg
         elif opt in ('-a', '--aria2'):
             _use_aria2 = True
-        elif opt in ('-l', '--alongisde'):
+        elif opt in ('-s', '--alongside'):
             _enable_alongside = True
         else:
             assert False, "unhandled option"
-                
+
+    # Setup log ##################################################
+    logger = logging.getLogger()
+    logger.setLevel(log_level)
+    # log format
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # create file handler
+    fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
+    fh.setLevel(log_level)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
+    if verbose:
+        sh = logging.StreamHandler()
+        sh.setLevel(log_level)
+        sh.setFormatter(formatter)
+        logger.addHandler(sh)
+        
+    # Check if program needs to be updated
+    if update:
+        upd = updater.Updater()
+        if upd.update():
+            logging.info("Program updated! Restarting...")
+            os.execl(sys.executable, *([sys.executable] + sys.argv))
+            sys.exit(0)
+
+    
+    # Start program #############################################
+    logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
+            
     GObject.threads_init()
     Gdk.threads_init()
 

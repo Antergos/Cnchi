@@ -26,15 +26,12 @@ import xml.dom.minidom
 import hashlib
 import sys
 
-
 TZ_DATA_FILE = '/usr/share/zoneinfo/zone.tab'
 ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
-
 
 def _seconds_since_epoch(dt):
     # TODO cjwatson 2006-02-23: %s escape is not portable
     return int(dt.replace(tzinfo=None).strftime('%s'))
-
 
 class SystemTzInfo(datetime.tzinfo):
     def __init__(self, tz=None):

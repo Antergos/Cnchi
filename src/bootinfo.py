@@ -31,6 +31,7 @@
 import os
 import subprocess
 import re
+import logging
 
 if __name__ == '__main__':
     import gettext
@@ -107,7 +108,7 @@ def get_devices_and_their_mount_points():
     try:
         out = subprocess.check_output(["mount"]).decode()
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        print(e)
+        logging.exception(e)
         return d
 
     out = out.split("\n")

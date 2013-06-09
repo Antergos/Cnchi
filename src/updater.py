@@ -37,8 +37,9 @@ import hashlib
 import os
 import info
 
-url_prefix = "https://raw.github.com/Antergos/Cnchi/alongside/"
-#url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
+import logging
+
+url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
 
 class Updater():
     def __init__(self, force_update=False):
@@ -52,14 +53,14 @@ class Updater():
             response = request.read().decode('utf-8')
                     
         except urllib.HTTPError as e:
-            print('Unable to get latest version info - HTTPError = %s' % e.reason)
+            logging.exception('Unable to get latest version info - HTTPError = %s' % e.reason)
         except urllib.URLError as e:
-            print ('Unable to get latest version info - URLError = %s' % e.reason)
+            logging.exception('Unable to get latest version info - URLError = %s' % e.reason)
         except httplib.HTTPException as e:
-            print ('Unable to get latest version info - HTTPException')
+            logging.exception('Unable to get latest version info - HTTPException')
         except Exception as e:
             import traceback
-            print ('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+            logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
 
         if len(response) > 0:
             updateInfo = json.loads(response)
@@ -67,7 +68,7 @@ class Updater():
             self.web_version = updateInfo['version']
             self.web_files = updateInfo['files']
         
-            print("web version: %s" % self.web_version)
+            logging.info("web version: %s" % self.web_version)
             
             self.force = force_update
             
@@ -96,7 +97,7 @@ class Updater():
     # This will update all files only if necessary
     def update(self):
         if self.is_web_version_newer():
-            print("New version found. Updating installer...")
+            logging.info("New version found. Updating installer...")
             for f in self.web_files:
                 name = f['name']
                 md5 = f['md5']
@@ -122,23 +123,23 @@ class Updater():
             txt = request.read()
             #.decode('utf-8')
         except urllib.error.HTTPError as e:
-            print('Unable to get %s - HTTPError = %s' % (name, e.reason))
+            logging.exception('Unable to get %s - HTTPError = %s' % (name, e.reason))
             return False
         except urllib.error.URLError as e:
-            print ('Unable to get %s - URLError = %s' % (name, e.reason))
+            logging.exception('Unable to get %s - URLError = %s' % (name, e.reason))
             return False
         except httplib.error.HTTPException as e:
-            print ('Unable to get %s - HTTPException' % name)
+            logging.exception('Unable to get %s - HTTPException' % name)
             return False
         except Exception as e:
             import traceback
-            print ('Unable to get %s - Exception = %s' % (name, traceback.format_exc()))
+            logging.exception('Unable to get %s - Exception = %s' % (name, traceback.format_exc()))
             return False
 
         web_md5 = self.get_md5(txt)
         
         if web_md5 != md5:
-            print("Checksum error in %s. Download aborted" % name)
+            logging.error("Checksum error in %s. Download aborted" % name)
             return False
         
         new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
@@ -149,7 +150,7 @@ class Updater():
         return True
 
     def replace_old_with_new_versions(self):
-        print("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
+        logging.info("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
         for f in self.web_files:
             name = f['name']
             old_name = os.path.join(base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))

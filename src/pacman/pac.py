@@ -39,8 +39,6 @@ import locale
 import gettext
 import math
 
-import log
-
 from multiprocessing import Queue
 import queue
 
@@ -215,7 +213,6 @@ class Pac(object):
             f = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
-            log.debug(event_text)
 
         try:
             self.callback_queue.put_nowait((event_type, event_text))
@@ -225,9 +222,7 @@ class Pac(object):
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
             # wait until queue is empty (is emptied in slides.py), then exit
-            log.debug("wait until queue is empty (is emptied in slides.py), then exit")
             self.callback_queue.join()
-            log.debug("pac.py: exiting installer process...")
             sys.exit(1)
 
          

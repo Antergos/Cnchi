@@ -34,7 +34,7 @@ from gi.repository import Gtk, GLib
 import config
 import os
 import keyboard_names
-import log
+import logging
 import show_message as show
 
 _next_page = "user_info"
@@ -103,7 +103,7 @@ class Keymap(Gtk.Box):
         if found == False:
             self.select_value_in_treeview(self.layout_treeview, "USA")
 
-        log.debug(_("keyboard_layout is %s") % selected_country)
+        logging.info(_("keyboard_layout is %s") % selected_country)
 
         self.show_all()
 

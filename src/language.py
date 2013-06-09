@@ -33,6 +33,7 @@ from gi.repository import Gtk, GLib
 import gettext
 import locale
 import os
+import logging
 
 # Useful vars for gettext (translations)
 APP="cnchi"
@@ -41,8 +42,6 @@ DIR = "/usr/share/locale"
 # Import functions
 import config
 import i18n
-
-import log
 
 _next_page = "location"
 _prev_page = "welcome"
@@ -130,7 +129,7 @@ class Language(Gtk.Box):
             lang.install()
             self.translate_ui()
         except IOError:
-            log.debug(_("Can't find translation file for the %s language") % locale_code)
+            logging.error(_("Can't find translation file for the %s language") % locale_code)
     
     # Select language loaded on boot as default
     def select_default_row(self, treeview, language):   

@@ -33,7 +33,7 @@ from gi.repository import Gtk
 import sys
 import os
 import queue
-import log
+import logging
 import misc
 import multiprocessing
 
@@ -52,7 +52,7 @@ def fatal_error(message):
     sys.exit(1)
 
 def error(message):
-    log.debug(message)
+    logging.error(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.ERROR,\
@@ -63,7 +63,7 @@ def error(message):
     msg_dialog.destroy()
 
 def warning(message):
-    log.debug(message)
+    logging.warning(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.WARNING,\
@@ -74,7 +74,7 @@ def warning(message):
     msg_dialog.destroy()
 
 def message(message):
-    log.debug(message)
+    logging.info(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.INFO,\
@@ -84,7 +84,7 @@ def message(message):
     msg_dialog.run()
 
 def question(message):
-    log.debug(message)
+    logging.info(message)
     msg_dialog = Gtk.MessageDialog(None,\
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.QUESTION,\

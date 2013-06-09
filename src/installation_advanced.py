@@ -35,7 +35,7 @@ import subprocess
 import gettext
 import sys
 import os
-import log
+import logging
 import misc
 
 # Insert the src/parted directory at the front of the path.
@@ -651,7 +651,7 @@ class InstallationAdvanced(Gtk.Box):
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
-        log.debug("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
+        logging.info("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
         # Be sure to just call get_devices once
         if self.disks == None:
@@ -668,7 +668,7 @@ class InstallationAdvanced(Gtk.Box):
         ## Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
             ## We unmount the partition. Should we ask first?
-            log.debug("Unmounting %s..." % part.path)
+            logging.info("Unmounting %s..." % part.path)
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
         ## Is it worth to show some warning message here?
@@ -837,7 +837,7 @@ class InstallationAdvanced(Gtk.Box):
 
                 # user wants to create an extended, logical or primary partition
                 if primary_radio.get_active():
-                    log.debug(_("Creating primary partition"))
+                    logging.debug(_("Creating primary partition"))
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif extended_radio.get_active():
                     #No mounting extended partitions...
@@ -848,13 +848,13 @@ class InstallationAdvanced(Gtk.Box):
                     mylabel = ''
                     myfmt = ''
                     formatme = False 
-                    log.debug(_("Creating extended partition"))
+                    logging.debug(_("Creating extended partition"))
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif logical_radio.get_active():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()        
                     if logical_count < max_logicals:
-                        log.debug(_("Creating logical partition"))
+                        logging.debug(_("Creating logical partition"))
                         # which geometry should we use here?
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
                 
@@ -1118,7 +1118,7 @@ class InstallationAdvanced(Gtk.Box):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                log.debug(_("Creating a new partition table of type %s for disk %s") % (ptype, path))
+                logging.info(_("Creating a new partition table of type %s for disk %s") % (ptype, path))
                 #remove debug, this doesn't actually do anything... 
                 new_disk = pm.make_new_disk(path, ptype)
                 self.disks[path] = new_disk
@@ -1297,16 +1297,16 @@ class InstallationAdvanced(Gtk.Box):
                 #only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
                     pm.finalize_changes(disk)
-                    log.debug(_("Saving changes done in %s") % disk_path)
+                    logging.info(_("Saving changes done in %s") % disk_path)
                 ## Now that partitions are created, set fs and label
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
-                    log.debug(partition_path)
+                    #log.debug(partition_path)
                     ## Get label, mount point and filesystem of staged partitions
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
-                        log.debug(_("Creating fs of type %s in %s with label %s") % (fisy, partition_path, lbl))
+                        logging.info(_("Creating fs of type %s in %s with label %s") % (fisy, partition_path, lbl))
                         if mnt == '/':
                             if not pm.get_flag(partitions[partition_path], 
                                                1):
@@ -1316,8 +1316,10 @@ class InstallationAdvanced(Gtk.Box):
                         if fmt:  
                          #all of fs module takes paths, not partition objs
                             (error, msg) = fs.create_fs(partition_path, fisy, lbl)
-                            log.debug(msg)
-                            log.debug(_("FORMATTED"))
+                            if error == 0:
+                                log.info(msg)
+                            else:
+                                log.error(msg)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
                                 fs.label_fs(fisy, partition_path, lbl)

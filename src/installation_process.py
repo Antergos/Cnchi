@@ -42,6 +42,7 @@ from urllib.request import urlopen
 import crypt
 import download
 import config
+import logging
 
 # Insert the src/pacman directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -56,7 +57,6 @@ sys.path.insert(0, parted_dir)
 import fs_module as fs
 import misc
 import pac
-import log
 
 _autopartition_script = 'auto_partition.sh'
 _postinstall_script = 'postinstall.sh'
@@ -103,9 +103,7 @@ class InstallationProcess(multiprocessing.Process):
         self.error = True
         self.running = False
         self.queue_event('error', txt)
-        log.debug("installation_process.py: wait until queue is empty (is emptied in slides.py), then exit")
         self.callback_queue.join()
-        log.debug("installation_process.py: exiting installer process...")
         sys.exit(1)
          
     def queue_event(self, event_type, event_text=""):
@@ -117,7 +115,7 @@ class InstallationProcess(multiprocessing.Process):
     @misc.raise_privileges    
     def run(self):
         p = multiprocessing.current_process()
-        log.debug("Starting: [%d] %s" % (p.pid, p.name))
+        #log.debug("Starting: [%d] %s" % (p.pid, p.name))
         
         # Common vars
         self.packages = []
@@ -329,8 +327,8 @@ class InstallationProcess(multiprocessing.Process):
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except (FileExistsError, shutil.Error) as e:
-            # print error but continue anyway
-            print(e)
+            # log error but continue anyway
+            logging.exception(e)
 
     # Configures pacman and syncs db on destination system
     def prepare_pacman(self):
@@ -571,7 +569,7 @@ class InstallationProcess(multiprocessing.Process):
                                     stderr=subprocess.STDOUT)
             out = proc.communicate()[0]
         except OSError as e:
-            print("Error running command: %s" % e.strerror)
+            logging.exception("Error running command: %s" % e.strerror)
             raise
         
         

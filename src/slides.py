@@ -36,7 +36,7 @@ import queue
 from multiprocessing import Queue, Lock
 
 import show_message as show
-import log
+import logging
 import subprocess
 import misc
 
@@ -136,7 +136,7 @@ class Slides(Gtk.Box):
             if event[0] == "percent":
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == "finished":
-                log.debug(event[1])
+                logging.info(event[1])
                 self.set_message(self.install_ok)
                 response = show.question(self.install_ok)
                 if response == Gtk.ResponseType.YES:
@@ -162,7 +162,7 @@ class Slides(Gtk.Box):
                 self.fatal_error = True
                 show.fatal_error(event[1])
             else:
-                log.debug(event[1])
+                logging.info(event[1])
                 self.set_message(event[1])
                             
             self.callback_queue.task_done()

@@ -33,9 +33,8 @@ from gi.repository import Gtk, GLib
 # Import functions
 import config
 import os
-import log
+import logging
 import show_message as show
-import log
 import xml.etree.ElementTree as etree
 
 _next_page = "check"
@@ -203,9 +202,9 @@ class Location(Gtk.Box):
                     try:
                         import locale
                         locale.setlocale(locale.LC_ALL, mylocale)
-                        log.debug(_("locale changed to : %s") % mylocale)
+                        logging.info(_("locale changed to : %s") % mylocale)
                     except (ImportError, locale.Error):
-                        log.debug(_("Can't change to locale '%s'") % mylocale)
+                        logging.warning(_("Can't change to locale '%s'") % mylocale)
 
         return True
 

@@ -36,10 +36,11 @@ import sys
 import os
 import misc
 import parted
-import log
+import logging
 import show_message as show
 import bootinfo
 import subprocess
+import logging
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -108,7 +109,7 @@ class InstallationAlongside(Gtk.Box):
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
                 )
             except:
-                print(_("Can't load %s css") % path)
+                logging.exception(_("Can't load %s css") % path)
         
 
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)
@@ -211,7 +212,7 @@ class InstallationAlongside(Gtk.Box):
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
-                    log.debug(_("In alongside install, can't create list of partitions"))
+                    logging.warning(_("In alongside install, can't create list of partitions"))
 
         # assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
@@ -244,7 +245,7 @@ class InstallationAlongside(Gtk.Box):
             self.max_size = int(x[1]) / 1000
             self.min_size = int(x[2]) / 1000
         except subprocess.CalledProcessError as e:
-            print("CalledProcessError.output = %s" % e.output)
+            logging.exception("CalledProcessError.output = %s" % e.output)
 
         if self.min_size + _minimum_space_for_antergos < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
@@ -318,9 +319,9 @@ class InstallationAlongside(Gtk.Box):
 
         new_size = self.new_size
         
-        print("partition_path: ", partition_path)
-        print("device_path: ", device_path)
-        print("new_size: ", new_size)
+        logging.debug("partition_path: ", partition_path)
+        logging.debug("device_path: ", device_path)
+        logging.debug("new_size: ", new_size)
         
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
@@ -338,8 +339,8 @@ class InstallationAlongside(Gtk.Box):
         
         primary_partitions.sort()
         
-        print("extended partition: ", extended_path)
-        print("primary partitions: ", primary_partitions)
+        logging.debug("extended partition: ", extended_path)
+        logging.debug("primary partitions: ", primary_partitions)
         
         # If we don't have 3 or 4 primary partitions,
         # we will be able to create a new one
@@ -350,9 +351,9 @@ class InstallationAlongside(Gtk.Box):
                 # destroy original partition and create two new ones
                 pm.split_partition(device_path, partition_path, new_size)
             else:
-                print("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
+                logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
         else:
-            print("There're too many primary partitions, can't create a new one")
+            logging.error("There're too many primary partitions, can't create a new one")
             
 
         '''

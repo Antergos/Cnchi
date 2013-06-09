@@ -20,7 +20,6 @@
 import gettext
 import misc
 
-
 def utf8(s, errors="strict"):
     """Decode a string as UTF-8 if it isn't already Unicode."""
     if isinstance(s, str):

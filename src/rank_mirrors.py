@@ -31,6 +31,7 @@
 import threading
 import multiprocessing
 import subprocess
+import logging
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -57,7 +58,7 @@ class AutoRankmirrorsThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            log.debug(_("In rankmirrors, can't get network status"))
+            logging.warning(_("In rankmirrors, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -70,5 +71,5 @@ class AutoRankmirrorsThread(threading.Thread):
         try:
             self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/rankmirrors-script"]).pid
         except subprocess.CalledProcessError as e:
-            print(_("Couldn't execute auto mirroring selection"))
+            logging.error(_("Couldn't execute auto mirroring selection"))
         

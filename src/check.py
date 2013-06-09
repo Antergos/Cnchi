@@ -33,7 +33,7 @@ from gi.repository import Gtk, GObject
 import subprocess
 import os
 import gtkwidgets
-import log
+import logging
 
 from rank_mirrors import AutoRankmirrorsThread
 
@@ -116,7 +116,7 @@ class Check(Gtk.Box):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            log.debug(_("Can't get network status"))
+            logging.warning(_("Can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -192,9 +192,9 @@ class Check(Gtk.Box):
         # remove timer
         self.remove_timer = True
 
-        log.debug(_("We have Internet connection."))
-        log.debug(_("We're connected to a power source."))
-        log.debug(_("We have enough space in disk."))
+        logging.info(_("We have Internet connection."))
+        logging.info(_("We're connected to a power source."))
+        logging.info(_("We have enough space in disk."))
           
         # Enable forward button
         self.forward_button.set_sensitive(True)

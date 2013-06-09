@@ -33,7 +33,7 @@ import sys
 import os
 import time
 import subprocess
-import log
+import logging
 import xmlrpc.client
 import queue
 
@@ -69,8 +69,7 @@ class DownloadPackages():
         try:
             s = xmlrpc.client.ServerProxy(aria2_url)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-            print(_("Can't connect to Aria2. Won't be able to speed up the download:"))
-            print(e)
+            logging.exception(_("Can't connect to Aria2. Won't be able to speed up the download."))
             return
 
         # first, update pacman databases
@@ -79,13 +78,13 @@ class DownloadPackages():
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
-                log.debug(_("Error creating metalink for package %s") % package_name)
+                logging.error(_("Error creating metalink for package %s") % package_name)
                 continue
             
             gids = self.add_metalink(s, metalink)
             
             if len(gids) <= 0:
-                log.debug(_("Error adding metalink for package %s") % package_name)
+                logging.error(_("Error adding metalink for package %s") % package_name)
                 continue
 
             all_gids_done = False
@@ -101,7 +100,7 @@ class DownloadPackages():
                     try:
                         r = s.aria2.tellStatus(gid)
                     except xmlrpc.client.Fault as e:
-                        print(e)
+                        logging.exception(e)
                         gids_to_remove.append(gid)
                         continue
                     
@@ -208,18 +207,20 @@ class DownloadPackages():
         try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
         except:
-            log.debug(_("Unable to create download queue for package %s") % package_name)
+            logging.error(_("Unable to create download queue for package %s") % package_name)
             return None  
 
         if not_found:
-            log.debug(_("Warning! Can't find these packages:"))
+            msg = _("Can't find these packages: ")
             for nf in sorted(not_found):
-                log.debug(nf)
+                msg = msg + nf + " "
+            logging.warning(msg)
       
         if missing_deps:
-            log.debug(_("Warning! Can't resolve these dependencies:"))
+            msg = _("Warning! Can't resolve these dependencies: ")
             for md in sorted(missing_deps):
-                log.debug(md)
+                msg = msg + md + " "
+            logging.warning(msg)
       
         metalink = pm2ml.download_queue_to_metalink(
             download_queue,
@@ -235,13 +236,13 @@ class DownloadPackages():
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
                 gids = s.aria2.addMetalink(binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-                print("Can't communicate with Aria2. Won't be able to speed up the download:")
-                print(e)
+                logging.exception("Can't communicate with Aria2. Won't be able to speed up the download")
 
         return gids
 
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue is None:
+            logging.debug(event_text)
             return
             
         if event_type in self.last_event:
@@ -259,9 +260,10 @@ class DownloadPackages():
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
-    log._debug = True
     _test = True
 
+    logging.basicConfig(filename="/tmp/download.log", level=logging.DEBUG)
+    
     '''
     DownloadPackages(\
     ["antergos-keyring", "antergos-mirrorlist",
