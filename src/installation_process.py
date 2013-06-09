@@ -239,9 +239,10 @@ class InstallationProcess(multiprocessing.Process):
             self.install_packages()
             self.queue_event('debug', 'Packages installed.')
 
-            self.queue_event('debug', 'Installing bootloader...')
-            self.install_bootloader()
-            self.queue_event('debug', 'Bootloader installed.')
+            if self.grub_device != None:
+                self.queue_event('debug', 'Installing bootloader...')
+                self.install_bootloader()
+                self.queue_event('debug', 'Bootloader installed.')
 
             self.queue_event('debug', 'Configuring system...')
             self.configure_system()

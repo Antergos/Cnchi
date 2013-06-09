@@ -238,6 +238,10 @@ class InstallationAdvanced(Gtk.Box):
         ## Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
 
+    def on_grub_device_check_toggled(self, checkbox):
+        combo = self.ui.get_object("grub_device_entry")
+        combo.set_sensitive(checkbox.get_active())
+
     ## Automatically select first entry
     def select_first_combobox_item(self, combobox):
         tree_model = combobox.get_model()
@@ -945,7 +949,7 @@ class InstallationAdvanced(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
-        txt = _("Device for boot loader installation:")
+        txt = _("Use this device for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
@@ -1360,6 +1364,11 @@ class InstallationAdvanced(Gtk.Box):
                 elif pm.check_mounted(p):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
+
+        combo = self.ui.get_object("grub_device_entry")
+        if combo.get_active() == False:
+            self.grub_device = None
+            logging.warning("Cnchi will not install any boot loader")
 
         self.process = installation_process.InstallationProcess( \
                     self.settings, \
