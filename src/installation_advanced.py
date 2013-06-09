@@ -1365,8 +1365,8 @@ class InstallationAdvanced(Gtk.Box):
                     mount_point, fs, writable = self.get_mount_point(p.path)
                     mount_devices[mount_point] = partition_path
 
-        combo = self.ui.get_object("grub_device_entry")
-        if combo.get_active() == False:
+        checkbox = self.ui.get_object("grub_device_check")
+        if checkbox.get_active() == False:
             self.grub_device = None
             logging.warning("Cnchi will not install any boot loader")
 
