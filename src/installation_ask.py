@@ -123,21 +123,7 @@ class InstallationAsk(Gtk.Box):
             self.settings.set('partition_mode', 'alongside')
         else:
             self.settings.set('partition_mode', 'advanced')
-        
-        # Ask bootloader type (don't know if it must be done here or after)
-        '''
-        import bootloader
-        bl = bootloader.BootLoader(self.ui_dir)
-        bootloader_type = bl.run()
-        
-        if len(bootloader_type) > 0:
-            self.settings.set('install_bootloader', True)
-            self.settings.set('bootloader_type', bootloader_type)
-            logging.info(_("Cnchi will install a %s bootloader") % bootloader_type)
-        else:
-            self.settings.set('install_bootloader', False)
-        '''
-        
+                
         return True
 
     def get_next_page(self):

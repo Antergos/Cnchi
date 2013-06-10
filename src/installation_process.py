@@ -69,7 +69,7 @@ class InstallError(Exception):
 
 class InstallationProcess(multiprocessing.Process):
     def __init__(self, settings, callback_queue, mount_devices, \
-                 grub_device, fs_devices, ssd=None, alternate_package_list=""):
+                 fs_devices, ssd=None, alternate_package_list=""):
         multiprocessing.Process.__init__(self)
                 
         self.alternate_package_list = alternate_package_list
@@ -83,7 +83,8 @@ class InstallationProcess(multiprocessing.Process):
         
         self.ssd = ssd
         self.mount_devices = mount_devices
-        self.grub_device = grub_device
+        
+        self.grub_device = self.settings.get('bootloader_device')
 
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
@@ -239,7 +240,8 @@ class InstallationProcess(multiprocessing.Process):
             self.install_packages()
             self.queue_event('debug', 'Packages installed.')
 
-            if self.grub_device != None:
+            if self.settings.get('install_bootloader') and \
+               self.grub_device != None:
                 self.queue_event('debug', 'Installing bootloader...')
                 self.install_bootloader()
                 self.queue_event('debug', 'Bootloader installed.')

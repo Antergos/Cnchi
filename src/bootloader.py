@@ -35,17 +35,20 @@ import os
 import logging
 
 class BootLoader():
-    def __init__(self, ui_dir):
-        self.ui_dir = ui_dir
+    def __init__(self, settings):
+        self.ui_dir = settings.get('UI_DIR')
         self.ui = Gtk.Builder()
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "bootloader.ui"))
         self.ui.connect_signals(self)
         
-        self.checks = {}
-        self.checks["GRUB2"] = self.ui.get_object("GRUB2_check")
-        self.checks["UEFI_x86_64"] = self.ui.get_object("UEFI_x86_64_check")
-        self.checks["UEFI_i386"] = self.ui.get_object("UEFI_i386_check")
+        self.btns = {}
+        self.btns["GRUB2"] = self.ui.get_object("GRUB2")
+        self.btns["UEFI_x86_64"] = self.ui.get_object("UEFI_x86_64")
+        self.btns["UEFI_i386"] = self.ui.get_object("UEFI_i386")
+        
+        # set bios as default
+        self.btns["GRUB2"].set_active(True)
 
         self.dialog = self.ui.get_object("bootloader")
         self.title = self.ui.get_object("title")
@@ -58,19 +61,20 @@ class BootLoader():
 
         label = self.ui.get_object("GRUB2_label")
         txt = _("BIOS (Common)")
-        self.label.set_markup(txt)
+        txt = '<span weight="bold">%s</span>' % txt
+        label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_x86_64_label")
         txt = _("x86_64 UEFI")
-        self.label.set_markup(txt)
+        label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_i386_label")
         txt = _("i386 UEFI")
-        self.label.set_markup(txt)
+        label.set_markup(txt)
         
     def get_type(self):
-        for k in self.checks:
-            if self.checks[k].get_active():
+        for k in self.btns:
+            if self.btns[k].get_active():
                 return k
         return ""
 
@@ -82,5 +86,18 @@ class BootLoader():
             bootloader_type = self.get_type()
         else:
             print("Cancel or close")
+
+        self.dialog.hide()
         
         return bootloader_type
+
+    def ask(self):
+        # Ask bootloader type (don't know if it must be done here or after)
+            bootloader_type = bl.run()
+            
+            if len(bootloader_type) > 0:
+                self.settings.set('install_bootloader', True)
+                self.settings.set('bootloader_type', bootloader_type)
+                logging.info(_("Cnchi will install a %s bootloader") % bootloader_type)
+            else:
+                self.settings.set('install_bootloader', False)

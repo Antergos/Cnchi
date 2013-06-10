@@ -376,13 +376,14 @@ class InstallationAlongside(Gtk.Box):
 
         '''        
         # TODO: Ask where to install GRUB
-        grub_device = mount_devices["/"]
+        
+        self.settings.set('install_bootloader', True)
+        self.settings.set('bootloader_device', mount_devices["/"])
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \
                         self.callback_queue, \
                         mount_devices, \
-                        grub_device, \
                         fs_devices, \
                         None, \
                         self.alternate_package_list)

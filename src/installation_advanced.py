@@ -1369,12 +1369,17 @@ class InstallationAdvanced(Gtk.Box):
         if checkbox.get_active() == False:
             self.grub_device = None
             logging.warning("Cnchi will not install any boot loader")
+        else:
+            # Ask bootloader type (don't know if it must be done here or after)
+            import bootloader
+            bl = bootloader.BootLoader(self.settings)
+
+        self.settings.set('bootloader_device', self.grub_device)
 
         self.process = installation_process.InstallationProcess( \
                     self.settings, \
                     self.callback_queue, \
                     mount_devices, \
-                    self.grub_device, \
                     fs_devices, \
                     self.ssd, \
                     self.alternate_package_list)
