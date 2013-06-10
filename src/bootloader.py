@@ -79,25 +79,22 @@ class BootLoader():
         return ""
 
     def run(self):
-        bootloader_type = ""
+        self.bl_type = ""
         response = self.dialog.run()
         
         if response == Gtk.ResponseType.OK:
-            bootloader_type = self.get_type()
-        else:
-            print("Cancel or close")
+            self.bl_type = self.get_type()
 
         self.dialog.hide()
-        
-        return bootloader_type
 
     def ask(self):
         # Ask bootloader type (don't know if it must be done here or after)
-            bootloader_type = bl.run()
-            
-            if len(bootloader_type) > 0:
-                self.settings.set('install_bootloader', True)
-                self.settings.set('bootloader_type', bootloader_type)
-                logging.info(_("Cnchi will install a %s bootloader") % bootloader_type)
-            else:
-                self.settings.set('install_bootloader', False)
+        bl.run()
+        
+        if len(self.bl_type) > 0:
+            self.settings.set('install_bootloader', True)
+            self.settings.set('bootloader_type', self.bl_type)
+            logging.info(_("Cnchi will install a %s bootloader") % self.bl_type)
+        else:
+            self.settings.set('install_bootloader', False)
+            logging.warning(_("Cnchi won't install any bootloader"))
