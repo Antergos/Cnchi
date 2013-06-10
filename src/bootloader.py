@@ -36,7 +36,8 @@ import logging
 
 class BootLoader():
     def __init__(self, settings):
-        self.ui_dir = settings.get('UI_DIR')
+        self.settings = settings
+        self.ui_dir = self.settings.get('UI_DIR')
         self.ui = Gtk.Builder()
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "bootloader.ui"))
@@ -79,22 +80,50 @@ class BootLoader():
         return ""
 
     def run(self):
-        self.bl_type = ""
+        bl_type = ""
+        
         response = self.dialog.run()
         
         if response == Gtk.ResponseType.OK:
-            self.bl_type = self.get_type()
+            bl_type = self.get_type()
 
         self.dialog.hide()
+        
+        return bl_type
 
     def ask(self):
-        # Ask bootloader type (don't know if it must be done here or after)
-        bl.run()
+        # Ask bootloader type
+        bl_type = bl.run()
         
-        if len(self.bl_type) > 0:
+        if len(bl_type) > 0:
             self.settings.set('install_bootloader', True)
-            self.settings.set('bootloader_type', self.bl_type)
-            logging.info(_("Cnchi will install a %s bootloader") % self.bl_type)
+            self.settings.set('bootloader_type', bl_type)
+            logging.info(_("Cnchi will install a %s bootloader") % bl_type)
         else:
             self.settings.set('install_bootloader', False)
             logging.warning(_("Cnchi won't install any bootloader"))
+
+if __name__ == '__main__':
+    import gettext
+    _ = gettext.gettext
+
+    import config
+    settings = config.Settings()
+    ui_dir = os.path.join(os.path.dirname(__file__), '../ui/')        
+    settings.set("UI_DIR", ui_dir)
+    
+    # setup_logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    # log format
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    sh.setFormatter(formatter)
+    logger.addHandler(sh)
+
+    # Ask bootloader type
+    bl = BootLoader(settings)
+    bl.ask()
+
+    Gtk.main()

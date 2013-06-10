@@ -1370,9 +1370,10 @@ class InstallationAdvanced(Gtk.Box):
             self.grub_device = None
             logging.warning("Cnchi will not install any boot loader")
         else:
-            # Ask bootloader type (don't know if it must be done here or after)
+            # Ask bootloader type
             import bootloader
             bl = bootloader.BootLoader(self.settings)
+            bl.ask()
 
         self.settings.set('bootloader_device', self.grub_device)
 

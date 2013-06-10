@@ -371,13 +371,14 @@ class InstallationAlongside(Gtk.Box):
         fs_devices[partition_path] = self.row[2]
         '''
 
-
-
-
         '''        
-        # TODO: Ask where to install GRUB
-        
-        self.settings.set('install_bootloader', True)
+        # TODO: Ask where to install the bootloader (if the user wants to install it)
+
+        # Ask bootloader type
+        import bootloader
+        bl = bootloader.BootLoader(self.settings)
+        bl.ask()
+
         self.settings.set('bootloader_device', mount_devices["/"])
 
         self.process = installation_process.InstallationProcess( \

@@ -154,14 +154,19 @@ class InstallationAutomatic(Gtk.Box):
         fs_devices[boot_partition] = "ext2"
         fs_devices[root_partition] = "ext4"
 
-        # TODO: Ask where to install GRUB
-        grub_device = self.auto_device
+        # TODO: Ask where to install the bootloader (if the user wants to install it)
+        
+        # Ask bootloader type
+        import bootloader
+        bl = bootloader.BootLoader(self.settings)
+        bl.ask()
+
+        self.settings.set('bootloader_device', self.auto_device)
         
         self.process = installation_process.InstallationProcess( \
                         self.settings, \
                         self.callback_queue, \
                         mount_devices, \
-                        grub_device, \
                         fs_devices, \
                         None, \
                         self.alternate_package_list)
