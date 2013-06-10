@@ -137,9 +137,15 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-                    subprocess.call(["mount", device, "/mnt"], stderr=subprocess.DEVNULL)
-                    oses[device] = get_os("/mnt")
-                    subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
+                    try:
+                        subprocess.call(["mount", device, "/mnt"], stderr=subprocess.DEVNULL)
+                        oses[device] = get_os("/mnt")
+                        subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
+                    except AttributeError:
+                        subprocess.call(["mount", device, "/mnt"])
+                        oses[device] = get_os("/mnt")
+                        subprocess.call(["umount", "/mnt"])
+                        
     return oses
     
 if __name__ == '__main__':

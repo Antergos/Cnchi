@@ -28,7 +28,6 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-import pm2ml
 import sys
 import os
 import time
@@ -36,6 +35,11 @@ import subprocess
 import logging
 import xmlrpc.client
 import queue
+
+try:
+    import pm2ml
+except:
+    print("pm2ml not found! This installer won't work.")
 
 _test = False
 

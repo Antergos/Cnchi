@@ -42,8 +42,12 @@ import math
 from multiprocessing import Queue
 import queue
 
-import pyalpm
-from pacman import pac_config
+try:
+    import pyalpm
+    from pacman import pac_config
+except:
+    print("pyalpm not found! This installer won't work.")
+
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
