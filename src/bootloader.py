@@ -62,7 +62,6 @@ class BootLoader():
 
         label = self.ui.get_object("GRUB2_label")
         txt = _("BIOS (Common)")
-        txt = '<span weight="bold">%s</span>' % txt
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_x86_64_label")
@@ -92,6 +91,13 @@ class BootLoader():
         return bl_type
 
     def ask(self):
+        # check if we can guess our bootloader type
+        with open("/proc/cmdline", "rt") as f:
+            if "UEFI_ARCH_x86_64" in f.read():
+                for k in self.btns:
+                    self.btns[k].set_active(False)
+                self.btns["UEFI_x86_64"].set_active(True)
+            
         # Ask bootloader type
         bl_type = bl.run()
         
