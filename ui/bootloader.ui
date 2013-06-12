@@ -162,21 +162,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="none">
+                  <object class="GtkLabel" id="help_label">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
-                    <property name="group">GRUB2</property>
-                    <child>
-                      <object class="GtkLabel" id="none_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Do not install any boot loader</property>
-                      </object>
-                    </child>
+                    <property name="label" translatable="yes">Choose 'cancel' if you don't want to install a boot loader</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

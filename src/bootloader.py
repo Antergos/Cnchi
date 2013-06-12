@@ -72,6 +72,10 @@ class BootLoader():
         txt = _("i386 UEFI")
         label.set_markup(txt)
         
+        label = self.ui.get_object("help_label")
+        txt = _("Choose 'cancel' if you don't want to install a boot loader")
+        label.set_markup(txt)
+        
     def get_type(self):
         for k in self.btns:
             if self.btns[k].get_active():
