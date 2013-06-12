@@ -511,10 +511,31 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
+
+
+
+        '''
+        GRUB2
+        UEFI_x86_64
+        UEFI_i386
+        
+            self.settings.set('install_bootloader', True)
+            self.settings.set('bootloader_type', bl_type)
+        '''
+
+
         # Lets start from a basic install, installing grub2 (bios) by default
         for child in root.iter('grub'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
+
+
+
+
+
+
+
+
 
     def get_graphics_card(self):
         p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
