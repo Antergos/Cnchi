@@ -508,7 +508,7 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # Add bootloader packages
+        # Add bootloader packages if needed
         if self.settings.get('install_bootloader'):
             bt = self.settings.get('bootloader_type')
             if bt == "GRUB2":
@@ -516,9 +516,15 @@ class InstallationProcess(multiprocessing.Process):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
             elif bt == "UEFI_x86_64":
-                pass
+                for child in root.iter('grub-efi'):
+                    if root.attrib.get('uefiarch') == "x86_64":
+                        for pkg in child.iter('pkgname'):
+                            self.packages.append(pkg.text)
             elif bt == "UEFI_i386":
-                pass
+                for child in root.iter('grub-efi'):
+                    if root.attrib.get('uefiarch') == "i386":
+                        for pkg in child.iter('pkgname'):
+                            self.packages.append(pkg.text)
 
 
     def get_graphics_card(self):
@@ -670,14 +676,12 @@ class InstallationProcess(multiprocessing.Process):
 
         if bt == "GRUB2":
             self.install_bootloader_grub2()
-        elif bt == "UEFI_x86_64":
-            pass
-        elif bt == "UEFI_i386":
-            pass
+        elif bt == "UEFI_x86_64" or bt == "UEFI_i386":
+            self.install_bootloader_grub2_efi(bt)
     
     def install_bootloader_grub2(self):
         grub_device = self.settings.get('bootloader_device')
-        self.queue_event('info', "Installing GRUB(2) BIOS boot loader in %s" % grub_device)
+        self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
         self.chroot_mount()
 
@@ -700,7 +704,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
             return
         except FileExistsError:
-            # ignore if exists
+            # ignore if already exists
             pass
 
         locale = self.settings.get("locale")
@@ -714,6 +718,128 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
+
+    def install_bootloader_grub2_efi(self, arch):
+        uefi_arch = "x86_64"
+        spec_uefi_arch = "x64"
+        
+        if bt == "UEFI_i386":
+            uefi_arch = "i386"
+            spec_uefi_arch = "ia32"
+
+        grub_device = self.settings.get('bootloader_device')
+        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
+
+        self.chroot_mount()
+        
+        self.chroot(['grub-install', \
+                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
+                  '--target=%s-efi' % uefi_arch, \
+                  '--bootloader-id="arch_grub"', \
+                  '--boot-directory=/boot', \
+                  '--recheck', \
+                  grub_device])
+        
+        self.chroot_umount()
+
+        '''
+    mkdir -p "${DESTDIR}/boot/grub/locale"
+    cp -f "${DESTDIR}/usr/share/locale/en@quot/LC_MESSAGES/grub.mo" "${DESTDIR}/boot/grub/locale/en.mo"
+    
+    
+    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
+    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
+    
+    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
+    
+    [[ -e "${DESTDIR}/boot/grub/grub.cfg" ]] && mv "${DESTDIR}/boot/grub/grub.cfg" "${DESTDIR}/boot/grub/grub.cfg.save"
+    
+    cat << EOF > "${DESTDIR}/boot/grub/grub.cfg"
+
+insmod usbms
+insmod usb_keyboard
+
+insmod part_gpt
+insmod part_msdos
+
+insmod fat
+insmod iso9660
+insmod udf
+insmod ${BOOT_PART_FS}
+
+insmod ext2
+insmod reiserfs
+insmod ntfs
+insmod hfsplus
+
+insmod linux
+insmod chain
+
+search --fs-uuid --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_UUID}
+
+if [ -f "(\${root})/grub/grub.cfg" ]; then
+    set prefix="(\${root})/grub"
+    source "(\${root})/grub/grub.cfg"
+else
+    if [ -f "(\${root})/boot/grub/grub.cfg" ]; then
+        set prefix="(\${root})/boot/grub"
+        source "(\${root})/boot/grub/grub.cfg"
+    fi
+fi
+
+EOF
+    
+    cp -f "${DESTDIR}/boot/grub/grub.cfg" "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}_standalone.cfg"
+    
+    __WD="${PWD}/"
+    
+    cd "${DESTDIR}/"
+    
+    chroot_mount
+    
+    chroot "${DESTDIR}" "/usr/bin/grub-mkstandalone" \
+        --directory="/usr/lib/grub/${UEFI_ARCH}-efi" \
+        --format="${UEFI_ARCH}-efi" \
+        --compression="xz" \
+        --output="/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}_standalone.efi" \
+        "boot/grub/grub.cfg" &>"/tmp/grub_${UEFI_ARCH}_uefi_mkstandalone.log"
+    
+    chroot_umount
+    
+    cd "${__WD}/"
+    
+    [[ -e "${DESTDIR}/boot/grub/grub.cfg.save" ]] && mv "${DESTDIR}/boot/grub/grub.cfg.save" "${DESTDIR}/boot/grub/grub.cfg"
+    
+    cat "/tmp/grub_uefi_${UEFI_ARCH}_install.log" >> "${LOG}"
+    
+    if [[ -e "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" ]] && [[ -e "${DESTDIR}/boot/grub/${UEFI_ARCH}-efi/core.efi" ]]; then
+        _BOOTMGR_LABEL="Antergos (GRUB)"
+        _BOOTMGR_LOADER_DIR="arch_grub"
+        _BOOTMGR_LOADER_FILE="grub${SPEC_UEFI_ARCH}.efi"
+        do_uefi_bootmgr_setup
+        
+        DIALOG --msgbox $"GRUB(2) UEFI ${UEFI_ARCH} has been successfully installed." 0 0
+        
+        GRUB_PREFIX_DIR="/boot/grub/"
+        GRUB_UEFI="1"
+        dogrub_config
+        GRUB_UEFI=""
+        
+        DIALOG --defaultno --yesno $"Do you want to copy /boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi to /boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi ?\n\nThis might be needed in some systems where efibootmgr may not work due to firmware issues." 0 0 && _UEFISYS_EFI_BOOT_DIR="1"
+        
+        if [[ "${_UEFISYS_EFI_BOOT_DIR}" == "1" ]]; then
+            mkdir -p "${DESTDIR}/boot/efi/EFI/boot"
+            
+            rm -f "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
+            
+            cp -f "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
+        fi
+    else
+        DIALOG --msgbox $"Error installing GRUB UEFI ${UEFI_ARCH}.\nCheck /tmp/grub_uefi_${UEFI_ARCH}_install.log for more info.\n\nYou probably need to install it manually by chrooting into ${DESTDIR}.\nDon't forget to bind /dev, /sys and /proc into ${DESTDIR} before chrooting." 0 0
+        return 1
+    fi
+    
+        '''        
 
     def enable_services(self, services):
         for name in services:
