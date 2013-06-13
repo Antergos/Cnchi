@@ -96,14 +96,15 @@ class BootLoader():
 
     def ask(self):
         # check if we can guess our bootloader type
+        bl_type = ""
+        
         with open("/proc/cmdline", "rt") as f:
             if "UEFI_ARCH_x86_64" in f.read():
-                for k in self.btns:
-                    self.btns[k].set_active(False)
-                self.btns["UEFI_x86_64"].set_active(True)
-            
-        # Ask bootloader type
-        bl_type = bl.run()
+                bl_type = "UEFI_x86_64"
+        
+        if bl_type == "":
+            # Ask bootloader type
+            bl_type = bl.run()
         
         if len(bl_type) > 0:
             self.settings.set('install_bootloader', True)
