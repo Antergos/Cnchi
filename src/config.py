@@ -34,7 +34,7 @@ from multiprocessing import Queue
 class Settings():
     def __init__(self):
         # Create a queue one element size
-        #self.settings = queue.Queue(1)
+
         self.settings = Queue(1)
 
         self.settings.put( { \
@@ -56,6 +56,9 @@ class Settings():
             'timezone_longitude' : 0, \
             'timezone_done' : False, \
             'use_ntp' : True, \
+            'install_bootloader' : True, \
+            'bootloader_device' : '/dev/sda', \
+            'bootloader_type' : 'GRUB2', \
             'third_party_software' : False, \
             'desktops' : [], \
             'desktop' : 'gnome', \

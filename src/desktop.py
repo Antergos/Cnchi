@@ -55,8 +55,6 @@ class DesktopAsk(Gtk.Box):
         self.desktop_info = self.ui.get_object("desktop_info")
         self.treeview_desktop = self.ui.get_object("treeview_desktop")
         
-        self.no_desktop = self.ui.get_object("no_desktop")
-
         self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
@@ -64,6 +62,7 @@ class DesktopAsk(Gtk.Box):
         self.enabled_desktops = self.settings.get("desktops")
                
         self.desktops = {
+         "nox" : "Base",
          "gnome" : "Gnome",
          "cinnamon" : "Cinnamon",
          "xfce" : "Xfce",
@@ -78,8 +77,6 @@ class DesktopAsk(Gtk.Box):
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
-        self.no_desktop.set_label(_("Don't install any desktop"))
-        
         image = self.ui.get_object("image_desktop")     
         label = self.ui.get_object("desktop_info")
 
@@ -143,9 +140,6 @@ class DesktopAsk(Gtk.Box):
             "without any desktop at all. After the installation you can " \
             "install the desktop you may see fit.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
-            self.treeview_desktop.set_sensitive(False)
-        else:
-            self.treeview_desktop.set_sensitive(True)
             
         label.set_markup(txt)
 
@@ -211,15 +205,6 @@ class DesktopAsk(Gtk.Box):
     def scroll_to_cell(self, treeview, path):
         treeview.scroll_to_cell(path)
         return False
-        
-    def on_no_desktop_toggled(self, button):
-        if button.get_active():
-            self.selected_desktop = self.desktop_choice
-            self.desktop_choice = "nox"
-            self.translate_ui(self.desktop_choice)
-        else:
-            self.desktop_choice = self.selected_desktop
-            self.translate_ui(self.desktop_choice)
 
     def get_prev_page(self):
         return _prev_page

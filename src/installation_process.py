@@ -84,8 +84,6 @@ class InstallationProcess(multiprocessing.Process):
         self.ssd = ssd
         self.mount_devices = mount_devices
         
-        self.grub_device = self.settings.get('bootloader_device')
-
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
         self.desktop_manager = 'gdm'
@@ -240,8 +238,7 @@ class InstallationProcess(multiprocessing.Process):
             self.install_packages()
             self.queue_event('debug', 'Packages installed.')
 
-            if self.settings.get('install_bootloader') and \
-               self.grub_device != None:
+            if self.settings.get('install_bootloader'):
                 self.queue_event('debug', 'Installing bootloader...')
                 self.install_bootloader()
                 self.queue_event('debug', 'Bootloader installed.')
@@ -503,7 +500,7 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # Install chinese fonts
+        # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
             self.queue_event('debug', 'Selecting chinese fonts.')
@@ -511,30 +508,17 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-
-
-
-        '''
-        GRUB2
-        UEFI_x86_64
-        UEFI_i386
-        
-            self.settings.set('install_bootloader', True)
-            self.settings.set('bootloader_type', bl_type)
-        '''
-
-
-        # Lets start from a basic install, installing grub2 (bios) by default
-        for child in root.iter('grub'):
-            for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
-
-
-
-
-
-
-
+        # Add bootloader packages
+        if self.settings.get('install_bootloader'):
+            bt = self.settings.get('bootloader_type')
+            if bt == "GRUB2":
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+            elif bt == "UEFI_x86_64":
+                pass
+            elif bt == "UEFI_i386":
+                pass
 
 
     def get_graphics_card(self):
@@ -680,10 +664,21 @@ class InstallationProcess(multiprocessing.Process):
             f.write(full_text)
 
     def install_bootloader(self):
-        # TODO: Install Grub2
-        # check dogrub_config and dogrub_bios from arch-setup
+        # TODO: check dogrub_config and dogrub_bios from arch-setup
+        
+        bt = self.settings.get('bootloader_type')
 
-        self.queue_event('info', "Installing GRUB(2) BIOS boot loader in %s" % self.grub_device)
+        if bt == "GRUB2":
+            self.install_bootloader_grub2()
+        elif bt == "UEFI_x86_64":
+            pass
+        elif bt == "UEFI_i386":
+            pass
+    
+    def install_bootloader_grub2(self):
+        grub_device = self.settings.get('bootloader_device')
+        self.queue_event('info', "Installing GRUB(2) BIOS boot loader in %s" % grub_device)
+
         self.chroot_mount()
 
         self.chroot(['grub-install', \
@@ -691,7 +686,7 @@ class InstallationProcess(multiprocessing.Process):
                   '--target=i386-pc', \
                   '--boot-directory=/boot', \
                   '--recheck', \
-                  self.grub_device])
+                  grub_device])
         
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         

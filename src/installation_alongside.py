@@ -378,8 +378,10 @@ class InstallationAlongside(Gtk.Box):
         import bootloader
         bl = bootloader.BootLoader(self.settings)
         bl.ask()
-
-        self.settings.set('bootloader_device', mount_devices["/"])
+        
+        if self.settings.get('install_bootloader'):
+            logging.info(_("Antergos will install the bootloader in %s") % mount_devices["/"])
+            self.settings.set('bootloader_device', mount_devices["/"])
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \

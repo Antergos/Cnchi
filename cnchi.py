@@ -63,8 +63,8 @@ import updater
 import show_message as show
 
 # Enabled desktops
-#_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
-_desktops = [ "gnome", "cinnamon", "xfce", "razor", "openbox" ]
+#_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
+_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
 
 # Command line options
 _alternate_package_list = ""
