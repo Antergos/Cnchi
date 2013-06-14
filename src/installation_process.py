@@ -675,11 +675,11 @@ class InstallationProcess(multiprocessing.Process):
         bt = self.settings.get('bootloader_type')
 
         if bt == "GRUB2":
-            self.install_bootloader_grub2()
+            self.install_bootloader_grub2_bios()
         elif bt == "UEFI_x86_64" or bt == "UEFI_i386":
             self.install_bootloader_grub2_efi(bt)
     
-    def install_bootloader_grub2(self):
+    def install_bootloader_grub2_bios(self):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
@@ -744,12 +744,11 @@ class InstallationProcess(multiprocessing.Process):
         
         if not os.path.exists(dest_locale_dir):
             os.makedirs(dest_locale_dir)
-            
-        '''
-        #src_locale_dir = os.path.join()
+        
+        mo = os.path.join(self.dest_dir, "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
 
         try:
-            shutil.copy2("/arch/10_linux", dest_locale_dir)
+            shutil.copy2(mo, os.path.join(dest_locale_dir, "en.mo"))
         except FileNotFoundError:
             self.chroot_umount()            
             self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
@@ -757,57 +756,63 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             # ignore if already exists
             pass
-        '''
+
+        d = self.dest_dir
+        boot_part_fs_uuid = subprocess.check_output(["/usr/bin/grub-probe", "--target='fs_uuid'", "%s/boot" % d])
+        boot_part_fs = subprocess.check_output(["/usr/bin/grub-probe", "--target='fs'", "%s/boot" % d])
+        boot_part_hints_string = subprocess.check_output(["/usr/bin/grub-probe", "--target='hints_string'", "%s/boot" % d])
+        
+        # backup grub.cfg
+        src = "%s/boot/grub/grub.cfg" % d
+        if os.path.exists(src):
+            shutil.move(src, "%s/boot/grub/grub.cfg.save" % d)
+
+        # write new grub.cfg
+        with open(src, "wt") as f:
+            f.write("insmode usbms\n")
+            f.write("insmod usb_keyboard\n\n")
+
+            f.write("insmod part_gpt\n")
+            f.write("insmod part_msdos\n\n")
+
+            f.write("insmod fat\n")
+            f.write("insmod iso9660\n")
+            f.write("insmod udf\n")
+            f.write("insmod %s\n\n" % boot_part_fs)
+
+            f.write("insmod ext2\n")
+            f.write("insmod reiserfs\n")
+            f.write("insmod ntfs\n")
+            f.write("insmod hfsplus\n\n")
+
+            f.write("insmod linux\n")
+            f.write("insmod chain\n\n")
+
+            f.write("search --fs-uuid --no-floppy --set=root %s %s" % (boot_part_hints_string, boot_part_fs_uuid))
+
+            f.write("if [ -f \"(\${root})/grub/grub.cfg\" ]; then\n")
+            f.write("set prefix=\"(\${root})/grub\"\n")
+            f.write("source \"(\${root})/grub/grub.cfg\"\n")
+            f.write("else\n")
+            f.write("if [ -f \"(\${root})/boot/grub/grub.cfg\" ]; then\n")
+            f.write("set prefix=\"(\${root})/boot/grub\"")
+            f.write("source \"(\${root})/boot/grub/grub.cfg\"\n")
+            f.write("fi\nfi\n\n")
+
+        grub_cfg = "%s/boot/grub/grub.cfg" % d
+        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (d, spec_uefi_arch)
+        try:
+            shutil.copy2(grub_cfg, grub_standalone)
+        except FileNotFoundError:
+            self.chroot_umount()            
+            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+            return
+        except FileExistsError:
+            # ignore if already exists
+            pass
+
 
         '''
-    mkdir -p "${DESTDIR}/boot/grub/locale"
-    cp -f "${DESTDIR}/usr/share/locale/en@quot/LC_MESSAGES/grub.mo" "${DESTDIR}/boot/grub/locale/en.mo"
-    
-    
-    BOOT_PART_FS_UUID="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs_uuid" "${DESTDIR}/boot" 2>/dev/null)"
-    BOOT_PART_FS="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="fs" "${DESTDIR}/boot" 2>/dev/null)"
-    
-    BOOT_PART_HINTS_STRING="$(LD_LIBRARY_PATH="${DESTDIR}/usr/lib:${DESTDIR}/lib" "${DESTDIR}/usr/bin/grub-probe" --target="hints_string" "${DESTDIR}/boot" 2>/dev/null)"
-    
-    [[ -e "${DESTDIR}/boot/grub/grub.cfg" ]] && mv "${DESTDIR}/boot/grub/grub.cfg" "${DESTDIR}/boot/grub/grub.cfg.save"
-    
-    cat << EOF > "${DESTDIR}/boot/grub/grub.cfg"
-
-insmod usbms
-insmod usb_keyboard
-
-insmod part_gpt
-insmod part_msdos
-
-insmod fat
-insmod iso9660
-insmod udf
-insmod ${BOOT_PART_FS}
-
-insmod ext2
-insmod reiserfs
-insmod ntfs
-insmod hfsplus
-
-insmod linux
-insmod chain
-
-search --fs-uuid --no-floppy --set=root ${BOOT_PART_HINTS_STRING} ${BOOT_PART_FS_UUID}
-
-if [ -f "(\${root})/grub/grub.cfg" ]; then
-    set prefix="(\${root})/grub"
-    source "(\${root})/grub/grub.cfg"
-else
-    if [ -f "(\${root})/boot/grub/grub.cfg" ]; then
-        set prefix="(\${root})/boot/grub"
-        source "(\${root})/boot/grub/grub.cfg"
-    fi
-fi
-
-EOF
-    
-    cp -f "${DESTDIR}/boot/grub/grub.cfg" "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}_standalone.cfg"
-    
     __WD="${PWD}/"
     
     cd "${DESTDIR}/"
@@ -833,7 +838,32 @@ EOF
         _BOOTMGR_LABEL="Antergos (GRUB)"
         _BOOTMGR_LOADER_DIR="arch_grub"
         _BOOTMGR_LOADER_FILE="grub${SPEC_UEFI_ARCH}.efi"
-        do_uefi_bootmgr_setup
+
+
+    _uefisysdev="$(df -T "${DESTDIR}/boot/efi" | tail -n +2 | awk '{print $1}')"
+    _DISC="$(echo "${_uefisysdev}" | sed 's/\(.\{8\}\).*/\1/')"
+    UEFISYS_PART_NUM="$(${_BLKID} -p -i -s PART_ENTRY_NUMBER -o value "${_uefisysdev}")"
+    
+    _BOOTMGR_DISC="${_DISC}"
+    _BOOTMGR_PART_NUM="${UEFISYS_PART_NUM}"
+    
+    if [[ "$(cat "/sys/class/dmi/id/sys_vendor")" == 'Apple Inc.' ]] || [[ "$(cat "/sys/class/dmi/id/sys_vendor")" == 'Apple Computer, Inc.' ]]; then
+        do_apple_efi_hfs_bless
+    else
+        ## For all the non-Mac UEFI systems
+        _EFIBOOTMGR_LABEL="${_BOOTMGR_LABEL}"
+        _EFIBOOTMGR_DISC="${_BOOTMGR_DISC}"
+        _EFIBOOTMGR_PART_NUM="${_BOOTMGR_PART_NUM}"
+        _EFIBOOTMGR_LOADER_DIR="${_BOOTMGR_LOADER_DIR}"
+        _EFIBOOTMGR_LOADER_FILE="${_BOOTMGR_LOADER_FILE}"
+        do_uefi_efibootmgr
+    fi
+    
+    unset _BOOTMGR_LABEL
+    unset _BOOTMGR_DISC
+    unset _BOOTMGR_PART_NUM
+    unset _BOOTMGR_LOADER_DIR
+    unset _BOOTMGR_LOADER_FILE
         
         DIALOG --msgbox $"GRUB(2) UEFI ${UEFI_ARCH} has been successfully installed." 0 0
         
@@ -857,6 +887,7 @@ EOF
     fi
     
         '''        
+        
 
     def enable_services(self, services):
         for name in services:

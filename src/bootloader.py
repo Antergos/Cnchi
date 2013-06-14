@@ -94,19 +94,20 @@ class BootLoader():
         return bl_type
 
     def ask(self):
-        # check if we can guess our bootloader type
-        bl_type = ""
+        bt = ""
         
-        with open("/proc/cmdline", "rt") as f:
-            if "UEFI_ARCH_x86_64" in f.read():
-                bl_type = "UEFI_x86_64"
-        
-        if bl_type == "":
+        if self.settings.get('force_ask_bootloader'):
             # Ask bootloader type
-            bl_type = bl.run()
+            bt = bl.run()
+        else:
+            # Guess our bootloader type
+            if os.path.exists("/sys/firmware/efi/systab"):
+                bt = "UEFI_x86_64"
+            else:
+                bt = "GRUB2"
         
-        if len(bl_type) > 0:
+        if len(bt) > 0:
             self.settings.set('install_bootloader', True)
-            self.settings.set('bootloader_type', bl_type)
+            self.settings.set('bootloader_type', bt)
         else:
             self.settings.set('install_bootloader', False)

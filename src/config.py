@@ -59,6 +59,7 @@ class Settings():
             'install_bootloader' : True, \
             'bootloader_device' : '/dev/sda', \
             'bootloader_type' : 'GRUB2', \
+            'force_ask_bootloader' : False, \
             'third_party_software' : False, \
             'desktops' : [], \
             'desktop' : 'gnome', \
