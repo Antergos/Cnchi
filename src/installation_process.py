@@ -758,46 +758,10 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
         d = self.dest_dir
-        boot_part_fs_uuid = subprocess.check_output(["/usr/bin/grub-probe", "--target='fs_uuid'", "%s/boot" % d])
-        boot_part_fs = subprocess.check_output(["/usr/bin/grub-probe", "--target='fs'", "%s/boot" % d])
-        boot_part_hints_string = subprocess.check_output(["/usr/bin/grub-probe", "--target='hints_string'", "%s/boot" % d])
+        locale = self.settings.get("locale")
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         
-        # backup grub.cfg
-        src = "%s/boot/grub/grub.cfg" % d
-        if os.path.exists(src):
-            shutil.move(src, "%s/boot/grub/grub.cfg.save" % d)
-
-        # write new grub.cfg
-        with open(src, "wt") as f:
-            f.write("insmode usbms\n")
-            f.write("insmod usb_keyboard\n\n")
-
-            f.write("insmod part_gpt\n")
-            f.write("insmod part_msdos\n\n")
-
-            f.write("insmod fat\n")
-            f.write("insmod iso9660\n")
-            f.write("insmod udf\n")
-            f.write("insmod %s\n\n" % boot_part_fs)
-
-            f.write("insmod ext2\n")
-            f.write("insmod reiserfs\n")
-            f.write("insmod ntfs\n")
-            f.write("insmod hfsplus\n\n")
-
-            f.write("insmod linux\n")
-            f.write("insmod chain\n\n")
-
-            f.write("search --fs-uuid --no-floppy --set=root %s %s" % (boot_part_hints_string, boot_part_fs_uuid))
-
-            f.write("if [ -f \"(\${root})/grub/grub.cfg\" ]; then\n")
-            f.write("set prefix=\"(\${root})/grub\"\n")
-            f.write("source \"(\${root})/grub/grub.cfg\"\n")
-            f.write("else\n")
-            f.write("if [ -f \"(\${root})/boot/grub/grub.cfg\" ]; then\n")
-            f.write("set prefix=\"(\${root})/boot/grub\"")
-            f.write("source \"(\${root})/boot/grub/grub.cfg\"\n")
-            f.write("fi\nfi\n\n")
+        self.chroot_umount()
 
         grub_cfg = "%s/boot/grub/grub.cfg" % d
         grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (d, spec_uefi_arch)
