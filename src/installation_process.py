@@ -740,7 +740,24 @@ class InstallationProcess(multiprocessing.Process):
                   '--recheck', \
                   grub_device])
         
-        self.chroot_umount()
+        dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
+        
+        if not os.path.exists(dest_locale_dir):
+            os.makedirs(dest_locale_dir)
+            
+        '''
+        #src_locale_dir = os.path.join()
+
+        try:
+            shutil.copy2("/arch/10_linux", dest_locale_dir)
+        except FileNotFoundError:
+            self.chroot_umount()            
+            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+            return
+        except FileExistsError:
+            # ignore if already exists
+            pass
+        '''
 
         '''
     mkdir -p "${DESTDIR}/boot/grub/locale"

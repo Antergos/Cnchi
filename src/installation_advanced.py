@@ -1368,7 +1368,6 @@ class InstallationAdvanced(Gtk.Box):
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() == False:
             self.settings.set('install_bootloader', False)
-            logging.warning("Cnchi will not install any boot loader")
         else:
             # Ask bootloader type
             import bootloader
@@ -1376,8 +1375,11 @@ class InstallationAdvanced(Gtk.Box):
             bl.ask()
         
         if self.settings.get('install_bootloader'):
-            logging.info(_("Antergos will install the bootloader in %s") % self.grub_device)
             self.settings.set('bootloader_device', self.grub_device)
+            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
+                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device'))
+        else:
+            logging.warning("Cnchi will not install any boot loader")
 
         self.process = installation_process.InstallationProcess( \
                     self.settings, \

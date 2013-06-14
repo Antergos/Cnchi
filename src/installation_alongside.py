@@ -380,8 +380,12 @@ class InstallationAlongside(Gtk.Box):
         bl.ask()
         
         if self.settings.get('install_bootloader'):
-            logging.info(_("Antergos will install the bootloader in %s") % mount_devices["/"])
             self.settings.set('bootloader_device', mount_devices["/"])
+            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
+                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device'))
+        else:
+            logging.warning("Cnchi will not install any boot loader")
+
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \
