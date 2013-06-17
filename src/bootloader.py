@@ -96,9 +96,17 @@ class BootLoader():
     def ask(self):
         bt = ""
         
-        if self.settings.get('force_ask_bootloader'):
+        force_grub_type = self.settings.get('force_grub_type')
+        
+        if force_grub_type == "ask":
             # Ask bootloader type
             bt = bl.run()
+        elif force_grub_type == "efi":
+            bt = "UEFI_x86_64"
+        elif force_grub_type == "bios":
+            bt = "GRUB2"
+        elif force_grub_type == "none":
+            bt = ""
         else:
             # Guess our bootloader type
             if os.path.exists("/sys/firmware/efi/systab"):

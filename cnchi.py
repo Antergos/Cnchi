@@ -73,6 +73,7 @@ _enable_alongside = False
 _log_level = logging.INFO
 _verbose = False
 _update = False
+_force_grub_type = False
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
@@ -137,6 +138,9 @@ class Main(Gtk.Window):
             
         # set enabled desktops
         self.settings.set("desktops", _desktops)
+        
+        # set if a grub type must be installed (user choice)
+        self.settings.set("force_grub_type", _force_grub_type)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")
@@ -361,15 +365,28 @@ class Main(Gtk.Window):
             logger.addHandler(sh)
         
 
+def show_help():
+    print("Cnchi Antergos Installer")
+    print("Advanced options:")
+    print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
+    print("-d, --debug : Show debug messages")
+    print("-s, --alongside : Enable alongside installation method (EXPERIMENTAL)")
+    print("-v, --verbose : Show logging messages to stdout")
+    print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
+    print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
+    print("-h, --help : Show this help message")
+
 if __name__ == '__main__':
     
     # Check program args
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "adp:suv",
-         ["aria2", "debug", "packages", "alongside", "update", "verbose"])
+        opts, args = getopt.getopt(argv, "adp:usvg:h",
+         ["aria2", "debug", "packages=", "alongside", "update", "verbose", \
+          "force-grub=", "help"])
     except getopt.GetoptError as e:
+        show_help()
         print(str(e))
         sys.exit(2)
     
@@ -386,6 +403,12 @@ if __name__ == '__main__':
             _use_aria2 = True
         elif opt in ('-s', '--alongside'):
             _enable_alongside = True
+        elif opt in ('-g', '--force-grub-type'):
+            if arg in ('bios', 'efi', 'ask', 'none'):
+                _force_grub_type = arg
+        elif opt in ('-h', '--help'):
+            show_help()
+            sys.exit(0)
         else:
             assert False, "unhandled option"
         

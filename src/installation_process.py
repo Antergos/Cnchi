@@ -775,80 +775,57 @@ class InstallationProcess(multiprocessing.Process):
             # ignore if already exists
             pass
 
+        self.chroot(['grub-mkstandalone', \
+                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
+                  '--format=%s-efi' % uefi_arch, \
+                  '--compression="xz"', \
+                  '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
+                  'boot/grub/grub.cfg'])
 
         '''
-    __WD="${PWD}/"
-    
-    cd "${DESTDIR}/"
-    
-    chroot_mount
-    
-    chroot "${DESTDIR}" "/usr/bin/grub-mkstandalone" \
-        --directory="/usr/lib/grub/${UEFI_ARCH}-efi" \
-        --format="${UEFI_ARCH}-efi" \
-        --compression="xz" \
-        --output="/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}_standalone.efi" \
-        "boot/grub/grub.cfg" &>"/tmp/grub_${UEFI_ARCH}_uefi_mkstandalone.log"
-    
-    chroot_umount
-    
-    cd "${__WD}/"
-    
-    [[ -e "${DESTDIR}/boot/grub/grub.cfg.save" ]] && mv "${DESTDIR}/boot/grub/grub.cfg.save" "${DESTDIR}/boot/grub/grub.cfg"
-    
-    cat "/tmp/grub_uefi_${UEFI_ARCH}_install.log" >> "${LOG}"
-    
-    if [[ -e "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" ]] && [[ -e "${DESTDIR}/boot/grub/${UEFI_ARCH}-efi/core.efi" ]]; then
-        _BOOTMGR_LABEL="Antergos (GRUB)"
-        _BOOTMGR_LOADER_DIR="arch_grub"
-        _BOOTMGR_LOADER_FILE="grub${SPEC_UEFI_ARCH}.efi"
+        # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
+        bootmgr_label = "Antergos (GRUB)"
+        bootmgr_loader_dir = "arch_grub"
+        bootmgr_loader_file = "grub%s.efi" % spec_uefi_arch
 
+        try:
+            uefisysdev = subprocess.check_output("df -T %s/boot/efi | tail -n +2 | awk '{print $1}'" % d)
+            disc = subprocess.check_output("echo %s | sed 's/\(.\{8\}\).*/\1/'" % uefisysdev)
+            uefisys_part_num = subprocess.check_output(["blkid", "-p", "-i", "-s", "PART_ENTRY_NUMBER", "-o", "value", uefisysdev])
+        except:
+            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+            return
+        
+        '''
 
-    _uefisysdev="$(df -T "${DESTDIR}/boot/efi" | tail -n +2 | awk '{print $1}')"
-    _DISC="$(echo "${_uefisysdev}" | sed 's/\(.\{8\}\).*/\1/')"
-    UEFISYS_PART_NUM="$(${_BLKID} -p -i -s PART_ENTRY_NUMBER -o value "${_uefisysdev}")"
-    
-    _BOOTMGR_DISC="${_DISC}"
-    _BOOTMGR_PART_NUM="${UEFISYS_PART_NUM}"
-    
-    if [[ "$(cat "/sys/class/dmi/id/sys_vendor")" == 'Apple Inc.' ]] || [[ "$(cat "/sys/class/dmi/id/sys_vendor")" == 'Apple Computer, Inc.' ]]; then
-        do_apple_efi_hfs_bless
-    else
-        ## For all the non-Mac UEFI systems
-        _EFIBOOTMGR_LABEL="${_BOOTMGR_LABEL}"
-        _EFIBOOTMGR_DISC="${_BOOTMGR_DISC}"
-        _EFIBOOTMGR_PART_NUM="${_BOOTMGR_PART_NUM}"
-        _EFIBOOTMGR_LOADER_DIR="${_BOOTMGR_LOADER_DIR}"
-        _EFIBOOTMGR_LOADER_FILE="${_BOOTMGR_LOADER_FILE}"
-        do_uefi_efibootmgr
-    fi
-    
-    unset _BOOTMGR_LABEL
-    unset _BOOTMGR_DISC
-    unset _BOOTMGR_PART_NUM
-    unset _BOOTMGR_LOADER_DIR
-    unset _BOOTMGR_LOADER_FILE
-        
-        DIALOG --msgbox $"GRUB(2) UEFI ${UEFI_ARCH} has been successfully installed." 0 0
-        
-        GRUB_PREFIX_DIR="/boot/grub/"
-        GRUB_UEFI="1"
-        dogrub_config
-        GRUB_UEFI=""
-        
-        DIALOG --defaultno --yesno $"Do you want to copy /boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi to /boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi ?\n\nThis might be needed in some systems where efibootmgr may not work due to firmware issues." 0 0 && _UEFISYS_EFI_BOOT_DIR="1"
-        
-        if [[ "${_UEFISYS_EFI_BOOT_DIR}" == "1" ]]; then
-            mkdir -p "${DESTDIR}/boot/efi/EFI/boot"
+        '''
+        if [[ -d "${DESTDIR}/sys/firmware/efi/vars" ]]; then
+            cat << EFIBEOF > "${DESTDIR}/efibootmgr_run.sh"
+#!/usr/bin/env bash
+
+for _bootnum in \$(efibootmgr | grep '^Boot[0-9]' | fgrep -i '${_EFIBOOTMGR_LABEL}' | cut -b5-8) ; do
+    efibootmgr --bootnum "\${_bootnum}" --delete-bootnum
+done
+
+echo
+efibootmgr --verbose --create --gpt --disk "${_EFIBOOTMGR_DISC}" --part "${_EFIBOOTMGR_PART_NUM}" --write-signature --label '${_EFIBOOTMGR_LABEL}' --loader '\\EFI\\${_EFIBOOTMGR_LOADER_DIR}\\${_EFIBOOTMGR_LOADER_FILE}'
+echo
+
+EFIBEOF
             
-            rm -f "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
-            
-            cp -f "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
+            chmod a+x "${DESTDIR}/efibootmgr_run.sh"
+            chroot "${DESTDIR}" "/usr/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
+            mv "${DESTDIR}/efibootmgr_run.sh" "/tmp/efibootmgr_run.sh"
+        
+        else
+            DIALOG --msgbox $"${DESTDIR}/sys/firmware/efi/vars/ directory not found. Check whether you have booted in UEFI boot mode and create a boot entry for ${_EFIBOOTMGR_LABEL} in the UEFI Boot Manager." 0 0
         fi
-    else
-        DIALOG --msgbox $"Error installing GRUB UEFI ${UEFI_ARCH}.\nCheck /tmp/grub_uefi_${UEFI_ARCH}_install.log for more info.\n\nYou probably need to install it manually by chrooting into ${DESTDIR}.\nDon't forget to bind /dev, /sys and /proc into ${DESTDIR} before chrooting." 0 0
-        return 1
-    fi
+        
+        mkdir -p "${DESTDIR}/boot/efi/EFI/boot"
+        
+        rm -f "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
+        
+        cp -f "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
     
         '''        
         
