@@ -129,6 +129,30 @@ class Pac(object):
             size_string = '%.2f MiB' % (KiB_size / 1024)
         return size_string
 
+    '''
+    # OLD Install_packages
+    def install_packages(self, pkg_names):
+        self.to_add = []
+
+        for pkgname in pkg_names:
+            self.to_add.append(pkgname)
+
+        self.to_remove = []
+
+        if self.to_add and self.t_lock is False:    
+            self.t = self.init_transaction()
+            if self.t is not False:
+                for pkgname in self.to_add:
+                    self.add_package(pkgname)
+                try:
+                    self.t.prepare()
+                    self.t.commit()
+                    self.t_lock = False
+                except pyalpm.error:
+                    line = traceback.format_exc()
+                    self.queue_event("error", line)
+                self.t.release()
+    '''
     def install_packages(self, pkg_names, conflicts):
         self.to_add = []
         self.conflicts = conflicts
@@ -140,19 +164,19 @@ class Pac(object):
 
         if self.to_add and self.t == None:
             self.t = self.init_transaction()
-            if self.t != None:
+            if self.t != None and self.t is not False:
                 for pkgname in self.to_add:
                     self.add_package(pkgname)
                 try:
                     self.t.prepare()
                     self.t.commit()
-                    self.release_transaction()
                 except pyalpm.error:
                     line = traceback.format_exc()
                     if "pm_errno 25" in line:
                         pass
                     else:
                         self.queue_event("error", line)
+                self.release_transaction()
     
     def add_package(self, pkgname):
         #print("searching %s" % pkgname)
