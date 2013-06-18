@@ -164,7 +164,7 @@ class Pac(object):
 
         if self.to_add and self.t == None:
             self.t = self.init_transaction()
-            if self.t != None and self.t is not False:
+            if self.t != None:
                 for pkgname in self.to_add:
                     self.add_package(pkgname)
                 try:
@@ -174,9 +174,35 @@ class Pac(object):
                     line = traceback.format_exc()
                     if "pm_errno 25" in line:
                         pass
+                    elif if "pm_errno 27" in line:
+                        print(line)
                     else:
                         self.queue_event("error", line)
                 self.release_transaction()
+
+    '''
+    # old add_package
+    def add_package(self, pkgname):
+        #print("searching %s" % pkgname)
+        try:
+            for repo in self.handle.get_syncdbs():
+                pkg = repo.get_pkg(pkgname)
+                if pkg:
+                    #print("adding %s" % pkgname)
+                    self.t.add_pkg(pkg)
+                    break
+                else:
+                    #this is used for groups.  However, cinnarch repo coming
+                    # first causes errors.  So I just moved them to the back.
+                    l = pyalpm.find_grp_pkgs([repo], pkgname)
+                    if l:
+                        lss = []
+                        for pakg in l:
+                                self.t.add_pkg(pakg)
+        except pyalpm.error:
+            line = traceback.format_exc()
+            self.queue_event("error", line)    
+    '''
     
     def add_package(self, pkgname):
         #print("searching %s" % pkgname)
