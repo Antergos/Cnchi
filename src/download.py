@@ -55,18 +55,28 @@ class DownloadPackages():
         else:
             self.cache_dir = cache_dir
             
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+            
         if databases_dir == None:
             self.databases_dir = "/var/lib/pacman/sync"
         else:
             self.databases_dir = databases_dir
             
+        if not os.path.exists(databases_dir):
+            os.makedirs(databases_dir)
+            
         self.last_event = {}
+        
+        self.aria2c_p = None
 
         self.callback_queue = callback_queue
 
-        self.set_aria2_defaults()
+        self.set_aria2_defaults(databases_dir)
 
         self.run_aria2_as_daemon()
+        
+        #self.s = self.aria2_connect()
 
         aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
 
@@ -77,7 +87,10 @@ class DownloadPackages():
             return
 
         # first, update pacman databases
-        package_names = ["databases"] + package_names
+        # "databases"
+        
+        
+        # now, download packages
         
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
@@ -157,7 +170,7 @@ class DownloadPackages():
                 new_gids_list.append(gid)
         return new_gids_list
 
-    def set_aria2_defaults(self):
+    def set_aria2_defaults(self, dest_dir):
         self.rpc_user = "antergos"
         self.rpc_passwd = "antergos"
         self.rpc_port = "6800"
@@ -190,12 +203,17 @@ class DownloadPackages():
             #"--conditional-get=true",
             #"--metalink-file=/tmp/packages.metalink",
             #"--pause",
-            "--dir=%s" % self.databases_dir]
+            "--dir=%s" % dest_dir]
             
     def run_aria2_as_daemon(self):
+        # check if aria2 is already running, if it is, stop it
+        
+        #self.aria2c_p
+        
+        # start aria2 as a daemon
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
-        aria2c_p = subprocess.Popen(aria2_cmd)
-        aria2c_p.wait()
+        self.aria2c_p = subprocess.Popen(aria2_cmd)
+        self.aria2c_p.wait()
 
     def create_metalink(self, package_name):
         args = str("-c %s" % self.conf_file).split() 

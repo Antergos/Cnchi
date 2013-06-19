@@ -266,13 +266,13 @@ class InstallationProcess(multiprocessing.Process):
     def download_packages(self):
         conf_file = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        #databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
-        databases_dir = "/var/lib/pacman/sync"
+        databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
+        #databases_dir = "/var/lib/pacman/sync"
         download.DownloadPackages(self.packages, conf_file, cache_dir, databases_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
-        self.queue_event('debug', "Creating pacman.conf for %s architecture" % self.arch)
+        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
         
         # Common repos
         
@@ -282,12 +282,16 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("[options]\n")
             tmp_file.write("Architecture = auto\n")
             tmp_file.write("SigLevel = PackageOptional\n")
-            #tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
+            #tmp_file.write("RootDir = %s" % self.dest_dir)
+            tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+            tmp_file.write("LogFile = /tmp/pacman.log\n")
             
-            # 
+            # ¿?
             tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+
+            tmp_file.write("#Repositories\n\n")
 
             tmp_file.write("[core]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
@@ -307,7 +311,7 @@ class InstallationProcess(multiprocessing.Process):
                 tmp_file.write("SigLevel = PackageRequired\n")
                 tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
 
-            tmp_file.write("\n\n#### Antergos repos start here\n\n")
+            tmp_file.write("\n#### Antergos repos start here\n\n")
             tmp_file.write("[antergos]\n") 
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
