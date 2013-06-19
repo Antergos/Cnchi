@@ -241,7 +241,6 @@ class InstallationProcess(multiprocessing.Process):
             if self.settings.get('install_bootloader'):
                 self.queue_event('debug', 'Installing bootloader...')
                 self.install_bootloader()
-                self.queue_event('debug', 'Bootloader installed.')
 
             self.queue_event('debug', 'Configuring system...')
             self.configure_system()
@@ -265,10 +264,11 @@ class InstallationProcess(multiprocessing.Process):
         return True
 
     def download_packages(self):
-        conf_dir = "/tmp/pacman.conf"
+        conf_file = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
-        download.DownloadPackages(self.packages, conf_dir, cache_dir, databases_dir, self.callback_queue)
+        #databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
+        databases_dir = "/var/lib/pacman/sync"
+        download.DownloadPackages(self.packages, conf_file, cache_dir, databases_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
@@ -282,7 +282,10 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("[options]\n")
             tmp_file.write("Architecture = auto\n")
             tmp_file.write("SigLevel = PackageOptional\n")
+            #tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+            
+            # 
             tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 

@@ -174,7 +174,8 @@ class Pac(object):
                     line = traceback.format_exc()
                     if "pm_errno 25" in line:
                         pass
-                    elif if "pm_errno 27" in line:
+                    elif "pm_errno 27" in line:
+                        # transaction is not ready
                         print(line)
                     else:
                         self.queue_event("error", line)
@@ -206,8 +207,7 @@ class Pac(object):
     
     def add_package(self, pkgname):
         #print("searching %s" % pkgname)
-        if self.t == None:
-            return
+        found = False
         try:
             for repo in self.handle.get_syncdbs():
                 if pkgname not in self.conflicts:
@@ -217,17 +217,20 @@ class Pac(object):
                         if pkg not in self.listofpackages:
                             self.listofpackages.append(pkg)
                             self.t.add_pkg(pkg)
+                        found = True
                         break
                     else:
                         # Couldn't find package in repo, 
                         # maybe it's a group of packages.
                         group_list = self.select_from_groups([repo], pkgname)
                         if group_list:
-                            for pkg_group in group_list:
-                                if pkg_group not in self.listofpackages and \
-                                    pkg_group not in self.conflicts:
-                                    self.listofpackages.append(pkg_group)
-                                    self.t.add_pkg(pkg_group)
+                            # Yes, it was a group of packages
+                            for pkg_in_group in group_list:
+                                if pkg_in_group not in self.listofpackages and \
+                                   pkg_in_group not in self.conflicts:
+                                    self.listofpackages.append(pkg_in_group)
+                                    self.t.add_pkg(pkg_in_group)
+                            found = True
                             break
         except pyalpm.error:
             line = traceback.format_exc()
@@ -235,6 +238,9 @@ class Pac(object):
                 pass
             else:
                 self.queue_event("error", line)
+                
+        if not found:
+            print(_("Package %s not found in any repo!") % pkgname)
 
     def select_from_groups(self, repos, pkg_group):
         pkgs_in_group = []
@@ -247,6 +253,7 @@ class Pac(object):
                 for pkg in pkgs:
                     if pkg.name not in self.conflicts:
                         pkgs_in_group.append(repo.get_pkg(pkg.name))
+                break
 
         return pkgs_in_group
 
