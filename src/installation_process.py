@@ -267,7 +267,6 @@ class InstallationProcess(multiprocessing.Process):
         conf_file = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
         databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
-        #databases_dir = "/var/lib/pacman/sync"
         download.DownloadPackages(self.packages, conf_file, cache_dir, databases_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
@@ -285,7 +284,14 @@ class InstallationProcess(multiprocessing.Process):
             #tmp_file.write("RootDir = %s" % self.dest_dir)
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-            tmp_file.write("LogFile = /tmp/pacman.log\n")
+            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
+            
+            # This doesn't seem to work ¿?
+            '''
+            if self.settings.get("use_aria2"):
+                # Tell pacman to use aria2 to download packages
+                tmp_file.write("XferCommand = /usr/bin/aria2c --allow-overwrite=true -c --file-allocation=none --log-level=error -m2 -x2 --max-file-not-found=5 -k5M --no-conf -Rtrue --summary-interval=60 -t5 -d / -o %o %u\n\n")
+            '''
             
             # ¿?
             tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
@@ -348,10 +354,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.prepare_pacman_keychain()
         
-        # If we use aria2, it will update the databases
-        # if not, we have to do it here
-        if not self.settings.get("use_aria2"):
-            self.pac.do_refresh()
+        self.pac.do_refresh()
 
     # Prepare pacman and get package list from Internet
     def select_packages(self):

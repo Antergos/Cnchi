@@ -84,7 +84,7 @@ class DownloadPackages():
         # first, update pacman databases
         # "databases"
         
-        self.aria2_download(["databases"])
+        #self.download_databases()
         
         # now, download packages
         
@@ -97,7 +97,7 @@ class DownloadPackages():
                 logging.error(_("Error creating metalink for package %s") % package_name)
                 continue
             
-            gids = self.add_metalink(self.s, metalink)
+            gids = self.add_metalink(metalink)
             
             if len(gids) <= 0:
                 logging.error(_("Error adding metalink for package %s") % package_name)
@@ -208,7 +208,7 @@ class DownloadPackages():
             #"--summary-interval=0",
             "--no-conf",
             "--quiet",
-            #"--remove-control-file",
+            "--remove-control-file",
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
             #"--conditional-get=true",
@@ -216,14 +216,7 @@ class DownloadPackages():
             #"--pause",
             "--dir=%s" % dest_dir]
 
-    def kill_aria2(self):
-        if self.aria2_process:
-            self.aria2_process.terminate()
-
     def run_aria2_as_daemon(self):
-        # check if aria2 is already running, if it is, stop it
-        self.kill_aria2()
-        
         # start aria2 as a daemon
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
         self.aria2_process = subprocess.Popen(aria2_cmd)
@@ -265,12 +258,12 @@ class DownloadPackages():
         )        
         return metalink
 
-    def add_metalink(self, s, metalink):
+    def add_metalink(self, metalink):
         gids = []
         if metalink != None:
             try:
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
-                gids = s.aria2.addMetalink(binary_metalink)
+                gids = self.s.aria2.addMetalink(binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                 logging.exception("Can't communicate with Aria2. Won't be able to speed up the download")
 
