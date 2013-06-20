@@ -55,20 +55,20 @@ class DownloadPackages():
         else:
             self.cache_dir = cache_dir
             
-        if not os.path.exists(cache_dir):
-            os.makedirs(cache_dir)
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
             
         if databases_dir == None:
             self.databases_dir = "/var/lib/pacman/sync"
         else:
             self.databases_dir = databases_dir
             
-        if not os.path.exists(databases_dir):
-            os.makedirs(databases_dir)
+        if not os.path.exists(self.databases_dir):
+            os.makedirs(self.databases_dir)
             
         self.last_event = {}
         
-        self.aria2c_p = None
+        self.aria2_process = None
 
         self.callback_queue = callback_queue
 
@@ -76,29 +76,28 @@ class DownloadPackages():
 
         self.run_aria2_as_daemon()
         
-        #self.s = self.aria2_connect()
-
-        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
-
-        try:
-            s = xmlrpc.client.ServerProxy(aria2_url)
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-            logging.exception(_("Can't connect to Aria2. Won't be able to speed up the download."))
+        self.s = self.aria2_connect()
+        
+        if self.s == None:
             return
 
         # first, update pacman databases
         # "databases"
         
+        self.aria2_download(["databases"])
         
         # now, download packages
         
+        self.aria2_download(package_names)
+        
+    def aria2_download(self, package_names):
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
                 logging.error(_("Error creating metalink for package %s") % package_name)
                 continue
             
-            gids = self.add_metalink(s, metalink)
+            gids = self.add_metalink(self.s, metalink)
             
             if len(gids) <= 0:
                 logging.error(_("Error adding metalink for package %s") % package_name)
@@ -115,7 +114,7 @@ class DownloadPackages():
                     old_percent = -1
                     
                     try:
-                        r = s.aria2.tellStatus(gid)
+                        r = self.s.aria2.tellStatus(gid)
                     except xmlrpc.client.Fault as e:
                         logging.exception(e)
                         gids_to_remove.append(gid)
@@ -123,7 +122,7 @@ class DownloadPackages():
                     
                     # remove completed gid's
                     if r['status'] == "complete":
-                        s.aria2.removeDownloadResult(gid)
+                        self.s.aria2.removeDownloadResult(gid)
                         gids_to_remove.append(gid)
                         continue
 
@@ -154,7 +153,7 @@ class DownloadPackages():
                     self.queue_event('action', action)
 
                     while r['status'] == "active" :
-                        r = s.aria2.tellStatus(gid)
+                        r = self.s.aria2.tellStatus(gid)
                         completed = int(r['completedLength'])
                         percent = float(completed / total)
                         if percent != old_percent:
@@ -162,6 +161,18 @@ class DownloadPackages():
                             old_percent = percent
                             
                 gids = self.remove_old_gids(gids, gids_to_remove)
+
+    def aria2_connect(self):
+        s = None
+        
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
+        
+        try:
+            s = xmlrpc.client.ServerProxy(aria2_url)
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+            logging.exception(_("Can't connect to Aria2. Won't be able to speed up the download."))
+        
+        return s
 
     def remove_old_gids(self, gids, gids_to_remove):
         new_gids_list = []
@@ -204,16 +215,19 @@ class DownloadPackages():
             #"--metalink-file=/tmp/packages.metalink",
             #"--pause",
             "--dir=%s" % dest_dir]
-            
+
+    def kill_aria2(self):
+        if self.aria2_process:
+            self.aria2_process.terminate()
+
     def run_aria2_as_daemon(self):
         # check if aria2 is already running, if it is, stop it
-        
-        #self.aria2c_p
+        self.kill_aria2()
         
         # start aria2 as a daemon
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
-        self.aria2c_p = subprocess.Popen(aria2_cmd)
-        self.aria2c_p.wait()
+        self.aria2_process = subprocess.Popen(aria2_cmd)
+        self.aria2_process.wait()
 
     def create_metalink(self, package_name):
         args = str("-c %s" % self.conf_file).split() 
