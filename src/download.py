@@ -172,34 +172,39 @@ class DownloadPackages():
         self.rpc_port = "6800"
         
         self.aria2_args = [
-            "--log=/tmp/download-aria2.log",
+            "--log=/tmp/cnchi-downloads.log",
             #"--max-concurrent-downloads=1",
             #"--split=5",
-            #"--min-split-size=5M",
-            #"--max-connection-per-server=2",
+            "--min-split-size=5M",
+            "--max-connection-per-server=2",
             #"--check-integrity",
             #"--continue=false",
+            "--max-tries=2",
+            "--timeout=5",
             "--enable-rpc",
             "--rpc-user=%s" % self.rpc_user,
             "--rpc-passwd=%s" % self.rpc_passwd,
             "--rpc-listen-port=%s" % self.rpc_port,
             "--rpc-save-upload-metadata=false",
             "--rpc-max-request-size=4M",
-            "--allow-overwrite=true",
+            "--allow-overwrite=false",
             #"--always-resume=false",
             #"--auto-save-interval=0",
-            "--log-level=notice",
+            "--log-level=error",
             "--show-console-readout=false",
             #"--summary-interval=0",
             "--no-conf",
             "--quiet",
-            "--remove-control-file",
+            #"--remove-control-file",
             "--stop-with-process=%d" % os.getpid(),
             "--auto-file-renaming=false",
             #"--conditional-get=true",
             #"--metalink-file=/tmp/packages.metalink",
             #"--pause",
-            "--dir=%s" % dest_dir]
+            "--file-allocation=none",
+            "--max-file-not-found=5",
+            "--remote-time=true",
+            "--dir=%s" % dest_dir ]
 
     def run_aria2_as_daemon(self):
         # start aria2 as a daemon

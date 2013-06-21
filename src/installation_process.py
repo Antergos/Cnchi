@@ -296,7 +296,7 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 
-            tmp_file.write("#Repositories\n\n")
+            tmp_file.write("# Repositories\n\n")
 
             tmp_file.write("[core]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
@@ -314,13 +314,11 @@ class InstallationProcess(multiprocessing.Process):
             if self.arch == 'x86_64':   
                 tmp_file.write("[multilib]\n")
                 tmp_file.write("SigLevel = PackageRequired\n")
-                tmp_file.write("Include = /etc/pacman.d/mirrorlist\n")
+                tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-            tmp_file.write("\n#### Antergos repos start here\n\n")
             tmp_file.write("[antergos]\n") 
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
-            tmp_file.write("#### Antergos repos end here\n\n")
         
         ## Init pyalpm
 
