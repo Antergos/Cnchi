@@ -44,7 +44,7 @@ except:
 _test = False
 
 class DownloadPackages():
-    def __init__(self, package_names, conf_file=None, cache_dir=None, databases_dir=None, callback_queue=None):
+    def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
         else:
@@ -58,21 +58,13 @@ class DownloadPackages():
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
             
-        if databases_dir == None:
-            self.databases_dir = "/var/lib/pacman/sync"
-        else:
-            self.databases_dir = databases_dir
-            
-        if not os.path.exists(self.databases_dir):
-            os.makedirs(self.databases_dir)
-            
         self.last_event = {}
         
         self.aria2_process = None
 
         self.callback_queue = callback_queue
 
-        self.set_aria2_defaults(databases_dir)
+        self.set_aria2_defaults(self.cache_dir)
 
         self.run_aria2_as_daemon()
         
@@ -81,13 +73,6 @@ class DownloadPackages():
         if self.s == None:
             return
 
-        # first, update pacman databases
-        # "databases"
-        
-        #self.download_databases()
-        
-        # now, download packages
-        
         self.aria2_download(package_names)
         
     def aria2_download(self, package_names):
@@ -305,6 +290,7 @@ if __name__ == '__main__':
      "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
     '''
     
+    '''
     DownloadPackages(\
     ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
      "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
@@ -325,3 +311,7 @@ if __name__ == '__main__':
      "gstreamer0.10-bad-plugins", "gstreamer0.10-base-plugins",
      "gstreamer0.10-ffmpeg", "gstreamer0.10-good-plugins",
      "gstreamer0.10-ugly-plugins", "gst-libav"])
+     '''
+     
+    DownloadPackages(["base"])
+
