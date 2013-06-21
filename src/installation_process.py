@@ -266,8 +266,7 @@ class InstallationProcess(multiprocessing.Process):
     def download_packages(self):
         conf_file = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        databases_dir = "%s/var/lib/pacman/sync" % self.dest_dir
-        download.DownloadPackages(self.packages, conf_file, cache_dir, databases_dir, self.callback_queue)
+        download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
