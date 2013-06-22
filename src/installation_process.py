@@ -937,7 +937,7 @@ EFIBEOF
         hostname = self.settings.get('hostname')
         
         sudoers_path = os.path.join(self.dest_dir, \
-                                    "etc/sudoers.d/installer")
+                                    "etc/sudoers.d/10-installer")
         with open(sudoers_path, "wt") as sudoers:
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         
