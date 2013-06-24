@@ -191,7 +191,7 @@ class DownloadPackages():
             #"--always-resume=false",
             #"--auto-save-interval=0",
             "--auto-file-renaming=false",
-            "--log-level=notice",
+            "--log-level=error",
             "--show-console-readout=false",
             #"--summary-interval=0",
             "--no-conf",
