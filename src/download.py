@@ -59,7 +59,7 @@ class DownloadPackages():
             os.makedirs(self.cache_dir)
             
         self.last_event = {}
-        
+               
         self.aria2_process = None
 
         self.callback_queue = callback_queue
@@ -186,26 +186,26 @@ class DownloadPackages():
             "--rpc-passwd=%s" % self.rpc_passwd,
             "--rpc-listen-port=%s" % self.rpc_port,
             "--rpc-save-upload-metadata=false",
-            "--rpc-max-request-size=4M",
+            "--rpc-max-request-size=16M",
             "--allow-overwrite=false",
             #"--always-resume=false",
             #"--auto-save-interval=0",
-            "--log-level=error",
+            "--auto-file-renaming=false",
+            "--log-level=notice",
             "--show-console-readout=false",
             #"--summary-interval=0",
             "--no-conf",
             "--quiet",
             #"--remove-control-file",
             "--stop-with-process=%d" % os.getpid(),
-            "--auto-file-renaming=false",
-            #"--conditional-get=true",
             #"--metalink-file=/tmp/packages.metalink",
             #"--pause",
             "--file-allocation=none",
             "--max-file-not-found=5",
             "--remote-time=true",
+            "--conditional-get=true",
             "--dir=%s" % dest_dir ]
-
+            
     def run_aria2_as_daemon(self):
         # start aria2 as a daemon
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
