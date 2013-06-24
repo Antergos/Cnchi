@@ -892,7 +892,8 @@ EFIBEOF
 
         # Generate the fstab file        
         self.auto_fstab()
-        #Copy configured networks in Live medium to target system
+        
+        # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
 
@@ -966,7 +967,7 @@ EFIBEOF
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
-        self.queue_event('info', _("Generating locales"))
+        self.queue_event('info', _("Generating locales..."))
         
         self.uncomment_locale_gen(locale)
         
@@ -981,83 +982,86 @@ EFIBEOF
         with open(vconsole_conf_path, "wt") as vconsole_conf:
             vconsole_conf.write('KEYMAP=%s \n' % keyboard_layout)
 
-        # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
-        xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
-        with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
-            xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
-            xorg_conf_xkb.write('# manually too freely.\n')
-            xorg_conf_xkb.write('Section "InputClass"\n')
-            xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
-            xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-            xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
-            if keyboard_variant != '':
-                xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
-            xorg_conf_xkb.write('EndSection\n')
-
+        self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
-        # Set autologin if selected
-        if self.settings.get('require_password') is False:
-            # Systems with GDM as Desktop Manager
-            if self.desktop_manager == 'gdm':
-                gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
-                with open(gdm_conf_path, "wt") as gdm_conf:
-                    gdm_conf.write('# Enable automatic login for user\n')
-                    gdm_conf.write('[daemon]\n')
-                    gdm_conf.write('AutomaticLogin=%s\n' % username)
-                    gdm_conf.write('AutomaticLoginEnable=True\n')
-
-            # Systems with KDM as Desktop Manager
-            elif self.desktop_manager == 'kdm':
-                kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
-                text = []
-                with open(kdm_conf_path, "rt") as kdm_conf:
-                    text = kdm_conf.readlines()
+        desktop = self.settings.get('desktop')
         
-                with open(kdm_conf_path, "wt") as kdm_conf:
-                    for line in text:
-                        if '#AutoLoginEnable=true' in line:
-                            line = '#AutoLoginEnable=true \n'
-                            line = line[1:]
-                        if 'AutoLoginUser=' in line:
-                            line = 'AutoLoginUser=%s \n' % username
-                        kdm_conf.write(line)
+        if desktop != "nox":
+            # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+            xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
+            with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
+                xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+                xorg_conf_xkb.write('# manually too freely.\n')
+                xorg_conf_xkb.write('Section "InputClass"\n')
+                xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+                xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+                xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
+                if keyboard_variant != '':
+                    xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
+                xorg_conf_xkb.write('EndSection\n')
 
-            # Systems with LXDM as Desktop Manager
-            elif self.desktop_manager == 'lxdm':
-                lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
-                text = []
-                with open(lxdm_conf_path, "rt") as lxdm_conf:
-                    text = lxdm_conf.readlines()
-        
-                with open(lxdm_conf_path, "wt") as lxdm_conf:
-                    for line in text:
-                        if '# autologin=dgod' in line and line[0] == "#":
-                            # uncomment line
-                            line = '# autologin=%s' % username
-                            line = line[1:]
-                        lxdm_conf.write(line)
+            # Set autologin if selected
+            if self.settings.get('require_password') is False:
+                # Systems with GDM as Desktop Manager
+                if self.desktop_manager == 'gdm':
+                    gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+                    with open(gdm_conf_path, "wt") as gdm_conf:
+                        gdm_conf.write('# Enable automatic login for user\n')
+                        gdm_conf.write('[daemon]\n')
+                        gdm_conf.write('AutomaticLogin=%s\n' % username)
+                        gdm_conf.write('AutomaticLoginEnable=True\n')
 
-            # Systems with LightDM as the Desktop Manager
-            elif self.desktop_manager == 'lightdm':
-                lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
-                # Ideally, use configparser for the ini conf file, but just do
-                # a simple text replacement for now
-                text = []
-                with open(lightdm_conf_path, "rt") as lightdm_conf:
-                    text = lightdm_conf.readlines()
+                # Systems with KDM as Desktop Manager
+                elif self.desktop_manager == 'kdm':
+                    kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+                    text = []
+                    with open(kdm_conf_path, "rt") as kdm_conf:
+                        text = kdm_conf.readlines()
+            
+                    with open(kdm_conf_path, "wt") as kdm_conf:
+                        for line in text:
+                            if '#AutoLoginEnable=true' in line:
+                                line = '#AutoLoginEnable=true \n'
+                                line = line[1:]
+                            if 'AutoLoginUser=' in line:
+                                line = 'AutoLoginUser=%s \n' % username
+                            kdm_conf.write(line)
 
-                with open(lightdm_conf_path, "wt") as lightdm_conf:
-                    for line in text:
-                        if '#autologin-user=' in line:
-                            line = 'autologin-user=%s\n' % username
-                        lightdm_conf.write(line)
-                
+                # Systems with LXDM as Desktop Manager
+                elif self.desktop_manager == 'lxdm':
+                    lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+                    text = []
+                    with open(lxdm_conf_path, "rt") as lxdm_conf:
+                        text = lxdm_conf.readlines()
+            
+                    with open(lxdm_conf_path, "wt") as lxdm_conf:
+                        for line in text:
+                            if '# autologin=dgod' in line and line[0] == "#":
+                                # uncomment line
+                                line = '# autologin=%s' % username
+                                line = line[1:]
+                            lxdm_conf.write(line)
+
+                # Systems with LightDM as the Desktop Manager
+                elif self.desktop_manager == 'lightdm':
+                    lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+                    # Ideally, use configparser for the ini conf file, but just do
+                    # a simple text replacement for now
+                    text = []
+                    with open(lightdm_conf_path, "rt") as lightdm_conf:
+                        text = lightdm_conf.readlines()
+
+                    with open(lightdm_conf_path, "wt") as lightdm_conf:
+                        for line in text:
+                            if '#autologin-user=' in line:
+                                line = 'autologin-user=%s\n' % username
+                            lightdm_conf.write(line)
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.    
-        self.queue_event('info', _("Running mkinitcpio"))
+        self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
         
         # Call post-install script to execute gsettings commands
@@ -1070,7 +1074,7 @@ EFIBEOF
         # so we have to modify it here (after running the script).
         # Set autologin if selected
         if self.settings.get('require_password') is False and \
-           self.desktop_manager == 'openbox':
+           self.desktop_manager == 'slim':
             conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
             text = []
             with open(conf_path, "rt") as conf:

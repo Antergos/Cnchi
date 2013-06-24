@@ -161,6 +161,13 @@ class UserInfo(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
+        
+        desktop = self.settings.get('desktop')
+        if desktop != "nox" and self.login['auto']:
+            self.login['auto'].set_sensitive(True)
+        else:
+            self.login['auto'].set_sensitive(False)
+        
         self.forward_button.set_sensitive(False)
 
     def get_prev_page(self):
