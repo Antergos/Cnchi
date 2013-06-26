@@ -137,7 +137,7 @@ class DownloadPackages():
                     action = _("Downloading package '%s'...") % basename
                     self.queue_event('action', action)
 
-                    while r['status'] == "active" :
+                    while r['status'] == "active":
                         r = self.s.aria2.tellStatus(gid)
                         completed = int(r['completedLength'])
                         percent = float(completed / total)
@@ -146,6 +146,9 @@ class DownloadPackages():
                             old_percent = percent
                             
                 gids = self.remove_old_gids(gids, gids_to_remove)
+            
+            # This method purges completed/error/removed downloads to free memory
+            self.s.aria2.purgeDownloadResult()
 
     def aria2_connect(self):
         s = None
