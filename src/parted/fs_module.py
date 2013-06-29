@@ -110,7 +110,7 @@ def create_fs(part, fstype, label='', other_opts=''):
              'jfs':'mkfs.jfs -q -L "%(label)s" %(other_opts)s %(part)s',
              'reiserfs':'mkfs.reiserfs -q -l "%(label)s" %(other_opts)s %(part)s',
              'xfs':'mkfs.xfs -f -L "%(label)s" %(other_opts)s %(part)s',
-             'btrfs':'mkfs.btrfs -L "%(label)s" %(other_opts)s %(part)s',
+             'btrfs':'mkfs.btrfs -f -L "%(label)s" %(other_opts)s %(part)s',
              'swap':'mkswap %(part)s'}
     try:
         y = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
