@@ -437,6 +437,8 @@ class InstallationAdvanced(Gtk.Box):
                     if uid in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
+                        if mount_point == "/":
+                            fmt_enable = false
                     else:
                         fmt_enable = True
                         if _("free space") not in path:
@@ -583,6 +585,8 @@ class InstallationAdvanced(Gtk.Box):
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
                 show.warning(_('Cannot use same mount twice...'))
+            elif mymount == "/" and not format_check.get_active():
+                show.warning(_('Root partition must be formatted...'))
             else:
                 if mount_point:
                     self.diskdic['mounts'].remove(mount_point)               
