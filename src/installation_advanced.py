@@ -1321,9 +1321,9 @@ class InstallationAdvanced(Gtk.Box):
                          #all of fs module takes paths, not partition objs
                             (error, msg) = fs.create_fs(partition_path, fisy, lbl)
                             if error == 0:
-                                log.info(msg)
+                                logging.info(msg)
                             else:
-                                log.error(msg)
+                                logging.error(msg)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
                                 fs.label_fs(fisy, partition_path, lbl)
