@@ -438,7 +438,7 @@ class InstallationAdvanced(Gtk.Box):
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
                         if mount_point == "/":
-                            fmt_enable = false
+                            fmt_enable = False
                     else:
                         fmt_enable = True
                         if _("free space") not in path:
