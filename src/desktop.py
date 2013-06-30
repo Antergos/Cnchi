@@ -83,21 +83,21 @@ class DesktopAsk(Gtk.Box):
         if desktop == 'gnome':
             txt = _("Gnome 3 is an easy and elegant way to use your " \
             "computer. It is designed to put you in control " \
-            "and bring freedom to everybody. GNOME 3 is developed " \
+            "and bring\nfreedom to everybody. GNOME 3 is developed " \
             "by the GNOME community.")
             txt = "<span weight='bold'>GNOME</span>\n" + txt
 
         elif desktop == 'cinnamon':
-            txt = _("Cinnamon it's a fork of GNOME Shell, initially " \
+            txt = _("Cinnamon it's a fork of GNOME Shell, " \
             "developed by (and for) Linux Mint. It attempts to " \
-            "provide a more traditional user environment based " \
+            "provide a more traditional\nuser environment based " \
             "on the desktop metaphor, like GNOME 2")
             txt = "<span weight='bold'>CINNAMON</span>\n" + txt
 
         elif desktop == 'xfce':
             txt = _("Xfce is a lightweight desktop environment " \
             "for UNIX-like operating systems. It aims to " \
-            "be fast and low on system resources, while " \
+            "be fast and low on\nsystem resources, while " \
             "still being visually appealing and user friendly.")
             txt = "<span weight='bold'>XFCE</span>\n" + txt
 
@@ -110,7 +110,7 @@ class DesktopAsk(Gtk.Box):
 
         elif desktop == 'openbox':
             txt = _("Openbox is a highly configurable, next generation " \
-            "window manager with extensive standards support." \
+            "window manager with extensive standards support.\n" \
             "The *box visual style is well known for its " \
             "minimalistic appearance.")
             txt = "<span weight='bold'>OPENBOX</span>\n" + txt
@@ -130,7 +130,7 @@ class DesktopAsk(Gtk.Box):
 
         elif desktop == 'razor':
             txt = _("Razor-qt is an advanced, easy-to-use, and fast desktop " \
-            "environment based on Qt technologies. It has been " \
+            "environment based on Qt technologies.\nIt has been " \
             "tailored for users who value simplicity, speed, and " \
             "an intuitive interface.")
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
@@ -138,7 +138,7 @@ class DesktopAsk(Gtk.Box):
         if desktop == 'nox':
             txt = _("This will install Antergos as command-line system, " \
             "without any desktop at all. After the installation you can " \
-            "install the desktop you may see fit.")
+            "install\nthe desktop you may see fit.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
             
         label.set_markup(txt)
@@ -155,7 +155,8 @@ class DesktopAsk(Gtk.Box):
 
     def set_desktop_list(self):
         render = Gtk.CellRendererText()
-        col_desktops = Gtk.TreeViewColumn(_("Select your desktop"), render, text=0)
+        #col_desktops = Gtk.TreeViewColumn(_("Select your desktop"), render, text=0)
+        col_desktops = Gtk.TreeViewColumn("", render, text=0)
         liststore_desktop = Gtk.ListStore(str)
         self.treeview_desktop.append_column(col_desktops)
         self.treeview_desktop.set_model(liststore_desktop)
