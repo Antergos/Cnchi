@@ -77,10 +77,13 @@ class InstallationAutomatic(Gtk.Box):
         self.device_label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic')
-        txt = _("This installation mode will overwrite everything in your drive. "
-         "If you are sure that this is what you want, please choose the drive where "
-         "you want to install Antergos and click the button below to start the process.")
+        txt = _("WARNING! This installation mode will overwrite everything in your drive!")
         txt = "<b>%s</b>" % txt
+        label.set_markup(txt)
+
+        label = self.ui.get_object('text_automatic2')
+        txt = _("Please choose the drive where you want to install Antergos\nand click the button below to start the process.")
+        txt = "%s" % txt
         label.set_markup(txt)
 
         txt = _("Install now!")

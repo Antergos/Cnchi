@@ -179,7 +179,7 @@ class Slides(Gtk.Box):
     @misc.raise_privileges
     def reboot(self):
         os.system("sync")
-        subprocess.call(["/usr/bin/reboot", "--reboot", "--force", "--no-wall"])
+        subprocess.call(["/usr/bin/systemctl", "reboot", "--force", "--no-wall"])
 
 class TestWindow(Gtk.Window):
     def __init__(self, box):
