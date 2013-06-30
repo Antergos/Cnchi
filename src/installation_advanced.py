@@ -45,6 +45,7 @@ sys.path.insert(0, parted_dir)
 
 import partition_module as pm
 import fs_module as fs
+import lvm
 import used_space
 import installation_process
 import show_message as show
@@ -65,7 +66,7 @@ class InstallationAdvanced(Gtk.Box):
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
-
+        self.lv_partitions = []
         self.disks_changed = []
         self.my_first_time = True
         self.orig_label_dic = {}        
@@ -157,13 +158,14 @@ class InstallationAdvanced(Gtk.Box):
             if "free" in path:
                 return None
             for zz in self.all_partitions:
-                for yy in zz:
-                    if zz[yy].path == path:
-                        p = zz[yy]
+                if "/dev/mapper" not in zz:
+                    for yy in zz:
+                        if zz[yy].path == path:
+                            p = zz[yy]
         try:
             dev = p.disk.device.path
         except:
-            dev = 'thinking'
+            dev = path
         if p:
             ends = p.geometry.end
             starts = p.geometry.start
@@ -196,10 +198,10 @@ class InstallationAdvanced(Gtk.Box):
                 button_new.set_sensitive(True)
             else:
                 disks = pm.get_devices()
-                if not path in disks:
+                if (path not in disks and 'dev/mapper' not in path) or ('dev/mapper' in path and '-' in path):
                     ## A partition is selected
                     for i in self.all_partitions:
-                        if path in i:
+                        if path in i and '/mapper' not in path and '/' in path:
                             diskobj = i[path].disk.device.path
                     if diskobj and model[tree_iter][1] == 'extended' and \
                      self.diskdic[diskobj]['has_logical']:
@@ -341,8 +343,58 @@ class InstallationAdvanced(Gtk.Box):
         ## Be sure to call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
-
+        self.lv_partitions = []
         self.diskdic['mounts'] = []
+        vgs = lvm.get_volume_groups()
+        if vgs:
+            for vg in vgs:
+                is_ssd = False
+                lvs = lvm.get_logical_volumes(vg)
+                if not lvs:
+                    continue
+                row = [vg, "", "", "",  False, False, "", "", "", "", 0, False, False, False, False]
+                lvparent = self.partition_list_store.append(None, row)
+                for lv in lvs:
+                    fmt_enable = True
+                    fmt_active = False
+                    label = ""
+                    fs_type = ""
+                    mount_point = ""
+                    used = ""
+                    flags = ""
+                    formatable = True
+                    partition_path = "/dev/mapper/%s-%s" % (vg, lv)
+                    self.all_partitions.append(partition_path)
+                    self.lv_partitions.append(partition_path)
+                    uid = self.gen_partition_uid(path=partition_path)
+                    if fs.get_type(partition_path):
+                        fs_type = fs.get_type(partition_path)
+                    else:
+                        #kludge, btrfs not being detected...
+                        if used_space.is_btrfs(p.path):
+                            fs_type = 'btrfs'
+
+                    if uid in self.stage_opts:
+                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                    
+                    info = fs.get_info(partition_path)
+                    if 'LABEL' in info:
+                       label = info['LABEL']
+
+                    if mount_point:
+                        self.diskdic['mounts'].append(mount_point)
+
+                    ## do not show swap version, only the 'swap' word
+                    if 'swap' in fs_type:
+                        fs_type = 'swap'
+
+                    row = [partition_path, fs_type, mount_point, label, fmt_active, \
+                           formatable, '', '', partition_path, \
+                           "", 0, fmt_enable, False, False, False]
+                    self.partition_list_store.append(lvparent, row)
+                    if self.my_first_time:
+                        self.orig_part_dic[partition_path] = self.gen_partition_uid(path=partition_path)
+                        self.orig_label_dic[partition_path] = label
 
         ## Here we fill our model
         for disk_path in sorted(self.disks):
@@ -373,8 +425,9 @@ class InstallationAdvanced(Gtk.Box):
                 
                 row = [dev.path, "", "", "", False, False, size_txt, "", \
                     "", "", 0, False, is_ssd, True, True]
+                if '/dev/mapper/' in disk_path:
+                    continue
                 disk_parent = self.partition_list_store.append(None, row)
-                
                 parent = disk_parent
 
                 # Create a list of partitions for this device (/dev/sda for example)
@@ -396,10 +449,13 @@ class InstallationAdvanced(Gtk.Box):
                     formatable = True
 
                     path = p.path
-                    
+                    if '/dev/mapper' in path:
+                        continue
                     ## Get file system
                     if p.fileSystem and p.fileSystem.type:
                         fs_type = p.fileSystem.type
+                    elif fs.get_type(path):
+                        fs_type = fs.get_type(path)
                     else:
                         #kludge, btrfs not being detected...
                         if 'free' not in partition_path:
@@ -438,7 +494,7 @@ class InstallationAdvanced(Gtk.Box):
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
                         if mount_point == "/":
-                            fmt_enable = false
+                            fmt_enable = False
                     else:
                         fmt_enable = True
                         if _("free space") not in path:
@@ -541,7 +597,8 @@ class InstallationAdvanced(Gtk.Box):
         fmt = row[4]
         partition_path = row[8]
         fmtable = row[11]
-        
+        if "lvm2" in fs.lower():
+            return 
         # set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
         use_combo_model = use_combo.get_model()
@@ -574,8 +631,10 @@ class InstallationAdvanced(Gtk.Box):
 
         # Get disk_path and disk
         disk_path = self.get_disk_path_from_selection(model, tree_iter)    
-        disk = self.disks[disk_path]
-
+        try:
+            disk = self.disks[disk_path]
+        except:
+            disk = None
         # show edit partition dialog
         response = self.edit_partition_dialog.run()
         
@@ -1183,6 +1242,37 @@ class InstallationAdvanced(Gtk.Box):
     def get_changes(self):
         changelist = []
         #store values as (path, create?, label?, format?)
+        for e in self.lv_partitions:
+            if self.gen_partition_uid(path=e) in self.stage_opts:
+                (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=e)]
+                if fmt:
+                    fmt = 'Yes'
+                else:
+                    fmt = 'No'
+                # Advanced method formats root by default
+                # THIS IS BAD BEHAVIOUR
+                # https://github.com/Antergos/Cnchi/issues/8
+                if mnt == "/":
+                    fmt = 'Yes'
+                if is_new:
+                    relabel = 'Yes'
+                    fmt = 'Yes'
+                    createme = 'Yes'
+                else:
+                    if e in self.orig_label_dic:
+                        if self.orig_label_dic[e] == lbl:
+                            relabel = 'No'
+                        else:
+                            relabel = 'Yes'
+                    createme = 'No'
+            else:
+                relabel = 'No'
+                fmt = 'No'
+                createme = 'No'
+                mnt = ''
+        if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
+            changelist.append((e, createme, relabel, fmt, mnt))
+
         if self.disks:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
@@ -1297,7 +1387,7 @@ class InstallationAdvanced(Gtk.Box):
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
             return False
-
+        xxxx = 0
         ## Create staged partitions 
         if self.disks != None:
             for disk_path in self.disks:
@@ -1308,18 +1398,36 @@ class InstallationAdvanced(Gtk.Box):
                     logging.info(_("Saving changes done in %s") % disk_path)
                 ## Now that partitions are created, set fs and label
                 partitions = pm.get_partitions(disk)
-                for partition_path in partitions:
+                if xxxx == 0:
+                    apartitions = list(partitions) + self.lv_partitions
+                    xxxx+=1
+                else:
+                    apartitions = partitions
+                noboot = True
+                for allopts in self.stage_opts:
+                    if self.stage_opts[allopts][2] == '/boot':
+                        noboot = False
+                for partition_path in apartitions:
                     #log.debug(partition_path)
                     ## Get label, mount point and filesystem of staged partitions
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
                         logging.info(_("Creating fs of type %s in %s with label %s") % (fisy, partition_path, lbl))
-                        if mnt == '/':
+                        if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], 
                                                1):
                                 x = pm.set_flag(1, partitions[partition_path])
                                 pm.finalize_changes(partitions[partition_path].disk)
+                        if "/dev/mapper" in partition_path:
+                            pvs = lvm.get_lvm_partitions()
+                            vgname = partition_path.split("/")[-1]
+                            vgname = vgname.split('-')[0]
+                            if (mnt == '/' and noboot) or mnt == '/boot':
+                                for ee in pvs[vgname]:
+                                    if not pm.get_flag(partitions[ee], 1):
+                                        x = pm.set_flag(1, partitions[ee])
+                                pm.finalize_changes(partitions[ee].disk)
                          #only format if they want formatting
                         if fmt:  
                          #all of fs module takes paths, not partition objs

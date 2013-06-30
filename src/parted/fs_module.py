@@ -52,6 +52,14 @@ def get_info(part):
     return(partdic)
 
 @misc.raise_privileges
+def get_type(part):
+    try:
+        ret = subprocess.check_output(shlex.split('blkid -o value -s TYPE %s' % part)).decode().strip()
+    except:
+        ret = ''
+    return ret
+
+@misc.raise_privileges
 def label_fs(fstype, part, label):
     ladic = {'ext2':'e2label %(part)s %(label)s',
              'ext3':'e2label %(part)s %(label)s',

@@ -32,7 +32,6 @@ import parted
 import subprocess
 import shlex
 import os
-
 import misc
 
 # Partition types
@@ -77,7 +76,7 @@ def get_devices():
         #Must create disk object to drill down
 
         # skip cd drive
-        if not dev.path.startswith("/dev/sr"):
+        if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
             try:           
                 diskob = parted.Disk(dev)
                 disk_dic[dev.path] = diskob
@@ -85,6 +84,7 @@ def get_devices():
                 print(e)
                 
                 disk_dic[dev.path] = None
+        
 
     return disk_dic
 
