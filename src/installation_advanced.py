@@ -208,7 +208,9 @@ class InstallationAdvanced(Gtk.Box):
                         button_delete.set_sensitive(False)
                         button_edit.set_sensitive(False)
                     else:
-                        button_delete.set_sensitive(True)    
+                        button_delete.set_sensitive(True)
+                        if '/mapper' in path:
+                            button_delete.set_sensitive(False)
                         button_edit.set_sensitive(True)
                 else:
                     ## A drive (disk) is selected
