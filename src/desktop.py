@@ -137,8 +137,8 @@ class DesktopAsk(Gtk.Box):
         
         if desktop == 'nox':
             txt = _("This will install Antergos as command-line system, " \
-            "without any desktop at all. After the installation you can " \
-            "install\nthe desktop you may see fit.")
+            "without any desktop at all. After the installation you can\n" \
+            "install the desktop you may see fit.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
             
         label.set_markup(txt)
@@ -155,8 +155,7 @@ class DesktopAsk(Gtk.Box):
 
     def set_desktop_list(self):
         render = Gtk.CellRendererText()
-        #col_desktops = Gtk.TreeViewColumn(_("Select your desktop"), render, text=0)
-        col_desktops = Gtk.TreeViewColumn("", render, text=0)
+        col_desktops = Gtk.TreeViewColumn(_("Desktops"), render, text=0)
         liststore_desktop = Gtk.ListStore(str)
         self.treeview_desktop.append_column(col_desktops)
         self.treeview_desktop.set_model(liststore_desktop)
