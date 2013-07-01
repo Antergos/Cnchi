@@ -1389,7 +1389,7 @@ class InstallationAdvanced(Gtk.Box):
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
             return False
-        xxxx = 0
+        partitions = {}
         ## Create staged partitions 
         if self.disks != None:
             for disk_path in self.disks:
@@ -1399,12 +1399,9 @@ class InstallationAdvanced(Gtk.Box):
                     pm.finalize_changes(disk)
                     logging.info(_("Saving changes done in %s") % disk_path)
                 ## Now that partitions are created, set fs and label
-                partitions = pm.get_partitions(disk)
-                if xxxx == 0:
-                    apartitions = list(partitions) + self.lv_partitions
-                    xxxx+=1
-                else:
-                    apartitions = partitions
+                partitions.update(pm.get_partitions(disk))
+            apartitions = list(partitions) + self.lv_partitions
+            if True:
                 noboot = True
                 for allopts in self.stage_opts:
                     if self.stage_opts[allopts][2] == '/boot':
@@ -1427,6 +1424,7 @@ class InstallationAdvanced(Gtk.Box):
                             vgname = vgname.split('-')[0]
                             if (mnt == '/' and noboot) or mnt == '/boot':
                                 for ee in pvs[vgname]:
+                                    print(partitions)
                                     if not pm.get_flag(partitions[ee], 1):
                                         x = pm.set_flag(1, partitions[ee])
                                 pm.finalize_changes(partitions[ee].disk)
@@ -1468,6 +1466,12 @@ class InstallationAdvanced(Gtk.Box):
             partitions = pm.get_partitions(disk)
             self.all_partitions.append(partitions)
             partition_list = pm.order_partitions(partitions)
+            for ppath in self.lv_partitions:
+                uid = self.gen_partition_uid(path=ppath)
+                if uid in self.stage_opts:
+                    (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                    mount_devices[mount_point] = ppath
+                    fs_devices[ppath] = fs_type
             for partition_path in partition_list:
                 p = partitions[partition_path]
                 uid = self.gen_partition_uid(p=p)

@@ -169,11 +169,15 @@ class InstallationProcess(multiprocessing.Process):
 
             if "swap" in self.mount_devices:
                 swap_partition = self.mount_devices["swap"]
+            else:
+                swap_partition = ""
 
             # Advanced method formats root by default
             # THIS IS BAD BEHAVIOUR
             #https://github.com/Antergos/Cnchi/issues/8
-            (error, msg) = fs.create_fs(root_partition, root_fs)
+            #Commenting out...not sure why we did this, we partition
+            #in advance installer...
+            #(error, msg) = fs.create_fs(root_partition, root_fs)
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
