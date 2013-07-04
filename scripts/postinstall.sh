@@ -243,8 +243,10 @@ postinstall(){
 	    mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
     fi
 
-	# Configure touchpad
-	set_synaptics
+	# Configure touchpad. Skip with base installs
+	if [[ $DESKTOP != 'nox' ]];then
+		set_synaptics
+	fi
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
