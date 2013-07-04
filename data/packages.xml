@@ -27,6 +27,7 @@
 		<pkgname>net-tools</pkgname>
 		<pkgname>usb_modeswitch</pkgname>
 		<pkgname>modemmanager</pkgname>
+		<pkgname>openssh</pkgname>
 	</common_system>
 
 	<graphic_system>
@@ -75,6 +76,8 @@
 		<pkgname>gstreamer0.10-ffmpeg</pkgname>
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
+		<pkgname>gnome-shell-extensions</pkgname>
+		<pkgname>gnome-tweak-tool</pkgname>
 	</gnome_desktop>
 
 	<cinnamon_desktop>
@@ -276,17 +279,16 @@
 
 	<bootloaders>
 		<grub>
-			<pkgname>grub-common</pkgname>
-			<pkgname>grub-bios</pkgname>
+			<pkgname>grub</pkgname>
 			<pkgname>os-prober</pkgname>
 		</grub>
 		<grub-efi uefiarch="x86_64">
-			<pkgname>grub-common</pkgname>
-			<pkgname>grub-efi-x86_64</pkgname>
+			<pkgname>grub</pkgname>
+			<pkgname>os-prober</pkgname>
 		</grub-efi>
 		<grub-efi uefiarch="i386">
-			<pkgname>grub-common</pkgname>
-			<pkgname>grub-efi-i386</pkgname>
+			<pkgname>grub</pkgname>
+			<pkgname>os-prober</pkgname>
 		</grub-efi>
 		<uefi_x86_64>
 			<pkgname>dosfstools</pkgname>
