@@ -1244,36 +1244,37 @@ class InstallationAdvanced(Gtk.Box):
     def get_changes(self):
         changelist = []
         #store values as (path, create?, label?, format?)
-        for e in self.lv_partitions:
-            if self.gen_partition_uid(path=e) in self.stage_opts:
-                (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=e)]
-                if fmt:
-                    fmt = 'Yes'
+        if self.lv_partitions:
+            for e in self.lv_partitions:
+                if self.gen_partition_uid(path=e) in self.stage_opts:
+                    (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=e)]
+                    if fmt:
+                        fmt = 'Yes'
+                    else:
+                        fmt = 'No'
+                    # Advanced method formats root by default
+                    # THIS IS BAD BEHAVIOUR
+                    # https://github.com/Antergos/Cnchi/issues/8
+                    if mnt == "/":
+                        fmt = 'Yes'
+                    if is_new:
+                        relabel = 'Yes'
+                        fmt = 'Yes'
+                        createme = 'Yes'
+                    else:
+                        if e in self.orig_label_dic:
+                            if self.orig_label_dic[e] == lbl:
+                                relabel = 'No'
+                            else:
+                                relabel = 'Yes'
+                        createme = 'No'
                 else:
+                    relabel = 'No'
                     fmt = 'No'
-                # Advanced method formats root by default
-                # THIS IS BAD BEHAVIOUR
-                # https://github.com/Antergos/Cnchi/issues/8
-                if mnt == "/":
-                    fmt = 'Yes'
-                if is_new:
-                    relabel = 'Yes'
-                    fmt = 'Yes'
-                    createme = 'Yes'
-                else:
-                    if e in self.orig_label_dic:
-                        if self.orig_label_dic[e] == lbl:
-                            relabel = 'No'
-                        else:
-                            relabel = 'Yes'
                     createme = 'No'
-            else:
-                relabel = 'No'
-                fmt = 'No'
-                createme = 'No'
-                mnt = ''
-        if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
-            changelist.append((e, createme, relabel, fmt, mnt))
+                    mnt = ''
+            if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
+                changelist.append((e, createme, relabel, fmt, mnt))
 
         if self.disks:
             for disk_path in self.disks:
