@@ -951,7 +951,7 @@ EFIBEOF
         subprocess.check_call(["chmod", "440", sudoers_path])
         
         
-        self.chroot(['useradd', '-m', '-s', '/usr/bin/bash', \
+        self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
 
