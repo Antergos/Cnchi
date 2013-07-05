@@ -412,41 +412,43 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        graphics = self.get_graphics_card()
-        
+        # Install graphic cards drivers always but in NoX installs
+        if self.desktop != "nox":
+            graphics = self.get_graphics_card()
+            
 
-        if "ati " in graphics:
-            for child in root.iter('ati'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-            self.card.append('ati')
-        
-        if "nvidia" in graphics:
-            for child in root.iter('nvidia'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-            self.card.append('nvidia')
-        
-        if "intel" in graphics or "lenovo" in graphics:
-            for child in root.iter('intel'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-            self.card.append('intel')
-        
-        if "virtualbox" in graphics:
-            for child in root.iter('virtualbox'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-        
-        if "vmware" in graphics:
-            for child in root.iter('vmware'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-        
-        if "via " in graphics:
-            for child in root.iter('via'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+            if "ati " in graphics:
+                for child in root.iter('ati'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+                self.card.append('ati')
+            
+            if "nvidia" in graphics:
+                for child in root.iter('nvidia'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+                self.card.append('nvidia')
+            
+            if "intel" in graphics or "lenovo" in graphics:
+                for child in root.iter('intel'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+                self.card.append('intel')
+            
+            if "virtualbox" in graphics:
+                for child in root.iter('virtualbox'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+            
+            if "vmware" in graphics:
+                for child in root.iter('vmware'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+            
+            if "via " in graphics:
+                for child in root.iter('via'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
         
         wlan = subprocess.check_output(\
             ["hwinfo", "--wlan", "--short"]).decode()
