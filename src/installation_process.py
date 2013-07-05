@@ -464,7 +464,8 @@ class InstallationProcess(multiprocessing.Process):
         
         fs_types = subprocess.check_output(\
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
-
+        for iii in self.fs_devices:
+            fs_types += self.fs_devices[iii]
         if "ntfs" in fs_types:
             for child in root.iter('ntfs'):
                 for pkg in child.iter('pkgname'):
