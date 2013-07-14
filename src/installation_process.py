@@ -449,6 +449,12 @@ class InstallationProcess(multiprocessing.Process):
                 for child in root.iter('via'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+
+            # Add xorg-drivers group if cnchi can't figure it out
+            # the graphic card driver.
+            if graphics not in ('ati ', 'nvidia', 'intel', 'virtualbox' \
+                                'vmware', 'via '):
+                self.packages.append('xorg-drivers')
         
         wlan = subprocess.check_output(\
             ["hwinfo", "--wlan", "--short"]).decode()
