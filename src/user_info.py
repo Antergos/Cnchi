@@ -90,6 +90,10 @@ class UserInfo(Gtk.Box):
         txt = _("Your name:")
         label.set_markup(txt)
 
+        label = self.ui.get_object('fullname')
+        txt = _("Your name")
+        label.set_placeholder_text(txt)
+
         label = self.ui.get_object('hostname_label')
         txt = _("Your computer's name:")
         label.set_markup(txt)
@@ -98,13 +102,25 @@ class UserInfo(Gtk.Box):
         txt = _("Pick a username:")
         label.set_markup(txt)
 
+        label = self.ui.get_object('username')
+        txt = _("Username")
+        label.set_placeholder_text(txt)
+
         label = self.ui.get_object('password_label')
         txt = _("Choose a password:")
         label.set_markup(txt)
 
+        label = self.ui.get_object('password')
+        txt = _("Password")
+        label.set_placeholder_text(txt)
+
         label = self.ui.get_object('verified_password_label')
         txt = _("Confirm your password:")
         label.set_markup(txt)
+
+        label = self.ui.get_object('verified_password')
+        txt = _("Confirm password")
+        label.set_placeholder_text(txt)
 
         label = self.ui.get_object('hostname_extra_label')
         txt = _("The name it uses when it talks to other computers.")
