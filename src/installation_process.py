@@ -1088,17 +1088,17 @@ EFIBEOF
         # Set autologin if selected
         if self.settings.get('require_password') is False and \
            self.desktop_manager == 'slim':
-            conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
+            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
             text = []
-            with open(conf_path, "rt") as conf:
-                text = conf.readlines()
-            with open(conf_path, "wt") as conf:
+            with open(slim_conf_path, "rt") as slim_conf:
+                text = slim_conf.readlines()
+            with open(slim_conf_path, "wt") as slim_conf:
                 for line in text:
                     if 'auto_login' in line:
                         line = 'auto_login yes\n'
                     if 'default_user' in line:
                         line = 'default_user %s\n' % username
-                    lxdm_conf.write(line)
+                    slim_conf.write(line)
 
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:
