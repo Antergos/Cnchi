@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-INSTALLER_VERSION=1.1.2
+INSTALLER_VERSION=1.2
 
 TEXTDOMAIN=cli_installer
 # we rely on some output which is parsed in english!
@@ -3913,7 +3913,7 @@ dogrub_bios() {
     
     dogrub_common_before
 
-    PACKAGES="grub-common grub-bios os-prober"
+    PACKAGES="grub os-prober"
     run_pacman
     # reset PACKAGES after installing
     PACKAGES=""
@@ -4057,7 +4057,7 @@ dogrub_uefi_common() {
     dogrub_common_before
     
     DIALOG --msgbox $"Installing grub-efi-${UEFI_ARCH} now ..." 0 0
-    PACKAGES="grub-common grub-efi-${UEFI_ARCH}"
+    PACKAGES="grub os-prober"
     
     run_pacman
     # reset PACKAGES after installing
@@ -4634,7 +4634,7 @@ configure_system() {
 
                 DIALOG --infobox $"Creating user..." 4 30
 
-                chroot ${DESTDIR} useradd -m -s /usr/bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
+                chroot ${DESTDIR} useradd -m -s /bin/bash -g users -G lp,video,network,storage,wheel,audio ${USER_NAME} >/dev/null 2>&1
                 chroot ${DESTDIR} passwd ${USER_NAME} < /tmp/.user_password >/dev/null 2>&1
                 chroot ${DESTDIR} chfn -f "${USER_FULL_NAME}" "${USER_NAME}" >/dev/null 2>&1
                 
