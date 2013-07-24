@@ -337,10 +337,13 @@ class Pac(object):
             return
 
         if level & pyalpm.LOG_ERROR:
-            self.error = _("ERROR: %s") % line
-            #print(line)
-            self.release_transaction()
-            self.queue_event("error", line)
+            if 'linux' not in self.target:
+                self.error = _("ERROR: %s") % line
+                #print(line)
+                self.release_transaction()
+                self.queue_event("error", line)
+            else:
+                pass
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
             self.queue_event("warning", line)
@@ -401,9 +404,9 @@ class Pac(object):
 
     def cb_progress(self, _target, _percent, n, i):
         if _target:
-            self.target = "Installing %s (%d/%d)" % (_target, i, n)
+            self.target = _("Installing %s (%d/%d)") % (_target, i, n)
         else:
-            self.target = "Checking and loading packages..."
+            self.target = _("Checking and loading packages...")
         self.percent = _percent / 100
         self.queue_event("target", self.target)
         self.queue_event("percent", self.percent)
