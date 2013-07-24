@@ -193,7 +193,7 @@ class Pac(object):
                     self.t.add_pkg(pkg)
                     break
                 else:
-                    #this is used for groups.  However, cinnarch repo coming
+                    #this is used for groups.  However, antergos repo coming
                     # first causes errors.  So I just moved them to the back.
                     l = pyalpm.find_grp_pkgs([repo], pkgname)
                     if l:

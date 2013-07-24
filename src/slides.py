@@ -183,8 +183,8 @@ class Slides(Gtk.Box):
 
 class TestWindow(Gtk.Window):
     def __init__(self, box):
-        Gtk.Window.__init__(self, title='Cinnarch Installer Test')
-        self.set_title(_('Cinnarch Installer'))
+        Gtk.Window.__init__(self, title='Antergos Installer Test')
+        self.set_title(_('Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(800, 500)
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     
     print("Testing slides screen")
     
-    APP = "Cinnarch Test Window"
+    APP = "Antergos Test Window"
     DIR = "/usr/share/locale"
     
     # This allows to translate all py texts (not the glade ones)

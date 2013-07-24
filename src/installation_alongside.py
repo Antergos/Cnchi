@@ -136,11 +136,11 @@ class InstallationAlongside(Gtk.Box):
             return False
     
     def translate_ui(self):
-        txt = _("Choose next to which OS you want to install Cinnarch")
+        txt = _("Choose next to which OS you want to install Antergos")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        txt = _("Cinnarch alongside another OS")
+        txt = _("Antergos alongside another OS")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
