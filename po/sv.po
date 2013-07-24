@@ -3,13 +3,14 @@
 # 
 # Translators:
 # mats_bjork007 <mats_bjork007@yahoo.se>, 2013
+# mats_bjork007 <mats_bjork007@yahoo.se>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
-"PO-Revision-Date: 2013-05-10 19:48+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
+"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/antergos/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -17,13 +18,13 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cnchi.py:91
+#: cnchi.py:103
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "Installationen måste köras med administratörsrättigheter och kan inte fortsätta utan det."
 
-#: cnchi.py:97
+#: cnchi.py:109
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -33,408 +34,537 @@ msgid ""
 msgstr "Du kan inte köra två installationer samtidigt.\n\nOm du är säker på att installationen inte redan körs kan du manuellt ta bort filen %s och starta om installationen."
 
 #: cnchi.py:186
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr ""
+
+#: cnchi.py:205
+msgid "Using '%s' file as package list"
+msgstr ""
+
+#: cnchi.py:224 src/slides.py:187
 msgid "Antergos Installer"
 msgstr "Antergos installation"
 
-#: src/check.py:70
+#: cnchi.py:292
+msgid "Quiting installer..."
+msgstr ""
+
+#: src/bootinfo.py:43 src/bootinfo.py:63 src/bootinfo.py:68 src/bootinfo.py:89
+#: src/installation_alongside.py:211
+msgid "unknown"
+msgstr ""
+
+#: src/bootloader.py:58
+msgid "What is your boot system type?"
+msgstr ""
+
+#: src/bootloader.py:63
+msgid "BIOS (Common)"
+msgstr ""
+
+#: src/bootloader.py:67
+msgid "x86_64 UEFI"
+msgstr ""
+
+#: src/bootloader.py:71
+msgid "i386 UEFI"
+msgstr ""
+
+#: src/bootloader.py:75
+msgid "Choose 'cancel' if you don't want to install a boot loader"
+msgstr ""
+
+#: src/check.py:71
 msgid "Check your computer"
 msgstr "Kontrollera din dator"
 
-#: src/check.py:75
+#: src/check.py:76
 msgid "has at least 3GB available drive space"
 msgstr "har åtminstone 3GB tillgängligt diskutrymme"
 
-#: src/check.py:79
+#: src/check.py:80
 msgid "is plugged in to a power source"
 msgstr "är inkopplad till en kraftkälla"
 
-#: src/check.py:83
+#: src/check.py:84
 msgid "is connected to the Internet"
 msgstr "är ansluten till Internet"
 
-#: src/check.py:87
+#: src/check.py:88
 msgid "For best results, please ensure that this computer:"
 msgstr "För bästa resultat, se till att den här datorn:"
 
-#: src/check.py:108
+#: src/check.py:93
+msgid ""
+"Antergos uses third-party software to play Flash, MP3 and other media. Some "
+"of this software is propietary. The software is subject to license terms "
+"included with its documentation."
+msgstr ""
+
+#: src/check.py:99
+msgid "Install this third-party software"
+msgstr ""
+
+#: src/check.py:119
 msgid "Can't get network status"
 msgstr "Kan inte kontrollera nätverksstatus"
 
-#: src/check.py:177
+#: src/check.py:195
 msgid "We have Internet connection."
 msgstr "Vi har anslutning till internet."
 
-#: src/check.py:178
+#: src/check.py:196
 msgid "We're connected to a power source."
 msgstr "Vi är ansluten till en kraftkälla."
 
-#: src/check.py:179
+#: src/check.py:197
 msgid "We have enough space in disk."
 msgstr "Vi har tillräckligt med diskutrymme."
 
-#: src/desktop.py:72
+#: src/desktop.py:84
 msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
-"put you in control and bring freedom to everybody. GNOME 3 is developed by "
-"the GNOME community, a diverse, international group of contributors."
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
+"freedom to everybody. GNOME 3 is developed by the GNOME community."
 msgstr ""
 
-#: src/desktop.py:79
+#: src/desktop.py:91
 msgid ""
-"Cinnamon it's a fork of GNOME Shell, initially developed by (and for) Linux "
-"Mint. It attempts to provide a more traditional user environment based on "
-"the desktop metaphor, like GNOME 2"
+"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
+"user environment based on the desktop metaphor, like GNOME 2"
 msgstr ""
 
-#: src/desktop.py:86
+#: src/desktop.py:98
 msgid ""
-"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
-"It aims to be fast and low on system resources, while still being visually "
-"appealing and user friendly."
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
+"system resources, while still being visually appealing and user friendly."
 msgstr ""
 
-#: src/desktop.py:93
+#: src/desktop.py:105
 msgid ""
 "Extremely fast-performing and energy-saving desktop environment. It comes "
 "with a beautiful interface, multi-language support, standard keyboard short "
 "cuts and additional features like tabbed file browsing."
-msgstr ""
+msgstr "Extremt snabb och energibesparande skrivbordsmiljö. Den kommer med ett vackert gränssnitt, stöd för många språk, standardiserade genvägar för tangentbordet samt ytterligare egenskaper som filhanterare med flikar."
 
-#: src/desktop.py:100
+#: src/desktop.py:112
 msgid ""
-"Openbox is a highly configurable, next generation window manager with "
-"extensive standards support.The *box visual style is well known for its "
-"minimalistic appearance."
+"Openbox is a highly configurable, next generation window manager with extensive standards support.\n"
+"The *box visual style is well known for its minimalistic appearance."
 msgstr ""
 
-#: src/desktop.py:107
+#: src/desktop.py:119
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Enlightenment är inte bara en fönsterhanterare för Linux/X11 och andra, utan också en hel serie med bibliotek för att hjälpa dig att skapa vackra användargränssnitt med mycket mindre ansträngning."
 
-#: src/desktop.py:113
+#: src/desktop.py:125
 msgid ""
 "The KDE Community is an international technology team dedicated to creating "
 "a free and user-friendly computing experience, offering an advanced "
 "graphical desktop and a wide variety of applications."
-msgstr ""
+msgstr "KDE gemenskapen är en internationell teknologisk grupp engagerad att skapa en fri och användarvänlig datorupplevelse och erbjuder en avancerad grafisk skrivbordsmiljö och en stor bredd på applikationerna."
 
-#: src/desktop.py:120
+#: src/desktop.py:132
 msgid ""
-"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
-"Qt technologies. It has been tailored for users who value simplicity, speed,"
-" and an intuitive interface."
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
+"It has been tailored for users who value simplicity, speed, and an intuitive interface."
 msgstr ""
 
-#: src/desktop.py:130
+#: src/desktop.py:139
+msgid ""
+"This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
+"install the desktop you may see fit."
+msgstr ""
+
+#: src/desktop.py:148
 msgid "Select your desktop"
-msgstr ""
+msgstr "Välj din skrivbordsmiljö"
 
-#: src/desktop.py:143
+#: src/desktop.py:158
 msgid "Desktops"
+msgstr "Skrivbord"
+
+#: src/desktop.py:191
+msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr ""
 
-#: src/installation_advanced.py:194 src/installation_advanced.py:426
-#: src/installation_advanced.py:438
+#: src/download.py:82
+msgid "Error creating metalink for package %s"
+msgstr ""
+
+#: src/download.py:88
+msgid "Error adding metalink for package %s"
+msgstr ""
+
+#: src/download.py:137
+msgid "Downloading package '%s'..."
+msgstr ""
+
+#: src/download.py:161
+msgid "Can't connect to Aria2. Won't be able to speed up the download."
+msgstr ""
+
+#: src/download.py:232
+msgid "Unable to create download queue for package %s"
+msgstr ""
+
+#: src/download.py:236
+msgid "Can't find these packages: "
+msgstr ""
+
+#: src/download.py:242
+msgid "Warning! Can't resolve these dependencies: "
+msgstr ""
+
+#: src/installation_advanced.py:197 src/installation_advanced.py:488
+#: src/installation_advanced.py:502
 msgid "free space"
 msgstr "tillgängligt utrymme"
 
-#: src/installation_advanced.py:258 src/installation_easy.py:90
+#: src/installation_advanced.py:266 src/installation_alongside.py:169
 msgid "Device"
 msgstr "Enhet"
 
-#: src/installation_advanced.py:261
+#: src/installation_advanced.py:269
 msgid "Type"
 msgstr "Typ"
 
-#: src/installation_advanced.py:264 src/installation_easy.py:86
+#: src/installation_advanced.py:272
 msgid "Mount point"
 msgstr "Monteringspunkt"
 
-#: src/installation_advanced.py:267
+#: src/installation_advanced.py:275
 msgid "Label"
 msgstr "Etikett"
 
-#: src/installation_advanced.py:273 src/installation_advanced.py:1223
+#: src/installation_advanced.py:281 src/installation_advanced.py:1355
 msgid "Format"
 msgstr "Formattera"
 
-#: src/installation_advanced.py:276
+#: src/installation_advanced.py:284
 msgid "Size"
 msgstr "Storlek"
 
-#: src/installation_advanced.py:279
+#: src/installation_advanced.py:287
 msgid "Used"
 msgstr "Använd"
 
-#: src/installation_advanced.py:282
+#: src/installation_advanced.py:290
 msgid "Flags"
 msgstr "Flaggor"
 
-#: src/installation_advanced.py:288
+#: src/installation_advanced.py:296
 msgid "SSD"
-msgstr ""
+msgstr "SSD"
 
-#: src/installation_advanced.py:409
+#: src/installation_advanced.py:471
 msgid "none"
 msgstr "ingen"
 
-#: src/installation_advanced.py:459
+#: src/installation_advanced.py:523
 msgid "extended"
 msgstr "utökad"
 
-#: src/installation_advanced.py:581 src/installation_advanced.py:818
+#: src/installation_advanced.py:648 src/installation_advanced.py:888
 msgid "Cannot use same mount twice..."
 msgstr "Kan inte använda samma monteringspunkt två gånger..."
 
-#: src/installation_advanced.py:837
+#: src/installation_advanced.py:650
+msgid "Root partition must be formatted..."
+msgstr ""
+
+#: src/installation_advanced.py:909
 msgid "Creating primary partition"
 msgstr "Skapar primär partition"
 
-#: src/installation_advanced.py:848
+#: src/installation_advanced.py:920
 msgid "Creating extended partition"
 msgstr "Skapar utökad partition"
 
-#: src/installation_advanced.py:854
+#: src/installation_advanced.py:926
 msgid "Creating logical partition"
 msgstr "Skapar logisk partition"
 
-#: src/installation_advanced.py:920
+#: src/installation_advanced.py:1013
 msgid "Advanced installation mode"
 msgstr "Avancerad installationsmetod"
 
-#: src/installation_advanced.py:924
-msgid "Device for boot loader installation:"
-msgstr "Enhet för installation av uppstartsladdaren (boot loader):"
+#: src/installation_advanced.py:1017
+msgid "Use this device for boot loader installation:"
+msgstr ""
 
-#: src/installation_advanced.py:934
+#: src/installation_advanced.py:1027
 msgid "New partition table"
 msgstr "Ny partionstabell"
 
-#: src/installation_advanced.py:942
+#: src/installation_advanced.py:1035
 msgid "Change..."
 msgstr "Ändra..."
 
-#: src/installation_advanced.py:947
+#: src/installation_advanced.py:1040
 msgid "Size:"
 msgstr "Storlek:"
 
-#: src/installation_advanced.py:951
+#: src/installation_advanced.py:1044
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/installation_advanced.py:955
+#: src/installation_advanced.py:1048
 msgid "Primary"
 msgstr "Primär"
 
-#: src/installation_advanced.py:959
+#: src/installation_advanced.py:1052
 msgid "Logical"
 msgstr "Logisk"
 
-#: src/installation_advanced.py:963
+#: src/installation_advanced.py:1056
 msgid "Extended"
 msgstr "Utökad"
 
-#: src/installation_advanced.py:967
+#: src/installation_advanced.py:1060
 msgid "Beginning of this space"
 msgstr "Början av detta utrymme"
 
-#: src/installation_advanced.py:971
+#: src/installation_advanced.py:1064
 msgid "End of this space"
 msgstr "Slutet av detta utrymme"
 
-#: src/installation_advanced.py:975 src/installation_advanced.py:992
+#: src/installation_advanced.py:1068 src/installation_advanced.py:1085
 msgid "Use as:"
 msgstr "Använd som:"
 
-#: src/installation_advanced.py:979 src/installation_advanced.py:996
+#: src/installation_advanced.py:1072 src/installation_advanced.py:1089
 msgid "Mount point:"
 msgstr "Monteringspunkt"
 
-#: src/installation_advanced.py:983 src/installation_advanced.py:1000
+#: src/installation_advanced.py:1076 src/installation_advanced.py:1093
 msgid "Label (optional):"
 msgstr "Etikett (valfritt):"
 
-#: src/installation_advanced.py:987
+#: src/installation_advanced.py:1080
 msgid "Encryption options..."
 msgstr "Krypteringsalternativ..."
 
-#: src/installation_advanced.py:1004
+#: src/installation_advanced.py:1097
 msgid "Format:"
 msgstr "Formattera:"
 
-#: src/installation_advanced.py:1009
+#: src/installation_advanced.py:1102
 msgid "Partition table type:"
 msgstr "Typ av partitionstabell:"
 
-#: src/installation_advanced.py:1014
+#: src/installation_advanced.py:1107
 msgid "Create partition table"
 msgstr "Skapa partitionstabell"
 
-#: src/installation_advanced.py:1017 src/installation_automatic.py:87
-#: src/installation_easy.py:98
+#: src/installation_advanced.py:1110 src/installation_alongside.py:147
+#: src/installation_automatic.py:89
 msgid "Install now!"
 msgstr "Installera nu!"
 
-#: src/installation_advanced.py:1097
+#: src/installation_advanced.py:1190
 msgid "Creating a new partition table of type %s for disk %s"
 msgstr "Skapar en ny partitionstabell med typen %s för disk %s"
 
-#: src/installation_advanced.py:1164
+#: src/installation_advanced.py:1289
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s är monterad i '%s'.\nFör att fortsätta måste den avmonteras.\nKlicka Ja för att avmontera eller Nej för att återgå\n"
 
-#: src/installation_advanced.py:1216
+#: src/installation_advanced.py:1348
 msgid "Partition %s will be deleted"
 msgstr "Partition %s kommer att tas bort"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Mount"
 msgstr "Montera"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "New"
 msgstr "Ny"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Partition"
 msgstr "Partition"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Relabel"
 msgstr "Ändra etikett"
 
-#: src/installation_advanced.py:1244
+#: src/installation_advanced.py:1376
 msgid "These disks will have partition actions:"
 msgstr "För dessa diskar kommer partitionerna att påverkas:"
 
-#: src/installation_advanced.py:1269
+#: src/installation_advanced.py:1401
 msgid "Saving changes done in %s"
 msgstr "Sparar ändringar gjorda på %s"
 
-#: src/installation_advanced.py:1278
+#: src/installation_advanced.py:1416
 msgid "Creating fs of type %s in %s with label %s"
 msgstr "Skapar filsystem av typen %s i %s med etiketten %s"
 
-#: src/installation_advanced.py:1289
-msgid "FORMATTED"
-msgstr "FORMATTERAD"
-
-#: src/installation_ask.py:76
-msgid "Installation type"
+#: src/installation_advanced.py:1498 src/installation_automatic.py:167
+msgid "Antergos will install the bootloader of type %s in %s"
 msgstr ""
 
-#: src/installation_ask.py:86
+#: src/installation_alongside.py:112
+msgid "Can't load %s css"
+msgstr ""
+
+#: src/installation_alongside.py:139
+msgid "Choose next to which OS you want to install Antergos"
+msgstr ""
+
+#: src/installation_alongside.py:143
+msgid "Antergos alongside another OS"
+msgstr ""
+
+#: src/installation_alongside.py:172
+msgid "Detected OS"
+msgstr ""
+
+#: src/installation_alongside.py:175
+msgid "Filesystem"
+msgstr ""
+
+#: src/installation_alongside.py:215
+msgid "In alongside install, can't create list of partitions"
+msgstr ""
+
+#: src/installation_ask.py:78
+msgid "Installation type"
+msgstr "Typ av installation"
+
+#: src/installation_ask.py:88
 msgid "Erase disk and install Antergos (automatic)"
 msgstr "Radera disken och installera Antergos (automatiskt)"
 
-#: src/installation_ask.py:89
+#: src/installation_ask.py:91
 msgid "Warning: This will delete all data on your disk"
-msgstr ""
-
-#: src/installation_ask.py:95
-msgid "Choose where to install Antergos (easy)"
-msgstr "Välj var du vill installera Antergos (enkel)"
+msgstr "Varning: Det här kommer att ta bort all data på din disk"
 
 #: src/installation_ask.py:98
-msgid "Set your root and swap mount points."
+msgid "Install this OS alongside the other OSes"
 msgstr ""
 
-#: src/installation_ask.py:104
+#: src/installation_ask.py:103
+msgid "Install this OS alongside the other OSes you have already installed."
+msgstr ""
+
+#: src/installation_ask.py:111
 msgid "Manage your partitions where to install Antergos (advanced)"
-msgstr ""
+msgstr "Hantera dina partitioner där du vill installera Antergos (avancerat)"
 
-#: src/installation_ask.py:107
+#: src/installation_ask.py:114
 msgid "Create/delete partitions, and also choose additional mount points."
-msgstr ""
+msgstr "Skapa/ta bort partitioner och även välja ytterligare montagepunkter."
 
-#: src/installation_automatic.py:73
+#: src/installation_automatic.py:72
 msgid "Automatic installation mode"
-msgstr ""
+msgstr "Automatiskt läge av installation"
 
-#: src/installation_automatic.py:77
+#: src/installation_automatic.py:76
 msgid "Select drive:"
 msgstr "Välj enhet:"
 
-#: src/installation_automatic.py:81
+#: src/installation_automatic.py:80
 msgid ""
-"This installation mode will overwrite everything in your drive. If you are "
-"sure that this is what you want, please choose the drive where you want to "
-"install Antergos and click the button below to start the process."
-msgstr "Den här installationsmetoden kommer att skriva över allt på din disk. Om du är säker på att det är vad du vill göra, välj den enhet där du vill installera Antergos och klicka på knappen nedan för att starta."
+"WARNING! This installation mode will overwrite everything in your drive!"
+msgstr ""
 
-#: src/installation_automatic.py:130
+#: src/installation_automatic.py:85
+msgid ""
+"Please choose the drive where you want to install Antergos\n"
+"and click the button below to start the process."
+msgstr ""
+
+#: src/installation_automatic.py:132
 msgid "Automatic install using %s device"
 msgstr "Automatisk installation använder enhet %s"
 
-#: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Antergos"
-msgstr "Du måste ange dessa två montagepunkter för att installera Antergos"
-
-#: src/installation_easy.py:94
-msgid "Easy installation mode"
+#: src/installation_automatic.py:148
+msgid "Antergos will use %s as installation device"
 msgstr ""
 
-#: src/installation_easy.py:118
-msgid "You can't select the same device for both mount points!"
-msgstr "Du kan inte välja samma enhet för båda montagepunkterna!"
-
-#: src/installation_easy.py:159
-msgid "In easy install, can't create list of partitions"
-msgstr "Kan inte skapa lista på partitioner i den enkla installationsmetoden"
-
-#: src/installation_thread.py:76
+#: src/installation_process.py:82
 msgid "Installing using the '%s' method"
 msgstr "Använder '%s' som metod för installation"
 
-#: src/installation_thread.py:126
+#: src/installation_process.py:144
 msgid "Can't execute the auto partition script"
 msgstr "Kan inte köra skriptet för automatisk partitionering"
 
-#: src/installation_thread.py:161
+#: src/installation_process.py:190 src/installation_process.py:214
+msgid "Mounting partition %s into %s directory"
+msgstr ""
+
+#: src/installation_process.py:196
+msgid "Mounting partition %s into %s/boot directory"
+msgstr ""
+
+#: src/installation_process.py:200
 msgid "Couldn't mount root and boot partitions"
 msgstr "Kund inte montera root och boot partitionerna"
 
-#: src/installation_thread.py:178
+#: src/installation_process.py:219
 msgid "Can't mount %s in %s"
-msgstr ""
+msgstr "Kan inte montera %s i %s"
 
-#: src/installation_thread.py:187
+#: src/installation_process.py:228
 msgid "Can't create necessary directories on destination system"
 msgstr "Kan inte skapa nödvändiga kataloger i systemet"
 
-#: src/installation_thread.py:605 src/installation_thread.py:627
+#: src/installation_process.py:378
+msgid "Can't retrieve remote package list, using a local file instead."
+msgstr ""
+
+#: src/installation_process.py:704
+msgid "Installing GRUB(2) BIOS boot loader in %s"
+msgstr ""
+
+#: src/installation_process.py:724 src/installation_process.py:740
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "FEL vid installation av GRUB(2) BIOS."
 
-#: src/installation_thread.py:618
+#: src/installation_process.py:738
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS har installerats utan problem."
 
-#: src/installation_thread.py:638
+#: src/installation_process.py:751
+msgid "Installing GRUB(2) UEFI %s boot loader in %s"
+msgstr ""
+
+#: src/installation_process.py:774 src/installation_process.py:792
+msgid "ERROR installing GRUB(2) UEFI."
+msgstr ""
+
+#: src/installation_process.py:862
 msgid "Error creating password hash for user %s"
 msgstr "Fel vid skapande av lösenordskryptering för användare %s"
 
-#: src/installation_thread.py:644
+#: src/installation_process.py:868
 msgid "Error changing password for user %s"
 msgstr "Fel när lösenordet ändrades för användare %s"
 
-#: src/installation_thread.py:691
+#: src/installation_process.py:917
 msgid "Configuring your new system"
 msgstr "Konfigurerar ditt nya system"
 
-#: src/installation_thread.py:757
-msgid "Generating locales"
-msgstr "Genererar språk"
+#: src/installation_process.py:983
+msgid "Generating locales..."
+msgstr ""
 
-#: src/installation_thread.py:820
-msgid "Running mkinitcpio"
-msgstr "Kör mkinitcpio"
+#: src/installation_process.py:998
+msgid "Adjusting hardware clock..."
+msgstr ""
+
+#: src/installation_process.py:1077
+msgid "Running mkinitcpio..."
+msgstr ""
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
@@ -452,199 +582,196 @@ msgstr "Varianter"
 msgid "keyboard_layout is %s"
 msgstr "Tangentbordslayout är %s"
 
-#: src/language.py:81
+#: src/language.py:80
 msgid "Please choose your language:"
 msgstr "Välj ditt språk:"
 
-#: src/language.py:86
+#: src/language.py:85
 msgid "This is an Alpha version."
-msgstr ""
+msgstr "Det här är en Alfaversion."
 
-#: src/language.py:87
+#: src/language.py:86
 msgid ""
-"The Software is provided \"as is\" without warranty of any kind, either express or implied, including without limitation any implied warranties of condition, uninterrupted use, merchantability, fitness for a particular purpose, or non-infringement.\n"
+"Still undergoing development. It is known NOT to work yet with LVM, RAID, btrfs subvolumes, and other advanced setups. \n"
+"Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
-#: src/language.py:96 src/welcome.py:112
+#: src/language.py:94 src/welcome.py:110
 msgid "Welcome to Antergos!"
 msgstr "Välkommen till Antergos!"
 
-#: src/language.py:114
+#: src/language.py:112
 msgid "Languages"
 msgstr "Språk"
 
-#: src/language.py:134
+#: src/language.py:132
 msgid "Can't find translation file for the %s language"
 msgstr "Kan inte hitta översättning för det %s språket"
 
-#: src/location.py:73
+#: src/location.py:72
 msgid "Select your location"
 msgstr "Välj din plats"
 
-#: src/location.py:77
+#: src/location.py:76
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
 msgstr "Vald plats kommer att användas för att hjälpa till att välja språk.\nNormalt är det landet där du bor.\nDet här är en urvalslista baserad på det språk du valde."
 
-#: src/location.py:82
+#: src/location.py:81
 msgid "Country, territory or area:"
 msgstr "Land, distrikt eller område:"
 
-#: src/location.py:203
+#: src/location.py:205
 msgid "locale changed to : %s"
 msgstr "språk ändrad till : %s"
 
-#: src/location.py:205
+#: src/location.py:207
 msgid "Can't change to locale '%s'"
 msgstr "Kan inte ändra språk till '%s'"
 
-#: src/pacman/pac.py:163
+#: src/pacman/pac.py:243
+msgid "Package %s not found in any repo!"
+msgstr ""
+
+#: src/pacman/pac.py:293
 msgid "Checking dependencies..."
 msgstr "Kontrollerar beroenden..."
 
-#: src/pacman/pac.py:166
+#: src/pacman/pac.py:295
 msgid "Checking file conflicts..."
 msgstr "Kontrollerar filer i konflikt..."
 
-#: src/pacman/pac.py:169
+#: src/pacman/pac.py:297
 msgid "Resolving dependencies..."
 msgstr "Löser beroenden..."
 
-#: src/pacman/pac.py:172
+#: src/pacman/pac.py:299
 msgid "Checking inter conflicts..."
 msgstr "Kontrollerar inbördes konflikter"
 
-#: src/pacman/pac.py:179
+#: src/pacman/pac.py:304
 msgid "Removing..."
 msgstr "Tar bort..."
 
-#: src/pacman/pac.py:182
+#: src/pacman/pac.py:306
 msgid "Upgrading..."
 msgstr "Uppgraderar..."
 
-#: src/pacman/pac.py:185
+#: src/pacman/pac.py:308
 msgid "Checking integrity..."
 msgstr "Kontrollerar integritet..."
 
-#: src/pacman/pac.py:189
+#: src/pacman/pac.py:311
 msgid "Loading packages files..."
 msgstr "Laddar paketfiler..."
 
-#: src/pacman/pac.py:193
+#: src/pacman/pac.py:314
 msgid "Configuring..."
 msgstr "Konfigurerar..."
 
-#: src/pacman/pac.py:195
+#: src/pacman/pac.py:315
 msgid "Configuring a package"
 msgstr "Konfigurerar ett paket"
 
-#: src/pacman/pac.py:197
+#: src/pacman/pac.py:317
 msgid "Downloading a file"
 msgstr "Laddar ner en fil"
 
-#: src/pacman/pac.py:221
+#: src/pacman/pac.py:340
 msgid "ERROR: %s"
 msgstr "FEL: %s"
 
-#: src/pacman/pac.py:225
+#: src/pacman/pac.py:345
 msgid "WARNING: %s"
 msgstr "VARNING: %s"
 
-#: src/pacman/pac.py:229
-msgid "DEBUG: %s"
-msgstr "AVLUSA: %s"
+#: src/pacman/pac.py:386
+msgid "Downloading %s..."
+msgstr ""
 
-#: src/pacman/pac.py:232
-msgid "FUNC: %s"
-msgstr "FUNC: %s"
-
-#: src/pacman/pac.py:264
-msgid "Downloading %s"
-msgstr "Laddar ner %s"
-
-#: src/pacman/pac.py:272
+#: src/pacman/pac.py:395
 msgid "Refreshing %s..."
 msgstr "Aktualiserar %s..."
 
-#: src/rank_mirrors.py:59
+#: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
 msgstr "Kan inte kontrollera nätverksstatus för rankmirrors"
 
-#: src/rank_mirrors.py:75
+#: src/rank_mirrors.py:74
 msgid "Couldn't execute auto mirroring selection"
 msgstr "Kunde inte utföra automatiskt val av speglingsserver"
 
-#: src/show_message.py:56
+#: src/show_message.py:60
 msgid "Antergos Installer - Error"
 msgstr "Antergos installation - Fel"
 
-#: src/show_message.py:67
+#: src/show_message.py:71
 msgid "Antergos Installer - Warning"
 msgstr "Antergos installation - Varning"
 
-#: src/show_message.py:78
+#: src/show_message.py:82
 msgid "Antergos Installer - Information"
 msgstr "Antergos installation - information"
 
-#: src/show_message.py:88
+#: src/show_message.py:92
 msgid "Antergos Installer - Question"
 msgstr "Antergos installation - Fråga"
 
-#: src/slides.py:80 src/slides.py:94
+#: src/slides.py:86 src/slides.py:101
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
 msgstr "Installationen är klar!\nVill du starta om ditt system nu?"
 
-#: src/slides.py:88
+#: src/slides.py:94
 msgid "Installing Antergos..."
-msgstr ""
+msgstr "Installerar Antergos..."
 
-#: src/slides.py:92
+#: src/slides.py:99
 msgid "Please wait..."
 msgstr "Vänta..."
 
-#: src/timezone.py:113
+#: src/timezone.py:115
 msgid "Where are you?"
 msgstr "Var är du?"
 
-#: src/timezone.py:118
+#: src/timezone.py:120
 msgid "Zone:"
 msgstr "Zon:"
 
-#: src/timezone.py:122
+#: src/timezone.py:124
 msgid "Region:"
 msgstr "Region:"
 
-#: src/timezone.py:133
+#: src/timezone.py:135
 msgid "location changed to : %s"
 msgstr "plats ändrad till : %s"
 
-#: src/timezone.py:221
+#: src/timezone.py:223
 msgid "Can't autodetect timezone coordinates"
 msgstr "Kan inte automatiskt känna av koordinaterna för tidszonen"
 
-#: src/timezone.py:279
+#: src/timezone.py:281
 msgid "Stoping timezone threads..."
 msgstr "Stoppar trådar för tidszoner..."
 
-#: src/timezone.py:307 src/timezone.py:358
+#: src/timezone.py:311 src/timezone.py:362
 msgid "In timezone, can't get network status"
 msgstr "Kan inte kontrollera nätverksstatus i tidszon"
 
-#: src/timezone.py:382
+#: src/timezone.py:386
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr "Kan inte få språkkoden som används för att skapa lista över spegelservrar för pacman"
 
-#: src/timezone.py:402
+#: src/timezone.py:407
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
 msgstr "Laddade ner en specifik lista över speglingsservrar för pacman baserad på landskoden %s"
 
-#: src/timezone.py:404
+#: src/timezone.py:409
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr "Kunde inte generera lista på speglingsservrar baserad på landskoden"
 
@@ -653,64 +780,80 @@ msgid "Your name:"
 msgstr "Ditt namn:"
 
 #: src/user_info.py:94
+msgid "Your name"
+msgstr ""
+
+#: src/user_info.py:98
 msgid "Your computer's name:"
 msgstr "Namn på din dator:"
 
-#: src/user_info.py:98
+#: src/user_info.py:102
 msgid "Pick a username:"
 msgstr "Välj ett användarnamn:"
 
-#: src/user_info.py:102
+#: src/user_info.py:106
+msgid "Username"
+msgstr ""
+
+#: src/user_info.py:110
 msgid "Choose a password:"
 msgstr "Välj ett lösenord:"
 
-#: src/user_info.py:106
+#: src/user_info.py:114
+msgid "Password"
+msgstr ""
+
+#: src/user_info.py:118
 msgid "Confirm your password:"
 msgstr "Bekräfta ditt lösenord:"
 
-#: src/user_info.py:110
+#: src/user_info.py:122
+msgid "Confirm password"
+msgstr ""
+
+#: src/user_info.py:126
 msgid "The name it uses when it talks to other computers."
 msgstr "Namnet den använder för att prata med andra datorer."
 
-#: src/user_info.py:114
+#: src/user_info.py:130
 msgid "You must enter a name"
 msgstr "Du måste ange ett namn"
 
-#: src/user_info.py:118
+#: src/user_info.py:134
 msgid "You must enter a username"
 msgstr "Du måste ange ett användarnamn"
 
-#: src/user_info.py:122
+#: src/user_info.py:138
 msgid "You must enter a password"
 msgstr "Du måste ange ett lösenord"
 
-#: src/user_info.py:126
+#: src/user_info.py:142
 msgid "Log in automatically"
 msgstr "Logga in automatiskt"
 
-#: src/user_info.py:127
+#: src/user_info.py:143
 msgid "Require my password to log in"
 msgstr "Kräv mitt lösenord för att logga in"
 
-#: src/user_info.py:128
+#: src/user_info.py:144
 msgid "Encrypt my home folder"
 msgstr "Kryptera min hemkatalog"
 
-#: src/user_info.py:130
+#: src/user_info.py:146
 msgid "Who are you?"
 msgstr "Vem är du?"
 
-#: src/user_info.py:204
+#: src/user_info.py:226
 msgid "Invalid characters entered"
 msgstr "Ogiltiga tecken angivna"
 
-#: src/user_info.py:208
+#: src/user_info.py:230
 msgid "Contains consecutive, initial and/or final dots"
 msgstr "Innehåller punkt efter varandra, i början och/eller i slutet"
 
-#: src/user_info.py:212
+#: src/user_info.py:234
 msgid "Too many characters"
-msgstr ""
+msgstr "För många tecken"
 
 #: src/validation.py:144
 msgid "password is too short"
@@ -736,24 +879,24 @@ msgstr "starkt lösenord"
 msgid "Passwords do not match"
 msgstr "Lösenorden stämmer inte överens"
 
-#: src/welcome.py:98
+#: src/welcome.py:96
 msgid ""
 "Try Antergos without modifying your hard drive.\n"
 "Or install it to your PC with one of the two installer options."
-msgstr ""
+msgstr "Prova Antergos utan att göra ändringar på din hårddisk.\nEller installera den på din PC med två olika alternativa sätt."
 
-#: src/welcome.py:103
+#: src/welcome.py:101
 msgid "Try it"
-msgstr ""
+msgstr "Prova den"
 
-#: src/welcome.py:106
+#: src/welcome.py:104
 msgid "CLI Installer"
-msgstr ""
+msgstr "Installation från kommandoraden"
 
-#: src/welcome.py:109
+#: src/welcome.py:107
 msgid "Graphical Installer"
-msgstr ""
+msgstr "Grafisk installation"
 
-#: src/welcome.py:133
+#: src/welcome.py:131
 msgid "Can't load the CLI installer"
 msgstr "Kan inte ladda CLI installeraren"

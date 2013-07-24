@@ -2,14 +2,17 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# lacika501 <80kiri@gmail.com>, 2013
+# Dr. Tibor Attila Anca <anca.tibor@gmail.com>, 2013
+# i_sty <szollosi.istv4n@gmail.com>, 2013
 # i_sty <szollosi.istv4n@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-05-10 21:46+CEST\n"
-"PO-Revision-Date: 2013-05-10 19:48+0000\n"
-"Last-Translator: faidoc <alexfilgueira@cinnarch.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
+"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/antergos/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -17,428 +20,557 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cnchi.py:91
+#: cnchi.py:103
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "A telepítőt adminisztrátor jogokkal kell futtatni, és nem lehet folytatni e nélkül."
+msgstr "Ezt a telepítőt adminisztrátor jogokkal kell futtatni, nem lehet enélkül folytatni."
 
-#: cnchi.py:97
+#: cnchi.py:109
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr "Nem lehet egyszerre két telepítőt futtatni.\n\nHa biztos vagy benne, hogy a telepítő már nem fut\ntöröld a következő fájlt:  %s\nés indítsd újra ezt a telepítőt."
+msgstr "Nem lehet egyszerre két telepítőt futtatni.\n\nHa biztos vagy benne, hogy a telepítő már nem fut,\ntöröld a %s fájlt\nés indítsd újra ezt a telepítőt."
 
 #: cnchi.py:186
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr ""
+
+#: cnchi.py:205
+msgid "Using '%s' file as package list"
+msgstr ""
+
+#: cnchi.py:224 src/slides.py:187
 msgid "Antergos Installer"
 msgstr "Antergos Telepítő"
 
-#: src/check.py:70
+#: cnchi.py:292
+msgid "Quiting installer..."
+msgstr ""
+
+#: src/bootinfo.py:43 src/bootinfo.py:63 src/bootinfo.py:68 src/bootinfo.py:89
+#: src/installation_alongside.py:211
+msgid "unknown"
+msgstr ""
+
+#: src/bootloader.py:58
+msgid "What is your boot system type?"
+msgstr ""
+
+#: src/bootloader.py:63
+msgid "BIOS (Common)"
+msgstr ""
+
+#: src/bootloader.py:67
+msgid "x86_64 UEFI"
+msgstr ""
+
+#: src/bootloader.py:71
+msgid "i386 UEFI"
+msgstr ""
+
+#: src/bootloader.py:75
+msgid "Choose 'cancel' if you don't want to install a boot loader"
+msgstr ""
+
+#: src/check.py:71
 msgid "Check your computer"
 msgstr "Számítógép ellenőrzése"
 
-#: src/check.py:75
+#: src/check.py:76
 msgid "has at least 3GB available drive space"
-msgstr "legkevesebb 3GB szabad helyre van szükség"
+msgstr "legalább 3GB szabad tárhellyel rendelkezik"
 
-#: src/check.py:79
+#: src/check.py:80
 msgid "is plugged in to a power source"
-msgstr "legyen csatlakoztatva az áramforáshoz"
+msgstr "hálózati áramforrásról működik"
 
-#: src/check.py:83
+#: src/check.py:84
 msgid "is connected to the Internet"
-msgstr "legyen csatlakoztatva az Internethez"
+msgstr "csatlakozik az internethez."
 
-#: src/check.py:87
+#: src/check.py:88
 msgid "For best results, please ensure that this computer:"
-msgstr "A legjobb eredmény érdekében, bizonyosodj meg róla, hogy a számítógép:"
+msgstr "A legjobb eredmény érdekében bizonyosodj meg róla, hogy a számítógéped:"
 
-#: src/check.py:108
+#: src/check.py:93
+msgid ""
+"Antergos uses third-party software to play Flash, MP3 and other media. Some "
+"of this software is propietary. The software is subject to license terms "
+"included with its documentation."
+msgstr ""
+
+#: src/check.py:99
+msgid "Install this third-party software"
+msgstr ""
+
+#: src/check.py:119
 msgid "Can't get network status"
-msgstr "Nem található hálózati állapot"
+msgstr "Hálózati állapot ismeretlen"
 
-#: src/check.py:177
+#: src/check.py:195
 msgid "We have Internet connection."
-msgstr "Van Internet kapcsolatunk."
+msgstr "Van internet kapcsolatunk."
 
-#: src/check.py:178
+#: src/check.py:196
 msgid "We're connected to a power source."
 msgstr "Kapcsolódtunk az áramforráshoz."
 
-#: src/check.py:179
+#: src/check.py:197
 msgid "We have enough space in disk."
-msgstr "Van elég szabad hely a lemezen."
+msgstr "Van elég szabad tárhely a lemezen."
 
-#: src/desktop.py:72
+#: src/desktop.py:84
 msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
-"put you in control and bring freedom to everybody. GNOME 3 is developed by "
-"the GNOME community, a diverse, international group of contributors."
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
+"freedom to everybody. GNOME 3 is developed by the GNOME community."
 msgstr ""
 
-#: src/desktop.py:79
+#: src/desktop.py:91
 msgid ""
-"Cinnamon it's a fork of GNOME Shell, initially developed by (and for) Linux "
-"Mint. It attempts to provide a more traditional user environment based on "
-"the desktop metaphor, like GNOME 2"
+"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
+"user environment based on the desktop metaphor, like GNOME 2"
 msgstr ""
 
-#: src/desktop.py:86
+#: src/desktop.py:98
 msgid ""
-"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
-"It aims to be fast and low on system resources, while still being visually "
-"appealing and user friendly."
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
+"system resources, while still being visually appealing and user friendly."
 msgstr ""
 
-#: src/desktop.py:93
+#: src/desktop.py:105
 msgid ""
 "Extremely fast-performing and energy-saving desktop environment. It comes "
 "with a beautiful interface, multi-language support, standard keyboard short "
 "cuts and additional features like tabbed file browsing."
-msgstr ""
+msgstr "Rendkívül gyors teljesítményű és energiatakarékos asztali környezet. Egy szép felületet, több nyelvű támogatást, szabványos gyorsbillentyű kombinációkat és további funkciókat is kínál, mint például a füles fálj-böngészést."
 
-#: src/desktop.py:100
+#: src/desktop.py:112
 msgid ""
-"Openbox is a highly configurable, next generation window manager with "
-"extensive standards support.The *box visual style is well known for its "
-"minimalistic appearance."
+"Openbox is a highly configurable, next generation window manager with extensive standards support.\n"
+"The *box visual style is well known for its minimalistic appearance."
 msgstr ""
 
-#: src/desktop.py:107
+#: src/desktop.py:119
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Az Enlightenment nem csak egy ablakkezelő Linux/X11 alá, mint a többi, hanem egy egész könyvtár csomag, ami segíti a szép felhasználófelület egyszerűbb létrehozását."
 
-#: src/desktop.py:113
+#: src/desktop.py:125
 msgid ""
 "The KDE Community is an international technology team dedicated to creating "
 "a free and user-friendly computing experience, offering an advanced "
 "graphical desktop and a wide variety of applications."
-msgstr ""
+msgstr "A KDE Közösség egy nemzetközi technológiai csapat elkötelezettsége, hogy egy ingyenes és felhasználóbarát számítástechnikai élményt nyújtson, egy fejlett grafikus felület és alkalmazások széles palettája mellett."
 
-#: src/desktop.py:120
+#: src/desktop.py:132
 msgid ""
-"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
-"Qt technologies. It has been tailored for users who value simplicity, speed,"
-" and an intuitive interface."
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
+"It has been tailored for users who value simplicity, speed, and an intuitive interface."
 msgstr ""
 
-#: src/desktop.py:130
+#: src/desktop.py:139
+msgid ""
+"This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
+"install the desktop you may see fit."
+msgstr ""
+
+#: src/desktop.py:148
 msgid "Select your desktop"
-msgstr ""
+msgstr "Asztali környezet kiválasztása"
 
-#: src/desktop.py:143
+#: src/desktop.py:158
 msgid "Desktops"
+msgstr "Asztali környezetek"
+
+#: src/desktop.py:191
+msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr ""
 
-#: src/installation_advanced.py:194 src/installation_advanced.py:426
-#: src/installation_advanced.py:438
+#: src/download.py:82
+msgid "Error creating metalink for package %s"
+msgstr ""
+
+#: src/download.py:88
+msgid "Error adding metalink for package %s"
+msgstr ""
+
+#: src/download.py:137
+msgid "Downloading package '%s'..."
+msgstr ""
+
+#: src/download.py:161
+msgid "Can't connect to Aria2. Won't be able to speed up the download."
+msgstr ""
+
+#: src/download.py:232
+msgid "Unable to create download queue for package %s"
+msgstr ""
+
+#: src/download.py:236
+msgid "Can't find these packages: "
+msgstr ""
+
+#: src/download.py:242
+msgid "Warning! Can't resolve these dependencies: "
+msgstr ""
+
+#: src/installation_advanced.py:197 src/installation_advanced.py:488
+#: src/installation_advanced.py:502
 msgid "free space"
 msgstr "szabad hely"
 
-#: src/installation_advanced.py:258 src/installation_easy.py:90
+#: src/installation_advanced.py:266 src/installation_alongside.py:169
 msgid "Device"
 msgstr "Eszköz"
 
-#: src/installation_advanced.py:261
+#: src/installation_advanced.py:269
 msgid "Type"
 msgstr "Típus"
 
-#: src/installation_advanced.py:264 src/installation_easy.py:86
+#: src/installation_advanced.py:272
 msgid "Mount point"
 msgstr "Csatolási pont"
 
-#: src/installation_advanced.py:267
+#: src/installation_advanced.py:275
 msgid "Label"
 msgstr "Címke"
 
-#: src/installation_advanced.py:273 src/installation_advanced.py:1223
+#: src/installation_advanced.py:281 src/installation_advanced.py:1355
 msgid "Format"
 msgstr "Formatálás"
 
-#: src/installation_advanced.py:276
+#: src/installation_advanced.py:284
 msgid "Size"
 msgstr "Méret"
 
-#: src/installation_advanced.py:279
+#: src/installation_advanced.py:287
 msgid "Used"
 msgstr "Használva"
 
-#: src/installation_advanced.py:282
+#: src/installation_advanced.py:290
 msgid "Flags"
 msgstr "Zászlók"
 
-#: src/installation_advanced.py:288
+#: src/installation_advanced.py:296
 msgid "SSD"
-msgstr ""
+msgstr "SSD"
 
-#: src/installation_advanced.py:409
+#: src/installation_advanced.py:471
 msgid "none"
 msgstr "semmi"
 
-#: src/installation_advanced.py:459
+#: src/installation_advanced.py:523
 msgid "extended"
-msgstr "bővített"
+msgstr "kiterjesztett"
 
-#: src/installation_advanced.py:581 src/installation_advanced.py:818
+#: src/installation_advanced.py:648 src/installation_advanced.py:888
 msgid "Cannot use same mount twice..."
-msgstr "Nem lehet használni ugyanazt a csatolási pontot kétszer..."
+msgstr "Nem lehet kétszer használni ugyanazt a csatolási pontot..."
 
-#: src/installation_advanced.py:837
+#: src/installation_advanced.py:650
+msgid "Root partition must be formatted..."
+msgstr ""
+
+#: src/installation_advanced.py:909
 msgid "Creating primary partition"
 msgstr "Elsődleges partíció létrehozása"
 
-#: src/installation_advanced.py:848
+#: src/installation_advanced.py:920
 msgid "Creating extended partition"
-msgstr "Bővített partíció létrehozása"
+msgstr "Kiterjesztett partíció létrehozása"
 
-#: src/installation_advanced.py:854
+#: src/installation_advanced.py:926
 msgid "Creating logical partition"
 msgstr "Logikai partíció létrehozása"
 
-#: src/installation_advanced.py:920
+#: src/installation_advanced.py:1013
 msgid "Advanced installation mode"
-msgstr "Részletes telepítési mód"
+msgstr "Haladó telepítési mód"
 
-#: src/installation_advanced.py:924
-msgid "Device for boot loader installation:"
-msgstr "Eszköz a rendszerbetöltő telepítésére:"
+#: src/installation_advanced.py:1017
+msgid "Use this device for boot loader installation:"
+msgstr ""
 
-#: src/installation_advanced.py:934
+#: src/installation_advanced.py:1027
 msgid "New partition table"
-msgstr "Új partíciós táblázat"
+msgstr "Új partíciós tábla"
 
-#: src/installation_advanced.py:942
+#: src/installation_advanced.py:1035
 msgid "Change..."
 msgstr "Változás..."
 
-#: src/installation_advanced.py:947
+#: src/installation_advanced.py:1040
 msgid "Size:"
 msgstr "Méret:"
 
-#: src/installation_advanced.py:951
+#: src/installation_advanced.py:1044
 msgid "Type:"
 msgstr "Típus:"
 
-#: src/installation_advanced.py:955
+#: src/installation_advanced.py:1048
 msgid "Primary"
 msgstr "Elsődleges"
 
-#: src/installation_advanced.py:959
+#: src/installation_advanced.py:1052
 msgid "Logical"
 msgstr "Logikai"
 
-#: src/installation_advanced.py:963
+#: src/installation_advanced.py:1056
 msgid "Extended"
-msgstr "Bővített"
+msgstr "Kiterjesztett"
 
-#: src/installation_advanced.py:967
+#: src/installation_advanced.py:1060
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Az elején ennek a helynek"
 
-#: src/installation_advanced.py:971
+#: src/installation_advanced.py:1064
 msgid "End of this space"
-msgstr ""
+msgstr "A végen ennek a helynek"
 
-#: src/installation_advanced.py:975 src/installation_advanced.py:992
+#: src/installation_advanced.py:1068 src/installation_advanced.py:1085
 msgid "Use as:"
 msgstr "Használja mint:"
 
-#: src/installation_advanced.py:979 src/installation_advanced.py:996
+#: src/installation_advanced.py:1072 src/installation_advanced.py:1089
 msgid "Mount point:"
 msgstr "Csatolási pont:"
 
-#: src/installation_advanced.py:983 src/installation_advanced.py:1000
+#: src/installation_advanced.py:1076 src/installation_advanced.py:1093
 msgid "Label (optional):"
 msgstr "Címke (opcionális):"
 
-#: src/installation_advanced.py:987
+#: src/installation_advanced.py:1080
 msgid "Encryption options..."
-msgstr "Titkosítási beállítások:"
+msgstr "Titkosítási beállítások..."
 
-#: src/installation_advanced.py:1004
+#: src/installation_advanced.py:1097
 msgid "Format:"
 msgstr "Formatálás:"
 
-#: src/installation_advanced.py:1009
+#: src/installation_advanced.py:1102
 msgid "Partition table type:"
-msgstr "Partíciós táblázat típusa:"
+msgstr "Partíciós táblat típusa:"
 
-#: src/installation_advanced.py:1014
+#: src/installation_advanced.py:1107
 msgid "Create partition table"
-msgstr "Partíciós táblázat létrehozása"
+msgstr "Partíciós tábla létrehozása"
 
-#: src/installation_advanced.py:1017 src/installation_automatic.py:87
-#: src/installation_easy.py:98
+#: src/installation_advanced.py:1110 src/installation_alongside.py:147
+#: src/installation_automatic.py:89
 msgid "Install now!"
 msgstr "Telepítés most!"
 
-#: src/installation_advanced.py:1097
+#: src/installation_advanced.py:1190
 msgid "Creating a new partition table of type %s for disk %s"
 msgstr "Új %s partíciós táblázat létrehozása a %s lemez számára"
 
-#: src/installation_advanced.py:1164
+#: src/installation_advanced.py:1289
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s csatlakoztatva ide '%s'.\nA folytatáshoz lekel választani.\nKattints az Igen-re a lecsatlakoztatáshoz, vagy a Nem-re a vissza lépéshez\n"
 
-#: src/installation_advanced.py:1216
+#: src/installation_advanced.py:1348
 msgid "Partition %s will be deleted"
 msgstr "%s partíció törlődni fog"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Mount"
 msgstr "Csatolás"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "New"
 msgstr "Új"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Partition"
 msgstr "Partíció"
 
-#: src/installation_advanced.py:1223
+#: src/installation_advanced.py:1355
 msgid "Relabel"
 msgstr "Újracímkézés"
 
-#: src/installation_advanced.py:1244
+#: src/installation_advanced.py:1376
 msgid "These disks will have partition actions:"
 msgstr "Ennek a lemeznek ezek a partíciós beállításai lesznek:"
 
-#: src/installation_advanced.py:1269
+#: src/installation_advanced.py:1401
 msgid "Saving changes done in %s"
 msgstr "Beállítások mentve ide %s"
 
-#: src/installation_advanced.py:1278
+#: src/installation_advanced.py:1416
 msgid "Creating fs of type %s in %s with label %s"
 msgstr "%s fájlrendszer létrehozása erre a lemezre: %s, ezzel a címkével: %s"
 
-#: src/installation_advanced.py:1289
-msgid "FORMATTED"
-msgstr "FORMÁZOTT"
+#: src/installation_advanced.py:1498 src/installation_automatic.py:167
+msgid "Antergos will install the bootloader of type %s in %s"
+msgstr ""
 
-#: src/installation_ask.py:76
+#: src/installation_alongside.py:112
+msgid "Can't load %s css"
+msgstr ""
+
+#: src/installation_alongside.py:139
+msgid "Choose next to which OS you want to install Antergos"
+msgstr ""
+
+#: src/installation_alongside.py:143
+msgid "Antergos alongside another OS"
+msgstr ""
+
+#: src/installation_alongside.py:172
+msgid "Detected OS"
+msgstr ""
+
+#: src/installation_alongside.py:175
+msgid "Filesystem"
+msgstr ""
+
+#: src/installation_alongside.py:215
+msgid "In alongside install, can't create list of partitions"
+msgstr ""
+
+#: src/installation_ask.py:78
 msgid "Installation type"
-msgstr ""
+msgstr "Telepítés típusa"
 
-#: src/installation_ask.py:86
+#: src/installation_ask.py:88
 msgid "Erase disk and install Antergos (automatic)"
-msgstr "Lemez törlése és Antergos telepítése (automatikusan)"
+msgstr "Lemez törlése és az Antergos telepítése (automatikus)"
 
-#: src/installation_ask.py:89
+#: src/installation_ask.py:91
 msgid "Warning: This will delete all data on your disk"
-msgstr ""
-
-#: src/installation_ask.py:95
-msgid "Choose where to install Antergos (easy)"
-msgstr "Válaszd ki hova szeretnéd telepíteni a Antergos-ot (könnyű)"
+msgstr "Figyelem: Ez törölni fogja az összes adatot a lemezen"
 
 #: src/installation_ask.py:98
-msgid "Set your root and swap mount points."
+msgid "Install this OS alongside the other OSes"
 msgstr ""
 
-#: src/installation_ask.py:104
+#: src/installation_ask.py:103
+msgid "Install this OS alongside the other OSes you have already installed."
+msgstr ""
+
+#: src/installation_ask.py:111
 msgid "Manage your partitions where to install Antergos (advanced)"
-msgstr ""
+msgstr "Partíciók szerkesztése, ahova az Antergos települjön (haladó)"
 
-#: src/installation_ask.py:107
+#: src/installation_ask.py:114
 msgid "Create/delete partitions, and also choose additional mount points."
-msgstr ""
+msgstr "Hozz létre/törölj partíciókat, és válasz további csatolási pontokat."
 
-#: src/installation_automatic.py:73
+#: src/installation_automatic.py:72
 msgid "Automatic installation mode"
+msgstr "Automatikus telepítési mód"
+
+#: src/installation_automatic.py:76
+msgid "Select drive:"
+msgstr "Meghajtó kiválasztása:"
+
+#: src/installation_automatic.py:80
+msgid ""
+"WARNING! This installation mode will overwrite everything in your drive!"
 msgstr ""
 
-#: src/installation_automatic.py:77
-msgid "Select drive:"
-msgstr "Válasz meghajtót:"
-
-#: src/installation_automatic.py:81
+#: src/installation_automatic.py:85
 msgid ""
-"This installation mode will overwrite everything in your drive. If you are "
-"sure that this is what you want, please choose the drive where you want to "
-"install Antergos and click the button below to start the process."
-msgstr "Ez a telepítési mód felül ír mindent a meghajtódon. Ha biztos vagy benne, hogy ezt akarod, kérlek válaszd ki hova szeretnéd telepíteni a Antergos-ot és kattints az alábbi gombra, hogy megkezdhesd ezt."
+"Please choose the drive where you want to install Antergos\n"
+"and click the button below to start the process."
+msgstr ""
 
-#: src/installation_automatic.py:130
+#: src/installation_automatic.py:132
 msgid "Automatic install using %s device"
 msgstr "Automatikus telepítés, használva ezt az eszközt:  %s"
 
-#: src/installation_easy.py:82
-msgid "You must inform about these two mount points to install Antergos"
-msgstr "Informálódj e két csatolási pontról, hogy telepítsd a Antergos-ot"
-
-#: src/installation_easy.py:94
-msgid "Easy installation mode"
+#: src/installation_automatic.py:148
+msgid "Antergos will use %s as installation device"
 msgstr ""
 
-#: src/installation_easy.py:118
-msgid "You can't select the same device for both mount points!"
-msgstr "Nem lehetséges kiválasztani ugyanazt az eszközt két csatolási ponthoz!"
-
-#: src/installation_easy.py:159
-msgid "In easy install, can't create list of partitions"
-msgstr "Az egyszerű telepítőben, nem kell létrehozni partíciós listát."
-
-#: src/installation_thread.py:76
+#: src/installation_process.py:82
 msgid "Installing using the '%s' method"
 msgstr "Telepítés a következő módszerrel: '%s'"
 
-#: src/installation_thread.py:126
+#: src/installation_process.py:144
 msgid "Can't execute the auto partition script"
 msgstr "Nem lehet futtatni az automatikus partícionáló scriptet"
 
-#: src/installation_thread.py:161
+#: src/installation_process.py:190 src/installation_process.py:214
+msgid "Mounting partition %s into %s directory"
+msgstr ""
+
+#: src/installation_process.py:196
+msgid "Mounting partition %s into %s/boot directory"
+msgstr ""
+
+#: src/installation_process.py:200
 msgid "Couldn't mount root and boot partitions"
 msgstr "Nem sikerült csatlakoztatni a root és boot partíciókat"
 
-#: src/installation_thread.py:178
+#: src/installation_process.py:219
 msgid "Can't mount %s in %s"
-msgstr ""
+msgstr "Nem lehet csatlakoztatni %s ebben %s"
 
-#: src/installation_thread.py:187
+#: src/installation_process.py:228
 msgid "Can't create necessary directories on destination system"
 msgstr "Nem hozhatsz létre szükséges könyvtárakat a cél rendszeren"
 
-#: src/installation_thread.py:605 src/installation_thread.py:627
+#: src/installation_process.py:378
+msgid "Can't retrieve remote package list, using a local file instead."
+msgstr ""
+
+#: src/installation_process.py:704
+msgid "Installing GRUB(2) BIOS boot loader in %s"
+msgstr ""
+
+#: src/installation_process.py:724 src/installation_process.py:740
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "HIBA a GRUB(2) BIOS telepítése során."
 
-#: src/installation_thread.py:618
+#: src/installation_process.py:738
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS telepítése sikeres."
 
-#: src/installation_thread.py:638
+#: src/installation_process.py:751
+msgid "Installing GRUB(2) UEFI %s boot loader in %s"
+msgstr ""
+
+#: src/installation_process.py:774 src/installation_process.py:792
+msgid "ERROR installing GRUB(2) UEFI."
+msgstr ""
+
+#: src/installation_process.py:862
 msgid "Error creating password hash for user %s"
 msgstr "Jelszó hash nem került létrehozásra a következő felhasználónak: %s"
 
-#: src/installation_thread.py:644
+#: src/installation_process.py:868
 msgid "Error changing password for user %s"
 msgstr "Hiba a jelszó megváltoztatásánál a következő felhasználónál: %s"
 
-#: src/installation_thread.py:691
+#: src/installation_process.py:917
 msgid "Configuring your new system"
 msgstr "Rendszer testreszabása"
 
-#: src/installation_thread.py:757
-msgid "Generating locales"
-msgstr "Helyek generálása"
+#: src/installation_process.py:983
+msgid "Generating locales..."
+msgstr ""
 
-#: src/installation_thread.py:820
-msgid "Running mkinitcpio"
-msgstr "mkinitcpio futtatása"
+#: src/installation_process.py:998
+msgid "Adjusting hardware clock..."
+msgstr ""
+
+#: src/installation_process.py:1077
+msgid "Running mkinitcpio..."
+msgstr ""
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
-msgstr "Válaszd billentyűzetkiosztást"
+msgstr "Válassz billentyűzetkiosztást"
 
 #: src/keymap.py:78
 msgid "Layouts"
@@ -452,199 +584,196 @@ msgstr "Variációk"
 msgid "keyboard_layout is %s"
 msgstr "A billentyűzetkiosztás ez: %s"
 
-#: src/language.py:81
+#: src/language.py:80
 msgid "Please choose your language:"
-msgstr "Válasz nyelvet:"
+msgstr "Válassz nyelvet:"
+
+#: src/language.py:85
+msgid "This is an Alpha version."
+msgstr "Ez egy Alpha verzió."
 
 #: src/language.py:86
-msgid "This is an Alpha version."
-msgstr ""
-
-#: src/language.py:87
 msgid ""
-"The Software is provided \"as is\" without warranty of any kind, either express or implied, including without limitation any implied warranties of condition, uninterrupted use, merchantability, fitness for a particular purpose, or non-infringement.\n"
+"Still undergoing development. It is known NOT to work yet with LVM, RAID, btrfs subvolumes, and other advanced setups. \n"
+"Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
-#: src/language.py:96 src/welcome.py:112
+#: src/language.py:94 src/welcome.py:110
 msgid "Welcome to Antergos!"
-msgstr "Üdvözlünk a Antergos-ban"
+msgstr "Üdvözlünk a Antergos-ban!"
 
-#: src/language.py:114
+#: src/language.py:112
 msgid "Languages"
 msgstr "Nyelvek"
 
-#: src/language.py:134
+#: src/language.py:132
 msgid "Can't find translation file for the %s language"
 msgstr "Nem található fordítási fájl a következő nyelvhez: %s"
 
-#: src/location.py:73
+#: src/location.py:72
 msgid "Select your location"
-msgstr "Válaszd ki a helységedet"
+msgstr "Tartózkodási hely kiválasztása"
 
-#: src/location.py:77
+#: src/location.py:76
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
 msgstr "A helység kiválasztása segíteni fog a rendszer helyének a meghatározásban.\nÁltalában ez egy ország ahol élsz.\nEz egy rövid lista, az általad kiválasztott nyelven."
 
-#: src/location.py:82
+#: src/location.py:81
 msgid "Country, territory or area:"
 msgstr "Ország, terület vagy övezet:"
 
-#: src/location.py:203
+#: src/location.py:205
 msgid "locale changed to : %s"
 msgstr "Hely megváltoztatva: %s"
 
-#: src/location.py:205
+#: src/location.py:207
 msgid "Can't change to locale '%s'"
 msgstr "Hely nem lett megváltoztatva: %s"
 
-#: src/pacman/pac.py:163
+#: src/pacman/pac.py:243
+msgid "Package %s not found in any repo!"
+msgstr ""
+
+#: src/pacman/pac.py:293
 msgid "Checking dependencies..."
 msgstr "Függőségek ellenőrzése..."
 
-#: src/pacman/pac.py:166
+#: src/pacman/pac.py:295
 msgid "Checking file conflicts..."
-msgstr "Fájl konfliktusok ellenőrzése..."
+msgstr "Fájlütközések ellenőrzése..."
 
-#: src/pacman/pac.py:169
+#: src/pacman/pac.py:297
 msgid "Resolving dependencies..."
-msgstr "Függőségek megoldása..."
+msgstr "Függőségek feloldása..."
 
-#: src/pacman/pac.py:172
+#: src/pacman/pac.py:299
 msgid "Checking inter conflicts..."
 msgstr "Belső konfliktusok ellenőrzése..."
 
-#: src/pacman/pac.py:179
+#: src/pacman/pac.py:304
 msgid "Removing..."
 msgstr "Eltávolítás..."
 
-#: src/pacman/pac.py:182
+#: src/pacman/pac.py:306
 msgid "Upgrading..."
 msgstr "Frissítés..."
 
-#: src/pacman/pac.py:185
+#: src/pacman/pac.py:308
 msgid "Checking integrity..."
 msgstr "Integritás ellenőrzése..."
 
-#: src/pacman/pac.py:189
+#: src/pacman/pac.py:311
 msgid "Loading packages files..."
 msgstr "Csomagfájlok betöltése..."
 
-#: src/pacman/pac.py:193
+#: src/pacman/pac.py:314
 msgid "Configuring..."
 msgstr "Konfigurálás..."
 
-#: src/pacman/pac.py:195
+#: src/pacman/pac.py:315
 msgid "Configuring a package"
 msgstr "Csomag konfigurálása"
 
-#: src/pacman/pac.py:197
+#: src/pacman/pac.py:317
 msgid "Downloading a file"
 msgstr "Fájl letöltése"
 
-#: src/pacman/pac.py:221
+#: src/pacman/pac.py:340
 msgid "ERROR: %s"
 msgstr "HIBA: %s"
 
-#: src/pacman/pac.py:225
+#: src/pacman/pac.py:345
 msgid "WARNING: %s"
 msgstr "FIGYELMEZTETÉS: %s"
 
-#: src/pacman/pac.py:229
-msgid "DEBUG: %s"
-msgstr "DEBUG: %s"
+#: src/pacman/pac.py:386
+msgid "Downloading %s..."
+msgstr ""
 
-#: src/pacman/pac.py:232
-msgid "FUNC: %s"
-msgstr "FUNC: %s"
-
-#: src/pacman/pac.py:264
-msgid "Downloading %s"
-msgstr "Letöltés: %s"
-
-#: src/pacman/pac.py:272
+#: src/pacman/pac.py:395
 msgid "Refreshing %s..."
 msgstr "Frissítése: %s"
 
-#: src/rank_mirrors.py:59
+#: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
 msgstr "A rankmirrors-ban nem található hálózati állapot"
 
-#: src/rank_mirrors.py:75
+#: src/rank_mirrors.py:74
 msgid "Couldn't execute auto mirroring selection"
 msgstr "Nem lehetséges az automatikus tükörszerver választást futtatni"
 
-#: src/show_message.py:56
+#: src/show_message.py:60
 msgid "Antergos Installer - Error"
 msgstr "Antergos Telepítő - Hiba"
 
-#: src/show_message.py:67
+#: src/show_message.py:71
 msgid "Antergos Installer - Warning"
 msgstr "Antergos Telepítő - Figyelmeztetés"
 
-#: src/show_message.py:78
+#: src/show_message.py:82
 msgid "Antergos Installer - Information"
 msgstr "Antergos Telepítő - Információ"
 
-#: src/show_message.py:88
+#: src/show_message.py:92
 msgid "Antergos Installer - Question"
 msgstr "Antergos Telepítő - Kérdés"
 
-#: src/slides.py:80 src/slides.py:94
+#: src/slides.py:86 src/slides.py:101
 msgid ""
 "Installation finished!\n"
 "Do you want to restart your system now?"
 msgstr "A rendszertelepítés befejeződött.\nÚjraindítja a rendszert most?"
 
-#: src/slides.py:88
+#: src/slides.py:94
 msgid "Installing Antergos..."
-msgstr ""
+msgstr "Antergos telepítése..."
 
-#: src/slides.py:92
+#: src/slides.py:99
 msgid "Please wait..."
 msgstr "Kérlek várj..."
 
-#: src/timezone.py:113
+#: src/timezone.py:115
 msgid "Where are you?"
 msgstr "Hol vagy?"
 
-#: src/timezone.py:118
+#: src/timezone.py:120
 msgid "Zone:"
 msgstr "Terület:"
 
-#: src/timezone.py:122
+#: src/timezone.py:124
 msgid "Region:"
 msgstr "Régió:"
 
-#: src/timezone.py:133
+#: src/timezone.py:135
 msgid "location changed to : %s"
 msgstr "Helység megváltoztatva: %s"
 
-#: src/timezone.py:221
+#: src/timezone.py:223
 msgid "Can't autodetect timezone coordinates"
 msgstr "Nem választódtak ki az időzónai koordináták:"
 
-#: src/timezone.py:279
+#: src/timezone.py:281
 msgid "Stoping timezone threads..."
 msgstr "Időzónai szálak leállítása..."
 
-#: src/timezone.py:307 src/timezone.py:358
+#: src/timezone.py:311 src/timezone.py:362
 msgid "In timezone, can't get network status"
 msgstr "Az időzónában, nem található hálózati állapot"
 
-#: src/timezone.py:382
+#: src/timezone.py:386
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr "Nem található ország kód, a pacman tükörlista elkészítéséhez"
 
-#: src/timezone.py:402
+#: src/timezone.py:407
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
 msgstr "Egyedi tükörlista letöltve a pacman-hoz, a(z) %s ország kódon alapulva"
 
-#: src/timezone.py:404
+#: src/timezone.py:409
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr "Nem sikerült elkészíteni a tükörlistát a pacman-hoz, ehhez az országkódhoz"
 
@@ -653,64 +782,80 @@ msgid "Your name:"
 msgstr "Neved:"
 
 #: src/user_info.py:94
+msgid "Your name"
+msgstr ""
+
+#: src/user_info.py:98
 msgid "Your computer's name:"
 msgstr "Számítógépnév:"
 
-#: src/user_info.py:98
-msgid "Pick a username:"
-msgstr "Válassz egy felhasználó nevet:"
-
 #: src/user_info.py:102
+msgid "Pick a username:"
+msgstr "Válassz egy felhasználónevet:"
+
+#: src/user_info.py:106
+msgid "Username"
+msgstr ""
+
+#: src/user_info.py:110
 msgid "Choose a password:"
 msgstr "Válassz egy jelszót:"
 
-#: src/user_info.py:106
+#: src/user_info.py:114
+msgid "Password"
+msgstr ""
+
+#: src/user_info.py:118
 msgid "Confirm your password:"
 msgstr "Erősítsd meg a jelszavadat:"
 
-#: src/user_info.py:110
+#: src/user_info.py:122
+msgid "Confirm password"
+msgstr ""
+
+#: src/user_info.py:126
 msgid "The name it uses when it talks to other computers."
 msgstr "A név, amellyel beszélsz más számítógépekkel."
 
-#: src/user_info.py:114
+#: src/user_info.py:130
 msgid "You must enter a name"
 msgstr "Megkel adjál egy nevet"
 
-#: src/user_info.py:118
+#: src/user_info.py:134
 msgid "You must enter a username"
 msgstr "Megkel adjál egy felhasználónevet"
 
-#: src/user_info.py:122
+#: src/user_info.py:138
 msgid "You must enter a password"
 msgstr "Megkel adnod a jelszót"
 
-#: src/user_info.py:126
+#: src/user_info.py:142
 msgid "Log in automatically"
-msgstr "Belépés automatikusan"
+msgstr "Automatikus bejelentkezés"
 
-#: src/user_info.py:127
+#: src/user_info.py:143
 msgid "Require my password to log in"
 msgstr "Jelszó kérése belépéskor"
 
-#: src/user_info.py:128
+#: src/user_info.py:144
 msgid "Encrypt my home folder"
 msgstr "Saját könyvtár titkosítása"
 
-#: src/user_info.py:130
+#: src/user_info.py:146
 msgid "Who are you?"
 msgstr "Ki vagy?"
 
-#: src/user_info.py:204
+#: src/user_info.py:226
 msgid "Invalid characters entered"
 msgstr "Érvénytelen karaktereket adtál meg"
 
-#: src/user_info.py:208
+#: src/user_info.py:230
 msgid "Contains consecutive, initial and/or final dots"
 msgstr "Tartalmazhat egymást követő kezdeti és/vagy végső pontokat."
 
-#: src/user_info.py:212
+#: src/user_info.py:234
 msgid "Too many characters"
-msgstr ""
+msgstr "Túl sok karakter"
 
 #: src/validation.py:144
 msgid "password is too short"
@@ -734,26 +879,26 @@ msgstr "Erős jelszó"
 
 #: src/validation.py:171
 msgid "Passwords do not match"
-msgstr "A jelszavakat nem egyeznek"
+msgstr "A jelszavak nem egyeznek"
 
-#: src/welcome.py:98
+#: src/welcome.py:96
 msgid ""
 "Try Antergos without modifying your hard drive.\n"
 "Or install it to your PC with one of the two installer options."
-msgstr ""
+msgstr "Próbáld ki az Antergos-t anélkül, hogy módosítanád a merevlemezedet.\nVagy telepítsd a PC-dre a következő két típus valamelyikével."
 
-#: src/welcome.py:103
+#: src/welcome.py:101
 msgid "Try it"
-msgstr ""
+msgstr "Kipróbálás"
 
-#: src/welcome.py:106
+#: src/welcome.py:104
 msgid "CLI Installer"
-msgstr ""
+msgstr "CLI telepítő"
 
-#: src/welcome.py:109
+#: src/welcome.py:107
 msgid "Graphical Installer"
-msgstr ""
+msgstr "Grafikus Telepítő"
 
-#: src/welcome.py:133
+#: src/welcome.py:131
 msgid "Can't load the CLI installer"
 msgstr "Nem sikerült betölteni a CLI telepítőt"
