@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
-"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
+"PO-Revision-Date: 2013-07-24 16:31+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/antergos/language/ro/)\n"
 "MIME-Version: 1.0\n"
@@ -681,21 +681,29 @@ msgstr "Configurarea unui pachet"
 msgid "Downloading a file"
 msgstr "Descărcarea unui fișier"
 
-#: src/pacman/pac.py:340
+#: src/pacman/pac.py:341
 msgid "ERROR: %s"
 msgstr "EROARE: %s"
 
-#: src/pacman/pac.py:345
+#: src/pacman/pac.py:348
 msgid "WARNING: %s"
 msgstr "AVERTISMENT: %s"
 
-#: src/pacman/pac.py:386
+#: src/pacman/pac.py:389
 msgid "Downloading %s..."
 msgstr ""
 
-#: src/pacman/pac.py:395
+#: src/pacman/pac.py:398
 msgid "Refreshing %s..."
 msgstr "Reîmprospătare %s"
+
+#: src/pacman/pac.py:407
+msgid "Installing %s (%d/%d)"
+msgstr ""
+
+#: src/pacman/pac.py:409
+msgid "Checking and loading packages..."
+msgstr ""
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"

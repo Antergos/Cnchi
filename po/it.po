@@ -2,13 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# faidoc <faidoc@gmail.com>, 2013
 # Davide_IT <davide.mauri88@tiscali.it>, 2013
 # skinth <skinth91@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
-"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
+"PO-Revision-Date: 2013-07-24 16:31+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/antergos/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -373,7 +374,7 @@ msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s è già montato in '%s'.\\n\nPer continuare deve essere smontato.\\n\nPremi Si per smontarlo, oppure No per tornare indietro\\n"
+msgstr "%s è già montato in '%s'.\nPer continuare deve essere smontato.\nPremi Si per smontarlo, oppure No per tornare indietro\n"
 
 #: src/installation_advanced.py:1348
 msgid "Partition %s will be deleted"
@@ -681,21 +682,29 @@ msgstr "Sto configurando un pacchetto"
 msgid "Downloading a file"
 msgstr "Sto scaricando un file"
 
-#: src/pacman/pac.py:340
+#: src/pacman/pac.py:341
 msgid "ERROR: %s"
 msgstr "ERRORE: %s"
 
-#: src/pacman/pac.py:345
+#: src/pacman/pac.py:348
 msgid "WARNING: %s"
 msgstr "ATTENZIONE: %s"
 
-#: src/pacman/pac.py:386
+#: src/pacman/pac.py:389
 msgid "Downloading %s..."
 msgstr ""
 
-#: src/pacman/pac.py:395
+#: src/pacman/pac.py:398
 msgid "Refreshing %s..."
 msgstr "Sto aggiornando %s..."
+
+#: src/pacman/pac.py:407
+msgid "Installing %s (%d/%d)"
+msgstr ""
+
+#: src/pacman/pac.py:409
+msgid "Checking and loading packages..."
+msgstr ""
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"

@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
-"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
+"PO-Revision-Date: 2013-07-24 16:31+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/antergos/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -37,11 +37,11 @@ msgstr "Não é possível executar duas instâncias do instalador.\nSe você tem
 
 #: cnchi.py:186
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "A usar Aria2 para descarregar os pacotes - EXPERIMENTAL"
 
 #: cnchi.py:205
 msgid "Using '%s' file as package list"
-msgstr ""
+msgstr "Usar o ficheiro '%s' como lista de pacotes"
 
 #: cnchi.py:224 src/slides.py:187
 msgid "Antergos Installer"
@@ -54,27 +54,27 @@ msgstr ""
 #: src/bootinfo.py:43 src/bootinfo.py:63 src/bootinfo.py:68 src/bootinfo.py:89
 #: src/installation_alongside.py:211
 msgid "unknown"
-msgstr ""
+msgstr "desconhecido"
 
 #: src/bootloader.py:58
 msgid "What is your boot system type?"
-msgstr ""
+msgstr "Qual é o tipo de arranque do seu sistema?"
 
 #: src/bootloader.py:63
 msgid "BIOS (Common)"
-msgstr ""
+msgstr "BIOS (Comum)"
 
 #: src/bootloader.py:67
 msgid "x86_64 UEFI"
-msgstr ""
+msgstr "x86_64 UEFI"
 
 #: src/bootloader.py:71
 msgid "i386 UEFI"
-msgstr ""
+msgstr "i386 UEFI"
 
 #: src/bootloader.py:75
 msgid "Choose 'cancel' if you don't want to install a boot loader"
-msgstr ""
+msgstr "Selecione 'cancelar' se não pretender instalar o um boot loader"
 
 #: src/check.py:71
 msgid "Check your computer"
@@ -683,21 +683,29 @@ msgstr "Configurando um pacote"
 msgid "Downloading a file"
 msgstr "Baixando um arquivo"
 
-#: src/pacman/pac.py:340
+#: src/pacman/pac.py:341
 msgid "ERROR: %s"
 msgstr "Erro: %s"
 
-#: src/pacman/pac.py:345
+#: src/pacman/pac.py:348
 msgid "WARNING: %s"
 msgstr "ATENÇÃO: %s"
 
-#: src/pacman/pac.py:386
+#: src/pacman/pac.py:389
 msgid "Downloading %s..."
 msgstr ""
 
-#: src/pacman/pac.py:395
+#: src/pacman/pac.py:398
 msgid "Refreshing %s..."
 msgstr "Actualizando %s"
+
+#: src/pacman/pac.py:407
+msgid "Installing %s (%d/%d)"
+msgstr ""
+
+#: src/pacman/pac.py:409
+msgid "Checking and loading packages..."
+msgstr ""
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
@@ -795,7 +803,7 @@ msgstr "Escolha um nome de usuário:"
 
 #: src/user_info.py:106
 msgid "Username"
-msgstr ""
+msgstr "Nome de utilizador"
 
 #: src/user_info.py:110
 msgid "Choose a password:"
@@ -803,7 +811,7 @@ msgstr "Escolha uma senha:"
 
 #: src/user_info.py:114
 msgid "Password"
-msgstr ""
+msgstr "Palavra Passe"
 
 #: src/user_info.py:118
 msgid "Confirm your password:"
@@ -811,7 +819,7 @@ msgstr "Confirme sua senha:"
 
 #: src/user_info.py:122
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirme a palavra passe"
 
 #: src/user_info.py:126
 msgid "The name it uses when it talks to other computers."

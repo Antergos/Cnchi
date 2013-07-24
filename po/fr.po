@@ -3,11 +3,12 @@
 # 
 # Translators:
 # Apos <jeandavidmoisan@gmail.com>, 2013
+# Gatien Bovyn <gatien.bovyn@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 14:36+CEST\n"
-"PO-Revision-Date: 2013-07-24 12:38+0000\n"
+"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
+"PO-Revision-Date: 2013-07-24 16:31+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -34,11 +35,11 @@ msgstr "Vous ne pouvez pas exécuter deux instances de ce programme d'installati
 
 #: cnchi.py:186
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "Utilisation de Aria2 pour télécharger les paquets - EXPÉRIMENTAL"
 
 #: cnchi.py:205
 msgid "Using '%s' file as package list"
-msgstr ""
+msgstr "Utilisation du fichier '%s' comme liste de paquets"
 
 #: cnchi.py:224 src/slides.py:187
 msgid "Antergos Installer"
@@ -46,32 +47,32 @@ msgstr "Installateur Antergos"
 
 #: cnchi.py:292
 msgid "Quiting installer..."
-msgstr ""
+msgstr "Fermeture de l’installateur…"
 
 #: src/bootinfo.py:43 src/bootinfo.py:63 src/bootinfo.py:68 src/bootinfo.py:89
 #: src/installation_alongside.py:211
 msgid "unknown"
-msgstr ""
+msgstr "inconnu"
 
 #: src/bootloader.py:58
 msgid "What is your boot system type?"
-msgstr ""
+msgstr "Quel est le type de votre système de démarrage ? "
 
 #: src/bootloader.py:63
 msgid "BIOS (Common)"
-msgstr ""
+msgstr "BIOS (Le plus courant)"
 
 #: src/bootloader.py:67
 msgid "x86_64 UEFI"
-msgstr ""
+msgstr "x86_64 UEFI"
 
 #: src/bootloader.py:71
 msgid "i386 UEFI"
-msgstr ""
+msgstr "i386 UEFI"
 
 #: src/bootloader.py:75
 msgid "Choose 'cancel' if you don't want to install a boot loader"
-msgstr ""
+msgstr "Choisissez 'Annuler' si vous ne souhaitez pas installer de chargeur d'amorçage"
 
 #: src/check.py:71
 msgid "Check your computer"
@@ -98,11 +99,11 @@ msgid ""
 "Antergos uses third-party software to play Flash, MP3 and other media. Some "
 "of this software is propietary. The software is subject to license terms "
 "included with its documentation."
-msgstr ""
+msgstr "Antergos utilise des logiciels tiers pour jouer les animations Flash, MP3 et autres médias. Certains de ces logiciels sont propriétaires. Le logiciel est sujet à une licence disponible avec sa documentation."
 
 #: src/check.py:99
 msgid "Install this third-party software"
-msgstr ""
+msgstr "Installer les logiciels tiers"
 
 #: src/check.py:119
 msgid "Can't get network status"
@@ -124,19 +125,19 @@ msgstr "Nous avons assez d'espace sur le disque."
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
 "freedom to everybody. GNOME 3 is developed by the GNOME community."
-msgstr ""
+msgstr "Gnome 3 est d’une utilisation facile et élégante. Il a été conçu pour vous donner le contrôle et apporter une liberté à tous. GNOME 3 est développé par la communauté GNOME."
 
 #: src/desktop.py:91
 msgid ""
 "Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
 "user environment based on the desktop metaphor, like GNOME 2"
-msgstr ""
+msgstr "Cinnamon est une branche de GNOME Shell, initialement développé par (et pour) Linux Mint. Il tente de procurer un environnement plus traditionnel basé sur une métaphore de bureau, tel que GNOME 2."
 
 #: src/desktop.py:98
 msgid ""
 "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
 "system resources, while still being visually appealing and user friendly."
-msgstr ""
+msgstr "Xfce est un environnement de bureau léger pour les systèmes d’opération de type UNIX. Il vise la vitesse et une basse utilisation des ressources système tout en étant visuellement attrayant et facile d’utilisation."
 
 #: src/desktop.py:105
 msgid ""
@@ -149,7 +150,7 @@ msgstr "Environnement de bureau d'une extrême rapidité et économe en énergie
 msgid ""
 "Openbox is a highly configurable, next generation window manager with extensive standards support.\n"
 "The *box visual style is well known for its minimalistic appearance."
-msgstr ""
+msgstr "Openbox est un gestionnaire de fenêtre de nouvelle génération hautement configurable ainsi qu’un soutien important des standards. \nLe style visuel *box est reconnu pour son apparence minimaliste."
 
 #: src/desktop.py:119
 msgid ""
@@ -169,13 +170,13 @@ msgstr "La communauté KDE est une équipe de technologie internationale dédié
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
 "It has been tailored for users who value simplicity, speed, and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt est un environnement de bureau avancé, facile d’utilisation et rapide, basé sur la technologie Qt.\nIl a été conçu pour les utilitateurs qui accordent de l’importance à la simplicité, la vitesse et une interface intuitive."
 
 #: src/desktop.py:139
 msgid ""
 "This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
 "install the desktop you may see fit."
-msgstr ""
+msgstr "Ceci installera Antergos comme système de ligne de commande, sans bureau du tout. Après l’installation, vous pourrez installer le bureau de votre choix."
 
 #: src/desktop.py:148
 msgid "Select your desktop"
@@ -187,35 +188,35 @@ msgstr "Bureaux"
 
 #: src/desktop.py:191
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi installera Antergos avec le bureau '%s'"
 
 #: src/download.py:82
 msgid "Error creating metalink for package %s"
-msgstr ""
+msgstr "Erreur de création du métalien pour le package %s"
 
 #: src/download.py:88
 msgid "Error adding metalink for package %s"
-msgstr ""
+msgstr "Erreur lors de la création du métalien pour le package %s"
 
 #: src/download.py:137
 msgid "Downloading package '%s'..."
-msgstr ""
+msgstr "Téléchargement du paquet '%s'..."
 
 #: src/download.py:161
 msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr ""
+msgstr "Connexion à Aria2 impossible. Le téléchargement ne sera pas accéléré."
 
 #: src/download.py:232
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "Impossible de créer la file de téléchargement pour le paquet %s"
 
 #: src/download.py:236
 msgid "Can't find these packages: "
-msgstr ""
+msgstr "Impossible de trouver ces paquets :"
 
 #: src/download.py:242
 msgid "Warning! Can't resolve these dependencies: "
-msgstr ""
+msgstr "Attention ! Ces dépendances ne sont pas résolues :"
 
 #: src/installation_advanced.py:197 src/installation_advanced.py:488
 #: src/installation_advanced.py:502
@@ -272,7 +273,7 @@ msgstr "Vous ne pouvez pas utiliser le même point de montage deux fois..."
 
 #: src/installation_advanced.py:650
 msgid "Root partition must be formatted..."
-msgstr ""
+msgstr "La partition root doit être formatée…"
 
 #: src/installation_advanced.py:909
 msgid "Creating primary partition"
@@ -292,7 +293,7 @@ msgstr "Mode d'installation avancée"
 
 #: src/installation_advanced.py:1017
 msgid "Use this device for boot loader installation:"
-msgstr ""
+msgstr "Périphérique d’installation du chargeur de démarrage :"
 
 #: src/installation_advanced.py:1027
 msgid "New partition table"
@@ -408,31 +409,31 @@ msgstr "Création fs de type %s dans %s avec comme étiquette %s"
 
 #: src/installation_advanced.py:1498 src/installation_automatic.py:167
 msgid "Antergos will install the bootloader of type %s in %s"
-msgstr ""
+msgstr "Antergos installera le chargeur d’amorçage de type %s sur la partition %s"
 
 #: src/installation_alongside.py:112
 msgid "Can't load %s css"
-msgstr ""
+msgstr "Impossible de charger le CSS de %s"
 
 #: src/installation_alongside.py:139
 msgid "Choose next to which OS you want to install Antergos"
-msgstr ""
+msgstr "Choisissez ensuite à côté de quel OS vous souhaitez installer Antergos"
 
 #: src/installation_alongside.py:143
 msgid "Antergos alongside another OS"
-msgstr ""
+msgstr "Antergos à côté d’un autre OS"
 
 #: src/installation_alongside.py:172
 msgid "Detected OS"
-msgstr ""
+msgstr "OS détecté(s)"
 
 #: src/installation_alongside.py:175
 msgid "Filesystem"
-msgstr ""
+msgstr "Système de fichier"
 
 #: src/installation_alongside.py:215
 msgid "In alongside install, can't create list of partitions"
-msgstr ""
+msgstr "Dans l'installation en parallèle, la liste de partitions ne peut pas être créée"
 
 #: src/installation_ask.py:78
 msgid "Installation type"
@@ -448,11 +449,11 @@ msgstr "Attention : Ceci effacera toutes les données sur votre disque"
 
 #: src/installation_ask.py:98
 msgid "Install this OS alongside the other OSes"
-msgstr ""
+msgstr "Installer cet OS à côté des autres systèmes"
 
 #: src/installation_ask.py:103
 msgid "Install this OS alongside the other OSes you have already installed."
-msgstr ""
+msgstr "Installe Antergos à côté des autres systèmes déjà installés."
 
 #: src/installation_ask.py:111
 msgid "Manage your partitions where to install Antergos (advanced)"
@@ -473,13 +474,13 @@ msgstr "Sélectionnez le disque :"
 #: src/installation_automatic.py:80
 msgid ""
 "WARNING! This installation mode will overwrite everything in your drive!"
-msgstr ""
+msgstr "ATTENTION ! Ce mode d’installation supprimera tout le contenu de votre disque !"
 
 #: src/installation_automatic.py:85
 msgid ""
 "Please choose the drive where you want to install Antergos\n"
 "and click the button below to start the process."
-msgstr ""
+msgstr "Veuillez choisir le disque où vous souhaitez installer Antergos\net cliquez sur le bouton ci-dessous pour lancer le processus."
 
 #: src/installation_automatic.py:132
 msgid "Automatic install using %s device"
@@ -487,7 +488,7 @@ msgstr "Installation automatique sur le périphérique %s"
 
 #: src/installation_automatic.py:148
 msgid "Antergos will use %s as installation device"
-msgstr ""
+msgstr "Antergos utilisera %s comme périphérique d'installation"
 
 #: src/installation_process.py:82
 msgid "Installing using the '%s' method"
@@ -499,11 +500,11 @@ msgstr "Impossible d'exécuter le script de partition automatique"
 
 #: src/installation_process.py:190 src/installation_process.py:214
 msgid "Mounting partition %s into %s directory"
-msgstr ""
+msgstr "Montage de la partition %s dans le répertoire %s"
 
 #: src/installation_process.py:196
 msgid "Mounting partition %s into %s/boot directory"
-msgstr ""
+msgstr "Montage de la partition %s dans le répertoire %s/boot"
 
 #: src/installation_process.py:200
 msgid "Couldn't mount root and boot partitions"
@@ -519,11 +520,11 @@ msgstr "Impossible de créer les répertoires nécessaires sur le système de de
 
 #: src/installation_process.py:378
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr ""
+msgstr "Impossible de récupérer une liste de paquets en ligne, utilisation d’un fichier local à la place."
 
 #: src/installation_process.py:704
 msgid "Installing GRUB(2) BIOS boot loader in %s"
-msgstr ""
+msgstr "Installation du chargeur d’amorçage GRUB(2) BIOS dans %s"
 
 #: src/installation_process.py:724 src/installation_process.py:740
 msgid "ERROR installing GRUB(2) BIOS."
@@ -535,11 +536,11 @@ msgstr "GRUB(2) BIOS a été installé avec succès."
 
 #: src/installation_process.py:751
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
-msgstr ""
+msgstr "Installation du chargeur d’amorçage GRUB(2) UEFI %s dans %s"
 
 #: src/installation_process.py:774 src/installation_process.py:792
 msgid "ERROR installing GRUB(2) UEFI."
-msgstr ""
+msgstr "ERREUR durant l’installation de GRUB(2) UEFI."
 
 #: src/installation_process.py:862
 msgid "Error creating password hash for user %s"
@@ -555,15 +556,15 @@ msgstr "Configuration de votre nouveau système"
 
 #: src/installation_process.py:983
 msgid "Generating locales..."
-msgstr ""
+msgstr "Créations des 'locales'"
 
 #: src/installation_process.py:998
 msgid "Adjusting hardware clock..."
-msgstr ""
+msgstr "Ajustement de l’horloge matérielle…"
 
 #: src/installation_process.py:1077
 msgid "Running mkinitcpio..."
-msgstr ""
+msgstr "Exécution de mkinitcpio…"
 
 #: src/keymap.py:70
 msgid "Select your keyboard layout"
@@ -595,7 +596,7 @@ msgid ""
 "Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Toujours en cours de développement. Il est connu pour NE PAS encore fonctionner avec des sous-volumes LVM, RAID et btrfs, ainsi que d’autres réglages avancés.\nS'il vous plaît, procédez avec prudence, car la perte de données est possible !\n\nSi vous trouvez un bug, merci de le signaler sur <a href='http://bugs.antergos.com'> http://bugs.antergos.com </ a>"
 
 #: src/language.py:94 src/welcome.py:110
 msgid "Welcome to Antergos!"
@@ -634,7 +635,7 @@ msgstr "Impossible de changer les paramètres régionaux '%s'"
 
 #: src/pacman/pac.py:243
 msgid "Package %s not found in any repo!"
-msgstr ""
+msgstr "Le paquet %s n’est présent dans aucun dépôt !"
 
 #: src/pacman/pac.py:293
 msgid "Checking dependencies..."
@@ -680,21 +681,29 @@ msgstr "Configuration d'un paquet"
 msgid "Downloading a file"
 msgstr "Téléchargement d'un fichier"
 
-#: src/pacman/pac.py:340
+#: src/pacman/pac.py:341
 msgid "ERROR: %s"
 msgstr "ERREUR : %s"
 
-#: src/pacman/pac.py:345
+#: src/pacman/pac.py:348
 msgid "WARNING: %s"
 msgstr "ATTENTION : %s"
 
-#: src/pacman/pac.py:386
+#: src/pacman/pac.py:389
 msgid "Downloading %s..."
-msgstr ""
+msgstr "Téléchargement de %s…"
 
-#: src/pacman/pac.py:395
+#: src/pacman/pac.py:398
 msgid "Refreshing %s..."
 msgstr "Rafraîchissage de %s..."
+
+#: src/pacman/pac.py:407
+msgid "Installing %s (%d/%d)"
+msgstr ""
+
+#: src/pacman/pac.py:409
+msgid "Checking and loading packages..."
+msgstr ""
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
@@ -780,7 +789,7 @@ msgstr "Votre nom :"
 
 #: src/user_info.py:94
 msgid "Your name"
-msgstr ""
+msgstr "Votre nom"
 
 #: src/user_info.py:98
 msgid "Your computer's name:"
@@ -792,7 +801,7 @@ msgstr "Choisissez un nom d'utilisateur :"
 
 #: src/user_info.py:106
 msgid "Username"
-msgstr ""
+msgstr "Nom d’utilisateur"
 
 #: src/user_info.py:110
 msgid "Choose a password:"
@@ -800,7 +809,7 @@ msgstr "Choisissez un mot de passe :"
 
 #: src/user_info.py:114
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: src/user_info.py:118
 msgid "Confirm your password:"
@@ -808,7 +817,7 @@ msgstr "Confirmez votre mot de passe :"
 
 #: src/user_info.py:122
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirmez votre mot de passe"
 
 #: src/user_info.py:126
 msgid "The name it uses when it talks to other computers."
