@@ -43,6 +43,7 @@ import crypt
 import download
 import config
 import logging
+import info
 
 # Insert the src/pacman directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -371,7 +372,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', "Getting package list...")
 
             try:
-                packages_xml = urlopen('http://install.antergos.com/packages.xml')
+                packages_xml = urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3])
             except URLError as e:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
