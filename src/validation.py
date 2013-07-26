@@ -69,7 +69,7 @@ def check_username(name):
         result.add(NAME_BADCHAR)
     if name.startswith('-') or name.endswith('-'):
         result.add(NAME_BADHYPHEN)
-    if '..' in name or name.startswith('.') or name.endswith('.'):
+    if '.' in name:
         result.add(NAME_BADDOTS)
 
     return sorted(result)

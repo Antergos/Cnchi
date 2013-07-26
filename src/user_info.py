@@ -227,7 +227,7 @@ class UserInfo(Gtk.Box):
                     txt = "<small><span color='darkred'>%s</span></small>" % txt
                     self.error_label[element].set_markup(txt)
                 elif validation.NAME_BADDOTS in result:
-                    txt = _("Contains consecutive, initial and/or final dots")
+                    txt = _("Username can't contain dots")
                     txt = "<small><span color='darkred'>%s</span></small>" % txt
                     self.error_label[element].set_markup(txt)
                 elif validation.NAME_LENGTH in result:
