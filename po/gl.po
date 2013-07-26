@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
-"PO-Revision-Date: 2013-07-24 16:31+0000\n"
+"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
+"PO-Revision-Date: 2013-07-26 11:18+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/antergos/language/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -94,7 +94,7 @@ msgstr "está conectado ao Internet"
 
 #: src/check.py:88
 msgid "For best results, please ensure that this computer:"
-msgstr "Para os mellores resultados, por favor asegúrse de que esta computadora:"
+msgstr "Para os mellores resultados, por favor asegúrese de que esta computadora:"
 
 #: src/check.py:93
 msgid ""
@@ -109,7 +109,7 @@ msgstr "Instalar este software de terceiros"
 
 #: src/check.py:119
 msgid "Can't get network status"
-msgstr "Non se pode ler o estado da red"
+msgstr "Non se pode ler o estado da rede"
 
 #: src/check.py:195
 msgid "We have Internet connection."
@@ -121,7 +121,7 @@ msgstr "Estamos conectados á corrente eléctrica."
 
 #: src/check.py:197
 msgid "We have enough space in disk."
-msgstr "Temos suficiente espazo en disco."
+msgstr "Temos espazo en disco dabondo."
 
 #: src/desktop.py:84
 msgid ""
@@ -146,7 +146,7 @@ msgid ""
 "Extremely fast-performing and energy-saving desktop environment. It comes "
 "with a beautiful interface, multi-language support, standard keyboard short "
 "cuts and additional features like tabbed file browsing."
-msgstr "Escritorio extremadamente rápido e aforrador de enerxía. Ven cunha bonita interfaz, soporte multilinguaxe, atallos de teclado estándar e características adicionáis coma un explorador de aquivos tabulado."
+msgstr "Escritorio extremadamente rápido e aforrador de enerxía. Ven cunha bonita interface, soporte multilinguaxe, atallos de teclado estándar e características adicionáis coma un explorador de aquivos tabulado."
 
 #: src/desktop.py:112
 msgid ""
@@ -327,11 +327,11 @@ msgstr "Extendida"
 
 #: src/installation_advanced.py:1060
 msgid "Beginning of this space"
-msgstr "Comezo de este espazo"
+msgstr "Comezo deste espazo"
 
 #: src/installation_advanced.py:1064
 msgid "End of this space"
-msgstr "Final de este espazo"
+msgstr "Final deste espazo"
 
 #: src/installation_advanced.py:1068 src/installation_advanced.py:1085
 msgid "Use as:"
@@ -492,79 +492,79 @@ msgstr "Instalación automática empregando o dispositivo %s"
 msgid "Antergos will use %s as installation device"
 msgstr "Antergos empregara %s como dispositivo de instalación"
 
-#: src/installation_process.py:82
+#: src/installation_process.py:83
 msgid "Installing using the '%s' method"
 msgstr "Instalando empregando o método '%s'"
 
-#: src/installation_process.py:144
+#: src/installation_process.py:145
 msgid "Can't execute the auto partition script"
 msgstr "Non se pode executar o script para auto particionado"
 
-#: src/installation_process.py:190 src/installation_process.py:214
+#: src/installation_process.py:191 src/installation_process.py:215
 msgid "Mounting partition %s into %s directory"
 msgstr "Montando partición %s no directorio %s"
 
-#: src/installation_process.py:196
+#: src/installation_process.py:197
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Montando partición %s no directorio %s/boot"
 
-#: src/installation_process.py:200
+#: src/installation_process.py:201
 msgid "Couldn't mount root and boot partitions"
 msgstr "Non se poden montar partición raiz nin boot"
 
-#: src/installation_process.py:219
+#: src/installation_process.py:220
 msgid "Can't mount %s in %s"
 msgstr "Non se pode montar %s en %s"
 
-#: src/installation_process.py:228
+#: src/installation_process.py:229
 msgid "Can't create necessary directories on destination system"
 msgstr "Non se pode crear os directorios necesarios no sistema de destino"
 
-#: src/installation_process.py:378
+#: src/installation_process.py:379
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "Non se pode obter a lista remota de paquetos, empregando un arquivo local na súa contra."
 
-#: src/installation_process.py:704
+#: src/installation_process.py:705
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Instalando cargador de arrinque GRUB(2) BIOS en %s"
 
-#: src/installation_process.py:724 src/installation_process.py:740
+#: src/installation_process.py:725 src/installation_process.py:741
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ERROR instalando GRUB(2) BIOS."
 
-#: src/installation_process.py:738
+#: src/installation_process.py:739
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS instalouse con éxito."
 
-#: src/installation_process.py:751
+#: src/installation_process.py:752
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Instalando cargador de arrinque GRUB(2) UEFI %s en %s"
 
-#: src/installation_process.py:774 src/installation_process.py:792
+#: src/installation_process.py:775 src/installation_process.py:793
 msgid "ERROR installing GRUB(2) UEFI."
 msgstr "ERROR instalando GRUB(2) UEFI."
 
-#: src/installation_process.py:862
+#: src/installation_process.py:863
 msgid "Error creating password hash for user %s"
 msgstr "Error creando hash de contrasinal para o usuario %s"
 
-#: src/installation_process.py:868
+#: src/installation_process.py:869
 msgid "Error changing password for user %s"
 msgstr "Error cambiando a contrasinal do usuario %s"
 
-#: src/installation_process.py:917
+#: src/installation_process.py:918
 msgid "Configuring your new system"
-msgstr "Configurando o te novo sistema"
+msgstr "Configurando o teu novo sistema"
 
-#: src/installation_process.py:983
+#: src/installation_process.py:984
 msgid "Generating locales..."
 msgstr "Xenerando locales..."
 
-#: src/installation_process.py:998
+#: src/installation_process.py:999
 msgid "Adjusting hardware clock..."
 msgstr "Axustando o reloxo hardware..."
 
-#: src/installation_process.py:1077
+#: src/installation_process.py:1078
 msgid "Running mkinitcpio..."
 msgstr "Executando mkinitcpio..."
 
@@ -610,18 +610,18 @@ msgstr "Linguas"
 
 #: src/language.py:132
 msgid "Can't find translation file for the %s language"
-msgstr "Non se pode atopar o arquivo de traducción para o idioma %s"
+msgstr "Non se pode atopar o arquivo de tradución para o idioma %s"
 
 #: src/location.py:72
 msgid "Select your location"
-msgstr "Selecciona a túa localización"
+msgstr "Escolle a túa localización"
 
 #: src/location.py:76
 msgid ""
 "The selected location will be used to help select the system locale.\n"
 "Normally this should be the country where you live.\n"
 "This is a shortlist of locations based on the language you selected."
-msgstr "A localización seleccionada empregarase para axudar a seleccionar o idioma do sistema.\nNormalmente é o país onde vives.\nEsta é unha pequena lista de localización baseadas na linguaxe escollida."
+msgstr "A localización escollida empregarase para axudar a seleccionar o idioma do sistema.\nNormalmente é o país onde vives.\nEsta é unha pequena lista de localización baseadas na linguaxe escollida."
 
 #: src/location.py:81
 msgid "Country, territory or area:"
@@ -689,7 +689,7 @@ msgstr "ERROR: %s"
 
 #: src/pacman/pac.py:348
 msgid "WARNING: %s"
-msgstr "Aviso: %s"
+msgstr "AVISO: %s"
 
 #: src/pacman/pac.py:389
 msgid "Downloading %s..."
@@ -701,11 +701,11 @@ msgstr "Refrescando %s..."
 
 #: src/pacman/pac.py:407
 msgid "Installing %s (%d/%d)"
-msgstr ""
+msgstr "Instalando %s (%d/%d)"
 
 #: src/pacman/pac.py:409
 msgid "Checking and loading packages..."
-msgstr ""
+msgstr "Comprobando e cargando paquetos..."
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
@@ -807,7 +807,7 @@ msgstr "Nome de usuario"
 
 #: src/user_info.py:110
 msgid "Choose a password:"
-msgstr "Escolle unha contrasinal:"
+msgstr "Escolle un contrasinal:"
 
 #: src/user_info.py:114
 msgid "Password"
@@ -815,7 +815,7 @@ msgstr "Contrasinal"
 
 #: src/user_info.py:118
 msgid "Confirm your password:"
-msgstr "Confirme a contrasinal:"
+msgstr "Confirme o contrasinal:"
 
 #: src/user_info.py:122
 msgid "Confirm password"
@@ -855,11 +855,11 @@ msgstr "Quen eres?"
 
 #: src/user_info.py:226
 msgid "Invalid characters entered"
-msgstr "Introducidos carácteres inválidos"
+msgstr "Introducidos caracteres inválidos"
 
 #: src/user_info.py:230
-msgid "Contains consecutive, initial and/or final dots"
-msgstr "Contén puntos consecutivos, iniciais e/ou finais"
+msgid "Username can't contain dots"
+msgstr "Usuario non pode conter puntos"
 
 #: src/user_info.py:234
 msgid "Too many characters"
@@ -901,7 +901,7 @@ msgstr "Próbao"
 
 #: src/welcome.py:104
 msgid "CLI Installer"
-msgstr "Instalado CLI"
+msgstr "Instalador CLI"
 
 #: src/welcome.py:107
 msgid "Graphical Installer"

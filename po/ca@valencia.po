@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
-"PO-Revision-Date: 2013-07-24 16:31+0000\n"
+"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
+"PO-Revision-Date: 2013-07-26 11:17+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -489,79 +489,79 @@ msgstr "Instal·lació automàtica usant el dispositiu %s"
 msgid "Antergos will use %s as installation device"
 msgstr ""
 
-#: src/installation_process.py:82
+#: src/installation_process.py:83
 msgid "Installing using the '%s' method"
 msgstr "Instal·lant usant el mètode '%s'"
 
-#: src/installation_process.py:144
+#: src/installation_process.py:145
 msgid "Can't execute the auto partition script"
 msgstr "No puc executar el script d'autoparticionat"
 
-#: src/installation_process.py:190 src/installation_process.py:214
+#: src/installation_process.py:191 src/installation_process.py:215
 msgid "Mounting partition %s into %s directory"
 msgstr ""
 
-#: src/installation_process.py:196
+#: src/installation_process.py:197
 msgid "Mounting partition %s into %s/boot directory"
 msgstr ""
 
-#: src/installation_process.py:200
+#: src/installation_process.py:201
 msgid "Couldn't mount root and boot partitions"
 msgstr "No puc muntar les particions de 'root' i 'boot'"
 
-#: src/installation_process.py:219
+#: src/installation_process.py:220
 msgid "Can't mount %s in %s"
 msgstr ""
 
-#: src/installation_process.py:228
+#: src/installation_process.py:229
 msgid "Can't create necessary directories on destination system"
 msgstr "No puc crear els directoris necessaris al sistema de destí"
 
-#: src/installation_process.py:378
+#: src/installation_process.py:379
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr ""
 
-#: src/installation_process.py:704
+#: src/installation_process.py:705
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr ""
 
-#: src/installation_process.py:724 src/installation_process.py:740
+#: src/installation_process.py:725 src/installation_process.py:741
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ERROR instal·lant el GRUB(2) BIOS."
 
-#: src/installation_process.py:738
+#: src/installation_process.py:739
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "S'ha instal·lat correctament el GRUB(2) BIOS."
 
-#: src/installation_process.py:751
+#: src/installation_process.py:752
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr ""
 
-#: src/installation_process.py:774 src/installation_process.py:792
+#: src/installation_process.py:775 src/installation_process.py:793
 msgid "ERROR installing GRUB(2) UEFI."
 msgstr ""
 
-#: src/installation_process.py:862
+#: src/installation_process.py:863
 msgid "Error creating password hash for user %s"
 msgstr "Error creant el 'hash' de la contrasenya per l'usuari %s"
 
-#: src/installation_process.py:868
+#: src/installation_process.py:869
 msgid "Error changing password for user %s"
 msgstr "No puc canviar la contrasenya per l'usuari %s"
 
-#: src/installation_process.py:917
+#: src/installation_process.py:918
 msgid "Configuring your new system"
 msgstr "Configurant el sistema"
 
-#: src/installation_process.py:983
+#: src/installation_process.py:984
 msgid "Generating locales..."
 msgstr ""
 
-#: src/installation_process.py:998
+#: src/installation_process.py:999
 msgid "Adjusting hardware clock..."
 msgstr ""
 
-#: src/installation_process.py:1077
+#: src/installation_process.py:1078
 msgid "Running mkinitcpio..."
 msgstr ""
 
@@ -855,8 +855,8 @@ msgid "Invalid characters entered"
 msgstr "Has entrat caràcters no vàlids"
 
 #: src/user_info.py:230
-msgid "Contains consecutive, initial and/or final dots"
-msgstr "Conté punts consecutius, inicials o finals"
+msgid "Username can't contain dots"
+msgstr ""
 
 #: src/user_info.py:234
 msgid "Too many characters"

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
-"PO-Revision-Date: 2013-07-24 16:31+0000\n"
+"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
+"PO-Revision-Date: 2013-07-26 11:17+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/antergos/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -490,79 +490,79 @@ msgstr "Automatische Installation auf der Festplatte %s"
 msgid "Antergos will use %s as installation device"
 msgstr ""
 
-#: src/installation_process.py:82
+#: src/installation_process.py:83
 msgid "Installing using the '%s' method"
 msgstr "Es wird nun nach der Methode '%s' das System installiert."
 
-#: src/installation_process.py:144
+#: src/installation_process.py:145
 msgid "Can't execute the auto partition script"
 msgstr "Das automatisierte Partitionsscript kann nicht ausgeführt werden"
 
-#: src/installation_process.py:190 src/installation_process.py:214
+#: src/installation_process.py:191 src/installation_process.py:215
 msgid "Mounting partition %s into %s directory"
 msgstr ""
 
-#: src/installation_process.py:196
+#: src/installation_process.py:197
 msgid "Mounting partition %s into %s/boot directory"
 msgstr ""
 
-#: src/installation_process.py:200
+#: src/installation_process.py:201
 msgid "Couldn't mount root and boot partitions"
 msgstr "Das Einhängen der root und boot Partition schlug fehl"
 
-#: src/installation_process.py:219
+#: src/installation_process.py:220
 msgid "Can't mount %s in %s"
 msgstr "Es kann nicht %s in %s eingehangen werden"
 
-#: src/installation_process.py:228
+#: src/installation_process.py:229
 msgid "Can't create necessary directories on destination system"
 msgstr "Es können nicht die nötigen Verzeichnisse auf dem Zielsystem nicht angelegt werden"
 
-#: src/installation_process.py:378
+#: src/installation_process.py:379
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr ""
 
-#: src/installation_process.py:704
+#: src/installation_process.py:705
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr ""
 
-#: src/installation_process.py:724 src/installation_process.py:740
+#: src/installation_process.py:725 src/installation_process.py:741
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "Ein FEHLER trat bei der Installation von GRUB(2) BIOS auf."
 
-#: src/installation_process.py:738
+#: src/installation_process.py:739
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS wurde erfolgreich installiert."
 
-#: src/installation_process.py:751
+#: src/installation_process.py:752
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr ""
 
-#: src/installation_process.py:774 src/installation_process.py:792
+#: src/installation_process.py:775 src/installation_process.py:793
 msgid "ERROR installing GRUB(2) UEFI."
 msgstr ""
 
-#: src/installation_process.py:862
+#: src/installation_process.py:863
 msgid "Error creating password hash for user %s"
 msgstr "Eine Fehler trat bei der Erstellung des Passwortes für den Nutzer %s auf"
 
-#: src/installation_process.py:868
+#: src/installation_process.py:869
 msgid "Error changing password for user %s"
 msgstr "Es trat ein Fehler bei der Änderung des Passwortes von Nutzer %s auf"
 
-#: src/installation_process.py:917
+#: src/installation_process.py:918
 msgid "Configuring your new system"
 msgstr "Ihr neues System wird eingerichtet"
 
-#: src/installation_process.py:983
+#: src/installation_process.py:984
 msgid "Generating locales..."
 msgstr ""
 
-#: src/installation_process.py:998
+#: src/installation_process.py:999
 msgid "Adjusting hardware clock..."
 msgstr ""
 
-#: src/installation_process.py:1077
+#: src/installation_process.py:1078
 msgid "Running mkinitcpio..."
 msgstr ""
 
@@ -856,8 +856,8 @@ msgid "Invalid characters entered"
 msgstr "Ungültige Zeichen wurden eingegeben"
 
 #: src/user_info.py:230
-msgid "Contains consecutive, initial and/or final dots"
-msgstr "Beinhält fortlaufende, anfängliche oder am Ende angegebene Punkte"
+msgid "Username can't contain dots"
+msgstr ""
 
 #: src/user_info.py:234
 msgid "Too many characters"

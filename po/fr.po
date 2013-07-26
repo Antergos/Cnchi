@@ -4,11 +4,12 @@
 # Translators:
 # Apos <jeandavidmoisan@gmail.com>, 2013
 # Gatien Bovyn <gatien.bovyn@hotmail.com>, 2013
+# Ti_Paul <tipaul2003@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-24 18:29+CEST\n"
-"PO-Revision-Date: 2013-07-24 16:31+0000\n"
+"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
+"PO-Revision-Date: 2013-07-26 11:17+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -80,7 +81,7 @@ msgstr "Vérifiez que votre ordinateur"
 
 #: src/check.py:76
 msgid "has at least 3GB available drive space"
-msgstr "a au moins 3Go d'espace disque disponible"
+msgstr "possède au moins 3Go d'espace disque disponible"
 
 #: src/check.py:80
 msgid "is plugged in to a power source"
@@ -88,7 +89,7 @@ msgstr "est branché à une source d'alimentation"
 
 #: src/check.py:84
 msgid "is connected to the Internet"
-msgstr "a une connexion internet"
+msgstr "est connecté à internet"
 
 #: src/check.py:88
 msgid "For best results, please ensure that this computer:"
@@ -373,7 +374,7 @@ msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s est monté dans '%s'.\nPour continuer il faut le démonter.\nCliquez sur Oui pour démonter, ou Non pour revenir\n"
+msgstr "%s est monté sous '%s'.\nPour continuer il faut le démonter.\nCliquez sur Oui pour démonter, ou Non pour revenir\n"
 
 #: src/installation_advanced.py:1348
 msgid "Partition %s will be deleted"
@@ -490,79 +491,79 @@ msgstr "Installation automatique sur le périphérique %s"
 msgid "Antergos will use %s as installation device"
 msgstr "Antergos utilisera %s comme périphérique d'installation"
 
-#: src/installation_process.py:82
+#: src/installation_process.py:83
 msgid "Installing using the '%s' method"
 msgstr "Installation à l'aide de la méthode '%s'"
 
-#: src/installation_process.py:144
+#: src/installation_process.py:145
 msgid "Can't execute the auto partition script"
 msgstr "Impossible d'exécuter le script de partition automatique"
 
-#: src/installation_process.py:190 src/installation_process.py:214
+#: src/installation_process.py:191 src/installation_process.py:215
 msgid "Mounting partition %s into %s directory"
 msgstr "Montage de la partition %s dans le répertoire %s"
 
-#: src/installation_process.py:196
+#: src/installation_process.py:197
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Montage de la partition %s dans le répertoire %s/boot"
 
-#: src/installation_process.py:200
+#: src/installation_process.py:201
 msgid "Couldn't mount root and boot partitions"
 msgstr "Impossible de monter les partitions root et boot"
 
-#: src/installation_process.py:219
+#: src/installation_process.py:220
 msgid "Can't mount %s in %s"
 msgstr "Ne peut monter %s sous %s"
 
-#: src/installation_process.py:228
+#: src/installation_process.py:229
 msgid "Can't create necessary directories on destination system"
 msgstr "Impossible de créer les répertoires nécessaires sur le système de destination"
 
-#: src/installation_process.py:378
+#: src/installation_process.py:379
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "Impossible de récupérer une liste de paquets en ligne, utilisation d’un fichier local à la place."
 
-#: src/installation_process.py:704
+#: src/installation_process.py:705
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Installation du chargeur d’amorçage GRUB(2) BIOS dans %s"
 
-#: src/installation_process.py:724 src/installation_process.py:740
+#: src/installation_process.py:725 src/installation_process.py:741
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
 
-#: src/installation_process.py:738
+#: src/installation_process.py:739
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS a été installé avec succès."
 
-#: src/installation_process.py:751
+#: src/installation_process.py:752
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Installation du chargeur d’amorçage GRUB(2) UEFI %s dans %s"
 
-#: src/installation_process.py:774 src/installation_process.py:792
+#: src/installation_process.py:775 src/installation_process.py:793
 msgid "ERROR installing GRUB(2) UEFI."
 msgstr "ERREUR durant l’installation de GRUB(2) UEFI."
 
-#: src/installation_process.py:862
+#: src/installation_process.py:863
 msgid "Error creating password hash for user %s"
 msgstr "Erreur de création du hash pour le mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:868
+#: src/installation_process.py:869
 msgid "Error changing password for user %s"
 msgstr "Erreur durant le changement du mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:917
+#: src/installation_process.py:918
 msgid "Configuring your new system"
 msgstr "Configuration de votre nouveau système"
 
-#: src/installation_process.py:983
+#: src/installation_process.py:984
 msgid "Generating locales..."
 msgstr "Créations des 'locales'"
 
-#: src/installation_process.py:998
+#: src/installation_process.py:999
 msgid "Adjusting hardware clock..."
 msgstr "Ajustement de l’horloge matérielle…"
 
-#: src/installation_process.py:1077
+#: src/installation_process.py:1078
 msgid "Running mkinitcpio..."
 msgstr "Exécution de mkinitcpio…"
 
@@ -699,11 +700,11 @@ msgstr "Rafraîchissage de %s..."
 
 #: src/pacman/pac.py:407
 msgid "Installing %s (%d/%d)"
-msgstr ""
+msgstr "Installation de %s (%d/%d)"
 
 #: src/pacman/pac.py:409
 msgid "Checking and loading packages..."
-msgstr ""
+msgstr "Vérification and chargement des paquets..."
 
 #: src/rank_mirrors.py:61
 msgid "In rankmirrors, can't get network status"
@@ -856,8 +857,8 @@ msgid "Invalid characters entered"
 msgstr "Caractères non valides entrés"
 
 #: src/user_info.py:230
-msgid "Contains consecutive, initial and/or final dots"
-msgstr "Contient des points au début à la fin, et/ou en séquences"
+msgid "Username can't contain dots"
+msgstr ""
 
 #: src/user_info.py:234
 msgid "Too many characters"
