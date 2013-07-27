@@ -2853,7 +2853,7 @@ select_packages() {
     fi
 
     GRAPHIC_CARD=`hwinfo --gfxcard|grep 'Model:[[:space:]]'`
-    WLAN_CARD=`hwinfo --wlan --short`
+    #WLAN_CARD=`hwinfo --wlan --short`
 
     if [[ `echo ${GRAPHIC_CARD}|grep -i 'ati[[:space:]]'` != "" ]];then
         PACKAGES="${PACKAGES} xf86-video-ati ati-dri"
@@ -2889,9 +2889,9 @@ select_packages() {
 
 
 
-    if [[ `echo ${WLAN_CARD}|grep -i broadcom` != "" ]];then
-        PACKAGES="${PACKAGES} broadcom-wl"
-    fi
+    #if [[ `echo ${WLAN_CARD}|grep -i broadcom` != "" ]];then
+    #    PACKAGES="${PACKAGES} broadcom-wl"
+    #fi
 
 
 
