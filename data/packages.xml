@@ -59,6 +59,10 @@
 		<pkgname>xfburn</pkgname>
 		<pkgname>gnome-system-monitor</pkgname>
 		<pkgname>empathy</pkgname>
+		<pkgname>telepathy-gabble</pkgname>
+		<pkgname>telepathy-salut</pkgname>
+		<pkgname>telepathy-rakia</pkgname>
+		<pkgname>telepathy-haze</pkgname>
 		<pkgname>transmission-gtk</pkgname>
 		<pkgname>xnoise</pkgname>
 		<pkgname>hotot-gtk3</pkgname>
@@ -98,6 +102,10 @@
 		<pkgname>xfburn</pkgname>
 		<pkgname>gnome-system-monitor</pkgname>
 		<pkgname>empathy</pkgname>
+		<pkgname>telepathy-gabble</pkgname>
+		<pkgname>telepathy-salut</pkgname>
+		<pkgname>telepathy-rakia</pkgname>
+		<pkgname>telepathy-haze</pkgname>
 		<pkgname>transmission-gtk</pkgname>
 		<pkgname>xnoise</pkgname>
 		<pkgname>hotot-gtk3</pkgname>
