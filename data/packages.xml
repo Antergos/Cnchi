@@ -182,7 +182,6 @@
 		<pkgname>transmission-qt</pkgname>
 		<pkgname>phonon-vlc</pkgname>
 		<pkgname>hotot-qt</pkgname>
-		<pkgname>partitionmanager</pkgname>
 	</razor_desktop>
 
 	<openbox_desktop>
