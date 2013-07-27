@@ -83,6 +83,7 @@
 		<pkgname>gst-libav</pkgname>
 		<pkgname>gnome-shell-extensions</pkgname>
 		<pkgname>gnome-tweak-tool</pkgname>
+		<pkgname>gnome-disk-utility</pkgname>
 	</gnome_desktop>
 
 	<cinnamon_desktop>
@@ -126,6 +127,7 @@
 		<pkgname>gstreamer0.10-good-plugins</pkgname>
 		<pkgname>gst-libav</pkgname>
 		<pkgname>cinnamon-theme-nadia</pkgname>
+		<pkgname>gnome-disk-utility</pkgname>
 	</cinnamon_desktop>
 
 	<xfce_desktop>
@@ -157,6 +159,7 @@
 		<pkgname>gst-libav</pkgname>
 		<pkgname>xdg-user-dirs-gtk</pkgname>
 		<pkgname>hotot-gtk3</pkgname>
+		<pkgname>gnome-disk-utility</pkgname>
 	</xfce_desktop>
 
 	<razor_desktop>
@@ -179,6 +182,7 @@
 		<pkgname>transmission-qt</pkgname>
 		<pkgname>phonon-vlc</pkgname>
 		<pkgname>hotot-qt</pkgname>
+		<pkgname>partitionmanager</pkgname>
 	</razor_desktop>
 
 	<openbox_desktop>
@@ -207,6 +211,7 @@
         <pkgname>xorg-xkill</pkgname>
         <pkgname>xnoise</pkgname>
         <pkgname>slimlock</pkgname>
+        <pkgname>gnome-disk-utility</pkgname>
     </openbox_desktop>
 
 	<!-- Third party software. Some of it is propietary -->
