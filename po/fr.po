@@ -2,14 +2,15 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# faidoc <faidoc@gmail.com>, 2013
 # Apos <jeandavidmoisan@gmail.com>, 2013
 # Gatien Bovyn <gatien.bovyn@hotmail.com>, 2013
 # Ti_Paul <tipaul2003@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
-"PO-Revision-Date: 2013-07-26 11:17+0000\n"
+"POT-Creation-Date: 2013-07-29 12:53+CEST\n"
+"PO-Revision-Date: 2013-07-29 11:01+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -124,21 +125,24 @@ msgstr "Nous avons assez d'espace sur le disque."
 
 #: src/desktop.py:84
 msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
-"freedom to everybody. GNOME 3 is developed by the GNOME community."
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
+"put you in control and bring freedom to everybody. GNOME 3 is developed by "
+"the GNOME community."
 msgstr "Gnome 3 est d’une utilisation facile et élégante. Il a été conçu pour vous donner le contrôle et apporter une liberté à tous. GNOME 3 est développé par la communauté GNOME."
 
 #: src/desktop.py:91
 msgid ""
-"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
-"user environment based on the desktop metaphor, like GNOME 2"
+"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It "
+"attempts to provide a more traditional user environment based on the desktop"
+" metaphor, like GNOME 2"
 msgstr "Cinnamon est une branche de GNOME Shell, initialement développé par (et pour) Linux Mint. Il tente de procurer un environnement plus traditionnel basé sur une métaphore de bureau, tel que GNOME 2."
 
 #: src/desktop.py:98
 msgid ""
-"Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
-"system resources, while still being visually appealing and user friendly."
-msgstr "Xfce est un environnement de bureau léger pour les systèmes d’opération de type UNIX. Il vise la vitesse et une basse utilisation des ressources système tout en étant visuellement attrayant et facile d’utilisation."
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
+"It aims to be fast and low on system resources, while still being visually "
+"appealing and user friendly."
+msgstr "Xfce est un environnement de bureau léger pour les systèmes d'opération de type UNIX. Il vise la vitesse et une basse utilisation des ressources système tout en étant visuellement attrayant et facile d'utilisation."
 
 #: src/desktop.py:105
 msgid ""
@@ -169,25 +173,26 @@ msgstr "La communauté KDE est une équipe de technologie internationale dédié
 
 #: src/desktop.py:132
 msgid ""
-"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
-"It has been tailored for users who value simplicity, speed, and an intuitive interface."
-msgstr "Razor-qt est un environnement de bureau avancé, facile d’utilisation et rapide, basé sur la technologie Qt.\nIl a été conçu pour les utilitateurs qui accordent de l’importance à la simplicité, la vitesse et une interface intuitive."
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
+"Qt technologies. It has been tailored for users who value simplicity, speed,"
+" and an intuitive interface."
+msgstr "Razor-qt est un environnement de bureau avancé, facile d'utilisation et rapide basé sur la technologie Qt. Il a été conçu pour les utilitateurs qui accorde de l'importance à la simplicité, la vitesse et une interface intuitive."
 
 #: src/desktop.py:139
 msgid ""
-"This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
-"install the desktop you may see fit."
+"This will install Antergos as command-line system, without any desktop at "
+"all. After the installation you can install the desktop you may see fit."
 msgstr "Ceci installera Antergos comme système de ligne de commande, sans bureau du tout. Après l’installation, vous pourrez installer le bureau de votre choix."
 
-#: src/desktop.py:148
+#: src/desktop.py:151
 msgid "Select your desktop"
 msgstr "Sélectionner votre bureau"
 
-#: src/desktop.py:158
+#: src/desktop.py:161
 msgid "Desktops"
 msgstr "Bureaux"
 
-#: src/desktop.py:191
+#: src/desktop.py:194
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi installera Antergos avec le bureau '%s'"
 

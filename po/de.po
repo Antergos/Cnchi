@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
-"PO-Revision-Date: 2013-07-26 11:17+0000\n"
+"POT-Creation-Date: 2013-07-29 12:53+CEST\n"
+"PO-Revision-Date: 2013-07-29 10:57+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/antergos/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -123,20 +123,23 @@ msgstr "Es ist ausreichend Speicherplatz verfügbar."
 
 #: src/desktop.py:84
 msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
-"freedom to everybody. GNOME 3 is developed by the GNOME community."
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
+"put you in control and bring freedom to everybody. GNOME 3 is developed by "
+"the GNOME community."
 msgstr ""
 
 #: src/desktop.py:91
 msgid ""
-"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
-"user environment based on the desktop metaphor, like GNOME 2"
+"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It "
+"attempts to provide a more traditional user environment based on the desktop"
+" metaphor, like GNOME 2"
 msgstr ""
 
 #: src/desktop.py:98
 msgid ""
-"Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
-"system resources, while still being visually appealing and user friendly."
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
+"It aims to be fast and low on system resources, while still being visually "
+"appealing and user friendly."
 msgstr ""
 
 #: src/desktop.py:105
@@ -168,25 +171,26 @@ msgstr "Die KDE Community ist ein internationales Entwicklerteam, das sich dazu 
 
 #: src/desktop.py:132
 msgid ""
-"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
-"It has been tailored for users who value simplicity, speed, and an intuitive interface."
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
+"Qt technologies. It has been tailored for users who value simplicity, speed,"
+" and an intuitive interface."
 msgstr ""
 
 #: src/desktop.py:139
 msgid ""
-"This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
-"install the desktop you may see fit."
+"This will install Antergos as command-line system, without any desktop at "
+"all. After the installation you can install the desktop you may see fit."
 msgstr ""
 
-#: src/desktop.py:148
+#: src/desktop.py:151
 msgid "Select your desktop"
 msgstr "Wählen Sie Ihre Oberfläche"
 
-#: src/desktop.py:158
+#: src/desktop.py:161
 msgid "Desktops"
 msgstr "Oberflächen"
 
-#: src/desktop.py:191
+#: src/desktop.py:194
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr ""
 

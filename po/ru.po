@@ -2,14 +2,15 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# faidoc <faidoc@gmail.com>, 2013
 # Barigosha <artisho5@gmail.com>, 2013
 # macbet <rostovslipknot@gmail.com>, 2013
 # Valentine Zgonnik <noisyislands@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-07-26 13:16+CEST\n"
-"PO-Revision-Date: 2013-07-26 11:17+0000\n"
+"POT-Creation-Date: 2013-07-29 12:53+CEST\n"
+"PO-Revision-Date: 2013-07-29 11:00+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/antergos/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +33,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr "Вы не можете запустить два экземпляра программы.\n\nЕсли вы уверены, что программа не выполняется\nможете самостоятельно удалить %s\nи запустить ее снова."
+msgstr "Вы не можете запустить два экземпляра установщика.\n\nЕсли вы уверены, что программа не выполняется\nможете самостоятельно удалить %s\nи запустить ее снова."
 
 #: cnchi.py:186
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
@@ -44,11 +45,11 @@ msgstr "Использование '%s' файла как список паке�
 
 #: cnchi.py:224 src/slides.py:187
 msgid "Antergos Installer"
-msgstr "Установщик Antergos"
+msgstr "Графический инсталлятор"
 
 #: cnchi.py:292
 msgid "Quiting installer..."
-msgstr ""
+msgstr "Закрытие установщика..."
 
 #: src/bootinfo.py:43 src/bootinfo.py:63 src/bootinfo.py:68 src/bootinfo.py:89
 #: src/installation_alongside.py:211
@@ -57,7 +58,7 @@ msgstr "неизвестный"
 
 #: src/bootloader.py:58
 msgid "What is your boot system type?"
-msgstr ""
+msgstr "Какой тип ваш тип загрузки ?"
 
 #: src/bootloader.py:63
 msgid "BIOS (Common)"
@@ -65,7 +66,7 @@ msgstr "BIOS(Обычный)"
 
 #: src/bootloader.py:67
 msgid "x86_64 UEFI"
-msgstr ""
+msgstr "x86_64 UEFI"
 
 #: src/bootloader.py:71
 msgid "i386 UEFI"
@@ -77,7 +78,7 @@ msgstr "Выберите 'отмена' если вы не хотите уста
 
 #: src/check.py:71
 msgid "Check your computer"
-msgstr "Проверьте свой компьютер"
+msgstr "Системные требования "
 
 #: src/check.py:76
 msgid "has at least 3GB available drive space"
@@ -112,32 +113,35 @@ msgstr "Не возможно проверить состояние сети"
 
 #: src/check.py:195
 msgid "We have Internet connection."
-msgstr "Мы подключены к Интернету."
+msgstr "Вы подключены к Интернету."
 
 #: src/check.py:196
 msgid "We're connected to a power source."
-msgstr "Мы подключены к источнику питания."
+msgstr "Вы подключены к источнику питания."
 
 #: src/check.py:197
 msgid "We have enough space in disk."
-msgstr "У нас есть достаточно места на диске."
+msgstr "У вас есть достаточно места на диске."
 
 #: src/desktop.py:84
 msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It is designed to put you in control and bring\n"
-"freedom to everybody. GNOME 3 is developed by the GNOME community."
+"Gnome 3 is an easy and elegant way to use your computer. It is designed to "
+"put you in control and bring freedom to everybody. GNOME 3 is developed by "
+"the GNOME community."
 msgstr "Gnome 3 это простой и элегантный способ использовать ваш компьютер. Он предназначен для полного контроля и свободы во всем.  GNOME 3 разработан в сообществе GNOME. "
 
 #: src/desktop.py:91
 msgid ""
-"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It attempts to provide a more traditional\n"
-"user environment based on the desktop metaphor, like GNOME 2"
+"Cinnamon it's a fork of GNOME Shell, developed by (and for) Linux Mint. It "
+"attempts to provide a more traditional user environment based on the desktop"
+" metaphor, like GNOME 2"
 msgstr "Cinnamon это форк GNOME Shell, изначально разрабатываемый для Linux Mint. Данная графическая среда похожа на GNOME 2, что делает ее более удобной для пользователя."
 
 #: src/desktop.py:98
 msgid ""
-"Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on\n"
-"system resources, while still being visually appealing and user friendly."
+"Xfce is a lightweight desktop environment for UNIX-like operating systems. "
+"It aims to be fast and low on system resources, while still being visually "
+"appealing and user friendly."
 msgstr "Xfce это легковесное окружение рабочего стола для UNIX-подобных операционных систем. Оно быстро работает и потребляет мало системных ресурсов, в тоже время имеет дружественный и визуально привлекательный интерфейс.  "
 
 #: src/desktop.py:105
@@ -169,35 +173,36 @@ msgstr "Сообщество KDE это международная команд�
 
 #: src/desktop.py:132
 msgid ""
-"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on Qt technologies.\n"
-"It has been tailored for users who value simplicity, speed, and an intuitive interface."
+"Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
+"Qt technologies. It has been tailored for users who value simplicity, speed,"
+" and an intuitive interface."
 msgstr "Razor-Qt это продвинутое, простое в использовании и быстрое  графическое окружение  на основе технологий Qt.\nИ создавалось для пользователей ценящих простоту, скорость и интуитивный интерфейс. "
 
 #: src/desktop.py:139
 msgid ""
-"This will install Antergos as command-line system, without any desktop at all. After the installation you can\n"
-"install the desktop you may see fit."
-msgstr ""
+"This will install Antergos as command-line system, without any desktop at "
+"all. After the installation you can install the desktop you may see fit."
+msgstr "Это режим установки Antergos  с помощью командной строки, без использования графического окружения. После установки вы можете выбрать графическое окружение  по своему усмотрению."
 
-#: src/desktop.py:148
+#: src/desktop.py:151
 msgid "Select your desktop"
 msgstr "Выберите ваш рабочий стол"
 
-#: src/desktop.py:158
+#: src/desktop.py:161
 msgid "Desktops"
 msgstr "Персональные компьютеры"
 
-#: src/desktop.py:191
+#: src/desktop.py:194
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi установит  Antergos с '%s' "
 
 #: src/download.py:82
 msgid "Error creating metalink for package %s"
-msgstr ""
+msgstr "Ошибка создания метассылки для пакета %s"
 
 #: src/download.py:88
 msgid "Error adding metalink for package %s"
-msgstr ""
+msgstr "Ошибка добавления метассылки для пакета %s"
 
 #: src/download.py:137
 msgid "Downloading package '%s'..."
@@ -205,19 +210,19 @@ msgstr "Загрузка пакета '%s'..."
 
 #: src/download.py:161
 msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr ""
+msgstr "Невозможно подключится к Aria2. Невозможно ускорить загрузку."
 
 #: src/download.py:232
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "Невозможно создать очередь загрузки для пакета '%s'"
 
 #: src/download.py:236
 msgid "Can't find these packages: "
-msgstr ""
+msgstr "Отсутствуют данные пакеты:"
 
 #: src/download.py:242
 msgid "Warning! Can't resolve these dependencies: "
-msgstr ""
+msgstr "Внимание! Не удается разрешить эти зависимости:"
 
 #: src/installation_advanced.py:197 src/installation_advanced.py:488
 #: src/installation_advanced.py:502
@@ -234,7 +239,7 @@ msgstr "Тип"
 
 #: src/installation_advanced.py:272
 msgid "Mount point"
-msgstr "Монтировать как..."
+msgstr "Точка монтирования:"
 
 #: src/installation_advanced.py:275
 msgid "Label"
@@ -274,7 +279,7 @@ msgstr "Нельзя использовать одинаковые точки м
 
 #: src/installation_advanced.py:650
 msgid "Root partition must be formatted..."
-msgstr ""
+msgstr "Корневой раздел должен быть отформатирован ..."
 
 #: src/installation_advanced.py:909
 msgid "Creating primary partition"
@@ -294,7 +299,7 @@ msgstr "Режим установки для опытных"
 
 #: src/installation_advanced.py:1017
 msgid "Use this device for boot loader installation:"
-msgstr ""
+msgstr "Использовать это устройство для установки загрузчика:"
 
 #: src/installation_advanced.py:1027
 msgid "New partition table"
@@ -410,11 +415,11 @@ msgstr "Создать файловую систему %s на %s с метко�
 
 #: src/installation_advanced.py:1498 src/installation_automatic.py:167
 msgid "Antergos will install the bootloader of type %s in %s"
-msgstr ""
+msgstr "Antergos  будет установлен с загрузчиком %s в %s"
 
 #: src/installation_alongside.py:112
 msgid "Can't load %s css"
-msgstr ""
+msgstr "Не удалось загрузить %s css"
 
 #: src/installation_alongside.py:139
 msgid "Choose next to which OS you want to install Antergos"
@@ -434,7 +439,7 @@ msgstr "Файловая система"
 
 #: src/installation_alongside.py:215
 msgid "In alongside install, can't create list of partitions"
-msgstr ""
+msgstr "при установке"
 
 #: src/installation_ask.py:78
 msgid "Installation type"
@@ -454,7 +459,7 @@ msgstr "Установка этой ОС рядом с другими ОС"
 
 #: src/installation_ask.py:103
 msgid "Install this OS alongside the other OSes you have already installed."
-msgstr ""
+msgstr "Установить эту ОС рядом с другими ОС, которые у вас уже установлены."
 
 #: src/installation_ask.py:111
 msgid "Manage your partitions where to install Antergos (advanced)"
@@ -537,7 +542,7 @@ msgstr "GRUB(2) BIOS установлен успешно."
 
 #: src/installation_process.py:752
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
-msgstr ""
+msgstr "Установка GRUB(2) UEFI %s загрузчика в %s"
 
 #: src/installation_process.py:775 src/installation_process.py:793
 msgid "ERROR installing GRUB(2) UEFI."
@@ -597,7 +602,7 @@ msgid ""
 "Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Все еще в разработке. Не работает с LVM, RAID, btrfs подразделами, и другими продвинутыми установками.\nПожалуйста, соблюдайте осторожность, возможна потеря данных! \nЕсли вы обнаружили ошибку, пожалуйста, посетите  <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:94 src/welcome.py:110
 msgid "Welcome to Antergos!"
@@ -858,7 +863,7 @@ msgstr "Введенные символы неправильные "
 
 #: src/user_info.py:230
 msgid "Username can't contain dots"
-msgstr ""
+msgstr "Имя пользователя не должно содержать точек"
 
 #: src/user_info.py:234
 msgid "Too many characters"
