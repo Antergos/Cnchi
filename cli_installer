@@ -4746,17 +4746,6 @@ configure_system() {
         # Fix QT apps
         echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
 
-
-        # Fix multilib repo in last release
-        cp -f /etc/pacman.conf ${DESTDIR}/etc/pacman.conf
-
-        if [[ $(uname -m) = 'x86_64' ]];then
-            echo "" >> ${DESTDIR}/etc/pacman.conf
-            echo "[multilib]" >> ${DESTDIR}/etc/pacman.conf
-            echo "SigLevel = PackageRequired" >> ${DESTDIR}/etc/pacman.conf
-            echo "Include = /etc/pacman.d/mirrorlist" >> ${DESTDIR}/etc/pacman.conf
-        fi
-
         # Set SNA Acceleration Method in Intel cards
         if [[ -e /tmp/card_intel ]];then
             cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/20-intel.conf
