@@ -3,7 +3,7 @@
 DESKTOP=$1
 
 # Change keyboard layaout
-dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','es+cat')]"
+dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 # Set gtk theme
 dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
