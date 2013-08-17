@@ -160,6 +160,7 @@
 		<pkgname>xdg-user-dirs-gtk</pkgname>
 		<pkgname>hotot-gtk3</pkgname>
 		<pkgname>gnome-disk-utility</pkgname>
+		<pkgname>polkit-gnome</pkgname>
 	</xfce_desktop>
 
 	<razor_desktop>
