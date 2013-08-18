@@ -373,7 +373,7 @@ class InstallationAdvanced(Gtk.Box):
                         fs_type = fs.get_type(partition_path)
                     else:
                         #kludge, btrfs not being detected...
-                        if used_space.is_btrfs(p.path):
+                        if used_space.is_btrfs(partition_path):
                             fs_type = 'btrfs'
 
                     if uid in self.stage_opts:
@@ -1480,9 +1480,9 @@ class InstallationAdvanced(Gtk.Box):
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
-                elif pm.check_mounted(p):
-                    mount_point, fs, writable = self.get_mount_point(p.path)
-                    mount_devices[mount_point] = partition_path
+                #elif pm.check_mounted(p):
+                #    mount_point, fs, writable = self.get_mount_point(p.path)
+                #    mount_devices[mount_point] = partition_path
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() == False:
