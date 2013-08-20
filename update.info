@@ -1,4 +1,4 @@
-{"version":"0.3.0","files":[
+{"version":"0.3.1","files":[
 {"name":"generate-update-info.py","md5":"1ee8c39677c62ec00bb64e1ddb32127c"},
 {"name":"cnchi.py","md5":"7c9d7962734e8d71ff269fa6ecff0c21"},
 {"name":"src/bootinfo.py","md5":"768e85e286af53bf514300c1e0d5d31f"},
@@ -11,7 +11,7 @@
 {"name":"src/welcome.py","md5":"86f3a35faac3419cd82cb6d0068663d9"},
 {"name":"src/installation_alongside.py","md5":"b75b5a3b5760c4ba37e2270365c370e1"},
 {"name":"src/show_message.py","md5":"f077e08be742dd55988219bfd3620aef"},
-{"name":"src/info.py","md5":"9d95f16857c78018557b9d7595f5dc04"},
+{"name":"src/info.py","md5":"83843cd2bfc7fe305a51e3e519a63eda"},
 {"name":"src/desktop.py","md5":"01dae3cb9ffaea4dd9f1fd17f440ae40"},
 {"name":"src/misc.py","md5":"01548b7618920a3f7ff762310e929e9a"},
 {"name":"src/user_info.py","md5":"224aa5a12c835545982b1aa8e8f3e692"},
@@ -21,12 +21,12 @@
 {"name":"src/location.py","md5":"875bd6cb8bec30a359f39aa861910d04"},
 {"name":"src/config.py","md5":"0d9814a375faf7e4113081658502c044"},
 {"name":"src/rank_mirrors.py","md5":"8edf69e7d67d6b46eaf2d99665136969"},
-{"name":"src/installation_advanced.py","md5":"b165c2c9ec8513d86c747a4c1f5c108b"},
+{"name":"src/installation_advanced.py","md5":"6326080065e38d85e2cb1cdec675a71b"},
 {"name":"src/installation_ask.py","md5":"d5bca73303a0e4061f6d679a77e31720"},
-{"name":"src/installation_process.py","md5":"7dcea2454fd5b510627b3f0c458b9ec2"},
+{"name":"src/installation_process.py","md5":"95f7cd1e41f9a1fdd80625e0e91f955d"},
 {"name":"src/keyboard_names.py","md5":"a4fd46f6aa421b6778e1e63b41642926"},
 {"name":"src/validation.py","md5":"ee645ac311ce67829c60f6bcdd2636dc"},
-{"name":"src/check.py","md5":"9fb4dd99d486abf36f3c8d4f7ff94b13"},
+{"name":"src/check.py","md5":"455328f040b0a87051bfb00f07086c5c"},
 {"name":"src/keymap.py","md5":"d2fe37f3f485aa9fae2a583779cc7cad"},
 {"name":"src/slides.py","md5":"70ed97ca0bbff5d64ec678c5091f8d39"},
 {"name":"src/download.py","md5":"d6625d008e0dfd955a2c3fa3837b235d"},
@@ -115,4 +115,4 @@
 {"name":"data/antergos-logo-mini.png","md5":"06d9c5f25d0a7211cdd45a06af02eb15"},
 {"name":"data/antergos-logo.png","md5":"4100b553ea51c485398e0139bb2c8572"},
 {"name":"data/slides.html","md5":"536531d097fe1fa123680c6fe3ad53e7"},
-{"name":"data/packages.xml","md5":"5faf3b78b5906b082675a803a81b82c1"}]}
+{"name":"data/packages.xml","md5":"3e5df3215ab176784fd470b72eb7a362"}]}
