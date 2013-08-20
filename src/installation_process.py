@@ -884,7 +884,7 @@ EFIBEOF
                 if mklins[e].startswith("HOOKS"):
                    mklins[e] = mklins[e].strip('"') + ' lvm2"'
             with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
-                f.write("\n".join(mklins))
+                f.write("\n".join(mklins) + "\n")
         self.chroot_mount()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
         self.chroot_umount()
