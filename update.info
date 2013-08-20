@@ -1,4 +1,4 @@
-{"version":"0.3.1","files":[
+{"version":"0.3.2","files":[
 {"name":"generate-update-info.py","md5":"1ee8c39677c62ec00bb64e1ddb32127c"},
 {"name":"cnchi.py","md5":"7c9d7962734e8d71ff269fa6ecff0c21"},
 {"name":"src/bootinfo.py","md5":"768e85e286af53bf514300c1e0d5d31f"},
@@ -11,7 +11,7 @@
 {"name":"src/welcome.py","md5":"86f3a35faac3419cd82cb6d0068663d9"},
 {"name":"src/installation_alongside.py","md5":"b75b5a3b5760c4ba37e2270365c370e1"},
 {"name":"src/show_message.py","md5":"f077e08be742dd55988219bfd3620aef"},
-{"name":"src/info.py","md5":"83843cd2bfc7fe305a51e3e519a63eda"},
+{"name":"src/info.py","md5":"36f14d8b90ec08937e3ff8c705b15412"},
 {"name":"src/desktop.py","md5":"01dae3cb9ffaea4dd9f1fd17f440ae40"},
 {"name":"src/misc.py","md5":"01548b7618920a3f7ff762310e929e9a"},
 {"name":"src/user_info.py","md5":"224aa5a12c835545982b1aa8e8f3e692"},
