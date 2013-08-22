@@ -337,7 +337,7 @@ class Pac(object):
             return
 
         if level & pyalpm.LOG_ERROR:
-            if 'linux' not in self.target:
+            if 'linux' not in self.target and 'lxdm' not in self.target:
                 self.error = _("ERROR: %s") % line
                 #print(line)
                 self.release_transaction()
