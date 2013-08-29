@@ -123,13 +123,24 @@ class InstallationProcess(multiprocessing.Process):
         self.dest_dir = "/install"
         if not os.path.exists(self.dest_dir):
             os.makedirs(self.dest_dir)
+        else:
+            # If we're recovering from a failed/stoped install, there'll be
+            # some mounted directories. Try to unmount them first
+        
+            install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
+            for p in install_dirs:
+                p = os.path.join(self.dest_dir, p)
+                (fsname, fstype, writable) = misc.mount_info(p)
+                if fsname:
+                    subprocess.check_call(['umount', p])
+                    self.queue_event('debug', "%s unmounted" % p)
 
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
         self.initramfs = "initramfs-%s" % self.kernel_pkg       
 
         self.arch = os.uname()[-1]
-        
+                
         ## Create/Format partitions
         
         if self.method == 'automatic':
@@ -173,12 +184,7 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-            # Advanced method formats root by default
-            # THIS IS BAD BEHAVIOUR
-            #https://github.com/Antergos/Cnchi/issues/8
-            #Commenting out...not sure why we did this, we partition
-            #in advance installer...
-            #(error, msg) = fs.create_fs(root_partition, root_fs)
+            # Advanced method formats root by default in installation_advanced
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
@@ -279,27 +285,21 @@ class InstallationProcess(multiprocessing.Process):
         
         # Common repos
         
-        # Instead of hardcoding pacman.conf, we could use an external file
+        # TODO: Instead of hardcoding pacman.conf, we could use an external file
 
         with open("/tmp/pacman.conf", "wt") as tmp_file:
             tmp_file.write("[options]\n")
             tmp_file.write("Architecture = auto\n")
             tmp_file.write("SigLevel = PackageOptional\n")
-            #tmp_file.write("RootDir = %s" % self.dest_dir)
+            
+            tmp_file.write("RootDir = %s\n" % self.dest_dir)
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
             tmp_file.write("LogFile = /tmp/pacman.log\n\n")
-            
-            # This doesn't seem to work ¿?
-            '''
-            if self.settings.get("use_aria2"):
-                # Tell pacman to use aria2 to download packages
-                tmp_file.write("XferCommand = /usr/bin/aria2c --allow-overwrite=true -c --file-allocation=none --log-level=error -m2 -x2 --max-file-not-found=5 -k5M --no-conf -Rtrue --summary-interval=60 -t5 -d / -o %o %u\n\n")
-            '''
-            
+                       
             # ¿?
-            tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
-            tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+            #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
+            #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
 
             tmp_file.write("# Repositories\n\n")
 
@@ -331,6 +331,7 @@ class InstallationProcess(multiprocessing.Process):
             self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except:
             raise InstallError("Can't initialize pyalpm.")
+
         
     # Add gnupg pacman files to installed system
     # Needs testing, but it seems to be the way to do it now

@@ -12,4 +12,4 @@ cat /tmp/.tmp-mirrorlist /etc/pacman.d/mirrorlist > /tmp/.mirrorlist
 
 cp /tmp/.mirrorlist /etc/pacman.d/mirrorlist 2>&1
 
-rm /tmp/.rankmirrors
+#rm /tmp/.rankmirrors

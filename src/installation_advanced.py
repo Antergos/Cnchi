@@ -1277,6 +1277,18 @@ class InstallationAdvanced(Gtk.Box):
             if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                 changelist.append((e, createme, relabel, fmt, mnt))
 
+        # If we're recovering from a failed/stoped install, there'll be
+        # some mounted directories. Try to unmount them first
+
+        dest_dir = "/install"
+        install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
+        for p in install_dirs:
+            p = os.path.join(dest_dir, p)
+            (fsname, fstype, writable) = misc.mount_info(p)
+            if fsname:
+                subprocess.check_call(['umount', p])
+                logging.debug("%s unmounted" % p)
+
         if self.disks:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
@@ -1284,16 +1296,22 @@ class InstallationAdvanced(Gtk.Box):
                 for partition_path in partitions:
                     if self.gen_partition_uid(path=partition_path) in self.stage_opts:
                         if disk.device.busy:
-                            # There's some mounted partition
+                            # Check if there's some mounted partition
                             if pm.check_mounted(partitions[partition_path]):
-                                mount_point, fs, writable = self.get_mount_point(partition_path)
-                                msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
+                                mount_point, fs_type, writable = self.get_mount_point(partition_path)
+                                if "swap" in fs_type:
+                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % partition_path
+                                else:
+                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
                                 response = show.question(msg)
                                 if response != Gtk.ResponseType.YES:
                                     return []
                                 else:
                                     # unmount it!
-                                    subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                    if "swap" in fs_type:
+                                        subp = subprocess.Popen(['swapoff', partition_path], stdout=subprocess.PIPE)
+                                    else:
+                                        subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         
@@ -1303,7 +1321,6 @@ class InstallationAdvanced(Gtk.Box):
                             fmt = 'No'
                             
                         # Advanced method formats root by default
-                        # THIS IS BAD BEHAVIOUR
                         # https://github.com/Antergos/Cnchi/issues/8
                         if mnt == "/":
                             fmt = 'Yes'
@@ -1460,8 +1477,6 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Start installation process
     def start_installation(self):
-        ## TODO: should we add already mounted partitions to the list of
-        ## partitions we will mount in the new system?
         fs_devices = {} 
         mount_devices = {} 
         for disk_path in self.disks:

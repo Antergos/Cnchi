@@ -141,13 +141,19 @@ class PacmanConfig(object):
     def __init__(self, conf = None, options = None):
         self.options = {}
         self.repos = collections.OrderedDict()
+
+        # Default options
         self.options["RootDir"] = "/install"
         self.options["DBPath"]  = "/install/var/lib/pacman"
         self.options["GPGDir"]  = "/install/etc/pacman.d/gnupg/"
         self.options["LogFile"] = "/install/var/log/pacman.log"
         self.options["Architecture"] = os.uname()[-1]
+        
+        # If a pacman.conf file is given, we parse it
         if conf is not None:
             self.load_from_file(conf)
+            
+        # If an options array is given, we add it
         if options is not None:
             self.load_from_options(options)
 
