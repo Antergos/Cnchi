@@ -90,8 +90,8 @@ class Pac(object):
                 if 'HoldPkg' in self.pacman_conf.options:
                     self.holdpkg = self.pacman_conf.options['HoldPkg']
             except:
-                with open("/tmp/zchadsf", "wt") as fd:
-                    fd.write("WTF!")
+                with open("/tmp/pyalpm.log", "wt") as fd:
+                    fd.write("PacmanConfig or alpm init error.")
                 raise
 
     def init_transaction(self, **options):
