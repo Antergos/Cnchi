@@ -26,8 +26,8 @@
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
 
-cnchi_VERSION = "0.3.2.1"
-cnchi_LAST_STABLE = "0.2.1"
+cnchi_VERSION = "0.4"
+cnchi_LAST_STABLE = "0.3.2.1"
 cnchi_WEBSITE = "http://www.antergos.com"
 cnchi_AUTHORS = "faidoc, karasu, skinner, arcnexus, omelchek"
 cnchi_LICENSE = '''
