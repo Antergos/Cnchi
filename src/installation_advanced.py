@@ -1279,15 +1279,16 @@ class InstallationAdvanced(Gtk.Box):
 
         # If we're recovering from a failed/stoped install, there'll be
         # some mounted directories. Try to unmount them first
-
+        
         dest_dir = "/install"
-        install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
-        for p in install_dirs:
-            p = os.path.join(dest_dir, p)
-            (fsname, fstype, writable) = misc.mount_info(p)
-            if fsname:
-                subprocess.check_call(['umount', p])
-                logging.debug("%s unmounted" % p)
+        if os.path.exists(dest_dir):    
+            install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
+            for p in install_dirs:
+                p = os.path.join(dest_dir, p)
+                (fsname, fstype, writable) = misc.mount_info(p)
+                if fsname:
+                    subprocess.check_call(['umount', p])
+                    logging.debug("%s unmounted" % p)
 
         if self.disks:
             for disk_path in self.disks:

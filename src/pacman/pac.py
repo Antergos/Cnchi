@@ -77,22 +77,17 @@ class Pac(object):
         self.last_event = {}
         
         if conf != None:
-            try:
-                self.pacman_conf = pac_config.PacmanConfig(conf)
-                self.handle = self.pacman_conf.initialize_alpm()
-                self.handle.dlcb = self.cb_dl
-                self.handle.totaldlcb = self.cb_totaldl
-                self.handle.eventcb = self.cb_event
-                self.handle.questioncb = self.cb_conv
-                self.handle.progresscb = self.cb_progress
-                self.handle.logcb = self.cb_log
-                self.holdpkg = None
-                if 'HoldPkg' in self.pacman_conf.options:
-                    self.holdpkg = self.pacman_conf.options['HoldPkg']
-            except:
-                with open("/tmp/pyalpm.log", "wt") as fd:
-                    fd.write("PacmanConfig or alpm init error.")
-                raise
+            self.pacman_conf = pac_config.PacmanConfig(conf)
+            self.handle = self.pacman_conf.initialize_alpm()
+            self.handle.dlcb = self.cb_dl
+            self.handle.totaldlcb = self.cb_totaldl
+            self.handle.eventcb = self.cb_event
+            self.handle.questioncb = self.cb_conv
+            self.handle.progresscb = self.cb_progress
+            self.handle.logcb = self.cb_log
+            self.holdpkg = None
+            if 'HoldPkg' in self.pacman_conf.options:
+                self.holdpkg = self.pacman_conf.options['HoldPkg']
 
     def init_transaction(self, **options):
         try:
