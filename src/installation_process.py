@@ -70,14 +70,14 @@ class InstallError(Exception):
 
 class InstallationProcess(multiprocessing.Process):
     def __init__(self, settings, callback_queue, mount_devices, \
-                 fs_devices, ssd=None, alternate_package_list=""):
+                 fs_devices, ssd=None, alternate_package_list="", blvm=False):
         multiprocessing.Process.__init__(self)
                 
         self.alternate_package_list = alternate_package_list
         
         self.callback_queue = callback_queue
         self.settings = settings
-        
+        self.blvm = blvm
         self.method = self.settings.get('partition_mode')
         
         self.queue_event('info', _("Installing using the '%s' method") % self.method)
@@ -877,6 +877,14 @@ EFIBEOF
 
     # runs mkinitcpio on the target system
     def run_mkinitcpio(self):
+        if self.blvm:
+            with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
+                mklins = [x.strip() for x in f.readlines()]
+            for e in range(len(mklins)):
+                if mklins[e].startswith("HOOKS"):
+                   mklins[e] = mklins[e].strip('"') + ' lvm2"'
+            with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
+                f.write("\n".join(mklins) + "\n")
         self.chroot_mount()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
         self.chroot_umount()
