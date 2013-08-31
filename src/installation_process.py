@@ -904,6 +904,27 @@ EFIBEOF
                     # uncomment line
                     line = line[1:]
                 gen.write(line)
+
+    def encrypt_home(self):
+        # TODO: ecryptfs-utils package is needed. It should be added in the livecd AND the installed packages
+        
+        # Load ecryptfs module
+        subprocess.check_call(['modprobe', 'ecryptfs'])
+        
+        # Get the username and user home dir
+        username = self.settings.get('username')
+        home_dir = os.path.join("/install/home", username)
+        
+        # The next steps are from http://sysphere.org/~anrxc/j/articles/ecryptfs/index.html
+        
+        # TODO: Prepare the eCryptfs directory structure
+        # mkdir -p /home/.ecryptfs/user/.Private 
+        # chmod 755 /home/.ecryptfs 
+        # chmod -R 700 /home/.ecryptfs/user 
+        # chown -R user:user /home/.ecryptfs/user 
+        # ln -s /home/.ecryptfs/user/.Private /home/user/.Private 
+        # chmod 500 /home/user
+        
         
     def configure_system(self):
         # final install steps
@@ -1119,3 +1140,8 @@ EFIBEOF
                 intel_conf.write('\tDriver      "intel"\n')
                 intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
                 intel_conf.write('EndSection\n')
+                
+        # encrypt home directory if requested
+        if self.settings.get('encrypt_home'):
+            self.encrypt_home()
+

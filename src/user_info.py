@@ -33,6 +33,7 @@ from gi.repository import Gtk
 import os
 import validation
 import config
+import show_message as show
 
 _next_page = "slides"
 _prev_page = "keymap"
@@ -167,8 +168,17 @@ class UserInfo(Gtk.Box):
         self.settings.set('password', self.entry['password'].get_text())
         self.settings.set('require_password', self.require_password)
         
-        # TODO: Allow to encrypt home directory
         self.settings.set('encrypt_home', False)
+        if self.login['encrypt']:
+            m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files well.\n\n")
+            m += _("Don't worry, for most intents and purposes this deficiency does not pose a problem.\n\n")
+            m += _("Anyway, one popular and inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and may lead to intense disk starvation.\n\n")
+            m += _("A simple workaround is to place sparse files in an unencrypted .Public directory\n\n")
+            m += _("Look at https://wiki.archlinux.org/index.php/ECryptfs for detailed information\n\n")
+            m += _("Are you sure you want to encrypt your home directory?\n")
+            res = show.question(m)
+            if res == Gtk.ResponseType.YES:
+                self.settings.set('encrypt_home', True)
         
         # this way installer_process will know all info has been entered
         self.settings.set('user_info_done', True)
