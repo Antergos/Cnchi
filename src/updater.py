@@ -41,6 +41,9 @@ import logging
 
 url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
 
+src_dir = os.path.dirname(__file__) or '.'
+base_dir = os.path.join(src_dir, "..")
+
 class Updater():
     def __init__(self, force_update=False):
         self.web_version = ""
@@ -165,8 +168,6 @@ class Updater():
 
 
 if __name__ == '__main__':
-    src_dir = os.path.dirname(__file__) or '.'
-    base_dir = os.path.join(src_dir, "..")
     updater = Updater(force_update=True)
     updater.update()
             
