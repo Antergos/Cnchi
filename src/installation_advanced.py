@@ -1277,18 +1277,29 @@ class InstallationAdvanced(Gtk.Box):
             if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                 changelist.append((e, createme, relabel, fmt, mnt))
 
-        # If we're recovering from a failed/stoped install, there'll be
-        # some mounted directories. Try to unmount them first
-        
         dest_dir = "/install"
         if os.path.exists(dest_dir):    
+            # If pacman was stoped and /var is in another partition than root
+            # (so as to be able to resume install), database lock file will still be in place.
+            # We must delete it or this new installation will fail
+
+            db_lock = os.path.join(dest_dir, "var/lib/pacman/db.lck")
+            if os.path.exists(db_lock):
+                with misc.raised_privileges():
+                    os.remove(db_lock)
+                logging.debug("%s deleted" % db_lock)
+
+            # If we're recovering from a failed/stoped install, there'll be
+            # some mounted directories. Try to unmount them first
+        
             install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
             for p in install_dirs:
                 p = os.path.join(dest_dir, p)
-                (fsname, fstype, writable) = misc.mount_info(p)
-                if fsname:
-                    subprocess.check_call(['umount', p])
-                    logging.debug("%s unmounted" % p)
+                if os.path.exists(p):
+                    (fsname, fstype, writable) = misc.mount_info(p)
+                    if fsname:
+                        subprocess.check_call(['umount', p])
+                        logging.debug("%s unmounted" % p)
 
         if self.disks:
             for disk_path in self.disks:
