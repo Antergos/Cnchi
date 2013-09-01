@@ -217,7 +217,7 @@ class InstallationProcess(multiprocessing.Process):
                     try:
                         mount_dir = self.dest_dir + path
                         if not os.path.exists(mount_dir):
-                            os.mkdir(mount_dir)
+                            os.makedirs(mount_dir)
                         txt = _("Mounting partition %s into %s directory") % (mp, mount_dir)
                         self.queue_event('debug', txt)
                         subprocess.check_call(['mount', mp, mount_dir])
