@@ -308,7 +308,7 @@ class AutoTimezoneThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            loggging.warning(_("In timezone, can't get network status"))
+            logging.warning(_("In timezone, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
