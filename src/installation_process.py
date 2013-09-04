@@ -911,9 +911,11 @@ EFIBEOF
         # Load ecryptfs module
         subprocess.check_call(['modprobe', 'ecryptfs'])
         
-        # Get the username and user home dir
+        # Get the username and passwd
         username = self.settings.get('username')
+        passwd = self.settings.get('password')
         
+        # Prepare directory vars
         home_root = os.path.join(self.dest_dir, "home")             # /install/home
         home_user = os.path.join(home_root, username)               # /install/home/user
         home_user_private = os.path.join(home_user, ".Private")     # /install/home/user/.Private
@@ -945,16 +947,25 @@ EFIBEOF
         subprocess.check_call(["chmod", "500", home_user])
         
         # Directory /home/.ecryptfs is owned by root and it is a central place for everything related to eCryptfs and user accounts.
-        # Everything under /home/.ecryptfs/user is owned by you and the actual encrypted data will be stored in /home/.ecryptfs/user/.Private.
+        # Everything under /home/.ecryptfs/user is owned by our user and the actual encrypted data will be stored in /home/.ecryptfs/user/.Private.
         # That directory will be mounted on top of /home/user (for convenience I will use the symlink /home/user/.Private when mounting).
         # While /home/user is not mounted we made sure that nothing can be written there with that last chmod command.
         # This will prevent cronjobs and other software from causing problems. 
         
+        # Generate passphrase
+        passphrase = subprocess.check_output("< /dev/urandom tr -cd \[:graph:\] | fold -w 32 | head -n 5")
+        
+        #ecryptfs-add-passphrase
+        #passphrase = ?
+        #key = ?
+        #sig1 = ?
+        #sig2 = ?
+        
         ## We can now mount eCryptfs over /home/user - notice that while mounted it will have the same permissions as the lower .Private directory: 
         
-        #mount -t ecryptfs /home/user/.Private /home/user
-        
-        
+        options = "key=passphrase,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=yes,ecryptfs_enable_filename_crypto=yes,ecryptfs_sig=%s,ecryptfs_fnek_sig=%s,passwd=%s" % (sig1, sig2, passwd)
+        subprocess.check_call(["mount", "-t", "ecryptfs", "-o", options, home_user_private, home_user])
+                        
     def configure_system(self):
         # final install steps
         # set clock, language, timezone
