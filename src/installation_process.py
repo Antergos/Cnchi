@@ -906,7 +906,8 @@ EFIBEOF
                 gen.write(line)
 
     def encrypt_home(self):
-        # TODO: ecryptfs-utils package is needed. It should be added in the livecd AND the installed packages
+        # TODO: ecryptfs-utils, rsync and lsof packages are needed.
+        # They should be added in the livecd AND in the "to install packages" xml list
         
         # Load ecryptfs module
         subprocess.check_call(['modprobe', 'ecryptfs'])
@@ -915,56 +916,17 @@ EFIBEOF
         username = self.settings.get('username')
         passwd = self.settings.get('password')
         
-        # Prepare directory vars
-        home_root = os.path.join(self.dest_dir, "home")             # /install/home
-        home_user = os.path.join(home_root, username)               # /install/home/user
-        home_user_private = os.path.join(home_user, ".Private")     # /install/home/user/.Private
+        # Migrate user home directory
+        command = "LOGINPASS=%s ecryptfs-migrate-home -u %s" % (passwd, username)
+        outp = subprocess.check_output(command)
         
-        ecrypt_dir = os.path.join(home_root, ".ecryptfs")           # /install/home/.ecryptfs
-        ecrypt_user = os.path.join(ecrypt_dir, username)            # /install/home/.ecryptfs/user
-        ecrypt_user_private = os.path.join(ecrypt_user, ".Private") # /install/home/.ecryptfs/user/.Private
+        with open(os.path.join(self.dest_dir, "tmp/cnchi-ecryptfs.log", "wt")) as f:
+            f.write(outp)
+                
+        subprocess.check_call(['su', username])
         
-        # The next steps are from http://sysphere.org/~anrxc/j/articles/ecryptfs/index.html
+        # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
         
-        ## TODO: Prepare the eCryptfs directory structure
-
-        # mkdir -p /home/.ecryptfs/user/.Private 
-        os.makedirs(ecrypt_user_private)
-
-        # chmod 755 /home/.ecryptfs 
-        subprocess.check_call(["chmod", "755", ecrypt_dir])
-        
-        # chmod -R 700 /home/.ecryptfs/user 
-        subprocess.check_call(["chmod", "-R", "700", ecrypt_user])
-        
-        # chown -R user:user /home/.ecryptfs/user 
-        subprocess.check_call(["chown", "-R", "%s:users" % username, ecrypt_user])
-        
-        # ln -s /home/.ecryptfs/user/.Private /home/user/.Private 
-        subprocess.check_call(["ln", "-s", ecrypt_user_private, home_user_private])
-        
-        # chmod 500 /home/user
-        subprocess.check_call(["chmod", "500", home_user])
-        
-        # Directory /home/.ecryptfs is owned by root and it is a central place for everything related to eCryptfs and user accounts.
-        # Everything under /home/.ecryptfs/user is owned by our user and the actual encrypted data will be stored in /home/.ecryptfs/user/.Private.
-        # That directory will be mounted on top of /home/user (for convenience I will use the symlink /home/user/.Private when mounting).
-        # While /home/user is not mounted we made sure that nothing can be written there with that last chmod command.
-        # This will prevent cronjobs and other software from causing problems. 
-        
-        # Generate passphrase
-        passphrase = subprocess.check_output("< /dev/urandom tr -cd \[:graph:\] | fold -w 32 | head -n 5")
-        
-        #ecryptfs-add-passphrase
-        #passphrase = ?
-        #key = ?
-        #sig1 = ?
-        #sig2 = ?
-        
-        ## We can now mount eCryptfs over /home/user - notice that while mounted it will have the same permissions as the lower .Private directory: 
-        
-        options = "key=passphrase,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=yes,ecryptfs_enable_filename_crypto=yes,ecryptfs_sig=%s,ecryptfs_fnek_sig=%s,passwd=%s" % (sig1, sig2, passwd)
-        subprocess.check_call(["mount", "-t", "ecryptfs", "-o", options, home_user_private, home_user])
                         
     def configure_system(self):
         # final install steps
