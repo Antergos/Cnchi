@@ -1279,16 +1279,6 @@ class InstallationAdvanced(Gtk.Box):
 
         dest_dir = "/install"
         if os.path.exists(dest_dir):    
-            # If pacman was stoped and /var is in another partition than root
-            # (so as to be able to resume install), database lock file will still be in place.
-            # We must delete it or this new installation will fail
-
-            db_lock = os.path.join(dest_dir, "var/lib/pacman/db.lck")
-            if os.path.exists(db_lock):
-                with misc.raised_privileges():
-                    os.remove(db_lock)
-                logging.debug("%s deleted" % db_lock)
-
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first
         

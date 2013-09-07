@@ -227,6 +227,19 @@ class InstallationProcess(multiprocessing.Process):
                         # self.queue_fatal_event(_("Couldn't mount %s") % mount_dir)
                         # return False
 
+
+        # If pacman was stoped and /var is in another partition than root
+        # (so as to be able to resume install), database lock file will still be in place.
+        # We must delete it or this new installation will fail
+
+        db_lock = os.path.join(self.dest_dir, "var/lib/pacman/db.lck")
+        if os.path.exists(db_lock):
+            with misc.raised_privileges():
+                os.remove(db_lock)
+            logging.debug("%s deleted" % db_lock)
+
+
+        # Create some needed folders
         try:
             subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
             subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
