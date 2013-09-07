@@ -159,7 +159,7 @@ class UserInfo(Gtk.Box):
 
         self.password_strength.hide()
         
-        self.login['encrypt'].hide()
+        #self.login['encrypt'].hide()
 
     def store_values(self):
         self.settings.set('fullname', self.entry['fullname'].get_text())
@@ -169,7 +169,7 @@ class UserInfo(Gtk.Box):
         self.settings.set('require_password', self.require_password)
         
         self.settings.set('encrypt_home', False)
-        if self.login['encrypt']:
+        if self.encrypt_home:
             m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files well.\n\n")
             m += _("Don't worry, for most intents and purposes this deficiency does not pose a problem.\n\n")
             m += _("Anyway, one popular and inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and may lead to intense disk starvation.\n\n")

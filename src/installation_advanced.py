@@ -1254,7 +1254,6 @@ class InstallationAdvanced(Gtk.Box):
                     else:
                         fmt = 'No'
                     # Advanced method formats root by default
-                    # THIS IS BAD BEHAVIOUR
                     # https://github.com/Antergos/Cnchi/issues/8
                     if mnt == "/":
                         fmt = 'Yes'
@@ -1277,20 +1276,6 @@ class InstallationAdvanced(Gtk.Box):
             if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                 changelist.append((e, createme, relabel, fmt, mnt))
 
-        dest_dir = "/install"
-        if os.path.exists(dest_dir):    
-            # If we're recovering from a failed/stoped install, there'll be
-            # some mounted directories. Try to unmount them first
-        
-            install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
-            for p in install_dirs:
-                p = os.path.join(dest_dir, p)
-                if os.path.exists(p):
-                    (fsname, fstype, writable) = misc.mount_info(p)
-                    if fsname:
-                        subprocess.check_call(['umount', p])
-                        logging.debug("%s unmounted" % p)
-
         if self.disks:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
@@ -1305,15 +1290,23 @@ class InstallationAdvanced(Gtk.Box):
                                     msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % partition_path
                                 else:
                                     msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
-                                response = show.question(msg)
-                                if response != Gtk.ResponseType.YES:
-                                    return []
+                                    
+                                if "install" in mount_point:
+                                    # If we're recovering from a failed/stoped install, there'll be
+                                    # some mounted directories. Unmount them without asking.
+                                    subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                    logging.debug("%s unmounted" % mount_point)
                                 else:
-                                    # unmount it!
-                                    if "swap" in fs_type:
-                                        subp = subprocess.Popen(['swapoff', partition_path], stdout=subprocess.PIPE)
+                                    response = show.question(msg)
+                                    if response != Gtk.ResponseType.YES:
+                                        return []
                                     else:
-                                        subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                        # unmount it!
+                                        if "swap" in fs_type:
+                                            subp = subprocess.Popen(['swapoff', partition_path], stdout=subprocess.PIPE)
+                                        else:
+                                            subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                            logging.debug("%s unmounted" % mount_point)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         
