@@ -127,14 +127,19 @@ class InstallationProcess(multiprocessing.Process):
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first
         
-            install_dirs = { "boot", "dev", "proc", "sys", "var", "" }
+            install_dirs = { "boot", "dev", "proc", "sys", "var" }
             for p in install_dirs:
                 p = os.path.join(self.dest_dir, p)
                 (fsname, fstype, writable) = misc.mount_info(p)
                 if fsname:
                     subprocess.check_call(['umount', p])
                     self.queue_event('debug', "%s unmounted" % p)
-
+            # now we can unmount /install
+            (fsname, fstype, writable) = misc.mount_info(self.dest_dir)
+            if fsname:
+                subprocess.check_call(['umount', self.dest_dir])
+                self.queue_event('debug', "%s unmounted" % self.dest_dir)
+            
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
         self.initramfs = "initramfs-%s" % self.kernel_pkg       
