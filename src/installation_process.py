@@ -38,7 +38,8 @@ import sys
 import time
 import shutil
 import xml.etree.ElementTree as etree
-from urllib.request import urlopen
+import urllib.request
+import urllib.error
 import crypt
 import download
 import config
@@ -391,11 +392,12 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', "Getting package list...")
 
             try:
-                packages_xml = urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3])
-            except URLError as e:
+                packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3])
+            except urllib.error.URLError as e:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
                 self.queue_event('debug', _("Can't retrieve remote package list, using a local file instead."))
+                #self.queue_event('debug', e)
                 data_dir = self.settings.get("DATA_DIR")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
 
