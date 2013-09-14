@@ -274,7 +274,7 @@ class Main(Gtk.Window):
         with open(tmp_running, "wt") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
-        GLib.timeout_add(100, self.pages["slides"].manage_events_from_cb_queue)
+        GLib.timeout_add(500, self.pages["slides"].manage_events_from_cb_queue)
 
     # TODO: some of these tmp files are created with sudo privileges
     # (this should be fixed) meanwhile, we need sudo privileges to remove them

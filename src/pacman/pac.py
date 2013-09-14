@@ -38,7 +38,7 @@ import sys
 import locale
 import gettext
 import math
-
+import logging
 from multiprocessing import Queue
 import queue
 
@@ -264,7 +264,7 @@ class Pac(object):
                 return
         
         self.last_event[event_type] = event_text
-        
+                
         if event_type == "error":
             # format message to show file, function, and line where the error
             # was issued
@@ -279,6 +279,8 @@ class Pac(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
+
+        logging.info(event_text)
         
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
