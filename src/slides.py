@@ -130,47 +130,50 @@ class Slides(Gtk.Box):
     # We should do as less as possible here, we want to maintain our
     # queue message as empty as possible
     def manage_events_from_cb_queue(self):
-        try:
-            event = self.callback_queue.get_nowait()
-        except queue.Empty:
-            return True
-            
         if self.fatal_error:
             return False
 
-        if event[0] == "percent":
-            self.progress_bar.set_fraction(event[1])
-        elif event[0] == "finished":
-            logging.info(event[1])
-            self.set_message(self.install_ok)
-            response = show.question(self.install_ok)
-            if response == Gtk.ResponseType.YES:
-                self.reboot()
-            else:
-                tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log"]
-                for t in tmp_files:
-                    p = os.path.join("/tmp", t)
-                    if os.path.exists(p):
-                        # TODO: some of these tmp files are created with sudo privileges
-                        # (this should be fixed) meanwhile, we need sudo privileges to remove them
-                        with misc.raised_privileges():
-                            os.remove(p)
-                self.callback_queue.task_done()
-                Gtk.main_quit()
-                    
-            self.exit_button.show()
-            return False
-        elif event[0] == "error":
-            self.callback_queue.task_done()
-            # a fatal error has been issued. We empty the queue
-            self.empty_queue()
-            self.fatal_error = True
-            show.fatal_error(event[1])
-        else:
-            #logging.info(event[1])
-            self.set_message(event[1])
+        while self.callback_queue.empty() == False:
+            try:
+                event = self.callback_queue.get_nowait()
+            except queue.Empty:
+                return True
+
+            if event[0] == "percent":
+                self.progress_bar.set_fraction(event[1])
+            elif event[0] == "finished":
+                logging.info(event[1])
+                self.set_message(self.install_ok)
+                response = show.question(self.install_ok)
+                if response == Gtk.ResponseType.YES:
+                    self.reboot()
+                else:
+                    tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log"]
+                    for t in tmp_files:
+                        p = os.path.join("/tmp", t)
+                        if os.path.exists(p):
+                            # TODO: some of these tmp files are created with sudo privileges
+                            # (this should be fixed) meanwhile, we need sudo privileges to remove them
+                            with misc.raised_privileges():
+                                os.remove(p)
+                    self.callback_queue.task_done()
+                    Gtk.main_quit()
                         
-        self.callback_queue.task_done()
+                self.exit_button.show()
+                return False
+            elif event[0] == "error":
+                self.callback_queue.task_done()
+                # a fatal error has been issued. We empty the queue
+                self.empty_queue()
+                self.fatal_error = True
+                show.fatal_error(event[1])
+                return False
+            else:
+                #logging.info(event[1])
+                self.set_message(event[1])
+                            
+            self.callback_queue.task_done()
+        
         return True
         
     def empty_queue(self):
