@@ -33,7 +33,7 @@ import config
 import os
 import logging
 
-_next_page = "installation_ask"
+_next_page = "features"
 _prev_page = "check"
 
 class DesktopAsk(Gtk.Box):

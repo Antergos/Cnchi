@@ -36,7 +36,7 @@ import logging
 
 import config
 
-_prev_page = "desktop"
+_prev_page = "features"
 
 class InstallationAsk(Gtk.Box):
 
