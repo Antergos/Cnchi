@@ -215,6 +215,12 @@ class Check(Gtk.Box):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        # We now have a features screen, so we don't need this here
+        # Just hide it for now
+        self.third_party_info.hide()
+        self.third_party_checkbutton.hide()
+        
         self.forward_button.set_sensitive(self.check_all())
 
         # set timer

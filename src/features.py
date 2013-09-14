@@ -54,6 +54,22 @@ class Features(Gtk.Box):
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
         self.ui.connect_signals(self)
+        
+        self.features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        
+        self.labels = {}
+        self.titles = {}
+        self.switches = {}
+        
+        for feature in self.features:
+            object_name = "label_" + feature
+            self.labels[feature] = self.ui.get_object(object_name)
+
+            object_name = "label_title_" + feature
+            self.titles[feature] = self.ui.get_object(object_name)
+
+            object_name = "switch_" + feature
+            self.switches[feature] = self.ui.get_object(object_name)
 
         super().add(self.ui.get_object("features"))
 
@@ -62,42 +78,65 @@ class Features(Gtk.Box):
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
-        '''
-        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least 3GB available drive space")
-        self.prepare_enough_space.props.label = txt
+        # Bluetooth
+        txt = _("Bluetooth support")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["bluetooth"].set_markup(txt)
 
-        self.prepare_power_source = self.ui.get_object("prepare_power_source")
-        txt = _("is plugged in to a power source")
-        self.prepare_power_source.props.label = txt
+        txt = _("Without Bluetooth support you can't use Bluetooth devices")
+        self.labels["bluetooth"].set_markup(txt)
 
-        self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
-        txt = _("is connected to the Internet")
-        self.prepare_network_connection.props.label = txt
+        # Printing support
+        txt = _("Printing support (cups)")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["cups"].set_markup(txt)
+        
+        txt = _("This includes printer drivers and manage tools")
+        self.labels["cups"].set_markup(txt)
 
-        self.prepare_best_results = self.ui.get_object("prepare_best_results")
-        txt = _("For best results, please ensure that this computer:")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.prepare_best_results.set_markup(txt)
+        # LibreOffice
+        txt = _("LibreOffice")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["office"].set_markup(txt)
+        
+        txt = _("Office suite (word processor, spreadsheet, ...)")
+        self.labels["office"].set_markup(txt)
 
-        self.third_party_info = self.ui.get_object("third_party_info")
-        txt = _("Antergos uses third-party software to play Flash, MP3 " \
-                "and other media. Some of this software is propietary. The " \
-                "software is subject to license terms included with its documentation.")
-        self.third_party_info.set_label(txt)
+        # Visual effects
+        txt = _("Visual effects")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["visual"].set_markup(txt)
+        
+        txt = _("Visual effects such as transparencies, shadows, etc.")
+        self.labels["visual"].set_markup(txt)
 
-        self.third_party_checkbutton = self.ui.get_object("third_party_checkbutton")
-        txt = _("Install this third-party software")
-        self.third_party_checkbutton.set_label(txt)
-        '''
+        # Firewall
+        txt = _("Firewall")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["firewall"].set_markup(txt)
+
+        txt = _("Activates your firewall (closes all ports by default)")
+        self.labels["firewall"].set_markup(txt)
+
+        # Propietary packages (third_party)
+        txt = _("Propietary packages")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["third_party"].set_markup(txt)
+        
+        txt = _("Third-party software to play Flash, MP3 and other media")
+        self.labels["third_party"].set_markup(txt)
 
     def store_values(self):
         # Enable forward button
         self.forward_button.set_sensitive(True)
         
-        # TODO: store values
+        # Get switches' values and store them
+        for feature in self.features:
+            isactive = self.switches[feature].get_active()
+            self.settings.set("feature_" + feature, isactive)
+            if isactive:
+                logging.debug("Selected '%s' feature to install" % feature)
 
-        
         return True
 
     def get_prev_page(self):
