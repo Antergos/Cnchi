@@ -205,6 +205,7 @@
         <pkgname>sakura</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname>zukitwo-theme-openbox</pkgname>
+        <pkgname>zukitwo-themes</pkgname>
         <pkgname>openbox-menu</pkgname>
         <pkgname>compton</pkgname>
         <pkgname>xorg-xinit</pkgname>
@@ -212,6 +213,13 @@
         <pkgname>xnoise</pkgname>
         <pkgname>slimlock</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>scrot</pkgname>
+        <pkgname>gpicview</pkgname>
+        <pkgname>arandr</pkgname>
+        <pkgname>lxinput</pkgname>
+        <pkgname>ttf-droid</pkgname>
+        <pkgname>ttf-ubuntu-font-family</pkgname>
     </openbox_desktop>
 
 	<!-- Third party software. Some of it is propietary -->
