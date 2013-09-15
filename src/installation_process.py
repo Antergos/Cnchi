@@ -567,6 +567,7 @@ class InstallationProcess(multiprocessing.Process):
         features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
 
         for feature in features:
+			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Selecting %s feature.' % feature)
                 for child in root.iter(feature):
@@ -1166,6 +1167,15 @@ EFIBEOF
                 intel_conf.write('\tDriver      "intel"\n')
                 intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
                 intel_conf.write('EndSection\n')
+                
+        # Setup ufw if it's an user wanted feature
+        if self.settings.get("feature_firewall"):
+			pass
+			# ufw default deny
+			# ufw allow Transmission
+			# ufw enable
+			# systemctl enable ufw.service
+			
                 
         # encrypt home directory if requested
         if self.settings.get('encrypt_home'):

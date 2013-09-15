@@ -82,7 +82,6 @@ class Features(Gtk.Box):
         txt = _("Bluetooth support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
-
         txt = _("Without Bluetooth support you can't use Bluetooth devices")
         self.labels["bluetooth"].set_markup(txt)
 
@@ -90,15 +89,13 @@ class Features(Gtk.Box):
         txt = _("Printing support (cups)")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
-        
         txt = _("This includes printer drivers and manage tools")
         self.labels["cups"].set_markup(txt)
 
         # LibreOffice
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["office"].set_markup(txt)
-        
+        self.titles["office"].set_markup(txt)        
         txt = _("Office suite (word processor, spreadsheet, ...)")
         self.labels["office"].set_markup(txt)
 
@@ -106,23 +103,20 @@ class Features(Gtk.Box):
         txt = _("Visual effects")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
-        
         txt = _("Visual effects such as transparencies, shadows, etc.")
         self.labels["visual"].set_markup(txt)
 
         # Firewall
-        txt = _("Firewall")
+        txt = _("Uncomplicated firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-
-        txt = _("Activates your firewall (closes all ports by default)")
+        txt = _("Installs ufw and denies all traffic by default (use gufw to setup it)")
         self.labels["firewall"].set_markup(txt)
 
         # Propietary packages (third_party)
         txt = _("Propietary packages")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["third_party"].set_markup(txt)
-        
+        self.titles["third_party"].set_markup(txt)  
         txt = _("Third-party software to play Flash, MP3 and other media")
         self.labels["third_party"].set_markup(txt)
 
