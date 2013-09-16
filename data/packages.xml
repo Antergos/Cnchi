@@ -207,7 +207,6 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>zukitwo-themes</pkgname>
         <pkgname>openbox-menu</pkgname>
-        <pkgname>compton</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
         <pkgname>xnoise</pkgname>
@@ -222,11 +221,53 @@
         <pkgname>ttf-ubuntu-font-family</pkgname>
     </openbox_desktop>
 
-	<!-- Third party software. Some of it is propietary -->
-	<third_party>
-		<pkgname>flashplugin</pkgname>
-		<pkgname>gstreamer0.10-ugly-plugins</pkgname>
-	</third_party>
+    <!-- User desired features -->
+    <user_features>
+        <bluetooth>
+            <pkgname>bluez</pkgname>
+            <pkgname>bluez-utils</pkgname>
+        </bluetooth>
+        
+        <cups>
+            <pkgname>libcups</pkgname>
+            <pkgname>cups</pkgname>
+            <pkgname>cups-filters</pkgname>
+            <pkgname>ghostscript</pkgname>
+            <pkgname>gsfonts</pkgname>
+            <!-- printer drivers -->
+            <pkgname>gutenprint</pkgname>
+            <pkgname>foomatic-db</pkgname>
+            <pkgname>foomatic-db-engine</pkgname>
+            <pkgname>foomatic-db-nonfree</pkgname>
+            <pkgname>foomatic-filters</pkgname>
+            <pkgname>hplip</pkgname>
+            <pkgname>splix</pkgname>
+        </cups>
+        
+        <office>
+            <pkgname>libreoffice-calc</pkgname>
+            <pkgname>libreoffice-common</pkgname>
+            <pkgname>libreoffice-gnome</pkgname>
+            <pkgname>libreoffice-impress</pkgname>
+            <pkgname>libreoffice-writer</pkgname>
+        </office>
+        
+        <visual>
+            <pkgname>compton</pkgname>
+            <pkgname>paranoid</pkgname>
+        </visual>
+        
+        <firewall>
+            <pkgname>ufw</pkgname>
+            <!-- <pkgname>gufw</pkgname> -->
+        </firewall>
+        
+        <!-- Third party software. Some of it is propietary -->
+        <third_party>
+            <pkgname>flashplugin</pkgname>
+            <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        </third_party>    
+    </user_features>
 
 	<graphics>
 		<nvidia>

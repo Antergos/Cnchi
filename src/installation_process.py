@@ -28,7 +28,6 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-#from multiprocessing import Process
 import multiprocessing
 import queue
 
@@ -829,52 +828,7 @@ class InstallationProcess(multiprocessing.Process):
                   '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
                   'boot/grub/grub.cfg'])
 
-        '''
         # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
-        bootmgr_label = "Antergos (GRUB)"
-        bootmgr_loader_dir = "arch_grub"
-        bootmgr_loader_file = "grub%s.efi" % spec_uefi_arch
-
-        try:
-            uefisysdev = subprocess.check_output("df -T %s/boot/efi | tail -n +2 | awk '{print $1}'" % d)
-            disc = subprocess.check_output("echo %s | sed 's/\(.\{8\}\).*/\1/'" % uefisysdev)
-            uefisys_part_num = subprocess.check_output(["blkid", "-p", "-i", "-s", "PART_ENTRY_NUMBER", "-o", "value", uefisysdev])
-        except:
-            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
-            return
-        
-        '''
-
-        '''
-        if [[ -d "${DESTDIR}/sys/firmware/efi/vars" ]]; then
-            cat << EFIBEOF > "${DESTDIR}/efibootmgr_run.sh"
-#!/usr/bin/env bash
-
-for _bootnum in \$(efibootmgr | grep '^Boot[0-9]' | fgrep -i '${_EFIBOOTMGR_LABEL}' | cut -b5-8) ; do
-    efibootmgr --bootnum "\${_bootnum}" --delete-bootnum
-done
-
-echo
-efibootmgr --verbose --create --gpt --disk "${_EFIBOOTMGR_DISC}" --part "${_EFIBOOTMGR_PART_NUM}" --write-signature --label '${_EFIBOOTMGR_LABEL}' --loader '\\EFI\\${_EFIBOOTMGR_LOADER_DIR}\\${_EFIBOOTMGR_LOADER_FILE}'
-echo
-
-EFIBEOF
-            
-            chmod a+x "${DESTDIR}/efibootmgr_run.sh"
-            chroot "${DESTDIR}" "/usr/bin/bash" "/efibootmgr_run.sh" &>"/tmp/efibootmgr_run.log"
-            mv "${DESTDIR}/efibootmgr_run.sh" "/tmp/efibootmgr_run.sh"
-        
-        else
-            DIALOG --msgbox $"${DESTDIR}/sys/firmware/efi/vars/ directory not found. Check whether you have booted in UEFI boot mode and create a boot entry for ${_EFIBOOTMGR_LABEL} in the UEFI Boot Manager." 0 0
-        fi
-        
-        mkdir -p "${DESTDIR}/boot/efi/EFI/boot"
-        
-        rm -f "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
-        
-        cp -f "${DESTDIR}/boot/efi/EFI/arch_grub/grub${SPEC_UEFI_ARCH}.efi" "${DESTDIR}/boot/efi/EFI/boot/boot${SPEC_UEFI_ARCH}.efi"
-    
-        '''        
         
 
     def enable_services(self, services):
@@ -1170,11 +1124,11 @@ EFIBEOF
                 
         # Setup ufw if it's an user wanted feature
         if self.settings.get("feature_firewall"):
-			pass
-			# ufw default deny
-			# ufw allow Transmission
-			# ufw enable
-			# systemctl enable ufw.service
+            pass
+            # ufw default deny
+            # ufw allow Transmission
+            # ufw enable
+            # systemctl enable ufw.service
 			
                 
         # encrypt home directory if requested
