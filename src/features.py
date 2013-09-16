@@ -55,13 +55,23 @@ class Features(Gtk.Box):
         self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
         self.ui.connect_signals(self)
         
-        self.features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        # Available features (for reference)
+        self.all_features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        
+        # Each desktop has its own features
+        self.features_by_desktop = {}
+        self.features_by_desktop["nox"] = [ "bluetooth", "cups", "firewall" ]
+        self.features_by_desktop["gnome"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["cinnamon"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["openbox"] = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
         
         self.labels = {}
         self.titles = {}
         self.switches = {}
         
-        for feature in self.features:
+        for feature in self.all_features:
             object_name = "label_" + feature
             self.labels[feature] = self.ui.get_object(object_name)
 
@@ -74,7 +84,19 @@ class Features(Gtk.Box):
         super().add(self.ui.get_object("features"))
 
     def translate_ui(self):
-        txt = _("Feature selection")
+        desktop = self.settings.get('desktop')
+        self.desktops = {
+         "nox" : "Base",
+         "gnome" : "Gnome",
+         "cinnamon" : "Cinnamon",
+         "xfce" : "Xfce",
+         "lxde" : "Lxde",
+         "openbox" : "Openbox",
+         "enlightenment" : "Enlightenment (e17)",
+         "kde" : "KDE",
+         "razor" : "Razor-qt" }
+
+        txt = self.desktops[desktop] + " - " + _("Feature selection")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
@@ -85,7 +107,7 @@ class Features(Gtk.Box):
         txt = _("Without Bluetooth support you can't use Bluetooth devices")
         self.labels["bluetooth"].set_markup(txt)
 
-        # Printing support
+        # Printing support (cups)
         txt = _("Printing support (cups)")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
@@ -119,6 +141,16 @@ class Features(Gtk.Box):
         self.titles["third_party"].set_markup(txt)  
         txt = _("Third-party software to play Flash, MP3 and other media")
         self.labels["third_party"].set_markup(txt)
+    
+    def hide_features(self):
+        for feature in self.all_features:
+            if feature not in self.features:
+                prefixes = [ "box", "image", "switch", "label_title", "label" ]
+                for prefix in prefixes:
+                    object_name = prefix + "_" + feature
+                    print(object_name)
+                    obj = self.ui.get_object(object_name)
+                    obj.hide()
 
     def store_values(self):
         # Enable forward button
@@ -130,7 +162,6 @@ class Features(Gtk.Box):
             self.settings.set("feature_" + feature, isactive)
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
-
         return True
 
     def get_prev_page(self):
@@ -140,6 +171,9 @@ class Features(Gtk.Box):
         return _next_page
 
     def prepare(self, direction):
+        desktop = self.settings.get('desktop')
+        self.features = self.features_by_desktop[desktop]
         self.translate_ui()
         self.show_all()
+        self.hide_features()
 

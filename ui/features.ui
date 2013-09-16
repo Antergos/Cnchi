@@ -8,7 +8,7 @@
     <property name="spacing">5</property>
     <property name="homogeneous">True</property>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkBox" id="box_bluetooth">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -87,7 +87,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box4">
+      <object class="GtkBox" id="box_cups">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -166,7 +166,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box5">
+      <object class="GtkBox" id="box_office">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -245,7 +245,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box6">
+      <object class="GtkBox" id="box_visual">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -324,7 +324,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box7">
+      <object class="GtkBox" id="box_firewall">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -403,7 +403,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkBox" id="box_third_party">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
