@@ -219,6 +219,8 @@
         <pkgname>lxinput</pkgname>
         <pkgname>ttf-droid</pkgname>
         <pkgname>ttf-ubuntu-font-family</pkgname>
+        <pkgname>conky</pkgname>
+        <pkgname>file-roller</pkgname>
     </openbox_desktop>
 
     <!-- User desired features -->
@@ -226,6 +228,8 @@
         <bluetooth>
             <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>
+            <pkgname>obexftp</pkgname>
+            <pkgname>obex-data-server</pkgname>
         </bluetooth>
         
         <cups>
