@@ -55,8 +55,8 @@ import installation_process
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
-# leave at least 3GB for Antergos when shrinking
-_minimum_space_for_antergos = 3000
+# leave at least 3.5GB for Antergos when shrinking
+_minimum_space_for_antergos = 3500
 
 class InstallationAlongside(Gtk.Box):
     def __init__(self, params):
@@ -255,7 +255,7 @@ class InstallationAlongside(Gtk.Box):
             # another install method
             pass
 
-        if self.new_size > 0:
+        if self.new_size > 0 and self.is_room_available():
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
@@ -305,11 +305,7 @@ class InstallationAlongside(Gtk.Box):
 
         return value
         
-
-    def start_installation(self):
-        # Alongside method shrinks selected partition
-        # and creates root and swap partition in the available space
-        
+    def is_room_available(self):
         partition_path = self.row[0]
         otherOS = self.row[1]
         fs_type = self.row[2]
@@ -319,9 +315,9 @@ class InstallationAlongside(Gtk.Box):
 
         new_size = self.new_size
         
-        logging.debug("partition_path: ", partition_path)
-        logging.debug("device_path: ", device_path)
-        logging.debug("new_size: ", new_size)
+        logging.debug("partition_path: %s" % partition_path)
+        logging.debug("device_path: %s" % device_path)
+        logging.debug("new_size: %s" % new_size)
         
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
@@ -339,23 +335,50 @@ class InstallationAlongside(Gtk.Box):
         
         primary_partitions.sort()
         
-        logging.debug("extended partition: ", extended_path)
-        logging.debug("primary partitions: ", primary_partitions)
+        logging.debug("extended partition: %s" % extended_path)
+        logging.debug("primary partitions: %s" % primary_partitions)
         
-        # If we don't have 3 or 4 primary partitions,
-        # we will be able to create a new one
-        if len(primary_partitions) < 3:
-            # first, shrink file system
-            res = fs.resize(partition_path, fs_type, new_size)
-            if res:
-                # destroy original partition and create two new ones
-                pm.split_partition(device_path, partition_path, new_size)
-            else:
-                logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
-        else:
+        if len(primary_partitions) >= 4:
             logging.error("There're too many primary partitions, can't create a new one")
-            
+            return False
+        
+        self.extended_path = extended_path
 
+        return True
+
+    def start_installation(self):
+        # Alongside method shrinks selected partition
+        # and creates root and swap partition in the available space
+        
+        if self.is_room_available() == False:
+            return
+
+        partition_path = self.row[0]
+        otherOS = self.row[1]
+        fs_type = self.row[2]
+
+        # what if path is sda10 (two digits) ? this is wrong
+        device_path = self.row[0][:-1]
+
+        new_size = self.new_size
+        
+        # first, shrink file system
+        res = fs.resize(partition_path, fs_type, new_size)
+        if res:
+            # destroy original partition and create a new resized one
+            pm.split_partition(device_path, partition_path, new_size)
+        else:
+            logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
+            return
+
+        if len(self.extended_path) <= 0:
+            logging.debug("As no extended partition was found, we'll create a new one")
+            # Create new extended partition for our new Antergos partition
+        
+        # Create a new partition for Antergos
+        
+            
+        
         '''
         # Prepare info for installer_process
         mount_devices = {}
@@ -369,9 +392,8 @@ class InstallationAlongside(Gtk.Box):
         fs_devices[root] = "ext4"
         fs_devices[swap] = "swap"
         fs_devices[partition_path] = self.row[2]
-        '''
-
-        '''        
+        
+        
         # TODO: Ask where to install the bootloader (if the user wants to install it)
 
         # Ask bootloader type

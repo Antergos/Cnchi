@@ -148,7 +148,6 @@ class Features(Gtk.Box):
                 prefixes = [ "box", "image", "switch", "label_title", "label" ]
                 for prefix in prefixes:
                     object_name = prefix + "_" + feature
-                    print(object_name)
                     obj = self.ui.get_object(object_name)
                     obj.hide()
 

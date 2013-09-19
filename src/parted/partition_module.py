@@ -319,8 +319,7 @@ def order_partitions(partdic):
 
 @misc.raise_privileges    
 def split_partition(device_path, partition_path, new_size_in_mb):
-    # shrinks partition: deletes the partition and creates
-    # two new ones.
+    # shrinks partition:
     # ALERT: The file system must be resized before trying this!
 
     disk_dic = get_devices()
@@ -335,7 +334,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
         print(partition_path + ' is mounted, unmount first')
         return False
         
-    # ok, partition deleted. Now we must create the new partitions with
+    # ok, partition deleted. Now we must create a new partition with
     # the new size
     
     sec_size = disk.sectorSize
@@ -355,7 +354,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
     
-    
+    '''
     # Create new partition (for Antergos)
     new_size_in_mb = old_size_in_mb - new_size_in_mb
     start_sector = new_end_sector + 1
@@ -363,8 +362,8 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
+    '''
 
-    # Remember to uncomment this!
     finalize_changes(disk)
 
 # ----------------------------------------------------------------------------
