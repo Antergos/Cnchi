@@ -487,7 +487,7 @@ class InstallationProcess(multiprocessing.Process):
         
         # Add filesystem packages
         
-        self.queue_event('debug', "Adding filesystem packages")       
+        self.queue_event('debug', "Adding filesystem packages")
         
         fs_types = subprocess.check_output(\
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
@@ -534,6 +534,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
+        self.queue_event('debug', "Check for user desired features and add them to our installation")
         self.add_selected_features()
         
         # Add chinese fonts
@@ -545,6 +546,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # Add bootloader packages if needed
+        self.queue_event('debug', "Adding bootloader packages if needed")
         if self.settings.get('install_bootloader'):
             bt = self.settings.get('bootloader_type')
             if bt == "GRUB2":
