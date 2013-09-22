@@ -237,9 +237,11 @@ class InstallationAlongside(Gtk.Box):
         self.min_size = 0
         self.max_size = 0
         self.new_size = 0
-
+        
         try:
+            subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
             x = subprocess.check_output(['df', partition_path]).decode()
+            subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
             x = x.split('\n')
             x = x[1].split()
             self.max_size = int(x[1]) / 1000
@@ -250,10 +252,10 @@ class InstallationAlongside(Gtk.Box):
         if self.min_size + _minimum_space_for_antergos < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
+            logging.warning(_("Can't shrink the partition (maybe it's nearly full)"))
             # Can't shrink the partition (maybe it's nearly full)
             # TODO: Show error message but let the user choose
             # another install method
-            pass
 
         if self.new_size > 0 and self.is_room_available():
             self.forward_button.set_sensitive(True)
