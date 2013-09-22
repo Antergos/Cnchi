@@ -373,9 +373,9 @@ class InstallationAlongside(Gtk.Box):
 
         if len(self.extended_path) <= 0:
             logging.debug("As no extended partition was found, we'll create a new one")
-            # Create new extended partition for our new Antergos partition
+            # TODO: Create new extended partition for our new Antergos partition
         
-        # Create a new partition for Antergos
+        # TODO: Create a new partition for Antergos
         
             
         
