@@ -71,9 +71,9 @@ class InstallationAsk(Gtk.Box):
         oses = bootinfo.get_os_dict()
         
         self.otherOS = ""
-        for k in self.oses:
-            if "sda" in k and self.oses[k] != "unknown":
-                self.otherOS = self.oses[k]
+        for k in oses:
+            if "sda" in k and oses[k] != "unknown":
+                self.otherOS = oses[k]
                 
         # by default, select automatic installation
         self.next_page = "installation_automatic"
