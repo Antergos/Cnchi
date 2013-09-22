@@ -33,6 +33,7 @@ from gi.repository import Gtk
 import subprocess
 import os
 import logging
+import bootinfo
 
 import config
 
@@ -46,7 +47,6 @@ class InstallationAsk(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
-        self.enable_alongside = params['enable_alongside']
         
         super().__init__()
         self.ui = Gtk.Builder()
@@ -66,13 +66,28 @@ class InstallationAsk(Gtk.Box):
         self.ui.connect_signals(self)
 
         super().add(self.ui.get_object("installation_ask"))
-
+        
+        oses = {}
+        oses = bootinfo.get_os_dict()
+        
+        self.otherOS = ""
+        for k in self.oses:
+            if "sda" in k and self.oses[k] != "unknown":
+                self.otherOS = self.oses[k]
+                
         # by default, select automatic installation
         self.next_page = "installation_automatic"
         
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        # Hide alongside option if no OS has been detected
+        if self.otherOS == "":
+            radio = self.ui.get_object("alongside_radiobutton")
+            radio.hide()
+            label = self.ui.get_object("alongside_description")
+            label.hide()
 
     def translate_ui(self):
         txt = _("Installation type")
@@ -95,17 +110,13 @@ class InstallationAsk(Gtk.Box):
         
         # alongside is still experimental. Needs a lot of testing.
         radio = self.ui.get_object("alongside_radiobutton")
-        radio.set_label(_("Install this OS alongside the other OSes"))
-        if not self.enable_alongside:
-            radio.set_sensitive(False)
+        radio.set_label(_("Install Antergos alongside %s") % self.otherOS)
 
         label = self.ui.get_object("alongside_description")
         txt = _("Install this OS alongside the other OSes you have already installed.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
-        if not self.enable_alongside:
-            label.set_sensitive(False)
 
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))

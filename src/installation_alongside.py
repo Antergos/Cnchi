@@ -360,6 +360,8 @@ class InstallationAlongside(Gtk.Box):
         # what if path is sda10 (two digits) ? this is wrong
         device_path = self.row[0][:-1]
 
+        #re.search(r'\d+$', self.row[0])
+
         new_size = self.new_size
         
         # first, shrink file system
@@ -370,12 +372,6 @@ class InstallationAlongside(Gtk.Box):
         else:
             logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
             return
-
-        if len(self.extended_path) <= 0:
-            logging.debug("As no extended partition was found, we'll create a new one")
-            # TODO: Create new extended partition for our new Antergos partition
-        
-        # TODO: Create a new partition for Antergos
         
             
         

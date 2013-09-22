@@ -70,7 +70,6 @@ _desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
 # Command line options
 _alternate_package_list = ""
 _use_aria2 = False
-_enable_alongside = False
 _log_level = logging.INFO
 _verbose = False
 _update = False
@@ -200,7 +199,6 @@ class Main(Gtk.Window):
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         params['alternate_package_list'] = _alternate_package_list
-        params['enable_alongside'] = _enable_alongside
         
         if len(_alternate_package_list) > 0:
             logging.info(_("Using '%s' file as package list") % _alternate_package_list)
@@ -372,7 +370,6 @@ def show_help():
     print("Advanced options:")
     print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
     print("-d, --debug : Show debug messages")
-    print("-s, --alongside : Enable alongside installation method (EXPERIMENTAL)")
     print("-v, --verbose : Show logging messages to stdout")
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
@@ -384,8 +381,8 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "adp:usvg:h",
-         ["aria2", "debug", "packages=", "alongside", "update", "verbose", \
+        opts, args = getopt.getopt(argv, "adp:uvg:h",
+         ["aria2", "debug", "packages=", "update", "verbose", \
           "force-grub=", "help"])
     except getopt.GetoptError as e:
         show_help()
@@ -403,8 +400,6 @@ if __name__ == '__main__':
             _alternate_package_list = arg
         elif opt in ('-a', '--aria2'):
             _use_aria2 = True
-        elif opt in ('-s', '--alongside'):
-            _enable_alongside = True
         elif opt in ('-g', '--force-grub-type'):
             if arg in ('bios', 'efi', 'ask', 'none'):
                 _force_grub_type = arg
