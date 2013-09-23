@@ -169,17 +169,45 @@ def resize(part, fs_type, new_size_in_mb):
     
     return res
 
+'''
+Usage: ntfsresize [OPTIONS] DEVICE
+    Resize an NTFS volume non-destructively, safely move any data if needed.
+
+    -c, --check            Check to ensure that the device is ready for resize
+    -i, --info             Estimate the smallest shrunken size or the smallest
+                                expansion size
+    -m, --info-mb-only     Estimate the smallest shrunken size possible,
+                                output size in MB only
+    -s, --size SIZE        Resize volume to SIZE[k|M|G] bytes
+    -x, --expand           Expand to full partition
+
+    -n, --no-action        Do not write to disk
+    -b, --bad-sectors      Support disks having bad sectors
+    -f, --force            Force to progress
+    -P, --no-progress-bar  Don't show progress bar
+    -v, --verbose          More output
+    -V, --version          Display version information
+    -h, --help             Display this help
+
+    The options -i and -x are exclusive of option -s, and -m is exclusive
+    of option -x. If options -i, -m, -s and -x are are all omitted
+    then the NTFS volume will be enlarged to the DEVICE size.
+
+'''
+
 @misc.raise_privileges    
 def resize_ntfs(part, new_size_in_mb):
-    logging.debug("ntfsresize --size %sM %s" % (str(new_size_in_mb), part))
+    logging.debug("ntfsresize -P --size %s %s" % (str(new_size_in_mb)+"M", part))
 
     try:
-        x = subprocess.check_output(["ntfsresize", "--size", str(new_size_in_mb)+"M", part])
+        x = subprocess.check_output(["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb)+"M", part])
     except Exception as e:
         x = None
         print(e)
         logging.error(e)
         return False
+    
+    logging.debug(x)
     
     return True
 
