@@ -252,17 +252,14 @@ class InstallationAlongside(Gtk.Box):
         if self.min_size + _minimum_space_for_antergos < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
-            logging.warning(_("Can't shrink the partition (maybe it's nearly full)"))
-            # Can't shrink the partition (maybe it's nearly full)
-            # TODO: Show error message but let the user choose
-            # another install method
+            show.error(_("Can't shrink the partition (maybe it's nearly full)"))
+            return
 
         if self.new_size > 0 and self.is_room_available():
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
         
-        return False
 
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")

@@ -31,6 +31,7 @@
 import subprocess
 import shlex
 import misc
+import logging
 
 _names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
@@ -138,7 +139,8 @@ def is_ssd(disk_path):
         if "Solid State" in output:
             ssd = True
     except:
-        print("Can't verify if %s is a Solid State Drive or not" % disk_path)
+        logging.warning(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
+        print(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
     
     return ssd
 
@@ -162,19 +164,21 @@ def resize(part, fs_type, new_size_in_mb):
     elif 'ext' in fs_type:
         res = resize_ext(part, new_size_in_mb)
     else:
-        print ("Sorry but filesystem %s can't be shrinked" % fs_type)
+        print (_("Sorry but filesystem %s can't be shrinked") % fs_type)
+        logging.error(_("Sorry but filesystem %s can't be shrinked") % fs_type)
     
     return res
 
 @misc.raise_privileges    
 def resize_ntfs(part, new_size_in_mb):
-    print("ntfsresize --size %sM %s" % (str(new_size_in_mb), part))
+    logging.debug("ntfsresize --size %sM %s" % (str(new_size_in_mb), part))
 
     try:
         x = subprocess.check_output(["ntfsresize", "--size", str(new_size_in_mb)+"M", part])
     except Exception as e:
         x = None
         print(e)
+        logging.error(e)
         return False
     
     return True
@@ -187,13 +191,14 @@ def resize_fat(part, new_size_in_mb):
     
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
-    print("resize2fs %s %sM" % (part, str(new_size_in_mb)))
+    logging.debug("resize2fs %s %sM" % (part, str(new_size_in_mb)))
 
     try:
         x = subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
     except Exception as e:
         x = None
         print(e)
+        logging.error(e)
         return False
 
     return True
