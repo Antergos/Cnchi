@@ -71,6 +71,7 @@
           <object class="GtkSwitch" id="switch_bluetooth">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
@@ -150,6 +151,7 @@
           <object class="GtkSwitch" id="switch_cups">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
@@ -229,6 +231,7 @@
           <object class="GtkSwitch" id="switch_office">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
@@ -308,6 +311,7 @@
           <object class="GtkSwitch" id="switch_visual">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
@@ -387,6 +391,7 @@
           <object class="GtkSwitch" id="switch_firewall">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
@@ -466,6 +471,7 @@
           <object class="GtkSwitch" id="switch_third_party">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="valign">center</property>
             <property name="margin_right">80</property>
           </object>
           <packing>
