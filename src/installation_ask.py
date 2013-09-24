@@ -52,7 +52,7 @@ class InstallationAsk(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_ask.ui"))
 
-        partitioner_dir = os.path.join(self.settings.get("DATA_DIR"), "partitioner/")
+        partitioner_dir = os.path.join(self.settings.get("DATA_DIR"), "partitioner/small/")
 
         image = self.ui.get_object("automatic_image")
         image.set_from_file(partitioner_dir + "automatic.png")
@@ -78,11 +78,17 @@ class InstallationAsk(Gtk.Box):
         # by default, select automatic installation
         self.next_page = "installation_automatic"
         
+    def enable_automatic_options(self, status):
+        objects = [ "encrypt_checkbutton", "encrypt_label", "lvm_checkbutton", "lvm_label" ]
+        for o in objects:
+            ob = self.ui.get_object(o)
+            ob.set_sensitive(status)
+        
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         
-        # Hide alongside option if no OS has been detected
+        # Hide alongside option if no existing OS has been detected
         if self.otherOS == "":
             radio = self.ui.get_object("alongside_radiobutton")
             radio.hide()
@@ -128,9 +134,27 @@ class InstallationAsk(Gtk.Box):
         label.set_line_wrap(True)
 
     def store_values(self):
+        check = self.ui.get_object("encrypt_checkbutton")
+        use_luks = check.get_active()
+        
+        check = self.ui.get_object("lvm_checkbutton")
+        use_lvm = check.get_active()
+                
         if self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
-        elif self.next_page == "installation_alongside":
+            self.settings.set('use_lvm', use_lvm)
+            self.settings.set('use_luks', use_luks)
+        else:
+            self.settings.set('use_lvm', False)
+            self.settings.set('use_luks', False)
+
+        if self.settings.get('use_luks'):
+            logging.info(_("Antergos installation will be encrypted"))
+            
+        if self.settings.get('use_lvm'):
+            logging.info(_("Antergos will be installed using a LVM setup"))
+            
+        if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
         else:
             self.settings.set('partition_mode', 'advanced')
@@ -146,11 +170,14 @@ class InstallationAsk(Gtk.Box):
     def on_automatic_radiobutton_toggled(self, widget):
         if widget.get_active():
             self.next_page = "installation_automatic"
+            self.enable_automatic_options(True)
 
     def on_easy_radiobutton_toggled(self, widget):
         if widget.get_active():
             self.next_page = "installation_alongside"
+            self.enable_automatic_options(False)
 
     def on_advanced_radiobutton_toggled(self, widget):
         if widget.get_active():
             self.next_page = "installation_advanced"
+            self.enable_automatic_options(False)
