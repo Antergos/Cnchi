@@ -167,7 +167,7 @@ class InstallationAutomatic(Gtk.Box):
             logging.info(_("Antergos will install the bootloader of type %s in %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Cnchi will not install any boot loader")
+            logging.warning("Antergos will not install any boot loader")
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \

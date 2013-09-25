@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script is called by Cnchi when an automatic installation is selected
+#
+# Usage: auto_partition.sh device
+# Optional parameters: --lvm --luks
+
 unset LANG
 ANSWER="/tmp/.setup"
 
@@ -13,6 +18,20 @@ _BLKID="blkid -c /dev/null"
 # destination of blockdevices in /sys
 block="/sys/block"
 
+OPTIONS="$@"
+USE_LVM="0"
+USE_LUKS="0"
+
+for f in $OPTIONS; do
+
+    if [ "${f}" == "--lvm" ]; then
+        USE_LVM="1"
+    fi
+
+    if [ "${f}" == "--luks" ]; then
+        USE_LUKS="1"
+    fi
+done
 
 
 getfsuuid()
