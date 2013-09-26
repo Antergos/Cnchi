@@ -192,7 +192,11 @@ class InstallationAlongside(Gtk.Box):
         
         self.partitions = {}
 
-        device_list = parted.getAllDevices()
+        try:
+            device_list = parted.getAllDevices()
+        except:
+            logging.error("pyparted3 not found!")
+            device_list = []
         
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
