@@ -28,11 +28,18 @@
 #   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 
-import parted
 import subprocess
 import shlex
 import os
 import misc
+
+# To be able to test this installer in other systems
+# that do not have pyparted3 installed
+try:
+    import parted
+except:
+    print("Can't import parted module! This installer won't work.")
+
 
 # Partition types
 PARTITION_PRIMARY = 0

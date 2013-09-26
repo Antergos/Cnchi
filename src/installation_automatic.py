@@ -34,10 +34,17 @@ from gi.repository import Gtk
 import subprocess
 import os
 import sys
-import parted
 import misc
 import logging
 import installation_process
+
+# To be able to test this installer in other systems
+# that do not have pyparted3 installed
+try:
+    import parted
+except:
+    print("Can't import parted module! This installer won't work.")
+
 
 _next_page = "timezone"
 _prev_page = "installation_ask"

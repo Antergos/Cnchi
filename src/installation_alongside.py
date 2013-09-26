@@ -35,12 +35,17 @@ from gi.repository import Gtk, Gdk
 import sys
 import os
 import misc
-import parted
 import logging
 import show_message as show
 import bootinfo
 import subprocess
-import logging
+
+# To be able to test this installer in other systems
+# that do not have pyparted3 installed
+try:
+    import parted
+except:
+    print("Can't import parted module! This installer won't work.")
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
