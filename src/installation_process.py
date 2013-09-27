@@ -152,10 +152,14 @@ class InstallationProcess(multiprocessing.Process):
             self.auto_device = self.mount_devices["/"].replace("3","")
             cnchi_dir = self.settings.get("CNCHI_DIR")
             script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
+            if self.settings.get("use_lvm"):
+                use_lvm = "--lvm"
+            if self.settings.get("use_luks"):
+                use_luks = "--luks"
             try:
                 self.queue_event('debug', "Automatic device: %s" % self.auto_device)
                 self.queue_event('debug', "Running automatic script...")
-                subprocess.check_call(["/usr/bin/bash", script_path, self.auto_device])
+                subprocess.check_call(["/usr/bin/bash", script_path, self.auto_device, use_lvm, use_luks])
                 self.queue_event('debug', "Automatic script done.")
             except subprocess.FileNotFoundError as e:
                 self.queue_fatal_event(_("Can't execute the auto partition script"))

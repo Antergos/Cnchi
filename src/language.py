@@ -103,7 +103,6 @@ class Language(Gtk.Box):
         for lang, lang_code in display_map.items():
             if lang_code[1] == self.current_locale:
                 return lang
-            
 
     def set_languages_list(self):
         liststore_language = Gtk.ListStore(str)

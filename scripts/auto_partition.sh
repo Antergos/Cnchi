@@ -8,8 +8,9 @@
 unset LANG
 ANSWER="/tmp/.setup"
 
-# use the first VT not dedicated to a running console
-LOG="/dev/tty7"
+## use the first VT not dedicated to a running console
+#LOG="/dev/tty7"
+LOG="/tmp/cnchi-auto_partition.log"
 
 # don't use /mnt because it's intended to mount other things there!
 DESTDIR="/install"

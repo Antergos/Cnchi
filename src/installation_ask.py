@@ -141,7 +141,6 @@ class InstallationAsk(Gtk.Box):
         use_lvm = check.get_active()
                 
         if self.next_page == "installation_automatic":
-            self.settings.set('partition_mode', 'automatic')
             self.settings.set('use_lvm', use_lvm)
             self.settings.set('use_luks', use_luks)
         else:
@@ -156,8 +155,10 @@ class InstallationAsk(Gtk.Box):
             
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
-        else:
+        elif self.next_page == "installation_advanced":
             self.settings.set('partition_mode', 'advanced')
+        elif self.next_page == "installation_automatic":
+            self.settings.set('partition_mode', 'automatic')
                 
         return True
 
