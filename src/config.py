@@ -74,7 +74,13 @@ class Settings():
             'encrypt_home' : False, \
             'user_info_done' : False, \
             'rankmirrors_done' : False, \
-            'use_aria2' : False })
+            'use_aria2' : False, \
+            'feature_bluetooth' : False, \
+            'feature_cups' : False, \
+            'feature_office' : False, \
+            'feature_visual' : False, \
+            'feature_firewall' : False, \
+            'feature_third_party' : False })
 
     def _get_settings(self):
         gd = self.settings.get()
