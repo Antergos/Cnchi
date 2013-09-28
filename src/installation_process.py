@@ -400,19 +400,18 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', "Getting package list...")
 
             try:
-                packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3])
+                packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3], timeout=5)
             except urllib.error.URLError as e:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
                 self.queue_event('debug', _("Can't retrieve remote package list, using a local file instead."))
-                #self.queue_event('debug', e)
                 data_dir = self.settings.get("DATA_DIR")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
 
-        self.queue_event('debug', "Adding base packages")
+        self.queue_event('debug', _("Adding all desktops common packages"))
 
         for child in root.iter('common_system'):
             for pkg in child.iter('pkgname'):
@@ -423,7 +422,7 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-            self.queue_event('debug', "Adding desktop '%s' packages" % self.desktop)
+            self.queue_event('debug', _("Adding '%s' desktop packages") % self.desktop)
 
             for child in root.iter(self.desktop + '_desktop'):
                 for pkg in child.iter('pkgname'):
@@ -442,10 +441,11 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # Install graphic cards drivers always but in NoX installs
+        # Install graphic cards drivers except in NoX installs
         if self.desktop != "nox":
-            graphics = self.get_graphics_card()
-            
+            self.queue_event('debug', _("Getting graphics card drivers"))
+
+            graphics = self.get_graphics_card()          
 
             if "ati " in graphics:
                 for child in root.iter('ati'):
@@ -486,17 +486,18 @@ class InstallationProcess(multiprocessing.Process):
                                 'vmware', 'via '):
                 self.packages.append('xorg-drivers')
         
-        wlan = subprocess.check_output(\
-            ["hwinfo", "--wlan", "--short"]).decode()
+        if os.path.exists("/usr/bin/hwinfo"):
+            wlan = subprocess.check_output(\
+                ["hwinfo", "--wlan", "--short"]).decode()
 
-        if "broadcom" in wlan:
-            for child in root.iter('broadcom'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+            if "broadcom" in wlan:
+                for child in root.iter('broadcom'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
         
         # Add filesystem packages
         
-        self.queue_event('debug', "Adding filesystem packages")
+        self.queue_event('debug', _("Adding filesystem packages"))
         
         fs_types = subprocess.check_output(\
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
@@ -543,7 +544,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
-        self.queue_event('debug', "Check for user desired features and add them to our installation")
+        self.queue_event('debug', _("Check for user desired features and add them to our installation"))
         self.add_selected_features()
         
         # Add chinese fonts
@@ -555,7 +556,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # Add bootloader packages if needed
-        self.queue_event('debug', "Adding bootloader packages if needed")
+        self.queue_event('debug', _("Adding bootloader packages if needed"))
         if self.settings.get('install_bootloader'):
             bt = self.settings.get('bootloader_type')
             if bt == "GRUB2":
