@@ -455,7 +455,7 @@ autoprepare() {
         # TODO: mkfs on AntergosRoot and AntergosSwap
         #/dev/AntergosVG/AntergosRoot
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
-        _mkfs yes /dev/AntergosVG/AntergosSwap swap || return 1
+        _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
     else
         
         ## FSSPECS - default filesystem specs (the + is bootable flag)
