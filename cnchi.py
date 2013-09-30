@@ -22,11 +22,12 @@
 #  
 #  Antergos Team:
 #   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
 #   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
+#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
+#  Manjaro Team:
+#   Philip Müller (philm) <philm.manjaro.org>
+#   Mateusz Mikołajczyk (toudi) <mikolajczyk.mateusz.gmail.com>
 
 from gi.repository import Gtk, Gdk, GObject, GLib
 import os
@@ -115,6 +116,10 @@ class Main(Gtk.Window):
         super().__init__()
         
         self.setup_logging()
+        
+        # workaround for dconf
+        os.system("mkdir -p /root/.cache/dconf")
+        os.system("chmod -R 777 /root/.cache")
         
         logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
         

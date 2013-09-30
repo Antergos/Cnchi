@@ -765,6 +765,8 @@ class InstallationProcess(multiprocessing.Process):
             # ignore if already exists
             pass
 
+        self.install_bootloader_grub2_locales()
+
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         
@@ -798,6 +800,36 @@ class InstallationProcess(multiprocessing.Process):
                   '--recheck', \
                   grub_device])
         
+        self.install_bootloader_grub2_locales()
+
+        d = self.dest_dir
+        locale = self.settings.get("locale")
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        
+        self.chroot_umount()
+
+        grub_cfg = "%s/boot/grub/grub.cfg" % d
+        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (d, spec_uefi_arch)
+        try:
+            shutil.copy2(grub_cfg, grub_standalone)
+        except FileNotFoundError:
+            self.chroot_umount()            
+            self.queue_event('warning', _("ERROR installing GRUB(2) locales."))
+            return
+        except FileExistsError:
+            # ignore if already exists
+            pass
+
+        self.chroot(['grub-mkstandalone', \
+                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
+                  '--format=%s-efi' % uefi_arch, \
+                  '--compression="xz"', \
+                  '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
+                  'boot/grub/grub.cfg'])
+
+        # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
+        
+    def install_bootloader_grub2_locales(self):
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
         
         if not os.path.exists(dest_locale_dir):
@@ -814,35 +846,7 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             # ignore if already exists
             pass
-
-        d = self.dest_dir
-        locale = self.settings.get("locale")
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
-        
-        self.chroot_umount()
-
-        grub_cfg = "%s/boot/grub/grub.cfg" % d
-        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (d, spec_uefi_arch)
-        try:
-            shutil.copy2(grub_cfg, grub_standalone)
-        except FileNotFoundError:
-            self.chroot_umount()            
-            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
-            return
-        except FileExistsError:
-            # ignore if already exists
-            pass
-
-        self.chroot(['grub-mkstandalone', \
-                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
-                  '--format=%s-efi' % uefi_arch, \
-                  '--compression="xz"', \
-                  '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
-                  'boot/grub/grub.cfg'])
-
-        # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
-        
-
+    
     def enable_services(self, services):
         for name in services:
             name += '.service'
@@ -949,6 +953,9 @@ class InstallationProcess(multiprocessing.Process):
         # enable services      
         self.enable_services([ self.desktop_manager, self.network_manager ])
 
+        if os.path.exists("%s/usr/lib/systemd/system/cups.service"  % self.dest_dir):
+            self.enable_services([ 'cups' ])
+            
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
             self.enable_services(["ntpd"])
@@ -1023,7 +1030,24 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_timesetting()
 
         desktop = self.settings.get('desktop')
-        
+
+        '''
+        consolefh = open("/install/etc/keyboard.conf", "r")
+        newconsolefh = open("/install/etc/keyboard.new", "w")
+        for line in consolefh:
+            line = line.rstrip("\r\n")
+            if(line.startswith("XKBLAYOUT=")):
+                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % keyboard_layout)
+            elif(line.startswith("XKBVARIANT=") and keyboard_variant != ''):
+                newconsolefh.write("XKBVARIANT=\"%s\"\n" % keyboard_variant)
+            else:
+                newconsolefh.write("%s\n" % line)
+        consolefh.close()
+        newconsolefh.close()
+        os.system("mv /install/etc/keyboard.conf /install/etc/keyboard.conf.old")
+        os.system("mv /install/etc/keyboard.new /install/etc/keyboard.conf")
+        '''
+                
         if desktop != "nox":
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
@@ -1040,6 +1064,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Set autologin if selected
             if self.settings.get('require_password') is False:
+                self.queue_event('info', _("%s: Enable automatic login for user %s." % (self.desktop_manager, username)))
                 # Systems with GDM as Desktop Manager
                 if self.desktop_manager == 'gdm':
                     gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
