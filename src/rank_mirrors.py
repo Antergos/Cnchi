@@ -20,12 +20,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  Antergos Team:
+#  Cnchi (Antergos) Team:
 #   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
 #   Gustau Castells (karasu) <karasu.antergos.com>
 #   Alex Skinner (skinner) <skinner.antergos.com>
 #   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#  Manjaro Team:
+#
+#  Thus (Manjaro) Team:
 #   Philip Müller (philm) <philm.manjaro.org>
 #   Mateusz Mikołajczyk (toudi) <mikolajczyk.mateusz.gmail.com>
 
