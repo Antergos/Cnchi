@@ -298,6 +298,7 @@ autoprepare() {
     # _stopmd
     # check on lvm devices, else weird things can happen during partitioning!
     # _stoplvm
+    
     NAME_SCHEME_PARAMETER_RUN=""
     # switch for mbr usage
 
@@ -308,6 +309,8 @@ autoprepare() {
     SWAP_PART_SET=""
     ROOT_PART_SET=""
     FSTYPE='ext4'
+    
+    # Do not support UEFI
     GUIDPARAMETER="no"
 
     if [[ "${GUIDPARAMETER}" = "yes" ]]; then
@@ -352,7 +355,6 @@ autoprepare() {
         else
             let SWAP_PART_SIZE=`grep MemTotal /proc/meminfo | awk '{print $2}'`/1024
         fi
-
 
         SWAP_PART_SET=1
 
@@ -452,10 +454,16 @@ autoprepare() {
         #lvcreate -n AntergosSwap -L ${SWAP_PART_SIZE} AntergosVG
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
         
-        # TODO: mkfs on AntergosRoot and AntergosSwap
-        #/dev/AntergosVG/AntergosRoot
+        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
+            _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" "/boot" AntergosBoot || return 1
+            
+        else        
+            _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" "/boot" AntergosBoot || return 1
+        fi
+
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
         _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
+        
     else
         
         ## FSSPECS - default filesystem specs (the + is bootable flag)
