@@ -151,7 +151,7 @@ class InstallationProcess(multiprocessing.Process):
         ## Create/Format partitions
         
         if self.method == 'automatic':
-            self.auto_device = self.mount_devices["/"].replace("3","")
+            self.auto_device = self.mount_devices["/boot"].replace("1","")
             cnchi_dir = self.settings.get("CNCHI_DIR")
             script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
 
@@ -205,10 +205,10 @@ class InstallationProcess(multiprocessing.Process):
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
             os.mkdir(self.dest_dir)
-
+            
         # Mount root and boot partitions (only if it's needed)
+        # Not doing this in automatic mode as our script (auto_partition.sh) mounts the root and boot devices itself.
         if self.method == 'alongside' or self.method == 'advanced':
-            # not doing this in automatic mode as our script mounts the root and boot devices
             try:
                 txt = _("Mounting partition %s into %s directory") % (root_partition, self.dest_dir)
                 self.queue_event('debug', txt)
@@ -244,6 +244,7 @@ class InstallationProcess(multiprocessing.Process):
                         # return False
 
 
+        # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
         # (so as to be able to resume install), database lock file will still be in place.
         # We must delete it or this new installation will fail
@@ -253,7 +254,6 @@ class InstallationProcess(multiprocessing.Process):
             with misc.raised_privileges():
                 os.remove(db_lock)
             logging.debug("%s deleted" % db_lock)
-
 
         # Create some needed folders
         try:
@@ -597,7 +597,7 @@ class InstallationProcess(multiprocessing.Process):
         return out.decode().lower()
     
     def install_packages(self):
-        self.chroot_mount()        
+        self.chroot_mount()
         self.run_pacman()
         self.chroot_umount()
     
@@ -842,9 +842,7 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2(mo, os.path.join(dest_locale_dir, "en.mo"))
         except FileNotFoundError:
-            self.chroot_umount()            
-            self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
-            return
+            self.queue_event('warning', _("ERROR installing GRUB(2) locale."))
         except FileExistsError:
             # ignore if already exists
             pass
@@ -933,7 +931,7 @@ class InstallationProcess(multiprocessing.Process):
         # setup systemd services
         # ... check configure_system from arch-setup
 
-        # Generate the fstab file        
+        self.queue_event('debug', 'Generate the fstab file')
         self.auto_fstab()
         
         # Copy configured networks in Live medium to target system
