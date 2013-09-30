@@ -19,12 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Cnchi (Antergos) Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
 
 import urllib.request
 import urllib.error
