@@ -133,7 +133,7 @@ class Main(Gtk.Window):
             
             self.ui_dir = self.settings.get("UI_DIR")
 
-        self.settings.set("CACHE_DIR", cache_dir)
+        self.settings.set("CACHE_DIR", _cache_dir)
             
         # set enabled desktops
         self.settings.set("desktops", _desktops)
