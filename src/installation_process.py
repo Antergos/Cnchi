@@ -131,7 +131,7 @@ class InstallationProcess(multiprocessing.Process):
             if fsname:
                 subprocess.check_call(['umount', self.dest_dir])
                 self.queue_event('debug', "%s unmounted" % self.dest_dir)
-            
+
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
         self.initramfs = "initramfs-%s" % self.kernel_pkg       

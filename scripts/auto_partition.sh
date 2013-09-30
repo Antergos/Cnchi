@@ -454,15 +454,15 @@ autoprepare() {
         #lvcreate -n AntergosSwap -L ${SWAP_PART_SIZE} AntergosVG
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
         
-        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
-            _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" "/boot" AntergosBoot || return 1
-            
-        else        
-            _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" "/boot" AntergosBoot || return 1
-        fi
-
+        ## Make sure the "root" partition is defined first
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
         _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
+
+        if [ "${GUIDPARAMETER}" == "yes" ]; then
+            _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
+        else        
+            _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
+        fi
         
     else
         
@@ -472,7 +472,7 @@ autoprepare() {
         ## Make sure the "root" partition is defined first in the FSSPECS list
         FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
 
-        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
+        if [ "${GUIDPARAMETER}" == "yes" ]; then
             FSSPECS="5:/:${ROOT_PART_SIZE} :${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
         fi
 
