@@ -33,6 +33,7 @@ class Settings():
             'UI_DIR' : '/usr/share/cnchi/ui/', \
             'DATA_DIR' : '/usr/share/cnchi/data/', \
             'TMP_DIR' : '/tmp', \
+            'CACHE_DIR' : '', \
             'language_name' : '', \
             'language_code' : '', \
             'locale' : '', \

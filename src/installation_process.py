@@ -263,6 +263,11 @@ class InstallationProcess(multiprocessing.Process):
                 self.queue_event('debug', 'Downloading packages...')
                 self.download_packages()
                 self.queue_event('debug', 'Packages downloaded.')
+                
+            cache_dir = self.settings.get("CACHE_DIR")
+            if len(cache_dir) > 0:
+                self.queue_event('debug', 'Copying xz files from cache...')
+                self.copy_cache_files(cache_dir)
 
             self.queue_event('debug', 'Installing packages...')
             self.install_packages()
@@ -911,7 +916,15 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(['su', username])
         
         # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
-        
+
+    def copy_cache_files(self, cache_dir):
+        dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+        if not os.path.exists(dest_dir):
+            os.makedirs(dest_dir)
+        try:
+            misc.copytree(cache_dir, dest_dir)
+        except (FileExistsError, shutil.Error) as e:
+            pass
                         
     def configure_system(self):
         # final install steps
