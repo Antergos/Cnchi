@@ -131,9 +131,9 @@ class Slides(Gtk.Box):
             except queue.Empty:
                 return True
 
-            if event[0] == "percent":
+            if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == "finished":
+            elif event[0] == 'finished':
                 logging.info(event[1])
                 self.set_message(self.install_ok)
                 response = show.question(self.install_ok)
@@ -153,15 +153,17 @@ class Slides(Gtk.Box):
                         
                 self.exit_button.show()
                 return False
-            elif event[0] == "error":
+            elif event[0] == 'error':
                 self.callback_queue.task_done()
                 # a fatal error has been issued. We empty the queue
                 self.empty_queue()
                 self.fatal_error = True
                 show.fatal_error(event[1])
                 return False
-            elif event[0] == "debug":
+            elif event[0] == 'debug':
                 logging.debug(event[1])
+            elif event[0] == 'warning':
+                logging.warning(event[1])
             else:
                 #logging.info(event[1])
                 self.set_message(event[1])
