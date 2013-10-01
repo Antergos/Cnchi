@@ -69,7 +69,11 @@ class InstallationProcess(multiprocessing.Process):
         
         self.callback_queue = callback_queue
         self.settings = settings
+        
+        # Used to know if there is a lvm partition (from advanced install)
+        # so we'll have to add the lvm2 hook to mkinitcpio
         self.blvm = blvm
+        
         self.method = self.settings.get('partition_mode')
         
         self.queue_event('info', _("Installing using the '%s' method") % self.method)
@@ -892,7 +896,8 @@ class InstallationProcess(multiprocessing.Process):
 
     # runs mkinitcpio on the target system
     def run_mkinitcpio(self):
-        if self.blvm:
+        # Add lvm hook if necessary
+        if self.blvm or self.settings.get("use_lvm"):
             with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
                 mklins = [x.strip() for x in f.readlines()]
             for e in range(len(mklins)):
@@ -900,9 +905,10 @@ class InstallationProcess(multiprocessing.Process):
                    mklins[e] = mklins[e].strip('"') + ' lvm2"'
             with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
                 f.write("\n".join(mklins) + "\n")
-        self.chroot_mount()
+        
+        self.chroot_mount_special_dirs()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
-        self.chroot_umount()
+        self.chroot_umount_special_dirs()
 
     # Uncomment selected locale in /etc/locale.gen
     def uncomment_locale_gen(self, locale):
@@ -958,8 +964,9 @@ class InstallationProcess(multiprocessing.Process):
         # setup systemd services
         # ... check configure_system from arch-setup
 
-        self.queue_event('debug', 'Generate the fstab file')
+        self.queue_event('debug', 'Generating the fstab file...')
         self.auto_fstab()
+        self.queue_event('debug', 'fstab file generated.')
         
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
@@ -1076,6 +1083,7 @@ class InstallationProcess(multiprocessing.Process):
         '''
                 
         if desktop != "nox":
+            self.queue_event('debug', "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")            
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
             with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
@@ -1088,6 +1096,7 @@ class InstallationProcess(multiprocessing.Process):
                 if keyboard_variant != '':
                     xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
                 xorg_conf_xkb.write('EndSection\n')
+            self.queue_event('debug', "00-keyboard.conf written.")
 
             # Set autologin if selected
             if self.settings.get('require_password') is False:
@@ -1153,6 +1162,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
         
+        self.queue_event('debug', "Call post-install script to execute gsettings commands")
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
             "scripts", _postinstall_script)
@@ -1176,6 +1186,7 @@ class InstallationProcess(multiprocessing.Process):
                         line = 'default_user %s\n' % username
                     slim_conf.write(line)
 
+        self.queue_event('debug', "Set SNA acceleration method on Intel cards to avoid GDM bug")
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:
             intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
@@ -1186,6 +1197,7 @@ class InstallationProcess(multiprocessing.Process):
                 intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
                 intel_conf.write('EndSection\n')
                 
+        self.queue_event('debug', "Setup user desired features...")
         # Setup ufw if it's an user wanted feature
         if self.settings.get("feature_firewall"):
             pass
@@ -1197,5 +1209,7 @@ class InstallationProcess(multiprocessing.Process):
                 
         # encrypt home directory if requested
         if self.settings.get('encrypt_home'):
+            self.queue_event('debug', "Encrypting user home dir...")
             self.encrypt_home()
+            self.queue_event('debug', "User home dir encrypted")
 
