@@ -282,7 +282,6 @@ class InstallationProcess(multiprocessing.Process):
             if self.settings.get('install_bootloader'):
                 self.queue_event('debug', 'Installing bootloader...')
                 self.install_bootloader()
-                self.queue_event('debug', 'Bootloader installed.')
 
             self.queue_event('debug', 'Configuring system...')
             self.configure_system()
