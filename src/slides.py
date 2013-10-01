@@ -160,6 +160,8 @@ class Slides(Gtk.Box):
                 self.fatal_error = True
                 show.fatal_error(event[1])
                 return False
+            elif event[0] == "debug":
+                logging.debug(event[1])
             else:
                 #logging.info(event[1])
                 self.set_message(event[1])

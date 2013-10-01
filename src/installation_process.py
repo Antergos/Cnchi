@@ -89,6 +89,8 @@ class InstallationProcess(multiprocessing.Process):
         
         self.running = True
         self.error = False
+        
+        self.special_dirs_mounted = False
     
     def queue_fatal_event(self, txt):
         # Queue the fatal event and exit process
@@ -276,6 +278,7 @@ class InstallationProcess(multiprocessing.Process):
             if self.settings.get('install_bootloader'):
                 self.queue_event('debug', 'Installing bootloader...')
                 self.install_bootloader()
+                self.queue_event('debug', 'Bootloader installed.')
 
             self.queue_event('debug', 'Configuring system...')
             self.configure_system()
@@ -592,14 +595,19 @@ class InstallationProcess(multiprocessing.Process):
         return out.decode().lower()
     
     def install_packages(self):
-        self.chroot_mount()
+        self.chroot_mount_special_dirs()
         self.run_pacman()
-        self.chroot_umount()
+        self.chroot_umount_special_dirs()
     
     def run_pacman(self):
         self.pac.install_packages(self.packages, self.conflicts)
     
-    def chroot_mount(self):
+    def chroot_mount_special_dirs(self):
+        # do not remount
+        if self.special_dirs_mounted:
+            self.queue_event('debug', _("Special dirs already mounted."))
+            return
+        
         dirs = [ "sys", "proc", "dev" ]
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
@@ -618,12 +626,26 @@ class InstallationProcess(multiprocessing.Process):
         mydir = os.path.join(self.dest_dir, "dev")
         subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
         
-    def chroot_umount(self):
-        dirs = [ "proc", "sys", "dev" ]
+        self.special_dirs_mounted = True
         
+    def chroot_umount_special_dirs(self):
+        # Do not umount if they're not mounted
+        if not self.special_dirs_mounted:
+            self.queue_event('debug', _("Special dirs already not mounted."))
+            return
+            
+        dirs = [ "proc", "sys", "dev" ]
+
         for d in dirs:
             mydir = os.path.join(self.dest_dir, d)
-            subprocess.check_call(["umount", mydir])
+            try:
+                subprocess.check_call(["umount", mydir])
+            except:
+                self.queue_event('warning', _("Unable to umount %s") % mydir)
+                return
+        
+        self.special_dirs_mounted = False
+
 
     def chroot(self, cmd, stdin=None, stdout=None):
         run = ['chroot', self.dest_dir]
@@ -738,7 +760,7 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
-        self.chroot_mount()
+        self.chroot_mount_special_dirs()
 
         self.chroot(['grub-install', \
                   '--directory=/usr/lib/grub/i386-pc', \
@@ -746,6 +768,8 @@ class InstallationProcess(multiprocessing.Process):
                   '--boot-directory=/boot', \
                   '--recheck', \
                   grub_device])
+        
+        self.chroot_umount_special_dirs()
         
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         
@@ -755,7 +779,6 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2("/arch/10_linux", grub_d_dir)
         except FileNotFoundError:
-            self.chroot_umount()            
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
             return
         except FileExistsError:
@@ -765,12 +788,11 @@ class InstallationProcess(multiprocessing.Process):
         self.install_bootloader_grub2_locales()
 
         locale = self.settings.get("locale")
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
-        
-        self.chroot_umount()
+        self.chroot_mount_special_dirs()
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])       
+        self.chroot_umount_special_dirs()
 
-        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
-        
+        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")        
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
@@ -787,7 +809,7 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
-        self.chroot_mount()
+        self.chroot_mount_special_dirs()
         
         self.chroot(['grub-install', \
                   '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
@@ -797,32 +819,34 @@ class InstallationProcess(multiprocessing.Process):
                   '--recheck', \
                   grub_device])
         
+        self.chroot_umount_special_dirs()
+        
         self.install_bootloader_grub2_locales()
 
-        d = self.dest_dir
         locale = self.settings.get("locale")
+        self.chroot_mount_special_dirs()
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot_umount_special_dirs()
         
-        self.chroot_umount()
-
-        grub_cfg = "%s/boot/grub/grub.cfg" % d
-        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (d, spec_uefi_arch)
+        grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
+        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
         try:
             shutil.copy2(grub_cfg, grub_standalone)
         except FileNotFoundError:
-            self.chroot_umount()            
-            self.queue_event('warning', _("ERROR installing GRUB(2) locales."))
+            self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
             return
         except FileExistsError:
             # ignore if already exists
             pass
 
+        self.chroot_mount_special_dirs()
         self.chroot(['grub-mkstandalone', \
                   '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
                   '--format=%s-efi' % uefi_arch, \
                   '--compression="xz"', \
                   '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
                   'boot/grub/grub.cfg'])
+        self.chroot_umount_special_dirs()
 
         # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
         
