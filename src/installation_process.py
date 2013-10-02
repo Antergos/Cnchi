@@ -548,7 +548,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))
-        self.add_selected_features()
+        self.add_packages_for_selected_features()
         
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
@@ -577,13 +577,13 @@ class InstallationProcess(multiprocessing.Process):
                         for pkg in child.iter('pkgname'):
                             self.packages.append(pkg.text)
 
-    def add_selected_features(self):
+    def add_packages_for_selected_features(self):
         features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
 
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
-                self.queue_event('debug', 'Selecting %s feature.' % feature)
+                self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
@@ -986,7 +986,8 @@ class InstallationProcess(multiprocessing.Process):
         # enable services      
         self.enable_services([ self.desktop_manager, self.network_manager ])
 
-        if os.path.exists("%s/usr/lib/systemd/system/cups.service"  % self.dest_dir):
+        cups_service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
+        if os.path.exists(cups_service):
             self.enable_services([ 'cups' ])
             
         # TODO: we never ask the user about this...
@@ -1020,7 +1021,6 @@ class InstallationProcess(multiprocessing.Process):
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         
         subprocess.check_call(["chmod", "440", sudoers_path])
-        
         
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
@@ -1185,9 +1185,9 @@ class InstallationProcess(multiprocessing.Process):
                         line = 'default_user %s\n' % username
                     slim_conf.write(line)
 
-        self.queue_event('debug', "Set SNA acceleration method on Intel cards to avoid GDM bug")
         # Set SNA acceleration method on Intel cards to avoid GDM bug
         if 'intel' in self.card:
+            self.queue_event('debug', "Set SNA acceleration method on Intel cards to avoid GDM bug")
             intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
             with open(intel_conf_path, "wt") as intel_conf:
                 intel_conf.write('Section "Device"\n')
@@ -1196,15 +1196,27 @@ class InstallationProcess(multiprocessing.Process):
                 intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
                 intel_conf.write('EndSection\n')
                 
-        self.queue_event('debug', "Setup user desired features...")
-        # Setup ufw if it's an user wanted feature
+        # Configure user features
+
+        if self.settings.get("feature_bluetooth"):
+            self.queue_event('debug', "Configuring bluetooth...")
+
+        if self.settings.get("feature_cups"):
+            self.queue_event('debug', "Configuring CUPS...")
+
+        if self.settings.get("feature_office"):
+            self.queue_event('debug', "Configuring libreoffice...")
+
+        if self.settings.get("feature_visual"):
+            self.queue_event('debug', "Configuring Compositing manager...")
+
         if self.settings.get("feature_firewall"):
-            pass
+            # Setup ufw if it's an user wanted feature
+            self.queue_event('debug', "Configuring firewall...")
             # ufw default deny
             # ufw allow Transmission
             # ufw enable
             # systemctl enable ufw.service
-			
                 
         # encrypt home directory if requested
         if self.settings.get('encrypt_home'):

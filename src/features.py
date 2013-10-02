@@ -48,6 +48,7 @@ class Features(Gtk.Box):
         self.ui.connect_signals(self)
         
         # Available features (for reference)
+        # if you add a feature, remember to add it's setup in installation_process.py
         self.all_features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
         
         # Each desktop has its own features
