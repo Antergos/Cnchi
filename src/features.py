@@ -125,7 +125,7 @@ class Features(Gtk.Box):
         txt = _("Uncomplicated firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-        txt = _("Installs ufw and denies all traffic by default (use gufw to setup it)")
+        txt = _("Controls the incoming and outgoing network traffic")
         self.labels["firewall"].set_markup(txt)
 
         # Propietary packages (third_party)
