@@ -364,12 +364,8 @@ class InstallationProcess(multiprocessing.Process):
 
         
     # Add gnupg pacman files to installed system
-    # Needs testing, but it seems to be the way to do it now
-    # Must be also changed in the CLI Installer
     def prepare_pacman_keychain(self):
-        # removed / from etc to make path relative...
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
-        # use copytree for cp -r
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except (FileExistsError, shutil.Error) as e:
@@ -489,14 +485,6 @@ class InstallationProcess(multiprocessing.Process):
                                 'vmware', 'via '):
                 self.packages.append('xorg-drivers')
         
-        if os.path.exists("/usr/bin/hwinfo"):
-            wlan = subprocess.check_output(\
-                ["hwinfo", "--wlan", "--short"]).decode()
-
-            if "broadcom" in wlan:
-                for child in root.iter('broadcom'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
         
         # Add filesystem packages
         
