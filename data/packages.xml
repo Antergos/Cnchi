@@ -230,6 +230,7 @@
             <pkgname>bluez-utils</pkgname>
             <pkgname>obexftp</pkgname>
             <pkgname>obex-data-server</pkgname>
+            <pkgname>gvfs-obexftp</pkgname>
         </bluetooth>
         
         <cups>
@@ -263,7 +264,7 @@
         
         <firewall>
             <pkgname>ufw</pkgname>
-            <!-- <pkgname>gufw</pkgname> -->
+            <pkgname>gufw</pkgname>
         </firewall>
         
         <!-- Third party software. Some of it is propietary -->
