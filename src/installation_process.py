@@ -770,8 +770,13 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2("/arch/10_linux", grub_d_dir)
         except FileNotFoundError:
-            self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-            return
+            try:
+                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
+            except FileNotFoundError:
+                self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
+                return
+            except FileExistsError:
+                pass
         except FileExistsError:
             # ignore if already exists
             pass
