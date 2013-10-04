@@ -144,6 +144,21 @@ class Features(Gtk.Box):
                     obj = self.ui.get_object(object_name)
                     obj.hide()
 
+    def enable_defaults(self):
+        if 'bluetooth' in self.features:
+            p1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(["grep", "-i", "bluetooth"],\
+                              stdin=p1.stdout, stdout=subprocess.PIPE)
+            p1.stdout.close()
+            out, err = p2.communicate()
+            if out.decode() is not '':
+                logging.debug("Detected bluetooth device. Enabling by default...")
+                self.switches['bluetooth'].set_active(True)
+        if 'firewall' in self.features:
+            self.switches['firewall'].set_active(True)
+        if 'cups' in self.features:
+            self.switches['cups'].set_active(True)
+
     def store_values(self):
         # Enable forward button
         self.forward_button.set_sensitive(True)
@@ -168,4 +183,5 @@ class Features(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.hide_features()
+        self.enable_defaults()
 
