@@ -167,7 +167,10 @@ class Slides(Gtk.Box):
             elif event[0] == 'warning':
                 logging.warning(event[1])
             else:
-                #logging.info(event[1])
+                # TODO: Check if logging slows down showing messages
+                #       remove logging.info in that case (and at least
+                #       use the one at pac.py:queue_event)
+                logging.info(event[1])
                 self.set_message(event[1])
                             
             self.callback_queue.task_done()
