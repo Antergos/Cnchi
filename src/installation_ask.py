@@ -80,8 +80,8 @@ class InstallationAsk(Gtk.Box):
         self.translate_ui()
         self.show_all()
         
-        # Hide alongside option if no existing OS has been detected
-        if self.otherOS == "":
+        # Hide alongside option if no existing Windows OS has been detected
+        if "windows" not in self.otherOS.lower():
             radio = self.ui.get_object("alongside_radiobutton")
             radio.hide()
             label = self.ui.get_object("alongside_description")
@@ -97,25 +97,28 @@ class InstallationAsk(Gtk.Box):
         self.forward_button.set_label("gtk-go-forward")
         self.forward_button.set_sensitive(True)
 
+        ## AUTOMATIC INSTALL
         radio = self.ui.get_object("automatic_radiobutton")
         radio.set_label(_("Erase disk and install Antergos (automatic)"))
 
         label = self.ui.get_object("automatic_description")
-        txt = _("Warning: This will delete all data on your disk")
+        txt = _("Warning: This will delete all data on your selected disk")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
         
-        # alongside is still experimental. Needs a lot of testing.
-        radio = self.ui.get_object("alongside_radiobutton")
-        radio.set_label(_("Install Antergos alongside %s") % self.otherOS)
+        ## ALONGSIDE INSTALL (still experimental. Needs a lot of testing)
+        if "windows" in self.otherOS.lower():
+            radio = self.ui.get_object("alongside_radiobutton")
+            label = self.ui.get_object("alongside_description")
+            radio.set_label(_("Install Antergos alongside %s") % self.otherOS)
 
-        label = self.ui.get_object("alongside_description")
-        txt = _("Install this OS alongside the other OSes you have already installed.")
-        txt = '<span weight="light" size="small">%s</span>' % txt
-        label.set_markup(txt)
-        label.set_line_wrap(True)
-
+            txt = _("Install Antergos alongside %s") % self.otherOS
+            txt = '<span weight="light" size="small">%s</span>' % txt
+            label.set_markup(txt)
+            label.set_line_wrap(True)
+        
+        ## ADVANCED INSTALL
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))
 
