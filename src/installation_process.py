@@ -272,7 +272,6 @@ class InstallationProcess(multiprocessing.Process):
                 
             cache_dir = self.settings.get("CACHE_DIR")
             if len(cache_dir) > 0:
-                self.queue_event('debug', 'Copying xz files from cache...')
                 self.copy_cache_files(cache_dir)
 
             self.queue_event('debug', 'Installing packages...')
@@ -774,8 +773,13 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2("/arch/10_linux", grub_d_dir)
         except FileNotFoundError:
-            self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-            return
+            try:
+                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
+            except FileNotFoundError:
+                self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
+                return
+            except FileExistsError:
+                pass
         except FileExistsError:
             # ignore if already exists
             pass
@@ -939,13 +943,25 @@ class InstallationProcess(multiprocessing.Process):
         # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
 
     def copy_cache_files(self, cache_dir):
+        self.queue_event('info', 'Copying xz files from cache...')
         dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
-        try:
-            misc.copytree(cache_dir, dest_dir)
-        except (FileExistsError, shutil.Error) as e:
-            pass
+            self.copyfiles_progress(cache_dir, dest_dir)
+
+    def copyfiles_progress(self, src, dst):
+        percent = 0.0
+        items = os.listdir(src)
+        step = 1.0 / len(items)
+        for item in items:
+            self.queue_event("percent", percent)
+            s = os.path.join(src, item)
+            d = os.path.join(dst, item)
+            try:
+                shutil.copy2(s, d)
+            except (FileExistsError, shutil.Error) as e:
+                pass
+            percent += step
                         
     def configure_system(self):
         # final install steps

@@ -272,7 +272,8 @@ class Pac(object):
         except queue.Full:
             pass
 
-        logging.info(event_text)
+        #if event_type != "percent":
+        #    logging.info(event_text)
         
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process

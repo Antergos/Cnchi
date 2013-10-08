@@ -61,6 +61,9 @@ class Language(Gtk.Box):
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = self.settings.get("DATA_DIR") + "languagelist.data.gz"
         self.set_languages_list()
+        
+        label = self.ui.get_object("welcome_label")
+        label.set_name("WelcomeMessage")
 
         super().add(self.ui.get_object("language"))
 
