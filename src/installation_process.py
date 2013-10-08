@@ -535,7 +535,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))
-        self.add_packages_for_selected_features()
+        self.add_packages_for_selected_features(root)
         
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
@@ -564,7 +564,7 @@ class InstallationProcess(multiprocessing.Process):
                         for pkg in child.iter('pkgname'):
                             self.packages.append(pkg.text)
 
-    def add_packages_for_selected_features(self):
+    def add_packages_for_selected_features(self, root):
         features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
 
         for feature in features:
