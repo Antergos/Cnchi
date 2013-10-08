@@ -210,7 +210,6 @@
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
         <pkgname>xnoise</pkgname>
-        <pkgname>slimlock</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>scrot</pkgname>
