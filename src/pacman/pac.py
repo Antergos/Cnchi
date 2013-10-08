@@ -52,6 +52,8 @@ class Pac(object):
         self.to_update = []
         self.to_provide = []
         
+        self.target = ""
+        
         # Packages to be removed
         # E.g: connman conflicts with netctl(openresolv), which is installed
         # by default with base group
