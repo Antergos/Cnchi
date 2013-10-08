@@ -704,8 +704,12 @@ class InstallationProcess(multiprocessing.Process):
             if parti in self.fs_devices:
                 myfmt = self.fs_devices[parti]
             else:
-                # It hasn't any filesystem defined (maybe swap?)
-                # TODO: don't skip it and mount it as it should be if it is a swap partition
+                # It hasn't any filesystem defined
+                continue
+            
+            # Avoid adding a partition to fstab when
+            # it has no mount point (except swap, of course)
+            if path == "" and "swap" not in myfmt:
                 continue
 
             if path == '/':
