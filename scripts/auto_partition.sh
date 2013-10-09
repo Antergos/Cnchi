@@ -310,6 +310,8 @@ autoprepare() {
     ROOT_PART_SET=""
     FSTYPE='ext4'
     
+    KEY_FILE="/tmp/.keyfile"
+    
     # Do not support UEFI
     GUIDPARAMETER="no"
 
@@ -388,6 +390,7 @@ autoprepare() {
     if [[ "${NAME_SCHEME_PARAMETER_RUN}" == "" ]]; then
         set_device_name_scheme || return 1
     fi
+
     # we assume a /dev/hdX format (or /dev/sdX)
     if [[ "${GUIDPARAMETER}" == "yes" ]]; then
         PART_ROOT="${DEVICE}5"
@@ -443,22 +446,43 @@ autoprepare() {
     ## wait until /dev initialized correct devices
     udevadm settle
 
+    # if using LVM, data_device will store root and swap partitions
+    # if not using LVM, data_device will be root partition
     if [ "$USE_LVM" == "1" ]; then
-
-        if [ "$USE_LUKS" == "1" ]; then
-            # Setup LUKS on LVM
-            echo "NOT IMPLEMENTED YET!"
-            #https://bbs.archlinux.org/viewtopic.php?id=87897
+        DATA_DEVICE=${DEVICE}2
+    else
+        DATA_DEVICE=${DEVICE}3
+    
+        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
+            DATA_DEVICE=${DEVICE}5
         fi
+    fi
+    
+    if [ "$USE_LUKS" == "1" ]; then
+        # Create a random keyfile
+        sudo dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
+        
+        # Setup luks
+        cryptsetup luksFormat -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
+        cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos --key-file ${KEY_FILE}
+    fi
 
+    if [ "$USE_LVM" == "1" ]; then
         # /dev/sdX1 is /boot
         # /dev/sdX2 is the PV
-        pvcreate ${DEVICE}2
-        vgcreate -v AntergosVG ${DEVICE}2
+        
+        if [ "$USE_LUKS" == "1" ]; then
+            # setup LVM on LUKS
+            pvcreate /dev/mapper/cryptAntergos
+            vgcreate -v AntergosVG /dev/mapper/cryptAntergos
+        else
+            pvcreate ${DATA_DEVICE}
+            vgcreate -v AntergosVG ${DATA_DEVICE}
+        fi
+        
         lvcreate -n AntergosRoot -L ${ROOT_PART_SIZE} AntergosVG
         
         # Use the remainig space for our swap volume
-        #lvcreate -n AntergosSwap -L ${SWAP_PART_SIZE} AntergosVG
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
 
         ## Make sure the "root" partition is defined first
@@ -469,10 +493,17 @@ autoprepare() {
             _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
         else        
             _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
-        fi
-        
-    else       
-        if [ "$USE_LUKS" == "0" ]; then
+        fi      
+    else
+        # Not using LVM
+        if [ "$USE_LUKS" == "1" ]; then
+            ## Make sure the "root" partition is defined first
+            _mkfs yes /dev/mapper/cryptAntergos ext4 "${DESTDIR}" / AntergosRoot || return 1
+            FSSPECS="1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            if [ "${GUIDPARAMETER}" == "yes" ]; then
+                FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            fi
+        else
             ## FSSPECS - default filesystem specs (the + is bootable flag)
             ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
             ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
@@ -480,34 +511,45 @@ autoprepare() {
             FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
 
             if [ "${GUIDPARAMETER}" == "yes" ]; then
-                FSSPECS="5:/:${ROOT_PART_SIZE} :${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+                FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
             fi
-
-            ## make and mount filesystems
-            for fsspec in ${FSSPECS}; do
-                part="$(echo ${fsspec} | tr -d ' ' | cut -f1 -d:)"
-                mountpoint="$(echo ${fsspec} | tr -d ' ' | cut -f2 -d:)"
-                fstype="$(echo ${fsspec} | tr -d ' ' | cut -f4 -d:)"
-                fsoptions="$(echo ${fsspec} | tr -d ' ' | cut -f5 -d:)"
-                [[ "${fsoptions}" == "" ]] && fsoptions="NONE"
-                labelname="$(echo ${fsspec} | tr -d ' ' | cut -f7 -d:)"
-                btrfsdevices="${DEVICE}${part}"
-                btrfsssd="NONE"
-                btrfscompress="NONE"
-                btrfssubvolume="NONE"
-                btrfslevel="NONE"
-                dosubvolume="no"
-                # if echo "${mountpoint}" | tr -d ' ' | grep '^/$' 2>&1 >/dev/null; then
-                # if [[ "$(echo ${mountpoint} | tr -d ' ' | grep '^/$' | wc -l)" -eq 0 ]]; then
-                _mkfs yes "${DEVICE}${part}" "${fstype}" "${DESTDIR}" "${mountpoint}" "${labelname}" "${fsoptions}" "${btrfsdevices}" "${btrfssubvolume}" "${btrfslevel}" "${dosubvolume}" "${btrfssd}" "${btrfscompress}" || return 1
-                # fi
-            done
-        else
-            # Setup LUKS without LVM
-            echo "NOT IMPLEMENTED YET!"
         fi
-    fi
 
+        ## make and mount filesystems
+        for fsspec in ${FSSPECS}; do
+            part="$(echo ${fsspec} | tr -d ' ' | cut -f1 -d:)"
+            mountpoint="$(echo ${fsspec} | tr -d ' ' | cut -f2 -d:)"
+            fstype="$(echo ${fsspec} | tr -d ' ' | cut -f4 -d:)"
+            fsoptions="$(echo ${fsspec} | tr -d ' ' | cut -f5 -d:)"
+            [[ "${fsoptions}" == "" ]] && fsoptions="NONE"
+            labelname="$(echo ${fsspec} | tr -d ' ' | cut -f7 -d:)"
+            btrfsdevices="${DEVICE}${part}"
+            btrfsssd="NONE"
+            btrfscompress="NONE"
+            btrfssubvolume="NONE"
+            btrfslevel="NONE"
+            dosubvolume="no"
+            # if echo "${mountpoint}" | tr -d ' ' | grep '^/$' 2>&1 >/dev/null; then
+            # if [[ "$(echo ${mountpoint} | tr -d ' ' | grep '^/$' | wc -l)" -eq 0 ]]; then
+            _mkfs yes "${DEVICE}${part}" "${fstype}" "${DESTDIR}" "${mountpoint}" "${labelname}" "${fsoptions}" "${btrfsdevices}" "${btrfssubvolume}" "${btrfslevel}" "${dosubvolume}" "${btrfssd}" "${btrfscompress}" || return 1
+            # fi
+        done
+    fi
+    
+    # TODO: Check this /etc/crypttab setup to open LUKS partition on boot
+    # <target name>	<source device>		<key file>	<options>
+    echo "cryptAntergos ${DATA_DEVICE} ${KEYFILE} cipher=aes-xts-plain" >> /etc/crypttab
+    
+    # Copy keyfile to boot partition, user will choose what to do with it
+    # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+    # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+    # (boot partition is not)
+    if [ "$USE_LUKS" == "1" ]; then
+        sudo chmod 0400 ${KEYFILE}
+        cp ${KEYFILE} ${DESTDIR}/boot
+        rm ${KEYFILE}
+    fi
+    
     S_MKFSAUTO=1
 }
 
