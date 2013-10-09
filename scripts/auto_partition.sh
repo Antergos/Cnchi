@@ -540,6 +540,8 @@ autoprepare() {
 
     # https://wiki.archlinux.org/index.php/Encrypted_LVM
 
+    #### THIS WILL BE CODED IN INSTALLATION_PROCESS.PY #############
+
     # Edit /install/etc/mkinitcpio.conf and change HOOKS to include:
     # keymap encrypt lvm2 filesystems
     
@@ -550,6 +552,8 @@ autoprepare() {
     # mkinitcpio -p linux
     # grub-mkconfig -o /install/boot/grub/grub.cfg
     # grub-install
+    
+    ################################################################
     
     # Copy keyfile to boot partition, user will choose what to do with it
     # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS

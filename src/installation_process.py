@@ -890,16 +890,31 @@ class InstallationProcess(multiprocessing.Process):
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
     # runs mkinitcpio on the target system
+    
+    def add_mkinitcpio_hooks(self, hooks):
+        with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
+            mklins = [x.strip() for x in f.readlines()]
+
+        for e in range(len(mklins)):
+            if mklins[e].startswith("HOOKS"):
+                for hook in hooks:
+                    mklins[e] = mklins[e].strip('"') + (' %s"' % hook)
+
+        with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
+            f.write("\n".join(mklins) + "\n")
+        
+    
     def run_mkinitcpio(self):
-        # Add lvm hook if necessary
+        # Add lvm and encrypt hooks if necessary
+        hooks = []
+        
+        if self.settings.get("use_luks"):
+            hooks.append("encrypt")
+
         if self.blvm or self.settings.get("use_lvm"):
-            with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
-                mklins = [x.strip() for x in f.readlines()]
-            for e in range(len(mklins)):
-                if mklins[e].startswith("HOOKS"):
-                   mklins[e] = mklins[e].strip('"') + ' lvm2"'
-            with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
-                f.write("\n".join(mklins) + "\n")
+            hooks.append("lvm2")
+            
+        self.add_mkinitcpio_hooks(hooks)
         
         self.chroot_mount_special_dirs()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
@@ -942,7 +957,7 @@ class InstallationProcess(multiprocessing.Process):
         
         # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
 
-    def copy_cache_files(self, cache_dir):        
+    def copy_cache_files(self, cache_dir):
         self.queue_event('info', 'Copying xz files from cache...')
         dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
         if not os.path.exists(dest_dir):
