@@ -444,6 +444,13 @@ autoprepare() {
     udevadm settle
 
     if [ "$USE_LVM" == "1" ]; then
+
+        if [ "$USE_LUKS" == "1" ]; then
+            # Setup LUKS on LVM
+            echo "NOT IMPLEMENTED YET!"
+            #https://bbs.archlinux.org/viewtopic.php?id=87897
+        fi
+
         # /dev/sdX1 is /boot
         # /dev/sdX2 is the PV
         pvcreate ${DEVICE}2
@@ -453,7 +460,7 @@ autoprepare() {
         # Use the remainig space for our swap volume
         #lvcreate -n AntergosSwap -L ${SWAP_PART_SIZE} AntergosVG
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
-        
+
         ## Make sure the "root" partition is defined first
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
         _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
@@ -464,37 +471,41 @@ autoprepare() {
             _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
         fi
         
-    else
-        
-        ## FSSPECS - default filesystem specs (the + is bootable flag)
-        ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
-        ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
-        ## Make sure the "root" partition is defined first in the FSSPECS list
-        FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+    else       
+        if [ "$USE_LUKS" == "0" ]; then
+            ## FSSPECS - default filesystem specs (the + is bootable flag)
+            ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
+            ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
+            ## Make sure the "root" partition is defined first in the FSSPECS list
+            FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
 
-        if [ "${GUIDPARAMETER}" == "yes" ]; then
-            FSSPECS="5:/:${ROOT_PART_SIZE} :${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            if [ "${GUIDPARAMETER}" == "yes" ]; then
+                FSSPECS="5:/:${ROOT_PART_SIZE} :${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            fi
+
+            ## make and mount filesystems
+            for fsspec in ${FSSPECS}; do
+                part="$(echo ${fsspec} | tr -d ' ' | cut -f1 -d:)"
+                mountpoint="$(echo ${fsspec} | tr -d ' ' | cut -f2 -d:)"
+                fstype="$(echo ${fsspec} | tr -d ' ' | cut -f4 -d:)"
+                fsoptions="$(echo ${fsspec} | tr -d ' ' | cut -f5 -d:)"
+                [[ "${fsoptions}" == "" ]] && fsoptions="NONE"
+                labelname="$(echo ${fsspec} | tr -d ' ' | cut -f7 -d:)"
+                btrfsdevices="${DEVICE}${part}"
+                btrfsssd="NONE"
+                btrfscompress="NONE"
+                btrfssubvolume="NONE"
+                btrfslevel="NONE"
+                dosubvolume="no"
+                # if echo "${mountpoint}" | tr -d ' ' | grep '^/$' 2>&1 >/dev/null; then
+                # if [[ "$(echo ${mountpoint} | tr -d ' ' | grep '^/$' | wc -l)" -eq 0 ]]; then
+                _mkfs yes "${DEVICE}${part}" "${fstype}" "${DESTDIR}" "${mountpoint}" "${labelname}" "${fsoptions}" "${btrfsdevices}" "${btrfssubvolume}" "${btrfslevel}" "${dosubvolume}" "${btrfssd}" "${btrfscompress}" || return 1
+                # fi
+            done
+        else
+            # Setup LUKS without LVM
+            echo "NOT IMPLEMENTED YET!"
         fi
-
-        ## make and mount filesystems
-        for fsspec in ${FSSPECS}; do
-            part="$(echo ${fsspec} | tr -d ' ' | cut -f1 -d:)"
-            mountpoint="$(echo ${fsspec} | tr -d ' ' | cut -f2 -d:)"
-            fstype="$(echo ${fsspec} | tr -d ' ' | cut -f4 -d:)"
-            fsoptions="$(echo ${fsspec} | tr -d ' ' | cut -f5 -d:)"
-            [[ "${fsoptions}" == "" ]] && fsoptions="NONE"
-            labelname="$(echo ${fsspec} | tr -d ' ' | cut -f7 -d:)"
-            btrfsdevices="${DEVICE}${part}"
-            btrfsssd="NONE"
-            btrfscompress="NONE"
-            btrfssubvolume="NONE"
-            btrfslevel="NONE"
-            dosubvolume="no"
-            # if echo "${mountpoint}" | tr -d ' ' | grep '^/$' 2>&1 >/dev/null; then
-            # if [[ "$(echo ${mountpoint} | tr -d ' ' | grep '^/$' | wc -l)" -eq 0 ]]; then
-            _mkfs yes "${DEVICE}${part}" "${fstype}" "${DESTDIR}" "${mountpoint}" "${labelname}" "${fsoptions}" "${btrfsdevices}" "${btrfssubvolume}" "${btrfslevel}" "${dosubvolume}" "${btrfssd}" "${btrfscompress}" || return 1
-            # fi
-        done
     fi
 
     S_MKFSAUTO=1
