@@ -314,7 +314,7 @@ autoprepare() {
     
     # Do not support UEFI
     GUIDPARAMETER="no"
-
+    
     if [[ "${GUIDPARAMETER}" = "yes" ]]; then
         GUID_PART_SIZE="2"
         GPT_BIOS_GRUB_PART_SIZE="${GUID_PART_SIZE}"
@@ -330,6 +330,7 @@ autoprepare() {
         echo "ERROR: Setup cannot detect size of your device, please use normal installation routine for partitioning and mounting devices."
         return 1
     fi
+    
     while [[ "${DEFAULTFS}" = "" ]]; do
 
         # create 1 MB bios_grub partition for grub-bios GPT support
@@ -436,6 +437,7 @@ autoprepare() {
             parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) 100% >>${LOG}
         fi
     fi
+    
     partprobe ${DISC}
     if [[ $? -gt 0 ]]; then
         echo "Error partitioning ${DEVICE} (see ${LOG} for details)" 0 0
@@ -445,7 +447,7 @@ autoprepare() {
     printk on
     ## wait until /dev initialized correct devices
     udevadm settle
-
+    
     # if using LVM, data_device will store root and swap partitions
     # if not using LVM, data_device will be root partition
     if [ "$USE_LVM" == "1" ]; then
@@ -463,8 +465,8 @@ autoprepare() {
         sudo dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
         
         # Setup luks
-        cryptsetup luksFormat -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
-        cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos --key-file ${KEY_FILE}
+        cryptsetup luksFormat -q -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
+        cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos -q --key-file ${KEY_FILE}
     fi
 
     if [ "$USE_LVM" == "1" ]; then
@@ -535,19 +537,29 @@ autoprepare() {
             # fi
         done
     fi
+
+    # https://wiki.archlinux.org/index.php/Encrypted_LVM
+
+    # Edit /install/etc/mkinitcpio.conf and change HOOKS to include:
+    # keymap encrypt lvm2 filesystems
     
-    # TODO: Check this /etc/crypttab setup to open LUKS partition on boot
-    # <target name>	<source device>		<key file>	<options>
-    echo "cryptAntergos ${DATA_DEVICE} ${KEYFILE} cipher=aes-xts-plain" >> /etc/crypttab
+    # Edit /install/etc/default/grub and change
+    # GRUB_CMDLINE_LINUX="cryptdevice=${DATA_DEVICE}:cryptAntergos"
+    
+    # Rebuild:
+    # mkinitcpio -p linux
+    # grub-mkconfig -o /install/boot/grub/grub.cfg
+    # grub-install
     
     # Copy keyfile to boot partition, user will choose what to do with it
     # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
     # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
     # (boot partition is not)
+    # Maybe instead of using a keyfile we should use a password...
     if [ "$USE_LUKS" == "1" ]; then
-        sudo chmod 0400 ${KEYFILE}
-        cp ${KEYFILE} ${DESTDIR}/boot
-        rm ${KEYFILE}
+        sudo chmod 0400 "${KEY_FILE}"
+        cp ${KEY_FILE} ${DESTDIR}/boot
+        rm ${KEY_FILE}
     fi
     
     S_MKFSAUTO=1
