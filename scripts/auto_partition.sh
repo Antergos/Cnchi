@@ -540,20 +540,16 @@ autoprepare() {
 
     # https://wiki.archlinux.org/index.php/Encrypted_LVM
 
-    #### THIS WILL BE CODED IN INSTALLATION_PROCESS.PY #############
+    # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
 
-    # Edit /install/etc/mkinitcpio.conf and change HOOKS to include:
-    # keymap encrypt lvm2 filesystems
-    
     # Edit /install/etc/default/grub and change
     # GRUB_CMDLINE_LINUX="cryptdevice=${DATA_DEVICE}:cryptAntergos"
     
-    # Rebuild:
-    # mkinitcpio -p linux
-    # grub-mkconfig -o /install/boot/grub/grub.cfg
-    # grub-install
-    
-    ################################################################
+    DEFAULT_GRUB="${DESTDIR}/etc/default/grub"
+    cp /etc/default/grub "${DEFAULT_GRUB}"
+    sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\" ${DEFAULT_GRUB}
+
+    # NOTE: Grub will be rebuild in installation_process.py
     
     # Copy keyfile to boot partition, user will choose what to do with it
     # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS

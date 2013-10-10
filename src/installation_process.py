@@ -741,8 +741,6 @@ class InstallationProcess(multiprocessing.Process):
             f.write(full_text)
 
     def install_bootloader(self):
-        # TODO: check dogrub_config and dogrub_bios from arch-setup
-        
         bt = self.settings.get('bootloader_type')
 
         if bt == "GRUB2":
@@ -889,7 +887,6 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
-    # runs mkinitcpio on the target system
     
     def add_mkinitcpio_hooks(self, hooks):
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
@@ -903,7 +900,6 @@ class InstallationProcess(multiprocessing.Process):
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
             f.write("\n".join(mklins) + "\n")
         
-    
     def run_mkinitcpio(self):
         # Add lvm and encrypt hooks if necessary
         hooks = []
@@ -916,6 +912,7 @@ class InstallationProcess(multiprocessing.Process):
             
         self.add_mkinitcpio_hooks(hooks)
         
+        # run mkinitcpio on the target system
         self.chroot_mount_special_dirs()
         self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
         self.chroot_umount_special_dirs()
