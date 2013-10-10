@@ -538,25 +538,29 @@ autoprepare() {
         done
     fi
 
-    # https://wiki.archlinux.org/index.php/Encrypted_LVM
-
-    # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
-
-    # Edit /install/etc/default/grub and change
-    # GRUB_CMDLINE_LINUX="cryptdevice=${DATA_DEVICE}:cryptAntergos"
-    
-    DEFAULT_GRUB="${DESTDIR}/etc/default/grub"
-    cp /etc/default/grub "${DEFAULT_GRUB}"
-    sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\" ${DEFAULT_GRUB}
-
-    # NOTE: Grub will be rebuild in installation_process.py
-    
-    # Copy keyfile to boot partition, user will choose what to do with it
-    # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-    # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
-    # (boot partition is not)
-    # Maybe instead of using a keyfile we should use a password...
     if [ "$USE_LUKS" == "1" ]; then
+        # https://wiki.archlinux.org/index.php/Encrypted_LVM
+
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
+
+        # Edit /install/etc/default/grub and change
+        # GRUB_CMDLINE_LINUX="cryptdevice=${DATA_DEVICE}:cryptAntergos"
+
+        DEFAULT_DIR="${DESTDIR}/etc/default"    
+        DEFAULT_GRUB="${DEFAULT_DIR}/grub"
+
+        mkdir -p ${DEFAULT_DIR}
+        cp /etc/default/grub "${DEFAULT_GRUB}"
+
+        sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\" ${DEFAULT_GRUB}
+
+        # NOTE: Grub will be rebuild in installation_process.py
+        
+        # Copy keyfile to boot partition, user will choose what to do with it
+        # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+        # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+        # (boot partition is not)
+        # Maybe instead of using a keyfile we should use a password...
         sudo chmod 0400 "${KEY_FILE}"
         cp ${KEY_FILE} ${DESTDIR}/boot
         rm ${KEY_FILE}
