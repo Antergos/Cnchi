@@ -955,6 +955,9 @@ class InstallationProcess(multiprocessing.Process):
         # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
 
     def copy_cache_files(self, cache_dir):
+        # Check in case user has given a wrong folder
+        if not os.path.exists(cache_dir):
+            return
         self.queue_event('info', 'Copying xz files from cache...')
         dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
         if not os.path.exists(dest_dir):
