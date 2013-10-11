@@ -986,25 +986,33 @@ class InstallationProcess(multiprocessing.Process):
         # setup systemd services
         # ... check configure_system from arch-setup
 
-        self.queue_event('debug', 'Generating the fstab file...')
+        self.queue_event('action', _("Configuring your new system"))
+
         self.auto_fstab()
         self.queue_event('debug', 'fstab file generated.')
         
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
+        self.queue_event('debug', 'Network configuration copied.')
 
         # copy mirror list
-        shutil.copy2('/etc/pacman.d/mirrorlist', \
-                    os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist'))       
-
-        self.queue_event("action", _("Configuring your new system"))
+        mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
+        try:
+            shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
+            self.queue_event('debug', 'Mirror list copied.')
+        except:
+            pass
 
         # Copy important config files to target system
         files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]        
         
         for path in files:
-            shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
+            try:
+                shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
+            except:
+                pass
+        self.queue_event('debug', 'Important configuration files copied.')
 
         # enable services      
         self.enable_services([ self.desktop_manager, self.network_manager ])
@@ -1017,15 +1025,18 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get("use_ntp"):
             self.enable_services(["ntpd"])
 
+        self.queue_event('debug', 'Enabled installed services.')
+
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
             # wait five seconds and try again
             time.sleep(5)
 
         # set timezone
-        zoneinfo_path = os.path.join("/usr/share/zoneinfo", \
-                                     self.settings.get("timezone_zone"))
+        zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
+
+        self.queue_event('debug', 'Timezone set.')
         
         # Wait FOREVER until the user sets his params
         while self.settings.get('user_info_done') is False:
@@ -1038,16 +1049,20 @@ class InstallationProcess(multiprocessing.Process):
         password = self.settings.get('password')
         hostname = self.settings.get('hostname')
         
-        sudoers_path = os.path.join(self.dest_dir, \
-                                    "etc/sudoers.d/10-installer")
+        sudoers_path = os.path.join(self.dest_dir, "etc/sudoers.d/10-installer")
+
         with open(sudoers_path, "wt") as sudoers:
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         
         subprocess.check_call(["chmod", "440", sudoers_path])
+
+        self.queue_event('debug', 'Sudo configuration for user %s done.' % username)
         
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
+
+        self.queue_event('debug', 'User %s added.' % username)
 
         self.change_user_password(username, password)
 
@@ -1059,9 +1074,12 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(hostname_path):
             with open(hostname_path, "wt") as f:
                 f.write(hostname)
+
+        self.queue_event('debug', 'Hostname  %s set.' % hostname)
         
         # User password is the root password  
         self.change_user_password('root', password)
+        self.queue_event('debug', 'Set the same password to root.')
 
         ## Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
