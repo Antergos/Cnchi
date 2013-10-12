@@ -461,12 +461,19 @@ autoprepare() {
     fi
     
     if [ "$USE_LUKS" == "1" ]; then
+        # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
+        # For 512 bit key length the header is 2MB
+        # If in doubt, just be generous and overwrite the first 10MB or so
+        dd if=/dev/zero of=${DATA_DEVICE} bs=512 count=20480
+    
         # Create a random keyfile
-        sudo dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
+        dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
         
         # Setup luks
         cryptsetup luksFormat -q -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
+        #cryptsetup luksAddKey ${DATA_DEVICE} --key-file ${KEY_FILE}
         cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos -q --key-file ${KEY_FILE}
+        
     fi
 
     if [ "$USE_LVM" == "1" ]; then
