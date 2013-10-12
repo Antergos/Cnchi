@@ -24,7 +24,7 @@ from multiprocessing import Queue
 
 class Settings():
     def __init__(self):
-        # Create a queue one element size
+        # Create a one element size queue
 
         self.settings = Queue(1)
 

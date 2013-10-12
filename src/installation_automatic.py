@@ -166,7 +166,7 @@ class InstallationAutomatic(Gtk.Box):
         fs_devices[boot_partition] = "ext2"
         fs_devices[root_partition] = "ext4"
 
-        # Ask bootloader type
+        # Ask (if guessing doesn't work) bootloader type
         import bootloader
         bl = bootloader.BootLoader(self.settings)
         bl.ask()
