@@ -62,6 +62,9 @@ class Language(Gtk.Box):
         self.language_list = self.settings.get("DATA_DIR") + "languagelist.data.gz"
         self.set_languages_list()
         
+        image1 = self.ui.get_object("image1")
+        image1.set_from_file(self.settings.get("DATA_DIR") + "languages.png")
+        
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
