@@ -84,6 +84,10 @@
 		<pkgname>gnome-shell-extensions</pkgname>
 		<pkgname>gnome-tweak-tool</pkgname>
 		<pkgname>gnome-disk-utility</pkgname>
+		<pkgname>gvfs-mtp</pkgname>
+		<pkgname>gvfs-obexftp</pkgname>
+		<pkgname>cdrkit</pkgname>
+		<pkgname>dvdauthor</pkgname>
 	</gnome_desktop>
 
 	<cinnamon_desktop>
@@ -128,6 +132,10 @@
 		<pkgname>gst-libav</pkgname>
 		<pkgname>cinnamon-theme-nadia</pkgname>
 		<pkgname>gnome-disk-utility</pkgname>
+		<pkgname>gvfs-mtp</pkgname>
+		<pkgname>gvfs-obexftp</pkgname>
+		<pkgname>cdrkit</pkgname>
+		<pkgname>dvdauthor</pkgname>
 	</cinnamon_desktop>
 
 	<xfce_desktop>
@@ -161,6 +169,10 @@
 		<pkgname>hotot-gtk3</pkgname>
 		<pkgname>gnome-disk-utility</pkgname>
 		<pkgname>polkit-gnome</pkgname>
+		<pkgname>gvfs-mtp</pkgname>
+		<pkgname>gvfs-obexftp</pkgname>
+		<pkgname>cdrkit</pkgname>
+		<pkgname>dvdauthor</pkgname>
 	</xfce_desktop>
 
 	<razor_desktop>
@@ -220,6 +232,12 @@
         <pkgname>ttf-ubuntu-font-family</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>file-roller</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+		<pkgname>gvfs-obexftp</pkgname>
+		<pkgname>cdrkit</pkgname>
+		<pkgname>dvdauthor</pkgname>
+		<pkgname>xfburn</pkgname>
+		<pkgname>lxpolkit</pkgname>
     </openbox_desktop>
 
     <!-- User desired features -->
