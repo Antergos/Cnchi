@@ -890,30 +890,47 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
-    
-    def add_mkinitcpio_hooks(self, hooks):
+    def set_mkinitcpio_hooks_and_modules(self, hooks, modules):
+        
+        self.queue_event('debug', "Setting hooks and modules in mkinitcpio.conf")
+        self.queue_event('debug', "HOOKS=%s" % ''.join(hooks))
+        self.queue_event('debug', "MODULES=%s" % ''.join(modules))
+        
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
             mklins = [x.strip() for x in f.readlines()]
 
         for e in range(len(mklins)):
             if mklins[e].startswith("HOOKS"):
+                mklins[e] = 'HOOKS=""'
                 for hook in hooks:
                     mklins[e] = mklins[e].strip('"') + (' %s"' % hook)
+            elif mklins[e].startswith("MODULES"):
+                mlinks[e] = 'MODULES=""'
+                for module in modules:
+                    mklins[e] = mklins[e].strip('"') + (' %s"' % module)
 
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
             f.write("\n".join(mklins) + "\n")
         
     def run_mkinitcpio(self):
         # Add lvm and encrypt hooks if necessary
-        hooks = []
+        
+        hooks = ["base", "udev", "autodetect", "modconf", "block" ] 
+        modules = []
+        
+        # It is important that the encrypt hook comes before the filesystems hook
+        # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
         
         if self.settings.get("use_luks"):
             hooks.append("encrypt")
+            modules.extend(["dm_mod", "dm_crypt", "ext4", "aes-x86_64", "sha256", "sha512" ])
 
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
             
-        self.add_mkinitcpio_hooks(hooks)
+        hooks.extend(["filesystems", "keyboard", "fsck" ])
+            
+        self.set_mkinitcpio_hooks_and_modules(hooks, modules)
         
         # run mkinitcpio on the target system
         self.chroot_mount_special_dirs()

@@ -476,6 +476,12 @@ autoprepare() {
         
     fi
 
+    BOOT_DEVICE="${DEVICE}1"
+
+    if [ "${GUIDPARAMETER}" == "yes" ]; then
+        BOOT_DEVICE="${DEVICE}3"
+    fi  
+
     if [ "$USE_LVM" == "1" ]; then
         # /dev/sdX1 is /boot
         # /dev/sdX2 is the PV
@@ -498,11 +504,7 @@ autoprepare() {
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
         _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
 
-        if [ "${GUIDPARAMETER}" == "yes" ]; then
-            _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
-        else        
-            _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
-        fi      
+        _mkfs yes "${BOOT_DEVICE}" ext2 "${DESTDIR}" /boot AntergosBoot || return 1    
     else
         # Not using LVM
         if [ "$USE_LUKS" == "1" ]; then
@@ -559,7 +561,7 @@ autoprepare() {
         mkdir -p ${DEFAULT_DIR}
         cp /etc/default/grub "${DEFAULT_GRUB}"
 
-        sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\" ${DEFAULT_GRUB}
+        sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
 
         # NOTE: Grub will be rebuild in installation_process.py
         
