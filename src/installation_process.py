@@ -895,17 +895,14 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', 'HOOKS="%s"' % ' '.join(hooks))
         self.queue_event('debug', 'MODULES="%s"' % ' '.join(modules))
         
-        with open("test.mkinitcpio.conf") as f:
+        with open("/etc/mkinitcpio.conf") as f:
             mklins = [x.strip() for x in f.readlines()]
 
         for e in range(len(mklins)):
             if mklins[e].startswith("HOOKS"):
                 mklins[e] = 'HOOKS="%s"' % ' '.join(hooks)
-            if mklins[e].startswith("MODULES"):
+            elif mklins[e].startswith("MODULES"):
                 mklins[e] = 'MODULES="%s"' % ' '.join(modules)
-
-        with open("test.mkinitcpio.conf", "w") as f:
-            f.write("\n".join(mklins) + "\n")
 
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
             f.write("\n".join(mklins) + "\n")
@@ -921,12 +918,12 @@ class InstallationProcess(multiprocessing.Process):
         
         if self.settings.get("use_luks"):
             hooks.append("encrypt")
-            modules.extend(["dm_mod", "dm_crypt", "ext4", "aes-x86_64", "sha256", "sha512" ])
+            modules.extend([ "dm_mod", "dm_crypt", "ext4", "aes-x86_64", "sha256", "sha512" ])
 
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
             
-        hooks.extend(["filesystems", "keyboard", "fsck" ])
+        hooks.extend([ "filesystems", "keyboard", "fsck" ])
             
         self.set_mkinitcpio_hooks_and_modules(hooks, modules)
         
