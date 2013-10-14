@@ -561,7 +561,7 @@ autoprepare() {
         mkdir -p ${DEFAULT_DIR}
         cp /etc/default/grub "${DEFAULT_GRUB}"
 
-        sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
+        sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\ cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
 
         # NOTE: Grub will be rebuild in installation_process.py
         
