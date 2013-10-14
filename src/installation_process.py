@@ -83,8 +83,11 @@ class InstallationProcess(multiprocessing.Process):
         
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
+
+        # Set defaults
         self.desktop_manager = 'gdm'
         self.network_manager = 'NetworkManager'
+
         self.card = []
         # Packages to be removed
         self.conflicts = []
@@ -1104,23 +1107,6 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_timesetting()
 
         desktop = self.settings.get('desktop')
-
-        '''
-        consolefh = open("/install/etc/keyboard.conf", "r")
-        newconsolefh = open("/install/etc/keyboard.new", "w")
-        for line in consolefh:
-            line = line.rstrip("\r\n")
-            if(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"%s\"\n" % keyboard_layout)
-            elif(line.startswith("XKBVARIANT=") and keyboard_variant != ''):
-                newconsolefh.write("XKBVARIANT=\"%s\"\n" % keyboard_variant)
-            else:
-                newconsolefh.write("%s\n" % line)
-        consolefh.close()
-        newconsolefh.close()
-        os.system("mv /install/etc/keyboard.conf /install/etc/keyboard.conf.old")
-        os.system("mv /install/etc/keyboard.new /install/etc/keyboard.conf")
-        '''
                 
         if desktop != "nox":
             self.queue_event('debug', "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")            
