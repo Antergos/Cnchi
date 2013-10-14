@@ -552,6 +552,9 @@ autoprepare() {
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
 
+        #######################################################################################################################################
+        # NOTE: Grub will be rebuild in installation_process.py SO ALL THIS SHOULD BE DONE ELSEWHERE (in installation_process.py) AND NOT HERE!
+        
         # Edit /install/etc/default/grub and change
         # GRUB_CMDLINE_LINUX="cryptdevice=${DATA_DEVICE}:cryptAntergos"
 
@@ -562,8 +565,7 @@ autoprepare() {
         cp /etc/default/grub "${DEFAULT_GRUB}"
 
         sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\ cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
-
-        # NOTE: Grub will be rebuild in installation_process.py
+        #######################################################################################################################################
         
         # Copy keyfile to boot partition, user will choose what to do with it
         # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
