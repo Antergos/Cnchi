@@ -740,7 +740,7 @@ class InstallationProcess(multiprocessing.Process):
 
         full_text = '\n'.join(all_lines)
 
-        with open('/install/etc/fstab','w') as f:
+        with open('%s/etc/fstab' % self.dest_dir, 'w') as f:
             f.write(full_text)
 
     def install_bootloader(self):
@@ -890,24 +890,22 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
-    def set_mkinitcpio_hooks_and_modules(self, hooks, modules):
+    def set_mkinitcpio_hooks_and_modules(self, hooks, modules):        
+        self.queue_event('debug', 'Setting hooks and modules in mkinitcpio.conf')
+        self.queue_event('debug', 'HOOKS="%s"' % ' '.join(hooks))
+        self.queue_event('debug', 'MODULES="%s"' % ' '.join(modules))
         
-        self.queue_event('debug', "Setting hooks and modules in mkinitcpio.conf")
-        self.queue_event('debug', "HOOKS=%s" % ''.join(hooks))
-        self.queue_event('debug', "MODULES=%s" % ''.join(modules))
-        
-        with open("%s/etc/mkinitcpio.conf" % self.dest_dir) as f:
+        with open("test.mkinitcpio.conf") as f:
             mklins = [x.strip() for x in f.readlines()]
 
         for e in range(len(mklins)):
             if mklins[e].startswith("HOOKS"):
-                mklins[e] = 'HOOKS=""'
-                for hook in hooks:
-                    mklins[e] = mklins[e].strip('"') + (' %s"' % hook)
-            elif mklins[e].startswith("MODULES"):
-                mlinks[e] = 'MODULES=""'
-                for module in modules:
-                    mklins[e] = mklins[e].strip('"') + (' %s"' % module)
+                mklins[e] = 'HOOKS="%s"' % ' '.join(hooks)
+            if mklins[e].startswith("MODULES"):
+                mklins[e] = 'MODULES="%s"' % ' '.join(modules)
+
+        with open("test.mkinitcpio.conf", "w") as f:
+            f.write("\n".join(mklins) + "\n")
 
         with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
             f.write("\n".join(mklins) + "\n")
@@ -915,7 +913,7 @@ class InstallationProcess(multiprocessing.Process):
     def run_mkinitcpio(self):
         # Add lvm and encrypt hooks if necessary
         
-        hooks = ["base", "udev", "autodetect", "modconf", "block" ] 
+        hooks = [ "base", "udev", "autodetect", "modconf", "block" ] 
         modules = []
         
         # It is important that the encrypt hook comes before the filesystems hook
