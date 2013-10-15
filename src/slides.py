@@ -57,6 +57,9 @@ class Slides(Gtk.Box):
         self.progress_bar = builder.get_object("progressbar")
         self.progress_bar.set_show_text(True)
         
+        self.global_progress_bar = builder.get_object("global_progressbar")
+        self.global_progress_bar.set_show_text(True)
+        
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
@@ -94,10 +97,18 @@ class Slides(Gtk.Box):
         
         self.install_ok = _("Installation finished!\n" \
                             "Do you want to restart your system now?")
-
+        
+    def show_global_progress_bar_if_hidden(self):
+        if self.global_progress_bar_is_hidden:
+            self.global_progress_bar.show_all()
+            self.global_progress_bar_is_hidden = False
+        
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        self.global_progress_bar.hide()
+        self.global_progress_bar_is_hidden = True
 
         self.backwards_button.hide()
         self.forward_button.hide()
@@ -136,9 +147,8 @@ class Slides(Gtk.Box):
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
             elif event[0] == 'global_percent':
-                # TODO: Add a global progress bar to show
-                # how many packages are left to install
-                pass
+                self.show_global_progress_bar_if_hidden()
+                self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'finished':
                 logging.info(event[1])
                 self.set_message(self.install_ok)
