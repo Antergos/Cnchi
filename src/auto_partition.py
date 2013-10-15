@@ -23,11 +23,13 @@
 import os
 import subprocess
 import logging
+import time
 
 class AutoPartition():
-    def __init__(self, dest_dir, settings):
-        answer = "/tmp/.setup"
+    def __init__(self, dest_dir, auto_device, settings):
+        
         self.dest_dir = dest_dir
+        self.auto_device = auto_device
         
         # destination of blockdevices in /sys
         block="/sys/block"
@@ -52,10 +54,6 @@ class AutoPartition():
         devices = subprocess.check_output(command)
         subprocess.call("umount %s" % devices)
 
-    def set_device_name_scheme(self):
-        self.NAME_SCHEME_PARAMETER = "FSUUID /dev/disk/by-uuid/<uuid>"
-        self.NAME_SCHEME_PARAMETER_RUN = "1"
-
     def mkfs(self, params):
         device = params['device']
         fs_type = params['fs_type']
@@ -63,7 +61,8 @@ class AutoPartition():
         mount_point = params['mount_point']
         label_name = params['label_name']
         fs_options = params['fs_options']
-        
+
+        btrfs_devices = params['brtfs_devices']
         '''
         local _btrfsdevices="$(echo ${8} | sed -e 's|#| |g')"
         local _btrfslevel=${9}
@@ -85,7 +84,7 @@ class AutoPartition():
                      "ext2" : "mkfs.ext2 -L %s %s %s" % (fs_options, label_name, device),
                      "ext3" : "mke2fs %s -L %s -t ext3 %s" % (fs_options, label_name, device),
                      "ext4" : "mke2fs %s -L %s -t ext4 %s" % (fs_options, label_name, device),
-                     "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfsdevices),
+                     "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
                      "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
                      "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
                      "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device) }
@@ -96,201 +95,105 @@ class AutoPartition():
                 return
             
             command = mkfs[fs_type]
+            subprocess.call(command)
             
+
+            time.sleep(4)
+
+            # create our mount directory
+            subprocess.call("mkdir -p %s%s" % (dest, mount_point))
+
+            # mount our new filesystem
+            subprocess.call("mount -t %s %s %s%s" % (fs_type, device, dest, mount_point))
+
+            # change permission of base directories to correct permission
+            # to avoid btrfs issues
+            mode = "755"
             
-        '''
-             "xfs" : "mkfs.xfs ${_fsoptions} -L ${_labelname} -f ${_device} >>${LOG} 2>&1; ret=$? ;;
-                jfs)      yes | mkfs.jfs ${_fsoptions} -L ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                reiserfs) yes | mkreiserfs ${_fsoptions} -l ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                ext2)     mkfs.ext2 -L ${_fsoptions} ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                ext3)     mke2fs ${_fsoptions} -L ${_labelname} -t ext3 ${_device} >>${LOG} 2>&1; ret=$? ;;
-                ext4)     mke2fs ${_fsoptions} -L ${_labelname} -t ext4 ${_device} >>${LOG} 2>&1; ret=$? ;;
-                btrfs)    mkfs.btrfs ${_fsoptions} -L ${_labelname} ${_btrfsdevices} >>${LOG} 2>&1; ret=$? ;;
-                nilfs2)   mkfs.nilfs2 ${_fsoptions} -L ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                ntfs-3g)  mkfs.ntfs ${_fsoptions} -L ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                vfat)     mkfs.vfat ${_fsoptions} -n ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
-                # don't handle anything else here, we will error later
-            esac
-            if [[ ${ret} != 0 ]]; then
-                echo "Error creating filesystem ${_fstype} on ${_device}"
-                return 1
+            if mount_point == "/tmp":
+                mode = "1777"
+            elif mount_point == "/root":
+                mode = "750"
+                    
+            subprocess.call("chmod %s %s%s" % (mode, dest, mount_point))
+        
+        fs_uuid = self.get_fs_uuid(device)
+        fs_label = self.get_fs_label(device)
+        logging.debug("Device details: %s UUID=%s LABEL=%s" % (device, fs_uuid, fs_label))
+    
+    def run(self):
+        # TODO: support UEFI
+        uefi = False
+
+        key_file = "/tmp/.keyfile"
+    
+        if uefi:
+            guid_part_size = "2"
+            gpt_bios_grub_part_size = "2"
+            uefisys_part_size = "512"
+        else:
+            guid_part_size = "0"
+            uefisys_part_size = "0"
+
+        # get just the disk size in 1000*1000 MB
+        device = subprocess.check_output("basename %s" % self.auto_device)
+        base_path = "/sys/block/%s" % device
+        if os.path.exists("%s/size" % base_path):
+            with open("%s/queue/logical_block_size" % base_path, "rt") as f:
+                logical_block_size = f.read()
+            with open(("%s/size" % base_path, "rt") as f:
+                size = f.read()
+            
+            disc_size = logical_block_size * size
+
+            logical_block_size = "/sys/block/%s/size" % device
+        
+        disc_size = disc_size - guid_part_size - uefisys_part_size
+        
+        boot_part_size = 200
+        disc_size = disc_size - boot_part_size
+        
+        mem_total = subprocess.check_output("grep MemTotal /proc/meminfo | awk '{print $2}'")
+        swap_part_size = 1536
+        if mem_total <= 1572864:
+            swap_part_size = mem_total / 1024
+        disc_size = disc_size - swap_part_size
+        
+        root_part_size = disc_size
+
+        lvm_pv_part_size = swap_part_size + root_part_size
+
+        # disable swap and all mounted partitions, umount / last!
+        self.umount_all()
+
+        # we assume a /dev/hdX format (or /dev/sdX)
+        if uefi:
+            '''
+            PART_ROOT="${DEVICE}5"
+            # GPT (GUID) is supported only by 'parted' or 'sgdisk'
+            printk off
+            # clean partition table to avoid issues!
+            sgdisk --zap ${DEVICE} &>/dev/null
+            # clear all magic strings/signatures - mdadm, lvm, partition tables etc.
+            dd if=/dev/zero of=${DEVICE} bs=512 count=2048 &>/dev/null
+            wipefs -a ${DEVICE} &>/dev/null
+            # create fresh GPT
+            sgdisk --clear ${DEVICE} &>/dev/null
+            # create actual partitions
+            sgdisk --set-alignment="2048" --new=1:1M:+${GPT_BIOS_GRUB_PART_SIZE}M --typecode=1:EF02 --change-name=1:BIOS_GRUB ${DEVICE} >> ${LOG}
+            sgdisk --set-alignment="2048" --new=2:0:+${UEFISYS_PART_SIZE}M --typecode=2:EF00 --change-name=2:UEFI_SYSTEM ${DEVICE} >> ${LOG}
+            sgdisk --set-alignment="2048" --new=3:0:+${BOOT_PART_SIZE}M --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT ${DEVICE} >> ${LOG}
+
+            if [ "$USE_LVM" == "1" ]; then
+                sgdisk --set-alignment="2048" --new=4:0:+${LVM_PV_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_LVM ${DEVICE} >> ${LOG}
+            else
+                sgdisk --set-alignment="2048" --new=4:0:+${SWAP_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_SWAP ${DEVICE} >> ${LOG}
+                sgdisk --set-alignment="2048" --new=5:0:+${ROOT_PART_SIZE}M --typecode=5:8300 --change-name=5:ANTERGOS_ROOT ${DEVICE} >> ${LOG}        
             fi
-            sleep 2
-        fi
-
-        sleep 2
-        # create our mount directory
-        mkdir -p ${_dest}${_mountpoint}
-      
-        mount -t ${_fstype} ${_device} ${_dest}${_mountpoint} >>${LOG} 2>&1
-
-        if [[ $? != 0 ]]; then
-            echo "Error mounting ${_dest}${_mountpoint}"
-            return 1
-        fi
-        # change permission of base directories to correct permission
-        # to avoid btrfs issues
-        if [[ "${_mountpoint}" = "/tmp" ]]; then
-            chmod 1777 ${_dest}${_mountpoint}
-        elif [[ "${_mountpoint}" = "/root" ]]; then
-            chmod 750 ${_dest}${_mountpoint}
-        else
-            chmod 755 ${_dest}${_mountpoint}
-        fi
-    fi
-    # add to .device-names for config files
-    local _fsuuid="$(getfsuuid ${_device})"
-    local _fslabel="$(getfslabel ${_device})"
-    echo "# DEVICE DETAILS: ${_device} UUID=${_fsuuid} LABEL=${_fslabel}" >> /tmp/.device-names
-    # add to temp fstab
-    if [[ "${NAME_SCHEME_PARAMETER}" == "FSUUID" ]]; then
-        if [[ -n "${_fsuuid}" ]]; then
-            _device="UUID=${_fsuuid}"
-        fi
-    elif [[ "${NAME_SCHEME_PARAMETER}" == "FSLABEL" ]]; then
-        if [[ -n "${_fslabel}" ]]; then
-            _device="LABEL=${_fslabel}"
-        fi
-    fi
-    
-    echo -n "${_device} ${_mountpoint} ${_fstype} defaults 0 " >>/tmp/.fstab
-    
-    if [[ "${_fstype}" = "swap" ]]; then
-        echo "0" >>/tmp/.fstab
-    else
-        echo "1" >>/tmp/.fstab
-    fi
-}
-
-
-
-autoprepare() {
-    # check on encrypted devices, else weird things can happen!
-    # _stopluks
-    # check on raid devices, else weird things can happen during partitioning!
-    # _stopmd
-    # check on lvm devices, else weird things can happen during partitioning!
-    # _stoplvm
-    
-    NAME_SCHEME_PARAMETER_RUN=""
-    # switch for mbr usage
-
-    DISC=$1
-
-    DEFAULTFS=""
-    BOOT_PART_SET=""
-    SWAP_PART_SET=""
-    ROOT_PART_SET=""
-    FSTYPE='ext4'
-    
-    KEY_FILE="/tmp/.keyfile"
-    
-    # Do not support UEFI
-    GUIDPARAMETER="no"
-    
-    if [[ "${GUIDPARAMETER}" = "yes" ]]; then
-        GUID_PART_SIZE="2"
-        GPT_BIOS_GRUB_PART_SIZE="${GUID_PART_SIZE}"
-        UEFISYS_PART_SIZE="512"
-    else
-        GUID_PART_SIZE="0"
-        UEFISYS_PART_SIZE="0"
-    fi
-    # get just the disk size in 1000*1000 MB
-    if [[ "$(cat ${block}/$(basename ${DISC} 2>/dev/null)/size 2>/dev/null)" ]]; then
-        DISC_SIZE="$(($(expr $(cat ${block}/$(basename ${DISC})/queue/logical_block_size) '*' $(cat ${block}/$(basename ${DISC})/size))/1000000))"
-    else
-        echo "ERROR: Setup cannot detect size of your device, please use normal installation routine for partitioning and mounting devices."
-        return 1
-    fi
-    
-    while [[ "${DEFAULTFS}" = "" ]]; do
-
-        # create 1 MB bios_grub partition for grub-bios GPT support
-        if [[ "${GUIDPARAMETER}" = "yes" ]]; then
-            GUID_PART_SIZE="2"
-            GPT_BIOS_GRUB_PART_SIZE="${GUID_PART_SIZE}"
-            UEFISYS_PART_SIZE="512"
-        else
-            GUID_PART_SIZE="0"
-            UEFISYS_PART_SIZE="0"
-        fi
-        DISC_SIZE=$((${DISC_SIZE}-${GUID_PART_SIZE}-${UEFISYS_PART_SIZE}))
-        while [[ "${BOOT_PART_SET}" = "" ]]; do
-            BOOT_PART_SIZE="200"
-                if [[ "${BOOT_PART_SIZE}" -ge "${DISC_SIZE}" || "${BOOT_PART_SIZE}" -lt "16" || "${SBOOT_PART_SIZE}" = "${DISC_SIZE}" ]]; then
-                    echo "ERROR: Invalid size for boot."
-                else
-                    BOOT_PART_SET=1
-                fi
-        done
-        DISC_SIZE=$((${DISC_SIZE}-${BOOT_PART_SIZE}))
-        MEMTOTAL=`grep MemTotal /proc/meminfo | awk '{print $2}'`
-        if [[ MEMTOTAL -gt 1572864 ]];then
-            SWAP_PART_SIZE=1536
-        else
-            let SWAP_PART_SIZE=`grep MemTotal /proc/meminfo | awk '{print $2}'`/1024
-        fi
-
-        SWAP_PART_SET=1
-
-        DISC_SIZE=$((${DISC_SIZE}-${SWAP_PART_SIZE}))
-        ROOT_SIZE="${DISC_SIZE}"
-        [[ "${DISC_SIZE}" -lt "7500" ]] && ROOT_SIZE="${DISC_SIZE}"
-        ROOT_PART_SIZE="${DISC_SIZE}"
-
-        LVM_PV_PART_SIZE=$((${SWAP_PART_SIZE}+${ROOT_PART_SIZE}))
-        
-        DEFAULTFS=1
-    done
-
-    DEVICE=${DISC}
-
-    # validate DEVICE
-    if [[ ! -b "${DEVICE}" ]]; then
-      echo "Device '${DEVICE}' is not valid"
-      return 1
-    fi
-
-    # validate DEST
-    if [[ ! -d "${DESTDIR}" ]]; then
-        echo "Destination directory '${DESTDIR}' is not valid"
-        return 1
-    fi
-
-    [[ -e /tmp/.fstab ]] && rm -f /tmp/.fstab
-    # disable swap and all mounted partitions, umount / last!
-    _umountall
-    if [[ "${NAME_SCHEME_PARAMETER_RUN}" == "" ]]; then
-        set_device_name_scheme || return 1
-    fi
-
-    # we assume a /dev/hdX format (or /dev/sdX)
-    if [[ "${GUIDPARAMETER}" == "yes" ]]; then
-        PART_ROOT="${DEVICE}5"
-        # GPT (GUID) is supported only by 'parted' or 'sgdisk'
-        printk off
-        # clean partition table to avoid issues!
-        sgdisk --zap ${DEVICE} &>/dev/null
-        # clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-        dd if=/dev/zero of=${DEVICE} bs=512 count=2048 &>/dev/null
-        wipefs -a ${DEVICE} &>/dev/null
-        # create fresh GPT
-        sgdisk --clear ${DEVICE} &>/dev/null
-        # create actual partitions
-        sgdisk --set-alignment="2048" --new=1:1M:+${GPT_BIOS_GRUB_PART_SIZE}M --typecode=1:EF02 --change-name=1:BIOS_GRUB ${DEVICE} >> ${LOG}
-        sgdisk --set-alignment="2048" --new=2:0:+${UEFISYS_PART_SIZE}M --typecode=2:EF00 --change-name=2:UEFI_SYSTEM ${DEVICE} >> ${LOG}
-        sgdisk --set-alignment="2048" --new=3:0:+${BOOT_PART_SIZE}M --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT ${DEVICE} >> ${LOG}
-
-        if [ "$USE_LVM" == "1" ]; then
-            sgdisk --set-alignment="2048" --new=4:0:+${LVM_PV_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_LVM ${DEVICE} >> ${LOG}
-        else
-            sgdisk --set-alignment="2048" --new=4:0:+${SWAP_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_SWAP ${DEVICE} >> ${LOG}
-            sgdisk --set-alignment="2048" --new=5:0:+${ROOT_PART_SIZE}M --typecode=5:8300 --change-name=5:ANTERGOS_ROOT ${DEVICE} >> ${LOG}        
-        fi
-        
-        sgdisk --print ${DEVICE} >> ${LOG}
-    else
+            
+            sgdisk --print ${DEVICE} >> ${LOG}
+            '''
+    else:
         PART_ROOT="${DEVICE}3"
         # start at sector 1 for 4k drive compatibility and correct alignment
         printk off
