@@ -104,7 +104,7 @@ class Timezone(Gtk.Box):
         self.autodetected_coords = None
 
     def translate_ui(self):
-        txt = _("Where are you?")
+        txt = _("Select Your Timezone")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 

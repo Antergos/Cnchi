@@ -80,7 +80,7 @@ class DesktopAsk(Gtk.Box):
             txt = "<span weight='bold'>GNOME</span>\n" + txt
 
         elif desktop == 'cinnamon':
-            txt = _("Cinnamon it's a fork of GNOME 3 developed " \
+            txt = _("Cinnamon is a fork of GNOME 3 developed " \
             "by (and for) Linux Mint. It provides users a more traditional desktop " \
             "interface along with the newest compositing techniques of GNOME 3. " \
             "Cinnamon is a solid desktop that's great for users of all experience levels. ")
