@@ -402,9 +402,9 @@ class Pac(object):
     def cb_progress(self, _target, _percent, n, i):
         if _target:
             self.target = _("Installing %s (%d/%d)") % (_target, i, n)
-            self.queue_event('global_percent', n / i)
+            self.queue_event('global_percent', i / n)
         else:
-            self.target = _("Checking and loading packages... [%s]" % _target)
+            self.target = _("Checking and loading packages...")
 
         self.percent = _percent / 100
         self.queue_event('target', self.target)
