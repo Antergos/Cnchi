@@ -82,7 +82,7 @@ class Check(Gtk.Box):
         self.prepare_best_results.set_markup(txt)
 
         self.third_party_info = self.ui.get_object("third_party_info")
-	txt = _("Antergos uses third-party software to play Flash videos, MP3 " \
+     txt = _("Antergos uses third-party software to play Flash videos, MP3 " \
                 "and other media, and to interact with some graphics and wifi " \
                 "hardware. Some of this software is propietary. Use of this " \
                 "software is subject to license terms included with its " \
