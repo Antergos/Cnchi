@@ -81,7 +81,8 @@ class InstallationAutomatic(Gtk.Box):
         label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic2')
-        txt = _("Select the drive we should use to install Antergos \n and click below to start the process.")
+        txt = _("Select the drive we should use to install Antergos" /
+        "and then click below to start the process.")
         txt = "%s" % txt
         label.set_markup(txt)
 
@@ -173,10 +174,10 @@ class InstallationAutomatic(Gtk.Box):
 
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', self.auto_device)
-            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
+            logging.info(_("Antergos will install the %s bootloader in %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Antergos will not install any boot loader")
+            logging.warning("Antergos will not install a boot loader.")
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \

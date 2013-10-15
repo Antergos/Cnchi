@@ -75,7 +75,7 @@ class Slides(Gtk.Box):
         
         self.scrolled_window.add(self.webview)
         
-        self.install_ok = _("Installation finished!\n" \
+        self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
 
         super().add(builder.get_object("slides"))

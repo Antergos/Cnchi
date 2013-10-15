@@ -81,7 +81,7 @@ def question(message):
         Gtk.DialogFlags.MODAL,\
         Gtk.MessageType.QUESTION,\
         Gtk.ButtonsType.YES_NO,\
-        _("Antergos Installer - Question"))
+        _("Antergos Installer - Confirmation"))
     msg_dialog.format_secondary_text(message)
     response = msg_dialog.run()
     msg_dialog.destroy()

@@ -85,8 +85,8 @@ class Welcome(Gtk.Box):
 
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
-        txt = _("You can try Antergos without making any changes to your system with 'Try It'.\n" \
-        "When you are ready to install Antergos simply choose which installer you prefer")
+        txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n" \
+        "When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
