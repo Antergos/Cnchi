@@ -145,26 +145,6 @@ class InstallationAutomatic(Gtk.Box):
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
         logging.info(_("Antergos will use %s as installation device") % self.auto_device)      
-        
-        if self.settings.get('use_lvm'):
-            # WARNING! : This must be the same that appears in auto_partition.sh
-            root_partition = "/dev/AntergosVG/AntergosRoot"
-        else:
-            root_partition = self.auto_device + "3"
-
-        boot_partition = self.auto_device + "1"
-        
-        # TODO: UEFI Install (must update auto_partition.sh)
-        # root_partition = self.auto_device + "5"
-        # boot_partition = self.atuo_device + "3"
-
-        mount_devices = {}
-        mount_devices["/"] = root_partition 
-        mount_devices["/boot"] = boot_partition
-
-        fs_devices = {}
-        fs_devices[boot_partition] = "ext2"
-        fs_devices[root_partition] = "ext4"
 
         # Ask (if guessing doesn't work) bootloader type
         import bootloader
@@ -177,6 +157,27 @@ class InstallationAutomatic(Gtk.Box):
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
             logging.warning("Antergos will not install any boot loader")
+        
+        if self.settings.get('use_lvm'):
+            # WARNING! : This must be the same that appears in auto_partition.sh
+            root_partition = "/dev/AntergosVG/AntergosRoot"
+        else:
+            root_partition = self.auto_device + "3"
+
+        boot_partition = self.auto_device + "1"
+        
+        # TODO: UEFI Install (must update auto_partition.sh)
+        if self.settings.get('bootloader_type') != "GRUB2":
+            root_partition = self.auto_device + "5"
+            boot_partition = self.atuo_device + "3"
+
+        mount_devices = {}
+        mount_devices["/"] = root_partition 
+        mount_devices["/boot"] = boot_partition
+
+        fs_devices = {}
+        fs_devices[boot_partition] = "ext2"
+        fs_devices[root_partition] = "ext4"
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \

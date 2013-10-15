@@ -135,6 +135,10 @@ class Slides(Gtk.Box):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
+            elif event[0] == 'global_percent':
+                # TODO: Add a global progress bar to show
+                # how many packages are left to install
+                pass
             elif event[0] == 'finished':
                 logging.info(event[1])
                 self.set_message(self.install_ok)

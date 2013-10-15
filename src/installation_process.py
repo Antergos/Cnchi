@@ -751,36 +751,38 @@ class InstallationProcess(multiprocessing.Process):
         elif bt == "UEFI_x86_64" or bt == "UEFI_i386":
             self.install_bootloader_grub2_efi(bt)
     
-    def modify_grub_default(self, uefi=False):
-        default_dir = os.path.join(self.dest_dir, "etc/default")
-        default_grub = os.path.join(default_dir, "grub")
+    def modify_grub_default(self):
+        # If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
+        # This scheme can be used in the automatic installation option only (at this time)
+        if self.method == 'automatic' and self.settings.get('use_luks'):
+            default_dir = os.path.join(self.dest_dir, "etc/default")
+            default_grub = os.path.join(default_dir, "grub")
 
-        if not os.path.exists(default_dir):
-            os.mkdir(default_dir)
-        if 
+            if not os.path.exists(default_dir):
+                os.mkdir(default_dir)
 
-        #sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\ cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
-        '''
-        with open("/etc/mkinitcpio.conf") as f:
-            mklins = [x.strip() for x in f.readlines()]
+            #sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\ cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
+            
+            root_device = self.mount_devices["/"]
+            boot_device = self.mount_devices["/boot"]
+            
+            default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
+            
+            with open(default_grub) as f:
+                lines = [x.strip() for x in f.readlines()]
 
-        for e in range(len(mklins)):
-            if mklins[e].startswith("HOOKS"):
-                mklins[e] = 'HOOKS="%s"' % ' '.join(hooks)
-            elif mklins[e].startswith("MODULES"):
-                mklins[e] = 'MODULES="%s"' % ' '.join(modules)
+            for e in range(len(lines)):
+                if lines[e].startswith("GRUB_CMDLINE_LINUX"):
+                    lines[e] = default_line
 
-        with open("%s/etc/mkinitcpio.conf" % self.dest_dir, "w") as f:
-            f.write("\n".join(mklins) + "\n")
-        '''
-
+            with open(default_grub, "w") as f:
+                f.write("\n".join(lines) + "\n")
         
     def install_bootloader_grub2_bios(self):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
         
-        if self.settings.get('use_luks'):
-            self.modify_grub_default()
+        self.modify_grub_default()
 
         self.chroot_mount_special_dirs()
 
@@ -836,8 +838,7 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
-        if self.settings.get('use_luks'):
-            self.modify_grub_default(False)
+        self.modify_grub_default()
 
         self.chroot_mount_special_dirs()
         
