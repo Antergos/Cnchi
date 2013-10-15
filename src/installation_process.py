@@ -761,19 +761,23 @@ class InstallationProcess(multiprocessing.Process):
             if not os.path.exists(default_dir):
                 os.mkdir(default_dir)
 
-            #sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=${DATA_DEVICE}:cryptAntergos\ cryptkey=${BOOT_DEVICE}:ext2:.keyfile\" ${DEFAULT_GRUB}
-            
             root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
             
+            # Let GRUB automatically add the kernel parameters for root encryption
             default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
+            
+            #Also, disable the usage of UUIDs for the rootfs:
+            disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
             
             with open(default_grub) as f:
                 lines = [x.strip() for x in f.readlines()]
 
             for e in range(len(lines)):
-                if lines[e].startswith("GRUB_CMDLINE_LINUX"):
+                if lines[e].startswith("#GRUB_CMDLINE_LINUX") or lines[e].startswith("GRUB_CMDLINE_LINUX"):
                     lines[e] = default_line
+                if lines[e].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[e].startswith("GRUB_DISABLE_LINUX_UUID"):
+                    lines[e] = disable_uuid_line
 
             with open(default_grub, "w") as f:
                 f.write("\n".join(lines) + "\n")
