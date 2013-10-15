@@ -68,7 +68,7 @@ class InstallationAutomatic(Gtk.Box):
         self.process = None
 
     def translate_ui(self):
-        txt = _("Automatic installation mode")
+        txt = _("Automatic Installation Mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -76,16 +76,16 @@ class InstallationAutomatic(Gtk.Box):
         self.device_label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic')
-        txt = _("WARNING! This installation mode will overwrite everything in your drive!")
+        txt = _("WARNING! This will overwrite everything currently on your drive!")
         txt = "<b>%s</b>" % txt
         label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic2')
-        txt = _("Please choose the drive where you want to install Antergos\nand click the button below to start the process.")
+        txt = _("Select the drive we should use to install Antergos \n and click below to start the process.")
         txt = "%s" % txt
         label.set_markup(txt)
 
-        txt = _("Install now!")
+        txt = _("Install Now!")
         self.forward_button.set_label(txt)
 
     @misc.raise_privileges

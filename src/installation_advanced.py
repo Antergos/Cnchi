@@ -1003,11 +1003,11 @@ class InstallationAdvanced(Gtk.Box):
     ## As the installer language can change anytime the user changes it, we have
     ## to "retranslate" all our widgets calling this function
     def translate_ui(self):
-        txt = _("Advanced installation mode")
+        txt = _("Advanced Installation Mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
-        txt = _("Use this device for boot loader installation:")
+        txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
@@ -1017,7 +1017,7 @@ class InstallationAdvanced(Gtk.Box):
         #label = self.ui.get_object('part_advanced_warning_message')
         #label.set_markup(txt)
         
-        txt = _("New partition table")
+        txt = _("New Partition Table")
         button = self.ui.get_object('partition_button_new_label')
         button.set_label(txt)
         
@@ -1058,11 +1058,11 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_create_place_end')
         button.set_label(txt)
         
-        txt = _("Use as:")
+        txt = _("Use As:")
         label = self.ui.get_object('partition_use_label')
         label.set_markup(txt)
         
-        txt = _("Mount point:")
+        txt = _("Mount Point:")
         label = self.ui.get_object('partition_mount_label')
         label.set_markup(txt)
 
@@ -1070,16 +1070,16 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('partition_label_label')
         label.set_markup(txt)
         
-        txt = _("Encryption options...")
+        txt = _("Encryption Options...")
         button = self.ui.get_object('partition_encryption_settings')
         button.set_label(txt)
         
         ## Translate dialog "Edit partition"
-        txt = _("Use as:")
+        txt = _("Use As:")
         label = self.ui.get_object('partition_use_label2')
         label.set_markup(txt)
         
-        txt = _("Mount point:")
+        txt = _("Mount Point:")
         label = self.ui.get_object('partition_mount_label2')
         label.set_markup(txt)
 
@@ -1092,15 +1092,15 @@ class InstallationAdvanced(Gtk.Box):
         label.set_markup(txt)
         
         ## Create disk partition table dialog
-        txt = _("Partition table type:")
+        txt = _("Partition Table Type:")
         label = self.ui.get_object('partition_type_label')
         label.set_markup(txt)
 
         dialog = self.ui.get_object("create_table_dialog")    
-        dialog.set_title(_("Create partition table"))
+        dialog.set_title(_("Create Partition Table"))
 
         ## Change "Next" button text
-        txt = _("Install now!")
+        txt = _("Install Now!")
         self.forward_button.set_label(txt)
 
         #self.ui.get_object('cancelbutton')
@@ -1180,7 +1180,7 @@ class InstallationAdvanced(Gtk.Box):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                logging.info(_("Creating a new partition table of type %s for disk %s") % (ptype, path))
+                logging.info(_("Creating a new %s partition table for disk %s") % (ptype, path))
                 #remove debug, this doesn't actually do anything... 
                 new_disk = pm.make_new_disk(path, ptype)
                 self.disks[path] = new_disk
@@ -1378,7 +1378,7 @@ class InstallationAdvanced(Gtk.Box):
                 y += 1
             
         changelist_dialog = self.ui.get_object("changelist_dialog")
-        changelist_dialog.set_title(_('These disks will have partition actions:'))
+        changelist_dialog.set_title(_('We will make changes to partitions on these disks:'))
         changelist_dialog.show_all()
         response = changelist_dialog.run()
         changelist_dialog.hide()
@@ -1403,7 +1403,7 @@ class InstallationAdvanced(Gtk.Box):
                 #only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
                     pm.finalize_changes(disk)
-                    logging.info(_("Saving changes done in %s") % disk_path)
+                    logging.info(_("Finished saving changes in %s") % disk_path)
                 ## Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
             apartitions = list(partitions) + self.lv_partitions
@@ -1418,7 +1418,7 @@ class InstallationAdvanced(Gtk.Box):
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
-                        logging.info(_("Creating fs of type %s in %s with label %s") % (fisy, partition_path, lbl))
+                        logging.info(_("Creating %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
                         if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], 
                                                1):

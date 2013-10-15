@@ -133,15 +133,15 @@ class InstallationAlongside(Gtk.Box):
             return False
     
     def translate_ui(self):
-        txt = _("Choose next to which OS you want to install Antergos")
+        txt = _("Select the OS you would like Antergos installed next to.")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        txt = _("Antergos alongside another OS")
+        txt = _("Antergos Alongside Installation")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
-        txt = _("Install now!")
+        txt = _("Install Now!")
         self.forward_button.set_label(txt)
 
     def prepare(self, direction):
@@ -213,7 +213,7 @@ class InstallationAlongside(Gtk.Box):
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
-                    logging.warning(_("In alongside install, can't create list of partitions"))
+                    logging.warning(_("Unable to create list of partitions for alongside installation."))
 
         # assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)

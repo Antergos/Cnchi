@@ -88,7 +88,7 @@ class InstallationAsk(Gtk.Box):
             label.hide()
 
     def translate_ui(self):
-        txt = _("Installation type")
+        txt = _("Installation Type")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
@@ -98,10 +98,10 @@ class InstallationAsk(Gtk.Box):
         self.forward_button.set_sensitive(True)
 
         radio = self.ui.get_object("automatic_radiobutton")
-        radio.set_label(_("Erase disk and install Antergos (automatic)"))
+        radio.set_label(_("Erase disk and install Antergos"))
 
         label = self.ui.get_object("automatic_description")
-        txt = _("Warning: This will delete all data on your disk")
+        txt = _("Warning: This will erase ALL data on your disk.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
@@ -111,16 +111,16 @@ class InstallationAsk(Gtk.Box):
         radio.set_label(_("Install Antergos alongside %s") % self.otherOS)
 
         label = self.ui.get_object("alongside_description")
-        txt = _("Install this OS alongside the other OSes you have already installed.")
+        txt = _("Install Antergos without changing existing operating systems.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
 
         radio = self.ui.get_object("advanced_radiobutton")
-        radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))
+        radio.set_label(_("Choose exactly where Antergos should be installed. (advanced)"))
 
         label = self.ui.get_object("advanced_description")
-        txt = _("Create/delete partitions, and also choose additional mount points.")
+        txt = _("Edit partition table and choose mount points.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)

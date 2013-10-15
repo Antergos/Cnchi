@@ -90,7 +90,7 @@ class Slides(Gtk.Box):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
         
-        self.install_ok = _("Installation finished!\n" \
+        self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
 
     def prepare(self, direction):
@@ -188,7 +188,7 @@ class Slides(Gtk.Box):
 class TestWindow(Gtk.Window):
     def __init__(self, box):
         Gtk.Window.__init__(self, title='Antergos Installer Test')
-        self.set_title(_('Antergos Installer'))
+        self.set_title(_('Cnchi: The Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(800, 500)
