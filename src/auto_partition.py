@@ -20,228 +20,86 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-unset LANG
-ANSWER="/tmp/.setup"
+import os
+import subprocess
+import logging
 
-## use the first VT not dedicated to a running console
-#LOG="/dev/tty7"
-LOG="/tmp/cnchi-auto_partition.log"
+class AutoPartition():
+    def __init__(self, dest_dir, settings):
+        answer = "/tmp/.setup"
+        self.dest_dir = dest_dir
+        
+        # destination of blockdevices in /sys
+        block="/sys/block"
+        
+        self.luks = settings.get('use_luks')
+        self.lvm = settings.get('use_lvm')
 
-echo "Cnchi auto partition log" > ${LOG}
-
-# don't use /mnt because it's intended to mount other things there!
-DESTDIR="/install"
-EDITOR=""
-_BLKID="blkid -c /dev/null"
-# destination of blockdevices in /sys
-block="/sys/block"
-
-OPTIONS="$@"
-USE_LVM="0"
-USE_LUKS="0"
-
-for f in $OPTIONS; do
-    if [ "${f}" == "--lvm" ]; then
-        USE_LVM="1"
-    fi
-
-    if [ "${f}" == "--luks" ]; then
-        USE_LUKS="1"
-    fi
-done
-
-
-getfsuuid()
-{
-    echo "$(${_BLKID} -p -i -s UUID -o value ${1})"
-}
-
-# parameters: device file
-# outputs:    LABEL on success
-#             nothing on failure
-# returns:    nothing
-getfslabel()
-{
-    echo "$(${_BLKID} -p -i -s LABEL -o value ${1})"
-}
-
-# Disable all luks encrypted devices
-_stopluks()
-{
-    DISABLELUKS=""
-    DETECTED_LUKS=""
-    LUKSDEVICE=""
-
-    # detect already running luks devices
-    LUKS_DEVICES="$(ls /dev/mapper/ | grep -v control)"
-    for i in ${LUKS_DEVICES}; do
-        cryptsetup status ${i} 2>/dev/null && LUKSDEVICE="${LUKSDEVICE} ${i}"
-    done
-    ! [[ "${LUKSDEVICE}" = "" ]] && DETECTED_LUKS=1
-    if [[ "${DETECTED_LUKS}" = "1" ]]; then
-        echo "Setup detected running luks encrypted devices, do you want to remove them completely?"
-    fi
-    if [[ "${DISABLELUKS}" = "1" ]]; then
-        echo "Removing luks encrypted devices ..."
-        for i in ${LUKSDEVICE}; do
-            LUKS_REAL_DEVICE="$(echo $(cryptsetup status ${i} | grep device: | sed -e 's#device:##g'))"
-            cryptsetup remove ${i} >> ${LOG}
-            # delete header from device
-            dd if=/dev/zero of=${LUKS_REAL_DEVICE} bs=512 count=2048 >/dev/null 2>&1
-        done
-    fi
+    def get_fs_uuid(self, device):
+        return subprocess.check_output("blkid -p -i -s UUID -o value %s" % device)
     
-    DISABLELUKS=""
-    DETECTED_LUKS=""
+    def get_fs_label(self, device):
+        return subprocess.check_output("blkid -p -i -s LABEL -o value %s" % device)
 
-    # detect not running luks devices
-    [[ "$(${_BLKID} | grep "TYPE=\"crypto_LUKS\"")" ]] && DETECTED_LUKS=1
-    if [[ "${DETECTED_LUKS}" = "1" ]]; then
-        echo "Setup detected not running luks encrypted devices, do you want to remove them completely?"
-    fi
-    if [[ "${DISABLELUKS}" = "1" ]]; then
-        echo "Removing not running luks encrypted devices ..."
-        for i in $(${_BLKID} | grep "TYPE=\"crypto_LUKS\"" | sed -e 's#:.*##g'); do
-            # delete header from device
-            dd if=/dev/zero of=${i} bs=512 count=2048 >/dev/null 2>&1
-        done
-    fi
-    [[ -e /tmp/.crypttab ]] && rm /tmp/.crypttab
-}
+    def umount_all(self):
+        subprocess.call(["swapoff", "-a"])
 
-_stopmd()
-{
-    if [[ "$(cat /proc/mdstat 2>/dev/null | grep ^md)" ]]; then
-        DISABLEMD=""
-        echo "Setup detected already running raid devices, do you want to disable them completely?"
-        if [[ "${DISABLEMD}" = "1" ]]; then
-            echo "Disabling all software raid devices..."
-            for i in $(cat /proc/mdstat 2>/dev/null | grep ^md | sed -e 's# :.*##g'); do
-                mdadm --manage --stop /dev/${i} >> ${LOG}
-            done
-            echo "Cleaning superblocks of all software raid devices..."
-            for i in $(${_BLKID} | grep "TYPE=\"linux_raid_member\"" | sed -e 's#:.*##g'); do
-                mdadm --zero-superblock ${i} >> ${LOG}
-            done
-        fi
-    fi
-    DISABLEMDSB=""
-    if [[ "$(${_BLKID} | grep "TYPE=\"linux_raid_member\"")" ]]; then
-        DIALOG --defaultno --yesno "Setup detected superblock of raid devices, do you want to clean the superblock of them?" 0 0 && DISABLEMDSB="1"
-        if [[ "${DISABLEMDSB}" = "1" ]]; then
-            DIALOG --infobox "Cleaning superblocks of all software raid devices..." 0 0
-            for i in $(${_BLKID} | grep "TYPE=\"linux_raid_member\"" | sed -e 's#:.*##g'); do
-                mdadm --zero-superblock ${i} >> ${LOG}
-            done
-        fi
-    fi
-}
+        command = "mount | grep -v %s | grep %s | sed 's|\ .*||g'" % (self.dest_dir, self.dest_dir)
+        devices = subprocess.check_output(command)
+        subprocess.call("umount %s" % devices)
 
+        command = "mount | grep %s | sed 's|\ .*||g'" % self.dest_dir
+        devices = subprocess.check_output(command)
+        subprocess.call("umount %s" % devices)
 
-_stoplvm()
-{
-    DISABLELVM=""
-    DETECTED_LVM=""
-    LV_VOLUMES="$(lvs -o vg_name,lv_name --noheading --separator - 2>/dev/null)"
-    LV_GROUPS="$(vgs -o vg_name --noheading 2>/dev/null)"
-    LV_PHYSICAL="$(pvs -o pv_name --noheading 2>/dev/null)"
-    ! [[ "${LV_VOLUMES}" = "" ]] && DETECTED_LVM=1
-    ! [[ "${LV_GROUPS}" = "" ]] && DETECTED_LVM=1
-    ! [[ "${LV_PHYSICAL}" = "" ]] && DETECTED_LVM=1
-    if [[ "${DETECTED_LVM}" = "1" ]]; then
-        DIALOG --defaultno --yesno "Setup detected lvm volumes, volume groups or physical devices, do you want to remove them completely?" 0 0 && DISABLELVM="1"
-    fi
-    if [[ "${DISABLELVM}" = "1" ]]; then
-        DIALOG --infobox "Removing logical volumes ..." 0 0
-        for i in ${LV_VOLUMES}; do
-            lvremove -f /dev/mapper/${i} 2>/dev/null >> ${LOG}
-        done
-        DIALOG --infobox "Removing logical groups ..." 0 0
-        for i in ${LV_GROUPS}; do
-            vgremove -f ${i} 2>/dev/null >> ${LOG}
-        done
-        DIALOG --infobox "Removing physical volumes ..." 0 0
-        for i in ${LV_PHYSICAL}; do
-            pvremove -f ${i} 2>/dev/null >> ${LOG}
-        done
-    fi
-}
+    def set_device_name_scheme(self):
+        self.NAME_SCHEME_PARAMETER = "FSUUID /dev/disk/by-uuid/<uuid>"
+        self.NAME_SCHEME_PARAMETER_RUN = "1"
 
+    def mkfs(self, params):
+        device = params['device']
+        fs_type = params['fs_type']
+        dest = params['dest']
+        mount_point = params['mount_point']
+        label_name = params['label_name']
+        fs_options = params['fs_options']
+        
+        '''
+        local _btrfsdevices="$(echo ${8} | sed -e 's|#| |g')"
+        local _btrfslevel=${9}
+        local _btrfssubvolume=${10}
+        local _dosubvolume=${11}
+        local _btrfscompress=${12}
+        local _btrfsssd=${13}
+        '''
+        
+        # we have two main cases: "swap" and everything else.
+        if fs_type == "swap":
+            subprocess.call(["swapoff", device])
+            subprocess.call(["mkswap", "-L", label_name, device])
+            subprocess.call(["swapon", device])
+        else:
+            mkfs = { "xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
+                     "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
+                     "reiserfs" : "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
+                     "ext2" : "mkfs.ext2 -L %s %s %s" % (fs_options, label_name, device),
+                     "ext3" : "mke2fs %s -L %s -t ext3 %s" % (fs_options, label_name, device),
+                     "ext4" : "mke2fs %s -L %s -t ext4 %s" % (fs_options, label_name, device),
+                     "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfsdevices),
+                     "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
+                     "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
+                     "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device) }
 
-_umountall()
-{
-    swapoff -a >/dev/null 2>&1
-    umount $(mount | grep -v "${DESTDIR} " | grep "${DESTDIR}" | sed 's|\ .*||g') >/dev/null 2>&1
-    umount $(mount | grep "${DESTDIR} " | sed 's|\ .*||g') >/dev/null 2>&1
-}
-
-
-set_device_name_scheme() {
-    NAME_SCHEME_PARAMETER=""
-    NAME_SCHEME_PARAMETER="FSUUID /dev/disk/by-uuid/<uuid>"
-    NAME_SCHEME_PARAMETER_RUN="1"
-}
-
-printk()
-{
-    case ${1} in
-        "on")  echo 4 >/proc/sys/kernel/printk ;;
-        "off") echo 0 >/proc/sys/kernel/printk ;;
-    esac
-}
-
-
-_mkfs() {
-    local _domk=${1}
-    local _device=${2}
-    local _fstype=${3}
-    local _dest=${4}
-    local _mountpoint=${5}
-    local _labelname=${6}
-    local _fsoptions=${7}
-    local _btrfsdevices="$(echo ${8} | sed -e 's|#| |g')"
-    local _btrfslevel=${9}
-    local _btrfssubvolume=${10}
-    local _dosubvolume=${11}
-    local _btrfscompress=${12}
-    local _btrfsssd=${13}
-    # correct empty entries
-    [[ "${_fsoptions}" = "NONE" ]] && _fsoptions=""
-    [[ "${_btrfsssd}" = "NONE" ]] && _btrfsssd=""
-    [[ "${_btrfscompress}" = "NONE" ]] && _btrfscompress=""
-    [[ "${_btrfssubvolume}" = "NONE" ]] && _btrfssubvolume=""
-    # add btrfs raid level, if needed
-    [[ ! "${_btrfslevel}" = "NONE" && "${_fstype}" = "btrfs" ]] && _fsoptions="${_fsoptions} -d ${_btrfslevel}"
-    # we have two main cases: "swap" and everything else.
-    if [[ "${_fstype}" = "swap" ]]; then
-        swapoff ${_device} >/dev/null 2>&1
-        if [[ "${_domk}" = "yes" ]]; then
-            mkswap -L ${_labelname} ${_device} >> ${LOG} 2>&1
-            if [[ $? != 0 ]]; then
-                echo "Error creating swap: mkswap ${_device}"
-                return 1
-            fi
-        fi
-        swapon ${_device} >> ${LOG} 2>&1
-        if [[ $? != 0 ]]; then
-            echo "Error activating swap: swapon ${_device}"
-            return 1
-        fi
-    else
-        # make sure the fstype is one we can handle
-        local knownfs=0
-        for fs in xfs jfs reiserfs ext2 ext3 ext4 btrfs nilfs2 ntfs-3g vfat; do
-            [[ "${_fstype}" = "${fs}" ]] && knownfs=1 && break
-        done
-        if [[ ${knownfs} -eq 0 ]]; then
-            echo "unknown fstype ${_fstype} for ${_device}"
-            return 1
-        fi
-        # if we were tasked to create the filesystem, do so
-        if [[ "${_domk}" = "yes" ]]; then
-            local ret
-            case ${_fstype} in
-                xfs)      mkfs.xfs ${_fsoptions} -L ${_labelname} -f ${_device} >>${LOG} 2>&1; ret=$? ;;
+            # make sure the fs type is one we can handle
+            if fs_type not in mkfs.keys():
+                logging.error("Unkown filesystem type %s" % fs_type)
+                return
+            
+            command = mkfs[fs_type]
+            
+            
+        '''
+             "xfs" : "mkfs.xfs ${_fsoptions} -L ${_labelname} -f ${_device} >>${LOG} 2>&1; ret=$? ;;
                 jfs)      yes | mkfs.jfs ${_fsoptions} -L ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
                 reiserfs) yes | mkreiserfs ${_fsoptions} -l ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
                 ext2)     mkfs.ext2 -L ${_fsoptions} ${_labelname} ${_device} >>${LOG} 2>&1; ret=$? ;;
