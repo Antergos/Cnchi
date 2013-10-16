@@ -4746,17 +4746,6 @@ configure_system() {
         # Fix QT apps
         echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
 
-        # Set SNA Acceleration Method in Intel cards
-        if [[ -e /tmp/card_intel ]];then
-            cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/20-intel.conf
-Section "Device"
-   Identifier  "Intel Graphics"
-   Driver      "intel"
-   Option      "AccelMethod"  "sna"
-EndSection
-EOF
-        fi
-
         ## END POSTPROCESSING ##
     fi
 }
