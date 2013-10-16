@@ -274,10 +274,10 @@ class AutoPartition():
         
         if self.luks:
             # setup LVM on LUKS
-            subprocess.call("pvcreate /dev/mapper/cryptAntergos")
+            subprocess.call("pvcreate -f /dev/mapper/cryptAntergos")
             subprocess.call("vgcreate -v AntergosVG /dev/mapper/cryptAntergos")
         else:
-            subprocess.call("pvcreate %s" % data_device)
+            subprocess.call("pvcreate -f %s" % data_device)
             subprocess.call("vgcreate -v AntergosVG %s" % data_device)
         
         subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)

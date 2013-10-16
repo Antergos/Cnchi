@@ -488,10 +488,10 @@ autoprepare() {
         
         if [ "$USE_LUKS" == "1" ]; then
             # setup LVM on LUKS
-            pvcreate /dev/mapper/cryptAntergos
+            pvcreate -f /dev/mapper/cryptAntergos
             vgcreate -v AntergosVG /dev/mapper/cryptAntergos
         else
-            pvcreate ${DATA_DEVICE}
+            pvcreate -f ${DATA_DEVICE}
             vgcreate -v AntergosVG ${DATA_DEVICE}
         fi
         
