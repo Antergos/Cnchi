@@ -1259,17 +1259,6 @@ class InstallationProcess(multiprocessing.Process):
                     if 'default_user' in line:
                         line = 'default_user %s\n' % username
                     slim_conf.write(line)
-
-        # Set SNA acceleration method on Intel cards to avoid GDM bug
-        if 'intel' in self.card:
-            self.queue_event('debug', "Set SNA acceleration method on Intel cards to avoid GDM bug")
-            intel_conf_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/20-intel.conf")
-            with open(intel_conf_path, "wt") as intel_conf:
-                intel_conf.write('Section "Device"\n')
-                intel_conf.write('\tIdentifier  "Intel Graphics"\n')
-                intel_conf.write('\tDriver      "intel"\n')
-                intel_conf.write('\tOption      "AccelMethod"  "sna"\n')
-                intel_conf.write('EndSection\n')
                 
         # Configure user features
 
