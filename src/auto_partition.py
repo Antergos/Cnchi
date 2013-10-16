@@ -37,11 +37,21 @@ class AutoPartition():
         self.luks = settings.get('use_luks')
         self.lvm = settings.get('use_lvm')
 
+        # TODO: support UEFI
+        self.uefi = False
+
+
     def get_fs_uuid(self, device):
         return subprocess.check_output("blkid -p -i -s UUID -o value %s" % device)
     
     def get_fs_label(self, device):
         return subprocess.check_output("blkid -p -i -s LABEL -o value %s" % device)
+        
+    def printk(self, enable):
+        if enable:
+            subprocess.call("echo 4 >/proc/sys/kernel/printk")
+        else
+            subprocess.call("echo 0 >/proc/sys/kernel/printk")
 
     def umount_all(self):
         subprocess.call(["swapoff", "-a"])
@@ -71,12 +81,14 @@ class AutoPartition():
         local _btrfscompress=${12}
         local _btrfsssd=${13}
         '''
-        
         # we have two main cases: "swap" and everything else.
         if fs_type == "swap":
-            subprocess.call(["swapoff", device])
-            subprocess.call(["mkswap", "-L", label_name, device])
-            subprocess.call(["swapon", device])
+            try:
+                subprocess.check_call(["swapoff", device])
+                subprocess.check_call(["mkswap", "-L", label_name, device])
+                subprocess.check_call(["swapon", device])
+            except subprocess.CalledProcessError as e:
+                logging.warning(e.output)
         else:
             mkfs = { "xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
                      "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
@@ -95,8 +107,12 @@ class AutoPartition():
                 return
             
             command = mkfs[fs_type]
-            subprocess.call(command)
             
+            try:
+                subprocess.check_call(command)
+            except subprocess.CalledProcessError as e:
+                logging.error(e.output)
+                return
 
             time.sleep(4)
 
@@ -122,12 +138,9 @@ class AutoPartition():
         logging.debug("Device details: %s UUID=%s LABEL=%s" % (device, fs_uuid, fs_label))
     
     def run(self):
-        # TODO: support UEFI
-        uefi = False
-
         key_file = "/tmp/.keyfile"
     
-        if uefi:
+        if self.uefi:
             guid_part_size = "2"
             gpt_bios_grub_part_size = "2"
             uefisys_part_size = "512"
@@ -136,8 +149,8 @@ class AutoPartition():
             uefisys_part_size = "0"
 
         # get just the disk size in 1000*1000 MB
-        device = subprocess.check_output("basename %s" % self.auto_device)
-        base_path = "/sys/block/%s" % device
+        device_name = subprocess.check_output("basename %s" % self.auto_device)
+        base_path = "/sys/block/%s" % device_name
         if os.path.exists("%s/size" % base_path):
             with open("%s/queue/logical_block_size" % base_path, "rt") as f:
                 logical_block_size = f.read()
@@ -166,112 +179,112 @@ class AutoPartition():
         # disable swap and all mounted partitions, umount / last!
         self.umount_all()
 
-        # we assume a /dev/hdX format (or /dev/sdX)
-        if uefi:
-            '''
-            PART_ROOT="${DEVICE}5"
-            # GPT (GUID) is supported only by 'parted' or 'sgdisk'
-            printk off
-            # clean partition table to avoid issues!
-            sgdisk --zap ${DEVICE} &>/dev/null
-            # clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            dd if=/dev/zero of=${DEVICE} bs=512 count=2048 &>/dev/null
-            wipefs -a ${DEVICE} &>/dev/null
-            # create fresh GPT
-            sgdisk --clear ${DEVICE} &>/dev/null
-            # create actual partitions
-            sgdisk --set-alignment="2048" --new=1:1M:+${GPT_BIOS_GRUB_PART_SIZE}M --typecode=1:EF02 --change-name=1:BIOS_GRUB ${DEVICE} >> ${LOG}
-            sgdisk --set-alignment="2048" --new=2:0:+${UEFISYS_PART_SIZE}M --typecode=2:EF00 --change-name=2:UEFI_SYSTEM ${DEVICE} >> ${LOG}
-            sgdisk --set-alignment="2048" --new=3:0:+${BOOT_PART_SIZE}M --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT ${DEVICE} >> ${LOG}
-
-            if [ "$USE_LVM" == "1" ]; then
-                sgdisk --set-alignment="2048" --new=4:0:+${LVM_PV_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_LVM ${DEVICE} >> ${LOG}
-            else
-                sgdisk --set-alignment="2048" --new=4:0:+${SWAP_PART_SIZE}M --typecode=4:8200 --change-name=4:ANTERGOS_SWAP ${DEVICE} >> ${LOG}
-                sgdisk --set-alignment="2048" --new=5:0:+${ROOT_PART_SIZE}M --typecode=5:8300 --change-name=5:ANTERGOS_ROOT ${DEVICE} >> ${LOG}        
-            fi
-            
-            sgdisk --print ${DEVICE} >> ${LOG}
-            '''
-    else:
-        PART_ROOT="${DEVICE}3"
-        # start at sector 1 for 4k drive compatibility and correct alignment
-        printk off
-
-        # clean partitiontable to avoid issues!
-        dd if=/dev/zero of=${DEVICE} bs=512 count=2048 >/dev/null 2>&1
-        wipefs -a ${DEVICE} &>/dev/null
-        # create DOS MBR with parted
-        parted -a optimal -s ${DEVICE} mktable msdos >/dev/null 2>&1
-        parted -a optimal -s ${DEVICE} mkpart primary 1 $((${GUID_PART_SIZE}+${BOOT_PART_SIZE})) >>${LOG}
-        parted -a optimal -s ${DEVICE} set 1 boot on >>${LOG}
+        self.printk(False)
         
-        if [ "$USE_LVM" == "1" ]; then
-            parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE})) $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${LVM_PV_PART_SIZE})) >>${LOG}
-        else
-            parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE})) $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) >>${LOG}
-            parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) 100% >>${LOG}
-        fi
-    fi
+        device = self.auto_device
+        
+        # we assume a /dev/hdX format (or /dev/sdX)
+        if self.uefi:
+            part_root = self.auto_device + "5"
+            
+            # GPT (GUID) is supported only by 'parted' or 'sgdisk'
+            # clean partition table to avoid issues!
+            subprocess.call("sgdisk --zap %s" % device)
+
+            # clear all magic strings/signatures - mdadm, lvm, partition tables etc.
+            subprocess.call("dd if=/dev/zero of=%s bs=512 count=2048" % device)
+            subprocess.call("wipefs -a %s" % device)
+            # create fresh GPT
+            subprocess.call("sgdisk --clear %s" % device)
+            # create actual partitions
+            subprocess.call('sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s' % (gpt_bios_grub_part_size, device))
+            subprocess.call('sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s' % (uefisys_part_size, device))
+            subprocess.call('sgdisk --set-alignment="2048" --new=3:0:+%dM --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT %s' % (boot_part_size, device))
+
+            if self.lvm:
+                subprocess.call('sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_LVM %s' % (lvm_pv_part_size, device))
+            else:
+                subprocess.call('sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s' % (swap_part_size, device))
+                subprocess.call('sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s' % (root_part_size, device))
+            
+            logging.debug(subprocess.check_output("sgdisk --print %s" % device))
+            
+        else:
+            part_root = self.auto_device + "3"
+            # start at sector 1 for 4k drive compatibility and correct alignment
+            # clean partitiontable to avoid issues!
+            subprocess.call("dd if=/dev/zero of=%s bs=512 count=2048" % device)
+            subprocess.call("wipefs -a %s" % device)
+
+            # create DOS MBR with parted
+            subprocess.call("parted -a optimal -s %s mktable msdos" % device)
+            subprocess.call("parted -a optimal -s %s mkpart primary 1 %d" % (device, guid_part_size + boot_part_size))
+            subprocess.call("parted -a optimal -s %s set 1 boot on" % device)
+            
+            if self.lvm:
+                start = guid_part_size + boot_part_size
+                end = start + lvm_pv_part_size
+                subprocess.call("parted -a optimal -s %s mkpart primary %d %d" % (device, start, end))
+            else:
+                start = guid_part_size + boot_part_size
+                end = start + swap_part_size
+                subprocess.call("parted -a optimal -s %s mkpart primary %d %d" % (device, start, end))
+                subprocess.call("parted -a optimal -s %s mkpart primary %d 100%" % (device, end))
+            
     
-    partprobe ${DISC}
-    if [[ $? -gt 0 ]]; then
-        echo "Error partitioning ${DEVICE} (see ${LOG} for details)" 0 0
-        printk on
-        return 1
-    fi
-    printk on
+    self.printk(True)
+
     ## wait until /dev initialized correct devices
-    udevadm settle
+    subprocess.call("udevadm settle")
     
     # if using LVM, data_device will store root and swap partitions
     # if not using LVM, data_device will be root partition
-    if [ "$USE_LVM" == "1" ]; then
-        DATA_DEVICE=${DEVICE}2
-    else
-        DATA_DEVICE=${DEVICE}3
+    if self.lvm:
+        val = 2
+    else:
+        val = 3
     
-        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
-            DATA_DEVICE=${DEVICE}5
-        fi
-    fi
-    
-    if [ "$USE_LUKS" == "1" ]; then
+    if self.uefi:
+        val += 2
+
+    data_device = self.auto_device + str(val)
+
+    if self.luks:
         # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
         # For 512 bit key length the header is 2MB
         # If in doubt, just be generous and overwrite the first 10MB or so
-        dd if=/dev/zero of=${DATA_DEVICE} bs=512 count=20480
+        subprocess.call("dd if=/dev/zero of=%s bs=512 count=20480" % data_device)
     
         # Create a random keyfile
-        dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
+        subprocess.call("dd if=/dev/urandom of=%s bs=1024 count=4" % key_file)
         
         # Setup luks
-        cryptsetup luksFormat -q -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
-        #cryptsetup luksAddKey ${DATA_DEVICE} --key-file ${KEY_FILE}
-        cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos -q --key-file ${KEY_FILE}
-        
+        subprocess.call("cryptsetup luksFormat -q -c aes-xts-plain -s 512 %s %s" % (data_device, key_file))
+        subprocess.call("cryptsetup luksOpen %s cryptAntergos -q --key-file %s" % (data_device, key_file))
     fi
 
-    BOOT_DEVICE="${DEVICE}1"
+    val = 1
+    
+    if self.uefi:
+        val = 3
 
-    if [ "${GUIDPARAMETER}" == "yes" ]; then
-        BOOT_DEVICE="${DEVICE}3"
-    fi  
-
-    if [ "$USE_LVM" == "1" ]; then
+    if self.lvm:
         # /dev/sdX1 is /boot
         # /dev/sdX2 is the PV
         
-        if [ "$USE_LUKS" == "1" ]; then
+        if self.luks:
             # setup LVM on LUKS
-            pvcreate /dev/mapper/cryptAntergos
-            vgcreate -v AntergosVG /dev/mapper/cryptAntergos
-        else
-            pvcreate ${DATA_DEVICE}
-            vgcreate -v AntergosVG ${DATA_DEVICE}
-        fi
+            subprocess.call("pvcreate /dev/mapper/cryptAntergos")
+            subprocess.call("vgcreate -v AntergosVG /dev/mapper/cryptAntergos")
+        else:
+            subprocess.call("pvcreate %s" % data_device)
+            subprocess.call("vgcreate -v AntergosVG %s" % data_device)
         
-        lvcreate -n AntergosRoot -L ${ROOT_PART_SIZE} AntergosVG
+        subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
+        
+        
+        
+        
         
         # Use the remainig space for our swap volume
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
