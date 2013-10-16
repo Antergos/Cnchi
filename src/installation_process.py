@@ -635,7 +635,6 @@ class InstallationProcess(multiprocessing.Process):
                 subprocess.check_call(["umount", mydir])
             except:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
-                return
         
         self.special_dirs_mounted = False
 
@@ -652,6 +651,7 @@ class InstallationProcess(multiprocessing.Process):
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
             out = proc.communicate()[0]
+            logging.debug(str(out))
         except OSError as e:
             logging.exception("Error running command: %s" % e.strerror)
             raise
@@ -776,7 +776,7 @@ class InstallationProcess(multiprocessing.Process):
             for e in range(len(lines)):
                 if lines[e].startswith("#GRUB_CMDLINE_LINUX") or lines[e].startswith("GRUB_CMDLINE_LINUX"):
                     lines[e] = default_line
-                if lines[e].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[e].startswith("GRUB_DISABLE_LINUX_UUID"):
+                elif lines[e].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[e].startswith("GRUB_DISABLE_LINUX_UUID"):
                     lines[e] = disable_uuid_line
 
             with open(default_grub, "w") as f:
@@ -1231,7 +1231,8 @@ class InstallationProcess(multiprocessing.Process):
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
-        # This way we don't have to fix deprecated hooks.    
+        # This way we don't have to fix deprecated hooks.
+        # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.    
         self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
         
