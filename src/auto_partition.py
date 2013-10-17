@@ -64,23 +64,7 @@ class AutoPartition():
         devices = subprocess.check_output(command)
         subprocess.call("umount %s" % devices)
 
-    def mkfs(self, params):
-        device = params['device']
-        fs_type = params['fs_type']
-        dest = params['dest']
-        mount_point = params['mount_point']
-        label_name = params['label_name']
-        fs_options = params['fs_options']
-
-        btrfs_devices = params['brtfs_devices']
-        '''
-        local _btrfsdevices="$(echo ${8} | sed -e 's|#| |g')"
-        local _btrfslevel=${9}
-        local _btrfssubvolume=${10}
-        local _dosubvolume=${11}
-        local _btrfscompress=${12}
-        local _btrfsssd=${13}
-        '''
+    def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         # we have two main cases: "swap" and everything else.
         if fs_type == "swap":
             try:
@@ -117,10 +101,10 @@ class AutoPartition():
             time.sleep(4)
 
             # create our mount directory
-            subprocess.call("mkdir -p %s%s" % (dest, mount_point))
+            subprocess.call("mkdir -p %s%s" % (self.dest_dir, mount_point))
 
             # mount our new filesystem
-            subprocess.call("mount -t %s %s %s%s" % (fs_type, device, dest, mount_point))
+            subprocess.call("mount -t %s %s %s%s" % (fs_type, device, self.dest_dir, mount_point))
 
             # change permission of base directories to correct permission
             # to avoid btrfs issues
@@ -131,7 +115,7 @@ class AutoPartition():
             elif mount_point == "/root":
                 mode = "750"
                     
-            subprocess.call("chmod %s %s%s" % (mode, dest, mount_point))
+            subprocess.call("chmod %s %s%s" % (mode, self.dest_dir, mount_point))
         
         fs_uuid = self.get_fs_uuid(device)
         fs_label = self.get_fs_label(device)
@@ -207,8 +191,7 @@ class AutoPartition():
                 subprocess.call('sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s' % (swap_part_size, device))
                 subprocess.call('sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s' % (root_part_size, device))
             
-            logging.debug(subprocess.check_output("sgdisk --print %s" % device))
-            
+            logging.debug(subprocess.check_output("sgdisk --print %s" % device))            
         else:
             part_root = self.auto_device + "3"
             # start at sector 1 for 4k drive compatibility and correct alignment
@@ -230,43 +213,65 @@ class AutoPartition():
                 end = start + swap_part_size
                 subprocess.call("parted -a optimal -s %s mkpart primary %d %d" % (device, start, end))
                 subprocess.call("parted -a optimal -s %s mkpart primary %d 100%" % (device, end))
-            
-    
+
     self.printk(True)
 
     ## wait until /dev initialized correct devices
     subprocess.call("udevadm settle")
-    
-    # if using LVM, data_device will store root and swap partitions
-    # if not using LVM, data_device will be root partition
-    if self.lvm:
-        val = 2
-    else:
-        val = 3
-    
-    if self.uefi:
-        val += 2
 
-    data_device = self.auto_device + str(val)
-
+    ##################################################################################################################
+    
+    luks_device = ""    
+    root_device = ""
+    boot_device = ""
+    swap_device = ""
+    
     if self.luks:
+        if self.lvm:
+            val = 2
+            root_device = "/dev/AntergosVG/AntergosRoot"
+        else:
+            val = 3
+
+        if self.uefi:
+            val += 2
+            
+        luks_device = self.auto_device + str(val)
+        
+        if root_device == "":
+            root_device = luks_device
+            
+        logging.debug("Will setup LUKS on device %s" % luks_device)
+        logging.debug("And root on device %s" % root_device)
+                    
         # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
         # For 512 bit key length the header is 2MB
         # If in doubt, just be generous and overwrite the first 10MB or so
-        subprocess.call("dd if=/dev/zero of=%s bs=512 count=20480" % data_device)
+        subprocess.call("dd if=/dev/zero of=%s bs=512 count=20480" % luks_device)
     
         # Create a random keyfile
         subprocess.call("dd if=/dev/urandom of=%s bs=1024 count=4" % key_file)
         
         # Setup luks
-        subprocess.call("cryptsetup luksFormat -q -c aes-xts-plain -s 512 %s %s" % (data_device, key_file))
-        subprocess.call("cryptsetup luksOpen %s cryptAntergos -q --key-file %s" % (data_device, key_file))
-    fi
+        subprocess.call("cryptsetup luksFormat -q -c aes-xts-plain -s 512 %s %s" % (luks_device, key_file))
+        subprocess.call("cryptsetup luksOpen %s cryptAntergos -q --key-file %s" % (luks_device, key_file))
+    else:
+        
 
     val = 1
-    
+   
     if self.uefi:
         val = 3
+
+    boot_device = self.auto_device + str(val)
+    swap_device = self.auto_device + str(val+1)
+
+
+
+
+
+
+
 
     if self.lvm:
         # /dev/sdX1 is /boot
@@ -282,61 +287,119 @@ class AutoPartition():
         
         subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
         
+        # Use the remainig space for our swap volume
+        subprocess.call("lvcreate -n AntergosSwap -l 100%FREE AntergosVG")
+
+        if self.uefi:
+            pass
+        else:
+            ## Make sure the "root" partition is defined first
+            self.mkfs("/dev/AntergosVG/AntergosRoot", "ext4", "/", "AntergosRoot")
+            self.mkfs("/dev/AntergosVG/AntergosSwap", "swap", "", "AntergosSwap")
+            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+    else:
+        if self.luks:
+            # Not using LVM but using LUKS
+            if self.uefi:
+                #FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+                ## Make sure the "root" partition is defined first
+                pass
+            else:
+                ## Make sure the "root" partition is defined first
+                self.mkfs("/dev/mapper/cryptAntergos", "ext4", "/", "AntergosRoot")
+                self.mkfs(swap_device, "swap", "", "AntergosSwap")
+                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+        else:
+            # Normal install (not using neither LVM nor LUKS)
+            if self.uefi:
+                #FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+                pass
+            else:
+                ## Make sure the "root" partition is defined first
+                self.mkfs(root_device, "ext4", "/", "AntergosRoot")
+                self.mkfs(swap_device, "swap", "", "AntergosSwap")
+                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    '''
+    if self.lvm:
+        # /dev/sdX1 is /boot
+        # /dev/sdX2 is the PV
         
+        if self.luks:
+            # setup LVM on LUKS
+            subprocess.call("pvcreate -f /dev/mapper/cryptAntergos")
+            subprocess.call("vgcreate -v AntergosVG /dev/mapper/cryptAntergos")
+        else:
+            subprocess.call("pvcreate -f %s" % data_device)
+            subprocess.call("vgcreate -v AntergosVG %s" % data_device)
         
-        
+        subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
         
         # Use the remainig space for our swap volume
-        lvcreate -n AntergosSwap -l 100%FREE AntergosVG
+        subprocess.call("lvcreate -n AntergosSwap -l 100%FREE AntergosVG")
 
-        ## Make sure the "root" partition is defined first
-        _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
-        _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
-
-        _mkfs yes "${BOOT_DEVICE}" ext2 "${DESTDIR}" /boot AntergosBoot || return 1    
-    else
-        # Not using LVM
-        if [ "$USE_LUKS" == "1" ]; then
+        if self.uefi:
+            pass
+        else:
             ## Make sure the "root" partition is defined first
-            _mkfs yes /dev/mapper/cryptAntergos ext4 "${DESTDIR}" / AntergosRoot || return 1
-            FSSPECS="1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-            if [ "${GUIDPARAMETER}" == "yes" ]; then
-                FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-            fi
-        else
-            ## FSSPECS - default filesystem specs (the + is bootable flag)
-            ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
-            ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
-            ## Make sure the "root" partition is defined first in the FSSPECS list
-            FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-
-            if [ "${GUIDPARAMETER}" == "yes" ]; then
-                FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-            fi
-        fi
-
-        ## make and mount filesystems
-        for fsspec in ${FSSPECS}; do
-            part="$(echo ${fsspec} | tr -d ' ' | cut -f1 -d:)"
-            mountpoint="$(echo ${fsspec} | tr -d ' ' | cut -f2 -d:)"
-            fstype="$(echo ${fsspec} | tr -d ' ' | cut -f4 -d:)"
-            fsoptions="$(echo ${fsspec} | tr -d ' ' | cut -f5 -d:)"
-            [[ "${fsoptions}" == "" ]] && fsoptions="NONE"
-            labelname="$(echo ${fsspec} | tr -d ' ' | cut -f7 -d:)"
-            btrfsdevices="${DEVICE}${part}"
-            btrfsssd="NONE"
-            btrfscompress="NONE"
-            btrfssubvolume="NONE"
-            btrfslevel="NONE"
-            dosubvolume="no"
-            # if echo "${mountpoint}" | tr -d ' ' | grep '^/$' 2>&1 >/dev/null; then
-            # if [[ "$(echo ${mountpoint} | tr -d ' ' | grep '^/$' | wc -l)" -eq 0 ]]; then
-            _mkfs yes "${DEVICE}${part}" "${fstype}" "${DESTDIR}" "${mountpoint}" "${labelname}" "${fsoptions}" "${btrfsdevices}" "${btrfssubvolume}" "${btrfslevel}" "${dosubvolume}" "${btrfssd}" "${btrfscompress}" || return 1
-            # fi
-        done
-    fi
-
-    if [ "$USE_LUKS" == "1" ]; then
+            self.mkfs("/dev/AntergosVG/AntergosRoot", "ext4", "/", "AntergosRoot")
+            self.mkfs("/dev/AntergosVG/AntergosSwap", "swap", "", "AntergosSwap")
+            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+    else:
+        if self.luks:
+            # Not using LVM but using LUKS
+            if self.uefi:
+                #FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+                ## Make sure the "root" partition is defined first
+                pass
+            else:
+                ## Make sure the "root" partition is defined first
+                self.mkfs("/dev/mapper/cryptAntergos", "ext4", "/", "AntergosRoot")
+                self.mkfs(swap_device, "swap", "", "AntergosSwap")
+                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+        else:
+            # Normal install (not using neither LVM nor LUKS)
+            if self.uefi:
+                #FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+                pass
+            else:
+                ## Make sure the "root" partition is defined first
+                self.mkfs(root_device, "ext4", "/", "AntergosRoot")
+                self.mkfs(swap_device, "swap", "", "AntergosSwap")
+                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+    '''
+    
+    if self.luks:
         # https://wiki.archlinux.org/index.php/Encrypted_LVM
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
@@ -347,14 +410,6 @@ class AutoPartition():
         # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
         # (boot partition is not)
         # Maybe instead of using a keyfile we should use a password...
-        sudo chmod 0400 "${KEY_FILE}"
-        cp ${KEY_FILE} ${DESTDIR}/boot
-        rm ${KEY_FILE}
-    fi
-    
-    S_MKFSAUTO=1
-}
-
-touch /tmp/.auto_partition.lock
-autoprepare $1
-rm /tmp/.auto_partition.lock
+        subprocess.call('chmod 0400 "${KEY_FILE}"')
+        subprocess.call('cp %s %s/boot' % (key_file, self.dest_dir))
+        subprocess.call('rm %s' % key_file)
