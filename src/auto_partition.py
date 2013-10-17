@@ -26,20 +26,19 @@ import logging
 import time
 
 class AutoPartition():
-    def __init__(self, dest_dir, auto_device, settings):
-        
+    def __init__(self, dest_dir, auto_device, use_luks, use_lvm):
         self.dest_dir = dest_dir
         self.auto_device = auto_device
-        
-        # destination of blockdevices in /sys
-        block="/sys/block"
-        
-        self.luks = settings.get('use_luks')
-        self.lvm = settings.get('use_lvm')
 
-        # TODO: support UEFI
         self.uefi = False
+        
+        if os.path.exists("/sys/firmware/efi/systab"):
+            self.uefi = True
 
+        self.luks = use_luks
+        self.lvm = use_lvm
+        
+        self.run()
 
     def get_fs_uuid(self, device):
         return subprocess.check_output("blkid -p -i -s UUID -o value %s" % device)
@@ -50,7 +49,7 @@ class AutoPartition():
     def printk(self, enable):
         if enable:
             subprocess.call("echo 4 >/proc/sys/kernel/printk")
-        else
+        else:
             subprocess.call("echo 0 >/proc/sys/kernel/printk")
 
     def umount_all(self):
@@ -120,6 +119,42 @@ class AutoPartition():
         fs_uuid = self.get_fs_uuid(device)
         fs_label = self.get_fs_label(device)
         logging.debug("Device details: %s UUID=%s LABEL=%s" % (device, fs_uuid, fs_label))
+
+    def get_devices(self):
+        d = self.auto_device
+        
+        boot = ""
+        swap = ""
+        root = ""
+
+        luks = ""    
+        lvm = ""
+
+        if self.uefi:
+            boot = d + "3"
+            swap = d + "4"
+            root = d + "5"
+        else:
+            boot = d + "1"
+            swap = d + "2"
+            root = d + "3"
+
+        if self.lvm:
+            lvm = root
+            swap = "/dev/AntergosVG/AntergosSwap"
+            root = "/dev/AntergosVG/AntergosRoot"
+                    
+        if self.luks:
+            if self.lvm:
+                # LUKS and LVM
+                luks = lvm
+                lvm = "/dev/mapper/cryptAntergos"
+            else:
+                # LUKS and no LVM
+                luks = root
+                root = "/dev/mapper/cryptAntergos"
+
+        return (boot, swap, root, luks, lvm)
     
     def run(self):
         key_file = "/tmp/.keyfile"
@@ -138,7 +173,7 @@ class AutoPartition():
         if os.path.exists("%s/size" % base_path):
             with open("%s/queue/logical_block_size" % base_path, "rt") as f:
                 logical_block_size = f.read()
-            with open(("%s/size" % base_path, "rt") as f:
+            with open("%s/size" % base_path, "rt") as f:
                 size = f.read()
             
             disc_size = logical_block_size * size
@@ -214,202 +249,73 @@ class AutoPartition():
                 subprocess.call("parted -a optimal -s %s mkpart primary %d %d" % (device, start, end))
                 subprocess.call("parted -a optimal -s %s mkpart primary %d 100%" % (device, end))
 
-    self.printk(True)
+        self.printk(True)
 
-    ## wait until /dev initialized correct devices
-    subprocess.call("udevadm settle")
+        ## wait until /dev initialized correct devices
+        subprocess.call("udevadm settle")
+        
+        (boot_device, swap_device, root_device, luks_device, lvm_device) = self.get_devices()
+        
+        logging.debug("Boot %s, Swap %s, Root %s" % (boot_device, swap_device, root_device))
+        
+        if self.luks:
+            logging.debug("Will setup LUKS on device %s" % luks_device)
+                        
+            # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
+            # For 512 bit key length the header is 2MB
+            # If in doubt, just be generous and overwrite the first 10MB or so
+            subprocess.call("dd if=/dev/zero of=%s bs=512 count=20480" % luks_device)
+        
+            # Create a random keyfile
+            subprocess.call("dd if=/dev/urandom of=%s bs=1024 count=4" % key_file)
+            
+            # Setup luks
+            subprocess.call("cryptsetup luksFormat -q -c aes-xts-plain -s 512 %s %s" % (luks_device, key_file))
+            subprocess.call("cryptsetup luksOpen %s cryptAntergos -q --key-file %s" % (luks_device, key_file))
 
-    ##################################################################################################################
-    
-    luks_device = ""    
-    root_device = ""
-    boot_device = ""
-    swap_device = ""
-    
-    if self.luks:
         if self.lvm:
-            val = 2
-            root_device = "/dev/AntergosVG/AntergosRoot"
-        else:
-            val = 3
-
-        if self.uefi:
-            val += 2
+            # /dev/sdX1 is /boot
+            # /dev/sdX2 is the PV
             
-        luks_device = self.auto_device + str(val)
-        
-        if root_device == "":
-            root_device = luks_device
+            logging.debug("Will setup LVM on device %s" % lvm_device)
+
+            subprocess.call("pvcreate -f %s" % lvm_device)
+            subprocess.call("vgcreate -v AntergosVG %s" % lvm_device)
             
-        logging.debug("Will setup LUKS on device %s" % luks_device)
-        logging.debug("And root on device %s" % root_device)
-                    
-        # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
-        # For 512 bit key length the header is 2MB
-        # If in doubt, just be generous and overwrite the first 10MB or so
-        subprocess.call("dd if=/dev/zero of=%s bs=512 count=20480" % luks_device)
-    
-        # Create a random keyfile
-        subprocess.call("dd if=/dev/urandom of=%s bs=1024 count=4" % key_file)
-        
-        # Setup luks
-        subprocess.call("cryptsetup luksFormat -q -c aes-xts-plain -s 512 %s %s" % (luks_device, key_file))
-        subprocess.call("cryptsetup luksOpen %s cryptAntergos -q --key-file %s" % (luks_device, key_file))
-    else:
-        
+            subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
+            
+            # Use the remainig space for our swap volume
+            subprocess.call("lvcreate -n AntergosSwap -l 100%FREE AntergosVG")
 
-    val = 1
-   
-    if self.uefi:
-        val = 3
-
-    boot_device = self.auto_device + str(val)
-    swap_device = self.auto_device + str(val+1)
-
-
-
-
-
-
-
-
-    if self.lvm:
-        # /dev/sdX1 is /boot
-        # /dev/sdX2 is the PV
+        ## Make sure the "root" partition is defined first
+        self.mkfs(root_device, "ext4", "/", "AntergosRoot")
+        self.mkfs(swap_device, "swap", "", "AntergosSwap")
+        self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
         
         if self.luks:
-            # setup LVM on LUKS
-            subprocess.call("pvcreate -f /dev/mapper/cryptAntergos")
-            subprocess.call("vgcreate -v AntergosVG /dev/mapper/cryptAntergos")
-        else:
-            subprocess.call("pvcreate -f %s" % data_device)
-            subprocess.call("vgcreate -v AntergosVG %s" % data_device)
-        
-        subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
-        
-        # Use the remainig space for our swap volume
-        subprocess.call("lvcreate -n AntergosSwap -l 100%FREE AntergosVG")
+            # https://wiki.archlinux.org/index.php/Encrypted_LVM
 
-        if self.uefi:
-            pass
-        else:
-            ## Make sure the "root" partition is defined first
-            self.mkfs("/dev/AntergosVG/AntergosRoot", "ext4", "/", "AntergosRoot")
-            self.mkfs("/dev/AntergosVG/AntergosSwap", "swap", "", "AntergosSwap")
-            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-    else:
-        if self.luks:
-            # Not using LVM but using LUKS
-            if self.uefi:
-                #FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-                ## Make sure the "root" partition is defined first
-                pass
-            else:
-                ## Make sure the "root" partition is defined first
-                self.mkfs("/dev/mapper/cryptAntergos", "ext4", "/", "AntergosRoot")
-                self.mkfs(swap_device, "swap", "", "AntergosSwap")
-                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-        else:
-            # Normal install (not using neither LVM nor LUKS)
-            if self.uefi:
-                #FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-                pass
-            else:
-                ## Make sure the "root" partition is defined first
-                self.mkfs(root_device, "ext4", "/", "AntergosRoot")
-                self.mkfs(swap_device, "swap", "", "AntergosSwap")
-                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+            # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
+            # NOTE: /etc/default/grub will be modified in installation_process.py, too.
+            
+            # Copy keyfile to boot partition, user will choose what to do with it
+            # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+            # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+            # (boot partition is not)
+            # Maybe instead of using a keyfile we should use a password...
+            subprocess.call('chmod 0400 "${KEY_FILE}"')
+            subprocess.call('cp %s %s/boot' % (key_file, self.dest_dir))
+            subprocess.call('rm %s' % key_file)
+
+if __name__ == '__main__':
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    sh.setFormatter(formatter)
+    logger.addHandler(sh)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    '''
-    if self.lvm:
-        # /dev/sdX1 is /boot
-        # /dev/sdX2 is the PV
-        
-        if self.luks:
-            # setup LVM on LUKS
-            subprocess.call("pvcreate -f /dev/mapper/cryptAntergos")
-            subprocess.call("vgcreate -v AntergosVG /dev/mapper/cryptAntergos")
-        else:
-            subprocess.call("pvcreate -f %s" % data_device)
-            subprocess.call("vgcreate -v AntergosVG %s" % data_device)
-        
-        subprocess.call("lvcreate -n AntergosRoot -L %d AntergosVG" % root_part_size)
-        
-        # Use the remainig space for our swap volume
-        subprocess.call("lvcreate -n AntergosSwap -l 100%FREE AntergosVG")
-
-        if self.uefi:
-            pass
-        else:
-            ## Make sure the "root" partition is defined first
-            self.mkfs("/dev/AntergosVG/AntergosRoot", "ext4", "/", "AntergosRoot")
-            self.mkfs("/dev/AntergosVG/AntergosSwap", "swap", "", "AntergosSwap")
-            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-    else:
-        if self.luks:
-            # Not using LVM but using LUKS
-            if self.uefi:
-                #FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-                ## Make sure the "root" partition is defined first
-                pass
-            else:
-                ## Make sure the "root" partition is defined first
-                self.mkfs("/dev/mapper/cryptAntergos", "ext4", "/", "AntergosRoot")
-                self.mkfs(swap_device, "swap", "", "AntergosSwap")
-                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-        else:
-            # Normal install (not using neither LVM nor LUKS)
-            if self.uefi:
-                #FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
-                pass
-            else:
-                ## Make sure the "root" partition is defined first
-                self.mkfs(root_device, "ext4", "/", "AntergosRoot")
-                self.mkfs(swap_device, "swap", "", "AntergosSwap")
-                self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-    '''
-    
-    if self.luks:
-        # https://wiki.archlinux.org/index.php/Encrypted_LVM
-
-        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
-        # NOTE: /etc/default/grub will be modified in installation_process.py, too.
-        
-        # Copy keyfile to boot partition, user will choose what to do with it
-        # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-        # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
-        # (boot partition is not)
-        # Maybe instead of using a keyfile we should use a password...
-        subprocess.call('chmod 0400 "${KEY_FILE}"')
-        subprocess.call('cp %s %s/boot' % (key_file, self.dest_dir))
-        subprocess.call('rm %s' % key_file)
+    ap = AutoPartition("/install", "/dev/sdb", False, False)
+    ap.run()

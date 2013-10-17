@@ -358,7 +358,7 @@ def show_help():
     print("Advanced options:")
     print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
     print("-c, --cache : Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)")
-    print("-d, --debug : Show debug messages")
+    print("-d, --debug : Set debug log level")
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
