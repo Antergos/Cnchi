@@ -664,7 +664,6 @@ class InstallationAdvanced(Gtk.Box):
                 if myfmt == 'swap':
                     mymount = 'swap'
 
-                logging.debug("Edit partition: stage_opts[%s] = (is_new:%s, mylabel:%s, mymount:%s, myfmt:%s, fmtop:%s)" % (uid, is_new, mylabel, mymount, myfmt, fmtop))
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
@@ -938,7 +937,6 @@ class InstallationAdvanced(Gtk.Box):
                         # BUG: Extended partition is getting formatted
                         uid = self.gen_partition_uid(p=partitions[e])
                         self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
-                        logging.debug("Add partition: stage_opts[%s] = (is_new:%s, mylabel:%s, mymount:%s, myfmt:%s, formatme:%s)" % (uid, True, mylabel, mymount, myfmt, formatme))
                 # Update partition list treeview
                 self.fill_partition_list()
 
