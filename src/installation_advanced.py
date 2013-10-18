@@ -1246,6 +1246,11 @@ class InstallationAdvanced(Gtk.Box):
         #store values as (path, create?, label?, format?)
         if self.lv_partitions:
             for e in self.lv_partitions:
+                relabel = 'No'
+                fmt = 'No'
+                createme = 'No'
+                mnt = ''
+
                 if self.gen_partition_uid(path=e) in self.stage_opts:
                     (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=e)]
                     if fmt:
@@ -1275,6 +1280,7 @@ class InstallationAdvanced(Gtk.Box):
                     fmt = 'No'
                     createme = 'No'
                     mnt = ''
+            
             if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                 changelist.append((e, createme, relabel, fmt, mnt))
 
@@ -1283,6 +1289,11 @@ class InstallationAdvanced(Gtk.Box):
                 disk = self.disks[disk_path]
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
+                    relabel = 'No'
+                    fmt = 'No'
+                    createme = 'No'
+                    mnt = ''
+                    
                     if self.gen_partition_uid(path=partition_path) in self.stage_opts:
                         if disk.device.busy:
                             # Check if there's some mounted partition
@@ -1341,6 +1352,7 @@ class InstallationAdvanced(Gtk.Box):
                         fmt = 'No'
                         createme = 'No'
                         mnt = ''
+
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                         changelist.append((partition_path, createme, relabel, fmt, mnt))
                     
