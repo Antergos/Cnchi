@@ -25,6 +25,7 @@ import multiprocessing
 import subprocess
 import logging
 import time
+import os
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -33,6 +34,7 @@ class AutoRankmirrorsThread(threading.Thread):
     def __init__(self):
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
+        self.rankmirrors_script = "/usr/share/cnchi/scripts/rankmirrors-script"
 
     def get_prop(self, obj, iface, prop):
         import dbus
@@ -60,6 +62,10 @@ class AutoRankmirrorsThread(threading.Thread):
         while not self.has_connection():
             time.sleep(2)  # Delay 
 
+        if not os.path.exists(self.rankmirrors_script):
+            logging.warning(_("Can't find rank mirrors script"))
+            return
+        
         # Run rankmirrors command
         try:
             self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/rankmirrors-script"]).pid

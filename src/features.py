@@ -97,35 +97,35 @@ class Features(Gtk.Box):
         txt = _("Bluetooth Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
-        txt = _("This enables your system to interact with Bluetooth devices.")
+        txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
-        txt = _("This installs printer drivers and management tools.")
+        txt = _("Installation of printer drivers and management tools.")
         self.labels["cups"].set_markup(txt)
 
         # LibreOffice
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)        
-        txt = _("Office suite that is compatible with Microsoft Office files.")
+        txt = _("Open source office suite that supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
 
         # Visual effects
         txt = _("Visual Effects")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
-        txt = _("Enable 3D acceleration to allow transparencies, shadows, and other effects.")
+        txt = _("Enable 3D acceleration for transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
         # Firewall
         txt = _("Uncomplicated Firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-        txt = _("Installs UFW and denies all traffic by default. (Use gufw to edit settings)")
+        txt = _("Network security system that controls the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
 
         # Propietary packages (third_party)
@@ -143,6 +143,21 @@ class Features(Gtk.Box):
                     object_name = prefix + "_" + feature
                     obj = self.ui.get_object(object_name)
                     obj.hide()
+
+    def enable_defaults(self):
+        if 'bluetooth' in self.features:
+            p1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(["grep", "-i", "bluetooth"],\
+                              stdin=p1.stdout, stdout=subprocess.PIPE)
+            p1.stdout.close()
+            out, err = p2.communicate()
+            if out.decode() is not '':
+                logging.debug("Detected bluetooth device. Enabling by default...")
+                self.switches['bluetooth'].set_active(True)
+        if 'firewall' in self.features:
+            self.switches['firewall'].set_active(True)
+        if 'cups' in self.features:
+            self.switches['cups'].set_active(True)
 
     def store_values(self):
         # Enable forward button
@@ -168,4 +183,5 @@ class Features(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.hide_features()
+        self.enable_defaults()
 

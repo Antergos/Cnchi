@@ -1,29 +1,22 @@
-CNCHI TODO LIST (17 May 2013)
+CNCHI TODO LIST (4th October 2013)
 
 * General:
- - Check all file paths (os.path.join)
  - Check if we can remove subprocess calls to pythonian code
+ - Encrypt home directory (done, needs testing)
 
-* Installer_advanced screen:
+* Advanced Install:
  - If you play with the partitioner (create partition, delete it, create it
    again, delete it again...) in the end it gets confused.
+ - Add LVM support (create / delete)
 
 * Timezone screen:
  - Add NTP switch
 
-* Keyboard screen:
- - Doesn't sort words that have accents (arcnexus fixed it, needs testing)
+* Alongside install:
+ - Rethink this option. Doesn't work as it is.
 
-* Slide screen:
- - Not all the installer events (messages) are shown. pac.py generates
-   too many messages
-
-Alongside branch:
-* Autodetect already installed OSes (see bootinfo.py)
-* Add a new install option: install alongside other OSes.
+* Automatic install:
+ - Encrypt whole partition in automatic install
 
 FUTURE:
-* Remove Easy install option?
 * EFI support
-* LVM
-* Be able to encrypt home directory

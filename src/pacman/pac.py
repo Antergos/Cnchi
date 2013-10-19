@@ -52,6 +52,8 @@ class Pac(object):
         self.to_update = []
         self.to_provide = []
         
+        self.target = ""
+        
         # Packages to be removed
         # E.g: connman conflicts with netctl(openresolv), which is installed
         # by default with base group
@@ -272,7 +274,8 @@ class Pac(object):
         except queue.Full:
             pass
 
-        logging.info(event_text)
+        #if event_type != "percent":
+        #    logging.info(event_text)
         
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
@@ -399,8 +402,10 @@ class Pac(object):
     def cb_progress(self, _target, _percent, n, i):
         if _target:
             self.target = _("Installing %s (%d/%d)") % (_target, i, n)
+            self.queue_event('global_percent', i / n)
         else:
             self.target = _("Checking and loading packages...")
+
         self.percent = _percent / 100
-        self.queue_event("target", self.target)
-        self.queue_event("percent", self.percent)
+        self.queue_event('target', self.target)
+        self.queue_event('percent', self.percent)

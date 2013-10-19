@@ -67,6 +67,7 @@ _verbose = False
 _update = False
 _force_grub_type = False
 _cache_dir = ""
+_debug = False
 
 # Useful vars for gettext (translations)
 APP = "cnchi"
@@ -74,8 +75,6 @@ DIR = "/usr/share/locale"
 
 _main_window_width = 800
 _main_window_height = 500
-
-_debug = False
 
 class Main(Gtk.Window):
 
@@ -108,10 +107,6 @@ class Main(Gtk.Window):
         super().__init__()
         
         self.setup_logging()
-        
-        # workaround for dconf
-        os.system("mkdir -p /root/.cache/dconf")
-        os.system("chmod -R 777 /root/.cache")
         
         logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
         
@@ -171,13 +166,7 @@ class Main(Gtk.Window):
         
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
-        #self.callback_queue = multiprocessing.Queue()
         self.callback_queue = multiprocessing.JoinableQueue()
-        
-        # Prevent join_thread() from blocking. In particular, this prevents
-        # the background thread from being joined automatically when the
-        # process exits – see join_thread().
-        #self.callback_queue.cancel_join_thread()
 
         # save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)
@@ -369,7 +358,7 @@ def show_help():
     print("Advanced options:")
     print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
     print("-c, --cache : Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)")
-    print("-d, --debug : Show debug messages")
+    print("-d, --debug : Set debug log level")
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")

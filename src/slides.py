@@ -55,6 +55,11 @@ class Slides(Gtk.Box):
         builder.connect_signals(self)
 
         self.progress_bar = builder.get_object("progressbar")
+        self.progress_bar.set_show_text(True)
+        
+        self.global_progress_bar = builder.get_object("global_progressbar")
+        self.global_progress_bar.set_show_text(True)
+        
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
@@ -92,10 +97,18 @@ class Slides(Gtk.Box):
         
         self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
-
+        
+    def show_global_progress_bar_if_hidden(self):
+        if self.global_progress_bar_is_hidden:
+            self.global_progress_bar.show_all()
+            self.global_progress_bar_is_hidden = False
+        
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        self.global_progress_bar.hide()
+        self.global_progress_bar_is_hidden = True
 
         self.backwards_button.hide()
         self.forward_button.hide()
@@ -133,6 +146,9 @@ class Slides(Gtk.Box):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
+            elif event[0] == 'global_percent':
+                self.show_global_progress_bar_if_hidden()
+                self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'finished':
                 logging.info(event[1])
                 self.set_message(self.install_ok)
@@ -165,7 +181,10 @@ class Slides(Gtk.Box):
             elif event[0] == 'warning':
                 logging.warning(event[1])
             else:
-                #logging.info(event[1])
+                # TODO: Check if logging slows down showing messages
+                #       remove logging.info in that case (and at least
+                #       use the one at pac.py:queue_event)
+                logging.info(event[1])
                 self.set_message(event[1])
                             
             self.callback_queue.task_done()

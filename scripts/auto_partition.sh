@@ -310,9 +310,11 @@ autoprepare() {
     ROOT_PART_SET=""
     FSTYPE='ext4'
     
+    KEY_FILE="/tmp/.keyfile"
+    
     # Do not support UEFI
     GUIDPARAMETER="no"
-
+    
     if [[ "${GUIDPARAMETER}" = "yes" ]]; then
         GUID_PART_SIZE="2"
         GPT_BIOS_GRUB_PART_SIZE="${GUID_PART_SIZE}"
@@ -328,6 +330,7 @@ autoprepare() {
         echo "ERROR: Setup cannot detect size of your device, please use normal installation routine for partitioning and mounting devices."
         return 1
     fi
+    
     while [[ "${DEFAULTFS}" = "" ]]; do
 
         # create 1 MB bios_grub partition for grub-bios GPT support
@@ -388,6 +391,7 @@ autoprepare() {
     if [[ "${NAME_SCHEME_PARAMETER_RUN}" == "" ]]; then
         set_device_name_scheme || return 1
     fi
+
     # we assume a /dev/hdX format (or /dev/sdX)
     if [[ "${GUIDPARAMETER}" == "yes" ]]; then
         PART_ROOT="${DEVICE}5"
@@ -433,6 +437,7 @@ autoprepare() {
             parted -a optimal -s ${DEVICE} mkpart primary $((${GUID_PART_SIZE}+${BOOT_PART_SIZE}+${SWAP_PART_SIZE})) 100% >>${LOG}
         fi
     fi
+    
     partprobe ${DISC}
     if [[ $? -gt 0 ]]; then
         echo "Error partitioning ${DEVICE} (see ${LOG} for details)" 0 0
@@ -442,38 +447,83 @@ autoprepare() {
     printk on
     ## wait until /dev initialized correct devices
     udevadm settle
+    
+    # if using LVM, data_device will store root and swap partitions
+    # if not using LVM, data_device will be root partition
+    if [ "$USE_LVM" == "1" ]; then
+        DATA_DEVICE=${DEVICE}2
+    else
+        DATA_DEVICE=${DEVICE}3
+    
+        if [[ "${GUIDPARAMETER}" == "yes" ]]; then
+            DATA_DEVICE=${DEVICE}5
+        fi
+    fi
+    
+    if [ "$USE_LUKS" == "1" ]; then
+        # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
+        # For 512 bit key length the header is 2MB
+        # If in doubt, just be generous and overwrite the first 10MB or so
+        dd if=/dev/zero of=${DATA_DEVICE} bs=512 count=20480
+    
+        # Create a random keyfile
+        dd if=/dev/urandom of=${KEY_FILE} bs=1024 count=4
+        
+        # Setup luks
+        cryptsetup luksFormat -q -c aes-xts-plain -s 512 ${DATA_DEVICE} ${KEY_FILE}
+        #cryptsetup luksAddKey ${DATA_DEVICE} --key-file ${KEY_FILE}
+        cryptsetup luksOpen ${DATA_DEVICE} cryptAntergos -q --key-file ${KEY_FILE}
+        
+    fi
+
+    BOOT_DEVICE="${DEVICE}1"
+
+    if [ "${GUIDPARAMETER}" == "yes" ]; then
+        BOOT_DEVICE="${DEVICE}3"
+    fi  
 
     if [ "$USE_LVM" == "1" ]; then
         # /dev/sdX1 is /boot
         # /dev/sdX2 is the PV
-        pvcreate ${DEVICE}2
-        vgcreate -v AntergosVG ${DEVICE}2
+        
+        if [ "$USE_LUKS" == "1" ]; then
+            # setup LVM on LUKS
+            pvcreate -f /dev/mapper/cryptAntergos
+            vgcreate -v AntergosVG /dev/mapper/cryptAntergos
+        else
+            pvcreate -f ${DATA_DEVICE}
+            vgcreate -v AntergosVG ${DATA_DEVICE}
+        fi
+        
         lvcreate -n AntergosRoot -L ${ROOT_PART_SIZE} AntergosVG
         
         # Use the remainig space for our swap volume
-        #lvcreate -n AntergosSwap -L ${SWAP_PART_SIZE} AntergosVG
         lvcreate -n AntergosSwap -l 100%FREE AntergosVG
-        
+
         ## Make sure the "root" partition is defined first
         _mkfs yes /dev/AntergosVG/AntergosRoot ext4 "${DESTDIR}" / AntergosRoot || return 1
         _mkfs yes /dev/AntergosVG/AntergosSwap swap "${DESTDIR}" "" AntergosSwap || return 1
 
-        if [ "${GUIDPARAMETER}" == "yes" ]; then
-            _mkfs yes "${DEVICE}3" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
-        else        
-            _mkfs yes "${DEVICE}1" ext2 "${DESTDIR}" /boot AntergosBoot || return 1
-        fi
-        
+        _mkfs yes "${BOOT_DEVICE}" ext2 "${DESTDIR}" /boot AntergosBoot || return 1    
     else
-        
-        ## FSSPECS - default filesystem specs (the + is bootable flag)
-        ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
-        ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
-        ## Make sure the "root" partition is defined first in the FSSPECS list
-        FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+        # Not using LVM
+        if [ "$USE_LUKS" == "1" ]; then
+            ## Make sure the "root" partition is defined first
+            _mkfs yes /dev/mapper/cryptAntergos ext4 "${DESTDIR}" / AntergosRoot || return 1
+            FSSPECS="1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            if [ "${GUIDPARAMETER}" == "yes" ]; then
+                FSSPECS="3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            fi
+        else
+            ## FSSPECS - default filesystem specs (the + is bootable flag)
+            ## <partnum>:<mountpoint>:<partsize>:<fstype>[:<fsoptions>][:+]:labelname
+            ## The partitions in FSSPECS list should be listed in the "mountpoint" order.
+            ## Make sure the "root" partition is defined first in the FSSPECS list
+            FSSPECS="3:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 1:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
 
-        if [ "${GUIDPARAMETER}" == "yes" ]; then
-            FSSPECS="5:/:${ROOT_PART_SIZE} :${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            if [ "${GUIDPARAMETER}" == "yes" ]; then
+                FSSPECS="5:/:${ROOT_PART_SIZE}:${FSTYPE}:::ROOT_ANTERGOS 3:/boot:${BOOT_PART_SIZE}:ext2::+:BOOT_ANTERGOS 2:/boot/efi:512:vfat:-F32::ESP 4:swap:${SWAP_PART_SIZE}:swap:::SWAP_ANTERGOS"
+            fi
         fi
 
         ## make and mount filesystems
@@ -497,6 +547,22 @@ autoprepare() {
         done
     fi
 
+    if [ "$USE_LUKS" == "1" ]; then
+        # https://wiki.archlinux.org/index.php/Encrypted_LVM
+
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
+        # NOTE: /etc/default/grub will be modified in installation_process.py, too.
+        
+        # Copy keyfile to boot partition, user will choose what to do with it
+        # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+        # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+        # (boot partition is not)
+        # Maybe instead of using a keyfile we should use a password...
+        sudo chmod 0400 "${KEY_FILE}"
+        cp ${KEY_FILE} ${DESTDIR}/boot
+        rm ${KEY_FILE}
+    fi
+    
     S_MKFSAUTO=1
 }
 

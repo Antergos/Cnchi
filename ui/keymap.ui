@@ -1,67 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Fri Oct 11 18:38:25 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAlignment" id="keymap">
+  <object class="GtkBox" id="keymap">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="top_padding">10</property>
-    <property name="left_padding">20</property>
-    <property name="right_padding">20</property>
+    <property name="orientation">vertical</property>
     <child>
-      <object class="GtkBox" id="keymap_box">
+      <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
+        <property name="margin_top">20</property>
+        <property name="homogeneous">True</property>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">20</property>
-            <property name="homogeneous">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_left">20</property>
+            <property name="margin_right">20</property>
+            <property name="hexpand">True</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
+              <object class="GtkTreeView" id="keyboardlayout">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="margin_right">20</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="keyboardlayout">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <signal name="cursor-changed" handler="on_keyboardlayout_cursor_changed" swapped="no"/>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection" id="treeview-selection1"/>
-                    </child>
-                  </object>
-                </child>
+                <property name="hexpand">True</property>
+                <signal name="cursor-changed" handler="on_keyboardlayout_cursor_changed" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow2">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_left">20</property>
+            <property name="margin_right">20</property>
+            <property name="hexpand">True</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow2">
+              <object class="GtkTreeView" id="keyboardvariant">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="margin_left">20</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="keyboardvariant">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection" id="treeview-selection2"/>
-                    </child>
-                  </object>
+                <property name="hexpand">True</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection2"/>
                 </child>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
@@ -71,6 +61,11 @@
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </object>
 </interface>
