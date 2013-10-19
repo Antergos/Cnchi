@@ -1,11 +1,19 @@
+@font-face {
+    font-family: Futura;
+    src: url('data/FUTURAM.ttf');
+}
+
 #header {
-    /*background-color: #5e5e5e;*/
-    /*color: #fc9f25;*/
-    background-color: #f0f0f0;
-    color: #6988bb;
+    background:
+    radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color:#282828;
+    background-size:16px 16px;
+    color: #fcfcfc;
     font: 14px;
-    font-family: "Arial",Georgia,Serif;
-    /*font-family: "Futura Md BT"; This doesn't work*/
+    font-family: Futura;
 }
 
 /*#WelcomeMessage {
