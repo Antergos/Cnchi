@@ -1,19 +1,17 @@
-@font-face {
-    font-family: Futura;
-    src: url('data/FUTURAM.ttf');
-}
-
 #header {
-    background:
-    radial-gradient(black 15%, transparent 16%) 0 0,
-    radial-gradient(black 15%, transparent 16%) 8px 8px,
-    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
-    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
-    background-color:#282828;
-    background-size:16px 16px;
+    background-color: transparent;
+    background-image: linear-gradient(to bottom, 
+                                      alpha(white, 0.16), 
+                                      alpha(white, 0.04) 49%,
+                                      alpha(black, 0.20) 51%,
+                                      alpha(black, 0.02)
+                                      ),
+                       url("data/header.jpg");                                 
+    background-repeat: repeat;
+    background-position: top left;
     color: #fcfcfc;
     font: 14px;
-    font-family: Futura;
+    font-family: "Futura", Helvetica, sans-serif;
 }
 
 /*#WelcomeMessage {
