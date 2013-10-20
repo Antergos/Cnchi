@@ -256,6 +256,9 @@ postinstall(){
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
 	cp -f /etc/os-release ${DESTDIR}/etc/os-release
+	
+	# Stop the journal from being filled with error
+	chroot ${DESTDIR} systemctl enable ModemManager.service
 }
 
 touch /tmp/.postinstall.lock
