@@ -116,7 +116,7 @@ class UserInfo(Gtk.Box):
         label.set_placeholder_text(txt)
 
         label = self.ui.get_object('hostname_extra_label')
-        txt = _("The name it uses when it talks to other computers.")
+        txt = _("Identifies your system to other computers and devices.")
         txt = '<span size="small">%s</span>' % txt
         label.set_markup(txt)
 
@@ -136,7 +136,7 @@ class UserInfo(Gtk.Box):
         self.login['pass'].set_label(_("Require my password to log in"))
         self.login['encrypt'].set_label(_("Encrypt my home folder"))
 
-        txt = _("Who are you?")
+        txt = _("Create Your User Account")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -162,11 +162,11 @@ class UserInfo(Gtk.Box):
         
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
-            m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files well.\n\n")
-            m += _("Don't worry, for most intents and purposes this deficiency does not pose a problem.\n\n")
-            m += _("Anyway, one popular and inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and may lead to intense disk starvation.\n\n")
-            m += _("A simple workaround is to place sparse files in an unencrypted .Public directory\n\n")
-            m += _("Look at https://wiki.archlinux.org/index.php/ECryptfs for detailed information\n\n")
+            m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n\n")
+            m += _("Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n\n")
+            m += _("One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n\n")
+            m += _("A simple workaround is to place sparse files in an unencrypted Public directory.\n\n")
+            m += _("Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n\n")
             m += _("Are you sure you want to encrypt your home directory?\n")
             res = show.question(m)
             if res == Gtk.ResponseType.YES:

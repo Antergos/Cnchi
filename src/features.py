@@ -89,50 +89,50 @@ class Features(Gtk.Box):
          "kde" : "KDE",
          "razor" : "Razor-qt" }
 
-        txt = self.desktops[desktop] + " - " + _("Feature selection")
+        txt = self.desktops[desktop] + " - " + _("Feature Selection")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
         # Bluetooth
-        txt = _("Bluetooth support")
+        txt = _("Bluetooth Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
-        txt = _("Without Bluetooth support you can't use Bluetooth devices")
+        txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
 
         # Printing support (cups)
-        txt = _("Printing support (cups)")
+        txt = _("Printing Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
-        txt = _("This includes printer drivers and manage tools")
+        txt = _("Installation of printer drivers and management tools.")
         self.labels["cups"].set_markup(txt)
 
         # LibreOffice
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)        
-        txt = _("Office suite (word processor, spreadsheet, ...)")
+        txt = _("Open source office suite that supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
 
         # Visual effects
-        txt = _("Visual effects")
+        txt = _("Visual Effects")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
-        txt = _("Visual effects such as transparencies, shadows, etc.")
+        txt = _("Enable 3D acceleration for transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
         # Firewall
-        txt = _("Uncomplicated firewall")
+        txt = _("Uncomplicated Firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-        txt = _("Controls the incoming and outgoing network traffic")
+        txt = _("Network security system that controls the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
 
         # Propietary packages (third_party)
-        txt = _("Propietary packages")
+        txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)  
-        txt = _("Third-party software to play Flash, MP3 and other media")
+        txt = _("Third-party software to play Flash videos, MP3 audio, and other media")
         self.labels["third_party"].set_markup(txt)
     
     def hide_features(self):

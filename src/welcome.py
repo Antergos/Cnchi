@@ -85,12 +85,12 @@ class Welcome(Gtk.Box):
 
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
-        txt = _("Try Antergos without modifying your hard drive.\n" \
-        "Or install it to your PC with one of the two installer options.")
+        txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n" \
+        "When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
-        txt = _("Try it")
+        txt = _("Try It")
         self.button['tryit'].set_label(txt)
 
         txt = _("CLI Installer")

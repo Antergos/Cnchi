@@ -88,7 +88,7 @@ class InstallationAsk(Gtk.Box):
             label.hide()
 
     def translate_ui(self):
-        txt = _("Installation type")
+        txt = _("Installation Type")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
@@ -99,10 +99,10 @@ class InstallationAsk(Gtk.Box):
 
         ## AUTOMATIC INSTALL
         radio = self.ui.get_object("automatic_radiobutton")
-        radio.set_label(_("Erase disk and install Antergos (automatic)"))
+        radio.set_label(_("Erase disk and install Antergos"))
 
         label = self.ui.get_object("automatic_description")
-        txt = _("Warning: This will delete all data on your selected disk")
+        txt = _("Warning: This will erase ALL data on your disk.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)
@@ -120,10 +120,10 @@ class InstallationAsk(Gtk.Box):
         
         ## ADVANCED INSTALL
         radio = self.ui.get_object("advanced_radiobutton")
-        radio.set_label(_("Manage your partitions where to install Antergos (advanced)"))
+        radio.set_label(_("Choose exactly where Antergos should be installed. (advanced)"))
 
         label = self.ui.get_object("advanced_description")
-        txt = _("Create/delete partitions, and also choose additional mount points.")
+        txt = _("Edit partition table and choose mount points.")
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         label.set_line_wrap(True)

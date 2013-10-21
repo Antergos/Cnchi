@@ -47,24 +47,24 @@ class BootLoader():
         self.translate_ui()
 
     def translate_ui(self):
-        txt = _("What is your boot system type?")
+        txt = _("What type of boot system are you using?")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
         label = self.ui.get_object("GRUB2_label")
-        txt = _("BIOS (Common)")
+        txt = _("BIOS (Most Common, Not Win8)")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_x86_64_label")
-        txt = _("x86_64 UEFI")
+        txt = _("64-bit UEFI (Win8)")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_i386_label")
-        txt = _("i386 UEFI")
+        txt = _("32-bit UEFI")
         label.set_markup(txt)
         
         label = self.ui.get_object("help_label")
-        txt = _("Choose 'cancel' if you don't want to install a boot loader")
+        txt = _("Select 'cancel' if you don't want to install a boot loade.r")
         label.set_markup(txt)
         
     def get_type(self):

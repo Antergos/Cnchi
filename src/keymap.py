@@ -59,7 +59,7 @@ class Keymap(Gtk.Box):
         super().add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
-        txt = _("Select your keyboard layout")
+        txt = _("Select Your Keyboard Layout")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         

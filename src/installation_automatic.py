@@ -68,7 +68,7 @@ class InstallationAutomatic(Gtk.Box):
         self.process = None
 
     def translate_ui(self):
-        txt = _("Automatic installation mode")
+        txt = _("Automatic Installation Mode")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -76,16 +76,17 @@ class InstallationAutomatic(Gtk.Box):
         self.device_label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic')
-        txt = _("WARNING! This installation mode will overwrite everything in your drive!")
+        txt = _("WARNING! This will overwrite everything currently on your drive!")
         txt = "<b>%s</b>" % txt
         label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic2')
-        txt = _("Please choose the drive where you want to install Antergos\nand click the button below to start the process.")
+        txt = _("Select the drive we should use to install Antergos" /
+        "and then click below to start the process.")
         txt = "%s" % txt
         label.set_markup(txt)
 
-        txt = _("Install now!")
+        txt = _("Install Now!")
         self.forward_button.set_label(txt)
 
     @misc.raise_privileges
@@ -128,7 +129,7 @@ class InstallationAutomatic(Gtk.Box):
     def store_values(self):
         #self.forward_button.set_sensitive(True)
         #installer_settings['auto_device'] = self.auto_device
-        logging.info(_("Automatic install using %s device") % self.auto_device)
+        logging.info(_("Automatic install on %s") % self.auto_device)
         self.start_installation()
         return True
 
@@ -144,7 +145,7 @@ class InstallationAutomatic(Gtk.Box):
 
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        logging.info(_("Antergos will use %s as installation device") % self.auto_device)      
+        logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)      
 
         # Ask (if guessing doesn't work) bootloader type
         import bootloader
@@ -153,13 +154,13 @@ class InstallationAutomatic(Gtk.Box):
 
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', self.auto_device)
-            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
+            logging.info(_("Antergos will install the %s bootloader on %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
             logging.warning("Antergos will not install any boot loader")
         
         if self.settings.get('use_lvm'):
-            # WARNING! : This must be the same that appears in auto_partition.sh
+           # WARNING! : This must be the same that appears in auto_partition.sh
             root_partition = "/dev/AntergosVG/AntergosRoot"
         else:
             root_partition = self.auto_device + "3"

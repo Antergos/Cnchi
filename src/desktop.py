@@ -74,37 +74,37 @@ class DesktopAsk(Gtk.Box):
 
         if desktop == 'gnome':
             txt = _("Gnome 3 is an easy and elegant way to use your " \
-            "computer. It is designed to put you in control " \
-            "and bring freedom to everybody. GNOME 3 is developed " \
-            "by the GNOME community.")
+            "computer. It features the Activities Overview which " \
+            "is an easy way to access all your basic tasks. GNOME 3 is " \
+            "the default desktop in Antergos.")
             txt = "<span weight='bold'>GNOME</span>\n" + txt
 
         elif desktop == 'cinnamon':
-            txt = _("Cinnamon it's a fork of GNOME Shell, " \
-            "developed by (and for) Linux Mint. It attempts to " \
-            "provide a more traditional user environment based " \
-            "on the desktop metaphor, like GNOME 2")
+            txt = _("Cinnamon is a fork of GNOME 3 developed " \
+            "by (and for) Linux Mint. It provides users a more traditional desktop " \
+            "interface along with the newest compositing techniques of GNOME 3. " \
+            "Cinnamon is a solid desktop that's great for users of all experience levels. ")
             txt = "<span weight='bold'>CINNAMON</span>\n" + txt
 
         elif desktop == 'xfce':
-            txt = _("Xfce is a lightweight desktop environment " \
-            "for UNIX-like operating systems. It aims to " \
-            "be fast and low on system resources, while " \
-            "still being visually appealing and user friendly.")
+            txt = _("Xfce is a lightweight desktop environment. It aims to " \
+            "be fast and low on system resources, while remaining visually " \
+            "appealing and user friendly. It is a great option for use " \
+            "on older computers or those with low hardware specifications. ")
             txt = "<span weight='bold'>XFCE</span>\n" + txt
 
         elif desktop == 'lxde':
-            txt = _("Extremely fast-performing and energy-saving desktop " \
-            "environment. It comes with a beautiful interface, " \
-            "multi-language support, standard keyboard short cuts " \
-            "and additional features like tabbed file browsing.")
+            txt = _("LXDE is an extremely fast-performing and energy-saving desktop " \
+            "environment. It uses less CPU and RAM than other environments. " \
+            "LXDE is especially designed for cloud computers with low hardware " \
+            "specifications such as netbooks, mobile devices, and older computers.")
             txt = "<span weight='bold'>LXDE</span>\n" + txt
 
         elif desktop == 'openbox':
-            txt = _("Openbox is a highly configurable, next generation " \
-            "window manager with extensive standards support.\n" \
-            "The *box visual style is well known for its " \
-            "minimalistic appearance.")
+            txt = _("Openbox is a highly configurable, next generation window manager " \
+            "with extensive standards support. It's default theme, the *box visual style," \
+            "is well known for its minimalistic appearance and flexibility. Your desktop " \
+            "becomes cleaner, faster, and is in your control with Openbox ")
             txt = "<span weight='bold'>OPENBOX</span>\n" + txt
 
         elif desktop == 'enlightenment':
@@ -114,10 +114,10 @@ class DesktopAsk(Gtk.Box):
             txt = "<span weight='bold'>ENLIGHTMENT</span>\n" + txt
 
         elif desktop == 'kde':
-            txt = _("The KDE Community is an international technology " \
-            "team dedicated to creating a free and user-friendly " \
-            "computing experience, offering an advanced graphical " \
-            "desktop and a wide variety of applications.")
+            txt = _("If you are looking for a familiar working environment, KDE's " \
+            "Plasma Desktop offers all the tools required for a modern desktop " \
+            "computing experience so you can be productive right from the start. " \
+            "The look, feel, and behavior can be easily customized to the user's taste.")
             txt = "<span weight='bold'>KDE</span>\n" + txt
 
         elif desktop == 'razor':
@@ -128,9 +128,9 @@ class DesktopAsk(Gtk.Box):
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
         
         if desktop == 'nox':
-            txt = _("This will install Antergos as command-line system, " \
-            "without any desktop at all. After the installation you can " \
-            "install the desktop you may see fit.")
+            txt = _("This option will install Antergos as command-line only system, " \
+            "without any type of graphical interface. After the installation you can " \
+            "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
             
         label.set_line_wrap(True)
@@ -140,7 +140,7 @@ class DesktopAsk(Gtk.Box):
 
         image.set_from_file(self.desktops_dir + desktop + ".png")
 
-        txt = _("Select your desktop")
+        txt = _("Choose Your Desktop Environment")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
             

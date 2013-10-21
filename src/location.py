@@ -65,9 +65,9 @@ class Location(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
-        txt = _("The selected location will be used to help select the system locale.\n" \
-            "Normally this should be the country where you live.\n" \
-            "This is a shortlist of locations based on the language you selected.")
+        txt = _("The location you select will be used to help determine the system locale.\n" \
+            "This should normally be the country in which you reside.\n" \
+            "Here is a shortlist of locations based on the language you selected.")
         self.label_help.set_markup(txt)
         
         txt = _("Country, territory or area:")

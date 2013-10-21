@@ -28,6 +28,7 @@
 		<pkgname>usb_modeswitch</pkgname>
 		<pkgname>modemmanager</pkgname>
 		<pkgname>openssh</pkgname>
+                <pkgname>yaourt</pkgname>
 	</common_system>
 
 	<graphic_system>
@@ -214,6 +215,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>modemmanager</pkgname>
         <pkgname>sakura</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname>zukitwo-theme-openbox</pkgname>
@@ -232,12 +234,15 @@
         <pkgname>ttf-ubuntu-font-family</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>file-roller</pkgname>
+        <pkgname>gvfs-smb</pkgname>
+        <pkgname>gvfs-atp</pkgname>
+        <pkgname>lxtask</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-		<pkgname>gvfs-obexftp</pkgname>
-		<pkgname>cdrkit</pkgname>
-		<pkgname>dvdauthor</pkgname>
-		<pkgname>xfburn</pkgname>
-		<pkgname>lxpolkit</pkgname>
+	<pkgname>gvfs-obexftp</pkgname>
+	<pkgname>cdrkit</pkgname>
+	<pkgname>dvdauthor</pkgname>
+	<pkgname>xfburn</pkgname>
+	<pkgname>lxpolkit</pkgname>
     </openbox_desktop>
 
     <!-- User desired features -->
@@ -287,6 +292,9 @@
         <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
+            <pkgname>ttf-ms-fonts</pkgname>
+            <pkgname>acroread</pkgname>
+            <pkgname>jre</pkgname>
             <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         </third_party>    
     </user_features>
