@@ -1065,7 +1065,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', 'Important configuration files copied.')
 
         # enable services      
-        self.enable_services([ self.desktop_manager, self.network_manager ])
+        self.enable_services([ self.desktop_manager, self.network_manager, ModemManager ])
 
         cups_service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
         if os.path.exists(cups_service):
