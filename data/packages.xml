@@ -290,10 +290,12 @@
         <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
+            <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+            <!--
             <pkgname>ttf-ms-fonts</pkgname>
             <pkgname>acroread</pkgname>
-            <pkgname>jre</pkgname>
-            <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+            <pkgname>jre</pkgname>            
+            -->
         </third_party>    
     </user_features>
 
