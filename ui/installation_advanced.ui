@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Tue Oct 22 07:21:40 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkDialog" id="changelist_dialog">
@@ -252,7 +253,6 @@
                     <property name="activates_default">True</property>
                     <property name="width_chars">6</property>
                     <property name="xalign">1</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="climb_rate">100</property>
@@ -538,8 +538,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="entry_text_column">0</property>
-            <property name="id_column">1</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -781,6 +779,7 @@
   <object class="GtkAlignment" id="installation_advanced">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="hexpand">True</property>
     <property name="top_padding">20</property>
     <property name="bottom_padding">10</property>
     <property name="left_padding">20</property>
@@ -974,8 +973,6 @@
               <object class="GtkComboBoxText" id="grub_device_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="entry_text_column">0</property>
-                <property name="id_column">1</property>
                 <signal name="changed" handler="on_grub_device_entry_changed" swapped="no"/>
               </object>
               <packing>
