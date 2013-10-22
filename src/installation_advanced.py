@@ -955,10 +955,8 @@ class InstallationAdvanced(Gtk.Box):
         if widget.get_active():
             sensitive = False
         
-        logging.debug("on_partition_create_type_extended_toggled : sensitive %s", sensitive)
-            
         for w in partition:
-            w.set_sensitive(sensitive)
+            partition[w].set_sensitive(sensitive)
 
     def on_partition_use_combo_changed(self, selection):
         fs_selected = selection.get_active_text()
@@ -1324,7 +1322,6 @@ class InstallationAdvanced(Gtk.Box):
                                             logging.debug("%s unmounted" % mount_point)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
-                        logging.debug("In get_changes(), stage_opts returned (is_new:%s, lbl:%s, mnt:%s, fs:%s, fmt:%s)" % (is_new, lbl, mnt, fs, fmt))
                         
                         if fmt:
                             fmt = 'Yes'
