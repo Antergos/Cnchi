@@ -1092,7 +1092,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', 'Important configuration files copied.')
 
         # enable desktop manager and network manager services
-        self.enable_services([ self.desktop_manager, self.network_manager ])           
+        self.enable_services([ self.desktop_manager, self.network_manager, "ModemManager" ])           
             
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
