@@ -1,3 +1,17 @@
+
+#logo {
+    background-color: #f0f0f0;
+    color: #6988bb;
+    font: 14px;
+}
+
+#title {
+    background-color: #f0f0f0;
+    color: #6988bb;
+    font: 14px;
+}
+
+/*
 #header {
     background-color: transparent;
     background-image: linear-gradient(to bottom, 
@@ -6,16 +20,11 @@
                                       alpha(black, 0.20) 51%,
                                       alpha(black, 0.02)
                                       ),
-                       url("data/header.jpg");                                 
+                       url("../images/header.jpg");
     background-repeat: repeat;
     background-position: top left;
     color: #fcfcfc;
     font: 14px;
     font-family: "Futura", Helvetica, sans-serif;
 }
-
-/*#WelcomeMessage {
-    background-image : url('data/welcome.png');
-    background-repeat:no-repeat;
-}*/
-
+*/

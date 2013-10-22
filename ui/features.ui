@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Mon Oct 21 21:04:15 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.6 -->
   <object class="GtkBox" id="features">
@@ -37,7 +38,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Firewall&lt;/span&gt;</property>
+                <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Uncomplicated Firewall&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -52,7 +53,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">Activates your firewall (closes all ports by default)</property>
+                <property name="label" translatable="yes">Control the incoming and outgoing network traffic.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -117,7 +118,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Printing support (cups)&lt;/span&gt;</property>
+                <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Printing support&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -132,7 +133,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">This includes printer drivers and manage tools</property>
+                <property name="label" translatable="yes">Installation of printer drivers and management tools.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -212,7 +213,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">Without Bluetooth support you can't use Bluetooth devices</property>
+                <property name="label" translatable="yes">Enables your system to make wireless connections via Bluetooth.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -292,7 +293,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">Visual effects such as transparencies, shadows, etc.</property>
+                <property name="label" translatable="yes">Enable 3D acceleration for transparency, shadows, and other desktop effects.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -372,7 +373,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">Office suite (word processor, spreadsheet, etc.)</property>
+                <property name="label" translatable="yes">Open source office suite that supports editing MS Office files.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -452,7 +453,7 @@
                 <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
-                <property name="label" translatable="yes">Third-party software to play Flash, MP3 and other media</property>
+                <property name="label" translatable="yes">Third-party software to play Flash videos, MP3 audio, and other media.</property>
               </object>
               <packing>
                 <property name="expand">False</property>

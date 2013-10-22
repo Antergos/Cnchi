@@ -17,4 +17,3 @@ Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
  * pyalpm
  * hwinfo
  * hdparm
- * upower

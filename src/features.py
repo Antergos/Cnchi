@@ -125,14 +125,16 @@ class Features(Gtk.Box):
         txt = _("Uncomplicated Firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-        txt = _("Network security system that controls the incoming and outgoing network traffic.")
+        # String too large
+        #txt = _("Network security system that controls the incoming and outgoing network traffic.")
+        txt = _("Control the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
 
         # Propietary packages (third_party)
         txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)  
-        txt = _("Third-party software to play Flash videos, MP3 audio, and other media")
+        txt = _("Third-party software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
     
     def hide_features(self):

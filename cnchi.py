@@ -141,21 +141,19 @@ class Main(Gtk.Window):
 
         self.add(self.ui.get_object("main"))
 
-        self.header = self.ui.get_object("box5")
+        self.header = self.ui.get_object("header")
 
         self.forward_button = self.ui.get_object("forward_button")
 
         self.logo = self.ui.get_object("logo")
-
         logo_dir = os.path.join(self.settings.get("DATA_DIR"), "antergos-logo-mini.png")
-                                
         self.logo.set_from_file(logo_dir)
-
+        
         self.title = self.ui.get_object("title")
 
         # To honor our css
-        self.title.set_name("header")
-        self.logo.set_name("header")
+        self.title.set_name("title")
+        self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
         self.progressbar = self.ui.get_object("progressbar1")
@@ -241,6 +239,11 @@ class Main(Gtk.Window):
 
         # show main window
         self.show_all()
+
+        self.vertical_image = self.ui.get_object('vertical_image')
+        self.vertical_image.hide()
+        #logo_90_dir = os.path.join(self.settings.get("DATA_DIR"), "antergos-logo-mini-90.png")
+        #self.vertical_image.set_from_file(logo_90_dir)
 
         self.current_page.prepare('forwards')
 

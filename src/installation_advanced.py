@@ -934,6 +934,24 @@ class InstallationAdvanced(Gtk.Box):
                 self.fill_partition_list()
 
         self.create_partition_dialog.hide()
+    
+    def on_partition_create_type_extended_toggled(self, widget):
+        partition = {}
+        partition['use_label'] = self.ui.get_object('partition_use_label')
+        partition['use_combo'] = self.ui.get_object('partition_use_combo')
+        partition['mount_label'] = self.ui.get_object('partition_mount_label')
+        partition['mount_combo'] = self.ui.get_object('partition_mount_combo')
+        partition['label_label'] = self.ui.get_object('partition_label_label')
+        partition['label_entry'] = self.ui.get_object('partition_label_entry')
+
+        sensitive = True
+        
+        if widget.get_active():
+            sensitive = False
+            
+        for w in partition:
+            w.set_sensitive(sensitive)
+
     def on_partition_use_combo_changed(self, selection):
         fs_selected = selection.get_active_text()
         p_mount_combo = self.ui.get_object('partition_mount_combo')

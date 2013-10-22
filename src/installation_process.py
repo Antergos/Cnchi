@@ -51,7 +51,9 @@ import fs_module as fs
 import misc
 import pac
 
-_autopartition_script = 'auto_partition.sh'
+import auto_partition
+
+#_autopartition_script = 'auto_partition.sh'
 _postinstall_script = 'postinstall.sh'
 
 class InstallError(Exception):
@@ -151,28 +153,18 @@ class InstallationProcess(multiprocessing.Process):
         
         if self.method == 'automatic':
             self.auto_device = self.mount_devices["/boot"].replace("1","")
-            cnchi_dir = self.settings.get("CNCHI_DIR")
-            script_path = os.path.join(cnchi_dir, "scripts", _autopartition_script)
-
-            use_lvm = ""
-            if self.settings.get("use_lvm"):
-                use_lvm = "--lvm"
-
-            use_luks = ""
-            if self.settings.get("use_luks"):
-                use_luks = "--luks"
+            self.queue_event('debug', "Creating partitions and their filesystems...")
 
             try:
-                self.queue_event('debug', "Automatic device: %s" % self.auto_device)
-                self.queue_event('debug', "Running automatic script...")
-                subprocess.check_call(["/usr/bin/bash", script_path, self.auto_device, use_lvm, use_luks])
-                self.queue_event('debug', "Automatic script done.")
-            except subprocess.FileNotFoundError as e:
-                self.queue_fatal_event(_("Can't execute the auto partition script"))
-                return False
+                ap = auto_partition.AutoPartition(self.dest_dir,
+                                                    self.auto_device,
+                                                    self.settings.get("use_luks"), 
+                                                    self.settings.get("use_lvm"))
+                ap.run()
             except subprocess.CalledProcessError as e:
-                self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
-                return False
+                logging.error(e.output)
+                self.queue_event('error', _("Error creating partitions and their filesystems"))
+                return
 
         if self.method == 'alongside':
             # Alongside method shrinks selected partition
@@ -199,14 +191,14 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-            # Advanced method formats root by default in installation_advanced
+            # NOTE: Advanced method formats root by default in installation_advanced
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
             os.mkdir(self.dest_dir)
             
         # Mount root and boot partitions (only if it's needed)
-        # Not doing this in automatic mode as our script (auto_partition.sh) mounts the root and boot devices itself.
+        # Not doing this in automatic mode as AutoPartition class mounts the root and boot devices itself.
         if self.method == 'alongside' or self.method == 'advanced':
             try:
                 txt = _("Mounting partition %s into %s directory") % (root_partition, self.dest_dir)
@@ -651,7 +643,7 @@ class InstallationProcess(multiprocessing.Process):
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
             out = proc.communicate()[0]
-            logging.debug(str(out))
+            logging.debug(out.decode())
         except OSError as e:
             logging.exception("Error running command: %s" % e.strerror)
             raise
@@ -1028,6 +1020,41 @@ class InstallationProcess(multiprocessing.Process):
                 pass
             percent += step
                         
+    def setup_features(self):
+        #features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        
+        if self.settings.get("feature_bluetooth"):
+            self.queue_event('debug', "Configuring bluetooth...")
+            service = os.path.join(self.dest_dir, "usr/lib/systemd/system/bluetooth.service")
+            if os.path.exists(service):
+                self.enable_services(['bluetooth'])
+
+        if self.settings.get("feature_cups"):
+            self.queue_event('debug', "Configuring CUPS...")
+            service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
+            if os.path.exists(service):
+                self.enable_services(['cups'])
+
+        if self.settings.get("feature_office"):
+            self.queue_event('debug', "Configuring libreoffice...")
+
+        if self.settings.get("feature_visual"):
+            self.queue_event('debug', "Configuring Compositing manager...")
+
+        if self.settings.get("feature_firewall"):
+            self.queue_event('debug', "Configuring firewall...")
+            # A very simplistic configuration which will deny all by default,
+            # allow any protocol from inside a 192.168.0.1-192.168.0.255 LAN,
+            # and allow incoming Deluge and SSH traffic from anywhere:
+            subprocess.check_call(["ufw", "default", "deny"])
+            subprocess.check_call(["ufw", "allow", "from", "192.168.0.0/24"])
+            subprocess.check_call(["ufw", "allow", "Deluge"])
+            subprocess.check_call(["ufw", "allow", "SSH"])
+            subprocess.check_call(["ufw", "enable"])
+            service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
+            if os.path.exists(service):
+                self.enable_services(['ufw'])
+
     def configure_system(self):
         # final install steps
         # set clock, language, timezone
@@ -1064,12 +1091,8 @@ class InstallationProcess(multiprocessing.Process):
                 pass
         self.queue_event('debug', 'Important configuration files copied.')
 
-        # enable services      
-        self.enable_services([ self.desktop_manager, self.network_manager, ModemManager ])
-
-        cups_service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
-        if os.path.exists(cups_service):
-            self.enable_services([ 'cups' ])
+        # enable desktop manager and network manager services
+        self.enable_services([ self.desktop_manager, self.network_manager ])           
             
         # TODO: we never ask the user about this...
         if self.settings.get("use_ntp"):
@@ -1261,26 +1284,7 @@ class InstallationProcess(multiprocessing.Process):
                     slim_conf.write(line)
                 
         # Configure user features
-
-        if self.settings.get("feature_bluetooth"):
-            self.queue_event('debug', "Configuring bluetooth...")
-
-        if self.settings.get("feature_cups"):
-            self.queue_event('debug', "Configuring CUPS...")
-
-        if self.settings.get("feature_office"):
-            self.queue_event('debug', "Configuring libreoffice...")
-
-        if self.settings.get("feature_visual"):
-            self.queue_event('debug', "Configuring Compositing manager...")
-
-        if self.settings.get("feature_firewall"):
-            # Setup ufw if it's an user wanted feature
-            self.queue_event('debug', "Configuring firewall...")
-            # ufw default deny
-            # ufw allow Transmission
-            # ufw enable
-            # systemctl enable ufw.service
+        self.setup_features()
                 
         # encrypt home directory if requested
         if self.settings.get('encrypt_home'):
