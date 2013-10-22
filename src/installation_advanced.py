@@ -365,7 +365,7 @@ class InstallationAdvanced(Gtk.Box):
                     if fs.get_type(partition_path):
                         fs_type = fs.get_type(partition_path)
                     else:
-                        #kludge, btrfs not being detected...
+                        # kludge, btrfs not being detected...
                         if used_space.is_btrfs(partition_path):
                             fs_type = 'btrfs'
 
@@ -379,7 +379,7 @@ class InstallationAdvanced(Gtk.Box):
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
 
-                    ## do not show swap version, only the 'swap' word
+                    # Do not show swap version, only the 'swap' word
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
@@ -391,7 +391,7 @@ class InstallationAdvanced(Gtk.Box):
                         self.orig_part_dic[partition_path] = self.gen_partition_uid(path=partition_path)
                         self.orig_label_dic[partition_path] = label
 
-        ## Here we fill our model
+        # Here we fill our model
         for disk_path in sorted(self.disks):
             if '/dev/mapper/arch_' in disk_path:
                 continue
@@ -415,7 +415,7 @@ class InstallationAdvanced(Gtk.Box):
             else:
                 dev = disk.device
 
-                ## Get device size
+                # Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
                 
                 row = [dev.path, "", "", "", False, False, size_txt, "", \
@@ -431,7 +431,7 @@ class InstallationAdvanced(Gtk.Box):
                 partition_list = pm.order_partitions(partitions)
 
                 for partition_path in partition_list:
-                    ## Get partition size
+                    # Get partition size
                     p = partitions[partition_path]
                     size_txt = self.get_size(p.geometry.length, dev.sectorSize)
                     fmt_enable = False
@@ -444,9 +444,12 @@ class InstallationAdvanced(Gtk.Box):
                     formatable = True
 
                     path = p.path
+                    
+                    # skip lvm, LUKS, ...
                     if '/dev/mapper' in path:
                         continue
-                    ## Get file system
+                    
+                    # Get file system
                     if p.fileSystem and p.fileSystem.type:
                         fs_type = p.fileSystem.type
                     elif fs.get_type(path):
@@ -463,10 +466,7 @@ class InstallationAdvanced(Gtk.Box):
                         else:
                             fs_type = _("none")
                     
-                    # Commenting out.  Nothing should be mounted...
-                    ## Get mount point
-                    #if pm.check_mounted(p) and not "swap" in fs_type:
-                    #    mount_point, notused_fs, notused_writable = self.get_mount_point(p.path)
+                    # Nothing should be mounted at this point
                     
                     if p.type == pm.PARTITION_EXTENDED:
                         formatable = False
@@ -477,11 +477,11 @@ class InstallationAdvanced(Gtk.Box):
                     
                     if p.type in (pm.PARTITION_FREESPACE,
                                   pm.PARTITION_FREESPACE_EXTENDED):
-                        ## Show 'free space' instead of /dev/sda-1    
+                        # Show 'free space' instead of /dev/sda-1    
                         path = _("free space")
                         formatable = False
                     else:                        
-                        ## Get partition flags
+                        # Get partition flags
                         flags = pm.get_flags(p)
                     
                     uid = self.gen_partition_uid(p=p)
@@ -512,10 +512,10 @@ class InstallationAdvanced(Gtk.Box):
                         self.diskdic['mounts'].append(mount_point)
             
                     if p.type == pm.PARTITION_EXTENDED:
-                        ## Show 'extended' in file system type column
+                        # Show 'extended' in file system type column
                         fs_type = _("extended")
 
-                    ## do not show swap version, only the 'swap' word
+                    # Do not show swap version, only the 'swap' word
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
@@ -531,9 +531,9 @@ class InstallationAdvanced(Gtk.Box):
                     
                     tree_iter = self.partition_list_store.append(parent, row)
 
-                    ## If we're an extended partition, all the logical
-                    ## partitions that follow will be shown as children
-                    ## of this one
+                    # If we're an extended partition, all the logical
+                    # partitions that follow will be shown as children
+                    # of this one
                     if p.type == pm.PARTITION_EXTENDED:
                         myparent = tree_iter 
                     
@@ -542,15 +542,16 @@ class InstallationAdvanced(Gtk.Box):
                         self.orig_label_dic[p.path] = label
         
         self.my_first_time = False
-        # assign our new model to our treeview
+
+        # Assign our new model to our treeview
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
         
-        # check if correct mount points are already defined, so we
-        # can proceed with installation
+        # Check if correct mount points are already defined,
+        # so we can proceed with installation
         self.check_mount_points()
 
-    ## Mark a partition to be formatted
+    # Mark a partition to be formatted
     def on_format_cell_toggled(self, widget, path):
         #selected_path = Gtk.TreePath(path)
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
@@ -564,14 +565,14 @@ class InstallationAdvanced(Gtk.Box):
              self.partition_list_store[path][1],
              self.partition_list_store[path][4]) 
 
-    ## Mark disk as ssd
+    # Mark disk as ssd
     def on_ssd_cell_toggled(self, widget, path):
         # ssd cell
         self.partition_list_store[path][12] = not self.partition_list_store[path][12]
         disk_path = self.partition_list_store[path][0]
         self.ssd[disk_path] = self.partition_list_store[path][12]
 
-    ## The user wants to edit a partition
+    # The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
         selection = self.partition_list.get_selection()
         
@@ -583,7 +584,7 @@ class InstallationAdvanced(Gtk.Box):
         if tree_iter == None:
             return
             
-        ## Get necessary row data
+        # Get necessary row data
         row = model[tree_iter]
 
         fs = row[1]
@@ -592,9 +593,12 @@ class InstallationAdvanced(Gtk.Box):
         fmt = row[4]
         partition_path = row[8]
         fmtable = row[11]
+        
+        # Can't edit an partition with LVM filesystem type
         if "lvm2" in fs.lower():
             return 
-        # set fs in dialog combobox
+        
+        # Set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
         use_combo_model = use_combo.get_model()
         use_combo_iter = use_combo_model.get_iter_first()
@@ -607,15 +611,15 @@ class InstallationAdvanced(Gtk.Box):
             else:
                 use_combo_iter = use_combo_model.iter_next(use_combo_iter)
 
-        # set mount point in dialog combobox
+        # Set mount point in dialog combobox
         mount_combo_entry = self.ui.get_object('combobox-entry2')
         mount_combo_entry.set_text(mount_point)
         
-        # set label entry
+        # Set label entry
         label_entry = self.ui.get_object('partition_label_entry2')
         label_entry.set_text(label)
         
-        # must format?
+        # Must format?
         format_check = self.ui.get_object('partition_format_check')
         format_check.set_active(fmt)
         format_check.set_sensitive(fmtable)
@@ -630,7 +634,8 @@ class InstallationAdvanced(Gtk.Box):
             disk = self.disks[disk_path]
         except:
             disk = None
-        # show edit partition dialog
+        
+        # Show edit partition dialog
         response = self.edit_partition_dialog.run()
         
         if response == Gtk.ResponseType.OK:
@@ -638,15 +643,17 @@ class InstallationAdvanced(Gtk.Box):
             mymount = mount_combo_entry.get_text().strip()
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
-                show.warning(_('Cannot use same mount twice...'))
+                show.warning(_('Cannot use same mount twice.'))
             elif mymount == "/" and not format_check.get_active():
-                show.warning(_('Root partition must be formatted...'))
+                show.warning(_('Root partition must be formatted.'))
             else:
                 if mount_point:
                     self.diskdic['mounts'].remove(mount_point)               
+
                 myfmt = use_combo.get_active_text()
                 uid = self.gen_partition_uid(path=partition_path)
                 fmtop = format_check.get_active()
+
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
                     #fmtop = self.stage_opts[uid][4]
@@ -654,38 +661,38 @@ class InstallationAdvanced(Gtk.Box):
                     is_new = False
                     #fmtop = False
 
-                # Should we force a format if the partition is new?
                 if myfmt == 'swap':
                     mymount = 'swap'
+
                 self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
             
         self.edit_partition_dialog.hide()
 
-        ## Update the partition list treeview
+        # Update the partition list treeview
         self.fill_partition_list()
 
-    ## This returns the disk path where the selected partition is in
+    # This returns the disk path where the selected partition is in
     def get_disk_path_from_selection(self, model, tree_iter):
         if tree_iter != None and model != None:
             row = model[tree_iter]
             partition_path = row[8]
             
-            ## Get partition type from the user selection
+            # Get partition type from the user selection
             part_type = row[10]
             
             # Get our parent drive
             parent_iter = model.iter_parent(tree_iter)
 
             if part_type == pm.PARTITION_LOGICAL:
-                ## If we are a logical partition, our drive won't be our father
-                ## but our grandpa (we have to skip the extended partition we're in)
+                # If we are a logical partition, our drive won't be our father
+                # but our grandpa (we have to skip the extended partition we're in)
                 parent_iter = model.iter_parent(parent_iter)
 
             return model[parent_iter][0]
         else:
             return None
 
-    ## Delete partition
+    # Delete partition
     def on_partition_list_delete_activate(self, button):
         selection = self.partition_list.get_selection() 
         if not selection:
@@ -695,8 +702,8 @@ class InstallationAdvanced(Gtk.Box):
 
         if tree_iter == None:
             return
-        am_new = False
-        ## Get row data
+        am_new = False        
+        # Get row data
         row = model[tree_iter]
         mount_point = row[2]
         size_available = row[6]
@@ -727,17 +734,17 @@ class InstallationAdvanced(Gtk.Box):
         if (disk.device.path, part.geometry.start) in self.used_dic:
             del self.used_dic[(disk.device.path, part.geometry.start)]
        
-        ## Before delete the partition, check if it's already mounted
+        # Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
-            ## We unmount the partition. Should we ask first?
+            # We unmount the partition. Should we ask first?
             logging.info("Unmounting %s..." % part.path)
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
-        ## Is it worth to show some warning message here?
-        ## No, created delete list as part of confirmation screen.
+        # Is it worth to show some warning message here?
+        # No, created delete list as part of confirmation screen.
         pm.delete_partition(disk, part)
         
-        ## Update the partition list treeview
+        # Update the partition list treeview
         self.fill_partition_list()
 
     def get_mount_point(self, partition_path):
@@ -753,29 +760,28 @@ class InstallationAdvanced(Gtk.Box):
                     writable = line[3].split(',')[0]
         return fsname, fstype, writable
 
-    ## Add a new partition
+    # Add a new partition
     def on_partition_list_new_activate(self, button):
         selection = self.partition_list.get_selection()
              
         if not selection:
             return
 
-        #assume it will be formatted, unless it's extended
-        formatme = True      
+        # Assume it will be formatted, unless it's extended
+        formatme = True
         model, tree_iter = selection.get_selected()
 
         if tree_iter == None:
             return
             
-        ## Get necessary row data
+        # Get necessary row data
         row = model[tree_iter]
 
-        ## Get partition type from the user selection
+        # Get partition type from the user selection
         part_type = row[10]
 
-        ## Check that the user has selected a free space row.
-        if part_type not in (pm.PARTITION_FREESPACE,
-                             pm.PARTITION_FREESPACE_EXTENDED):
+        # Check that the user has selected a free space row.
+        if part_type not in (pm.PARTITION_FREESPACE, pm.PARTITION_FREESPACE_EXTENDED):
             return
 
         size_available = row[6]
@@ -787,9 +793,9 @@ class InstallationAdvanced(Gtk.Box):
         parent_part_type = model[parent_iter][10]
  
         if parent_part_type == pm.PARTITION_EXTENDED:
-            ## We're creating a partition inside an already created extended
-            ## partition. Our drive won't be our father but our grandpa
-            ## (we have to skip the extended partition we're in)
+            # We're creating a partition inside an already created extended
+            # partition. Our drive won't be our father but our grandpa
+            # (we have to skip the extended partition we're in)
             parent_iter = model.iter_parent(parent_iter)
             isbase = False
         else:
@@ -837,10 +843,10 @@ class InstallationAdvanced(Gtk.Box):
             primary_radio.set_visible(False)
             extended_radio.set_visible(False)
 
-        ## Get how many primary partitions are already created on disk
+        # Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
         if primary_count >= disk.maxPrimaryPartitionCount:
-            ## No room left for another primary partition
+            # No room left for another primary partition
             primary_radio.set_sensitive(False)
         
         beginning_radio = self.ui.get_object('partition_create_place_beginning')
@@ -863,7 +869,7 @@ class InstallationAdvanced(Gtk.Box):
         label_entry = self.ui.get_object('partition_label_entry')
         label_entry.set_text("")
 
-        #use
+        # use
         use_combo = self.ui.get_object('partition_use_combo')
         use_combo.set_active(3) 
 
@@ -902,11 +908,11 @@ class InstallationAdvanced(Gtk.Box):
                     logging.debug(_("Creating primary partition"))
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif extended_radio.get_active():
-                    #No mounting extended partitions...
+                    # No mounting extended partitions...
                     if mymount:
                         self.diskdic['mounts'].remove(mymount)
                         mymount = ''   
-                    #No labeling either..
+                    # No labeling either..
                     mylabel = ''
                     myfmt = ''
                     formatme = False 
@@ -928,9 +934,10 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
-                        #Changing back to disabling format box.  
-                        self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (True, mylabel, mymount, myfmt, True)
-                ## Update partition list treeview
+                        # Changing back to disabling format box.
+                        # BUG FIX: Extended partition was getting formatted
+                        self.stage_opts[self.gen_partition_uid(p=partitions[e])] = (True, mylabel, mymount, myfmt, formatme)
+                # Update partition list treeview
                 self.fill_partition_list()
 
         self.create_partition_dialog.hide()
@@ -1165,7 +1172,7 @@ class InstallationAdvanced(Gtk.Box):
 
     ## Create a new partition table
     def on_partition_list_new_label_activate(self, button):
-        ## TODO: We should check first if there's any mounted partition (including swap)'
+        ## TODO: We should check first if there's any mounted partition (including swap)
         
         selection = self.partition_list.get_selection()
         
@@ -1199,7 +1206,7 @@ class InstallationAdvanced(Gtk.Box):
                     ptype = 'gpt'
 
                 logging.info(_("Creating a new %s partition table for disk %s") % (ptype, path))
-                #remove debug, this doesn't actually do anything... 
+                # remove debug, this doesn't actually do anything... 
                 new_disk = pm.make_new_disk(path, ptype)
                 self.disks[path] = new_disk
                 
@@ -1214,33 +1221,15 @@ class InstallationAdvanced(Gtk.Box):
     def check_mount_points(self):
         ## at least root (/) partition must be defined
 
-        # TODO:
-
         check_ok = False
 
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
 
-        # Commenting all this out...no device should be mounted now
-        # except install media!
-        '''
-        for disk_path in self.disks:
-            disk = self.disks[disk_path]
-            if not disk:
-                continue
-            partitions = pm.get_partitions(disk)
-            for partition_path in partitions:
-                p = partitions[partition_path]
-                if pm.check_mounted(p):
-                    mount_point, fs, writable = self.get_mount_point(p.path)
-                    if "/" in mount_point:
-                        # don't allow vfat as / filesystem, it will not work!
-                        # don't allow ntfs as / filesystem, this is stupid!
-                        if "vfat" not in fs and "ntfs" not in fs:
-                            check_ok = True
-        '''
+        # No device should be mounted now except install media.
         
+        # Check root fs
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
@@ -1251,7 +1240,7 @@ class InstallationAdvanced(Gtk.Box):
 
         self.forward_button.set_sensitive(check_ok)
 
-    ## Grab all changes for confirmation
+    # Grab all changes for confirmation
     def get_changes(self):
         changelist = []
         #store values as (path, create?, label?, format?)
@@ -1268,8 +1257,11 @@ class InstallationAdvanced(Gtk.Box):
                     if mnt == "/":
                         fmt = 'Yes'
                     if is_new:
-                        relabel = 'Yes'
-                        fmt = 'Yes'
+                        if lbl != "":
+                            relabel = 'Yes'
+                        # Avoid extended partitions getting fmt flag true on new creation
+                        if fs != _("extended"):
+                            fmt = 'Yes'
                         createme = 'Yes'
                     else:
                         if e in self.orig_label_dic:
@@ -1329,10 +1321,13 @@ class InstallationAdvanced(Gtk.Box):
                         # https://github.com/Antergos/Cnchi/issues/8
                         if mnt == "/":
                             fmt = 'Yes'
-                            
+                    
                         if is_new:
-                            relabel = 'Yes'
-                            fmt = 'Yes'
+                            if lbl != "":
+                                relabel = 'Yes'
+                            # Avoid extended partitions getting fmt flag true on new creation
+                            if fs != _("extended"):
+                                fmt = 'Yes'
                             createme = 'Yes' 
                         else:
                             if partition_path in self.orig_label_dic:
