@@ -28,8 +28,8 @@ import os
 import logging
 
 # Useful vars for gettext (translations)
-APP="cnchi"
-DIR = "/usr/share/locale"
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 # Import functions
 import config
@@ -58,12 +58,14 @@ class Language(Gtk.Box):
 
         self.translate_ui()
 
+        data_dir = self.settings.get('data')
+        
         self.current_locale = locale.getdefaultlocale()[0]
-        self.language_list = self.settings.get("DATA_DIR") + "languagelist.data.gz"
+        self.language_list =  os.path.join(data_dir, "languagelist.data.gz")
         self.set_languages_list()
         
         image1 = self.ui.get_object("image1")
-        image1.set_from_file(self.settings.get("DATA_DIR") + "languages.png")
+        image1.set_from_file(os.path.join(data_dir, "languages.png"))
         
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
@@ -121,7 +123,7 @@ class Language(Gtk.Box):
             locale_code, encoding = locale.getdefaultlocale()
 
         try:
-            lang = gettext.translation (APP, DIR, [locale_code] )
+            lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code])
             lang.install()
             self.translate_ui()
         except IOError:

@@ -42,7 +42,7 @@ class DesktopAsk(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "desktop.ui"))
 
-        self.desktops_dir = os.path.join(self.settings.get("DATA_DIR"), "desktops/")
+        self.desktops_dir = os.path.join(self.settings.get('data'), "desktops/")
 
         self.desktop_info = self.ui.get_object("desktop_info")
         self.treeview_desktop = self.ui.get_object("treeview_desktop")

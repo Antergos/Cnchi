@@ -122,7 +122,7 @@ class Location(Gtk.Box):
         self.show_all()
         
     def load_locales(self):
-        data_dir = self.settings.get("DATA_DIR")  
+        data_dir = self.settings.get('data')  
         xml_path = os.path.join(data_dir, "locales.xml")
         
         self.locales = {}

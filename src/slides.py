@@ -68,7 +68,7 @@ class Slides(Gtk.Box):
         if self.settings == None:
             html_file = '/usr/share/cnchi/data/slides.html'
         else:
-            html_file = os.path.join(self.settings.get("DATA_DIR"), 'slides.html')
+            html_file = os.path.join(self.settings.get('data'), 'slides.html')
         
         try:
             with open(html_file) as html_stream:
@@ -203,56 +203,3 @@ class Slides(Gtk.Box):
     def reboot(self):
         os.system("sync")
         subprocess.call(["/usr/bin/systemctl", "reboot", "--force", "--no-wall"])
-
-class TestWindow(Gtk.Window):
-    def __init__(self, box):
-        Gtk.Window.__init__(self, title='Antergos Installer Test')
-        self.set_title(_('Cnchi: The Antergos Installer'))
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(False)
-        self.set_size_request(800, 500)
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file("/usr/share/cnchi/ui/cnchi.ui")
-
-        self.add(self.ui.get_object("main"))
-
-        self.main_box = self.ui.get_object("main_box")
-        
-        self.main_box.add(box)
-
-if __name__ == '__main__':
-    import gettext
-    import locale
-    
-    print("Testing slides screen")
-    
-    APP = "Antergos Test Window"
-    DIR = "/usr/share/locale"
-    
-    # This allows to translate all py texts (not the glade ones)
-    gettext.textdomain(APP)
-    gettext.bindtextdomain(APP, DIR)
-
-    locale_code, encoding = locale.getdefaultlocale()
-    lang = gettext.translation (APP, DIR, [locale_code], None, True)
-    lang.install()
-
-    # With this we can use _("string") to translate
-    gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
-
-    params = {}
-    params['title'] = "TITLE"
-    params['ui_dir'] = "/usr/share/cnchi/ui"
-    params['forward_button'] = None
-    params['backwards_button'] = None
-    params['exit_button'] = None
-    params['callback_queue'] = None
-    params['settings'] = None
-    
-    slides = Slides(params)
-    
-    w = TestWindow(slides)
-    
-    w.show_all()
-    
-    Gtk.main()

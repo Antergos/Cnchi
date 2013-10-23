@@ -88,7 +88,7 @@ class InstallationAlongside(Gtk.Box):
         slider = self.ui.get_object("scale")
         
         slider.set_name("myslider")
-        path = os.path.join(self.settings.get("DATA_DIR"), "css", "scale.css")
+        path = os.path.join(self.settings.get("data"), "css", "scale.css")
         
         self.available_slider_range = [0, 0]
         

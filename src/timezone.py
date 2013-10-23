@@ -115,6 +115,10 @@ class Timezone(Gtk.Box):
         label = self.ui.get_object('label_region')
         txt = _("Region:")
         label.set_markup(txt)
+        
+        label = self.ui.get_object('label_ntp')
+        txt = _("Use Network Time Protocol for clock synchronization:")
+        label.set_markup(txt)
 
     def on_location_changed(self, unused_widget, city):
         #("timezone.location_changed started!")
@@ -230,7 +234,7 @@ class Timezone(Gtk.Box):
         self.auto_timezone_thread.start()
 
     def start_mirrorlist_thread(self):
-        scripts_dir = os.path.join(self.settings.get("CNCHI_DIR"), "scripts")
+        scripts_dir = os.path.join(self.settings.get('cnchi'), "scripts")
         self.mirrorlist_thread = GenerateMirrorListThread(self.auto_timezone_coords, scripts_dir)
         self.mirrorlist_thread.start()
 
@@ -275,6 +279,9 @@ class Timezone(Gtk.Box):
             self.auto_timezone_thread.stop()
         if self.mirrorlist_thread != None:
             self.mirrorlist_thread.stop()
+    
+    def on_switch_ntp_activate(self, ntp_switch):
+        self.settings['use_ntp'] = ntp_switch.get_active()
 
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):

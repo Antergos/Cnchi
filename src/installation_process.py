@@ -268,7 +268,7 @@ class InstallationProcess(multiprocessing.Process):
                 self.download_packages()
                 self.queue_event('debug', 'Packages downloaded.')
                 
-            cache_dir = self.settings.get("CACHE_DIR")
+            cache_dir = self.settings.get("cache")
             if len(cache_dir) > 0:
                 self.copy_cache_files(cache_dir)
 
@@ -401,7 +401,7 @@ class InstallationProcess(multiprocessing.Process):
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
                 self.queue_event('debug', _("Can't retrieve remote package list, using a local file instead."))
-                data_dir = self.settings.get("DATA_DIR")
+                data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
 
         tree = etree.parse(packages_xml)
@@ -432,10 +432,11 @@ class InstallationProcess(multiprocessing.Process):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
                     self.packages.append(pkg.text)
         
-        if self.settings.get("use_ntp"):
-            for child in root.iter('ntp'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+        # Always install ntp as the user may want to activate it
+        # later (or not) in the timezone screen
+        for child in root.iter('ntp'):
+            for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
 
         # Install graphic cards drivers except in NoX installs
         if self.desktop != "nox":
@@ -762,7 +763,7 @@ class InstallationProcess(multiprocessing.Process):
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
-            else
+            else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 
             # Disable the usage of UUIDs for the rootfs:
@@ -1111,16 +1112,15 @@ class InstallationProcess(multiprocessing.Process):
         # enable desktop manager and network manager services
         self.enable_services([ self.desktop_manager, self.network_manager, "ModemManager" ])           
             
-        # TODO: we never ask the user about this...
-        if self.settings.get("use_ntp"):
-            self.enable_services(["ntpd"])
-
         self.queue_event('debug', 'Enabled installed services.')
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
             # wait five seconds and try again
             time.sleep(5)
+
+        if self.settings.get("use_ntp"):
+            self.enable_services(["ntpd"])
 
         # set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
@@ -1278,8 +1278,7 @@ class InstallationProcess(multiprocessing.Process):
         
         self.queue_event('debug', "Call post-install script to execute gsettings commands")
         # Call post-install script to execute gsettings commands
-        script_path_postinstall = os.path.join(self.settings.get("CNCHI_DIR"), \
-            "scripts", _postinstall_script)
+        script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", _postinstall_script)
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 

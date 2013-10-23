@@ -28,7 +28,7 @@ import os
 class BootLoader():
     def __init__(self, settings):
         self.settings = settings
-        self.ui_dir = self.settings.get('UI_DIR')
+        self.ui_dir = self.settings.get('ui')
         self.ui = Gtk.Builder()
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "bootloader.ui"))

@@ -54,7 +54,7 @@ class Keymap(Gtk.Box):
 
         self.create_toolviews()
 
-        self.filename = self.settings.get("DATA_DIR") + "kbdnames.gz"
+        self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
         super().add(self.ui.get_object("keymap"))
 

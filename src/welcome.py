@@ -28,10 +28,6 @@ import misc
 
 from show_message import warning
 
-# Useful vars for gettext (translations)
-APP="cnchi"
-DIR = "/usr/share/locale"
-
 # Import functions
 import config
 
@@ -52,7 +48,7 @@ class Welcome(Gtk.Box):
         self.ui.add_from_file(os.path.join(self.ui_dir, "welcome.ui"))
         self.ui.connect_signals(self)
 
-        data_dir = self.settings.get("DATA_DIR")
+        data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "welcome")
         
         self.label = {}

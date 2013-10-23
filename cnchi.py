@@ -70,8 +70,8 @@ _cache_dir = ""
 _debug = False
 
 # Useful vars for gettext (translations)
-APP = "cnchi"
-DIR = "/usr/share/locale"
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 _main_window_width = 800
 _main_window_height = 500
@@ -80,15 +80,15 @@ class Main(Gtk.Window):
 
     def __init__(self):
         # This allows to translate all py texts (not the glade ones)
-        gettext.textdomain(APP)
-        gettext.bindtextdomain(APP, DIR)
+        gettext.textdomain(APP_NAME)
+        gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 
         locale_code, encoding = locale.getdefaultlocale()
-        lang = gettext.translation (APP, DIR, [locale_code], None, True)
+        lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
         lang.install()
 
         # With this we can use _("string") to translate
-        gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
+        gettext.install(APP_NAME, localedir=LOCALE_DIR, codeset=None, names=[locale_code])
 
         # check if we have administrative privileges
         if os.getuid() != 0:
@@ -114,21 +114,21 @@ class Main(Gtk.Window):
         logging.debug("[%d] %s started" % (p.pid, p.name))
         
         self.settings = config.Settings()        
-        self.ui_dir = self.settings.get("UI_DIR")
+        self.ui_dir = self.settings.get('ui')
 
         if not os.path.exists(self.ui_dir):
             cnchi_dir = os.path.join(os.path.dirname(__file__), './')
-            self.settings.set("CNCHI_DIR", cnchi_dir)
+            self.settings.set('cnchi', cnchi_dir)
             
             ui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
-            self.settings.set("UI_DIR", ui_dir)
+            self.settings.set('ui', ui_dir)
             
             data_dir = os.path.join(os.path.dirname(__file__), 'data/')
-            self.settings.set("DATA_DIR", data_dir)           
+            self.settings.set('data', data_dir)           
             
-            self.ui_dir = self.settings.get("UI_DIR")
+            self.ui_dir = self.settings.get('ui')
 
-        self.settings.set("CACHE_DIR", _cache_dir)
+        self.settings.set('cache', _cache_dir)
             
         # set enabled desktops
         self.settings.set("desktops", _desktops)
@@ -144,9 +144,10 @@ class Main(Gtk.Window):
         self.header = self.ui.get_object("header")
 
         self.forward_button = self.ui.get_object("forward_button")
-
+        
         self.logo = self.ui.get_object("logo")
-        logo_dir = os.path.join(self.settings.get("DATA_DIR"), "antergos-logo-mini.png")
+        data_dir = self.settings.get('data')
+        logo_dir = os.path.join(data_dir, "antergos-logo-mini.png")
         self.logo.set_from_file(logo_dir)
         
         self.title = self.ui.get_object("title")
@@ -213,7 +214,7 @@ class Main(Gtk.Window):
         self.set_size_request(_main_window_width, _main_window_height);
 
         # set window icon
-        icon_dir = os.path.join(self.settings.get("DATA_DIR"), 'antergos-icon.png')
+        icon_dir = os.path.join(data_dir, 'antergos-icon.png')
         
         self.set_icon_from_file(icon_dir)
 
@@ -225,7 +226,7 @@ class Main(Gtk.Window):
         # Header style testing
         style_provider = Gtk.CssProvider()
 
-        style_css = os.path.join(self.settings.get("DATA_DIR"), "css", "gtk-style.css")
+        style_css = os.path.join(data_dir, "css", "gtk-style.css")
 
         with open(style_css, 'rb') as css:
             css_data = css.read()
@@ -242,7 +243,7 @@ class Main(Gtk.Window):
 
         self.vertical_image = self.ui.get_object('vertical_image')
         self.vertical_image.hide()
-        #logo_90_dir = os.path.join(self.settings.get("DATA_DIR"), "antergos-logo-mini-90.png")
+        #logo_90_dir = os.path.join(data_dir, "antergos-logo-mini-90.png")
         #self.vertical_image.set_from_file(logo_90_dir)
 
         self.current_page.prepare('forwards')
