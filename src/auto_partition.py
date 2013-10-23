@@ -24,6 +24,7 @@ import os
 import subprocess
 import logging
 import time
+import sys
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
