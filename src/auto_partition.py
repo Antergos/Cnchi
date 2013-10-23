@@ -69,22 +69,21 @@ class AutoPartition():
         mount = subprocess.check_output("mount").decode().split("\n")
 
         # Umount all devices mounted inside self.dest_dir (if any)
-        devices = []
+        dirs = []
         for m in mount:
-            if self.dest_dir+"/" in m:
-                devices.append(m.split()[0])
+            if self.dest_dir in m:
+                d = m.split()[0]
+                # Do not unmount self.dest_dir now (we will do it later)
+                if d is not self.dest_dir:
+                    dirs.append(d)
 
-        for d in devices:
+        for d in dirs:
+            logging.warning("Unmounting %s" % d)
             subprocess.call(["umount", d])
 
         # Umount the device that is mounted in self.dest_dir (if any)
-        devices = []
-        for m in mount:
-            if self.dest_dir+" " in m:
-                devices.append(m.split()[0])
-
-        for d in devices:
-            subprocess.call(["umount", d])
+        logging.warning("Unmounting %s" % self.dest_dir)
+        subprocess.call(["umount", self.dest_dir])
         
         # Remove all previous Antergos LVM volumes
         if os.path.exists("/dev/mapper/AntergosRoot"):
