@@ -143,10 +143,10 @@ class InstallationAsk(Gtk.Box):
             self.settings.set('use_luks', False)
 
         if self.settings.get('use_luks'):
-            logging.info(_("Antergos installation will be encrypted"))
+            logging.info(_("Antergos installation will be encrypted using LUKS"))
             
         if self.settings.get('use_lvm'):
-            logging.info(_("Antergos will be installed using a LVM setup"))
+            logging.info(_("Antergos will be installed using LVM volumes"))
             
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
