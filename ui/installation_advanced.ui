@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Oct 22 07:21:40 2013 -->
+<!-- Generated with glade 3.16.0 on Fri Oct 18 14:06:21 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkDialog" id="changelist_dialog">
@@ -353,6 +353,7 @@
                     <property name="xalign">0</property>
                     <property name="draw_indicator">True</property>
                     <property name="group">partition_create_type_primary</property>
+                    <signal name="toggled" handler="on_partition_create_type_extended_toggled" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
