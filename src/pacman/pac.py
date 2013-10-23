@@ -40,7 +40,6 @@ try:
 except:
     print("pyalpm not found! This installer won't work.")
 
-
 class Pac(object):
     def __init__(self, conf, callback_queue):
         
@@ -333,19 +332,23 @@ class Pac(object):
         if not (level & _logmask):
             return
 
+        if level & pyalpm.LOG_ERROR or level & pyalpm.LOG_WARNING:
+            # Even if there is a real error we're not sure we want to abort all installation
+            # Instead of issuing a fatal error we just log an error message
+            logging.error(line)
+        
+        '''
         if level & pyalpm.LOG_ERROR:
             if 'linux' not in self.target and 'lxdm' not in self.target:
                 self.error = _("ERROR: %s") % line
-                #print(line)
                 self.release_transaction()
                 self.queue_event("error", line)
+                logging.warning(line)
             else:
-                pass
+                logging.warning(line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
-            self.queue_event("warning", line)
-            #print(line)
-        '''
+            self.queue_event('warning', line)
         elif level & pyalpm.LOG_DEBUG:
             line = _("DEBUG: %s") % line
             print(line)
