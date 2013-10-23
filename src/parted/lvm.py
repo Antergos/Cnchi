@@ -56,3 +56,21 @@ def get_logical_volumes(vg):
             lv.append(e.split()[-1])
     return lv
 
+# When removing, we use -f flag to avoid warnings and confirmation messages
+
+@misc.raise_privileges
+def remove_logical_volume(lv):
+    subprocess.checK_call(["lvremove", "-f", lv])
+
+@misc.raise_privileges
+def remove_volume_group(vg):
+    # Before removing the volume group, remove its logical volumes
+    lvm_logical_volumes = get_logical_volumes(vg)
+    for lv in lvm_logical_volumes:
+        remove_logical_volume(lv)
+    # Now, remove the volume group
+    subprocess.check_call(["vgremove", "-f", vg])
+
+@misc.raise_privileges
+def remove_physical_volume(pv):
+    subprocess.check_call(["pvremove", "-f", pv])
