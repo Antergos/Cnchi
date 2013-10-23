@@ -934,7 +934,6 @@ class InstallationAdvanced(Gtk.Box):
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
-                        # BUG: Extended partition is getting formatted
                         uid = self.gen_partition_uid(p=partitions[e])
                         self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
                 # Update partition list treeview
@@ -1267,7 +1266,6 @@ class InstallationAdvanced(Gtk.Box):
                         if lbl != "":
                             relabel = 'Yes'
                         # Avoid extended partitions getting fmt flag true on new creation
-                        # BUG: Extended partitions are formated (this is wrong).
                         if fs != _("extended"):
                             fmt = 'Yes'
                         createme = 'Yes'
@@ -1509,6 +1507,9 @@ class InstallationAdvanced(Gtk.Box):
                 uid = self.gen_partition_uid(p=p)
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                    # FIX: Do not mount extended partitions
+                    if fs_type == _("extended"):
+                        continue
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
                 #elif pm.check_mounted(p):
