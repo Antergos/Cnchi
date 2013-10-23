@@ -81,7 +81,7 @@ class InstallationAutomatic(Gtk.Box):
         label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic2')
-        txt = _("Select the drive we should use to install Antergos" /
+        txt = _("Select the drive we should use to install Antergos" \
         "and then click below to start the process.")
         txt = "%s" % txt
         label.set_markup(txt)
