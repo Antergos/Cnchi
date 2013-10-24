@@ -324,12 +324,16 @@ class AutoPartition():
                 subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, key_file])
                 subprocess.check_call(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file", key_file])
             else:
-                # TODO : TEST THIS!
                 # Set up luks with a password key
-                #subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, self.luks_key_pass])
-                #subprocess.check_call(["cryptsetup", "luksOpen", "-q", "-d", self.luks_key_pass, luks_device, "cryptAntergos"])
-                subprocess.call("echo %s | cryptsetup luksFormat -q -c aes-xts-plain -s 512 --key-file=- %s" % (self.luks_key_pass, luks_device))
-                subprocess.call("echo %s | cryptsetup luksOpen %s cryptAntergos -q --key-file=-" % (self.luks_key_pass, luks_device))
+                luks_key_pass_bytes = bytes(self.luks_key_pass, 'UTF-8')
+
+                p = subprocess.Popen(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", "--key-file=-", luks_device],
+                    stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+                p.communicate(input=luks_key_pass_bytes)[0]
+                
+                p = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file=-"],
+                    stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+                p.communicate(input=luks_key_pass_bytes)[0]
 
         if self.lvm:
             # /dev/sdX1 is /boot
