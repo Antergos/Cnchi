@@ -53,7 +53,6 @@ import pac
 
 import auto_partition
 
-#_autopartition_script = 'auto_partition.sh'
 _postinstall_script = 'postinstall.sh'
 
 class InstallError(Exception):
@@ -124,6 +123,7 @@ class InstallationProcess(multiprocessing.Process):
         self.packages = []
         
         self.dest_dir = "/install"
+        
         if not os.path.exists(self.dest_dir):
             os.makedirs(self.dest_dir)
         else:
@@ -149,17 +149,25 @@ class InstallationProcess(multiprocessing.Process):
 
         self.arch = os.uname()[-1]
                 
-        ## Create/Format partitions
+        # Create and format partitions
         
         if self.method == 'automatic':
-            self.auto_device = self.mount_devices["/boot"].replace("1","")
-            self.queue_event('debug', "Creating partitions and their filesystems...")
+            self.auto_device = self.mount_devices["auto_device"]
+            # Just in case, delete the fake "auto_device" entry
+            del self.mount_devices["auto_device"]
+            self.queue_event('debug', "Creating partitions and their filesystems in %s" % self.auto_device)
+            
+            # TODO: Ask for a key password if we are using LUKS
+            # if no key password is given a key file is generated and stored in /boot
+            # (see auto_partition.py)
+            key_pass = ""
 
             try:
                 ap = auto_partition.AutoPartition(self.dest_dir,
                                                     self.auto_device,
                                                     self.settings.get("use_luks"), 
-                                                    self.settings.get("use_lvm"))
+                                                    self.settings.get("use_lvm"),
+                                                    key_pass)
                 ap.run()
             except subprocess.CalledProcessError as e:
                 logging.error(e.output)
@@ -218,8 +226,6 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'advanced':
             for path in self.mount_devices:
                 mp = self.mount_devices[path]
-                # Root and Boot are already mounted.
-                # Just try to mount all the rest.
                 if mp != root_partition and mp != boot_partition and mp != swap_partition:
                     try:
                         mount_dir = self.dest_dir + path
@@ -229,10 +235,8 @@ class InstallationProcess(multiprocessing.Process):
                         self.queue_event('debug', txt)
                         subprocess.check_call(['mount', mp, mount_dir])
                     except subprocess.CalledProcessError as e:
-                        # we try to continue as root and boot mounted ok
+                        # We will continue as root and boot are already mounted
                         self.queue_event('debug', _("Can't mount %s in %s") % (mp, mount_dir))
-                        # self.queue_fatal_event(_("Couldn't mount %s") % mount_dir)
-                        # return False
 
 
         # Nasty workaround:

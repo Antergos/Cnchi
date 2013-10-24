@@ -158,27 +158,14 @@ class InstallationAutomatic(Gtk.Box):
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
             logging.warning("Antergos will not install any boot loader")
-        
-        if self.settings.get('use_lvm'):
-           # WARNING! : This must be the same that appears in auto_partition.sh
-            root_partition = "/dev/AntergosVG/AntergosRoot"
-        else:
-            root_partition = self.auto_device + "3"
 
-        boot_partition = self.auto_device + "1"
-        
-        # TODO: UEFI Install (must update auto_partition.sh)
-        if self.settings.get('bootloader_type') != "GRUB2":
-            root_partition = self.auto_device + "5"
-            boot_partition = self.atuo_device + "3"
-
+        # We don't need to pass neither which devices will be mounted nor which filesystems
+        # the devices will be formated with, as auto_partition.py takes care of everything
+        # in an automatic installation. Just give in which device we want to install Antergos
         mount_devices = {}
-        mount_devices["/"] = root_partition 
-        mount_devices["/boot"] = boot_partition
+        mount_devices["auto_device"] = self.auto_device
 
         fs_devices = {}
-        fs_devices[boot_partition] = "ext2"
-        fs_devices[root_partition] = "ext4"
 
         self.process = installation_process.InstallationProcess( \
                         self.settings, \
