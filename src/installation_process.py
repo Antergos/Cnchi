@@ -636,7 +636,7 @@ class InstallationProcess(multiprocessing.Process):
 
 
     def chroot(self, cmd, stdin=None, stdout=None):
-        run = ['chroot', self.dest_dir]
+        run = [ 'chroot', self.dest_dir ]
         
         for c in cmd:
             run.append(c)
@@ -978,27 +978,38 @@ class InstallationProcess(multiprocessing.Process):
                     line = line[1:]
                 gen.write(line)
 
+    def check_output(self, command):
+        return subprocess.check_output(command.split()).decode().strip("\n")
+
     def encrypt_home(self):
-        # TODO: ecryptfs-utils, rsync and lsof packages are needed.
+        # WARNING: ecryptfs-utils, rsync and lsof packages are needed.
         # They should be added in the livecd AND in the "to install packages" xml list
         
         # Load ecryptfs module
         subprocess.check_call(['modprobe', 'ecryptfs'])
+        
+        # Add it to /install/etc/modules-load.d/
+        with open("%s/etc/modules-load.d/ecryptfs.conf", "wt") as f:
+            f.write("ecryptfs\n")
         
         # Get the username and passwd
         username = self.settings.get('username')
         passwd = self.settings.get('password')
         
         # Migrate user home directory
-        command = "LOGINPASS=%s ecryptfs-migrate-home -u %s" % (passwd, username)
-        outp = subprocess.check_output(command)
+        # See http://blog.dustinkirkland.com/2011/02/long-overdue-introduction-ecryptfs.html
+        self.chroot_mount_special_dirs()
+        command = "LOGINPASS=%s chroot %s ecryptfs-migrate-home -u %s" % (passwd, self.dest_dir, username)
+        outp = self.check_output(command)
+        self.chroot_umount_special_dirs()
         
-        with open(os.path.join(self.dest_dir, "tmp/cnchi-ecryptfs.log", "wt")) as f:
+        with open(os.path.join(self.dest_dir, "root/cnchi-ecryptfs.log", "wt")) as f:
             f.write(outp)
-                
+
+        # Critically important, USER must login before the next reboot to complete the migration
+        # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
         subprocess.check_call(['su', username])
         
-        # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
 
     def copy_cache_files(self, cache_dir):
         # Check in case user has given a wrong folder
@@ -1049,10 +1060,10 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', "Configuring firewall...")
             # A very simplistic configuration which will deny all by default,
             # allow any protocol from inside a 192.168.0.1-192.168.0.255 LAN,
-            # and allow incoming Deluge and SSH traffic from anywhere:
+            # and allow incoming Transmission and SSH traffic from anywhere:
             subprocess.check_call(["ufw", "default", "deny"])
             subprocess.check_call(["ufw", "allow", "from", "192.168.0.0/24"])
-            subprocess.check_call(["ufw", "allow", "Deluge"])
+            subprocess.check_call(["ufw", "allow", "Transmission"])
             subprocess.check_call(["ufw", "allow", "SSH"])
             subprocess.check_call(["ufw", "enable"])
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
