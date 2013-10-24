@@ -324,9 +324,12 @@ class AutoPartition():
                 subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, key_file])
                 subprocess.check_call(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file", key_file])
             else:
+                # TODO : TEST THIS!
                 # Set up luks with a password key
-                subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, self.luks_key_pass])
-                subprocess.check_call(["cryptsetup", "luksOpen", "-q", "-d", self.luks_key_pass, luks_device, "cryptAntergos"])
+                #subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, self.luks_key_pass])
+                #subprocess.check_call(["cryptsetup", "luksOpen", "-q", "-d", self.luks_key_pass, luks_device, "cryptAntergos"])
+                subprocess.call("echo %s | cryptsetup luksFormat -q -c aes-xts-plain -s 512 --key-file=- %s" % (self.luks_key_pass, luks_device))
+                subprocess.call("echo %s | cryptsetup luksOpen %s cryptAntergos -q --key-file=-" % (self.luks_key_pass, luks_device))
 
         if self.lvm:
             # /dev/sdX1 is /boot
