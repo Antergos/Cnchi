@@ -193,6 +193,15 @@ class AutoPartition():
             root = "/dev/AntergosVG/AntergosRoot"
                 
         return (boot, swap, root, luks, lvm)
+
+    def get_mount_devices(self):
+        (boot_device, swap_device, root_device, luks_device, lvm_device) = self.get_devices()
+        
+        mount_devices = {}
+        mount_devices["/boot"] = boot_device
+        mount_devices["/"] = root_device
+        return mount_devices
+
     
     def run(self):
         key_file = "/tmp/.keyfile"

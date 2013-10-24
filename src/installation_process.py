@@ -167,10 +167,15 @@ class InstallationProcess(multiprocessing.Process):
                                                     self.settings.get("use_lvm"),
                                                     self.settings.get("luks_key_pass"))
                 ap.run()
+
+                # Get mount_devices
+                # (mount_devices will be used when configuring GRUB in modify_grub_default)
+                self.mount_devices = ap.get_mount_devices()
             except subprocess.CalledProcessError as e:
                 logging.error(e.output)
                 self.queue_event('error', _("Error creating partitions and their filesystems"))
                 return
+                
 
         if self.method == 'alongside':
             # Alongside method shrinks selected partition
@@ -751,7 +756,6 @@ class InstallationProcess(multiprocessing.Process):
         # This scheme can be used in the automatic installation option only (at this time)
         if self.method == 'automatic' and self.settings.get('use_luks'):
             default_dir = os.path.join(self.dest_dir, "etc/default")
-            default_grub = os.path.join(default_dir, "grub")
 
             if not os.path.exists(default_dir):
                 os.mkdir(default_dir)
@@ -768,6 +772,8 @@ class InstallationProcess(multiprocessing.Process):
             # Disable the usage of UUIDs for the rootfs:
             disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
             
+            default_grub = os.path.join(default_dir, "grub")
+
             with open(default_grub) as f:
                 lines = [x.strip() for x in f.readlines()]
 
