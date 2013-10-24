@@ -152,9 +152,8 @@ class InstallationProcess(multiprocessing.Process):
         # Create and format partitions
         
         if self.method == 'automatic':
-            self.auto_device = self.mount_devices["auto_device"]
-            # Just in case, delete the fake "auto_device" entry
-            del self.mount_devices["auto_device"]
+            self.auto_device = self.settings.get('auto_device')
+
             self.queue_event('debug', "Creating partitions and their filesystems in %s" % self.auto_device)
             
             # TODO: Ask for a key password if we are using LUKS (in installation_automatic.py)
