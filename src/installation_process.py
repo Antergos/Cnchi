@@ -157,17 +157,16 @@ class InstallationProcess(multiprocessing.Process):
             del self.mount_devices["auto_device"]
             self.queue_event('debug', "Creating partitions and their filesystems in %s" % self.auto_device)
             
-            # TODO: Ask for a key password if we are using LUKS
+            # TODO: Ask for a key password if we are using LUKS (in installation_automatic.py)
             # if no key password is given a key file is generated and stored in /boot
             # (see auto_partition.py)
-            key_pass = ""
 
             try:
                 ap = auto_partition.AutoPartition(self.dest_dir,
                                                     self.auto_device,
                                                     self.settings.get("use_luks"), 
                                                     self.settings.get("use_lvm"),
-                                                    key_pass)
+                                                    self.settings.get("luks_key_pass"))
                 ap.run()
             except subprocess.CalledProcessError as e:
                 logging.error(e.output)
@@ -761,9 +760,12 @@ class InstallationProcess(multiprocessing.Process):
             boot_device = self.mount_devices["/boot"]
             
             # Let GRUB automatically add the kernel parameters for root encryption
-            default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
-            
-            #Also, disable the usage of UUIDs for the rootfs:
+            if self.settings.get("luks_key_pass") == "":
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
+            else
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
+                
+            # Disable the usage of UUIDs for the rootfs:
             disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
             
             with open(default_grub) as f:

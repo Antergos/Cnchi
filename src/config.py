@@ -72,7 +72,10 @@ class Settings():
             'feature_office' : False, \
             'feature_visual' : False, \
             'feature_firewall' : False, \
-            'feature_third_party' : False })
+            'feature_third_party' : False, \
+            'use_luks' : False, \
+            'luks_key_pass' : "", \
+            'use_lvm' : False })
 
     def _get_settings(self):
         gd = self.settings.get()

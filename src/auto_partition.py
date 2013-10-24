@@ -26,10 +26,10 @@ import logging
 import time
 
 class AutoPartition():
-    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, key_pass):
+    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass):
         self.dest_dir = dest_dir
         self.auto_device = auto_device
-        self.key_pass = key_pass
+        self.luks_key_pass = luks_key_pass
 
         self.uefi = False
         
@@ -316,7 +316,7 @@ class AutoPartition():
             # If in doubt, just be generous and overwrite the first 10MB or so
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % luks_device, "bs=512", "count=20480", "status=noxfer"])
         
-            if self.key_pass == "":
+            if self.luks_key_pass == "":
                 # No key password given, let's create a random keyfile
                 subprocess.check_call(["dd", "if=/dev/urandom", "of=%s" % key_file, "bs=1024", "count=4", "status=noxfer"])
             
@@ -325,8 +325,8 @@ class AutoPartition():
                 subprocess.check_call(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file", key_file])
             else:
                 # Set up luks with a password key
-                subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, self.key_pass])
-                subprocess.check_call(["cryptsetup", "luksOpen", "-q", "-d", self.key_pass, luks_device, "cryptAntergos"])
+                subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, self.luks_key_pass])
+                subprocess.check_call(["cryptsetup", "luksOpen", "-q", "-d", self.luks_key_pass, luks_device, "cryptAntergos"])
 
         if self.lvm:
             # /dev/sdX1 is /boot
@@ -347,10 +347,10 @@ class AutoPartition():
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
         
-        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
         # NOTE: /etc/default/grub will be modified in installation_process.py, too.
 
-        if self.luks and self.key_pass == "":
+        if self.luks and self.luks_key_pass == "":
             # Copy keyfile to boot partition, user will choose what to do with it
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
@@ -368,5 +368,5 @@ if __name__ == '__main__':
     sh.setFormatter(formatter)
     logger.addHandler(sh)
 
-    ap = AutoPartition("/install", "/dev/sdb", use_luks=False, use_lvm=True, key_pass="")
+    ap = AutoPartition("/install", "/dev/sdb", use_luks=False, use_lvm=True, luks_key_pass="")
     ap.run()
