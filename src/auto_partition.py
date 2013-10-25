@@ -194,12 +194,19 @@ class AutoPartition():
                 
         return (boot, swap, root, luks, lvm)
 
+    # mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py)
     def get_mount_devices(self):
         (boot_device, swap_device, root_device, luks_device, lvm_device) = self.get_devices()
         
         mount_devices = {}
+        
         mount_devices["/boot"] = boot_device
-        mount_devices["/"] = root_device
+        
+        if self.luks:
+            mount_devices["/"] = luks_device
+        else:
+            mount_devices["/"] = root_device
+        
         return mount_devices
 
     

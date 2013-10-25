@@ -1,5 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#
+#  info.py
+#
 #  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify

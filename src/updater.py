@@ -31,10 +31,11 @@ import info
 
 import logging
 
-url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
+#_url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
+_url_prefix = "https://raw.github.com/Antergos/Cnchi/master/"
 
-src_dir = os.path.dirname(__file__) or '.'
-base_dir = os.path.join(src_dir, "..")
+_src_dir = os.path.dirname(__file__) or '.'
+_base_dir = os.path.join(_src_dir, "..")
 
 class Updater():
     def __init__(self, force_update=False):
@@ -43,10 +44,10 @@ class Updater():
         
         response = ""
         try: 
-            update_info_url = url_prefix + "update.info"
+            update_info_url = _url_prefix + "update.info"
             request = urlopen(update_info_url)
             response = request.read().decode('utf-8')
-                    
+            
         except urllib.HTTPError as e:
             logging.exception('Unable to get latest version info - HTTPError = %s' % e.reason)
         except urllib.URLError as e:
@@ -63,7 +64,7 @@ class Updater():
             self.web_version = updateInfo['version']
             self.web_files = updateInfo['files']
         
-            logging.info("web version: %s" % self.web_version)
+            logging.info("Cnchi Internet version: %s" % self.web_version)
             
             self.force = force_update
             
@@ -98,6 +99,7 @@ class Updater():
                 md5 = f['md5']
                 if self.download(name, md5) is False:
                     # download has failed
+                    logging.error("Download of %s has failed" % name)
                     return False
             # replace old files with the new ones
             self.replace_old_with_new_versions()                
@@ -111,7 +113,7 @@ class Updater():
         return md5.hexdigest()
 
     def download(self, name, md5):
-        url = url_prefix + name
+        url = _url_prefix + name
         response = ""
         try: 
             request = urlopen(url)
@@ -137,7 +139,7 @@ class Updater():
             logging.error("Checksum error in %s. Download aborted" % name)
             return False
         
-        new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
+        new_name = os.path.join(_base_dir, name + "." + self.web_version.replace(".", "_"))
         
         with open(new_name, "wb") as f:
             f.write(txt)
@@ -148,9 +150,9 @@ class Updater():
         logging.info("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
         for f in self.web_files:
             name = f['name']
-            old_name = os.path.join(base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
-            new_name = os.path.join(base_dir, name + "." + self.web_version.replace(".", "_"))
-            cur_name = os.path.join(base_dir, name)
+            old_name = os.path.join(_base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
+            new_name = os.path.join(_base_dir, name + "." + self.web_version.replace(".", "_"))
+            cur_name = os.path.join(_base_dir, name)
             
             if os.path.exists(name):
                 os.rename(name, old_name)

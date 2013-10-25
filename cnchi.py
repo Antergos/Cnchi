@@ -104,9 +104,7 @@ class Main(Gtk.Window):
                           'and run this installer again.') % tmp_running)
             sys.exit(1)
                 
-        super().__init__()
-        
-        self.setup_logging()
+        super().__init__()       
         
         logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
         
@@ -339,22 +337,23 @@ class Main(Gtk.Window):
                     # we're at the first page
                     self.backwards_button.hide()
 
-    def setup_logging(self):
-        logger = logging.getLogger()
-        logger.setLevel(_log_level)
-        # log format
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        # create file handler
-        fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
-        fh.setLevel(_log_level)
-        fh.setFormatter(formatter)
-        logger.addHandler(fh)
+def setup_logging():
+    logger = logging.getLogger()
+    logger.setLevel(_log_level)
+    # log format
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # create file handler
+    fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
+    fh.setLevel(_log_level)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
 
-        if _verbose:
-            sh = logging.StreamHandler()
-            sh.setLevel(_log_level)
-            sh.setFormatter(formatter)
-            logger.addHandler(sh)
+    if _verbose:
+        # Show log messages to stdout
+        sh = logging.StreamHandler()
+        sh.setLevel(_log_level)
+        sh.setFormatter(formatter)
+        logger.addHandler(sh)
         
 
 def show_help():
@@ -403,17 +402,22 @@ if __name__ == '__main__':
             sys.exit(0)
         else:
             assert False, "unhandled option"
+
+    setup_logging()
         
-    # Check if program needs to be updated
     if _update:
+        # Check if program needs to be updated
         upd = updater.Updater()
         if upd.update():
             print("Program updated! Restarting...")
-            # Remove /tmp/.setup-running
+            # Remove /tmp/.setup-running to be able to run another
+            # instance of Cnchi
             p = "/tmp/.setup-running"
             if os.path.exists(p):
                 os.remove(p)
+            # Run another instance of Cnchi (which will be the new version)
             os.execl(sys.executable, *([sys.executable] + sys.argv))
+            # Exit and let the new instance do all the hard work
             sys.exit(0)
 
     # Start Gdk stuff and main window app
