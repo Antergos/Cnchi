@@ -66,6 +66,24 @@ if __name__ == '__main__':
     for root, dirs, filenames in os.walk(data_dir, topdown=False):
         for f in filenames:
             files.append(os.path.join(root[2:], f))
+
+    # Get all in po dir
+    data_dir = os.path.join(base_dir, "po")
+    for root, dirs, filenames in os.walk(data_dir, topdown=False):
+        for f in filenames:
+            files.append(os.path.join(root[2:], f))
+
+    # Get all in ui dir
+    data_dir = os.path.join(base_dir, "ui")
+    for root, dirs, filenames in os.walk(data_dir, topdown=False):
+        for f in filenames:
+            files.append(os.path.join(root[2:], f))
+
+    # Get all in scripts dir
+    data_dir = os.path.join(base_dir, "scripts")
+    for root, dirs, filenames in os.walk(data_dir, topdown=False):
+        for f in filenames:
+            files.append(os.path.join(root[2:], f))
         
     txt = '{"version":"%s","files":[\n' % info.cnchi_VERSION
     

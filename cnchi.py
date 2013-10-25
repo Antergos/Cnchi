@@ -413,14 +413,18 @@ if __name__ == '__main__':
         # Check if program needs to be updated
         upd = updater.Updater(_force_update)
         if upd.update():
-            print("Program updated! Restarting...")
             # Remove /tmp/.setup-running to be able to run another
             # instance of Cnchi
             p = "/tmp/.setup-running"
             if os.path.exists(p):
                 os.remove(p)
-            # Run another instance of Cnchi (which will be the new version)
-            os.execl(sys.executable, *([sys.executable] + sys.argv))
+            if not _force_update:
+                print("Program updated! Restarting...")
+                # Run another instance of Cnchi (which will be the new version)
+                os.execl(sys.executable, *([sys.executable] + sys.argv))
+            else:
+                print("Program updated! Please restart Cnchi.")
+
             # Exit and let the new instance do all the hard work
             sys.exit(0)
 

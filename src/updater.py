@@ -94,13 +94,17 @@ class Updater():
     def update(self):
         if self.is_web_version_newer():
             logging.info("New version found. Updating installer...")
+            num_files = len(self.web_files)
+            i = 1
             for f in self.web_files:
                 name = f['name']
                 md5 = f['md5']
+                print("Downloading %s (%d/%d)" % (name, i, num_files))
                 if self.download(name, md5) is False:
                     # download has failed
                     logging.error("Download of %s has failed" % name)
                     return False
+                i = i + 1
             # replace old files with the new ones
             self.replace_old_with_new_versions()                
             return True
