@@ -90,7 +90,7 @@ class Updater():
             
         return False
 
-    # This will update all files only if necessary
+    # This will update all files only if necessary (or forced)
     def update(self):
         if self.is_web_version_newer():
             logging.info("New version found. Updating installer...")
