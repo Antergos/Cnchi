@@ -1,8 +1,8 @@
 {"version":"0.4.1","files":[
 {"name":"generate-update-info.py","md5":"4809cf0a09795c7fb600ab5aafa2f687"},
-{"name":"cnchi.py","md5":"ee10fc76fc5e300b9d22337ededae193"},
+{"name":"cnchi.py","md5":"f130d69df487fb8de0aaeebfb3ed69e1"},
 {"name":"src/info.py","md5":"a0a902781ad60629c271eb0b9e9b0142"},
-{"name":"src/updater.py","md5":"ce663a1baf1cb9849f60619a4569b1bf"},
+{"name":"src/updater.py","md5":"438f87df5a12753643f1840359ccdc56"},
 {"name":"src/timezone.py","md5":"76f29a6be88cc7a848a82264cf832061"},
 {"name":"src/download.py","md5":"4beb7acae6dc18a5bc552b78b2a50562"},
 {"name":"src/check.py","md5":"24cbccf809e28a4a1af826eb0519c994"},

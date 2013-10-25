@@ -38,7 +38,7 @@ _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
 
 class Updater():
-    def __init__(self, force_update=False):
+    def __init__(self, force_update):
         self.web_version = ""
         self.web_files = []
         
@@ -159,9 +159,3 @@ class Updater():
             
             if os.path.exists(new_name):
                 os.rename(new_name, cur_name)
-
-
-if __name__ == '__main__':
-    updater = Updater(force_update=True)
-    updater.update()
-            

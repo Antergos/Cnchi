@@ -61,13 +61,14 @@ _desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
 
 # Command line options
 _alternate_package_list = ""
-_use_aria2 = False
-_log_level = logging.INFO
-_verbose = False
-_update = False
-_force_grub_type = False
 _cache_dir = ""
 _debug = False
+_force_grub_type = False
+_force_update = False
+_log_level = logging.INFO
+_update = False
+_use_aria2 = False
+_verbose = False
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
@@ -373,9 +374,9 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "ac:dp:uvg:h",
-         ["aria2", "cache=", "debug", "packages=", "update", "verbose", \
-          "force-grub=", "help"])
+        opts, args = getopt.getopt(argv, "ac:dp:ufvg:h",
+         ["aria2", "cache=", "debug", "packages=", "update",
+          "force-update", "verbose", "force-grub=", "help"])
     except getopt.GetoptError as e:
         show_help()
         print(str(e))
@@ -387,6 +388,9 @@ if __name__ == '__main__':
         elif opt in ('-v', '--verbose'):
             _verbose = True
         elif opt in ('-u', '--update'):
+            _update = True
+        elif opt in ('-f', '--force-update'):
+            _force_update = True
             _update = True
         elif opt in ('-p', '--packages'):
             _alternate_package_list = arg
@@ -407,7 +411,7 @@ if __name__ == '__main__':
         
     if _update:
         # Check if program needs to be updated
-        upd = updater.Updater()
+        upd = updater.Updater(_force_update)
         if upd.update():
             print("Program updated! Restarting...")
             # Remove /tmp/.setup-running to be able to run another
