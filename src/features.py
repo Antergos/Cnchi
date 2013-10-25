@@ -59,7 +59,7 @@ class Features(Gtk.Box):
         self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["openbox"] = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
-        
+                
         self.labels = {}
         self.titles = {}
         self.switches = {}
@@ -73,7 +73,13 @@ class Features(Gtk.Box):
 
             object_name = "switch_" + feature
             self.switches[feature] = self.ui.get_object(object_name)
-
+        
+        # The first time we load this screen, we try to guess some defaults
+        self.defaults = True
+        
+        # Only show ufw rules info once
+        self.ufw_info_already_shown = False
+        
         super().add(self.ui.get_object("features"))
 
     def translate_ui(self):
@@ -171,6 +177,14 @@ class Features(Gtk.Box):
             self.settings.set("feature_" + feature, isactive)
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
+                
+        # Show ufw info message if ufw is selected
+        if self.settings.get("feature_firewall") and not self.ufw_info_already_shown:
+            ufw = self.ui.get_object("ufw")
+            ufw.run()
+            ufw.hide()
+            self.ufw_info_already_shown = True
+
         return True
 
     def get_prev_page(self):
@@ -185,5 +199,7 @@ class Features(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.hide_features()
-        self.enable_defaults()
+        if self.defaults:
+            self.enable_defaults()
+            self.defaults = False
 
