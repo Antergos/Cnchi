@@ -370,6 +370,11 @@ def show_help():
 
 if __name__ == '__main__':
     
+    # Check for hwinfo
+    if not os.path.exists("/usr/bin/hwinfo"):
+        print("Please install hwinfo before running this installer")
+        sys.exit(1)
+    
     # Check program args
     argv = sys.argv[1:]
     
