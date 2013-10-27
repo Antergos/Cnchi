@@ -1,14 +1,24 @@
-
 #logo {
-    background-color: #f0f0f0;
-    color: #6988bb;
+    background-color: transparent;
+    background-image: url("data/images/header.png");                                 
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: 100% 100%;
+    color: #fcfcfc;
     font: 14px;
+    font-family: 'DejaVu Sans', Sans, sans-serif;
 }
 
 #title {
-    background-color: #f0f0f0;
-    color: #6988bb;
+    background-color: transparent;
+    background-image: url("data/images/header.png");                                 
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: 100% 100%;
+    color: #5082d4;
     font: 14px;
+    font-family: 'DejaVu Sans', Sans, sans-serif;
+    padding-top:7.5px;
 }
 
 /*
