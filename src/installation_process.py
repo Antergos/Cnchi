@@ -171,6 +171,7 @@ class InstallationProcess(multiprocessing.Process):
                 # Get mount_devices
                 # (mount_devices will be used when configuring GRUB in modify_grub_default)
                 self.mount_devices = ap.get_mount_devices()
+                self.fs_devices = ap.get_fs_devices()
             except subprocess.CalledProcessError as e:
                 logging.error(e.output)
                 self.queue_event('error', _("Error creating partitions and their filesystems"))

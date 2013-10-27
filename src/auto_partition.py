@@ -209,6 +209,25 @@ class AutoPartition():
         
         return mount_devices
 
+
+
+
+    
+
+
+    def get_fs_devices(self):
+        mount_devices = {}
+        fs_devices = {}
+        
+        
+        
+        #for d in mount_devices:
+        
+        
+        
+        
+        
+        
     
     def run(self):
         key_file = "/tmp/.keyfile"
