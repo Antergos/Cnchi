@@ -1069,11 +1069,14 @@ class InstallationProcess(multiprocessing.Process):
             # A very simplistic configuration which will deny all by default,
             # allow any protocol from inside a 192.168.0.1-192.168.0.255 LAN,
             # and allow incoming Transmission and SSH traffic from anywhere:
-            subprocess.check_call(["ufw", "default", "deny"])
-            subprocess.check_call(["ufw", "allow", "from", "192.168.0.0/24"])
-            subprocess.check_call(["ufw", "allow", "Transmission"])
-            subprocess.check_call(["ufw", "allow", "SSH"])
-            subprocess.check_call(["ufw", "enable"])
+            self.chroot_mount_special_dirs()
+            self.chroot(["ufw", "default", "deny"])
+            self.chroot((["ufw", "allow", "from", "192.168.0.0/24"])
+            self.chroot((["ufw", "allow", "Transmission"])
+            self.chroot((["ufw", "allow", "SSH"])
+            self.chroot((["ufw", "enable"])
+            self.chroot_umount_special_dirs()
+            
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])
