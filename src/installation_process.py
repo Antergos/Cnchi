@@ -1072,10 +1072,10 @@ class InstallationProcess(multiprocessing.Process):
             # and allow incoming Transmission and SSH traffic from anywhere:
             self.chroot_mount_special_dirs()
             self.chroot(["ufw", "default", "deny"])
-            self.chroot((["ufw", "allow", "from", "192.168.0.0/24"])
-            self.chroot((["ufw", "allow", "Transmission"])
-            self.chroot((["ufw", "allow", "SSH"])
-            self.chroot((["ufw", "enable"])
+            self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
+            self.chroot(["ufw", "allow", "Transmission"])
+            self.chroot(["ufw", "allow", "SSH"])
+            self.chroot(["ufw", "enable"])
             self.chroot_umount_special_dirs()
             
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
