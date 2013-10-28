@@ -168,8 +168,9 @@ class InstallationProcess(multiprocessing.Process):
                                                     self.settings.get("luks_key_pass"))
                 ap.run()
 
-                # Get mount_devices
+                # Get mount_devices and fs_devices
                 # (mount_devices will be used when configuring GRUB in modify_grub_default)
+                # (fs_devices  will be used when configuring the fstab file)
                 self.mount_devices = ap.get_mount_devices()
                 self.fs_devices = ap.get_fs_devices()
             except subprocess.CalledProcessError as e:
