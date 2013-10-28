@@ -209,7 +209,7 @@ class AutoPartition():
             mount_devices["/"] = root_device
             
         for m in mount_devices:
-            logging.debug(mount_devices[m])
+            logging.debug("mount_devices[%s] = %s" % (m, mount_devices[m]))
         
         return mount_devices
 
@@ -229,7 +229,7 @@ class AutoPartition():
             fs_devices[root_device] = "ext4"
             
         for f in fs_devices:
-            logging.debug(fs_devices[f])
+            logging.debug("fs_devices[%s] = %s" % (f, fs_devices[f]))
 
         return fs_devices
     

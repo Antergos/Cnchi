@@ -710,10 +710,16 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 # It hasn't any filesystem defined
                 continue
+
+            # TODO: Take care of swap partitions
+            if "swap" in myfmt:
+                logging.debug("Add to fstab : UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
+                #all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
+                continue
             
             # Avoid adding a partition to fstab when
-            # it has no mount point (except swap, of course)
-            if path == "" and "swap" not in myfmt:
+            # it has no mount point (swap has been checked before)
+            if path == "":
                 continue
 
             if path == '/':
@@ -739,8 +745,9 @@ class InstallationProcess(multiprocessing.Process):
 
         if root_ssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
-
+        
         full_text = '\n'.join(all_lines)
+        full_text += '\n'
 
         with open('%s/etc/fstab' % self.dest_dir, 'w') as f:
             f.write(full_text)
