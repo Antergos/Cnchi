@@ -136,7 +136,7 @@ class Features(Gtk.Box):
         txt = _("Control the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
 
-        # Propietary packages (third_party)
+        # Proprietary packages (third_party)
         txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)  
