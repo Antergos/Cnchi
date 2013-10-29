@@ -151,7 +151,8 @@ class UserInfo(Gtk.Box):
 
         self.password_strength.hide()
         
-        #self.login['encrypt'].hide()
+        # TODO: Fix home encryption and stop hidding its widget
+        self.login['encrypt'].hide()
 
     def store_values(self):
         self.settings.set('fullname', self.entry['fullname'].get_text())
