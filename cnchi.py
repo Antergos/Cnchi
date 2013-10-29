@@ -433,12 +433,12 @@ if __name__ == '__main__':
             # Exit and let the new instance do all the hard work
             sys.exit(0)
 
-    # Start Gdk stuff and main window app
+    # Start Gdk stuff and main window app 
     GObject.threads_init()
-    Gdk.threads_init()
+    #Gdk.threads_init()
 
     app = Main()
     
-    Gdk.threads_enter()
+    #Gdk.threads_enter()
     Gtk.main()
-    Gdk.threads_leave()
+    #Gdk.threads_leave()

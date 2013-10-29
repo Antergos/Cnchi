@@ -164,7 +164,10 @@ class Slides(Gtk.Box):
                             # (this should be fixed) meanwhile, we need sudo privileges to remove them
                             with misc.raised_privileges():
                                 os.remove(p)
-                    self.callback_queue.task_done()
+                    # BUG: This does not work. Cnchi gets blocked and never exits
+                    #self.callback_queue.task_done()
+                    while Gtk.events_pending():
+                        Gtk.main_iteration()
                     Gtk.main_quit()
                         
                 self.exit_button.show()
