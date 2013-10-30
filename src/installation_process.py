@@ -578,10 +578,15 @@ class InstallationProcess(multiprocessing.Process):
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                        
+        # Add libreoffice language package
+        if self.settings.get('feature_office'):
+            lang = self.settings.get('locale').split('.')[0]
+            pkg = "libreoffice-%s" % lang
+            self.packages.append(pkg)
 
     def get_graphics_card(self):
-        p1 = subprocess.Popen(["hwinfo", "--gfxcard"], \
-                              stdout=subprocess.PIPE)
+        p1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["grep", "Model:[[:space:]]"],\
                               stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()
@@ -597,7 +602,7 @@ class InstallationProcess(multiprocessing.Process):
         self.pac.install_packages(self.packages, self.conflicts)
     
     def chroot_mount_special_dirs(self):
-        # do not remount
+        # Do not remount
         if self.special_dirs_mounted:
             self.queue_event('debug', _("Special dirs already mounted."))
             return
