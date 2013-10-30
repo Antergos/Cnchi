@@ -91,12 +91,12 @@ class Main(Gtk.Window):
         # With this we can use _("string") to translate
         gettext.install(APP_NAME, localedir=LOCALE_DIR, codeset=None, names=[locale_code])
 
-        # check if we have administrative privileges
+        # Check if we have administrative privileges
         if os.getuid() != 0:
             show.fatal_error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
         
-        # check if we're already running
+        # Check if we're already running
         tmp_running = "/tmp/.setup-running"
         if os.path.exists(tmp_running):
             show.error(_('You cannot run two instances of this installer.\n\n'
@@ -129,10 +129,10 @@ class Main(Gtk.Window):
 
         self.settings.set('cache', _cache_dir)
             
-        # set enabled desktops
+        # Set enabled desktops
         self.settings.set("desktops", _desktops)
         
-        # set if a grub type must be installed (user choice)
+        # Set if a grub type must be installed (user choice)
         self.settings.set("force_grub_type", _force_grub_type)
 
         self.ui = Gtk.Builder()
@@ -166,12 +166,12 @@ class Main(Gtk.Window):
         # to the main thread (installer_*.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
-        # save in config if we have to use aria2 to download pacman packages
+        # Save in config if we have to use aria2 to download pacman packages
         self.settings.set("use_aria2", _use_aria2)
         if _use_aria2:
             logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
 
-        # load all pages
+        # Load all pages
         # (each one is a screen, a step in the install process)
 
         self.pages = dict()
@@ -212,12 +212,12 @@ class Main(Gtk.Window):
         self.set_resizable(False)
         self.set_size_request(_main_window_width, _main_window_height);
 
-        # set window icon
+        # Set window icon
         icon_dir = os.path.join(data_dir, 'antergos-icon.png')
         
         self.set_icon_from_file(icon_dir)
 
-        # set the first page to show
+        # Set the first page to show
         self.current_page = self.pages["welcome"]
 
         self.main_box.add(self.current_page)
@@ -237,7 +237,7 @@ class Main(Gtk.Window):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
-        # show main window
+        # Show main window
         self.show_all()
 
         self.vertical_image = self.ui.get_object('vertical_image')
@@ -247,19 +247,19 @@ class Main(Gtk.Window):
 
         self.current_page.prepare('forwards')
 
-        # hide backwards button
+        # Hide backwards button
         self.backwards_button.hide()
 
         # Hide titlebar but show border decoration
         self.get_window().set_accept_focus(True)
         self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
         
-        # hide progress bar as it's value is zero
+        # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
         self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-        # we drop privileges, but where we should do it? before this? ¿?
+        # We drop privileges, but where we should do it? before this? ¿?
         misc.drop_privileges()
 
         with open(tmp_running, "wt") as tmp_file:
@@ -312,7 +312,7 @@ class Main(Gtk.Window):
                     self.main_box.add(self.current_page)
 
                     if self.current_page.get_prev_page() != None:
-                        # there is a previous page, show button
+                        # There is a previous page, show button
                         self.backwards_button.show()
                         self.backwards_button.set_sensitive(True)
                     else:
@@ -324,8 +324,8 @@ class Main(Gtk.Window):
         if prev_page != None:
             self.set_progressbar_step(-self.progressbar_step)
 
-            # if we go backwards, don't store user changes
-            #self.current_page.store_values()
+            # If we go backwards, don't store user changes
+            # self.current_page.store_values()
             
             self.main_box.remove(self.current_page)
             self.current_page = self.pages[prev_page]
@@ -335,15 +335,15 @@ class Main(Gtk.Window):
                 self.main_box.add(self.current_page)
 
                 if self.current_page.get_prev_page() == None:
-                    # we're at the first page
+                    # We're at the first page
                     self.backwards_button.hide()
 
 def setup_logging():
     logger = logging.getLogger()
     logger.setLevel(_log_level)
-    # log format
+    # Log format
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # create file handler
+    # Create file handler
     fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
     fh.setLevel(_log_level)
     fh.setFormatter(formatter)
@@ -435,10 +435,7 @@ if __name__ == '__main__':
 
     # Start Gdk stuff and main window app 
     GObject.threads_init()
-    #Gdk.threads_init()
 
     app = Main()
-    
-    #Gdk.threads_enter()
+
     Gtk.main()
-    #Gdk.threads_leave()

@@ -26,6 +26,7 @@ import subprocess
 import os
 import gtkwidgets
 import logging
+import misc
 
 _next_page = "installation_ask"
 _prev_page = "desktop"
@@ -142,6 +143,16 @@ class Features(Gtk.Box):
         self.titles["third_party"].set_markup(txt)  
         txt = _("Third-party software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
+        
+        # Uncomplicated Firewall dialog
+        ufw = self.ui.get_object("ufw")
+        txt = _("Uncomplicated Firewall will be installed with these rules:")
+        txt = "<big>%s</big>" % txt
+        ufw.set_markup(txt)
+        toallow = misc.get_network()
+        txt = "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH" % toallow
+        txt = "<i>%s</i>" % txt
+        ufw.format_secondary_markup(txt)
     
     def hide_features(self):
         for feature in self.all_features:
