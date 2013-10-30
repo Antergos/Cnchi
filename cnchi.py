@@ -184,6 +184,7 @@ class Main(Gtk.Window):
         params['exit_button'] = self.exit_button
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
+        params['main_progressbar'] = self.ui.get_object('progressbar1')
         params['alternate_package_list'] = _alternate_package_list
         
         if len(_alternate_package_list) > 0:

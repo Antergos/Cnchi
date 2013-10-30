@@ -46,6 +46,7 @@ class Slides(Gtk.Box):
         self.exit_button = params['exit_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
+        self.main_progressbar = params['main_progressbar']
 
         super().__init__()
 
@@ -106,6 +107,9 @@ class Slides(Gtk.Box):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        # Last screen reached, hide main progress bar.
+        self.main_progressbar.hide()
         
         self.global_progress_bar.hide()
         self.global_progress_bar_is_hidden = True
