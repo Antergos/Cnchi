@@ -22,7 +22,7 @@
 
 import multiprocessing
 import queue
-
+import socket
 import subprocess
 import os
 import sys
@@ -1051,6 +1051,29 @@ class InstallationProcess(multiprocessing.Process):
             except (FileExistsError, shutil.Error) as e:
                 pass
             percent += step
+    def get_ip(self):
+        intip = False
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(("antergos.com",1234))
+        except:
+            return ""
+        myip = s.getsockname()[0]
+        s.close()
+        spip = myip.split(".")
+        if spip[0] == '192':
+            if spip[1] == '168':
+                intip = True
+        elif spip[0] == '10':
+            intip = True
+        elif spip[0] == '172':
+            if int(spip[1]) > 15 and int(spip[1]) < 32:
+                intip = True
+        if intip:
+            ipran = '.'.join(spip[:-1]) + ".0/24"
+        else:
+            ipran = '.'.join(spip)
+        return ipran
                         
     def setup_features(self):
         #features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
@@ -1080,7 +1103,12 @@ class InstallationProcess(multiprocessing.Process):
             # and allow incoming Transmission and SSH traffic from anywhere:
             self.chroot_mount_special_dirs()
             self.chroot(["ufw", "default", "deny"])
-            self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
+            toallow = self.get_ip()
+            if toallow:
+                self.chroot(["ufw", "allow", "from", toallow])
+            #self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
+            #self.chroot(["ufw", "allow", "from", "192.168.1.0/24"])
+            #self.chroot(["ufw", "allow", "from", "192.168.2.0/24"])
             self.chroot(["ufw", "allow", "Transmission"])
             self.chroot(["ufw", "allow", "SSH"])
             self.chroot(["ufw", "enable"])

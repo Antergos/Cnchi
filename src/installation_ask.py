@@ -80,12 +80,12 @@ class InstallationAsk(Gtk.Box):
         self.translate_ui()
         self.show_all()
         
-        # Hide alongside option if no existing Windows OS has been detected
-        if "windows" not in self.otherOS.lower():
-            radio = self.ui.get_object("alongside_radiobutton")
-            radio.hide()
-            label = self.ui.get_object("alongside_description")
-            label.hide()
+        # Always hide alongside option. It is not ready yet
+        # if "windows" not in self.otherOS.lower():
+        radio = self.ui.get_object("alongside_radiobutton")
+        radio.hide()
+        label = self.ui.get_object("alongside_description")
+        label.hide()
 
     def translate_ui(self):
         txt = _("Installation Type")

@@ -202,7 +202,7 @@ class AutoPartition():
         
         mount_devices["/boot"] = boot_device
         
-        # TODO: Check that this works using LUKS, LVM or LVM on LUKS
+        # TODO: Check that this works using LVM on LUKS
         if self.luks:
             mount_devices["/"] = luks_device
         else:
@@ -222,7 +222,7 @@ class AutoPartition():
         fs_devices[boot_device] = "ext2"
         fs_devices[swap_device] = "swap"
 
-        # TODO: Check that this works using LUKS, LVM or LVM on LUKS
+        # TODO: Check that this works using LVM on LUKS
         if self.luks:
             fs_devices[luks_device] = "ext4"
         else:
@@ -256,7 +256,7 @@ class AutoPartition():
             
             disc_size = ((logical_block_size * size) / 1024) / 1024
         else:
-            logging.error("Setup cannot detect size of your device, please use normal "
+            logging.error("Setup cannot detect size of your device, please use normal " \
                 "installation routine for partitioning and mounting devices.")
             return
         
