@@ -1105,7 +1105,7 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(["ufw", "default", "deny"])
             toallow = self.get_ip()
             if toallow:
-                self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
+                self.chroot(["ufw", "allow", "from", toallow])
             #self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
             #self.chroot(["ufw", "allow", "from", "192.168.1.0/24"])
             #self.chroot(["ufw", "allow", "from", "192.168.2.0/24"])
