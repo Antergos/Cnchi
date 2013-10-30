@@ -164,25 +164,22 @@ class InstallationAutomatic(Gtk.Box):
             Gtk.main_iteration()
     
     def on_luks_password_changed(self, widget):
-        pass
-        '''
-        if widget == self.entry['luks_password']:
-            luks_password = self.entry['luks_password'].get_text()
-
-        if widget == self.entry['luks_password_confirm']:
-            luks_password_confirm 
-            pass
+        luks_password = self.entry['luks_password'].get_text()
+        luks_password_confirm = self.entry['luks_password_confirm'].get_text()
+        install_ok = True
         if len(luks_password) <= 0:
             self.image_password_ok.hide()
+            self.forward_button.set_sensitive(True)
         else:
-            luks_confirm_password = self.entry['luks_password_confirm'].get_text()
-            if luks_password == luks_confirm_password:
+            if luks_password == luks_password_confirm:
                 icon = "gtk-yes"
             else:
                 icon = "gtk-no"
-            self.image_password_ok.set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+                install_ok = False
+            self.image_password_ok.set_from_stock(icon, Gtk.IconSize.BUTTON)
             self.image_password_ok.show()
-        '''
+
+        self.forward_button.set_sensitive(install_ok)
     
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
