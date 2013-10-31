@@ -41,6 +41,7 @@ class Welcome(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
+        self.disable_tryit = params['disable_tryit']
 
         super().__init__()
 
@@ -131,6 +132,9 @@ class Welcome(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.forward_button.hide()
+        if self.disable_tryit:
+            box_tryit = self.ui.get_object("box_tryit")
+            box_tryit.hide()
 
     def get_prev_page(self):
         return _prev_page

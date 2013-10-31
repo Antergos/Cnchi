@@ -69,6 +69,7 @@ _log_level = logging.INFO
 _update = False
 _use_aria2 = False
 _verbose = False
+_disable_tryit = False
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
@@ -188,6 +189,7 @@ class Main(Gtk.Window):
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
         params['alternate_package_list'] = _alternate_package_list
+        params['disable_tryit'] = _disable_tryit
         
         if len(_alternate_package_list) > 0:
             logging.info(_("Using '%s' file as package list") % _alternate_package_list)
@@ -384,7 +386,7 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(argv, "ac:dp:ufvg:h",
          ["aria2", "cache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "help"])
+          "force-update", "verbose", "force-grub=", "disable-tryit", "help"])
     except getopt.GetoptError as e:
         show_help()
         print(str(e))
@@ -409,6 +411,8 @@ if __name__ == '__main__':
         elif opt in ('-g', '--force-grub-type'):
             if arg in ('bios', 'efi', 'ask', 'none'):
                 _force_grub_type = arg
+        elif opt in ('--disable-tryit'):
+            _disable_tryit = True
         elif opt in ('-h', '--help'):
             show_help()
             sys.exit(0)
