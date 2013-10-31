@@ -52,19 +52,19 @@ class BootLoader():
         self.title.set_markup(txt)
 
         label = self.ui.get_object("GRUB2_label")
-        txt = _("BIOS (Most Common, Not Win8)")
+        txt = _("BIOS (Most Common)")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_x86_64_label")
-        txt = _("64-bit UEFI (Win8)")
+        txt = _("64-bit UEFI")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_i386_label")
-        txt = _("32-bit UEFI")
+        txt = _("32-bit UEFI (old Macs)")
         label.set_markup(txt)
         
         label = self.ui.get_object("help_label")
-        txt = _("Select 'cancel' if you don't want to install a boot loade.r")
+        txt = _("Select 'cancel' if you don't want to install a boot loader.")
         label.set_markup(txt)
         
     def get_type(self):
