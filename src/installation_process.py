@@ -1239,7 +1239,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Set autologin if selected
             if self.settings.get('require_password') is False:
-                self.queue_event('info', _("%s: Enable automatic login for user %s." % (self.desktop_manager, username)))
+                self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
                 # Systems with GDM as Desktop Manager
                 if self.desktop_manager == 'gdm':
                     gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
