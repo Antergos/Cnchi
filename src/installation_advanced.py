@@ -1166,6 +1166,14 @@ class InstallationAdvanced(Gtk.Box):
 
         self.translate_ui()
         self.show_all()
+        
+        # TODO: Enable this and finish LUKS encryption
+        button = self.ui.get_object('partition_encryption_settings')
+        button.set_sensitive(False)
+        button.hide()
+        button = self.ui.get_object('partition_encryption_settings2')
+        button.set_sensitive(False)
+        button.hide()
 
         #label = self.ui.get_object('part_advanced_recalculating_label')
         #label.hide()
