@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-10-31 16:35+PET\n"
+"POT-Creation-Date: 2013-10-31 16:59+PET\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,19 +54,19 @@ msgid "What type of boot system are you using?"
 msgstr ""
 
 #: src/bootloader.py:55
-msgid "BIOS (Most Common, Not Win8)"
+msgid "BIOS (Most Common)"
 msgstr ""
 
 #: src/bootloader.py:59
-msgid "64-bit UEFI (Win8)"
+msgid "64-bit UEFI"
 msgstr ""
 
 #: src/bootloader.py:63
-msgid "32-bit UEFI"
+msgid "32-bit UEFI (old Macs)"
 msgstr ""
 
 #: src/bootloader.py:67
-msgid "Select 'cancel' if you don't want to install a boot loade.r"
+msgid "Select 'cancel' if you don't want to install a boot loader."
 msgstr ""
 
 #: src/check.py:63
@@ -90,7 +90,7 @@ msgid "For best results, please ensure that this computer:"
 msgstr ""
 
 #: src/check.py:85
-msgid "Antergos uses third-party software to play Flash videos, MP3 and other media, and to interact with some graphics and wifi hardware. Some of this software is proprietary. Use of this software is subject to license terms included with its documentation."
+msgid "Antergos uses third-party software to play Flash videos, MP3 and other media. Some of this software is proprietary. Use of this software is subject to license terms included with its documentation."
 msgstr ""
 
 #: src/check.py:93
@@ -118,7 +118,7 @@ msgid "Gnome 3 is an easy and elegant way to use your computer. It features the 
 msgstr ""
 
 #: src/desktop.py:83
-msgid "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides users a more traditional desktop interface along with the newest compositing techniques of GNOME 3. Cinnamon is a solid desktop that's great for users of all experience levels. "
+msgid "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides users a more traditional desktop interface along with the newest compositing techniques of GNOME 3. Cinnamon is for users of all experience levels. "
 msgstr ""
 
 #: src/desktop.py:90
