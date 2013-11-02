@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-10-31 16:59+PET\n"
+"POT-Creation-Date: 2013-11-01 19:18+PET\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: cnchi.py:96
+#: cnchi.py:97
 msgid "This installer must be run with administrative privileges, and cannot continue without them."
 msgstr ""
 
-#: cnchi.py:102
+#: cnchi.py:105
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -28,19 +28,19 @@ msgid ""
 "and run this installer again."
 msgstr ""
 
-#: cnchi.py:172
+#: cnchi.py:175
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
 msgstr ""
 
-#: cnchi.py:191
+#: cnchi.py:195
 msgid "Using '%s' file as package list"
 msgstr ""
 
-#: cnchi.py:211
+#: cnchi.py:215
 msgid "Antergos Installer"
 msgstr ""
 
-#: cnchi.py:284
+#: cnchi.py:288
 msgid "Quiting installer..."
 msgstr ""
 
@@ -266,7 +266,7 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
-#: src/installation_advanced.py:277 src/installation_advanced.py:1413
+#: src/installation_advanced.py:277 src/installation_advanced.py:1421
 msgid "Format"
 msgstr ""
 
@@ -291,8 +291,8 @@ msgid "none"
 msgstr ""
 
 #: src/installation_advanced.py:519 src/installation_advanced.py:921
-#: src/installation_advanced.py:1295 src/installation_advanced.py:1368
-#: src/installation_advanced.py:1536
+#: src/installation_advanced.py:1303 src/installation_advanced.py:1376
+#: src/installation_advanced.py:1544
 msgid "extended"
 msgstr ""
 
@@ -397,57 +397,57 @@ msgstr ""
 msgid "Install Now!"
 msgstr ""
 
-#: src/installation_advanced.py:1235
+#: src/installation_advanced.py:1243
 msgid "Creating a new %s partition table for disk %s"
 msgstr ""
 
-#: src/installation_advanced.py:1331
+#: src/installation_advanced.py:1339
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr ""
 
-#: src/installation_advanced.py:1333
+#: src/installation_advanced.py:1341
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr ""
 
-#: src/installation_advanced.py:1406
+#: src/installation_advanced.py:1414
 msgid "Partition %s will be deleted"
 msgstr ""
 
-#: src/installation_advanced.py:1413
+#: src/installation_advanced.py:1421
 msgid "Mount"
 msgstr ""
 
-#: src/installation_advanced.py:1413
+#: src/installation_advanced.py:1421
 msgid "New"
 msgstr ""
 
-#: src/installation_advanced.py:1413
+#: src/installation_advanced.py:1421
 msgid "Partition"
 msgstr ""
 
-#: src/installation_advanced.py:1413
+#: src/installation_advanced.py:1421
 msgid "Relabel"
 msgstr ""
 
-#: src/installation_advanced.py:1434
+#: src/installation_advanced.py:1442
 msgid "We will make changes to partitions on these disks:"
 msgstr ""
 
-#: src/installation_advanced.py:1459
+#: src/installation_advanced.py:1467
 msgid "Finished saving changes in %s"
 msgstr ""
 
-#: src/installation_advanced.py:1473
+#: src/installation_advanced.py:1481
 msgid "Creating %s filesystem in %s labeled %s"
 msgstr ""
 
-#: src/installation_advanced.py:1555
+#: src/installation_advanced.py:1563
 msgid "Antergos will install the bootloader of type %s in %s"
 msgstr ""
 
@@ -699,7 +699,7 @@ msgid ""
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr ""
 
-#: src/language.py:93 src/welcome.py:98
+#: src/language.py:93 src/welcome.py:99
 msgid "Welcome to Antergos!"
 msgstr ""
 
@@ -1031,25 +1031,25 @@ msgstr ""
 msgid "Passwords do not match"
 msgstr ""
 
-#: src/welcome.py:84
+#: src/welcome.py:85
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
 msgstr ""
 
-#: src/welcome.py:89
+#: src/welcome.py:90
 msgid "Try It"
 msgstr ""
 
-#: src/welcome.py:92
+#: src/welcome.py:93
 msgid "CLI Installer"
 msgstr ""
 
-#: src/welcome.py:95
+#: src/welcome.py:96
 msgid "Graphical Installer"
 msgstr ""
 
-#: src/welcome.py:119
+#: src/welcome.py:120
 msgid "Can't load the CLI installer"
 msgstr ""
 
