@@ -279,6 +279,13 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </openbox_desktop>
+    
+    <kde_desktop>
+        <pkgname>kde-meta-kdebase</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
+        <pkgname>lightdm-webkit-greeter</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+    </kde_desktop>
 
     <!-- User desired features -->
     <user_features>
@@ -326,11 +333,6 @@
         <third_party>
             <pkgname>flashplugin</pkgname>
             <pkgname>libdvdcss</pkgname>
-            <!--
-            <pkgname>ttf-ms-fonts</pkgname>
-            <pkgname>acroread</pkgname>
-            <pkgname>jre</pkgname>            
-            -->
         </third_party>    
     </user_features>
 

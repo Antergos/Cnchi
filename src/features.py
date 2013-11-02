@@ -60,6 +60,7 @@ class Features(Gtk.Box):
         self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["openbox"] = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        self.features_by_desktop["kde"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
                 
         self.labels = {}
         self.titles = {}
