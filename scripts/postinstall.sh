@@ -79,6 +79,9 @@ gnome_settings(){
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	
+	## Our background in LXDM
+	chroot ${DESTDIR}/etc/lxdm su -c echo "bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> lightdm.conf
 	}
 
 cinnamon_settings(){
