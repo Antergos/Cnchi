@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-11-01 19:18+PET\n"
+"POT-Creation-Date: 2013-11-03 11:52+PET\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -528,11 +528,11 @@ msgid "Select the drive we should use to install Antergos and then click below t
 msgstr ""
 
 #: src/installation_automatic.py:94
-msgid "Choose a password for your LUKS device:"
+msgid "Encryption Password:"
 msgstr ""
 
-#: src/installation_automatic.py:98
-msgid "Confirm your password for your LUKS device:"
+#: src/installation_automatic.py:98 src/user_info.py:111
+msgid "Confirm your password:"
 msgstr ""
 
 #: src/installation_automatic.py:152
@@ -918,10 +918,6 @@ msgstr ""
 
 #: src/user_info.py:107
 msgid "Password"
-msgstr ""
-
-#: src/user_info.py:111
-msgid "Confirm your password:"
 msgstr ""
 
 #: src/user_info.py:115
