@@ -91,11 +91,11 @@ class InstallationAutomatic(Gtk.Box):
         label.set_markup(txt)
         
         label = self.ui.get_object('label_luks_password')
-        txt = _("Choose a password for your LUKS device:")
+        txt = _("Encryption Password:")
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password_confirm')
-        txt = _("Confirm your password for your LUKS device:")
+        txt = _("Confirm your password:")
         label.set_markup(txt)
 
         txt = _("Install Now!")
@@ -168,7 +168,7 @@ class InstallationAutomatic(Gtk.Box):
         luks_password_confirm = self.entry['luks_password_confirm'].get_text()
         install_ok = True
         if len(luks_password) <= 0:
-            self.image_password_ok.hide()
+            self.image_password_ok.set_opacity(0)
             self.forward_button.set_sensitive(True)
         else:
             if luks_password == luks_password_confirm:
@@ -177,7 +177,7 @@ class InstallationAutomatic(Gtk.Box):
                 icon = "gtk-no"
                 install_ok = False
             self.image_password_ok.set_from_stock(icon, Gtk.IconSize.BUTTON)
-            self.image_password_ok.show()
+            self.image_password_ok.set_opacity(1)
 
         self.forward_button.set_sensitive(install_ok)
     
