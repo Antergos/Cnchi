@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Sun Nov  3 15:57:59 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkBox" id="installation_automatic">
     <property name="can_focus">False</property>
     <property name="margin_left">10</property>
@@ -21,7 +22,7 @@
             <property name="xalign">0.89999997615814209</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">dialog-warning</property>
-            <property name="icon-size">6</property>
+            <property name="icon_size">6</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -157,7 +158,7 @@ and click the button below to start the process.</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Confirm your password for your LUKS device:</property>
+                <property name="label" translatable="yes">Confirm your password:</property>
                 <property name="justify">right</property>
               </object>
               <packing>
@@ -172,7 +173,7 @@ and click the button below to start the process.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
-                <property name="label" translatable="yes">Choose a password for your LUKS device:</property>
+                <property name="label" translatable="yes">Encryption Password:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -182,25 +183,36 @@ and click the button below to start the process.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry_luks_password_confirm">
+              <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="visibility">False</property>
-                <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="entry_luks_password">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="visibility">False</property>
-                <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkEntry" id="entry_luks_password">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_right">6</property>
+                    <property name="input_purpose">password</property>
+                    <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="image_password_ok">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="opacity">0</property>
+                    <property name="stock">gtk-no</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -210,19 +222,32 @@ and click the button below to start the process.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="image_password_ok">
+              <object class="GtkBox" id="box3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkEntry" id="entry_luks_password_confirm">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="input_purpose">password</property>
+                    <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">1</property>
                 <property name="top_attach">1</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
         </child>
