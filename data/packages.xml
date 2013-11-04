@@ -283,11 +283,13 @@
     <kde_desktop>
         <pkgname>kde-meta-kdebase</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname>lightdm-webkit-greeter</pkgname> <!-- Needs to be added to our repo -->
-        <pkgname>lightdm-webkit-theme-antergos</pkgname> <!-- Needs to be added to our repo -->
+       <!-- <pkgname>lightdm-webkit-greeter</pkgname>  Needs to be added to our repo -->
+       <!-- <pkgname>lightdm-webkit-theme-antergos</pkgname>  Needs to be added to our repo -->
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
+        <pkgname>vlc</pkgname>
+        <pkgname>phonon-vlc</pkgname>
     </kde_desktop>
 
     <!-- User desired features -->
