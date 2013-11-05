@@ -1141,8 +1141,18 @@ class InstallationProcess(multiprocessing.Process):
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
         elif self.network_manager == 'netctl':
-            # TODO: Copy a netctl dhcp setup
-            pass
+            # TODO: Detect if we are using Wi-fi
+            wifi = False
+            profile = 'ethernet-dhcp'
+            if wifi:
+                profile = 'wireless-wpa'
+                
+            self.queue_event('debug', 'Cnchi will configure netctl using the %s profile' % profile)
+                
+            src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
+            dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
+            shutil.copy(src_path, dst_path)
+            self.chroot(['netctl', 'enable', profile])
             
         self.queue_event('debug', 'Network configuration copied.')
 
