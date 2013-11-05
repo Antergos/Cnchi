@@ -309,8 +309,6 @@
             <pkgname>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
             <pkgname>libreoffice-writer</pkgname>
-            <!-- TODO: Install the language package that is needed and not always en-US -->
-            <pkgname>libreoffice-en-US</pkgname>
         </office>
         <!-- visual effects for openbox -->
         <visual>

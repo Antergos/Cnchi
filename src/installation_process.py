@@ -581,8 +581,24 @@ class InstallationProcess(multiprocessing.Process):
                         
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            lang = self.settings.get('locale').split('.')[0]
-            pkg = "libreoffice-%s" % lang
+            pkg = ""
+            lang_name = self.settings.get("language_name").lower() 
+            if lang_name == "english":
+                # There're some English variants available but not all of them.
+                lang_packs = [ 'en-GB', 'en-US', 'en-ZA' ]
+                locale = self.settings.get('locale').split('.')[0]
+                locale.replace('_', '-')
+                if locale in lang_packs:
+                    pkg = "libreoffice-%s" % locale
+                else:
+                    # Install American English if there is not an specific
+                    # language package available.
+                    pkg = "libreoffice-en-US"
+            else:
+                # All the other language packs use their language code
+                lang_code = self.settings.get('language_code')
+                lang_code.replace('_', '-')
+                pkg = "libreoffice-%s" % lang_code
             self.packages.append(pkg)
 
     def get_graphics_card(self):
