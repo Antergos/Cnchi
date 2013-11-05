@@ -587,7 +587,7 @@ class InstallationProcess(multiprocessing.Process):
                 # There're some English variants available but not all of them.
                 lang_packs = [ 'en-GB', 'en-US', 'en-ZA' ]
                 locale = self.settings.get('locale').split('.')[0]
-                locale.replace('_', '-')
+                locale = locale.replace('_', '-')
                 if locale in lang_packs:
                     pkg = "libreoffice-%s" % locale
                 else:
@@ -597,7 +597,7 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
-                lang_code.replace('_', '-')
+                lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
             self.packages.append(pkg)
 
