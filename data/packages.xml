@@ -31,7 +31,7 @@
         <pkgname>wpa_actiond</pkgname>
         <pkgname>zd1211-firmware</pkgname>
     </common_system>
-
+    
     <!-- Common to all graphic desktops -->
     <!-- It's best to put here apps that are qt/gtk agnostic -->
     <graphic_system>
@@ -45,6 +45,11 @@
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
     </graphic_system>
+
+    <!-- Specific to noX/Base installation -->
+    <nox>
+        <pkgname nm='true' name='netctl'>netctl</pkgname>
+    </nox>
 
     <gnome_desktop>
         <pkgname>cdrkit</pkgname>
@@ -172,7 +177,6 @@
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname dm='true' name='lxdm'>lxdm</pkgname>
-        <!-- <pkgname>polkit-gnome</pkgname> -->
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -309,6 +313,7 @@
             <pkgname>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
             <pkgname>libreoffice-writer</pkgname>
+            <!-- Cnchi will install the language pack -->
         </office>
         <!-- visual effects for openbox -->
         <visual>
