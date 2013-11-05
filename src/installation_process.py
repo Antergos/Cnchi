@@ -718,7 +718,7 @@ class InstallationProcess(multiprocessing.Process):
             # TODO: Take care of swap partitions
             if "swap" in myfmt:
                 logging.debug("Add to fstab : UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
-                #all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
+                all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
                 continue
             
             # Avoid adding a partition to fstab when
