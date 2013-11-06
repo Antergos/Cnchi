@@ -1141,11 +1141,10 @@ class InstallationProcess(multiprocessing.Process):
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
         elif self.network_manager == 'netctl':
-            # TODO: Detect if we are using Wi-fi
-            wifi = False
-            profile = 'ethernet-dhcp'
-            if wifi:
+            if misc.is_wireless_enabled():
                 profile = 'wireless-wpa'
+            else:
+                profile = 'ethernet-dhcp'
                 
             self.queue_event('debug', 'Cnchi will configure netctl using the %s profile' % profile)
                 

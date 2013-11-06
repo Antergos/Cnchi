@@ -832,6 +832,11 @@ def get_prop(obj, iface, prop):
         else:
             raise
 
+def is_wireless_enabled():
+    import dbus
+    bus = dbus.SystemBus()
+    manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+    return get_prop(manager, NM, 'WirelessEnabled')
 
 def has_connection():
     import dbus
