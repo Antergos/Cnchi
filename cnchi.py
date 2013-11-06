@@ -144,7 +144,7 @@ class Main(Gtk.Window):
         self.add(self.ui.get_object("main"))
 
         self.header = self.ui.get_object("header")
-
+        
         self.forward_button = self.ui.get_object("forward_button")
         
         self.logo = self.ui.get_object("logo")
@@ -249,6 +249,13 @@ class Main(Gtk.Window):
         self.vertical_image.hide()
         #logo_90_dir = os.path.join(data_dir, "antergos-logo-mini-90.png")
         #self.vertical_image.set_from_file(logo_90_dir)
+        
+        self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(True)
+        #self.header.hide()
+        self.title.hide()
+        self.logo.hide()
 
         self.current_page.prepare('forwards')
 
@@ -256,7 +263,7 @@ class Main(Gtk.Window):
         self.backwards_button.hide()
 
         # Hide titlebar but show border decoration
-        self.get_window().set_accept_focus(True)
+        #self.get_window().set_accept_focus(True)
         self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
         
         # Hide progress bar as it's value is zero
