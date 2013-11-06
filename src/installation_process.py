@@ -1140,6 +1140,10 @@ class InstallationProcess(multiprocessing.Process):
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
+        
+        # TODO: Test copy profile. Also think a bit more about it.
+        # Maybe just installing netctl is enough.
+        '''
         elif self.network_manager == 'netctl':
             if misc.is_wireless_enabled():
                 profile = 'wireless-wpa'
@@ -1152,8 +1156,9 @@ class InstallationProcess(multiprocessing.Process):
             dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
             shutil.copy(src_path, dst_path)
             self.chroot(['netctl', 'enable', profile])
-            
+
         self.queue_event('debug', 'Network configuration copied.')
+        '''
 
         # copy mirror list
         mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
