@@ -436,6 +436,15 @@ class InstallationProcess(multiprocessing.Process):
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
                     self.packages.append(pkg.text)
+        else:
+            # Add specific NoX/Base packages
+            for child in root.iter('nox'):
+                for pkg in child.iter('pkgname'):
+                    if pkg.attrib.get('nm'):
+                        self.network_manager = pkg.attrib.get('name')
+                    if pkg.attrib.get('conflicts'):
+                        self.conflicts.append(pkg.attrib.get('conflicts'))
+                    self.packages.append(pkg.text)
         
         # Always install ntp as the user may want to activate it
         # later (or not) in the timezone screen
@@ -581,8 +590,24 @@ class InstallationProcess(multiprocessing.Process):
                         
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            lang = self.settings.get('locale').split('.')[0]
-            pkg = "libreoffice-%s" % lang
+            pkg = ""
+            lang_name = self.settings.get("language_name").lower() 
+            if lang_name == "english":
+                # There're some English variants available but not all of them.
+                lang_packs = [ 'en-GB', 'en-US', 'en-ZA' ]
+                locale = self.settings.get('locale').split('.')[0]
+                locale = locale.replace('_', '-')
+                if locale in lang_packs:
+                    pkg = "libreoffice-%s" % locale
+                else:
+                    # Install American English if there is not an specific
+                    # language package available.
+                    pkg = "libreoffice-en-US"
+            else:
+                # All the other language packs use their language code
+                lang_code = self.settings.get('language_code')
+                lang_code = lang_code.replace('_', '-')
+                pkg = "libreoffice-%s" % lang_code
             self.packages.append(pkg)
 
     def get_graphics_card(self):
@@ -1115,7 +1140,25 @@ class InstallationProcess(multiprocessing.Process):
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
+        
+        # TODO: Test copy profile. Also think a bit more about it.
+        # Maybe just installing netctl is enough.
+        '''
+        elif self.network_manager == 'netctl':
+            if misc.is_wireless_enabled():
+                profile = 'wireless-wpa'
+            else:
+                profile = 'ethernet-dhcp'
+                
+            self.queue_event('debug', 'Cnchi will configure netctl using the %s profile' % profile)
+                
+            src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
+            dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
+            shutil.copy(src_path, dst_path)
+            self.chroot(['netctl', 'enable', profile])
+
         self.queue_event('debug', 'Network configuration copied.')
+        '''
 
         # copy mirror list
         mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
@@ -1135,8 +1178,13 @@ class InstallationProcess(multiprocessing.Process):
                 pass
         self.queue_event('debug', 'Important configuration files copied.')
 
-        # enable desktop manager and network manager services
-        self.enable_services([ self.desktop_manager, self.network_manager, "ModemManager" ])           
+        desktop = self.settings.get('desktop')
+
+        # enable services
+        if desktop != "nox":
+            self.enable_services([ self.desktop_manager, "ModemManager" ])
+        
+        self.enable_services([ self.network_manager ])
             
         self.queue_event('debug', 'Enabled installed services.')
 
@@ -1197,7 +1245,7 @@ class InstallationProcess(multiprocessing.Process):
         self.change_user_password('root', password)
         self.queue_event('debug', 'Set the same password to root.')
 
-        ## Generate locales
+        # Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
@@ -1218,8 +1266,6 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
-
-        desktop = self.settings.get('desktop')
                 
         if desktop != "nox":
             self.queue_event('debug', "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")            
