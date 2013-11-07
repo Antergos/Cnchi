@@ -78,6 +78,7 @@ LOCALE_DIR = "/usr/share/locale"
 _main_window_width = 800
 _main_window_height = 500
 
+# At least this GTK version is needed
 _gtk_version_needed = "3.10"
 
 class Main(Gtk.Window):
@@ -382,25 +383,31 @@ def show_help():
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
     print("-v, --verbose : Show logging messages to stdout")
 
+def check_gtk_version():
+    # Check desired GTK Version
+    dmajor = int(_gtk_version_needed.split(".")[0])
+    dminor = int(_gtk_version_needed.split(".")[1])
+    
+    # Check system GTK Version
+    smajor = Gtk.get_major_version()
+    sminor = Gtk.get_minor_version()
+
+    if dmajor > smajor or (dmajor == smajor and dminor > sminor):
+        print("Detected GTK %d.%d but %s is needed. Can't run this installer." % (smajor, sminor, _gtk_version_needed))
+        return False
+    
+    return True
+
 if __name__ == '__main__':
     
     # Check for hwinfo
     if not os.path.exists("/usr/bin/hwinfo"):
         print("Please install hwinfo before running this installer")
         sys.exit(1)
-        
-    # Check GTK Version
-    gtk_needed_major_version = int(_gtk_version_needed.split(".")[0])
-    gtk_needed_minor_version = int(_gtk_version_needed.split(".")[1])
 
-    if gtk_needed_major_version > Gtk.get_major_version():
-        print("Detected GTK %d.%d but %s is needed." % (Gtk.get_major_version(), Gtk.get_minor_version(), _gtk_version_needed))
+    if not check_gtk_version():
         sys.exit(1)
-    elif gtk_needed_major_version == Gtk.get_major_version() and \
-        gtk_needed_minor_version > Gtk.get_minor_version():
-        print("Detected GTK %d.%d but %s is needed." % (Gtk.get_major_version(), Gtk.get_minor_version(), _gtk_version_needed))
-        sys.exit(1)
-    
+
     # Check program args
     argv = sys.argv[1:]
     
