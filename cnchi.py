@@ -78,6 +78,8 @@ LOCALE_DIR = "/usr/share/locale"
 _main_window_width = 800
 _main_window_height = 500
 
+_gtk_version_needed = "3.10"
+
 class Main(Gtk.Window):
 
     def __init__(self):
@@ -385,6 +387,18 @@ if __name__ == '__main__':
     # Check for hwinfo
     if not os.path.exists("/usr/bin/hwinfo"):
         print("Please install hwinfo before running this installer")
+        sys.exit(1)
+        
+    # Check GTK Version
+    gtk_needed_major_version = int(_gtk_version_needed.split(".")[0])
+    gtk_needed_minor_version = int(_gtk_version_needed.split(".")[1])
+
+    if gtk_needed_major_version > Gtk.get_major_version():
+        print("Detected GTK %d.%d but %s is needed." % (Gtk.get_major_version(), Gtk.get_minor_version(), _gtk_version_needed))
+        sys.exit(1)
+    elif gtk_needed_major_version == Gtk.get_major_version() and \
+        gtk_needed_minor_version > Gtk.get_minor_version():
+        print("Detected GTK %d.%d but %s is needed." % (Gtk.get_major_version(), Gtk.get_minor_version(), _gtk_version_needed))
         sys.exit(1)
     
     # Check program args
