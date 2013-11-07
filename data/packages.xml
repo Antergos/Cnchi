@@ -282,14 +282,44 @@
     
     <kde_desktop>
         <pkgname>kde-meta-kdebase</pkgname>
+        <pkgname>kde-meta-kdeartwork</pkgname>
+        <pkgname>kdegraphics-gwenview</pkgname>
+        <pkgname>kdegraphics-ksnapshot</pkgname>
+        <pkgname>kdegraphics-okular</pkgname>
+        <pkgname>kdegraphics-thumbnailers</pkgname>
+        <pkgname>kdemultimedia-kmix</pkgname>
+        <pkgname>kde-meta-kdenetwork</pkgname>
+        <pkgname>kdepim-kmail</pkgname>
+        <pkgname>kdepim-kontact</pkgname>
+        <pkgname>kdepim-korganizer</pkgname>
+        <pkgname>kde-telepathy-meta</pkgname>
+        <pkgname>kdeutils-kgpg</pkgname>
+        <pkgname>kdeutils-kwallet</pkgname>
+        <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>digikam</pkgname>
+        <pkgname>apper</pkgname>
+        <pkgname>kde-gtk-config</pkgname>
+        <pkgname>transmission-qt</pkgname>
+        <pkgname>kdesdk-kate</pkgname>
+        <pkgname>kdeutils-ark</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
+        <pkgname>lightdm-kde-greeter</pkgname>
        <!-- <pkgname>lightdm-webkit-greeter</pkgname>  Needs to be added to our repo -->
        <!-- <pkgname>lightdm-webkit-theme-antergos</pkgname>  Needs to be added to our repo -->
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>vlc</pkgname>
-        <pkgname>phonon-vlc</pkgname>
+        <pkgname>kdeadmin-kuser</pkgname>
+        <pkgname>k3b</pkgname>
+        <pkgname>dvd+rw-tools</pkgname>
+        <pkgname>emovix</pkgname>
+        <pkgname>cdrdao</pkgname>
+        <pkgname>kdesdk-dolphin-plugins</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
+        <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
+        <pkgname>kdeplasma-addons-applets-notes</pkgname>
     </kde_desktop>
 
     <!-- User desired features -->
