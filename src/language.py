@@ -57,10 +57,11 @@ class Language(Gtk.Box):
         self.scrolledwindow = self.ui.get_object("scrolledwindow1")
 
         # Set up list box
-        self.listbox = Gtk.ListBox(hexpand=True, vexpand=True, expand=True)
-        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
-        self.listbox.set_filter_func(self.listbox_filter_by_name, None)
-        self.scrolledwindow.add(self.listbox)
+        #self.listbox = Gtk.ListBox(hexpand=True, vexpand=True, expand=True)
+        #self.listbox.set_sort_func(self.listbox_sort_by_name, None)
+        #self.listbox.set_filter_func(self.listbox_filter_by_name, None)
+        #self.scrolledwindow.add(self.listbox)
+        self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         
         # TODO: Remove this and use the listbox
@@ -143,10 +144,11 @@ class Language(Gtk.Box):
         for lang in sorted_choices:
             liststore_language.append([lang])
 
-
-            label = Gtk.Label()
-            label.set_text(lang)
-            self.listbox.add(label)
+            box = Gtk.VBox()
+            #label = Gtk.Label("HELLO")
+            #label.set_text("HELLO")
+            #box.add(label)
+            self.listbox.add(box)
 
 
             if current_language == lang:
