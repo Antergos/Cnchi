@@ -42,7 +42,7 @@ class Check(Gtk.Box):
 
     def __init__(self, params):
 
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
         self.forward_button = params['forward_button']
@@ -61,8 +61,10 @@ class Check(Gtk.Box):
 
     def translate_ui(self):
         txt = _("System Check")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.title.set_markup(txt)
+        #txt = '<span weight="bold" size="large">%s</span>' % txt
+        #self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         txt = _("has at least 3GB available storage space")

@@ -35,7 +35,7 @@ _prev_page = "timezone"
 class Keymap(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -59,9 +59,12 @@ class Keymap(Gtk.Box):
         super().add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
-        txt = _("Select Your Keyboard Layout")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Select Your Keyboard Layout"))
+
+        #txt = _("Select Your Keyboard Layout")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
         # TODO: Also change layouts and variants text column
 

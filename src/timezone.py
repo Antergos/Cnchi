@@ -51,7 +51,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 class Timezone(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -103,11 +103,7 @@ class Timezone(Gtk.Box):
 
         self.autodetected_coords = None
 
-    def translate_ui(self):
-        txt = _("Select Your Timezone")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-
+    def translate_ui(self):       
         label = self.ui.get_object('label_zone')
         txt = _("Zone:")
         label.set_markup(txt)
@@ -119,6 +115,13 @@ class Timezone(Gtk.Box):
         label = self.ui.get_object('label_ntp')
         txt = _("Use Network Time Protocol for clock synchronization:")
         label.set_markup(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Select Your Timezone"))
+        
+        #txt = _("Select Your Timezone")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
     def on_location_changed(self, unused_widget, city):
         #("timezone.location_changed started!")

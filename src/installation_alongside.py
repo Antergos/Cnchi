@@ -57,7 +57,7 @@ _minimum_space_for_antergos = 3500
 
 class InstallationAlongside(Gtk.Box):
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -137,9 +137,12 @@ class InstallationAlongside(Gtk.Box):
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        txt = _("Antergos Alongside Installation")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Antergos Alongside Installation"))
+
+        #txt = _("Antergos Alongside Installation")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)

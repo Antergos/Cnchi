@@ -35,7 +35,7 @@ class Features(Gtk.Box):
 
     def __init__(self, params):
 
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
         self.forward_button = params['forward_button']
@@ -97,8 +97,11 @@ class Features(Gtk.Box):
          "razor" : "Razor-qt" }
 
         txt = self.desktops[desktop] + " - " + _("Feature Selection")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.title.set_markup(txt)
+        #txt = '<span weight="bold" size="large">%s</span>' % txt
+        #self.title.set_markup(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(txt)
 
         # Bluetooth
         txt = _("Bluetooth Support")

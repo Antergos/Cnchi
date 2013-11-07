@@ -41,7 +41,7 @@ _prev_page = "welcome"
 class Language(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -102,10 +102,6 @@ class Language(Gtk.Box):
         '''
         
     def translate_ui(self):
-        #txt = _("Welcome to the Antergos Installer")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-
         txt = _("Please choose your language:")
         txt = '<span weight="bold">%s</span>' % txt
         self.label_choose_language.set_markup(txt)
@@ -120,8 +116,10 @@ class Language(Gtk.Box):
         label.set_markup(txt)
 
         txt = _("Welcome to Antergos!")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(txt)
     
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string

@@ -34,7 +34,7 @@ _prev_page = "language"
 
 class Location(Gtk.Box):
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -60,11 +60,7 @@ class Location(Gtk.Box):
         
         super().add(self.ui.get_object("location"))
 
-    def translate_ui(self):
-        txt = _("Select your location")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-        
+    def translate_ui(self):       
         txt = _("The location you select will be used to help determine the system locale.\n" \
             "This should normally be the country in which you reside.\n" \
             "Here is a shortlist of locations based on the language you selected.")
@@ -73,6 +69,13 @@ class Location(Gtk.Box):
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>%s</span>" % txt
         self.label_choose_country.set_markup(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Select your location"))
+
+        #txt = _("Select your location")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
     def create_toolview(self):
         render = Gtk.CellRendererText()

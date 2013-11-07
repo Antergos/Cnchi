@@ -31,7 +31,7 @@ _prev_page = "check"
 class DesktopAsk(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -141,8 +141,12 @@ class DesktopAsk(Gtk.Box):
         image.set_from_file(self.desktops_dir + desktop + ".png")
 
         txt = _("Choose Your Desktop")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(txt)
+
             
     def prepare(self, direction):
         self.translate_ui(self.desktop_choice)

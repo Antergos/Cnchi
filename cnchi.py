@@ -152,13 +152,11 @@ class Main(Gtk.Window):
         
         self.logo = self.ui.get_object("logo")
         data_dir = self.settings.get('data')
-        logo_dir = os.path.join(data_dir, "antergos-logo-mini.png")
+        logo_dir = os.path.join(data_dir, "antergos-logo-mini2.png")
         self.logo.set_from_file(logo_dir)
-        
-        self.title = self.ui.get_object("title")
 
         # To honor our css
-        self.title.set_name("title")
+        self.header.set_name("header")
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
@@ -183,7 +181,7 @@ class Main(Gtk.Window):
         self.pages = dict()
 
         params = dict()
-        params['title'] = self.title
+        params['header'] = self.header
         params['ui_dir'] = self.ui_dir
         params['forward_button'] = self.forward_button
         params['backwards_button'] = self.backwards_button
@@ -231,6 +229,7 @@ class Main(Gtk.Window):
         self.main_box.add(self.current_page)
 
         # Header style testing
+        
         style_provider = Gtk.CssProvider()
 
         style_css = os.path.join(data_dir, "css", "gtk-style.css")
@@ -244,6 +243,7 @@ class Main(Gtk.Window):
             Gdk.Screen.get_default(), style_provider,     
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+        
 
         # Show main window
         self.show_all()
@@ -256,9 +256,8 @@ class Main(Gtk.Window):
         self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
-        #self.header.hide()
-        self.title.hide()
-        self.logo.hide()
+
+        #self.logo.hide()
 
         self.current_page.prepare('forwards')
 
@@ -267,7 +266,7 @@ class Main(Gtk.Window):
 
         # Hide titlebar but show border decoration
         #self.get_window().set_accept_focus(True)
-        self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
+        #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
         
         # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)

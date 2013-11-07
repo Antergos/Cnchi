@@ -44,7 +44,7 @@ _prev_page = "installation_ask"
 class InstallationAutomatic(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -73,10 +73,6 @@ class InstallationAutomatic(Gtk.Box):
         self.process = None
 
     def translate_ui(self):
-        txt = _("Automatic Installation Mode")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-
         txt = _("Select drive:")
         self.device_label.set_markup(txt)
 
@@ -100,6 +96,13 @@ class InstallationAutomatic(Gtk.Box):
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Automatic Installation Mode"))
+
+        #txt = _("Automatic Installation Mode")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
     @misc.raise_privileges
     def populate_devices(self):

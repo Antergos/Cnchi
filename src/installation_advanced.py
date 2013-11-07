@@ -52,7 +52,7 @@ class InstallationAdvanced(Gtk.Box):
     def __init__(self, params):
         # Store class parameters
         self.blvm = False
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -1055,9 +1055,12 @@ class InstallationAdvanced(Gtk.Box):
     # As the installer language can change anytime the user changes it, we have
     # to "retranslate" all our widgets calling this function
     def translate_ui(self):
-        txt = _("Advanced Installation Mode")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Advanced Installation Mode"))
+
+        #txt = _("Advanced Installation Mode")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt

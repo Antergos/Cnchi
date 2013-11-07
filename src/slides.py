@@ -39,7 +39,7 @@ _prev_page = None
 class Slides(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -89,15 +89,18 @@ class Slides(Gtk.Box):
         self.fatal_error = False
         
     def translate_ui(self):
-        txt = _("Installing Antergos...")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
         
         self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Installing Antergos..."))
+
+        #txt = _("Installing Antergos...")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
     def show_global_progress_bar_if_hidden(self):
         if self.global_progress_bar_is_hidden:
