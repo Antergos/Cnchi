@@ -163,8 +163,20 @@ class Main(Gtk.Window):
         self.progressbar = self.ui.get_object("progressbar1")
 
         self.forward_button = self.ui.get_object("forward_button")
-        self.exit_button = self.ui.get_object("exit_button")
         self.backwards_button = self.ui.get_object("backwards_button")
+
+        image1 = Gtk.Image() 
+        image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
+        self.forward_button.set_label("")
+        self.forward_button.set_image(image1)
+
+        image2 = Gtk.Image()
+        image2.set_from_icon_name("go-previous", Gtk.IconSize.BUTTON)
+        self.backwards_button.set_label("")
+        self.backwards_button.set_image(image2)
+        
+        # TODO: There's no exit button. We should add an Install button and hide it.
+        self.exit_button = None
         
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
@@ -210,10 +222,11 @@ class Main(Gtk.Window):
         self.pages["user_info"] = user_info.UserInfo(params)
         self.pages["slides"] = slides.Slides(params)
 
-        self.connect("delete-event", Gtk.main_quit)
+        #self.connect("delete-event", Gtk.main_quit)
+        self.connect('delete-event', self.on_exit_button_clicked)
         self.ui.connect_signals(self)
 
-        self.set_title(_('Antergos Installer'))
+        self.set_title(_('Cnchi - Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(_main_window_width, _main_window_height);
@@ -229,7 +242,7 @@ class Main(Gtk.Window):
         self.main_box.add(self.current_page)
 
         # Header style testing
-        
+
         style_provider = Gtk.CssProvider()
 
         style_css = os.path.join(data_dir, "css", "gtk-style.css")
@@ -243,21 +256,14 @@ class Main(Gtk.Window):
             Gdk.Screen.get_default(), style_provider,     
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        
 
+        
         # Show main window
         self.show_all()
 
-        self.vertical_image = self.ui.get_object('vertical_image')
-        self.vertical_image.hide()
-        #logo_90_dir = os.path.join(data_dir, "antergos-logo-mini-90.png")
-        #self.vertical_image.set_from_file(logo_90_dir)
-        
         self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
-
-        #self.logo.hide()
 
         self.current_page.prepare('forwards')
 

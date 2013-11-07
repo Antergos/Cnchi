@@ -1,60 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Thu Oct 31 18:03:51 2013 -->
+<!-- Generated with glade 3.16.0 on Thu Nov  7 18:33:33 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAlignment" id="welcome">
+  <object class="GtkBox" id="welcome">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
-    <property name="left_padding">10</property>
-    <property name="right_padding">10</property>
-    <style>
-      <class name="welcome"/>
-    </style>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">16</property>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">center</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">16</property>
+        <property name="spacing">40</property>
+        <property name="homogeneous">True</property>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkBox" id="box_tryit">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">40</property>
-            <property name="homogeneous">True</property>
+            <property name="margin_left">20</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="box_tryit">
+              <object class="GtkImage" id="tryit_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkImage" id="tryit_image">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="tryit_button">
-                    <property name="label" translatable="yes">Try it</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_tryit_button_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -63,36 +34,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="box_cli">
+              <object class="GtkButton" id="tryit_button">
+                <property name="label" translatable="yes">Try it</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkImage" id="cli_image">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="cli_button">
-                    <property name="label" translatable="yes">CLI Installer</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_cli_button_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_tryit_button_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -100,42 +47,42 @@
                 <property name="position">1</property>
               </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="box_cli">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="box_graph">
+              <object class="GtkImage" id="cli_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkImage" id="graph_image">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="graph_button">
-                    <property name="label" translatable="yes">Graphical Installer</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_graph_button_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="stock">gtk-missing-image</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="cli_button">
+                <property name="label" translatable="yes">CLI Installer</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_cli_button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -146,15 +93,36 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="infowelcome_label">
+          <object class="GtkBox" id="box_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">You can try Cinnarch without modify your hard drive, just click on "Try it".
-If you want to install the system to your PC, use one of the two installer options.</property>
-            <property name="justify">center</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 8"/>
-            </attributes>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkImage" id="graph_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="graph_button">
+                <property name="label" translatable="yes">Graphical Installer</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_graph_button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -163,6 +131,28 @@ If you want to install the system to your PC, use one of the two installer optio
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="infowelcome_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">You can try Cinnarch without modify your hard drive, just click on "Try it".
+If you want to install the system to your PC, use one of the two installer options.</property>
+        <property name="justify">center</property>
+        <attributes>
+          <attribute name="font-desc" value="Sans Bold 8"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
     </child>
   </object>
 </interface>
