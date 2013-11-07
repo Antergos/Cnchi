@@ -54,6 +54,16 @@ class Language(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.label_choose_language = self.ui.get_object("label_choose_language")
+        self.scrolledwindow = self.ui.get_object("scrolledwindow1")
+
+        # Set up list box
+        self.listbox = Gtk.ListBox(hexpand=True, vexpand=True, expand=True)
+        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
+        self.listbox.set_filter_func(self.listbox_filter_by_name, None)
+        self.scrolledwindow.add(self.listbox)
+        self.listbox.connect("row-selected", self.on_listbox_row_selected)
+        
+        # TODO: Remove this and use the listbox
         self.treeview_language = self.ui.get_object("treeview_language")
 
         self.translate_ui()
@@ -72,6 +82,25 @@ class Language(Gtk.Box):
 
         super().add(self.ui.get_object("language"))
 
+    def on_listbox_row_selected(self, listbox, listbox_row):
+        # Someone selected a different row of the listbox"""
+        pass
+    
+    def listbox_filter_by_name(self, row, user_data):
+        pass
+        #bus_name_box_list = row.get_children()
+        #return self.__bus_name_filter.get_text().lower() in bus_name_box_list[0].bus_name.lower()
+    
+    def listbox_sort_by_name(self, row1, row2, user_data):
+        # Sort function for listbox
+        pass
+        '''
+        child1 = row1.get_children()
+        child2 = row2.get_children()
+        un1 = child1[0].bus_name
+        un2 = child2[0].bus_name
+        '''
+        
     def translate_ui(self):
         #txt = _("Welcome to the Antergos Installer")
         #txt = '<span weight="bold" size="large">%s</span>' % txt
