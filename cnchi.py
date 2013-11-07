@@ -265,8 +265,8 @@ class Main(Gtk.Window):
         self.backwards_button.hide()
 
         # Hide titlebar but show border decoration
-        #self.get_window().set_accept_focus(True)
-        #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
+        self.get_window().set_accept_focus(True)
+        self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
         
         # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
