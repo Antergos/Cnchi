@@ -79,7 +79,7 @@ _main_window_width = 800
 _main_window_height = 500
 
 # At least this GTK version is needed
-_gtk_version_needed = "3.10"
+_gtk_version_needed = "3.9.6"
 
 class Main(Gtk.Window):
 
@@ -385,16 +385,21 @@ def show_help():
 
 def check_gtk_version():
     # Check desired GTK Version
-    dmajor = int(_gtk_version_needed.split(".")[0])
-    dminor = int(_gtk_version_needed.split(".")[1])
+    major_needed = int(_gtk_version_needed.split(".")[0])
+    minor_needed = int(_gtk_version_needed.split(".")[1])
+    micro_needed = int(_gtk_version_needed.split(".")[2])
     
     # Check system GTK Version
-    smajor = Gtk.get_major_version()
-    sminor = Gtk.get_minor_version()
+    major = Gtk.get_major_version()
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
 
-    if dmajor > smajor or (dmajor == smajor and dminor > sminor):
-        print("Detected GTK %d.%d but %s is needed. Can't run this installer." % (smajor, sminor, _gtk_version_needed))
+    if major_needed > major or (major_needed == major and minor_needed > minor) or \
+      (major_needed == major and minor_needed == minor and micro_needed > micro):
+        print("Detected GTK %d.%d.%d but %s is needed. Can't run this installer." % (major, minor, micro, _gtk_version_needed))
         return False
+    else:
+        print("Using GTK v%d.%d.%d" % (major, minor, micro))
     
     return True
 
