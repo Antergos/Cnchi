@@ -64,10 +64,10 @@ class Language(Gtk.Box):
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         
         # TODO: Remove this and use the listbox
-        self.treeview_language = self.ui.get_object("treeview_language")
+        #self.treeview_language = self.ui.get_object("treeview_language")
 
         self.translate_ui()
-
+        
         data_dir = self.settings.get('data')
         
         self.current_locale = locale.getdefaultlocale()[0]
@@ -83,7 +83,7 @@ class Language(Gtk.Box):
         super().add(self.ui.get_object("language"))
 
     def on_listbox_row_selected(self, listbox, listbox_row):
-        # Someone selected a different row of the listbox"""
+        # Someone selected a different row of the listbox
         pass
     
     def listbox_filter_by_name(self, row, user_data):
@@ -135,15 +135,23 @@ class Language(Gtk.Box):
 
         render = Gtk.CellRendererText()
         col_languages = Gtk.TreeViewColumn(_("Languages"), render, text=0)
-        self.treeview_language.set_model(liststore_language)
-        self.treeview_language.append_column(col_languages)
+        #self.treeview_language.set_model(liststore_language)
+        #self.treeview_language.append_column(col_languages)
 
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             liststore_language.append([lang])
+
+
+            label = Gtk.Label()
+            label.set_text(lang)
+            self.listbox.add(label)
+
+
             if current_language == lang:
-                self.select_default_row(self.treeview_language, current_language)
+                pass
+                #self.select_default_row(self.treeview_language, current_language)
 
     def set_language(self, locale_code):
         if locale_code is None:
@@ -210,7 +218,7 @@ class Language(Gtk.Box):
         self.translate_ui()
         
         # scroll language treeview to selected item
-        self.scroll_to_selected_item(self.treeview_language)
+        #self.scroll_to_selected_item(self.treeview_language)
         
         self.show_all()
 
