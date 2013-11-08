@@ -66,7 +66,7 @@
             <!--
                 <property name="margin_left">10</property>
                 <property name="margin_right">10</property>
-                -->
+            -->
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <property name="use_action_appearance">False</property>
