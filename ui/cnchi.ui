@@ -19,11 +19,6 @@
             <!--<property name="ypad">13</property>-->
             <property name="stock">gtk-missing-image</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="backwards_button">
@@ -35,10 +30,8 @@
             <property name="receives_default">True</property>
             <property name="no_show_all">True</property>
             <property name="halign">end</property>
-            <!--
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                -->
+            <!--<property name="margin_left">10</property>-->
+            <!--<property name="margin_right">10</property>-->
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <property name="use_action_appearance">False</property>
@@ -47,10 +40,7 @@
             <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack_type">end</property>
-            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -63,10 +53,8 @@
             <property name="receives_default">True</property>
             <property name="no_show_all">True</property>
             <property name="halign">end</property>
-            <!--
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-            -->
+            <!--<property name="margin_left">10</property>-->
+            <!--<property name="margin_right">10</property>-->            
             <property name="margin_top">8</property>
             <property name="margin_bottom">8</property>
             <property name="use_action_appearance">False</property>
@@ -76,18 +64,10 @@
             <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack_type">end</property>
-            <property name="position">3</property>
           </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkProgressBar" id="progressbar1">
