@@ -80,12 +80,13 @@ class Language(Gtk.Box):
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         # Someone selected a different row of the listbox
-        for vbox in listbox_row:
-            for label in vbox.get_children():
-                current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
-                lang = label.get_text()
-                lang_code = display_map[lang][1]
-                self.set_language(lang_code)
+        if listbox_row is not None:
+            for vbox in listbox_row:
+                for label in vbox.get_children():
+                    current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
+                    lang = label.get_text()
+                    lang_code = display_map[lang][1]
+                    self.set_language(lang_code)
 
     def listbox_filter_by_name(self, row, user_data):
         pass
