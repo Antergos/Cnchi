@@ -61,6 +61,7 @@ class Language(Gtk.Box):
         #self.listbox.set_sort_func(self.listbox_sort_by_name, None)
         #self.listbox.set_filter_func(self.listbox_filter_by_name, None)
         #self.scrolledwindow.add(self.listbox)
+
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         
@@ -143,14 +144,10 @@ class Language(Gtk.Box):
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             liststore_language.append([lang])
-
             box = Gtk.VBox()
-            #label = Gtk.Label("HELLO")
-            #label.set_text("HELLO")
-            #box.add(label)
+            label = Gtk.Label(lang)
+            box.add(label)
             self.listbox.add(box)
-
-
             if current_language == lang:
                 pass
                 #self.select_default_row(self.treeview_language, current_language)
@@ -168,16 +165,19 @@ class Language(Gtk.Box):
     
     # Select language loaded on boot as default
     def select_default_row(self, treeview, language):   
+        pass
+        '''
         model = treeview.get_model()
         iterator = model.iter_children(None)
         while iterator is not None:
             if model.get_value(iterator, 0) == language:
                 path = model.get_path(iterator)
                 treeview.get_selection().select_path(path)
-                #treeview.scroll_to_cell(path, use_align=False, row_align=0.0, col_align=0.0)
+                treeview.scroll_to_cell(path, use_align=False, row_align=0.0, col_align=0.0)
                 GLib.idle_add(self.scroll_to_cell, treeview, path)
                 break
             iterator = model.iter_next(iterator)
+        '''
 
     def scroll_to_cell(self, treeview, path):
         treeview.scroll_to_cell(path)
