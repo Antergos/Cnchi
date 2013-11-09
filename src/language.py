@@ -59,8 +59,6 @@ class Language(Gtk.Box):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        #self.listbox.set_sort_func(self.listbox_sort_by_name, None)
-        #self.listbox.set_filter_func(self.listbox_filter_by_name, None)
         
         self.translate_ui()
         
@@ -87,21 +85,6 @@ class Language(Gtk.Box):
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
-
-    def listbox_filter_by_name(self, row, user_data):
-        pass
-        #bus_name_box_list = row.get_children()
-        #return self.__bus_name_filter.get_text().lower() in bus_name_box_list[0].bus_name.lower()
-    
-    def listbox_sort_by_name(self, row1, row2, user_data):
-        # Sort function for listbox
-        pass
-        '''
-        child1 = row1.get_children()
-        child2 = row2.get_children()
-        un1 = child1[0].bus_name
-        un2 = child2[0].bus_name
-        '''
         
     def translate_ui(self):
         txt = _("Please choose your language:")
@@ -118,9 +101,6 @@ class Language(Gtk.Box):
         label.set_markup(txt)
 
         txt = _("Welcome to Antergos!")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
     
     def langcode_to_lang(self, display_map):
@@ -155,12 +135,12 @@ class Language(Gtk.Box):
             logging.error(_("Can't find translation file for the %s language") % locale_code)
     
     def select_default_row(self, language):   
-        for listbox_row in self.listbox:
-            for vbox in listbox_row:
-                for label in vbox.get_children():
-                    if language == label.get_text():
-                        self.listbox.select_row(listbox_row)
-                        return
+        for listbox_row in self.listbox.get_children():
+            for vbox in listbox_row.get_children():
+                label = vbox.get_children()[0]
+                if language == label.get_text():
+                    self.listbox.select_row(listbox_row)
+                    return
                 
     def store_values(self):
         listbox_row = self.listbox.get_selected_row()

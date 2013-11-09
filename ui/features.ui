@@ -516,40 +516,26 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">5</property>
-      </packing>
-    </child>
-
-
-
+                  <property name="margin_right">80</property>
+                </object>
+                <packing>
+                  <property name="expand">False</property>
+                  <property name="fill">True</property>
+                  <property name="position">2</property>
+                </packing>
+              </child>
+            </object>
+            <packing>
+              <property name="expand">False</property>
+              <property name="fill">True</property>
+              <property name="position">5</property>
+            </packing>
+          </child>
+        </object>
+      </child>
     </object>
-    </child>
-
-
-
-
-
-  </object>
-
-
-
-
-
-
-    </child>
-  </object>
+  </child>
+</object>
 
 
 
