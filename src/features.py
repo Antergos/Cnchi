@@ -183,7 +183,7 @@ class Features(Gtk.Box):
 
     def store_values(self):
         # Enable forward button
-        self.forward_button.set_sensitive(True)
+        #self.forward_button.set_sensitive(True)
         
         # Get switches' values and store them
         for feature in self.features:

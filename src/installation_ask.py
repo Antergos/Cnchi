@@ -97,7 +97,11 @@ class InstallationAsk(Gtk.Box):
         
         # In case we're coming from an installer screen, we change
         # to forward stock button and we activate it
-        self.forward_button.set_label("gtk-go-forward")
+        #self.forward_button.set_label("gtk-go-forward")
+        image1 = Gtk.Image() 
+        image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
+        self.forward_button.set_label("")
+        self.forward_button.set_image(image1)
         self.forward_button.set_sensitive(True)
 
         ## AUTOMATIC INSTALL

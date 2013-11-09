@@ -148,8 +148,6 @@ class Main(Gtk.Window):
 
         self.header = self.ui.get_object("header")
         
-        self.forward_button = self.ui.get_object("forward_button")
-        
         self.logo = self.ui.get_object("logo")
         data_dir = self.settings.get('data')
         logo_dir = os.path.join(data_dir, "antergos-logo-mini2.png")
