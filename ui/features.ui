@@ -1,45 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.16.0 on Tue Oct 29 22:19:31 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkBox" id="features">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <property name="spacing">5</property>
     <property name="homogeneous">True</property>
+    
     <child>
-      <object class="GtkBox" id="box_firewall">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+      <object class="GtkListBox" id="listbox">
         <child>
-          <object class="GtkImage" id="image_firewall">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
-            <property name="pixel_size">48</property>
-            <property name="icon_name">network-server</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="box12">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">center</property>
-            <property name="orientation">vertical</property>
+          <object class="GtkListBoxRow" id="firewall-row">
             <child>
-              <object class="GtkLabel" id="label_title_firewall">
+              <object class="GtkBox" id="box_firewall">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
-                <property name="xpad">20</property>
-                <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Uncomplicated Firewall&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
+                <child>
+                  <object class="GtkImage" id="image_firewall">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">80</property>
+                    <property name="pixel_size">48</property>
+                    <property name="icon_name">network-server</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="box12">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="valign">center</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="label_title_firewall">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="xpad">20</property>
+                        <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Uncomplicated Firewall&lt;/span&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_firewall">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="xpad">20</property>
+                        <property name="label" translatable="yes">Control the incoming and outgoing network traffic.</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="switch_firewall">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <property name="margin_right">80</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -47,47 +93,18 @@
                 <property name="position">0</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkLabel" id="label_firewall">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="xalign">0</property>
-                <property name="xpad">20</property>
-                <property name="label" translatable="yes">Control the incoming and outgoing network traffic.</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="switch_firewall">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="valign">center</property>
-            <property name="margin_right">80</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
     </child>
+  </object>
+</interface>    
+    
+    <!--
+    
+    
+    
+    
     <child>
       <object class="GtkBox" id="box_cups">
         <property name="visible">True</property>
@@ -168,6 +185,17 @@
         <property name="position">1</property>
       </packing>
     </child>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <child>
       <object class="GtkBox" id="box_bluetooth">
         <property name="visible">True</property>
@@ -248,6 +276,16 @@
         <property name="position">2</property>
       </packing>
     </child>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <child>
       <object class="GtkBox" id="box_visual">
         <property name="visible">True</property>
@@ -328,6 +366,14 @@
         <property name="position">3</property>
       </packing>
     </child>
+    
+    
+    
+    
+    
+    
+    
+    
     <child>
       <object class="GtkBox" id="box_office">
         <property name="visible">True</property>
@@ -408,6 +454,15 @@
         <property name="position">4</property>
       </packing>
     </child>
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <child>
       <object class="GtkBox" id="box_third_party">
         <property name="visible">True</property>
@@ -488,7 +543,37 @@
         <property name="position">5</property>
       </packing>
     </child>
+
+
+
+    </object>
+    </child>
+
+
+
+
+
   </object>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <object class="GtkMessageDialog" id="ufw">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Cnchi</property>
@@ -532,3 +617,4 @@ ufw allow SSH&lt;/i&gt;
     </child>
   </object>
 </interface>
+-->
