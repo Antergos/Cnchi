@@ -313,11 +313,14 @@
         <pkgname>kdeutils-kgpg</pkgname>
         <pkgname>kdeutils-kwallet</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>kwebkitpart</pkgname>
         <pkgname>lightdm-kde-greeter</pkgname>
+        <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>vlc</pkgname>
+        <pkgname>webkitgtk</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
     </kde_desktop>
 
