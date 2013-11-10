@@ -115,6 +115,24 @@ class InstallationAsk(Gtk.Box):
         label.set_markup(txt)
         label.set_line_wrap(True)
         
+        button = self.ui.get_object("encrypt_checkbutton")
+        txt = _("Encrypt this installation for increased security.")
+        button.set_label(txt)
+        
+        label = self.ui.get_object("encrypt_label")
+        txt = _("You will be asked to create an encryption password in the next step.")
+        txt = '<span weight="light" size="small">%s</span>' % txt
+        label.set_markup(txt)
+        
+        button = self.ui.get_object("lvm_checkbutton")
+        txt = "Use LVM with this installation."
+        button.set_label(txt)
+        
+        label = self.ui.get_object("lvm_label")
+        txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
+        txt = '<span weight="light" size="small">%s</span>' % txt
+        label.set_markup(txt)
+        
         ## ALONGSIDE INSTALL (still experimental. Needs a lot of testing)
         if "windows" in self.otherOS.lower():
             radio = self.ui.get_object("alongside_radiobutton")
