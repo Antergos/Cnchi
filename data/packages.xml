@@ -305,6 +305,7 @@
         <pkgname>kdemultimedia-kmix</pkgname>
         <pkgname>kdepim-kmail</pkgname>
         <pkgname>kdepim-kontact</pkgname>
+        <pkgname>kdeplasma-addons-applets-homerun</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname>kdeplasma-addons-applets-notes</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
@@ -315,6 +316,7 @@
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kwebkitpart</pkgname>
         <pkgname>lightdm-kde-greeter</pkgname>
+        <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
@@ -327,79 +329,32 @@
     <!-- User desired features -->
     <user_features>
         <bluetooth>
-            <pkgname>bluez</pkgname>
-            <pkgname>bluez-utils</pkgname>
-            <pkgname>gvfs-obexftp</pkgname>
-            <pkgname>obex-data-server</pkgname>
-            <pkgname>obexftp</pkgname>
+            <pkgname lib='gtk'>bluez</pkgname>
+            <pkgname lib='gtk'>bluez-utils</pkgname>
+            <pkgname lib='gtk'>gvfs-obexftp</pkgname>
+            <pkgname lib='qt'>bluedevil</pkgname>
         </bluetooth>
-   <!-- <bluetooth>
-            <non_kde>
-                <pkgname>bluez</pkgname>
-                <pkgname>gnome-bluetooth</pkgname>
-                <pkgname>gvfs-obexftp</pkgname>
-                <pkgname>obex-data-server</pkgname>
-                <pkgname>obexftp</pkgname>
-            </non_kde>
-            <is_kde>
-                <pkgname>bluedevil</pkgname>
-            </is_kde>
-        </bluetooth> -->
+
         <cups>
             <pkgname>cups</pkgname>
-            <pkgname>cups-filters</pkgname>
-            <pkgname>foomatic-db</pkgname>
-            <pkgname>foomatic-db-engine</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
-            <pkgname>foomatic-filters</pkgname>
-            <pkgname>ghostscript</pkgname>
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
             <pkgname>hplip</pkgname>
-            <pkgname>libcups</pkgname>
+            <pkgname lib='gtk'>system-config-printer</pkgname>
             <pkgname>splix</pkgname>
+            <pkgname lib='qt'>kdeutils-print-manager</pkgname>  
         </cups>
-   <!-- <cups>
-            <not_kde>
-                <pkgname>cups</pkgname>
-                <pkgname>system-config-printer</pkgname>
-                <pkgname>foomatic-db-nonfree</pkgname>
-                <pkgname>gsfonts</pkgname>
-                <pkgname>gutenprint</pkgname>
-                <pkgname>hplip</pkgname>
-                <pkgname>splix</pkgname>
-            </not_kde>
-            <is_kde>
-                <pkgname>kdeutils-print-manager</pkgname>
-                <pkgname>system-config-printer</pkgname>
-                <pkgname>foomatic-db-nonfree</pkgname>
-                <pkgname>gsfonts</pkgname>
-                <pkgname>gutenprint</pkgname>
-                <pkgname>hplip</pkgname>
-                <pkgname>splix</pkgname>
-            </is_kde>
-                
-        </cups> -->
+        
         <office>
             <pkgname>libreoffice-calc</pkgname>
             <pkgname>libreoffice-common</pkgname>
-            <pkgname>libreoffice-gnome</pkgname>
+            <pkgname lib='gtk'>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
+            <pkgname lib='qt'>libreoffice-kde4</pkgname>
             <pkgname>libreoffice-writer</pkgname>
-   <!-- <office>
-            <not_kde>
-                <pkgname>libreoffice-calc</pkgname>
-                <pkgname>libreoffice-gnome</pkgname>
-                <pkgname>libreoffice-impress</pkgname>
-                <pkgname>libreoffice-writer</pkgname>
-            </not_kde>
-            <is_kde>
-                <pkgname>libreoffice-kde4</pkgname>
-                <pkgname>libreoffice-calc</pkgname>
-                <pkgname>libreoffice-impress</pkgname>
-                <pkgname>libreoffice-writer</pkgname>
-            </is_kde>
-        </office> -->
+   
+        </office>
         
         <!-- visual effects for openbox -->
         <visual>
@@ -408,20 +363,11 @@
         </visual>
         <!-- Uncomplicated firewall -->
         <firewall>
-            <pkgname>gufw</pkgname>
+            <pkgname lib='gtk'>gufw</pkgname>
+            <pkgname lib='qt'>kcm-ufw</pkgname>
             <pkgname>ufw</pkgname>
         </firewall>
         
-   <!-- <firewall>
-            <not_kde>
-                <pkgname>gufw</pkgname>
-                <pkgname>ufw</pkgname>
-            </not_kde>
-            <is_kde>
-                <pkgname>ufw</pkgname>
-                <pkgname>kcm-ufw</pkgname> Need to add this to our repo
-            </is_kde>
-        </firewall>
         <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
