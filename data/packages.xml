@@ -286,6 +286,9 @@
 
     <!-- User desired features -->
     <user_features>
+        <aur>
+            <pkgname>yaourt</pkgname>
+        </aur>
         <bluetooth>
             <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>

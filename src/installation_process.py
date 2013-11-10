@@ -578,7 +578,7 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages.append(pkg.text)
 
     def add_packages_for_selected_features(self, root):
-        features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
 
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
@@ -1082,8 +1082,11 @@ class InstallationProcess(multiprocessing.Process):
             percent += step
                         
     def setup_features(self):
-        #features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        #features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
         
+        #if self.settings.get("feature_aur"):
+        #    self.queue_event('debug', "Configuring AUR...")
+
         if self.settings.get("feature_bluetooth"):
             self.queue_event('debug', "Configuring bluetooth...")
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/bluetooth.service")
@@ -1096,11 +1099,11 @@ class InstallationProcess(multiprocessing.Process):
             if os.path.exists(service):
                 self.enable_services(['cups'])
 
-        if self.settings.get("feature_office"):
-            self.queue_event('debug', "Configuring libreoffice...")
+        #if self.settings.get("feature_office"):
+        #    self.queue_event('debug', "Configuring libreoffice...")
 
-        if self.settings.get("feature_visual"):
-            self.queue_event('debug', "Configuring Compositing manager...")
+        #if self.settings.get("feature_visual"):
+        #    self.queue_event('debug', "Configuring Compositing manager...")
 
         if self.settings.get("feature_firewall"):
             self.queue_event('debug', "Configuring firewall...")
@@ -1112,14 +1115,10 @@ class InstallationProcess(multiprocessing.Process):
             toallow = misc.get_network()
             if toallow:
                 self.chroot(["ufw", "allow", "from", toallow])
-            #self.chroot(["ufw", "allow", "from", "192.168.0.0/24"])
-            #self.chroot(["ufw", "allow", "from", "192.168.1.0/24"])
-            #self.chroot(["ufw", "allow", "from", "192.168.2.0/24"])
             self.chroot(["ufw", "allow", "Transmission"])
             self.chroot(["ufw", "allow", "SSH"])
             self.chroot(["ufw", "enable"])
             self.chroot_umount_special_dirs()
-            
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])

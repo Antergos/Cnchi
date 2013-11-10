@@ -47,19 +47,23 @@ class Features(Gtk.Box):
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
         self.ui.connect_signals(self)
+
+        # Set up list box
+        self.listbox = self.ui.get_object("listbox")
+        self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        self.all_features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
         
         # Each desktop has its own features
         self.features_by_desktop = {}
-        self.features_by_desktop["nox"] = [ "bluetooth", "cups", "firewall" ]
-        self.features_by_desktop["gnome"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["cinnamon"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["openbox"] = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "firewall" ]
+        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
                 
         self.labels = {}
         self.titles = {}
@@ -102,6 +106,13 @@ class Features(Gtk.Box):
 
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
+
+        # AUR
+        txt = _("Arch User Repository (AUR) Support")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["aur"].set_markup(txt)
+        txt = _("The Arch User Repository (AUR) is a community-driven repository for Arch users.")
+        self.labels["aur"].set_markup(txt)
 
         # Bluetooth
         txt = _("Bluetooth Support")
@@ -160,11 +171,9 @@ class Features(Gtk.Box):
     def hide_features(self):
         for feature in self.all_features:
             if feature not in self.features:
-                prefixes = [ "box", "image", "switch", "label_title", "label" ]
-                for prefix in prefixes:
-                    object_name = prefix + "_" + feature
-                    obj = self.ui.get_object(object_name)
-                    obj.hide()
+                name = feature + "-row"
+                obj = self.ui.get_object(name)
+                obj.hide()
 
     def enable_defaults(self):
         if 'bluetooth' in self.features:
@@ -182,9 +191,6 @@ class Features(Gtk.Box):
             self.switches['cups'].set_active(True)
 
     def store_values(self):
-        # Enable forward button
-        #self.forward_button.set_sensitive(True)
-        
         # Get switches' values and store them
         for feature in self.features:
             isactive = self.switches[feature].get_active()
@@ -192,7 +198,7 @@ class Features(Gtk.Box):
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
                 
-        # Show ufw info message if ufw is selected
+        # Show ufw info message if ufw is selected (just once)
         if self.settings.get("feature_firewall") and not self.ufw_info_already_shown:
             ufw = self.ui.get_object("ufw")
             ufw.run()

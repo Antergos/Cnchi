@@ -44,6 +44,7 @@ class InstallationAsk(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_ask.ui"))
 
+        #partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/")
         partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/small/")
 
         image = self.ui.get_object("automatic_image")
