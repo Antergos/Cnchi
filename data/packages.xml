@@ -292,6 +292,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>emovix</pkgname>
+        <pkgname>gimp</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kde-meta-kdeartwork</pkgname>
@@ -305,7 +306,7 @@
         <pkgname>kdemultimedia-kmix</pkgname>
         <pkgname>kdepim-kmail</pkgname>
         <pkgname>kdepim-kontact</pkgname>
-        <pkgname>kdeplasma-addons-applets-homerun</pkgname>
+        <pkgname>kdeplasma-applets-homerun</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname>kdeplasma-addons-applets-notes</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
@@ -314,9 +315,13 @@
         <pkgname>kdeutils-kgpg</pkgname>
         <pkgname>kdeutils-kwallet</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
         <pkgname>lightdm-kde-greeter</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
+        <pkgname>oxyfaenza-git</pkgname>
+        <pkgname>oxygen-gtk2</pkgname>
+        <pkgname>oxygen-gtk3</pkgname>
         <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
