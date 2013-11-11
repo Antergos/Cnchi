@@ -397,6 +397,8 @@ def check_gtk_version():
     minor = Gtk.get_minor_version()
     micro = Gtk.get_micro_version()
 
+    # Cnchi will be called from our liveCD that already has the latest GTK version
+    # This is here just to help testing Cnchi in our environment.
     if major_needed > major or (major_needed == major and minor_needed > minor) or \
       (major_needed == major and minor_needed == minor and micro_needed > micro):
         print("Detected GTK %d.%d.%d but %s is needed. Can't run this installer." % (major, minor, micro, _gtk_version_needed))
@@ -409,6 +411,7 @@ def check_gtk_version():
 if __name__ == '__main__':
     
     # Check for hwinfo
+    # (this check is just for developers, in our liveCD hwinfo always will be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
         print("Please install hwinfo before running this installer")
         sys.exit(1)
