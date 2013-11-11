@@ -136,6 +136,14 @@ class Keymap(Gtk.Box):
 
         # FIXME: Doesn't sort well accents, must use utf8
         sorted_layouts.sort()
+        '''
+        mylocale = self.settings.get("locale")
+
+        import locale
+        locale.setlocale(locale.LC_ALL, mylocale)
+        key = cmp_to_key(locale.strcoll)
+        sorted_text = sorted(text, key)
+        '''
 
         liststore = self.layout_treeview.get_model()
 
@@ -201,6 +209,14 @@ class Keymap(Gtk.Box):
 
                 # FIXME: Doesn't sort well accents, must use utf8
                 sorted_variants.sort()
+                '''
+        mylocale = self.settings.get("locale")
+
+        import locale
+        locale.setlocale(locale.LC_ALL, mylocale)
+        key = cmp_to_key(locale.strcoll)
+        sorted_text = sorted(text, key)
+                '''
 
                 liststore = self.variant_treeview.get_model()
 

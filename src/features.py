@@ -51,6 +51,7 @@ class Features(Gtk.Box):
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
         
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
@@ -87,6 +88,26 @@ class Features(Gtk.Box):
         self.ufw_info_already_shown = False
         
         super().add(self.ui.get_object("features"))
+
+    def listbox_sort_by_name(self, row1, row2, user_data):
+        # Sort function for listbox
+        # Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
+        # WARNING: IF LAYOUT IS CHANGED IN features.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY.
+        label1 = row1.get_children()[0].get_children()[1].get_children()[0]
+        label2 = row2.get_children()[0].get_children()[1].get_children()[0]
+        
+        text = [label1.get_text(), label2.get_text()]
+
+        '''
+        mylocale = self.settings.get("locale")
+
+        import locale
+        locale.setlocale(locale.LC_ALL, mylocale)
+        key = cmp_to_key(locale.strcoll)
+        sorted_text = sorted(text, key)
+        '''
+        
+        return 0
 
     def translate_ui(self):
         desktop = self.settings.get('desktop')
@@ -125,9 +146,9 @@ class Features(Gtk.Box):
         # Extra Fonts
         txt = _("Extra Fonts")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["aur"].set_markup(txt)
+        self.titles["fonts"].set_markup(txt)
         txt = _("Installation of extra fonts")
-        self.labels["aur"].set_markup(txt)
+        self.labels["fonts"].set_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
