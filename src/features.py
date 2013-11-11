@@ -64,7 +64,8 @@ class Features(Gtk.Box):
         self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
-                
+        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "office", "firewall", "third_party" ]                
+        
         self.labels = {}
         self.titles = {}
         self.switches = {}

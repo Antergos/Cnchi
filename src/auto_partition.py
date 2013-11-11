@@ -207,9 +207,8 @@ class AutoPartition():
             mount_devices["/"] = luks_device
         else:
             mount_devices["/"] = root_device
-        
-        mount_devices["swap"] = swap_device
-            
+
+            mount_devices["swap"] = swap_device            
         for m in mount_devices:
             logging.debug("mount_devices[%s] = %s" % (m, mount_devices[m]))
         

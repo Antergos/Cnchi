@@ -57,7 +57,7 @@ import show_message as show
 
 # Enabled desktops (remember to update features_by_desktop in features.py if this is changed)
 #_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
-_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
+_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "kde" ]
 
 # Command line options
 _alternate_package_list = ""
