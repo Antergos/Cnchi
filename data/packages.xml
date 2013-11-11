@@ -342,7 +342,6 @@
             <pkgname lib='gtk'>gvfs-obexftp</pkgname>
             <pkgname lib='qt'>bluedevil</pkgname>
         </bluetooth>
-
         <cups>
             <pkgname>cups</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
@@ -352,18 +351,23 @@
             <pkgname lib='gtk'>system-config-printer</pkgname>
             <pkgname>splix</pkgname>
             <pkgname lib='qt'>kdeutils-print-manager</pkgname>  
-        </cups>
-        
+        </cups>     
+        <fonts>
+            <pkgname>ttf-dejavu</pkgname>
+            <pkgname>ttf-bitstream-vera</pkgname>
+            <pkgname>ttf-freefont</pkgname>
+            <pkgname>ttf-arphic-uming</pkgname>
+            <pkgname>ttf-baekmuk</pkgname>
+            <pkgname>ttf-ms-fonts</pkgname>
+        </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
             <pkgname>libreoffice-common</pkgname>
             <pkgname lib='gtk'>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
             <pkgname lib='qt'>libreoffice-kde4</pkgname>
-            <pkgname>libreoffice-writer</pkgname>
-   
+            <pkgname>libreoffice-writer</pkgname>   
         </office>
-        
         <!-- visual effects for openbox -->
         <visual>
             <pkgname>compton</pkgname>
@@ -375,7 +379,6 @@
             <pkgname lib='qt'>kcm-ufw</pkgname>
             <pkgname>ufw</pkgname>
         </firewall>
-        
         <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
