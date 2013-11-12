@@ -28,6 +28,7 @@ import os
 import keyboard_names
 import logging
 import show_message as show
+import misc
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -134,21 +135,14 @@ class Keymap(Gtk.Box):
         for layout in kbd_names._layout_by_human:
             sorted_layouts.append(layout)
 
-        # FIXME: Doesn't sort well accents, must use utf8
-        sorted_layouts.sort()
-        '''
-        mylocale = self.settings.get("locale")
+        #sorted_layouts.sort()
+        sorted_layouts = misc.sort_list(sorted_layouts, self.settings.get("locale"))
 
-        import locale
-        locale.setlocale(locale.LC_ALL, mylocale)
-        key = cmp_to_key(locale.strcoll)
-        sorted_text = sorted(text, key)
-        '''
-
+        # Clear our model
         liststore = self.layout_treeview.get_model()
-
         liststore.clear()
 
+        # Add layouts (sorted)
         for layout in sorted_layouts:
             liststore.append([layout])
 
@@ -207,27 +201,19 @@ class Keymap(Gtk.Box):
                 for variant in variants[country_code]:
                     sorted_variants.append(variant)
 
-                # FIXME: Doesn't sort well accents, must use utf8
-                sorted_variants.sort()
-                '''
-        mylocale = self.settings.get("locale")
+                #sorted_variants.sort()
+                sorted_variants = misc.sort_list(sorted_variants, self.settings.get("locale"))
 
-        import locale
-        locale.setlocale(locale.LC_ALL, mylocale)
-        key = cmp_to_key(locale.strcoll)
-        sorted_text = sorted(text, key)
-                '''
-
+                # Clear our model
                 liststore = self.variant_treeview.get_model()
-
                 liststore.clear()
 
+                # Add keyboard variants (sorted)
                 for variant in sorted_variants:
                     liststore.append([variant])
 
                 #selection = self.variant_treeview.get_selection()
                 self.variant_treeview.set_cursor(0)
-
         else:
             liststore = self.variant_treeview.get_model()
             liststore.clear()
