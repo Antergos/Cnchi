@@ -88,7 +88,7 @@ class Features(Gtk.Box):
         self.ufw_info_already_shown = False
         
         super().add(self.ui.get_object("features"))
-
+        
     def listbox_sort_by_name(self, row1, row2, user_data):
         # Sort function for listbox
         # Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
@@ -97,17 +97,14 @@ class Features(Gtk.Box):
         label2 = row2.get_children()[0].get_children()[1].get_children()[0]
         
         text = [label1.get_text(), label2.get_text()]
-
-        '''
-        mylocale = self.settings.get("locale")
-
-        import locale
-        locale.setlocale(locale.LC_ALL, mylocale)
-        key = cmp_to_key(locale.strcoll)
-        sorted_text = sorted(text, key)
-        '''
+        sorted_text = misc.sort_list(text, self.settings.get("locale"))
         
-        return 0
+        # If strings are already well sorted return < 0
+        if text[0] == sorted_text[0]:
+            return -1
+        
+        # Strings must be swaped, return > 0
+        return 1
 
     def translate_ui(self):
         desktop = self.settings.get('desktop')

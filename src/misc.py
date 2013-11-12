@@ -916,3 +916,14 @@ def get_network():
     else:
         ipran = '.'.join(spip)
     return ipran
+
+def sort_list(mylist, mylocale=""):
+    import locale
+    import functools
+
+    if mylocale != "":
+        locale.setlocale(locale.LC_ALL, mylocale)
+        
+    sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
+
+    return sorted_list
