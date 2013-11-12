@@ -919,11 +919,11 @@ def get_network():
 
 def sort_list(mylist, mylocale=""):
     import locale
+    import functools
 
     if mylocale != "":
         locale.setlocale(locale.LC_ALL, mylocale)
         
-    key = cmp_to_key(locale.strcoll)
-    sorted_list = sorted(mylist, key)
+    sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
 
     return sorted_list
