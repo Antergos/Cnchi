@@ -580,14 +580,22 @@ class InstallationProcess(multiprocessing.Process):
     def add_packages_for_selected_features(self, root):
         features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
 
+        desktop = self.settings.get("desktop")
+        
+        lib = {'gtk': ["gnome", "cinnamon", "xfce", "openbox" ], 'qt' : [ "razor", "kde" ] }
+
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                        
+                        # If it's a specific gtk or qt package we have to check it
+                        # against our chosen desktop.
+                        plib = pkg.attrib.get('lib')
+                        if plib == "" or desktop in lib[plib]:
+                            self.packages.append(pkg.text)        
+
         # Add libreoffice language package
         if self.settings.get('feature_office'):
             pkg = ""
