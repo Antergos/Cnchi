@@ -351,7 +351,10 @@
             <pkgname lib='gtk'>system-config-printer</pkgname>
             <pkgname>splix</pkgname>
             <pkgname lib='qt'>kdeutils-print-manager</pkgname>  
-        </cups>     
+        </cups>
+        <gnome_extra>
+            <pkgname>gnome-extra</pkgname>
+        </gnome_extra>
         <fonts>
             <pkgname>ttf-dejavu</pkgname>
             <pkgname>ttf-bitstream-vera</pkgname>

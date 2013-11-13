@@ -55,12 +55,12 @@ class Features(Gtk.Box):
         
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
+        self.all_features = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
         
         # Each desktop has its own features
         self.features_by_desktop = {}
         self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
-        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
         self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
         self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
@@ -146,6 +146,13 @@ class Features(Gtk.Box):
         self.titles["fonts"].set_markup(txt)
         txt = _("Installation of extra fonts")
         self.labels["fonts"].set_markup(txt)
+
+        # Gnome Extra
+        txt = _("Gnome Extra")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["gnome_extra"].set_markup(txt)
+        txt = _("Installation of extra Gnome applications")
+        self.labels["gnome_extra"].set_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")

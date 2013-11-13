@@ -578,7 +578,7 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages.append(pkg.text)
 
     def add_packages_for_selected_features(self, root):
-        features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        features = [ "aur", "bluetooth", "cups", "gnome_extra", "office", "visual", "firewall", "third_party" ]
 
         desktop = self.settings.get("desktop")
         
