@@ -173,9 +173,6 @@ class Main(Gtk.Window):
         self.backwards_button.set_label("")
         self.backwards_button.set_image(image2)
         
-        # TODO: There's no exit button. We should add an Install button and hide it.
-        self.exit_button = None
-        
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
         self.callback_queue = multiprocessing.JoinableQueue()
@@ -195,7 +192,6 @@ class Main(Gtk.Window):
         params['ui_dir'] = self.ui_dir
         params['forward_button'] = self.forward_button
         params['backwards_button'] = self.backwards_button
-        params['exit_button'] = self.exit_button
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
@@ -254,7 +250,6 @@ class Main(Gtk.Window):
             Gdk.Screen.get_default(), style_provider,     
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-
         
         # Show main window
         self.show_all()

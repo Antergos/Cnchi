@@ -43,7 +43,6 @@ class Slides(Gtk.Box):
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-        self.exit_button = params['exit_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.main_progressbar = params['main_progressbar']
@@ -119,7 +118,8 @@ class Slides(Gtk.Box):
 
         self.backwards_button.hide()
         self.forward_button.hide()
-        self.exit_button.hide()
+
+        self.header.set_show_close_button(False)
 
     def store_values(self):
         return False
@@ -174,8 +174,6 @@ class Slides(Gtk.Box):
                     while Gtk.events_pending():
                         Gtk.main_iteration()
                     Gtk.main_quit()
-                        
-                self.exit_button.show()
                 return False
             elif event[0] == 'error':
                 self.callback_queue.task_done()
