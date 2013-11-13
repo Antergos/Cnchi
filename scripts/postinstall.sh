@@ -260,6 +260,14 @@ postinstall(){
 	cp /etc/arch-release ${DESTDIR}/etc
 	cp -f /etc/os-release ${DESTDIR}/etc/os-release
 	
+	# Configure LXDM Wallpaper. Skip with base installs
+	line_old='# bg=/usr/share/backgrounds/default.png'
+	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+	if [[ $DESKTOP != 'nox' ]];then
+	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
+		
+	fi
+	
 }
 
 touch /tmp/.postinstall.lock
