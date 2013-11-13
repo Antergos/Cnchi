@@ -140,7 +140,7 @@ class DesktopAsk(Gtk.Box):
 
         image.set_from_file(self.desktops_dir + desktop + ".png")
 
-        txt = _("Choose Your Desktop Environment")
+        txt = _("Choose Your Desktop")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
             

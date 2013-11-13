@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2013-11-03 11:52+PET\n"
+"POT-Creation-Date: 2013-11-04 09:03+PET\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,7 +150,7 @@ msgid "This option will install Antergos as command-line only system, without an
 msgstr ""
 
 #: src/desktop.py:143
-msgid "Choose Your Desktop Environment"
+msgid "Choose Your Desktop"
 msgstr ""
 
 #: src/desktop.py:153
