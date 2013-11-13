@@ -593,7 +593,7 @@ class InstallationProcess(multiprocessing.Process):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
-                        if plib == "" or desktop in lib[plib]:
+                        if plib is None or desktop in lib[plib]:
                             self.packages.append(pkg.text)        
 
         # Add libreoffice language package
