@@ -121,7 +121,7 @@ class Pac(object):
             logging.error("No targets specified")
             return 1
 
-        repos = dict((db.name,db) for db in handle.get_syncdbs())
+        repos = dict((db.name,db) for db in self.handle.get_syncdbs())
 
         targets = []
         for name in pkgs:
@@ -163,7 +163,7 @@ class Pac(object):
 
     def get_group_pkgs(self, group):
         # Get group packages 
-        for repo in handle.get_syncdbs():
+        for repo in self.handle.get_syncdbs():
             grp = repo.read_grp(group)
             if grp is None:
                 continue
@@ -299,18 +299,19 @@ class Pac(object):
             self.last_dl_filename = filename
             self.last_dl_total = total
             self.last_dl_progress = 0
-            text = _("Download %s: %d/%d" % (filename, tx, total))
+            text = _("Downloading %s: %d/%d" % (filename, tx, total))
             self.queue_event('action', text)
 
         # Compute a progress indicator
         if self.last_dl_total > 0:
-            progress = (tx * 25) // self.last_dl_total
+            #progress = (tx * 25) // self.last_dl_total
+            progress = tx // self.last_dl_total
         else:
             # if total is unknown, use log(kBytes)²/2
             progress = int(math.log(1 + tx / 1024) ** 2 / 2)
 
         if progress > self.last_dl_progress:
             self.last_dl_progress = progress
-            text = _("Download %s: %d/%d" % (filename, tx, total))
+            text = _("Downloading %s: %d/%d" % (filename, tx, total))
             self.queue_event('action', text)
             self.queue_event('percent', progress)
