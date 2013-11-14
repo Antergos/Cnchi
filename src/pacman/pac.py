@@ -280,7 +280,7 @@ class Pac(object):
 
         # Compute a progress indicator
         if self.last_dl_total > 0:
-            progress = (tx * 25) // _last_dl_total
+            progress = (tx * 25) // self.last_dl_total
         else:
             # if total is unknown, use log(kBytes)²/2
             progress = int(math.log(1 + tx / 1024) ** 2 / 2)
