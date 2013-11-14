@@ -133,21 +133,6 @@ def pacman_conf_enumerator(path):
 			else:
 				warnings.warn(InvalidSyntax(f.name, 'unrecognized option', key))
 
-_logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
-
-def cb_log(level, line):
-	if not (level & _logmask):
-		return
-	if level & pyalpm.LOG_ERROR:
-		line = "ERROR: " + line
-	elif level & pyalpm.LOG_WARNING:
-		line = "WARNING: " + line
-	elif level & pyalpm.LOG_DEBUG:
-		line = "DEBUG: " + line
-	elif level & pyalpm.LOG_FUNCTION:
-		line = "FUNC: " + line
-	sys.stderr.write(line)
-
 class PacmanConfig(object):
 	def __init__(self, conf = None, options = None):
 		self.options = {}
@@ -212,7 +197,7 @@ class PacmanConfig(object):
 		if "IgnoreGroup" in self.options:
 			h.ignoregrps = self.options["IgnoreGroup"]
 
-		h.logcb = cb_log
+		#h.logcb = cb_log
 
 		# set sync databases
 		for repo, servers in self.repos.items():
