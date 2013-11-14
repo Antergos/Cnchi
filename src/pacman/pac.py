@@ -4,7 +4,7 @@
 #  pac.py
 #
 #  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
-#  Copyright 2013 Manjaro (http://manjaro.org)
+#  Copyright 2013 Manjaro
 #  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import queue
 
 try:
     import pyalpm
-    from pacman import pac_config
+    from pacman import config
 except:
     print("pyalpm not found! This installer won't work.")
 
