@@ -139,7 +139,7 @@ class Pac(object):
         targets = []
         for name in pkgs:
             ok, pkg = self.find_sync_package(name, repos)
-            if ok and pkg not in targets:
+            if ok:
                 targets.append(pkg)
             else:
                 # Can't find this one, check if it's a group
@@ -149,12 +149,12 @@ class Pac(object):
                         # Check that added package is not in our conflicts list
                         # Ex: connman conflicts with netctl(openresolv), which is
                         # installed by default with base group
-                        if pkg.name not in conflicts and pkg not in targets:
+                        if pkg.name not in conflicts and pkg.name not in pkgs:
                             targets.append(pkg)
                 else:
                     # No, it wasn't neither a package nor a group
                     logging.error(pkg)
-                
+
         if len(targets) == 0:
             logging.error("No targets found")
             return 1
