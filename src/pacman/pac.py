@@ -163,10 +163,15 @@ class Pac(object):
         
         if t is None:
             return 1
+            
+        pkg_names = []
 
         for pkg in targets:
-            logging.debug("Adding %s to transaction" % pkg.name)
-            t.add_pkg(pkg)
+            if pkg.name not in pkg_names:
+                logging.debug("Adding %s to transaction" % pkg.name)
+                t.add_pkg(pkg)
+                pkg_names.append(pkg.name)
+                
         
         ok = self.finalize(t)
         
