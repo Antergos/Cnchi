@@ -82,12 +82,23 @@ class Pac(object):
         t.release()
         return True
 
+    def init_transaction(self, **options):
+        # Transaction initialization
+        try:
+            t = self.handle.init_transaction(**options)
+        except pyalpm.error:
+            line = traceback.format_exc()
+            logging.error(line)
+            return None
+        return t
+
+    '''
     def init_transaction(self, options):
         # Transaction initialization
-        self.handle.dlcb = self.cb_dl
-        self.handle.eventcb = self.cb_event
-        self.handle.questioncb = self.cb_conv
-        self.handle.progresscb = self.cb_progress
+        #self.handle.dlcb = self.cb_dl
+        #self.handle.eventcb = self.cb_event
+        #self.handle.questioncb = self.cb_conv
+        #self.handle.progresscb = self.cb_progress
         t = self.handle.init_transaction(
                 cascade = getattr(options, "cascade", False),
                 nodeps = getattr(options, "nodeps", False),
@@ -101,20 +112,21 @@ class Pac(object):
                 alldeps = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         return t
+    '''
         
     ###################################################################
     # pacman -Sy (refresh) and pacman -S (install)
 
-    def do_refresh(self, options=None):
+    def do_refresh(self):
         # Sync databases like pacman -Sy
         force = True
         for db in self.handle.get_syncdbs():
-            t = self.init_transaction(options)
+            t = self.init_transaction()
             db.update(force)
             t.release()
         return 0
 
-    def do_install(self, pkgs, conflicts=[], options=None):
+    def do_install(self, pkgs, conflicts=[]):
         # Install a list of packages like pacman -S
         logging.debug("Install a list of packages like pacman -S")
         if len(pkgs) == 0:
@@ -128,7 +140,6 @@ class Pac(object):
             ok, pkg = self.find_sync_package(name, repos)
             if ok:
                 targets.append(pkg)
-                logging.debug("Added package %s" % pkg.name)
             else:
                 # Can't find this one, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
@@ -139,7 +150,6 @@ class Pac(object):
                         # installed by default with base group
                         if pkg.name not in conflicts:
                             targets.append(pkg)
-                    logging.debug("Added group %s" % name)
                 else:
                     # No, it wasn't neither a package nor a group
                     logging.error(pkg)
@@ -148,7 +158,11 @@ class Pac(object):
             logging.error("No targets found")
             return 1
 
-        t = self.init_transaction(options)
+        t = self.init_transaction()
+        
+        if t is None:
+            return 1
+            
         [t.add_pkg(pkg) for pkg in targets]
         ok = self.finalize(t)
         return (0 if ok else 1)
@@ -159,7 +173,7 @@ class Pac(object):
             pkg = db.get_pkg(pkgname)
             if pkg is not None:
                 return True, pkg
-        return False, "package '%s' was not found" % pkgname
+        return False, "Package '%s' was not found." % pkgname
 
     def get_group_pkgs(self, group):
         # Get group packages 
@@ -301,6 +315,7 @@ class Pac(object):
             self.last_dl_progress = 0
             text = _("Downloading %s: %d/%d" % (filename, tx, total))
             self.queue_event('action', text)
+            self.queue_event('percent', 0)
 
         # Compute a progress indicator
         if self.last_dl_total > 0:
