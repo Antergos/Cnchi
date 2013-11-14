@@ -76,7 +76,8 @@ class Pac(object):
             t.prepare()
             t.commit()
         except pyalpm.error:
-            traceback.print_exc()
+            line = traceback.format_exc()
+            logging.error(line)
             t.release()
             return False
         t.release()
@@ -162,9 +163,13 @@ class Pac(object):
         
         if t is None:
             return 1
-            
-        [t.add_pkg(pkg) for pkg in targets]
+
+        for pkg in targets:
+            logging.debug("Adding %s to transaction" % pkg.name)
+            t.add_pkg(pkg)
+        
         ok = self.finalize(t)
+        
         return (0 if ok else 1)
 
     def find_sync_package(self, pkgname, syncdbs):
@@ -316,6 +321,7 @@ class Pac(object):
             text = _("Downloading %s: %d/%d" % (filename, tx, total))
             self.queue_event('action', text)
             self.queue_event('percent', 0)
+            return
 
         # Compute a progress indicator
         if self.last_dl_total > 0:
