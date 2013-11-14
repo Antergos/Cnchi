@@ -3,7 +3,10 @@
 #
 #  pac.py
 #
-#  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
+#  This file has fragments of code from 'pamac'
+#  (pamac is a package manager from Manjaro team)
+#  Check it at http://git.manjaro.org/core/pamac
+#  
 #  Copyright 2013 Manjaro (http://manjaro.org)
 #  Copyright 2013 Antergos
 #  
