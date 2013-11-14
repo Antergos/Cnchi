@@ -317,6 +317,19 @@ class Pac(object):
         
         self.last_percent = percent
 
+    '''
+    def cb_progress(self, _target, _percent, n, i):
+        if _target:
+            self.target = _("Installing %s (%d/%d)") % (_target, i, n)
+            self.queue_event('global_percent', i / n)
+        else:
+            self.target = _("Checking and loading packages...")
+
+        self.percent = _percent / 100
+        self.queue_event('target', self.target)
+        self.queue_event('percent', self.percent)    
+    '''
+
     def cb_dl(self, filename, tx, total):
         # Check if a new file is coming
         if filename != self.last_dl_filename or self.last_dl_total != total:
@@ -341,3 +354,33 @@ class Pac(object):
             text = _("Downloading %s: %d/%d" % (filename, tx, total))
             self.queue_event('action', text)
             self.queue_event('percent', progress)
+
+    '''            
+    def cb_dl(self, _target, _transferred, total):
+        if self.t != None:
+            if self.total_size > 0:
+                fraction = (_transferred + self.already_transferred) / self.total_size
+            size = 0
+            if self.t.to_remove or self.t.to_add:
+                for pkg in self.t.to_remove + self.t.to_add:
+                    if pkg.name + '-' + pkg.version in _target:
+                        size = pkg.size
+                if _transferred == size:
+                    self.already_transferred += size
+                fsize = self.get_size(self.total_size)
+                self.action = _('Downloading %s...') % _target
+                self.target = _target
+                if fraction > 1:
+                    self.percent = 0
+                else:
+                    self.percent = math.floor(fraction * 100) / 100
+                self.queue_event("action", self.action)
+                self.queue_event("percent", self.percent)
+            else:
+                self.action = _('Refreshing %s...') % _target
+                self.target = _target
+                # can't we know which percent has 'refreshed' ?
+                self.percent = 0
+                self.queue_event("action", self.action)
+                #self.queue_event("percent", self.percent)
+    '''
