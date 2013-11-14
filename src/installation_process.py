@@ -620,7 +620,6 @@ class InstallationProcess(multiprocessing.Process):
     
     def install_packages(self):
         self.chroot_mount_special_dirs()
-        self.pac.do_refresh()
         self.pac.do_install(self.packages, self.conflicts)
         self.chroot_umount_special_dirs()
     

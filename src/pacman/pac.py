@@ -116,8 +116,9 @@ class Pac(object):
 
     def do_install(self, pkgs, conflicts=[], options=None):
         # Install a list of packages like pacman -S
+        logging.debug("Install a list of packages like pacman -S")
         if len(pkgs) == 0:
-            print("error: no targets specified")
+            logging.error("No targets specified")
             return 1
 
         repos = dict((db.name,db) for db in handle.get_syncdbs())
@@ -127,6 +128,7 @@ class Pac(object):
             ok, pkg = self.find_sync_package(name, repos)
             if ok:
                 targets.append(pkg)
+                logging.debug("Added package %s" % pkg.name)
             else:
                 # Can't find this one, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
@@ -137,14 +139,15 @@ class Pac(object):
                         # installed by default with base group
                         if pkg.name not in conflicts:
                             targets.append(pkg)
+                    logging.debug("Added group %s" % name)
                 else:
                     # No, it wasn't neither a package nor a group
-                    print('error: ', pkg)
+                    logging.error(pkg)
                 
         if len(targets) == 0:
-            print("error: no targets found")
+            logging.error("No targets found")
             return 1
-                
+
         t = self.init_transaction(options)
         [t.add_pkg(pkg) for pkg in targets]
         ok = self.finalize(t)
@@ -231,8 +234,8 @@ class Pac(object):
         elif ID is 7:
             action = _('Checking inter conflicts...')
         elif ID is 9:
-            #self.action = _('Installing...')
-            pass
+            # action = _('Installing...')
+            action = ""
         elif ID is 11:
             action = _('Removing...')
         elif ID is 13:
@@ -269,6 +272,27 @@ class Pac(object):
             pass
         '''
 
+    def cb_progress(self, target, percent, n, i):
+        # Display progress percentage for target i/n
+        if len(target) == 0:
+            # Abstract progress
+            if percent < self.last_percent or i < self.last_i:
+                self.queue_event('info', _("Progress (%d targets)") % n)
+                self.last_i = 0
+            self.queue_event('target', _("Checking and loading packages..."))
+            self.queue_event('percent', percent / 100)
+            self.last_i = i
+        else:
+            # Progress for some target
+            if target != self.last_target or percent < self.last_percent:
+                self.last_target = target
+                self.last_percent = 0
+                self.queue_event('target', _("Installing %s (%d/%d)") % (target, i, n))
+                self.queue_event('percent', percent / 100)
+                self.queue_event('global_percent', i / n)
+        
+        self.last_percent = percent
+
     def cb_dl(self, filename, tx, total):
         # Check if a new file is coming
         if filename != self.last_dl_filename or self.last_dl_total != total:
@@ -287,27 +311,6 @@ class Pac(object):
 
         if progress > self.last_dl_progress:
             self.last_dl_progress = progress
-            #text = _("Download %s: %d/%d" % (filename, tx, total))
-            #self.queue_event('action', text)
+            text = _("Download %s: %d/%d" % (filename, tx, total))
+            self.queue_event('action', text)
             self.queue_event('percent', progress)
-
-    def cb_progress(self, target, percent, n, i):
-        # Display progress percentage for target i/n
-        if len(target) == 0:
-            # Abstract progress
-            if percent < self.last_percent or i < self.last_i:
-                self.queue_event('info', _("Progress (%d targets)") % n)
-            self.last_i = i
-            self.queue_event('target', _("Checking and loading packages..."))
-            self.queue_event('percent', percent / 100)
-        else:
-            # Progress for some target
-            if target != self.last_target or percent < self.last_percent:
-                self.last_target = target
-                self.last_percent = 0
-                self.target = _("Installing %s (%d/%d)") % (target, i, n)
-                self.queue_event('target', target)
-                self.queue_event('percent', percent / 100)
-                self.queue_event('global_percent', i / n)
-        
-        self.last_percent = percent
