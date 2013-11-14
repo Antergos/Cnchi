@@ -38,17 +38,30 @@ except:
     print("pyalpm not found! This installer won't work.")
 
 class Pac(object):
-    def __init__(self, conf, callback_queue):
+    def __init__(self, conf_path, callback_queue):
         
         self.callback_queue = callback_queue
+        
+        # Transaction
         self.t = None
+        
         self.conflict_to_remove = None
+        
+        # Packages lists
         self.to_remove = []
         self.to_add = []
         self.to_update = []
         self.to_provide = []
         
-        self.target = ""
+        # Some progress indicators (used in cb_progress callback)
+        self.last_target = None
+        self.last_percent = 100
+        self.last_i = -1
+        
+        # Some download indicators (used in cb_dl callback)
+        self.last_dl_filename = None
+        self.last_dl_progress = None
+        self.last_dl_total = None
         
         # Packages to be removed
         # E.g: connman conflicts with netctl(openresolv), which is installed
@@ -59,25 +72,30 @@ class Pac(object):
         self.listofpackages = []
         
         self.action = ""
-        self.percent = 0
         
         self.already_transferred = 0
         self.total_size = 0
         
         self.last_event = {}
         
-        if conf != None:
-            self.pacman_conf = pac_config.PacmanConfig(conf)
-            self.handle = self.pacman_conf.initialize_alpm()
+        if conf_path != None:
+            self.config = config.PacmanConfig(conf_path)
+            self.handle = self.config.initialize_alpm()
+        
+            # Set callback functions
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_conv
             self.handle.progresscb = self.cb_progress
             self.handle.logcb = self.cb_log
+            
+            # Check if HoldPkg option is set
             self.holdpkg = None
-            if 'HoldPkg' in self.pacman_conf.options:
-                self.holdpkg = self.pacman_conf.options['HoldPkg']
+            if 'HoldPkg' in self.config.options:
+                self.holdpkg = self.config.options['HoldPkg']
+
+##########################################################################################
 
     def init_transaction(self, **options):
         try:
@@ -96,6 +114,8 @@ class Pac(object):
                 self.t = None
             except pyalpm.error:
                 self.queue_event("error", traceback.format_exc())
+
+
         
     # Sync databases like pacman -Sy
     def do_refresh(self):
@@ -119,30 +139,6 @@ class Pac(object):
             size_string = '%.2f MiB' % (KiB_size / 1024)
         return size_string
 
-    '''
-    # OLD Install_packages
-    def install_packages(self, pkg_names):
-        self.to_add = []
-
-        for pkgname in pkg_names:
-            self.to_add.append(pkgname)
-
-        self.to_remove = []
-
-        if self.to_add and self.t_lock is False:    
-            self.t = self.init_transaction()
-            if self.t is not False:
-                for pkgname in self.to_add:
-                    self.add_package(pkgname)
-                try:
-                    self.t.prepare()
-                    self.t.commit()
-                    self.t_lock = False
-                except pyalpm.error:
-                    line = traceback.format_exc()
-                    self.queue_event("error", line)
-                self.t.release()
-    '''
     def install_packages(self, pkg_names, conflicts):
         self.to_add = []
         self.conflicts = conflicts
@@ -170,30 +166,6 @@ class Pac(object):
                     else:
                         self.queue_event("error", line)
                 self.release_transaction()
-
-    '''
-    # old add_package
-    def add_package(self, pkgname):
-        #print("searching %s" % pkgname)
-        try:
-            for repo in self.handle.get_syncdbs():
-                pkg = repo.get_pkg(pkgname)
-                if pkg:
-                    #print("adding %s" % pkgname)
-                    self.t.add_pkg(pkg)
-                    break
-                else:
-                    #this is used for groups.  However, antergos repo coming
-                    # first causes errors.  So I just moved them to the back.
-                    l = pyalpm.find_grp_pkgs([repo], pkgname)
-                    if l:
-                        lss = []
-                        for pakg in l:
-                                self.t.add_pkg(pakg)
-        except pyalpm.error:
-            line = traceback.format_exc()
-            self.queue_event("error", line)    
-    '''
     
     def add_package(self, pkgname):
         #print("searching %s" % pkgname)
@@ -278,9 +250,9 @@ class Pac(object):
             # wait until queue is empty (is emptied in slides.py), then exit
             self.callback_queue.join()
             sys.exit(1)
-
-         
-    # Callback functions 
+        
+    # Callback functions ####################################################################################
+    
     def cb_event(self, ID, event, tupel):
         if ID is 1:
             self.action = _('Checking dependencies...')
@@ -302,25 +274,18 @@ class Pac(object):
             self.already_transferred = 0
         elif ID is 17:
             self.action = _('Loading packages files...')
-            print('Loading packages files')
         elif ID is 26:
             self.action = _('Configuring...')
-            print(_('Configuring a package'))
         elif ID is 27:
-            print(_('Downloading a file'))
+            self.action = _('Downloading a file')
         else:
             self.action = ''
 
         if len(self.action) > 0:
             self.queue_event("action", self.action)
-        #self.queue_event("target", '')
-        #self.queue_event("percent", 0)
-
-        #print(ID, event)
 
     def cb_conv(self, *args):
         pass
-        #print("conversation", args)
 
     def cb_log(self, level, line):
         # Only manage error and warning messages
@@ -371,41 +336,50 @@ class Pac(object):
 
         return size_txt
 
-    def cb_dl(self, _target, _transferred, total):
-        if self.t != None:
-            if self.total_size > 0:
-                fraction = (_transferred + self.already_transferred) / self.total_size
-            size = 0
-            if self.t.to_remove or self.t.to_add:
-                for pkg in self.t.to_remove + self.t.to_add:
-                    if pkg.name + '-' + pkg.version in _target:
-                        size = pkg.size
-                if _transferred == size:
-                    self.already_transferred += size
-                fsize = self.get_size(self.total_size)
-                self.action = _('Downloading %s...') % _target
-                self.target = _target
-                if fraction > 1:
-                    self.percent = 0
-                else:
-                    self.percent = math.floor(fraction * 100) / 100
-                self.queue_event("action", self.action)
-                self.queue_event("percent", self.percent)
-            else:
-                self.action = _('Refreshing %s...') % _target
-                self.target = _target
-                # can't we know which percent has 'refreshed' ?
-                self.percent = 0
-                self.queue_event("action", self.action)
-                #self.queue_event("percent", self.percent)
 
-    def cb_progress(self, _target, _percent, n, i):
-        if _target:
-            self.target = _("Installing %s (%d/%d)") % (_target, i, n)
-            self.queue_event('global_percent', i / n)
+
+
+
+
+    def cb_dl(self, filename, tx, total):
+        # Check if a new file is coming
+        if filename != self.last_dl_filename or self.last_dl_total != total:
+            self.last_dl_filename = filename
+            self.last_dl_total = total
+            self.last_dl_progress = 0
+            text = _("Download %s: %d/%d" % (filename, tx, total))
+            self.queue_event('action', text)
+
+        # Compute a progress indicator
+        if self.last_dl_total > 0:
+            progress = (tx * 25) // _last_dl_total
         else:
-            self.target = _("Checking and loading packages...")
+            # if total is unknown, use log(kBytes)²/2
+            progress = int(math.log(1 + tx / 1024) ** 2 / 2)
 
-        self.percent = _percent / 100
-        self.queue_event('target', self.target)
-        self.queue_event('percent', self.percent)
+        if progress > self.last_dl_progress:
+            self.last_dl_progress = progress
+            #text = _("Download %s: %d/%d" % (filename, tx, total))
+            #self.queue_event('action', text)
+            self.queue_event('percent', progress)
+
+    # Display progress percentage for target i/n
+    def cb_progress(self, target, percent, n, i):
+        if len(target) == 0:
+            # Abstract progress
+            if percent < self.last_percent or i < self.last_i:
+                self.queue_event('info', _("Progress (%d targets)") % n)
+            self.last_i = i
+            self.queue_event('target', _("Checking and loading packages..."))
+            self.queue_event('percent', percent / 100)
+        else:
+            # Progress for some target
+            if target != self.last_target or percent < self.last_percent:
+                self.last_target = target
+                self.last_percent = 0
+                self.target = _("Installing %s (%d/%d)") % (target, i, n)
+                self.queue_event('target', target)
+                self.queue_event('percent', percent / 100)
+                self.queue_event('global_percent', i / n)
+        
+        self.last_percent = percent
