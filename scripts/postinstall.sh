@@ -111,6 +111,11 @@ cinnamon_settings(){
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+	# Set LXDM wallpaper
+	line_old='# bg=/usr/share/backgrounds/default.png'
+ 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+ 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
 }
 
 xfce_settings(){
@@ -141,6 +146,11 @@ xfce_settings(){
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set LXDM wallpaper
+	line_old='# bg=/usr/share/backgrounds/default.png'
+ 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+ 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
 }
 
 openbox_settings(){
