@@ -628,11 +628,8 @@ class InstallationProcess(multiprocessing.Process):
     
     def install_packages(self):
         self.chroot_mount_special_dirs()
-        self.run_pacman()
+        self.pac.do_install(self.packages, self.conflicts)
         self.chroot_umount_special_dirs()
-    
-    def run_pacman(self):
-        self.pac.install_packages(self.packages, self.conflicts)
     
     def chroot_mount_special_dirs(self):
         # Do not remount
