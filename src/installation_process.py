@@ -719,7 +719,6 @@ class InstallationProcess(multiprocessing.Process):
 
                 shutil.copy(source_network, target_network)
 
-    # TODO: Take care of swap partitions
     def auto_fstab(self):
         all_lines = []
         all_lines.append("# /etc/fstab: static file system information.")
@@ -745,7 +744,7 @@ class InstallationProcess(multiprocessing.Process):
                 # It hasn't any filesystem defined
                 continue
 
-            # TODO: Take care of swap partitions
+            # Take care of swap partitions
             if "swap" in myfmt:
                 logging.debug("Add to fstab : UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
                 all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
@@ -1070,11 +1069,19 @@ class InstallationProcess(multiprocessing.Process):
         dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
-        self.copyfiles_progress(cache_dir, dest_dir)
+        self.copy_cache_files_progress(cache_dir, dest_dir)
 
-    def copyfiles_progress(self, src, dst):
+    def copy_cache_files_progress(self, src, dst):
         percent = 0.0
-        items = os.listdir(src)
+        list_dir = os.listdir(src)
+        
+        # Do not copy all xz files, only copy the ones that are needed
+        items = []
+        for i in list_dir:
+            if i.endswith(".pkg.tar.xz"):
+                if i[:-11] in self.packages():
+                    items.append(i)
+        
         step = 1.0 / len(items)
         for item in items:
             self.queue_event("percent", percent)
