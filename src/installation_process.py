@@ -584,6 +584,7 @@ class InstallationProcess(multiprocessing.Process):
         
         lib = {'gtk': ["gnome", "cinnamon", "xfce", "openbox" ], 'qt' : [ "razor", "kde" ] }
 
+        # TODO: Test this (KDE is not working)
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
