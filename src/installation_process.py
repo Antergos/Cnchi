@@ -1073,14 +1073,16 @@ class InstallationProcess(multiprocessing.Process):
 
     def copy_cache_files_progress(self, src, dst):
         percent = 0.0
-        list_dir = os.listdir(src)
+        items = os.listdir(src)
         
-        # Do not copy all xz files, only copy the ones that are needed
+        # TODO: Do not copy all xz files, only copy the ones that are needed
+        '''
         items = []
         for i in list_dir:
             if i.endswith(".pkg.tar.xz"):
                 if i[:-11] in self.packages():
                     items.append(i)
+        '''
         
         step = 1.0 / len(items)
         for item in items:
