@@ -1337,7 +1337,7 @@ class InstallationAdvanced(Gtk.Box):
                                 mount_point, fs_type, writable = self.get_mount_point(partition_path)
                                 if "swap" in fs_type:
                                     msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % partition_path
-                                else:
+                                elif len(mount_point) > 0:
                                     msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
                                     
                                 if "install" in mount_point:
