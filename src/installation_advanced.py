@@ -296,14 +296,13 @@ class InstallationAdvanced(Gtk.Box):
     def get_size(self, length, sectorSize):
         size = length * sectorSize
         size_txt = "%db" % size
+        
         if size >= 1000000000:
             size /= 1000000000
             size_txt = "%dG" % size
-
         elif size >= 1000000:
             size /= 1000000
-            size_txt = "%dM" % size
-        
+            size_txt = "%dM" % size        
         elif size >= 1000:
             size /= 1000
             size_txt = "%dK" % size
@@ -1348,9 +1347,10 @@ class InstallationAdvanced(Gtk.Box):
                                     # some mounted directories. Unmount them without asking.
                                     subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                     logging.debug("%s unmounted" % mount_point)
-                                else:
+                                elif len(mount_point) > 0:
                                     response = show.question(msg)
                                     if response != Gtk.ResponseType.YES:
+                                        # User doesn't want to unmount, we can't go on.
                                         return []
                                     else:
                                         # unmount it!
@@ -1359,6 +1359,8 @@ class InstallationAdvanced(Gtk.Box):
                                         else:
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                             logging.debug("%s unmounted" % mount_point)
+                                else:
+                                    logging.warning(_("%s shows as mounted but it has no mount point") % partition_path)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         

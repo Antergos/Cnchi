@@ -79,8 +79,8 @@ class InstallationProcess(multiprocessing.Process):
          'blvm': blvm }
         self.settings.set('installer_thread_call', p)
         
-        # Used to know if there is a lvm partition (from advanced install)
-        # so we'll have to add the lvm2 hook to mkinitcpio
+        # This flag tells us if there is a lvm partition (from advanced install)
+        # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
         self.blvm = blvm
         
         self.method = self.settings.get('partition_mode')
