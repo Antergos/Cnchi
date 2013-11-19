@@ -34,6 +34,7 @@ class Settings():
             'bootloader_type' : 'GRUB2', \
             'cache' : '', \
             'cnchi' : '/usr/share/cnchi/', \
+            'installer_thread_call' : {}, \
             'data' : '/usr/share/cnchi/data/', \
             'desktop' : 'gnome', \
             'desktops' : [], \

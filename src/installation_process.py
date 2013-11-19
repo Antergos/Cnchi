@@ -70,6 +70,17 @@ class InstallationProcess(multiprocessing.Process):
         self.callback_queue = callback_queue
         self.settings = settings
         
+        # Save how we have been called
+        # We need this in case we have to retry the installation
+        i = { 'settings' : settings,
+         'callback_queue' : callback_queue,
+         'mount_devices' : mount_devices,
+         'fs_devices' : fs_devices,
+         'ssd' : ssd,
+         'alternate_package_list' : alternate_package_list,
+         'blvm': blvm }
+        self.settings.set('installer_thread_call', i)
+        
         # Used to know if there is a lvm partition (from advanced install)
         # so we'll have to add the lvm2 hook to mkinitcpio
         self.blvm = blvm
@@ -105,6 +116,7 @@ class InstallationProcess(multiprocessing.Process):
         self.running = False
         self.queue_event('error', txt)
         self.callback_queue.join()
+        # Is this really necessary?
         sys.exit(1)
          
     def queue_event(self, event_type, event_text=""):
@@ -629,7 +641,13 @@ class InstallationProcess(multiprocessing.Process):
     
     def install_packages(self):
         self.chroot_mount_special_dirs()
-        self.pac.do_install(self.packages, self.conflicts)
+
+        result = self.pac.do_install(self.packages, self.conflicts)
+        if result == 1:
+            self.chroot_umount_special_dirs()
+            self.queue_fatal_event(_("Can't download and install necessary packages."))
+            return False
+                
         self.chroot_umount_special_dirs()
     
     def chroot_mount_special_dirs(self):

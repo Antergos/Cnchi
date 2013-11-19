@@ -177,11 +177,33 @@ class Slides(Gtk.Box):
                 return False
             elif event[0] == 'error':
                 self.callback_queue.task_done()
-                # a fatal error has been issued. We empty the queue
+                # A fatal error has been issued. We empty the queue
                 self.empty_queue()
-                self.fatal_error = True
+                
+                # Show the error
                 show.fatal_error(event[1])
-                return False
+
+                # Ask if user wants to retry
+                res = show.question(_("Do you want to retry?"))
+                if res == GTK_RESPONSE_YES:
+                    # Restart installation process
+                    logging.debug("Restarting installation process...")
+                    p = self.settings.get('installer_thread_call')
+                    
+                    self.process = installation_process.InstallationProcess( \
+                        self.settings, \
+                        self.callback_queue, \
+                        p['mount_devices'], \
+                        p['fs_devices'], \
+                        p['ssd'], \
+                        p['alternate_package_list'], \
+                        p['blvm'])
+                    
+                    self.process.start()
+                    return True
+                else:
+                    self.fatal_error = True
+                    return False
             elif event[0] == 'debug':
                 logging.debug(event[1])
             elif event[0] == 'warning':
