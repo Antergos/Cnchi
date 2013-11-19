@@ -72,14 +72,12 @@ class InstallationProcess(multiprocessing.Process):
         
         # Save how we have been called
         # We need this in case we have to retry the installation
-        i = { 'settings' : settings,
-         'callback_queue' : callback_queue,
-         'mount_devices' : mount_devices,
+        p = {'mount_devices' : mount_devices,
          'fs_devices' : fs_devices,
          'ssd' : ssd,
          'alternate_package_list' : alternate_package_list,
          'blvm': blvm }
-        self.settings.set('installer_thread_call', i)
+        self.settings.set('installer_thread_call', p)
         
         # Used to know if there is a lvm partition (from advanced install)
         # so we'll have to add the lvm2 hook to mkinitcpio
