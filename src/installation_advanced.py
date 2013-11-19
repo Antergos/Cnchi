@@ -1360,7 +1360,7 @@ class InstallationAdvanced(Gtk.Box):
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                             logging.debug("%s unmounted" % mount_point)
                                 else:
-                                    logging.warning(_("%s shows as mounted but it has no mount point") % partition_path)
+                                    logging.warning(_("%s shows as mounted (busy) but it has no mount point") % partition_path)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         
