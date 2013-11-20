@@ -338,7 +338,8 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
             tmp_file.write("LogFile = /tmp/pacman.log\n\n")
-                       
+                
+            # TODO: DO NOT COPY XZ FILES, INSTEAD ADD CACHE DIR HERE
             # ¿?
             #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
@@ -588,11 +589,11 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages.append(pkg.text)
 
     def add_packages_for_selected_features(self, root):
-        features = [ "aur", "bluetooth", "cups", "gnome_extra", "office", "visual", "firewall", "third_party" ]
+        features = ["aur", "bluetooth", "cups", "gnome_extra", "office", "visual", "firewall", "third_party"]
 
         desktop = self.settings.get("desktop")
         
-        lib = {'gtk': ["gnome", "cinnamon", "xfce", "openbox" ], 'qt' : [ "razor", "kde" ] }
+        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["razor", "kde"]}
 
         # TODO: Test this (KDE is not working)
         for feature in features:
@@ -604,8 +605,8 @@ class InstallationProcess(multiprocessing.Process):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
-                        if plib is None or desktop in lib[plib]:
-                            self.packages.append(pkg.text)        
+                        if plib is None or (plib in lib and desktop in lib[plib]):
+                            self.packages.append(pkg.text)
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
@@ -691,7 +692,6 @@ class InstallationProcess(multiprocessing.Process):
         
         self.special_dirs_mounted = False
 
-
     def chroot(self, cmd, stdin=None, stdout=None):
         run = [ 'chroot', self.dest_dir ]
         
@@ -708,7 +708,6 @@ class InstallationProcess(multiprocessing.Process):
         except OSError as e:
             logging.exception("Error running command: %s" % e.strerror)
             raise
-        
         
     def is_running(self):
         return self.running
@@ -1076,7 +1075,6 @@ class InstallationProcess(multiprocessing.Process):
         # Critically important, USER must login before the next reboot to complete the migration
         # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
         subprocess.check_call(['su', username])
-        
 
     def copy_cache_files(self, cache_dir):
         # Check in case user has given a wrong folder
@@ -1091,15 +1089,6 @@ class InstallationProcess(multiprocessing.Process):
     def copy_cache_files_progress(self, src, dst):
         percent = 0.0
         items = os.listdir(src)
-        
-        # TODO: Do not copy all xz files, only copy the ones that are needed
-        '''
-        items = []
-        for i in list_dir:
-            if i.endswith(".pkg.tar.xz"):
-                if i[:-11] in self.packages():
-                    items.append(i)
-        '''
         
         step = 1.0 / len(items)
         for item in items:
