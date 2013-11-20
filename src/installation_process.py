@@ -560,6 +560,7 @@ class InstallationProcess(multiprocessing.Process):
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))
         self.add_packages_for_selected_features(root)
+        self.queue_event('debug', _("All features needed packages have been added"))
         
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
@@ -595,21 +596,32 @@ class InstallationProcess(multiprocessing.Process):
         
         lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["razor", "kde"]}
 
-        # TODO: Test this (KDE is not working)
+        # TODO: Fix this (KDE is not working)
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
+                        plib = pkg.attrib.get('lib')
+                        if plib != None:
+                            logging.debug(plib)
+                        self.packages.append(pkg.text)
+                        '''
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
-                        if plib is None or (plib in lib and desktop in lib[plib]):
+                        if plib is None:
                             self.packages.append(pkg.text)
-
+                        else:
+                            self.queue_event('debug', 'package:%s plib %s' % (pkg.text, plib))
+                            #plib in lib and desktop in lib[plib]:
+                            #self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
+                        '''
+                               
         # Add libreoffice language package
         if self.settings.get('feature_office'):
+            self.queu_event('debug','Add libreoffice language package')
             pkg = ""
             lang_name = self.settings.get("language_name").lower() 
             if lang_name == "english":

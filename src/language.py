@@ -132,7 +132,7 @@ class Language(Gtk.Box):
             lang.install()
             self.translate_ui()
         except IOError:
-            logging.error(_("Can't find translation file for the %s language") % locale_code)
+            logging.warning(_("Can't find translation file for the %s language") % locale_code)
     
     def select_default_row(self, language):   
         for listbox_row in self.listbox.get_children():
