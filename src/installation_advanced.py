@@ -22,7 +22,7 @@
 
 import xml.etree.ElementTree as etree
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import subprocess
 import gettext
 import sys
@@ -1452,6 +1452,8 @@ class InstallationAdvanced(Gtk.Box):
         changelist_dialog.show_all()
         response = changelist_dialog.run()
         changelist_dialog.hide()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         
         return response
 
@@ -1465,6 +1467,31 @@ class InstallationAdvanced(Gtk.Box):
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
             return False
+
+        watch = Gdk.Cursor(Gdk.CursorType.WATCH)
+        gdk_window = self.get_root_window()
+        gdk_window.set_cursor(watch)
+        
+        self.create_staged_partitions()
+        self.start_installation()
+        
+        arrow = Gdk.Cursor(Gdk.CursorType.ARROW)
+        gdk_window.set_cursor(arrow)
+        
+        # Restore "Next" button's text
+        self.forward_button.set_label("gtk-go-forward")
+        self.forward_button.set_use_stock(True)
+        return True
+    
+    # Tell which one is our previous page (in our case installation_ask)
+    def get_prev_page(self):
+        return _prev_page
+
+    # Tell which one is our next page
+    def get_next_page(self):
+        return _next_page
+
+    def create_staged_partitions(self):            
         partitions = {}
         # Create staged partitions 
         if self.disks != None:
@@ -1491,7 +1518,8 @@ class InstallationAdvanced(Gtk.Box):
                         if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], 1):
                                 x = pm.set_flag(1, partitions[partition_path])
-                                pm.finalize_changes(partitions[partition_path].disk)
+                                if not self.testing:
+                                    pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
@@ -1502,32 +1530,21 @@ class InstallationAdvanced(Gtk.Box):
                                     print(partitions)
                                     if not pm.get_flag(partitions[ee], 1):
                                         x = pm.set_flag(1, partitions[ee])
-                                pm.finalize_changes(partitions[ee].disk)
+                                if not self.testing:
+                                    pm.finalize_changes(partitions[ee].disk)
                         # Only format if they want formatting
                         if fmt:  
                             # All of fs module takes paths, not partition objs
-                            (error, msg) = fs.create_fs(partition_path, fisy, lbl)
-                            if error == 0:
-                                logging.info(msg)
-                            else:
-                                logging.error(msg)
+                            if not self.testing:
+                                (error, msg) = fs.create_fs(partition_path, fisy, lbl)
+                                if error == 0:
+                                    logging.info(msg)
+                                else:
+                                    logging.error(msg)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
-                                fs.label_fs(fisy, partition_path, lbl)
-        self.start_installation()
-        
-        # Restore "Next" button's text
-        self.forward_button.set_label("gtk-go-forward")
-        self.forward_button.set_use_stock(True)
-        return True
-    
-    # Tell which one is our previous page (in our case installation_ask)
-    def get_prev_page(self):
-        return _prev_page
-
-    # Tell which one is our next page
-    def get_next_page(self):
-        return _next_page
+                                if not self.testing:
+                                    fs.label_fs(fisy, partition_path, lbl)
 
     # Start installation process
     def start_installation(self):

@@ -431,7 +431,7 @@ if __name__ == '__main__':
         print(str(e))
         sys.exit(2)
     
-    print(opts)
+    #print(opts)
     
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
