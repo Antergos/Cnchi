@@ -84,8 +84,8 @@ class Features(Gtk.Box):
         # The first time we load this screen, we try to guess some defaults
         self.defaults = True
         
-        # Only show ufw rules info once
-        self.ufw_info_already_shown = False
+        # Only show ufw rules and aur disclaimer info once
+        self.info_already_shown = { "ufw":False, "aur":False }
         
         super().add(self.ui.get_object("features"))
         
@@ -165,14 +165,14 @@ class Features(Gtk.Box):
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)        
-        txt = _("Open source office suite that supports editing MS Office files.")
+        txt = _("Open source office suite. Supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
 
         # Visual effects
         txt = _("Visual Effects")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
-        txt = _("Enable 3D acceleration for transparency, shadows, and other desktop effects.")
+        txt = _("Enable transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
         # Firewall
@@ -188,19 +188,9 @@ class Features(Gtk.Box):
         txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)  
-        txt = _("Third-party software to play Flash videos, MP3 audio, and other media.")
+        txt = _("Software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
-        
-        # Uncomplicated Firewall dialog
-        ufw = self.ui.get_object("ufw")
-        txt = _("Uncomplicated Firewall will be installed with these rules:")
-        txt = "<big>%s</big>" % txt
-        ufw.set_markup(txt)
-        toallow = misc.get_network()
-        txt = "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH" % toallow
-        txt = "<i>%s</i>" % txt
-        ufw.format_secondary_markup(txt)
-    
+            
     def hide_features(self):
         for feature in self.all_features:
             if feature not in self.features:
@@ -231,14 +221,44 @@ class Features(Gtk.Box):
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
                 
-        # Show ufw info message if ufw is selected (just once)
-        if self.settings.get("feature_firewall") and not self.ufw_info_already_shown:
-            ufw = self.ui.get_object("ufw")
-            ufw.run()
-            ufw.hide()
-            self.ufw_info_already_shown = True
+        # Show ufw info message if ufw is selected (only once)
+        if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
+            info = self.prepare_info_dialog("ufw")
+            info.run()
+            info.hide()
+            self.info_already_shown["ufw"] = True
+
+        # Show AUR disclaimer if AUR is selected (only once)            
+        if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
+            info = self.prepare_info_dialog("aur")
+            info.run()
+            info.hide()
+            self.info_already_shown["aur"] = True
 
         return True
+
+    def prepare_info_dialog(self, feature):
+        if feature == "aur":
+            # Aur disclaimer
+            txt1 = _("Arch User Repository - Disclaimer")
+            txt2 = _("The Arch User Repository is a collection of user-submitted PKGBUILDs\n" \
+                "that supplement software available from the official repositories.\n\n" \
+                "The AUR is community driven and NOT supported by Arch or Antergos.\n")
+        
+        if feature == "ufw":
+            # Ufw rules info
+            txt1 = _("Uncomplicated Firewall will be installed with these rules:")
+            toallow = misc.get_network()
+            txt2 = _("ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH") % toallow
+
+        txt1 = "<big>%s</big>" % txt1
+        txt2 = "<i>%s</i>" % txt2
+
+        info = self.ui.get_object("info")
+        info.set_markup(txt1)
+        info.format_secondary_markup(txt2)
+        
+        return info
 
     def get_prev_page(self):
         return _prev_page
