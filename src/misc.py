@@ -29,6 +29,7 @@ import subprocess
 import syslog
 import socket
 import osextras
+import logging
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -922,7 +923,10 @@ def sort_list(mylist, mylocale=""):
     import functools
 
     if mylocale != "":
-        locale.setlocale(locale.LC_ALL, mylocale)
+        try:
+            locale.setlocale(locale.LC_ALL, mylocale)
+        except:
+            logging.warning(_("Can't set locale %s") % mylocale)
         
     sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
 
