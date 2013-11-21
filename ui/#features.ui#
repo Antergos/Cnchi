@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Thu Nov 21 04:03:46 2013 -->
+<interface>
+  <!-- interface-requires gtk+ 3.10 -->
+  <object class="GtkBox" id="features">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
+        <property name="height_request">300</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="shadow_type">in</property>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkMessageDialog" id="ufw">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Cnchi</property>
+    <property name="window_position">center-always</property>
+    <property name="type_hint">normal</property>
+    <property name="buttons">close</property>
+    <property name="text" translatable="yes">&lt;big&gt;Uncomplicated Firewall will be installed with these rules:&lt;/big&gt;</property>
+    <property name="use_markup">True</property>
+    <property name="secondary_text">&lt;i&gt;ufw default deny
+ufw allow from 192.168.0.0/24
+ufw allow from 192.168.1.0/24
+ufw allow from 192.168.2.0/24
+ufw allow Transmission
+ufw allow SSH&lt;/i&gt;
+</property>
+    <property name="secondary_use_markup">True</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="messagedialog-vbox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="messagedialog-action_area">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
