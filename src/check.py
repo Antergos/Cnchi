@@ -168,7 +168,7 @@ class Check(Gtk.Box):
                         max_size = size
         # we need 4GB
         #3221225472
-        if max_size >= 4000000000 
+        if max_size >= 4000000000:
             return True
 
         return False
