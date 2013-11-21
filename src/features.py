@@ -98,7 +98,7 @@ class Features(Gtk.Box):
         
         text = [label1.get_text(), label2.get_text()]
         sorted_text = misc.sort_list(text, self.settings.get("locale"))
-        
+              
         # If strings are already well sorted return < 0
         if text[0] == sorted_text[0]:
             return -1
@@ -130,7 +130,7 @@ class Features(Gtk.Box):
         txt = _("Arch User Repository (AUR) Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["aur"].set_markup(txt)
-        txt = _("The Arch User Repository (AUR) is a community-driven repository for Arch users.")
+        txt = _("The AUR is a community-driven repository for Arch users.")
         self.labels["aur"].set_markup(txt)
 
         # Bluetooth
@@ -190,6 +190,8 @@ class Features(Gtk.Box):
         self.titles["third_party"].set_markup(txt)  
         txt = _("Software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
+
+        self.listbox.invalidate_sort()
             
     def hide_features(self):
         for feature in self.all_features:
