@@ -174,7 +174,8 @@ class InstallationProcess(multiprocessing.Process):
                                                     self.auto_device,
                                                     self.settings.get("use_luks"), 
                                                     self.settings.get("use_lvm"),
-                                                    self.settings.get("luks_key_pass"))
+                                                    self.settings.get("luks_key_pass"),
+                                                    self.settings.get("use_home"))
                 ap.run()
 
                 # Get mount_devices and fs_devices

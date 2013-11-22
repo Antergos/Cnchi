@@ -26,7 +26,7 @@ import logging
 import time
 
 class AutoPartition():
-    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass):
+    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home):
         self.dest_dir = dest_dir
         self.auto_device = auto_device
         self.luks_key_pass = luks_key_pass
@@ -39,6 +39,9 @@ class AutoPartition():
 
         self.luks = use_luks
         self.lvm = use_lvm
+
+        # TODO: Make home a different partition or if using LVM, a different volume 
+        self.home = use_home
         
     def check_output(self, command):
         return subprocess.check_output(command.split()).decode().strip("\n")
@@ -95,6 +98,8 @@ class AutoPartition():
         # Close cryptAntergos (it may have been left open because of a previous failed installation)
         if os.path.exists("/dev/mapper/cryptAntergos"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
+        if os.path.exists("/dev/mapper/cryptAntergosHome"):
+            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
         
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         # We have two main cases: "swap" and everything else.
@@ -162,18 +167,25 @@ class AutoPartition():
         boot = ""
         swap = ""
         root = ""
+        home = ""
 
         luks = ""    
         lvm = ""
 
+        # TODO: SET SWAP IN A LOGIC PARTITION
+        
         if self.uefi:
             boot = d + "3"
             swap = d + "4"
             root = d + "5"
+            if self.home:
+                home = d + "6"
         else:
             boot = d + "1"
             swap = d + "2"
             root = d + "3"
+            if self.home:
+                home = d + "4"
 
         if self.luks:
             if self.lvm:
@@ -184,6 +196,8 @@ class AutoPartition():
                 # LUKS and no LVM
                 luks = root
                 root = "/dev/mapper/cryptAntergos"
+                if self.home:
+                    home = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
             lvm = swap
@@ -191,24 +205,29 @@ class AutoPartition():
         if self.lvm:
             swap = "/dev/AntergosVG/AntergosSwap"
             root = "/dev/AntergosVG/AntergosRoot"
+            if self.home:
+                home = "/dev/antergosVG/AntergosHome"
                 
-        return (boot, swap, root, luks, lvm)
+        return (boot, swap, root, luks, lvm, home)
 
     # mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py
     def get_mount_devices(self):
-        (boot_device, swap_device, root_device, luks_device, lvm_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_device, lvm_device, home_device) = self.get_devices()
         
         mount_devices = {}
         
         mount_devices["/boot"] = boot_device
-        
-        # TODO: Check that this works using LVM on LUKS
+
         if self.luks:
             mount_devices["/"] = luks_device
         else:
             mount_devices["/"] = root_device
 
-            mount_devices["swap"] = swap_device            
+        mount_devices["swap"] = swap_device
+
+        if self.home:
+            mount_devices["/home"] = home_device
+        
         for m in mount_devices:
             logging.debug("mount_devices[%s] = %s" % (m, mount_devices[m]))
         
@@ -216,14 +235,17 @@ class AutoPartition():
 
     # fs_devices  will be used when configuring the fstab file in installation_process.py
     def get_fs_devices(self):        
-        (boot_device, swap_device, root_device, luks_device, lvm_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_device, lvm_device, home_device) = self.get_devices()
 
         fs_devices = {}
         
         fs_devices[boot_device] = "ext2"
         fs_devices[swap_device] = "swap"
 
-        # TODO: Check that this works using LVM on LUKS
+        # TODO: Not sure about this. Must change it in the next if?
+        if self.home:
+            fs_devices[home_device] = "ext4"
+
         if self.luks:
             fs_devices[luks_device] = "ext4"
         else:
@@ -257,7 +279,7 @@ class AutoPartition():
             
             disc_size = ((logical_block_size * size) / 1024) / 1024
         else:
-            logging.error("Setup cannot detect size of your device, please use normal " \
+            logging.error("Setup cannot detect size of your device, please use advanced " \
                 "installation routine for partitioning and mounting devices.")
             return
         
@@ -271,13 +293,23 @@ class AutoPartition():
             swap_part_size = mem_total / 1024
 
         root_part_size = disc_size - (guid_part_size + uefisys_part_size + boot_part_size + swap_part_size)
+        
+        home_part_size = 0
+        if self.home:
+            # TODO: Decide how much we leave to root and how much we leave to home
+            home_part_size = 0
+        
+        root_part_size = root_part_size - home_part_size
 
-        lvm_pv_part_size = swap_part_size + root_part_size
+        lvm_pv_part_size = swap_part_size + root_part_size + home_part_size
         
         logging.debug("disc_size %dMB" % disc_size)
         logging.debug("guid_part_size %dMB" % guid_part_size)
         logging.debug("uefisys_part_size %dMB" % uefisys_part_size)
         logging.debug("boot_part_size %dMB" % boot_part_size)
+        
+        if self.home:
+            logging.debug("home_part_size %dMB" % home_part_size)
         
         if self.lvm:
             logging.debug("lvm_pv_part_size %dMB" % lvm_pv_part_size)
