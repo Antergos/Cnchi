@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  cnchi.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -55,8 +55,10 @@ import info
 import updater
 import show_message as show
 
-# Enabled desktops (remember to update features_by_desktop in features.py if this is changed)
-#_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
+# Enabled desktops (remember to update features_by_desktop
+# in features.py if this is changed)
+#_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", \
+# "openbox", "lxde", "enlightenment", "kde" ]
 _desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "kde" ]
 
 # Command line options
@@ -102,7 +104,7 @@ class Main(Gtk.Window):
         if os.getuid() != 0:
             show.fatal_error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
-        
+
         setup_logging()
 
         # Check if we're already running
@@ -113,34 +115,34 @@ class Main(Gtk.Window):
                           'you can manually delete the file %s\n'
                           'and run this installer again.') % tmp_running)
             sys.exit(1)
-                
-        super().__init__()       
-        
+
+        super().__init__()
+
         logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
-        
+
         p = multiprocessing.current_process()
         logging.debug("[%d] %s started" % (p.pid, p.name))
-        
-        self.settings = config.Settings()        
+
+        self.settings = config.Settings()
         self.ui_dir = self.settings.get('ui')
 
         if not os.path.exists(self.ui_dir):
             cnchi_dir = os.path.join(os.path.dirname(__file__), './')
             self.settings.set('cnchi', cnchi_dir)
-            
+
             ui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
             self.settings.set('ui', ui_dir)
-            
+
             data_dir = os.path.join(os.path.dirname(__file__), 'data/')
-            self.settings.set('data', data_dir)           
-            
+            self.settings.set('data', data_dir)
+
             self.ui_dir = self.settings.get('ui')
 
         self.settings.set('cache', _cache_dir)
-            
+
         # Set enabled desktops
         self.settings.set("desktops", _desktops)
-        
+
         # Set if a grub type must be installed (user choice)
         self.settings.set("force_grub_type", _force_grub_type)
 
@@ -150,7 +152,7 @@ class Main(Gtk.Window):
         self.add(self.ui.get_object("main"))
 
         self.header = self.ui.get_object("header")
-        
+
         self.logo = self.ui.get_object("logo")
         data_dir = self.settings.get('data')
         logo_dir = os.path.join(data_dir, "antergos-logo-mini2.png")
@@ -166,7 +168,7 @@ class Main(Gtk.Window):
         self.forward_button = self.ui.get_object("forward_button")
         self.backwards_button = self.ui.get_object("backwards_button")
 
-        image1 = Gtk.Image() 
+        image1 = Gtk.Image()
         image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
         self.forward_button.set_label("")
         self.forward_button.set_image(image1)
@@ -175,7 +177,7 @@ class Main(Gtk.Window):
         image2.set_from_icon_name("go-previous", Gtk.IconSize.BUTTON)
         self.backwards_button.set_label("")
         self.backwards_button.set_image(image2)
-        
+
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
         self.callback_queue = multiprocessing.JoinableQueue()
@@ -201,10 +203,10 @@ class Main(Gtk.Window):
         params['alternate_package_list'] = _alternate_package_list
         params['disable_tryit'] = _disable_tryit
         params['testing'] = _testing
-        
+
         if len(_alternate_package_list) > 0:
             logging.info(_("Using '%s' file as package list") % _alternate_package_list)
-        
+
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
         self.pages["location"] = location.Location(params)
@@ -231,7 +233,7 @@ class Main(Gtk.Window):
 
         # Set window icon
         icon_dir = os.path.join(data_dir, 'antergos-icon.png')
-        
+
         self.set_icon_from_file(icon_dir)
 
         # Set the first page to show
@@ -251,10 +253,10 @@ class Main(Gtk.Window):
         style_provider.load_from_data(css_data)
 
         Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider,     
+            Gdk.Screen.get_default(), style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        
+
         # Show main window
         self.show_all()
 
@@ -270,7 +272,7 @@ class Main(Gtk.Window):
         # Hide titlebar but show border decoration
         self.get_window().set_accept_focus(True)
         self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
-        
+
         # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
@@ -294,7 +296,7 @@ class Main(Gtk.Window):
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
                 os.remove(p)
-         
+
     def on_exit_button_clicked(self, widget, data=None):
         self.remove_temp_files()
         logging.info(_("Quiting installer..."))
@@ -306,7 +308,7 @@ class Main(Gtk.Window):
             new_value = 1
         if new_value < 0:
             new_value = 0
-        self.progressbar.set_fraction(new_value)        
+        self.progressbar.set_fraction(new_value)
         if new_value > 0:
             self.progressbar.show()
         else:
@@ -317,9 +319,9 @@ class Main(Gtk.Window):
 
         if next_page != None:
             stored = self.current_page.store_values()
-            
+
             if stored != False:
-                self.set_progressbar_step(self.progressbar_step)     
+                self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.current_page)
 
                 self.current_page = self.pages[next_page]
@@ -343,7 +345,7 @@ class Main(Gtk.Window):
 
             # If we go backwards, don't store user changes
             # self.current_page.store_values()
-            
+
             self.main_box.remove(self.current_page)
             self.current_page = self.pages[prev_page]
 
@@ -372,7 +374,7 @@ def setup_logging():
         sh.setLevel(_log_level)
         sh.setFormatter(formatter)
         logger.addHandler(sh)
-        
+
 
 def show_help():
     print("Cnchi Antergos Installer")
@@ -383,7 +385,7 @@ def show_help():
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
-    print("-t, --testing : Do not perform any changes (useful for developers)") 
+    print("-t, --testing : Do not perform any changes (useful for developers)")
     print("-v, --verbose : Show logging messages to stdout")
 
 def check_gtk_version():
@@ -391,7 +393,7 @@ def check_gtk_version():
     major_needed = int(_gtk_version_needed.split(".")[0])
     minor_needed = int(_gtk_version_needed.split(".")[1])
     micro_needed = int(_gtk_version_needed.split(".")[2])
-    
+
     # Check system GTK Version
     major = Gtk.get_major_version()
     minor = Gtk.get_minor_version()
@@ -405,11 +407,11 @@ def check_gtk_version():
         return False
     else:
         print("Using GTK v%d.%d.%d" % (major, minor, micro))
-    
+
     return True
 
 if __name__ == '__main__':
-    
+
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo always will be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
@@ -421,7 +423,7 @@ if __name__ == '__main__':
 
     # Check program args
     argv = sys.argv[1:]
-    
+
     try:
         opts, args = getopt.getopt(argv, "ac:dp:ufvg:nht",
          ["aria2", "cache=", "debug", "packages=", "update",
@@ -430,9 +432,9 @@ if __name__ == '__main__':
         show_help()
         print(str(e))
         sys.exit(2)
-    
+
     #print(opts)
-    
+
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
             _log_level = logging.DEBUG
@@ -461,7 +463,7 @@ if __name__ == '__main__':
             _testing = True
         else:
             assert False, "unhandled option"
-        
+
     if _update:
         setup_logging()
         # Check if program needs to be updated
@@ -482,7 +484,7 @@ if __name__ == '__main__':
             # Exit and let the new instance do all the hard work
             sys.exit(0)
 
-    # Start Gdk stuff and main window app 
+    # Start Gdk stuff and main window app
     GObject.threads_init()
 
     app = Main()

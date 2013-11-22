@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  partition_module.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -49,13 +49,13 @@ DISK_EXTENDED = 1
 def get_devices():
     device_list = parted.getAllDevices()
     disk_dic = {}
-    
+
     myhomepath = '/run/archiso/bootmnt'
     if os.path.exists(myhomepath):
         myhome = subprocess.check_output(["df", "-P", myhomepath]).decode()
     else:
         myhome = ""
-    
+
     for dev in device_list:
         if dev.path in myhome:
             continue
@@ -76,14 +76,14 @@ def get_devices():
 
         # skip cd drive
         if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
-            try:           
+            try:
                 diskob = parted.Disk(dev)
                 disk_dic[dev.path] = diskob
             except Exception as e:
                 print(e)
-                
+
                 disk_dic[dev.path] = None
-        
+
 
     return disk_dic
 
@@ -106,7 +106,7 @@ def get_partitions(diskob):
     #limiter = 1000
     for p in partition_list:
         part_dic[p.path] = p
-        #this is start sector, end sector, and length     
+        #this is start sector, end sector, and length
         #startbyte = p.geometry.start
         #endbyte = p.geometry.end
         #plength = p.geometry.length
@@ -119,7 +119,7 @@ def get_partitions(diskob):
         #I can't think of a case of less than 1mb partition
         #psizemb = psize / (limiter * limiter)
         #psizegb = psizemb / limiter
-        #grabs the filesystem type       
+        #grabs the filesystem type
         #if p.fileSystem:
         #    ptype = p.fileSystem.type
         #else:
@@ -128,7 +128,7 @@ def get_partitions(diskob):
         #print(p.type)
     free_list = diskob.getFreeSpacePartitions()
     fcount = 0
-    #because I honestly don't know the right answer, let's reserve the first 2048 sectors. 
+    #because I honestly don't know the right answer, let's reserve the first 2048 sectors.
     for f in free_list:
         if f.geometry.end < 2048:
             continue
@@ -147,26 +147,26 @@ def delete_partition(diskob, part):
         diskob.deletePartition(part)
     except Exception as e:
         print(e)
-    
+
 def get_partition_size(diskob, part):
     dev = diskob.device
     sec_size = dev.sectorSize
-    mbs = (sec_size * part.length) / 1000000   
+    mbs = (sec_size * part.length) / 1000000
 
 # length : geometry length
 
 def get_size_txt(length, sectorSize):
     size = length * sectorSize
     size_txt = "%dk" % size
-    
+
     if size >= 1000000:
         size /= 1000000
         size_txt = "%dM" % size
-    
+
     if size >= 1000:
         size /= 1000
         size_txt = "%dG" % size
-        
+
     return size_txt
 
 
@@ -207,12 +207,12 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
     #However, if user is advanced and purposely wants to NOT include some
     #area of disk between 5 and smallest allowed partition, we should let him.
     #
-    #beginning defaults to True.  This starts partition at beginning of 
+    #beginning defaults to True.  This starts partition at beginning of
     #free space.  Specify to False to instead start at end
     #let's use kb = 1000b, mb = 10000000b, etc etc
     dev = diskob.device
     sec_size = dev.sectorSize
-    mb = 1000000 / sec_size 
+    mb = 1000000 / sec_size
     length = int(size_in_mbytes * 1000000 / sec_size)
     if length > (last_sector - first_sector + 1):
         length = last_sector - first_sector + 1
@@ -225,7 +225,7 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
         end_sector = last_sector
         start_sector = end_sector - length + 1
         if start_sector - first_sector < mb:
-            start_sector = first_sector 
+            start_sector = first_sector
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)
     return ngeom
 
@@ -250,7 +250,7 @@ def get_used_space_from_path(path):
 
 def get_largest_size(diskob, part):
     # Call this to set the initial size of new partition in frontend, but also
-    # the MAX to which user may enter.  
+    # the MAX to which user may enter.
     dev = diskob.device
     sec_size = dev.sectorSize
     mbs = (sec_size * part.length) / 1000000
@@ -297,7 +297,7 @@ def get_flags(part):
 
 def get_flag(part, flag):
     return part.getFlag(flag)
-    
+
 @misc.raise_privileges
 def finalize_changes(diskob):
     diskob.commit()
@@ -316,14 +316,14 @@ def order_partitions(partdic):
 # 1. Expand partition
 # 2. Expand fs (resize)
 
-@misc.raise_privileges    
+@misc.raise_privileges
 def split_partition(device_path, partition_path, new_size_in_mb):
     # shrinks partition and splits it in two.
     # ALERT: The file system must be resized before trying this!
 
     disk_dic = get_devices()
     disk = disk_dic[device_path]
-    
+
     part_dic = get_partitions(disk)
     part = part_dic[partition_path]
 
@@ -332,10 +332,10 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     else:
         print(partition_path + ' is mounted, unmount first')
         return False
-        
+
     # ok, partition deleted. Now we must create a new partition with
     # the new size
-    
+
     sec_size = disk.sectorSize
     print("Sec size: ", sec_size)
 
@@ -345,14 +345,14 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     old_end_sector = part.gemotry.end
     old_length = part.geometry.length
     old_size_in_mb =  old_length * sec_size / units
-  
+
     # Create new partition (the one for the otherOS)
     new_length = int(new_size_in_mb * units / sec_size)
     new_end_sector = start_sector + new_length
     my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
-        
+
     # Create new partition (for Antergos)
     new_size_in_mb = old_size_in_mb - new_size_in_mb
     start_sector = new_end_sector + 1
@@ -360,7 +360,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
-    
+
     finalize_changes(disk)
 
 # ----------------------------------------------------------------------------
@@ -368,12 +368,12 @@ def split_partition(device_path, partition_path, new_size_in_mb):
 
 def example():
     #This builds a dictionary to map disk objects to the common name
-    #So for example, disk_dic['/dev/sda'] is that diskobject. 
+    #So for example, disk_dic['/dev/sda'] is that diskobject.
     #This should make it easy to translate from frontend to backend.
     disk_dic = get_devices()
 
     #This does the same thing, but for partitions.
-    #In this example just using /dev/sdb as the device  
+    #In this example just using /dev/sdb as the device
     #Any useable free space is returned as a partition object, only for 'fluency'
     #sake.  It's name will always be 'free#' where # is an incrementing number.
     part_dic = get_partitions(disk_dic['/dev/sdb'])
@@ -390,8 +390,8 @@ def example():
 
     #Creating is a little tougher.  I give you two options here.  You may
     #specify the geometry yourself, or use the geometry helper.  The arguments
-    #for this are diskobject, first sector of free space, the last 
-    #sector of free space, size in mb, and optionally, whether 
+    #for this are diskobject, first sector of free space, the last
+    #sector of free space, size in mb, and optionally, whether
     #to start at beginning or end using beginning=True or False
     #defaults to True
     my_geometry = geom_builder(disk_dic['/dev/sdb'], 123456, 567890, 1000)
@@ -400,7 +400,7 @@ def example():
     # I return free regions as partitions of type 'free space'.  So, if a user
     # wants to create a partition exactly in area of free space, you can use
     # part_dic['free0'].geometry as the geometry, and skip building
-    # the geometry yourself.  
+    # the geometry yourself.
 
     #The second argument here is the type.  Here is cheat sheet.
     #NORMAL            = 0

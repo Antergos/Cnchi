@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  desktop.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -46,13 +46,13 @@ class DesktopAsk(Gtk.Box):
 
         self.desktop_info = self.ui.get_object("desktop_info")
         self.treeview_desktop = self.ui.get_object("treeview_desktop")
-        
+
         self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
-        
+
         self.enabled_desktops = self.settings.get("desktops")
-               
+
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
@@ -69,7 +69,7 @@ class DesktopAsk(Gtk.Box):
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
-        image = self.ui.get_object("image_desktop")     
+        image = self.ui.get_object("image_desktop")
         label = self.ui.get_object("desktop_info")
 
         if desktop == 'gnome':
@@ -126,13 +126,13 @@ class DesktopAsk(Gtk.Box):
             "tailored for users who value simplicity, speed, and " \
             "an intuitive interface.")
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
-        
+
         if desktop == 'nox':
             txt = _("This option will install Antergos as command-line only system, " \
             "without any type of graphical interface. After the installation you can " \
             "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
-            
+
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.FILL)
         label.set_size_request(-1, 100)
@@ -147,7 +147,7 @@ class DesktopAsk(Gtk.Box):
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
-            
+
     def prepare(self, direction):
         self.translate_ui(self.desktop_choice)
         self.show_all()
@@ -162,12 +162,12 @@ class DesktopAsk(Gtk.Box):
         names = []
         for d in self.enabled_desktops:
             names.append(self.desktops[d])
-        
+
         names.sort()
-        
+
         for n in names:
             liststore_desktop.append([n])
-                
+
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
     def set_desktop(self, desktop):
@@ -176,7 +176,7 @@ class DesktopAsk(Gtk.Box):
                 self.desktop_choice = k
                 self.translate_ui(self.desktop_choice)
                 return
-                
+
     def on_treeview_desktop_cursor_changed(self, treeview):
         selected = treeview.get_selection()
         if selected:
@@ -184,13 +184,13 @@ class DesktopAsk(Gtk.Box):
             if iter:
                 desktop = ls.get_value(iter, 0)
                 self.set_desktop(desktop)
-        
+
     def store_values(self):
         self.settings.set('desktop', self.desktop_choice)
         logging.info(_("Cnchi will install Antergos with the '%s' desktop") % self.desktop_choice)
         return True
 
-    def select_default_row(self, treeview, desktop):   
+    def select_default_row(self, treeview, desktop):
         model = treeview.get_model()
         iterator = model.iter_children(None)
         while iterator is not None:

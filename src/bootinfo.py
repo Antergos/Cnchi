@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  bootinfo.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -38,10 +38,10 @@ def get_os(mountname):
     system_dirs = ["System32", "system32"]
     winload_names = ["Winload.exe", "winload.exe"]
     secevent_names = ["SecEvent.Evt", "secevent.evt"]
-    
+
     vista_mark = "W.i.n.d.o.w.s. .V.i.s.t.a"
     seven_mark = "W.i.n.d.o.w.s. .7"
-    
+
     for windows in win_dirs:
         for system in system_dirs:
             for name in winload_names:
@@ -67,7 +67,7 @@ def get_os(mountname):
                  "Windows 95"]
 
     dos_names = ["IO.SYS", "io.sys"]
-    
+
     for name in dos_names:
         p = os.path.join(mountname, name)
         if os.path.exists(p):
@@ -77,7 +77,7 @@ def get_os(mountname):
                         OS = mark
 
     # Linuxes
-    
+
     if OS == _("unknown"):
         linux_names = ["issue", "slackware_version"]
         for name in linux_names:
@@ -104,7 +104,7 @@ def get_devices_and_their_mount_points():
         return d
 
     out = out.split("\n")
-    
+
     for line in out:
         e = line.split()
         try:
@@ -116,11 +116,11 @@ def get_devices_and_their_mount_points():
             pass
 
     return d
-    
+
 
 def get_os_dict():
     oses = {}
-    
+
     with open("/proc/partitions", "rt") as f:
         for line in f:
             l = line.split()
@@ -137,9 +137,9 @@ def get_os_dict():
                         subprocess.call(["mount", device, "/mnt"])
                         oses[device] = get_os("/mnt")
                         subprocess.call(["umount", "/mnt"])
-                        
+
     return oses
-    
+
 if __name__ == '__main__':
     oses = {}
     oses = get_os_dict()

@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  check.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -118,11 +118,11 @@ class Check(Gtk.Box):
 
     def check_all(self):
         has_internet = self.has_connection()
-        self.prepare_network_connection.set_state(has_internet)       
+        self.prepare_network_connection.set_state(has_internet)
 
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)
-        
+
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
 
@@ -192,7 +192,7 @@ class Check(Gtk.Box):
         logging.info(_("We have Internet connection."))
         logging.info(_("We're connected to a power source."))
         logging.info(_("We have enough disk space."))
-          
+
         # Enable forward button
         self.forward_button.set_sensitive(True)
 
@@ -200,7 +200,7 @@ class Check(Gtk.Box):
         self.thread = None
         self.thread = AutoRankmirrorsThread()
         self.thread.start()
-        
+
         return True
 
     def get_prev_page(self):
@@ -212,12 +212,12 @@ class Check(Gtk.Box):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
-        
+
         # We now have a features screen, so we don't need this here
         # Just hide it for now
         self.third_party_info.hide()
         self.third_party_checkbutton.hide()
-        
+
         self.forward_button.set_sensitive(self.check_all())
 
         # set timer

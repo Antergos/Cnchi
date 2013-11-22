@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  fs_module.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -81,7 +81,7 @@ def label_fs(fstype, part, label):
 def create_fs(part, fstype, label='', other_opts=''):
     #set some default options
     #-m 1 reserves 1% for root, because I think 5% is too much on
-    #newer bigger drives.  
+    #newer bigger drives.
     #Also turn on dir_index for ext.  Not sure about other fs opts
 
     #The return value is tuple.  First arg is 0 for success, 1 for fail
@@ -98,7 +98,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                'reiserfs':'',
                'btrfs':'',
                'xfs':'',
-               'swap':''} 
+               'swap':''}
     fstype = fstype.lower()
     if not other_opts:
         other_opts = opt_dic[fstype]
@@ -119,7 +119,7 @@ def create_fs(part, fstype, label='', other_opts=''):
     except Exception as e:
         ret = (1, e)
     return ret
-    
+
 @misc.raise_privileges
 def is_ssd(disk_path):
     ssd = False
@@ -133,7 +133,7 @@ def is_ssd(disk_path):
     except:
         logging.warning(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
         print(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
-    
+
     return ssd
 
 # To shrink a partition:
@@ -146,9 +146,9 @@ def is_ssd(disk_path):
 
 def resize(part, fs_type, new_size_in_mb):
     fs_type = fs_type.lower()
-    
+
     res = False
-    
+
     if 'ntfs' in fs_type:
         res = resize_ntfs(part, new_size_in_mb)
     elif 'fat' in fs_type:
@@ -158,7 +158,7 @@ def resize(part, fs_type, new_size_in_mb):
     else:
         print (_("Sorry but filesystem %s can't be shrinked") % fs_type)
         logging.error(_("Sorry but filesystem %s can't be shrinked") % fs_type)
-    
+
     return res
 
 '''
@@ -187,7 +187,7 @@ Usage: ntfsresize [OPTIONS] DEVICE
 
 '''
 
-@misc.raise_privileges    
+@misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     logging.debug("ntfsresize -P --size %s %s" % (str(new_size_in_mb)+"M", part))
 
@@ -198,9 +198,9 @@ def resize_ntfs(part, new_size_in_mb):
         print(e)
         logging.error(e)
         return False
-    
+
     logging.debug(x)
-    
+
     return True
 
 @misc.raise_privileges
@@ -208,7 +208,7 @@ def resize_fat(part, new_size_in_mb):
     # https://bbs.archlinux.org/viewtopic.php?id=131728
     # the only Linux tool that was capable of resizing fat32, isn't capable of it anymore?
     return False
-    
+
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
     logging.debug("resize2fs %s %sM" % (part, str(new_size_in_mb)))

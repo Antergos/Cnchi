@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  user_info.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -138,7 +138,7 @@ class UserInfo(Gtk.Box):
 
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Create Your User Account"))
-        
+
         #txt = _("Create Your User Account")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt
         #self.title.set_markup(txt)
@@ -153,7 +153,7 @@ class UserInfo(Gtk.Box):
             error_label.hide()
 
         self.password_strength.hide()
-        
+
         # TODO: Fix home encryption and stop hidding its widget
         self.login['encrypt'].hide()
 
@@ -163,7 +163,7 @@ class UserInfo(Gtk.Box):
         self.settings.set('username', self.entry['username'].get_text())
         self.settings.set('password', self.entry['password'].get_text())
         self.settings.set('require_password', self.require_password)
-        
+
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
             m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n\n")
@@ -175,7 +175,7 @@ class UserInfo(Gtk.Box):
             res = show.question(m)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
-        
+
         # this way installer_process will know all info has been entered
         self.settings.set('user_info_done', True)
 
@@ -183,13 +183,13 @@ class UserInfo(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
-        
+
         desktop = self.settings.get('desktop')
         if desktop != "nox" and self.login['auto']:
             self.login['auto'].set_sensitive(True)
         else:
             self.login['auto'].set_sensitive(False)
-        
+
         self.forward_button.set_sensitive(False)
 
     def get_prev_page(self):

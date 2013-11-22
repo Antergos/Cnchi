@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  installation_alongside.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -65,20 +65,20 @@ class InstallationAlongside(Gtk.Box):
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
         self.testing = params['testing']
-        
+
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
 
         self.ui.connect_signals(self)
-        
+
         self.label = self.ui.get_object('label_info')
-        
+
         self.treeview = self.ui.get_object("treeview1")
         self.treeview_store = None
         self.prepare_treeview()
         self.populate_treeview()
-        
+
         # Init dialog slider
         self.init_slider()
 
@@ -87,28 +87,28 @@ class InstallationAlongside(Gtk.Box):
     def init_slider(self):
         dialog = self.ui.get_object("shrink-dialog")
         slider = self.ui.get_object("scale")
-        
+
         slider.set_name("myslider")
         path = os.path.join(self.settings.get("data"), "css", "scale.css")
-        
+
         self.available_slider_range = [0, 0]
-        
+
         if os.path.exists(path):
             with open(path, "rb") as css:
                 css_data = css.read()
-            
+
             provider = Gtk.CssProvider()
 
             try:
                 provider.load_from_data(css_data)
 
                 Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(), provider,     
+                    Gdk.Screen.get_default(), provider,
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
                 )
             except:
                 logging.exception(_("Can't load %s css") % path)
-        
+
 
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)
 
@@ -123,7 +123,7 @@ class InstallationAlongside(Gtk.Box):
         slider.connect("scroll_event",
                 self.on_scale_scroll_event)
         '''
-    
+
     def slider_change_value(self, slider, scroll, value):
         if value <= self.available_slider_range[0] or \
            value >= self.available_slider_range[1]:
@@ -132,7 +132,7 @@ class InstallationAlongside(Gtk.Box):
             slider.set_fill_level(value)
             self.update_ask_shrink_size_labels(value)
             return False
-    
+
     def translate_ui(self):
         txt = _("Select the OS you would like Antergos installed next to.")
         txt = '<span size="large">%s</span>' % txt
@@ -162,20 +162,20 @@ class InstallationAlongside(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
-        
+
     def prepare_treeview(self):
         ## Create columns for our treeview
         render_text = Gtk.CellRendererText()
-                
+
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
         self.treeview.append_column(col)
-        
+
         col = Gtk.TreeViewColumn(_("Detected OS"), render_text, text=1)
         self.treeview.append_column(col)
 
         col = Gtk.TreeViewColumn(_("Filesystem"), render_text, text=2)
         self.treeview.append_column(col)
-    
+
     @misc.raise_privileges
     def populate_treeview(self):
         if self.treeview_store != None:
@@ -185,7 +185,7 @@ class InstallationAlongside(Gtk.Box):
 
         oses = {}
         oses = bootinfo.get_os_dict()
-        
+
         self.partitions = {}
 
         try:
@@ -193,16 +193,16 @@ class InstallationAlongside(Gtk.Box):
         except:
             logging.error("pyparted3 not found!")
             device_list = []
-        
+
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
-                try:           
+                try:
                     disk = parted.Disk(dev)
                     # create list of partitions for this device (p.e. /dev/sda)
                     partition_list = disk.partitions
-                    
+
                     for p in partition_list:
                         if p.type != pm.PARTITION_EXTENDED:
                             ## Get file system
@@ -225,24 +225,24 @@ class InstallationAlongside(Gtk.Box):
 
     def on_treeview_cursor_changed(self, widget):
         selection = self.treeview.get_selection()
-        
+
         if not selection:
             return
-            
+
         model, tree_iter = selection.get_selected()
 
         if tree_iter == None:
             return
-        
+
         self.row = model[tree_iter]
-        
+
         partition_path = self.row[0]
         other_os_name = self.row[1]
-        
+
         self.min_size = 0
         self.max_size = 0
         self.new_size = 0
-        
+
         try:
             subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
             x = subprocess.check_output(['df', partition_path]).decode()
@@ -264,7 +264,7 @@ class InstallationAlongside(Gtk.Box):
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
-        
+
 
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")
@@ -272,10 +272,10 @@ class InstallationAlongside(Gtk.Box):
 
         label_antergos_size = self.ui.get_object("label_antergos_size")
         label_antergos_size.set_markup(str(int(self.max_size - new_value)) + " MB")
-        
+
     def ask_shrink_size(self, other_os_name):
         dialog = self.ui.get_object("shrink-dialog")
-                
+
         slider = self.ui.get_object("scale")
 
         # leave space for Antergos
@@ -287,7 +287,7 @@ class InstallationAlongside(Gtk.Box):
         slider.set_range(0, self.max_size)
         slider.set_value(self.min_size)
         slider.set_draw_value(False)
-        
+
         label_other_os = self.ui.get_object("label_other_os")
         txt = "<span weight='bold' size='large'>%s</span>" % other_os_name
         label_other_os.set_markup(txt)
@@ -295,20 +295,20 @@ class InstallationAlongside(Gtk.Box):
         label_antergos = self.ui.get_object("label_antergos")
         txt = "<span weight='bold' size='large'>Antergos</span>"
         label_antergos.set_markup(txt)
-        
+
         self.update_ask_shrink_size_labels(self.min_size)
-       
+
         response = dialog.run()
 
         value = 0
-        
+
         if response == Gtk.ResponseType.OK:
             value = int(slider.get_value()) + 1
-        
+
         dialog.hide()
 
         return value
-        
+
     def is_room_available(self):
         partition_path = self.row[0]
         otherOS = self.row[1]
@@ -318,17 +318,17 @@ class InstallationAlongside(Gtk.Box):
         device_path = self.row[0][:-1]
 
         new_size = self.new_size
-        
+
         logging.debug("partition_path: %s" % partition_path)
         logging.debug("device_path: %s" % device_path)
         logging.debug("new_size: %s" % new_size)
-        
+
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
 
         extended_path = ""
         primary_partitions = []
-        
+
         for path in self.partitions:
             if device_path in path:
                 p = self.partitions[path]
@@ -336,16 +336,16 @@ class InstallationAlongside(Gtk.Box):
                     extended_path = path
                 elif p.type == pm.PARTITION_PRIMARY:
                     primary_partitions.append(path)
-        
+
         primary_partitions.sort()
-        
+
         logging.debug("extended partition: %s" % extended_path)
         logging.debug("primary partitions: %s" % primary_partitions)
-        
+
         if len(primary_partitions) >= 4:
             logging.error("There're too many primary partitions, can't create a new one")
             return False
-        
+
         self.extended_path = extended_path
 
         return True
@@ -353,7 +353,7 @@ class InstallationAlongside(Gtk.Box):
     def start_installation(self):
         # Alongside method shrinks selected partition
         # and creates root and swap partition in the available space
-        
+
         if self.is_room_available() == False:
             return
 
@@ -367,7 +367,7 @@ class InstallationAlongside(Gtk.Box):
         #re.search(r'\d+$', self.row[0])
 
         new_size = self.new_size
-        
+
         # first, shrink file system
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
@@ -376,31 +376,31 @@ class InstallationAlongside(Gtk.Box):
         else:
             logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
             return
-        
-            
-        
+
+
+
         '''
         # Prepare info for installer_process
         mount_devices = {}
         mount_devices["/"] =
-        mount_devices["swap"] = 
-        
+        mount_devices["swap"] =
+
         root = mount_devices["/"]
         swap = mount_devices["swap"]
-        
+
         fs_devices = {}
         fs_devices[root] = "ext4"
         fs_devices[swap] = "swap"
         fs_devices[partition_path] = self.row[2]
-        
-        
+
+
         # TODO: Ask where to install the bootloader (if the user wants to install it)
 
         # Ask bootloader type
         import bootloader
         bl = bootloader.BootLoader(self.settings)
         bl.ask()
-        
+
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', mount_devices["/"])
             logging.info(_("Antergos will install the bootloader of type %s in %s") % \
@@ -416,6 +416,6 @@ class InstallationAlongside(Gtk.Box):
                             fs_devices, \
                             None, \
                             self.alternate_package_list)
-            
+
             self.process.start()
         '''

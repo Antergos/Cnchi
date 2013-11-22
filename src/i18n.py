@@ -83,7 +83,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
         language_display_map[trans] = (name, code)
         if i == current_language_index:
             current_language = trans
-            
+
         i += 1
     languagelist.close()
 

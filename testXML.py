@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  testXML.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -27,7 +27,7 @@ import os
 def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootloader_type):
     '''The list of packages is retrieved from an online XML to let us
     control the pkgname in case of any modification'''
-    
+
     print("Getting package list...")
 
     data_dir = 'data'
@@ -54,7 +54,7 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
 
         for child in root.iter(desktop + '_desktop'):
             for pkg in child.iter('pkgname'):
-                # If package is Desktop Manager, save name to 
+                # If package is Desktop Manager, save name to
                 # activate the correct service
                 if pkg.attrib.get('dm'):
                     desktop_manager = pkg.attrib.get('name')
@@ -72,7 +72,7 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
                 if pkg.attrib.get('conflicts'):
                     conflicts.append(pkg.attrib.get('conflicts'))
                 packages.append(pkg.text)
-    
+
     # Always install ntp as the user may want to activate it
     # later (or not) in the timezone screen
     for child in root.iter('ntp'):
@@ -91,29 +91,29 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
                 for pkg in child.iter('pkgname'):
                     packages.append(pkg.text)
             card.append('ati')
-        
+
         if "nvidia" in graphics:
             for child in root.iter('nvidia'):
                 for pkg in child.iter('pkgname'):
                     packages.append(pkg.text)
             card.append('nvidia')
-        
+
         if "intel" in graphics or "lenovo" in graphics:
             for child in root.iter('intel'):
                 for pkg in child.iter('pkgname'):
                     packages.append(pkg.text)
             card.append('intel')
-        
+
         if "virtualbox" in graphics:
             for child in root.iter('virtualbox'):
                 for pkg in child.iter('pkgname'):
                     packages.append(pkg.text)
-        
+
         if "vmware" in graphics:
             for child in root.iter('vmware'):
                 for pkg in child.iter('pkgname'):
                     packages.append(pkg.text)
-        
+
         if "via " in graphics:
             for child in root.iter('via'):
                 for pkg in child.iter('pkgname'):
@@ -124,22 +124,22 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
         if graphics not in ('ati ', 'nvidia', 'intel', 'virtualbox' \
                             'vmware', 'via '):
             packages.append('xorg-drivers')
-    
+
     # Add filesystem packages
-    
+
     print("Adding filesystem packages")
-    
+
     fs_types = subprocess.check_output(\
         ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
-    
+
     for iii in fs_devices:
         fs_types += fs_devices[iii]
-    
+
     if "ntfs" in fs_types:
         for child in root.iter('ntfs'):
             for pkg in child.iter('pkgname'):
                 packages.append(pkg.text)
-    
+
     if "btrfs" in fs_types:
         for child in root.iter('btrfs'):
             for pkg in child.iter('pkgname'):
@@ -178,7 +178,7 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
     # Check for user desired features and add them to our installation
     print("Check for user desired features and add them to our installation")
     features = ["aur", "bluetooth", "cups", "gnome_extra", "office", "visual", "firewall", "third_party"]
-   
+
     lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox" ], 'qt':[ "razor", "kde" ]}
 
     # TODO: Test this (KDE is not working)
@@ -190,7 +190,7 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
                 # If it's a specific gtk or qt package we have to check it
                 # against our chosen desktop.
                 plib = pkg.attrib.get('lib')
-                
+
                 if plib is None or (plib in lib and desktop in lib[plib]):
                     print(pkg.text)
                     packages.append(pkg.text)
@@ -217,7 +217,7 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
         pkg = "libreoffice-%s" % lang_code
     packages.append(pkg)
     '''
-    
+
     # Add chinese fonts
     if lang_code == "zh_TW" or lang_code == "zh_CN":
         print('Selecting chinese fonts.')
@@ -246,4 +246,4 @@ def select_packages(desktop, fs_devices, lang_code, install_bootloader, bootload
 
 if __name__ == '__main__':
     select_packages(desktop="kde", fs_devices={'0':"ext4"}, lang_code="ca_ES", install_bootloader=True, bootloader_type="GRUB2")
-    
+

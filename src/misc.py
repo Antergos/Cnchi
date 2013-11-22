@@ -927,7 +927,7 @@ def sort_list(mylist, mylocale=""):
             locale.setlocale(locale.LC_ALL, mylocale)
         except:
             logging.warning(_("Can't set locale %s") % mylocale)
-        
+
     sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
 
     return sorted_list

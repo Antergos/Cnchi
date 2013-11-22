@@ -31,7 +31,7 @@ for item in output:
 			size = int(col[3])
 			if size > max_size:
 				max_size = size
-		
+
 print (max_size)
 
 #print(output)

@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  features.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -52,11 +52,11 @@ class Features(Gtk.Box):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
-        
+
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
         self.all_features = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
-        
+
         # Each desktop has its own features
         self.features_by_desktop = {}
         self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
@@ -65,12 +65,12 @@ class Features(Gtk.Box):
         self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
         self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
-        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]                
-        
+        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+
         self.labels = {}
         self.titles = {}
         self.switches = {}
-        
+
         for feature in self.all_features:
             object_name = "label_" + feature
             self.labels[feature] = self.ui.get_object(object_name)
@@ -80,29 +80,29 @@ class Features(Gtk.Box):
 
             object_name = "switch_" + feature
             self.switches[feature] = self.ui.get_object(object_name)
-        
+
         # The first time we load this screen, we try to guess some defaults
         self.defaults = True
-        
+
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
-        
+
         super().add(self.ui.get_object("features"))
-        
+
     def listbox_sort_by_name(self, row1, row2, user_data):
         # Sort function for listbox
         # Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
         # WARNING: IF LAYOUT IS CHANGED IN features.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY.
         label1 = row1.get_children()[0].get_children()[1].get_children()[0]
         label2 = row2.get_children()[0].get_children()[1].get_children()[0]
-        
+
         text = [label1.get_text(), label2.get_text()]
         sorted_text = misc.sort_list(text, self.settings.get("locale"))
-              
+
         # If strings are already well sorted return < 0
         if text[0] == sorted_text[0]:
             return -1
-        
+
         # Strings must be swaped, return > 0
         return 1
 
@@ -164,7 +164,7 @@ class Features(Gtk.Box):
         # LibreOffice
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["office"].set_markup(txt)        
+        self.titles["office"].set_markup(txt)
         txt = _("Open source office suite. Supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
 
@@ -187,12 +187,12 @@ class Features(Gtk.Box):
         # Proprietary packages (third_party)
         txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["third_party"].set_markup(txt)  
+        self.titles["third_party"].set_markup(txt)
         txt = _("Software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
 
         self.listbox.invalidate_sort()
-            
+
     def hide_features(self):
         for feature in self.all_features:
             if feature not in self.features:
@@ -222,7 +222,7 @@ class Features(Gtk.Box):
             self.settings.set("feature_" + feature, isactive)
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
-                
+
         # Show ufw info message if ufw is selected (only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
             info = self.prepare_info_dialog("ufw")
@@ -230,7 +230,7 @@ class Features(Gtk.Box):
             info.hide()
             self.info_already_shown["ufw"] = True
 
-        # Show AUR disclaimer if AUR is selected (only once)            
+        # Show AUR disclaimer if AUR is selected (only once)
         if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
             info = self.prepare_info_dialog("aur")
             info.run()
@@ -246,7 +246,7 @@ class Features(Gtk.Box):
             txt2 = _("The Arch User Repository is a collection of user-submitted PKGBUILDs\n" \
                 "that supplement software available from the official repositories.\n\n" \
                 "The AUR is community driven and NOT supported by Arch or Antergos.\n")
-        
+
         if feature == "ufw":
             # Ufw rules info
             txt1 = _("Uncomplicated Firewall will be installed with these rules:")
@@ -259,7 +259,7 @@ class Features(Gtk.Box):
         info = self.ui.get_object("info")
         info.set_markup(txt1)
         info.format_secondary_markup(txt2)
-        
+
         return info
 
     def get_prev_page(self):
