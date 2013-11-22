@@ -22,6 +22,11 @@ __pycache__
 # Installer logs
 pip-log.txt
 
+# PyCharm
+.idea
+debug
+
+
 # Unit test / coverage reports
 .coverage
 .tox
