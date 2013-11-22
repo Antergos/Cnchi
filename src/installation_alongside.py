@@ -64,7 +64,8 @@ class InstallationAlongside(Gtk.Box):
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
-
+        self.testing = params['testing']
+        
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
@@ -407,14 +408,14 @@ class InstallationAlongside(Gtk.Box):
         else:
             logging.warning("Cnchi will not install any boot loader")
 
-
-        self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        None, \
-                        self.alternate_package_list)
-        
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                            self.settings, \
+                            self.callback_queue, \
+                            mount_devices, \
+                            fs_devices, \
+                            None, \
+                            self.alternate_package_list)
+            
+            self.process.start()
         '''

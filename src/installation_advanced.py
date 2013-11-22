@@ -59,9 +59,13 @@ class InstallationAdvanced(Gtk.Box):
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
+        self.testing = params['testing']
+        
         self.lv_partitions = []
         self.disks_changed = []
+        
         self.my_first_time = True
+        
         self.orig_label_dic = {}        
         self.orig_part_dic = {}
 
@@ -1568,15 +1572,18 @@ class InstallationAdvanced(Gtk.Box):
             logging.info(_("Antergos will install the bootloader of type %s in %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Cnchi will not install any boot loader")
+            logging.warning(_("Cnchi will not install any boot loader"))
 
-        self.process = installation_process.InstallationProcess( \
-                    self.settings, \
-                    self.callback_queue, \
-                    mount_devices, \
-                    fs_devices, \
-                    self.ssd, \
-                    self.alternate_package_list, \
-                    self.blvm)
-                    
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                        self.settings, \
+                        self.callback_queue, \
+                        mount_devices, \
+                        fs_devices, \
+                        self.ssd, \
+                        self.alternate_package_list, \
+                        self.blvm)
+                        
+            self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))

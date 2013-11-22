@@ -29,6 +29,7 @@ import keyboard_names
 import logging
 import show_message as show
 import misc
+import subprocess
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -247,6 +248,9 @@ class Keymap(Gtk.Box):
 
         self.settings.set("keyboard_layout", self.keyboard_layout)
         self.settings.set("keyboard_variant", self.keyboard_variant)
+        
+        # Issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
+        self.setkb()
 
         return True
 
@@ -255,3 +259,12 @@ class Keymap(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+    def setkb(self):
+        subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])
+        
+        # It makes no sense try loadkeys here (it's console)
+        #subprocess.check_call(['loadkeys', self.keyboard_layout])
+        
+        with misc.raised_privileges():
+            subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout]) 

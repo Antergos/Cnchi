@@ -51,6 +51,7 @@ class InstallationAutomatic(Gtk.Box):
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
+        self.testing = params['testing']
         
         super().__init__()
         self.ui = Gtk.Builder()
@@ -150,7 +151,7 @@ class InstallationAutomatic(Gtk.Box):
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_key_pass', luks_password)
         if luks_password != "":
-            logging.debug("A LUKS password has been set")
+            logging.debug(_("A LUKS password has been set"))
             
         logging.info(_("Automatic install on %s") % self.auto_device)
         self.start_installation()
@@ -198,7 +199,7 @@ class InstallationAutomatic(Gtk.Box):
             logging.info(_("Antergos will install the %s bootloader on %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Antergos will not install any boot loader")
+            logging.warning(_("Antergos will not install any boot loader"))
 
         # We don't need to pass neither which devices will be mounted nor which filesystems
         # the devices will be formated with, as auto_partition.py takes care of everything
@@ -208,12 +209,15 @@ class InstallationAutomatic(Gtk.Box):
         
         self.settings.set('auto_device', self.auto_device)
 
-        self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        None, \
-                        self.alternate_package_list)
-                        
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                            self.settings, \
+                            self.callback_queue, \
+                            mount_devices, \
+                            fs_devices, \
+                            None, \
+                            self.alternate_package_list)
+                            
+            self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))

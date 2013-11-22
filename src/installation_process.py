@@ -145,12 +145,12 @@ class InstallationProcess(multiprocessing.Process):
                 (fsname, fstype, writable) = misc.mount_info(p)
                 if fsname:
                     subprocess.check_call(['umount', p])
-                    self.queue_event('debug', "%s unmounted" % p)
+                    self.queue_event('debug', _("%s unmounted") % p)
             # now we can unmount /install
             (fsname, fstype, writable) = misc.mount_info(self.dest_dir)
             if fsname:
                 subprocess.check_call(['umount', self.dest_dir])
-                self.queue_event('debug', "%s unmounted" % self.dest_dir)
+                self.queue_event('debug', _("%s unmounted") % self.dest_dir)
 
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
@@ -163,7 +163,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'automatic':
             self.auto_device = self.settings.get('auto_device')
 
-            self.queue_event('debug', "Creating partitions and their filesystems in %s" % self.auto_device)
+            self.queue_event('debug', _("Creating partitions and their filesystems in %s") % self.auto_device)
             
             # TODO: Ask for a key password if we are using LUKS (in installation_automatic.py)
             # if no key password is given a key file is generated and stored in /boot
@@ -262,7 +262,7 @@ class InstallationProcess(multiprocessing.Process):
         if os.path.exists(db_lock):
             with misc.raised_privileges():
                 os.remove(db_lock)
-            logging.debug("%s deleted" % db_lock)
+            logging.debug(_("%s deleted") % db_lock)
 
         # Create some needed folders
         try:
@@ -274,30 +274,30 @@ class InstallationProcess(multiprocessing.Process):
             return False
 
         try:
-            self.queue_event('debug', 'Selecting packages...')
+            self.queue_event('debug', _('Selecting packages...'))
             self.select_packages()
-            self.queue_event('debug', 'Packages selected')
+            self.queue_event('debug', _('Packages selected'))
 
             if self.settings.get("use_aria2"):
-                self.queue_event('debug', 'Downloading packages...')
+                self.queue_event('debug', _('Downloading packages...'))
                 self.download_packages()
-                self.queue_event('debug', 'Packages downloaded.')
+                self.queue_event('debug', _('Packages downloaded.'))
                 
             cache_dir = self.settings.get("cache")
             if len(cache_dir) > 0:
                 self.copy_cache_files(cache_dir)
 
-            self.queue_event('debug', 'Installing packages...')
+            self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
-            self.queue_event('debug', 'Packages installed.')
+            self.queue_event('debug', _('Packages installed.'))
 
             if self.settings.get('install_bootloader'):
-                self.queue_event('debug', 'Installing bootloader...')
+                self.queue_event('debug', _('Installing bootloader...'))
                 self.install_bootloader()
 
-            self.queue_event('debug', 'Configuring system...')
+            self.queue_event('debug', _('Configuring system...'))
             self.configure_system()
-            self.queue_event('debug', 'System configured.')            
+            self.queue_event('debug', _('System configured.'))
         except subprocess.CalledProcessError as e:
             self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
             return False
@@ -311,7 +311,7 @@ class InstallationProcess(multiprocessing.Process):
             return False
 
         # installation finished ok
-        self.queue_event("finished")
+        self.queue_event(_("Installation finished"))
         self.running = False
         self.error = False
         return True
@@ -323,7 +323,7 @@ class InstallationProcess(multiprocessing.Process):
 
     # creates temporary pacman.conf file
     def create_pacman_conf(self):
-        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
+        self.queue_event('debug', _("Creating a temporary pacman.conf for %s architecture") % self.arch)
         
         # Common repos
         
@@ -409,7 +409,7 @@ class InstallationProcess(multiprocessing.Process):
             '''The list of packages is retrieved from an online XML to let us
             control the pkgname in case of any modification'''
             
-            self.queue_event('info', "Getting package list...")
+            self.queue_event('info', _("Getting package list..."))
 
             try:
                 packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3], timeout=5)
@@ -565,7 +565,7 @@ class InstallationProcess(multiprocessing.Process):
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
-            self.queue_event('debug', 'Selecting chinese fonts.')
+            self.queue_event('debug', _('Selecting chinese fonts.'))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -600,7 +600,7 @@ class InstallationProcess(multiprocessing.Process):
         for feature in features:
 			# Add necessary packages for user desired features to our install list 
             if self.settings.get("feature_" + feature):
-                self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
+                self.queue_event('debug', _('Adding packages for "%s" feature.') % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
                         plib = pkg.attrib.get('lib')
@@ -616,12 +616,12 @@ class InstallationProcess(multiprocessing.Process):
                         else:
                             self.queue_event('debug', 'package:%s plib %s' % (pkg.text, plib))
                             #plib in lib and desktop in lib[plib]:
-                            #self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
+                            #self.queue_event('debug', _('Adding packages for "%s" feature.') % feature)
                         '''
                                
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            self.queu_event('debug','Add libreoffice language package')
+            self.queu_event('debug', _('Add libreoffice language package'))
             pkg = ""
             lang_name = self.settings.get("language_name").lower() 
             if lang_name == "english":
@@ -718,7 +718,7 @@ class InstallationProcess(multiprocessing.Process):
             out = proc.communicate()[0]
             logging.debug(out.decode())
         except OSError as e:
-            logging.exception("Error running command: %s" % e.strerror)
+            logging.exception(_("Error running command: %s") % e.strerror)
             raise
         
     def is_running(self):
@@ -774,8 +774,8 @@ class InstallationProcess(multiprocessing.Process):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                logging.debug("Add to fstab : UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
                 all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
+                logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s") % (uuid, path, myfmt, opts, chk))
                 continue
             
             # Avoid adding a partition to fstab when
@@ -1000,7 +1000,7 @@ class InstallationProcess(multiprocessing.Process):
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
     def set_mkinitcpio_hooks_and_modules(self, hooks, modules):        
-        self.queue_event('debug', 'Setting hooks and modules in mkinitcpio.conf')
+        self.queue_event('debug', _('Setting hooks and modules in mkinitcpio.conf'))
         self.queue_event('debug', 'HOOKS="%s"' % ' '.join(hooks))
         self.queue_event('debug', 'MODULES="%s"' % ' '.join(modules))
         
@@ -1092,7 +1092,7 @@ class InstallationProcess(multiprocessing.Process):
         # Check in case user has given a wrong folder
         if not os.path.exists(cache_dir):
             return
-        self.queue_event('info', 'Copying xz files from cache...')
+        self.queue_event('info', _('Copying xz files from cache...'))
         dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
@@ -1117,28 +1117,28 @@ class InstallationProcess(multiprocessing.Process):
         #features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
         
         #if self.settings.get("feature_aur"):
-        #    self.queue_event('debug', "Configuring AUR...")
+        #    self.queue_event('debug', _("Configuring AUR..."))
 
         if self.settings.get("feature_bluetooth"):
-            self.queue_event('debug', "Configuring bluetooth...")
+            self.queue_event('debug', _("Configuring bluetooth..."))
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/bluetooth.service")
             if os.path.exists(service):
                 self.enable_services(['bluetooth'])
 
         if self.settings.get("feature_cups"):
-            self.queue_event('debug', "Configuring CUPS...")
+            self.queue_event('debug', _("Configuring CUPS..."))
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
             if os.path.exists(service):
                 self.enable_services(['cups'])
 
         #if self.settings.get("feature_office"):
-        #    self.queue_event('debug', "Configuring libreoffice...")
+        #    self.queue_event('debug', _("Configuring libreoffice..."))
 
         #if self.settings.get("feature_visual"):
-        #    self.queue_event('debug', "Configuring Compositing manager...")
+        #    self.queue_event('debug', _("Configuring Compositing manager..."))
 
         if self.settings.get("feature_firewall"):
-            self.queue_event('debug', "Configuring firewall...")
+            self.queue_event('debug', _("Configuring firewall..."))
             # A very simplistic configuration which will deny all by default,
             # allow any protocol from inside a 192.168.0.1-192.168.0.255 LAN,
             # and allow incoming Transmission and SSH traffic from anywhere:
@@ -1166,7 +1166,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('action', _("Configuring your new system"))
 
         self.auto_fstab()
-        self.queue_event('debug', 'fstab file generated.')
+        self.queue_event('debug', _('fstab file generated.'))
         
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
@@ -1181,21 +1181,20 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 profile = 'ethernet-dhcp'
                 
-            self.queue_event('debug', 'Cnchi will configure netctl using the %s profile' % profile)
+            self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
                 
             src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
             dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
             shutil.copy(src_path, dst_path)
             self.chroot(['netctl', 'enable', profile])
-
-        self.queue_event('debug', 'Network configuration copied.')
         '''
+        self.queue_event('debug', _('Network configuration copied.'))
 
         # copy mirror list
         mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
         try:
             shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
-            self.queue_event('debug', 'Mirror list copied.')
+            self.queue_event('debug', _('Mirror list copied.'))
         except:
             pass
 
@@ -1207,7 +1206,7 @@ class InstallationProcess(multiprocessing.Process):
                 shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
             except:
                 pass
-        self.queue_event('debug', 'Important configuration files copied.')
+        self.queue_event('debug', _('Important configuration files copied.'))
 
         desktop = self.settings.get('desktop')
 
@@ -1217,7 +1216,7 @@ class InstallationProcess(multiprocessing.Process):
         
         self.enable_services([ self.network_manager ])
             
-        self.queue_event('debug', 'Enabled installed services.')
+        self.queue_event('debug', _('Enabled installed services.'))
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
@@ -1231,7 +1230,7 @@ class InstallationProcess(multiprocessing.Process):
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
 
-        self.queue_event('debug', 'Timezone set.')
+        self.queue_event('debug', _('Timezone set.'))
         
         # Wait FOREVER until the user sets his params
         while self.settings.get('user_info_done') is False:
@@ -1251,13 +1250,13 @@ class InstallationProcess(multiprocessing.Process):
         
         subprocess.check_call(["chmod", "440", sudoers_path])
 
-        self.queue_event('debug', 'Sudo configuration for user %s done.' % username)
+        self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
         
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
 
-        self.queue_event('debug', 'User %s added.' % username)
+        self.queue_event('debug', _('User %s added.') % username)
 
         self.change_user_password(username, password)
 
@@ -1270,11 +1269,11 @@ class InstallationProcess(multiprocessing.Process):
             with open(hostname_path, "wt") as f:
                 f.write(hostname)
 
-        self.queue_event('debug', 'Hostname  %s set.' % hostname)
+        self.queue_event('debug', _('Hostname  %s set.') % hostname)
         
         # User password is the root password  
         self.change_user_password('root', password)
-        self.queue_event('debug', 'Set the same password to root.')
+        self.queue_event('debug', _('Set the same password to root.'))
 
         # Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
@@ -1299,7 +1298,7 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_timesetting()
                 
         if desktop != "nox":
-            self.queue_event('debug', "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")            
+            self.queue_event('debug', _("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
             with open(xorg_conf_xkb_path, "wt") as xorg_conf_xkb:
@@ -1312,7 +1311,7 @@ class InstallationProcess(multiprocessing.Process):
                 if keyboard_variant != '':
                     xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
                 xorg_conf_xkb.write('EndSection\n')
-            self.queue_event('debug', "00-keyboard.conf written.")
+            self.queue_event('debug', _("00-keyboard.conf written."))
 
             # Set autologin if selected
             if self.settings.get('require_password') is False:
@@ -1379,7 +1378,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
         
-        self.queue_event('debug', "Call post-install script to execute gsettings commands")
+        self.queue_event('debug', _("Call post-install script to execute gsettings commands"))
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", _postinstall_script)
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
@@ -1407,7 +1406,7 @@ class InstallationProcess(multiprocessing.Process):
                 
         # encrypt home directory if requested
         if self.settings.get('encrypt_home'):
-            self.queue_event('debug', "Encrypting user home dir...")
+            self.queue_event('debug', _("Encrypting user home dir..."))
             self.encrypt_home()
-            self.queue_event('debug', "User home dir encrypted")
+            self.queue_event('debug', _("User home dir encrypted"))
 

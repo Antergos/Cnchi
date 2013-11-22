@@ -71,6 +71,9 @@ _use_aria2 = False
 _verbose = False
 _disable_tryit = False
 
+# Do not perform any changes (this is just for testing purposes)
+_testing = False
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
@@ -197,6 +200,7 @@ class Main(Gtk.Window):
         params['main_progressbar'] = self.ui.get_object('progressbar1')
         params['alternate_package_list'] = _alternate_package_list
         params['disable_tryit'] = _disable_tryit
+        params['testing'] = _testing
         
         if len(_alternate_package_list) > 0:
             logging.info(_("Using '%s' file as package list") % _alternate_package_list)
@@ -379,6 +383,7 @@ def show_help():
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
+    print("-t, --testing : Do not perform any changes (useful for developers)") 
     print("-v, --verbose : Show logging messages to stdout")
 
 def check_gtk_version():
@@ -418,13 +423,15 @@ if __name__ == '__main__':
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "ac:dp:ufvg:h",
+        opts, args = getopt.getopt(argv, "ac:dp:ufvg:nht",
          ["aria2", "cache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help"])
+          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing"])
     except getopt.GetoptError as e:
         show_help()
         print(str(e))
         sys.exit(2)
+    
+    print(opts)
     
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
@@ -445,11 +452,13 @@ if __name__ == '__main__':
         elif opt in ('-g', '--force-grub-type'):
             if arg in ('bios', 'efi', 'ask', 'none'):
                 _force_grub_type = arg
-        elif opt in ('--disable-tryit'):
+        elif opt in ('-n', '--disable-tryit'):
             _disable_tryit = True
         elif opt in ('-h', '--help'):
             show_help()
             sys.exit(0)
+        elif opt in ('-t', '--testing'):
+            _testing = True
         else:
             assert False, "unhandled option"
         
