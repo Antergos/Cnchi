@@ -29,6 +29,7 @@ import subprocess
 import syslog
 import socket
 import osextras
+import logging
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -916,3 +917,17 @@ def get_network():
     else:
         ipran = '.'.join(spip)
     return ipran
+
+def sort_list(mylist, mylocale=""):
+    import locale
+    import functools
+
+    if mylocale != "":
+        try:
+            locale.setlocale(locale.LC_ALL, mylocale)
+        except:
+            logging.warning(_("Can't set locale %s") % mylocale)
+        
+    sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
+
+    return sorted_list

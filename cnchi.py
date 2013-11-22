@@ -57,7 +57,7 @@ import show_message as show
 
 # Enabled desktops (remember to update features_by_desktop in features.py if this is changed)
 #_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
-_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
+_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "kde" ]
 
 # Command line options
 _alternate_package_list = ""
@@ -71,12 +71,18 @@ _use_aria2 = False
 _verbose = False
 _disable_tryit = False
 
+# Do not perform any changes (this is just for testing purposes)
+_testing = False
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
 _main_window_width = 800
 _main_window_height = 500
+
+# At least this GTK version is needed
+_gtk_version_needed = "3.9.6"
 
 class Main(Gtk.Window):
 
@@ -144,26 +150,31 @@ class Main(Gtk.Window):
         self.add(self.ui.get_object("main"))
 
         self.header = self.ui.get_object("header")
-
-        self.forward_button = self.ui.get_object("forward_button")
         
         self.logo = self.ui.get_object("logo")
         data_dir = self.settings.get('data')
-        logo_dir = os.path.join(data_dir, "antergos-logo-mini.png")
+        logo_dir = os.path.join(data_dir, "antergos-logo-mini2.png")
         self.logo.set_from_file(logo_dir)
-        
-        self.title = self.ui.get_object("title")
 
         # To honor our css
-        self.title.set_name("title")
+        self.header.set_name("header")
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
         self.progressbar = self.ui.get_object("progressbar1")
 
         self.forward_button = self.ui.get_object("forward_button")
-        self.exit_button = self.ui.get_object("exit_button")
         self.backwards_button = self.ui.get_object("backwards_button")
+
+        image1 = Gtk.Image() 
+        image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
+        self.forward_button.set_label("")
+        self.forward_button.set_image(image1)
+
+        image2 = Gtk.Image()
+        image2.set_from_icon_name("go-previous", Gtk.IconSize.BUTTON)
+        self.backwards_button.set_label("")
+        self.backwards_button.set_image(image2)
         
         # Create a queue. Will be used to report pacman messages (pac.py)
         # to the main thread (installer_*.py)
@@ -180,16 +191,16 @@ class Main(Gtk.Window):
         self.pages = dict()
 
         params = dict()
-        params['title'] = self.title
+        params['header'] = self.header
         params['ui_dir'] = self.ui_dir
         params['forward_button'] = self.forward_button
         params['backwards_button'] = self.backwards_button
-        params['exit_button'] = self.exit_button
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
         params['alternate_package_list'] = _alternate_package_list
         params['disable_tryit'] = _disable_tryit
+        params['testing'] = _testing
         
         if len(_alternate_package_list) > 0:
             logging.info(_("Using '%s' file as package list") % _alternate_package_list)
@@ -209,10 +220,11 @@ class Main(Gtk.Window):
         self.pages["user_info"] = user_info.UserInfo(params)
         self.pages["slides"] = slides.Slides(params)
 
-        self.connect("delete-event", Gtk.main_quit)
+        #self.connect("delete-event", Gtk.main_quit)
+        self.connect('delete-event', self.on_exit_button_clicked)
         self.ui.connect_signals(self)
 
-        self.set_title(_('Antergos Installer'))
+        self.set_title(_('Cnchi - Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(_main_window_width, _main_window_height);
@@ -228,6 +240,7 @@ class Main(Gtk.Window):
         self.main_box.add(self.current_page)
 
         # Header style testing
+
         style_provider = Gtk.CssProvider()
 
         style_css = os.path.join(data_dir, "css", "gtk-style.css")
@@ -241,14 +254,13 @@ class Main(Gtk.Window):
             Gdk.Screen.get_default(), style_provider,     
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-
+        
         # Show main window
         self.show_all()
 
-        self.vertical_image = self.ui.get_object('vertical_image')
-        self.vertical_image.hide()
-        #logo_90_dir = os.path.join(data_dir, "antergos-logo-mini-90.png")
-        #self.vertical_image.set_from_file(logo_90_dir)
+        self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(True)
 
         self.current_page.prepare('forwards')
 
@@ -371,26 +383,55 @@ def show_help():
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
     print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
+    print("-t, --testing : Do not perform any changes (useful for developers)") 
     print("-v, --verbose : Show logging messages to stdout")
+
+def check_gtk_version():
+    # Check desired GTK Version
+    major_needed = int(_gtk_version_needed.split(".")[0])
+    minor_needed = int(_gtk_version_needed.split(".")[1])
+    micro_needed = int(_gtk_version_needed.split(".")[2])
+    
+    # Check system GTK Version
+    major = Gtk.get_major_version()
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+
+    # Cnchi will be called from our liveCD that already has the latest GTK version
+    # This is here just to help testing Cnchi in our environment.
+    if major_needed > major or (major_needed == major and minor_needed > minor) or \
+      (major_needed == major and minor_needed == minor and micro_needed > micro):
+        print("Detected GTK %d.%d.%d but %s is needed. Can't run this installer." % (major, minor, micro, _gtk_version_needed))
+        return False
+    else:
+        print("Using GTK v%d.%d.%d" % (major, minor, micro))
+    
+    return True
 
 if __name__ == '__main__':
     
     # Check for hwinfo
+    # (this check is just for developers, in our liveCD hwinfo always will be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
         print("Please install hwinfo before running this installer")
         sys.exit(1)
-    
+
+    if not check_gtk_version():
+        sys.exit(1)
+
     # Check program args
     argv = sys.argv[1:]
     
     try:
-        opts, args = getopt.getopt(argv, "ac:dp:ufvg:h",
+        opts, args = getopt.getopt(argv, "ac:dp:ufvg:nht",
          ["aria2", "cache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help"])
+          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing"])
     except getopt.GetoptError as e:
         show_help()
         print(str(e))
         sys.exit(2)
+    
+    #print(opts)
     
     for opt, arg in opts:
         if opt in ('-d', '--debug'):
@@ -411,11 +452,13 @@ if __name__ == '__main__':
         elif opt in ('-g', '--force-grub-type'):
             if arg in ('bios', 'efi', 'ask', 'none'):
                 _force_grub_type = arg
-        elif opt in ('--disable-tryit'):
+        elif opt in ('-n', '--disable-tryit'):
             _disable_tryit = True
         elif opt in ('-h', '--help'):
             show_help()
             sys.exit(0)
+        elif opt in ('-t', '--testing'):
+            _testing = True
         else:
             assert False, "unhandled option"
         

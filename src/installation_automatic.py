@@ -44,13 +44,14 @@ _prev_page = "installation_ask"
 class InstallationAutomatic(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
+        self.testing = params['testing']
         
         super().__init__()
         self.ui = Gtk.Builder()
@@ -73,10 +74,6 @@ class InstallationAutomatic(Gtk.Box):
         self.process = None
 
     def translate_ui(self):
-        txt = _("Automatic Installation Mode")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-
         txt = _("Select drive:")
         self.device_label.set_markup(txt)
 
@@ -100,6 +97,13 @@ class InstallationAutomatic(Gtk.Box):
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Automatic Installation Mode"))
+
+        #txt = _("Automatic Installation Mode")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
     @misc.raise_privileges
     def populate_devices(self):
@@ -147,7 +151,7 @@ class InstallationAutomatic(Gtk.Box):
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_key_pass', luks_password)
         if luks_password != "":
-            logging.debug("A LUKS password has been set")
+            logging.debug(_("A LUKS password has been set"))
             
         logging.info(_("Automatic install on %s") % self.auto_device)
         self.start_installation()
@@ -195,7 +199,7 @@ class InstallationAutomatic(Gtk.Box):
             logging.info(_("Antergos will install the %s bootloader on %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Antergos will not install any boot loader")
+            logging.warning(_("Antergos will not install any boot loader"))
 
         # We don't need to pass neither which devices will be mounted nor which filesystems
         # the devices will be formated with, as auto_partition.py takes care of everything
@@ -205,12 +209,15 @@ class InstallationAutomatic(Gtk.Box):
         
         self.settings.set('auto_device', self.auto_device)
 
-        self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        None, \
-                        self.alternate_package_list)
-                        
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                            self.settings, \
+                            self.callback_queue, \
+                            mount_devices, \
+                            fs_devices, \
+                            None, \
+                            self.alternate_package_list)
+                            
+            self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))

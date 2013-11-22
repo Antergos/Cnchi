@@ -57,14 +57,15 @@ _minimum_space_for_antergos = 3500
 
 class InstallationAlongside(Gtk.Box):
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
-
+        self.testing = params['testing']
+        
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
@@ -137,9 +138,12 @@ class InstallationAlongside(Gtk.Box):
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        txt = _("Antergos Alongside Installation")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Antergos Alongside Installation"))
+
+        #txt = _("Antergos Alongside Installation")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
@@ -404,14 +408,14 @@ class InstallationAlongside(Gtk.Box):
         else:
             logging.warning("Cnchi will not install any boot loader")
 
-
-        self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        None, \
-                        self.alternate_package_list)
-        
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                            self.settings, \
+                            self.callback_queue, \
+                            mount_devices, \
+                            fs_devices, \
+                            None, \
+                            self.alternate_package_list)
+            
+            self.process.start()
         '''

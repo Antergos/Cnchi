@@ -39,11 +39,10 @@ _prev_page = None
 class Slides(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
-        self.exit_button = params['exit_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.main_progressbar = params['main_progressbar']
@@ -89,15 +88,18 @@ class Slides(Gtk.Box):
         self.fatal_error = False
         
     def translate_ui(self):
-        txt = _("Installing Antergos...")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
         
         self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Installing Antergos..."))
+
+        #txt = _("Installing Antergos...")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
     def show_global_progress_bar_if_hidden(self):
         if self.global_progress_bar_is_hidden:
@@ -116,7 +118,8 @@ class Slides(Gtk.Box):
 
         self.backwards_button.hide()
         self.forward_button.hide()
-        self.exit_button.hide()
+
+        self.header.set_show_close_button(False)
 
     def store_values(self):
         return False
@@ -171,16 +174,36 @@ class Slides(Gtk.Box):
                     while Gtk.events_pending():
                         Gtk.main_iteration()
                     Gtk.main_quit()
-                        
-                self.exit_button.show()
                 return False
             elif event[0] == 'error':
                 self.callback_queue.task_done()
-                # a fatal error has been issued. We empty the queue
+                # A fatal error has been issued. We empty the queue
                 self.empty_queue()
-                self.fatal_error = True
+                
+                # Show the error
                 show.fatal_error(event[1])
-                return False
+
+                # Ask if user wants to retry
+                res = show.question(_("Do you want to retry?"))
+                if res == GTK_RESPONSE_YES:
+                    # Restart installation process
+                    logging.debug("Restarting installation process...")
+                    p = self.settings.get('installer_thread_call')
+                    
+                    self.process = installation_process.InstallationProcess( \
+                        self.settings, \
+                        self.callback_queue, \
+                        p['mount_devices'], \
+                        p['fs_devices'], \
+                        p['ssd'], \
+                        p['alternate_package_list'], \
+                        p['blvm'])
+                    
+                    self.process.start()
+                    return True
+                else:
+                    self.fatal_error = True
+                    return False
             elif event[0] == 'debug':
                 logging.debug(event[1])
             elif event[0] == 'warning':

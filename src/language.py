@@ -41,7 +41,7 @@ _prev_page = "welcome"
 class Language(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -54,10 +54,14 @@ class Language(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.label_choose_language = self.ui.get_object("label_choose_language")
-        self.treeview_language = self.ui.get_object("treeview_language")
 
+        # Set up list box
+        self.listbox = self.ui.get_object("listbox")
+        self.listbox.connect("row-selected", self.on_listbox_row_selected)
+        self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        
         self.translate_ui()
-
+        
         data_dir = self.settings.get('data')
         
         self.current_locale = locale.getdefaultlocale()[0]
@@ -72,11 +76,17 @@ class Language(Gtk.Box):
 
         super().add(self.ui.get_object("language"))
 
+    def on_listbox_row_selected(self, listbox, listbox_row):
+        # Someone selected a different row of the listbox
+        if listbox_row is not None:
+            for vbox in listbox_row:
+                for label in vbox.get_children():
+                    current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
+                    lang = label.get_text()
+                    lang_code = display_map[lang][1]
+                    self.set_language(lang_code)
+        
     def translate_ui(self):
-        #txt = _("Welcome to the Antergos Installer")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-
         txt = _("Please choose your language:")
         txt = '<span weight="bold">%s</span>' % txt
         self.label_choose_language.set_markup(txt)
@@ -91,8 +101,7 @@ class Language(Gtk.Box):
         label.set_markup(txt)
 
         txt = _("Welcome to Antergos!")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        self.header.set_subtitle(txt)
     
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
@@ -104,19 +113,15 @@ class Language(Gtk.Box):
                 return lang
 
     def set_languages_list(self):
-        liststore_language = Gtk.ListStore(str)
-
-        render = Gtk.CellRendererText()
-        col_languages = Gtk.TreeViewColumn(_("Languages"), render, text=0)
-        self.treeview_language.set_model(liststore_language)
-        self.treeview_language.append_column(col_languages)
-
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
-            liststore_language.append([lang])
+            box = Gtk.VBox()
+            label = Gtk.Label(lang)
+            box.add(label)
+            self.listbox.add(box)
             if current_language == lang:
-                self.select_default_row(self.treeview_language, current_language)
+                self.select_default_row(current_language)
 
     def set_language(self, locale_code):
         if locale_code is None:
@@ -127,63 +132,35 @@ class Language(Gtk.Box):
             lang.install()
             self.translate_ui()
         except IOError:
-            logging.error(_("Can't find translation file for the %s language") % locale_code)
+            logging.warning(_("Can't find translation file for the %s language") % locale_code)
     
-    # Select language loaded on boot as default
-    def select_default_row(self, treeview, language):   
-        model = treeview.get_model()
-        iterator = model.iter_children(None)
-        while iterator is not None:
-            if model.get_value(iterator, 0) == language:
-                path = model.get_path(iterator)
-                treeview.get_selection().select_path(path)
-                #treeview.scroll_to_cell(path, use_align=False, row_align=0.0, col_align=0.0)
-                GLib.idle_add(self.scroll_to_cell, treeview, path)
-                break
-            iterator = model.iter_next(iterator)
-
-    def scroll_to_cell(self, treeview, path):
-        treeview.scroll_to_cell(path)
-        return False
+    def select_default_row(self, language):   
+        for listbox_row in self.listbox.get_children():
+            for vbox in listbox_row.get_children():
+                label = vbox.get_children()[0]
+                if language == label.get_text():
+                    self.listbox.select_row(listbox_row)
+                    return
                 
-    def on_treeview_language_cursor_changed(self, treeview):
-        selected = treeview.get_selection()
-        if selected:
-            (ls, iter) = selected.get_selected()
-            if iter:
-                current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
-                language = ls.get_value(iter, 0)
-                language_code = display_map[language][1]
-                self.set_language(language_code)
-
     def store_values(self):
-        selected = self.treeview_language.get_selection()
-
-        (ls, iter) = selected.get_selected()
-        language = ls.get_value(iter,0)
+        listbox_row = self.listbox.get_selected_row()
+        if listbox_row != None:
+            for vbox in listbox_row:
+                for label in vbox.get_children():
+                    lang = label.get_text()
 
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
 
-        self.settings.set("language_name", display_map[language][0])
-        self.settings.set("language_code", display_map[language][1])
+        self.settings.set("language_name", display_map[lang][0])
+        self.settings.set("language_code", display_map[lang][1])
         
         return True
-
-    def scroll_to_selected_item(self, treeview):
-        selected = treeview.get_selection()
-
-        if selected:
-            (ls, iterator) = selected.get_selected()
-            model = treeview.get_model()
-            path = model.get_path(iterator)
-            treeview.get_selection().select_path(path)
-            GLib.idle_add(self.scroll_to_cell, treeview, path)
 
     def prepare(self, direction):
         self.translate_ui()
         
         # scroll language treeview to selected item
-        self.scroll_to_selected_item(self.treeview_language)
+        #self.scroll_to_selected_item(self.treeview_language)
         
         self.show_all()
 

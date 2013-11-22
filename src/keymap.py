@@ -28,6 +28,8 @@ import os
 import keyboard_names
 import logging
 import show_message as show
+import misc
+import subprocess
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -35,7 +37,7 @@ _prev_page = "timezone"
 class Keymap(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -59,9 +61,12 @@ class Keymap(Gtk.Box):
         super().add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
-        txt = _("Select Your Keyboard Layout")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Select Your Keyboard Layout"))
+
+        #txt = _("Select Your Keyboard Layout")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
         # TODO: Also change layouts and variants text column
 
@@ -131,13 +136,14 @@ class Keymap(Gtk.Box):
         for layout in kbd_names._layout_by_human:
             sorted_layouts.append(layout)
 
-        # FIXME: Doesn't sort well accents, must use utf8
-        sorted_layouts.sort()
+        #sorted_layouts.sort()
+        sorted_layouts = misc.sort_list(sorted_layouts, self.settings.get("locale"))
 
+        # Clear our model
         liststore = self.layout_treeview.get_model()
-
         liststore.clear()
 
+        # Add layouts (sorted)
         for layout in sorted_layouts:
             liststore.append([layout])
 
@@ -196,19 +202,19 @@ class Keymap(Gtk.Box):
                 for variant in variants[country_code]:
                     sorted_variants.append(variant)
 
-                # FIXME: Doesn't sort well accents, must use utf8
-                sorted_variants.sort()
+                #sorted_variants.sort()
+                sorted_variants = misc.sort_list(sorted_variants, self.settings.get("locale"))
 
+                # Clear our model
                 liststore = self.variant_treeview.get_model()
-
                 liststore.clear()
 
+                # Add keyboard variants (sorted)
                 for variant in sorted_variants:
                     liststore.append([variant])
 
                 #selection = self.variant_treeview.get_selection()
                 self.variant_treeview.set_cursor(0)
-
         else:
             liststore = self.variant_treeview.get_model()
             liststore.clear()
@@ -242,6 +248,9 @@ class Keymap(Gtk.Box):
 
         self.settings.set("keyboard_layout", self.keyboard_layout)
         self.settings.set("keyboard_variant", self.keyboard_variant)
+        
+        # Issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
+        self.setkb()
 
         return True
 
@@ -250,3 +259,12 @@ class Keymap(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+    def setkb(self):
+        subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])
+        
+        # It makes no sense try loadkeys here (it's console)
+        #subprocess.check_call(['loadkeys', self.keyboard_layout])
+        
+        with misc.raised_privileges():
+            subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout]) 

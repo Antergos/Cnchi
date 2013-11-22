@@ -35,7 +35,7 @@ class Features(Gtk.Box):
 
     def __init__(self, params):
 
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
         self.forward_button = params['forward_button']
@@ -47,20 +47,26 @@ class Features(Gtk.Box):
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
         self.ui.connect_signals(self)
+
+        # Set up list box
+        self.listbox = self.ui.get_object("listbox")
+        self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
         
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
+        self.all_features = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
         
         # Each desktop has its own features
         self.features_by_desktop = {}
-        self.features_by_desktop["nox"] = [ "bluetooth", "cups", "firewall" ]
-        self.features_by_desktop["gnome"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["cinnamon"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
-        self.features_by_desktop["openbox"] = [ "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
-                
+        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
+        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
+        self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
+        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]                
+        
         self.labels = {}
         self.titles = {}
         self.switches = {}
@@ -78,10 +84,27 @@ class Features(Gtk.Box):
         # The first time we load this screen, we try to guess some defaults
         self.defaults = True
         
-        # Only show ufw rules info once
-        self.ufw_info_already_shown = False
+        # Only show ufw rules and aur disclaimer info once
+        self.info_already_shown = { "ufw":False, "aur":False }
         
         super().add(self.ui.get_object("features"))
+        
+    def listbox_sort_by_name(self, row1, row2, user_data):
+        # Sort function for listbox
+        # Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
+        # WARNING: IF LAYOUT IS CHANGED IN features.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY.
+        label1 = row1.get_children()[0].get_children()[1].get_children()[0]
+        label2 = row2.get_children()[0].get_children()[1].get_children()[0]
+        
+        text = [label1.get_text(), label2.get_text()]
+        sorted_text = misc.sort_list(text, self.settings.get("locale"))
+              
+        # If strings are already well sorted return < 0
+        if text[0] == sorted_text[0]:
+            return -1
+        
+        # Strings must be swaped, return > 0
+        return 1
 
     def translate_ui(self):
         desktop = self.settings.get('desktop')
@@ -97,8 +120,18 @@ class Features(Gtk.Box):
          "razor" : "Razor-qt" }
 
         txt = self.desktops[desktop] + " - " + _("Feature Selection")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.title.set_markup(txt)
+        #txt = '<span weight="bold" size="large">%s</span>' % txt
+        #self.title.set_markup(txt)
+
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(txt)
+
+        # AUR
+        txt = _("Arch User Repository (AUR) Support")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["aur"].set_markup(txt)
+        txt = _("The AUR is a community-driven repository for Arch users.")
+        self.labels["aur"].set_markup(txt)
 
         # Bluetooth
         txt = _("Bluetooth Support")
@@ -106,6 +139,20 @@ class Features(Gtk.Box):
         self.titles["bluetooth"].set_markup(txt)
         txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
+
+        # Extra Fonts
+        txt = _("Extra Fonts")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["fonts"].set_markup(txt)
+        txt = _("Installation of extra fonts")
+        self.labels["fonts"].set_markup(txt)
+
+        # Gnome Extra
+        txt = _("Gnome Extra")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
+        self.titles["gnome_extra"].set_markup(txt)
+        txt = _("Installation of extra Gnome applications")
+        self.labels["gnome_extra"].set_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
@@ -118,14 +165,14 @@ class Features(Gtk.Box):
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)        
-        txt = _("Open source office suite that supports editing MS Office files.")
+        txt = _("Open source office suite. Supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
 
         # Visual effects
         txt = _("Visual Effects")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
-        txt = _("Enable 3D acceleration for transparency, shadows, and other desktop effects.")
+        txt = _("Enable transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
         # Firewall
@@ -141,27 +188,17 @@ class Features(Gtk.Box):
         txt = _("Proprietary Software")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)  
-        txt = _("Third-party software to play Flash videos, MP3 audio, and other media.")
+        txt = _("Software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
-        
-        # Uncomplicated Firewall dialog
-        ufw = self.ui.get_object("ufw")
-        txt = _("Uncomplicated Firewall will be installed with these rules:")
-        txt = "<big>%s</big>" % txt
-        ufw.set_markup(txt)
-        toallow = misc.get_network()
-        txt = "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH" % toallow
-        txt = "<i>%s</i>" % txt
-        ufw.format_secondary_markup(txt)
-    
+
+        self.listbox.invalidate_sort()
+            
     def hide_features(self):
         for feature in self.all_features:
             if feature not in self.features:
-                prefixes = [ "box", "image", "switch", "label_title", "label" ]
-                for prefix in prefixes:
-                    object_name = prefix + "_" + feature
-                    obj = self.ui.get_object(object_name)
-                    obj.hide()
+                name = feature + "-row"
+                obj = self.ui.get_object(name)
+                obj.hide()
 
     def enable_defaults(self):
         if 'bluetooth' in self.features:
@@ -179,9 +216,6 @@ class Features(Gtk.Box):
             self.switches['cups'].set_active(True)
 
     def store_values(self):
-        # Enable forward button
-        self.forward_button.set_sensitive(True)
-        
         # Get switches' values and store them
         for feature in self.features:
             isactive = self.switches[feature].get_active()
@@ -189,14 +223,44 @@ class Features(Gtk.Box):
             if isactive:
                 logging.debug("Selected '%s' feature to install" % feature)
                 
-        # Show ufw info message if ufw is selected
-        if self.settings.get("feature_firewall") and not self.ufw_info_already_shown:
-            ufw = self.ui.get_object("ufw")
-            ufw.run()
-            ufw.hide()
-            self.ufw_info_already_shown = True
+        # Show ufw info message if ufw is selected (only once)
+        if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
+            info = self.prepare_info_dialog("ufw")
+            info.run()
+            info.hide()
+            self.info_already_shown["ufw"] = True
+
+        # Show AUR disclaimer if AUR is selected (only once)            
+        if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
+            info = self.prepare_info_dialog("aur")
+            info.run()
+            info.hide()
+            self.info_already_shown["aur"] = True
 
         return True
+
+    def prepare_info_dialog(self, feature):
+        if feature == "aur":
+            # Aur disclaimer
+            txt1 = _("Arch User Repository - Disclaimer")
+            txt2 = _("The Arch User Repository is a collection of user-submitted PKGBUILDs\n" \
+                "that supplement software available from the official repositories.\n\n" \
+                "The AUR is community driven and NOT supported by Arch or Antergos.\n")
+        
+        if feature == "ufw":
+            # Ufw rules info
+            txt1 = _("Uncomplicated Firewall will be installed with these rules:")
+            toallow = misc.get_network()
+            txt2 = _("ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH") % toallow
+
+        txt1 = "<big>%s</big>" % txt1
+        txt2 = "<i>%s</i>" % txt2
+
+        info = self.ui.get_object("info")
+        info.set_markup(txt1)
+        info.format_secondary_markup(txt2)
+        
+        return info
 
     def get_prev_page(self):
         return _prev_page

@@ -34,7 +34,7 @@ class UserInfo(Gtk.Box):
 
     def __init__(self, params):
 
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -136,9 +136,12 @@ class UserInfo(Gtk.Box):
         self.login['pass'].set_label(_("Require my password to log in"))
         self.login['encrypt'].set_label(_("Encrypt my home folder"))
 
-        txt = _("Create Your User Account")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Create Your User Account"))
+        
+        #txt = _("Create Your User Account")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
 
     def hide_widgets(self):
         ok_widgets = self.ok.values()

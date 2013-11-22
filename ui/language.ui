@@ -38,23 +38,19 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="treeview_language">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <signal name="cursor-changed" handler="on_treeview_language_cursor_changed" swapped="no"/>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection" id="treeview-selection1"/>
-                    </child>
-                  </object>
-                </child>
+              <child>
+              <object class="GtkListBox" id="listbox">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            </child>                
+            </object>
+            <packing>
+              <property name="expand">True</property>
+              <property name="fill">True</property>
+              <property name="position">1</property>
+            </packing>
+          </child>
           </object>
           <packing>
             <property name="expand">True</property>

@@ -1,7 +1,7 @@
 
 #logo {
     background-color: transparent;
-    background-image: url('/usr/share/cnchi/data/images/header.png');                                 
+    /* background-image: url('/usr/share/cnchi/data/images/header.png'); */
     background-position: top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -22,4 +22,19 @@
     font: 14px;
     font-family: 'DejaVu Sans', Helvetica, sans-serif;
     padding-top:7.5px;
+}
+
+#header {
+    background-color: transparent;
+    background-image: url('/usr/share/cnchi/data/images/header.png');                                 
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-top: 0px;
+    /*
+    color: #5082d4;
+    font: 14px;
+    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    padding-top:7.5px;
+    */
 }

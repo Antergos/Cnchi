@@ -3,12 +3,8 @@
 #
 #  pac.py
 #
-#  This file has fragments of code from 'pamac'
-#  (pamac is a package manager from Manjaro team)
-#  Check it at http://git.manjaro.org/core/pamac
-#  
-#  Copyright 2013 Manjaro (http://manjaro.org)
-#  Copyright 2013 Antergos
+#  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
+#  Copyright (C) 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,220 +32,173 @@ import queue
 
 try:
     import pyalpm
-    from pacman import pac_config
+    from pacman import config
 except:
     print("pyalpm not found! This installer won't work.")
+    sys.exit(1)
 
 class Pac(object):
-    def __init__(self, conf, callback_queue):
-        
+    def __init__(self, conf_path, callback_queue):
         self.callback_queue = callback_queue
-        self.t = None
+        
         self.conflict_to_remove = None
-        self.to_remove = []
-        self.to_add = []
-        self.to_update = []
-        self.to_provide = []
         
-        self.target = ""
+        # Some progress indicators (used in cb_progress callback)
+        self.last_target = None
+        self.last_percent = 100
+        self.last_i = -1
         
-        # Packages to be removed
-        # E.g: connman conflicts with netctl(openresolv), which is installed
-        # by default with base group
-        self.conflicts = []
-        
-        # avoid adding a package that has been added in the past
-        self.listofpackages = []
-        
-        self.action = ""
-        self.percent = 0
-        
-        self.already_transferred = 0
-        self.total_size = 0
+        # Some download indicators (used in cb_dl callback)
+        self.last_dl_filename = None
+        self.last_dl_progress = None
+        self.last_dl_total = None     
         
         self.last_event = {}
         
-        if conf != None:
-            self.pacman_conf = pac_config.PacmanConfig(conf)
-            self.handle = self.pacman_conf.initialize_alpm()
+        if conf_path != None:
+            self.config = config.PacmanConfig(conf_path)
+            self.handle = self.config.initialize_alpm()
+        
+            # Set callback functions
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_conv
             self.handle.progresscb = self.cb_progress
             self.handle.logcb = self.cb_log
-            self.holdpkg = None
-            if 'HoldPkg' in self.pacman_conf.options:
-                self.holdpkg = self.pacman_conf.options['HoldPkg']
+
+    ###################################################################
+    # Transaction
+
+    def finalize(self, t):
+        # Commit a transaction
+        try:
+            t.prepare()
+            t.commit()
+        except pyalpm.error:
+            line = traceback.format_exc()
+            logging.error(line)
+            t.release()
+            return False
+        t.release()
+        return True
 
     def init_transaction(self, **options):
+        # Transaction initialization
         try:
-            _t = self.handle.init_transaction(**options)
-            # print(_t.flags)
-            return _t
+            t = self.handle.init_transaction(**options)
         except pyalpm.error:
             line = traceback.format_exc()
-            self.queue_event("error", line)
+            logging.error(line)
             return None
+        return t
 
-    def release_transaction(self):
-        if self.t != None:
-            try:
-                self.t.release()
-                self.t = None
-            except pyalpm.error:
-                self.queue_event("error", traceback.format_exc())
+    '''
+    def init_transaction(self, options):
+        # Transaction initialization
+        #self.handle.dlcb = self.cb_dl
+        #self.handle.eventcb = self.cb_event
+        #self.handle.questioncb = self.cb_conv
+        #self.handle.progresscb = self.cb_progress
+        t = self.handle.init_transaction(
+                cascade = getattr(options, "cascade", False),
+                nodeps = getattr(options, "nodeps", False),
+                force = getattr(options, 'force', False),
+                dbonly = getattr(options, 'dbonly', False),
+                downloadonly = getattr(options, 'downloadonly', False),
+                nosave = getattr(options, 'nosave', False),
+                recurse = (getattr(options, 'recursive', 0) > 0),
+                recurseall = (getattr(options, 'recursive', 0) > 1),
+                unneeded = getattr(options, 'unneeded', False),
+                alldeps = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_DEPEND),
+                allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
+        return t
+    '''
         
-    # Sync databases like pacman -Sy
+    ###################################################################
+    # pacman -Sy (refresh) and pacman -S (install)
+
     def do_refresh(self):
-        self.release_transaction()
+        # Sync databases like pacman -Sy
+        force = True
         for db in self.handle.get_syncdbs():
-            try:
-                self.t = self.init_transaction()                
-                db.update(force=False)
-                if self.t != None:
-                    self.t.release()
-                    self.t = None
-            except pyalpm.error:
-                self.queue_event("error", traceback.format_exc())
-                return
+            t = self.init_transaction()
+            db.update(force)
+            t.release()
+        return 0
 
-    def format_size(self, size):
-        KiB_size = size / 1024
-        if KiB_size < 1000:
-            size_string = '%.1f KiB' % KiB_size
-        else:
-            size_string = '%.2f MiB' % (KiB_size / 1024)
-        return size_string
+    def do_install(self, pkgs, conflicts=[]):
+        # Install a list of packages like pacman -S
+        logging.debug("Install a list of packages like pacman -S")
+        if len(pkgs) == 0:
+            logging.error("No targets specified")
+            return 1
 
-    '''
-    # OLD Install_packages
-    def install_packages(self, pkg_names):
-        self.to_add = []
+        repos = dict((db.name,db) for db in self.handle.get_syncdbs())
 
-        for pkgname in pkg_names:
-            self.to_add.append(pkgname)
-
-        self.to_remove = []
-
-        if self.to_add and self.t_lock is False:    
-            self.t = self.init_transaction()
-            if self.t is not False:
-                for pkgname in self.to_add:
-                    self.add_package(pkgname)
-                try:
-                    self.t.prepare()
-                    self.t.commit()
-                    self.t_lock = False
-                except pyalpm.error:
-                    line = traceback.format_exc()
-                    self.queue_event("error", line)
-                self.t.release()
-    '''
-    def install_packages(self, pkg_names, conflicts):
-        self.to_add = []
-        self.conflicts = conflicts
-
-        for pkgname in pkg_names:
-            self.to_add.append(pkgname)
-
-        self.to_remove = []
-
-        if self.to_add and self.t == None:
-            self.t = self.init_transaction()
-            if self.t != None:
-                for pkgname in self.to_add:
-                    self.add_package(pkgname)
-                try:
-                    self.t.prepare()
-                    self.t.commit()
-                except pyalpm.error:
-                    line = traceback.format_exc()
-                    if "pm_errno 25" in line:
-                        pass
-                    elif "pm_errno 27" in line:
-                        # transaction is not ready
-                        print(line)
-                    else:
-                        self.queue_event("error", line)
-                self.release_transaction()
-
-    '''
-    # old add_package
-    def add_package(self, pkgname):
-        #print("searching %s" % pkgname)
-        try:
-            for repo in self.handle.get_syncdbs():
-                pkg = repo.get_pkg(pkgname)
-                if pkg:
-                    #print("adding %s" % pkgname)
-                    self.t.add_pkg(pkg)
-                    break
-                else:
-                    #this is used for groups.  However, antergos repo coming
-                    # first causes errors.  So I just moved them to the back.
-                    l = pyalpm.find_grp_pkgs([repo], pkgname)
-                    if l:
-                        lss = []
-                        for pakg in l:
-                                self.t.add_pkg(pakg)
-        except pyalpm.error:
-            line = traceback.format_exc()
-            self.queue_event("error", line)    
-    '''
-    
-    def add_package(self, pkgname):
-        #print("searching %s" % pkgname)
-        found = False
-        try:
-            for repo in self.handle.get_syncdbs():
-                if pkgname not in self.conflicts:
-                    pkg = repo.get_pkg(pkgname)
-                    if pkg:
-                        #print("adding %s" % pkgname)
-                        if pkg not in self.listofpackages:
-                            self.listofpackages.append(pkg)
-                            self.t.add_pkg(pkg)
-                        found = True
-                        break
-                    else:
-                        # Couldn't find package in repo, 
-                        # maybe it's a group of packages.
-                        group_list = self.select_from_groups([repo], pkgname)
-                        if group_list:
-                            # Yes, it was a group of packages
-                            for pkg_in_group in group_list:
-                                if pkg_in_group not in self.listofpackages and \
-                                   pkg_in_group not in self.conflicts:
-                                    self.listofpackages.append(pkg_in_group)
-                                    self.t.add_pkg(pkg_in_group)
-                            found = True
-                            break
-        except pyalpm.error:
-            line = traceback.format_exc()
-            if "pm_errno 25" in line:
-                pass
+        targets = []
+        for name in pkgs:
+            ok, pkg = self.find_sync_package(name, repos)
+            if ok:
+                targets.append(pkg)
             else:
-                self.queue_event("error", line)
-                
-        if not found:
-            print(_("Package %s not found in any repo!") % pkgname)
+                # Can't find this one, check if it's a group
+                group_pkgs = self.get_group_pkgs(name)
+                if group_pkgs != None:
+                    for pkg in group_pkgs:
+                        # Check that added package is not in our conflicts list
+                        # Ex: connman conflicts with netctl(openresolv), which is
+                        # installed by default with base group
+                        if pkg.name not in conflicts and pkg.name not in pkgs:
+                            targets.append(pkg)
+                else:
+                    # No, it wasn't neither a package nor a group
+                    logging.error(pkg)
 
-    def select_from_groups(self, repos, pkg_group):
-        pkgs_in_group = []
-        for repo in repos:
-            grp = repo.read_grp(pkg_group)
+        if len(targets) == 0:
+            logging.error("No targets found")
+            return 1
+
+        t = self.init_transaction()
+        
+        if t is None:
+            return 1
+            
+        pkg_names = []
+
+        for pkg in targets:
+            if pkg.name not in pkg_names:
+                logging.debug("Adding %s to transaction" % pkg.name)
+                t.add_pkg(pkg)
+                pkg_names.append(pkg.name)
+                
+        
+        ok = self.finalize(t)
+        
+        return (0 if ok else 1)
+
+    def find_sync_package(self, pkgname, syncdbs):
+        # Finds a package name in a list of DBs
+        for db in syncdbs.values():
+            pkg = db.get_pkg(pkgname)
+            if pkg is not None:
+                return True, pkg
+        return False, "Package '%s' was not found." % pkgname
+
+    def get_group_pkgs(self, group):
+        # Get group packages 
+        for repo in self.handle.get_syncdbs():
+            grp = repo.read_grp(group)
             if grp is None:
                 continue
             else:
                 name, pkgs = grp
-                for pkg in pkgs:
-                    if pkg.name not in self.conflicts:
-                        pkgs_in_group.append(repo.get_pkg(pkg.name))
-                break
+                return pkgs
+        return None
 
-        return pkgs_in_group
-
+    ###################################################################
+    # Queue event
+    
     def queue_event(self, event_type, event_text=""):
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:
@@ -262,8 +211,7 @@ class Pac(object):
             # format message to show file, function, and line where the error
             # was issued
             import inspect
-            # Get the previous frame in the stack, otherwise it would
-            # be this function!!!
+            # Get the previous frame in the stack, otherwise it would be this function
             f = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
@@ -273,142 +221,117 @@ class Pac(object):
         except queue.Full:
             pass
 
-        #if event_type != "percent":
-        #    logging.info(event_text)
-        
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
             # wait until queue is empty (is emptied in slides.py), then exit
             self.callback_queue.join()
             sys.exit(1)
+    
+        
+    ###################################################################
+    # Version functions
+    
+    def get_version(self):
+        return "Cnchi running on pyalpm v%s - libalpm v%s" % (pyalpm.version(), pyalpm.alpmversion())
 
-         
-    # Callback functions 
-    def cb_event(self, ID, event, tupel):
-        if ID is 1:
-            self.action = _('Checking dependencies...')
-        elif ID is 3:
-            self.action = _('Checking file conflicts...')
-        elif ID is 5:
-            self.action = _('Resolving dependencies...')
-        elif ID is 7:
-            self.action = _('Checking inter conflicts...')
-        elif ID is 9:
-            #self.action = _('Installing...')
-            self.action = ''
-        elif ID is 11:
-            self.action = _('Removing...')
-        elif ID is 13:
-            self.action = _('Upgrading...')
-        elif ID is 15:
-            self.action = _('Checking integrity...')
-            self.already_transferred = 0
-        elif ID is 17:
-            self.action = _('Loading packages files...')
-            print('Loading packages files')
-        elif ID is 26:
-            self.action = _('Configuring...')
-            print(_('Configuring a package'))
-        elif ID is 27:
-            print(_('Downloading a file'))
-        else:
-            self.action = ''
+    def get_versions(self):
+        return (pyalpm.version(), pyalpm.alpmversion())
 
-        if len(self.action) > 0:
-            self.queue_event("action", self.action)
-        #self.queue_event("target", '')
-        #self.queue_event("percent", 0)
-
-        #print(ID, event)
-
+    ###################################################################
+    # Callback functions
+    
     def cb_conv(self, *args):
         pass
-        #print("conversation", args)
+
+    def cb_totaldl(self, total_size):
+        pass
+
+    def cb_event(self, ID, event, tupel):
+        action = ""
+
+        if ID is 1:
+            action = _('Checking dependencies...')
+        elif ID is 3:
+            action = _('Checking file conflicts...')
+        elif ID is 5:
+            action = _('Resolving dependencies...')
+        elif ID is 7:
+            action = _('Checking inter conflicts...')
+        elif ID is 9:
+            # action = _('Installing...')
+            action = ""
+        elif ID is 11:
+            action = _('Removing...')
+        elif ID is 13:
+            action = _('Upgrading...')
+        elif ID is 15:
+            action = _('Checking integrity...')
+        elif ID is 17:
+            action = _('Loading packages files...')
+        elif ID is 26:
+            action = _('Configuring...')
+        elif ID is 27:
+            action = _('Downloading a file')
+        else:
+            action = ""
+
+        if len(action) > 0:
+            self.queue_event('action', action)
 
     def cb_log(self, level, line):
-        # Only manage error and warning messages
         _logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
 
+        # Only manage error and warning messages
         if not (level & _logmask):
             return
 
-        if level & pyalpm.LOG_ERROR or level & pyalpm.LOG_WARNING:
-            # Even if there is a real error we're not sure we want to abort all installation
-            # Instead of issuing a fatal error we just log an error message
-            logging.error(line)
-        
-        '''
         if level & pyalpm.LOG_ERROR:
-            if 'linux' not in self.target and 'lxdm' not in self.target:
-                self.error = _("ERROR: %s") % line
-                self.release_transaction()
-                self.queue_event("error", line)
-                logging.warning(line)
-            else:
-                logging.warning(line)
+            logging.error(line)
         elif level & pyalpm.LOG_WARNING:
-            self.warning = _("WARNING: %s") % line
-            self.queue_event('warning', line)
-        elif level & pyalpm.LOG_DEBUG:
-            line = _("DEBUG: %s") % line
-            print(line)
-        elif level & pyalpm.LOG_FUNCTION:
-            line = _("FUNC: %s") % line
-            print(line)
+            logging.warning(line)
         '''
-
-    def cb_totaldl(self, _total_size):
-        self.total_size = _total_size
-
-    def get_size(self, size):
-        size_txt = "%db" % size
-        if size >= 1000000000:
-            size /= 1000000000
-            size_txt = "%dG" % size
-        elif size >= 1000000:
-            size /= 1000000
-            size_txt = "%dM" % size
-        elif size >= 1000:
-            size /= 1000
-            size_txt = "%dK" % size
-
-        return size_txt
-
-    def cb_dl(self, _target, _transferred, total):
-        if self.t != None:
-            if self.total_size > 0:
-                fraction = (_transferred + self.already_transferred) / self.total_size
-            size = 0
-            if self.t.to_remove or self.t.to_add:
-                for pkg in self.t.to_remove + self.t.to_add:
-                    if pkg.name + '-' + pkg.version in _target:
-                        size = pkg.size
-                if _transferred == size:
-                    self.already_transferred += size
-                fsize = self.get_size(self.total_size)
-                self.action = _('Downloading %s...') % _target
-                self.target = _target
-                if fraction > 1:
-                    self.percent = 0
-                else:
-                    self.percent = math.floor(fraction * 100) / 100
-                self.queue_event("action", self.action)
-                self.queue_event("percent", self.percent)
-            else:
-                self.action = _('Refreshing %s...') % _target
-                self.target = _target
-                # can't we know which percent has 'refreshed' ?
-                self.percent = 0
-                self.queue_event("action", self.action)
-                #self.queue_event("percent", self.percent)
-
+        elif level & pyalpm.LOG_DEBUG:
+            logging.debug(line)
+        elif level & pyalpm.LOG_FUNCTION:
+            pass
+        '''
+    
     def cb_progress(self, _target, _percent, n, i):
         if _target:
-            self.target = _("Installing %s (%d/%d)") % (_target, i, n)
+            target = _("Installing %s (%d/%d)") % (_target, i, n)
             self.queue_event('global_percent', i / n)
         else:
-            self.target = _("Checking and loading packages...")
+            target = _("Checking and loading packages...")
 
-        self.percent = _percent / 100
-        self.queue_event('target', self.target)
-        self.queue_event('percent', self.percent)
+        percent = _percent / 100
+        self.queue_event('target', target)
+        self.queue_event('percent', percent)
+
+    def cb_dl(self, filename, tx, total):
+        # Check if a new file is coming
+        # (if filename has changed or total file size has changed)
+        if filename != self.last_dl_filename or self.last_dl_total != total:
+            # Yes, new file
+            self.last_dl_filename = filename
+            self.last_dl_total = total
+            self.last_dl_progress = 0
+            progress = 0
+            # text = _("Downloading %s: %d/%d") % (filename, tx, total)
+            text = _("Downloading '%s'") % filename
+            self.queue_event('action', text)
+            self.queue_event('percent', progress)
+        else:
+            # Compute a progress indicator
+            if self.last_dl_total > 0:
+                progress = tx / self.last_dl_total
+            else:
+                # if total is unknown, use log(kBytes)²/2
+                progress = (math.log(1 + tx / 1024) ** 2 / 2) / 100
+
+            if progress > self.last_dl_progress:
+                self.last_dl_progress = progress
+                #text = _("Downloading %s: %d/%d") % (filename, tx, total)
+                #text = _("Downloading '%s'") % filename
+                #self.queue_event('action', text)
+                self.queue_event('percent', progress)
+

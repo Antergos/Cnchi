@@ -34,7 +34,7 @@ _prev_page = "features"
 class InstallationAsk(Gtk.Box):
 
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -44,6 +44,7 @@ class InstallationAsk(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_ask.ui"))
 
+        #partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/")
         partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/small/")
 
         image = self.ui.get_object("automatic_image")
@@ -71,7 +72,9 @@ class InstallationAsk(Gtk.Box):
         self.next_page = "installation_automatic"
         
     def enable_automatic_options(self, status):
-        objects = [ "encrypt_checkbutton", "encrypt_label", "lvm_checkbutton", "lvm_label" ]
+        objects = [ "encrypt_checkbutton", "encrypt_label", \
+                    "lvm_checkbutton", "lvm_label", \
+                    "home_checkbutton", "home_label" ]
         for o in objects:
             ob = self.ui.get_object(o)
             ob.set_sensitive(status)
@@ -88,16 +91,23 @@ class InstallationAsk(Gtk.Box):
         label.hide()
 
     def translate_ui(self):
-        txt = _("Installation Type")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Installation Type"))
+
+        #txt = _("Installation Type")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
         # In case we're coming from an installer screen, we change
         # to forward stock button and we activate it
-        self.forward_button.set_label("gtk-go-forward")
+        #self.forward_button.set_label("gtk-go-forward")
+        image1 = Gtk.Image() 
+        image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
+        self.forward_button.set_label("")
+        self.forward_button.set_image(image1)
         self.forward_button.set_sensitive(True)
 
-        ## AUTOMATIC INSTALL
+        # AUTOMATIC INSTALL
         radio = self.ui.get_object("automatic_radiobutton")
         radio.set_label(_("Erase disk and install Antergos"))
 
@@ -125,7 +135,16 @@ class InstallationAsk(Gtk.Box):
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
         
-        ## ALONGSIDE INSTALL (still experimental. Needs a lot of testing)
+        button = self.ui.get_object("home_checkbutton")
+        txt = _("Set your Home in a different partition/volume")
+        button.set_label(txt)
+        
+        label = self.ui.get_object("home_label")
+        txt = _("This will setup you /home directory in a different partition or volume.")
+        txt = '<span weight="light" size="small">%s</span>' % txt
+        label.set_markup(txt)
+
+        # ALONGSIDE INSTALL (still experimental. Needs a lot of testing)
         if "windows" in self.otherOS.lower():
             radio = self.ui.get_object("alongside_radiobutton")
             label = self.ui.get_object("alongside_description")
@@ -136,7 +155,7 @@ class InstallationAsk(Gtk.Box):
             label.set_markup(txt)
             label.set_line_wrap(True)
         
-        ## ADVANCED INSTALL
+        # ADVANCED INSTALL
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Choose exactly where Antergos should be installed. (advanced)"))
 
@@ -152,19 +171,28 @@ class InstallationAsk(Gtk.Box):
         
         check = self.ui.get_object("lvm_checkbutton")
         use_lvm = check.get_active()
+        
+        check = self.ui.get_object("home_checkbutton")
+        use_home = check.get_active()
                 
         if self.next_page == "installation_automatic":
             self.settings.set('use_lvm', use_lvm)
             self.settings.set('use_luks', use_luks)
+            self.settings.set('use_home', use_home)
         else:
             self.settings.set('use_lvm', False)
             self.settings.set('use_luks', False)
+            self.settings.set('use_home', False)
 
         if self.settings.get('use_luks'):
             logging.info(_("Antergos installation will be encrypted using LUKS"))
             
         if self.settings.get('use_lvm'):
             logging.info(_("Antergos will be installed using LVM volumes"))
+            if self.settings.get('use_home'):
+                logging.info(_("Antergos will be installed using a separate /home volume."))
+        elif self.settings.get('use_home'):
+            logging.info(_("Antergos will be installed using a separate /home partition."))
             
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')

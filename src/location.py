@@ -34,7 +34,7 @@ _prev_page = "language"
 
 class Location(Gtk.Box):
     def __init__(self, params):
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -48,23 +48,22 @@ class Location(Gtk.Box):
 
         self.ui.connect_signals(self)
 
-        self.treeview = self.ui.get_object("treeview_countries")
+        #self.treeview = self.ui.get_object("treeview_countries")
+        
+        self.listbox = self.ui.get_object("listbox_countries")
+        self.listbox.connect("row-selected", self.on_listbox_row_selected)
+        self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
 
-        self.treeview_items = 0
-        
-        self.create_toolview()
+        self.listbox_items = 0
         
         self.load_locales()
         
         super().add(self.ui.get_object("location"))
 
-    def translate_ui(self):
-        txt = _("Select your location")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
-        
+    def translate_ui(self):       
         txt = _("The location you select will be used to help determine the system locale.\n" \
             "This should normally be the country in which you reside.\n" \
             "Here is a shortlist of locations based on the language you selected.")
@@ -73,30 +72,19 @@ class Location(Gtk.Box):
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>%s</span>" % txt
         self.label_choose_country.set_markup(txt)
-        
-    def create_toolview(self):
-        render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn("", render, text=0)
-        liststore = Gtk.ListStore(str)
-        self.treeview.append_column(col)
-        self.treeview.set_model(liststore)
-        self.treeview.set_headers_visible(False)
-        
-    def select_first_treeview_item(self):
-        model = self.treeview.get_model()
-        treeiter = model.get_iter(0)
-        self.treeview.set_cursor(0)
-        path = model.get_path(treeiter)
-        GLib.idle_add(self.scroll_to_cell, self.treeview, path)
 
-    def scroll_to_cell(self, treeview, path):
-        treeview.scroll_to_cell(path)
-        return False
-
+        self.header.set_subtitle(_("Select your location"))
+        
+    def select_first_listbox_item(self):
+        listbox_row = self.listbox.get_children()[0]
+        self.listbox.select_row(listbox_row)
+        #self.selected_country
+        
     def hide_all(self):
         names = [ "location_box", "label_help", "label_choose_country", \
                      "box1", "eventbox1", "eventbox2", "scrolledwindow1", \
-                     "treeview_countries" ]
+                     "listbox_countries" ]
+        
         for name in names:
             control = self.ui.get_object(name)
             if control != None:
@@ -104,9 +92,9 @@ class Location(Gtk.Box):
 
     def prepare(self, direction):
         self.hide_all()
-        self.fill_treeview()
+        self.fill_listbox()
         
-        if self.treeview_items == 1:
+        if self.listbox_items == 1:
             # If we have only one option, don't bother our beloved user
             self.store_values()
             if direction == 'forwards':
@@ -114,7 +102,7 @@ class Location(Gtk.Box):
             else:
                 GLib.idle_add(self.backwards_button.clicked)
         else:
-            self.select_first_treeview_item()
+            self.select_first_listbox_item()
             self.translate_ui()       
         
         # If I don't do this, check page is not shown well when skipping this page (location)
@@ -154,14 +142,12 @@ class Location(Gtk.Box):
                 if country_code in language_name:
                     self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
 
-    def fill_treeview(self):
+    def fill_listbox(self):
         lang_code = self.settings.get("language_code")
         areas = []
         for locale_name in self.locales:
             if lang_code in locale_name:
                 areas.append(self.locales[locale_name])
-        liststore = self.treeview.get_model()
-        liststore.clear()
         
         # FIXME: What do we have to do when can't find any country?
         # Right now we put them all!
@@ -170,33 +156,39 @@ class Location(Gtk.Box):
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
 
-        self.treeview_items = len(areas)
+        self.listbox_items = len(areas)
         
         areas.sort()
         
+        # Delete listbox previous contents (if any)
+        for listbox_row in self.listbox.get_children():
+            listbox_row.destroy()
+        
         for area in areas:
-            liststore.append([area])
-            
+            box = Gtk.VBox()
+            label = Gtk.Label(area)
+            box.add(label)
+            self.listbox.add(box)
+            #self.select_default_row(current_language)
+
+    def on_listbox_row_selected(self, listbox, listbox_row):
+        if listbox_row is not None:
+            vbox = listbox_row.get_children()[0]
+            label = vbox.get_children()[0]
+            self.selected_country = label.get_text()
 
     def store_values(self):
-        selected = self.treeview.get_selection()
-        if selected:
-            (ls, iter) = selected.get_selected()
-
-            if not iter:
-                iter = ls.get_iter_first()
-
-            country = ls.get_value(iter, 0)
-            lang_code = self.settings.get("language_code")
-            for mylocale in self.locales:
-                if self.locales[mylocale] == country:
-                    self.settings.set("locale", mylocale)
-                    try:
-                        import locale
-                        locale.setlocale(locale.LC_ALL, mylocale)
-                        logging.info(_("locale changed to : %s") % mylocale)
-                    except (ImportError, locale.Error):
-                        logging.warning(_("Can't change to locale '%s'") % mylocale)
+        country = self.selected_country
+        lang_code = self.settings.get("language_code")
+        for mylocale in self.locales:
+            if self.locales[mylocale] == country:
+                self.settings.set("locale", mylocale)
+                try:
+                    import locale
+                    locale.setlocale(locale.LC_ALL, mylocale)
+                    logging.info(_("locale changed to : %s") % mylocale)
+                except (ImportError, locale.Error):
+                    logging.warning(_("Can't change to locale '%s'") % mylocale)
 
         return True
 

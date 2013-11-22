@@ -22,7 +22,7 @@
 
 import xml.etree.ElementTree as etree
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import subprocess
 import gettext
 import sys
@@ -52,16 +52,20 @@ class InstallationAdvanced(Gtk.Box):
     def __init__(self, params):
         # Store class parameters
         self.blvm = False
-        self.title = params['title']
+        self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
+        self.testing = params['testing']
+        
         self.lv_partitions = []
         self.disks_changed = []
+        
         self.my_first_time = True
+        
         self.orig_label_dic = {}        
         self.orig_part_dic = {}
 
@@ -296,14 +300,13 @@ class InstallationAdvanced(Gtk.Box):
     def get_size(self, length, sectorSize):
         size = length * sectorSize
         size_txt = "%db" % size
+        
         if size >= 1000000000:
             size /= 1000000000
             size_txt = "%dG" % size
-
         elif size >= 1000000:
             size /= 1000000
-            size_txt = "%dM" % size
-        
+            size_txt = "%dM" % size        
         elif size >= 1000:
             size /= 1000
             size_txt = "%dK" % size
@@ -1055,9 +1058,12 @@ class InstallationAdvanced(Gtk.Box):
     # As the installer language can change anytime the user changes it, we have
     # to "retranslate" all our widgets calling this function
     def translate_ui(self):
-        txt = _("Advanced Installation Mode")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        #self.header.set_title("Cnchi")
+        self.header.set_subtitle(_("Advanced Installation Mode"))
+
+        #txt = _("Advanced Installation Mode")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.title.set_markup(txt)
         
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
@@ -1345,9 +1351,10 @@ class InstallationAdvanced(Gtk.Box):
                                     # some mounted directories. Unmount them without asking.
                                     subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                     logging.debug("%s unmounted" % mount_point)
-                                else:
+                                elif len(mount_point) > 0:
                                     response = show.question(msg)
                                     if response != Gtk.ResponseType.YES:
+                                        # User doesn't want to unmount, we can't go on.
                                         return []
                                     else:
                                         # unmount it!
@@ -1356,6 +1363,8 @@ class InstallationAdvanced(Gtk.Box):
                                         else:
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                             logging.debug("%s unmounted" % mount_point)
+                                else:
+                                    logging.warning(_("%s shows as mounted (busy) but it has no mount point") % partition_path)
                                 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
                         
@@ -1443,6 +1452,8 @@ class InstallationAdvanced(Gtk.Box):
         changelist_dialog.show_all()
         response = changelist_dialog.run()
         changelist_dialog.hide()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         
         return response
 
@@ -1456,6 +1467,31 @@ class InstallationAdvanced(Gtk.Box):
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
             return False
+
+        watch = Gdk.Cursor(Gdk.CursorType.WATCH)
+        gdk_window = self.get_root_window()
+        gdk_window.set_cursor(watch)
+        
+        self.create_staged_partitions()
+        self.start_installation()
+        
+        arrow = Gdk.Cursor(Gdk.CursorType.ARROW)
+        gdk_window.set_cursor(arrow)
+        
+        # Restore "Next" button's text
+        self.forward_button.set_label("gtk-go-forward")
+        self.forward_button.set_use_stock(True)
+        return True
+    
+    # Tell which one is our previous page (in our case installation_ask)
+    def get_prev_page(self):
+        return _prev_page
+
+    # Tell which one is our next page
+    def get_next_page(self):
+        return _next_page
+
+    def create_staged_partitions(self):            
         partitions = {}
         # Create staged partitions 
         if self.disks != None:
@@ -1482,7 +1518,8 @@ class InstallationAdvanced(Gtk.Box):
                         if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], 1):
                                 x = pm.set_flag(1, partitions[partition_path])
-                                pm.finalize_changes(partitions[partition_path].disk)
+                                if not self.testing:
+                                    pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
@@ -1493,32 +1530,21 @@ class InstallationAdvanced(Gtk.Box):
                                     print(partitions)
                                     if not pm.get_flag(partitions[ee], 1):
                                         x = pm.set_flag(1, partitions[ee])
-                                pm.finalize_changes(partitions[ee].disk)
+                                if not self.testing:
+                                    pm.finalize_changes(partitions[ee].disk)
                         # Only format if they want formatting
                         if fmt:  
                             # All of fs module takes paths, not partition objs
-                            (error, msg) = fs.create_fs(partition_path, fisy, lbl)
-                            if error == 0:
-                                logging.info(msg)
-                            else:
-                                logging.error(msg)
+                            if not self.testing:
+                                (error, msg) = fs.create_fs(partition_path, fisy, lbl)
+                                if error == 0:
+                                    logging.info(msg)
+                                else:
+                                    logging.error(msg)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
-                                fs.label_fs(fisy, partition_path, lbl)
-        self.start_installation()
-        
-        # Restore "Next" button's text
-        self.forward_button.set_label("gtk-go-forward")
-        self.forward_button.set_use_stock(True)
-        return True
-    
-    # Tell which one is our previous page (in our case installation_ask)
-    def get_prev_page(self):
-        return _prev_page
-
-    # Tell which one is our next page
-    def get_next_page(self):
-        return _next_page
+                                if not self.testing:
+                                    fs.label_fs(fisy, partition_path, lbl)
 
     # Start installation process
     def start_installation(self):
@@ -1563,15 +1589,18 @@ class InstallationAdvanced(Gtk.Box):
             logging.info(_("Antergos will install the bootloader of type %s in %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Cnchi will not install any boot loader")
+            logging.warning(_("Cnchi will not install any boot loader"))
 
-        self.process = installation_process.InstallationProcess( \
-                    self.settings, \
-                    self.callback_queue, \
-                    mount_devices, \
-                    fs_devices, \
-                    self.ssd, \
-                    self.alternate_package_list, \
-                    self.blvm)
-                    
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                        self.settings, \
+                        self.callback_queue, \
+                        mount_devices, \
+                        fs_devices, \
+                        self.ssd, \
+                        self.alternate_package_list, \
+                        self.blvm)
+                        
+            self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))
