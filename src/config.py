@@ -72,6 +72,7 @@ class Settings():
             'tmp' : '/tmp', \
             'ui' : '/usr/share/cnchi/ui/', \
             'use_aria2' : False, \
+            'use_home' : False, \
             'use_luks' : False, \
             'use_lvm' : False, \
             'use_ntp' : True, \

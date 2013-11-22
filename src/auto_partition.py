@@ -78,7 +78,7 @@ class AutoPartition():
             logging.warning("Unmounting %s" % d)
             subprocess.call(["umount", d])
 
-        # Umount the device that is mounted in self.dest_dir (if any)
+        # Now is the time to unmount the device that is mounted in self.dest_dir (if any)
         logging.warning("Unmounting %s" % self.dest_dir)
         subprocess.call(["umount", self.dest_dir])
         
@@ -170,7 +170,7 @@ class AutoPartition():
         root = ""
         home = ""
 
-        luks = ""    
+        luks = []
         lvm = ""
 
         # TODO: SET SWAP IN A LOGIC PARTITION
@@ -191,11 +191,13 @@ class AutoPartition():
         if self.luks:
             if self.lvm:
                 # LUKS and LVM
-                luks = swap
+                luks = [swap]
                 lvm = "/dev/mapper/cryptAntergos"
             else:
                 # LUKS and no LVM
-                luks = root
+                # In this case we'll have two LUKS devices, one for root
+                # and the other one for /home
+                luks = [root, boot]
                 root = "/dev/mapper/cryptAntergos"
                 if self.home:
                     home = "/dev/mapper/cryptAntergosHome"
@@ -213,44 +215,43 @@ class AutoPartition():
 
     # mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py
     def get_mount_devices(self):
-        (boot_device, swap_device, root_device, luks_device, lvm_device, home_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
         
         mount_devices = {}
         
         mount_devices["/boot"] = boot_device
+        mount_devices["/"] = root_device
+        mount_devices["/home"] = home_device
 
         if self.luks:
-            mount_devices["/"] = luks_device
-        else:
-            mount_devices["/"] = root_device
+            mount_devices["/"] = luks_devices[0]
+            if self.home and not self.lvm:
+                mount_devices["/home"] = luks_devices[1]
 
         mount_devices["swap"] = swap_device
-
-        if self.home:
-            mount_devices["/home"] = home_device
         
         for m in mount_devices:
             logging.debug("mount_devices[%s] = %s" % (m, mount_devices[m]))
         
         return mount_devices
 
-    # fs_devices  will be used when configuring the fstab file in installation_process.py
+    # fs_devices will be used when configuring the fstab file in installation_process.py
     def get_fs_devices(self):        
-        (boot_device, swap_device, root_device, luks_device, lvm_device, home_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         fs_devices = {}
         
         fs_devices[boot_device] = "ext2"
         fs_devices[swap_device] = "swap"
 
-        # TODO: Not sure about this. Must change it in the next if?
-        if self.home:
-            fs_devices[home_device] = "ext4"
-
         if self.luks:
-            fs_devices[luks_device] = "ext4"
+            fs_devices[luks_devices[0]] = "ext4"
+            if self.home:
+                fs_devices[luks_devices[1]] = "ext4"
         else:
             fs_devices[root_device] = "ext4"
+            if self.home:
+                fs_devices[home_device] = "ext4"
             
         for f in fs_devices:
             logging.debug("fs_devices[%s] = %s" % (f, fs_devices[f]))
@@ -436,8 +437,7 @@ class AutoPartition():
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
             # (boot partition is not)
             subprocess.check_call(['chmod', '0400', key_file])
-            subprocess.check_call(['cp', key_file, '%s/boot' % self.dest_dir])
-            subprocess.check_call(['rm', key_file])
+            subprocess.check_call(['mv', key_file, '%s/boot' % self.dest_dir])
 
 if __name__ == '__main__':
     logger = logging.getLogger()
@@ -448,5 +448,5 @@ if __name__ == '__main__':
     sh.setFormatter(formatter)
     logger.addHandler(sh)
 
-    ap = AutoPartition("/install", "/dev/sdb", use_luks=False, use_lvm=True, luks_key_pass="")
+    ap = AutoPartition("/install", "/dev/sdb", use_luks=False, use_lvm=True, luks_key_pass="", use_home=True, callback_queue=None)
     ap.run()
