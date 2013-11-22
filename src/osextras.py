@@ -22,7 +22,6 @@
 
 import os
 
-
 def _resolve_link_root(root, path):
     """Helper for realpath_root. See posixpath._resolve_link."""
     paths_seen = set()

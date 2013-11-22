@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, WebKit, GLib
 import config
@@ -54,6 +46,7 @@ class Slides(Gtk.Box):
         self.exit_button = params['exit_button']
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
+        self.main_progressbar = params['main_progressbar']
 
         super().__init__()
 
@@ -63,6 +56,11 @@ class Slides(Gtk.Box):
         builder.connect_signals(self)
 
         self.progress_bar = builder.get_object("progressbar")
+        self.progress_bar.set_show_text(True)
+        
+        self.global_progress_bar = builder.get_object("global_progressbar")
+        self.global_progress_bar.set_show_text(True)
+        
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
@@ -71,7 +69,7 @@ class Slides(Gtk.Box):
         if self.settings == None:
             html_file = '/usr/share/cnchi/data/slides.html'
         else:
-            html_file = os.path.join(self.settings.get("DATA_DIR"), 'slides.html')
+            html_file = os.path.join(self.settings.get('data'), 'slides.html')
         
         try:
             with open(html_file) as html_stream:
@@ -83,7 +81,7 @@ class Slides(Gtk.Box):
         
         self.scrolled_window.add(self.webview)
         
-        self.install_ok = _("Installation finished!\n" \
+        self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
 
         super().add(builder.get_object("slides"))
@@ -98,12 +96,23 @@ class Slides(Gtk.Box):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
         
-        self.install_ok = _("Installation finished!\n" \
+        self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
-
+        
+    def show_global_progress_bar_if_hidden(self):
+        if self.global_progress_bar_is_hidden:
+            self.global_progress_bar.show_all()
+            self.global_progress_bar_is_hidden = False
+        
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        # Last screen reached, hide main progress bar.
+        self.main_progressbar.hide()
+        
+        self.global_progress_bar.hide()
+        self.global_progress_bar_is_hidden = True
 
         self.backwards_button.hide()
         self.forward_button.hide()
@@ -126,16 +135,25 @@ class Slides(Gtk.Box):
         txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
+    # This function is called from cnchi.py with a timeout function
+    # We should do as less as possible here, we want to maintain our
+    # queue message as empty as possible
     def manage_events_from_cb_queue(self):
-        try:
-            event = self.callback_queue.get_nowait()
-        except queue.Empty:
-            event = ()
+        if self.fatal_error:
+            return False
 
-        if len(event) > 0 and self.fatal_error == False:
-            if event[0] == "percent":
+        while self.callback_queue.empty() == False:
+            try:
+                event = self.callback_queue.get_nowait()
+            except queue.Empty:
+                return True
+
+            if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == "finished":
+            elif event[0] == 'global_percent':
+                self.show_global_progress_bar_if_hidden()
+                self.global_progress_bar.set_fraction(event[1])
+            elif event[0] == 'finished':
                 logging.info(event[1])
                 self.set_message(self.install_ok)
                 response = show.question(self.install_ok)
@@ -150,22 +168,32 @@ class Slides(Gtk.Box):
                             # (this should be fixed) meanwhile, we need sudo privileges to remove them
                             with misc.raised_privileges():
                                 os.remove(p)
-                    self.callback_queue.task_done()
+                    while Gtk.events_pending():
+                        Gtk.main_iteration()
                     Gtk.main_quit()
                         
                 self.exit_button.show()
                 return False
-            elif event[0] == "error":
+            elif event[0] == 'error':
                 self.callback_queue.task_done()
                 # a fatal error has been issued. We empty the queue
                 self.empty_queue()
                 self.fatal_error = True
                 show.fatal_error(event[1])
+                return False
+            elif event[0] == 'debug':
+                logging.debug(event[1])
+            elif event[0] == 'warning':
+                logging.warning(event[1])
             else:
+                # TODO: Check if logging slows down showing messages
+                #       remove logging.info in that case (and at least
+                #       use the one at pac.py:queue_event)
                 logging.info(event[1])
                 self.set_message(event[1])
                             
             self.callback_queue.task_done()
+        
         return True
         
     def empty_queue(self):
@@ -180,56 +208,3 @@ class Slides(Gtk.Box):
     def reboot(self):
         os.system("sync")
         subprocess.call(["/usr/bin/systemctl", "reboot", "--force", "--no-wall"])
-
-class TestWindow(Gtk.Window):
-    def __init__(self, box):
-        Gtk.Window.__init__(self, title='Antergos Installer Test')
-        self.set_title(_('Antergos Installer'))
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(False)
-        self.set_size_request(800, 500)
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file("/usr/share/cnchi/ui/cnchi.ui")
-
-        self.add(self.ui.get_object("main"))
-
-        self.main_box = self.ui.get_object("main_box")
-        
-        self.main_box.add(box)
-
-if __name__ == '__main__':
-    import gettext
-    import locale
-    
-    print("Testing slides screen")
-    
-    APP = "Antergos Test Window"
-    DIR = "/usr/share/locale"
-    
-    # This allows to translate all py texts (not the glade ones)
-    gettext.textdomain(APP)
-    gettext.bindtextdomain(APP, DIR)
-
-    locale_code, encoding = locale.getdefaultlocale()
-    lang = gettext.translation (APP, DIR, [locale_code], None, True)
-    lang.install()
-
-    # With this we can use _("string") to translate
-    gettext.install(APP, localedir=DIR, codeset=None, names=[locale_code])
-
-    params = {}
-    params['title'] = "TITLE"
-    params['ui_dir'] = "/usr/share/cnchi/ui"
-    params['forward_button'] = None
-    params['backwards_button'] = None
-    params['exit_button'] = None
-    params['callback_queue'] = None
-    params['settings'] = None
-    
-    slides = Slides(params)
-    
-    w = TestWindow(slides)
-    
-    w.show_all()
-    
-    Gtk.main()

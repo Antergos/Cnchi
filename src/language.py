@@ -20,14 +20,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GLib
 import gettext
@@ -36,8 +28,8 @@ import os
 import logging
 
 # Useful vars for gettext (translations)
-APP="cnchi"
-DIR = "/usr/share/locale"
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 # Import functions
 import config
@@ -66,9 +58,17 @@ class Language(Gtk.Box):
 
         self.translate_ui()
 
+        data_dir = self.settings.get('data')
+        
         self.current_locale = locale.getdefaultlocale()[0]
-        self.language_list = self.settings.get("DATA_DIR") + "languagelist.data.gz"
+        self.language_list =  os.path.join(data_dir, "languagelist.data.gz")
         self.set_languages_list()
+        
+        image1 = self.ui.get_object("image1")
+        image1.set_from_file(os.path.join(data_dir, "languages.png"))
+        
+        label = self.ui.get_object("welcome_label")
+        label.set_name("WelcomeMessage")
 
         super().add(self.ui.get_object("language"))
 
@@ -82,12 +82,11 @@ class Language(Gtk.Box):
         self.label_choose_language.set_markup(txt)
         
         label = self.ui.get_object("welcome_label")
-        txt_bold = _("This is an Alpha version.")
-        txt = _("Still undergoing development. It is known NOT " \
-        "to work yet with LVM, RAID, btrfs subvolumes, and other " \
-        "advanced setups. \n" \
-        "Please proceed with caution as data loss is possible! \n\n" \
-        "If you find any bug, please, visit <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
+        txt_bold = _("Notice: The Cnchi Installer is beta software.")
+        txt = _("Cnchi is pre-release beta software that is under active development. \n" \
+        "It does not yet properly handle RAID, btrfs subvolumes, or other " \
+        "advanced setups. Please proceed with caution as data loss is possible! \n\n" \
+        "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         txt = "<span weight='bold'>%s</span>\n\n" % txt_bold + txt
         label.set_markup(txt)
 
@@ -103,7 +102,6 @@ class Language(Gtk.Box):
         for lang, lang_code in display_map.items():
             if lang_code[1] == self.current_locale:
                 return lang
-            
 
     def set_languages_list(self):
         liststore_language = Gtk.ListStore(str)
@@ -125,7 +123,7 @@ class Language(Gtk.Box):
             locale_code, encoding = locale.getdefaultlocale()
 
         try:
-            lang = gettext.translation (APP, DIR, [locale_code] )
+            lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code])
             lang.install()
             self.translate_ui()
         except IOError:

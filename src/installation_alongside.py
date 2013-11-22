@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 import xml.etree.ElementTree as etree
 
@@ -35,12 +27,17 @@ from gi.repository import Gtk, Gdk
 import sys
 import os
 import misc
-import parted
 import logging
 import show_message as show
 import bootinfo
 import subprocess
-import logging
+
+# To be able to test this installer in other systems
+# that do not have pyparted3 installed
+try:
+    import parted
+except:
+    print("Can't import parted module! This installer won't work.")
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -55,8 +52,8 @@ import installation_process
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
-# leave at least 3GB for Antergos when shrinking
-_minimum_space_for_antergos = 3000
+# leave at least 3.5GB for Antergos when shrinking
+_minimum_space_for_antergos = 3500
 
 class InstallationAlongside(Gtk.Box):
     def __init__(self, params):
@@ -91,7 +88,7 @@ class InstallationAlongside(Gtk.Box):
         slider = self.ui.get_object("scale")
         
         slider.set_name("myslider")
-        path = os.path.join(self.settings.get("DATA_DIR"), "css", "scale.css")
+        path = os.path.join(self.settings.get("data"), "css", "scale.css")
         
         self.available_slider_range = [0, 0]
         
@@ -136,15 +133,15 @@ class InstallationAlongside(Gtk.Box):
             return False
     
     def translate_ui(self):
-        txt = _("Choose next to which OS you want to install Antergos")
+        txt = _("Select the OS you would like Antergos installed next to.")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        txt = _("Antergos alongside another OS")
+        txt = _("Antergos Alongside Installation")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
-        txt = _("Install now!")
+        txt = _("Install Now!")
         self.forward_button.set_label(txt)
 
     def prepare(self, direction):
@@ -187,7 +184,11 @@ class InstallationAlongside(Gtk.Box):
         
         self.partitions = {}
 
-        device_list = parted.getAllDevices()
+        try:
+            device_list = parted.getAllDevices()
+        except:
+            logging.error("pyparted3 not found!")
+            device_list = []
         
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
@@ -212,7 +213,7 @@ class InstallationAlongside(Gtk.Box):
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
-                    logging.warning(_("In alongside install, can't create list of partitions"))
+                    logging.warning(_("Unable to create list of partitions for alongside installation."))
 
         # assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
@@ -237,9 +238,11 @@ class InstallationAlongside(Gtk.Box):
         self.min_size = 0
         self.max_size = 0
         self.new_size = 0
-
+        
         try:
+            subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
             x = subprocess.check_output(['df', partition_path]).decode()
+            subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
             x = x.split('\n')
             x = x[1].split()
             self.max_size = int(x[1]) / 1000
@@ -250,17 +253,14 @@ class InstallationAlongside(Gtk.Box):
         if self.min_size + _minimum_space_for_antergos < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
-            # Can't shrink the partition (maybe it's nearly full)
-            # TODO: Show error message but let the user choose
-            # another install method
-            pass
+            show.error(_("Can't shrink the partition (maybe it's nearly full)"))
+            return
 
-        if self.new_size > 0:
+        if self.new_size > 0 and self.is_room_available():
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
         
-        return False
 
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")
@@ -305,11 +305,7 @@ class InstallationAlongside(Gtk.Box):
 
         return value
         
-
-    def start_installation(self):
-        # Alongside method shrinks selected partition
-        # and creates root and swap partition in the available space
-        
+    def is_room_available(self):
         partition_path = self.row[0]
         otherOS = self.row[1]
         fs_type = self.row[2]
@@ -319,9 +315,9 @@ class InstallationAlongside(Gtk.Box):
 
         new_size = self.new_size
         
-        logging.debug("partition_path: ", partition_path)
-        logging.debug("device_path: ", device_path)
-        logging.debug("new_size: ", new_size)
+        logging.debug("partition_path: %s" % partition_path)
+        logging.debug("device_path: %s" % device_path)
+        logging.debug("new_size: %s" % new_size)
         
         # Find out how many primary partitions device has, and also
         # if there's already an extended partition
@@ -339,23 +335,46 @@ class InstallationAlongside(Gtk.Box):
         
         primary_partitions.sort()
         
-        logging.debug("extended partition: ", extended_path)
-        logging.debug("primary partitions: ", primary_partitions)
+        logging.debug("extended partition: %s" % extended_path)
+        logging.debug("primary partitions: %s" % primary_partitions)
         
-        # If we don't have 3 or 4 primary partitions,
-        # we will be able to create a new one
-        if len(primary_partitions) < 3:
-            # first, shrink file system
-            res = fs.resize(partition_path, fs_type, new_size)
-            if res:
-                # destroy original partition and create two new ones
-                pm.split_partition(device_path, partition_path, new_size)
-            else:
-                logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
-        else:
+        if len(primary_partitions) >= 4:
             logging.error("There're too many primary partitions, can't create a new one")
-            
+            return False
+        
+        self.extended_path = extended_path
 
+        return True
+
+    def start_installation(self):
+        # Alongside method shrinks selected partition
+        # and creates root and swap partition in the available space
+        
+        if self.is_room_available() == False:
+            return
+
+        partition_path = self.row[0]
+        otherOS = self.row[1]
+        fs_type = self.row[2]
+
+        # what if path is sda10 (two digits) ? this is wrong
+        device_path = self.row[0][:-1]
+
+        #re.search(r'\d+$', self.row[0])
+
+        new_size = self.new_size
+        
+        # first, shrink file system
+        res = fs.resize(partition_path, fs_type, new_size)
+        if res:
+            # destroy original partition and create a new resized one
+            pm.split_partition(device_path, partition_path, new_size)
+        else:
+            logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
+            return
+        
+            
+        
         '''
         # Prepare info for installer_process
         mount_devices = {}
@@ -369,9 +388,8 @@ class InstallationAlongside(Gtk.Box):
         fs_devices[root] = "ext4"
         fs_devices[swap] = "swap"
         fs_devices[partition_path] = self.row[2]
-        '''
-
-        '''        
+        
+        
         # TODO: Ask where to install the bootloader (if the user wants to install it)
 
         # Ask bootloader type

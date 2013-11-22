@@ -24,21 +24,13 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
     
 import traceback
 import sys
 import locale
 import gettext
 import math
-
+import logging
 from multiprocessing import Queue
 import queue
 
@@ -47,7 +39,6 @@ try:
     from pacman import pac_config
 except:
     print("pyalpm not found! This installer won't work.")
-
 
 class Pac(object):
     def __init__(self, conf, callback_queue):
@@ -59,6 +50,8 @@ class Pac(object):
         self.to_add = []
         self.to_update = []
         self.to_provide = []
+        
+        self.target = ""
         
         # Packages to be removed
         # E.g: connman conflicts with netctl(openresolv), which is installed
@@ -264,7 +257,7 @@ class Pac(object):
                 return
         
         self.last_event[event_type] = event_text
-        
+                
         if event_type == "error":
             # format message to show file, function, and line where the error
             # was issued
@@ -279,6 +272,9 @@ class Pac(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
+
+        #if event_type != "percent":
+        #    logging.info(event_text)
         
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
@@ -336,19 +332,23 @@ class Pac(object):
         if not (level & _logmask):
             return
 
+        if level & pyalpm.LOG_ERROR or level & pyalpm.LOG_WARNING:
+            # Even if there is a real error we're not sure we want to abort all installation
+            # Instead of issuing a fatal error we just log an error message
+            logging.error(line)
+        
+        '''
         if level & pyalpm.LOG_ERROR:
             if 'linux' not in self.target and 'lxdm' not in self.target:
                 self.error = _("ERROR: %s") % line
-                #print(line)
                 self.release_transaction()
                 self.queue_event("error", line)
+                logging.warning(line)
             else:
-                pass
+                logging.warning(line)
         elif level & pyalpm.LOG_WARNING:
             self.warning = _("WARNING: %s") % line
-            self.queue_event("warning", line)
-            #print(line)
-        '''
+            self.queue_event('warning', line)
         elif level & pyalpm.LOG_DEBUG:
             line = _("DEBUG: %s") % line
             print(line)
@@ -405,8 +405,10 @@ class Pac(object):
     def cb_progress(self, _target, _percent, n, i):
         if _target:
             self.target = _("Installing %s (%d/%d)") % (_target, i, n)
+            self.queue_event('global_percent', i / n)
         else:
             self.target = _("Checking and loading packages...")
+
         self.percent = _percent / 100
-        self.queue_event("target", self.target)
-        self.queue_event("percent", self.percent)
+        self.queue_event('target', self.target)
+        self.queue_event('percent', self.percent)

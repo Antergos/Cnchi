@@ -23,7 +23,7 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="box5">
+          <object class="GtkBox" id="header">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -34,7 +34,7 @@
                 <property name="xalign">0</property>
                 <property name="xpad">60</property>
                 <property name="ypad">5</property>
-                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Welcome to Cinnarch&lt;/span&gt;</property>
+                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Welcome to Antergos&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -66,9 +66,34 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="main_box">
+          <object class="GtkBox" id="box2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <child>
+              <object class="GtkBox" id="main_box">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage" id="vertical_image">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xpad">10</property>
+                    <property name="pixel_size">64</property>
+                    <property name="icon_name">computer</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <placeholder/>
             </child>
@@ -80,7 +105,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box3">
+          <object class="GtkBox" id="footer">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">10</property>
@@ -106,6 +131,7 @@
             <child>
               <object class="GtkButton" id="forward_button">
                 <property name="label">gtk-go-forward</property>
+                <property name="use_action_appearance">False</property>
                 <property name="width_request">115</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -116,9 +142,9 @@
                 <property name="margin_right">10</property>
                 <property name="margin_top">8</property>
                 <property name="margin_bottom">8</property>
+                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
                 <property name="image_position">right</property>
-                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
               </object>
               <packing>
@@ -131,6 +157,7 @@
             <child>
               <object class="GtkButton" id="backwards_button">
                 <property name="label">gtk-go-back</property>
+                <property name="use_action_appearance">False</property>
                 <property name="width_request">115</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -141,8 +168,8 @@
                 <property name="margin_right">10</property>
                 <property name="margin_top">8</property>
                 <property name="margin_bottom">8</property>
+                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
               </object>
               <packing>
@@ -155,6 +182,7 @@
             <child>
               <object class="GtkButton" id="exit_button">
                 <property name="label">gtk-close</property>
+                <property name="use_action_appearance">False</property>
                 <property name="width_request">115</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -165,9 +193,9 @@
                 <property name="margin_right">10</property>
                 <property name="margin_top">8</property>
                 <property name="margin_bottom">8</property>
+                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
                 <property name="image_position">right</property>
-                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="on_exit_button_clicked" swapped="no"/>
               </object>
               <packing>

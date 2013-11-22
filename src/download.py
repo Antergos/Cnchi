@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 import sys
 import os
@@ -39,9 +31,14 @@ import queue
 try:
     import pm2ml
 except:
-    print("pm2ml not found! This installer won't work.")
+    print("pm2ml not found. Aria2 download won't work.")
 
 _test = False
+
+# DownloadPackages:
+# This class tries to previously download all necessary packages for
+# Antergos installation using aria2.
+# It's known to use too much memory so it's not advised to use it
 
 class DownloadPackages():
     def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
@@ -225,6 +222,11 @@ class DownloadPackages():
         
         args += ["--noconfirm"]
         args += "-r -p http -l 50".split()
+
+        try:
+            import pm2ml
+        except:
+            return None
         
         try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)

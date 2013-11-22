@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, Gdk
 import subprocess, sys, os
@@ -35,10 +27,6 @@ import os
 import misc
 
 from show_message import warning
-
-# Useful vars for gettext (translations)
-APP="cnchi"
-DIR = "/usr/share/locale"
 
 # Import functions
 import config
@@ -53,6 +41,7 @@ class Welcome(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
+        self.disable_tryit = params['disable_tryit']
 
         super().__init__()
 
@@ -60,7 +49,7 @@ class Welcome(Gtk.Box):
         self.ui.add_from_file(os.path.join(self.ui_dir, "welcome.ui"))
         self.ui.connect_signals(self)
 
-        data_dir = self.settings.get("DATA_DIR")
+        data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "welcome")
         
         self.label = {}
@@ -93,12 +82,12 @@ class Welcome(Gtk.Box):
 
     def translate_ui(self):
         #label = self.ui.get_object("infowelcome_label")
-        txt = _("Try Antergos without modifying your hard drive.\n" \
-        "Or install it to your PC with one of the two installer options.")
+        txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n" \
+        "When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
-        txt = _("Try it")
+        txt = _("Try It")
         self.button['tryit'].set_label(txt)
 
         txt = _("CLI Installer")
@@ -143,6 +132,9 @@ class Welcome(Gtk.Box):
         self.translate_ui()
         self.show_all()
         self.forward_button.hide()
+        if self.disable_tryit:
+            box_tryit = self.ui.get_object("box_tryit")
+            box_tryit.hide()
 
     def get_prev_page(self):
         return _prev_page

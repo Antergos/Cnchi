@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GLib
 
@@ -73,9 +65,9 @@ class Location(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         
-        txt = _("The selected location will be used to help select the system locale.\n" \
-            "Normally this should be the country where you live.\n" \
-            "This is a shortlist of locations based on the language you selected.")
+        txt = _("The location you select will be used to help determine the system locale.\n" \
+            "This should normally be the country in which you reside.\n" \
+            "Here is a shortlist of locations based on the language you selected.")
         self.label_help.set_markup(txt)
         
         txt = _("Country, territory or area:")
@@ -130,7 +122,7 @@ class Location(Gtk.Box):
         self.show_all()
         
     def load_locales(self):
-        data_dir = self.settings.get("DATA_DIR")  
+        data_dir = self.settings.get('data')  
         xml_path = os.path.join(data_dir, "locales.xml")
         
         self.locales = {}

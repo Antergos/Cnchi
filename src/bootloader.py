@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GObject
 
@@ -36,7 +28,7 @@ import os
 class BootLoader():
     def __init__(self, settings):
         self.settings = settings
-        self.ui_dir = self.settings.get('UI_DIR')
+        self.ui_dir = self.settings.get('ui')
         self.ui = Gtk.Builder()
 
         self.ui.add_from_file(os.path.join(self.ui_dir, "bootloader.ui"))
@@ -55,24 +47,24 @@ class BootLoader():
         self.translate_ui()
 
     def translate_ui(self):
-        txt = _("What is your boot system type?")
+        txt = _("What type of boot system are you using?")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
         label = self.ui.get_object("GRUB2_label")
-        txt = _("BIOS (Common)")
+        txt = _("BIOS (Most Common)")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_x86_64_label")
-        txt = _("x86_64 UEFI")
+        txt = _("64-bit UEFI")
         label.set_markup(txt)
 
         label = self.ui.get_object("UEFI_i386_label")
-        txt = _("i386 UEFI")
+        txt = _("32-bit UEFI (old Macs)")
         label.set_markup(txt)
         
         label = self.ui.get_object("help_label")
-        txt = _("Choose 'cancel' if you don't want to install a boot loader")
+        txt = _("Select 'cancel' if you don't want to install a boot loader.")
         label.set_markup(txt)
         
     def get_type(self):

@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, Gdk, TimezoneMap
 
@@ -112,7 +104,7 @@ class Timezone(Gtk.Box):
         self.autodetected_coords = None
 
     def translate_ui(self):
-        txt = _("Where are you?")
+        txt = _("Select Your Timezone")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
 
@@ -122,6 +114,10 @@ class Timezone(Gtk.Box):
 
         label = self.ui.get_object('label_region')
         txt = _("Region:")
+        label.set_markup(txt)
+        
+        label = self.ui.get_object('label_ntp')
+        txt = _("Use Network Time Protocol for clock synchronization:")
         label.set_markup(txt)
 
     def on_location_changed(self, unused_widget, city):
@@ -238,7 +234,7 @@ class Timezone(Gtk.Box):
         self.auto_timezone_thread.start()
 
     def start_mirrorlist_thread(self):
-        scripts_dir = os.path.join(self.settings.get("CNCHI_DIR"), "scripts")
+        scripts_dir = os.path.join(self.settings.get('cnchi'), "scripts")
         self.mirrorlist_thread = GenerateMirrorListThread(self.auto_timezone_coords, scripts_dir)
         self.mirrorlist_thread.start()
 
@@ -283,6 +279,9 @@ class Timezone(Gtk.Box):
             self.auto_timezone_thread.stop()
         if self.mirrorlist_thread != None:
             self.mirrorlist_thread.stop()
+    
+    def on_switch_ntp_activate(self, ntp_switch):
+        self.settings['use_ntp'] = ntp_switch.get_active()
 
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue):
@@ -308,7 +307,7 @@ class AutoTimezoneThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            loggging.warning(_("In timezone, can't get network status"))
+            logging.warning(_("In timezone, can't get network status"))
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 

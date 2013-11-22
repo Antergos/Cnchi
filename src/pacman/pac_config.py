@@ -23,14 +23,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 import io
 import os
@@ -141,13 +133,19 @@ class PacmanConfig(object):
     def __init__(self, conf = None, options = None):
         self.options = {}
         self.repos = collections.OrderedDict()
+
+        # Default options
         self.options["RootDir"] = "/install"
         self.options["DBPath"]  = "/install/var/lib/pacman"
         self.options["GPGDir"]  = "/install/etc/pacman.d/gnupg/"
         self.options["LogFile"] = "/install/var/log/pacman.log"
         self.options["Architecture"] = os.uname()[-1]
+        
+        # If a pacman.conf file is given, we parse it
         if conf is not None:
             self.load_from_file(conf)
+            
+        # If an options array is given, we add it
         if options is not None:
             self.load_from_options(options)
 

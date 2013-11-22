@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 #
-# Copyright (C) 2012 Canonical Ltd.
+# Copyright (c) 2012 Canonical Ltd.
+# Copyright (c) 2013 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ import re
 import shutil
 import subprocess
 import syslog
-
+import socket
 import osextras
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -58,7 +59,6 @@ def is_swap(device):
 
 
 _dropped_privileges = 0
-
 
 def set_groups_for_uid(uid):
     if uid == os.geteuid() or uid == os.getuid():
@@ -832,6 +832,11 @@ def get_prop(obj, iface, prop):
         else:
             raise
 
+def is_wireless_enabled():
+    import dbus
+    bus = dbus.SystemBus()
+    manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+    return get_prop(manager, NM, 'WirelessEnabled')
 
 def has_connection():
     import dbus
@@ -887,3 +892,27 @@ def install_size():
 min_install_size = None
 
 # vim:ai:et:sts=4:tw=80:sw=4:
+
+def get_network():
+    intip = False
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("antergos.com",1234))
+    except:
+        return ""
+    myip = s.getsockname()[0]
+    s.close()
+    spip = myip.split(".")
+    if spip[0] == '192':
+        if spip[1] == '168':
+            intip = True
+    elif spip[0] == '10':
+        intip = True
+    elif spip[0] == '172':
+        if int(spip[1]) > 15 and int(spip[1]) < 32:
+            intip = True
+    if intip:
+        ipran = '.'.join(spip[:-1]) + ".0/24"
+    else:
+        ipran = '.'.join(spip)
+    return ipran

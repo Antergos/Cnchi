@@ -19,20 +19,19 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
-import parted
 import subprocess
 import shlex
 import os
 import misc
+
+# To be able to test this installer in other systems
+# that do not have pyparted3 installed
+try:
+    import parted
+except:
+    print("Can't import parted module! This installer won't work.")
+
 
 # Partition types
 PARTITION_PRIMARY = 0
@@ -319,8 +318,7 @@ def order_partitions(partdic):
 
 @misc.raise_privileges    
 def split_partition(device_path, partition_path, new_size_in_mb):
-    # shrinks partition: deletes the partition and creates
-    # two new ones.
+    # shrinks partition and splits it in two.
     # ALERT: The file system must be resized before trying this!
 
     disk_dic = get_devices()
@@ -335,7 +333,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
         print(partition_path + ' is mounted, unmount first')
         return False
         
-    # ok, partition deleted. Now we must create the new partitions with
+    # ok, partition deleted. Now we must create a new partition with
     # the new size
     
     sec_size = disk.sectorSize
@@ -354,8 +352,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
-    
-    
+        
     # Create new partition (for Antergos)
     new_size_in_mb = old_size_in_mb - new_size_in_mb
     start_sector = new_end_sector + 1
@@ -363,8 +360,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
     print("create_partition ", my_geometry)
     create_partition(disk, 0, my_geometry)
-
-    # Remember to uncomment this!
+    
     finalize_changes(disk)
 
 # ----------------------------------------------------------------------------

@@ -8,18 +8,6 @@
 # Validation library.
 # Created by Antonio Olmo <aolmo#emergya._info> on 26 jul 2005.
 
-import gettext
-
-# Useful vars for gettext (translations)
-APP="cnchi"
-DIR = "/usr/share/locale"
-
-# This allows to translate all py texts (not the glade ones)
-gettext.textdomain(APP)
-gettext.bindtextdomain(APP, DIR)
-
-# With this we can use _("string") to translate
-_ = gettext.gettext
 
 def check_grub_device(device):
     """Check that the user entered a valid boot device.

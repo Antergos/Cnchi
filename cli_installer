@@ -1320,7 +1320,7 @@ _createlv()
                 if [[ "${LV_SIZE}" = "0" ]]; then
                     DIALOG --msgbox $"ERROR: You have entered a invalid size, please enter again." 0 0
                 else
-                    if [[ "${LV_SIZE}" -ge "$(vgs -o vg_free --noheading --units m | sed -e 's#m##g')" ]]; then
+                    if [[ "${LV_SIZE}" -ge "$(vgs -o vg_free --noheading --units m | sed -e 's#m##g'| sed -e 's/\,/./g' | tr -d ' ')" ]]; then
                         DIALOG --msgbox $"ERROR: You have entered a too large size, please enter again." 0 0
                     else
                         LV_SIZE_SET=1
@@ -4745,17 +4745,6 @@ configure_system() {
 
         # Fix QT apps
         echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
-
-        # Set SNA Acceleration Method in Intel cards
-        if [[ -e /tmp/card_intel ]];then
-            cat << EOF > ${DESTDIR}/etc/X11/xorg.conf.d/20-intel.conf
-Section "Device"
-   Identifier  "Intel Graphics"
-   Driver      "intel"
-   Option      "AccelMethod"  "sna"
-EndSection
-EOF
-        fi
 
         ## END POSTPROCESSING ##
     fi

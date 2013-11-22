@@ -1,5 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#
+#  info.py
+#
 #  Copyright 2013 Antergos
 #  
 #  This program is free software; you can redistribute it and/or modify
@@ -16,18 +19,9 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
-
-cnchi_VERSION = "0.3.2"
-cnchi_LAST_STABLE = "0.2.1"
+cnchi_VERSION = "0.4.1"
+cnchi_LAST_STABLE = "0.3.2"
 cnchi_WEBSITE = "http://www.antergos.com"
 cnchi_AUTHORS = "faidoc, karasu, skinner, arcnexus, omelchek"
 cnchi_LICENSE = '''

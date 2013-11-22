@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GLib
 
@@ -62,12 +54,12 @@ class Keymap(Gtk.Box):
 
         self.create_toolviews()
 
-        self.filename = self.settings.get("DATA_DIR") + "kbdnames.gz"
+        self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
         super().add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
-        txt = _("Select your keyboard layout")
+        txt = _("Select Your Keyboard Layout")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.title.set_markup(txt)
         

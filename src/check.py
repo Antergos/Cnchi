@@ -19,14 +19,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
 from gi.repository import Gtk, GObject
 
@@ -68,12 +60,12 @@ class Check(Gtk.Box):
         super().add(self.ui.get_object("check"))
 
     def translate_ui(self):
-        txt = _("Check your computer")
+        txt = _("System Check")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least 3GB available drive space")
+        txt = _("has at least 3GB available storage space")
         self.prepare_enough_space.props.label = txt
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
@@ -90,9 +82,11 @@ class Check(Gtk.Box):
         self.prepare_best_results.set_markup(txt)
 
         self.third_party_info = self.ui.get_object("third_party_info")
-        txt = _("Antergos uses third-party software to play Flash, MP3 " \
-                "and other media. Some of this software is propietary. The " \
-                "software is subject to license terms included with its documentation.")
+        txt = _("Antergos uses third-party software to play Flash videos, MP3 " \
+        "and other media." \
+        " Some of this software is proprietary. Use of this " \
+        "software is subject to license terms included with its " \
+        "documentation.")
         self.third_party_info.set_label(txt)
 
         self.third_party_checkbutton = self.ui.get_object("third_party_checkbutton")
@@ -194,7 +188,7 @@ class Check(Gtk.Box):
 
         logging.info(_("We have Internet connection."))
         logging.info(_("We're connected to a power source."))
-        logging.info(_("We have enough space in disk."))
+        logging.info(_("We have enough disk space."))
           
         # Enable forward button
         self.forward_button.set_sensitive(True)
@@ -215,6 +209,12 @@ class Check(Gtk.Box):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        
+        # We now have a features screen, so we don't need this here
+        # Just hide it for now
+        self.third_party_info.hide()
+        self.third_party_checkbutton.hide()
+        
         self.forward_button.set_sensitive(self.check_all())
 
         # set timer

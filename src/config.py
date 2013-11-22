@@ -19,34 +19,47 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  Antergos Team:
-#   Alex Filgueira (faidoc) <alexfilgueira.antergos.com>
-#   Raúl Granados (pollitux) <raulgranados.antergos.com>
-#   Gustau Castells (karasu) <karasu.antergos.com>
-#   Kirill Omelchenko (omelcheck) <omelchek.antergos.com>
-#   Marc Miralles (arcnexus) <arcnexus.antergos.com>
-#   Alex Skinner (skinner) <skinner.antergos.com>
 
-#import queue
 from multiprocessing import Queue
 
 class Settings():
     def __init__(self):
-        # Create a queue one element size
+        # Create a one element size queue
 
         self.settings = Queue(1)
 
         self.settings.put( { \
-            'CNCHI_DIR' : '/usr/share/cnchi/', \
-            'UI_DIR' : '/usr/share/cnchi/ui/', \
-            'DATA_DIR' : '/usr/share/cnchi/data/', \
-            'TMP_DIR' : '/tmp', \
+            'auto_device' : '/dev/sda', \
+            'bootloader_device' : '/dev/sda', \
+            'bootloader_type' : 'GRUB2', \
+            'cache' : '', \
+            'cnchi' : '/usr/share/cnchi/', \
+            'data' : '/usr/share/cnchi/data/', \
+            'desktop' : 'gnome', \
+            'desktops' : [], \
+            'encrypt_home' : False, \
+            'feature_bluetooth' : False, \
+            'feature_cups' : False, \
+            'feature_office' : False, \
+            'feature_visual' : False, \
+            'feature_firewall' : False, \
+            'feature_third_party' : False, \
+            'force_grub_type' : False, \
+            'fullname' : '', \
+            'hostname' : 'antergos', \
+            'install_bootloader' : True, \
+            'keyboard_layout' : '', \
+            'keyboard_variant' : '', \
             'language_name' : '', \
             'language_code' : '', \
             'locale' : '', \
-            'keyboard_layout' : '', \
-            'keyboard_variant' : '', \
+            'log_file' : '/tmp/cnchi.log', \
+            'luks_key_pass' : "", \
+            'partition_mode' : 'easy', \
+            'password' : '', \
+            'rankmirrors_done' : False, \
+            'require_password' : True, \
+            'third_party_software' : False, \
             'timezone_human_zone' : '', \
             'timezone_country' : '', \
             'timezone_zone' : '', \
@@ -55,26 +68,14 @@ class Settings():
             'timezone_latitude' : 0, \
             'timezone_longitude' : 0, \
             'timezone_done' : False, \
+            'tmp' : '/tmp', \
+            'ui' : '/usr/share/cnchi/ui/', \
+            'use_aria2' : False, \
+            'use_luks' : False, \
+            'use_lvm' : False, \
             'use_ntp' : True, \
-            'install_bootloader' : True, \
-            'bootloader_device' : '/dev/sda', \
-            'bootloader_type' : 'GRUB2', \
-            'force_grub_type' : False, \
-            'third_party_software' : False, \
-            'desktops' : [], \
-            'desktop' : 'gnome', \
-            'partition_mode' : 'easy', \
-            'auto_device' : '/dev/sda', \
-            'log_file' : '/tmp/cnchi.log', \
-            'fullname' : '', \
-            'hostname' : 'antergos', \
-            'username' : '', \
-            'password' : '', \
-            'require_password' : True, \
-            'encrypt_home' : False, \
             'user_info_done' : False, \
-            'rankmirrors_done' : False, \
-            'use_aria2' : False })
+            'username' : '' })
 
     def _get_settings(self):
         gd = self.settings.get()
