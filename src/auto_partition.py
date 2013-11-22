@@ -26,22 +26,23 @@ import logging
 import time
 
 class AutoPartition():
-    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home):
+    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home, callback_queue):
         self.dest_dir = dest_dir
         self.auto_device = auto_device
-        self.luks_key_pass = luks_key_pass
+        self.luks_key_pass = luks_key_pass           
+        self.luks = use_luks
+        self.lvm = use_lvm
+        # TODO: Make home a different partition or if using LVM, a different volume 
+        self.home = use_home
+        
+        # Will use these queue to show progress info to the user
+        self.callback_queue = callback_queue
 
         self.uefi = False
         
         if os.path.exists("/sys/firmware/efi/systab"):
             # TODO: Check if UEFI works
             self.uefi = True
-
-        self.luks = use_luks
-        self.lvm = use_lvm
-
-        # TODO: Make home a different partition or if using LVM, a different volume 
-        self.home = use_home
         
     def check_output(self, command):
         return subprocess.check_output(command.split()).decode().strip("\n")

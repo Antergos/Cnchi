@@ -165,8 +165,7 @@ class InstallationProcess(multiprocessing.Process):
 
             self.queue_event('debug', _("Creating partitions and their filesystems in %s") % self.auto_device)
             
-            # TODO: Ask for a key password if we are using LUKS (in installation_automatic.py)
-            # if no key password is given a key file is generated and stored in /boot
+            # If no key password is given a key file is generated and stored in /boot
             # (see auto_partition.py)
 
             try:
