@@ -591,34 +591,37 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages.append(pkg.text)
 
     def add_packages_for_selected_features(self, root):
-        features = ["aur", "bluetooth", "cups", "gnome_extra", "office", "visual", "firewall", "third_party"]
+        #TODO: There must be a better way to do this?
+        self.features_by_desktop = {"nox": ["aur", "bluetooth", "cups", "fonts", "firewall"],
+                            "gnome": ["aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall",
+                                      "third_party"],
+                            "cinnamon": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
+                            "xfce": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
+                            "razor": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
+                            "openbox": ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall",
+                                        "third_party"],
+                            "kde": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"]}
 
         desktop = self.settings.get("desktop")
-        
+        features = self.features_by_desktop[desktop]
         lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["razor", "kde"]}
 
-        # TODO: Fix this (KDE is not working)
+        # TODO: Test this (It is working for me)
         for feature in features:
-			# Add necessary packages for user desired features to our install list 
+            # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
-                self.queue_event('debug', _('Adding packages for "%s" feature.') % feature)
+                self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
-                        plib = pkg.attrib.get('lib')
-                        if plib != None:
-                            logging.debug(plib)
-                        self.packages.append(pkg.text)
-                        '''
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
-                        if plib is None:
+                        if plib is None or (plib is not None and desktop in lib[plib]):
+                            logging.debug("Selecting package: %s for feature: %s" % (pkg.text, feature))
                             self.packages.append(pkg.text)
                         else:
-                            self.queue_event('debug', 'package:%s plib %s' % (pkg.text, plib))
-                            #plib in lib and desktop in lib[plib]:
-                            #self.queue_event('debug', _('Adding packages for "%s" feature.') % feature)
-                        '''
+                            logging.debug("Skipping %s package: %s for feature: %s" % (plib, pkg.text, feature))
+                            
                                
         # Add libreoffice language package
         if self.settings.get('feature_office'):
