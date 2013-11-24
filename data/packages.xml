@@ -212,7 +212,6 @@
         <pkgname dm='true' name='lxdm'>lxdm</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>openbox-themes</pkgname>
-        <pkgname>phonon-vlc</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
         <pkgname>qtfm</pkgname>
         <pkgname>razor-qt</pkgname>
@@ -292,7 +291,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>emovix</pkgname>
-        <pkgname>gimp</pkgname>
+        <pkgname>grub2-editor</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kde-meta-kdeartwork</pkgname>
@@ -306,7 +305,6 @@
         <pkgname>kdemultimedia-kmix</pkgname>
         <pkgname>kdepim-kmail</pkgname>
         <pkgname>kdepim-kontact</pkgname>
-        <pkgname>kdeplasma-applets-homerun</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname>kdeplasma-addons-applets-notes</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
@@ -337,10 +335,10 @@
             <pkgname>yaourt</pkgname>
         </aur>
         <bluetooth>
-            <pkgname lib='gtk'>bluez</pkgname>
-            <pkgname lib='gtk'>bluez-utils</pkgname>
-            <pkgname lib='gtk'>gvfs-obexftp</pkgname>
             <pkgname lib='qt'>bluedevil</pkgname>
+            <pkgname>bluez</pkgname>
+            <pkgname>bluez-utils</pkgname>
+            <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
         <cups>
             <pkgname>cups</pkgname>
@@ -348,9 +346,9 @@
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
             <pkgname>hplip</pkgname>
+            <pkgname lib='qt'>kdeutils-print-manager</pkgname>
             <pkgname lib='gtk'>system-config-printer</pkgname>
-            <pkgname>splix</pkgname>
-            <pkgname lib='qt'>kdeutils-print-manager</pkgname>  
+            <pkgname>splix</pkgname>  
         </cups>
         <gnome_extra>
             <pkgname>gnome-extra</pkgname>
