@@ -604,7 +604,8 @@ class InstallationProcess(multiprocessing.Process):
 
         desktop = self.settings.get("desktop")
         features = self.features_by_desktop[desktop]
-        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["razor", "kde"]}
+        #For now, removed razor from qt list as it pulls in all kdelibs, Will revisit this list.
+        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["norazor", "kde"]}
 
         # TODO: Test this (It is working for me)
         for feature in features:
