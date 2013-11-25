@@ -33,7 +33,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 # Import functions
 import config
-import i18n
+import ubuntu.i18n as i18n
 
 _next_page = "location"
 _prev_page = "welcome"

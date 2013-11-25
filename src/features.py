@@ -20,11 +20,11 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GObject
+""" Features screen """
 
+from gi.repository import Gtk
 import subprocess
 import os
-import gtkwidgets
 import logging
 import misc
 
@@ -32,9 +32,9 @@ _next_page = "installation_ask"
 _prev_page = "desktop"
 
 class Features(Gtk.Box):
-
+    """ Features screen class """
     def __init__(self, params):
-
+        """ Initializes features ui """
         self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
@@ -67,6 +67,9 @@ class Features(Gtk.Box):
         self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
         self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
 
+        # This is initialized each time this screen is shown in prepare()
+        self.features = None
+        
         self.labels = {}
         self.titles = {}
         self.switches = {}
@@ -90,9 +93,9 @@ class Features(Gtk.Box):
         super().add(self.ui.get_object("features"))
 
     def listbox_sort_by_name(self, row1, row2, user_data):
-        # Sort function for listbox
-        # Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
-        # WARNING: IF LAYOUT IS CHANGED IN features.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY.
+        """ Sort function for listbox
+            Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
+            WARNING: IF LAYOUT IS CHANGED IN features.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         label1 = row1.get_children()[0].get_children()[1].get_children()[0]
         label2 = row2.get_children()[0].get_children()[1].get_children()[0]
 
@@ -107,8 +110,9 @@ class Features(Gtk.Box):
         return 1
 
     def translate_ui(self):
+        """ Translates features ui """
         desktop = self.settings.get('desktop')
-        self.desktops = {
+        desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
          "cinnamon" : "Cinnamon",
@@ -119,7 +123,7 @@ class Features(Gtk.Box):
          "kde" : "KDE",
          "razor" : "Razor-qt" }
 
-        txt = self.desktops[desktop] + " - " + _("Feature Selection")
+        txt = desktops[desktop] + " - " + _("Feature Selection")
         #txt = '<span weight="bold" size="large">%s</span>' % txt
         #self.title.set_markup(txt)
 
@@ -194,6 +198,7 @@ class Features(Gtk.Box):
         self.listbox.invalidate_sort()
 
     def hide_features(self):
+        """ Hide unused features """
         for feature in self.all_features:
             if feature not in self.features:
                 name = feature + "-row"
@@ -201,27 +206,29 @@ class Features(Gtk.Box):
                 obj.hide()
 
     def enable_defaults(self):
+        """ Enable some features by default """
         if 'bluetooth' in self.features:
-            p1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(["grep", "-i", "bluetooth"],\
-                              stdin=p1.stdout, stdout=subprocess.PIPE)
-            p1.stdout.close()
-            out, err = p2.communicate()
+            process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+            process2 = subprocess.Popen(["grep", "-i", "bluetooth"], stdin=process1.stdout, stdout=subprocess.PIPE)
+            process1.stdout.close()
+            out, err = process2.communicate()
             if out.decode() is not '':
                 logging.debug("Detected bluetooth device. Enabling by default...")
                 self.switches['bluetooth'].set_active(True)
+
         if 'firewall' in self.features:
             self.switches['firewall'].set_active(True)
+
         if 'cups' in self.features:
             self.switches['cups'].set_active(True)
 
     def store_values(self):
-        # Get switches' values and store them
+        """ Get switches values and store them """
         for feature in self.features:
             isactive = self.switches[feature].get_active()
             self.settings.set("feature_" + feature, isactive)
             if isactive:
-                logging.debug("Selected '%s' feature to install" % feature)
+                logging.debug("Selected '%s' feature to install", feature)
 
         # Show ufw info message if ufw is selected (only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
@@ -240,6 +247,7 @@ class Features(Gtk.Box):
         return True
 
     def prepare_info_dialog(self, feature):
+        """ Some features show an information dialog when this screen is accepted """
         if feature == "aur":
             # Aur disclaimer
             txt1 = _("Arch User Repository - Disclaimer")
@@ -269,6 +277,7 @@ class Features(Gtk.Box):
         return _next_page
 
     def prepare(self, direction):
+        """ Prepare features screen to get ready to show itself """
         desktop = self.settings.get('desktop')
         self.features = self.features_by_desktop[desktop]
         self.translate_ui()
@@ -277,4 +286,3 @@ class Features(Gtk.Box):
         if self.defaults:
             self.enable_defaults()
             self.defaults = False
-

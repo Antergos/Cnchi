@@ -30,13 +30,11 @@ import misc
 import logging
 import installation_process
 
-# To be able to test this installer in other systems
-# that do not have pyparted3 installed
+# To be able to test this installer in other systems that do not have pyparted3 installed
 try:
     import parted
 except:
     print("Can't import parted module! This installer won't work.")
-
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
@@ -106,7 +104,7 @@ class InstallationAutomatic(Gtk.Box):
         #self.title.set_markup(txt)
 
     @misc.raise_privileges
-    def populate_devices(self):
+    def populate_devices(self):            
         device_list = parted.getAllDevices()
 
         self.device_store.remove_all()

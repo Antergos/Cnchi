@@ -129,7 +129,7 @@ class Main(Gtk.Window):
 
         super().__init__()
 
-        logging.info(_("Cnchi installer version %s"), info.cnchi_VERSION)
+        logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
 
         current_process = multiprocessing.current_process()
         logging.debug("[%d] %s started", current_process.pid, current_process.name)

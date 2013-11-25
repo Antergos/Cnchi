@@ -413,7 +413,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.cnchi_VERSION[:3], timeout=5)
+                packages_xml = urllib.request.urlopen('http://install.antergos.com/packages-%s.xml' % info.CNCHI_VERSION[:3], timeout=5)
             except urllib.error.URLError as e:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated

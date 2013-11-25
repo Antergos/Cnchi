@@ -20,18 +20,19 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GObject
+""" Check screen (detects if Antergos prerequisites are meet) """
 
+from gi.repository import Gtk, GObject
 import subprocess
 import os
-import gtkwidgets
 import logging
+import ubuntu.gtkwidgets as gtkwidgets
 
 from rank_mirrors import AutoRankmirrorsThread
 
+# Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
-
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 
@@ -39,9 +40,9 @@ _next_page = "desktop"
 _prev_page = "location"
 
 class Check(Gtk.Box):
-
+    """ Check class """
     def __init__(self, params):
-
+        """ Init class ui """
         self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
@@ -56,6 +57,16 @@ class Check(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.remove_timer = False
+        
+        self.thread = None
+
+        self.third_party_info = None
+        self.prepare_power_source = None
+        self.prepare_network_connection = None
+        self.third_party_checkbutton = None
+        self.prepare_enough_space = None
+        self.timeout_id = None
+        self.prepare_best_results = None
 
         super().add(self.ui.get_object("check"))
 
@@ -145,11 +156,11 @@ class Check(Gtk.Box):
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
             return False
-        for d in os.listdir(path):
-            p = os.path.join(path, d, 'type')
-            if os.path.exists(p):
-                with open(p) as fp:
-                    if fp.read().startswith('Battery'):
+        for folder in os.listdir(path):
+            type_path = os.path.join(path, folder, 'type')
+            if os.path.exists(type_path):
+                with open(type_path) as power_file:
+                    if power_file.read().startswith('Battery'):
                         return True
         return False
 
@@ -197,7 +208,6 @@ class Check(Gtk.Box):
         self.forward_button.set_sensitive(True)
 
         ## Launch rankmirrors script to determine the 5 fastest mirrors
-        self.thread = None
         self.thread = AutoRankmirrorsThread()
         self.thread.start()
 

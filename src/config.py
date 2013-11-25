@@ -20,12 +20,16 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Configuration module for Cnchi """
+
 from multiprocessing import Queue
 
-class Settings():
+class Settings(object):
+    """ Store all Cnchi setup options here """
     def __init__(self):
-        # Create a one element size queue
+        """ Initialize default configuration """
 
+        # Creates a one element size queue
         self.settings = Queue(1)
 
         self.settings.put( { \
@@ -80,23 +84,27 @@ class Settings():
             'username' : '' })
 
     def _get_settings(self):
-        gd = self.settings.get()
-        d = gd.copy()
-        self.settings.put(gd)
-        return d
+        """ Get a copy of our settings """
+        global_settings = self.settings.get()
+        copy = global_settings.copy()
+        self.settings.put(global_settings)
+        return copy
 
-    def _update_settings(self, d):
-        gd = self.settings.get()
+    def _update_settings(self, new_settings):
+        """ Updates global settings """
+        global_settings = self.settings.get()
         try:
-            gd.update(d)
+            global_settings.update(new_settings)
         finally:
-            self.settings.put(gd)
+            self.settings.put(global_settings)
 
     def get(self, key):
-        d = self._get_settings()
-        return d[key]
+        """ Get one setting value """
+        settings = self._get_settings()
+        return settings[key]
 
     def set(self, key, value):
-        d = self._get_settings()
-        d[key] = value
-        self._update_settings(d)
+        """ Set one setting's value """
+        settings = self._get_settings()
+        settings[key] = value
+        self._update_settings(settings)

@@ -20,28 +20,26 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import sys
 import os
-import time
 import subprocess
 import logging
 import xmlrpc.client
 import queue
+
+""" Module to download packages using Aria2 """
 
 try:
     import pm2ml
 except:
     print("pm2ml not found. Aria2 download won't work.")
 
-_test = False
-
-# DownloadPackages:
-# This class tries to previously download all necessary packages for
-# Antergos installation using aria2.
-# It's known to use too much memory so it's not advised to use it
-
-class DownloadPackages():
+class DownloadPackages(object):
+    """ Class to download packages using Aria2
+        This class tries to previously download all necessary packages for
+        Antergos installation using aria2.
+        It's known to use too much memory so it's not advised to use it """
     def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
+        """ Initialize DownloadPackages class. Gets default configuration """
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
         else:
@@ -60,29 +58,35 @@ class DownloadPackages():
         self.aria2_process = None
 
         self.callback_queue = callback_queue
+        
+        self.rpc_user = ""
+        self.rpc_passwd = ""
+        self.aria2_args = ""
+        self.rpc_port = ""
 
         self.set_aria2_defaults(self.cache_dir)
 
         self.run_aria2_as_daemon()
 
-        self.s = self.aria2_connect()
+        self.connection = self.aria2_connect()
 
-        if self.s == None:
+        if self.connection == None:
             return
 
         self.aria2_download(package_names)
 
     def aria2_download(self, package_names):
+        """ Main method. Downloads all packages in package_names list and its dependencies using aria2 """
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
-                logging.error(_("Error creating metalink for package %s") % package_name)
+                logging.error(_("Error creating metalink for package %s"), package_name)
                 continue
 
             gids = self.add_metalink(metalink)
 
             if len(gids) <= 0:
-                logging.error(_("Error adding metalink for package %s") % package_name)
+                logging.error(_("Error adding metalink for package %s"), package_name)
                 continue
 
             all_gids_done = False
@@ -96,29 +100,29 @@ class DownloadPackages():
                     old_percent = -1
 
                     try:
-                        r = self.s.aria2.tellStatus(gid)
+                        result = self.connection.aria2.tellStatus(gid)
                     except xmlrpc.client.Fault as e:
                         logging.exception(e)
                         gids_to_remove.append(gid)
                         continue
 
                     # remove completed gid's
-                    if r['status'] == "complete":
-                        self.s.aria2.removeDownloadResult(gid)
+                    if result['status'] == "complete":
+                        self.connection.aria2.removeDownloadResult(gid)
                         gids_to_remove.append(gid)
                         continue
 
                     # if gid is not active, go to the next gid
-                    if r['status'] != "active":
+                    if result['status'] != "active":
                         continue
 
                     all_gids_done = False
 
-                    totalLength = int(r['totalLength'])
-                    files = r['files']
-                    if totalLength == 0:
-                        totalLength = int(files[0]['length'])
-                    total += totalLength
+                    total_length = int(result['totalLength'])
+                    files = result['files']
+                    if total_length == 0:
+                        total_length = int(files[0]['length'])
+                    total += total_length
 
                     if total <= 0:
                         continue
@@ -134,9 +138,9 @@ class DownloadPackages():
                     action = _("Downloading package '%s'...") % basename
                     self.queue_event('action', action)
 
-                    while r['status'] == "active":
-                        r = self.s.aria2.tellStatus(gid)
-                        completed = int(r['completedLength'])
+                    while result['status'] == "active":
+                        result = self.connection.aria2.tellStatus(gid)
+                        completed = int(result['completedLength'])
                         percent = float(completed / total)
                         if percent != old_percent:
                             self.queue_event('percent', percent)
@@ -145,21 +149,23 @@ class DownloadPackages():
                 gids = self.remove_old_gids(gids, gids_to_remove)
 
             # This method purges completed/error/removed downloads to free memory
-            self.s.aria2.purgeDownloadResult()
+            self.connection.aria2.purgeDownloadResult()
 
     def aria2_connect(self):
-        s = None
+        """ Connect to aria2 daemon """
+        connection = None
 
         aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
 
         try:
-            s = xmlrpc.client.ServerProxy(aria2_url)
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
+            connection = xmlrpc.client.ServerProxy(aria2_url)
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as exception:
             logging.exception(_("Can't connect to Aria2. Won't be able to speed up the download."))
 
-        return s
+        return connection
 
     def remove_old_gids(self, gids, gids_to_remove):
+        """ Remove old downloads """
         new_gids_list = []
         for gid in gids:
             if gid not in gids_to_remove:
@@ -167,6 +173,7 @@ class DownloadPackages():
         return new_gids_list
 
     def set_aria2_defaults(self, dest_dir):
+        """ Set aria2 defaults """
         self.rpc_user = "antergos"
         self.rpc_passwd = "antergos"
         self.rpc_port = "6800"
@@ -207,12 +214,13 @@ class DownloadPackages():
             "--dir=%s" % dest_dir ]
 
     def run_aria2_as_daemon(self):
-        # start aria2 as a daemon
+        """ Start aria2 as a daemon """
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
         self.aria2_process = subprocess.Popen(aria2_cmd)
         self.aria2_process.wait()
 
     def create_metalink(self, package_name):
+        """ Creates a metalink to download package_name and its dependencies """
         args = str("-c %s" % self.conf_file).split()
 
         if package_name == "databases":
@@ -224,26 +232,21 @@ class DownloadPackages():
         args += "-r -p http -l 50".split()
 
         try:
-            import pm2ml
-        except:
-            return None
-
-        try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
         except:
-            logging.error(_("Unable to create download queue for package %s") % package_name)
+            logging.error(_("Unable to create download queue for package %s"), package_name)
             return None
 
         if not_found:
             msg = _("Can't find these packages: ")
-            for nf in sorted(not_found):
-                msg = msg + nf + " "
+            for not_found in sorted(not_found):
+                msg = msg + not_found + " "
             logging.warning(msg)
 
         if missing_deps:
             msg = _("Warning! Can't resolve these dependencies: ")
-            for md in sorted(missing_deps):
-                msg = msg + md + " "
+            for missing in sorted(missing_deps):
+                msg = msg + missing + " "
             logging.warning(msg)
 
         metalink = pm2ml.download_queue_to_metalink(
@@ -254,17 +257,19 @@ class DownloadPackages():
         return metalink
 
     def add_metalink(self, metalink):
+        """ Adds a metalink to the download queue """
         gids = []
         if metalink != None:
             try:
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
-                gids = self.s.aria2.addMetalink(binary_metalink)
+                gids = self.connection.aria2.addMetalink(binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
                 logging.exception("Can't communicate with Aria2. Won't be able to speed up the download")
 
         return gids
 
     def queue_event(self, event_type, event_text=""):
+        """ Adds an event to Cnchi event queue """
         if self.callback_queue is None:
             logging.debug(event_text)
             return
@@ -284,44 +289,8 @@ class DownloadPackages():
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
-    _test = True
 
     logging.basicConfig(filename="/tmp/download.log", level=logging.DEBUG)
 
-    '''
-    DownloadPackages(\
-    ["antergos-keyring", "antergos-mirrorlist",
-     "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
-     "wireless_tools", "wpa_actiond", "b43-fwcutter", "ntfs-3g",
-     "dosfstools", "xorg-server", "xorg-server-utils", "sudo", "pacmanxg4",
-     "pkgfile", "chromium", "flashplugin", "alsa-utils", "whois", "dnsutils",
-     "transmission-cli", "libreoffice-installer", "faenza-hotot-icon",
-     "faenza-icon-theme", "antergos-wallpapers", "unzip", "unrar",
-     "net-tools", "xf86-input-synaptics", "usb_modeswitch", "modemmanager"])
-    '''
-
-    '''
-    DownloadPackages(\
-    ["base", "base-devel", "antergos-keyring", "antergos-mirrorlist",
-     "haveged", "crda", "ipw2200-fw", "ipw2100-fw", "zd1211-firmware",
-     "wireless_tools", "wpa_actiond", "b43-fwcutter", "ntfs-3g",
-     "dosfstools", "xorg-server", "xorg-server-utils", "sudo",
-     "pacmanxg4", "pkgfile", "chromium", "flashplugin", "alsa-utils",
-     "whois", "dnsutils", "transmission-cli", "libreoffice-installer",
-     "faenza-hotot-icon", "faenza-icon-theme", "antergos-wallpapers",
-     "unzip", "unrar", "net-tools", "xf86-input-synaptics",
-     "usb_modeswitch", "modemmanager", "ttf-dejavu", "ttf-bitstream-vera",
-     "network-manager-applet", "networkmanager-openvpn", "gnome-terminal",
-     "file-roller", "evince", "gnome-screenshot", "gnome-bluetooth",
-     "gnome-calculator", "xdg-user-dirs-gtk", "gedit", "xfburn",
-     "gnome-system-monitor", "empathy", "transmission-gtk", "xnoise",
-     "hotot-gtk3", "shotwell", "gnome-themes-standard",
-     "hicolor-icon-theme", "gdm", "gnome-keyring", "libgnomeui",
-     "gnome-shell", "gnome-control-center", "nautilus",	"zukitwo-themes",
-     "gstreamer0.10-bad-plugins", "gstreamer0.10-base-plugins",
-     "gstreamer0.10-ffmpeg", "gstreamer0.10-good-plugins",
-     "gstreamer0.10-ugly-plugins", "gst-libav"])
-     '''
-
-    DownloadPackages(["base"])
+    DownloadPackages(["base", "base-devel"])
 
