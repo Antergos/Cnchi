@@ -59,7 +59,6 @@
         <pkgname>file-roller</pkgname>
         <pkgname dm='true' name='gdm'>gdm</pkgname>
         <pkgname>gedit</pkgname>
-        <pkgname>gnome-bluetooth</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -114,7 +113,6 @@
         <pkgname>evince</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
-        <pkgname>gnome-bluetooth</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
@@ -214,7 +212,6 @@
         <pkgname dm='true' name='lxdm'>lxdm</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>openbox-themes</pkgname>
-        <pkgname>phonon-vlc</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
         <pkgname>qtfm</pkgname>
         <pkgname>razor-qt</pkgname>
@@ -283,37 +280,94 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </openbox_desktop>
+    
+    <kde_desktop>
+        <pkgname>kde-meta-kdebase</pkgname>
+        <pkgname>kde-meta-kdenetwork</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+        <pkgname>apper</pkgname>
+        <pkgname>cdrdao</pkgname>
+        <pkgname>digikam</pkgname>
+        <pkgname>dvd+rw-tools</pkgname>
+        <pkgname>emovix</pkgname>
+        <pkgname>grub2-editor</pkgname>
+        <pkgname>k3b</pkgname>
+        <pkgname>kde-gtk-config</pkgname>
+        <pkgname>kde-meta-kdeartwork</pkgname>
+        <pkgname>kde-telepathy-meta</pkgname>
+        <pkgname>kdeadmin-kuser</pkgname>
+        <pkgname>kdegraphics-gwenview</pkgname>
+        <pkgname>kdegraphics-ksnapshot</pkgname>
+        <pkgname>kdegraphics-okular</pkgname>
+        <pkgname>kdegraphics-thumbnailers</pkgname>
+        <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
+        <pkgname>kdemultimedia-kmix</pkgname>
+        <pkgname>kdepim-kmail</pkgname>
+        <pkgname>kdepim-kontact</pkgname>
+        <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
+        <pkgname>kdeplasma-addons-applets-notes</pkgname>
+        <pkgname>kdesdk-dolphin-plugins</pkgname>
+        <pkgname>kdesdk-kate</pkgname>
+        <pkgname>kdeutils-ark</pkgname>
+        <pkgname>kdeutils-kgpg</pkgname>
+        <pkgname>kdeutils-kwallet</pkgname>
+        <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>kipi-plugins</pkgname>
+        <pkgname>kwebkitpart</pkgname>
+        <pkgname>lightdm-kde-greeter</pkgname>
+        <pkgname>lightdm-webkit-greeter</pkgname>
+        <pkgname>oxyfaenza-git</pkgname>
+        <pkgname>oxygen-gtk2</pkgname>
+        <pkgname>oxygen-gtk3</pkgname>
+        <pkgname>qt5-webkit</pkgname>
+        <pkgname>transmission-qt</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>vlc</pkgname>
+        <pkgname>webkitgtk</pkgname>
+        <pkgname>xdg-user-dirs</pkgname>
+    </kde_desktop>
 
     <!-- User desired features -->
     <user_features>
+        <aur>
+            <pkgname>yaourt</pkgname>
+        </aur>
         <bluetooth>
+            <pkgname lib='qt'>bluedevil</pkgname>
             <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>
-            <pkgname>gvfs-obexftp</pkgname>
-            <pkgname>obex-data-server</pkgname>
-            <pkgname>obexftp</pkgname>
+            <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
         <cups>
             <pkgname>cups</pkgname>
-            <pkgname>cups-filters</pkgname>
-            <pkgname>foomatic-db</pkgname>
-            <pkgname>foomatic-db-engine</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
-            <pkgname>foomatic-filters</pkgname>
-            <pkgname>ghostscript</pkgname>
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
             <pkgname>hplip</pkgname>
-            <pkgname>libcups</pkgname>
-            <pkgname>splix</pkgname>
+            <pkgname lib='qt'>kdeutils-print-manager</pkgname>
+            <pkgname lib='gtk'>system-config-printer</pkgname>
+            <pkgname>splix</pkgname>  
         </cups>
+        <gnome_extra>
+            <pkgname>gnome-extra</pkgname>
+        </gnome_extra>
+        <fonts>
+            <pkgname>ttf-dejavu</pkgname>
+            <pkgname>ttf-bitstream-vera</pkgname>
+            <pkgname>ttf-freefont</pkgname>
+            <pkgname>ttf-arphic-uming</pkgname>
+            <pkgname>ttf-baekmuk</pkgname>
+            <pkgname>ttf-ms-fonts</pkgname>
+        </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
             <pkgname>libreoffice-common</pkgname>
-            <pkgname>libreoffice-gnome</pkgname>
+            <pkgname lib='gtk'>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
-            <pkgname>libreoffice-writer</pkgname>
-            <!-- Cnchi will install the language pack -->
+            <pkgname lib='qt'>libreoffice-kde4</pkgname>
+            <pkgname>libreoffice-writer</pkgname>   
         </office>
         <!-- visual effects for openbox -->
         <visual>
@@ -322,18 +376,14 @@
         </visual>
         <!-- Uncomplicated firewall -->
         <firewall>
-            <pkgname>gufw</pkgname>
+            <pkgname lib='gtk'>gufw</pkgname>
+            <pkgname lib='qt'>kcm-ufw</pkgname>
             <pkgname>ufw</pkgname>
         </firewall>
         <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
             <pkgname>libdvdcss</pkgname>
-            <!--
-            <pkgname>ttf-ms-fonts</pkgname>
-            <pkgname>acroread</pkgname>
-            <pkgname>jre</pkgname>            
-            -->
         </third_party>    
     </user_features>
 
