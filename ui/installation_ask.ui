@@ -174,7 +174,7 @@
         <property name="active">True</property>
         <property name="draw_indicator">True</property>
         <property name="group">automatic_radiobutton</property>
-        <signal name="toggled" handler="on_easy_radiobutton_toggled" swapped="no"/>
+        <signal name="toggled" handler="on_alongside_radiobutton_toggled" swapped="no"/>
       </object>
       <packing>
         <property name="expand">False</property>

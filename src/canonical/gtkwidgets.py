@@ -19,7 +19,7 @@
 
 import cairo
 from gi.repository import Gtk, Gdk, GObject, Pango
-import misc
+import canonical.misc as misc
 
 def refresh():
     while Gtk.events_pending():

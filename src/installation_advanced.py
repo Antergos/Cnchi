@@ -20,37 +20,33 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import xml.etree.ElementTree as etree
+""" Installation advanced module. Custom partition screen """
 
 from gi.repository import Gtk, Gdk
 import subprocess
-import gettext
-import sys
 import os
 import logging
-import misc
 
 # Insert the src/parted directory at the front of the path.
-base_dir = os.path.dirname(__file__) or '.'
-parted_dir = os.path.join(base_dir, 'parted')
-sys.path.insert(0, parted_dir)
+#base_dir = os.path.dirname(__file__) or '.'
+#parted_dir = os.path.join(base_dir, 'parted3')
+#sys.path.insert(0, parted_dir)
 
-import partition_module as pm
-import fs_module as fs
-import lvm
-import used_space
+import parted3.partition_module as pm
+import parted3.fs_module as fs
+import parted3.lvm as lvm
+import parted3.used_space as used_space
+
 import installation_process
 import show_message as show
-
-#import bootinfo
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
 
 class InstallationAdvanced(Gtk.Box):
-
+    """ Installation advanced class. Custom partitioning. """
     def __init__(self, params):
-        # Store class parameters
+        """ Store class parameters """
         self.blvm = False
         self.header = params['header']
         self.ui_dir = params['ui_dir']
@@ -96,14 +92,14 @@ class InstallationAdvanced(Gtk.Box):
         # Initialize our create partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo')
         use_combo.remove_all()
-        for fs_name in sorted(fs._names):
+        for fs_name in sorted(fs.NAMES):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
         # Initialize our edit partition dialog filesystems' combo.
         use_combo = self.ui.get_object('partition_use_combo2')
         use_combo.remove_all()
-        for fs_name in sorted(fs._names):
+        for fs_name in sorted(fs.NAMES):
             use_combo.append_text(fs_name)
         use_combo.set_wrap_width(2)
 
@@ -123,7 +119,7 @@ class InstallationAdvanced(Gtk.Box):
 
         for combo in mount_combos:
             combo.remove_all()
-            for mp in sorted(fs._common_mount_points):
+            for mp in sorted(fs.COMMON_MOUNT_POINTS):
                 combo.append_text(mp)
 
         # We will store our devices here
@@ -153,8 +149,13 @@ class InstallationAdvanced(Gtk.Box):
         # Add ourselves to the parent class
         super().add(self.ui.get_object("installation_advanced"))
 
-    # Function to generate uid by partition object or path
+        # Initialize some attributes
+        self.process = None
+        self.diskdic = {}
+        self.all_partitions = []
+
     def gen_partition_uid(self, p=None, path=None):
+        """ Function to generate uid by partition object or path """
         if path and not p:
             if "free" in path:
                 return None
@@ -176,9 +177,9 @@ class InstallationAdvanced(Gtk.Box):
         uid = dev + str(starts) + str(ends)
         return uid
 
-    # Activates/deactivates our buttons depending on which is selected in the
-    # partition treeview
     def check_buttons(self, selection):
+        """ Activates/deactivates our buttons depending on which is selected in the
+            partition treeview """
         button_new = self.ui.get_object('partition_button_new')
         button_new.set_sensitive(False)
 
@@ -217,9 +218,9 @@ class InstallationAdvanced(Gtk.Box):
                     # A drive (disk) is selected
                     button_new_label.set_sensitive(True)
 
-    # Get all devices where we can put our Grub boot code
-    # Not using partitions (but we'll have to)
     def fill_grub_device_entry(self):
+        """ Get all devices where we can put our Grub boot code
+            Not using partitions (but we'll have to) """
         self.grub_device_entry.remove_all()
         self.grub_devices.clear()
 
@@ -247,20 +248,20 @@ class InstallationAdvanced(Gtk.Box):
         combo = self.ui.get_object("grub_device_entry")
         combo.set_sensitive(checkbox.get_active())
 
-    # Automatically select first entry
     def select_first_combobox_item(self, combobox):
+        """ Automatically select first entry """
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
 
-    # Get new selected GRUB device
     def on_grub_device_entry_changed(self, widget):
+        """ Get new selected GRUB device """
         line = self.grub_device_entry.get_active_text()
         if line != None:
             self.grub_device = self.grub_devices[line]
 
-    # Create columns for our treeview
     def prepare_partition_list(self):
+        """ Create columns for our treeview """
         render_text = Gtk.CellRendererText()
 
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
@@ -296,9 +297,9 @@ class InstallationAdvanced(Gtk.Box):
         col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle, active=12, visible=13, sensitive=14)
         self.partition_list.append_column(col)
 
-    # Helper function to get a disk/partition size in human format
-    def get_size(self, length, sectorSize):
-        size = length * sectorSize
+    def get_size(self, length, sector_size):
+        """ Helper function to get a disk/partition size in human format """
+        size = length * sector_size
         size_txt = "%db" % size
 
         if size >= 1000000000:
@@ -313,8 +314,8 @@ class InstallationAdvanced(Gtk.Box):
 
         return size_txt
 
-    # Fill the partition list with all the data.
     def fill_partition_list(self):
+        """ Fill the partition list with all the data. """
         self.diskdic = {}
         self.all_partitions = []
         # We will store our data model in 'partition_list_store'
@@ -380,7 +381,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     info = fs.get_info(partition_path)
                     if 'LABEL' in info:
-                       label = info['LABEL']
+                        label = info['LABEL']
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
@@ -503,7 +504,8 @@ class InstallationAdvanced(Gtk.Box):
                                 if mount_point:
                                     used = pm.get_used_space(p)
                                 else:
-                                    used = self.get_size(used_space.get_used_space(partition_path, fs_type) * p.geometry.length, dev.sectorSize)
+                                    used = used_space.get_used_space(partition_path, fs_type) * p.geometry.length
+                                    used = self.get_size(used, dev.sectorSize)
                                 self.used_dic[(disk_path, p.geometry.start)] = used
                             else:
                                 if (disk_path, p.geometry.start) in self.used_dic:
@@ -557,8 +559,8 @@ class InstallationAdvanced(Gtk.Box):
         # so we can proceed with installation
         self.check_mount_points()
 
-    # Mark a partition to be formatted
     def on_format_cell_toggled(self, widget, path):
+        """ Mark a partition to be formatted """
         # selected_path = Gtk.TreePath(path)
         self.partition_list_store[path][4] = not self.partition_list_store[path][4]
         amnew = False
@@ -571,15 +573,15 @@ class InstallationAdvanced(Gtk.Box):
              self.partition_list_store[path][1],
              self.partition_list_store[path][4])
 
-    # Mark disk as ssd
     def on_ssd_cell_toggled(self, widget, path):
+        """ Mark disk as ssd """
         # ssd cell
         self.partition_list_store[path][12] = not self.partition_list_store[path][12]
         disk_path = self.partition_list_store[path][0]
         self.ssd[disk_path] = self.partition_list_store[path][12]
 
-    # The user wants to edit a partition
     def on_partition_list_edit_activate(self, button):
+        """ The user wants to edit a partition """
         selection = self.partition_list.get_selection()
 
         if not selection:
@@ -678,8 +680,8 @@ class InstallationAdvanced(Gtk.Box):
         # Update the partition list treeview
         self.fill_partition_list()
 
-    # This returns the disk path where the selected partition is in
     def get_disk_path_from_selection(self, model, tree_iter):
+        """ This returns the disk path where the selected partition is in """
         if tree_iter != None and model != None:
             row = model[tree_iter]
             partition_path = row[8]
@@ -699,8 +701,8 @@ class InstallationAdvanced(Gtk.Box):
         else:
             return None
 
-    # Delete partition
     def on_partition_list_delete_activate(self, button):
+        """ Delete partition """
         selection = self.partition_list.get_selection()
         if not selection:
             return
@@ -755,6 +757,7 @@ class InstallationAdvanced(Gtk.Box):
         self.fill_partition_list()
 
     def get_mount_point(self, partition_path):
+        """ Get device mount point """
         fsname = ''
         fstype = ''
         writable = ''
@@ -767,8 +770,8 @@ class InstallationAdvanced(Gtk.Box):
                     writable = line[3].split(',')[0]
         return fsname, fstype, writable
 
-    # Add a new partition
     def on_partition_list_new_activate(self, button):
+        """ Add a new partition """
         selection = self.partition_list.get_selection()
 
         if not selection:
@@ -948,10 +951,11 @@ class InstallationAdvanced(Gtk.Box):
 
         self.create_partition_dialog.hide()
 
-    # TODO: Load previous user choices (if any)
-    # show LUKS encryption options dialog
-    # save user choices
     def on_partition_encryption_settings_clicked(self, widget):
+        # TODO: Load previous user choices (if any)
+        # show LUKS encryption options dialog
+        # save user choices
+        """ Show LUKS encryption options dialog """
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
             pass
@@ -1012,6 +1016,7 @@ class InstallationAdvanced(Gtk.Box):
             p_mount_label.show()
 
     def on_partition_list_undo_activate(self, button):
+        """ Undo all user changes """
         # To undo user changes, we simply reload all devices
         self.disks = pm.get_devices()
         self.disks_changed = []
@@ -1025,19 +1030,19 @@ class InstallationAdvanced(Gtk.Box):
         # Refresh our partition treeview
         self.fill_partition_list()
 
-    # Selection changed, call check_buttons to update them
     def on_partition_list_treeview_selection_changed(self, selection):
+        """ Selection changed, call check_buttons to update them """
         self.check_buttons(selection)
         return False
 
-    # Called when clicked on the partition list treeview
-    # Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_button_press_event(self, widget, event):
+        """ Called when clicked on the partition list treeview
+            Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
         return False
 
-    # Called when a key is pressed when the partition list treeview has focus
-    # Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_key_press_event(self, widget, event):
+        """ Called when a key is pressed when the partition list treeview has focus
+            Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
         return False
 
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
@@ -1051,14 +1056,14 @@ class InstallationAdvanced(Gtk.Box):
 
         return False
 
-    # Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events)
     def on_partition_list_treeview_popup_menu(self, widget):
+        """ Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
         return False
 
-    # As the installer language can change anytime the user changes it, we have
-    # to "retranslate" all our widgets calling this function
     def translate_ui(self):
-        #self.header.set_title("Cnchi")
+        """ As the installer language can change anytime the user changes it, we have
+            to 'retranslate' all our widgets calling this function """
+
         self.header.set_subtitle(_("Advanced Installation Mode"))
 
         #txt = _("Advanced Installation Mode")
@@ -1164,8 +1169,8 @@ class InstallationAdvanced(Gtk.Box):
         #self.ui.get_object('cancelbutton')
         #self.ui.get_object('partition_dialog_okbutton')
 
-    # Prepare our dialog to show/hide/activate/deactivate what's necessary
     def prepare(self, direction):
+        """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
         self.fill_grub_device_entry()
 
         self.fill_partition_list()
@@ -1211,8 +1216,8 @@ class InstallationAdvanced(Gtk.Box):
         button = self.ui.get_object('partition_button_undo')
         button.set_sensitive(True)
 
-    # Create a new partition table
     def on_partition_list_new_label_activate(self, button):
+        """ Create a new partition table """
         # TODO: We should check first if there's any mounted partition (including swap)
 
         selection = self.partition_list.get_selection()
@@ -1260,7 +1265,8 @@ class InstallationAdvanced(Gtk.Box):
         pass
 
     def check_mount_points(self):
-        # At least root (/) partition must be defined
+        """ Check that all necessary mount points are specified.
+            At least root (/) partition must be defined """
 
         check_ok = False
 
@@ -1281,8 +1287,8 @@ class InstallationAdvanced(Gtk.Box):
 
         self.forward_button.set_sensitive(check_ok)
 
-    # Grab all changes for confirmation
     def get_changes(self):
+        """ Grab all changes for confirmation """
         changelist = []
         # Store values as (path, create?, label?, format?)
         if self.lv_partitions:
@@ -1342,15 +1348,17 @@ class InstallationAdvanced(Gtk.Box):
                             if pm.check_mounted(partitions[partition_path]):
                                 mount_point, fs_type, writable = self.get_mount_point(partition_path)
                                 if "swap" in fs_type:
-                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % partition_path
+                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
+                                        "Click Yes to unmount, or No to return\n") % partition_path
                                 elif len(mount_point) > 0:
-                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\nClick Yes to unmount, or No to return\n") % (partition_path, mount_point)
+                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
+                                        "Click Yes to unmount, or No to return\n") % (partition_path, mount_point)
 
                                 if "install" in mount_point:
                                     # If we're recovering from a failed/stoped install, there'll be
                                     # some mounted directories. Unmount them without asking.
                                     subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
-                                    logging.debug("%s unmounted" % mount_point)
+                                    logging.debug("%s unmounted", mount_point)
                                 elif len(mount_point) > 0:
                                     response = show.question(msg)
                                     if response != Gtk.ResponseType.YES:
@@ -1364,7 +1372,8 @@ class InstallationAdvanced(Gtk.Box):
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
                                             logging.debug("%s unmounted" % mount_point)
                                 else:
-                                    logging.warning(_("%s shows as mounted (busy) but it has no mount point") % partition_path)
+                                    msg = _("%s shows as mounted (busy) but it has no mount point")
+                                    logging.warning(msg, partition_path)
 
                         (is_new, lbl, mnt, fs, fmt) = self.stage_opts[self.gen_partition_uid(path=partition_path)]
 
@@ -1400,11 +1409,13 @@ class InstallationAdvanced(Gtk.Box):
 
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt:
                         changelist.append((partition_path, createme, relabel, fmt, mnt))
-                        logging.debug("In get_changes(), added to changelist: path[%s] createme[%s] relabel[%s] fmt[%s] mnt[%s]" % (partition_path, createme, relabel, fmt, mnt))
+                        msg = "In get_changes(), added to changelist: path[%s] createme[%s] relabel[%s] fmt[%s] mnt[%s]"
+                        logging.debug(msg, partition_path, createme, relabel, fmt, mnt)
 
             return changelist
 
     def show_changes(self, changelist):
+        """ Show all changes to the user before doing anything, just in case. """
         if self.show_changes_grid is not None:
             self.show_changes_grid.destroy()
 
@@ -1457,8 +1468,8 @@ class InstallationAdvanced(Gtk.Box):
 
         return response
 
-    # The user clicks "Install now!"
     def store_values(self):
+        """ The user clicks 'Install now!' """
         changelist = self.get_changes()
         if changelist == []:
             # Something wrong has happened or nothing to change
@@ -1483,17 +1494,18 @@ class InstallationAdvanced(Gtk.Box):
         self.forward_button.set_use_stock(True)
         return True
 
-    # Tell which one is our previous page (in our case installation_ask)
     def get_prev_page(self):
+        """ Tell which one is our previous page (in our case installation_ask) """
         return _prev_page
-
-    # Tell which one is our next page
+    
     def get_next_page(self):
+        """ Tell which one is our next page """
         return _next_page
 
     def create_staged_partitions(self):
+        """ Create staged partitions """
+
         partitions = {}
-        # Create staged partitions
         if self.disks != None:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
@@ -1546,8 +1558,8 @@ class InstallationAdvanced(Gtk.Box):
                                 if not self.testing:
                                     fs.label_fs(fisy, partition_path, lbl)
 
-    # Start installation process
     def start_installation(self):
+        """ Start installation process """
         fs_devices = {}
         mount_devices = {}
         for disk_path in self.disks:
@@ -1586,8 +1598,8 @@ class InstallationAdvanced(Gtk.Box):
 
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', self.grub_device)
-            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
-                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
+            logging.info(_("Antergos will install the bootloader of type %s in %s"),
+                self.settings.get('bootloader_type'), self.settings.get('bootloader_device'))
         else:
             logging.warning(_("Cnchi will not install any boot loader"))
 

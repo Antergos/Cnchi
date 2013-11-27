@@ -25,10 +25,10 @@ from gi.repository import Gtk, GLib
 # Import functions
 import config
 import os
-import keyboard_names
+import canonical.keyboard_names as keyboard_names
 import logging
 import show_message as show
-import misc
+import canonical.misc as misc
 import subprocess
 
 _next_page = "user_info"

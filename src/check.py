@@ -26,7 +26,8 @@ from gi.repository import Gtk, GObject
 import subprocess
 import os
 import logging
-import ubuntu.gtkwidgets as gtkwidgets
+import canonical.gtkwidgets as gtkwidgets
+import canonical.misc as misc
 
 from rank_mirrors import AutoRankmirrorsThread
 
@@ -106,29 +107,8 @@ class Check(Gtk.Box):
         txt = _("Install this third-party software")
         self.third_party_checkbutton.set_label(txt)
 
-    def get_prop(self, obj, iface, prop):
-        try:
-            import dbus
-            return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-        except dbus.DBusException as e:
-            if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-                return None
-            else:
-                raise
-
-    def has_connection(self):
-        try:
-            import dbus
-            bus = dbus.SystemBus()
-            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-            state = self.get_prop(manager, NM, 'state')
-        except dbus.exceptions.DBusException:
-            logging.warning(_("Can't get network status"))
-            return False
-        return state == NM_STATE_CONNECTED_GLOBAL
-
     def check_all(self):
-        has_internet = self.has_connection()
+        has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
 
         on_power = not self.on_battery()

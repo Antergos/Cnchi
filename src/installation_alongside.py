@@ -26,7 +26,7 @@ from gi.repository import Gtk, Gdk
 
 import sys
 import os
-import misc
+import canonical.misc as misc
 import logging
 import show_message as show
 import bootinfo

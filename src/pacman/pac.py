@@ -21,23 +21,25 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Module interface to pyalpm """
+
 import traceback
 import sys
-import locale
-import gettext
 import math
 import logging
-from multiprocessing import Queue
+#from multiprocessing import Queue
 import queue
 
 try:
     import pyalpm
-    from pacman import config
+    #from pacman import config
+    import pacman.config
 except:
     print("pyalpm not found! This installer won't work.")
     sys.exit(1)
 
 class Pac(object):
+    """ Comunicates with libalpm using pyalpm """
     def __init__(self, conf_path, callback_queue):
         self.callback_queue = callback_queue
 
@@ -56,7 +58,7 @@ class Pac(object):
         self.last_event = {}
 
         if conf_path != None:
-            self.config = config.PacmanConfig(conf_path)
+            self.config = pacman.config.PacmanConfig(conf_path)
             self.handle = self.config.initialize_alpm()
 
             # Set callback functions
@@ -134,7 +136,7 @@ class Pac(object):
             logging.error("No targets specified")
             return 1
 
-        repos = dict((db.name,db) for db in self.handle.get_syncdbs())
+        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
         targets = []
         for name in pkgs:
@@ -289,12 +291,10 @@ class Pac(object):
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
-        '''
-        elif level & pyalpm.LOG_DEBUG:
-            logging.debug(line)
-        elif level & pyalpm.LOG_FUNCTION:
-            pass
-        '''
+        #elif level & pyalpm.LOG_DEBUG:
+        #    logging.debug(line)
+        #elif level & pyalpm.LOG_FUNCTION:
+        #    pass
 
     def cb_progress(self, _target, _percent, n, i):
         if _target:
@@ -334,4 +334,3 @@ class Pac(object):
                 #text = _("Downloading '%s'") % filename
                 #self.queue_event('action', text)
                 self.queue_event('percent', progress)
-

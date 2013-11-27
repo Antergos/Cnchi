@@ -30,7 +30,7 @@ from multiprocessing import Queue, Lock
 import show_message as show
 import logging
 import subprocess
-import misc
+import canonical.misc as misc
 
 # when we reach this page we can't go neither backwards nor forwards
 _next_page = None

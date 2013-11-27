@@ -20,40 +20,47 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Functions to work with file systems """
+
 import subprocess
 import shlex
-import misc
+import canonical.misc as misc
 import logging
 
-_names = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
+# constants
+NAMES = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
            'reiserfs', 'xfs', 'btrfs', 'swap']
 
-_common_mount_points = [ '/', '/boot', '/home', '/usr', '/var' ]
+COMMON_MOUNT_POINTS = [ '/', '/boot', '/home', '/usr', '/var' ]
 
 @misc.raise_privileges
 def get_info(part):
+    """ Get partition info using blkid """
     try:
         ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
-    except:
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
         ret = ''
     partdic = {}
-    i = ret.split()
-    for e in i:
-        if '=' in e:
-            e = e.split('=')
-            partdic[e[0]] = e[1].strip('"')
+    for info in ret.split():
+        if '=' in info:
+            info = info.split('=')
+            partdic[info[0]] = info[1].strip('"')
     return(partdic)
 
 @misc.raise_privileges
 def get_type(part):
+    """ Get filesystem type using blkid """
     try:
         ret = subprocess.check_output(shlex.split('blkid -o value -s TYPE %s' % part)).decode().strip()
-    except:
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
         ret = ''
     return ret
 
 @misc.raise_privileges
 def label_fs(fstype, part, label):
+    """ Get filesystem label """
     ladic = {'ext2':'e2label %(part)s %(label)s',
              'ext3':'e2label %(part)s %(label)s',
              'ext4':'e2label %(part)s %(label)s',
@@ -70,23 +77,26 @@ def label_fs(fstype, part, label):
     # in a dictionary.  So 'part' and 'label' will be defined
     # and replaced in above dic
     try:
-        y = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
-        ret = (0, y)
-    except Exception as e:
-        ret = (1, e)
+        result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
+        ret = (0, result)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
+        ret = (1, err)
         # check_call returns exit code.  0 should mean success
     return ret
 
 @misc.raise_privileges
 def create_fs(part, fstype, label='', other_opts=''):
-    #set some default options
-    #-m 1 reserves 1% for root, because I think 5% is too much on
-    #newer bigger drives.
-    #Also turn on dir_index for ext.  Not sure about other fs opts
+    """ Create filesystem using mkfs """
 
-    #The return value is tuple.  First arg is 0 for success, 1 for fail
-    #Secong arg is either output from call if successful
-    #or exception if failure
+    # Set some default options
+    # -m 1 reserves 1% for root, because I think 5% is too much on
+    # newer bigger drives.
+    # Also turn on dir_index for ext.  Not sure about other fs opts
+
+    # The return value is tuple.  First arg is 0 for success, 1 for fail
+    # Secong arg is either output from call if successful
+    # or exception if failure
 
     opt_dic = {'ext2':'-m 1',
                'ext3':'-m 1 -O dir_index',
@@ -114,25 +124,27 @@ def create_fs(part, fstype, label='', other_opts=''):
              'btrfs':'mkfs.btrfs -f -L "%(label)s" %(other_opts)s %(part)s',
              'swap':'mkswap %(part)s'}
     try:
-        y = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
-        ret = (0, y)
-    except Exception as e:
-        ret = (1, e)
+        result = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
+        ret = (0, result)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
+        ret = (1, err)
     return ret
 
 @misc.raise_privileges
 def is_ssd(disk_path):
+    """ Check if is sdd """
     ssd = False
     try:
-        p1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=p1.stdout, stdout=subprocess.PIPE)
-        p1.stdout.close()
-        output = p2.communicate()[0].decode()
+        process1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=process1.stdout, stdout=subprocess.PIPE)
+        process1.stdout.close()
+        output = process2.communicate()[0].decode()
         if "Solid State" in output:
             ssd = True
-    except:
-        logging.warning(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
-        print(_("Can't verify if %s is a Solid State Drive or not") % disk_path)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
+        logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
 
     return ssd
 
@@ -145,6 +157,7 @@ def is_ssd(disk_path):
 # 2. Expand fs (resize)
 
 def resize(part, fs_type, new_size_in_mb):
+    """ Resize partition """
     fs_type = fs_type.lower()
 
     res = False
@@ -156,69 +169,42 @@ def resize(part, fs_type, new_size_in_mb):
     elif 'ext' in fs_type:
         res = resize_ext(part, new_size_in_mb)
     else:
-        print (_("Sorry but filesystem %s can't be shrinked") % fs_type)
-        logging.error(_("Sorry but filesystem %s can't be shrinked") % fs_type)
+        logging.error(_("Sorry but filesystem %s can't be shrinked"), fs_type)
 
     return res
 
-'''
-Usage: ntfsresize [OPTIONS] DEVICE
-    Resize an NTFS volume non-destructively, safely move any data if needed.
-
-    -c, --check            Check to ensure that the device is ready for resize
-    -i, --info             Estimate the smallest shrunken size or the smallest
-                                expansion size
-    -m, --info-mb-only     Estimate the smallest shrunken size possible,
-                                output size in MB only
-    -s, --size SIZE        Resize volume to SIZE[k|M|G] bytes
-    -x, --expand           Expand to full partition
-
-    -n, --no-action        Do not write to disk
-    -b, --bad-sectors      Support disks having bad sectors
-    -f, --force            Force to progress
-    -P, --no-progress-bar  Don't show progress bar
-    -v, --verbose          More output
-    -V, --version          Display version information
-    -h, --help             Display this help
-
-    The options -i and -x are exclusive of option -s, and -m is exclusive
-    of option -x. If options -i, -m, -s and -x are are all omitted
-    then the NTFS volume will be enlarged to the DEVICE size.
-
-'''
-
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
-    logging.debug("ntfsresize -P --size %s %s" % (str(new_size_in_mb)+"M", part))
+    """ Resize a ntfs partition """
+    logging.debug("ntfsresize -P --size %s %s", str(new_size_in_mb)+"M", part)
 
     try:
-        x = subprocess.check_output(["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb)+"M", part])
-    except Exception as e:
-        x = None
-        print(e)
-        logging.error(e)
+        result = subprocess.check_output(["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb)+"M", part])
+    except subprocess.CalledProcessError as err:
+        result = None
+        logging.error(err)
         return False
 
-    logging.debug(x)
+    logging.debug(result)
 
     return True
 
 @misc.raise_privileges
 def resize_fat(part, new_size_in_mb):
+    """ Resize a fat partition """
     # https://bbs.archlinux.org/viewtopic.php?id=131728
     # the only Linux tool that was capable of resizing fat32, isn't capable of it anymore?
     return False
 
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
-    logging.debug("resize2fs %s %sM" % (part, str(new_size_in_mb)))
+    """ Resize an ext partition """
+    logging.debug("resize2fs %s %sM", part, str(new_size_in_mb))
 
     try:
-        x = subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
-    except Exception as e:
-        x = None
-        print(e)
-        logging.error(e)
+        subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
         return False
 
     return True

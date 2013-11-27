@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gettext
-import misc
+import canonical.misc as misc
 
 def utf8(s, errors="strict"):
     """Decode a string as UTF-8 if it isn't already Unicode."""

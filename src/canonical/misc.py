@@ -28,7 +28,7 @@ import shutil
 import subprocess
 import syslog
 import socket
-import osextras
+import canonical.osextras as osextras
 import logging
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -57,7 +57,6 @@ def is_swap(device):
     except Exception:
         pass
     return False
-
 
 _dropped_privileges = 0
 
@@ -822,7 +821,6 @@ def set_indicator_keymaps(lang):
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
-
 def get_prop(obj, iface, prop):
     import dbus
     try:
@@ -846,7 +844,6 @@ def has_connection():
     state = get_prop(manager, NM, 'state')
     return state == NM_STATE_CONNECTED_GLOBAL
 
-
 def add_connection_watch(func):
     import dbus
 
@@ -862,7 +859,6 @@ def add_connection_watch(func):
         # using ssh with X forwarding, and are therefore connected.  This
         # allows us to proceed with a minimum of complaint.
         func(True)
-
 
 def install_size():
     if min_install_size:
@@ -891,8 +887,6 @@ def install_size():
     return min_disk_size
 
 min_install_size = None
-
-# vim:ai:et:sts=4:tw=80:sw=4:
 
 def get_network():
     intip = False

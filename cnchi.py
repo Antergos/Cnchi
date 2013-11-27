@@ -36,26 +36,25 @@ BASE_DIR = os.path.dirname(__file__) or '.'
 SRC_DIR = os.path.join(BASE_DIR, 'src')
 sys.path.insert(0, SRC_DIR)
 
-from src import config
-
-from src import welcome
-from src import language
-from src import location
-from src import check
-from src import desktop
-from src import features
-from src import keymap
-from src import timezone
-from src import installation_ask
-from src import installation_automatic
-from src import installation_alongside
-from src import installation_advanced
-from src import user_info
-from src import slides
-from src import misc
-from src import info
-from src import updater
-from src import show_message as show
+import config
+import welcome
+import language
+import location
+import check
+import desktop
+import features
+import keymap
+import timezone
+import installation_ask
+import installation_automatic
+import installation_alongside
+import installation_advanced
+import user_info
+import slides
+import canonical.misc as misc
+import info
+import updater
+import show_message as show
 
 # Enabled desktops
 # (remember to update features_by_desktop in features.py if this is changed)
@@ -289,9 +288,6 @@ class Main(Gtk.Window):
         self.progressbar.hide()
         self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-        # We drop privileges, but where we should do it? before this? ¿?
-        misc.drop_privileges()
-
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
@@ -498,6 +494,9 @@ def init_cnchi():
             # Exit and let the new instance do all the hard work
             sys.exit(0)
 
+    # Drop root privileges
+    misc.drop_privileges()
+
     # Start Gdk stuff and main window app
     GObject.threads_init()
 
@@ -505,8 +504,5 @@ def init_cnchi():
 
     Gtk.main()
 
-
 if __name__ == '__main__':
-    
     init_cnchi()
-

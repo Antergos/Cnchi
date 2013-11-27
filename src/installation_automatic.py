@@ -26,7 +26,7 @@ from gi.repository import Gtk
 import subprocess
 import os
 import sys
-import misc
+import canonical.misc as misc
 import logging
 import installation_process
 

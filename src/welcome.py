@@ -24,7 +24,7 @@ from gi.repository import Gtk, Gdk
 import subprocess, sys, os
 import gettext
 import os
-import misc
+import canonical.misc as misc
 
 from show_message import warning
 

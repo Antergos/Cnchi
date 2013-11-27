@@ -20,46 +20,28 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Sorts mirrorlist to use the closest mirrors first """
+
 import threading
-import multiprocessing
 import subprocess
 import logging
 import time
 import os
-
-NM = 'org.freedesktop.NetworkManager'
-NM_STATE_CONNECTED_GLOBAL = 70
+import canonical.misc as misc
 
 class AutoRankmirrorsThread(threading.Thread):
+    """ Thread class that searches the closest mirrors available """
     def __init__(self):
+        """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
         self.rankmirrors_script = "/usr/share/cnchi/scripts/rankmirrors-script"
 
-    def get_prop(self, obj, iface, prop):
-        import dbus
-        try:
-            return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-        except dbus.DBusException as e:
-            if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-                return None
-            else:
-                raise
-
-    def has_connection(self):
-        import dbus
-        try:
-            bus = dbus.SystemBus()
-            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-            state = self.get_prop(manager, NM, 'state')
-        except dbus.exceptions.DBusException:
-            logging.warning(_("In rankmirrors, can't get network status"))
-            return False
-        return state == NM_STATE_CONNECTED_GLOBAL
-
     def run(self):
-        # wait until there is an Internet connection available
-        while not self.has_connection():
+        """ Run thread """
+
+        # Wait until there is an Internet connection available
+        while not misc.has_connection():
             time.sleep(2)  # Delay
 
         if not os.path.exists(self.rankmirrors_script):
@@ -69,6 +51,6 @@ class AutoRankmirrorsThread(threading.Thread):
         # Run rankmirrors command
         try:
             self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/rankmirrors-script"]).pid
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirroring selection"))
-
+            logging.error(err)

@@ -26,7 +26,7 @@ from gi.repository import Gtk
 import subprocess
 import os
 import logging
-import misc
+import canonical.misc as misc
 
 _next_page = "installation_ask"
 _prev_page = "desktop"

@@ -34,11 +34,11 @@ import datetime
 import show_message as show
 import config
 import logging
-import tz
+import canonical.tz as tz
 import dbus
 import subprocess
 from urllib.request import urlopen
-import misc
+import canonical.misc as misc
 
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
