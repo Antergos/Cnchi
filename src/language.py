@@ -93,9 +93,9 @@ class Language(Gtk.Box):
 
         label = self.ui.get_object("welcome_label")
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
-        txt = _("Cnchi is pre-release beta software that is under active development. \n" \
-        "It does not yet properly handle RAID, btrfs subvolumes, or other " \
-        "advanced setups. Please proceed with caution as data loss is possible! \n\n" \
+        txt = _("Cnchi is pre-release beta software that is under active development.\n"
+        "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+        "setups. Please proceed with caution as data loss is possible!\n\n"
         "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         txt = "<span weight='bold'>%s</span>\n\n" % txt_bold + txt
         label.set_markup(txt)

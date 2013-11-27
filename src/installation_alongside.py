@@ -41,11 +41,11 @@ except:
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
-parted_dir = os.path.join(base_dir, 'parted')
+parted_dir = os.path.join(base_dir, 'parted3')
 sys.path.insert(0, parted_dir)
 
-import partition_module as pm
-import fs_module as fs
+import parted3.partition_module as pm
+import parted3.fs_module as fs
 
 import installation_process
 
