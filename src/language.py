@@ -3,19 +3,19 @@
 # -*- coding: utf-8 -*-
 #
 #  language.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -33,7 +33,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 # Import functions
 import config
-import i18n
+import canonical.i18n as i18n
 
 _next_page = "location"
 _prev_page = "welcome"
@@ -59,18 +59,18 @@ class Language(Gtk.Box):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        
+
         self.translate_ui()
-        
+
         data_dir = self.settings.get('data')
-        
+
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list =  os.path.join(data_dir, "languagelist.data.gz")
         self.set_languages_list()
-        
+
         image1 = self.ui.get_object("image1")
         image1.set_from_file(os.path.join(data_dir, "languages.png"))
-        
+
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
@@ -85,29 +85,29 @@ class Language(Gtk.Box):
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
-        
+
     def translate_ui(self):
         txt = _("Please choose your language:")
         txt = '<span weight="bold">%s</span>' % txt
         self.label_choose_language.set_markup(txt)
-        
+
         label = self.ui.get_object("welcome_label")
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
-        txt = _("Cnchi is pre-release beta software that is under active development. \n" \
-        "It does not yet properly handle RAID, btrfs subvolumes, or other " \
-        "advanced setups. Please proceed with caution as data loss is possible! \n\n" \
+        txt = _("Cnchi is pre-release beta software that is under active development.\n"
+        "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+        "setups. Please proceed with caution as data loss is possible!\n\n"
         "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         txt = "<span weight='bold'>%s</span>\n\n" % txt_bold + txt
         label.set_markup(txt)
 
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
-    
+
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
         if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
             self.current_locale = self.current_locale.split("_")[0]
-    
+
         for lang, lang_code in display_map.items():
             if lang_code[1] == self.current_locale:
                 return lang
@@ -133,15 +133,15 @@ class Language(Gtk.Box):
             self.translate_ui()
         except IOError:
             logging.warning(_("Can't find translation file for the %s language") % locale_code)
-    
-    def select_default_row(self, language):   
+
+    def select_default_row(self, language):
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[0]
                 if language == label.get_text():
                     self.listbox.select_row(listbox_row)
                     return
-                
+
     def store_values(self):
         listbox_row = self.listbox.get_selected_row()
         if listbox_row != None:
@@ -153,15 +153,15 @@ class Language(Gtk.Box):
 
         self.settings.set("language_name", display_map[lang][0])
         self.settings.set("language_code", display_map[lang][1])
-        
+
         return True
 
     def prepare(self, direction):
         self.translate_ui()
-        
+
         # scroll language treeview to selected item
         #self.scroll_to_selected_item(self.treeview_language)
-        
+
         self.show_all()
 
     def get_prev_page(self):

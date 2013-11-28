@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gettext
-import misc
+import canonical.misc as misc
 
 def utf8(s, errors="strict"):
     """Decode a string as UTF-8 if it isn't already Unicode."""
@@ -83,7 +83,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
         language_display_map[trans] = (name, code)
         if i == current_language_index:
             current_language = trans
-            
+
         i += 1
     languagelist.close()
 

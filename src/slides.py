@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  slides.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -30,7 +30,7 @@ from multiprocessing import Queue, Lock
 import show_message as show
 import logging
 import subprocess
-import misc
+import canonical.misc as misc
 
 # when we reach this page we can't go neither backwards nor forwards
 _next_page = None
@@ -56,20 +56,20 @@ class Slides(Gtk.Box):
 
         self.progress_bar = builder.get_object("progressbar")
         self.progress_bar.set_show_text(True)
-        
+
         self.global_progress_bar = builder.get_object("global_progressbar")
         self.global_progress_bar.set_show_text(True)
-        
+
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
         self.webview = WebKit.WebView()
-        
+
         if self.settings == None:
             html_file = '/usr/share/cnchi/data/slides.html'
         else:
             html_file = os.path.join(self.settings.get('data'), 'slides.html')
-        
+
         try:
             with open(html_file) as html_stream:
                 html = html_stream.read(None)
@@ -77,20 +77,20 @@ class Slides(Gtk.Box):
                 self.webview.load_html_string(html, "file://" + data)
         except IOError:
             pass
-        
+
         self.scrolled_window.add(self.webview)
-        
+
         self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
 
         super().add(builder.get_object("slides"))
-        
+
         self.fatal_error = False
-        
+
     def translate_ui(self):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
-        
+
         self.install_ok = _("Installation Complete!\n" \
                             "Do you want to restart your system now?")
 
@@ -100,19 +100,19 @@ class Slides(Gtk.Box):
         #txt = _("Installing Antergos...")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt
         #self.title.set_markup(txt)
-        
+
     def show_global_progress_bar_if_hidden(self):
         if self.global_progress_bar_is_hidden:
             self.global_progress_bar.show_all()
             self.global_progress_bar_is_hidden = False
-        
+
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
-        
+
         # Last screen reached, hide main progress bar.
         self.main_progressbar.hide()
-        
+
         self.global_progress_bar.hide()
         self.global_progress_bar_is_hidden = True
 
@@ -179,7 +179,7 @@ class Slides(Gtk.Box):
                 self.callback_queue.task_done()
                 # A fatal error has been issued. We empty the queue
                 self.empty_queue()
-                
+
                 # Show the error
                 show.fatal_error(event[1])
 
@@ -189,7 +189,7 @@ class Slides(Gtk.Box):
                     # Restart installation process
                     logging.debug("Restarting installation process...")
                     p = self.settings.get('installer_thread_call')
-                    
+
                     self.process = installation_process.InstallationProcess( \
                         self.settings, \
                         self.callback_queue, \
@@ -198,7 +198,7 @@ class Slides(Gtk.Box):
                         p['ssd'], \
                         p['alternate_package_list'], \
                         p['blvm'])
-                    
+
                     self.process.start()
                     return True
                 else:
@@ -214,11 +214,11 @@ class Slides(Gtk.Box):
                 #       use the one at pac.py:queue_event)
                 logging.info(event[1])
                 self.set_message(event[1])
-                            
+
             self.callback_queue.task_done()
-        
+
         return True
-        
+
     def empty_queue(self):
         while self.callback_queue.empty() == False:
             try:

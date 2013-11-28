@@ -2,24 +2,24 @@
 # -*- coding: utf-8 -*-
 #
 #  partedtest.py
-#  
+#
 #  Copyright 2013 Cinnarch
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
+#
 
 import parted
 
@@ -55,7 +55,7 @@ def get_partitions(diskob):
     limiter = 1000
     for p in partition_list:
         part_dic[p.path] = p
-        #this is start sector, end sector, and length     
+        #this is start sector, end sector, and length
         #startbyte = p.geometry.start
         #endbyte = p.geometry.end
         #plength = p.geometry.length
@@ -68,7 +68,7 @@ def get_partitions(diskob):
         #I can't think of a case of less than 1mb partition
         #psizemb = psize / (limiter * limiter)
         #psizegb = psizemb / limiter
-        #grabs the filesystem type       
+        #grabs the filesystem type
         #if p.fileSystem:
         #    ptype = p.fileSystem.type
         #else:
@@ -77,7 +77,7 @@ def get_partitions(diskob):
         #print(p.type)
     free_list = diskob.getFreeSpacePartitions()
     fcount = 0
-    #because I honestly don't know the right answer, let's reserve the first 2048 sectors. 
+    #because I honestly don't know the right answer, let's reserve the first 2048 sectors.
     for f in free_list:
         if f.geometry.end < 2048:
             continue
@@ -88,7 +88,7 @@ def get_partitions(diskob):
         fcount += 1
     return part_dic
 
-        
+
 def delete_partition(diskob, part):
     diskob.deletePartition(part)
 
@@ -134,7 +134,7 @@ def check_mounted(part):
         return 0
 
 def get_largest_size(diskob, part):
-    #Call this to set the initial size of new partition in frontend, but also the MAX to which user may enter.  
+    #Call this to set the initial size of new partition in frontend, but also the MAX to which user may enter.
     dev = diskob.device
     sec_size = dev.sectorSize
     mbs = (sec_size * part.length) / 1000000
@@ -145,12 +145,12 @@ def finalize_changes(diskob):
 
 def main():
     #This builds a dictionary to map disk objects to the common name
-    #So for example, disk_dic['/dev/sda'] is that diskobject. 
+    #So for example, disk_dic['/dev/sda'] is that diskobject.
     #This should make it easy to translate from frontend to backend.
     disk_dic = get_devices()
 
     #This does the same thing, but for partitions.
-    #In this example just using /dev/sdb as the device  
+    #In this example just using /dev/sdb as the device
     #Any useable free space is returned as a partition object, only for 'fluency' sake.  It's name will always be 'free#' where # is an incrementing number.
     part_dic = get_partitions(disk_dic['/dev/sdb'])
 
@@ -166,7 +166,7 @@ def main():
     #Creating is a little tougher.  I give you two options here.  You may specify the geometry yourself, or use the geometry helper.  The arguments for this are diskobject, start sector, and size in mb.
     my_geometry = geom_builder(disk_dic['/dev/sdb'], 123456, 1000)
 
-    #The above is optional, i'll try to explain why.  In part_dic, I return free regions as partitions of type 'free space'.  So, if a user wants to create a partition exactly in area of free space, you can use part_dic['free0'].geometry as the geometry, and skip building the geometry yourself.  
+    #The above is optional, i'll try to explain why.  In part_dic, I return free regions as partitions of type 'free space'.  So, if a user wants to create a partition exactly in area of free space, you can use part_dic['free0'].geometry as the geometry, and skip building the geometry yourself.
 
     #The second argument here is the type.  Here is cheat sheet.
     #NORMAL            = 0

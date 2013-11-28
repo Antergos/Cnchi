@@ -5,60 +5,62 @@
 #
 #  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 #  Copyright (C) 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-    
+
+""" Module interface to pyalpm """
+
 import traceback
 import sys
-import locale
-import gettext
 import math
 import logging
-from multiprocessing import Queue
+#from multiprocessing import Queue
 import queue
 
 try:
     import pyalpm
-    from pacman import config
+    #from pacman import config
+    import pacman.config
 except:
     print("pyalpm not found! This installer won't work.")
     sys.exit(1)
 
 class Pac(object):
+    """ Comunicates with libalpm using pyalpm """
     def __init__(self, conf_path, callback_queue):
         self.callback_queue = callback_queue
-        
+
         self.conflict_to_remove = None
-        
+
         # Some progress indicators (used in cb_progress callback)
         self.last_target = None
         self.last_percent = 100
         self.last_i = -1
-        
+
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
         self.last_dl_progress = None
-        self.last_dl_total = None     
-        
+        self.last_dl_total = None
+
         self.last_event = {}
-        
+
         if conf_path != None:
-            self.config = config.PacmanConfig(conf_path)
+            self.config = pacman.config.PacmanConfig(conf_path)
             self.handle = self.config.initialize_alpm()
-        
+
             # Set callback functions
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
@@ -114,7 +116,7 @@ class Pac(object):
                 allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         return t
     '''
-        
+
     ###################################################################
     # pacman -Sy (refresh) and pacman -S (install)
 
@@ -134,7 +136,7 @@ class Pac(object):
             logging.error("No targets specified")
             return 1
 
-        repos = dict((db.name,db) for db in self.handle.get_syncdbs())
+        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
         targets = []
         for name in pkgs:
@@ -160,10 +162,10 @@ class Pac(object):
             return 1
 
         t = self.init_transaction()
-        
+
         if t is None:
             return 1
-            
+
         pkg_names = []
 
         for pkg in targets:
@@ -171,10 +173,10 @@ class Pac(object):
                 logging.debug("Adding %s to transaction" % pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
-                
-        
+
+
         ok = self.finalize(t)
-        
+
         return (0 if ok else 1)
 
     def find_sync_package(self, pkgname, syncdbs):
@@ -186,7 +188,7 @@ class Pac(object):
         return False, "Package '%s' was not found." % pkgname
 
     def get_group_pkgs(self, group):
-        # Get group packages 
+        # Get group packages
         for repo in self.handle.get_syncdbs():
             grp = repo.read_grp(group)
             if grp is None:
@@ -198,15 +200,15 @@ class Pac(object):
 
     ###################################################################
     # Queue event
-    
+
     def queue_event(self, event_type, event_text=""):
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:
                 # do not repeat same event
                 return
-        
+
         self.last_event[event_type] = event_text
-                
+
         if event_type == "error":
             # format message to show file, function, and line where the error
             # was issued
@@ -226,11 +228,11 @@ class Pac(object):
             # wait until queue is empty (is emptied in slides.py), then exit
             self.callback_queue.join()
             sys.exit(1)
-    
-        
+
+
     ###################################################################
     # Version functions
-    
+
     def get_version(self):
         return "Cnchi running on pyalpm v%s - libalpm v%s" % (pyalpm.version(), pyalpm.alpmversion())
 
@@ -239,7 +241,7 @@ class Pac(object):
 
     ###################################################################
     # Callback functions
-    
+
     def cb_conv(self, *args):
         pass
 
@@ -289,13 +291,11 @@ class Pac(object):
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
-        '''
-        elif level & pyalpm.LOG_DEBUG:
-            logging.debug(line)
-        elif level & pyalpm.LOG_FUNCTION:
-            pass
-        '''
-    
+        #elif level & pyalpm.LOG_DEBUG:
+        #    logging.debug(line)
+        #elif level & pyalpm.LOG_FUNCTION:
+        #    pass
+
     def cb_progress(self, _target, _percent, n, i):
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
@@ -334,4 +334,3 @@ class Pac(object):
                 #text = _("Downloading '%s'") % filename
                 #self.queue_event('action', text)
                 self.queue_event('percent', progress)
-

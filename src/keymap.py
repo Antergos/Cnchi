@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  keymap.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -25,10 +25,11 @@ from gi.repository import Gtk, GLib
 # Import functions
 import config
 import os
-import keyboard_names
+import canonical.keyboard_names as keyboard_names
 import logging
 import show_message as show
-import misc
+import canonical.misc as misc
+import subprocess
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -66,7 +67,7 @@ class Keymap(Gtk.Box):
         #txt = _("Select Your Keyboard Layout")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt
         #self.title.set_markup(txt)
-        
+
         # TODO: Also change layouts and variants text column
 
     def create_toolviews(self):
@@ -248,6 +249,9 @@ class Keymap(Gtk.Box):
         self.settings.set("keyboard_layout", self.keyboard_layout)
         self.settings.set("keyboard_variant", self.keyboard_variant)
 
+        # Issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
+        self.setkb()
+
         return True
 
     def get_prev_page(self):
@@ -255,3 +259,12 @@ class Keymap(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+    def setkb(self):
+        subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])
+
+        # It makes no sense try loadkeys here (it's console)
+        #subprocess.check_call(['loadkeys', self.keyboard_layout])
+
+        with misc.raised_privileges():
+            subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])

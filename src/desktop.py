@@ -2,26 +2,27 @@
 # -*- coding: utf-8 -*-
 #
 #  desktop.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Desktop screen """
+
 from gi.repository import Gtk, GLib
-import config
 import os
 import logging
 
@@ -29,7 +30,7 @@ _next_page = "features"
 _prev_page = "check"
 
 class DesktopAsk(Gtk.Box):
-
+    """ Class to show the Desktop screen """
     def __init__(self, params):
         self.header = params['header']
         self.ui_dir = params['ui_dir']
@@ -46,13 +47,13 @@ class DesktopAsk(Gtk.Box):
 
         self.desktop_info = self.ui.get_object("desktop_info")
         self.treeview_desktop = self.ui.get_object("treeview_desktop")
-        
+
         self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
-        
+
         self.enabled_desktops = self.settings.get("desktops")
-               
+
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
@@ -69,7 +70,8 @@ class DesktopAsk(Gtk.Box):
         super().add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
-        image = self.ui.get_object("image_desktop")     
+        """ Translates all ui elements """
+        image = self.ui.get_object("image_desktop")
         label = self.ui.get_object("desktop_info")
 
         if desktop == 'gnome':
@@ -147,12 +149,14 @@ class DesktopAsk(Gtk.Box):
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
-            
+
     def prepare(self, direction):
+        """ Prepare screen """
         self.translate_ui(self.desktop_choice)
         self.show_all()
 
     def set_desktop_list(self):
+        """ Set desktop list in the TreeView """
         render = Gtk.CellRendererText()
         col_desktops = Gtk.TreeViewColumn(_("Desktops"), render, text=0)
         liststore_desktop = Gtk.ListStore(str)
@@ -160,37 +164,40 @@ class DesktopAsk(Gtk.Box):
         self.treeview_desktop.set_model(liststore_desktop)
 
         names = []
-        for d in self.enabled_desktops:
-            names.append(self.desktops[d])
-        
+        for desktop in self.enabled_desktops:
+            names.append(self.desktops[desktop])
+
         names.sort()
-        
-        for n in names:
-            liststore_desktop.append([n])
-                
+
+        for name in names:
+            liststore_desktop.append([name])
+
         self.select_default_row(self.treeview_desktop, 'Gnome')
 
     def set_desktop(self, desktop):
-        for k in self.desktops.keys():
-            if self.desktops[k] == desktop:
-                self.desktop_choice = k
+        """ Show desktop info """
+        for key in self.desktops.keys():
+            if self.desktops[key] == desktop:
+                self.desktop_choice = key
                 self.translate_ui(self.desktop_choice)
                 return
-                
+
     def on_treeview_desktop_cursor_changed(self, treeview):
         selected = treeview.get_selection()
         if selected:
-            (ls, iter) = selected.get_selected()
-            if iter:
-                desktop = ls.get_value(iter, 0)
+            (selection, iterator) = selected.get_selected()
+            if iterator:
+                desktop = selection.get_value(iterator, 0)
                 self.set_desktop(desktop)
-        
+
     def store_values(self):
+        """ Store desktop """
         self.settings.set('desktop', self.desktop_choice)
-        logging.info(_("Cnchi will install Antergos with the '%s' desktop") % self.desktop_choice)
+        logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice)
         return True
 
-    def select_default_row(self, treeview, desktop):   
+    def select_default_row(self, treeview, desktop):
+        """ Select default treeview row """
         model = treeview.get_model()
         iterator = model.iter_children(None)
         while iterator is not None:
@@ -202,6 +209,7 @@ class DesktopAsk(Gtk.Box):
             iterator = model.iter_next(iterator)
 
     def scroll_to_cell(self, treeview, path):
+        """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
         return False
 

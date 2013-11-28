@@ -1,0 +1,3 @@
+#!/bin/sh
+sudo -E ./cnchi.py -dv -c /pkg -p data/packages.xml
+

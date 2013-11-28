@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  location.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -49,42 +49,42 @@ class Location(Gtk.Box):
         self.ui.connect_signals(self)
 
         #self.treeview = self.ui.get_object("treeview_countries")
-        
+
         self.listbox = self.ui.get_object("listbox_countries")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        
+
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
 
         self.listbox_items = 0
-        
+
         self.load_locales()
-        
+
         super().add(self.ui.get_object("location"))
 
-    def translate_ui(self):       
+    def translate_ui(self):
         txt = _("The location you select will be used to help determine the system locale.\n" \
             "This should normally be the country in which you reside.\n" \
             "Here is a shortlist of locations based on the language you selected.")
         self.label_help.set_markup(txt)
-        
+
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>%s</span>" % txt
         self.label_choose_country.set_markup(txt)
 
         self.header.set_subtitle(_("Select your location"))
-        
+
     def select_first_listbox_item(self):
         listbox_row = self.listbox.get_children()[0]
         self.listbox.select_row(listbox_row)
         #self.selected_country
-        
+
     def hide_all(self):
         names = [ "location_box", "label_help", "label_choose_country", \
                      "box1", "eventbox1", "eventbox2", "scrolledwindow1", \
                      "listbox_countries" ]
-        
+
         for name in names:
             control = self.ui.get_object(name)
             if control != None:
@@ -93,7 +93,7 @@ class Location(Gtk.Box):
     def prepare(self, direction):
         self.hide_all()
         self.fill_listbox()
-        
+
         if self.listbox_items == 1:
             # If we have only one option, don't bother our beloved user
             self.store_values()
@@ -103,18 +103,18 @@ class Location(Gtk.Box):
                 GLib.idle_add(self.backwards_button.clicked)
         else:
             self.select_first_listbox_item()
-            self.translate_ui()       
-        
+            self.translate_ui()
+
         # If I don't do this, check page is not shown well when skipping this page (location)
         # If I do this, we can see location page for a second (it's ugly)
         self.show_all()
-        
+
     def load_locales(self):
-        data_dir = self.settings.get('data')  
+        data_dir = self.settings.get('data')
         xml_path = os.path.join(data_dir, "locales.xml")
-        
+
         self.locales = {}
-        
+
         tree = etree.parse(xml_path)
         root = tree.getroot()
         for child in root.iter("language"):
@@ -124,18 +124,18 @@ class Location(Gtk.Box):
                 elif item.tag == 'locale_name':
                     locale_name = item.text
             self.locales[locale_name] = language_name
-            
+
         xml_path = os.path.join(data_dir, "iso3366-1.xml")
-        
+
         countries = {}
-        
+
         tree = etree.parse(xml_path)
         root = tree.getroot()
         for child in root:
             code = child.attrib['value']
             name = child.text
             countries[code] = name
-            
+
         for locale_name in self.locales:
             language_name = self.locales[locale_name]
             for country_code in countries:
@@ -148,7 +148,7 @@ class Location(Gtk.Box):
         for locale_name in self.locales:
             if lang_code in locale_name:
                 areas.append(self.locales[locale_name])
-        
+
         # FIXME: What do we have to do when can't find any country?
         # Right now we put them all!
         # I've observed this with Esperanto and Asturianu at least.
@@ -157,13 +157,13 @@ class Location(Gtk.Box):
                 areas.append(self.locales[locale_name])
 
         self.listbox_items = len(areas)
-        
+
         areas.sort()
-        
+
         # Delete listbox previous contents (if any)
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
-        
+
         for area in areas:
             box = Gtk.VBox()
             label = Gtk.Label(area)

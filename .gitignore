@@ -41,3 +41,5 @@ nosetests.xml
 
 # Backup files (joe et al)
 *~
+# PyCharm Config Files
+.idea

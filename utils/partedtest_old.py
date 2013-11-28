@@ -21,7 +21,7 @@ for dev in device_list:
     #create list of partitions for this device(/dev/sda for example)
     partition_list = diskob.partitions
     for p in partition_list:
-        #this is start sector, end sector, and length     
+        #this is start sector, end sector, and length
         startbyte = p.geometry.start
         endbyte = p.geometry.end
         plength = p.geometry.length
@@ -33,6 +33,6 @@ for dev in device_list:
         #I can't think of a case of less than 1mb partition
         psizemb = psize / (limiter * limiter)
         psizegb = psizemb / limiter
-        #grabs the filesystem type       
+        #grabs the filesystem type
         ptype = p.fileSystem.type
-       
+

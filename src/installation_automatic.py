@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  installation_automatic.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -26,17 +26,15 @@ from gi.repository import Gtk
 import subprocess
 import os
 import sys
-import misc
+import canonical.misc as misc
 import logging
 import installation_process
 
-# To be able to test this installer in other systems
-# that do not have pyparted3 installed
+# To be able to test this installer in other systems that do not have pyparted3 installed
 try:
     import parted
 except:
     print("Can't import parted module! This installer won't work.")
-
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
@@ -51,7 +49,8 @@ class InstallationAutomatic(Gtk.Box):
         self.callback_queue = params['callback_queue']
         self.settings = params['settings']
         self.alternate_package_list = params['alternate_package_list']
-        
+        self.testing = params['testing']
+
         super().__init__()
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "installation_automatic.ui"))
@@ -64,9 +63,9 @@ class InstallationAutomatic(Gtk.Box):
         self.entry = {}
         self.entry['luks_password'] = self.ui.get_object('entry_luks_password')
         self.entry['luks_password_confirm']= self.ui.get_object('entry_luks_password_confirm')
-        
+
         self.image_password_ok = self.ui.get_object('image_password_ok')
-        
+
         super().add(self.ui.get_object("installation_automatic"))
 
         self.devices = dict()
@@ -85,7 +84,7 @@ class InstallationAutomatic(Gtk.Box):
         txt = _("Select the drive we should use to install Antergos " \
         "and then click below to start the process.")
         label.set_markup(txt)
-        
+
         label = self.ui.get_object('label_luks_password')
         txt = _("Encryption Password:")
         label.set_markup(txt)
@@ -105,12 +104,12 @@ class InstallationAutomatic(Gtk.Box):
         #self.title.set_markup(txt)
 
     @misc.raise_privileges
-    def populate_devices(self):
+    def populate_devices(self):            
         device_list = parted.getAllDevices()
-        
+
         self.device_store.remove_all()
         self.devices = {}
-                   
+
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
@@ -139,19 +138,19 @@ class InstallationAutomatic(Gtk.Box):
         self.translate_ui()
         self.populate_devices()
         self.show_all()
-        
+
         if not self.settings.get('use_luks'):
             f = self.ui.get_object('frame_luks')
             f.hide()
-            
+
         #self.forward_button.set_sensitive(False)
 
     def store_values(self):
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_key_pass', luks_password)
         if luks_password != "":
-            logging.debug("A LUKS password has been set")
-            
+            logging.debug(_("A LUKS password has been set"))
+
         logging.info(_("Automatic install on %s") % self.auto_device)
         self.start_installation()
         return True
@@ -165,7 +164,7 @@ class InstallationAutomatic(Gtk.Box):
     def refresh(self):
         while Gtk.events_pending():
             Gtk.main_iteration()
-    
+
     def on_luks_password_changed(self, widget):
         luks_password = self.entry['luks_password'].get_text()
         luks_password_confirm = self.entry['luks_password_confirm'].get_text()
@@ -183,10 +182,10 @@ class InstallationAutomatic(Gtk.Box):
             self.image_password_ok.set_opacity(1)
 
         self.forward_button.set_sensitive(install_ok)
-    
+
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
-        logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)      
+        logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
 
         # Ask (if guessing doesn't work) bootloader type
         import bootloader
@@ -198,22 +197,25 @@ class InstallationAutomatic(Gtk.Box):
             logging.info(_("Antergos will install the %s bootloader on %s") % \
                 (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
         else:
-            logging.warning("Antergos will not install any boot loader")
+            logging.warning(_("Antergos will not install any boot loader"))
 
         # We don't need to pass neither which devices will be mounted nor which filesystems
         # the devices will be formated with, as auto_partition.py takes care of everything
         # in an automatic installation.
         mount_devices = {}
         fs_devices = {}
-        
+
         self.settings.set('auto_device', self.auto_device)
 
-        self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        None, \
-                        self.alternate_package_list)
-                        
-        self.process.start()
+        if not self.testing:
+            self.process = installation_process.InstallationProcess( \
+                            self.settings, \
+                            self.callback_queue, \
+                            mount_devices, \
+                            fs_devices, \
+                            None, \
+                            self.alternate_package_list)
+
+            self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))
