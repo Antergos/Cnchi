@@ -27,6 +27,8 @@ import time
 
 # Partition sizes are in MB
 MAX_ROOT_SIZE = 10000
+
+# TODO: This higly depends on the selected DE! Must be taken into account.
 MIN_ROOT_SIZE = 6000
 
 def check_output(command):

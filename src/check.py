@@ -36,7 +36,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
-MIN_ROOT_SIZE = 6000000000
+MIN_ROOT_SIZE = 4000000000
 
 _next_page = "desktop"
 _prev_page = "location"
