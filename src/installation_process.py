@@ -37,16 +37,6 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as etree
 
-#BASE_DIR = os.path.dirname(__file__) or '.'
-
-# Insert the src/pacman directory at the front of the path.
-#PACMAN_DIR = os.path.join(BASE_DIR, 'pacman')
-#sys.path.insert(0, PACMAN_DIR)
-
-# Insert the src/parted3 directory at the front of the path.
-#PARTED_DIR = os.path.join(BASE_DIR, 'parted3')
-#sys.path.insert(0, PARTED_DIR)
-
 import auto_partition
 import parted3.fs_module as fs
 import canonical.misc as misc
@@ -144,9 +134,6 @@ class InstallationProcess(multiprocessing.Process):
     @misc.raise_privileges
     def run(self):
         """ Run installation """
-        # process = multiprocessing.current_process()
-        # log.debug("Starting: [%d] %s" % (process.pid, process.name))
-
         # Common vars
         self.packages = []
 
@@ -886,7 +873,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
 

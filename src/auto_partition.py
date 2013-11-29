@@ -99,6 +99,8 @@ class AutoPartition(object):
             subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
         if os.path.exists("/dev/mapper/AntergosSwap"):
             subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
+        if os.path.exists("/dev/mapper/AntergosHome"):
+            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
         if os.path.exists("/dev/AntergosVG"):
             subprocess.check_call(["vgremove", "-f", "AntergosVG"])
         pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
@@ -303,7 +305,6 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             p.communicate(input=luks_key_pass_bytes)[0]      
 
-    # TODO: In LUKS only mode and using a /home partition, setup Antergos to unlock home partition at boot
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
@@ -417,8 +418,9 @@ class AutoPartition(object):
             # Create DOS MBR with parted
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
-            # Create boot partition
+            # Create boot partition (all sizes are in MB)
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(boot_part_size)])
+            # Set boot partition as bootable
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
 
             if self.lvm:
@@ -435,12 +437,12 @@ class AutoPartition(object):
                 # Create root partition
                 start = end
                 end = start + root_part_size
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(end), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
                 
                 if self.home:
                     # Create home partition
                     start = end
-                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(end), "100%"])
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
                     
         printk(True)
 
@@ -489,17 +491,30 @@ class AutoPartition(object):
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
         # NOTE: /etc/default/grub will be modified in installation_process.py, too.
 
-        if self.luks and self.luks_key_pass == "":
-            # Copy keyfile to boot partition, user will choose what to do with it
-            # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-            # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
-            # (boot partition is not)
-            subprocess.check_call(['chmod', '0400', key_file[0]])
-            subprocess.check_call(['mv', key_file[0], '%s/boot' % self.dest_dir])
+        # TODO: This if is too long, rewrite it
+        if self.luks:
             if self.home and not self.lvm:
-                subprocess.check_call(['chmod', '0400', key_file[1]])
-                subprocess.check_call(['mv', key_file[1], '%s/boot' % self.dest_dir])
-                
+                # Setup Antergos to unlock home partition at boot
+                if self.luks_key_pass != "":
+                    home_keyfile = "none"
+                else:
+                    home_keyfile = key_file[1]
+                fname = os.path.join(self.dest_dir, "etc/crypttab")
+                with open(fname, "a") as crypttab:
+                    line = "cryptAntergosHome %s %s luks" % (luks_device[1], home_keyfile)
+                    crypttab.write(line)
+                    logging.debug("Added %s to /etc/crypttab" % line)
+
+            if self.luks_key_pass == "":
+                # Copy keyfile to boot partition, user will choose what to do with it
+                # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+                # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+                # (boot partition is not)
+                subprocess.check_call(['chmod', '0400', key_file[0]])
+                subprocess.check_call(['mv', key_file[0], '%s/boot' % self.dest_dir])
+                if self.home and not self.lvm:
+                    subprocess.check_call(['chmod', '0400', key_file[1]])
+                    subprocess.check_call(['mv', key_file[1], '%s/boot' % self.dest_dir])
 
 if __name__ == '__main__':
     logger = logging.getLogger()
