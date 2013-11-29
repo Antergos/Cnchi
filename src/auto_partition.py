@@ -27,7 +27,7 @@ import time
 
 # Partition sizes are in MB
 MAX_ROOT_SIZE = 10000
-MIN_ROOT_SIZE = 4000
+MIN_ROOT_SIZE = 6000
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
@@ -49,6 +49,53 @@ def printk(enable):
         else:
             fpk.write("0")
 
+def unmount_all(dest_dir):
+    """ Unmounts all devices that are mounted inside dest_dir """
+    subprocess.check_call(["swapoff", "-a"])
+
+    mount_result = subprocess.check_output("mount").decode().split("\n")
+
+    # Umount all devices mounted inside dest_dir (if any)
+    dirs = []
+    for mount in mount_result:
+        if dest_dir in mount:
+            directory = mount.split()[0]
+            # Do not unmount dest_dir now (we will do it later)
+            if directory is not dest_dir:
+                dirs.append(directory)
+
+    for directory in dirs:
+        logging.warning(_("Unmounting %s"), directory)
+        subprocess.call(["umount", directory])
+
+    # Now is the time to unmount the device that is mounted in dest_dir (if any)
+    
+    if dest_dir in mount_result:
+        logging.warning(_("Unmounting %s"), dest_dir)
+        subprocess.call(["umount", dest_dir])
+
+    # Remove all previous Antergos LVM volumes
+    # (it may have been left created due to a previous failed installation)
+    if os.path.exists("/dev/mapper/AntergosRoot"):
+        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
+    if os.path.exists("/dev/mapper/AntergosSwap"):
+        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
+    if os.path.exists("/dev/mapper/AntergosHome"):
+        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
+    if os.path.exists("/dev/AntergosVG"):
+        subprocess.check_call(["vgremove", "-f", "AntergosVG"])
+    pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
+    if len(pvolumes[0]) > 0:
+        for pv in pvolumes:
+            pv = pv.strip(" ")
+            subprocess.check_call(["pvremove", "-f", pv])
+
+    # Close cryptAntergos (it may have been left open because of a previous failed installation)
+    if os.path.exists("/dev/mapper/cryptAntergos"):
+        subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
+    if os.path.exists("/dev/mapper/cryptAntergosHome"):
+        subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
+
 class AutoPartition(object):
     """ Class used by the automatic installation method """
     def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home, callback_queue):
@@ -69,51 +116,6 @@ class AutoPartition(object):
         if os.path.exists("/sys/firmware/efi/systab"):
             # TODO: Check if UEFI works
             self.uefi = True
-
-    def umount_all(self):
-        """ Unmounts all devices that are mounted inside dest_dir """
-        subprocess.check_call(["swapoff", "-a"])
-
-        mount_result = subprocess.check_output("mount").decode().split("\n")
-
-        # Umount all devices mounted inside self.dest_dir (if any)
-        dirs = []
-        for mount in mount_result:
-            if self.dest_dir in mount:
-                directory = mount.split()[0]
-                # Do not unmount self.dest_dir now (we will do it later)
-                if directory is not self.dest_dir:
-                    dirs.append(directory)
-
-        for directory in dirs:
-            logging.warning(_("Unmounting %s"), directory)
-            subprocess.call(["umount", directory])
-
-        # Now is the time to unmount the device that is mounted in self.dest_dir (if any)
-        logging.warning(_("Unmounting %s"), self.dest_dir)
-        subprocess.call(["umount", self.dest_dir])
-
-        # Remove all previous Antergos LVM volumes
-        # (it may have been left created due to a previous failed installation)
-        if os.path.exists("/dev/mapper/AntergosRoot"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
-        if os.path.exists("/dev/mapper/AntergosSwap"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
-        if os.path.exists("/dev/mapper/AntergosHome"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
-        if os.path.exists("/dev/AntergosVG"):
-            subprocess.check_call(["vgremove", "-f", "AntergosVG"])
-        pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
-        if len(pvolumes[0]) > 0:
-            for pv in pvolumes:
-                pv = pv.strip(" ")
-                subprocess.check_call(["pvremove", "-f", pv])
-
-        # Close cryptAntergos (it may have been left open because of a previous failed installation)
-        if os.path.exists("/dev/mapper/cryptAntergos"):
-            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
-        if os.path.exists("/dev/mapper/cryptAntergosHome"):
-            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -373,7 +375,7 @@ class AutoPartition(object):
             logging.debug("home_part_size %dMB", home_part_size)
 
         # Disable swap and all mounted partitions, umount / last!
-        self.umount_all()
+        unmount_all(self.dest_dir)
 
         printk(False)
 
