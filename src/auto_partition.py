@@ -29,7 +29,8 @@ import time
 MAX_ROOT_SIZE = 10000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
-MIN_ROOT_SIZE = 6000
+# KDE needs at least 6.5 GB free
+MIN_ROOT_SIZE = 6500
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
