@@ -101,14 +101,30 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="desktop_info">
+      <object class="GtkTable" id="desktop_info_table">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_left">20</property>
         <property name="margin_right">20</property>
-        <property name="xalign">0</property>
-        <property name="label" translatable="yes">label</property>
-        <property name="use_markup">True</property>
+        <child>
+          <object class="GtkLabel" id="desktop_info">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">20</property>
+            <property name="margin_right">20</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">label</property>
+            <property name="use_markup">True</property>
+            <property name="wrap">True</property>
+          </object>
+          <!--
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+          -->
+        </child>
       </object>
       <packing>
         <property name="expand">False</property>
