@@ -3,6 +3,7 @@
 # 
 # Translators:
 # theradialactive <account@d2ns.org>, 2013
+# faidoc <faidoc@gmail.com>, 2013
 # Poscaenium <harald.hager@harrys-net.at>, 2013
 # snow2k9, 2013
 # t_bb_ <tabbo.hankel@bremen.piratenpartei.de>, 2013
@@ -10,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-07 13:37+0000\n"
-"Last-Translator: snow2k9\n"
+"PO-Revision-Date: 2013-11-20 11:09+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/antergos/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -449,7 +450,7 @@ msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s ist eingehangen als swap.\\n\nUm fortzufahren müssen Sie sie erst auszuhängen.\\n\nKlicken Sie auf Ja um sie auszuhängen, oder Nein um zurückzukehren.\\n"
+msgstr "%s ist eingehangen als swap.\nUm fortzufahren müssen Sie sie erst auszuhängen.\nKlicken Sie auf Ja um sie auszuhängen, oder Nein um zurückzukehren.\n"
 
 #: src/installation_advanced.py:1341
 msgid ""

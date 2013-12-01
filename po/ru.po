@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-06 20:04+0000\n"
-"Last-Translator: macbet <rostovslipknot@gmail.com>\n"
+"PO-Revision-Date: 2013-11-20 11:09+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/antergos/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1020,19 +1020,19 @@ msgstr "Не волнуйтесь, для большинства целей эт
 msgid ""
 "One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
 "\n"
-msgstr "Одно популярное, но нецелесообразное применение eCryptfs состоит в том, чтобы зашифровать местоположение загрузки БитТоррента, поскольку это часто требует, чтобы eCryptfs обращался с фрагментированным файлам размером 10 ГБ или больше это  может привести к интенсивному дисковому износу.\\n\n\\n"
+msgstr "Одно популярное, но нецелесообразное применение eCryptfs состоит в том, чтобы зашифровать местоположение загрузки БитТоррента, поскольку это часто требует, чтобы eCryptfs обращался с фрагментированным файлам размером 10 ГБ или больше это  может привести к интенсивному дисковому износу.\n\n"
 
 #: src/user_info.py:169
 msgid ""
 "A simple workaround is to place sparse files in an unencrypted Public directory.\n"
 "\n"
-msgstr "Простым решением является размещение фрагментированных файлов в нешифрованный каталог Public.\\n\n\\n"
+msgstr "Простым решением является размещение фрагментированных файлов в нешифрованный каталог Public.\n\n"
 
 #: src/user_info.py:170
 msgid ""
 "Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
 "\n"
-msgstr "Прочтите https://wiki.archlinux.org/index.php/ECryptfs для получения подробностей.\\n\n\\n"
+msgstr "Прочтите https://wiki.archlinux.org/index.php/ECryptfs для получения подробностей.\n\n"
 
 #: src/user_info.py:171
 msgid "Are you sure you want to encrypt your home directory?\n"

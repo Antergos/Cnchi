@@ -5,12 +5,13 @@
 # faidoc <faidoc@gmail.com>, 2013
 # mats_bjork007 <mats_bjork007@yahoo.se>, 2013
 # mats_bjork007 <mats_bjork007@yahoo.se>, 2013
+# ogg1980 <olle@dalnix.se>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-07 11:31+0000\n"
-"Last-Translator: mats_bjork007 <mats_bjork007@yahoo.se>\n"
+"PO-Revision-Date: 2013-11-30 17:33+0000\n"
+"Last-Translator: ogg1980 <olle@dalnix.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/antergos/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -143,7 +144,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr ""
+msgstr "Xfce är en lättviktsmiljö för skrivbordet. Dess mål är att vara snabbt och ha låga systemkrav men samtidigt vara visuellt attraktiv och användarvänlig. Det är ett bra val för äldre datorer eller för datorer med lägre systemprestanda."
 
 #: src/desktop.py:97
 msgid ""
@@ -151,7 +152,7 @@ msgid ""
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
-msgstr ""
+msgstr "LXDE är en extremt snabb och energisparande skrivbordsmiljö. Det använder mindre processorkraft och minne an andra miljöer. LXDE är speciellt framtaget för moln datorer med låga hårdvaruspecifikationer så som netbooks, mobila enheter och äldre datorer."
 
 #: src/desktop.py:104
 msgid ""
@@ -159,7 +160,7 @@ msgid ""
 "extensive standards support. It's default theme, the *box visual style,is "
 "well known for its minimalistic appearance and flexibility. Your desktop "
 "becomes cleaner, faster, and is in your control with Openbox "
-msgstr ""
+msgstr "Openbox är en mycket konfigurerbar, nästa generationens fönsterhanterare med stort stöd för standarder. *box visuella stil är välkänt för sitt minimalistiska utseende och flexibilitet. Ditt skrivbord blir renare, snabbare och är helt i din kontroll med Openbox."
 
 #: src/desktop.py:111
 msgid ""
@@ -174,7 +175,7 @@ msgid ""
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start. The look, feel, and behavior can"
 " be easily customized to the user's taste."
-msgstr ""
+msgstr "Om du letar efter en bekant arbetsmiljö, erbjuder KDE's Plasma Skrivbord alla verktyg som behövs för en modern användarupplevelse vilket innebär att du kan vara produktiv redan från start. Utseendet, känslan och beteende kan med lätthet anpassas till användarens tycke och smak."
 
 #: src/desktop.py:124
 msgid ""
@@ -188,7 +189,7 @@ msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
-msgstr ""
+msgstr "Det här kommer att installera Antergos som ett terminalbaserat system utan någon grafisk användarmiljö. Efter installationen kan du själv anpassa Antergos genom att installera de paket du önskar med pakethanteraren via kommandopromten."
 
 #: src/desktop.py:143
 msgid "Choose Your Desktop"
@@ -232,7 +233,7 @@ msgstr "Varning! Kan inte lösa dessa beroenden:"
 
 #: src/features.py:99
 msgid "Feature Selection"
-msgstr ""
+msgstr "Funktionsval"
 
 #: src/features.py:104
 msgid "Bluetooth Support"
@@ -240,7 +241,7 @@ msgstr "Stöd för Bluetooth"
 
 #: src/features.py:107
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "Gör det möjligt för ditt system att göra trådlösa anslutningar via Bluetooth."
 
 #: src/features.py:111
 msgid "Printing Support"
@@ -248,7 +249,7 @@ msgstr "Stöd för utskrifter"
 
 #: src/features.py:114
 msgid "Installation of printer drivers and management tools."
-msgstr ""
+msgstr "Installation av drivrutiner och verktyg för skrivare."
 
 #: src/features.py:118
 msgid "LibreOffice"
@@ -277,7 +278,7 @@ msgstr "Kontrollera den inkommande och utgående nätverkstrafiken."
 
 #: src/features.py:141
 msgid "Proprietary Software"
-msgstr ""
+msgstr "Proprietär mjukvara"
 
 #: src/features.py:144
 msgid "Third-party software to play Flash videos, MP3 audio, and other media."
@@ -364,7 +365,7 @@ msgstr "Skapar logisk partition"
 
 #: src/installation_advanced.py:1058
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "Avancerad installationsmetod"
 
 #: src/installation_advanced.py:1062
 msgid "Use the device below for boot loader installation:"
@@ -420,7 +421,7 @@ msgstr "Etikett (valfritt):"
 
 #: src/installation_advanced.py:1125
 msgid "Encryption Options..."
-msgstr ""
+msgstr "Krypteringsalternativ..."
 
 #: src/installation_advanced.py:1142
 msgid "Format:"
@@ -515,7 +516,7 @@ msgstr "Filsystem"
 
 #: src/installation_alongside.py:216
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "Kunde ej skapa lista över partitioner för installation bredvid annat operativsystem."
 
 #: src/installation_alongside.py:256
 msgid "Can't shrink the partition (maybe it's nearly full)"
@@ -641,7 +642,7 @@ msgstr "Lägger till paket för filsystemen"
 
 #: src/installation_process.py:541
 msgid "Check for user desired features and add them to our installation"
-msgstr ""
+msgstr "Sök efter av användaren önskade funktioner och lägg till dem i installationen"
 
 #: src/installation_process.py:553
 msgid "Adding bootloader packages if needed"
@@ -741,7 +742,7 @@ msgid ""
 "It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi är fortfarande under aktiv utveckling .\nDen hanterar ännu inte RAID, btrfs delvolumer, eller andra avancerade inställningar. Fortsätt med försiktighet då det är möjligt att data kan försvinna!\nOm du hittar några fel, var vänlig rapportera dessa på sidan <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:93 src/welcome.py:99
 msgid "Welcome to Antergos!"
@@ -856,7 +857,7 @@ msgstr "Kan inte kontrollera nätverksstatus för rankmirrors"
 
 #: src/rank_mirrors.py:66
 msgid "Can't find rank mirrors script"
-msgstr ""
+msgstr "Kan inte hitta rank mirrors skriptet"
 
 #: src/rank_mirrors.py:73
 msgid "Couldn't execute auto mirroring selection"
@@ -1004,25 +1005,25 @@ msgstr "Skapa ditt användarkonto"
 msgid ""
 "Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n"
 "\n"
-msgstr ""
+msgstr "Antergos kommer att använda eCryptfs att kryptera din hemkatalog. Tyvärr hanterar eCryptfs inte glesa särskilt bra.\n\n"
 
 #: src/user_info.py:167
 msgid ""
 "Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
 "\n"
-msgstr ""
+msgstr "Men oroa dig inte, för i de flesta avseenden utgör denna brist inte några problem.\n\n"
 
 #: src/user_info.py:168
 msgid ""
 "One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
 "\n"
-msgstr ""
+msgstr "En populär men olämpligt tillämpning av eCryptfs är att kryptera en BitTorrent-nedladdning plats eftersom detta kräver eCryptfs att hantera  filer på 10 GB eller mer, vilket kan leda till att diskutrymme tar slut.\n"
 
 #: src/user_info.py:169
 msgid ""
 "A simple workaround is to place sparse files in an unencrypted Public directory.\n"
 "\n"
-msgstr ""
+msgstr "En enkel lösning är att placera stora filer i en okrypterad publik katalog.\n\n"
 
 #: src/user_info.py:170
 msgid ""
@@ -1074,7 +1075,7 @@ msgstr "Lösenorden stämmer inte överens"
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
-msgstr ""
+msgstr "Du kan prova Antergos utan att påverka din hårddisk, klicka bara på 'Prova det'.\nOm du vill installera systemet på din dator; välj den installationsmetod du föredrar."
 
 #: src/welcome.py:90
 msgid "Try It"

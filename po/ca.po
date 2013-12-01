@@ -1,15 +1,17 @@
-# Cnchi Catalan
-# Copyright (C) 2013 Antergos
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
 # tot3lmon <tot3lmon@gmail.com>, 2013
 # faidoc <alexfilgueira@antergos.com>, 2013
-# karasu <karasu@antergos.com>, 2013
+# karasu0 <karasu@antergos.com>, 2013
+# karasu0 <karasu@antergos.com>, 2013
+# tot3lmon <tot3lmon@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-05 09:49+0000\n"
+"PO-Revision-Date: 2013-11-20 11:09+0000\n"
 "Last-Translator: karasu0 <karasu@antergos.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +46,7 @@ msgstr "S'usarà el fitxer '%s' com a llista de paquets"
 
 #: cnchi.py:215
 msgid "Antergos Installer"
-msgstr "Instal·lador de Antergos"
+msgstr "Instal·lador d'Antergos"
 
 #: cnchi.py:288
 msgid "Quiting installer..."
@@ -93,7 +95,7 @@ msgstr "està connectat a Internet"
 
 #: src/check.py:80
 msgid "For best results, please ensure that this computer:"
-msgstr "Per obtenir els millors resultats, assegura't que:"
+msgstr "Per obtenir els millors resultats, assegura't que el teu equip:"
 
 #: src/check.py:85
 msgid ""
@@ -864,15 +866,15 @@ msgstr "No puc seleccionar un 'mirror' de manera automàtica"
 
 #: src/show_message.py:52
 msgid "Antergos Installer - Error"
-msgstr "Instal·lador Antergos - Error"
+msgstr "Instal·lador d'Antergos - Error"
 
 #: src/show_message.py:63
 msgid "Antergos Installer - Warning"
-msgstr "Instal·lador Antergos - Avís"
+msgstr "Instal·lador d'Antergos - Avís"
 
 #: src/show_message.py:74
 msgid "Antergos Installer - Information"
-msgstr "Instal·lador Antergos - Informació"
+msgstr "Instal·lador d'Antergos - Informació"
 
 #: src/show_message.py:84
 msgid "Antergos Installer - Confirmation"
@@ -1082,11 +1084,11 @@ msgstr "Prova-ho"
 
 #: src/welcome.py:93
 msgid "CLI Installer"
-msgstr "CLI l'instal·lador"
+msgstr "Instal·lador CLI"
 
 #: src/welcome.py:96
 msgid "Graphical Installer"
-msgstr "instal·lador gràfic"
+msgstr "Instal·lador gràfic"
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"

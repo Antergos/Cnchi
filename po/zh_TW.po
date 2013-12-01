@@ -3,12 +3,13 @@
 # 
 # Translators:
 # freddy4212 <freddy4212@gmail.com>, 2013
+# 柏諺 黃 <s8321414@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-04 14:04+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2013-11-22 03:00+0000\n"
+"Last-Translator: 柏諺 黃 <s8321414@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/antergos/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +22,7 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "本安裝程式必須以管理者的身份執行，如果不是以管理者身份就不能繼續。"
 
 #: cnchi.py:105
 msgid ""
@@ -30,7 +31,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "您不能同時執行兩個安裝程式。\n\n如果您確定您並沒有執行安裝程式\n您可以手動刪除這個檔案： %s\n然後再次執行安裝程式。"
 
 #: cnchi.py:175
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
