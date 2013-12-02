@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-30 17:33+0000\n"
-"Last-Translator: ogg1980 <olle@dalnix.se>\n"
+"POT-Creation-Date: 2013-12-01 22:18+PET\n"
+"PO-Revision-Date: 2013-12-02 03:18+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/antergos/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -191,15 +191,15 @@ msgid ""
 "Antergos by installing packages with the command-line package manager."
 msgstr "Det här kommer att installera Antergos som ett terminalbaserat system utan någon grafisk användarmiljö. Efter installationen kan du själv anpassa Antergos genom att installera de paket du önskar med pakethanteraren via kommandopromten."
 
-#: src/desktop.py:143
+#: src/desktop.py:140
 msgid "Choose Your Desktop"
 msgstr "Välj din skrivbordsmiljö"
 
-#: src/desktop.py:153
+#: src/desktop.py:150
 msgid "Desktops"
 msgstr "Skrivbord"
 
-#: src/desktop.py:186
+#: src/desktop.py:183
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi kommer att installera Antergos med '%s' som skrivbord."
 
@@ -232,8 +232,8 @@ msgid "Warning! Can't resolve these dependencies: "
 msgstr "Varning! Kan inte lösa dessa beroenden:"
 
 #: src/features.py:99
-msgid "Feature Selection"
-msgstr "Funktionsval"
+msgid "Features"
+msgstr ""
 
 #: src/features.py:104
 msgid "Bluetooth Support"
@@ -534,23 +534,37 @@ msgstr "Radera disken och installera Antergos"
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Varning: Det här kommer att ta bort all data på din disk"
 
-#: src/installation_ask.py:114 src/installation_ask.py:116
+#: src/installation_ask.py:111
+msgid "Encrypt this installation for increased security."
+msgstr ""
+
+#: src/installation_ask.py:115
+msgid "You will be asked to create an encryption password in the next step."
+msgstr ""
+
+#: src/installation_ask.py:124
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr ""
+
+#: src/installation_ask.py:132 src/installation_ask.py:134
 msgid "Install Antergos alongside %s"
 msgstr "Installera Antergos bredvid %s"
 
-#: src/installation_ask.py:123
+#: src/installation_ask.py:141
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "Välj exakt var Antergos ska installeras. (avancerad)"
 
-#: src/installation_ask.py:126
+#: src/installation_ask.py:144
 msgid "Edit partition table and choose mount points."
 msgstr "Ändra partitionstabell och välj monteringspunkter."
 
-#: src/installation_ask.py:146
+#: src/installation_ask.py:164
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "Antergosinstallationen kommer att krypteras enligt LUKS"
 
-#: src/installation_ask.py:149
+#: src/installation_ask.py:167
 msgid "Antergos will be installed using LVM volumes"
 msgstr "Antergos kommer att installeras med LVM volymer"
 
@@ -592,123 +606,123 @@ msgstr "Cnchi kommer att installera Antergos på %s"
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos kommer att installera starthanterare %s i %s"
 
-#: src/installation_process.py:79
+#: src/installation_process.py:78
 msgid "Installing using the '%s' method"
 msgstr "Använder '%s' som metod för installation"
 
-#: src/installation_process.py:177
+#: src/installation_process.py:176
 msgid "Error creating partitions and their filesystems"
 msgstr "Fel vid skapande av partitioner och dess filsystem"
 
-#: src/installation_process.py:216 src/installation_process.py:238
+#: src/installation_process.py:215 src/installation_process.py:237
 msgid "Mounting partition %s into %s directory"
 msgstr "Monterar partition %s i katalogen %s"
 
-#: src/installation_process.py:222
+#: src/installation_process.py:221
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Monterar partition %s i %s startkatalog"
 
-#: src/installation_process.py:226
+#: src/installation_process.py:225
 msgid "Couldn't mount root and boot partitions"
 msgstr "Kund inte montera root och boot partitionerna"
 
-#: src/installation_process.py:243
+#: src/installation_process.py:242
 msgid "Can't mount %s in %s"
 msgstr "Kan inte montera %s i %s"
 
-#: src/installation_process.py:263
+#: src/installation_process.py:262
 msgid "Can't create necessary directories on destination system"
 msgstr "Kan inte skapa nödvändiga kataloger i systemet"
 
-#: src/installation_process.py:408
+#: src/installation_process.py:407
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "Kan inte hämta extern lista på paket, använder lokal fil istället."
 
-#: src/installation_process.py:415
+#: src/installation_process.py:414
 msgid "Adding all desktops common packages"
 msgstr "Lägger till alla gemensamma paket för skrivbordet"
 
-#: src/installation_process.py:426
+#: src/installation_process.py:425
 msgid "Adding '%s' desktop packages"
 msgstr "Lägger till paket för '%s' skrivbord"
 
-#: src/installation_process.py:448
+#: src/installation_process.py:456
 msgid "Getting graphics card drivers"
 msgstr "Hämtar drivrutiner för grafikkortet"
 
-#: src/installation_process.py:494
+#: src/installation_process.py:502
 msgid "Adding filesystem packages"
 msgstr "Lägger till paket för filsystemen"
 
-#: src/installation_process.py:541
+#: src/installation_process.py:549
 msgid "Check for user desired features and add them to our installation"
 msgstr "Sök efter av användaren önskade funktioner och lägg till dem i installationen"
 
-#: src/installation_process.py:553
+#: src/installation_process.py:561
 msgid "Adding bootloader packages if needed"
 msgstr "Lägger till paket för starthanteraren om det behövs"
 
-#: src/installation_process.py:607
+#: src/installation_process.py:628
 msgid "Special dirs already mounted."
 msgstr "Speciella kataloger är redan monterade."
 
-#: src/installation_process.py:633
+#: src/installation_process.py:654
 msgid "Special dirs already not mounted."
 msgstr "Speciella kataloger är ännu inte monterade."
 
-#: src/installation_process.py:643
+#: src/installation_process.py:664
 msgid "Unable to umount %s"
 msgstr "Kan inte avmontera %s"
 
-#: src/installation_process.py:804
+#: src/installation_process.py:825
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Installerar GRUB(2) BIOS starthanterare i %s"
 
-#: src/installation_process.py:830 src/installation_process.py:849
+#: src/installation_process.py:851 src/installation_process.py:870
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "FEL vid installation av GRUB(2) BIOS."
 
-#: src/installation_process.py:847
+#: src/installation_process.py:868
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS har installerats utan problem."
 
-#: src/installation_process.py:860
+#: src/installation_process.py:881
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Installerar GRUB(2) UEFI %s starthanterare i %s"
 
-#: src/installation_process.py:888
+#: src/installation_process.py:909
 msgid "ERROR installing GRUB(2) configuration file."
 msgstr "FEL vid installation av GRUB(2) konfigurationsfil."
 
-#: src/installation_process.py:916
+#: src/installation_process.py:937
 msgid "ERROR installing GRUB(2) locale."
 msgstr "FEL vid installation av språk till GRUB(2)."
 
-#: src/installation_process.py:930
+#: src/installation_process.py:951
 msgid "Error creating password hash for user %s"
 msgstr "Fel vid skapande av lösenordskryptering för användare %s"
 
-#: src/installation_process.py:936
+#: src/installation_process.py:957
 msgid "Error changing password for user %s"
 msgstr "Fel när lösenordet ändrades för användare %s"
 
-#: src/installation_process.py:1110
+#: src/installation_process.py:1131
 msgid "Configuring your new system"
 msgstr "Konfigurerar ditt nya system"
 
-#: src/installation_process.py:1204
+#: src/installation_process.py:1248
 msgid "Generating locales..."
 msgstr "Genererar språk..."
 
-#: src/installation_process.py:1219
+#: src/installation_process.py:1263
 msgid "Adjusting hardware clock..."
 msgstr "Uppdaterar klockan..."
 
-#: src/installation_process.py:1242
+#: src/installation_process.py:1284
 msgid "%s: Enable automatic login for user %s."
 msgstr "%s: Aktivera automatisk inloggning för användare %s."
 
-#: src/installation_process.py:1302
+#: src/installation_process.py:1344
 msgid "Running mkinitcpio..."
 msgstr "Kör mkinitcpio..."
 
@@ -779,69 +793,57 @@ msgstr "språk ändrad till : %s"
 msgid "Can't change to locale '%s'"
 msgstr "Kan inte ändra språk till '%s'"
 
-#: src/pacman/pac.py:236
-msgid "Package %s not found in any repo!"
-msgstr "Paketet %s hittades inte i något förråd!"
-
-#: src/pacman/pac.py:289
+#: src/pacman/pac.py:253
 msgid "Checking dependencies..."
 msgstr "Kontrollerar beroenden..."
 
-#: src/pacman/pac.py:291
+#: src/pacman/pac.py:255
 msgid "Checking file conflicts..."
 msgstr "Kontrollerar filer i konflikt..."
 
-#: src/pacman/pac.py:293
+#: src/pacman/pac.py:257
 msgid "Resolving dependencies..."
 msgstr "Löser beroenden..."
 
-#: src/pacman/pac.py:295
+#: src/pacman/pac.py:259
 msgid "Checking inter conflicts..."
 msgstr "Kontrollerar inbördes konflikter"
 
-#: src/pacman/pac.py:300
+#: src/pacman/pac.py:264
 msgid "Removing..."
 msgstr "Tar bort..."
 
-#: src/pacman/pac.py:302
+#: src/pacman/pac.py:266
 msgid "Upgrading..."
 msgstr "Uppgraderar..."
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:268
 msgid "Checking integrity..."
 msgstr "Kontrollerar integritet..."
 
-#: src/pacman/pac.py:307
+#: src/pacman/pac.py:270
 msgid "Loading packages files..."
 msgstr "Laddar paketfiler..."
 
-#: src/pacman/pac.py:310
+#: src/pacman/pac.py:272
 msgid "Configuring..."
 msgstr "Konfigurerar..."
 
-#: src/pacman/pac.py:311
-msgid "Configuring a package"
-msgstr "Konfigurerar ett paket"
-
-#: src/pacman/pac.py:313
+#: src/pacman/pac.py:274
 msgid "Downloading a file"
 msgstr "Laddar ner en fil"
 
-#: src/pacman/pac.py:389
-msgid "Downloading %s..."
-msgstr "Laddar ner %s..."
-
-#: src/pacman/pac.py:398
-msgid "Refreshing %s..."
-msgstr "Aktualiserar %s..."
-
-#: src/pacman/pac.py:407
+#: src/pacman/pac.py:301
 msgid "Installing %s (%d/%d)"
 msgstr "Installerar %s (%d/%d)"
 
-#: src/pacman/pac.py:410
+#: src/pacman/pac.py:304
 msgid "Checking and loading packages..."
 msgstr "Kontrollerar och laddar paket..."
+
+#: src/pacman/pac.py:320
+msgid "Downloading '%s'"
+msgstr ""
 
 #: src/parted/fs_module.py:134 src/parted/fs_module.py:135
 msgid "Can't verify if %s is a Solid State Drive or not"

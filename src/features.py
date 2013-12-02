@@ -96,7 +96,7 @@ class Features(Gtk.Box):
          "kde" : "KDE",
          "razor" : "Razor-qt" }
 
-        txt = self.desktops[desktop] + " - " + _("Feature Selection")
+        txt = self.desktops[desktop] + " - " + _("Features")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.title.set_markup(txt)
 
