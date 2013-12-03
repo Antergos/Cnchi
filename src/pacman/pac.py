@@ -300,6 +300,9 @@ class Pac(object):
             self.queue_event('global_percent', i / n)
         else:
             target = _("Checking and loading packages...")
+            if _percent == 0:
+                # Hide global bar (left by cb_dl)
+                self.queue_event('progress', 'hide_global')
 
         percent = _percent / 100
         self.queue_event('target', target)
@@ -318,9 +321,12 @@ class Pac(object):
             self.queue_event('action', text)
             self.queue_event('percent', progress)
 
-            global_percent = self.total_downloaded / self.total_download_size
-            self.queue_event('global_percent', global_percent)
-            self.total_downloaded += total
+            # if pacman is just updating databases,
+            # total_download_size will be zero
+            if self.total_download_size > 0:
+                global_percent = self.total_downloaded / self.total_download_size
+                self.queue_event('global_percent', global_percent)
+                self.total_downloaded += total
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
