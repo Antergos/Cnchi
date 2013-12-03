@@ -208,6 +208,11 @@ class Slides(Gtk.Box):
                 logging.debug(event[1])
             elif event[0] == 'warning':
                 logging.warning(event[1])
+            elif event[0] == 'progress':
+                if event[1] == 'hide_all':
+                    self.progress_bar.hide()
+                    self.global_progress_bar.hide()
+                    self.global_progress_bar_is_hidden = True
             else:
                 # TODO: Check if logging slows down showing messages
                 #       remove logging.info in that case (and at least

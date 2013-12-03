@@ -1201,7 +1201,10 @@ class InstallationProcess(multiprocessing.Process):
                 self.enable_services(['ufw'])
 
     def configure_system(self):
-        """ Final install steps """
+        """ Final install steps """        
+        # Hide progress bars
+        self.queue_event('progress', 'hide_all')
+        
         # set clock, language, timezone
         # run mkinitcpio
         # populate pacman keyring
