@@ -134,22 +134,11 @@ class DesktopAsk(Gtk.Box):
             "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
             
-        label.set_line_wrap(True)
-        #label.set_justify(Gtk.Justification.FILL)
-        #label.set_size_request(-1, 100)
-        label.set_size_request(400, -1)
         label.set_markup(txt)
-
-        table = self.ui.get_object('desktop_info_table')
-        table.attach(label, 0, 1, 0, 1, Gtk.AttachOptions.SHRINK | Gtk.AttachOptions.FILL)
 
         image.set_from_file(self.desktops_dir + desktop + ".png")
 
         txt = _("Choose Your Desktop")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
 
