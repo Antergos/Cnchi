@@ -53,8 +53,6 @@ class Language(Gtk.Box):
         self.ui.add_from_file(os.path.join(self.ui_dir, "language.ui"))
         self.ui.connect_signals(self)
 
-        self.label_choose_language = self.ui.get_object("label_choose_language")
-
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
@@ -87,17 +85,13 @@ class Language(Gtk.Box):
                     self.set_language(lang_code)
 
     def translate_ui(self):
-        txt = _("Please choose your language:")
-        txt = '<span weight="bold">%s</span>' % txt
-        self.label_choose_language.set_markup(txt)
-
-        label = self.ui.get_object("welcome_label")
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
         txt = _("Cnchi is pre-release beta software that is under active development.\n"
         "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
         "setups. Please proceed with caution as data loss is possible!\n\n"
         "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
         txt = "<span weight='bold'>%s</span>\n\n" % txt_bold + txt
+        label = self.ui.get_object("welcome_label")
         label.set_markup(txt)
 
         txt = _("Welcome to Antergos!")
@@ -118,6 +112,7 @@ class Language(Gtk.Box):
         for lang in sorted_choices:
             box = Gtk.VBox()
             label = Gtk.Label(lang)
+            label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
             if current_language == lang:

@@ -2,55 +2,41 @@
 <!-- Generated with glade 3.16.0 on Sat Oct 12 18:38:54 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAlignment" id="language">
+  <object class="GtkBox" id="language">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="left_padding">20</property>
-    <property name="right_padding">25</property>
+    <property name="margin_left">20</property>
+    <property name="margin_bottom">10</property>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="height_request">300</property>
+            <property name="width_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+          <child>
+          <object class="GtkListBox" id="listbox">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+        </child>                
+        </object>
+        <packing>
+          <property name="expand">True</property>
+          <property name="fill">True</property>
+          <property name="position">0</property>
+        </packing>
+      </child>
     <child>
-      <object class="GtkBox" id="language_box">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkImage" id="image1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">10</property>
-            <child>
-              <object class="GtkLabel" id="label_choose_language">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_top">5</property>
-                <property name="label" translatable="yes">&lt;span weight="bold"&gt;Please choose your language:&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="height_request">300</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
-              <child>
-              <object class="GtkListBox" id="listbox">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-              </object>
-            </child>                
-            </object>
-            <packing>
-              <property name="expand">True</property>
-              <property name="fill">True</property>
-              <property name="position">1</property>
-            </packing>
-          </child>
+            <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -59,53 +45,34 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box1">
+          <object class="GtkLabel" id="welcome_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkImage" id="image1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="welcome_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">50</property>
-                <property name="yalign">0.89999997615814209</property>
-                <property name="label" translatable="yes">&lt;span weight='bold'&gt;This is an Alpha version.&lt;/span&gt;
+            <property name="margin_left">20</property>
+            <property name="yalign">1</property>
+            <property name="label" translatable="yes">&lt;span weight='bold'&gt;This is an Alpha version.&lt;/span&gt;
 
 
 Still undergoing development. It is known NOT to work yet with LVM, RAID, btrfs subvolumes, and other " advanced setups.
 Please proceed with caution as data loss is possible! 
 
 If you find any bug, please, visit &lt;a href='http://bugs.antergos.com'&gt;http://bugs.antergos.com&lt;/a&gt;</property>
-                <property name="use_markup">True</property>
-                <property name="justify">fill</property>
-                <property name="wrap">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="use_markup">True</property>
+            <property name="justify">fill</property>
+            <property name="wrap">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </object>
 </interface>
