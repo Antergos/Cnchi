@@ -45,15 +45,14 @@ class Pac(object):
 
         self.conflict_to_remove = None
 
-        # Some progress indicators (used in cb_progress callback)
-        self.last_target = None
-        self.last_percent = 100
-        self.last_i = -1
-
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
         self.last_dl_progress = None
         self.last_dl_total = None
+
+        # Used to show a global download progress bar
+        self.total_downloaded = 0
+        self.total_download_size = 0
 
         self.last_event = {}
 
@@ -174,7 +173,6 @@ class Pac(object):
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
-
         ok = self.finalize(t)
 
         return (0 if ok else 1)
@@ -246,7 +244,7 @@ class Pac(object):
         pass
 
     def cb_totaldl(self, total_size):
-        pass
+        self.total_download_size = total_size
 
     def cb_event(self, ID, event, tupel):
         action = ""
@@ -316,10 +314,13 @@ class Pac(object):
             self.last_dl_total = total
             self.last_dl_progress = 0
             progress = 0
-            text = _("Downloading %s (%d/%d)") % (filename, tx, total)
+            text = _("Downloading %s") % filename
             self.queue_event('action', text)
             self.queue_event('percent', progress)
-            self.queue_event('global_percent', tx / total)
+
+            global_percent = self.total_downloaded / self.total_download_size
+            self.queue_event('global_percent', global_percent)
+            self.total_downloaded += total
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
