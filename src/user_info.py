@@ -154,6 +154,10 @@ class UserInfo(Gtk.Box):
             error_label.hide()
 
         self.password_strength.hide()
+        
+        # Hide encryption if using LUKS encryption (user must use one or the other but not both)
+        if self.settings.get('use_luks'):
+            self.login['encrypt'].hide()
 
         # TODO: Fix home encryption and stop hidding its widget
         self.login['encrypt'].hide()

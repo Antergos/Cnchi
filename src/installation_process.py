@@ -36,7 +36,7 @@ import time
 import urllib.request
 import urllib.error
 import xml.etree.ElementTree as etree
-
+import encfs
 import auto_partition
 import parted3.fs_module as fs
 import canonical.misc as misc
@@ -1096,40 +1096,6 @@ class InstallationProcess(multiprocessing.Process):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    def encrypt_home(self):
-        """ Encrypt user's home folder """
-        # TODO: This method is not finished yet! Must be tested and sure it doesn't work as it is now.
-
-        # WARNING: ecryptfs-utils, rsync and lsof packages are needed.
-        # They should be added in the livecd AND in the "to install packages" xml list
-
-        # Load ecryptfs module
-        subprocess.check_call(['modprobe', 'ecryptfs'])
-
-        # Add encryptfs to /install/etc/modules-load.d/
-        path = os.path.join(self.dest_dir, "etc/modules-load.d/ecryptfs.conf")
-        with open(path, "w") as encryptfs_file:
-            encryptfs_file.write("ecryptfs\n")
-
-        # Get the username and passwd
-        username = self.settings.get('username')
-        passwd = self.settings.get('password')
-
-        # Migrate user home directory
-        # See http://blog.dustinkirkland.com/2011/02/long-overdue-introduction-ecryptfs.html
-        self.chroot_mount_special_dirs()
-        command = "LOGINPASS=%s chroot %s ecryptfs-migrate-home -u %s" % (passwd, self.dest_dir, username)
-        outp = self.check_output(command)
-        self.chroot_umount_special_dirs()
-
-        path = os.path.join(self.dest_dir, "root/cnchi-ecryptfs.log")
-        with open(path, "w") as encryptfs_log_file:
-            encryptfs_log_file.write(outp)
-
-        # Critically important, USER must login before the next reboot to complete the migration
-        # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
-        subprocess.check_call(['su', username])
-
     def copy_cache_files(self, cache_dir):
         """ Copy all packages fro specified directory to install's target """
         # Check in case user has given a wrong folder
@@ -1299,7 +1265,7 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["chmod", "440", sudoers_path])
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
-
+        
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
@@ -1452,9 +1418,9 @@ class InstallationProcess(multiprocessing.Process):
         # Configure user features
         self.setup_features()
 
-        # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
+            # Encrypt user's home directory if requested
             self.queue_event('debug', _("Encrypting user home dir..."))
-            self.encrypt_home()
+            encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
 
