@@ -316,10 +316,10 @@ class Pac(object):
             self.last_dl_total = total
             self.last_dl_progress = 0
             progress = 0
-            # text = _("Downloading %s: %d/%d") % (filename, tx, total)
-            text = _("Downloading '%s'") % filename
+            text = _("Downloading %s (%d/%d)") % (filename, tx, total)
             self.queue_event('action', text)
             self.queue_event('percent', progress)
+            self.queue_event('global_percent', tx / total)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
