@@ -505,7 +505,7 @@ class AutoPartition(object):
                 else:
                     home_keyfile = key_file[1]
                 fname = os.path.join(self.dest_dir, "etc/crypttab")
-                with open(fname, "a") as crypttab:
+                with open(fname, "w") as crypttab:
                     line = "cryptAntergosHome %s %s luks" % (luks_device[1], home_keyfile)
                     crypttab.write(line)
                     logging.debug("Added %s to /etc/crypttab" % line)
