@@ -92,6 +92,9 @@ class InstallationAutomatic(Gtk.Box):
         label = self.ui.get_object('label_luks_password_confirm')
         txt = _("Confirm your password:")
         label.set_markup(txt)
+        
+        btn = self.ui.get_object('checkbutton_show_password')
+        btn.set_label(_("show password"))
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
@@ -102,6 +105,13 @@ class InstallationAutomatic(Gtk.Box):
         #txt = _("Automatic Installation Mode")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt
         #self.title.set_markup(txt)
+
+    def on_checkbutton_show_password_toggled(self, widget):
+        """ show/hide LUKS passwords """
+        btn = self.ui.get_object('checkbutton_show_password')
+        show = btn.get_active()
+        self.entry['luks_password'].set_visibility(show)
+        self.entry['luks_password_confirm'].set_visibility(show)
 
     @misc.raise_privileges
     def populate_devices(self):            

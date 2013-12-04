@@ -194,11 +194,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'advanced':
             root_partition = self.mount_devices["/"]
 
-            # TODO: root_fs is never used! Fix this.
+            # NOTE: Advanced method formats root by default in installation_advanced
+            '''
             if root_partition in self.fs_devices:
                 root_fs = self.fs_devices[root_partition]
             else:
                 root_fs = "ext4"
+            '''
 
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
@@ -210,7 +212,6 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-            # NOTE: Advanced method formats root by default in installation_advanced
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):

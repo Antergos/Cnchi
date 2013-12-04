@@ -135,7 +135,7 @@ class Slides(Gtk.Box):
             Gtk.main_iteration()
 
     def set_message(self, txt):
-        txt = "<span color='darkred'>%s</span>" % txt
+        #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
     # This function is called from cnchi.py with a timeout function
