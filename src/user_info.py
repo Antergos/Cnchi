@@ -136,6 +136,9 @@ class UserInfo(Gtk.Box):
         self.login['pass'].set_label(_("Require my password to log in"))
         self.login['encrypt'].set_label(_("Encrypt my home folder"))
 
+        btn = self.ui.get_object('checkbutton_show_password')
+        btn.set_label(_("show password"))
+
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Create Your User Account"))
 
