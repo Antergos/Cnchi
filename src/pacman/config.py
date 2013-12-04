@@ -33,7 +33,10 @@ import argparse
 import collections
 import warnings
 
-import pyalpm
+try:
+    import pyalpm
+except ImportError:
+    pass
 
 class InvalidSyntax(Warning):
     """ Class to show warning when a pacman.conf parse error is issued """
