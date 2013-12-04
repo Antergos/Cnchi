@@ -310,6 +310,7 @@ class InstallationProcess(multiprocessing.Process):
             all_ok = False
         except:
             # unknown error
+            logging.error(_("Unknown error"))
             self.running = False
             self.error = True
             all_ok = False
