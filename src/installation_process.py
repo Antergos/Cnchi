@@ -1166,16 +1166,80 @@ class InstallationProcess(multiprocessing.Process):
             if os.path.exists(service):
                 self.enable_services(['ufw'])
 
+    def set_autologin(self):
+        """ Enables automatic login for the installed desktop manager """
+        self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
+
+        if self.desktop_manager == 'gdm':
+            # Systems with GDM as Desktop Manager
+            gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+            with open(gdm_conf_path, "w") as gdm_conf:
+                gdm_conf.write('# Cnchi - Enable automatic login for user\n')
+                gdm_conf.write('[daemon]\n')
+                gdm_conf.write('AutomaticLogin=%s\n' % username)
+                gdm_conf.write('AutomaticLoginEnable=True\n')
+        elif self.desktop_manager == 'kdm':
+            # Systems with KDM as Desktop Manager
+            kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+            text = []
+            with open(kdm_conf_path, "r") as kdm_conf:
+                text = kdm_conf.readlines()
+            with open(kdm_conf_path, "w") as kdm_conf:
+                for line in text:
+                    if '#AutoLoginEnable=true' in line:
+                        line = 'AutoLoginEnable=true\n'
+                    if 'AutoLoginUser=' in line:
+                        line = 'AutoLoginUser=%s\n' % username
+                    kdm_conf.write(line)
+        elif self.desktop_manager == 'lxdm':
+            # Systems with LXDM as Desktop Manager
+            lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+            text = []
+            with open(lxdm_conf_path, "r") as lxdm_conf:
+                text = lxdm_conf.readlines()
+            with open(lxdm_conf_path, "w") as lxdm_conf:
+                for line in text:
+                    if '# autologin=dgod' in line:
+                        line = 'autologin=%s\n' % username
+                    lxdm_conf.write(line)
+        elif self.desktop_manager == 'lightdm':
+            # Systems with LightDM as Desktop Manager
+            # Ideally, we should use configparser for the ini conf file,
+            # but we just do a simple text replacement for now, as it worksforme(tm)
+            lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+            text = []
+            with open(lightdm_conf_path, "r") as lightdm_conf:
+                text = lightdm_conf.readlines()
+            with open(lightdm_conf_path, "w") as lightdm_conf:
+                for line in text:
+                    if '#autologin-user=' in line:
+                        line = 'autologin-user=%s\n' % username
+                    lightdm_conf.write(line)
+        elif self.desktop_manager == 'slim':
+            # Systems with Slim as Desktop Manager
+            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
+            text = []
+            with open(slim_conf_path, "r") as slim_conf:
+                text = slim_conf.readlines()
+            with open(slim_conf_path, "w") as slim_conf:
+                for line in text:
+                    if 'auto_login' in line:
+                        line = 'auto_login yes\n'
+                    if 'default_user' in line:
+                        line = 'default_user %s\n' % username
+                    slim_conf.write(line)
+
     def configure_system(self):
-        """ Final install steps """        
-        # Hide progress bars
-        self.queue_event('progress', 'hide_all')
+        """ Final install steps
+            Set clock, language, timezone
+            Run mkinitcpio
+            Populate pacman keyring
+            Setup systemd services
+            ... and more """
         
-        # set clock, language, timezone
-        # run mkinitcpio
-        # populate pacman keyring
-        # setup systemd services
-        # ... check configure_system from arch-setup
+        # All downloading and installing has been done, so we hide progress bars
+        # (they are 100% both so it makes no sense to still show them)
+        self.queue_event('progress', 'hide_all')
 
         self.queue_event('action', _("Configuring your new system"))
 
@@ -1209,7 +1273,9 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
             self.queue_event('debug', _('Mirror list copied.'))
-        except:
+        except FileNotFoundError:
+            logging.warning(_("Can't copy mirrorlist file"))
+        except FileExistsError:
             pass
 
         # Copy important config files to target system
@@ -1218,8 +1284,9 @@ class InstallationProcess(multiprocessing.Process):
         for path in files:
             try:
                 shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
-            except:
-                pass
+            except FileNotFoundError, FileExistsError:
+                logging.warning(_("Can't copy %s file") % path)
+
         self.queue_event('debug', _('Important configuration files copied.'))
 
         desktop = self.settings.get('desktop')
@@ -1283,7 +1350,7 @@ class InstallationProcess(multiprocessing.Process):
             with open(hostname_path, "w") as hostname_file:
                 hostname_file.write(hostname)
 
-        self.queue_event('debug', _('Hostname  %s set.') % hostname)
+        self.queue_event('debug', _('Hostname set to %s.') % hostname)
 
         # User password is the root password
         self.change_user_password('root', password)
@@ -1327,64 +1394,6 @@ class InstallationProcess(multiprocessing.Process):
                 xorg_conf_xkb.write('EndSection\n')
             self.queue_event('debug', _("00-keyboard.conf written."))
 
-            # Set autologin if selected
-            if self.settings.get('require_password') is False:
-                self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
-                # Systems with GDM as Desktop Manager
-                if self.desktop_manager == 'gdm':
-                    gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
-                    with open(gdm_conf_path, "wt") as gdm_conf:
-                        gdm_conf.write('# Enable automatic login for user\n')
-                        gdm_conf.write('[daemon]\n')
-                        gdm_conf.write('AutomaticLogin=%s\n' % username)
-                        gdm_conf.write('AutomaticLoginEnable=True\n')
-
-                # Systems with KDM as Desktop Manager
-                elif self.desktop_manager == 'kdm':
-                    kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
-                    text = []
-                    with open(kdm_conf_path, "r") as kdm_conf:
-                        text = kdm_conf.readlines()
-
-                    with open(kdm_conf_path, "w") as kdm_conf:
-                        for line in text:
-                            if '#AutoLoginEnable=true' in line:
-                                line = '#AutoLoginEnable=true \n'
-                                line = line[1:]
-                            if 'AutoLoginUser=' in line:
-                                line = 'AutoLoginUser=%s \n' % username
-                            kdm_conf.write(line)
-
-                # Systems with LXDM as Desktop Manager
-                elif self.desktop_manager == 'lxdm':
-                    lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
-                    text = []
-                    with open(lxdm_conf_path, "r") as lxdm_conf:
-                        text = lxdm_conf.readlines()
-
-                    with open(lxdm_conf_path, "w") as lxdm_conf:
-                        for line in text:
-                            if '# autologin=dgod' in line and line[0] == "#":
-                                # uncomment line
-                                line = '# autologin=%s' % username
-                                line = line[1:]
-                            lxdm_conf.write(line)
-
-                # Systems with LightDM as the Desktop Manager
-                elif self.desktop_manager == 'lightdm':
-                    lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
-                    # Ideally, use configparser for the ini conf file, but just do
-                    # a simple text replacement for now
-                    text = []
-                    with open(lightdm_conf_path, "r") as lightdm_conf:
-                        text = lightdm_conf.readlines()
-
-                    with open(lightdm_conf_path, "w") as lightdm_conf:
-                        for line in text:
-                            if '#autologin-user=' in line:
-                                line = 'autologin-user=%s\n' % username
-                            lightdm_conf.write(line)
-
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
@@ -1392,35 +1401,33 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
 
-        self.queue_event('debug', _("Call post-install script to execute gsettings commands"))
+        self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
-        # In openbox "desktop", the postinstall script writes /etc/slim.conf
-        # so we have to modify it here (after running the script).
         # Set autologin if selected
-        if self.settings.get('require_password') is False and \
-           self.desktop_manager == 'slim':
-            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
-            text = []
-            with open(slim_conf_path, "r") as slim_conf:
-                text = slim_conf.readlines()
-            with open(slim_conf_path, "w") as slim_conf:
-                for line in text:
-                    if 'auto_login' in line:
-                        line = 'auto_login yes\n'
-                    if 'default_user' in line:
-                        line = 'default_user %s\n' % username
-                    slim_conf.write(line)
+        # Warning: In openbox "desktop", the postinstall script writes /etc/slim.conf
+        # so we have to modify it here (after running the post-install script).
+        if self.settings.get('require_password') is False:
+            self.set_autologin()
 
         # Configure user features
         self.setup_features()
 
+        # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
-            # Encrypt user's home directory if requested
             self.queue_event('debug', _("Encrypting user home dir..."))
             encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
 
+        # Last but not least, copy Cnchi log to new installation
+        datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
+        dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
+        try:
+            shutil.copy("/tmp/cnchi.log", dst)
+        except FileNotFoundError:
+            logging.warning(_("Can't copy Cnchi log to /var/log"))
+        except FileExistsError:
+            pass
