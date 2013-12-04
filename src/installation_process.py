@@ -1284,8 +1284,10 @@ class InstallationProcess(multiprocessing.Process):
         for path in files:
             try:
                 shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
-            except FileNotFoundError, FileExistsError:
-                logging.warning(_("Can't copy %s file") % path)
+            except FileNotFoundError:
+                logging.error(_("Can't copy %s file, file not found.") % path)
+            except FileExistsError:
+                logging.error(_("Can't copy %s file, file already exists.") % path)
 
         self.queue_event('debug', _('Important configuration files copied.'))
 

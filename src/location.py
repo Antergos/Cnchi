@@ -58,6 +58,8 @@ class Location(Gtk.Box):
         self.listbox_items = 0
 
         self.load_locales()
+        
+        self.selected_country = ""
 
         super().add(self.ui.get_object("location"))
 
@@ -104,9 +106,6 @@ class Location(Gtk.Box):
         else:
             self.select_first_listbox_item()
             self.translate_ui()
-
-            # If I don't do this, check page is not shown well when skipping this page (location)
-            # If I do this, we can see location page for a second (it's ugly)
             self.show_all()
 
     def load_locales(self):
@@ -171,6 +170,8 @@ class Location(Gtk.Box):
             box.add(label)
             self.listbox.add(box)
             #self.select_default_row(current_language)
+        
+        self.selected_country = areas[0]
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         if listbox_row is not None:
