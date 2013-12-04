@@ -1230,13 +1230,13 @@ class InstallationAdvanced(Gtk.Box):
         if tree_iter == None:
             return
 
-        path = model[tree_iter][0]
+        disk_path = model[tree_iter][0]
 
         # Be sure to just call get_devices once
         if self.disks == None:
             self.disks = pm.get_devices()
 
-        disk_sel = self.disks[path]
+        disk_sel = self.disks[disk_path]
 
         dialog = self.ui.get_object("create_table_dialog")
         response = dialog.run()
@@ -1251,16 +1251,102 @@ class InstallationAdvanced(Gtk.Box):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                logging.info(_("Creating a new %s partition table for disk %s") % (ptype, path))
+                logging.info(_("Creating a new %s partition table for disk %s") % (ptype, disk_path))
                 # remove debug, this doesn't actually do anything...
-                new_disk = pm.make_new_disk(path, ptype)
-                self.disks[path] = new_disk
+                new_disk = pm.make_new_disk(disk_path, ptype)
+                self.disks[disk_path] = new_disk
 
                 self.fill_grub_device_entry()
                 self.fill_partition_list()
+                
+                if ptype == 'gpt' and not os.path.exists("/sys/firmware/efi/systab"):
+                    # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
+                    show.warning(_('GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk '
+                        'or bios_grub flag in GNU Parted) in BIOS systems to embed its core.img file due to lack of '
+                        'post-MBR embed gap in GPT disks. Runtime GPT support in GRUB is provided by the part_gpt '
+                        'module, and is not related to the BIOS Boot Partition requirement\n\n'
+                        'GRUB in BIOS-GPT configuration requires a BIOS boot partition to embed its core.img in the '
+                        'absence of post-MBR gap in GPT partitioned systems (which is taken over by the GPT Primary '
+                        'Header and Primary Partition table). This partition is used by GRUB only in BIOS-GPT setups. '
+                        'No such partition type exists in case of MBR partitioning (at least not for GRUB). This '
+                        'partition is also not required if the system is UEFI based, as no embedding of bootsectors '
+                        'takes place in that case.\n\n'
+                        'For a BIOS-GPT configuration, create a 1007 KiB partition at the beginning of the disk with '
+                        'no filesystem. The size of 1007 KiB will allow for the following partition to be correctly '
+                        'alligned at 1024 KiB. If needed, the partition can also be located somewhere else on the '
+                        'disk, but it should be within the first 2 TiB region. Set the partition type to ef02.\n\n'
+                        'The GPT partition also creates a protective MBR partition to stop unsupported tools from '
+                        'modifying it. You may need to set a bootable flag on this protective MBR or some BIOSes/EFIs '
+                        'will refuse to boot.\n\n'
+                        'Cnchi will create this special partition for you.'))
+                    self.create_bios_gpt_boot_partition(disk_path)
 
         dialog.hide()
 
+    def create_bios_gpt_boot_partition(self, disk_path):
+        """ Create an unformatted partition with no filesystem and with a bios_grub flag on. """
+        # It won't be formated
+        formatme = False
+        
+        part_type = pm.PARTITION_FREESPACE
+
+        self.disks_changed.append(disk_path)
+
+        # Be sure to just call get_devices once
+        if self.disks == None:
+            self.disks = pm.get_devices()
+
+        disk = self.disks[disk_path]
+        dev = disk.device
+
+        #partitions = pm.get_partitions(disk)
+        #p = partitions[partition_path]
+
+        # Get how many primary partitions are already created on disk
+        if disk.primaryPartitionCount > 0:
+            # BIOS GPT Boot partition must be the first one on the disk
+            logging.error("Can't create BIOS GPT Boot partition!")
+            return
+
+        #max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
+
+        mylabel = "BIOS_GPT_BOOT"
+
+        mymount = ""
+        myfmt = ""
+
+        # Size must be 2MiB
+        size = 2
+
+        beg_var = True
+
+        start_sector = p.geometry.start
+        end_sector = p.geometry.end
+        geometry = pm.geom_builder(disk, start_sector,
+                                   end_sector, size, beg_var)
+
+        part = pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
+        
+        (res, err) = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
+        
+        if res:
+            logging.error(err)
+
+        # Store stage partition info in self.stage_opts
+        old_parts = []
+        for y in self.all_partitions:
+            for z in y:
+                old_parts.append(z)
+
+        partitions = pm.get_partitions(disk)
+        for e in partitions:
+            if e not in old_parts:
+                uid = self.gen_partition_uid(p=partitions[e])
+                self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
+
+        # Update partition list treeview
+        self.fill_partition_list()
+    
     def on_partition_list_lvm_activate(self, button):
         pass
 
@@ -1528,10 +1614,12 @@ class InstallationAdvanced(Gtk.Box):
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
                         logging.info(_("Creating %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
                         if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
-                            if not pm.get_flag(partitions[partition_path], 1):
-                                x = pm.set_flag(1, partitions[partition_path])
-                                if not self.testing:
-                                    pm.finalize_changes(partitions[partition_path].disk)
+                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
+                                (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
+                            if "swap" in fisy:
+                                (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
+                            if not self.testing:
+                                pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
@@ -1540,8 +1628,8 @@ class InstallationAdvanced(Gtk.Box):
                                 self.blvm = True
                                 for ee in pvs[vgname]:
                                     print(partitions)
-                                    if not pm.get_flag(partitions[ee], 1):
-                                        x = pm.set_flag(1, partitions[ee])
+                                    if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
+                                        x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
                         # Only format if they want formatting

@@ -47,6 +47,23 @@ PARTITION_PROTECTED = 10
 # Disk types
 DISK_EXTENDED = 1
 
+# Partition flags
+PED_PARTITION_BOOT = 1
+PED_PARTITION_ROOT = 2
+PED_PARTITION_SWAP = 3
+PED_PARTITION_HIDDEN = 4
+PED_PARTITION_RAID = 5
+PED_PARTITION_LVM = 6
+PED_PARTITION_LBA = 7
+PED_PARTITION_HPSERVICE = 8
+PED_PARTITION_PALO = 9
+PED_PARTITION_PREP = 10
+PED_PARTITION_MSFT_RESERVED = 11
+PED_PARTITION_BIOS_GRUB = 12
+PED_PARTITION_APPLE_TV_RECOVERY = 13
+PED_PARTITION_DIAG = 14
+PED_PARTITION_LEGACY_BOOT = 15
+
 @misc.raise_privileges
 def get_devices():
     device_list = parted.getAllDevices()
@@ -194,11 +211,13 @@ def create_partition(diskob, part_type, geom):
     mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend-1)
     maxgeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
     if diskob.maxPartitionLength < maxgeom.length:
-        logging.warning('Partition is too large!')
+        logging.error('Partition is too large!')
+        return None
     else:
         npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
         nconstraint = parted.Constraint(minGeom=mingeom, maxGeom=maxgeom)
         ncont = diskob.addPartition(partition=npartition, constraint=nconstraint)
+        return npartition
 
 def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
                  beginning=True):
@@ -261,23 +280,6 @@ def get_largest_size(diskob, part):
     mbs = (sec_size * part.length) / 1000000
     return mbs
 
-'''HERE ARE PARTITION FLAGS.  We will likely just use 1, 2 and 3)
-            PED_PARTITION_BOOT=1,
-62	        PED_PARTITION_ROOT=2,
-63	        PED_PARTITION_SWAP=3,
-64	        PED_PARTITION_HIDDEN=4,
-65	        PED_PARTITION_RAID=5,
-66	        PED_PARTITION_LVM=6,
-67	        PED_PARTITION_LBA=7,
-68	        PED_PARTITION_HPSERVICE=8,
-69	        PED_PARTITION_PALO=9,
-70	        PED_PARTITION_PREP=10,
-71	        PED_PARTITION_MSFT_RESERVED=11,
-72	        PED_PARTITION_BIOS_GRUB=12,
-73	        PED_PARTITION_APPLE_TV_RECOVERY=13,
-74	        PED_PARTITION_DIAG=14,
-75	        PED_PARTITION_LEGACY_BOOT=15
-'''
 # The return value is tuple.  First arg is 0 for success, 1 for fail
 # Second arg is either None if successful
 # or exception if failure
