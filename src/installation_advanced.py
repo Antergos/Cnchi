@@ -1616,8 +1616,6 @@ class InstallationAdvanced(Gtk.Box):
                         if ((mnt == '/' and noboot) or mnt == '/boot') and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
                                 (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
-                            if "swap" in fisy:
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
                             if not self.testing:
                                 pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
@@ -1632,6 +1630,11 @@ class InstallationAdvanced(Gtk.Box):
                                         x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
+
+                        #if "swap" in fisy:
+                        #    (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
+                        #    pm.finalize_changes(partitions[partition_path].disk)
+                        
                         # Only format if they want formatting
                         if fmt:
                             # All of fs module takes paths, not partition objs
