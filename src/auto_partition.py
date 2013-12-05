@@ -219,7 +219,7 @@ class AutoPartition(object):
                 if self.home:
                     # In this case we'll have two LUKS devices, one for root
                     # and the other one for /home
-                    luks = [root, home]
+                    luks.append(home)
                     home = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
