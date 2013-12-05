@@ -79,25 +79,33 @@ def unmount_all(dest_dir):
 
     # Remove all previous Antergos LVM volumes
     # (it may have been left created due to a previous failed installation)
-    if os.path.exists("/dev/mapper/AntergosRoot"):
-        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
-    if os.path.exists("/dev/mapper/AntergosSwap"):
-        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
-    if os.path.exists("/dev/mapper/AntergosHome"):
-        subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
-    if os.path.exists("/dev/AntergosVG"):
-        subprocess.check_call(["vgremove", "-f", "AntergosVG"])
-    pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
-    if len(pvolumes[0]) > 0:
-        for pv in pvolumes:
-            pv = pv.strip(" ")
-            subprocess.check_call(["pvremove", "-f", pv])
+    try:
+        if os.path.exists("/dev/mapper/AntergosRoot"):
+            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
+        if os.path.exists("/dev/mapper/AntergosSwap"):
+            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
+        if os.path.exists("/dev/mapper/AntergosHome"):
+            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
+        if os.path.exists("/dev/AntergosVG"):
+            subprocess.check_call(["vgremove", "-f", "AntergosVG"])
+        pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
+        if len(pvolumes[0]) > 0:
+            for pv in pvolumes:
+                pv = pv.strip(" ")
+                subprocess.check_call(["pvremove", "-f", pv])
+    except subprocess.CalledProcessError as err:
+        logging.warning(_("Can't delete existent LVM volumes (see below)"))
+        logging.warning(err)
 
     # Close cryptAntergos (it may have been left open because of a previous failed installation)
-    if os.path.exists("/dev/mapper/cryptAntergos"):
-        subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
-    if os.path.exists("/dev/mapper/cryptAntergosHome"):
-        subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
+    try:
+        if os.path.exists("/dev/mapper/cryptAntergos"):
+            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
+        if os.path.exists("/dev/mapper/cryptAntergosHome"):
+            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
+    except subprocess.CalledProcessError as err:
+        logging.warning(_("Can't close LUKS devices (see below)"))
+        logging.warning(err)
 
 class AutoPartition(object):
     """ Class used by the automatic installation method """
@@ -129,8 +137,8 @@ class AutoPartition(object):
                     subprocess.check_call(["swapoff", device])
                 subprocess.check_call(["mkswap", "-L", label_name, device])
                 subprocess.check_call(["swapon", device])
-            except subprocess.CalledProcessError as e:
-                logging.warning(e.output)
+            except subprocess.CalledProcessError as err:
+                logging.warning(err.output)
         else:
             mkfs = { "xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
                      "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
@@ -496,7 +504,6 @@ class AutoPartition(object):
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
         # NOTE: /etc/default/grub will be modified in installation_process.py, too.
 
-        # TODO: This if is too long, rewrite it
         if self.luks:
             if self.home and not self.lvm:
                 # Setup Antergos to unlock home partition at boot
@@ -508,7 +515,7 @@ class AutoPartition(object):
                 subprocess.check_call(["mkdir", "-p", fname])
                 fname = os.path.join(self.dest_dir, "etc/crypttab")
                 with open(fname, "a") as crypttab:
-                    line = "cryptAntergosHome %s %s luks" % (luks_device[1], home_keyfile)
+                    line = "cryptAntergosHome %s %s luks" % (luks_devices[1], home_keyfile)
                     crypttab.write(line)
                     logging.debug("Added %s to /etc/crypttab" % line)
 
