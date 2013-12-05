@@ -287,7 +287,7 @@ class AutoPartition(object):
 
         return fs_devices
 
-    def setup_luks(self, luks_device, key_file):
+    def setup_luks(self, luks_device, luks_name, key_file):
         """ Setups a luks device """
         # For now, we we'll use the same password for root and /home
         # If instead user wants to use a key file, we'll have two different key files.
@@ -305,7 +305,7 @@ class AutoPartition(object):
 
             # Set up luks with a keyfile
             subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, key_file])
-            subprocess.check_call(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file", key_file])
+            subprocess.check_call(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", key_file])
         else:
             # Set up luks with a password key
             luks_key_pass_bytes = bytes(self.luks_key_pass, 'UTF-8')
@@ -314,9 +314,9 @@ class AutoPartition(object):
                 "--key-file=-", luks_device], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             p.communicate(input=luks_key_pass_bytes)[0]
 
-            p = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, "cryptAntergos", "-q", "--key-file=-"],
+            p = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            p.communicate(input=luks_key_pass_bytes)[0]      
+            p.communicate(input=luks_key_pass_bytes)[0]
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
@@ -470,9 +470,9 @@ class AutoPartition(object):
             logging.debug("Boot %s, Swap %s, Root %s, Home %s", boot_device, swap_device, root_device, home_device)
 
         if self.luks:
-            self.setup_luks(luks_devices[0], key_files[0])
+            self.setup_luks(luks_devices[0], "cryptAntergos", key_files[0])
             if self.home and not self.lvm:
-                self.setup_luks(luks_devices[1], key_files[1])
+                self.setup_luks(luks_devices[1], "cryptAntergosHome", key_files[1])
 
         if self.lvm:
             # /dev/sdX1 is /boot
