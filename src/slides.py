@@ -80,7 +80,7 @@ class Slides(Gtk.Box):
 
         self.scrolled_window.add(self.webview)
 
-        self.install_ok = _("Installation Complete!\n" \
+        self.install_ok = _("Installation Complete!\n"
                             "Do you want to restart your system now?")
 
         super().add(builder.get_object("slides"))
@@ -91,7 +91,7 @@ class Slides(Gtk.Box):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
 
-        self.install_ok = _("Installation Complete!\n" \
+        self.install_ok = _("Installation Complete!\n"
                             "Do you want to restart your system now?")
 
         #self.header.set_title("Cnchi")

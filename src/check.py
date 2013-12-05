@@ -78,7 +78,7 @@ class Check(Gtk.Box):
         self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least %dGB available storage space." % int(MIN_ROOT_SIZE / 1000000000))
+        txt = _("has at least %dGB available storage space.") % int(MIN_ROOT_SIZE / 1000000000)
         txt += " (*)"
         self.prepare_enough_space.props.label = txt
         
