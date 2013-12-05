@@ -32,11 +32,12 @@ import queue
 
 try:
     import pyalpm
-    import pacman.config
 except ImportError:
-    msg = _("pyalpm not found! This installer won't work.")
+    msg = "pyalpm not found! This installer won't work."
     print(msg)
     logging.error(msg)
+
+import pacman.config
 
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
