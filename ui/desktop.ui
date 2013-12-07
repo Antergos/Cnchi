@@ -1,83 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Nov  3 16:36:16 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Dec  4 19:31:05 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkBox" id="desktop">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_top">10</property>
     <property name="orientation">vertical</property>
+    <property name="spacing">40</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_left">80</property>
         <property name="margin_right">20</property>
+        <property name="margin_top">10</property>
         <property name="spacing">40</property>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="width_request">150</property>
+            <property name="height_request">50</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
+            <property name="can_focus">True</property>
+            <property name="margin_right">10</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkEventBox" id="eventbox1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="width_request">150</property>
-                <property name="height_request">180</property>
+              <object class="GtkTreeView" id="treeview_desktop">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="margin_right">10</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="treeview_desktop">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="headers_visible">False</property>
-                    <property name="headers_clickable">False</property>
-                    <signal name="cursor-changed" handler="on_treeview_desktop_cursor_changed" swapped="no"/>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection" id="treeview-selection1"/>
-                    </child>
-                  </object>
+                <property name="headers_visible">False</property>
+                <signal name="cursor-changed" handler="on_treeview_desktop_cursor_changed" swapped="no"/>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection"/>
                 </child>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -85,6 +45,8 @@
           <object class="GtkImage" id="image_desktop">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">start</property>
+            <property name="margin_left">20</property>
             <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
@@ -95,7 +57,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
@@ -105,10 +67,14 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_left">20</property>
-        <property name="margin_right">20</property>
+        <property name="margin_right">10</property>
         <property name="xalign">0</property>
         <property name="label" translatable="yes">label</property>
         <property name="use_markup">True</property>
+        <property name="justify">fill</property>
+        <property name="wrap">True</property>
+        <property name="width_chars">85</property>
+        <property name="max_width_chars">85</property>
       </object>
       <packing>
         <property name="expand">False</property>

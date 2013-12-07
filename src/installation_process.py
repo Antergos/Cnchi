@@ -36,17 +36,7 @@ import time
 import urllib.request
 import urllib.error
 import xml.etree.ElementTree as etree
-
-#BASE_DIR = os.path.dirname(__file__) or '.'
-
-# Insert the src/pacman directory at the front of the path.
-#PACMAN_DIR = os.path.join(BASE_DIR, 'pacman')
-#sys.path.insert(0, PACMAN_DIR)
-
-# Insert the src/parted3 directory at the front of the path.
-#PARTED_DIR = os.path.join(BASE_DIR, 'parted3')
-#sys.path.insert(0, PARTED_DIR)
-
+import encfs
 import auto_partition
 import parted3.fs_module as fs
 import canonical.misc as misc
@@ -144,9 +134,6 @@ class InstallationProcess(multiprocessing.Process):
     @misc.raise_privileges
     def run(self):
         """ Run installation """
-        # process = multiprocessing.current_process()
-        # log.debug("Starting: [%d] %s" % (process.pid, process.name))
-
         # Common vars
         self.packages = []
 
@@ -156,20 +143,9 @@ class InstallationProcess(multiprocessing.Process):
             os.makedirs(self.dest_dir)
         else:
             # If we're recovering from a failed/stoped install, there'll be
-            # some mounted directories. Try to unmount them first
-
-            install_dirs = { "boot", "dev", "proc", "sys", "var" }
-            for i_dir in install_dirs:
-                i_dir = os.path.join(self.dest_dir, i_dir)
-                (fsname, fstype, writable) = misc.mount_info(i_dir)
-                if fsname:
-                    subprocess.check_call(['umount', i_dir])
-                    self.queue_event('debug', _("%s unmounted") % i_dir)
-            # now we can unmount /install
-            (fsname, fstype, writable) = misc.mount_info(self.dest_dir)
-            if fsname:
-                subprocess.check_call(['umount', self.dest_dir])
-                self.queue_event('debug', _("%s unmounted") % self.dest_dir)
+            # some mounted directories. Try to unmount them first.
+            # We use unmount_all from auto_partition to do this.
+            auto_partition.unmount_all(self.dest_dir)
 
         self.kernel_pkg = "linux"
         self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
@@ -218,11 +194,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'advanced':
             root_partition = self.mount_devices["/"]
 
-            # TODO: root_fs is never used! Fix this.
+            # NOTE: Advanced method formats root by default in installation_advanced
+            '''
             if root_partition in self.fs_devices:
                 root_fs = self.fs_devices[root_partition]
             else:
                 root_fs = "ext4"
+            '''
 
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
@@ -234,7 +212,6 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-            # NOTE: Advanced method formats root by default in installation_advanced
 
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
@@ -334,6 +311,7 @@ class InstallationProcess(multiprocessing.Process):
             all_ok = False
         except:
             # unknown error
+            logging.error(_("Unknown error"))
             self.running = False
             self.error = True
             all_ok = False
@@ -886,7 +864,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile"' % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
 
@@ -1120,40 +1098,6 @@ class InstallationProcess(multiprocessing.Process):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    def encrypt_home(self):
-        """ Encrypt user's home folder """
-        # TODO: This method is not finished yet! Must be tested and sure it doesn't work as it is now.
-
-        # WARNING: ecryptfs-utils, rsync and lsof packages are needed.
-        # They should be added in the livecd AND in the "to install packages" xml list
-
-        # Load ecryptfs module
-        subprocess.check_call(['modprobe', 'ecryptfs'])
-
-        # Add encryptfs to /install/etc/modules-load.d/
-        path = os.path.join(self.dest_dir, "etc/modules-load.d/ecryptfs.conf")
-        with open(path, "w") as encryptfs_file:
-            encryptfs_file.write("ecryptfs\n")
-
-        # Get the username and passwd
-        username = self.settings.get('username')
-        passwd = self.settings.get('password')
-
-        # Migrate user home directory
-        # See http://blog.dustinkirkland.com/2011/02/long-overdue-introduction-ecryptfs.html
-        self.chroot_mount_special_dirs()
-        command = "LOGINPASS=%s chroot %s ecryptfs-migrate-home -u %s" % (passwd, self.dest_dir, username)
-        outp = self.check_output(command)
-        self.chroot_umount_special_dirs()
-
-        path = os.path.join(self.dest_dir, "root/cnchi-ecryptfs.log")
-        with open(path, "w") as encryptfs_log_file:
-            encryptfs_log_file.write(outp)
-
-        # Critically important, USER must login before the next reboot to complete the migration
-        # User should run ecryptfs-unwrap-passphrase and write down the generated passphrase
-        subprocess.check_call(['su', username])
-
     def copy_cache_files(self, cache_dir):
         """ Copy all packages fro specified directory to install's target """
         # Check in case user has given a wrong folder
@@ -1224,13 +1168,80 @@ class InstallationProcess(multiprocessing.Process):
             if os.path.exists(service):
                 self.enable_services(['ufw'])
 
+    def set_autologin(self):
+        """ Enables automatic login for the installed desktop manager """
+        self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
+
+        if self.desktop_manager == 'gdm':
+            # Systems with GDM as Desktop Manager
+            gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+            with open(gdm_conf_path, "w") as gdm_conf:
+                gdm_conf.write('# Cnchi - Enable automatic login for user\n')
+                gdm_conf.write('[daemon]\n')
+                gdm_conf.write('AutomaticLogin=%s\n' % username)
+                gdm_conf.write('AutomaticLoginEnable=True\n')
+        elif self.desktop_manager == 'kdm':
+            # Systems with KDM as Desktop Manager
+            kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+            text = []
+            with open(kdm_conf_path, "r") as kdm_conf:
+                text = kdm_conf.readlines()
+            with open(kdm_conf_path, "w") as kdm_conf:
+                for line in text:
+                    if '#AutoLoginEnable=true' in line:
+                        line = 'AutoLoginEnable=true\n'
+                    if 'AutoLoginUser=' in line:
+                        line = 'AutoLoginUser=%s\n' % username
+                    kdm_conf.write(line)
+        elif self.desktop_manager == 'lxdm':
+            # Systems with LXDM as Desktop Manager
+            lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+            text = []
+            with open(lxdm_conf_path, "r") as lxdm_conf:
+                text = lxdm_conf.readlines()
+            with open(lxdm_conf_path, "w") as lxdm_conf:
+                for line in text:
+                    if '# autologin=dgod' in line:
+                        line = 'autologin=%s\n' % username
+                    lxdm_conf.write(line)
+        elif self.desktop_manager == 'lightdm':
+            # Systems with LightDM as Desktop Manager
+            # Ideally, we should use configparser for the ini conf file,
+            # but we just do a simple text replacement for now, as it worksforme(tm)
+            lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+            text = []
+            with open(lightdm_conf_path, "r") as lightdm_conf:
+                text = lightdm_conf.readlines()
+            with open(lightdm_conf_path, "w") as lightdm_conf:
+                for line in text:
+                    if '#autologin-user=' in line:
+                        line = 'autologin-user=%s\n' % username
+                    lightdm_conf.write(line)
+        elif self.desktop_manager == 'slim':
+            # Systems with Slim as Desktop Manager
+            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
+            text = []
+            with open(slim_conf_path, "r") as slim_conf:
+                text = slim_conf.readlines()
+            with open(slim_conf_path, "w") as slim_conf:
+                for line in text:
+                    if 'auto_login' in line:
+                        line = 'auto_login yes\n'
+                    if 'default_user' in line:
+                        line = 'default_user %s\n' % username
+                    slim_conf.write(line)
+
     def configure_system(self):
-        """ Final install steps """
-        # set clock, language, timezone
-        # run mkinitcpio
-        # populate pacman keyring
-        # setup systemd services
-        # ... check configure_system from arch-setup
+        """ Final install steps
+            Set clock, language, timezone
+            Run mkinitcpio
+            Populate pacman keyring
+            Setup systemd services
+            ... and more """
+        
+        # All downloading and installing has been done, so we hide progress bars
+        # (they are 100% both so it makes no sense to still show them)
+        self.queue_event('progress', 'hide_all')
 
         self.queue_event('action', _("Configuring your new system"))
 
@@ -1264,7 +1275,9 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
             self.queue_event('debug', _('Mirror list copied.'))
-        except:
+        except FileNotFoundError:
+            logging.warning(_("Can't copy mirrorlist file"))
+        except FileExistsError:
             pass
 
         # Copy important config files to target system
@@ -1273,8 +1286,11 @@ class InstallationProcess(multiprocessing.Process):
         for path in files:
             try:
                 shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
-            except:
-                pass
+            except FileNotFoundError:
+                logging.error(_("Can't copy %s file, file not found.") % path)
+            except FileExistsError:
+                logging.error(_("Can't copy %s file, file already exists.") % path)
+
         self.queue_event('debug', _('Important configuration files copied.'))
 
         desktop = self.settings.get('desktop')
@@ -1320,7 +1336,7 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["chmod", "440", sudoers_path])
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
-
+        
         self.chroot(['useradd', '-m', '-s', '/bin/bash', \
                   '-g', 'users', '-G', 'lp,video,network,storage,wheel,audio', \
                   username])
@@ -1338,7 +1354,7 @@ class InstallationProcess(multiprocessing.Process):
             with open(hostname_path, "w") as hostname_file:
                 hostname_file.write(hostname)
 
-        self.queue_event('debug', _('Hostname  %s set.') % hostname)
+        self.queue_event('debug', _('Hostname set to %s.') % hostname)
 
         # User password is the root password
         self.change_user_password('root', password)
@@ -1382,64 +1398,6 @@ class InstallationProcess(multiprocessing.Process):
                 xorg_conf_xkb.write('EndSection\n')
             self.queue_event('debug', _("00-keyboard.conf written."))
 
-            # Set autologin if selected
-            if self.settings.get('require_password') is False:
-                self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
-                # Systems with GDM as Desktop Manager
-                if self.desktop_manager == 'gdm':
-                    gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
-                    with open(gdm_conf_path, "wt") as gdm_conf:
-                        gdm_conf.write('# Enable automatic login for user\n')
-                        gdm_conf.write('[daemon]\n')
-                        gdm_conf.write('AutomaticLogin=%s\n' % username)
-                        gdm_conf.write('AutomaticLoginEnable=True\n')
-
-                # Systems with KDM as Desktop Manager
-                elif self.desktop_manager == 'kdm':
-                    kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
-                    text = []
-                    with open(kdm_conf_path, "r") as kdm_conf:
-                        text = kdm_conf.readlines()
-
-                    with open(kdm_conf_path, "w") as kdm_conf:
-                        for line in text:
-                            if '#AutoLoginEnable=true' in line:
-                                line = '#AutoLoginEnable=true \n'
-                                line = line[1:]
-                            if 'AutoLoginUser=' in line:
-                                line = 'AutoLoginUser=%s \n' % username
-                            kdm_conf.write(line)
-
-                # Systems with LXDM as Desktop Manager
-                elif self.desktop_manager == 'lxdm':
-                    lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
-                    text = []
-                    with open(lxdm_conf_path, "r") as lxdm_conf:
-                        text = lxdm_conf.readlines()
-
-                    with open(lxdm_conf_path, "w") as lxdm_conf:
-                        for line in text:
-                            if '# autologin=dgod' in line and line[0] == "#":
-                                # uncomment line
-                                line = '# autologin=%s' % username
-                                line = line[1:]
-                            lxdm_conf.write(line)
-
-                # Systems with LightDM as the Desktop Manager
-                elif self.desktop_manager == 'lightdm':
-                    lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
-                    # Ideally, use configparser for the ini conf file, but just do
-                    # a simple text replacement for now
-                    text = []
-                    with open(lightdm_conf_path, "r") as lightdm_conf:
-                        text = lightdm_conf.readlines()
-
-                    with open(lightdm_conf_path, "w") as lightdm_conf:
-                        for line in text:
-                            if '#autologin-user=' in line:
-                                line = 'autologin-user=%s\n' % username
-                            lightdm_conf.write(line)
-
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
@@ -1447,28 +1405,17 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Running mkinitcpio..."))
         self.run_mkinitcpio()
 
-        self.queue_event('debug', _("Call post-install script to execute gsettings commands"))
+        self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute gsettings commands
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
-        # In openbox "desktop", the postinstall script writes /etc/slim.conf
-        # so we have to modify it here (after running the script).
         # Set autologin if selected
-        if self.settings.get('require_password') is False and \
-           self.desktop_manager == 'slim':
-            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
-            text = []
-            with open(slim_conf_path, "r") as slim_conf:
-                text = slim_conf.readlines()
-            with open(slim_conf_path, "w") as slim_conf:
-                for line in text:
-                    if 'auto_login' in line:
-                        line = 'auto_login yes\n'
-                    if 'default_user' in line:
-                        line = 'default_user %s\n' % username
-                    slim_conf.write(line)
+        # Warning: In openbox "desktop", the postinstall script writes /etc/slim.conf
+        # so we have to modify it here (after running the post-install script).
+        if self.settings.get('require_password') is False:
+            self.set_autologin()
 
         # Configure user features
         self.setup_features()
@@ -1476,6 +1423,15 @@ class InstallationProcess(multiprocessing.Process):
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
             self.queue_event('debug', _("Encrypting user home dir..."))
-            self.encrypt_home()
+            encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
 
+        # Last but not least, copy Cnchi log to new installation
+        datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
+        dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
+        try:
+            shutil.copy("/tmp/cnchi.log", dst)
+        except FileNotFoundError:
+            logging.warning(_("Can't copy Cnchi log to /var/log"))
+        except FileExistsError:
+            pass

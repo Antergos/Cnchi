@@ -48,9 +48,7 @@ class Location(Gtk.Box):
 
         self.ui.connect_signals(self)
 
-        #self.treeview = self.ui.get_object("treeview_countries")
-
-        self.listbox = self.ui.get_object("listbox_countries")
+        self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
@@ -60,6 +58,8 @@ class Location(Gtk.Box):
         self.listbox_items = 0
 
         self.load_locales()
+        
+        self.selected_country = ""
 
         super().add(self.ui.get_object("location"))
 
@@ -78,7 +78,6 @@ class Location(Gtk.Box):
     def select_first_listbox_item(self):
         listbox_row = self.listbox.get_children()[0]
         self.listbox.select_row(listbox_row)
-        #self.selected_country
 
     def hide_all(self):
         names = [ "location_box", "label_help", "label_choose_country", \
@@ -101,13 +100,13 @@ class Location(Gtk.Box):
                 GLib.idle_add(self.forward_button.clicked)
             else:
                 GLib.idle_add(self.backwards_button.clicked)
+
+            while Gtk.events_pending():
+                Gtk.main_iteration()
         else:
             self.select_first_listbox_item()
             self.translate_ui()
-
-        # If I don't do this, check page is not shown well when skipping this page (location)
-        # If I do this, we can see location page for a second (it's ugly)
-        self.show_all()
+            self.show_all()
 
     def load_locales(self):
         data_dir = self.settings.get('data')
@@ -167,9 +166,12 @@ class Location(Gtk.Box):
         for area in areas:
             box = Gtk.VBox()
             label = Gtk.Label(area)
+            label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
             #self.select_default_row(current_language)
+        
+        self.selected_country = areas[0]
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         if listbox_row is not None:

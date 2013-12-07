@@ -36,6 +36,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
+MIN_ROOT_SIZE = 4000000000
 
 _next_page = "desktop"
 _prev_page = "location"
@@ -61,10 +62,8 @@ class Check(Gtk.Box):
         
         self.thread = None
 
-        self.third_party_info = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
-        self.third_party_checkbutton = None
         self.prepare_enough_space = None
         self.timeout_id = None
         self.prepare_best_results = None
@@ -79,8 +78,14 @@ class Check(Gtk.Box):
         self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least 4GB available storage space")
+        txt = _("has at least %dGB available storage space.") % int(MIN_ROOT_SIZE / 1000000000)
+        txt += " (*)"
         self.prepare_enough_space.props.label = txt
+        
+        self.label_space = self.ui.get_object("label_space")
+        txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
+        txt = "(*) <i>%s</i>" % txt
+        self.label_space.set_markup(txt)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
@@ -94,18 +99,6 @@ class Check(Gtk.Box):
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.prepare_best_results.set_markup(txt)
-
-        self.third_party_info = self.ui.get_object("third_party_info")
-        txt = _("Antergos uses third-party software to play Flash videos, MP3 " \
-        "and other media." \
-        " Some of this software is proprietary. Use of this " \
-        "software is subject to license terms included with its " \
-        "documentation.")
-        self.third_party_info.set_label(txt)
-
-        self.third_party_checkbutton = self.ui.get_object("third_party_checkbutton")
-        txt = _("Install this third-party software")
-        self.third_party_checkbutton.set_label(txt)
 
     def check_all(self):
         has_internet = misc.has_connection()
@@ -159,17 +152,10 @@ class Check(Gtk.Box):
                         max_size = size
         # we need 4GB
         #3221225472
-        if max_size >= 4000000000:
+        if max_size >= MIN_ROOT_SIZE:
             return True
 
         return False
-
-    def on_third_party_checkbutton_toggled(self, button):
-        current_value = self.settings.get("third_party_software")
-        if current_value is False:
-            self.settings.set("third_party_software", True)
-        else:
-            self.settings.set("third_party_software", False)
 
     def on_timer(self, time):
         if not self.remove_timer:
@@ -202,11 +188,6 @@ class Check(Gtk.Box):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
-
-        # We now have a features screen, so we don't need this here
-        # Just hide it for now
-        self.third_party_info.hide()
-        self.third_party_checkbutton.hide()
 
         self.forward_button.set_sensitive(self.check_all())
 

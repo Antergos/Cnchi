@@ -80,7 +80,7 @@ class Slides(Gtk.Box):
 
         self.scrolled_window.add(self.webview)
 
-        self.install_ok = _("Installation Complete!\n" \
+        self.install_ok = _("Installation Complete!\n"
                             "Do you want to restart your system now?")
 
         super().add(builder.get_object("slides"))
@@ -91,7 +91,7 @@ class Slides(Gtk.Box):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
 
-        self.install_ok = _("Installation Complete!\n" \
+        self.install_ok = _("Installation Complete!\n"
                             "Do you want to restart your system now?")
 
         #self.header.set_title("Cnchi")
@@ -135,7 +135,7 @@ class Slides(Gtk.Box):
             Gtk.main_iteration()
 
     def set_message(self, txt):
-        txt = "<span color='darkred'>%s</span>" % txt
+        #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
     # This function is called from cnchi.py with a timeout function
@@ -208,6 +208,12 @@ class Slides(Gtk.Box):
                 logging.debug(event[1])
             elif event[0] == 'warning':
                 logging.warning(event[1])
+            elif event[0] == 'progress':
+                if event[1] == 'hide_all' or event[1] == 'hide_global':
+                    self.global_progress_bar.hide()
+                    self.global_progress_bar_is_hidden = True
+                if event[1] == 'hide_all' or event[1] == 'hide_local':
+                    self.progress_bar.hide()
             else:
                 # TODO: Check if logging slows down showing messages
                 #       remove logging.info in that case (and at least

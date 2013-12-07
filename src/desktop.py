@@ -75,78 +75,70 @@ class DesktopAsk(Gtk.Box):
         label = self.ui.get_object("desktop_info")
 
         if desktop == 'gnome':
-            txt = _("Gnome 3 is an easy and elegant way to use your " \
-            "computer. It features the Activities Overview which " \
-            "is an easy way to access all your basic tasks. GNOME 3 is " \
+            txt = _("Gnome 3 is an easy and elegant way to use your "
+            "computer. It features the Activities Overview which "
+            "is an easy way to access all your basic tasks. GNOME 3 is "
             "the default desktop in Antergos.")
             txt = "<span weight='bold'>GNOME</span>\n" + txt
 
         elif desktop == 'cinnamon':
-            txt = _("Cinnamon is a fork of GNOME 3 developed " \
-            "by (and for) Linux Mint. It provides users a more traditional desktop " \
-            "interface along with the newest compositing techniques of GNOME 3. " \
+            txt = _("Cinnamon is a fork of GNOME 3 developed "
+            "by (and for) Linux Mint. It provides users a more traditional desktop "
+            "interface along with the newest compositing techniques of GNOME 3. "
             "Cinnamon is for users of all experience levels. ")
             txt = "<span weight='bold'>CINNAMON</span>\n" + txt
 
         elif desktop == 'xfce':
-            txt = _("Xfce is a lightweight desktop environment. It aims to " \
-            "be fast and low on system resources, while remaining visually " \
-            "appealing and user friendly. It is a great option for use " \
+            txt = _("Xfce is a lightweight desktop environment. It aims to "
+            "be fast and low on system resources, while remaining visually "
+            "appealing and user friendly. It is a great option for use "
             "on older computers or those with low hardware specifications. ")
             txt = "<span weight='bold'>XFCE</span>\n" + txt
 
         elif desktop == 'lxde':
-            txt = _("LXDE is an extremely fast-performing and energy-saving desktop " \
-            "environment. It uses less CPU and RAM than other environments. " \
-            "LXDE is especially designed for cloud computers with low hardware " \
+            txt = _("LXDE is an extremely fast-performing and energy-saving desktop "
+            "environment. It uses less CPU and RAM than other environments. "
+            "LXDE is especially designed for cloud computers with low hardware "
             "specifications such as netbooks, mobile devices, and older computers.")
             txt = "<span weight='bold'>LXDE</span>\n" + txt
 
         elif desktop == 'openbox':
-            txt = _("Openbox is a highly configurable, next generation window manager " \
-            "with extensive standards support. It's default theme, the *box visual style," \
-            "is well known for its minimalistic appearance and flexibility. Your desktop " \
-            "becomes cleaner, faster, and is in your control with Openbox ")
+            txt = _("Openbox is a highly configurable, next generation window "
+            "manager with extensive standards support. It's default theme "
+            "is well known for its minimalistic appearance and flexibility. "
+            "Your desktop becomes cleaner, faster.")
             txt = "<span weight='bold'>OPENBOX</span>\n" + txt
 
         elif desktop == 'enlightenment':
-            txt = _("Enlightenment is not just a window manager for Linux/X11 " \
-            "and others, but also a whole suite of libraries to help " \
+            txt = _("Enlightenment is not just a window manager for Linux/X11 "
+            "and others, but also a whole suite of libraries to help "
             "you create beautiful user interfaces with much less work")
             txt = "<span weight='bold'>ENLIGHTMENT</span>\n" + txt
 
         elif desktop == 'kde':
-            txt = _("If you are looking for a familiar working environment, KDE's " \
-            "Plasma Desktop offers all the tools required for a modern desktop " \
-            "computing experience so you can be productive right from the start. " \
-            "The look, feel, and behavior can be easily customized to the user's taste.")
+            txt = _("If you are looking for a familiar working environment, KDE's "
+            "Plasma Desktop offers all the tools required for a modern desktop "
+            "computing experience so you can be productive right from the start.")
             txt = "<span weight='bold'>KDE</span>\n" + txt
 
         elif desktop == 'razor':
-            txt = _("Razor-qt is an advanced, easy-to-use, and fast desktop " \
-            "environment based on Qt technologies. It has been " \
-            "tailored for users who value simplicity, speed, and " \
+            txt = _("Razor-qt is an advanced, easy-to-use, and fast desktop "
+            "environment based on Qt technologies. It has been "
+            "tailored for users who value simplicity, speed, and "
             "an intuitive interface.")
             txt = "<span weight='bold'>RAZOR-QT</span>\n" + txt
         
         if desktop == 'nox':
-            txt = _("This option will install Antergos as command-line only system, " \
-            "without any type of graphical interface. After the installation you can " \
+            txt = _("This option will install Antergos as command-line only system, "
+            "without any type of graphical interface. After the installation you can "
             "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
             
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.FILL)
-        label.set_size_request(-1, 100)
         label.set_markup(txt)
 
         image.set_from_file(self.desktops_dir + desktop + ".png")
 
         txt = _("Choose Your Desktop")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
 
