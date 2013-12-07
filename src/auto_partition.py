@@ -237,7 +237,7 @@ class AutoPartition(object):
             swap = "/dev/AntergosVG/AntergosSwap"
             root = "/dev/AntergosVG/AntergosRoot"
             if self.home:
-                home = "/dev/antergosVG/AntergosHome"
+                home = "/dev/AntergosVG/AntergosHome"
 
         return (boot, swap, root, luks, lvm, home)
 
@@ -483,15 +483,15 @@ class AutoPartition(object):
             subprocess.check_call(["pvcreate", "-ff", lvm_device])
             subprocess.check_call(["vgcreate", "AntergosVG", lvm_device])
 
-            subprocess.check_call(["lvcreate", "-n", "AntergosRoot", "-L", str(int(root_part_size)), "AntergosVG"])
+            subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(root_part_size)), "AntergosVG"])
 
             if not self.home:
                 # Use the remainig space for our swap volume
-                subprocess.check_call(["lvcreate", "-n", "AntergosSwap", "-l", "100%FREE", "AntergosVG"])
+                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
             else:
-                subprocess.check_call(["lvcreate", "-n", "AntergosSwap", "-L", str(int(swap_part_size)), "AntergosVG"])
+                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(swap_part_size)), "AntergosVG"])
                 # Use the remainig space for our home volume
-                subprocess.check_call(["lvcreate", "-n", "AntergosHome", "-l", "100%FREE", "AntergosVG"])
+                subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
 
         # Make sure the "root" partition is defined first!
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
