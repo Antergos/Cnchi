@@ -37,8 +37,6 @@
     <graphic_system>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname>pacmanxg4</pkgname>
         <pkgname>xf86-input-synaptics</pkgname>
@@ -56,6 +54,8 @@
         <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname dm='true' name='gdm'>gdm</pkgname>
         <pkgname>gedit</pkgname>
@@ -111,6 +111,8 @@
         <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
@@ -158,6 +160,8 @@
         <pkgname>cdrkit</pkgname>
         <pkgname>dvdauthor</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -224,6 +228,8 @@
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>dvdauthor</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
@@ -282,45 +288,53 @@
     </openbox_desktop>
     
     <kde_desktop>
-        <pkgname>kde-meta-kdebase</pkgname>
-        <pkgname>kde-meta-kdenetwork</pkgname>
-        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>apper</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
-        <pkgname>emovix</pkgname>
         <pkgname>grub2-editor</pkgname>
+        <pkgname>hotot-qt5</pkgname>
         <pkgname>k3b</pkgname>
-        <pkgname>kde-gtk-config</pkgname>
-        <pkgname>kde-meta-kdeartwork</pkgname>
-        <pkgname>kde-telepathy-meta</pkgname>
+        <pkgname>kde-servicemenus-rootactions</pkgname>
+        <pkgname>kde-wallpapers</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
+        <pkgname>kdeartwork-colorschemes</pkgname>
+        <pkgname>kdeartwork-desktopthemes</pkgname>
+        <pkgname>kdeartwork-iconthemes</pkgname>
+        <pkgname>kdeartwork-kscreensaver</pkgname>
+        <pkgname>kdeartwork-styles</pkgname>
+        <pkgname>kdebase-dolphin</pkgname>
+        <pkgname>kdebase-kdepasswd</pkgname>
+        <pkgname>kdebase-kdialog</pkgname>
+        <pkgname>kdebase-kfind</pkgname>
+        <pkgname>kdebase-konsole</pkgname>
+        <pkgname>kdebase-plasma</pkgname>
         <pkgname>kdegraphics-gwenview</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
         <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
         <pkgname>kdemultimedia-kmix</pkgname>
-        <pkgname>kdepim-kmail</pkgname>
-        <pkgname>kdepim-kontact</pkgname>
+        <pkgname>kdenetwork-filesharing</pkgname>
+        <pkgname>kdenetwork-kopete</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname>kdeplasma-addons-applets-notes</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
         <pkgname>kdesdk-kate</pkgname>
+        <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
+        <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kdeutils-kgpg</pkgname>
         <pkgname>kdeutils-kwallet</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>lightdm-kde-greeter</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
-        <pkgname>oxyfaenza-git</pkgname>
+        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
-        <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
@@ -333,10 +347,13 @@
     <user_features>
         <aur>
             <pkgname>yaourt</pkgname>
+            <pkgname>cmake</pkgname>
+            <pkgname>git</pkgname>
+            <pkgname>bzr</pkgname>
         </aur>
         <bluetooth>
             <pkgname lib='qt'>bluedevil</pkgname>
-            <pkgname>bluez</pkgname>
+            <!--<pkgname>bluez</pkgname> This will be added by dependencies-->
             <pkgname>bluez-utils</pkgname>
             <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
@@ -380,7 +397,7 @@
             <pkgname lib='qt'>kcm-ufw</pkgname>
             <pkgname>ufw</pkgname>
         </firewall>
-        <!-- Third party software. Some of it is propietary -->
+        <!-- Third party software. Some of it is proprietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
             <pkgname>libdvdcss</pkgname>
