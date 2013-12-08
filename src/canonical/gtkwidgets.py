@@ -21,30 +21,7 @@ import cairo
 from gi.repository import Gtk, Gdk, GObject, Pango
 import canonical.misc as misc
 
-def refresh():
-    while Gtk.events_pending():
-        Gtk.main_iteration()
 
-def draw_round_rect(c, r, x, y, w, h):
-    c.move_to(x + r, y)
-    c.line_to(x + w - r, y)
-    c.curve_to(x + w, y, x + w, y, x + w, y + r)
-    c.line_to(x + w, y + h - r)
-    c.curve_to(x + w, y + h, x + w, y + h, x + w - r, y + h)
-    c.line_to(x + r, y + h)
-    c.curve_to(x, y + h, x, y + h, x, y + h - r)
-    c.line_to(x, y + r)
-    c.curve_to(x, y, x, y, x + r, y)
-    c.close_path()
-
-
-def gtk_to_cairo_color(c):
-    color = Gdk.color_parse(c)
-    s = 1.0 / 65535.0
-    r = color.red * s
-    g = color.green * s
-    b = color.blue * s
-    return r, g, b
 
 
 class StylizedFrame(Gtk.Alignment):
