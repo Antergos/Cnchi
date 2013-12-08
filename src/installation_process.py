@@ -90,7 +90,7 @@ class InstallationProcess(multiprocessing.Process):
         self.desktop = self.settings.get('desktop')
 
         # Set defaults
-        self.desktop_manager = 'gdm'
+        self.desktop_manager = 'lxdm'
         self.network_manager = 'NetworkManager'
 
         self.card = []
@@ -377,6 +377,11 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("[antergos]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
+
+            # For final testing of KDE
+            tmp_file.write("[antergos-testing]\n")
+            tmp_file.write("SigLevel = Optional TrustAll\n")
+            tmp_file.write("Server = http://antergos.info/repo\n\n")
 
         # Init pyalpm
 
@@ -811,7 +816,11 @@ class InstallationProcess(multiprocessing.Process):
                 continue
 
             if path == '/':
-                chk = '1'
+                # We do not run fsck on btrfs partitions
+                if "btrfs" in myfmt:
+                    chk = '0'
+                else:
+                    chk = '1'
                 opts = "rw,relatime,data=ordered"
             else:
                 full_path = os.path.join(self.dest_dir, path)

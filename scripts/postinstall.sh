@@ -234,6 +234,25 @@ razor_settings(){
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
+kde_settings() {
+    # This is not complete yet
+
+    # copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+	# Set KDE in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+}
+
 nox_settings(){
 	echo "Done"
 }
