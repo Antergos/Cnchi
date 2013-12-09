@@ -65,7 +65,7 @@ class Slides(Gtk.Box):
 
         self.webview = WebKit.WebView()
 
-        if self.settings == None:
+        if self.settings is None:
             html_file = '/usr/share/cnchi/data/slides.html'
         else:
             html_file = os.path.join(self.settings.get('data'), 'slides.html')
@@ -102,9 +102,12 @@ class Slides(Gtk.Box):
         #self.title.set_markup(txt)
 
     def show_global_progress_bar_if_hidden(self):
-        if self.global_progress_bar_is_hidden:
-            self.global_progress_bar.show_all()
-            self.global_progress_bar_is_hidden = False
+    #Not sure how to fix object not defined for this so just bypassing for now
+    #   if self.global_progress_bar_is_hidden:
+        self.global_progress_bar.show_all()
+        self.global_progress_bar_is_hidden = False
+
+
 
     def prepare(self, direction):
         self.translate_ui()
