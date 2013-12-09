@@ -19,7 +19,7 @@
     background-size: 100% 100%;
     margin-top: 0px;
     color: #5082d4;
-    font: 14px;
+    font: 17px;
     font-family: 'DejaVu Sans', Helvetica, sans-serif;
     padding-top:7.5px;
 }
@@ -29,8 +29,11 @@
     background-image: url('/usr/share/cnchi/data/images/header.png');                                 
     background-position: top;
     background-repeat: no-repeat;
+    background-size: cover;
     background-size: 100% 100%;
     margin-top: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
     /*
     color: #5082d4;
     font: 14px;

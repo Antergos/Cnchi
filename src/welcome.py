@@ -97,7 +97,9 @@ class Welcome(Gtk.Box):
         self.button['graph'].set_label(txt)
 
         #self.header.set_title("Cnchi")
-        self.header.set_subtitle(_("Welcome to Antergos!"))
+        txt = _("Welcome to Antergos!")
+        self.header.set_subtitle(txt)
+        
 
         #txt = _("Welcome to Antergos!")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt

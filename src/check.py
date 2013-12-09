@@ -120,7 +120,7 @@ class Check(Gtk.Box):
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
-            return self.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            return self.set_prop(upower, UPOWER_PATH, 'OnBattery')
 
         return False
 
