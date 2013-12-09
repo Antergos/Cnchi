@@ -97,7 +97,7 @@ def unmount_all(dest_dir):
         logging.warning(_("Can't delete existent LVM volumes (see below)"))
         logging.warning(err)
 
-    # Close cryptAntergos (it may have been left open because of a previous failed installation)
+    # Close LUKS devices (they may have been left open because of a previous failed installation)
     try:
         if os.path.exists("/dev/mapper/cryptAntergos"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
@@ -114,9 +114,11 @@ class AutoPartition(object):
         self.dest_dir = dest_dir
         self.auto_device = auto_device
         self.luks_key_pass = luks_key_pass
+        # Use LUKS encryption
         self.luks = use_luks
+        # Use LVM
         self.lvm = use_lvm
-        # TODO: Make home a different partition or if using LVM, a different volume
+        # Make home a different partition or if using LVM, a different volume
         self.home = use_home
 
         # Will use these queue to show progress info to the user
@@ -190,8 +192,6 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
-        d = self.auto_device
-
         boot = ""
         swap = ""
         root = ""
@@ -199,21 +199,21 @@ class AutoPartition(object):
 
         luks = []
         lvm = ""
-
-        # TODO: SET SWAP IN A LOGIC PARTITION
+        
+        # self.auto_device is of type /dev/sdX or /dev/hdX
 
         if self.uefi:
-            boot = d + "3"
-            swap = d + "4"
-            root = d + "5"
+            boot = self.auto_device + "3"
+            swap = self.auto_device + "4"
+            root = self.auto_device + "5"
             if self.home:
-                home = d + "6"
+                home = self.auto_device + "6"
         else:
-            boot = d + "1"
-            swap = d + "2"
-            root = d + "3"
+            boot = self.auto_device + "1"
+            swap = self.auto_device + "2"
+            root = self.auto_device + "3"
             if self.home:
-                home = d + "4"
+                home = self.auto_device + "4"
 
         if self.luks:
             if self.lvm:
