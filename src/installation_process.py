@@ -381,7 +381,7 @@ class InstallationProcess(multiprocessing.Process):
             # For final testing of KDE
             tmp_file.write("[antergos-testing]\n")
             tmp_file.write("SigLevel = Optional TrustAll\n")
-            tmp_file.write("Server = http://antergos.info/repo\n\n")
+            tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
 
         # Init pyalpm
 
