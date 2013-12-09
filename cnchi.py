@@ -297,6 +297,8 @@ class Main(Gtk.Window):
         """ Quit Cnchi """
         remove_temp_files()
         logging.info(_("Quiting installer..."))
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         Gtk.main_quit()
 
     def set_progressbar_step(self, add_value):
