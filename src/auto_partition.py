@@ -69,13 +69,13 @@ def unmount_all(dest_dir):
 
     for directory in dirs:
         logging.warning(_("Unmounting %s"), directory)
-        subprocess.call(["umount", directory])
+        subprocess.call(["umount", "-l", directory])
 
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
     
     if dest_dir in mount_result:
         logging.warning(_("Unmounting %s"), dest_dir)
-        subprocess.call(["umount", dest_dir])
+        subprocess.call(["umount", "-l", dest_dir])
 
     # Remove all previous Antergos LVM volumes
     # (it may have been left created due to a previous failed installation)

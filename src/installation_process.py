@@ -719,7 +719,7 @@ class InstallationProcess(multiprocessing.Process):
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             try:
-                subprocess.check_call(["umount", mydir])
+                subprocess.check_call(["umount", "-l", mydir])
             except:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
 

@@ -112,11 +112,11 @@ def get_os_dict():
                     try:
                         subprocess.call(["mount", device, "/mnt"], stderr=subprocess.DEVNULL)
                         oses[device] = get_os("/mnt")
-                        subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
+                        subprocess.call(["umount", "-l", "/mnt"], stderr=subprocess.DEVNULL)
                     except AttributeError:
                         subprocess.call(["mount", device, "/mnt"])
                         oses[device] = get_os("/mnt")
-                        subprocess.call(["umount", "/mnt"])
+                        subprocess.call(["umount", "-l", "/mnt"])
 
     return oses
 
