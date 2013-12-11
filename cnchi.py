@@ -58,7 +58,7 @@ import show_message as show
 
 # Enabled desktops
 # (remember to update features_by_desktop in features.py if this is changed)
-# (also check desktop.py)
+# (also check desktop.py and installation_process.py)
 DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
 
 # Command line options

@@ -603,6 +603,7 @@ class InstallationProcess(multiprocessing.Process):
                             "gnome": ["aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall",
                                       "third_party"],
                             "cinnamon": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
+                            "mate": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
                             "xfce": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
                             "razor": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
                             "openbox": ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall",
@@ -613,7 +614,7 @@ class InstallationProcess(multiprocessing.Process):
         features = self.features_by_desktop[desktop]
 
         # TODO: For now, removed razor from qt list as it pulls in all kdelibs, Will revisit this list.
-        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox"], 'qt':["norazor", "kde"]}
+        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox", "mate"], 'qt':["norazor", "kde"]}
 
         for feature in features:
             # Add necessary packages for user desired features to our install list
