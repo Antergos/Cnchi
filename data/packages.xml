@@ -35,6 +35,7 @@
     <!-- Common to all graphic desktops -->
     <!-- It's best to put here apps that are qt/gtk agnostic -->
     <graphic_system>
+        <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
