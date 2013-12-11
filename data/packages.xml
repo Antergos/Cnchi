@@ -40,8 +40,16 @@
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>libreoffice-installer</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>pacmanxg4</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>upower</pkgname>
         <pkgname>xf86-input-synaptics</pkgname>
+        <pkgname>xf86-video-fbdev</pkgname>
+        <pkgname>xf86-video-vesa</pkgname>
+        <pkgname>xorg-apps</pkgname>
+        <pkgname>xorg-fonts</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
     </graphic_system>
@@ -57,8 +65,9 @@
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>file-roller</pkgname>
-        <pkgname dm='true' name='gdm'>gdm</pkgname>
+        <!-- <pkgname dm='true' name='gdm'>gdm</pkgname> -->
         <pkgname>gedit</pkgname>
+        <pkgname>lightdm-gtk3-greeter</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -74,11 +83,13 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-bad-plugins</pkgname>
         <pkgname>gstreamer0.10-base-plugins</pkgname>
         <pkgname>gstreamer0.10-ffmpeg</pkgname>
         <pkgname>gstreamer0.10-good-plugins</pkgname>
         <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
@@ -94,8 +105,6 @@
         <pkgname>telepathy-rakia</pkgname>
         <pkgname>telepathy-haze</pkgname>
         <pkgname>transmission-gtk</pkgname>
-        <pkgname>ttf-dejavu</pkgname>
-        <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
@@ -125,17 +134,20 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-bad-plugins</pkgname>
         <pkgname>gstreamer0.10-base-plugins</pkgname>
         <pkgname>gstreamer0.10-ffmpeg</pkgname>
         <pkgname>gstreamer0.10-good-plugins</pkgname>
         <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-smb</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
-        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
+        <pkgname>lightdm-gtk3-greeter</pkgname>
         <pkgname>nemo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -146,8 +158,6 @@
         <pkgname>telepathy-rakia</pkgname>
         <pkgname>telepathy-haze</pkgname>
         <pkgname>transmission-gtk</pkgname>
-        <pkgname>ttf-dejavu</pkgname>
-        <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
@@ -174,7 +184,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
-        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
+        <pkgname>lightdm-gtk3-greeter</pkgname>        
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -209,7 +219,7 @@
         <pkgname>kdesdk-kate</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kovpn</pkgname>
-        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
+        <pkgname>lightdm-kde-greeter</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>openbox-themes</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
@@ -218,6 +228,20 @@
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
     </razor_desktop>
+    
+    <mate_desktop>
+        <pkgname>cups-pk-helper</pkgname>
+        <pkgname>gksu</pkgname>
+        <pkgname>gvfs-smb</pkgname>
+        <pkgname>lightdm-gtk2-greeter</pkgname>
+        <pkgname>mate</pkgname>
+        <pkgname>mate-extras</pkgname>
+        <pkgname>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>system-config-printer</pkgname>
+        <pkgname>xdg-user-dirs</pkgname>
+    </mate_desktop>
 
     <openbox_desktop>
         <pkgname>arandr</pkgname>
@@ -234,15 +258,18 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-bad-plugins</pkgname>
         <pkgname>gstreamer0.10-base-plugins</pkgname>
         <pkgname>gstreamer0.10-ffmpeg</pkgname>
         <pkgname>gstreamer0.10-good-plugins</pkgname>
         <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>gvfs-atp</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
+        <pkgname>lightdm-gtk3-greeter</pkgname>        
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxpolkit</pkgname>
@@ -265,11 +292,8 @@
         <pkgname>python2-xdg</pkgname>
         <pkgname>sakura</pkgname>
         <pkgname>scrot</pkgname>
-        <pkgname dm='true' name='slim'>slim</pkgname>
         <pkgname>tint2</pkgname>
         <pkgname>transmission-gtk</pkgname>
-        <pkgname>ttf-droid</pkgname>
-        <pkgname>ttf-ubuntu-font-family</pkgname>
         <pkgname>udiskie</pkgname>
         <pkgname>volumeicon</pkgname>
         <pkgname>xfburn</pkgname>
@@ -282,19 +306,17 @@
     </openbox_desktop>
     
     <kde_desktop>
-        <pkgname>kde-meta-kdebase</pkgname>
-        <pkgname>kde-meta-kdenetwork</pkgname>
-        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>apper</pkgname>
         <pkgname>cdrdao</pkgname>
+        <pkgname>clementine</pkgname>
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>emovix</pkgname>
         <pkgname>grub2-editor</pkgname>
         <pkgname>k3b</pkgname>
+        <pkgname>kde</pkgname>
         <pkgname>kde-gtk-config</pkgname>
-        <pkgname>kde-meta-kdeartwork</pkgname>
+        <pkgname>kdeartwork</pkgname>
         <pkgname>kde-telepathy-meta</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
         <pkgname>kdegraphics-gwenview</pkgname>
@@ -307,6 +329,7 @@
         <pkgname>kdepim-kontact</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname>kdeplasma-addons-applets-notes</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
         <pkgname>kdesdk-kate</pkgname>
         <pkgname>kdeutils-ark</pkgname>
@@ -322,8 +345,6 @@
         <pkgname>oxygen-gtk3</pkgname>
         <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
-        <pkgname>ttf-bitstream-vera</pkgname>
-        <pkgname>ttf-dejavu</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>webkitgtk</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
@@ -342,7 +363,11 @@
         </bluetooth>
         <cups>
             <pkgname>cups</pkgname>
+            <pkgname>cups-filters</pkgname>
+            <pkgname>foomatic-db</pkgname>
+            <pkgname>foomatic-db-engine</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
+            <pkgname>ghostscript</pkgname>
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
             <pkgname>hplip</pkgname>
@@ -354,12 +379,17 @@
             <pkgname>gnome-extra</pkgname>
         </gnome_extra>
         <fonts>
-            <pkgname>ttf-dejavu</pkgname>
-            <pkgname>ttf-bitstream-vera</pkgname>
-            <pkgname>ttf-freefont</pkgname>
             <pkgname>ttf-arphic-uming</pkgname>
             <pkgname>ttf-baekmuk</pkgname>
+            <!--
+            <pkgname>ttf-bitstream-vera</pkgname>
+            <pkgname>ttf-dejavu</pkgname>
+            -->
+            <pkgname>ttf-droid</pkgname>
+            <pkgname>ttf-freefont</pkgname>
+            <pkgname>ttf-liberation</pkgname>
             <pkgname>ttf-ms-fonts</pkgname>
+            <pkgname>ttf-ubuntu-font-family</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
