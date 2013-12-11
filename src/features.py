@@ -59,13 +59,14 @@ class Features(Gtk.Box):
 
         # Each desktop has its own features
         self.features_by_desktop = {}
-        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
-        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
         self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
+        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
         self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["mate"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
+        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
+        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
