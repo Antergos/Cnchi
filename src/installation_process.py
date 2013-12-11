@@ -909,12 +909,10 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
-                self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-                return
+                self.queue_event('warning', _("Can't find neither '/arch/10_linux' nor '/etc/grub.d/10_linux'"))
             except FileExistsError:
                 pass
         except FileExistsError:
-            # ignore if already exists
             pass
 
         self.install_bootloader_grub2_locales()
@@ -969,9 +967,7 @@ class InstallationProcess(multiprocessing.Process):
             shutil.copy2(grub_cfg, grub_standalone)
         except FileNotFoundError:
             self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
-            return
         except FileExistsError:
-            # ignore if already exists
             pass
 
         self.chroot_mount_special_dirs()
@@ -997,13 +993,13 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2(grub_mo, os.path.join(dest_locale_dir, "en.mo"))
         except FileNotFoundError:
-            self.queue_event('warning', _("ERROR installing GRUB(2) locale."))
+            self.queue_event('warning', _("Can't install GRUB(2) locale."))
         except FileExistsError:
-            # ignore if already exists
+            # Ignore if already exists
             pass
 
     def enable_services(self, services):
-        """ Enables all services that are in the list services """
+        """ Enables all services that are in the list 'services' """
         for name in services:
             self.chroot(['systemctl', 'enable', name + ".service"])
             self.queue_event('debug', _('Enabled %s service.') % name)
@@ -1147,9 +1143,6 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_firewall"):
             self.queue_event('debug', _("Configuring firewall..."))
-            # A very simplistic configuration which will deny all by default,
-            # allow any protocol from inside a 192.168.0.1-192.168.0.255 LAN,
-            # and allow incoming Transmission and SSH traffic from anywhere:
             self.chroot_mount_special_dirs()
             self.chroot(["ufw", "default", "deny"])
             toallow = misc.get_network()
