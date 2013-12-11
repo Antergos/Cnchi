@@ -1165,6 +1165,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def set_autologin(self):
         """ Enables automatic login for the installed desktop manager """
+        username = self.settings.get('username')
         self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
 
         if self.desktop_manager == 'gdm':
