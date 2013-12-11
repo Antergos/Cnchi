@@ -113,6 +113,8 @@ class Features(Gtk.Box):
     def translate_ui(self):
         """ Translates features ui """
         desktop = self.settings.get('desktop')
+
+        # TODO: This should be global as it is also used in desktop.py
         desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
@@ -122,7 +124,8 @@ class Features(Gtk.Box):
          "openbox" : "Openbox",
          "enlightenment" : "Enlightenment (e17)",
          "kde" : "KDE",
-         "razor" : "Razor-qt" }
+         "razor" : "Razor-qt",
+         "mate" : "Mate" }
 
         txt = desktops[desktop] + " - " + _("Feature Selection")
         #txt = '<span weight="bold" size="large">%s</span>' % txt

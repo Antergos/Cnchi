@@ -54,6 +54,7 @@ class DesktopAsk(Gtk.Box):
 
         self.enabled_desktops = self.settings.get("desktops")
 
+        # TODO: This should be global as it is also used in features.py
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
