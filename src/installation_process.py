@@ -104,7 +104,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.special_dirs_mounted = False
 
-        # Initialize some vars that are correctly initialized elsewhere
+        # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
         self.auto_device = ""
         self.packages = []
         self.pac = None
@@ -114,7 +114,6 @@ class InstallationProcess(multiprocessing.Process):
         self.vmlinuz = ""
         self.features_by_desktop = {}
         self.dest_dir = ""
-
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -293,10 +292,6 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
             self.queue_event('debug', _('Packages installed.'))
-
-            if self.settings.get('install_bootloader'):
-                self.queue_event('debug', _('Installing bootloader...'))
-                self.install_bootloader()
 
             self.queue_event('debug', _('Configuring system...'))
             self.configure_system()
@@ -724,7 +719,7 @@ class InstallationProcess(multiprocessing.Process):
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             try:
-                subprocess.check_call(["umount", mydir])
+                subprocess.check_call(["umount", "-l", mydir])
             except:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
 
@@ -1019,8 +1014,8 @@ class InstallationProcess(multiprocessing.Process):
     def enable_services(self, services):
         """ Enables all services that are in the list services """
         for name in services:
-            name += '.service'
-            self.chroot(['systemctl', 'enable', name])
+            self.chroot(['systemctl', 'enable', name + ".service"])
+            self.queue_event('debug', _('Enabled %s service.') % name)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
@@ -1179,6 +1174,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def set_autologin(self):
         """ Enables automatic login for the installed desktop manager """
+        username = self.settings.get('username')
         self.queue_event('info', _("%s: Enable automatic login for user %s.") % (self.desktop_manager, username))
 
         if self.desktop_manager == 'gdm':
@@ -1262,7 +1258,6 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
 
         # TODO: Test copy profile. Code below is not finished.
-        # Also think a bit more about it, maybe just installing netctl is enough.
         '''
         elif self.network_manager == 'netctl':
             if misc.is_wireless_enabled():
@@ -1279,7 +1274,7 @@ class InstallationProcess(multiprocessing.Process):
         '''
         self.queue_event('debug', _('Network configuration copied.'))
 
-        # copy mirror list
+        # Copy mirror list
         mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
         try:
             shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
@@ -1289,7 +1284,7 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-        # Copy important config files to target system
+        # Copy important /etc config files to target system
         files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]
 
         for path in files:
@@ -1304,13 +1299,11 @@ class InstallationProcess(multiprocessing.Process):
 
         desktop = self.settings.get('desktop')
 
-        # enable services
+        # Enable services
         if desktop != "nox":
             self.enable_services([ self.desktop_manager, "ModemManager" ])
 
         self.enable_services([ self.network_manager ])
-
-        self.queue_event('debug', _('Enabled installed services.'))
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
@@ -1320,7 +1313,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get("use_ntp"):
             self.enable_services(["ntpd"])
 
-        # set timezone
+        # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
 
@@ -1380,20 +1373,21 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(['locale-gen'])
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
-            locale_conf.write('LANG=%s \n' % locale)
-            locale_conf.write('LC_COLLATE=C \n')
+            locale_conf.write('LANG=%s\n' % locale)
+            #locale_conf.write('LC_COLLATE=C\n')
+            locale_conf.write('LC_COLLATE=%s\n' % locale)
 
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
         with open(vconsole_conf_path, "w") as vconsole_conf:
-            vconsole_conf.write('KEYMAP=%s \n' % keyboard_layout)
+            vconsole_conf.write('KEYMAP=%s\n' % keyboard_layout)
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
         if desktop != "nox":
-            self.queue_event('debug', _("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+            self.queue_event('debug', _("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
             with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
                 xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
@@ -1415,32 +1409,37 @@ class InstallationProcess(multiprocessing.Process):
         self.run_mkinitcpio()
 
         self.queue_event('debug', _("Call Cnchi post-install script"))
-        # Call post-install script to execute gsettings commands
+        # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
             username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # Set autologin if selected
-        # Warning: In openbox "desktop", the postinstall script writes /etc/slim.conf
-        # so we have to modify it here (after running the post-install script).
+        # Warning: In openbox "desktop", the post-install script writes /etc/slim.conf
+        # so we always have to call set_autologin AFTER the post-install script call.
         if self.settings.get('require_password') is False:
             self.set_autologin()
 
-        # Configure user features
+        # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
 
-        # Encrypt user's home directory if requested
+        # Encrypt user's home directory if requested (NOT FINISHED YET)
         if self.settings.get('encrypt_home'):
             self.queue_event('debug', _("Encrypting user home dir..."))
             encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
 
-        # Last but not least, copy Cnchi log to new installation
+        # Install boot loader (always after running mkinitcpio)
+        if self.settings.get('install_bootloader'):
+            self.queue_event('debug', _('Installing bootloader...'))
+            self.install_bootloader()
+
+        # Copy Cnchi log to new installation
         datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
         dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
         try:
             shutil.copy("/tmp/cnchi.log", dst)
         except FileNotFoundError:
-            logging.warning(_("Can't copy Cnchi log to /var/log"))
+            logging.warning(_("Can't copy Cnchi log to %s") % dst)
         except FileExistsError:
             pass

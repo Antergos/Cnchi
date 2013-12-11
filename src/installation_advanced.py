@@ -1443,7 +1443,7 @@ class InstallationAdvanced(Gtk.Box):
                                 if "install" in mount_point:
                                     # If we're recovering from a failed/stoped install, there'll be
                                     # some mounted directories. Unmount them without asking.
-                                    subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
+                                    subp = subprocess.Popen(['umount', '-l', partition_path], stdout=subprocess.PIPE)
                                     logging.debug("%s unmounted", mount_point)
                                 elif len(mount_point) > 0:
                                     response = show.question(msg)
