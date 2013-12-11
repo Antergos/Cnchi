@@ -20,6 +20,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Shows slides while installing. Also manages installing messages and progress bars """
+
 from gi.repository import Gtk, WebKit, GLib
 import config
 import os
@@ -32,13 +34,13 @@ import logging
 import subprocess
 import canonical.misc as misc
 
-# when we reach this page we can't go neither backwards nor forwards
+# When we reach this page we can't go neither backwards nor forwards
 _next_page = None
 _prev_page = None
 
 class Slides(Gtk.Box):
-
     def __init__(self, params):
+        """ Initialize class and its vars """
         self.header = params['header']
         self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
@@ -63,6 +65,7 @@ class Slides(Gtk.Box):
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
+        # Add a webkit view to show the slides
         self.webview = WebKit.WebView()
 
         if self.settings == None:
@@ -80,26 +83,16 @@ class Slides(Gtk.Box):
 
         self.scrolled_window.add(self.webview)
 
-        self.install_ok = _("Installation Complete!\n"
-                            "Do you want to restart your system now?")
-
         super().add(builder.get_object("slides"))
 
         self.fatal_error = False
+        self.global_progress_bar_is_hidden = True
 
     def translate_ui(self):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
 
-        self.install_ok = _("Installation Complete!\n"
-                            "Do you want to restart your system now?")
-
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Installing Antergos..."))
-
-        #txt = _("Installing Antergos...")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
     def show_global_progress_bar_if_hidden(self):
         if self.global_progress_bar_is_hidden:
@@ -113,6 +106,7 @@ class Slides(Gtk.Box):
         # Last screen reached, hide main progress bar.
         self.main_progressbar.hide()
 
+        # Hide global progress bar
         self.global_progress_bar.hide()
         self.global_progress_bar_is_hidden = True
 
@@ -122,26 +116,26 @@ class Slides(Gtk.Box):
         self.header.set_show_close_button(False)
 
     def store_values(self):
+        """ Nothing to be done here """
         return False
 
     def get_prev_page(self):
+        """ No previous page available """
         return _prev_page
 
     def get_next_page(self):
+        """ This is the last page """
         return _next_page
 
-    def refresh(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
     def set_message(self, txt):
+        """ Show information message """
         #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
-    # This function is called from cnchi.py with a timeout function
-    # We should do as less as possible here, we want to maintain our
-    # queue message as empty as possible
     def manage_events_from_cb_queue(self):
+        """ This function is called from cnchi.py with a timeout function
+            We should do as less as possible here, we want to maintain our
+            queue message as empty as possible """
         if self.fatal_error:
             return False
 
@@ -158,8 +152,10 @@ class Slides(Gtk.Box):
                 self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'finished':
                 logging.info(event[1])
-                self.set_message(self.install_ok)
-                response = show.question(self.install_ok)
+                install_ok = _("Installation Complete!\n"
+                    "Do you want to restart your system now?")
+                #self.set_message(install_ok)
+                response = show.question(install_ok)
                 if response == Gtk.ResponseType.YES:
                     self.reboot()
                 else:
@@ -184,7 +180,7 @@ class Slides(Gtk.Box):
                 show.fatal_error(event[1])
 
                 # Ask if user wants to retry
-                res = show.question(_("Do you want to retry?"))
+                res = show.question(_("Do you want to retry the installation using the same configuration?"))
                 if res == GTK_RESPONSE_YES:
                     # Restart installation process
                     logging.debug("Restarting installation process...")
@@ -215,9 +211,6 @@ class Slides(Gtk.Box):
                 if event[1] == 'hide_all' or event[1] == 'hide_local':
                     self.progress_bar.hide()
             else:
-                # TODO: Check if logging slows down showing messages
-                #       remove logging.info in that case (and at least
-                #       use the one at pac.py:queue_event)
                 logging.info(event[1])
                 self.set_message(event[1])
 
@@ -226,6 +219,7 @@ class Slides(Gtk.Box):
         return True
 
     def empty_queue(self):
+        """ Empties messages queue """
         while self.callback_queue.empty() == False:
             try:
                 event = self.callback_queue.get_nowait()
@@ -235,5 +229,6 @@ class Slides(Gtk.Box):
 
     @misc.raise_privileges
     def reboot(self):
+        """ Reboots the system, used when installation is finished """
         os.system("sync")
         subprocess.call(["/usr/bin/systemctl", "reboot", "--force", "--no-wall"])
