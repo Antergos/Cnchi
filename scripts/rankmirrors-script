@@ -1,14 +1,14 @@
 #!/bin/bash
 
-touch /tmp/.rankmirrors
+#touch /tmp/.rankmirrors
 # Testing to see if this helps improve the selection
-reflector -l 20 -f 5 --save=/tmp/.rankmirrors
+reflector -l 20 -f 5 --save=/etc/pacman.d/mirrorlist
 
-rankmirrors -n 5 /tmp/.rankmirrors > /tmp/.ranked-mirrorlist 2>&1
+#rankmirrors -n 5 /tmp/.rankmirrors > /tmp/.ranked-mirrorlist 2>&1
 
                 
-echo "# Fastest mirrors selected during installation" > /tmp/.tmp-mirrorlist 2>&1
-tail -n 5 /tmp/.ranked-mirrorlist >> /tmp/.tmp-mirrorlist 2>&1
-cat /tmp/.tmp-mirrorlist /etc/pacman.d/mirrorlist > /tmp/.mirrorlist
+#echo "# Fastest mirrors selected during installation" > /tmp/.tmp-mirrorlist 2>&1
+#tail -n 5 /tmp/.ranked-mirrorlist >> /tmp/.tmp-mirrorlist 2>&1
+#cat /tmp/.tmp-mirrorlist /etc/pacman.d/mirrorlist > /tmp/.mirrorlist
 
-cp /tmp/.mirrorlist /etc/pacman.d/mirrorlist 2>&1
+#cp /tmp/.mirrorlist /etc/pacman.d/mirrorlist 2>&1
