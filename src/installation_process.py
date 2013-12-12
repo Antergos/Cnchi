@@ -1193,7 +1193,7 @@ class InstallationProcess(multiprocessing.Process):
                     if '#user-session=default' in line:
                         if desktop is "gnome" or "cinnamon":
                             line = 'user-session=%s\n' % desktop
-                        #Am I joining these strings correctly? Need to test.
+                        #Am I joining these strings correctly? It looks wrong, like it should have () or [].
                         elif desktop is "razor" or "openbox":
                             line = 'user-session=%s + "-session\n"' % desktop
                         elif desktop is "xfce":
