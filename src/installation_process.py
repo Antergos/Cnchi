@@ -1193,12 +1193,13 @@ class InstallationProcess(multiprocessing.Process):
                     if '#user-session=default' in line:
                         if desktop is "gnome" or "cinnamon":
                             line = 'user-session=%s\n' % desktop
+                        #Am I joining these strings correctly? Need to test.
                         elif desktop is "razor" or "openbox":
                             line = 'user-session=%s + "-session\n"' % desktop
                         elif desktop is "xfce":
                             line = 'user-session="start" + %s + "4\n"' % desktop
                         elif desktop is "kde":
-                            line = 'user-session=%s +"plasma\n"' % desktop
+                            line = 'user-session=%s + "-plasma\n"' % desktop
                     lightdm_conf.write(line)
 
         # if self.desktop_manager == 'gdm':
