@@ -355,6 +355,11 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
+            # KDE's next release is in 7 days. Better to be ready now...
+            tmp_file.write("[kde-unstable]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
             tmp_file.write("[extra]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
