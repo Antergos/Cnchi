@@ -54,6 +54,7 @@ class DesktopAsk(Gtk.Box):
 
         self.enabled_desktops = self.settings.get("desktops")
 
+        # TODO: This should be global as it is also used in features.py
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
@@ -63,7 +64,8 @@ class DesktopAsk(Gtk.Box):
          "openbox" : "Openbox",
          "enlightenment" : "Enlightenment (e17)",
          "kde" : "KDE",
-         "razor" : "Razor-qt" }
+         "razor" : "Razor-qt",
+         "mate" : "Mate" }
 
         self.set_desktop_list()
 
@@ -133,6 +135,12 @@ class DesktopAsk(Gtk.Box):
             "without any type of graphical interface. After the installation you can "
             "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
+        
+        if desktop == 'mate':
+            txt = _("MATE is a fork of GNOME 2. It provides an intuitive and attractive "
+            "desktop environment using traditional metaphors for Linux and other Unix-like "
+            "operating systems.")
+            txt = "<span weight='bold'>MATE</span>\n" + txt
             
         label.set_markup(txt)
 
