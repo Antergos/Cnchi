@@ -344,7 +344,6 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
             tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
-            # TODO: DO NOT COPY XZ FILES, INSTEAD ADD CACHE DIR HERE
             # ¿?
             #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
@@ -891,17 +890,6 @@ class InstallationProcess(multiprocessing.Process):
 
         self.modify_grub_default()
 
-        self.chroot_mount_special_dirs()
-
-        self.chroot(['grub-install', \
-                  '--directory=/usr/lib/grub/i386-pc', \
-                  '--target=i386-pc', \
-                  '--boot-directory=/boot', \
-                  '--recheck', \
-                  grub_device])
-
-        self.chroot_umount_special_dirs()
-
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
         if not os.path.exists(grub_d_dir):
@@ -923,7 +911,16 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        #self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig > /boot/grub/grub.cfg' % locale])
+
+        self.chroot(['grub-install', \
+                  '--directory=/usr/lib/grub/i386-pc', \
+                  '--target=i386-pc', \
+                  '--boot-directory=/boot', \
+                  '--recheck', \
+                  grub_device])
+
         self.chroot_umount_special_dirs()
 
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
