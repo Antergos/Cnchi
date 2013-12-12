@@ -1,9 +1,10 @@
 #!/bin/bash
 
 touch /tmp/.rankmirrors
+# Testing to see if this helps improve the selection
+reflector -l 20 -f 5 --save=/tmp/.rankmirrors
 
-
-rankmirrors -n 5 /etc/pacman.d/mirrorlist > /tmp/.ranked-mirrorlist 2>&1
+rankmirrors -n 5 /tmp/.rankmirrors > /tmp/.ranked-mirrorlist 2>&1
 
                 
 echo "# Fastest mirrors selected during installation" > /tmp/.tmp-mirrorlist 2>&1

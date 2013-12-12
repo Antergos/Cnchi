@@ -444,6 +444,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.desktop != "nox":
             for child in root.iter('graphic_system'):
                 for pkg in child.iter('pkgname'):
+                    if pkg.attrib.get('dm'):
+                        self.desktop_manager = pkg.attrib.get('name')
                     self.packages.append(pkg.text)
 
             self.queue_event('debug', _("Adding '%s' desktop packages") % self.desktop)
@@ -452,8 +454,6 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     # If package is Desktop Manager, save name to
                     # activate the correct service
-                    if pkg.attrib.get('dm'):
-                        self.desktop_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('nm'):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
@@ -1173,7 +1173,7 @@ class InstallationProcess(multiprocessing.Process):
                 self.enable_services(['ufw'])
 
     def set_display_manger(self):
-        """ Enables automatic login for the installed desktop manager """
+        """ Configures the installed desktop manager, including autologin. """
         desktop = self.settings.get('desktop')
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
 
