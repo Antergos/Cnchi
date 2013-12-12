@@ -166,7 +166,10 @@ class AutoPartition(object):
                 logging.error(e.output)
                 return
 
-            time.sleep(4)
+            #time.sleep(4)
+
+            # Flush file system buffers
+            subprocess.check_call(["sync"])
 
             # Create our mount directory
             path = self.dest_dir + mount_point
@@ -185,7 +188,7 @@ class AutoPartition(object):
                 mode = "750"
 
             subprocess.check_call(["chmod", mode, path])
-
+            
         fs_uuid = get_fs_uuid(device)
         fs_label = get_fs_label(device)
         logging.debug("Device details: %s UUID=%s LABEL=%s", device, fs_uuid, fs_label)
@@ -441,16 +444,20 @@ class AutoPartition(object):
                 end = start + lvm_pv_part_size
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                # Set lvm flag
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
             else:
                 # Create swap partition
                 start = boot_part_size
                 end = start + swap_part_size
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "swap", "on"])
 
                 # Create root partition
                 start = end
                 end = start + root_part_size
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "3", "root", "on"])
                 
                 if self.home:
                     # Create home partition
@@ -460,7 +467,7 @@ class AutoPartition(object):
         printk(True)
 
         # Wait until /dev initialized correct devices
-        subprocess.check_call(["udevadm", "settle"])
+        subprocess.check_call(["udevadm", "settle", "--quiet"])
 
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
@@ -475,13 +482,10 @@ class AutoPartition(object):
                 self.setup_luks(luks_devices[1], "cryptAntergosHome", key_files[1])
 
         if self.lvm:
-            # /dev/sdX1 is /boot
-            # /dev/sdX2 is the PV
-
             logging.debug(_("Will setup LVM on device %s"), lvm_device)
 
-            subprocess.check_call(["pvcreate", "-ff", "-y", lvm_device])
-            subprocess.check_call(["vgcreate", "-ff", "-y", "AntergosVG", lvm_device])
+            subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
+            subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
 
             subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(root_part_size)), "AntergosVG"])
 
