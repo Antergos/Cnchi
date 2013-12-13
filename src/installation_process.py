@@ -853,12 +853,12 @@ class InstallationProcess(multiprocessing.Process):
         """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
             This scheme can be used in the automatic installation option only (at this time) """
 
+        default_dir = os.path.join(self.dest_dir, "etc/default")
+        default_grub = os.path.join(default_dir, "grub")
+        if not os.path.exists(default_dir):
+            os.mkdir(default_dir)
+
         if self.method == 'automatic' and self.settings.get('use_luks'):
-            default_dir = os.path.join(self.dest_dir, "etc/default")
-
-            if not os.path.exists(default_dir):
-                os.mkdir(default_dir)
-
             root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
 
@@ -871,9 +871,7 @@ class InstallationProcess(multiprocessing.Process):
             # Disable the usage of UUIDs for the rootfs:
             disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
 
-            default_grub = os.path.join(default_dir, "grub")
-
-            with open(default_grub, "r") as grub_file:
+            with open(default_grub, 'r') as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
@@ -882,9 +880,14 @@ class InstallationProcess(multiprocessing.Process):
                 elif lines[i].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[i].startswith("GRUB_DISABLE_LINUX_UUID"):
                     lines[i] = disable_uuid_line
 
-            with open(default_grub, "w") as grub_file:
+            with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
-
+        
+        # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
+        with open(default_grub, 'a') as grub_file:
+            grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
+            grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
+                
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_device = self.settings.get('bootloader_device')
@@ -913,16 +916,10 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        #self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig > /boot/grub/grub.cfg' % locale])
-
-        self.chroot(['grub-install', \
-                  '--directory=/usr/lib/grub/i386-pc', \
-                  '--target=i386-pc', \
-                  '--boot-directory=/boot', \
-                  '--recheck', \
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
+                  '--target=i386-pc', '--boot-directory=/boot',  '--recheck',
                   grub_device])
-
         self.chroot_umount_special_dirs()
 
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")

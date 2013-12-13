@@ -1,10 +1,5 @@
 #!/bin/bash
 
-exec 200>/tmp/.rankmirrors
-if ! flock -n 200  ; then
-    exit 0
-fi
-
 #rankmirrors -n 5 /etc/pacman.d/mirrorlist > /tmp/.ranked-mirrorlist 2>&1              
 #echo "# Fastest mirrors selected during installation" > /tmp/.tmp-mirrorlist 2>&1
 #tail -n 5 /tmp/.ranked-mirrorlist >> /tmp/.tmp-mirrorlist 2>&1
