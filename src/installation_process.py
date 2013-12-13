@@ -711,16 +711,20 @@ class InstallationProcess(multiprocessing.Process):
         mydir = os.path.join(self.dest_dir, "dev")
         subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
 
+        mydir = os.path.join(self.dest_dir, "dev/pts")
+        subprocess.check_call(["mount", "-t", "devpts", "pts", mydir])
+        subprocess.check_call(["chmod", "555", mydir])
+
         self.special_dirs_mounted = True
 
     def chroot_umount_special_dirs(self):
         """ Umount special directories for our chroot """
         # Do not umount if they're not mounted
         if not self.special_dirs_mounted:
-            self.queue_event('debug', _("Special dirs already not mounted."))
+            self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = [ "proc", "sys", "dev" ]
+        special_dirs = [ "proc", "sys", "dev/pts", "dev" ]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
