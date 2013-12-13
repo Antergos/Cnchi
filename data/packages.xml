@@ -35,12 +35,13 @@
     <!-- Common to all graphic desktops -->
     <!-- It's best to put here apps that are qt/gtk agnostic -->
     <graphic_system>
-        <pkgname>accountsservice</pkgname> <!--for lightdm to hide system users in greeter -->
+        <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
+        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
@@ -68,7 +69,6 @@
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -150,7 +150,6 @@
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>nemo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -189,7 +188,6 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -224,7 +222,6 @@
         <pkgname>kdesdk-kate</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kovpn</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>openbox-themes</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
@@ -238,7 +235,6 @@
         <pkgname>cups-pk-helper</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>mate</pkgname>
         <pkgname>mate-extras</pkgname>
         <pkgname>network-manager-applet</pkgname>
@@ -276,7 +272,6 @@
         <pkgname>gvfs-atp</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxpolkit</pkgname>
@@ -356,7 +351,6 @@
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
         <pkgname>transmission-qt</pkgname>
