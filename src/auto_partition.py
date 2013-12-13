@@ -23,7 +23,9 @@
 import os
 import subprocess
 import logging
-import time
+#import time
+
+""" AutoPartition class """
 
 # Partition sizes are in MB
 MAX_ROOT_SIZE = 10000
@@ -72,7 +74,7 @@ def unmount_all(dest_dir):
         subprocess.call(["umount", "-l", directory])
 
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
-    
+
     if dest_dir in mount_result:
         logging.warning(_("Unmounting %s"), dest_dir)
         subprocess.call(["umount", "-l", dest_dir])
@@ -90,9 +92,9 @@ def unmount_all(dest_dir):
             subprocess.check_call(["vgremove", "-f", "AntergosVG"])
         pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
         if len(pvolumes[0]) > 0:
-            for pv in pvolumes:
-                pv = pv.strip(" ")
-                subprocess.check_call(["pvremove", "-f", pv])
+            for pvolume in pvolumes:
+                pvolume = pvolume.strip(" ")
+                subprocess.check_call(["pvremove", "-f", pvolume])
     except subprocess.CalledProcessError as err:
         logging.warning(_("Can't delete existent LVM volumes (see below)"))
         logging.warning(err)
@@ -188,7 +190,7 @@ class AutoPartition(object):
                 mode = "750"
 
             subprocess.check_call(["chmod", mode, path])
-            
+
         fs_uuid = get_fs_uuid(device)
         fs_label = get_fs_label(device)
         logging.debug("Device details: %s UUID=%s LABEL=%s", device, fs_uuid, fs_label)
@@ -203,7 +205,7 @@ class AutoPartition(object):
 
         luks = []
         lvm = ""
-        
+
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
         if self.uefi:
@@ -280,7 +282,7 @@ class AutoPartition(object):
 
         fs_devices[boot_device] = "ext2"
         fs_devices[swap_device] = "swap"
-        
+
         if self.uefi:
             fs_devices[efi_device] = "vfat"
 
@@ -302,7 +304,7 @@ class AutoPartition(object):
         """ Setups a luks device """
         # For now, we we'll use the same password for root and /home
         # If instead user wants to use a key file, we'll have two different key files.
-        
+
         logging.debug(_("Cnchi will setup LUKS on device %s"), luks_device)
 
         # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
@@ -315,19 +317,21 @@ class AutoPartition(object):
             subprocess.check_call(["dd", "if=/dev/urandom", "of=%s" % key_file, "bs=1024", "count=4", "status=noxfer"])
 
             # Set up luks with a keyfile
-            subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, key_file])
-            subprocess.check_call(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", key_file])
+            subprocess.check_call(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512",
+                luks_device, key_file])
+            subprocess.check_call(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file",
+                key_file])
         else:
             # Set up luks with a password key
             luks_key_pass_bytes = bytes(self.luks_key_pass, 'UTF-8')
 
-            p = subprocess.Popen(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512",
+            proc = subprocess.Popen(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512",
                 "--key-file=-", luks_device], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            p.communicate(input=luks_key_pass_bytes)[0]
+            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)[0]
 
-            p = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
+            proc = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            p.communicate(input=luks_key_pass_bytes)[0]
+            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)[0]
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
@@ -357,7 +361,7 @@ class AutoPartition(object):
             logging.error("Setup cannot detect size of your device, please use advanced "
                 "installation routine for partitioning and mounting devices.")
             return
-            
+
         # Partition sizes are expressed in MB
 
         boot_part_size = 256
@@ -443,13 +447,13 @@ class AutoPartition(object):
                 subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
                     % (swap_part_size, device)], shell=True)
                 subprocess.check_call(['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
-                    % (root_part_size, device)], shell=True)                
+                    % (root_part_size, device)], shell=True)
 
                 if self.home:
                     #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=6:0:+%dM' % home_part_size,
                     #    ' --typecode=6:8300', '--change-name=5:ANTERGOS_HOME', device])
                     subprocess.check_call(['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
-                        % (home_part_size, device)], shell=True)                    
+                        % (home_part_size, device)], shell=True)
 
             logging.debug(check_output("sgdisk --print %s" % device))
         else:
@@ -477,20 +481,23 @@ class AutoPartition(object):
                 # Create swap partition
                 start = boot_part_size
                 end = start + swap_part_size
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
+                    str(start), str(end)])
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "swap", "on"])
 
                 # Create root partition
                 start = end
                 end = start + root_part_size
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary",
+                    str(start), str(end)])
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "3", "root", "on"])
-                
+
                 if self.home:
                     # Create home partition
                     start = end
-                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
-                    
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary",
+                        str(start), "100%"])
+
         printk(True)
 
         # Wait until /dev initialized correct devices
@@ -549,25 +556,25 @@ class AutoPartition(object):
                 if self.luks_key_pass != "":
                     home_keyfile = "none"
                 else:
-                    home_keyfile = key_file[1]
+                    home_keyfile = key_files[1]
                 fname = os.path.join(self.dest_dir, "etc")
                 subprocess.check_call(["mkdir", "-p", fname])
                 fname = os.path.join(self.dest_dir, "etc/crypttab")
                 with open(fname, "a") as crypttab:
                     line = "cryptAntergosHome %s %s luks" % (luks_devices[1], home_keyfile)
                     crypttab.write(line)
-                    logging.debug("Added %s to /etc/crypttab" % line)
+                    logging.debug("Added %s to /etc/crypttab", line)
 
             if self.luks_key_pass == "":
                 # Copy keyfile to boot partition, user will choose what to do with it
                 # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
                 # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
                 # (boot partition is not)
-                subprocess.check_call(['chmod', '0400', key_file[0]])
-                subprocess.check_call(['mv', key_file[0], '%s/boot' % self.dest_dir])
+                subprocess.check_call(['chmod', '0400', key_files[0]])
+                subprocess.check_call(['mv', key_files[0], '%s/boot' % self.dest_dir])
                 if self.home and not self.lvm:
-                    subprocess.check_call(['chmod', '0400', key_file[1]])
-                    subprocess.check_call(['mv', key_file[1], '%s/boot' % self.dest_dir])
+                    subprocess.check_call(['chmod', '0400', key_files[1]])
+                    subprocess.check_call(['mv', key_files[1], '%s/boot' % self.dest_dir])
 
 if __name__ == '__main__':
     logger = logging.getLogger()
