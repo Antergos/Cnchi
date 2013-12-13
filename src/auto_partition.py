@@ -195,6 +195,7 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
+        efi = ""
         boot = ""
         swap = ""
         root = ""
@@ -206,6 +207,7 @@ class AutoPartition(object):
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
         if self.uefi:
+            efi = self.auto_device + "2"
             boot = self.auto_device + "3"
             swap = self.auto_device + "4"
             root = self.auto_device + "5"
@@ -242,17 +244,20 @@ class AutoPartition(object):
             if self.home:
                 home = "/dev/AntergosVG/AntergosHome"
 
-        return (boot, swap, root, luks, lvm, home)
+        return (efi, boot, swap, root, luks, lvm, home)
 
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py """
 
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         mount_devices = {}
         mount_devices["/boot"] = boot_device
         mount_devices["/"] = root_device
         mount_devices["/home"] = home_device
+
+        if self.uefi:
+            mount_devices["/boot/efi"] = efi_device
 
         if self.luks:
             mount_devices["/"] = luks_devices[0]
@@ -269,12 +274,15 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ fs_devices will be used when configuring the fstab file in installation_process.py """
 
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         fs_devices = {}
 
         fs_devices[boot_device] = "ext2"
         fs_devices[swap_device] = "swap"
+        
+        if self.uefi:
+            fs_devices[efi_device] = "vfat"
 
         if self.luks:
             fs_devices[luks_devices[0]] = "ext4"
@@ -327,9 +335,11 @@ class AutoPartition(object):
         if self.uefi:
             gpt_bios_grub_part_size = 2
             uefisys_part_size = 512
+            empty_space_size = 1
         else:
             gpt_bios_grub_part_size = 0
             uefisys_part_size = 0
+            empty_space_size = 0
 
         # Get just the disk size in 1000*1000 MB
         device = self.auto_device
@@ -359,7 +369,7 @@ class AutoPartition(object):
         if mem_total <= 1572864:
             swap_part_size = mem_total / 1024
 
-        root_part_size = disc_size - (gpt_bios_grub_part_size + uefisys_part_size + boot_part_size + swap_part_size)
+        root_part_size = disc_size - (empty_space_size + gpt_bios_grub_part_size + uefisys_part_size + boot_part_size + swap_part_size)
 
         home_part_size = 0
         if self.home:
@@ -403,26 +413,43 @@ class AutoPartition(object):
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
             subprocess.check_call(["wipefs", "-a", device])
             # Create fresh GPT
-            subprocess.check_call(["sgdisk", "--clear", device])
+            #subprocess.check_call(["sgdisk", "--clear", device])
+            subprocess.check_call(['sgdisk --clear %s' % device], shell=True)
             # Create actual partitions
-            subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=1:1M:+%dM' % gpt_bios_grub_part_size,
-                '--typecode=1:EF02', '--change-name=1:BIOS_GRUB', device])
-            subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=2:0:+%dM' % uefisys_part_size,
-                '--typecode=2:EF00', '--change-name=2:UEFI_SYSTEM', device])
-            subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=3:0:+%dM' % boot_part_size,
-                '--typecode=3:8300', '--attributes=3:set:2', '--change-name=3:ANTERGOS_BOOT', device])
+            #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=1:1M:+%dM' % gpt_bios_grub_part_size,
+            #    '--typecode=1:EF02', '--change-name=1:BIOS_GRUB', device])
+            #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=2:0:+%dM' % uefisys_part_size,
+            #    '--typecode=2:EF00', '--change-name=2:UEFI_SYSTEM', device])
+            #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=3:0:+%dM' % boot_part_size,
+            #    '--typecode=3:8300', '--attributes=3:set:2', '--change-name=3:ANTERGOS_BOOT', device])
+
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s'
+                % (gpt_bios_grub_part_size, device)], shell=True)
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s'
+                % (uefisys_part_size, device)], shell=True)
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=3:0:+%dM --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT %s'
+                % (boot_part_size, device)], shell=True)
 
             if self.lvm:
-                subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=4:0:+%dM' % lvm_pv_part_size,
-                    '--typecode=4:8200', '--change-name=4:ANTERGOS_LVM', device])
+                #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=4:0:+%dM' % lvm_pv_part_size,
+                #    '--typecode=4:8200', '--change-name=4:ANTERGOS_LVM', device])
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8E00 --change-name=4:ANTERGOS_LVM %s'
+                    % (lvm_pv_part_size, device)], shell=True)
             else:
-                subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=4:0:+%dM' % swap_part_size,
-                    '--typecode=4:8200', '--change-name=4:ANTERGOS_SWAP', device])
-                subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=5:0:+%dM' % root_part_size,
-                    ' --typecode=5:8300', '--change-name=5:ANTERGOS_ROOT', device])
+                #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=4:0:+%dM' % swap_part_size,
+                #    '--typecode=4:8200', '--change-name=4:ANTERGOS_SWAP', device])
+                #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=5:0:+%dM' % root_part_size,
+                #    ' --typecode=5:8300', '--change-name=5:ANTERGOS_ROOT', device])
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
+                    % (swap_part_size, device)], shell=True)
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
+                    % (root_part_size, device)], shell=True)                
+
                 if self.home:
-                    subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=6:0:+%dM' % home_part_size,
-                        ' --typecode=6:8300', '--change-name=5:ANTERGOS_HOME', device])
+                    #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=6:0:+%dM' % home_part_size,
+                    #    ' --typecode=6:8300', '--change-name=5:ANTERGOS_HOME', device])
+                    subprocess.check_call(['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
+                        % (home_part_size, device)], shell=True)                    
 
             logging.debug(check_output("sgdisk --print %s" % device))
         else:
@@ -469,10 +496,14 @@ class AutoPartition(object):
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle", "--quiet"])
 
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
-        if not self.home:
+        if not self.home and self.uefi:
+            logging.debug("EFI %s, Boot %s, Swap %s, Root %s", efi_device, boot_device, swap_device, root_device)
+        elif not self.home and not self.uefi:
             logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
+        elif self.home and self.uefi:
+            logging.debug("EFI %s, Boot %s, Swap %s, Root %s, Home %s", efi_device, boot_device, swap_device, root_device, home_device)
         else:
             logging.debug("Boot %s, Swap %s, Root %s, Home %s", boot_device, swap_device, root_device, home_device)
 
@@ -501,6 +532,10 @@ class AutoPartition(object):
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+
+        # Format the EFI partition
+        if self.uefi:
+            self.mkfs(efi_device, "vfat", "/boot/efi", "AntergosEFI")
 
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")

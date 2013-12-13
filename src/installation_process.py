@@ -945,13 +945,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
 
-        self.chroot(['grub-install', \
-                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
-                  '--target=%s-efi' % uefi_arch, \
-                  '--bootloader-id="arch_grub"', \
-                  '--boot-directory=/boot', \
-                  '--recheck', \
-                  grub_device])
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi --bootloader-id=antergos_grub '
+            '--boot-directory=/install/boot --recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
 
@@ -962,25 +957,23 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         self.chroot_umount_special_dirs()
 
-        grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
-        grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
-        try:
-            shutil.copy2(grub_cfg, grub_standalone)
-        except FileNotFoundError:
-            self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
-        except FileExistsError:
-            pass
-
-        self.chroot_mount_special_dirs()
-        self.chroot(['grub-mkstandalone', \
-                  '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
-                  '--format=%s-efi' % uefi_arch, \
-                  '--compression="xz"', \
-                  '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
-                  'boot/grub/grub.cfg'])
-        self.chroot_umount_special_dirs()
-
-        # TODO: Create a boot entry for Antergos in the UEFI boot manager (is this necessary?)
+        #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
+        #grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
+        #try:
+        #    shutil.copy2(grub_cfg, grub_standalone)
+        #except FileNotFoundError:
+        #    self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
+        #except FileExistsError:
+        #    pass
+        #
+        #self.chroot_mount_special_dirs()
+        #self.chroot(['grub-mkstandalone', \
+        #          '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
+        #          '--format=%s-efi' % uefi_arch, \
+        #          '--compression="xz"', \
+        #          '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
+        #          'boot/grub/grub.cfg'])
+        #self.chroot_umount_special_dirs()
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
