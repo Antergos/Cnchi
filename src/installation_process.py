@@ -889,6 +889,8 @@ class InstallationProcess(multiprocessing.Process):
                     lines[i] = default_line
                 elif lines[i].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[i].startswith("GRUB_DISABLE_LINUX_UUID"):
                     lines[i] = disable_uuid_line
+                elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                    lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
