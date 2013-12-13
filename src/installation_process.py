@@ -210,7 +210,6 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-
         # Create the directory where we will mount our new root partition
         if not os.path.exists(self.dest_dir):
             os.mkdir(self.dest_dir)
@@ -314,10 +313,21 @@ class InstallationProcess(multiprocessing.Process):
             return False
         else:
             # Installation finished successfully
-            self.queue_event(_("Installation finished"))
+            self.queue_event("finished", _("Installation finished"))
             self.running = False
             self.error = False
             return True
+
+    def copy_log(self):
+        # Copy Cnchi log to new installation
+        datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
+        dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
+        try:
+            shutil.copy("/tmp/cnchi.log", dst)
+        except FileNotFoundError:
+            logging.warning(_("Can't copy Cnchi log to %s"), dst)
+        except FileExistsError:
+            pass
 
     def download_packages(self):
         """ Downloads necessary packages using Aria2 """
@@ -1425,13 +1435,3 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-
-        # Copy Cnchi log to new installation
-        datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
-        dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
-        try:
-            shutil.copy("/tmp/cnchi.log", dst)
-        except FileNotFoundError:
-            logging.warning(_("Can't copy Cnchi log to %s"), dst)
-        except FileExistsError:
-            pass
