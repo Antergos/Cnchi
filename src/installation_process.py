@@ -194,12 +194,11 @@ class InstallationProcess(multiprocessing.Process):
             root_partition = self.mount_devices["/"]
 
             # NOTE: Advanced method formats root by default in installation_advanced
-            '''
-            if root_partition in self.fs_devices:
-                root_fs = self.fs_devices[root_partition]
-            else:
-                root_fs = "ext4"
-            '''
+
+            #if root_partition in self.fs_devices:
+            #    root_fs = self.fs_devices[root_partition]
+            #else:
+            #    root_fs = "ext4"
 
             if "/boot" in self.mount_devices:
                 boot_partition = self.mount_devices["/boot"]
@@ -862,7 +861,8 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"'
+                    % (root_device, boot_device)
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
 
@@ -1155,7 +1155,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
-        
+
         sessions = { 'gnome':'gnome', 'cinnamon':'cinnamon', 'razor':'razor-session', 'openbox':'openbox-session',
             'xfce':'startxfce4', 'kde':'kde-plasma', 'mate':'mate' }
 
@@ -1186,7 +1186,7 @@ class InstallationProcess(multiprocessing.Process):
                 gdm_conf.write('[daemon]\n')
                 gdm_conf.write('AutomaticLogin=%s\n' % username)
                 gdm_conf.write('AutomaticLoginEnable=True\n')
-        
+
         if self.desktop_manager == 'kdm':
             # Systems with KDM as Desktop Manager
             kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
@@ -1200,7 +1200,7 @@ class InstallationProcess(multiprocessing.Process):
                     if 'AutoLoginUser=' in line:
                         line = 'AutoLoginUser=%s\n' % username
                     kdm_conf.write(line)
-        
+
         if self.desktop_manager == 'lxdm':
             # Systems with LXDM as Desktop Manager
             lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
@@ -1212,7 +1212,7 @@ class InstallationProcess(multiprocessing.Process):
                     if '# autologin=dgod' in line:
                         line = 'autologin=%s\n' % username
                     lxdm_conf.write(line)
-        
+
         if self.desktop_manager == 'slim':
             # Systems with Slim as Desktop Manager
             slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
@@ -1234,7 +1234,7 @@ class InstallationProcess(multiprocessing.Process):
             Populate pacman keyring
             Setup systemd services
             ... and more """
-        
+
         # All downloading and installing has been done, so we hide progress bars
         # (they are 100% both so it makes no sense to still show them)
         self.queue_event('progress', 'hide_all')
@@ -1249,20 +1249,20 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
 
         # TODO: Test copy profile. Code below is not finished.
-        '''
-        elif self.network_manager == 'netctl':
-            if misc.is_wireless_enabled():
-                profile = 'wireless-wpa'
-            else:
-                profile = 'ethernet-dhcp'
+        
+        #if self.network_manager == 'netctl':
+        #    if misc.is_wireless_enabled():
+        #        profile = 'wireless-wpa'
+        #    else:
+        #        profile = 'ethernet-dhcp'
+        #
+        #    self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
+        #
+        #    src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
+        #    dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
+        #    shutil.copy(src_path, dst_path)
+        #    self.chroot(['netctl', 'enable', profile])
 
-            self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
-
-            src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
-            dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
-            shutil.copy(src_path, dst_path)
-            self.chroot(['netctl', 'enable', profile])
-        '''
         self.queue_event('debug', _('Network configuration copied.'))
 
         # Copy mirror list
@@ -1329,12 +1329,12 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["chmod", "440", sudoers_path])
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
-        
+
         default_groups = 'lp,video,network,storage,wheel,audio'
-        
+
         if self.settings.get('require_password') is False:
             default_groups += ',autologin'
-        
+
         self.chroot(['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username])
 
         self.queue_event('debug', _('User %s added.') % username)
@@ -1433,6 +1433,6 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy("/tmp/cnchi.log", dst)
         except FileNotFoundError:
-            logging.warning(_("Can't copy Cnchi log to %s") % dst)
+            logging.warning(_("Can't copy Cnchi log to %s"), dst)
         except FileExistsError:
             pass
