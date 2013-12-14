@@ -327,11 +327,11 @@ class AutoPartition(object):
 
             proc = subprocess.Popen(["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512",
                 "--key-file=-", luks_device], stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)[0]
+            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
             proc = subprocess.Popen(["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)[0]
+            (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
@@ -417,8 +417,9 @@ class AutoPartition(object):
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
             subprocess.check_call(["wipefs", "-a", device])
             # Create fresh GPT
-            #subprocess.check_call(["sgdisk", "--clear", device])
-            subprocess.check_call(['sgdisk --clear %s' % device], shell=True)
+            subprocess.check_call(["sgdisk", "--clear", device])
+            # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
+            subprocess.check_call(["partprobe", device])            
             # Create actual partitions
             #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=1:1M:+%dM' % gpt_bios_grub_part_size,
             #    '--typecode=1:EF02', '--change-name=1:BIOS_GRUB', device])
@@ -483,14 +484,14 @@ class AutoPartition(object):
                 end = start + swap_part_size
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
                     str(start), str(end)])
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "swap", "on"])
+                #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "swap", "on"])
 
                 # Create root partition
                 start = end
                 end = start + root_part_size
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary",
                     str(start), str(end)])
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "3", "root", "on"])
+                #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "3", "root", "on"])
 
                 if self.home:
                     # Create home partition
@@ -542,7 +543,7 @@ class AutoPartition(object):
 
         # Format the EFI partition
         if self.uefi:
-            self.mkfs(efi_device, "vfat", "/boot/efi", "AntergosEFI")
+            self.mkfs(efi_device, "vfat", "/boot/efi", "UEFI_SYSTEM")
 
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")

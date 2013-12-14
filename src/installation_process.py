@@ -122,7 +122,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('error', txt)
         self.callback_queue.join()
         # Is this really necessary?
-        sys.exit(1)
+        os._exit(0)
 
     def queue_event(self, event_type, event_text=""):
         try:
@@ -181,7 +181,6 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(err.output)
                 self.queue_event('error', _("Error creating partitions and their filesystems"))
                 return
-
 
         if self.method == 'alongside':
             # Alongside method shrinks selected partition
@@ -803,6 +802,10 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
                 continue
 
+            # fstab uses vfat to mount fat16 and fat32 partitions
+            if "fat" in myfmt:
+                myfmt = 'vfat'
+            
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
             if path == "":
@@ -906,20 +909,22 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
-                self.queue_event('warning', _("Can't find neither '/arch/10_linux' nor '/etc/grub.d/10_linux'"))
+                self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
             except FileExistsError:
                 pass
         except FileExistsError:
             pass
 
+        self.chroot_mount_special_dirs()
+
+        self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
+                  '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
+
         self.install_bootloader_grub2_locales()
 
         locale = self.settings.get("locale")
-        self.chroot_mount_special_dirs()
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
-        self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
-                  '--target=i386-pc', '--boot-directory=/boot',  '--recheck',
-                  grub_device])
+
         self.chroot_umount_special_dirs()
 
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
@@ -1332,6 +1337,7 @@ class InstallationProcess(multiprocessing.Process):
         default_groups = 'lp,video,network,storage,wheel,audio'
 
         if self.settings.get('require_password') is False:
+            self.chroot(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
         self.chroot(['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username])
