@@ -22,11 +22,24 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
+# Useful vars for gettext (translations)
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
+
+# This allows to translate all py texts (not the glade ones)
+import gettext
+gettext.textdomain(APP_NAME)
+gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+
+import locale
+locale_code, encoding = locale.getdefaultlocale()
+lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
+lang.install()
+
 from gi.repository import Gtk, Gdk, GObject, GLib
 import os
 import sys
 import getopt
-import gettext
 import locale
 import multiprocessing
 import logging
@@ -55,11 +68,7 @@ import canonical.misc as misc
 import info
 import updater
 import show_message as show
-
-# Enabled desktops
-# (remember to update features_by_desktop in features.py if this is changed)
-# (also check desktop.py and installation_process.py)
-DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
+import desktop_environments as desktops
 
 # Command line options
 _alternate_package_list = ""
@@ -72,10 +81,6 @@ _use_aria2 = False
 _verbose = False
 _disable_tryit = False
 _testing = False
-
-# Useful vars for gettext (translations)
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 800
@@ -99,16 +104,16 @@ def remove_temp_files():
 class Main(Gtk.Window):
     """ Cnchi main window """
     def __init__(self):
-        # This allows to translate all py texts (not the glade ones)
-        gettext.textdomain(APP_NAME)
-        gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
-
-        locale_code, encoding = locale.getdefaultlocale()
-        lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
-        lang.install()
-
-        # With this we can use _("string") to translate
-        gettext.install(APP_NAME, localedir=LOCALE_DIR, codeset=None, names=[locale_code])
+        ## This allows to translate all py texts (not the glade ones)
+        #gettext.textdomain(APP_NAME)
+        #gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+        #
+        #locale_code, encoding = locale.getdefaultlocale()
+        #lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
+        #lang.install()
+        #
+        ## With this we can use _("string") to translate
+        #gettext.install(APP_NAME, localedir=LOCALE_DIR, codeset=None, names=[locale_code])
 
         # Check if we have administrative privileges
         if os.getuid() != 0:
@@ -151,7 +156,7 @@ class Main(Gtk.Window):
         self.settings.set('cache', _cache_dir)
 
         # Set enabled desktops
-        self.settings.set("desktops", DESKTOPS)
+        self.settings.set("desktops", desktops.DESKTOPS)
 
         # Set if a grub type must be installed (user choice)
         self.settings.set("force_grub_type", _force_grub_type)

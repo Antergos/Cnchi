@@ -26,6 +26,7 @@ from gi.repository import Gtk
 import subprocess
 import os
 import logging
+import desktop_environments as desktops
 import canonical.misc as misc
 
 _next_page = "installation_ask"
@@ -55,18 +56,10 @@ class Features(Gtk.Box):
 
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
+        self.all_features = desktops.ALL_FEATURES
 
         # Each desktop has its own features
-        self.features_by_desktop = {}
-        self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
-        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["mate"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
-        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
-        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop = desktops.FEATURES
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
@@ -114,20 +107,7 @@ class Features(Gtk.Box):
         """ Translates features ui """
         desktop = self.settings.get('desktop')
 
-        # TODO: This should be global as it is also used in desktop.py
-        desktops = {
-         "nox" : "Base",
-         "gnome" : "Gnome",
-         "cinnamon" : "Cinnamon",
-         "xfce" : "Xfce",
-         "lxde" : "Lxde",
-         "openbox" : "Openbox",
-         "enlightenment" : "Enlightenment (e17)",
-         "kde" : "KDE",
-         "razor" : "Razor-qt",
-         "mate" : "Mate" }
-
-        txt = desktops[desktop] + " - " + _("Feature Selection")
+        txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
         #txt = '<span weight="bold" size="large">%s</span>' % txt
         #self.title.set_markup(txt)
 

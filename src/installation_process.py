@@ -38,6 +38,7 @@ import urllib.error
 import xml.etree.ElementTree as etree
 import encfs
 import auto_partition
+import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
@@ -90,7 +91,7 @@ class InstallationProcess(multiprocessing.Process):
         self.desktop = self.settings.get('desktop')
 
         # Set defaults
-        self.desktop_manager = 'gdm'
+        self.desktop_manager = 'lightdm'
         self.network_manager = 'NetworkManager'
 
         self.card = []
@@ -112,7 +113,6 @@ class InstallationProcess(multiprocessing.Process):
         self.initramfs = ""
         self.kernel_pkg = ""
         self.vmlinuz = ""
-        self.features_by_desktop = {}
         self.dest_dir = ""
 
     def queue_fatal_event(self, txt):
@@ -610,24 +610,12 @@ class InstallationProcess(multiprocessing.Process):
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
-        self.features_by_desktop = {"nox": ["aur", "bluetooth", "cups", "fonts", "firewall"],
-                            "gnome": ["aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall",
-                                      "third_party"],
-                            "cinnamon": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
-                            "mate": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
-                            "xfce": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
-                            "razor": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"],
-                            "openbox": ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall",
-                                        "third_party"],
-                            "kde": ["aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party"]}
-
         desktop = self.settings.get("desktop")
-        features = self.features_by_desktop[desktop]
 
         # TODO: For now, removed razor from qt list as it pulls in all kdelibs, Will revisit this list.
-        lib = {'gtk':["gnome", "cinnamon", "xfce", "openbox", "mate"], 'qt':["norazor", "kde"]}
+        lib = desktops.LIBS
 
-        for feature in features:
+        for feature in desktops.FEATURES:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
