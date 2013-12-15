@@ -301,9 +301,9 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err)
             self.queue_fatal_event(err.value)
             all_ok = False
-        except:
+        except err:
             # unknown error
-            logging.error(_("Unknown error"))
+            logging.error(err)
             self.running = False
             self.error = True
             all_ok = False
@@ -862,12 +862,16 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'automatic' and self.settings.get('use_luks'):
             root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
-
+            root_uuid = fs.get_info(root_device)['UUID']
+            boot_uuid = fs.get_info(boot_device)['UUID']
+            
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
+                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
             else:
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
+                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
             # Disable the usage of UUIDs for the rootfs:
             disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
@@ -876,7 +880,8 @@ class InstallationProcess(multiprocessing.Process):
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
-                if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
+                if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
+                    (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
                     lines[i] = default_line
                 elif lines[i].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[i].startswith("GRUB_DISABLE_LINUX_UUID"):
                     lines[i] = disable_uuid_line
