@@ -368,7 +368,7 @@ def setup_logging():
     logger = logging.getLogger()
     logger.setLevel(_log_level)
     # Log format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(filename)s - %(name)s - %(levelname)s - %(message)s')
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
     file_handler.setLevel(_log_level)
