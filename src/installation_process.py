@@ -873,9 +873,6 @@ class InstallationProcess(multiprocessing.Process):
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
-            # Disable the usage of UUIDs for the rootfs:
-            disable_uuid_line = 'GRUB_DISABLE_LINUX_UUID=true'
-
             with open(default_grub, 'r') as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
@@ -883,8 +880,6 @@ class InstallationProcess(multiprocessing.Process):
                 if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
                     (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
                     lines[i] = default_line
-                elif lines[i].startswith("#GRUB_DISABLE_LINUX_UUID") or lines[i].startswith("GRUB_DISABLE_LINUX_UUID"):
-                    lines[i] = disable_uuid_line
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
