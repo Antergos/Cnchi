@@ -528,7 +528,7 @@ class InstallationAdvanced(Gtk.Box):
 
                     if p.type == pm.PARTITION_EXTENDED:
                         # Show 'extended' in file system type column
-                        fs_type = _("extended")
+                        fs_type = 'extended'
 
                     # Do not show swap version, only the 'swap' word
                     if 'swap' in fs_type:
@@ -931,7 +931,7 @@ class InstallationAdvanced(Gtk.Box):
                         mymount = ''
                     # No labeling either..
                     mylabel = ''
-                    myfmt = _("extended")
+                    myfmt = 'extended'
                     formatme = False
                     logging.debug(_("Creating extended partition"))
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
@@ -1421,7 +1421,7 @@ class InstallationAdvanced(Gtk.Box):
                         if lbl != "":
                             relabel = 'Yes'
                         # Avoid extended and bios-gpt-boot partitions getting fmt flag true on new creation
-                        if fs != _("extended") and fs != "bios-gpt-boot":
+                        if fs != "extended" and fs != "bios-gpt-boot":
                             fmt = 'Yes'
                         createme = 'Yes'
                     else:
@@ -1500,7 +1500,7 @@ class InstallationAdvanced(Gtk.Box):
                             if lbl != "":
                                 relabel = 'Yes'
                             # Avoid extended and bios-gpt-boot partitions getting fmt flag true on new creation
-                            if fs != _("extended") and fs != "bios-gpt-boot":
+                            if fs != "extended" and fs != "bios-gpt-boot":
                                 fmt = 'Yes'
                             createme = 'Yes'
                         else:
@@ -1641,6 +1641,9 @@ class InstallationAdvanced(Gtk.Box):
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
+                        # FIX: Do not label or format extended or bios-gpt-boot partitions
+                        if fisy == "extended" or fisy == "bios-gpt-boot":
+                            continue
                         logging.info(_("Creating %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
                         if (mnt == '/boot/efi'):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
@@ -1709,7 +1712,7 @@ class InstallationAdvanced(Gtk.Box):
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     # FIX: Do not mount extended or bios-gpt-boot partitions
-                    if fs_type == _("extended") or fs_type == "bios-gpt-boot":
+                    if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         continue
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
