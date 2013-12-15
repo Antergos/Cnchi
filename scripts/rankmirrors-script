@@ -6,4 +6,4 @@
 #cat /tmp/.tmp-mirrorlist /etc/pacman.d/mirrorlist > /tmp/.mirrorlist
 #cp /tmp/.mirrorlist /etc/pacman.d/mirrorlist 2>&1
 
-reflector -l 20 -f 5 --save=/etc/pacman.d/mirrorlist
+#reflector -l 20 -f 5 --save=/etc/pacman.d/mirrorlist
