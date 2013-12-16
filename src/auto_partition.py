@@ -554,33 +554,20 @@ class AutoPartition(object):
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
-        # NOTE: /etc/default/grub will be modified in installation_process.py, too.
+        # NOTE: /etc/default/grub, /etc/fstab and /etc/crypttab will be modified in installation_process.py, too.
 
-        if self.luks:
+        if self.luks and self.luks_key_pass == "":
+            # Copy keyfile to boot partition and home keyfile to root partition.
+            # User will choose what to do with it
+            # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+            # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
+            # (boot partition is not)
+            subprocess.check_call(['chmod', '0400', key_files[0]])
+            subprocess.check_call(['mv', key_files[0], '%s/boot' % self.dest_dir])
             if self.home and not self.lvm:
-                # Setup Antergos to unlock home partition at boot
-                if self.luks_key_pass != "":
-                    home_keyfile = "none"
-                else:
-                    home_keyfile = key_files[1]
-                fname = os.path.join(self.dest_dir, "etc")
-                subprocess.check_call(["mkdir", "-p", fname])
-                fname = os.path.join(self.dest_dir, "etc/crypttab")
-                with open(fname, "a") as crypttab:
-                    line = "cryptAntergosHome %s %s luks" % (luks_devices[1], home_keyfile)
-                    crypttab.write(line)
-                    logging.debug("Added %s to /etc/crypttab", line)
-
-            if self.luks_key_pass == "":
-                # Copy keyfile to boot partition, user will choose what to do with it
-                # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-                # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
-                # (boot partition is not)
-                subprocess.check_call(['chmod', '0400', key_files[0]])
-                subprocess.check_call(['mv', key_files[0], '%s/boot' % self.dest_dir])
-                if self.home and not self.lvm:
-                    subprocess.check_call(['chmod', '0400', key_files[1]])
-                    subprocess.check_call(['mv', key_files[1], '%s/boot' % self.dest_dir])
+                subprocess.check_call(['chmod', '0400', key_files[1]])
+                subprocess.check_call(["mkdir", "-p", '%s/etc/luks-keys' % self.dest_dir])
+                subprocess.check_call(['mv', key_files[1], '%s/etc/luks-keys' % self.dest_dir])
 
 if __name__ == '__main__':
     logger = logging.getLogger()
