@@ -121,12 +121,22 @@ class Features(Gtk.Box):
         txt = _("The AUR is a community-driven repository for Arch users.")
         self.labels["aur"].set_markup(txt)
 
+        txt = _("MORE INFO HERE")
+        self.titles["aur"].set_tooltip_markup(txt)
+        self.switches["aur"].set_tooltip_markup(txt)
+        self.labels["aur"].set_tooltip_markup(txt)
+
         # Bluetooth
         txt = _("Bluetooth Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
         txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
+
+        txt = _("MORE INFO HERE")
+        self.titles["bluetooth"].set_tooltip_markup(txt)
+        self.switches["bluetooth"].set_tooltip_markup(txt)
+        self.labels["bluetooth"].set_tooltip_markup(txt)
 
         # Extra Fonts
         txt = _("Extra Fonts")
@@ -139,9 +149,13 @@ class Features(Gtk.Box):
         txt = _("Gnome Extra")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["gnome_extra"].set_markup(txt)
-        # https://www.archlinux.org/groups/x86_64/gnome-extra/
         txt = _("Installation of extra Gnome applications")
         self.labels["gnome_extra"].set_markup(txt)
+
+        txt = _("MORE INFO HERE")
+        self.titles["gnome_extra"].set_tooltip_markup(txt)
+        self.switches["gnome_extra"].set_tooltip_markup(txt)
+        self.labels["gnome_extra"].set_tooltip_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
