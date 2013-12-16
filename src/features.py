@@ -139,6 +139,7 @@ class Features(Gtk.Box):
         txt = _("Gnome Extra")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["gnome_extra"].set_markup(txt)
+        # https://www.archlinux.org/groups/x86_64/gnome-extra/
         txt = _("Installation of extra Gnome applications")
         self.labels["gnome_extra"].set_markup(txt)
 
