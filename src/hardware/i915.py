@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  i915.py
 #
 #  Copyright 2013 Antergos
 #

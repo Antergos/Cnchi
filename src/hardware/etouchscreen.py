@@ -29,9 +29,9 @@
 from hardware import Hardware
 import subprocess
 
-# 0eef:0001
+DEVICES = [('0x0eef', '0x0001')]
 
-class Etouchscreen(Hardware):
+class ETouchScreen(Hardware):
     def __init__(self):
         pass
         

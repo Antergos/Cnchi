@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  nvidia.py
 #
 #  Copyright 2013 Antergos
 #
@@ -24,10 +24,11 @@
 
 from hardware import Hardware
 
-# 10de:040c
-# 10de:040f
+DEVICES = [
+('0x10de', '0x040c'),
+('0x10de', '0x040f')]
 
-class XXXXX(Hardware):
+class NVidia(Hardware):
     def __init__(self):
         pass
         

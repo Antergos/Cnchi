@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  virtualbox.py
 #
 #  Copyright 2013 Antergos
 #
@@ -24,9 +24,9 @@
 
 from hardware import Hardware
 
-# 80ee:cafe
+DEVICES = [('0x80ee', '0xcafe')]
 
-class XXXXX(Hardware):
+class Virtualbox(Hardware):
     def __init__(self):
         pass
         

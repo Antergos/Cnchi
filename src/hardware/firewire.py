@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  firewire.py
 #
 #  Copyright 2013 Antergos
 #
@@ -24,9 +24,9 @@
 
 from hardware import Hardware
 
-# 1180:0832
+DEVICES = [('0x1180','0x0832')]
 
-class XXXXX(Hardware):
+class Firewire(Hardware):
     def __init__(self):
         pass
         

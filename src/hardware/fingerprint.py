@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  fingerprint.py
 #
 #  Copyright 2013 Antergos
 #
@@ -43,7 +43,7 @@ DEVICES = [
 ('0x08ff', '0x5501'),
 ('0x147e', '0x2016')]
 
-class XXXXX(Hardware):
+class FingerPrint(Hardware):
     def __init__(self):
         pass
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  radeon.py
 #
 #  Copyright 2013 Antergos
 #
@@ -24,12 +24,13 @@
 
 from hardware import Hardware
 
-# 1002:3154
-# 1002:4c66
-# 1002:5460
-# 1002:68f9
+DEVICES = [
+('0x1002','0x3154'),
+('0x1002', '0x4c66'),
+('0x1002', '0x5460'),
+('0x1002', '0x68f9')]
 
-class XXXXX(Hardware):
+class Radeon(Hardware):
     def __init__(self):
         pass
         

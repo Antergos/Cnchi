@@ -24,7 +24,7 @@
 
 from hardware import Hardware
 
-# 14e4:4315
+DEVICES = [('0x14e4', '0x4315')]
 
 class Broadcom-wl(Hardware):
     def __init__(self):

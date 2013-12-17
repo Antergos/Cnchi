@@ -44,6 +44,9 @@ class HardwareInstall(object):
     def __init__(self):
         pass
     
+    def get_all(self):
+        pass
+    
     def run(self):
         # pci
         lines = subprocess.check_call(["lspci", "-n"])
