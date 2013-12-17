@@ -26,6 +26,8 @@ from hardware import Hardware
 
 DEVICES = [('0x80ee', '0xcafe')]
 
+CLASS_NAME = "Virtualbox"
+
 class Virtualbox(Hardware):
     def __init__(self):
         pass
@@ -39,11 +41,11 @@ class Virtualbox(Hardware):
         """ Device is (VendorID, ProductID) """
         pass
 
-pacman -S --needed --noconfirm virtualbox-guest-utils
-
-systemctl disable openntpd
-systemctl enable vboxservice
-
-echo 'vboxguest' >  /etc/modules-load.d/virtualbox-guest.conf
-echo 'vboxsf'    >> /etc/modules-load.d/virtualbox-guest.conf
-echo 'vboxvideo' >> /etc/modules-load.d/virtualbox-guest.conf
+#pacman -S --needed --noconfirm virtualbox-guest-utils
+#
+#systemctl disable openntpd
+#systemctl enable vboxservice
+#
+#echo 'vboxguest' >  /etc/modules-load.d/virtualbox-guest.conf
+#echo 'vboxsf'    >> /etc/modules-load.d/virtualbox-guest.conf
+#echo 'vboxvideo' >> /etc/modules-load.d/virtualbox-guest.conf

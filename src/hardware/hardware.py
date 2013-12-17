@@ -25,6 +25,8 @@
 import subprocess
 import os
 
+DEVICES = []
+
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
@@ -36,25 +38,58 @@ class Hardware(object):
     def postinstall(self):
         raise NotImplementedError("postinstall is not implemented!")
 
+    #def check_device(self, device):
+    #    """ Device is (VendorID, ProductID) """
+    #    raise NotImplementedError("check_device is not implemented")
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
-        raise NotImplementedError("check_device is not implemented")
+        if device in DEVICES:
+            return True
+        return False
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
     def __init__(self):
-        pass
-    
-    def get_all(self):
-        # os.listdir()
-        pass
-    
+        self.imports = []
+        
+        dirs = os.listdir('.')
+
+        # This is unsafe, but we don't care if somebody wants
+        # Cnchi to run code arbitrarily.
+        for filename in dirs:
+            if ".py" in filename and "__init__" not in filename and "hardware" not in filename:
+                filename = filename[:-3]
+                try:
+                    package = filename
+                    name = filename.capitalize()
+                    # from package import name
+                    if package is not 'hardware' and package is not '__init__':
+                        print(package)
+                        class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
+                        #print("from",package, "import", name)
+                        #self.imports.append(getattr(__import__(package, fromlist=[name]), name))
+                except ImportError:
+                    print("Error importing %s from %s" % (name, package))
+                        
     def run(self):
-        # pci
-        lines = subprocess.check_call(["lspci", "-n"])
+        pci_devices = []
+        usb_devices = []
+        
+        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
-            pci = line[2]
-            print(pci)
+            if len(line) > 0:
+                pci_devices.append(line.split()[2])
+
+        lines = subprocess.check_output(["lsusb"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                usb_devices.append(line.split()[5])
+        
+        for imp in self.imports:
+            for pci_device in pci_devices:
+                print(imp.check_device(pci_device))
+            for usb_device in usb_devices:
+                print(imp.check_device(usb_device))
 
 if __name__ == '__main__':
     hardware_install = HardwareInstall()

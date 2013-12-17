@@ -43,6 +43,8 @@ DEVICES = [
 ('0x08ff', '0x5501'),
 ('0x147e', '0x2016')]
 
+CLASS_NAME = "FingerPrint"
+
 class FingerPrint(Hardware):
     def __init__(self):
         pass
@@ -57,4 +59,4 @@ class FingerPrint(Hardware):
         
         pass
 
-pacman -S --noconfirm --needed fprintd
+#pacman -S --noconfirm --needed fprintd

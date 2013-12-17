@@ -26,7 +26,9 @@ from hardware import Hardware
 
 DEVICES = [('0x14e4', '0x4315')]
 
-class Broadcom-wl(Hardware):
+CLASS_NAME = "Broadcom_wl"
+
+class Broadcom_wl(Hardware):
     def __init__(self):
         pass
         
@@ -36,6 +38,6 @@ class Broadcom-wl(Hardware):
     def postinstall(self):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        pass
+#    def check_device(self, device):
+#        """ Device is (VendorID, ProductID) """
+#        pass

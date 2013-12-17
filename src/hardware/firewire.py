@@ -26,6 +26,8 @@ from hardware import Hardware
 
 DEVICES = [('0x1180','0x0832')]
 
+CLASS_NAME = "Firewire"
+
 class Firewire(Hardware):
     def __init__(self):
         pass
@@ -39,4 +41,4 @@ class Firewire(Hardware):
         """ Device is (VendorID, ProductID) """
         pass
 
-pacman -S --needed --noconfirm libffado libraw1394
+#pacman -S --needed --noconfirm libffado libraw1394

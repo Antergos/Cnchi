@@ -24,7 +24,9 @@
 
 from hardware import Hardware
 
-class XXXXX(Hardware):
+CLASS_NAME = "i915"
+
+class i915(Hardware):
     def __init__(self):
         pass
         
@@ -33,19 +35,19 @@ class XXXXX(Hardware):
     def postinstall(self):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        pass
+#    def check_device(self, device):
+#        """ Device is (VendorID, ProductID) """
+#        pass
 
-UNAME_M=`uname -m`
-KMS="i915"
-KMS_OPTIONS="modeset=1"
-DRI="intel-dri"
-DDX="xf86-video-intel"
-DECODER="libva-intel-driver"
-
-pacman -S --noconfirm --needed ${DRI} ${DDX} ${DECODER} libtxc_dxtn
-if [ "${UNAME_M}" == "x86_64" ]; then
-    pacman -S --noconfirm --needed lib32-${DRI} lib32-mesa-libgl
-fi
-echo "options ${KMS} ${KMS_OPTIONS}" > /etc/modprobe.d/${KMS}.conf
+#UNAME_M=`uname -m`
+#KMS="i915"
+#KMS_OPTIONS="modeset=1"
+#DRI="intel-dri"
+#DDX="xf86-video-intel"
+#DECODER="libva-intel-driver"
+#
+#pacman -S --noconfirm --needed ${DRI} ${DDX} ${DECODER} libtxc_dxtn
+#if [ "${UNAME_M}" == "x86_64" ]; then
+#    pacman -S --noconfirm --needed lib32-${DRI} lib32-mesa-libgl
+#fi
+#echo "options ${KMS} ${KMS_OPTIONS}" > /etc/modprobe.d/${KMS}.conf

@@ -31,6 +31,8 @@ import subprocess
 
 DEVICES = [('0x0eef', '0x0001')]
 
+CLASS_NAME = "ETouchScreen"
+
 class ETouchScreen(Hardware):
     def __init__(self):
         pass
@@ -54,6 +56,6 @@ class ETouchScreen(Hardware):
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        pass
+#    def check_device(self, device):
+#        """ Device is (VendorID, ProductID) """
+#        pass

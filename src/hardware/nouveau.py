@@ -25,6 +25,8 @@
 import os
 from hardware import Hardware
 
+CLASS_NAME = "Nouveau"
+
 class Nouveau(Hardware):
     def __init__(self):
         self.KMS = "nouveau"
@@ -37,8 +39,7 @@ class Nouveau(Hardware):
     def get_packages(self):
         pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
         if self.ARCH == "x86_64":
-            pkgs.expand(["lib32-%s" % self.DRI, "lib32-mesa-libgl" ]
-        
+            pkgs.expand([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
     
     def postinstall(self):
         path = os.path.join("/etc/modprobe.d", self.KMS, ".conf")
