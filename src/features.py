@@ -26,6 +26,7 @@ from gi.repository import Gtk
 import subprocess
 import os
 import logging
+import desktop_environments as desktops
 import canonical.misc as misc
 
 _next_page = "installation_ask"
@@ -55,18 +56,10 @@ class Features(Gtk.Box):
 
         # Available features (for reference)
         # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
+        self.all_features = desktops.ALL_FEATURES
 
         # Each desktop has its own features
-        self.features_by_desktop = {}
-        self.features_by_desktop["cinnamon"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["gnome"] = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ]
-        self.features_by_desktop["kde"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["mate"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["nox"] = [ "aur", "bluetooth", "cups", "fonts", "firewall" ]
-        self.features_by_desktop["openbox"] = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
-        self.features_by_desktop["razor"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
-        self.features_by_desktop["xfce"] = [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]
+        self.features_by_desktop = desktops.FEATURES
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
@@ -114,20 +107,7 @@ class Features(Gtk.Box):
         """ Translates features ui """
         desktop = self.settings.get('desktop')
 
-        # TODO: This should be global as it is also used in desktop.py
-        desktops = {
-         "nox" : "Base",
-         "gnome" : "Gnome",
-         "cinnamon" : "Cinnamon",
-         "xfce" : "Xfce",
-         "lxde" : "Lxde",
-         "openbox" : "Openbox",
-         "enlightenment" : "Enlightenment (e17)",
-         "kde" : "KDE",
-         "razor" : "Razor-qt",
-         "mate" : "Mate" }
-
-        txt = desktops[desktop] + " - " + _("Feature Selection")
+        txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
         #txt = '<span weight="bold" size="large">%s</span>' % txt
         #self.title.set_markup(txt)
 
@@ -141,12 +121,22 @@ class Features(Gtk.Box):
         txt = _("The AUR is a community-driven repository for Arch users.")
         self.labels["aur"].set_markup(txt)
 
+        txt = _("MORE INFO HERE")
+        self.titles["aur"].set_tooltip_markup(txt)
+        self.switches["aur"].set_tooltip_markup(txt)
+        self.labels["aur"].set_tooltip_markup(txt)
+
         # Bluetooth
         txt = _("Bluetooth Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
         txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
+
+        txt = _("MORE INFO HERE")
+        self.titles["bluetooth"].set_tooltip_markup(txt)
+        self.switches["bluetooth"].set_tooltip_markup(txt)
+        self.labels["bluetooth"].set_tooltip_markup(txt)
 
         # Extra Fonts
         txt = _("Extra Fonts")
@@ -161,6 +151,11 @@ class Features(Gtk.Box):
         self.titles["gnome_extra"].set_markup(txt)
         txt = _("Installation of extra Gnome applications")
         self.labels["gnome_extra"].set_markup(txt)
+
+        txt = _("MORE INFO HERE")
+        self.titles["gnome_extra"].set_tooltip_markup(txt)
+        self.switches["gnome_extra"].set_tooltip_markup(txt)
+        self.labels["gnome_extra"].set_tooltip_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
