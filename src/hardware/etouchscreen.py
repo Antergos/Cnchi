@@ -29,6 +29,8 @@
 from hardware import Hardware
 import subprocess
 
+# 0eef:0001
+
 class Etouchscreen(Hardware):
     def __init__(self):
         pass
@@ -51,3 +53,7 @@ class Etouchscreen(Hardware):
             conf_file.write('\tOption          "InvertY" "1"\n')
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
+
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        pass

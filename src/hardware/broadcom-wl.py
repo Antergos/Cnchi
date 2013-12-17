@@ -24,6 +24,8 @@
 
 from hardware import Hardware
 
+# 14e4:4315
+
 class Broadcom-wl(Hardware):
     def __init__(self):
         pass
@@ -34,6 +36,6 @@ class Broadcom-wl(Hardware):
     def postinstall(self):
         pass
 
-    def check_pci(self, pci):
-        # check that vendor and pciid are ok
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
         pass

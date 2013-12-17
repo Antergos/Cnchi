@@ -35,8 +35,9 @@ class Hardware(object):
     def postinstall(self):
         raise NotImplementedError("postinstall is not implemented!")
 
-    def check_pci(self, pci):
-        raise NotImplementedError("check_pci is not implemented")
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        raise NotImplementedError("check_device is not implemented")
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
