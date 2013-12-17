@@ -196,12 +196,13 @@ class Features(Gtk.Box):
         self.labels["office"].set_markup(txt)
 
         txt = _("LibreOffice is the free power-packed Open Source\n"
-                "personal productivity suite for Windows, Macintosh "
-            "and Linux, that gives you six feature-rich applications for all your document production and data "
-            "processing needs: Writer, Calc, Impress, Draw, Math and Base.")
-        self.titles[""].set_tooltip_markup(txt)
-        self.switches[""].set_tooltip_markup(txt)
-        self.labels[""].set_tooltip_markup(txt)
+                "personal productivity suite for Windows, Macintosh\n"
+                "and Linux, that gives you six feature-rich applications\n"
+                "for all your document production and data processing\n"
+                "needs: Writer, Calc, Impress, Draw, Math and Base.")
+        self.titles["office"].set_tooltip_markup(txt)
+        self.switches["office"].set_tooltip_markup(txt)
+        self.labels["office"].set_tooltip_markup(txt)
 
         # Visual effects
         txt = _("Visual Effects")
@@ -210,9 +211,11 @@ class Features(Gtk.Box):
         txt = _("Enable transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
-        txt = _("Compton is a lightweight, standalone composite manager, suitable for use with window managers "
-            "that do not natively provide compositing functionality. Compton itself is a fork of xcompmgr-dana, "
-            "which in turn is a fork of xcompmgr. See the compton github page for further information.")
+        txt = _("Compton is a lightweight, standalone composite manager,\n"
+                "suitable for use with window managers that do not natively\n"
+                "provide compositing functionality. Compton itself is a fork\n"
+                "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+                "See the compton github page for further information.")
         self.titles["visual"].set_tooltip_markup(txt)
         self.switches["visual"].set_tooltip_markup(txt)
         self.labels["visual"].set_tooltip_markup(txt)
@@ -224,8 +227,9 @@ class Features(Gtk.Box):
         txt = _("Control the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
 
-        txt = _("Ufw stands for Uncomplicated Firewall, and is a program for managing a netfilter firewall. "
-            "It provides a command line interface and aims to be uncomplicated and easy to use.")
+        txt = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
+                "managing a netfilter firewall. It provides a command line\n"
+                "interface and aims to be uncomplicated and easy to use.")
         self.titles["firewall"].set_tooltip_markup(txt)
         self.switches["firewall"].set_tooltip_markup(txt)
         self.labels["firewall"].set_tooltip_markup(txt)
