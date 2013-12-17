@@ -23,6 +23,7 @@
 """ Hardware related packages installation """
 
 import subprocess
+import os
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
@@ -45,6 +46,7 @@ class HardwareInstall(object):
         pass
     
     def get_all(self):
+        # os.listdir()
         pass
     
     def run(self):
