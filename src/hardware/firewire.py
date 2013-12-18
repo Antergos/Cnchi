@@ -33,12 +33,15 @@ class Firewire(Hardware):
         pass
         
     def get_packages(self):
-        pass    
+        return []
+        
     def postinstall(self):
         pass
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
-        pass
+        if device in DEVICES:
+            return True
+        return False
 
 #pacman -S --needed --noconfirm libffado libraw1394

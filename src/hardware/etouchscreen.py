@@ -38,7 +38,7 @@ class ETouchScreen(Hardware):
         pass
         
     def get_packages(self):
-        pkgs = [ "xinput_calibrator", "xournal" ]
+        return [ "xinput_calibrator", "xournal" ]
     
     def postinstall(self):
         subprocess.check_call(["rmmod", "usbtouchscreen"])
@@ -56,6 +56,8 @@ class ETouchScreen(Hardware):
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
 
-#    def check_device(self, device):
-#        """ Device is (VendorID, ProductID) """
-#        pass
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        if device in DEVICES:
+            return True
+        return False

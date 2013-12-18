@@ -35,14 +35,16 @@ class NVidia(Hardware):
         pass
         
     def get_packages(self):
-        pass    
+        return [] 
  
     def postinstall(self):
         pass
 
-#    def check_device(self, device):
-#        """ Device is (VendorID, ProductID) """
-#        pass
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        if device in DEVICES:
+            return True
+        return False
 
 # Install nvidia
 #echo -en "\ny\n" | pacman -S --needed --noconfirm nvidia libva-vdpau-driver

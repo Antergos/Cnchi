@@ -33,11 +33,14 @@ class Broadcom_wl(Hardware):
         pass
         
     def get_packages(self):
-        pkgs = [ "broadcom-wl" ]
+        return [ "broadcom-wl" ]
     
     def postinstall(self):
         pass
 
-#    def check_device(self, device):
-#        """ Device is (VendorID, ProductID) """
-#        pass
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        if device in DEVICES:
+            return True
+        return False
+        

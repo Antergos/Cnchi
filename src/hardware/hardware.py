@@ -38,19 +38,14 @@ class Hardware(object):
     def postinstall(self):
         raise NotImplementedError("postinstall is not implemented!")
 
-    #def check_device(self, device):
-    #    """ Device is (VendorID, ProductID) """
-    #    raise NotImplementedError("check_device is not implemented")
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
-        return False
-
+        raise NotImplementedError("check_device is not implemented")
+            
 class HardwareInstall(object):
     """ This class checks user's hardware """
     def __init__(self):
-        self.imports = []
+        self.objects = []
         
         dirs = os.listdir('.')
 
@@ -63,34 +58,42 @@ class HardwareInstall(object):
                     package = filename
                     name = filename.capitalize()
                     # from package import name
-                    if package is not 'hardware' and package is not '__init__':
-                        print(package)
-                        class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
-                        #print("from",package, "import", name)
-                        #self.imports.append(getattr(__import__(package, fromlist=[name]), name))
+                    class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
+                    self.objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError:
                     print("Error importing %s from %s" % (name, package))
                         
-    def run(self):
-        pci_devices = []
-        usb_devices = []
-        
+    def get_packages(self):
+        devices = []
+
+        # Get PCI devices
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                pci_devices.append(line.split()[2])
+                dev = line.split()[2].split(":")
+                devices.append(("0x" + dev[0], "0x" + dev[1]))
 
+        # Get USB devices
         lines = subprocess.check_output(["lsusb"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                usb_devices.append(line.split()[5])
+                dev = line.split()[5].split(":")
+                devices.append(("0x" + dev[0], "0x" + dev[1]))
         
-        for imp in self.imports:
-            for pci_device in pci_devices:
-                print(imp.check_device(pci_device))
-            for usb_device in usb_devices:
-                print(imp.check_device(usb_device))
+        # Add a known device (just for testing, must be removed in final version)
+        devices.append(('0x14e4', '0x4315'))
+        
+        packages = []
+
+        for obj in self.objects:
+            for device in devices:
+                if obj.check_device(self=obj, device=device):
+                    print(device, obj, "detected")
+                    packages.extend(obj.get_packages(self=obj))
+        
+        return packages
 
 if __name__ == '__main__':
     hardware_install = HardwareInstall()
-    hardware_install.run()
+    pkgs = hardware_install.get_packages()
+    print(pkgs)

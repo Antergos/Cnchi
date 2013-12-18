@@ -27,6 +27,8 @@ from hardware import Hardware
 
 CLASS_NAME = "Nouveau"
 
+DEVICES = []
+
 class Nouveau(Hardware):
     def __init__(self):
         self.KMS = "nouveau"
@@ -40,8 +42,16 @@ class Nouveau(Hardware):
         pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
         if self.ARCH == "x86_64":
             pkgs.expand([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
+        return pkgs
     
     def postinstall(self):
         path = os.path.join("/etc/modprobe.d", self.KMS, ".conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
+
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        if device in DEVICES:
+            return True
+        return False
+            

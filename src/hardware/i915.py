@@ -26,18 +26,23 @@ from hardware import Hardware
 
 CLASS_NAME = "i915"
 
+DEVICES = []
+
 class i915(Hardware):
     def __init__(self):
         pass
         
     def get_packages(self):
-        pass    
+        return []
+        
     def postinstall(self):
         pass
 
-#    def check_device(self, device):
-#        """ Device is (VendorID, ProductID) """
-#        pass
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID) """
+        if device in DEVICES:
+            return True
+        return False
 
 #UNAME_M=`uname -m`
 #KMS="i915"
