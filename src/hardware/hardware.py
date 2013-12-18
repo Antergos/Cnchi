@@ -53,8 +53,8 @@ class HardwareInstall(object):
         # This is unsafe, but we don't care if somebody wants
         # Cnchi to run code arbitrarily.
         for filename in dirs:
-            if ".py" in filename and "__init__" not in filename and "hardware" not in filename:
-                filename = filename[:-3]
+            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
+                filename = filename[:-len(".py")]
                 try:
                     package = filename
                     name = filename.capitalize()
