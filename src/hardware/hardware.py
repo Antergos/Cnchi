@@ -41,6 +41,9 @@ class Hardware(object):
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         raise NotImplementedError("check_device is not implemented")
+        
+    def chroot(self, cmd):
+        pass
             
 class HardwareInstall(object):
     """ This class checks user's hardware """

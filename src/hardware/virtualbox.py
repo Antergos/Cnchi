@@ -33,22 +33,21 @@ class Virtualbox(Hardware):
         pass
         
     def get_packages(self):
-        return [] 
+        return ["virtualbox-guest-utils"]
+    
+    def chroot(self, cmd):
+        __super__().chroot(self, cmd)
     
     def post_install(self):
-        pass
+        with open("/etc/modules-load.d/virtualbox-guest.conf", 'w') as modules:
+            modules.write("vboxguest\n")
+            modules.write("vboxsf\n")
+            modules.write("vboxvideo\n")
+        self.chroot(["systemctl", "disable", "openntpd"])
+        self.chroot(["systemctl", "enable", "vboxservice"])
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         if device in DEVICES:
             return True
         return False
-
-#pacman -S --needed --noconfirm virtualbox-guest-utils
-#
-#systemctl disable openntpd
-#systemctl enable vboxservice
-#
-#echo 'vboxguest' >  /etc/modules-load.d/virtualbox-guest.conf
-#echo 'vboxsf'    >> /etc/modules-load.d/virtualbox-guest.conf
-#echo 'vboxvideo' >> /etc/modules-load.d/virtualbox-guest.conf

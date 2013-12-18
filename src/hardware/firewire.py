@@ -33,7 +33,7 @@ class Firewire(Hardware):
         pass
         
     def get_packages(self):
-        return []
+        return ["libffado", "libraw1394"]
         
     def post_install(self):
         pass
@@ -43,5 +43,3 @@ class Firewire(Hardware):
         if device in DEVICES:
             return True
         return False
-
-#pacman -S --needed --noconfirm libffado libraw1394

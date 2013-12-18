@@ -50,7 +50,7 @@ class FingerPrint(Hardware):
         pass
         
     def get_packages(self):
-        return []
+        return ["fprintd"]
         
     def post_install(self):
         pass
@@ -60,5 +60,3 @@ class FingerPrint(Hardware):
         if device in DEVICES:
             return True
         return False
-
-#pacman -S --noconfirm --needed fprintd
