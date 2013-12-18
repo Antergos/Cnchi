@@ -35,7 +35,7 @@ class Hardware(object):
     def get_packages(self):
         raise NotImplementedError("get_packages is not implemented!")
     
-    def postinstall(self):
+    def post_install(self):
         raise NotImplementedError("postinstall is not implemented!")
 
     def check_device(self, device):
@@ -45,7 +45,8 @@ class Hardware(object):
 class HardwareInstall(object):
     """ This class checks user's hardware """
     def __init__(self):
-        self.objects = []
+        self.all_objects = []
+        self.objects_found = []
         
         dirs = os.listdir('.')
 
@@ -59,11 +60,11 @@ class HardwareInstall(object):
                     name = filename.capitalize()
                     # from package import name
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
-                    self.objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
+                    self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError:
                     print("Error importing %s from %s" % (name, package))
-                        
-    def get_packages(self):
+        
+        # Detect devices
         devices = []
 
         # Get PCI devices
@@ -82,16 +83,26 @@ class HardwareInstall(object):
         
         # Add a known device (just for testing, must be removed in final version)
         devices.append(('0x14e4', '0x4315'))
-        
-        packages = []
 
-        for obj in self.objects:
+        # Find objects that support the found devices
+        for obj in self.all_objects:
             for device in devices:
                 if obj.check_device(self=obj, device=device):
-                    print(device, obj, "detected")
-                    packages.extend(obj.get_packages(self=obj))
+                    print(device, "detected", obj, "supports it")
+                    self.objects_found.append(obj)
+        
+    def get_packages(self):
+        """ Get pacman package list for all detected devices """
+        packages = []
+        for obj in self.objects_found:
+            packages.extend(obj.get_packages(self=obj))
         
         return packages
+        
+    def post_install(self):
+        """ Run post install commands for all detected devices """
+        for obj in self.objects_found:
+            obj.postinstall(self=obj)
 
 if __name__ == '__main__':
     hardware_install = HardwareInstall()

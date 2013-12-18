@@ -40,7 +40,7 @@ class ETouchScreen(Hardware):
     def get_packages(self):
         return [ "xinput_calibrator", "xournal" ]
     
-    def postinstall(self):
+    def post_install(self):
         subprocess.check_call(["rmmod", "usbtouchscreen"])
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
         with open("/etc/modprobe.d/blacklist-usbtouchscreen.conf", 'w') as conf_file:

@@ -35,7 +35,7 @@ class i915(Hardware):
     def get_packages(self):
         return []
         
-    def postinstall(self):
+    def post_install(self):
         pass
 
     def check_device(self, device):

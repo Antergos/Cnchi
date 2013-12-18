@@ -44,7 +44,7 @@ class Nouveau(Hardware):
             pkgs.expand([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
         return pkgs
     
-    def postinstall(self):
+    def post_install(self):
         path = os.path.join("/etc/modprobe.d", self.KMS, ".conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
