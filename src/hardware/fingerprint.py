@@ -52,7 +52,7 @@ class FingerPrint(Hardware):
     def get_packages(self):
         return ["fprintd"]
         
-    def post_install(self):
+    def post_install(self, dest_dir):
         pass
 
     def check_device(self, device):

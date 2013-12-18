@@ -24,6 +24,7 @@
 
 import subprocess
 import os
+import logging
 
 DEVICES = []
 
@@ -35,15 +36,30 @@ class Hardware(object):
     def get_packages(self):
         raise NotImplementedError("get_packages is not implemented!")
     
-    def post_install(self):
+    def post_install(self, dest_dir):
         raise NotImplementedError("postinstall is not implemented!")
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         raise NotImplementedError("check_device is not implemented")
         
-    def chroot(self, cmd):
-        pass
+    def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
+        """ Runs command inside the chroot """
+        run = [ 'chroot', dest_dir ]
+
+        for element in cmd:
+            run.append(element)
+
+        try:
+            proc = subprocess.Popen(run,
+                                    stdin=stdin,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT)
+            out = proc.communicate()[0]
+            logging.debug(out.decode())
+        except OSError as err:
+            logging.exception(_("Error running command: %s"), err.strerror)
+            raise
             
 class HardwareInstall(object):
     """ This class checks user's hardware """
@@ -84,8 +100,8 @@ class HardwareInstall(object):
                 dev = line.split()[5].split(":")
                 devices.append(("0x" + dev[0], "0x" + dev[1]))
         
-        # Add a known device (just for testing, must be removed in final version)
-        devices.append(('0x14e4', '0x4315'))
+        # Enable this for testing
+        #devices.append(('0x14e4', '0x4315'))
 
         # Find objects that support the found devices
         for obj in self.all_objects:
@@ -102,10 +118,10 @@ class HardwareInstall(object):
         
         return packages
         
-    def post_install(self):
+    def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
         for obj in self.objects_found:
-            obj.postinstall(self=obj)
+            obj.postinstall(self=obj, dest_dir)
 
 if __name__ == '__main__':
     hardware_install = HardwareInstall()

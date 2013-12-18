@@ -35,7 +35,7 @@ class Firewire(Hardware):
     def get_packages(self):
         return ["libffado", "libraw1394"]
         
-    def post_install(self):
+    def post_install(self, dest_dir):
         pass
 
     def check_device(self, device):

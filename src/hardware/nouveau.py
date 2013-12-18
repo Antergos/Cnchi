@@ -22,8 +22,8 @@
 
 """ Nouveau driver installation """
 
-import os
 from hardware import Hardware
+import os
 
 CLASS_NAME = "Nouveau"
 
@@ -41,11 +41,11 @@ class Nouveau(Hardware):
     def get_packages(self):
         pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
         if self.ARCH == "x86_64":
-            pkgs.expand([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
+            pkgs.extend([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
         return pkgs
     
-    def post_install(self):
-        path = os.path.join("/etc/modprobe.d", self.KMS, ".conf")
+    def post_install(self, dest_dir):
+        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, self.KMS)
         with open(path, 'w') as modprobe:
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
 

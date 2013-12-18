@@ -35,7 +35,7 @@ class Broadcom_wl(Hardware):
     def get_packages(self):
         return [ "broadcom-wl" ]
     
-    def post_install(self):
+    def post_install(self, dest_dir):
         pass
 
     def check_device(self, device):

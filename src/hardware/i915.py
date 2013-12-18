@@ -23,6 +23,7 @@
 """  driver installation """
 
 from hardware import Hardware
+import os
 
 CLASS_NAME = "i915"
 
@@ -30,29 +31,26 @@ DEVICES = []
 
 class i915(Hardware):
     def __init__(self):
-        pass
+        self.KMS = "i915"
+        self.KMS_OPTIONS = "modeset=1"
+        self.DRI = "intel-dri"
+        self.DDX = "xf86-video-intel"
+        self.DECODER = "libva-intel-driver"
+        self.ARCH = os.uname()[-1]
         
     def get_packages(self):
-        return []
+        pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
+        if self.ARCH == "x86_64":
+            pkgs.extend([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
+        return pkgs
         
-    def post_install(self):
-        pass
+    def post_install(self, dest_dir):
+        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, self.KMS)
+        with open(path, 'w') as modprobe:
+            modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         if device in DEVICES:
             return True
         return False
-
-#UNAME_M=`uname -m`
-#KMS="i915"
-#KMS_OPTIONS="modeset=1"
-#DRI="intel-dri"
-#DDX="xf86-video-intel"
-#DECODER="libva-intel-driver"
-#
-#pacman -S --noconfirm --needed ${DRI} ${DDX} ${DECODER} libtxc_dxtn
-#if [ "${UNAME_M}" == "x86_64" ]; then
-#    pacman -S --noconfirm --needed lib32-${DRI} lib32-mesa-libgl
-#fi
-#echo "options ${KMS} ${KMS_OPTIONS}" > /etc/modprobe.d/${KMS}.conf
