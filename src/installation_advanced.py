@@ -1470,7 +1470,7 @@ class InstallationAdvanced(Gtk.Box):
                                 mount_point, fs_type, writable = self.get_mount_point(partition_path)
                                 #if "swap" in fs_type:
                                 swap_partition = self.get_swap_partition(partition_path)
-                                 if swap_partition == partition_path:
+                                if swap_partition == partition_path:
                                     msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % partition_path
                                     mounted = True
