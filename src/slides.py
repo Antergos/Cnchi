@@ -95,12 +95,10 @@ class Slides(Gtk.Box):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def show_global_progress_bar_if_hidden(self):
-    #Not sure how to fix object not defined for this so just bypassing for now
-    #   if self.global_progress_bar_is_hidden:
-        self.global_progress_bar.show_all()
-        self.global_progress_bar_is_hidden = False
-
-
+        # TODO: Check if this is still throwing an error
+        if self.global_progress_bar_is_hidden:
+            self.global_progress_bar.show_all()
+            self.global_progress_bar_is_hidden = False
 
     def prepare(self, direction):
         self.translate_ui()
