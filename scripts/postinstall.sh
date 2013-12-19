@@ -240,16 +240,32 @@ kde_settings() {
     # copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+	
+	# Set Background
+	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
+	mv 2560x1600.png ../old-default.png
+	ln -s ${DESTDIR}/usr/share/antergos/wallpapers/antergos-wallpaper.png ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/2560x1600.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	
+	# Get zip file from github, unzip it and copy all setup files in their right places.
+    mkdir -p ${DESTDIR}/tmp
+    wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
+    unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
+    cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	
+	# Fix Permissions
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.kde4
 
 }
 
