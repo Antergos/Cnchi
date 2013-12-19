@@ -352,6 +352,7 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
             tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
+            # TODO: DO NOT COPY XZ FILES, INSTEAD ADD CACHE DIR HERE
             # ¿?
             #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
             #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
@@ -359,6 +360,11 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("# Repositories\n\n")
 
             tmp_file.write("[core]\n")
+            tmp_file.write("SigLevel = PackageRequired\n")
+            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+            # KDE's next release is in 7 days. Better to be ready now...
+            tmp_file.write("[kde-unstable]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
@@ -379,6 +385,11 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("[antergos]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
+
+            # For final testing of KDE
+            tmp_file.write("[antergos-testing]\n")
+            tmp_file.write("SigLevel = Optional TrustAll\n")
+            tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
 
         # Init pyalpm
 
@@ -457,8 +468,6 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     # If package is Desktop Manager, save name to
                     # activate the correct service
-                    if pkg.attrib.get('dm'):
-                        self.desktop_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('nm'):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
@@ -839,7 +848,11 @@ class InstallationProcess(multiprocessing.Process):
                 continue
 
             if path == '/':
-                chk = '1'
+                # We do not run fsck on btrfs partitions
+                if "btrfs" in myfmt:
+                    chk = '0'
+                else:
+                    chk = '1'
                 opts = "rw,relatime,data=ordered"
             else:
                 full_path = os.path.join(self.dest_dir, path)
@@ -926,6 +939,17 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
         self.modify_grub_default()
+
+        self.chroot_mount_special_dirs()
+
+        self.chroot(['grub-install', \
+                  '--directory=/usr/lib/grub/i386-pc', \
+                  '--target=i386-pc', \
+                  '--boot-directory=/boot', \
+                  '--recheck', \
+                  grub_device])
+
+        self.chroot_umount_special_dirs()
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
