@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  virtualbox.py
+#  via.py
 #
 #  Copyright 2013 Antergos
 #
@@ -20,32 +20,42 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" VIA (openchrome) driver installation """
 
 from hardware import Hardware
+import os
 
-DEVICES = [('0x80ee', '0xcafe')]
+CLASS_NAME = "Via"
 
-CLASS_NAME = "Virtualbox"
+DEVICES = [
+('0x1106', '0x3122'),
+('0x1106', '0x7205'),
+('0x1106', '0x3118'),
+('0x1106', '0x3230'),
+('0x1106', '0x0505'),
+('0x1106', '0x0581'),
+('0x1106', '0x3205'),
+('0x1106', '0x3343'),
+('0x1106', '0x3344'),
+('0x1106', '0x0581')]
 
-class Virtualbox(Hardware):
+class Via(Hardware):
     def __init__(self):
         pass
-        
-    def get_packages(self):
-        return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
     
-    def chroot(self, cmd):
-        __super__().chroot(self, cmd)
+    def get_packages(self):
+        return [ "xf86-video-openchrome" ]
     
     def post_install(self, dest_dir):
-        path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
-        with open(path, 'w') as modules:
-            modules.write("vboxguest\n")
-            modules.write("vboxsf\n")
-            modules.write("vboxvideo\n")
-        self.chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        self.chroot(["systemctl", "enable", "vboxservice"], dest_dir)
+        path = "%s/etc/X11/xorg.conf.d/10-via.conf" % dest_dir
+        with open(path, 'w') as video:
+            video.write('Section "Device"\n')
+            video.write('\tIdentifier     "Device0"\n')
+            video.write('\tDriver         "openchrome"\n')
+            #video.write('\tOption         "EnableAGPDMA" "false"\n')
+            #video.write('\tOption         "XaaNoImageWriteRect"\n')
+            video.write('\tVendorName     "VIA"\n')
+            video.write('EndSection\n')
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  virtualbox.py
+#  vmware.py
 #
 #  Copyright 2013 Antergos
 #
@@ -24,16 +24,18 @@
 
 from hardware import Hardware
 
-DEVICES = [('0x80ee', '0xcafe')]
+DEVICES = [
+('0x15ad', '0x0405'),
+('0x15ad', '0x0710')]
 
-CLASS_NAME = "Virtualbox"
+CLASS_NAME = "Vmware"
 
-class Virtualbox(Hardware):
+class Vmware(Hardware):
     def __init__(self):
         pass
         
     def get_packages(self):
-        return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
+        return [ "xf86-video-vmware" ]
     
     def chroot(self, cmd):
         __super__().chroot(self, cmd)

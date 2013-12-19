@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  virtualbox.py
+#  uvesafb.py
 #
 #  Copyright 2013 Antergos
 #
@@ -20,32 +20,24 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" VESA driver installation """
 
 from hardware import Hardware
+import os
 
-DEVICES = [('0x80ee', '0xcafe')]
+CLASS_NAME = "VesaFB"
 
-CLASS_NAME = "Virtualbox"
+DEVICES = []
 
-class Virtualbox(Hardware):
+class VesaFB(Hardware):
     def __init__(self):
         pass
-        
-    def get_packages(self):
-        return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
     
-    def chroot(self, cmd):
-        __super__().chroot(self, cmd)
+    def get_packages(self):
+        return [ "v86d" ]
     
     def post_install(self, dest_dir):
-        path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
-        with open(path, 'w') as modules:
-            modules.write("vboxguest\n")
-            modules.write("vboxsf\n")
-            modules.write("vboxvideo\n")
-        self.chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        self.chroot(["systemctl", "enable", "vboxservice"], dest_dir)
+        pass
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """

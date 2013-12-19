@@ -932,24 +932,13 @@ class InstallationProcess(multiprocessing.Process):
         with open(default_grub, 'a') as grub_file:
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
-                
+    
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
         self.modify_grub_default()
-
-        self.chroot_mount_special_dirs()
-
-        self.chroot(['grub-install', \
-                  '--directory=/usr/lib/grub/i386-pc', \
-                  '--target=i386-pc', \
-                  '--boot-directory=/boot', \
-                  '--recheck', \
-                  grub_device])
-
-        self.chroot_umount_special_dirs()
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
@@ -985,7 +974,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-
+    
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
         uefi_arch = "x86_64"
