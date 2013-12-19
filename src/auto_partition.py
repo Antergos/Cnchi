@@ -165,7 +165,9 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as e:
-                logging.error(e.output)
+                txt = _("Can't create file system %s") % fs_type
+                logging.error(txt)
+                show.fatal_error(txt)
                 return
 
             #time.sleep(4)
@@ -363,8 +365,10 @@ class AutoPartition(object):
 
             disc_size = ((logical_block_size * size) / 1024) / 1024
         else:
-            logging.error("Setup cannot detect size of your device, please use advanced "
+            txt = _("Setup cannot detect size of your device, please use advanced "
                 "installation routine for partitioning and mounting devices.")
+            logging.error(txt)
+            show.warning(txt)
             return
 
         # Partition sizes are expressed in MB

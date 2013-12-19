@@ -37,8 +37,8 @@ LINUX_NAMES = ["issue", "slackware_version"]
 
 VISTA_MARK = "W.i.n.d.o.w.s. .V.i.s.t.a"
 SEVEN_MARK = "W.i.n.d.o.w.s. .7"
-DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0", \
-             "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98" \
+DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
+             "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
 
 if __name__ == '__main__':

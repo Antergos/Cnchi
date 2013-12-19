@@ -49,7 +49,6 @@ class InstallationAdvanced(Gtk.Box):
         """ Store class parameters """
         self.blvm = False
         self.header = params['header']
-        self.ui_dir = params['ui_dir']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
@@ -83,6 +82,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Get UI items
         self.ui = Gtk.Builder()
+        self.ui_dir = self.settings.get('ui')
         ui_file = os.path.join(self.ui_dir, "installation_advanced.ui")
         self.ui.add_from_file(ui_file)
 
@@ -201,7 +201,7 @@ class InstallationAdvanced(Gtk.Box):
 
         model, tree_iter = selection.get_selected()
         diskobj = None
-        if tree_iter != None:
+        if tree_iter is not None:
             path = model[tree_iter][0]
             if path == _("free space"):
                 button_new.set_sensitive(True)
@@ -232,7 +232,7 @@ class InstallationAdvanced(Gtk.Box):
         self.grub_devices.clear()
 
         # Just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         for path in sorted(self.disks):
@@ -264,7 +264,7 @@ class InstallationAdvanced(Gtk.Box):
     def on_grub_device_entry_changed(self, widget):
         """ Get new selected GRUB device """
         line = self.grub_device_entry.get_active_text()
-        if line != None:
+        if line is not None:
             self.grub_device = self.grub_devices[line]
 
     def prepare_partition_list(self):
@@ -326,7 +326,7 @@ class InstallationAdvanced(Gtk.Box):
         self.diskdic = {}
         self.all_partitions = []
         # We will store our data model in 'partition_list_store'
-        if self.partition_list_store != None:
+        if self.partition_list_store is not None:
             self.partition_list_store.clear()
 
         # Treeview columns:
@@ -346,8 +346,8 @@ class InstallationAdvanced(Gtk.Box):
         # ssd_selectable (sensitive)
 
         self.partition_list_store = \
-            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str, \
-            str, int, bool, bool, bool, bool)
+            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str,
+                          str, int, bool, bool, bool, bool)
 
         # Be sure to call get_devices once
         if self.disks == None:
@@ -361,7 +361,7 @@ class InstallationAdvanced(Gtk.Box):
                 lvs = lvm.get_logical_volumes(vg)
                 if not lvs:
                     continue
-                row = [vg, "", "", "",  False, False, "", "", "", "", 0, False, False, False, False]
+                row = [vg, "", "", "", False, False, "", "", "", "", 0, False, False, False, False]
                 lvparent = self.partition_list_store.append(None, row)
                 for lv in lvs:
                     fmt_enable = True
@@ -397,8 +397,8 @@ class InstallationAdvanced(Gtk.Box):
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
-                    row = [partition_path, fs_type, mount_point, label, fmt_active, \
-                           formatable, '', '', partition_path, \
+                    row = [partition_path, fs_type, mount_point, label, fmt_active,
+                           formatable, '', '', partition_path,
                            "", 0, fmt_enable, False, False, False]
                     self.partition_list_store.append(lvparent, row)
                     if self.my_first_time:
@@ -423,7 +423,7 @@ class InstallationAdvanced(Gtk.Box):
 
             if disk is None:
                 # Maybe disk without a partition table?
-                row = [disk_path, "", "", "", False, False, "", "", "", \
+                row = [disk_path, "", "", "", False, False, "", "", "",
                     "", 0, False, is_ssd, False, False]
                 self.partition_list_store.append(None, row)
             else:
@@ -432,7 +432,7 @@ class InstallationAdvanced(Gtk.Box):
                 # Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
 
-                row = [dev.path, "", "", "", False, False, size_txt, "", \
+                row = [dev.path, "", "", "", False, False, size_txt, "",
                     "", "", 0, False, is_ssd, True, True]
                 if '/dev/mapper/' in disk_path:
                     continue
@@ -534,8 +534,8 @@ class InstallationAdvanced(Gtk.Box):
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
-                    row = [path, fs_type, mount_point, label, fmt_active, \
-                           formatable, size_txt, used, partition_path, \
+                    row = [path, fs_type, mount_point, label, fmt_active,
+                           formatable, size_txt, used, partition_path,
                            "", p.type, fmt_enable, False, False, False]
 
                     if p.type in (pm.PARTITION_LOGICAL,
@@ -596,7 +596,7 @@ class InstallationAdvanced(Gtk.Box):
 
         model, tree_iter = selection.get_selected()
 
-        if tree_iter == None:
+        if tree_iter is None:
             return
 
         # Get necessary row data
@@ -619,7 +619,7 @@ class InstallationAdvanced(Gtk.Box):
         use_combo_model = use_combo.get_model()
         use_combo_iter = use_combo_model.get_iter_first()
 
-        while use_combo_iter != None:
+        while use_combo_iter is not None:
             use_combo_row = use_combo_model[use_combo_iter]
             if use_combo_row[0] and use_combo_row[0] in fs:
                 use_combo.set_active_iter(use_combo_iter)
@@ -641,7 +641,7 @@ class InstallationAdvanced(Gtk.Box):
         format_check.set_sensitive(fmtable)
 
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         # Get disk_path and disk
@@ -689,7 +689,7 @@ class InstallationAdvanced(Gtk.Box):
 
     def get_disk_path_from_selection(self, model, tree_iter):
         """ This returns the disk path where the selected partition is in """
-        if tree_iter != None and model != None:
+        if tree_iter is not None and model is not None:
             row = model[tree_iter]
             partition_path = row[8]
 
@@ -716,7 +716,7 @@ class InstallationAdvanced(Gtk.Box):
 
         model, tree_iter = selection.get_selected()
 
-        if tree_iter == None:
+        if tree_iter is None:
             return
         am_new = False
         # Get row data
@@ -739,7 +739,7 @@ class InstallationAdvanced(Gtk.Box):
         logging.info("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
 
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         disk = self.disks[disk_path]
@@ -799,7 +799,7 @@ class InstallationAdvanced(Gtk.Box):
         formatme = True
         model, tree_iter = selection.get_selected()
 
-        if tree_iter == None:
+        if tree_iter is None:
             return
 
         # Get necessary row data
@@ -832,7 +832,7 @@ class InstallationAdvanced(Gtk.Box):
         disk_path = model[parent_iter][0]
         self.disks_changed.append(disk_path)
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         disk = self.disks[disk_path]
@@ -917,7 +917,7 @@ class InstallationAdvanced(Gtk.Box):
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
                 myfmt = use_combo.get_active_text()
-                if myfmt == None:
+                if myfmt is None:
                     myfmt = ""
                 if myfmt == 'swap':
                     mymount = 'swap'
@@ -983,8 +983,8 @@ class InstallationAdvanced(Gtk.Box):
 
     def enable_luks_dialog_options(self, status):
         w_sensitive = [ 'label_luks_vol_name', 'label_luks_password',
-            'label_luks_password_confirm', 'entry_luks_vol_name',
-            'entry_luks_password', 'entry_luks_password_confirm' ]
+                        'label_luks_password_confirm', 'entry_luks_vol_name',
+                        'entry_luks_password', 'entry_luks_password_confirm' ]
         w_hide = [ 'image_luks_password_confirm', 'label_luks_password_status' ]
 
         for w in w_sensitive:
@@ -1022,7 +1022,7 @@ class InstallationAdvanced(Gtk.Box):
             p_mount_combo.show()
             p_mount_label.show()
 
-    def on_partition_use_combo2_changed(self,selection):
+    def on_partition_use_combo2_changed(self, selection):
         fs_selected = selection.get_active_text()
         p_mount_combo = self.ui.get_object('partition_mount_combo2')
         p_mount_label = self.ui.get_object('partition_mount_label2')
@@ -1245,13 +1245,13 @@ class InstallationAdvanced(Gtk.Box):
 
         model, tree_iter = selection.get_selected()
 
-        if tree_iter == None:
+        if tree_iter is None:
             return
 
         disk_path = model[tree_iter][0]
 
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         disk_sel = self.disks[disk_path]
@@ -1311,7 +1311,7 @@ class InstallationAdvanced(Gtk.Box):
         self.disks_changed.append(disk_path)
 
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         disk = self.disks[disk_path]
@@ -1381,7 +1381,7 @@ class InstallationAdvanced(Gtk.Box):
         exist_efi = False
         
         # Be sure to just call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
 
         # No device should be mounted now except install media.
@@ -1632,7 +1632,7 @@ class InstallationAdvanced(Gtk.Box):
         """ Create staged partitions """
 
         partitions = {}
-        if self.disks != None:
+        if self.disks is not None:
             for disk_path in self.disks:
                 disk = self.disks[disk_path]
                 # Only commit changes to disks we've changed!
@@ -1741,7 +1741,7 @@ class InstallationAdvanced(Gtk.Box):
                 #    mount_devices[mount_point] = partition_path
 
         checkbox = self.ui.get_object("grub_device_check")
-        if checkbox.get_active() == False:
+        if checkbox.get_active() is False:
             self.settings.set('install_bootloader', False)
         else:
             # Ask bootloader type
@@ -1757,13 +1757,13 @@ class InstallationAdvanced(Gtk.Box):
             logging.warning(_("Cnchi will not install any boot loader"))
 
         if not self.testing:
-            self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        mount_devices, \
-                        fs_devices, \
-                        self.ssd, \
-                        self.alternate_package_list, \
+            self.process = installation_process.InstallationProcess(
+                        self.settings,
+                        self.callback_queue,
+                        mount_devices,
+                        fs_devices,
+                        self.ssd,
+                        self.alternate_package_list,
                         self.blvm)
 
             self.process.start()

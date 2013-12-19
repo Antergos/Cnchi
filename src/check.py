@@ -46,7 +46,6 @@ class Check(Gtk.Box):
     def __init__(self, params):
         """ Init class ui """
         self.header = params['header']
-        self.ui_dir = params['ui_dir']
         self.settings = params['settings']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
@@ -54,7 +53,7 @@ class Check(Gtk.Box):
         super().__init__()
 
         self.ui = Gtk.Builder()
-
+        self.ui_dir = self.settings.get('ui')
         self.ui.add_from_file(os.path.join(self.ui_dir, "check.ui"))
         self.ui.connect_signals(self)
 

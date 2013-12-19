@@ -22,7 +22,7 @@
 
 """ Configures Antergos to encrypt user's home with encFS """
 
-import logging
+#import logging
 import os
 import shutil
 import subprocess

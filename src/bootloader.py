@@ -30,9 +30,9 @@ class BootLoader(object):
     def __init__(self, settings):
         """ Init class, load ui """
         self.settings = settings
-        self.ui_dir = self.settings.get('ui')
         self.ui = Gtk.Builder()
 
+        self.ui_dir = self.settings.get('ui')
         self.ui.add_from_file(os.path.join(self.ui_dir, "bootloader.ui"))
         self.ui.connect_signals(self)
 

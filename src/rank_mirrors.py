@@ -42,7 +42,7 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
-            time.sleep(2)  # Delay
+            time.sleep(4)  # Delay
 
         if not os.path.exists(self.rankmirrors_script):
             logging.warning(_("Can't find rank mirrors script"))
