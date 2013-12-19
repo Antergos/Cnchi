@@ -777,6 +777,17 @@ class InstallationAdvanced(Gtk.Box):
                     writable = line[3].split(',')[0]
         return fsname, fstype, writable
 
+    def get_swap_partition(self, partition_path):
+        """ Get active swap partition """
+
+        partition = ''
+        with open('/proc/swaps') as fp:
+            for line in fp:
+                line = line.split()
+                if line[0] == partition_path:
+                    partition = line[0]
+        return partition
+
     def on_partition_list_new_activate(self, button):
         """ Add a new partition """
         selection = self.partition_list.get_selection()
@@ -1454,32 +1465,38 @@ class InstallationAdvanced(Gtk.Box):
                     if self.gen_partition_uid(path=partition_path) in self.stage_opts:
                         if disk.device.busy:
                             # Check if there's some mounted partition
+                            mounted = False
                             if pm.check_mounted(partitions[partition_path]):
                                 mount_point, fs_type, writable = self.get_mount_point(partition_path)
-                                if "swap" in fs_type:
+                                #if "swap" in fs_type:
+                                swap_partition = self.get_swap_partition(partition_path)
+                                if swap_partition == partition_path:
                                     msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % partition_path
+                                    mounted = True
                                 elif len(mount_point) > 0:
                                     msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % (partition_path, mount_point)
-
+                                    mounted = True
                                 if "install" in mount_point:
-                                    # If we're recovering from a failed/stoped install, there'll be
+                                    # If we're recovering from a failed/stopped install, there'll be
                                     # some mounted directories. Unmount them without asking.
                                     subp = subprocess.Popen(['umount', '-l', partition_path], stdout=subprocess.PIPE)
                                     logging.debug("%s unmounted", mount_point)
-                                elif len(mount_point) > 0:
+                                elif mounted:
                                     response = show.question(msg)
                                     if response != Gtk.ResponseType.YES:
                                         # User doesn't want to unmount, we can't go on.
                                         return []
                                     else:
                                         # unmount it!
-                                        if "swap" in fs_type:
-                                            subp = subprocess.Popen(['swapoff', partition_path], stdout=subprocess.PIPE)
+                                        if swap_partition == partition_path:
+                                            subp = subprocess.Popen(['sh', '-c', 'swapoff %s'
+                                                                    % partition_path], stdout=subprocess.PIPE)
+                                            logging.debug("Swap partition %s unmounted", partition_path)
                                         else:
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
-                                            logging.debug("%s unmounted" % mount_point)
+                                            logging.debug("%s unmounted", mount_point)
                                 else:
                                     msg = _("%s shows as mounted (busy) but it has no mount point")
                                     logging.warning(msg, partition_path)
@@ -1685,7 +1702,10 @@ class InstallationAdvanced(Gtk.Box):
                                 if error == 0:
                                     logging.info(msg)
                                 else:
+                                    txt = _("Couldn't format partition '%s' with label '%s' as '%s'") % (partition_path, lbl, fisy)
+                                    logging.error(txt)
                                     logging.error(msg)
+                                    show.error(txt)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
                                 if not self.testing:

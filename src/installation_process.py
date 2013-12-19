@@ -489,6 +489,7 @@ class InstallationProcess(multiprocessing.Process):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
+        # TODO: Decide who takes care of graphics card, if packages.xml or HardwareInstall
         # Install graphic cards drivers except in NoX installs
         if self.desktop != "nox":
             self.queue_event('debug', _("Getting graphics card drivers"))
@@ -534,6 +535,14 @@ class InstallationProcess(multiprocessing.Process):
                                 'vmware', 'via '):
                 self.packages.append('xorg-drivers')
 
+        # Get packages needed for detected hardware
+        try:
+            from hardware import HardwareInstall
+            hardware_install = HardwareInstall()
+            self.packages.extend(hardware_install.get_packages())
+        except ImportError:
+            logging.warning("Can't import hardware module.")
+    
         # Add filesystem packages
 
         self.queue_event('debug', _("Adding filesystem packages"))
@@ -1464,6 +1473,14 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
+        
+        # Configure detected hardware
+        try:
+            from hardware import HardwareInstall
+            hardware_install = HardwareInstall()
+            hardware_install.post_install(self.dest_dir)
+        except ImportError:
+            logging.warning("Can't import hardware module.")
 
         # Encrypt user's home directory if requested (NOT FINISHED YET)
         if self.settings.get('encrypt_home'):

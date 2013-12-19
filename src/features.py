@@ -121,7 +121,10 @@ class Features(Gtk.Box):
         txt = _("The AUR is a community-driven repository for Arch users.")
         self.labels["aur"].set_markup(txt)
 
-        txt = _("MORE INFO HERE")
+        txt = _("Use yaourt to install AUR packages.\n"
+                "The AUR was created to organize and share new packages\n"
+                "from the community and to help expedite popular packages'\n"
+                "inclusion into the [community] repository.")
         self.titles["aur"].set_tooltip_markup(txt)
         self.switches["aur"].set_tooltip_markup(txt)
         self.labels["aur"].set_tooltip_markup(txt)
@@ -133,17 +136,29 @@ class Features(Gtk.Box):
         txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
 
-        txt = _("MORE INFO HERE")
+        txt = _("Bluetooth is a standard for the short-range wireless\n"
+                "interconnection of cellular phones, computers, and\n"
+                "other electronic devices. In Linux, the canonical\n"
+                "implementation of the Bluetooth protocol stack is BlueZ")
         self.titles["bluetooth"].set_tooltip_markup(txt)
         self.switches["bluetooth"].set_tooltip_markup(txt)
         self.labels["bluetooth"].set_tooltip_markup(txt)
 
-        # Extra Fonts
-        txt = _("Extra Fonts")
+        # Extra TTF Fonts
+        txt = _("Extra Truetype Fonts")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["fonts"].set_markup(txt)
-        txt = _("Installation of extra fonts")
+        txt = _("Installation of extra TrueType fonts")
         self.labels["fonts"].set_markup(txt)
+
+        txt = _("TrueType is an outline font standard developed by\n"
+                "Apple and Microsoft in the late 1980s as a competitor\n"
+                "to Adobe's Type 1 fonts used in PostScript. It has\n"
+                "become the most common format for fonts on both the\n"
+                "Mac OS and Microsoft Windows operating systems.")
+        self.titles["fonts"].set_tooltip_markup(txt)
+        self.switches["fonts"].set_tooltip_markup(txt)
+        self.labels["fonts"].set_tooltip_markup(txt)
 
         # Gnome Extra
         txt = _("Gnome Extra")
@@ -152,7 +167,9 @@ class Features(Gtk.Box):
         txt = _("Installation of extra Gnome applications")
         self.labels["gnome_extra"].set_markup(txt)
 
-        txt = _("MORE INFO HERE")
+        txt = _("Contains various optional tools such as a media\n"
+                "player, a calculator, an editor and other non-critical\n"
+                "applications that go well with the GNOME desktop.\n")
         self.titles["gnome_extra"].set_tooltip_markup(txt)
         self.switches["gnome_extra"].set_tooltip_markup(txt)
         self.labels["gnome_extra"].set_tooltip_markup(txt)
@@ -164,12 +181,28 @@ class Features(Gtk.Box):
         txt = _("Installation of printer drivers and management tools.")
         self.labels["cups"].set_markup(txt)
 
+        txt = _("CUPS is the standards-based, open source printing\n"
+                "system developed by Apple Inc. for OS® X and other\n"
+                "UNIX®-like operating systems.")
+        self.titles["cups"].set_tooltip_markup(txt)
+        self.switches["cups"].set_tooltip_markup(txt)
+        self.labels["cups"].set_tooltip_markup(txt)
+
         # LibreOffice
         txt = _("LibreOffice")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)
         txt = _("Open source office suite. Supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
+
+        txt = _("LibreOffice is the free power-packed Open Source\n"
+                "personal productivity suite for Windows, Macintosh\n"
+                "and Linux, that gives you six feature-rich applications\n"
+                "for all your document production and data processing\n"
+                "needs: Writer, Calc, Impress, Draw, Math and Base.")
+        self.titles["office"].set_tooltip_markup(txt)
+        self.switches["office"].set_tooltip_markup(txt)
+        self.labels["office"].set_tooltip_markup(txt)
 
         # Visual effects
         txt = _("Visual Effects")
@@ -178,14 +211,28 @@ class Features(Gtk.Box):
         txt = _("Enable transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
 
+        txt = _("Compton is a lightweight, standalone composite manager,\n"
+                "suitable for use with window managers that do not natively\n"
+                "provide compositing functionality. Compton itself is a fork\n"
+                "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+                "See the compton github page for further information.")
+        self.titles["visual"].set_tooltip_markup(txt)
+        self.switches["visual"].set_tooltip_markup(txt)
+        self.labels["visual"].set_tooltip_markup(txt)
+
         # Firewall
         txt = _("Uncomplicated Firewall")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
-        # String too large
-        #txt = _("Network security system that controls the incoming and outgoing network traffic.")
         txt = _("Control the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
+
+        txt = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
+                "managing a netfilter firewall. It provides a command line\n"
+                "interface and aims to be uncomplicated and easy to use.")
+        self.titles["firewall"].set_tooltip_markup(txt)
+        self.switches["firewall"].set_tooltip_markup(txt)
+        self.labels["firewall"].set_tooltip_markup(txt)
 
         # Proprietary packages (third_party)
         txt = _("Proprietary Software")
@@ -194,6 +241,12 @@ class Features(Gtk.Box):
         txt = _("Software to play Flash videos, MP3 audio, and other media.")
         self.labels["third_party"].set_markup(txt)
 
+        # txt = _("")
+        #self.titles["third_party"].set_tooltip_markup(txt)
+        #self.switches["third_party"].set_tooltip_markup(txt)
+        #self.labels["third_party"].set_tooltip_markup(txt)
+
+        # Sort listbox items
         self.listbox.invalidate_sort()
 
     def hide_features(self):
