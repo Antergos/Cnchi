@@ -236,10 +236,6 @@ razor_settings(){
 
 kde_settings() {
     # This is not complete yet
-
-    # copy antergos menu icon
-	mkdir -p ${DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 	
 	# Set Background
 	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
@@ -255,6 +251,7 @@ kde_settings() {
     wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
     cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
+    cp -R ${DESTDIR}/tmp/usr ${DESTDIR}
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
