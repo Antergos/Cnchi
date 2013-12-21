@@ -363,11 +363,6 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-            # KDE's next release is in 7 days. Better to be ready now...
-            tmp_file.write("[kde-unstable]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
             tmp_file.write("[extra]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
@@ -386,7 +381,7 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
 
-            # For final testing of KDE
+            # Packages from AUR that we build to easier include at install time.
             tmp_file.write("[antergos-testing]\n")
             tmp_file.write("SigLevel = Optional TrustAll\n")
             tmp_file.write("Server = http://antergos.info/repo/testing\n\n")

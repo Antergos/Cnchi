@@ -349,9 +349,9 @@
         <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kdeutils-kwallet</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>oxyfaenza-git</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
         <pkgname>transmission-qt</pkgname>

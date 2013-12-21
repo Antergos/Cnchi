@@ -250,12 +250,17 @@ kde_settings() {
     mkdir -p ${DESTDIR}/tmp
     wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
     cp -R ${DESTDIR}/tmp/usr ${DESTDIR}
+    cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
+    cp -R ${DESTDIR}/tmp/.icons ${DESTDIR}/home/${USER_NAME}/
+    cp -R ${DESTDIR}/tmp/.config ${DESTDIR}/home/${USER_NAME}/
+    tar xvf cursor.gz && cp -R Mac_OSX_Aqua ${DESTDIR}/home/${USER_NAME}/.icons/
+
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.icons ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -263,6 +268,7 @@ kde_settings() {
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.kde4
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.icons
 
 }
 
