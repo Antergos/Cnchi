@@ -57,7 +57,7 @@ class InstallError(Exception):
 
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
-    def __init__(self, settings, callback_queue, mount_devices, \
+    def __init__(self, settings, callback_queue, mount_devices,
                  fs_devices, ssd=None, alternate_package_list="", blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
@@ -295,7 +295,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('System configured.'))
         except subprocess.CalledProcessError as err:
             logging.error(err)
-            self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+            self.queue_fatal_event("CalledProcessError.output = %s" % err.output)
             all_ok = False
         except InstallError as err:
             logging.error(err)
@@ -542,7 +542,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _("Adding filesystem packages"))
 
-        fs_types = subprocess.check_output(\
+        fs_types = subprocess.check_output(
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
         for iii in self.fs_devices:
@@ -623,11 +623,9 @@ class InstallationProcess(multiprocessing.Process):
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
-
-        # TODO: For now, removed razor from qt list as it pulls in all kdelibs, Will revisit this list.
         lib = desktops.LIBS
 
-        for feature in desktops.FEATURES:
+        for feature in lib[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
@@ -669,8 +667,8 @@ class InstallationProcess(multiprocessing.Process):
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
         process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"], \
-                              stdin=process1.stdout, stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
+                                    stdin=process1.stdout, stdout=subprocess.PIPE)
         process1.stdout.close()
         out, err = process2.communicate()
         return out.decode().lower()
@@ -785,15 +783,11 @@ class InstallationProcess(multiprocessing.Process):
     def auto_fstab(self):
         """ Create /etc/fstab file """
 
-        all_lines = []
-        all_lines.append("# /etc/fstab: static file system information.")
-        all_lines.append("#")
-        all_lines.append("# Use 'blkid' to print the universally unique identifier for a")
-        all_lines.append("# device; this may be used with UUID= as a more robust way to name devices")
-        all_lines.append("# that works even if disks are added and removed. See fstab(5).")
-        all_lines.append("#")
-        all_lines.append("# <file system> <mount point>   <type>  <options>       <dump>  <pass>")
-        all_lines.append("#")
+        all_lines = ["# /etc/fstab: static file system information.", "#",
+                     "# Use 'blkid' to print the universally unique identifier for a",
+                     "# device; this may be used with UUID= as a more robust way to name devices",
+                     "# that works even if disks are added and removed. See fstab(5).", "#",
+                     "# <file system> <mount point>   <type>  <options>       <dump>  <pass>", "#"]
 
         root_ssd = 0
 
@@ -910,7 +904,7 @@ class InstallationProcess(multiprocessing.Process):
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
-            with open(default_grub, 'r') as grub_file:
+            with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
@@ -1110,7 +1104,7 @@ class InstallationProcess(multiprocessing.Process):
         #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
 
         text = []
-        with open("%s/etc/locale.gen" % self.dest_dir, "r") as gen:
+        with open("%s/etc/locale.gen" % self.dest_dir) as gen:
             text = gen.readlines()
 
         with open("%s/etc/locale.gen" % self.dest_dir, "w") as gen:
@@ -1204,7 +1198,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with LightDM as Desktop Manager
             lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
             text = []
-            with open(lightdm_conf_path, "r") as lightdm_conf:
+            with open(lightdm_conf_path) as lightdm_conf:
                 text = lightdm_conf.readlines()
             with open(lightdm_conf_path, "w") as lightdm_conf:
                 for line in text:
@@ -1232,7 +1226,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with KDM as Desktop Manager
             kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
             text = []
-            with open(kdm_conf_path, "r") as kdm_conf:
+            with open(kdm_conf_path) as kdm_conf:
                 text = kdm_conf.readlines()
             with open(kdm_conf_path, "w") as kdm_conf:
                 for line in text:
@@ -1246,7 +1240,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with LXDM as Desktop Manager
             lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
             text = []
-            with open(lxdm_conf_path, "r") as lxdm_conf:
+            with open(lxdm_conf_path) as lxdm_conf:
                 text = lxdm_conf.readlines()
             with open(lxdm_conf_path, "w") as lxdm_conf:
                 for line in text:
@@ -1258,7 +1252,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with Slim as Desktop Manager
             slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
             text = []
-            with open(slim_conf_path, "r") as slim_conf:
+            with open(slim_conf_path) as slim_conf:
                 text = slim_conf.readlines()
             with open(slim_conf_path, "w") as slim_conf:
                 for line in text:
@@ -1447,8 +1441,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
-        subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
-            username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
+        subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
+                               username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # Set lightdm config including autologin if selected
         # Warning: In openbox "desktop", the post-install script writes /etc/slim.conf
