@@ -58,7 +58,7 @@ class DownloadPackages(object):
         self.aria2_process = None
 
         self.callback_queue = callback_queue
-        
+
         self.rpc_user = ""
         self.rpc_passwd = ""
         self.aria2_args = ""

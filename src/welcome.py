@@ -99,7 +99,7 @@ class Welcome(Gtk.Box):
         #self.header.set_title("Cnchi")
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
-        
+
 
         #txt = _("Welcome to Antergos!")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt

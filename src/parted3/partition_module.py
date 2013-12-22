@@ -269,7 +269,7 @@ def get_used_space_from_path(path):
     except subprocess.CalledProcessError as err:
         used_space = 0
         logging.error(err)
-        
+
     return used_space
 
 def get_largest_size(diskob, part):

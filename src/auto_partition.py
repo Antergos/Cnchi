@@ -428,7 +428,7 @@ class AutoPartition(object):
             # Create fresh GPT
             subprocess.check_call(["sgdisk", "--clear", device])
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
-            subprocess.check_call(["partprobe", device])            
+            subprocess.check_call(["partprobe", device])
             # Create actual partitions
             #subprocess.check_call(['sgdisk', '--set-alignment="2048"', '--new=1:1M:+%dM' % gpt_bios_grub_part_size,
             #    '--typecode=1:EF02', '--change-name=1:BIOS_GRUB', device])

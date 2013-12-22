@@ -33,13 +33,13 @@ CLASS_NAME = "Vmware"
 class Vmware(Hardware):
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         return [ "xf86-video-vmware" ]
-    
+
     def chroot(self, cmd):
         __super__().chroot(self, cmd)
-    
+
     def post_install(self, dest_dir):
         path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
         with open(path, 'w') as modules:

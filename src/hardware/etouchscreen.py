@@ -36,10 +36,10 @@ CLASS_NAME = "ETouchScreen"
 class ETouchScreen(Hardware):
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         return [ "xinput_calibrator", "xournal" ]
-    
+
     def post_install(self, dest_dir):
         subprocess.check_call(["rmmod", "usbtouchscreen"])
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax

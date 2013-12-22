@@ -31,10 +31,10 @@ CLASS_NAME = "Broadcom_wl"
 class Broadcom_wl(Hardware):
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         return [ "broadcom-wl" ]
-    
+
     def post_install(self, dest_dir):
         pass
 

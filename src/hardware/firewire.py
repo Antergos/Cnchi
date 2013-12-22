@@ -31,10 +31,10 @@ CLASS_NAME = "Firewire"
 class Firewire(Hardware):
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         return ["libffado", "libraw1394"]
-        
+
     def post_install(self, dest_dir):
         pass
 

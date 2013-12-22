@@ -538,7 +538,7 @@ class InstallationProcess(multiprocessing.Process):
             self.packages.extend(hardware_install.get_packages())
         except ImportError:
             logging.warning("Can't import hardware module.")
-    
+
         # Add filesystem packages
 
         self.queue_event('debug', _("Adding filesystem packages"))
@@ -832,7 +832,7 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
-            
+
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
             if path == "":
@@ -863,11 +863,11 @@ class InstallationProcess(multiprocessing.Process):
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
-            
+
         if root_ssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
             logging.debug(_("Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"))
-            
+
         full_text = '\n'.join(all_lines)
         full_text += '\n'
 
@@ -897,7 +897,7 @@ class InstallationProcess(multiprocessing.Process):
             boot_device = self.mount_devices["/boot"]
             root_uuid = fs.get_info(root_device)['UUID']
             boot_uuid = fs.get_info(boot_device)['UUID']
-            
+
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
@@ -918,12 +918,12 @@ class InstallationProcess(multiprocessing.Process):
 
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
-        
+
         # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
         with open(default_grub, 'a') as grub_file:
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
-    
+
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_device = self.settings.get('bootloader_device')
@@ -965,7 +965,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-    
+
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
         uefi_arch = "x86_64"
@@ -1286,7 +1286,7 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
 
         # TODO: Test copy profile. Code below is not finished.
-        
+
         #if self.network_manager == 'netctl':
         #    if misc.is_wireless_enabled():
         #        profile = 'wireless-wpa'
@@ -1453,7 +1453,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
-        
+
         # Configure detected hardware
         try:
             from hardware import HardwareInstall

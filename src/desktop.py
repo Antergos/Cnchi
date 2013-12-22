@@ -63,10 +63,10 @@ class DesktopAsk(Gtk.Box):
         """ Translates all ui elements """
         image = self.ui.get_object("image_desktop")
         label = self.ui.get_object("desktop_info")
-        
+
         txt = "<span weight='bold'>%s</span>\n" % desktops.NAMES[desktop]
         txt += desktops.DESCRIPTIONS[desktop]
-            
+
         label.set_markup(txt)
 
         image.set_from_file(self.desktops_dir + desktop + ".png")

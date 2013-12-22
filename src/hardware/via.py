@@ -42,10 +42,10 @@ DEVICES = [
 class Via(Hardware):
     def __init__(self):
         pass
-    
+
     def get_packages(self):
         return [ "xf86-video-openchrome" ]
-    
+
     def post_install(self, dest_dir):
         path = "%s/etc/X11/xorg.conf.d/10-via.conf" % dest_dir
         with open(path, 'w') as video:

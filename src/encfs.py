@@ -36,25 +36,25 @@ def setup(username, dest_dir):
     # Edit configuration files
     name = os.path.join(dest_dir, "etc/security/pam_encfs.conf")
     shutil.copy(name, name + ".cnchi")
-    
+
     with open(name, "r") as pam_encfs:
         lines = pam_encfs.readlines()
-    
+
     i = len(lines) - 1
     lines[i] = "# " + lines[i]
-    
+
     with open(name, "w") as pam_encfs:
         pam_encfs.write(lines)
         pam_encfs.write("# Added by Cnchi - Antergos Installer\n")
         pam_encfs.write("-\t/home/.encfs\t-\t-v\t-\n")
-        
+
     name = os.path.join(dest_dir, "etc/security/pam_env.conf")
     shutil.copy(name, name + ".cnchi")
     with open(name, "a") as pam_env:
         pam_env.write("# Added by Cnchi - Antergos Installer\n")
         pam_env.write("# Set the ICEAUTHORITY file location to allow GNOME to start on encfs $HOME\n")
         pam_env.write("ICEAUTHORITY DEFAULT=/tmp/.ICEauthority_@{PAM_USER}\n")
-    
+
     name = os.path.join(dest_dir, "etc/fuse.conf")
     shutil.copy(name, name + ".cnchi")
     with open(name, "a") as fuse_conf:
@@ -67,7 +67,7 @@ def setup(username, dest_dir):
         system_login.write("# Added by Cnchi - Antergos Installer\n")
         system_login.write("session required\tpam_encfs.so\n")
         system_login.write("session optional\tpam_mount.so\n")
-        
+
     name = os.path.join(dest_dir, "etc/pam.d/system-auth")
     shutil.copy(name, name + ".cnchi")
     with open(name, "a") as system_auth:
@@ -88,15 +88,15 @@ def setup(username, dest_dir):
 
     # Set owner
     subprocess.check_call(['chown', '%s:users' % username, encrypted_dir, mounted_dir])
-    
+
     # Create encrypted directory
     subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir])
-    
+
     # Restore user home files
     src = os.path.join(backup_dir, "*")
     subprocess.check_call(['mv', src, mounted_dir])
     src = os.path.join(backup_dir, ".[A-Za-z0-9]*")
     subprocess.check_call(['mv', src, mounted_dir])
-    
+
     # Delete home backup
     subprocess.check_call(['rmdir', backup_dir])

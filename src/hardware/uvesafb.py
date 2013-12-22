@@ -32,10 +32,10 @@ DEVICES = []
 class VesaFB(Hardware):
     def __init__(self):
         pass
-    
+
     def get_packages(self):
         return [ "v86d" ]
-    
+
     def post_install(self, dest_dir):
         pass
 

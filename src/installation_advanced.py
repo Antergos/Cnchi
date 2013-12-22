@@ -128,7 +128,7 @@ class InstallationAdvanced(Gtk.Box):
             # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
             if self.uefi:
                 combo.append_text('/boot/efi')
-                
+
         # We will store our devices here
         self.disks = None
 
@@ -1276,7 +1276,7 @@ class InstallationAdvanced(Gtk.Box):
 
                 self.fill_grub_device_entry()
                 self.fill_partition_list()
-                
+
                 if ptype == 'gpt' and not self.uefi:
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
                     show.warning(_('GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk '
@@ -1305,7 +1305,7 @@ class InstallationAdvanced(Gtk.Box):
         """ Create an unformatted partition with no filesystem and with a bios_grub flag on. """
         # It won't be formated
         formatme = False
-        
+
         part_type = pm.PARTITION_FREESPACE
 
         self.disks_changed.append(disk_path)
@@ -1321,7 +1321,7 @@ class InstallationAdvanced(Gtk.Box):
         partition_list = pm.order_partitions(partitions)
         for partition_path in partition_list:
             p = partitions[partition_path]
-        
+
         # Get how many primary partitions are already created on disk
         if disk.primaryPartitionCount > 0:
             # BIOS GPT Boot partition must be the first one on the disk
@@ -1346,9 +1346,9 @@ class InstallationAdvanced(Gtk.Box):
                                    end_sector, size, beg_var)
 
         part = pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
-        
+
         (res, err) = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
-        
+
         if res:
             logging.error(err)
 
@@ -1366,7 +1366,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update partition list treeview
         self.fill_partition_list()
-    
+
     def on_partition_list_lvm_activate(self, button):
         pass
 
@@ -1376,10 +1376,10 @@ class InstallationAdvanced(Gtk.Box):
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
         check_ok = False
-        
+
         exist_root = False
         exist_efi = False
-        
+
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
@@ -1623,7 +1623,7 @@ class InstallationAdvanced(Gtk.Box):
     def get_prev_page(self):
         """ Tell which one is our previous page (in our case installation_ask) """
         return _prev_page
-    
+
     def get_next_page(self):
         """ Tell which one is our next page """
         return _next_page
@@ -1652,7 +1652,7 @@ class InstallationAdvanced(Gtk.Box):
                     if self.stage_opts[allopts][2] == '/boot/efi':
                         noboot = False
                         efiboot = True
-                        
+
                 for partition_path in apartitions:
                     # Get label, mount point and filesystem of staged partitions
                     uid = self.gen_partition_uid(path=partition_path)
@@ -1676,7 +1676,7 @@ class InstallationAdvanced(Gtk.Box):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
                                 (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                             if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)                        
+                                pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
@@ -1693,7 +1693,7 @@ class InstallationAdvanced(Gtk.Box):
                         #if "swap" in fisy:
                         #    (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
                         #    pm.finalize_changes(partitions[partition_path].disk)
-                        
+
                         # Only format if they want formatting
                         if fmt:
                             # All of fs module takes paths, not partition objs

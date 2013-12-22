@@ -240,7 +240,7 @@ kde_settings() {
 	# Set Background
 	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
 	mv 2560x1600.png ../old-default.png
-	ln -s ${DESTDIR}/usr/share/antergos/wallpapers/antergos-wallpaper.png ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/2560x1600.png
+	chroot ${DESTDIR} ln -s /usr/share/antergos/wallpapers/antergos-wallpaper.png /usr/share/wallpapers/Elarun/contents/images/2560x1600.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -250,12 +250,12 @@ kde_settings() {
     mkdir -p ${DESTDIR}/tmp
     wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    cp -R ${DESTDIR}/tmp/usr ${DESTDIR}
-    cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
-    cp -R ${DESTDIR}/tmp/.icons ${DESTDIR}/home/${USER_NAME}/
-    cp -R ${DESTDIR}/tmp/.config ${DESTDIR}/home/${USER_NAME}/
+    cd ${DESTDIR}/tmp/kde-setup-master
+    cp -R usr ${DESTDIR}
+    cp -R .kde4 ${DESTDIR}/home/${USER_NAME}/
+    cp -R .icons ${DESTDIR}/home/${USER_NAME}/
+    cp -R .config ${DESTDIR}/home/${USER_NAME}/
     tar xvf cursor.gz && cp -R Mac_OSX_Aqua ${DESTDIR}/home/${USER_NAME}/.icons/
-
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel

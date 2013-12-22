@@ -58,7 +58,7 @@ class Location(Gtk.Box):
         self.listbox_items = 0
 
         self.load_locales()
-        
+
         self.selected_country = ""
 
         super().add(self.ui.get_object("location"))
@@ -170,7 +170,7 @@ class Location(Gtk.Box):
             box.add(label)
             self.listbox.add(box)
             #self.select_default_row(current_language)
-        
+
         self.selected_country = areas[0]
 
     def on_listbox_row_selected(self, listbox, listbox_row):
