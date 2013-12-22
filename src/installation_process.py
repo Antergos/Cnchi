@@ -301,8 +301,9 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err)
             self.queue_fatal_event(err.value)
             all_ok = False
-        except err:
+        except:
             # unknown error
+            err = 'Unknown Error'
             logging.error(err)
             self.running = False
             self.error = True
@@ -624,8 +625,9 @@ class InstallationProcess(multiprocessing.Process):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
         lib = desktops.LIBS
+        features = desktops.FEATURES
 
-        for feature in lib[desktop]:
+        for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
