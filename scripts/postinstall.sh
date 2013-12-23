@@ -235,7 +235,6 @@ razor_settings(){
 }
 
 kde_settings() {
-    # This is not complete yet
 	
 	# Set Background
 	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
@@ -255,12 +254,14 @@ kde_settings() {
     cp -R .kde4 ${DESTDIR}/home/${USER_NAME}/
     cp -R .icons ${DESTDIR}/home/${USER_NAME}/
     cp -R .config ${DESTDIR}/home/${USER_NAME}/
+    cp -R .local ${DESTDIR}/home/${USER_NAME}/
     tar xvf cursor.gz && cp -R Mac_OSX_Aqua ${DESTDIR}/home/${USER_NAME}/.icons/
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
 	cp -R ${DESTDIR}/home/${USER_NAME}/.icons ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.local ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
