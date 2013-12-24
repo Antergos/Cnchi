@@ -1473,8 +1473,11 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-
-        self.queue_event('debug', _("Call grub2-theme install script"))
-        # Call grub2-theme install script
-        script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
-        subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
+            bootloader = self.settings.get('bootloader_type')
+            if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+                self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
+            else:
+                 self.queue_event('debug', _("Call grub2-theme install script"))
+                 # Call grub2-theme install script
+                 script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
+                 subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
