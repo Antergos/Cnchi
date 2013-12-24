@@ -44,6 +44,7 @@ import canonical.misc as misc
 import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
+GRUBTHEME_SCRIPT = 'install.sh'
 
 class InstallError(Exception):
     """ Exception class called upon an installer error """
@@ -1472,3 +1473,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
+
+        self.queue_event('debug', _("Call grub2-theme install script"))
+        # Call grub2-theme install script
+        script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
+        subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
