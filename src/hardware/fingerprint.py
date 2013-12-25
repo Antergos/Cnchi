@@ -48,10 +48,10 @@ CLASS_NAME = "FingerPrint"
 class FingerPrint(Hardware):
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         return ["fprintd"]
-        
+
     def post_install(self, dest_dir):
         pass
 

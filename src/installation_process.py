@@ -44,6 +44,7 @@ import canonical.misc as misc
 import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
+GRUBTHEME_SCRIPT = 'install.sh'
 
 class InstallError(Exception):
     """ Exception class called upon an installer error """
@@ -57,7 +58,7 @@ class InstallError(Exception):
 
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
-    def __init__(self, settings, callback_queue, mount_devices, \
+    def __init__(self, settings, callback_queue, mount_devices,
                  fs_devices, ssd=None, alternate_package_list="", blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
@@ -295,14 +296,15 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('System configured.'))
         except subprocess.CalledProcessError as err:
             logging.error(err)
-            self.queue_fatal_event("CalledProcessError.output = %s" % e.output)
+            self.queue_fatal_event("CalledProcessError.output = %s" % err.output)
             all_ok = False
         except InstallError as err:
             logging.error(err)
             self.queue_fatal_event(err.value)
             all_ok = False
-        except err:
+        except:
             # unknown error
+            err = 'Unknown Error'
             logging.error(err)
             self.running = False
             self.error = True
@@ -363,11 +365,6 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
-            # KDE's next release is in 7 days. Better to be ready now...
-            tmp_file.write("[kde-unstable]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
             tmp_file.write("[extra]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
@@ -386,7 +383,7 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
 
-            # For final testing of KDE
+            # Packages from AUR that we build to easier include at install time.
             tmp_file.write("[antergos-testing]\n")
             tmp_file.write("SigLevel = Optional TrustAll\n")
             tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
@@ -542,12 +539,12 @@ class InstallationProcess(multiprocessing.Process):
             self.packages.extend(hardware_install.get_packages())
         except ImportError:
             logging.warning("Can't import hardware module.")
-    
+
         # Add filesystem packages
 
         self.queue_event('debug', _("Adding filesystem packages"))
 
-        fs_types = subprocess.check_output(\
+        fs_types = subprocess.check_output(
             ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
         for iii in self.fs_devices:
@@ -609,30 +606,33 @@ class InstallationProcess(multiprocessing.Process):
         # Add bootloader packages if needed
         self.queue_event('debug', _("Adding bootloader packages if needed"))
         if self.settings.get('install_bootloader'):
-            btype = self.settings.get('bootloader_type')
-            if btype == "GRUB2":
-                for child in root.iter('grub'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-            elif btype == "UEFI_x86_64":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "x86_64":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
-            elif btype == "UEFI_i386":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "i386":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
+             for child in root.iter('grub'):
+                 for pkg in child.iter('pkgname'):
+                     self.packages.append(pkg.text)
+            # Not sure what's going on here??
+            # btype = self.settings.get('bootloader_type')
+            # if btype == "GRUB2":
+            #     for child in root.iter('grub'):
+            #         for pkg in child.iter('pkgname'):
+            #             self.packages.append(pkg.text)
+            # elif btype == "UEFI_x86_64":
+            #     for child in root.iter('grub-efi'):
+            #         if root.attrib.get('uefiarch') == "x86_64":
+            #             for pkg in child.iter('pkgname'):
+            #                 self.packages.append(pkg.text)
+            # elif btype == "UEFI_i386":
+            #     for child in root.iter('grub-efi'):
+            #         if root.attrib.get('uefiarch') == "i386":
+            #             for pkg in child.iter('pkgname'):
+            #                 self.packages.append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
-
-        # TODO: For now, removed razor from qt list as it pulls in all kdelibs, Will revisit this list.
         lib = desktops.LIBS
+        features = desktops.FEATURES
 
-        for feature in desktops.FEATURES:
+        for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
@@ -674,8 +674,8 @@ class InstallationProcess(multiprocessing.Process):
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
         process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"], \
-                              stdin=process1.stdout, stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
+                                    stdin=process1.stdout, stdout=subprocess.PIPE)
         process1.stdout.close()
         out, err = process2.communicate()
         return out.decode().lower()
@@ -790,15 +790,11 @@ class InstallationProcess(multiprocessing.Process):
     def auto_fstab(self):
         """ Create /etc/fstab file """
 
-        all_lines = []
-        all_lines.append("# /etc/fstab: static file system information.")
-        all_lines.append("#")
-        all_lines.append("# Use 'blkid' to print the universally unique identifier for a")
-        all_lines.append("# device; this may be used with UUID= as a more robust way to name devices")
-        all_lines.append("# that works even if disks are added and removed. See fstab(5).")
-        all_lines.append("#")
-        all_lines.append("# <file system> <mount point>   <type>  <options>       <dump>  <pass>")
-        all_lines.append("#")
+        all_lines = ["# /etc/fstab: static file system information.", "#",
+                     "# Use 'blkid' to print the universally unique identifier for a",
+                     "# device; this may be used with UUID= as a more robust way to name devices",
+                     "# that works even if disks are added and removed. See fstab(5).", "#",
+                     "# <file system> <mount point>   <type>  <options>       <dump>  <pass>", "#"]
 
         root_ssd = 0
 
@@ -841,7 +837,7 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
-            
+
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
             if path == "":
@@ -872,11 +868,11 @@ class InstallationProcess(multiprocessing.Process):
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
-            
+
         if root_ssd:
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
             logging.debug(_("Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"))
-            
+
         full_text = '\n'.join(all_lines)
         full_text += '\n'
 
@@ -906,7 +902,7 @@ class InstallationProcess(multiprocessing.Process):
             boot_device = self.mount_devices["/boot"]
             root_uuid = fs.get_info(root_device)['UUID']
             boot_uuid = fs.get_info(boot_device)['UUID']
-            
+
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
@@ -915,7 +911,7 @@ class InstallationProcess(multiprocessing.Process):
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
-            with open(default_grub, 'r') as grub_file:
+            with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
@@ -927,12 +923,12 @@ class InstallationProcess(multiprocessing.Process):
 
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
-        
+
         # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
         with open(default_grub, 'a') as grub_file:
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
-    
+
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_device = self.settings.get('bootloader_device')
@@ -974,7 +970,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-    
+
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
         uefi_arch = "x86_64"
@@ -1115,7 +1111,7 @@ class InstallationProcess(multiprocessing.Process):
         #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
 
         text = []
-        with open("%s/etc/locale.gen" % self.dest_dir, "r") as gen:
+        with open("%s/etc/locale.gen" % self.dest_dir) as gen:
             text = gen.readlines()
 
         with open("%s/etc/locale.gen" % self.dest_dir, "w") as gen:
@@ -1209,7 +1205,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with LightDM as Desktop Manager
             lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
             text = []
-            with open(lightdm_conf_path, "r") as lightdm_conf:
+            with open(lightdm_conf_path) as lightdm_conf:
                 text = lightdm_conf.readlines()
             with open(lightdm_conf_path, "w") as lightdm_conf:
                 for line in text:
@@ -1237,7 +1233,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with KDM as Desktop Manager
             kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
             text = []
-            with open(kdm_conf_path, "r") as kdm_conf:
+            with open(kdm_conf_path) as kdm_conf:
                 text = kdm_conf.readlines()
             with open(kdm_conf_path, "w") as kdm_conf:
                 for line in text:
@@ -1251,7 +1247,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with LXDM as Desktop Manager
             lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
             text = []
-            with open(lxdm_conf_path, "r") as lxdm_conf:
+            with open(lxdm_conf_path) as lxdm_conf:
                 text = lxdm_conf.readlines()
             with open(lxdm_conf_path, "w") as lxdm_conf:
                 for line in text:
@@ -1263,7 +1259,7 @@ class InstallationProcess(multiprocessing.Process):
             # Systems with Slim as Desktop Manager
             slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
             text = []
-            with open(slim_conf_path, "r") as slim_conf:
+            with open(slim_conf_path) as slim_conf:
                 text = slim_conf.readlines()
             with open(slim_conf_path, "w") as slim_conf:
                 for line in text:
@@ -1295,7 +1291,7 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
 
         # TODO: Test copy profile. Code below is not finished.
-        
+
         #if self.network_manager == 'netctl':
         #    if misc.is_wireless_enabled():
         #        profile = 'wireless-wpa'
@@ -1452,8 +1448,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
-        subprocess.check_call(["/usr/bin/bash", script_path_postinstall, \
-            username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
+        subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
+                               username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # Set lightdm config including autologin if selected
         # Warning: In openbox "desktop", the post-install script writes /etc/slim.conf
@@ -1462,7 +1458,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
-        
+
         # Configure detected hardware
         try:
             from hardware import HardwareInstall
@@ -1481,3 +1477,11 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
+            bootloader = self.settings.get('bootloader_type')
+            if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+                self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
+            else:
+                 self.queue_event('debug', _("Call grub2-theme install script"))
+                 # Call grub2-theme install script
+                 script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
+                 subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])

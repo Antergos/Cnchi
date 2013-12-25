@@ -1,78 +1,67 @@
-# Antergos-Bluez GRUB2 Theme
-# Based on the Archlinux theme by American_Jesus
-# Designed for any resolution.
-# Created by Dustin Falgout - dustinfalgout@gmail.com
+# Antergos grub2 theme
 
-# Global Property
-title-text: ""
-title-font: "Roboto Regular 14"
-title-color: "#5698fc"
-message-font: "Roboto Regular 13"
-message-color: "#000000"
-message-bg-color: "#f6f6f6"
 desktop-image: "background.png"
-desktop-color: "#000000"
-terminal-box: "menu_bkg_*.png"
-terminal-font: "DejaVu Sans Mono Regular 12"
 
-+ image {
-            id = "__archlogo__"
-            left = 37%
-		    width = 25%
-		    top = 2%
-		    height = 19%
-		    file = "antergos1.png"
-}
+title-text: ""
 
-# Show the boot menu
+terminal-box: "terminal_box_*.png"
+terminal-font: "Gnu Unifont Mono Regular 16"
+
 + boot_menu {
-		left = 30%
-		width = 40%
-		top = 29%
-		height = 50%
-		item_font = "Roboto Regular 12"
-		selected_item_font = "Roboto Regular 14"
-		item_color = "#5698fc"
-		selected_item_color = "#5698fc"
-		item_height = 38
-		item_padding = 15
-		item_spacing = 5
-		icon_width = 32
-		icon_height = 32
-		item_icon_space = 20
-		selected_item_pixmap_style= "select_bkg_*.png"
-		menu_pixmap_style = "menu_bkg_*.png"
-		scrollbar = true
-		scrollbar_width = 24
-		scrollbar_thumb = "sb_thumb_*.png"
-		scrollbar_frame = "sb_frame_*.png"
+  left = 45%
+  width = 50%
+  top = 30%
+  height = 50%	
+
+  item_font = "Raleway Regular 16"
+  item_color = "#fff"
+  item_height = 48
+  item_icon_space = 8
+  item_spacing = 2
+
+  selected_item_font = "Raleway Regular 16"
+  selected_item_color= "#000"
+  selected_item_pixmap_style = "select_*.png"
+
+  icon_height = 48
+  icon_width = 48
+
+  scrollbar = true
+  scrollbar_width = 20
+  scrollbar_thumb = "slider_*.png"
 }
 
++ progress_bar {
+  id = "__timeout__"
 
-# Show logo and circular progress
-+ circular_progress
-{
-   id = "__timeout__"
-   left = 40
-   top = 150
-   width = 105
-   height = 105
-   num_ticks = 33
-   ticks_disappear = false
-   start_angle = -67
-   end_angle = -67
-   center_bitmap = "archlogo.png"
-   tick_bitmap = "tick.png"
+  left = 28%
+  top = 100%-95
+  height = 20
+  width = 40%
+
+  font = "Raleway Regular 14"
+
+  text_color = "#000"
+  fg_color = "#236ee0"
+
+  bg_color = "#fff"
+  border_color = "#fff"
+
+  # instead of the above colors, use pixmaps
+  # bar_style = "progress_bar_*.png"
+  # highlight_style = "progress_highlight_*.png"
+
+  text = "@TIMEOUT_NOTIFICATION_LONG@"
 }
-
 # Show an informational message.
 + hbox {
-		top = 100%-35
-		left = 33%
-		+ label {text = "Enter: " font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
-		+ label {text = "Boot Selection     " font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
-		+ label {text = "E: " font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
-		+ label {text = "Edit Selection     " font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
-		+ label {text = "C: " font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
-		+ label {text = "GRUB Commandline" font = "Roboto Regular 12" color = "#FFFFFF" align = "left"}
+		top = 100%-60
+		left = 31%
+		height = 20
+		+ label {text = "Enter: Boot Selection     E: Edit Selection     C: GRUB Commandline" font = "Raleway Regular 14" color = "#FFFFFF" align = "center"}
+}
++ hbox {
+		top = 100%-30
+		left = 24%
+		+ label {text = "For Non-Graphical Boot: Add systemd.unit=multi-user.target to the kernel command line." font = "Raleway Regular 14" color = "#FFFFFF" align = "center"}
 }

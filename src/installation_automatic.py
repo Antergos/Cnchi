@@ -92,7 +92,7 @@ class InstallationAutomatic(Gtk.Box):
         label = self.ui.get_object('label_luks_password_confirm')
         txt = _("Confirm your password:")
         label.set_markup(txt)
-        
+
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("show password"))
 
@@ -114,7 +114,7 @@ class InstallationAutomatic(Gtk.Box):
         self.entry['luks_password_confirm'].set_visibility(show)
 
     @misc.raise_privileges
-    def populate_devices(self):            
+    def populate_devices(self):
         device_list = parted.getAllDevices()
 
         self.device_store.remove_all()

@@ -58,7 +58,7 @@ class Check(Gtk.Box):
         self.ui.connect_signals(self)
 
         self.remove_timer = False
-        
+
         self.thread = None
 
         self.prepare_power_source = None
@@ -80,7 +80,7 @@ class Check(Gtk.Box):
         txt = _("has at least %dGB available storage space.") % int(MIN_ROOT_SIZE / 1000000000)
         txt += " (*)"
         self.prepare_enough_space.props.label = txt
-        
+
         self.label_space = self.ui.get_object("label_space")
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
         txt = "(*) <i>%s</i>" % txt

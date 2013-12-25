@@ -34,12 +34,12 @@ CLASS_NAME = "NVidia"
 class NVidia(Hardware):
     def __init__(self):
         self.ARCH = os.uname()[-1]
-        
+
     def get_packages(self):
         pkgs = ["nvidia", "libva-vdpau-driver"]
         if self.ARCH == "x86_64":
             pkgs.append("lib32-nvidia-libgl")
- 
+
     def post_install(self, dest_dir):
         path = "%s/etc/X11/xorg.conf.d/10-nvidia.conf" % dest_dir
         with open(path, 'w') as video:
@@ -50,11 +50,11 @@ class NVidia(Hardware):
             video.write('\tOption         "RegistryDwords"      "EnableBrightnessControl=1"\n')
             video.write('\tVendorName     "NVIDIA Corporation"\n')
             video.write('EndSection\n')
-        
+
         path = "%s/etc/modprobe.d/blacklist-nouveau.conf" % dest_dir
         with open(path, 'w') as blacklist:
             blacklist.write("blacklist nouveau\n")
-        
+
         path = "%s/etc/modprobe.d/nvidia.conf" % dest_dir
         with open(path, 'w') as modprobe:
             modprobe.write("options nvidia NVreg_EnableMSI=1\n")

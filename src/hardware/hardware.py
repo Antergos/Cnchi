@@ -32,17 +32,17 @@ class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
         pass
-    
+
     def get_packages(self):
         raise NotImplementedError("get_packages is not implemented!")
-    
+
     def post_install(self, dest_dir):
         raise NotImplementedError("postinstall is not implemented!")
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         raise NotImplementedError("check_device is not implemented")
-        
+
     def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
         run = [ 'chroot', dest_dir ]
@@ -60,13 +60,13 @@ class Hardware(object):
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
             raise
-            
+
 class HardwareInstall(object):
     """ This class checks user's hardware """
     def __init__(self):
         self.all_objects = []
         self.objects_found = []
-        
+
         dirs = os.listdir('.')
 
         # This is unsafe, but we don't care if somebody wants
@@ -82,7 +82,7 @@ class HardwareInstall(object):
                     self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError:
                     print("Error importing %s from %s" % (name, package))
-        
+
         # Detect devices
         devices = []
 
@@ -99,7 +99,7 @@ class HardwareInstall(object):
             if len(line) > 0:
                 dev = line.split()[5].split(":")
                 devices.append(("0x" + dev[0], "0x" + dev[1]))
-        
+
         # Enable this for testing
         #devices.append(('0x14e4', '0x4315'))
 
@@ -109,15 +109,15 @@ class HardwareInstall(object):
                 if obj.check_device(self=obj, device=device):
                     print(device, "detected", obj, "supports it")
                     self.objects_found.append(obj)
-        
+
     def get_packages(self):
         """ Get pacman package list for all detected devices """
         packages = []
         for obj in self.objects_found:
             packages.extend(obj.get_packages(self=obj))
-        
+
         return packages
-        
+
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
         for obj in self.objects_found:

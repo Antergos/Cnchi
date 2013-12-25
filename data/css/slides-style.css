@@ -3,16 +3,16 @@
 }
 
 .cb-slideshow,
-.cb-slideshow:after { 
+.cb-slideshow:after {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0px;
     left: 0px;
-    z-index: 0; 
+    z-index: 0;
 }
 
-.cb-slideshow li span { 
+.cb-slideshow li span {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -29,32 +29,32 @@
     -moz-animation: imageAnimation 36s linear infinite 0s;
     -o-animation: imageAnimation 36s linear infinite 0s;
     -ms-animation: imageAnimation 36s linear infinite 0s;
-    animation: imageAnimation 36s linear infinite 0s; 
+    animation: imageAnimation 36s linear infinite 0s;
 }
 
 
-.cb-slideshow li:nth-child(1) span { 
-    background-image: url(../images/1.png) 
+.cb-slideshow li:nth-child(1) span {
+    background-image: url(../images/1.png)
 }
-.cb-slideshow li:nth-child(2) span { 
+.cb-slideshow li:nth-child(2) span {
     background-image: url(../images/2.png);
     -webkit-animation-delay: 12s;
     -moz-animation-delay: 12s;
     -o-animation-delay: 12s;
     -ms-animation-delay: 12s;
-    animation-delay: 12s; 
+    animation-delay: 12s;
 }
-.cb-slideshow li:nth-child(3) span { 
+.cb-slideshow li:nth-child(3) span {
     background-image: url(../images/3.png);
     -webkit-animation-delay: 24s;
     -moz-animation-delay: 24s;
     -o-animation-delay: 24s;
     -ms-animation-delay: 24s;
-    animation-delay: 24s; 
+    animation-delay: 24s;
 }
 
 /* Animation for the slideshow images */
-@-webkit-keyframes imageAnimation { 
+@-webkit-keyframes imageAnimation {
     0% { opacity: 0;
     -webkit-animation-timing-function: ease-in; }
     2% { opacity: 1;
@@ -64,7 +64,7 @@
     100% { opacity: 0 }
 }
 
-@keyframes imageAnimation { 
+@keyframes imageAnimation {
     0% { opacity: 0;
     animation-timing-function: ease-in; }
     2% { opacity: 1;
@@ -78,7 +78,7 @@
 
 
 /* CSS reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
     margin:0;
     padding:0;
 }
@@ -87,7 +87,7 @@ html,body {
     padding:0;
 }
 
-fieldset,img { 
+fieldset,img {
     border:0;
 }
 

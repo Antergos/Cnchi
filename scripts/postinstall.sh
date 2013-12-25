@@ -235,16 +235,11 @@ razor_settings(){
 }
 
 kde_settings() {
-    # This is not complete yet
-
-    # copy antergos menu icon
-	mkdir -p ${DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 	
 	# Set Background
 	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
 	mv 2560x1600.png ../old-default.png
-	ln -s ${DESTDIR}/usr/share/antergos/wallpapers/antergos-wallpaper.png ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/2560x1600.png
+	chroot ${DESTDIR} ln -s /usr/share/antergos/wallpapers/antergos-wallpaper.png /usr/share/wallpapers/Elarun/contents/images/2560x1600.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -254,11 +249,19 @@ kde_settings() {
     mkdir -p ${DESTDIR}/tmp
     wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    cp -R ${DESTDIR}/tmp/.kde4 ${DESTDIR}/home/${USER_NAME}/
+    cd ${DESTDIR}/tmp/kde-setup-master
+    cp -R usr ${DESTDIR}
+    cp -R .kde4 ${DESTDIR}/home/${USER_NAME}/
+    cp -R .icons ${DESTDIR}/home/${USER_NAME}/
+    cp -R .config ${DESTDIR}/home/${USER_NAME}/
+    cp -R .local ${DESTDIR}/home/${USER_NAME}/
+    tar xvf cursor.gz && cp -R Mac_OSX_Aqua ${DESTDIR}/home/${USER_NAME}/.icons/
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.icons ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.local ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -266,6 +269,7 @@ kde_settings() {
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.kde4
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.icons
 
 }
 

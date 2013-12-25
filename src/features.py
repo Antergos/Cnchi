@@ -63,7 +63,7 @@ class Features(Gtk.Box):
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
-        
+
         self.labels = {}
         self.titles = {}
         self.switches = {}
