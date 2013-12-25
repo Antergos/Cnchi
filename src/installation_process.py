@@ -606,21 +606,25 @@ class InstallationProcess(multiprocessing.Process):
         # Add bootloader packages if needed
         self.queue_event('debug', _("Adding bootloader packages if needed"))
         if self.settings.get('install_bootloader'):
-            btype = self.settings.get('bootloader_type')
-            if btype == "GRUB2":
-                for child in root.iter('grub'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-            elif btype == "UEFI_x86_64":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "x86_64":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
-            elif btype == "UEFI_i386":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "i386":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
+             for child in root.iter('grub'):
+                 for pkg in child.iter('pkgname'):
+                     self.packages.append(pkg.text)
+            # Not sure what's going on here??
+            # btype = self.settings.get('bootloader_type')
+            # if btype == "GRUB2":
+            #     for child in root.iter('grub'):
+            #         for pkg in child.iter('pkgname'):
+            #             self.packages.append(pkg.text)
+            # elif btype == "UEFI_x86_64":
+            #     for child in root.iter('grub-efi'):
+            #         if root.attrib.get('uefiarch') == "x86_64":
+            #             for pkg in child.iter('pkgname'):
+            #                 self.packages.append(pkg.text)
+            # elif btype == "UEFI_i386":
+            #     for child in root.iter('grub-efi'):
+            #         if root.attrib.get('uefiarch') == "i386":
+            #             for pkg in child.iter('pkgname'):
+            #                 self.packages.append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """

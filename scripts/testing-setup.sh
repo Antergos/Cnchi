@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Updating mirrorlist..."
-reflector -l 15 -f 5 --save /etc/pacman.d/mirrorlist
+reflector -p http -l 15 -f 5 --save /etc/pacman.d/mirrorlist
 
 echo "Installing git..."
 pacman -Sy git --noconfirm
