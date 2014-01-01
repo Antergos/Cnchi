@@ -1049,11 +1049,15 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
 
-        self.chroot(['grub-mkconfig', '-o', grub_dir])
+        self.chroot(['grub-mkconfig', '-o', grub_dir + "grub.cfg"])
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
-        dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
+        bootloader = self.settings.get('bootloader_type')
+        if bootloader is "UEFI_x86_64" or "UEFI_i386":
+            dest_locale_dir = os.path.join(self.dest_dir, "boot/efi/grub/locale")
+        else:
+            dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
         if not os.path.exists(dest_locale_dir):
             os.makedirs(dest_locale_dir)
@@ -1511,7 +1515,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            self.queue_event('debug', _('Installing bootloader theme...'))
+            self.queue_event('debug', _('Installing grub2 theme...'))
             self.copy_bootloader_theme_files()
             self.install_bootloader_theme()
 
