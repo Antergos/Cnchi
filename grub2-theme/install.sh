@@ -28,7 +28,11 @@ grub2-theme-install(){
 		    sed -i.bak "s,^#\?\s\?$1.*,$3$1$2," "${GRUB_CONF}"
 	    fi
     }
-    GRUB_PREFIX="${DEFAULT_PREFIX}"
+
+    if [ ! -d "${DEFAULT_PREFIX}" ]; then
+    GRUB_PREFIX="${DESTDIR}/boot/efi/grub";
+    else GRUB_PREFIX="${DEFAULT_PREFIX}"
+    fi
 
     GRUB_CFG="${GRUB_PREFIX}/grub.cfg"
 
@@ -36,7 +40,7 @@ grub2-theme-install(){
 
     # Create the theme's directory.
     THEME_DIR="${GRUB_PREFIX}/themes/${THEME_NAME}"
-    if [[ -d "${THEME_DIRr}" ]] ; then
+    if [[ -d "${THEME_DIR}" ]] ; then
     rm -r "${THEME_DIR}"
     fi
 

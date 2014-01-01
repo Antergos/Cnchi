@@ -984,7 +984,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi --bootloader-id=antergos_grub '
-            '--boot-directory=/install/boot --recheck' % uefi_arch], shell=True)
+            '--boot-directory=/install/boot/efi --recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
 
@@ -992,7 +992,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/efi/grub/grub.cfg' % locale])
         self.chroot_umount_special_dirs()
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
@@ -1474,10 +1474,10 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
             bootloader = self.settings.get('bootloader_type')
-            if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
-                self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
-            else:
-                 self.queue_event('debug', _("Call grub2-theme install script"))
-                 # Call grub2-theme install script
-                 script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
-                 subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
+            # if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+            #     self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
+            # else:
+            self.queue_event('debug', _("Call grub2-theme install script"))
+            # Call grub2-theme install script
+            script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
+            subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
