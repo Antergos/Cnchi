@@ -1013,6 +1013,44 @@ class InstallationProcess(multiprocessing.Process):
         #          'boot/grub/grub.cfg'])
         #self.chroot_umount_special_dirs()
 
+    def copy_bootloader_theme_files(self):
+        bootloader = self.settings.get('bootloader_type')
+        if bootloader is "UEFI_x86_64" or "UEFI_i386":
+            theme_dir = os.path.join(self.dest_dir, "boot/efi/grub/themes/Antergos-Default")
+        else:
+            theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        try:
+            shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
+        except FileNotFoundError:
+            logging.warning(_("Grub2 theme file not found"), theme_dir)
+        except FileExistsError:
+                logging.warning(_("grub2 theme files already exists at %s"), theme_dir)
+
+    def install_bootloader_theme(self):
+        bootloader = self.settings.get('bootloader_type')
+        if bootloader is "UEFI_x86_64" or "UEFI_i386":
+            grub_dir = "/boot/efi/grub/"
+        else:
+            grub_dir = "/boot/grub/"
+
+        default_dir = os.path.join(self.dest_dir, "etc/default")
+        default_grub = os.path.join(default_dir, "grub")
+        theme_file = os.path.join(grub_dir, "themes/Antergos-Default/", "theme.txt")
+
+        with open(default_grub) as grub_file:
+            lines = [x.strip() for x in grub_file.readlines()]
+
+        for i in range(len(lines)):
+            if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                lines[i] = theme_file
+
+        with open(default_grub, 'w') as grub_file:
+            grub_file.write("\n".join(lines) + "\n")
+
+        self.chroot_mount_special_dirs()
+
+        self.chroot(['grub-mkconfig', '-o', grub_dir])
+
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
@@ -1473,11 +1511,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            bootloader = self.settings.get('bootloader_type')
-            # if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
-            #     self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
-            # else:
-            self.queue_event('debug', _("Call grub2-theme install script"))
-            # Call grub2-theme install script
-            script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
-            subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
+            self.queue_event('debug', _('Installing bootloader theme...'))
+            self.copy_bootloader_theme_files()
+            self.install_bootloader_theme()
+
+
