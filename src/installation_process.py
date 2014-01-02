@@ -984,7 +984,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi '
-                               '--bootloader-id=antergos_grub ' '--boot-directory=/install/boot'
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                '--recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
