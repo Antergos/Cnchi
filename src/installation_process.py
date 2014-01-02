@@ -1035,7 +1035,10 @@ class InstallationProcess(multiprocessing.Process):
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
-        theme_file = os.path.join(grub_dir, "themes/Antergos-Default/", "theme.txt")
+        theme_file = 'GRUB_THEME="' + os.path.join(grub_dir, "themes/Antergos-Default/", "theme.txt", '"')
+        swap_partition = self.mount_devices["swap"]
+        swap_uuid = fs.get_info(swap_partition)['UUID']
+        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
 
         with open(default_grub) as grub_file:
             lines = [x.strip() for x in grub_file.readlines()]
@@ -1043,6 +1046,10 @@ class InstallationProcess(multiprocessing.Process):
         for i in range(len(lines)):
             if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                 lines[i] = theme_file
+            #TODO This is not the best place for this, all bootloader code needs cleanup
+            if lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
+                lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                lines[i] = kernel_cmd
 
         with open(default_grub, 'w') as grub_file:
             grub_file.write("\n".join(lines) + "\n")

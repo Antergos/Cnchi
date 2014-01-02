@@ -354,6 +354,10 @@
         <pkgname>kwebkitpart</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
+        <pkgname>qtcurve-kde4</pkgname>
+        <pkgname>qtcurve-qt4</pkgname>
+        <pkgname>qtcurve-qt5</pkgname>
+        <pkgname>qtcurve-gtk2</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>webkitgtk</pkgname>

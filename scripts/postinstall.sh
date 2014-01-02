@@ -236,10 +236,9 @@ razor_settings(){
 
 kde_settings() {
 	
-	# Set Background
+	# Move kde default Background
 	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
 	mv 2560x1600.png ../old-default.png
-	chroot ${DESTDIR} ln -s /usr/share/antergos/wallpapers/antergos-wallpaper.png /usr/share/wallpapers/Elarun/contents/images/2560x1600.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
