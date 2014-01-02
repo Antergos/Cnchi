@@ -983,16 +983,21 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi --bootloader-id=antergos_grub '
-            '--boot-directory=/install/boot/efi --recheck' % uefi_arch], shell=True)
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi '
+                               '--bootloader-id=antergos_grub ' '--boot-directory=/install/boot'
+                               '--recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
 
         self.install_bootloader_grub2_locales()
-
+        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+        self.copy_bootloader_theme_files()
+        self.queue_event('info', _("Installing GRUB(2) Theme"))
+        self.install_bootloader_theme()
+        self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/efi/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
         self.chroot_umount_special_dirs()
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
@@ -1014,11 +1019,11 @@ class InstallationProcess(multiprocessing.Process):
         #self.chroot_umount_special_dirs()
 
     def copy_bootloader_theme_files(self):
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            theme_dir = os.path.join(self.dest_dir, "boot/efi/grub/themes/Antergos-Default")
-        else:
-            theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        #bootloader = self.settings.get('bootloader_type')
+        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
+        #     theme_dir = os.path.join(self.dest_dir, "boot/efi/grub/themes/Antergos-Default")
+        # else:
+        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
             shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
         except FileNotFoundError:
@@ -1027,15 +1032,15 @@ class InstallationProcess(multiprocessing.Process):
                 logging.warning(_("grub2 theme files already exists at %s"), theme_dir)
 
     def install_bootloader_theme(self):
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            grub_dir = "/boot/efi/grub/"
-        else:
-            grub_dir = "/boot/grub/"
+        # bootloader = self.settings.get('bootloader_type')
+        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
+        #     grub_dir = "/boot/efi/grub/"
+        # else:
+        grub_dir = "/boot/grub/"
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
-        theme_file = 'GRUB_THEME="' + os.path.join(grub_dir, "themes/Antergos-Default/", "theme.txt", '"')
+        theme_file = 'GRUB_THEME="' + os.path.join(grub_dir, 'themes/Antergos-Default/', 'theme.txt"')
         swap_partition = self.mount_devices["swap"]
         swap_uuid = fs.get_info(swap_partition)['UUID']
         kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
@@ -1054,9 +1059,9 @@ class InstallationProcess(multiprocessing.Process):
         with open(default_grub, 'w') as grub_file:
             grub_file.write("\n".join(lines) + "\n")
 
-        self.chroot_mount_special_dirs()
-
-        self.chroot(['grub-mkconfig', '-o', grub_dir + "grub.cfg"])
+        # self.chroot_mount_special_dirs()
+        #
+        # self.chroot(['grub-mkconfig', '-o', grub_dir + 'grub.cfg'])
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
@@ -1522,8 +1527,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            self.queue_event('debug', _('Installing grub2 theme...'))
-            self.copy_bootloader_theme_files()
-            self.install_bootloader_theme()
+            # self.queue_event('debug', _('Installing grub2 theme...'))
+            # self.copy_bootloader_theme_files()
+            # self.install_bootloader_theme()
 
 
