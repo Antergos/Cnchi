@@ -955,6 +955,10 @@ class InstallationProcess(multiprocessing.Process):
                   '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
 
         self.install_bootloader_grub2_locales()
+        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+        self.copy_bootloader_theme_files()
+        self.queue_event('info', _("Installing GRUB(2) Theme"))
+        self.install_bootloader_theme()
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -984,7 +988,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi '
-                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot/efi/EFI '
                                '--recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
@@ -997,7 +1001,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/efi/EFI/grub/grub.cfg' % locale])
         self.chroot_umount_special_dirs()
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
@@ -1019,24 +1023,24 @@ class InstallationProcess(multiprocessing.Process):
         #self.chroot_umount_special_dirs()
 
     def copy_bootloader_theme_files(self):
-        #bootloader = self.settings.get('bootloader_type')
-        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
-        #     theme_dir = os.path.join(self.dest_dir, "boot/efi/grub/themes/Antergos-Default")
-        # else:
-        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        bootloader = self.settings.get('bootloader_type')
+        if bootloader is "UEFI_x86_64" or "UEFI_i386":
+            theme_dir = os.path.join(self.dest_dir, "boot/efi/EFI/grub/themes/Antergos-Default")
+        else:
+            theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
             shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
         except FileNotFoundError:
             logging.warning(_("Grub2 theme file not found"), theme_dir)
         except FileExistsError:
-                logging.warning(_("grub2 theme files already exists at %s"), theme_dir)
+            logging.warning(_("grub2 theme files already exists at %s"), theme_dir)
 
     def install_bootloader_theme(self):
-        # bootloader = self.settings.get('bootloader_type')
-        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
-        #     grub_dir = "/boot/efi/grub/"
-        # else:
-        grub_dir = "/boot/grub/"
+        bootloader = self.settings.get('bootloader_type')
+        if bootloader is "UEFI_x86_64" or "UEFI_i386":
+            grub_dir = "/boot/efi/EFI/grub/"
+        else:
+            grub_dir = "/boot/grub/"
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
@@ -1067,7 +1071,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Install Grub2 locales """
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            dest_locale_dir = os.path.join(self.dest_dir, "boot/efi/grub/locale")
+            dest_locale_dir = os.path.join(self.dest_dir, "boot/efi/EFI/grub/locale")
         else:
             dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
@@ -1387,6 +1391,16 @@ class InstallationProcess(multiprocessing.Process):
             self.enable_services([ self.desktop_manager, "ModemManager" ])
 
         self.enable_services([ self.network_manager ])
+        
+        # Check if we are installed in vbox and configure accordingly.
+        vbox_chk = self.get_graphics_card()
+        modules_load = "/install/etc/modules-load.d/vbox.conf"
+        if vbox_chk is "virtualbox":
+            with open(modules_load, "x") as vbox_conf:
+                line = 'vboxsf'
+                vbox_conf.write(line)
+            self.enable_services([ "vboxservice" ])
+
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
