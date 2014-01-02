@@ -987,8 +987,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi '
-                               '--bootloader-id=antergos_grub --boot-directory=/install/boot/efi/EFI '
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/ '
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot/EFI '
                                '--recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
@@ -1001,7 +1001,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/efi/EFI/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/EFI/grub/grub.cfg' % locale])
+
         self.chroot_umount_special_dirs()
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
@@ -1025,7 +1026,7 @@ class InstallationProcess(multiprocessing.Process):
     def copy_bootloader_theme_files(self):
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            theme_dir = os.path.join(self.dest_dir, "boot/efi/EFI/grub/themes/Antergos-Default")
+            theme_dir = os.path.join(self.dest_dir, "boot/EFI/grub/themes/Antergos-Default")
         else:
             theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
@@ -1033,12 +1034,12 @@ class InstallationProcess(multiprocessing.Process):
         except FileNotFoundError:
             logging.warning(_("Grub2 theme file not found"), theme_dir)
         except FileExistsError:
-            logging.warning(_("grub2 theme files already exists at %s"), theme_dir)
+            logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
 
     def install_bootloader_theme(self):
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            grub_dir = "/boot/efi/EFI/grub/"
+            grub_dir = "/boot/EFI/grub/"
         else:
             grub_dir = "/boot/grub/"
 
@@ -1391,7 +1392,7 @@ class InstallationProcess(multiprocessing.Process):
             self.enable_services([ self.desktop_manager, "ModemManager" ])
 
         self.enable_services([ self.network_manager ])
-        
+
         # Check if we are installed in vbox and configure accordingly.
         vbox_chk = self.get_graphics_card()
         modules_load = "/install/etc/modules-load.d/vbox.conf"
