@@ -890,6 +890,11 @@ class InstallationProcess(multiprocessing.Process):
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
+        theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
+        swap_partition = self.mount_devices["swap"]
+        swap_uuid = fs.get_info(swap_partition)['UUID']
+        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
 
@@ -914,6 +919,27 @@ class InstallationProcess(multiprocessing.Process):
                 if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
                     (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
                     lines[i] = default_line
+                elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                    lines[i] = theme
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
+                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
+                elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                    lines[i] = "GRUB_DISTRIBUTOR=Antergos"
+
+            with open(default_grub, 'w') as grub_file:
+                grub_file.write("\n".join(lines) + "\n")
+        else:
+
+            with open(default_grub) as grub_file:
+                lines = [x.strip() for x in grub_file.readlines()]
+
+            for i in range(len(lines)):
+                if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                    lines[i] = theme
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
+                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
@@ -986,7 +1012,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
         self.modify_grub_default()
-        # Check for existing EFI bootloader before grub install and set var for use later
+
+        # Check for existing EFI bootloader before grub install and remember for later use
         if os.path.exists(os.path.join(self.dest_dir, "boot/EFI")):
             efi_exists = True
         else:
@@ -1004,22 +1031,19 @@ class InstallationProcess(multiprocessing.Process):
 
         self.copy_bootloader_theme_files()
 
-        self.install_bootloader_theme()
-
-        self.queue_event('info', _("Generating grub.cfg"))
-        locale = self.settings.get("locale")
         # Move grub into default UEFI dir if none already exists
         if not efi_exists:
-            self.queue_event('info', _("No default loader detected. Moving Grub(2) into default boot dir."))
+            self.queue_event('info', _("No default UEFI loader found. Moving Grub(2) into default loader dir."))
             grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
             grub_dir_dst = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
             grub_efi_old = ("grub" + spec_uefi_arch + ".efi")
             grub_efi_new = ("BOOT" + spec_uefi_arch_2 + ".efi")
-            os.rename(grub_dir_src, grub_dir_dst)
-            os.rename(grub_dir_dst + grub_efi_old, grub_dir_dst + grub_efi_new)
-            grub_cfg = "/boot/EFI/BOOT/grub.cfg"
-        else:
-            grub_cfg = "/boot/EFI/antergos_grub/grub.cfg"
+            os.mkdir(grub_dir_dst)
+            shutil.copy(grub_dir_src + grub_efi_old, grub_dir_dst + grub_efi_new)
+
+        self.queue_event('info', _("Generating grub.cfg"))
+        locale = self.settings.get("locale")
+        grub_cfg = "/boot/grub/grub.cfg"
 
         self.chroot_mount_special_dirs()
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
@@ -1053,60 +1077,26 @@ class InstallationProcess(multiprocessing.Process):
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            theme_dir = os.path.join(self.dest_dir, "boot/EFI/grub/themes/Antergos-Default")
-        else:
-            theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        # bootloader = self.settings.get('bootloader_type')
+        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
+        #     theme_dir = os.path.join(self.dest_dir, "boot/EFI/grub/themes/Antergos-Default")
+        # else:
+        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
             shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
         except FileNotFoundError:
-            logging.warning(_("Grub2 theme file not found"), theme_dir)
+            logging.warning(_("Grub2 theme files not found"), theme_dir)
         except FileExistsError:
             logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
 
-    def install_bootloader_theme(self):
-        self.queue_event('info', _("Installing GRUB(2) Theme"))
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            grub_dir = "/boot/EFI/grub/"
-        else:
-            grub_dir = "/boot/grub/"
-
-        default_dir = os.path.join(self.dest_dir, "etc/default")
-        default_grub = os.path.join(default_dir, "grub")
-        theme_file = 'GRUB_THEME="' + os.path.join(grub_dir, 'themes/Antergos-Default/', 'theme.txt"')
-        swap_partition = self.mount_devices["swap"]
-        swap_uuid = fs.get_info(swap_partition)['UUID']
-        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
-
-        with open(default_grub) as grub_file:
-            lines = [x.strip() for x in grub_file.readlines()]
-
-        for i in range(len(lines)):
-            if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
-                lines[i] = theme_file
-            #TODO This is not the best place for this, all bootloader code needs cleanup
-            if lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
-                    lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                lines[i] = kernel_cmd
-            elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
-                lines[i] = "GRUB_DISTRIBUTOR=Antergos"
-
-        with open(default_grub, 'w') as grub_file:
-            grub_file.write("\n".join(lines) + "\n")
-
-        # self.chroot_mount_special_dirs()
-        #
-        # self.chroot(['grub-mkconfig', '-o', grub_dir + 'grub.cfg'])
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            dest_locale_dir = os.path.join(self.dest_dir, "boot/EFI/grub/locale")
-        else:
-            dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
+        # bootloader = self.settings.get('bootloader_type')
+        # if bootloader is "UEFI_x86_64" or "UEFI_i386":
+        #     dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
+        # else:
+        dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
         if not os.path.exists(dest_locale_dir):
             os.makedirs(dest_locale_dir)
