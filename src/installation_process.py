@@ -975,33 +975,54 @@ class InstallationProcess(multiprocessing.Process):
         """ Install bootloader in a UEFI system """
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
+        spec_uefi_arch_2 = "X64"
 
         if arch == "UEFI_i386":
             uefi_arch = "i386"
             spec_uefi_arch = "ia32"
+            spec_uefi_arch_2 = "IA32"
 
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
         self.modify_grub_default()
+        # Check for existing EFI bootloader before grub install and set var for use later
+        if os.path.exists(os.path.join(self.dest_dir, "boot/EFI")):
+            efi_exists = True
+        else:
+            efi_exists = False
 
         self.chroot_mount_special_dirs()
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/EFI '
-                               '--bootloader-id=antergos_grub --boot-directory=/install/boot/EFI '
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                '--recheck' % uefi_arch], shell=True)
 
         self.chroot_umount_special_dirs()
 
         self.install_bootloader_grub2_locales()
-        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+
         self.copy_bootloader_theme_files()
-        self.queue_event('info', _("Installing GRUB(2) Theme"))
+
         self.install_bootloader_theme()
+
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
+        # Move grub into default UEFI dir if none already exists
+        if not efi_exists:
+            self.queue_event('info', _("No default loader detected. Moving Grub(2) into default boot dir."))
+            grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
+            grub_dir_dst = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
+            grub_efi_old = ("grub" + spec_uefi_arch + ".efi")
+            grub_efi_new = ("BOOT" + spec_uefi_arch_2 + ".efi")
+            os.rename(grub_dir_src, grub_dir_dst)
+            os.rename(grub_dir_dst + grub_efi_old, grub_dir_dst + grub_efi_new)
+            grub_cfg = "/boot/EFI/BOOT/grub.cfg"
+        else:
+            grub_cfg = "/boot/EFI/antergos_grub/grub.cfg"
+
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/EFI/antergos_grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
         self.chroot_umount_special_dirs()
         # src = os.path.join(self.dest_dir, "boot/EFI/grub/grub.cfg")
         # dst = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/grub.cfg")
@@ -1031,6 +1052,7 @@ class InstallationProcess(multiprocessing.Process):
         #self.chroot_umount_special_dirs()
 
     def copy_bootloader_theme_files(self):
+        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
             theme_dir = os.path.join(self.dest_dir, "boot/EFI/grub/themes/Antergos-Default")
@@ -1044,6 +1066,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
 
     def install_bootloader_theme(self):
+        self.queue_event('info', _("Installing GRUB(2) Theme"))
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
             grub_dir = "/boot/EFI/grub/"
@@ -1065,8 +1088,10 @@ class InstallationProcess(multiprocessing.Process):
                 lines[i] = theme_file
             #TODO This is not the best place for this, all bootloader code needs cleanup
             if lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
-                lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
                 lines[i] = kernel_cmd
+            elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
         with open(default_grub, 'w') as grub_file:
             grub_file.write("\n".join(lines) + "\n")
