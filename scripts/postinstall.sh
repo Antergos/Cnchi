@@ -245,16 +245,18 @@ kde_settings() {
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-    mkdir -p ${DESTDIR}/tmp
-    wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
-    unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    cd ${DESTDIR}/tmp/kde-setup-master
-    cp -R usr ${DESTDIR}
-    cp -R .kde4 ${DESTDIR}/home/${USER_NAME}/
-    cp -R .icons ${DESTDIR}/home/${USER_NAME}/
-    cp -R .config ${DESTDIR}/home/${USER_NAME}/
-    cp -R .local ${DESTDIR}/home/${USER_NAME}/
-    tar xvf cursor.gz && cp -R Mac_OSX_Aqua ${DESTDIR}/home/${USER_NAME}/.icons/
+        mkdir -p ${DESTDIR}/tmp
+        wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
+        unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
+        cd ${DESTDIR}/tmp/kde-setup-master
+        cp -R usr ${DESTDIR}
+        usr_old="dustin"
+        grep -rl ${usr_old} . | xargs sed -i s@${usr_old}@${USER_NAME}@g
+        mv home/user home/${USER_NAME}
+        cp -R home ${DESTDIR}
+        chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
+        chroot ${DESTDIR} tar -xvf /home/$USER_NAME/.icons/cursor.gz
+        rm ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
@@ -263,12 +265,10 @@ kde_settings() {
 	cp -R ${DESTDIR}/home/${USER_NAME}/.local ${DESTDIR}/etc/skel
 
 	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	chroot ${DESTDIR} su -c xdg-user-dirs-update
 	
 	# Fix Permissions
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.kde4
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.icons
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 }
 
@@ -288,7 +288,7 @@ postinstall(){
 	"${DESKTOP}_settings"
 
 	## Unmute alsa channels
-	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
+	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
 
 	# Fix transmission leftover
     if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ];
