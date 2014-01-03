@@ -987,7 +987,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/ '
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/EFI '
                                '--bootloader-id=antergos_grub --boot-directory=/install/boot/EFI '
                                '--recheck' % uefi_arch], shell=True)
 
@@ -1001,9 +1001,16 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/EFI/grub/grub.cfg' % locale])
-
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/EFI/antergos_grub/grub.cfg' % locale])
         self.chroot_umount_special_dirs()
+        # src = os.path.join(self.dest_dir, "boot/EFI/grub/grub.cfg")
+        # dst = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/grub.cfg")
+        # try:
+        #     shutil.copy(src, dst)
+        # except FileExistsError:
+        #     pass
+        # except FileNotFoundError:
+        #     pass
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
         #grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
@@ -1072,7 +1079,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Install Grub2 locales """
         bootloader = self.settings.get('bootloader_type')
         if bootloader is "UEFI_x86_64" or "UEFI_i386":
-            dest_locale_dir = os.path.join(self.dest_dir, "boot/efi/EFI/grub/locale")
+            dest_locale_dir = os.path.join(self.dest_dir, "boot/EFI/grub/locale")
         else:
             dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
