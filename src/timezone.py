@@ -310,7 +310,17 @@ class AutoTimezoneThread(threading.Thread):
             manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
             state = self.get_prop(manager, NM, 'state')
         except dbus.exceptions.DBusException:
-            logging.warning(_("In timezone, can't get network status"))
+            # Networkmanager is not responding, try open a well known ip site (google)
+            import urllib
+            from socket import timeout
+            try:
+                url = 'http://74.125.228.100'
+                packages_xml = urllib.request.urlopen(url, timeout=5)
+                return True
+            except urllib.error.URLError as err:
+                pass
+            except timeout as err:
+                pass
             return False
         return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -318,11 +328,13 @@ class AutoTimezoneThread(threading.Thread):
         # wait until there is an Internet connection available
         while not self.has_connection():
             time.sleep(2)  # Delay and try again
+            logging.warning(_("Can't get network status. Will try again later."))
             if self.stop_event.is_set():
                 return
 
         # ok, now get our timezone
 
+        logging.info(_("We have connection. Let's get our timezone"))
         try:
             url = "http://geo.antergos.com"
             conn = urllib.request.urlopen(url)
@@ -333,6 +345,9 @@ class AutoTimezoneThread(threading.Thread):
         if coords != 'error':
             coords = coords.split()
             self.coords_queue.put(coords)
+            logging.info(_("Timezone detected."))
+        else:
+            logging.info(_("Can't detect user timezone."))
 
 # Creates a mirror list for pacman based on country code
 class GenerateMirrorListThread(threading.Thread):
