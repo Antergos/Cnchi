@@ -81,7 +81,7 @@ _use_aria2 = False
 _verbose = False
 _disable_tryit = False
 _testing = False
-_show_hidden_options = False
+_z_hidden = False
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 800

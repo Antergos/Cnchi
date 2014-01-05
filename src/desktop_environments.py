@@ -22,6 +22,8 @@
 
 """ DE information """
 
+import config as self
+
 # Enabled desktops
 if self.settings.get('z_hidden'):
     DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
