@@ -1,417 +1,291 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-<meta charset='utf-8'>
-<title>
-Core / thus | 
-GitLab
-</title>
-<link href="/assets/favicon-4b751da746de7855d7eb8123072388ed.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
-<link href="/assets/application-bff6fa0047d6fd0c2f7a2888a7b5c146.css" media="screen" rel="stylesheet" type="text/css" />
-<script src="/assets/application-96e620a612deb394b87a4bc3e96821f5.js" type="text/javascript"></script>
-<meta content="authenticity_token" name="csrf-param" />
-<meta content="pKW+REHZBy1DbM6sI0/P6mOtAR1F2bY66LgyElQ2IfY=" name="csrf-token" />
-<script type="text/javascript">
-//<![CDATA[
-window.gon = {};gon.default_issues_tracker="gitlab";gon.api_version="v3";gon.gravatar_url="https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm";gon.relative_url_root="";
-//]]>
-</script>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  generate_keyboard_layout.py
 
-</head>
+import subprocess
+import sys
 
-<body class='ui_mars application' data-page='projects:blob:show'>
-<header class='navbar navbar-static-top navbar-gitlab'>
-<div class='navbar-inner'>
-<div class='container'>
-<div class='app_logo'>
-<span class='separator'></span>
-<a href="/public" class="home"><h1>GITLAB</h1>
-</a><span class='separator'></span>
-</div>
-<h1 class='project_name'>
-<span><a href="/groups/core">Core</a> / thus</span>
-</h1>
-<ul class='nav'>
-<li>
-<a>
-<div class='hide turbolink-spinner'>
-<i class='icon-refresh icon-spin'></i>
-Loading...
-</div>
-</a>
-</li>
-<li>
-<a href="/users/sign_in" class="btn btn-sign-in">Sign in</a>
-</li>
-</ul>
-</div>
-</div>
-</header>
+try:
+    from PyQt5.QtCore import Qt, QRectF
+    from PyQt5.QtGui import QFont, QPainter, QPen, QPainterPath, QColor
+    from PyQt5.QtWidgets import QWidget, QApplication
+    pyqt5_available = True
+except ImportError:
+    from PyQt4.QtCore import Qt, QRectF
+    from PyQt4.QtGui import QApplication, QWidget, QFont, QPainter, QPen, QPainterPath, QColor, QPixmap
+    pyqt5_available = False
 
-<nav class='main-nav'>
-<div class='container'><ul>
-<li class="home"><a href="/core/thus" title="Project"><i class='icon-home'></i>
-</a></li><li class="active"><a href="/core/thus/tree/master">Files</a>
-</li><li class=""><a href="/core/thus/commits/master">Commits</a>
-</li><li class=""><a href="/core/thus/network/master">Network</a>
-</li><li class=""><a href="/core/thus/graphs/master">Graphs</a>
-</li><li class=""><a href="/core/thus/issues">Issues
-<span class='count issue_counter'>0</span>
-</a></li><li class=""><a href="/core/thus/merge_requests">Merge Requests
-<span class='count merge_counter'>0</span>
-</a></li><li class=""><a href="/core/thus/wikis/home">Wiki</a>
-</li><li class=""><a href="/core/thus/wall">Wall</a>
-</li><li class=""><a href="/core/thus/snippets">Snippets</a>
-</li></ul>
-</div>
-</nav>
-<div class='container'>
-<div class='content'><div class='tree-ref-holder'>
-<form accept-charset="UTF-8" action="/core/thus/refs/switch" class="project-refs-form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
-<select class="project-refs-select chosen" id="ref" name="ref"><optgroup label="Branches"><option value="development">development</option>
-<option value="master" selected="selected">master</option></optgroup><optgroup label="Tags"><option value="0.8.8rc2">0.8.8rc2</option>
-<option value="0.8.8rc1">0.8.8rc1</option>
-<option value="0.8.8">0.8.8</option></optgroup></select>
-<input id="destination" name="destination" type="hidden" value="blob" />
-<input id="path" name="path" type="hidden" value="src/generate_keyboard_layout.py" />
-</form>
+#U+ , or +U+ ... to string
+def fromUnicodeString(raw):
+    if raw[0:2] == "U+":
+        return chr(int(raw[2:], 16))
+    elif raw[0:2] == "+U":
+        return chr(int(raw[3:], 16))
+
+    return ""
 
 
-</div>
-<div class='tree-holder' id='tree-holder'>
-<ul class='breadcrumb'>
-<li>
-<i class='icon-angle-right'></i>
-<a href="/core/thus/tree/master">thus
-</a></li>
-/
-<li>
-<a href="/core/thus/tree/master/src">src</a>
-</li>
-/
-<li>
-<a href="/core/thus/blob/master/src/generate_keyboard_layout.py"><span class='cblue'>
-generate_keyboard_layout.py
-</span>
-</a></li>
-</ul>
-<div class='tree-content-holder' id='tree-content-holder'>
-<div class='file-holder'>
-<div class='file-title'>
-<i class='icon-file'></i>
-<span class='file_name'>
-generate_keyboard_layout.py
-<small>8.21 KB</small>
-</span>
-<span class='options'><div class='btn-group tree-btn-group'>
-<span class='btn btn-small disabled'>edit</span>
-<a href="/core/thus/raw/master/src/generate_keyboard_layout.py" class="btn btn-small" target="_blank">raw</a>
-<a href="/core/thus/blame/master/src/generate_keyboard_layout.py" class="btn btn-small">blame</a>
-<a href="/core/thus/commits/master/src/generate_keyboard_layout.py" class="btn btn-small">history</a>
-</div>
-</span>
-</div>
-<div class='file-content code'>
-<div class='white'>
-<table class="lines"><tr><td><pre class="line_numbers"><a id="L1" href="#L1" rel="#L1"><i class="icon-link"></i>   1</a>
-<a id="L2" href="#L2" rel="#L2"><i class="icon-link"></i>   2</a>
-<a id="L3" href="#L3" rel="#L3"><i class="icon-link"></i>   3</a>
-<a id="L4" href="#L4" rel="#L4"><i class="icon-link"></i>   4</a>
-<a id="L5" href="#L5" rel="#L5"><i class="icon-link"></i>   5</a>
-<a id="L6" href="#L6" rel="#L6"><i class="icon-link"></i>   6</a>
-<a id="L7" href="#L7" rel="#L7"><i class="icon-link"></i>   7</a>
-<a id="L8" href="#L8" rel="#L8"><i class="icon-link"></i>   8</a>
-<a id="L9" href="#L9" rel="#L9"><i class="icon-link"></i>   9</a>
-<a id="L10" href="#L10" rel="#L10"><i class="icon-link"></i>  10</a>
-<a id="L11" href="#L11" rel="#L11"><i class="icon-link"></i>  11</a>
-<a id="L12" href="#L12" rel="#L12"><i class="icon-link"></i>  12</a>
-<a id="L13" href="#L13" rel="#L13"><i class="icon-link"></i>  13</a>
-<a id="L14" href="#L14" rel="#L14"><i class="icon-link"></i>  14</a>
-<a id="L15" href="#L15" rel="#L15"><i class="icon-link"></i>  15</a>
-<a id="L16" href="#L16" rel="#L16"><i class="icon-link"></i>  16</a>
-<a id="L17" href="#L17" rel="#L17"><i class="icon-link"></i>  17</a>
-<a id="L18" href="#L18" rel="#L18"><i class="icon-link"></i>  18</a>
-<a id="L19" href="#L19" rel="#L19"><i class="icon-link"></i>  19</a>
-<a id="L20" href="#L20" rel="#L20"><i class="icon-link"></i>  20</a>
-<a id="L21" href="#L21" rel="#L21"><i class="icon-link"></i>  21</a>
-<a id="L22" href="#L22" rel="#L22"><i class="icon-link"></i>  22</a>
-<a id="L23" href="#L23" rel="#L23"><i class="icon-link"></i>  23</a>
-<a id="L24" href="#L24" rel="#L24"><i class="icon-link"></i>  24</a>
-<a id="L25" href="#L25" rel="#L25"><i class="icon-link"></i>  25</a>
-<a id="L26" href="#L26" rel="#L26"><i class="icon-link"></i>  26</a>
-<a id="L27" href="#L27" rel="#L27"><i class="icon-link"></i>  27</a>
-<a id="L28" href="#L28" rel="#L28"><i class="icon-link"></i>  28</a>
-<a id="L29" href="#L29" rel="#L29"><i class="icon-link"></i>  29</a>
-<a id="L30" href="#L30" rel="#L30"><i class="icon-link"></i>  30</a>
-<a id="L31" href="#L31" rel="#L31"><i class="icon-link"></i>  31</a>
-<a id="L32" href="#L32" rel="#L32"><i class="icon-link"></i>  32</a>
-<a id="L33" href="#L33" rel="#L33"><i class="icon-link"></i>  33</a>
-<a id="L34" href="#L34" rel="#L34"><i class="icon-link"></i>  34</a>
-<a id="L35" href="#L35" rel="#L35"><i class="icon-link"></i>  35</a>
-<a id="L36" href="#L36" rel="#L36"><i class="icon-link"></i>  36</a>
-<a id="L37" href="#L37" rel="#L37"><i class="icon-link"></i>  37</a>
-<a id="L38" href="#L38" rel="#L38"><i class="icon-link"></i>  38</a>
-<a id="L39" href="#L39" rel="#L39"><i class="icon-link"></i>  39</a>
-<a id="L40" href="#L40" rel="#L40"><i class="icon-link"></i>  40</a>
-<a id="L41" href="#L41" rel="#L41"><i class="icon-link"></i>  41</a>
-<a id="L42" href="#L42" rel="#L42"><i class="icon-link"></i>  42</a>
-<a id="L43" href="#L43" rel="#L43"><i class="icon-link"></i>  43</a>
-<a id="L44" href="#L44" rel="#L44"><i class="icon-link"></i>  44</a>
-<a id="L45" href="#L45" rel="#L45"><i class="icon-link"></i>  45</a>
-<a id="L46" href="#L46" rel="#L46"><i class="icon-link"></i>  46</a>
-<a id="L47" href="#L47" rel="#L47"><i class="icon-link"></i>  47</a>
-<a id="L48" href="#L48" rel="#L48"><i class="icon-link"></i>  48</a>
-<a id="L49" href="#L49" rel="#L49"><i class="icon-link"></i>  49</a>
-<a id="L50" href="#L50" rel="#L50"><i class="icon-link"></i>  50</a>
-<a id="L51" href="#L51" rel="#L51"><i class="icon-link"></i>  51</a>
-<a id="L52" href="#L52" rel="#L52"><i class="icon-link"></i>  52</a>
-<a id="L53" href="#L53" rel="#L53"><i class="icon-link"></i>  53</a>
-<a id="L54" href="#L54" rel="#L54"><i class="icon-link"></i>  54</a>
-<a id="L55" href="#L55" rel="#L55"><i class="icon-link"></i>  55</a>
-<a id="L56" href="#L56" rel="#L56"><i class="icon-link"></i>  56</a>
-<a id="L57" href="#L57" rel="#L57"><i class="icon-link"></i>  57</a>
-<a id="L58" href="#L58" rel="#L58"><i class="icon-link"></i>  58</a>
-<a id="L59" href="#L59" rel="#L59"><i class="icon-link"></i>  59</a>
-<a id="L60" href="#L60" rel="#L60"><i class="icon-link"></i>  60</a>
-<a id="L61" href="#L61" rel="#L61"><i class="icon-link"></i>  61</a>
-<a id="L62" href="#L62" rel="#L62"><i class="icon-link"></i>  62</a>
-<a id="L63" href="#L63" rel="#L63"><i class="icon-link"></i>  63</a>
-<a id="L64" href="#L64" rel="#L64"><i class="icon-link"></i>  64</a>
-<a id="L65" href="#L65" rel="#L65"><i class="icon-link"></i>  65</a>
-<a id="L66" href="#L66" rel="#L66"><i class="icon-link"></i>  66</a>
-<a id="L67" href="#L67" rel="#L67"><i class="icon-link"></i>  67</a>
-<a id="L68" href="#L68" rel="#L68"><i class="icon-link"></i>  68</a>
-<a id="L69" href="#L69" rel="#L69"><i class="icon-link"></i>  69</a>
-<a id="L70" href="#L70" rel="#L70"><i class="icon-link"></i>  70</a>
-<a id="L71" href="#L71" rel="#L71"><i class="icon-link"></i>  71</a>
-<a id="L72" href="#L72" rel="#L72"><i class="icon-link"></i>  72</a>
-<a id="L73" href="#L73" rel="#L73"><i class="icon-link"></i>  73</a>
-<a id="L74" href="#L74" rel="#L74"><i class="icon-link"></i>  74</a>
-<a id="L75" href="#L75" rel="#L75"><i class="icon-link"></i>  75</a>
-<a id="L76" href="#L76" rel="#L76"><i class="icon-link"></i>  76</a>
-<a id="L77" href="#L77" rel="#L77"><i class="icon-link"></i>  77</a>
-<a id="L78" href="#L78" rel="#L78"><i class="icon-link"></i>  78</a>
-<a id="L79" href="#L79" rel="#L79"><i class="icon-link"></i>  79</a>
-<a id="L80" href="#L80" rel="#L80"><i class="icon-link"></i>  80</a>
-<a id="L81" href="#L81" rel="#L81"><i class="icon-link"></i>  81</a>
-<a id="L82" href="#L82" rel="#L82"><i class="icon-link"></i>  82</a>
-<a id="L83" href="#L83" rel="#L83"><i class="icon-link"></i>  83</a>
-<a id="L84" href="#L84" rel="#L84"><i class="icon-link"></i>  84</a>
-<a id="L85" href="#L85" rel="#L85"><i class="icon-link"></i>  85</a>
-<a id="L86" href="#L86" rel="#L86"><i class="icon-link"></i>  86</a>
-<a id="L87" href="#L87" rel="#L87"><i class="icon-link"></i>  87</a>
-<a id="L88" href="#L88" rel="#L88"><i class="icon-link"></i>  88</a>
-<a id="L89" href="#L89" rel="#L89"><i class="icon-link"></i>  89</a>
-<a id="L90" href="#L90" rel="#L90"><i class="icon-link"></i>  90</a>
-<a id="L91" href="#L91" rel="#L91"><i class="icon-link"></i>  91</a>
-<a id="L92" href="#L92" rel="#L92"><i class="icon-link"></i>  92</a>
-<a id="L93" href="#L93" rel="#L93"><i class="icon-link"></i>  93</a>
-<a id="L94" href="#L94" rel="#L94"><i class="icon-link"></i>  94</a>
-<a id="L95" href="#L95" rel="#L95"><i class="icon-link"></i>  95</a>
-<a id="L96" href="#L96" rel="#L96"><i class="icon-link"></i>  96</a>
-<a id="L97" href="#L97" rel="#L97"><i class="icon-link"></i>  97</a>
-<a id="L98" href="#L98" rel="#L98"><i class="icon-link"></i>  98</a>
-<a id="L99" href="#L99" rel="#L99"><i class="icon-link"></i>  99</a>
-<a id="L100" href="#L100" rel="#L100"><i class="icon-link"></i> 100</a>
-<a id="L101" href="#L101" rel="#L101"><i class="icon-link"></i> 101</a>
-<a id="L102" href="#L102" rel="#L102"><i class="icon-link"></i> 102</a>
-<a id="L103" href="#L103" rel="#L103"><i class="icon-link"></i> 103</a>
-<a id="L104" href="#L104" rel="#L104"><i class="icon-link"></i> 104</a>
-<a id="L105" href="#L105" rel="#L105"><i class="icon-link"></i> 105</a>
-<a id="L106" href="#L106" rel="#L106"><i class="icon-link"></i> 106</a>
-<a id="L107" href="#L107" rel="#L107"><i class="icon-link"></i> 107</a>
-<a id="L108" href="#L108" rel="#L108"><i class="icon-link"></i> 108</a>
-<a id="L109" href="#L109" rel="#L109"><i class="icon-link"></i> 109</a>
-<a id="L110" href="#L110" rel="#L110"><i class="icon-link"></i> 110</a>
-<a id="L111" href="#L111" rel="#L111"><i class="icon-link"></i> 111</a>
-<a id="L112" href="#L112" rel="#L112"><i class="icon-link"></i> 112</a>
-<a id="L113" href="#L113" rel="#L113"><i class="icon-link"></i> 113</a>
-<a id="L114" href="#L114" rel="#L114"><i class="icon-link"></i> 114</a>
-<a id="L115" href="#L115" rel="#L115"><i class="icon-link"></i> 115</a>
-<a id="L116" href="#L116" rel="#L116"><i class="icon-link"></i> 116</a>
-<a id="L117" href="#L117" rel="#L117"><i class="icon-link"></i> 117</a>
-<a id="L118" href="#L118" rel="#L118"><i class="icon-link"></i> 118</a>
-<a id="L119" href="#L119" rel="#L119"><i class="icon-link"></i> 119</a>
-<a id="L120" href="#L120" rel="#L120"><i class="icon-link"></i> 120</a>
-<a id="L121" href="#L121" rel="#L121"><i class="icon-link"></i> 121</a>
-<a id="L122" href="#L122" rel="#L122"><i class="icon-link"></i> 122</a>
-<a id="L123" href="#L123" rel="#L123"><i class="icon-link"></i> 123</a>
-<a id="L124" href="#L124" rel="#L124"><i class="icon-link"></i> 124</a>
-<a id="L125" href="#L125" rel="#L125"><i class="icon-link"></i> 125</a>
-<a id="L126" href="#L126" rel="#L126"><i class="icon-link"></i> 126</a>
-<a id="L127" href="#L127" rel="#L127"><i class="icon-link"></i> 127</a>
-<a id="L128" href="#L128" rel="#L128"><i class="icon-link"></i> 128</a>
-<a id="L129" href="#L129" rel="#L129"><i class="icon-link"></i> 129</a>
-<a id="L130" href="#L130" rel="#L130"><i class="icon-link"></i> 130</a>
-<a id="L131" href="#L131" rel="#L131"><i class="icon-link"></i> 131</a>
-<a id="L132" href="#L132" rel="#L132"><i class="icon-link"></i> 132</a>
-<a id="L133" href="#L133" rel="#L133"><i class="icon-link"></i> 133</a>
-<a id="L134" href="#L134" rel="#L134"><i class="icon-link"></i> 134</a>
-<a id="L135" href="#L135" rel="#L135"><i class="icon-link"></i> 135</a>
-<a id="L136" href="#L136" rel="#L136"><i class="icon-link"></i> 136</a>
-<a id="L137" href="#L137" rel="#L137"><i class="icon-link"></i> 137</a>
-<a id="L138" href="#L138" rel="#L138"><i class="icon-link"></i> 138</a>
-<a id="L139" href="#L139" rel="#L139"><i class="icon-link"></i> 139</a>
-<a id="L140" href="#L140" rel="#L140"><i class="icon-link"></i> 140</a>
-<a id="L141" href="#L141" rel="#L141"><i class="icon-link"></i> 141</a>
-<a id="L142" href="#L142" rel="#L142"><i class="icon-link"></i> 142</a>
-<a id="L143" href="#L143" rel="#L143"><i class="icon-link"></i> 143</a>
-<a id="L144" href="#L144" rel="#L144"><i class="icon-link"></i> 144</a>
-<a id="L145" href="#L145" rel="#L145"><i class="icon-link"></i> 145</a>
-<a id="L146" href="#L146" rel="#L146"><i class="icon-link"></i> 146</a>
-<a id="L147" href="#L147" rel="#L147"><i class="icon-link"></i> 147</a>
-<a id="L148" href="#L148" rel="#L148"><i class="icon-link"></i> 148</a>
-<a id="L149" href="#L149" rel="#L149"><i class="icon-link"></i> 149</a>
-<a id="L150" href="#L150" rel="#L150"><i class="icon-link"></i> 150</a>
-<a id="L151" href="#L151" rel="#L151"><i class="icon-link"></i> 151</a>
-<a id="L152" href="#L152" rel="#L152"><i class="icon-link"></i> 152</a>
-<a id="L153" href="#L153" rel="#L153"><i class="icon-link"></i> 153</a>
-<a id="L154" href="#L154" rel="#L154"><i class="icon-link"></i> 154</a>
-<a id="L155" href="#L155" rel="#L155"><i class="icon-link"></i> 155</a>
-<a id="L156" href="#L156" rel="#L156"><i class="icon-link"></i> 156</a>
-<a id="L157" href="#L157" rel="#L157"><i class="icon-link"></i> 157</a>
-<a id="L158" href="#L158" rel="#L158"><i class="icon-link"></i> 158</a>
-<a id="L159" href="#L159" rel="#L159"><i class="icon-link"></i> 159</a>
-<a id="L160" href="#L160" rel="#L160"><i class="icon-link"></i> 160</a>
-<a id="L161" href="#L161" rel="#L161"><i class="icon-link"></i> 161</a>
-<a id="L162" href="#L162" rel="#L162"><i class="icon-link"></i> 162</a>
-<a id="L163" href="#L163" rel="#L163"><i class="icon-link"></i> 163</a>
-<a id="L164" href="#L164" rel="#L164"><i class="icon-link"></i> 164</a>
-<a id="L165" href="#L165" rel="#L165"><i class="icon-link"></i> 165</a>
-<a id="L166" href="#L166" rel="#L166"><i class="icon-link"></i> 166</a>
-<a id="L167" href="#L167" rel="#L167"><i class="icon-link"></i> 167</a>
-<a id="L168" href="#L168" rel="#L168"><i class="icon-link"></i> 168</a>
-<a id="L169" href="#L169" rel="#L169"><i class="icon-link"></i> 169</a>
-<a id="L170" href="#L170" rel="#L170"><i class="icon-link"></i> 170</a>
-<a id="L171" href="#L171" rel="#L171"><i class="icon-link"></i> 171</a>
-<a id="L172" href="#L172" rel="#L172"><i class="icon-link"></i> 172</a>
-<a id="L173" href="#L173" rel="#L173"><i class="icon-link"></i> 173</a>
-<a id="L174" href="#L174" rel="#L174"><i class="icon-link"></i> 174</a>
-<a id="L175" href="#L175" rel="#L175"><i class="icon-link"></i> 175</a>
-<a id="L176" href="#L176" rel="#L176"><i class="icon-link"></i> 176</a>
-<a id="L177" href="#L177" rel="#L177"><i class="icon-link"></i> 177</a>
-<a id="L178" href="#L178" rel="#L178"><i class="icon-link"></i> 178</a>
-<a id="L179" href="#L179" rel="#L179"><i class="icon-link"></i> 179</a>
-<a id="L180" href="#L180" rel="#L180"><i class="icon-link"></i> 180</a>
-<a id="L181" href="#L181" rel="#L181"><i class="icon-link"></i> 181</a>
-<a id="L182" href="#L182" rel="#L182"><i class="icon-link"></i> 182</a>
-<a id="L183" href="#L183" rel="#L183"><i class="icon-link"></i> 183</a>
-<a id="L184" href="#L184" rel="#L184"><i class="icon-link"></i> 184</a>
-<a id="L185" href="#L185" rel="#L185"><i class="icon-link"></i> 185</a>
-<a id="L186" href="#L186" rel="#L186"><i class="icon-link"></i> 186</a>
-<a id="L187" href="#L187" rel="#L187"><i class="icon-link"></i> 187</a>
-<a id="L188" href="#L188" rel="#L188"><i class="icon-link"></i> 188</a>
-<a id="L189" href="#L189" rel="#L189"><i class="icon-link"></i> 189</a>
-<a id="L190" href="#L190" rel="#L190"><i class="icon-link"></i> 190</a>
-<a id="L191" href="#L191" rel="#L191"><i class="icon-link"></i> 191</a>
-<a id="L192" href="#L192" rel="#L192"><i class="icon-link"></i> 192</a>
-<a id="L193" href="#L193" rel="#L193"><i class="icon-link"></i> 193</a>
-<a id="L194" href="#L194" rel="#L194"><i class="icon-link"></i> 194</a>
-<a id="L195" href="#L195" rel="#L195"><i class="icon-link"></i> 195</a>
-<a id="L196" href="#L196" rel="#L196"><i class="icon-link"></i> 196</a>
-<a id="L197" href="#L197" rel="#L197"><i class="icon-link"></i> 197</a>
-<a id="L198" href="#L198" rel="#L198"><i class="icon-link"></i> 198</a>
-<a id="L199" href="#L199" rel="#L199"><i class="icon-link"></i> 199</a>
-<a id="L200" href="#L200" rel="#L200"><i class="icon-link"></i> 200</a>
-<a id="L201" href="#L201" rel="#L201"><i class="icon-link"></i> 201</a>
-<a id="L202" href="#L202" rel="#L202"><i class="icon-link"></i> 202</a>
-<a id="L203" href="#L203" rel="#L203"><i class="icon-link"></i> 203</a>
-<a id="L204" href="#L204" rel="#L204"><i class="icon-link"></i> 204</a>
-<a id="L205" href="#L205" rel="#L205"><i class="icon-link"></i> 205</a>
-<a id="L206" href="#L206" rel="#L206"><i class="icon-link"></i> 206</a>
-<a id="L207" href="#L207" rel="#L207"><i class="icon-link"></i> 207</a>
-<a id="L208" href="#L208" rel="#L208"><i class="icon-link"></i> 208</a>
-<a id="L209" href="#L209" rel="#L209"><i class="icon-link"></i> 209</a>
-<a id="L210" href="#L210" rel="#L210"><i class="icon-link"></i> 210</a>
-<a id="L211" href="#L211" rel="#L211"><i class="icon-link"></i> 211</a>
-<a id="L212" href="#L212" rel="#L212"><i class="icon-link"></i> 212</a>
-<a id="L213" href="#L213" rel="#L213"><i class="icon-link"></i> 213</a>
-<a id="L214" href="#L214" rel="#L214"><i class="icon-link"></i> 214</a>
-<a id="L215" href="#L215" rel="#L215"><i class="icon-link"></i> 215</a>
-<a id="L216" href="#L216" rel="#L216"><i class="icon-link"></i> 216</a>
-<a id="L217" href="#L217" rel="#L217"><i class="icon-link"></i> 217</a>
-<a id="L218" href="#L218" rel="#L218"><i class="icon-link"></i> 218</a>
-<a id="L219" href="#L219" rel="#L219"><i class="icon-link"></i> 219</a>
-<a id="L220" href="#L220" rel="#L220"><i class="icon-link"></i> 220</a>
-<a id="L221" href="#L221" rel="#L221"><i class="icon-link"></i> 221</a>
-<a id="L222" href="#L222" rel="#L222"><i class="icon-link"></i> 222</a>
-<a id="L223" href="#L223" rel="#L223"><i class="icon-link"></i> 223</a>
-<a id="L224" href="#L224" rel="#L224"><i class="icon-link"></i> 224</a>
-<a id="L225" href="#L225" rel="#L225"><i class="icon-link"></i> 225</a>
-<a id="L226" href="#L226" rel="#L226"><i class="icon-link"></i> 226</a>
-<a id="L227" href="#L227" rel="#L227"><i class="icon-link"></i> 227</a>
-<a id="L228" href="#L228" rel="#L228"><i class="icon-link"></i> 228</a>
-<a id="L229" href="#L229" rel="#L229"><i class="icon-link"></i> 229</a>
-<a id="L230" href="#L230" rel="#L230"><i class="icon-link"></i> 230</a>
-<a id="L231" href="#L231" rel="#L231"><i class="icon-link"></i> 231</a>
-<a id="L232" href="#L232" rel="#L232"><i class="icon-link"></i> 232</a>
-<a id="L233" href="#L233" rel="#L233"><i class="icon-link"></i> 233</a>
-<a id="L234" href="#L234" rel="#L234"><i class="icon-link"></i> 234</a>
-<a id="L235" href="#L235" rel="#L235"><i class="icon-link"></i> 235</a>
-<a id="L236" href="#L236" rel="#L236"><i class="icon-link"></i> 236</a>
-<a id="L237" href="#L237" rel="#L237"><i class="icon-link"></i> 237</a>
-<a id="L238" href="#L238" rel="#L238"><i class="icon-link"></i> 238</a>
-<a id="L239" href="#L239" rel="#L239"><i class="icon-link"></i> 239</a>
-<a id="L240" href="#L240" rel="#L240"><i class="icon-link"></i> 240</a>
-<a id="L241" href="#L241" rel="#L241"><i class="icon-link"></i> 241</a>
-<a id="L242" href="#L242" rel="#L242"><i class="icon-link"></i> 242</a>
-<a id="L243" href="#L243" rel="#L243"><i class="icon-link"></i> 243</a>
-<a id="L244" href="#L244" rel="#L244"><i class="icon-link"></i> 244</a>
-<a id="L245" href="#L245" rel="#L245"><i class="icon-link"></i> 245</a>
-<a id="L246" href="#L246" rel="#L246"><i class="icon-link"></i> 246</a>
-<a id="L247" href="#L247" rel="#L247"><i class="icon-link"></i> 247</a>
-<a id="L248" href="#L248" rel="#L248"><i class="icon-link"></i> 248</a>
-<a id="L249" href="#L249" rel="#L249"><i class="icon-link"></i> 249</a>
-<a id="L250" href="#L250" rel="#L250"><i class="icon-link"></i> 250</a>
-<a id="L251" href="#L251" rel="#L251"><i class="icon-link"></i> 251</a>
-<a id="L252" href="#L252" rel="#L252"><i class="icon-link"></i> 252</a>
-<a id="L253" href="#L253" rel="#L253"><i class="icon-link"></i> 253</a>
-<a id="L254" href="#L254" rel="#L254"><i class="icon-link"></i> 254</a>
-<a id="L255" href="#L255" rel="#L255"><i class="icon-link"></i> 255</a>
-<a id="L256" href="#L256" rel="#L256"><i class="icon-link"></i> 256</a>
-<a id="L257" href="#L257" rel="#L257"><i class="icon-link"></i> 257</a>
-<a id="L258" href="#L258" rel="#L258"><i class="icon-link"></i> 258</a>
-<a id="L259" href="#L259" rel="#L259"><i class="icon-link"></i> 259</a>
-<a id="L260" href="#L260" rel="#L260"><i class="icon-link"></i> 260</a>
-<a id="L261" href="#L261" rel="#L261"><i class="icon-link"></i> 261</a>
-<a id="L262" href="#L262" rel="#L262"><i class="icon-link"></i> 262</a>
-<a id="L263" href="#L263" rel="#L263"><i class="icon-link"></i> 263</a>
-<a id="L264" href="#L264" rel="#L264"><i class="icon-link"></i> 264</a>
-<a id="L265" href="#L265" rel="#L265"><i class="icon-link"></i> 265</a>
-<a id="L266" href="#L266" rel="#L266"><i class="icon-link"></i> 266</a>
-<a id="L267" href="#L267" rel="#L267"><i class="icon-link"></i> 267</a>
-<a id="L268" href="#L268" rel="#L268"><i class="icon-link"></i> 268</a>
-<a id="L269" href="#L269" rel="#L269"><i class="icon-link"></i> 269</a>
-<a id="L270" href="#L270" rel="#L270"><i class="icon-link"></i> 270</a>
-<a id="L271" href="#L271" rel="#L271"><i class="icon-link"></i> 271</a>
-<a id="L272" href="#L272" rel="#L272"><i class="icon-link"></i> 272</a>
-<a id="L273" href="#L273" rel="#L273"><i class="icon-link"></i> 273</a>
-<a id="L274" href="#L274" rel="#L274"><i class="icon-link"></i> 274</a>
-<a id="L275" href="#L275" rel="#L275"><i class="icon-link"></i> 275</a>
-<a id="L276" href="#L276" rel="#L276"><i class="icon-link"></i> 276</a>
-<a id="L277" href="#L277" rel="#L277"><i class="icon-link"></i> 277</a>
-<a id="L278" href="#L278" rel="#L278"><i class="icon-link"></i> 278</a>
-<a id="L279" href="#L279" rel="#L279"><i class="icon-link"></i> 279</a>
-<a id="L280" href="#L280" rel="#L280"><i class="icon-link"></i> 280</a>
-<a id="L281" href="#L281" rel="#L281"><i class="icon-link"></i> 281</a>
-<a id="L282" href="#L282" rel="#L282"><i class="icon-link"></i> 282</a>
-<a id="L283" href="#L283" rel="#L283"><i class="icon-link"></i> 283</a>
-<a id="L284" href="#L284" rel="#L284"><i class="icon-link"></i> 284</a>
-<a id="L285" href="#L285" rel="#L285"><i class="icon-link"></i> 285</a>
-<a id="L286" href="#L286" rel="#L286"><i class="icon-link"></i> 286</a>
-<a id="L287" href="#L287" rel="#L287"><i class="icon-link"></i> 287</a>
-<a id="L288" href="#L288" rel="#L288"><i class="icon-link"></i> 288</a>
-<a id="L289" href="#L289" rel="#L289"><i class="icon-link"></i> 289</a>
-<a id="L290" href="#L290" rel="#L290"><i class="icon-link"></i> 290</a>
-<a id="L291" href="#L291" rel="#L291"><i class="icon-link"></i> 291</a></pre></td><td><div class="highlight"><pre><div id="LC1" class="line"><span class="c">#!/usr/bin/env python</span></div><div id="LC2" class="line"><span class="c"># -*- coding: utf-8 -*-</span></div><div id="LC3" class="line"><span class="c">#</span></div><div id="LC4" class="line"><span class="c">#  generate_keyboard_layout.py</span></div><div id="LC5" class="line"><br/></div><div id="LC6" class="line"><span class="kn">import</span> <span class="nn">subprocess</span></div><div id="LC7" class="line"><span class="kn">import</span> <span class="nn">sys</span></div><div id="LC8" class="line"><br/></div><div id="LC9" class="line"><span class="k">try</span><span class="p">:</span></div><div id="LC10" class="line">    <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QRectF</span></div><div id="LC11" class="line">    <span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QPainter</span><span class="p">,</span> <span class="n">QPen</span><span class="p">,</span> <span class="n">QPainterPath</span><span class="p">,</span> <span class="n">QColor</span></div><div id="LC12" class="line">    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QApplication</span></div><div id="LC13" class="line">    <span class="n">pyqt5_available</span> <span class="o">=</span> <span class="bp">True</span></div><div id="LC14" class="line"><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span></div><div id="LC15" class="line">    <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QRectF</span></div><div id="LC16" class="line">    <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QPainter</span><span class="p">,</span> <span class="n">QPen</span><span class="p">,</span> <span class="n">QPainterPath</span><span class="p">,</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QPixmap</span></div><div id="LC17" class="line">    <span class="n">pyqt5_available</span> <span class="o">=</span> <span class="bp">False</span></div><div id="LC18" class="line"><br/></div><div id="LC19" class="line"><span class="c">#U+ , or +U+ ... to string</span></div><div id="LC20" class="line"><span class="k">def</span> <span class="nf">fromUnicodeString</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span></div><div id="LC21" class="line">    <span class="k">if</span> <span class="n">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;U+&quot;</span><span class="p">:</span></div><div id="LC22" class="line">        <span class="k">return</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="mi">16</span><span class="p">))</span></div><div id="LC23" class="line">    <span class="k">elif</span> <span class="n">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;+U&quot;</span><span class="p">:</span></div><div id="LC24" class="line">        <span class="k">return</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="mi">16</span><span class="p">))</span></div><div id="LC25" class="line"><br/></div><div id="LC26" class="line">    <span class="k">return</span> <span class="s">&quot;&quot;</span></div><div id="LC27" class="line"><br/></div><div id="LC28" class="line"><br/></div><div id="LC29" class="line"><span class="k">class</span> <span class="nc">Keyboard</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span></div><div id="LC30" class="line"><br/></div><div id="LC31" class="line">    <span class="n">kb_104</span> <span class="o">=</span> <span class="p">{</span></div><div id="LC32" class="line">        <span class="s">&quot;extended_return&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span></div><div id="LC33" class="line">        <span class="s">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span></div><div id="LC34" class="line">        <span class="p">(</span><span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">,</span> <span class="mh">0x3</span><span class="p">,</span> <span class="mh">0x4</span><span class="p">,</span> <span class="mh">0x5</span><span class="p">,</span> <span class="mh">0x6</span><span class="p">,</span> <span class="mh">0x7</span><span class="p">,</span> <span class="mh">0x8</span><span class="p">,</span> <span class="mh">0x9</span><span class="p">,</span> <span class="mh">0xa</span><span class="p">,</span> <span class="mh">0xb</span><span class="p">,</span> <span class="mh">0xc</span><span class="p">,</span> <span class="mh">0xd</span><span class="p">),</span></div><div id="LC35" class="line">        <span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="mh">0x12</span><span class="p">,</span> <span class="mh">0x13</span><span class="p">,</span> <span class="mh">0x14</span><span class="p">,</span> <span class="mh">0x15</span><span class="p">,</span> <span class="mh">0x16</span><span class="p">,</span> <span class="mh">0x17</span><span class="p">,</span> <span class="mh">0x18</span><span class="p">,</span> <span class="mh">0x19</span><span class="p">,</span> <span class="mh">0x1a</span><span class="p">,</span> <span class="mh">0x1b</span><span class="p">,</span> <span class="mh">0x2b</span><span class="p">),</span></div><div id="LC36" class="line">        <span class="p">(</span><span class="mh">0x1e</span><span class="p">,</span> <span class="mh">0x1f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x23</span><span class="p">,</span> <span class="mh">0x24</span><span class="p">,</span> <span class="mh">0x25</span><span class="p">,</span> <span class="mh">0x26</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">),</span></div><div id="LC37" class="line">        <span class="p">(</span><span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mh">0x2e</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">),</span></div><div id="LC38" class="line">        <span class="p">()]</span></div><div id="LC39" class="line">    <span class="p">}</span></div><div id="LC40" class="line"><br/></div><div id="LC41" class="line">    <span class="n">kb_105</span> <span class="o">=</span> <span class="p">{</span></div><div id="LC42" class="line">        <span class="s">&quot;extended_return&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span></div><div id="LC43" class="line">        <span class="s">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span></div><div id="LC44" class="line">        <span class="p">(</span><span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">,</span> <span class="mh">0x3</span><span class="p">,</span> <span class="mh">0x4</span><span class="p">,</span> <span class="mh">0x5</span><span class="p">,</span> <span class="mh">0x6</span><span class="p">,</span> <span class="mh">0x7</span><span class="p">,</span> <span class="mh">0x8</span><span class="p">,</span> <span class="mh">0x9</span><span class="p">,</span> <span class="mh">0xa</span><span class="p">,</span> <span class="mh">0xb</span><span class="p">,</span> <span class="mh">0xc</span><span class="p">,</span> <span class="mh">0xd</span><span class="p">),</span></div><div id="LC45" class="line">        <span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="mh">0x12</span><span class="p">,</span> <span class="mh">0x13</span><span class="p">,</span> <span class="mh">0x14</span><span class="p">,</span> <span class="mh">0x15</span><span class="p">,</span> <span class="mh">0x16</span><span class="p">,</span> <span class="mh">0x17</span><span class="p">,</span> <span class="mh">0x18</span><span class="p">,</span> <span class="mh">0x19</span><span class="p">,</span> <span class="mh">0x1a</span><span class="p">,</span> <span class="mh">0x1b</span><span class="p">),</span></div><div id="LC46" class="line">        <span class="p">(</span><span class="mh">0x1e</span><span class="p">,</span> <span class="mh">0x1f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x23</span><span class="p">,</span> <span class="mh">0x24</span><span class="p">,</span> <span class="mh">0x25</span><span class="p">,</span> <span class="mh">0x26</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x2b</span><span class="p">),</span></div><div id="LC47" class="line">        <span class="p">(</span><span class="mh">0x54</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mh">0x2e</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">),</span></div><div id="LC48" class="line">        <span class="p">()]</span></div><div id="LC49" class="line">    <span class="p">}</span></div><div id="LC50" class="line"><br/></div><div id="LC51" class="line">    <span class="n">kb_106</span> <span class="o">=</span> <span class="p">{</span></div><div id="LC52" class="line">        <span class="s">&quot;extended_return&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span></div><div id="LC53" class="line">        <span class="s">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span></div><div id="LC54" class="line">        <span class="p">(</span><span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">,</span> <span class="mh">0x3</span><span class="p">,</span> <span class="mh">0x4</span><span class="p">,</span> <span class="mh">0x5</span><span class="p">,</span> <span class="mh">0x6</span><span class="p">,</span> <span class="mh">0x7</span><span class="p">,</span> <span class="mh">0x8</span><span class="p">,</span> <span class="mh">0x9</span><span class="p">,</span> <span class="mh">0xa</span><span class="p">,</span> <span class="mh">0xb</span><span class="p">,</span> <span class="mh">0xc</span><span class="p">,</span> <span class="mh">0xd</span><span class="p">,</span> <span class="mh">0xe</span><span class="p">),</span></div><div id="LC55" class="line">        <span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="mh">0x12</span><span class="p">,</span> <span class="mh">0x13</span><span class="p">,</span> <span class="mh">0x14</span><span class="p">,</span> <span class="mh">0x15</span><span class="p">,</span> <span class="mh">0x16</span><span class="p">,</span> <span class="mh">0x17</span><span class="p">,</span> <span class="mh">0x18</span><span class="p">,</span> <span class="mh">0x19</span><span class="p">,</span> <span class="mh">0x1a</span><span class="p">,</span> <span class="mh">0x1b</span><span class="p">),</span></div><div id="LC56" class="line">        <span class="p">(</span><span class="mh">0x1e</span><span class="p">,</span> <span class="mh">0x1f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">,</span> <span class="mh">0x23</span><span class="p">,</span> <span class="mh">0x24</span><span class="p">,</span> <span class="mh">0x25</span><span class="p">,</span> <span class="mh">0x26</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">),</span></div><div id="LC57" class="line">        <span class="p">(</span><span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2d</span><span class="p">,</span> <span class="mh">0x2e</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">),</span></div><div id="LC58" class="line">        <span class="p">()]</span></div><div id="LC59" class="line">    <span class="p">}</span></div><div id="LC60" class="line"><br/></div><div id="LC61" class="line">    <span class="n">lowerFont</span> <span class="o">=</span> <span class="n">QFont</span><span class="p">(</span><span class="s">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">QFont</span><span class="o">.</span><span class="n">DemiBold</span><span class="p">)</span></div><div id="LC62" class="line">    <span class="n">upperFont</span> <span class="o">=</span> <span class="n">QFont</span><span class="p">(</span><span class="s">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></div><div id="LC63" class="line"><br/></div><div id="LC64" class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div><div id="LC65" class="line">        <span class="n">QWidget</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span></div><div id="LC66" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">codes</span> <span class="o">=</span> <span class="p">[]</span></div><div id="LC67" class="line"><br/></div><div id="LC68" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="s">&quot;us&quot;</span></div><div id="LC69" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="s">&quot;&quot;</span></div><div id="LC70" class="line"><br/></div><div id="LC71" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="bp">None</span></div><div id="LC72" class="line"><br/></div><div id="LC73" class="line">    <span class="k">def</span> <span class="nf">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span></div><div id="LC74" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span></div><div id="LC75" class="line"><br/></div><div id="LC76" class="line">    <span class="k">def</span> <span class="nf">setVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variant</span><span class="p">):</span></div><div id="LC77" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="n">variant</span></div><div id="LC78" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">loadCodes</span><span class="p">()</span></div><div id="LC79" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">loadInfo</span><span class="p">()</span></div><div id="LC80" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span></div><div id="LC81" class="line"><br/></div><div id="LC82" class="line">    <span class="k">def</span> <span class="nf">loadInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div><div id="LC83" class="line">        <span class="n">kbl_104</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;us&quot;</span><span class="p">,</span> <span class="s">&quot;th&quot;</span><span class="p">]</span></div><div id="LC84" class="line">        <span class="n">kbl_106</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;jp&quot;</span><span class="p">]</span></div><div id="LC85" class="line"><br/></div><div id="LC86" class="line">        <span class="c"># most keyboards are 105 key so default to that</span></div><div id="LC87" class="line">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="ow">in</span> <span class="n">kbl_104</span><span class="p">:</span></div><div id="LC88" class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb_104</span></div><div id="LC89" class="line">        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="ow">in</span> <span class="n">kbl_106</span><span class="p">:</span></div><div id="LC90" class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb_106</span></div><div id="LC91" class="line">        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb_105</span><span class="p">:</span></div><div id="LC92" class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb_105</span></div><div id="LC93" class="line"><br/></div><div id="LC94" class="line">    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re</span><span class="p">):</span></div><div id="LC95" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="mi">6</span></div><div id="LC96" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">usable_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">6</span></div><div id="LC97" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">key_w</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usable_width</span> <span class="o">-</span> <span class="mi">14</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="p">)</span> <span class="o">/</span> <span class="mi">15</span></div><div id="LC98" class="line"><br/></div><div id="LC99" class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_w</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span></div><div id="LC100" class="line"><br/></div><div id="LC101" class="line">    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe</span><span class="p">):</span></div><div id="LC102" class="line">        <span class="n">p</span> <span class="o">=</span> <span class="n">QPainter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div><div id="LC103" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">setRenderHint</span><span class="p">(</span><span class="n">QPainter</span><span class="o">.</span><span class="n">Antialiasing</span><span class="p">)</span></div><div id="LC104" class="line"><br/></div><div id="LC105" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mh">0xd6</span><span class="p">,</span> <span class="mh">0xd6</span><span class="p">,</span> <span class="mh">0xd6</span><span class="p">))</span></div><div id="LC106" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">640</span><span class="p">)</span></div><div id="LC107" class="line"><br/></div><div id="LC108" class="line">        <span class="n">pen</span> <span class="o">=</span> <span class="n">QPen</span><span class="p">()</span></div><div id="LC109" class="line">        <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div><div id="LC110" class="line">        <span class="n">pen</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mh">0x58</span><span class="p">,</span> <span class="mh">0x58</span><span class="p">,</span> <span class="mh">0x58</span><span class="p">))</span></div><div id="LC111" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span></div><div id="LC112" class="line"><br/></div><div id="LC113" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mh">0x58</span><span class="p">,</span> <span class="mh">0x58</span><span class="p">,</span> <span class="mh">0x58</span><span class="p">))</span></div><div id="LC114" class="line"><br/></div><div id="LC115" class="line">        <span class="n">p</span><span class="o">.</span><span class="n">setBackgroundMode</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">TransparentMode</span><span class="p">)</span></div><div id="LC116" class="line"><br/></div><div id="LC117" class="line">        <span class="n">rx</span> <span class="o">=</span> <span class="mi">3</span></div><div id="LC118" class="line"><br/></div><div id="LC119" class="line">        <span class="n">space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span></div><div id="LC120" class="line">        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">usable_width</span></div><div id="LC121" class="line">        <span class="n">kw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_w</span></div><div id="LC122" class="line"><br/></div><div id="LC123" class="line">        <span class="k">def</span> <span class="nf">drawRow</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">last_end</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div><div id="LC124" class="line">            <span class="n">x</span> <span class="o">=</span> <span class="n">sx</span></div><div id="LC125" class="line">            <span class="n">y</span> <span class="o">=</span> <span class="n">sy</span></div><div id="LC126" class="line">            <span class="n">keys</span> <span class="o">=</span> <span class="n">row</span></div><div id="LC127" class="line">            <span class="n">rw</span> <span class="o">=</span> <span class="n">w</span> <span class="o">-</span> <span class="n">sx</span></div><div id="LC128" class="line">            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span></div><div id="LC129" class="line">            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span></div><div id="LC130" class="line">                <span class="n">rect</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC131" class="line"><br/></div><div id="LC132" class="line">                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">last_end</span><span class="p">:</span></div><div id="LC133" class="line">                    <span class="n">rect</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">rw</span><span class="p">)</span></div><div id="LC134" class="line"><br/></div><div id="LC135" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">drawRoundedRect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC136" class="line"><br/></div><div id="LC137" class="line">                <span class="n">rect</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div><div id="LC138" class="line"><br/></div><div id="LC139" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">))</span></div><div id="LC140" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lowerFont</span><span class="p">)</span></div><div id="LC141" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignBottom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">regular_text</span><span class="p">(</span><span class="n">k</span><span class="p">))</span></div><div id="LC142" class="line"><br/></div><div id="LC143" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mh">0x9e</span><span class="p">,</span> <span class="mh">0xde</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">))</span></div><div id="LC144" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upperFont</span><span class="p">)</span></div><div id="LC145" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shift_text</span><span class="p">(</span><span class="n">k</span><span class="p">))</span></div><div id="LC146" class="line"><br/></div><div id="LC147" class="line">                <span class="n">rw</span> <span class="o">=</span> <span class="n">rw</span> <span class="o">-</span> <span class="n">space</span> <span class="o">-</span> <span class="n">kw</span></div><div id="LC148" class="line">                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">space</span> <span class="o">+</span> <span class="n">kw</span></div><div id="LC149" class="line">                <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span></div><div id="LC150" class="line"><br/></div><div id="LC151" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span></div><div id="LC152" class="line">            <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rw</span><span class="p">)</span></div><div id="LC153" class="line"><br/></div><div id="LC154" class="line">        <span class="n">x</span> <span class="o">=</span> <span class="mi">6</span></div><div id="LC155" class="line">        <span class="n">y</span> <span class="o">=</span> <span class="mi">6</span></div><div id="LC156" class="line"><br/></div><div id="LC157" class="line">        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb</span><span class="p">[</span><span class="s">&quot;keys&quot;</span><span class="p">]</span></div><div id="LC158" class="line">        <span class="n">ext_return</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb</span><span class="p">[</span><span class="s">&quot;extended_return&quot;</span><span class="p">]</span></div><div id="LC159" class="line"><br/></div><div id="LC160" class="line">        <span class="n">first_key_w</span> <span class="o">=</span> <span class="mi">0</span></div><div id="LC161" class="line"><br/></div><div id="LC162" class="line">        <span class="n">rows</span> <span class="o">=</span> <span class="mi">4</span></div><div id="LC163" class="line">        <span class="n">remaining_x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div><div id="LC164" class="line">        <span class="n">remaining_widths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div><div id="LC165" class="line"><br/></div><div id="LC166" class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span></div><div id="LC167" class="line">            <span class="k">if</span> <span class="n">first_key_w</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span></div><div id="LC168" class="line">                <span class="n">first_key_w</span> <span class="o">=</span> <span class="n">first_key_w</span> <span class="o">*</span> <span class="mf">1.375</span></div><div id="LC169" class="line"><br/></div><div id="LC170" class="line">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">kb_105</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span></div><div id="LC171" class="line">                    <span class="n">first_key_w</span> <span class="o">=</span> <span class="n">kw</span> <span class="o">*</span> <span class="mf">1.275</span></div><div id="LC172" class="line"><br/></div><div id="LC173" class="line">                <span class="n">rect</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">first_key_w</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC174" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">drawRoundedRect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC175" class="line">                <span class="n">x</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">first_key_w</span> <span class="o">+</span> <span class="n">space</span></div><div id="LC176" class="line">            <span class="k">else</span><span class="p">:</span></div><div id="LC177" class="line">                <span class="n">first_key_w</span> <span class="o">=</span> <span class="n">kw</span></div><div id="LC178" class="line"><br/></div><div id="LC179" class="line">            <span class="n">x</span><span class="p">,</span> <span class="n">rw</span> <span class="o">=</span> <span class="n">drawRow</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ext_return</span><span class="p">)</span></div><div id="LC180" class="line"><br/></div><div id="LC181" class="line">            <span class="n">remaining_x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span></div><div id="LC182" class="line">            <span class="n">remaining_widths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rw</span></div><div id="LC183" class="line"><br/></div><div id="LC184" class="line">            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span></div><div id="LC185" class="line">                <span class="n">rect</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC186" class="line">                <span class="n">p</span><span class="o">.</span><span class="n">drawRoundedRect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC187" class="line"><br/></div><div id="LC188" class="line">            <span class="n">x</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span></div><div id="LC189" class="line">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">space</span> <span class="o">+</span> <span class="n">kw</span></div><div id="LC190" class="line"><br/></div><div id="LC191" class="line">        <span class="k">if</span> <span class="n">ext_return</span><span class="p">:</span></div><div id="LC192" class="line">            <span class="n">rx</span> <span class="o">=</span> <span class="n">rx</span> <span class="o">*</span> <span class="mi">2</span></div><div id="LC193" class="line">            <span class="n">x1</span> <span class="o">=</span> <span class="n">remaining_x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div><div id="LC194" class="line">            <span class="n">y1</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">space</span> <span class="o">*</span> <span class="mi">1</span></div><div id="LC195" class="line">            <span class="n">w1</span> <span class="o">=</span> <span class="n">remaining_widths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div><div id="LC196" class="line">            <span class="n">x2</span> <span class="o">=</span> <span class="n">remaining_x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div><div id="LC197" class="line">            <span class="n">y2</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">space</span> <span class="o">*</span> <span class="mi">2</span></div><div id="LC198" class="line"><br/></div><div id="LC199" class="line">            <span class="c"># this is some serious crap... but it has to be so</span></div><div id="LC200" class="line">            <span class="c"># maybe one day keyboards won&#39;t look like this...</span></div><div id="LC201" class="line">            <span class="c"># one can only hope</span></div><div id="LC202" class="line">            <span class="n">pp</span> <span class="o">=</span> <span class="n">QPainterPath</span><span class="p">()</span></div><div id="LC203" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC204" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">arcTo</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span></div><div id="LC205" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">w1</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span></div><div id="LC206" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">arcTo</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">w1</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span></div><div id="LC207" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">w1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">-</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC208" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">arcTo</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">w1</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span></div><div id="LC209" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC210" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">arcTo</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span></div><div id="LC211" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC212" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">lineTo</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">rx</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC213" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">arcTo</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">)</span></div><div id="LC214" class="line">            <span class="n">pp</span><span class="o">.</span><span class="n">closeSubpath</span><span class="p">()</span></div><div id="LC215" class="line"><br/></div><div id="LC216" class="line">            <span class="n">p</span><span class="o">.</span><span class="n">drawPath</span><span class="p">(</span><span class="n">pp</span><span class="p">)</span></div><div id="LC217" class="line">        <span class="k">else</span><span class="p">:</span></div><div id="LC218" class="line">            <span class="n">x</span> <span class="o">=</span> <span class="n">remaining_x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div><div id="LC219" class="line">            <span class="c"># Changed .5 to 6 because return key was out of line</span></div><div id="LC220" class="line">            <span class="n">y</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">kw</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">space</span> <span class="o">*</span> <span class="mi">2</span></div><div id="LC221" class="line">            <span class="n">rect</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">remaining_widths</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">kw</span><span class="p">)</span></div><div id="LC222" class="line">            <span class="n">p</span><span class="o">.</span><span class="n">drawRoundedRect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rx</span><span class="p">)</span></div><div id="LC223" class="line"><br/></div><div id="LC224" class="line">        <span class="n">QWidget</span><span class="o">.</span><span class="n">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe</span><span class="p">)</span></div><div id="LC225" class="line"><br/></div><div id="LC226" class="line">    <span class="k">def</span> <span class="nf">regular_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span></div><div id="LC227" class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div><div id="LC228" class="line"><br/></div><div id="LC229" class="line">    <span class="k">def</span> <span class="nf">shift_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span></div><div id="LC230" class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span></div><div id="LC231" class="line"><br/></div><div id="LC232" class="line">    <span class="k">def</span> <span class="nf">ctrl_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span></div><div id="LC233" class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span></div><div id="LC234" class="line"><br/></div><div id="LC235" class="line">    <span class="k">def</span> <span class="nf">alt_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span></div><div id="LC236" class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span></div><div id="LC237" class="line"><br/></div><div id="LC238" class="line">    <span class="k">def</span> <span class="nf">loadCodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div><div id="LC239" class="line">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span></div><div id="LC240" class="line">            <span class="k">return</span></div><div id="LC241" class="line"><br/></div><div id="LC242" class="line">        <span class="n">variantParam</span> <span class="o">=</span> <span class="s">&quot;&quot;</span></div><div id="LC243" class="line">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variant</span><span class="p">:</span></div><div id="LC244" class="line">            <span class="n">variantParam</span> <span class="o">=</span> <span class="s">&quot;-variant </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">variant</span></div><div id="LC245" class="line"><br/></div><div id="LC246" class="line">        <span class="n">cmd</span> <span class="o">=</span> <span class="s">&quot;ckbcomp -model pc106 -layout </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> -compact&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">variantParam</span><span class="p">)</span></div><div id="LC247" class="line">        <span class="c">#print cmd</span></div><div id="LC248" class="line"><br/></div><div id="LC249" class="line">        <span class="n">pipe</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span></div><div id="LC250" class="line">        <span class="n">cfile</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span></div><div id="LC251" class="line"><br/></div><div id="LC252" class="line">        <span class="c">#clear the current codes</span></div><div id="LC253" class="line">        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="p">[:]</span></div><div id="LC254" class="line"><br/></div><div id="LC255" class="line">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cfile</span><span class="p">:</span></div><div id="LC256" class="line">            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;keycode&quot;</span><span class="p">:</span></div><div id="LC257" class="line">                <span class="k">continue</span></div><div id="LC258" class="line"><br/></div><div id="LC259" class="line">            <span class="n">codes</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span></div><div id="LC260" class="line"><br/></div><div id="LC261" class="line">            <span class="n">plain</span> <span class="o">=</span> <span class="n">fromUnicodeString</span><span class="p">(</span><span class="n">codes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div><div id="LC262" class="line">            <span class="n">shift</span> <span class="o">=</span> <span class="n">fromUnicodeString</span><span class="p">(</span><span class="n">codes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div><div id="LC263" class="line">            <span class="n">ctrl</span> <span class="o">=</span> <span class="n">fromUnicodeString</span><span class="p">(</span><span class="n">codes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div><div id="LC264" class="line">            <span class="n">alt</span> <span class="o">=</span> <span class="n">fromUnicodeString</span><span class="p">(</span><span class="n">codes</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span></div><div id="LC265" class="line"><br/></div><div id="LC266" class="line">            <span class="k">if</span> <span class="n">ctrl</span> <span class="o">==</span> <span class="n">plain</span><span class="p">:</span></div><div id="LC267" class="line">                <span class="n">ctrl</span> <span class="o">=</span> <span class="s">&quot;&quot;</span></div><div id="LC268" class="line"><br/></div><div id="LC269" class="line">            <span class="k">if</span> <span class="n">alt</span> <span class="o">==</span> <span class="n">plain</span><span class="p">:</span></div><div id="LC270" class="line">                <span class="n">alt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span></div><div id="LC271" class="line"><br/></div><div id="LC272" class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">plain</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">ctrl</span><span class="p">,</span> <span class="n">alt</span><span class="p">))</span></div><div id="LC273" class="line"><br/></div><div id="LC274" class="line"><span class="c">## testing</span></div><div id="LC275" class="line"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span></div><div id="LC276" class="line">    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span></div><div id="LC277" class="line"><br/></div><div id="LC278" class="line">    <span class="n">layout</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div><div id="LC279" class="line">    <span class="n">variant</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div><div id="LC280" class="line">    <span class="n">filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div><div id="LC281" class="line"><br/></div><div id="LC282" class="line">    <span class="n">kb1</span> <span class="o">=</span> <span class="n">Keyboard</span><span class="p">()</span></div><div id="LC283" class="line">    <span class="n">kb1</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span></div><div id="LC284" class="line">    <span class="n">kb1</span><span class="o">.</span><span class="n">setVariant</span><span class="p">(</span><span class="n">variant</span><span class="p">)</span></div><div id="LC285" class="line"><br/></div><div id="LC286" class="line">    <span class="k">if</span> <span class="n">pyqt5_available</span><span class="p">:</span></div><div id="LC287" class="line">        <span class="n">snapshot</span> <span class="o">=</span> <span class="n">QWidget</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">kb1</span><span class="p">)</span></div><div id="LC288" class="line">    <span class="k">else</span><span class="p">:</span></div><div id="LC289" class="line">        <span class="n">snapshot</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="o">.</span><span class="n">grabWidget</span><span class="p">(</span><span class="n">kb1</span><span class="p">)</span></div><div id="LC290" class="line">    <span class="c">#snapshot = snapshot.scaled(600, 200, Qt.IgnoreAspectRatio, Qt.FastTransformation)</span></div><div id="LC291" class="line">    <span class="n">snapshot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;PNG&quot;</span><span class="p">)</span></div></pre></div></td></tr></table
-</div>
-</div>
+class Keyboard(QWidget):
 
-</div>
-</div>
+    kb_104 = {
+        "extended_return": False,
+        "keys": [
+        (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
+        (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x2b),
+        (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28),
+        (0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35),
+        ()]
+    }
 
-</div>
-</div>
-</div>
-</body>
-</html>
+    kb_105 = {
+        "extended_return": True,
+        "keys": [
+        (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
+        (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
+        (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x2b),
+        (0x54, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35),
+        ()]
+    }
+
+    kb_106 = {
+        "extended_return": True,
+        "keys": [
+        (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe),
+        (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
+        (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29),
+        (0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36),
+        ()]
+    }
+
+    lowerFont = QFont("Helvetica", 10, QFont.DemiBold)
+    upperFont = QFont("Helvetica", 8)
+
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+        self.codes = []
+
+        self.layout = "us"
+        self.variant = ""
+
+        self.kb = None
+
+    def setLayout(self, layout):
+        self.layout = layout
+
+    def setVariant(self, variant):
+        self.variant = variant
+        self.loadCodes()
+        self.loadInfo()
+        self.repaint()
+
+    def loadInfo(self):
+        kbl_104 = ["us", "th"]
+        kbl_106 = ["jp"]
+
+        # most keyboards are 105 key so default to that
+        if self.layout in kbl_104:
+            self.kb = self.kb_104
+        elif self.layout in kbl_106:
+            self.kb = self.kb_106
+        elif self.kb != self.kb_105:
+            self.kb = self.kb_105
+
+    def resizeEvent(self, re):
+        self.space = 6
+        self.usable_width = self.width() - 6
+        self.key_w = (self.usable_width - 14 * self.space) / 15
+
+        self.setMaximumHeight(self.key_w * 4 + self.space * 5)
+
+    def paintEvent(self, pe):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+
+        p.setBrush(QColor(0xd6, 0xd6, 0xd6))
+        p.drawRect(0, 0, 640, 640)
+
+        pen = QPen()
+        pen.setWidth(1)
+        pen.setColor(QColor(0x58, 0x58, 0x58))
+        p.setPen(pen)
+
+        p.setBrush(QColor(0x58, 0x58, 0x58))
+
+        p.setBackgroundMode(Qt.TransparentMode)
+
+        rx = 3
+
+        space = self.space
+        w = self.usable_width
+        kw = self.key_w
+
+        def drawRow(row, sx, sy, last_end=False):
+            x = sx
+            y = sy
+            keys = row
+            rw = w - sx
+            i = 0
+            for k in keys:
+                rect = QRectF(x, y, kw, kw)
+
+                if i == len(keys) - 1 and last_end:
+                    rect.setWidth(rw)
+
+                p.drawRoundedRect(rect, rx, rx)
+
+                rect.adjust(5, 1, 0, 0)
+
+                p.setPen(QColor(0xff, 0xff, 0xff))
+                p.setFont(self.lowerFont)
+                p.drawText(rect, Qt.AlignLeft | Qt.AlignBottom, self.regular_text(k))
+
+                p.setPen(QColor(0x9e, 0xde, 0x00))
+                p.setFont(self.upperFont)
+                p.drawText(rect, Qt.AlignLeft | Qt.AlignTop, self.shift_text(k))
+
+                rw = rw - space - kw
+                x = x + space + kw
+                i = i + 1
+
+                p.setPen(pen)
+            return (x, rw)
+
+        x = 6
+        y = 6
+
+        keys = self.kb["keys"]
+        ext_return = self.kb["extended_return"]
+
+        first_key_w = 0
+
+        rows = 4
+        remaining_x = [0, 0, 0, 0]
+        remaining_widths = [0, 0, 0, 0]
+
+        for i in range(0, rows):
+            if first_key_w > 0:
+                first_key_w = first_key_w * 1.375
+
+                if self.kb == self.kb_105 and i == 3:
+                    first_key_w = kw * 1.275
+
+                rect = QRectF(6, y, first_key_w, kw)
+                p.drawRoundedRect(rect, rx, rx)
+                x = 6 + first_key_w + space
+            else:
+                first_key_w = kw
+
+            x, rw = drawRow(keys[i], x, y, i == 1 and not ext_return)
+
+            remaining_x[i] = x
+            remaining_widths[i] = rw
+
+            if i != 1 and i != 2:
+                rect = QRectF(x, y, rw, kw)
+                p.drawRoundedRect(rect, rx, rx)
+
+            x = .5
+            y = y + space + kw
+
+        if ext_return:
+            rx = rx * 2
+            x1 = remaining_x[1]
+            y1 = 6 + kw * 1 + space * 1
+            w1 = remaining_widths[1]
+            x2 = remaining_x[2]
+            y2 = 6 + kw * 2 + space * 2
+
+            # this is some serious crap... but it has to be so
+            # maybe one day keyboards won't look like this...
+            # one can only hope
+            pp = QPainterPath()
+            pp.moveTo(x1, y1 + rx)
+            pp.arcTo(x1, y1, rx, rx, 180, -90)
+            pp.lineTo(x1 + w1 - rx, y1)
+            pp.arcTo(x1 + w1 - rx, y1, rx, rx, 90, -90)
+            pp.lineTo(x1 + w1, y2 + kw - rx)
+            pp.arcTo(x1 + w1 - rx, y2 + kw - rx, rx, rx, 0, -90)
+            pp.lineTo(x2 + rx, y2 + kw)
+            pp.arcTo(x2, y2 + kw - rx, rx, rx, -90, -90)
+            pp.lineTo(x2, y1 + kw)
+            pp.lineTo(x1 + rx, y1 + kw)
+            pp.arcTo(x1, y1 + kw - rx, rx, rx, -90, -90)
+            pp.closeSubpath()
+
+            p.drawPath(pp)
+        else:
+            x = remaining_x[2]
+            # Changed .5 to 6 because return key was out of line
+            y = 6 + kw * 2 + space * 2
+            rect = QRectF(x, y, remaining_widths[2], kw)
+            p.drawRoundedRect(rect, rx, rx)
+
+        QWidget.paintEvent(self, pe)
+
+    def regular_text(self, index):
+        return self.codes[index - 1][0]
+
+    def shift_text(self, index):
+        return self.codes[index - 1][1]
+
+    def ctrl_text(self, index):
+        return self.codes[index - 1][2]
+
+    def alt_text(self, index):
+        return self.codes[index - 1][3]
+
+    def loadCodes(self):
+        if self.layout is None:
+            return
+
+        variantParam = ""
+        if self.variant:
+            variantParam = "-variant %s" % self.variant
+
+        cmd = "ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
+        #print cmd
+
+        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
+        cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+
+        #clear the current codes
+        del self.codes[:]
+
+        for line in cfile:
+            if line[:7] != "keycode":
+                continue
+
+            codes = line.split('=')[1].strip().split(' ')
+
+            plain = fromUnicodeString(codes[0])
+            shift = fromUnicodeString(codes[1])
+            ctrl = fromUnicodeString(codes[2])
+            alt = fromUnicodeString(codes[3])
+
+            if ctrl == plain:
+                ctrl = ""
+
+            if alt == plain:
+                alt = ""
+
+            self.codes.append((plain, shift, ctrl, alt))
+
+## testing
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+    layout = sys.argv[1]
+    variant = sys.argv[2]
+    filename = sys.argv[3]
+
+    kb1 = Keyboard()
+    kb1.setLayout(layout)
+    kb1.setVariant(variant)
+
+    if pyqt5_available:
+        snapshot = QWidget.grab(kb1)
+    else:
+        snapshot = QPixmap.grabWidget(kb1)
+    #snapshot = snapshot.scaled(600, 200, Qt.IgnoreAspectRatio, Qt.FastTransformation)
+    snapshot.save(filename, "PNG")
