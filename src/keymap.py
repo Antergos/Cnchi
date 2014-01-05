@@ -57,9 +57,8 @@ class Keymap(Gtk.Box):
         self.layout_treeview = self.ui.get_object("keyboardlayout")
         self.variant_treeview = self.ui.get_object("keyboardvariant")
         
-        #self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
-        
-        #self.keyboard_image = self.ui.get_object("keyboard_image")
+        self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
+        self.keyboard_image = self.ui.get_object("keyboard_image")
 
         self.create_toolviews()
 
@@ -89,8 +88,6 @@ class Keymap(Gtk.Box):
         if direction == 'forwards':
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
-            
-            #self.fill_variant_treeview()
 
             # Select treeview with selected country in previous screen.
             selected_country = self.settings.get("timezone_human_country")
@@ -98,7 +95,8 @@ class Keymap(Gtk.Box):
             found = self.select_value_in_treeview(self.layout_treeview, selected_country)
 
             if found == False:
-                self.select_value_in_treeview(self.layout_treeview, "USA")
+                selected_country = "USA"
+                self.select_value_in_treeview(self.layout_treeview, selected_country)
 
             logging.info(_("keyboard_layout is %s") % selected_country)
 
@@ -232,7 +230,7 @@ class Keymap(Gtk.Box):
 
     def on_keyboardvariant_cursor_changed(self, widget):
         self.store_values()
-        #self.set_keyboard_image()
+        self.set_keyboard_image()
 
     def store_values(self):
         # We've previously stored our layout, now store our variant
@@ -291,11 +289,21 @@ class Keymap(Gtk.Box):
             subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
 
     def set_keyboard_image(self):
-        keyboard_image_file = "/tmp/keyboard_layout.png"
-        keyboard_layout_generator = os.path.join(self.settings.get('cnchi'), "scripts/generate_keyboard_layout.py")
         
-        # I don't like os.system
-        os.system('python "%s" "%s" "%s" "%s"' %
-            (keyboard_layout_generator, self.keyboard_layout, self.keyboard_variant, keyboard_image_file))
-        self.keyboard_image.set_from_file(keyboard_image_file)
+        #keyboard_image_file = "/tmp/keyboard_layout.png"
+        #keyboard_layout_generator = os.path.join(self.settings.get('cnchi'), "scripts/generate_keyboard_layout.py")
         
+        ## I don't like os.system
+        #os.system('python "%s" "%s" "%s" "%s"' %
+        #    (keyboard_layout_generator, self.keyboard_layout, self.keyboard_variant, keyboard_image_file))
+        #self.keyboard_image.set_from_file(keyboard_image_file)
+        
+        import generate_keyboard_layout
+        self.keyboard_image = generate_keyboard_layout.Keyboard(self.keyboard_image.get_parent_window())
+        
+        self.keyboard_image.setLayout(self.keyboard_layout)
+        self.keyboard_image.setVariant(self.keyboard_variant)
+        #self.keyboard_image.setLayout("jp")
+        #self.keyboard_image.setVariant("")
+
+        self.keyboard_image.show_all()

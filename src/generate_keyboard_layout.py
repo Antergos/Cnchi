@@ -56,7 +56,7 @@ class Keyboard(Gtk.DrawingArea):
     def __init__(self, parent=None):
         Gtk.DrawingArea.__init__(self)
         
-        self.set_size_request (430, 130)
+        self.set_size_request(430, 130)
         
         self.codes = []
 
@@ -64,6 +64,10 @@ class Keyboard(Gtk.DrawingArea):
         self.variant = ""
         
         self.kb = None
+        
+        self.connect('draw', self.do_draw_cb)
+        self.connect('configure-event', self.configure_event_cb)
+        
 
     def setLayout(self, layout):
         self.layout = layout
@@ -73,6 +77,8 @@ class Keyboard(Gtk.DrawingArea):
         self.loadCodes()
         self.loadInfo()
         #self.repaint()
+        self.configure_event_cb(None, None)
+        self.queue_draw()
 
     def loadInfo(self):
         kbl_104 = ["us", "th"]
@@ -106,10 +112,17 @@ class Keyboard(Gtk.DrawingArea):
 
     def configure_event_cb(self, widget, event):
         self.space = 6
-        
+                
         width = self.get_allocated_width()
         height = self.get_allocated_height()
+
+        print("************************************ width: ", width)
+        print("************************************ height: ", height)
         
+        #(width, height) = self.get_size_request()
+        #print("************************************ width: ", width)
+        #print("************************************ height: ", height)
+
         self.usable_width = width - 6
         self.key_w = (self.usable_width - 14 * self.space) / 15
 
@@ -285,7 +298,7 @@ class Keyboard(Gtk.DrawingArea):
         if self.variant:
             variantParam = "-variant %s" % self.variant
 
-        cmd = "./ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
+        cmd = "/usr/share/cnchi/scripts/ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
         #print cmd
 
         pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
@@ -330,9 +343,6 @@ if __name__ == "__main__":
         
     window.add(kb1)
                        
-    kb1.connect('draw', kb1.do_draw_cb)
-    kb1.connect('configure-event', kb1.configure_event_cb)
-
     window.connect_after('destroy', destroy)
     window.show_all()
     Gtk.main()
