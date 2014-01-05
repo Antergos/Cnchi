@@ -245,7 +245,7 @@ kde_settings() {
         mv home/user home/${USER_NAME}
         cp -R home ${DESTDIR}
         chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
-        chroot ${DESTDIR} tar -xvf /home/$USER_NAME/.icons/cursor.gz
+        tar -xvf ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
         rm ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
 
 	# Set skel directory
@@ -272,11 +272,13 @@ mate_settings() {
         fi
 
     # Set gsettings
+    # Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
+
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}

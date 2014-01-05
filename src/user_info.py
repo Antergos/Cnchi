@@ -167,11 +167,21 @@ class UserInfo(Gtk.Box):
 
     def store_values(self):
         """ Store all user values in self.settings """
-        self.settings.set('fullname', self.entry['fullname'].get_text())
-        self.settings.set('hostname', self.entry['hostname'].get_text())
-        self.settings.set('username', self.entry['username'].get_text())
-        self.settings.set('password', self.entry['password'].get_text())
-        self.settings.set('require_password', self.require_password)
+        # For developer testing
+        if self.settings.get('z_hidden'):
+            self.settings.set('fullname', 'Antergos Testing')
+            self.settings.set('hostname', 'Testing Machine')
+            self.settings.set('username', 'antergos')
+            self.settings.set('password', 'testing')
+            self.settings.set('require_password', self.require_password)
+        else:
+            self.settings.set('fullname', self.entry['fullname'].get_text())
+            self.settings.set('hostname', self.entry['hostname'].get_text())
+            self.settings.set('username', self.entry['username'].get_text())
+            self.settings.set('password', self.entry['password'].get_text())
+            self.settings.set('require_password', self.require_password)
+
+
 
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
@@ -294,10 +304,11 @@ class UserInfo(Gtk.Box):
         # Check if all fields are filled and ok
         all_ok = True
         ok_widgets = self.is_ok.values()
-        for ok_widget in ok_widgets:
-            (icon_name, icon_size) = ok_widget.get_stock()
-            visible = ok_widget.get_visible()
-            if visible == False or icon_name != "gtk-yes":
-                all_ok = False
+        if not self.settings.get('z_hidden'):
+            for ok_widget in ok_widgets:
+                (icon_name, icon_size) = ok_widget.get_stock()
+                visible = ok_widget.get_visible()
+                if visible == False or icon_name != "gtk-yes":
+                    all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
