@@ -989,7 +989,6 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         self.copy_bootloader_theme_files()
         self.queue_event('info', _("Installing GRUB(2) Theme"))
-        self.install_bootloader_theme()
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -1017,17 +1016,17 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
         self.modify_grub_default()
-
+        self.queue_event('info', _("Modified /etc/default/grub. Calling grub-install."))
         # Check for existing EFI bootloader before grub install and remember for later use
         if os.path.exists(os.path.join(self.dest_dir, "boot/EFI")):
             efi_exists = True
         else:
             efi_exists = False
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot \
-                                --bootloader-id=antergos_grub --boot-directory=/install/boot \
-                                --recheck' % uefi_arch], shell=True, timeout=60)
-
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                               '--recheck' % uefi_arch], shell=True, timeout=60)
+        self.queue_event('info', _("grub-install completed. installing grub2 locales."))
         self.install_bootloader_grub2_locales()
 
         self.copy_bootloader_theme_files()
