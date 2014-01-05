@@ -44,7 +44,6 @@ import canonical.misc as misc
 import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
-GRUBTHEME_SCRIPT = 'install.sh'
 
 class InstallError(Exception):
     """ Exception class called upon an installer error """
@@ -387,6 +386,12 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("[antergos-testing]\n")
             tmp_file.write("SigLevel = Optional TrustAll\n")
             tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
+
+            # Until MATE makes it into the official repos..
+            if self.desktop is 'mate':
+                tmp_file.write("[mate]\n")
+                tmp_file.write("SigLevel = Optional TrustAll\n")
+                tmp_file.write("Server = http://repo.mate-desktop.org/archlinux/$arch\n\n")
 
         # Init pyalpm
 

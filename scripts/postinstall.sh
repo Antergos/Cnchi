@@ -111,11 +111,6 @@ cinnamon_settings(){
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-
-	# Set LXDM wallpaper
-	line_old='# bg=/usr/share/backgrounds/default.png'
- 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
- 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
 }
 
 xfce_settings(){
@@ -146,11 +141,6 @@ xfce_settings(){
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-
-	# Set LXDM wallpaper
-	line_old='# bg=/usr/share/backgrounds/default.png'
- 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
- 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
 }
 
 openbox_settings(){
@@ -272,6 +262,33 @@ kde_settings() {
 
 }
 
+mate_settings() {
+
+    # Set gsettings input-source
+	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	else
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
+        fi
+
+    # Set gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+	# Set mate in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+}
 nox_settings(){
 	echo "Done"
 }

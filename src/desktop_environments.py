@@ -23,7 +23,11 @@
 """ DE information """
 
 # Enabled desktops
-DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
+if self.settings.get('z_hidden'):
+    DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
+else:
+    DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
+
 
 # Descriptive names
 NAMES = {
@@ -31,12 +35,12 @@ NAMES = {
     'gnome' : "Gnome",
     'cinnamon' : "Cinnamon",
     'xfce' : "Xfce",
-    'lxde' : "Lxde",
+    'lxde' : "LXDE",
     'openbox' : "Openbox",
     'enlightenment' : "Enlightenment (e17)",
     'kde' : "KDE",
     'razor' : "Razor-qt",
-    'mate' : "Mate" }
+    'mate' : "MATE" }
 
 LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate"],
