@@ -173,7 +173,7 @@ class UserInfo(Gtk.Box):
             self.settings.set('hostname', 'Testing Machine')
             self.settings.set('username', 'antergos')
             self.settings.set('password', 'testing')
-            self.settings.set('require_password', self.require_password)
+            self.settings.set('require_password', True)
         else:
             self.settings.set('fullname', self.entry['fullname'].get_text())
             self.settings.set('hostname', self.entry['hostname'].get_text())
@@ -212,8 +212,8 @@ class UserInfo(Gtk.Box):
             self.login['auto'].set_sensitive(True)
         else:
             self.login['auto'].set_sensitive(False)
-
-        self.forward_button.set_sensitive(False)
+        if not self.settings.get('z_hidden'):
+            self.forward_button.set_sensitive(False)
 
     def get_prev_page(self):
         return _prev_page

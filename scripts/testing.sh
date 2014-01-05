@@ -24,9 +24,13 @@ echo "Switching to testing branch..."
 git checkout testing;
 fi
 echo "Starting Cnchi..."
-if [ "$1" = "-c" ]; then
-dbus-launch cnchi -d -v -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml & exit;
+if [ "$1" == "-c" ]; then
+    if ["$2" == "mate" ]; then
+        cnchi -d -v -z -c /media/sf_data/PKG-CACHE/mate/pkg/ -p /usr/share/cnchi/data/packages.xml & exit;
+    else
+        cnchi -d -v -z -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml & exit;
+fi
 else
-dbus-launch cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit;
+cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit;
 fi
 exit;
