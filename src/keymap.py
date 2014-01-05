@@ -57,9 +57,9 @@ class Keymap(Gtk.Box):
         self.layout_treeview = self.ui.get_object("keyboardlayout")
         self.variant_treeview = self.ui.get_object("keyboardvariant")
         
-        self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
+        #self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         
-        self.keyboard_image = self.ui.get_object("keyboard_image")
+        #self.keyboard_image = self.ui.get_object("keyboard_image")
 
         self.create_toolviews()
 
@@ -232,7 +232,7 @@ class Keymap(Gtk.Box):
 
     def on_keyboardvariant_cursor_changed(self, widget):
         self.store_values()
-        self.set_keyboard_image()
+        #self.set_keyboard_image()
 
     def store_values(self):
         # We've previously stored our layout, now store our variant
