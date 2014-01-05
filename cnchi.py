@@ -158,7 +158,10 @@ class Main(Gtk.Window):
 
 
         # Set enabled desktops
-        self.settings.set("desktops", desktops.DESKTOPS)
+        if self.settings.get('z_hidden'):
+            self.settings.set("desktops", desktops.DESKTOPS_DEV)
+        else:
+            self.settings.set("desktops", desktops.DESKTOPS)
 
         # Set if a grub type must be installed (user choice)
         self.settings.set("force_grub_type", _force_grub_type)

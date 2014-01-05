@@ -22,13 +22,10 @@
 
 """ DE information """
 
-import config as self
-
 # Enabled desktops
-if self.settings.get('z_hidden'):
-    DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
-else:
-    DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
+
+DESKTOPS_DEV = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
+DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
 
 
 # Descriptive names
