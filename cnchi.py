@@ -156,6 +156,9 @@ class Main(Gtk.Window):
 
         self.settings.set('cache', _cache_dir)
 
+        # For things we are not ready for users to test
+        self.settings.set('z_hidden', _z_hidden)
+
 
         # Set enabled desktops
         if self.settings.get('z_hidden'):
@@ -464,7 +467,7 @@ def init_cnchi():
 
     for option, argument in options:
         if option in ('-a', '--aria2'):
-            _use_ari2 = True
+            _use_aria2 = True
         elif option in ('-c', '--cache'):
             _cache_dir = argument
         elif option in ('-d', '--debug'):
