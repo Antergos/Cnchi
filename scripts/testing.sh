@@ -17,8 +17,8 @@ echo "Previous setup detected, skipping downloads"
 fi
 cd /usr/share/cnchi
 if [ "$1" = "-c" ]; then
-echo "Switching to uefi-testing branch..."
-git checkout uefi-testing;
+echo "Switching to testing branch..."
+git checkout testing;
 else
 echo "Switching to testing branch..."
 git checkout testing;

@@ -1015,8 +1015,6 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
-        self.modify_grub_default()
-        self.queue_event('info', _("Modified /etc/default/grub. Calling grub-install."))
         # Check for existing EFI bootloader before grub install and remember for later use
         if os.path.exists(os.path.join(self.dest_dir, "boot/EFI")):
             efi_exists = True
@@ -1028,7 +1026,6 @@ class InstallationProcess(multiprocessing.Process):
                                '--recheck' % uefi_arch], shell=True, timeout=60)
         self.queue_event('info', _("grub-install completed. installing grub2 locales."))
         self.install_bootloader_grub2_locales()
-
         self.copy_bootloader_theme_files()
 
         # Move grub into default UEFI dir if none already exists
@@ -1040,6 +1037,8 @@ class InstallationProcess(multiprocessing.Process):
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
             os.mkdir(grub_dir_dst)
             shutil.copy((grub_dir_src + grub_efi_old), (grub_dir_dst + grub_efi_new))
+
+        self.modify_grub_default()
 
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
