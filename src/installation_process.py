@@ -700,7 +700,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs already mounted."))
             return
 
-        special_dirs = [ "sys", "proc", "dev/pts", "dev" ]
+        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             if not os.path.exists(mydir):
@@ -721,6 +721,9 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
+        mydir = os.path.join(self.dest_dir, "sys/firmware/efi/efivars")
+        subprocess.check_call(["mount", "-t", "efivarfs", "efivarfs", mydir])
+
         self.special_dirs_mounted = True
 
     def chroot_umount_special_dirs(self):
@@ -730,7 +733,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = [ "proc", "sys", "dev/pts", "dev" ]
+        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -1012,6 +1015,8 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_2 = "IA32"
 
+        self.modify_grub_default()
+
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
@@ -1020,25 +1025,24 @@ class InstallationProcess(multiprocessing.Process):
             efi_exists = True
         else:
             efi_exists = False
-
+        self.chroot_mount_special_dirs()
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                '--recheck' % uefi_arch], shell=True, timeout=60)
         self.queue_event('info', _("grub-install completed. installing grub2 locales."))
+        self.chroot_umount_special_dirs()
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
-        # Move grub into default UEFI dir if none already exists
+        # Copy grub into default UEFI dir if none already exists
         if not efi_exists:
-            self.queue_event('info', _("No default UEFI loader found. Moving Grub(2) into default loader dir."))
+            self.queue_event('info', _("No default UEFI loader found. Copying Grub(2) into default loader dir."))
             grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
             grub_dir_dst = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
             grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
             os.mkdir(grub_dir_dst)
             shutil.copy((grub_dir_src + grub_efi_old), (grub_dir_dst + grub_efi_new))
-
-        self.modify_grub_default()
 
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
