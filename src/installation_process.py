@@ -615,17 +615,17 @@ class InstallationProcess(multiprocessing.Process):
             if btype == "GRUB2":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        is_uefi = pkg.attrib.get('uefi')
+                        if not is_uefi:
+                            self.packages.append(pkg.text)
             elif btype == "UEFI_x86_64":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "x86_64":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
             elif btype == "UEFI_i386":
-                for child in root.iter('grub-efi'):
-                    if root.attrib.get('uefiarch') == "i386":
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """

@@ -238,8 +238,10 @@
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>mate</pkgname>
+        <pkgname>mate-disk-utility</pkgname>
         <pkgname>mate-extras</pkgname>
-        <pkgname>mint-menu</pkgname>
+        <pkgname>mate-applet-softupd</pkgname>
+        <pkgname>mintmenu</pkgname>
         <pkgname>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
@@ -378,7 +380,6 @@
         </aur>
         <bluetooth>
             <pkgname lib='qt'>bluedevil</pkgname>
-            <!--<pkgname>bluez</pkgname> This will be added by dependencies-->
             <pkgname>bluez-utils</pkgname>
             <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
@@ -506,8 +507,12 @@
         </ntp>
     </clock_sync>
 
-    <bootloaders>
-        <efistub>
+    <grub>
+        <pkgname>grub</pkgname>
+        <pkgname>os-prober</pkgname>
+        <pkgname uefi="true">efibootmgr</pkgname>
+        <pkgname uefi="true">dosfstools</pkgname>
+        <!--<efistub>
             <pkgname>efilinux-efi</pkgname>
         </efistub>
         <grub>
@@ -531,6 +536,6 @@
         <uefi_x86_64>
             <pkgname>dosfstools</pkgname>
             <pkgname>efibootmgr</pkgname>
-        </uefi_x86_64>
-    </bootloaders>
+        </uefi_x86_64>-->
+    </grub>
 </packages>
