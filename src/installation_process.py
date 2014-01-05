@@ -388,7 +388,7 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
 
             # Until MATE makes it into the official repos..
-            if self.desktop is 'mate':
+            if self.desktop == 'mate':
                 tmp_file.write("[mate]\n")
                 tmp_file.write("SigLevel = Optional TrustAll\n")
                 tmp_file.write("Server = http://repo.mate-desktop.org/archlinux/$arch\n\n")
