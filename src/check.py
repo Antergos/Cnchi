@@ -49,6 +49,7 @@ class Check(Gtk.Box):
         self.settings = params['settings']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+        self.testing = params['testing']
 
         super().__init__()
 
@@ -172,9 +173,10 @@ class Check(Gtk.Box):
         # Enable forward button
         self.forward_button.set_sensitive(True)
 
-        ## Launch rankmirrors script to determine the 5 fastest mirrors
-        self.thread = AutoRankmirrorsThread()
-        self.thread.start()
+        if not self.testing:
+            # Launch rankmirrors script to determine the 5 fastest mirrors
+            self.thread = AutoRankmirrorsThread()
+            self.thread.start()
 
         return True
 
