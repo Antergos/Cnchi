@@ -721,8 +721,9 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
-        mydir = os.path.join(self.dest_dir, "sys/firmware/efi/efivars")
-        subprocess.check_call(["mount", "-t", "efivarfs", "efivarfs", mydir])
+        efivar = "/sys/firmware/efi/efivars"
+        mydir = os.path.join(self.dest_dir, efivar[1:])
+        subprocess.check_call(["mount", "-o", "bind", efivar, mydir])
 
         self.special_dirs_mounted = True
 
@@ -733,7 +734,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
+        special_dirs = [ "sys", "proc", "dev" ]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -890,6 +891,7 @@ class InstallationProcess(multiprocessing.Process):
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
         elif bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+            subprocess.check_call('modprobe -a efivars dm-mod', Shell=True, Timeout=None)
             self.install_bootloader_grub2_efi(bootloader)
 
     def modify_grub_default(self):
@@ -1006,6 +1008,8 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
+        # TODO: Clean this up a bit. It is working in vbox but needs testing on other hardware.
+        # TODO: If tests show it still not working 100%, try to manually add entry to loader (efibootmgr).
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_2 = "X64"
@@ -1020,29 +1024,41 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
-        # Check for existing EFI bootloader before grub install and remember for later use
-        if os.path.exists(os.path.join(self.dest_dir, "boot/EFI")):
-            efi_exists = True
-        else:
-            efi_exists = False
         self.chroot_mount_special_dirs()
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                               '--recheck' % uefi_arch], shell=True, timeout=60)
+                               '--recheck' % uefi_arch], shell=True, timeout=45)
         self.queue_event('info', _("grub-install completed. installing grub2 locales."))
         self.chroot_umount_special_dirs()
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
-        # Copy grub into default UEFI dir if none already exists
-        if not efi_exists:
-            self.queue_event('info', _("No default UEFI loader found. Copying Grub(2) into default loader dir."))
-            grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
-            grub_dir_dst = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
-            grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
+        # Copy grub into dirs known to be used as default by some OEMs if they are empty.
+        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT")
+        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot")
+        grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
+        grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
+        if not os.path.exists(default_1):
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
-            os.mkdir(grub_dir_dst)
-            shutil.copy((grub_dir_src + grub_efi_old), (grub_dir_dst + grub_efi_new))
+            self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
+            os.mkdir(default_1)
+            shutil.copy((grub_dir_src + grub_efi_old), (default_1 + grub_efi_new))
+        elif not os.path.exists(default_2):
+            grub_efi_new = 'bootmgfw.efi'
+            self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
+            os.mkdir(default_2)
+            shutil.copy((grub_dir_src + grub_efi_old), (default_2 + grub_efi_new ))
+
+        # Copy uefi shell none exists in /boot/EFI
+        shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
+        shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
+        try:
+            shutil.move(shell_src, shell_dst)
+        except FileNotFoundError:
+            logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
+        except FileExistsError:
+            logging.warning(_("UEFI Shell already exists ar %s"), shell_dst)
+
 
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
