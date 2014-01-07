@@ -1033,20 +1033,34 @@ class InstallationProcess(multiprocessing.Process):
         self.copy_bootloader_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
-        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT")
-        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot")
+        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
+        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/")
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
         grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
         if not os.path.exists(default_1):
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
             self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
             os.mkdir(default_1)
-            shutil.copy((grub_dir_src + grub_efi_old), (default_1 + grub_efi_new))
+            try:
+                shutil.copy([grub_dir_src + grub_efi_old], [default_1 + grub_efi_new])
+            except FileNotFoundError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+            except FileExistsError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+            except:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
         elif not os.path.exists(default_2):
             grub_efi_new = 'bootmgfw.efi'
             self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
             os.mkdir(default_2)
-            shutil.copy((grub_dir_src + grub_efi_old), (default_2 + grub_efi_new ))
+            try:
+                shutil.copy([grub_dir_src + grub_efi_old], [default_2 + grub_efi_new])
+            except FileNotFoundError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+            except FileExistsError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+            except:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
 
         # Copy uefi shell none exists in /boot/EFI
         shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
