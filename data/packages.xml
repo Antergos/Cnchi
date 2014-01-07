@@ -45,6 +45,7 @@
         <pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-liberation</pkgname>
         <pkgname>upower</pkgname>
         <pkgname>xf86-input-synaptics</pkgname>
         <pkgname>xf86-video-fbdev</pkgname>
@@ -387,7 +388,7 @@
         <fonts>
             <pkgname>ttf-droid</pkgname>
             <pkgname>ttf-freefont</pkgname>
-            <pkgname>ttf-liberation</pkgname>
+            <pkgname>ttf-google-fonts</pkgname>
             <pkgname>ttf-ubuntu-font-family</pkgname>
         </fonts>
         <office>
