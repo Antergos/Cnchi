@@ -891,7 +891,6 @@ class InstallationProcess(multiprocessing.Process):
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
         elif bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
-            subprocess.check_call('modprobe -a efivars dm-mod', Shell=True, Timeout=None)
             self.install_bootloader_grub2_efi(bootloader)
 
     def modify_grub_default(self):
@@ -1427,13 +1426,14 @@ class InstallationProcess(multiprocessing.Process):
         self.enable_services([ self.network_manager ])
 
         # Check if we are installed in vbox and configure accordingly.
+        # TODO: This isnt working, why?
         vbox_chk = self.get_graphics_card()
         modules_load = "/install/etc/modules-load.d/vbox.conf"
-        if vbox_chk is "virtualbox":
+        if "virtualbox" in vbox_chk:
             with open(modules_load, "x") as vbox_conf:
                 line = 'vboxsf'
                 vbox_conf.write(line)
-            self.enable_services([ "vboxservice" ])
+            self.enable_services(["vboxservice"])
 
 
         # Wait FOREVER until the user sets the timezone
@@ -1470,7 +1470,10 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
 
-        default_groups = 'lp,video,network,storage,wheel,audio'
+        if vbox_chk == "virtualbox":
+            default_groups = 'lp,video,network,storage,wheel,audio,vboxusers'
+        else:
+            default_groups = 'lp,video,network,storage,wheel,audio'
 
         if self.settings.get('require_password') is False:
             self.chroot(['groupadd', 'autologin'])
@@ -1540,7 +1543,7 @@ class InstallationProcess(multiprocessing.Process):
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
-        self.queue_event('info', _("Running mkinitcpio..."))
+        self.queue_event('info', _("Configuring System Startup..."))
         self.run_mkinitcpio()
 
         self.queue_event('debug', _("Call Cnchi post-install script"))
