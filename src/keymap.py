@@ -30,6 +30,7 @@ import logging
 import show_message as show
 import canonical.misc as misc
 import subprocess
+import keyboard_widget
 
 _next_page = "user_info"
 _prev_page = "timezone"
@@ -58,7 +59,7 @@ class Keymap(Gtk.Box):
         self.variant_treeview = self.ui.get_object("keyboardvariant")
         
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
-        self.keyboard_image = self.ui.get_object("keyboard_image")
+        self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
         self.create_toolviews()
 
@@ -230,7 +231,7 @@ class Keymap(Gtk.Box):
 
     def on_keyboardvariant_cursor_changed(self, widget):
         self.store_values()
-        self.set_keyboard_image()
+        self.set_keyboard_widget()
 
     def store_values(self):
         # We've previously stored our layout, now store our variant
@@ -288,7 +289,7 @@ class Keymap(Gtk.Box):
         with misc.raised_privileges():
             subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
 
-    def set_keyboard_image(self):
+    def set_keyboard_widget(self):
         
         #keyboard_image_file = "/tmp/keyboard_layout.png"
         #keyboard_layout_generator = os.path.join(self.settings.get('cnchi'), "scripts/generate_keyboard_layout.py")
@@ -298,12 +299,11 @@ class Keymap(Gtk.Box):
         #    (keyboard_layout_generator, self.keyboard_layout, self.keyboard_variant, keyboard_image_file))
         #self.keyboard_image.set_from_file(keyboard_image_file)
         
-        import generate_keyboard_layout
-        self.keyboard_image = generate_keyboard_layout.Keyboard(self.keyboard_image.get_parent_window())
+        #self.keyboard_widget = keyboard_widget.KeyboardWidget(self.keyboard_image.get_parent_window())
         
-        self.keyboard_image.setLayout(self.keyboard_layout)
-        self.keyboard_image.setVariant(self.keyboard_variant)
-        #self.keyboard_image.setLayout("jp")
-        #self.keyboard_image.setVariant("")
+        self.keyboard_widget.setLayout(self.keyboard_layout)
+        self.keyboard_widget.setVariant(self.keyboard_variant)
+        #self.keyboard_widget.setLayout("jp")
+        #self.keyboard_widget.setVariant("")
 
-        self.keyboard_image.show_all()
+        self.keyboard_widget.show_all()

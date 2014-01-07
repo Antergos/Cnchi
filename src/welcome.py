@@ -31,7 +31,8 @@ from show_message import warning
 # Import functions
 import config
 
-_next_page = "language"
+#_next_page = "language"
+_next_page = "keymap"
 _prev_page = None
 
 class Welcome(Gtk.Box):

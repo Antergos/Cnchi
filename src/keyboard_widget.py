@@ -3,7 +3,7 @@
 #
 #  generate_keyboard_layout.py
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 import cairo
 import subprocess
 import sys
@@ -18,8 +18,9 @@ def fromUnicodeString(raw):
     return ""
 
 
-class Keyboard(Gtk.DrawingArea):
-
+class KeyboardWidget(Gtk.DrawingArea):
+    __gtype_name__ = 'KeyboardWidget'
+    
     kb_104 = {
         "extended_return": False,
         "keys": [
@@ -63,12 +64,10 @@ class Keyboard(Gtk.DrawingArea):
         self.layout = "us"
         self.variant = ""
         
+        self.space = 6
+        
         self.kb = None
         
-        self.connect('draw', self.do_draw_cb)
-        self.connect('configure-event', self.configure_event_cb)
-        
-
     def setLayout(self, layout):
         self.layout = layout
 
@@ -77,7 +76,7 @@ class Keyboard(Gtk.DrawingArea):
         self.loadCodes()
         self.loadInfo()
         #self.repaint()
-        self.configure_event_cb(None, None)
+        #self.configure_event_cb(None, None)
         self.queue_draw()
 
     def loadInfo(self):
@@ -110,34 +109,15 @@ class Keyboard(Gtk.DrawingArea):
         cr.set_line_width(2)
         cr.stroke()
 
-    def configure_event_cb(self, widget, event):
-        self.space = 6
-                
-        width = self.get_allocated_width()
-        height = self.get_allocated_height()
-
-        print("************************************ width: ", width)
-        print("************************************ height: ", height)
+    def do_draw(self, cr):
+        ''' The 'cr' variable is the current Cairo context '''
         
-        #(width, height) = self.get_size_request()
-        #print("************************************ width: ", width)
-        #print("************************************ height: ", height)
-
-        self.usable_width = width - 6
-        self.key_w = (self.usable_width - 14 * self.space) / 15
-
-        #(width, height) = self.get_size_request()
-        #max_height = self.key_w * 4 + self.space * 5
+        alloc = self.get_allocation()
+        width = alloc.width
+        height = alloc.height
         
-        return False
-    
-    def do_draw_cb(self, widget, cr):
-        ''' The do_draw_cb is called when the widget is asked to draw itself
-            with the 'draw' as opposed to old function 'expose event' 
-            Remember that this will be called a lot of times, so it's usually
-            a good idea to write this code as optimized as it can be, don't
-            create any resources in here.
-            the 'cr' variable is the current Cairo context '''
+        usable_width = width - 6
+        key_w = (usable_width - 14 * self.space) / 15
             
         # Set background color to transparent
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.0)
@@ -156,8 +136,8 @@ class Keyboard(Gtk.DrawingArea):
         rx = 3
 
         space = self.space
-        w = self.usable_width
-        kw = self.key_w
+        w = usable_width
+        kw = key_w
 
         def drawRow(row, sx, sy, last_end=False):
             x = sx
@@ -169,7 +149,8 @@ class Keyboard(Gtk.DrawingArea):
                 rect = (x, y, kw, kw)
 
                 if i == len(keys) - 1 and last_end:
-                    rect[2] = rect[0] + rw
+                    #rect = (rect[0], rect[1], rect[0] + rw, rect[3])
+                    r2 = rw
 
                 self.rounded_rectangle(cr, rect[0], rect[1], rect[2], rect[3])
 
@@ -326,6 +307,8 @@ class Keyboard(Gtk.DrawingArea):
 
             self.codes.append((plain, shift, ctrl, alt))
 
+GObject.type_register(KeyboardWidget)
+
 ## testing
 
 def destroy(window):
@@ -336,7 +319,7 @@ if __name__ == "__main__":
     window.set_title ("Hello World")
     box = Gtk.Box('Vertical',5)
 
-    kb1 = Keyboard()
+    kb1 = KeyboardWidget()
     
     kb1.setLayout("jp")
     kb1.setVariant("")
