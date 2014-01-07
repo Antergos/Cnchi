@@ -2,17 +2,17 @@
 previous="/tmp/dev-setup"
 if ! [ -f "$previous" ]; then
 touch /tmp/dev-setup;
-vbox_chk = "$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
-if [ "${vbox_chk}" == "VirtualBox" ]; then
-echo "VirtualBox detected. Checking kernel modules and starting vboxservice."
-modprobe -a vboxsf efivars dm-mod && systemctl start vboxservice;
-else
-continue
-fi
 echo "Updating mirrorlist..."
 reflector -p http -l 15 -f 5 --save /etc/pacman.d/mirrorlist;
 echo "Installing git..."
 pacman -Sy git grub efibootmgr --noconfirm --needed;
+vbox_chk = "$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
+if [[ "${vbox_chk}" == "VirtualBox" ]]; then
+echo "VirtualBox detected. Checking kernel modules and starting vboxservice."
+modprobe -a vboxsf efivars dm-mod && systemctl start vboxservice;
+else
+modprobe -a efivars dm-mod;
+fi
 echo "Removing current Cnchi..."
 rm -R /usr/share/cnchi;
 cd /usr/share;
