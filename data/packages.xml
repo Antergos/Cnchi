@@ -45,6 +45,7 @@
         <pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-liberation</pkgname>
         <pkgname>upower</pkgname>
         <pkgname>xf86-input-synaptics</pkgname>
         <pkgname>xf86-video-fbdev</pkgname>
@@ -316,7 +317,7 @@
         <pkgname>hotot-qt5</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
-        <!-- <pkgname>kdeadmin-kuser</pkgname> -->
+        <pkgname>kdeadmin-kuser</pkgname>
         <!-- <pkgname>kdeartwork-colorschemes</pkgname> -->
         <pkgname>kdeartwork-desktopthemes</pkgname>
         <pkgname>kdeartwork-iconthemes</pkgname>
@@ -336,6 +337,7 @@
         <pkgname>kdemultimedia-kmix</pkgname>
         <pkgname>kdenetwork-filesharing</pkgname>
         <pkgname>kdenetwork-kopete</pkgname>
+        <pkgname>kde-servicemenus-rootactions</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
@@ -386,7 +388,7 @@
         <fonts>
             <pkgname>ttf-droid</pkgname>
             <pkgname>ttf-freefont</pkgname>
-            <pkgname>ttf-liberation</pkgname>
+            <pkgname>ttf-google-fonts</pkgname>
             <pkgname>ttf-ubuntu-font-family</pkgname>
         </fonts>
         <office>
