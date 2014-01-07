@@ -44,7 +44,6 @@ import canonical.misc as misc
 import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
-GRUBTHEME_SCRIPT = 'install.sh'
 
 class InstallError(Exception):
     """ Exception class called upon an installer error """
@@ -388,6 +387,12 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = Optional TrustAll\n")
             tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
 
+            # Until MATE makes it into the official repos..
+            if self.desktop == 'mate':
+                tmp_file.write("[mate]\n")
+                tmp_file.write("SigLevel = Optional TrustAll\n")
+                tmp_file.write("Server = http://repo.mate-desktop.org/archlinux/$arch\n\n")
+
         # Init pyalpm
 
         try:
@@ -606,25 +611,21 @@ class InstallationProcess(multiprocessing.Process):
         # Add bootloader packages if needed
         self.queue_event('debug', _("Adding bootloader packages if needed"))
         if self.settings.get('install_bootloader'):
-             for child in root.iter('grub'):
-                 for pkg in child.iter('pkgname'):
-                     self.packages.append(pkg.text)
-            # Not sure what's going on here??
-            # btype = self.settings.get('bootloader_type')
-            # if btype == "GRUB2":
-            #     for child in root.iter('grub'):
-            #         for pkg in child.iter('pkgname'):
-            #             self.packages.append(pkg.text)
-            # elif btype == "UEFI_x86_64":
-            #     for child in root.iter('grub-efi'):
-            #         if root.attrib.get('uefiarch') == "x86_64":
-            #             for pkg in child.iter('pkgname'):
-            #                 self.packages.append(pkg.text)
-            # elif btype == "UEFI_i386":
-            #     for child in root.iter('grub-efi'):
-            #         if root.attrib.get('uefiarch') == "i386":
-            #             for pkg in child.iter('pkgname'):
-            #                 self.packages.append(pkg.text)
+            btype = self.settings.get('bootloader_type')
+            if btype == "GRUB2":
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        is_uefi = pkg.attrib.get('uefi')
+                        if not is_uefi:
+                            self.packages.append(pkg.text)
+            elif btype == "UEFI_x86_64":
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
+            elif btype == "UEFI_i386":
+                for child in root.iter('grub'):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -673,9 +674,9 @@ class InstallationProcess(multiprocessing.Process):
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
-        process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
+        process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE, shell=True)
         process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
-                                    stdin=process1.stdout, stdout=subprocess.PIPE)
+                                    stdin=process1.stdout, stdout=subprocess.PIPE, shell=True)
         process1.stdout.close()
         out, err = process2.communicate()
         return out.decode().lower()
@@ -699,7 +700,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs already mounted."))
             return
 
-        special_dirs = [ "sys", "proc", "dev/pts", "dev" ]
+        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             if not os.path.exists(mydir):
@@ -720,6 +721,10 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
+        efivar = "/sys/firmware/efi/efivars"
+        mydir = os.path.join(self.dest_dir, efivar[1:])
+        subprocess.check_call(["mount", "-o", "bind", efivar, mydir])
+
         self.special_dirs_mounted = True
 
     def chroot_umount_special_dirs(self):
@@ -729,7 +734,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = [ "proc", "sys", "dev/pts", "dev" ]
+        special_dirs = [ "sys", "proc", "dev" ]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -894,6 +899,11 @@ class InstallationProcess(multiprocessing.Process):
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
+        theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
+        swap_partition = self.mount_devices["swap"]
+        swap_uuid = fs.get_info(swap_partition)['UUID']
+        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
 
@@ -918,6 +928,27 @@ class InstallationProcess(multiprocessing.Process):
                 if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
                     (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
                     lines[i] = default_line
+                elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                    lines[i] = theme
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
+                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
+                elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                    lines[i] = "GRUB_DISTRIBUTOR=Antergos"
+
+            with open(default_grub, 'w') as grub_file:
+                grub_file.write("\n".join(lines) + "\n")
+        else:
+
+            with open(default_grub) as grub_file:
+                lines = [x.strip() for x in grub_file.readlines()]
+
+            for i in range(len(lines)):
+                if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                    lines[i] = theme
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
+                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
@@ -959,6 +990,9 @@ class InstallationProcess(multiprocessing.Process):
                   '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
 
         self.install_bootloader_grub2_locales()
+        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+        self.copy_bootloader_theme_files()
+        self.queue_event('info', _("Installing GRUB(2) Theme"))
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -973,31 +1007,73 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
+        # TODO: Clean this up a bit. It is working in vbox but needs testing on other hardware.
+        # TODO: If tests show it still not working 100%, try to manually add entry to loader (efibootmgr).
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
+        spec_uefi_arch_2 = "X64"
 
         if arch == "UEFI_i386":
             uefi_arch = "i386"
             spec_uefi_arch = "ia32"
+            spec_uefi_arch_2 = "IA32"
+
+        self.modify_grub_default()
 
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
-        self.modify_grub_default()
-
         self.chroot_mount_special_dirs()
-
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot/efi --bootloader-id=antergos_grub '
-            '--boot-directory=/install/boot --recheck' % uefi_arch], shell=True)
-
+        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                               '--recheck' % uefi_arch], shell=True, timeout=45)
+        self.queue_event('info', _("grub-install completed. installing grub2 locales."))
         self.chroot_umount_special_dirs()
-
         self.install_bootloader_grub2_locales()
+        self.copy_bootloader_theme_files()
 
+        # Copy grub into dirs known to be used as default by some OEMs if they are empty.
+        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT")
+        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot")
+        grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
+        grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
+        if not os.path.exists(default_1):
+            grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
+            self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
+            os.mkdir(default_1)
+            shutil.copy((grub_dir_src + grub_efi_old), (default_1 + grub_efi_new))
+        elif not os.path.exists(default_2):
+            grub_efi_new = 'bootmgfw.efi'
+            self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
+            os.mkdir(default_2)
+            shutil.copy((grub_dir_src + grub_efi_old), (default_2 + grub_efi_new ))
+
+        # Copy uefi shell none exists in /boot/EFI
+        shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
+        shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
+        try:
+            shutil.move(shell_src, shell_dst)
+        except FileNotFoundError:
+            logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
+        except FileExistsError:
+            logging.warning(_("UEFI Shell already exists ar %s"), shell_dst)
+
+
+        self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
+        grub_cfg = "/boot/grub/grub.cfg"
+
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
         self.chroot_umount_special_dirs()
+        # src = os.path.join(self.dest_dir, "boot/EFI/grub/grub.cfg")
+        # dst = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/grub.cfg")
+        # try:
+        #     shutil.copy(src, dst)
+        # except FileExistsError:
+        #     pass
+        # except FileNotFoundError:
+        #     pass
 
         #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
         #grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
@@ -1016,6 +1092,17 @@ class InstallationProcess(multiprocessing.Process):
         #          '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
         #          'boot/grub/grub.cfg'])
         #self.chroot_umount_special_dirs()
+
+    def copy_bootloader_theme_files(self):
+        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        try:
+            shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
+        except FileNotFoundError:
+            logging.warning(_("Grub2 theme files not found"), theme_dir)
+        except FileExistsError:
+            logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
+
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
@@ -1092,7 +1179,7 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("use_luks"):
             hooks.append("encrypt")
-            modules.extend([ "dm_mod", "dm_crypt", "ext4", "aes-x86_64", "sha256", "sha512" ])
+            modules.extend([ "dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512" ])
 
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
@@ -1338,6 +1425,17 @@ class InstallationProcess(multiprocessing.Process):
 
         self.enable_services([ self.network_manager ])
 
+        # Check if we are installed in vbox and configure accordingly.
+        # TODO: This isnt working, why?
+        vbox_chk = self.get_graphics_card()
+        modules_load = "/install/etc/modules-load.d/vbox.conf"
+        if "virtualbox" in vbox_chk:
+            with open(modules_load, "x") as vbox_conf:
+                line = 'vboxsf'
+                vbox_conf.write(line)
+            self.enable_services(["vboxservice"])
+
+
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
             # wait five seconds and try again
@@ -1372,7 +1470,10 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
 
-        default_groups = 'lp,video,network,storage,wheel,audio'
+        if vbox_chk == "virtualbox":
+            default_groups = 'lp,video,network,storage,wheel,audio,vboxusers'
+        else:
+            default_groups = 'lp,video,network,storage,wheel,audio'
 
         if self.settings.get('require_password') is False:
             self.chroot(['groupadd', 'autologin'])
@@ -1442,7 +1543,7 @@ class InstallationProcess(multiprocessing.Process):
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
-        self.queue_event('info', _("Running mkinitcpio..."))
+        self.queue_event('info', _("Configuring System Startup..."))
         self.run_mkinitcpio()
 
         self.queue_event('debug', _("Call Cnchi post-install script"))
@@ -1477,11 +1578,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            bootloader = self.settings.get('bootloader_type')
-            if bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
-                self.queue_event('debug', _("UEFI Boot - Skipping theme install."))
-            else:
-                 self.queue_event('debug', _("Call grub2-theme install script"))
-                 # Call grub2-theme install script
-                 script_path_grubtheme = os.path.join(self.settings.get('cnchi'), "grub2-theme", GRUBTHEME_SCRIPT)
-                 subprocess.check_call(["/usr/bin/bash", script_path_grubtheme, self.dest_dir])
+            # self.queue_event('debug', _('Installing grub2 theme...'))
+            # self.copy_bootloader_theme_files()
+            # self.install_bootloader_theme()
+
+

@@ -81,6 +81,7 @@ _use_aria2 = False
 _verbose = False
 _disable_tryit = False
 _testing = False
+_z_hidden = False
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 800
@@ -155,8 +156,15 @@ class Main(Gtk.Window):
 
         self.settings.set('cache', _cache_dir)
 
+        # For things we are not ready for users to test
+        self.settings.set('z_hidden', _z_hidden)
+
+
         # Set enabled desktops
-        self.settings.set("desktops", desktops.DESKTOPS)
+        if self.settings.get('z_hidden'):
+            self.settings.set("desktops", desktops.DESKTOPS_DEV)
+        else:
+            self.settings.set("desktops", desktops.DESKTOPS)
 
         # Set if a grub type must be installed (user choice)
         self.settings.set("force_grub_type", _force_grub_type)
@@ -434,6 +442,7 @@ def init_cnchi():
     global _verbose
     global _disable_tryit
     global _testing
+    global _z_hidden
 
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
@@ -448,9 +457,9 @@ def init_cnchi():
     arguments_vector = sys.argv[1:]
 
     try:
-        options, arguments = getopt.getopt(arguments_vector, "ac:dp:ufvg:nht",
+        options, arguments = getopt.getopt(arguments_vector, "ac:dp:ufvg:nhtz",
          ["aria2", "cache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing"])
+          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing", "z-hidden"])
     except getopt.GetoptError as e:
         show_help()
         print(str(e))
@@ -458,7 +467,7 @@ def init_cnchi():
 
     for option, argument in options:
         if option in ('-a', '--aria2'):
-            _use_ari2 = True
+            _use_aria2 = True
         elif option in ('-c', '--cache'):
             _cache_dir = argument
         elif option in ('-d', '--debug'):
@@ -482,8 +491,11 @@ def init_cnchi():
             _update = True
         elif option in ('-v', '--verbose'):
             _verbose = True
+        elif option in ('-z', '--z-hidden'):
+            _z_hidden = True
         else:
             assert False, "Unhandled option"
+
 
     if _update:
         setup_logging()

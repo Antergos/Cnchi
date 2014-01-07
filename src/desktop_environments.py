@@ -23,7 +23,10 @@
 """ DE information """
 
 # Enabled desktops
+
+DESKTOPS_DEV = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
 DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
+
 
 # Descriptive names
 NAMES = {
@@ -31,12 +34,12 @@ NAMES = {
     'gnome' : "Gnome",
     'cinnamon' : "Cinnamon",
     'xfce' : "Xfce",
-    'lxde' : "Lxde",
+    'lxde' : "LXDE",
     'openbox' : "Openbox",
     'enlightenment' : "Enlightenment (e17)",
     'kde' : "KDE",
     'razor' : "Razor-qt",
-    'mate' : "Mate" }
+    'mate' : "MATE" }
 
 LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate"],

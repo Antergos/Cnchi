@@ -233,16 +233,22 @@
     </razor_desktop>
 
     <mate_desktop>
-        <pkgname>cups-pk-helper</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
+        <pkgname>hotot-gtk3</pkgname>
         <pkgname>mate</pkgname>
+        <pkgname>mate-disk-utility</pkgname>
         <pkgname>mate-extras</pkgname>
+        <pkgname>mate-applet-softupd</pkgname>
+        <pkgname>mintmenu</pkgname>
         <pkgname>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>system-config-printer</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>zukitwo-themes</pkgname>
     </mate_desktop>
 
     <openbox_desktop>
@@ -352,6 +358,10 @@
         <pkgname>kwebkitpart</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
+        <pkgname>qtcurve-kde4</pkgname>
+        <pkgname>qtcurve-qt4</pkgname>
+        <pkgname>qtcurve-qt5</pkgname>
+        <pkgname>qtcurve-gtk2</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>webkitgtk</pkgname>
@@ -374,6 +384,7 @@
         <cups>
             <!-- I removed what is automatically added by dependencies -->
             <pkgname>cups</pkgname>
+            <pkgname>cups-pk-helper</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
@@ -493,8 +504,12 @@
         </ntp>
     </clock_sync>
 
-    <bootloaders>
-        <efistub>
+    <grub>
+        <pkgname>grub</pkgname>
+        <pkgname>os-prober</pkgname>
+        <pkgname uefi="true">efibootmgr</pkgname>
+        <pkgname uefi="true">dosfstools</pkgname>
+        <!--<efistub>
             <pkgname>efilinux-efi</pkgname>
         </efistub>
         <grub>
@@ -518,6 +533,6 @@
         <uefi_x86_64>
             <pkgname>dosfstools</pkgname>
             <pkgname>efibootmgr</pkgname>
-        </uefi_x86_64>
-    </bootloaders>
+        </uefi_x86_64>-->
+    </grub>
 </packages>

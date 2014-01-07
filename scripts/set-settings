@@ -144,3 +144,13 @@ if [[ ${DESKTOP} == 'xfce' ]];then
 	dbus-launch xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu.png"
 fi
 
+if [[ ${DESKTOP} == 'mate' ]]; then
+
+    # Set desktop background
+    dbus-launch gsettings set org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+
+    # Set icon theme
+	dbus-launch gsettings set org.gnome.desktop.interface icon-theme Faenza-Dark
+
+fi
+

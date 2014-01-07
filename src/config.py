@@ -81,7 +81,8 @@ class Settings(object):
             'use_lvm' : False,
             'use_ntp' : True,
             'user_info_done' : False,
-            'username' : '' })
+            'username' : '',
+            'z_hidden' : False})
 
     def _get_settings(self):
         """ Get a copy of our settings """
