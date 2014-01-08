@@ -290,20 +290,7 @@ class Keymap(Gtk.Box):
             subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
 
     def set_keyboard_widget(self):
-        
-        #keyboard_image_file = "/tmp/keyboard_layout.png"
-        #keyboard_layout_generator = os.path.join(self.settings.get('cnchi'), "scripts/generate_keyboard_layout.py")
-        
-        ## I don't like os.system
-        #os.system('python "%s" "%s" "%s" "%s"' %
-        #    (keyboard_layout_generator, self.keyboard_layout, self.keyboard_variant, keyboard_image_file))
-        #self.keyboard_image.set_from_file(keyboard_image_file)
-        
-        #self.keyboard_widget = keyboard_widget.KeyboardWidget(self.keyboard_image.get_parent_window())
-        
-        self.keyboard_widget.setLayout(self.keyboard_layout)
-        self.keyboard_widget.setVariant(self.keyboard_variant)
-        #self.keyboard_widget.setLayout("jp")
-        #self.keyboard_widget.setVariant("")
-
+        ''' Pass current keyboard layout to the keyboard widget. '''
+        self.keyboard_widget.set_layout(self.keyboard_layout)
+        self.keyboard_widget.set_variant(self.keyboard_variant)
         self.keyboard_widget.show_all()

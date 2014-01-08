@@ -1,7 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  generate_keyboard_layout.py
+#  keyboard_widget.py
+#
+#  Copyright 2013 Antergos
+#
+#  QT Version: Anonymous (please, if you did the pyQT version tell us!)
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+
+''' Keyboard widget that shows keyboard layout and variant types to the user '''
 
 from gi.repository import Gtk, Gdk, GObject
 import cairo
@@ -9,14 +30,13 @@ import subprocess
 import sys
 import math
 
-#U+ , or +U+ ... to string
-def fromUnicodeString(raw):
+def unicode_to_string(raw):
+    ''' U+ , or +U+ ... to string '''
     if raw[0:2] == "U+":
         return chr(int(raw[2:], 16))
     elif raw[0:2] == "+U":
         return chr(int(raw[3:], 16))
     return ""
-
 
 class KeyboardWidget(Gtk.DrawingArea):
     __gtype_name__ = 'KeyboardWidget'
@@ -51,9 +71,6 @@ class KeyboardWidget(Gtk.DrawingArea):
         ()]
     }
 
-    #lowerFont = "Helvetica SemiBold 10"
-    #upperFont = "Helvetica 8"
-
     def __init__(self, parent=None):
         Gtk.DrawingArea.__init__(self)
         
@@ -63,23 +80,38 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         self.layout = "us"
         self.variant = ""
+        self.lower_font = "Helvetica"
+        self.upper_font = "Helvetica"
         
         self.space = 6
         
         self.kb = None
         
-    def setLayout(self, layout):
+    def set_layout(self, layout):
         self.layout = layout
+    
+    def set_font(self, font):
+        self.set_fonts(font, font)
 
-    def setVariant(self, variant):
+    def set_fonts(self, lo_font, up_font):
+        self.lower_font = lo_font
+        self.upper_font = up_font
+        # To properly render fonts for multilingual websites like Wikipedia or this Arch Linux wiki, install
+        # these packages: ttf-freefont, ttf-arphic-uming, ttf-baekmu
+        # ttf-freefont: FreeMono, FreeMonoBold, FreeMonoBoldOblique, FreeMonoOblique, FreeSans, FreeSansBold,
+        #               FreeSansBoldOblique, FreeSansOblique, FreeSerif, FreeSerifBold, FreeSerifBoldItalic,
+        #               FreeSerifItalic
+        # ttf-arphic-uming: uming (chinese)
+        # ttf-baekmu: batang, dotum, gulim, hline (korean)
+
+    def set_variant(self, variant):
         self.variant = variant
-        self.loadCodes()
-        self.loadInfo()
-        #self.repaint()
-        #self.configure_event_cb(None, None)
+        self.load_codes()
+        self.load_info()
+        # Force repaint
         self.queue_draw()
 
-    def loadInfo(self):
+    def load_info(self):
         kbl_104 = ["us", "th"]
         kbl_106 = ["jp"]
 
@@ -93,8 +125,8 @@ class KeyboardWidget(Gtk.DrawingArea):
 
     def rounded_rectangle(self, cr, x, y, width, height, aspect=1.0):
         corner_radius = height / 10.0
-        radius = corner_radius / aspect;
-        degrees = math.pi / 180.0;
+        radius = corner_radius / aspect
+        degrees = math.pi / 180.0
         
         cr.new_sub_path()
         cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees)
@@ -110,8 +142,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         cr.stroke()
 
     def do_draw(self, cr):
-        ''' The 'cr' variable is the current Cairo context '''
-        
+        ''' The 'cr' variable is the current Cairo context '''        
         alloc = self.get_allocation()
         width = alloc.width
         height = alloc.height
@@ -123,14 +154,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.0)
         cr.paint()
         
-        # d6d6d6
         cr.set_source_rgb(0.84, 0.84, 0.84)
         cr.set_line_width(2)
         
         cr.rectangle(0, 0, 640, 640)
         cr.stroke()
-                
-        # 585858
+
         cr.set_source_rgb(0.22, 0.22, 0.22)
 
         rx = 3
@@ -139,7 +168,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         w = usable_width
         kw = key_w
 
-        def drawRow(row, sx, sy, last_end=False):
+        def draw_row(row, sx, sy, last_end=False):
             x = sx
             y = sy
             keys = row
@@ -149,30 +178,30 @@ class KeyboardWidget(Gtk.DrawingArea):
                 rect = (x, y, kw, kw)
 
                 if i == len(keys) - 1 and last_end:
-                    #rect = (rect[0], rect[1], rect[0] + rw, rect[3])
-                    r2 = rw
+                    rect = (rect[0], rect[1], rw, rect[3])
 
                 self.rounded_rectangle(cr, rect[0], rect[1], rect[2], rect[3])
 
                 px = rect[0] + 5
                 py = rect[1] + rect[3] - (rect[3] / 4)
 
-                # lower
-                cr.set_source_rgb(1.0, 1.0, 1.0)
-                cr.select_font_face("Helvetica", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD);
-                cr.set_font_size(10)
-                cr.move_to(px, py)
-                cr.show_text(self.regular_text(k))
+                if len(self.codes) > 0:
+                    # Draw lower character
+                    cr.set_source_rgb(1.0, 1.0, 1.0)
+                    cr.select_font_face(self.lower_font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                    cr.set_font_size(10)
+                    cr.move_to(px, py)
+                    cr.show_text(self.regular_text(k))
 
-                px = rect[0] + 5
-                py = rect[1] + (rect[3] / 3)
-                
-                # upper
-                cr.set_source_rgb(0.82, 0.82, 0.82)
-                cr.select_font_face("Helvetica", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL);
-                cr.set_font_size(8)
-                cr.move_to(px, py)
-                cr.show_text(self.shift_text(k))
+                    px = rect[0] + 5
+                    py = rect[1] + (rect[3] / 3)
+                    
+                    # Draw upper character
+                    cr.set_source_rgb(0.82, 0.82, 0.82)
+                    cr.select_font_face(self.upper_font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                    cr.set_font_size(8)
+                    cr.move_to(px, py)
+                    cr.show_text(self.shift_text(k))
 
                 rw = rw - space - kw
                 x = x + space + kw
@@ -203,7 +232,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             else:
                 first_key_w = kw
 
-            x, rw = drawRow(keys[i], x, y, i == 1 and not ext_return)
+            x, rw = draw_row(keys[i], x, y, i == 1 and not ext_return)
 
             remaining_x[i] = x
             remaining_widths[i] = rw
@@ -225,8 +254,8 @@ class KeyboardWidget(Gtk.DrawingArea):
             # this is some serious crap... but it has to be so
             # maybe one day keyboards won't look like this...
             # one can only hope
-            #pp = QPainterPath()
-            degrees = math.pi / 180.0;
+            degrees = math.pi / 180.0
+
             cr.new_sub_path()
             
             cr.move_to(x1, y1 + rx)
@@ -242,6 +271,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             cr.arc(x1 + rx, y1 + kw - rx, rx, 90 * degrees, 180 * degrees)
             
             cr.close_path()
+
             cr.set_source_rgb(0.5, 0.5, 0.5)
             cr.fill_preserve()
             cr.set_source_rgba(0.2, 0.2, 0.2, 0.5)
@@ -251,13 +281,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             x = remaining_x[2]
             # Changed .5 to 6 because return key was out of line
             y = 6 + kw * 2 + space * 2
-            #rect = QRectF(x, y, remaining_widths[2], kw)
-            #p.drawRoundedRect(rect, rx, rx)
             self.rounded_rectangle(cr, x, y, remaining_widths[2], kw)
-
-
-        #QWidget.paintEvent(self, pe)
-        
 
     def regular_text(self, index):
         return self.codes[index - 1][0]
@@ -271,21 +295,20 @@ class KeyboardWidget(Gtk.DrawingArea):
     def alt_text(self, index):
         return self.codes[index - 1][3]
 
-    def loadCodes(self):
+    def load_codes(self):
         if self.layout is None:
             return
 
-        variantParam = ""
+        variant_param = ""
         if self.variant:
-            variantParam = "-variant %s" % self.variant
+            variant_param = "-variant %s" % self.variant
 
-        cmd = "/usr/share/cnchi/scripts/ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variantParam)
-        #print cmd
+        cmd = "/usr/share/cnchi/scripts/ckbcomp -model pc106 -layout %s %s -compact" % (self.layout, variant_param)
 
         pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
         cfile = pipe.communicate()[0].decode("utf-8").split('\n')
 
-        #clear the current codes
+        # Clear current codes
         del self.codes[:]
 
         for line in cfile:
@@ -294,10 +317,10 @@ class KeyboardWidget(Gtk.DrawingArea):
 
             codes = line.split('=')[1].strip().split(' ')
 
-            plain = fromUnicodeString(codes[0])
-            shift = fromUnicodeString(codes[1])
-            ctrl = fromUnicodeString(codes[2])
-            alt = fromUnicodeString(codes[3])
+            plain = unicode_to_string(codes[0])
+            shift = unicode_to_string(codes[1])
+            ctrl = unicode_to_string(codes[2])
+            alt = unicode_to_string(codes[3])
 
             if ctrl == plain:
                 ctrl = ""
@@ -316,14 +339,23 @@ def destroy(window):
 
 if __name__ == "__main__":
     window = Gtk.Window()
-    window.set_title ("Hello World")
-    box = Gtk.Box('Vertical',5)
+    window.set_title ("Keyboard widget")
+    box = Gtk.Box('Vertical', 1)
 
     kb1 = KeyboardWidget()
     
-    kb1.setLayout("jp")
-    kb1.setVariant("")
-        
+    # ttf-freefont: FreeMono, FreeMonoBold, FreeMonoBoldOblique, FreeMonoOblique, FreeSans, FreeSansBold,
+    #               FreeSansBoldOblique, FreeSansOblique, FreeSerif, FreeSerifBold, FreeSerifBoldItalic,
+    #               FreeSerifItalic
+    # ttf-arphic-uming: uming (chinese)
+    # ttf-baekmu: batang, dotum, gulim, hline (korean)
+    kb1.set_font("uming")
+
+    #kb1.set_layout("ru")
+    #kb1.set_layout("jp")
+    kb1.set_layout("kk")
+    kb1.set_variant("")
+
     window.add(kb1)
                        
     window.connect_after('destroy', destroy)
