@@ -420,8 +420,11 @@ if __name__ == "__main__":
     
     #kb1.set_layout("ru")
     #kb1.set_layout("jp")
-    kb1.set_layout("mm")
-    kb1.set_variant("")
+    #kb1.set_layout("mm")
+    #kb1.set_variant("")
+
+    kb1.set_layout("es")
+    kb1.set_variant("cat")
 
     window.add(kb1)
                        
