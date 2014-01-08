@@ -101,119 +101,82 @@ class KeyboardWidget(Gtk.DrawingArea):
         if self.variant == "chr":
             self.font = "Aboriginal Sans"
 
-        # Load fonts from ttf-indic-otf package
+        # Load fonts from:
+        # ttf-indic-otf, ttf-khmer, ttf-lohit-fonts, ttf-myanmar3
+        # ttf-thaana-fonts, ttf-tlwg
 
-        # fr,it:georgisch
-        if self.variant == "geo":
-            self.font = "Oriya"
-
-        # Afganistan
-        if self.layout == "af": # olpc-ps,
-            self.font = "Oriya"
-        # Arabisch
-        if self.layout == "ara": # buckwalter,
-            self.font = "Oriya"
-        # Armenia
-        if self.layout == "am":
-            self.font = "Oriya"
-        # Bangladesh
+        # Font: Akaash
         if self.layout == "bd":
             self.font = "Akaash"
-        # Bhutan
-        if self.layout == "bt": ##
-            self.font = "Akaash"
-        # Braille
-        if self.layout == "brai": # broken, even with ttf-ubraille
-            self.font = "Braille"
-        # Cambodia
-        if self.layout == "kh": #
-            self.font = "Akaash"
-        # China
-        if self.layout == "cn": # tib, tib_asciinum
-            self.font = "Oriya"
-            if self.variant == "tib":
-                self.font = "tw moe std kai"
-            if self.variant == "tib_asciinum":
-                self.font = "tw moe std kai"
-        # Ethiopia
-        if self.layout == "et": # broken, didn't found a font yet
-            self.font = "Akaash"
-        # Georgia
-        if self.layout == "ge":
-            self.font = "Oriya"
-        # Greece
-        if self.layout == "gr":
-            self.font = "Oriya"
-        # Guinea
-        if self.layout == "gn":
-            self.font = "Oriya"
-        # India
-        if self.layout == "in": # broken variants: guj, guru, jhelum, kan, ori, tel, urd-phonetic3, urd-phonetic, urd-winkeys
-            self.font = "Gargi"
-            if self.variant == "ben_probhat":
-                self.font = "Akaash"
-            if self.variant == "ben":
-                self.font = "Akaash"
-            if self.variant == "mal":
-                self.font = "Malayalam"
-            if self.variant == "mal_lalitha":
-                self.font = "Malayalam"
-            if self.variant == "tam_keyboard_with_numerals": # not all keys
-                self.font = "TSCu_Times"
-            if self.variant == "tam_TAB": # not all keys
-                self.font = "TSCu_Times"
-            if self.variant == "tam_TSCII":
-                self.font = "TSCu_Times"
-            if self.variant == "tam_unicode":
-                self.font = "TSCu_Times"
-            if self.variant == "tam": # not all keys
-                self.font = "TSCu_Times"
-        # Iran
-        if self.layout == "ir":
-            self.font = "Oriya"
-        # Iraq
-        if self.layout == "iq":
-            self.font = "Oriya"
-        # Ireland
-        if self.layout == "ie":
-            self.font = "Oriya"
-        # Israel
-        if self.layout == "il": # broken variants: biblical
-            self.font = "Oriya"
-        # Japan
-        if self.layout == "jp": # broken variants: kana
-            self.font = "Oriya"
-        # Laos
-        if self.layout == "la":
-            self.font = "Oriya"
-        # Maldives
-        if self.layout == "mv": #
-            self.font = "Gargi"
-        # Morocco
-        if self.layout == "ma":
-            self.font = "Oriya"
-        # Myanmar
-        if self.layout == "mm": #
-            self.font = "Myanmar3"
-        # Nepal
-        if self.layout == "np":
-            self.font = "Gargi"
-        # Pakistan
-        if self.layout == "pk": # not all keys
-            self.font = "Oriya"
-        # Sri Lanka
-        if self.layout == "lk": # broken variants: tam_TAB, tam_unicode
-            self.font = "Oriya"
-        # Syria
-        if self.layout == "sy": # broken variants: syc_phonetic, syc
-            self.font = "Oriya"
-        # Thailand
-        if self.layout == "th": # broken variants: pat, tis
-            self.font = "Oriya"
-        # Vietnam
-        if self.layout == "vn":
-            self.font = "Akaash"        
 
+        # Font: Gari
+        if self.layout == "np" or self.layout == "in":
+            self.font = "Gargi"
+
+        # Font: KhmerOS
+        if self.layout == "kh":
+            self.font = "KhmerOS"
+
+        # Font: Bengali
+        if self.variant == "ben_probhat" or self.variant == "ben":
+            self.font = "Lohit Bengali"
+
+        # Font: Padmaa
+        if self.variant == "guj": # not all keys
+            self.font = "Padmaa"
+
+        # Font: Punjabi
+        if self.variant == "guru" or self.variant == "jhelum":
+            self.font = "Lohit Punjabi"
+
+        # Font: Kannada
+        if self.variant == "kan":
+            self.font = "Lohit Kannada"
+
+        # Font: Malayalam
+        if self.variant == "mal" or self.variant == "mal_lalitha":
+            self.font = "Malayalam"
+
+        # Font: Tamil
+        if self.variant == "tam_keyboard_with_numerals" or self.variant == "tam":
+            self.font = "Lohit Tamil"
+
+        # Font: TSCu Times
+        lst = [ "tam_TAB", "tam_TSCII", "tam_unicode" ]
+        for i in lst:
+             if self.variant == i:
+                 self.font = "TSCu_Times"
+
+        # Font: Telugu
+        if self.variant == "tel":
+            self.font = "Lohit Telugu"
+
+        # Font: Oriya
+        lst = [ "af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il", "la", "ma", "pk", "lk", "sy" ]
+        for i in lst:
+             if self.layout == i:
+                 self.font = "Oriya"
+        
+        lst = [ "geo", "urd-phonetic3", "urd-phonetic", "urd-winkeys" ]
+        for i in lst:
+             if self.variant == i:
+                 self.font = "Oriya"
+        
+        if self.variant == "ori":
+            self.font = "Lohit Oriya"
+
+        # Font: Mv Boli
+        if self.layout == "mv":
+            self.font = "MVBoli"
+
+        # Font: Myanmar
+        if self.layout == "mm":
+            self.font = "Myanmar3"
+
+        # Font: Tlwg
+        if self.layout == "th":
+            self.font = "Tlwg Mono"
+            
     def set_variant(self, variant):
         self.variant = variant
         self.load_codes()
@@ -457,7 +420,7 @@ if __name__ == "__main__":
     
     #kb1.set_layout("ru")
     #kb1.set_layout("jp")
-    kb1.set_layout("kk")
+    kb1.set_layout("mm")
     kb1.set_variant("")
 
     window.add(kb1)
