@@ -3,9 +3,8 @@
 #
 #  keyboard_widget.py
 #
-#  Copyright 2013 Antergos
-#
-#  QT Version: Anonymous (please, if you did the pyQT version tell us!)
+#  Copyright 2013 Manjaro (QT version)
+#  Copyright 2013 Antergos (Gtk version)
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -74,14 +73,13 @@ class KeyboardWidget(Gtk.DrawingArea):
     def __init__(self, parent=None):
         Gtk.DrawingArea.__init__(self)
         
-        self.set_size_request(430, 130)
+        self.set_size_request(460, 130)
         
         self.codes = []
 
         self.layout = "us"
         self.variant = ""
-        self.lower_font = "Helvetica"
-        self.upper_font = "Helvetica"
+        self.font = "Helvetica"
         
         self.space = 6
         
@@ -90,24 +88,137 @@ class KeyboardWidget(Gtk.DrawingArea):
     def set_layout(self, layout):
         self.layout = layout
     
-    def set_font(self, font):
-        self.set_fonts(font, font)
+    def set_font(self):
+        ''' Font depends on the keyboard layout '''
+        # broken: ad (Andorra), lk (Sri Lanka), brai (Braille)
+        # ?!?: us:chr
 
-    def set_fonts(self, lo_font, up_font):
-        self.lower_font = lo_font
-        self.upper_font = up_font
-        # To properly render fonts for multilingual websites like Wikipedia or this Arch Linux wiki, install
-        # these packages: ttf-freefont, ttf-arphic-uming, ttf-baekmu
-        # ttf-freefont: FreeMono, FreeMonoBold, FreeMonoBoldOblique, FreeMonoOblique, FreeSans, FreeSansBold,
-        #               FreeSansBoldOblique, FreeSansOblique, FreeSerif, FreeSerifBold, FreeSerifBoldItalic,
-        #               FreeSerifItalic
-        # ttf-arphic-uming: uming (chinese)
-        # ttf-baekmu: batang, dotum, gulim, hline (korean)
+        self.font = "Helvetica"
+
+        # Load fonts from ttf-aboriginal-sans package
+
+        # us:chr
+        if self.variant == "chr":
+            self.font = "Aboriginal Sans"
+
+        # Load fonts from ttf-indic-otf package
+
+        # fr,it:georgisch
+        if self.variant == "geo":
+            self.font = "Oriya"
+
+        # Afganistan
+        if self.layout == "af": # olpc-ps,
+            self.font = "Oriya"
+        # Arabisch
+        if self.layout == "ara": # buckwalter,
+            self.font = "Oriya"
+        # Armenia
+        if self.layout == "am":
+            self.font = "Oriya"
+        # Bangladesh
+        if self.layout == "bd":
+            self.font = "Akaash"
+        # Bhutan
+        if self.layout == "bt": ##
+            self.font = "Akaash"
+        # Braille
+        if self.layout == "brai": # broken, even with ttf-ubraille
+            self.font = "Braille"
+        # Cambodia
+        if self.layout == "kh": #
+            self.font = "Akaash"
+        # China
+        if self.layout == "cn": # tib, tib_asciinum
+            self.font = "Oriya"
+            if self.variant == "tib":
+                self.font = "tw moe std kai"
+            if self.variant == "tib_asciinum":
+                self.font = "tw moe std kai"
+        # Ethiopia
+        if self.layout == "et": # broken, didn't found a font yet
+            self.font = "Akaash"
+        # Georgia
+        if self.layout == "ge":
+            self.font = "Oriya"
+        # Greece
+        if self.layout == "gr":
+            self.font = "Oriya"
+        # Guinea
+        if self.layout == "gn":
+            self.font = "Oriya"
+        # India
+        if self.layout == "in": # broken variants: guj, guru, jhelum, kan, ori, tel, urd-phonetic3, urd-phonetic, urd-winkeys
+            self.font = "Gargi"
+            if self.variant == "ben_probhat":
+                self.font = "Akaash"
+            if self.variant == "ben":
+                self.font = "Akaash"
+            if self.variant == "mal":
+                self.font = "Malayalam"
+            if self.variant == "mal_lalitha":
+                self.font = "Malayalam"
+            if self.variant == "tam_keyboard_with_numerals": # not all keys
+                self.font = "TSCu_Times"
+            if self.variant == "tam_TAB": # not all keys
+                self.font = "TSCu_Times"
+            if self.variant == "tam_TSCII":
+                self.font = "TSCu_Times"
+            if self.variant == "tam_unicode":
+                self.font = "TSCu_Times"
+            if self.variant == "tam": # not all keys
+                self.font = "TSCu_Times"
+        # Iran
+        if self.layout == "ir":
+            self.font = "Oriya"
+        # Iraq
+        if self.layout == "iq":
+            self.font = "Oriya"
+        # Ireland
+        if self.layout == "ie":
+            self.font = "Oriya"
+        # Israel
+        if self.layout == "il": # broken variants: biblical
+            self.font = "Oriya"
+        # Japan
+        if self.layout == "jp": # broken variants: kana
+            self.font = "Oriya"
+        # Laos
+        if self.layout == "la":
+            self.font = "Oriya"
+        # Maldives
+        if self.layout == "mv": #
+            self.font = "Gargi"
+        # Morocco
+        if self.layout == "ma":
+            self.font = "Oriya"
+        # Myanmar
+        if self.layout == "mm": #
+            self.font = "Myanmar3"
+        # Nepal
+        if self.layout == "np":
+            self.font = "Gargi"
+        # Pakistan
+        if self.layout == "pk": # not all keys
+            self.font = "Oriya"
+        # Sri Lanka
+        if self.layout == "lk": # broken variants: tam_TAB, tam_unicode
+            self.font = "Oriya"
+        # Syria
+        if self.layout == "sy": # broken variants: syc_phonetic, syc
+            self.font = "Oriya"
+        # Thailand
+        if self.layout == "th": # broken variants: pat, tis
+            self.font = "Oriya"
+        # Vietnam
+        if self.layout == "vn":
+            self.font = "Akaash"        
 
     def set_variant(self, variant):
         self.variant = variant
         self.load_codes()
         self.load_info()
+        self.set_font()
         # Force repaint
         self.queue_draw()
 
@@ -149,7 +260,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         
         usable_width = width - 6
         key_w = (usable_width - 14 * self.space) / 15
-            
+                    
         # Set background color to transparent
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.0)
         cr.paint()
@@ -188,7 +299,7 @@ class KeyboardWidget(Gtk.DrawingArea):
                 if len(self.codes) > 0:
                     # Draw lower character
                     cr.set_source_rgb(1.0, 1.0, 1.0)
-                    cr.select_font_face(self.lower_font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
                     cr.set_font_size(10)
                     cr.move_to(px, py)
                     cr.show_text(self.regular_text(k))
@@ -198,7 +309,7 @@ class KeyboardWidget(Gtk.DrawingArea):
                     
                     # Draw upper character
                     cr.set_source_rgb(0.82, 0.82, 0.82)
-                    cr.select_font_face(self.upper_font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
                     cr.set_font_size(8)
                     cr.move_to(px, py)
                     cr.show_text(self.shift_text(k))
@@ -344,13 +455,6 @@ if __name__ == "__main__":
 
     kb1 = KeyboardWidget()
     
-    # ttf-freefont: FreeMono, FreeMonoBold, FreeMonoBoldOblique, FreeMonoOblique, FreeSans, FreeSansBold,
-    #               FreeSansBoldOblique, FreeSansOblique, FreeSerif, FreeSerifBold, FreeSerifBoldItalic,
-    #               FreeSerifItalic
-    # ttf-arphic-uming: uming (chinese)
-    # ttf-baekmu: batang, dotum, gulim, hline (korean)
-    kb1.set_font("uming")
-
     #kb1.set_layout("ru")
     #kb1.set_layout("jp")
     kb1.set_layout("kk")
