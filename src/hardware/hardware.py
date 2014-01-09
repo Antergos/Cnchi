@@ -59,7 +59,6 @@ class Hardware(object):
             logging.debug(out.decode())
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
-            raise
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
@@ -114,14 +113,13 @@ class HardwareInstall(object):
         """ Get pacman package list for all detected devices """
         packages = []
         for obj in self.objects_found:
-            packages.extend(obj.get_packages(self=obj))
-
+            packages.extend(obj.get_packages(obj))
         return packages
 
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
         for obj in self.objects_found:
-            obj.postinstall(self=obj, dest_dir)
+            obj.post_install(obj, dest_dir)
 
 if __name__ == '__main__':
     hardware_install = HardwareInstall()

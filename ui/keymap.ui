@@ -6,8 +6,9 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
+    <property name="spacing">10</property>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_top">20</property>
@@ -72,14 +73,53 @@
       </packing>
     </child>
     <child>
-      <object class="GtkDrawingArea" id="keyboard_image">
+      <object class="GtkBox" id="box2">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkEventBox" id="eventbox1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="KeyboardWidget" id="keyboard_widget">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
       </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="eventbox2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
