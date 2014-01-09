@@ -520,22 +520,28 @@ class InstallationProcess(multiprocessing.Process):
                 for child in root.iter('virtualbox'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('virtualbox')
 
             if "vmware" in graphics:
                 for child in root.iter('vmware'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('vmware')
 
             if "via " in graphics:
                 for child in root.iter('via'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('via')
 
             # Add xorg-drivers group if cnchi can't figure it out
             # the graphic card driver.
             if graphics not in ('ati ', 'nvidia', 'intel', 'virtualbox' \
                                 'vmware', 'via '):
                 self.packages.append('xorg-drivers')
+                self.card.append('xorg')
+
+            logging.debug("Added %s graphics drivers to the installation" % self.card)
 
         # Get packages needed for detected hardware
         try:
