@@ -915,8 +915,10 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
+                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"'
+                # % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
+                               'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
             else:
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
@@ -946,8 +948,8 @@ class InstallationProcess(multiprocessing.Process):
             for i in range(len(lines)):
                 if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
-                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
-                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith(
+                        "GRUB_CMDLINE_LINUX_DEFAULT"):
                     lines[i] = kernel_cmd
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
@@ -1018,6 +1020,7 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_2 = "IA32"
 
+        logging.debug(_("Configuring /etc/default/grub."))
         self.modify_grub_default()
 
         grub_device = self.settings.get('bootloader_device')
