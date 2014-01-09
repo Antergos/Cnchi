@@ -1030,7 +1030,6 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Configuring /etc/default/grub."))
         self.modify_grub_default()
 
-        grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
 
         self.chroot_mount_special_dirs()
@@ -1050,7 +1049,7 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(default_1):
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
             self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
-            os.mkdir(default_1)
+            os.makedirs(default_1)
             try:
                 shutil.copy([grub_dir_src + grub_efi_old], [default_1 + grub_efi_new])
             except FileNotFoundError:
@@ -1062,7 +1061,7 @@ class InstallationProcess(multiprocessing.Process):
         elif not os.path.exists(default_2):
             grub_efi_new = 'bootmgfw.efi'
             self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
-            os.mkdir(default_2)
+            os.makedirs(default_2)
             try:
                 shutil.copy([grub_dir_src + grub_efi_old], [default_2 + grub_efi_new])
             except FileNotFoundError:
@@ -1080,7 +1079,9 @@ class InstallationProcess(multiprocessing.Process):
         except FileNotFoundError:
             logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
         except FileExistsError:
-            logging.warning(_("UEFI Shell already exists ar %s"), shell_dst)
+            logging.warning(_("UEFI Shell already exists at %s"), shell_dst)
+        except:
+            logging.warning(_("UEFI Shell drop-in could not be copied."))
 
 
         self.queue_event('info', _("Generating grub.cfg"))
