@@ -282,9 +282,9 @@ class InstallationProcess(multiprocessing.Process):
                 self.download_packages()
                 self.queue_event('debug', _('Packages downloaded.'))
 
-            cache_dir = self.settings.get("cache")
-            if len(cache_dir) > 0:
-                self.copy_cache_files(cache_dir)
+
+            # if len(cache_dir) > 0:
+            #     self.copy_cache_files(cache_dir)
 
             self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
@@ -343,6 +343,8 @@ class InstallationProcess(multiprocessing.Process):
 
         # TODO: Instead of hardcoding pacman.conf, we could use an external file
 
+        cache_dir = self.settings.get("cache")
+
         with open("/tmp/pacman.conf", "w") as tmp_file:
             tmp_file.write("[options]\n")
             tmp_file.write("Architecture = auto\n")
@@ -350,13 +352,13 @@ class InstallationProcess(multiprocessing.Process):
 
             tmp_file.write("RootDir = %s\n" % self.dest_dir)
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
-            tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
-            # TODO: DO NOT COPY XZ FILES, INSTEAD ADD CACHE DIR HERE
-            # ¿?
-            #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
-            #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+            if len(cache_dir) > 0:
+                tmp_file.write("CacheDir = %s\n" % cache_dir)
+            else:
+                tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+
+            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
             tmp_file.write("# Repositories\n\n")
 
@@ -1237,32 +1239,32 @@ class InstallationProcess(multiprocessing.Process):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    def copy_cache_files(self, cache_dir):
-        """ Copy all packages fro specified directory to install's target """
-        # Check in case user has given a wrong folder
-        if not os.path.exists(cache_dir):
-            return
-        self.queue_event('info', _('Copying xz files from cache...'))
-        dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
-        if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
-        self.copy_cache_files_progress(cache_dir, dest_dir)
-
-    def copy_cache_files_progress(self, src, dst):
-        """ Copy files updating the slides' progress bar """
-        percent = 0.0
-        items = os.listdir(src)
-
-        step = 1.0 / len(items)
-        for item in items:
-            self.queue_event("percent", percent)
-            source = os.path.join(src, item)
-            destination = os.path.join(dst, item)
-            try:
-                shutil.copy2(source, destination)
-            except (FileExistsError, shutil.Error) as err:
-                logging.warning(err)
-            percent += step
+    # def copy_cache_files(self, cache_dir):
+    #     """ Copy all packages fro specified directory to install's target """
+    #     # Check in case user has given a wrong folder
+    #     if not os.path.exists(cache_dir):
+    #         return
+    #     self.queue_event('info', _('Copying xz files from cache...'))
+    #     dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+    #     if not os.path.exists(dest_dir):
+    #         os.makedirs(dest_dir)
+    #     self.copy_cache_files_progress(cache_dir, dest_dir)
+    #
+    # def copy_cache_files_progress(self, src, dst):
+    #     """ Copy files updating the slides' progress bar """
+    #     percent = 0.0
+    #     items = os.listdir(src)
+    # 
+    #     step = 1.0 / len(items)
+    #     for item in items:
+    #         self.queue_event("percent", percent)
+    #         source = os.path.join(src, item)
+    #         destination = os.path.join(dst, item)
+    #         try:
+    #             shutil.copy2(source, destination)
+    #         except (FileExistsError, shutil.Error) as err:
+    #             logging.warning(err)
+    #         percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
