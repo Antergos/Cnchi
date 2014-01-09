@@ -295,6 +295,34 @@ nox_settings(){
 	echo "Done"
 }
 
+desktop_files() {
+    cat << EOF > ${DESTDIR}/usr/share/applications/antergos-wiki.desktop
+[Desktop Entry]
+Type=Application
+Name=Antergos Wiki
+GenericName=Online Documentation
+Comment=Online documention for Antergos Users.
+Exec=xdg-open http://wiki.antergos.com/
+Icon=info
+Terminal=false
+StartupNotify=false
+Categories=Application;System;Documentation;
+EOF
+
+    cat << EOF > ${DESTDIR}/usr/share/applications/antergos-forum.desktop
+[Desktop Entry]
+Type=Application
+Name=Antergos Forum
+GenericName=User Support
+Comment=User support and discussion forum.
+Exec=xdg-open http://forum.antergos.com/
+Icon=help
+Terminal=false
+StartupNotify=false
+Categories=Application;System;Documentation;
+EOF
+
+}
 postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
@@ -318,6 +346,9 @@ postinstall(){
 	# Configure touchpad. Skip with base installs
 	if [[ $DESKTOP != 'nox' ]];then
 		set_synaptics
+
+		# Create desktop files for Wiki and Forum.
+	    desktop_files
 	fi
 
 	# Set Antergos name in filesystem files
