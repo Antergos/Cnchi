@@ -536,8 +536,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add xorg-drivers group if cnchi can't figure it out
             # the graphic card driver.
-            if graphics not in ('ati ', 'nvidia', 'intel', 'virtualbox' \
-                                'vmware', 'via '):
+            if self.card is None:
                 self.packages.append('xorg-drivers')
                 self.card.append('xorg')
 
@@ -550,6 +549,8 @@ class InstallationProcess(multiprocessing.Process):
             self.packages.extend(hardware_install.get_packages())
         except ImportError:
             logging.warning(_("Can't import hardware module."))
+        except:
+            logging.warning(_("Unknown error in hardware module."))
 
         # Add filesystem packages
 
@@ -1071,7 +1072,7 @@ class InstallationProcess(multiprocessing.Process):
             except:
                 logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
 
-        # Copy uefi shell none exists in /boot/EFI
+        # Copy uefi shell if none exists in /boot/EFI
         shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
         shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
         try:
@@ -1450,9 +1451,8 @@ class InstallationProcess(multiprocessing.Process):
 
         # Check if we are installed in vbox and configure accordingly.
         # TODO: This isnt working, why?
-        vbox_chk = self.get_graphics_card()
         modules_load = "/install/etc/modules-load.d/vbox.conf"
-        if "virtualbox" in vbox_chk:
+        if "virtualbox" in self.card:
             with open(modules_load, "x") as vbox_conf:
                 line = 'vboxsf'
                 vbox_conf.write(line)
@@ -1493,7 +1493,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
 
-        if vbox_chk == "virtualbox":
+        if self.card is "virtualbox":
             default_groups = 'lp,video,network,storage,wheel,audio,vboxusers'
         else:
             default_groups = 'lp,video,network,storage,wheel,audio'
@@ -1576,8 +1576,6 @@ class InstallationProcess(multiprocessing.Process):
                                username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
         # Set lightdm config including autologin if selected
-        # Warning: In openbox "desktop", the post-install script writes /etc/slim.conf
-        # so we always have to call set_display_manger AFTER the post-install script call.
         self.set_display_manager()
 
         # Configure user features (third party software, libreoffice language pack, ...)
@@ -1590,6 +1588,8 @@ class InstallationProcess(multiprocessing.Process):
             hardware_install.post_install(self.dest_dir)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
+        except:
+            logging.warning(_("Unknown error in hardware module."))
 
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
@@ -1601,8 +1601,5 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            # self.queue_event('debug', _('Installing grub2 theme...'))
-            # self.copy_bootloader_theme_files()
-            # self.install_bootloader_theme()
 
 
