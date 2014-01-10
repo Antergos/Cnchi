@@ -225,10 +225,6 @@ razor_settings(){
 }
 
 kde_settings() {
-	
-	# Move kde default Background
-	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
-	mv 2560x1600.png ../old-default.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -239,14 +235,12 @@ kde_settings() {
         wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
         unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
         cd ${DESTDIR}/tmp/kde-setup-master
-        cp -R usr ${DESTDIR}
         usr_old="dustin"
         grep -rl ${usr_old} . | xargs sed -i s@${usr_old}@${USER_NAME}@g
-        mv home/user home/${USER_NAME}
+        cd ${DESTDIR}/tmp/kde-setup-master
         cp -R home ${DESTDIR}
+        cp -R usr ${DESTDIR}
         chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
-        tar -xvf ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
-        rm ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel

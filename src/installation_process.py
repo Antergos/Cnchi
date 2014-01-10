@@ -976,8 +976,6 @@ class InstallationProcess(multiprocessing.Process):
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
 
-        self.modify_grub_default()
-
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
         if not os.path.exists(grub_d_dir):
@@ -1029,17 +1027,13 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_2 = "IA32"
 
-        logging.debug(_("Configuring /etc/default/grub."))
-        self.modify_grub_default()
+        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % uefi_arch)
 
-        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
-
-        self.chroot_mount_special_dirs()
         subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                '--recheck' % uefi_arch], shell=True, timeout=45)
-        self.queue_event('info', _("grub-install completed. installing grub2 locales."))
-        self.chroot_umount_special_dirs()
+
+        self.queue_event('info', _("Command grub-install completed. Now Installing grub2 locales."))
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
@@ -1053,7 +1047,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
             os.makedirs(default_1)
             try:
-                shutil.copy([grub_dir_src + grub_efi_old], [default_1 + grub_efi_new])
+                shutil.copy(grub_dir_src + grub_efi_old, default_1 + grub_efi_new)
             except FileNotFoundError:
                 logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
             except FileExistsError:
@@ -1065,7 +1059,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
             os.makedirs(default_2)
             try:
-                shutil.copy([grub_dir_src + grub_efi_old], [default_2 + grub_efi_new])
+                shutil.copy(grub_dir_src + grub_efi_old, default_2 + grub_efi_new)
             except FileNotFoundError:
                 logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
             except FileExistsError:
@@ -1085,7 +1079,7 @@ class InstallationProcess(multiprocessing.Process):
         except:
             logging.warning(_("UEFI Shell drop-in could not be copied."))
 
-
+        # Run grub-mkconfig last
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         grub_cfg = "/boot/grub/grub.cfg"
@@ -1093,42 +1087,18 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
         self.chroot_umount_special_dirs()
-        # src = os.path.join(self.dest_dir, "boot/EFI/grub/grub.cfg")
-        # dst = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/grub.cfg")
-        # try:
-        #     shutil.copy(src, dst)
-        # except FileExistsError:
-        #     pass
-        # except FileNotFoundError:
-        #     pass
 
-        #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
-        #grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
-        #try:
-        #    shutil.copy2(grub_cfg, grub_standalone)
-        #except FileNotFoundError:
-        #    self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
-        #except FileExistsError:
-        #    pass
-        #
-        #self.chroot_mount_special_dirs()
-        #self.chroot(['grub-mkstandalone', \
-        #          '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
-        #          '--format=%s-efi' % uefi_arch, \
-        #          '--compression="xz"', \
-        #          '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
-        #          'boot/grub/grub.cfg'])
-        #self.chroot_umount_special_dirs()
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        theme_dir_src = os.path.join(self, "grub2-theme/Antergos-Default")
+        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
-            shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
+            shutil.move(theme_dir_src, theme_dir_dst)
         except FileNotFoundError:
-            logging.warning(_("Grub2 theme files not found"), theme_dir)
+            logging.warning(_("Grub2 theme files not found"))
         except FileExistsError:
-            logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
+            logging.warning(_("Grub2 theme files already exist."))
 
 
     def install_bootloader_grub2_locales(self):
@@ -1254,7 +1224,7 @@ class InstallationProcess(multiprocessing.Process):
     #     """ Copy files updating the slides' progress bar """
     #     percent = 0.0
     #     items = os.listdir(src)
-    # 
+    #
     #     step = 1.0 / len(items)
     #     for item in items:
     #         self.queue_event("percent", percent)
@@ -1599,6 +1569,11 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Encrypting user home dir..."))
             encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
+
+        # Prepare default grub file before running grub-install
+        if self.settings.get('install_bootloader'):
+            logging.debug(_("Configuring /etc/default/grub."))
+            self.modify_grub_default()
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('install_bootloader'):
