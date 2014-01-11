@@ -1001,7 +1001,7 @@ class InstallationProcess(multiprocessing.Process):
         self.install_bootloader_grub2_locales()
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         self.copy_bootloader_theme_files()
-        self.queue_event('info', _("Installing GRUB(2) Theme"))
+
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -1027,13 +1027,36 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_2 = "IA32"
 
+        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
+        
+        if not os.path.exists(grub_d_dir):
+            os.makedirs(grub_d_dir)
+
+        try:
+            shutil.copy2("/arch/10_linux", grub_d_dir)
+        except FileNotFoundError:
+            try:
+                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
+            except FileNotFoundError:
+                self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+            except FileExistsError:
+                pass
+        except FileExistsError:
+            pass
+
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % uefi_arch)
+        try:
+            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+        except subprocess.CalledProcessError as err:
+            logging.ERROR('Command grub-install failed. Error output: %s' % err)
+        except subprocess.TimeoutExpired:
+            logging.ERROR('Command grub-install timed out.')
+        except:
+            logging.ERROR('Command grub-install failed. Unknown Error.')
 
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                               '--recheck' % uefi_arch], shell=True, timeout=45)
-
-        self.queue_event('info', _("Command grub-install completed. Now Installing grub2 locales."))
+        self.queue_event('info', _("Command grub-install completed. Installing grub2 locales."))
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
@@ -1092,7 +1115,7 @@ class InstallationProcess(multiprocessing.Process):
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         theme_dir_src = os.path.join(self, "grub2-theme/Antergos-Default")
-        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/")
         try:
             shutil.move(theme_dir_src, theme_dir_dst)
         except FileNotFoundError:
