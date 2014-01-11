@@ -939,10 +939,10 @@ class InstallationProcess(multiprocessing.Process):
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
-                if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) \
-                        and not (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or
-                                 lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
-                    lines[i] = default_line
+                if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
+                    if not lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
+                        if not lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                            lines[i] = default_line
                 elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
                 elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
@@ -954,15 +954,15 @@ class InstallationProcess(multiprocessing.Process):
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
         else:
-
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
                 if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
-                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith(
-                        "GRUB_CMDLINE_LINUX_DEFAULT"):
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
+                elif lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
                     lines[i] = kernel_cmd
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
@@ -974,6 +974,8 @@ class InstallationProcess(multiprocessing.Process):
         with open(default_grub, 'a') as grub_file:
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
+
+        logging.debug('/etc/default/grub configuration completed successfully.')
 
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
@@ -1153,7 +1155,7 @@ class InstallationProcess(multiprocessing.Process):
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
         try:
-            shadow_password = crypt.crypt(new_password,"$6$%s$" % user)
+            shadow_password = crypt.crypt(new_password, "$6$%s$" % user)
         except:
             self.queue_event('warning', _('Error creating password hash for user %s') % user)
             return False
@@ -1331,6 +1333,7 @@ class InstallationProcess(multiprocessing.Process):
                     if '#user-session=default' in line:
                         line = 'user-session=%s\n' % sessions[desktop]
                     lightdm_conf.write(line)
+            logging.debug('Completed LightDM Configuration')
 
         if self.desktop_manager == 'gdm':
             # Systems with GDM as Desktop Manager
@@ -1458,7 +1461,6 @@ class InstallationProcess(multiprocessing.Process):
                 line = 'vboxsf'
                 vbox_conf.write(line)
             self.enable_services(["vboxservice"])
-
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
