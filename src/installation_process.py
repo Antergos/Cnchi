@@ -45,15 +45,18 @@ import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 
+
 class InstallError(Exception):
     """ Exception class called upon an installer error """
     def __init__(self, value):
         """ Initialize exception class """
         super().__init__(value)
         self.value = value
+
     def __str__(self):
         """ Returns exception message """
         return repr(self.value)
+
 
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
@@ -69,11 +72,11 @@ class InstallationProcess(multiprocessing.Process):
 
         # Save how we have been called
         # We need this in case we have to retry the installation
-        parameters = {'mount_devices' : mount_devices,
-         'fs_devices' : fs_devices,
-         'ssd' : ssd,
-         'alternate_package_list' : alternate_package_list,
-         'blvm': blvm }
+        parameters = {'mount_devices': mount_devices,
+                      'fs_devices': fs_devices,
+                      'ssd': ssd,
+                      'alternate_package_list': alternate_package_list,
+                      'blvm': blvm}
         self.settings.set('installer_thread_call', parameters)
 
         # This flag tells us if there is a lvm partition (from advanced install)
@@ -253,7 +256,6 @@ class InstallationProcess(multiprocessing.Process):
         # If pacman was stoped and /var is in another partition than root
         # (so as to be able to resume install), database lock file will still be in place.
         # We must delete it or this new installation will fail
-
         db_lock = os.path.join(self.dest_dir, "var/lib/pacman/db.lck")
         if os.path.exists(db_lock):
             with misc.raised_privileges():
@@ -414,7 +416,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
-        dirs = [ "var/cache/pacman/pkg", "var/lib/pacman" ]
+        dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
 
         for pacman_dir in dirs:
             mydir = os.path.join(self.dest_dir, pacman_dir)
@@ -665,7 +667,7 @@ class InstallationProcess(multiprocessing.Process):
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
                 # There're some English variants available but not all of them.
-                lang_packs = [ 'en-GB', 'en-US', 'en-ZA' ]
+                lang_packs = ['en-GB', 'en-US', 'en-ZA']
                 locale = self.settings.get('locale').split('.')[0]
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
@@ -709,7 +711,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs already mounted."))
             return
 
-        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
+        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars"]
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             if not os.path.exists(mydir):
@@ -743,7 +745,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = [ "sys", "proc", "dev" ]
+        special_dirs = ["sys", "proc", "dev"]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -756,7 +758,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def chroot(self, cmd, stdin=None, stdout=None):
         """ Runs command inside the chroot """
-        run = [ 'chroot', self.dest_dir ]
+        run = ['chroot', self.dest_dir]
 
         for element in cmd:
             run.append(element)
@@ -861,6 +863,7 @@ class InstallationProcess(multiprocessing.Process):
                 # We do not run fsck on btrfs partitions
                 if "btrfs" in myfmt:
                     chk = '0'
+                    self.settings.set('btrfs', True)
                 else:
                     chk = '1'
                 opts = "rw,relatime,data=ordered"
@@ -936,8 +939,9 @@ class InstallationProcess(multiprocessing.Process):
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
-                if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
-                    (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
+                if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) \
+                        and not (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or
+                                 lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
                     lines[i] = default_line
                 elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
@@ -996,12 +1000,11 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
-                  '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
+                     '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
 
         self.install_bootloader_grub2_locales()
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         self.copy_bootloader_theme_files()
-
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -1091,7 +1094,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
 
         # Copy uefi shell if none exists in /boot/EFI
-        shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
+        shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
         shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
         try:
             shutil.move(shell_src, shell_dst)
@@ -1114,7 +1117,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir_src = os.path.join(self, "grub2-theme/Antergos-Default")
+        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
         theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/")
         try:
             shutil.move(theme_dir_src, theme_dir_dst)
@@ -1191,7 +1194,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Runs mkinitcpio """
         # Add lvm and encrypt hooks if necessary
 
-        hooks = [ "base", "udev", "autodetect", "modconf", "block" ]
+        hooks = ["base", "udev", "autodetect", "modconf", "block"]
         modules = []
 
         # It is important that the encrypt hook comes before the filesystems hook
@@ -1199,12 +1202,14 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("use_luks"):
             hooks.append("encrypt")
-            modules.extend([ "dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512" ])
+            modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512"])
 
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
-
-        hooks.extend([ "filesystems", "keyboard", "fsck" ])
+        if self.settings.get('btrfs'):
+            hooks.extend(["filesystems", "keyboard"])
+        else:
+            hooks.extend(["filesystems", "keyboard", "fsck"])
 
         self.set_mkinitcpio_hooks_and_modules(hooks, modules)
 
@@ -1305,8 +1310,8 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
 
-        sessions = { 'gnome':'gnome', 'cinnamon':'cinnamon', 'razor':'razor-session', 'openbox':'openbox-session',
-            'xfce':'startxfce4', 'kde':'kde-plasma', 'mate':'mate' }
+        sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox-session',
+                    'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate'}
 
         if self.desktop_manager == 'lightdm':
             # Systems with LightDM as Desktop Manager
@@ -1425,7 +1430,7 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
         # Copy important /etc config files to target system
-        files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]
+        files = ["/etc/pacman.conf", "/etc/yaourtrc"]
 
         for path in files:
             try:
@@ -1441,9 +1446,9 @@ class InstallationProcess(multiprocessing.Process):
 
         # Enable services
         if desktop != "nox":
-            self.enable_services([ self.desktop_manager, "ModemManager" ])
+            self.enable_services([self.desktop_manager, "ModemManager"])
 
-        self.enable_services([ self.network_manager ])
+        self.enable_services([self.network_manager])
 
         # Check if we are installed in vbox and configure accordingly.
         # TODO: This isnt working, why?
