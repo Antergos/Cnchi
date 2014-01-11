@@ -231,22 +231,26 @@ kde_settings() {
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-        mkdir -p ${DESTDIR}/tmp
-        wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
-        unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-        cd ${DESTDIR}/tmp/kde-setup-master
-        usr_old="dustin"
-        grep -rl ${usr_old} . | xargs sed -i s@${usr_old}@${USER_NAME}@g
-        cd ${DESTDIR}/tmp/kde-setup-master
-        cp -R home ${DESTDIR}
-        cp -R usr ${DESTDIR}
-        chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
+	cd /tmp
+    wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
+    unzip /tmp/master.zip
+    cd kde-setup-master
+    usr_old=dustin
+    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
+    cd /tmp/kde-setup-master
+    mv home/user home/${USER_NAME}
+    cp -R home ${DESTDIR}
+    cp -R usr ${DESTDIR}
+    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
 
-	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.icons ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.local ${DESTDIR}/etc/skel
+	# Set Root environment
+	cd /tmp/kde-setup-master
+	usr_old=${USER_NAME}
+	usr_new=root
+    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${usr_new}|g"
+    cd /tmp/kde-setup-master
+    mv home/${USER_NAME} home/root
+    cp -R home/root ${DESTDIR}
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update

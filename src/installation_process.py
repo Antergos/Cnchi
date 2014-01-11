@@ -1028,7 +1028,7 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch_2 = "IA32"
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
-        
+
         if not os.path.exists(grub_d_dir):
             os.makedirs(grub_d_dir)
 
