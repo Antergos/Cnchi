@@ -109,7 +109,7 @@ class BootLoader(object):
             bootloader_type = ""
         else:
             # Guess our bootloader type
-            if os.path.exists("/sys/firmware/efi/systab"):
+            if os.path.exists("/sys/firmware/efi/efivars"):
                 bootloader_type = "UEFI_x86_64"
             else:
                 bootloader_type = "GRUB2"
