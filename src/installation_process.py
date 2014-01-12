@@ -546,15 +546,15 @@ class InstallationProcess(multiprocessing.Process):
 
             logging.debug("Added %s graphics drivers to the installation" % self.card)
 
-        # Get packages needed for detected hardware
-        try:
-            import hardware.hardware as hardware
-            hardware_install = hardware.HardwareInstall()
-            self.packages.extend(hardware_install.get_packages())
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except:
-            logging.warning(_("Unknown error in hardware module."))
+        # # Get packages needed for detected hardware
+        # try:
+        #     import hardware.hardware as hardware
+        #     hardware_install = hardware.HardwareInstall()
+        #     self.packages.extend(hardware_install.get_packages())
+        # except ImportError:
+        #     logging.warning(_("Can't import hardware module."))
+        # except:
+        #     logging.warning(_("Unknown error in hardware module."))
 
         # Add filesystem packages
 
@@ -745,7 +745,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars"]
+        special_dirs = ["dev/pts", "sys/firmware/efi/efivars", "sys", "proc", "dev"]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -1595,15 +1595,15 @@ class InstallationProcess(multiprocessing.Process):
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
 
-        # Configure detected hardware
-        try:
-            import hardware.hardware as hardware
-            hardware_install = hardware.HardwareInstall()
-            hardware_install.post_install(self.dest_dir)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except:
-            logging.warning(_("Unknown error in hardware module."))
+        # # Configure detected hardware
+        # try:
+        #     import hardware.hardware as hardware
+        #     hardware_install = hardware.HardwareInstall()
+        #     hardware_install.post_install(self.dest_dir)
+        # except ImportError:
+        #     logging.warning(_("Can't import hardware module."))
+        # except:
+        #     logging.warning(_("Unknown error in hardware module."))
 
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
