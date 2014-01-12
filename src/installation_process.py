@@ -556,7 +556,7 @@ class InstallationProcess(multiprocessing.Process):
         except:
             logging.warning(_("Unknown error in hardware module."))
 
-        Add filesystem packages
+        # Add filesystem packages
 
         self.queue_event('debug', _("Adding filesystem packages"))
 
