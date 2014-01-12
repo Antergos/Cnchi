@@ -908,7 +908,7 @@ class InstallationProcess(multiprocessing.Process):
 
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
-        elif bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+        else:
             self.install_bootloader_grub2_efi(bootloader)
 
     def modify_grub_default(self):
