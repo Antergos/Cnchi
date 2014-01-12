@@ -233,7 +233,7 @@ kde_settings() {
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
     wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
-    unzip /tmp/master.zip
+    unzip -qq /tmp/master.zip
     cd kde-setup-master
     usr_old=dustin
     grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
@@ -245,9 +245,9 @@ kde_settings() {
 
 	# Set Root environment
 	cd /tmp/kde-setup-master
-	usr_old=${USER_NAME}
+	usr_nm=${USER_NAME}
 	usr_new=root
-    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${usr_new}|g"
+    grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
     cd /tmp/kde-setup-master
     mv home/${USER_NAME} home/root
     cp -R home/root ${DESTDIR}

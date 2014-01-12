@@ -745,12 +745,18 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
 
-        special_dirs = ["sys", "proc", "dev"]
+        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars"]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             try:
-                subprocess.check_call(["umount", "-l", mydir])
+                subprocess.check_call(["umount", mydir])
+            except subprocess.CalledProcessError as err:
+                logging.error(err)
+                try:
+                    subprocess.check_call(["umount", "-l", mydir])
+                except:
+                    self.queue_event('warning', _("Unable to umount %s") % mydir)
             except:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
 
@@ -1456,7 +1462,7 @@ class InstallationProcess(multiprocessing.Process):
         # Check if we are installed in vbox and configure accordingly.
         # TODO: This isnt working, why?
         modules_load = "/install/etc/modules-load.d/vbox.conf"
-        if "virtualbox" in self.card:
+        if self.card == "virtualbox":
             with open(modules_load, "x") as vbox_conf:
                 line = 'vboxsf'
                 vbox_conf.write(line)
@@ -1578,6 +1584,11 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
                                username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
 
+        # Prepare default grub file before running grub-install
+        if self.settings.get('install_bootloader'):
+            logging.debug(_("Configuring /etc/default/grub."))
+            self.modify_grub_default()
+
         # Set lightdm config including autologin if selected
         self.set_display_manager()
 
@@ -1599,11 +1610,6 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Encrypting user home dir..."))
             encfs.setup(username, self.dest_dir)
             self.queue_event('debug', _("User home dir encrypted"))
-
-        # Prepare default grub file before running grub-install
-        if self.settings.get('install_bootloader'):
-            logging.debug(_("Configuring /etc/default/grub."))
-            self.modify_grub_default()
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('install_bootloader'):
