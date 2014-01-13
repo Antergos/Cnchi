@@ -232,6 +232,7 @@ kde_settings() {
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
+	rm -R ${DESTDIR}/usr/share/apps/desktoptheme/slim-glow/lancelot
     wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -o -qq /tmp/master.zip
     cd kde-setup-master
@@ -251,6 +252,7 @@ kde_settings() {
     cd /tmp/kde-setup-master
     mv home/${USER_NAME} home/root
     cp -R home/root ${DESTDIR}
+    chroot ${DESTDIR} ln -s /home/root/.gtkrc-2.0 /home/root/.gtkrc-2.0-kde4
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update
