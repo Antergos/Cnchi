@@ -37,14 +37,13 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as etree
 import encfs
-import auto_partition
+from installation import auto_partition
 import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
-
 
 class InstallError(Exception):
     """ Exception class called upon an installer error """

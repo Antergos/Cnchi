@@ -28,7 +28,8 @@ import os
 import sys
 import canonical.misc as misc
 import logging
-import installation_process
+#import installation_process
+from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed
 try:

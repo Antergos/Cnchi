@@ -37,7 +37,7 @@ import parted3.fs_module as fs
 import parted3.lvm as lvm
 import parted3.used_space as used_space
 
-import installation_process
+from installation import process as installation_process
 import show_message as show
 
 _next_page = "timezone"

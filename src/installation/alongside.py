@@ -47,7 +47,7 @@ sys.path.insert(0, parted_dir)
 import parted3.partition_module as pm
 import parted3.fs_module as fs
 
-import installation_process
+from installation import process as installation_process
 
 _next_page = "timezone"
 _prev_page = "installation_ask"
