@@ -4,6 +4,8 @@ Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
 
 Usage: sudo -E cnchi.py
 
+To create logs to help debug problems: sudo -E cnchi.py -dv
+
 ## Dependencies
 
  * gtk 3
