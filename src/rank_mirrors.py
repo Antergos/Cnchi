@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Sorts mirrorlist to use the closest mirrors first """
+""" Creates mirrorlist sorted by both latest updates and fastest connection """
 
 import threading
 import subprocess
@@ -30,12 +30,12 @@ import os
 import canonical.misc as misc
 
 class AutoRankmirrorsThread(threading.Thread):
-    """ Thread class that searches the closest mirrors available """
+    """ Thread class that downloads and sorts the mirrorlist """
     def __init__(self):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
-        self.rankmirrors_script = "/usr/share/cnchi/scripts/rankmirrors-script"
+        self.reflector_script = "/usr/share/cnchi/scripts/reflector.sh"
 
     def run(self):
         """ Run thread """
@@ -44,13 +44,13 @@ class AutoRankmirrorsThread(threading.Thread):
         while not misc.has_connection():
             time.sleep(4)  # Delay
 
-        if not os.path.exists(self.rankmirrors_script):
-            logging.warning(_("Can't find rank mirrors script"))
+        if not os.path.exists(self.reflector_script):
+            logging.warning(_("Can't find reflector script"))
             return
 
         # Run rankmirrors command
         try:
-            self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/rankmirrors-script"]).pid
+            self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/reflector.sh"]).pid
         except subprocess.CalledProcessError as err:
-            logging.error(_("Couldn't execute auto mirroring selection"))
+            logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(err)

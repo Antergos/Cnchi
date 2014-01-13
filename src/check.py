@@ -174,7 +174,7 @@ class Check(Gtk.Box):
         self.forward_button.set_sensitive(True)
 
         if not self.testing:
-            # Launch rankmirrors script to determine the 5 fastest mirrors
+            # Launch reflector script to determine the 10 fastest mirrors
             self.thread = AutoRankmirrorsThread()
             self.thread.start()
 

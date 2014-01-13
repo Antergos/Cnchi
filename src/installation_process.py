@@ -45,15 +45,18 @@ import pacman.pac as pac
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 
+
 class InstallError(Exception):
     """ Exception class called upon an installer error """
     def __init__(self, value):
         """ Initialize exception class """
         super().__init__(value)
         self.value = value
+
     def __str__(self):
         """ Returns exception message """
         return repr(self.value)
+
 
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
@@ -69,11 +72,11 @@ class InstallationProcess(multiprocessing.Process):
 
         # Save how we have been called
         # We need this in case we have to retry the installation
-        parameters = {'mount_devices' : mount_devices,
-         'fs_devices' : fs_devices,
-         'ssd' : ssd,
-         'alternate_package_list' : alternate_package_list,
-         'blvm': blvm }
+        parameters = {'mount_devices': mount_devices,
+                      'fs_devices': fs_devices,
+                      'ssd': ssd,
+                      'alternate_package_list': alternate_package_list,
+                      'blvm': blvm}
         self.settings.set('installer_thread_call', parameters)
 
         # This flag tells us if there is a lvm partition (from advanced install)
@@ -253,7 +256,6 @@ class InstallationProcess(multiprocessing.Process):
         # If pacman was stoped and /var is in another partition than root
         # (so as to be able to resume install), database lock file will still be in place.
         # We must delete it or this new installation will fail
-
         db_lock = os.path.join(self.dest_dir, "var/lib/pacman/db.lck")
         if os.path.exists(db_lock):
             with misc.raised_privileges():
@@ -282,9 +284,9 @@ class InstallationProcess(multiprocessing.Process):
                 self.download_packages()
                 self.queue_event('debug', _('Packages downloaded.'))
 
-            cache_dir = self.settings.get("cache")
-            if len(cache_dir) > 0:
-                self.copy_cache_files(cache_dir)
+
+            # if len(cache_dir) > 0:
+            #     self.copy_cache_files(cache_dir)
 
             self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
@@ -301,13 +303,16 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err)
             self.queue_fatal_event(err.value)
             all_ok = False
-        except:
-            # unknown error
-            err = 'Unknown Error'
-            logging.error(err)
-            self.running = False
-            self.error = True
-            all_ok = False
+        except Exception as err:
+            try:
+                logging.debug('Exception: %s. Trying to continue.' % err)
+                all_ok = True
+                pass
+            except Exception as err:
+                logging.debug('Unknown Error: %s. Unable to continue.' % err)
+                self.running = False
+                self.error = True
+                all_ok = False
 
         if all_ok is False:
             return False
@@ -343,6 +348,8 @@ class InstallationProcess(multiprocessing.Process):
 
         # TODO: Instead of hardcoding pacman.conf, we could use an external file
 
+        cache_dir = self.settings.get("cache")
+
         with open("/tmp/pacman.conf", "w") as tmp_file:
             tmp_file.write("[options]\n")
             tmp_file.write("Architecture = auto\n")
@@ -350,13 +357,13 @@ class InstallationProcess(multiprocessing.Process):
 
             tmp_file.write("RootDir = %s\n" % self.dest_dir)
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
-            tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
-            # TODO: DO NOT COPY XZ FILES, INSTEAD ADD CACHE DIR HERE
-            # ¿?
-            #tmp_file.write("CacheDir = /packages/core-%s/pkg\n" % self.arch)
-            #tmp_file.write("CacheDir = /packages/core-any/pkg\n\n")
+            if len(cache_dir) > 0:
+                tmp_file.write("CacheDir = %s\n" % cache_dir)
+            else:
+                tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
+
+            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
 
             tmp_file.write("# Repositories\n\n")
 
@@ -412,7 +419,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
-        dirs = [ "var/cache/pacman/pkg", "var/lib/pacman" ]
+        dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
 
         for pacman_dir in dirs:
             mydir = os.path.join(self.dest_dir, pacman_dir)
@@ -520,22 +527,27 @@ class InstallationProcess(multiprocessing.Process):
                 for child in root.iter('virtualbox'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('virtualbox')
 
             if "vmware" in graphics:
                 for child in root.iter('vmware'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('vmware')
 
             if "via " in graphics:
                 for child in root.iter('via'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
+                self.card.append('via')
 
             # Add xorg-drivers group if cnchi can't figure it out
             # the graphic card driver.
-            if graphics not in ('ati ', 'nvidia', 'intel', 'virtualbox' \
-                                'vmware', 'via '):
+            if self.card is None:
                 self.packages.append('xorg-drivers')
+                self.card.append('xorg')
+
+            logging.debug("Added %s graphics drivers to the installation" % self.card)
 
         # Get packages needed for detected hardware
         try:
@@ -544,6 +556,8 @@ class InstallationProcess(multiprocessing.Process):
             self.packages.extend(hardware_install.get_packages())
         except ImportError:
             logging.warning(_("Can't import hardware module."))
+        except Exception as err:
+            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
 
         # Add filesystem packages
 
@@ -656,7 +670,7 @@ class InstallationProcess(multiprocessing.Process):
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
                 # There're some English variants available but not all of them.
-                lang_packs = [ 'en-GB', 'en-US', 'en-ZA' ]
+                lang_packs = ['en-GB', 'en-US', 'en-ZA']
                 locale = self.settings.get('locale').split('.')[0]
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
@@ -674,9 +688,9 @@ class InstallationProcess(multiprocessing.Process):
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
-        process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE, shell=True)
+        process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
         process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
-                                    stdin=process1.stdout, stdout=subprocess.PIPE, shell=True)
+                                    stdin=process1.stdout, stdout=subprocess.PIPE)
         process1.stdout.close()
         out, err = process2.communicate()
         return out.decode().lower()
@@ -700,7 +714,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs already mounted."))
             return
 
-        special_dirs = [ "sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars" ]
+        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars"]
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             if not os.path.exists(mydir):
@@ -721,9 +735,10 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
-        efivar = "/sys/firmware/efi/efivars"
-        mydir = os.path.join(self.dest_dir, efivar[1:])
-        subprocess.check_call(["mount", "-o", "bind", efivar, mydir])
+        efivars = "/sys/firmware/efi/efivars"
+        if os.path.exists(efivars):
+            mydir = os.path.join(self.dest_dir, efivars[1:])
+            subprocess.check_call(["mount", "-o", "bind", efivars, mydir])
 
         self.special_dirs_mounted = True
 
@@ -733,13 +748,22 @@ class InstallationProcess(multiprocessing.Process):
         if not self.special_dirs_mounted:
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
-
-        special_dirs = [ "sys", "proc", "dev" ]
+        efivars = "/sys/firmware/efi/efivars"
+        if os.path.exists(efivars):
+            special_dirs = ["dev/pts", "sys/firmware/efi/efivars", "sys", "proc", "dev"]
+        else:
+            special_dirs = ["dev/pts", "sys", "proc", "dev"]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             try:
-                subprocess.check_call(["umount", "-l", mydir])
+                subprocess.check_call(["umount", mydir])
+            except subprocess.CalledProcessError as err:
+                logging.error(err)
+                try:
+                    subprocess.check_call(["umount", "-l", mydir])
+                except:
+                    self.queue_event('warning', _("Unable to umount %s") % mydir)
             except:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
 
@@ -747,7 +771,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def chroot(self, cmd, stdin=None, stdout=None):
         """ Runs command inside the chroot """
-        run = [ 'chroot', self.dest_dir ]
+        run = ['chroot', self.dest_dir]
 
         for element in cmd:
             run.append(element)
@@ -852,6 +876,7 @@ class InstallationProcess(multiprocessing.Process):
                 # We do not run fsck on btrfs partitions
                 if "btrfs" in myfmt:
                     chk = '0'
+                    self.settings.set('btrfs', True)
                 else:
                     chk = '1'
                 opts = "rw,relatime,data=ordered"
@@ -886,11 +911,13 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader(self):
         """ Installs bootloader """
-        bootloader = self.settings.get('bootloader_type')
 
+        self.modify_grub_default()
+
+        bootloader = self.settings.get('bootloader_type')
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
-        elif bootloader == "UEFI_x86_64" or bootloader == "UEFI_i386":
+        else:
             self.install_bootloader_grub2_efi(bootloader)
 
     def modify_grub_default(self):
@@ -915,8 +942,10 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"' % (root_device, boot_device)
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
+                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"'
+                # % (root_device, boot_device)
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
+                               'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
             else:
                 #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
@@ -925,9 +954,10 @@ class InstallationProcess(multiprocessing.Process):
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
-                if (lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX")) and not \
-                    (lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT")):
-                    lines[i] = default_line
+                if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
+                    if not lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
+                        if not lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                            lines[i] = default_line
                 elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
                 elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
@@ -939,15 +969,15 @@ class InstallationProcess(multiprocessing.Process):
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
         else:
-
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
             for i in range(len(lines)):
                 if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                     lines[i] = theme
-                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
-                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
+                    lines[i] = kernel_cmd
+                elif lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
                     lines[i] = kernel_cmd
                 elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                     lines[i] = "GRUB_DISTRIBUTOR=Antergos"
@@ -960,12 +990,12 @@ class InstallationProcess(multiprocessing.Process):
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
 
+        logging.debug('/etc/default/grub configuration completed successfully.')
+
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_device = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_device)
-
-        self.modify_grub_default()
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
@@ -987,12 +1017,11 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
-                  '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
+                     '--target=i386-pc', '--boot-directory=/boot',  '--recheck', grub_device])
 
         self.install_bootloader_grub2_locales()
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         self.copy_bootloader_theme_files()
-        self.queue_event('info', _("Installing GRUB(2) Theme"))
 
         locale = self.settings.get("locale")
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
@@ -1018,47 +1047,85 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_2 = "IA32"
 
-        self.modify_grub_default()
+        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
-        grub_device = self.settings.get('bootloader_device')
-        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % (uefi_arch, grub_device))
+        if not os.path.exists(grub_d_dir):
+            os.makedirs(grub_d_dir)
 
-        self.chroot_mount_special_dirs()
-        subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                               '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                               '--recheck' % uefi_arch], shell=True, timeout=45)
-        self.queue_event('info', _("grub-install completed. installing grub2 locales."))
-        self.chroot_umount_special_dirs()
+        try:
+            shutil.copy2("/arch/10_linux", grub_d_dir)
+        except FileNotFoundError:
+            logging.error('10_linux File Not Found')
+            try:
+                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
+            except FileNotFoundError:
+                self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+            except FileExistsError:
+                pass
+        except FileExistsError:
+            pass
+        except:
+            logging.error('Unknown error while copying 10_linux into grub.d dir.')
+
+        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
+        try:
+            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+        except subprocess.CalledProcessError as err:
+            logging.error('Command grub-install failed. Error output: %s' % err)
+        except subprocess.TimeoutExpired:
+            logging.error('Command grub-install timed out.')
+        except:
+            logging.error('Command grub-install failed. Unknown Error.')
+
+        self.queue_event('info', _("Command grub-install completed. Installing grub2 locales."))
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
-        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT")
-        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot")
+        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
+        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/")
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
         grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
         if not os.path.exists(default_1):
             grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
             self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
-            os.mkdir(default_1)
-            shutil.copy((grub_dir_src + grub_efi_old), (default_1 + grub_efi_new))
+            os.makedirs(default_1)
+            try:
+                shutil.copy(grub_dir_src + grub_efi_old, default_1 + grub_efi_new)
+            except FileNotFoundError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+            except FileExistsError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+            except:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
         elif not os.path.exists(default_2):
             grub_efi_new = 'bootmgfw.efi'
             self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
-            os.mkdir(default_2)
-            shutil.copy((grub_dir_src + grub_efi_old), (default_2 + grub_efi_new ))
+            os.makedirs(default_2)
+            try:
+                shutil.copy(grub_dir_src + grub_efi_old, default_2 + grub_efi_new)
+            except FileNotFoundError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+            except FileExistsError:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+            except:
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
 
-        # Copy uefi shell none exists in /boot/EFI
-        shell_src = os.path.join(self, "grub2-theme/shellx64_v2.efi")
+        # Copy uefi shell if none exists in /boot/EFI
+        shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
         shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
         try:
             shutil.move(shell_src, shell_dst)
         except FileNotFoundError:
             logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
         except FileExistsError:
-            logging.warning(_("UEFI Shell already exists ar %s"), shell_dst)
+            logging.warning(_("UEFI Shell already exists at %s"), shell_dst)
+        except:
+            logging.warning(_("UEFI Shell drop-in could not be copied."))
 
-
+        # Run grub-mkconfig last
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         grub_cfg = "/boot/grub/grub.cfg"
@@ -1066,42 +1133,18 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
         self.chroot_umount_special_dirs()
-        # src = os.path.join(self.dest_dir, "boot/EFI/grub/grub.cfg")
-        # dst = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/grub.cfg")
-        # try:
-        #     shutil.copy(src, dst)
-        # except FileExistsError:
-        #     pass
-        # except FileNotFoundError:
-        #     pass
 
-        #grub_cfg = "%s/boot/grub/grub.cfg" % self.dest_dir
-        #grub_standalone = "%s/boot/efi/EFI/arch_grub/grub%s_standalone.cfg" % (self.dest_dir, spec_uefi_arch)
-        #try:
-        #    shutil.copy2(grub_cfg, grub_standalone)
-        #except FileNotFoundError:
-        #    self.queue_event('warning', _("ERROR installing GRUB(2) configuration file."))
-        #except FileExistsError:
-        #    pass
-        #
-        #self.chroot_mount_special_dirs()
-        #self.chroot(['grub-mkstandalone', \
-        #          '--directory=/usr/lib/grub/%s-efi' % uefi_arch, \
-        #          '--format=%s-efi' % uefi_arch, \
-        #          '--compression="xz"', \
-        #          '--output="/boot/efi/EFI/arch_grub/grub%s_standalone.efi' % spec_uefi_arch, \
-        #          'boot/grub/grub.cfg'])
-        #self.chroot_umount_special_dirs()
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
+        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
+        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/")
         try:
-            shutil.move("/usr/share/cnchi/grub2-theme/Antergos-Default", theme_dir)
+            shutil.move(theme_dir_src, theme_dir_dst)
         except FileNotFoundError:
-            logging.warning(_("Grub2 theme files not found"), theme_dir)
+            logging.warning(_("Grub2 theme files not found"))
         except FileExistsError:
-            logging.warning(_("Grub2 theme files already exists at %s"), theme_dir)
+            logging.warning(_("Grub2 theme files already exist."))
 
 
     def install_bootloader_grub2_locales(self):
@@ -1130,7 +1173,7 @@ class InstallationProcess(multiprocessing.Process):
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
         try:
-            shadow_password = crypt.crypt(new_password,"$6$%s$" % user)
+            shadow_password = crypt.crypt(new_password, "$6$%s$" % user)
         except:
             self.queue_event('warning', _('Error creating password hash for user %s') % user)
             return False
@@ -1171,7 +1214,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Runs mkinitcpio """
         # Add lvm and encrypt hooks if necessary
 
-        hooks = [ "base", "udev", "autodetect", "modconf", "block" ]
+        hooks = ["base", "udev", "autodetect", "modconf", "block"]
         modules = []
 
         # It is important that the encrypt hook comes before the filesystems hook
@@ -1179,12 +1222,14 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("use_luks"):
             hooks.append("encrypt")
-            modules.extend([ "dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512" ])
+            modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512"])
 
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
-
-        hooks.extend([ "filesystems", "keyboard", "fsck" ])
+        if self.settings.get('btrfs'):
+            hooks.extend(["filesystems", "keyboard"])
+        else:
+            hooks.extend(["filesystems", "keyboard", "fsck"])
 
         self.set_mkinitcpio_hooks_and_modules(hooks, modules)
 
@@ -1212,32 +1257,32 @@ class InstallationProcess(multiprocessing.Process):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    def copy_cache_files(self, cache_dir):
-        """ Copy all packages fro specified directory to install's target """
-        # Check in case user has given a wrong folder
-        if not os.path.exists(cache_dir):
-            return
-        self.queue_event('info', _('Copying xz files from cache...'))
-        dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
-        if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
-        self.copy_cache_files_progress(cache_dir, dest_dir)
-
-    def copy_cache_files_progress(self, src, dst):
-        """ Copy files updating the slides' progress bar """
-        percent = 0.0
-        items = os.listdir(src)
-
-        step = 1.0 / len(items)
-        for item in items:
-            self.queue_event("percent", percent)
-            source = os.path.join(src, item)
-            destination = os.path.join(dst, item)
-            try:
-                shutil.copy2(source, destination)
-            except (FileExistsError, shutil.Error) as err:
-                logging.warning(err)
-            percent += step
+    # def copy_cache_files(self, cache_dir):
+    #     """ Copy all packages fro specified directory to install's target """
+    #     # Check in case user has given a wrong folder
+    #     if not os.path.exists(cache_dir):
+    #         return
+    #     self.queue_event('info', _('Copying xz files from cache...'))
+    #     dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+    #     if not os.path.exists(dest_dir):
+    #         os.makedirs(dest_dir)
+    #     self.copy_cache_files_progress(cache_dir, dest_dir)
+    #
+    # def copy_cache_files_progress(self, src, dst):
+    #     """ Copy files updating the slides' progress bar """
+    #     percent = 0.0
+    #     items = os.listdir(src)
+    #
+    #     step = 1.0 / len(items)
+    #     for item in items:
+    #         self.queue_event("percent", percent)
+    #         source = os.path.join(src, item)
+    #         destination = os.path.join(dst, item)
+    #         try:
+    #             shutil.copy2(source, destination)
+    #         except (FileExistsError, shutil.Error) as err:
+    #             logging.warning(err)
+    #         percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
@@ -1285,8 +1330,8 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
 
-        sessions = { 'gnome':'gnome', 'cinnamon':'cinnamon', 'razor':'razor-session', 'openbox':'openbox-session',
-            'xfce':'startxfce4', 'kde':'kde-plasma', 'mate':'mate' }
+        sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox-session',
+                    'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate'}
 
         if self.desktop_manager == 'lightdm':
             # Systems with LightDM as Desktop Manager
@@ -1306,6 +1351,7 @@ class InstallationProcess(multiprocessing.Process):
                     if '#user-session=default' in line:
                         line = 'user-session=%s\n' % sessions[desktop]
                     lightdm_conf.write(line)
+            logging.debug('Completed LightDM Configuration')
 
         if self.desktop_manager == 'gdm':
             # Systems with GDM as Desktop Manager
@@ -1405,7 +1451,7 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
         # Copy important /etc config files to target system
-        files = [ "/etc/pacman.conf", "/etc/yaourtrc" ]
+        files = ["/etc/pacman.conf", "/etc/yaourtrc"]
 
         for path in files:
             try:
@@ -1421,20 +1467,21 @@ class InstallationProcess(multiprocessing.Process):
 
         # Enable services
         if desktop != "nox":
-            self.enable_services([ self.desktop_manager, "ModemManager" ])
+            self.enable_services([self.desktop_manager, "ModemManager"])
 
-        self.enable_services([ self.network_manager ])
+        self.enable_services([self.network_manager])
 
         # Check if we are installed in vbox and configure accordingly.
         # TODO: This isnt working, why?
-        vbox_chk = self.get_graphics_card()
         modules_load = "/install/etc/modules-load.d/vbox.conf"
-        if "virtualbox" in vbox_chk:
-            with open(modules_load, "x") as vbox_conf:
-                line = 'vboxsf'
-                vbox_conf.write(line)
-            self.enable_services(["vboxservice"])
-
+        if self.card == "virtualbox":
+            try:
+                with open(modules_load, "x") as vbox_conf:
+                    line = 'vboxsf'
+                    vbox_conf.write(line)
+                self.enable_services(["vboxservice"])
+            except:
+                logging.error('Writing vbox.conf to modules-load.d failed.')
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
@@ -1470,7 +1517,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
 
-        if vbox_chk == "virtualbox":
+        if self.card is "virtualbox":
             default_groups = 'lp,video,network,storage,wheel,audio,vboxusers'
         else:
             default_groups = 'lp,video,network,storage,wheel,audio'
@@ -1549,12 +1596,16 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
-        subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
-                               username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
+        try:
+            subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
+                                   keyboard_layout, keyboard_variant], timeout=60)
+            logging.debug('Post install script completed successfully.')
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+        except subprocess.TimeoutExpired as err:
+            logging.error(err)
 
         # Set lightdm config including autologin if selected
-        # Warning: In openbox "desktop", the post-install script writes /etc/slim.conf
-        # so we always have to call set_display_manger AFTER the post-install script call.
         self.set_display_manager()
 
         # Configure user features (third party software, libreoffice language pack, ...)
@@ -1567,6 +1618,8 @@ class InstallationProcess(multiprocessing.Process):
             hardware_install.post_install(self.dest_dir)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
+        except Exception as err:
+            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
 
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
@@ -1578,8 +1631,5 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            # self.queue_event('debug', _('Installing grub2 theme...'))
-            # self.copy_bootloader_theme_files()
-            # self.install_bootloader_theme()
 
 

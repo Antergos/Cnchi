@@ -225,34 +225,34 @@ razor_settings(){
 }
 
 kde_settings() {
-	
-	# Move kde default Background
-	cd ${DESTDIR}/usr/share/wallpapers/Elarun/contents/images/
-	mv 2560x1600.png ../old-default.png
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-        mkdir -p ${DESTDIR}/tmp
-        wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/lots0logs/kde-setup/archive/master.zip"
-        unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-        cd ${DESTDIR}/tmp/kde-setup-master
-        cp -R usr ${DESTDIR}
-        usr_old="dustin"
-        grep -rl ${usr_old} . | xargs sed -i s@${usr_old}@${USER_NAME}@g
-        mv home/user home/${USER_NAME}
-        cp -R home ${DESTDIR}
-        chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
-        tar -xvf ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
-        rm ${DESTDIR}/home/$USER_NAME/.icons/cursor.gz
+	cd /tmp
+	rm -R ${DESTDIR}/usr/share/apps/desktoptheme/slim-glow/lancelot
+    wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
+    unzip -o -qq /tmp/master.zip
+    cd kde-setup-master
+    usr_old=dustin
+    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
+    cd /tmp/kde-setup-master
+    mv home/user home/${USER_NAME}
+    cp -R home ${DESTDIR}
+    cp -R usr ${DESTDIR}
+    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
 
-	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.kde4 ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.icons ${DESTDIR}/etc/skel
-	cp -R ${DESTDIR}/home/${USER_NAME}/.local ${DESTDIR}/etc/skel
+	# Set Root environment
+	cd /tmp/kde-setup-master
+	usr_nm=${USER_NAME}
+	usr_new=root
+    grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
+    cd /tmp/kde-setup-master
+    mv home/${USER_NAME} home/root
+    cp -R home/root ${DESTDIR}
+    chroot ${DESTDIR} ln -s /home/root/.gtkrc-2.0 /home/root/.gtkrc-2.0-kde4
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update
@@ -295,6 +295,34 @@ nox_settings(){
 	echo "Done"
 }
 
+desktop_files() {
+    cat << EOF > ${DESTDIR}/usr/share/applications/antergos-wiki.desktop
+[Desktop Entry]
+Type=Application
+Name=Antergos Wiki
+GenericName=Online Documentation
+Comment=Online documention for Antergos Users.
+Exec=xdg-open http://wiki.antergos.com/
+Icon=info
+Terminal=false
+StartupNotify=false
+Categories=Application;System;Documentation;
+EOF
+
+    cat << EOF > ${DESTDIR}/usr/share/applications/antergos-forum.desktop
+[Desktop Entry]
+Type=Application
+Name=Antergos Forum
+GenericName=User Support
+Comment=User support and discussion forum.
+Exec=xdg-open http://forum.antergos.com/
+Icon=help
+Terminal=false
+StartupNotify=false
+Categories=Application;System;Documentation;
+EOF
+
+}
 postinstall(){
 	USER_NAME=$1
 	DESTDIR=$2
@@ -318,6 +346,9 @@ postinstall(){
 	# Configure touchpad. Skip with base installs
 	if [[ $DESKTOP != 'nox' ]];then
 		set_synaptics
+
+		# Create desktop files for Wiki and Forum.
+	    desktop_files
 	fi
 
 	# Set Antergos name in filesystem files
