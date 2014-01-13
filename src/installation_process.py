@@ -1331,7 +1331,7 @@ class InstallationProcess(multiprocessing.Process):
         username = self.settings.get('username')
 
         sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox-session',
-                    'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate'}
+                    'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
 
         if self.desktop_manager == 'lightdm':
             # Systems with LightDM as Desktop Manager
@@ -1423,20 +1423,25 @@ class InstallationProcess(multiprocessing.Process):
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
 
-        # TODO: Test copy profile. Code below is not finished.
-
-        #if self.network_manager == 'netctl':
-        #    if misc.is_wireless_enabled():
-        #        profile = 'wireless-wpa'
-        #    else:
-        #        profile = 'ethernet-dhcp'
-        #
-        #    self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
-        #
-        #    src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
-        #    dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
-        #    shutil.copy(src_path, dst_path)
-        #    self.chroot(['netctl', 'enable', profile])
+        # Copy network profile when using netctl (and not networkmanager)
+        # netctl is used in the noX desktop option
+        if self.network_manager == 'netctl':
+            if misc.is_wireless_enabled():
+                # TODO: We should port wifi-menu from netctl package here. Just copying the default profile
+                # is NOT an elegant solution
+                profile = 'wireless-wpa'
+            else:
+                # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
+                # edited by himself. Maybe we could ease this process?
+                profile = 'ethernet-dhcp'
+        
+            self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
+            src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
+            dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
+            shutil.copy(src_path, dst_path)
+            # Enable our profile
+            self.chroot(['netctl', 'enable', profile])
+            logging.warning('warning', _('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
 
         self.queue_event('debug', _('Network configuration copied.'))
 
@@ -1472,13 +1477,14 @@ class InstallationProcess(multiprocessing.Process):
         self.enable_services([self.network_manager])
 
         # Check if we are installed in vbox and configure accordingly.
+        # This should be done in the hardware module when it's finished.
         # TODO: This isnt working, why?
-        modules_load = "/install/etc/modules-load.d/vbox.conf"
         if self.card == "virtualbox":
+            modules_load = "%s/etc/modules-load.d/vbox.conf" % self.dest_dir
             try:
-                with open(modules_load, "x") as vbox_conf:
-                    line = 'vboxsf'
-                    vbox_conf.write(line)
+                with open(modules_load, "w") as vbox_conf:
+                    vbox_conf.write('# Added by Cnchi - Antergos Installer\n')
+                    vbox_conf.write('vboxsf\n')
                 self.enable_services(["vboxservice"])
             except:
                 logging.error('Writing vbox.conf to modules-load.d failed.')
@@ -1622,6 +1628,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Unknown error in hardware module. Output: %s" % err))
 
         # Encrypt user's home directory if requested
+        # TODO: Test this!
         if self.settings.get('encrypt_home'):
             self.queue_event('debug', _("Encrypting user home dir..."))
             encfs.setup(username, self.dest_dir)

@@ -24,7 +24,7 @@
 
 # Enabled desktops
 
-DESKTOPS_DEV = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
+DESKTOPS_DEV = [ "cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
 DESKTOPS = [ "cinnamon", "gnome", "kde", "nox", "openbox", "razor", "xfce" ]
 
 
@@ -39,10 +39,10 @@ NAMES = {
     'enlightenment' : "Enlightenment (e17)",
     'kde' : "KDE",
     'razor' : "Razor-qt",
-    'mate' : "MATE" }
+    'mate' : "MATE"}
 
 LIBS = {
-    'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate"],
+    'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
     'qt' : ["norazor", "kde"]}
 
 ALL_FEATURES = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
@@ -53,6 +53,7 @@ FEATURES = {
     'gnome' : [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ],
     'kde' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'mate' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
+    'enlightenment' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'nox' : [ "aur", "bluetooth", "cups", "fonts", "firewall" ],
     'openbox' : [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ],
     'razor' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],

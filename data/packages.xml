@@ -251,6 +251,21 @@
         <pkgname>zukitwo-themes</pkgname>
     </mate_desktop>
 
+    <enlightenment_desktop>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
+        <pkgname>gksu</pkgname>
+        <pkgname>gvfs-smb</pkgname>
+        <pkgname>hotot-gtk3</pkgname>
+        <pkgname>enlightenment17</pkgname>        
+        <pkgname>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>xdg-user-dirs</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>zukitwo-themes</pkgname>
+    </enlightenment_desktop>
+
     <openbox_desktop>
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
