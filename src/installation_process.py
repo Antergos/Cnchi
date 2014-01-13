@@ -305,13 +305,11 @@ class InstallationProcess(multiprocessing.Process):
             all_ok = False
         except Exception as err:
             try:
-                logging.debug(err)
-                logging.debug('Exception has occurred. Trying to continue.')
+                logging.debug('Exception: %s. Trying to continue.' % err)
                 all_ok = True
                 pass
             except Exception as err:
-                logging.debug(err)
-                logging.debug('Unknown Error. Unable to continue.')
+                logging.debug('Unknown Error: %s. Unable to continue.' % err)
                 self.running = False
                 self.error = True
                 all_ok = False
@@ -551,15 +549,15 @@ class InstallationProcess(multiprocessing.Process):
 
             logging.debug("Added %s graphics drivers to the installation" % self.card)
 
-        # # Get packages needed for detected hardware
-        # try:
-        #     import hardware.hardware as hardware
-        #     hardware_install = hardware.HardwareInstall()
-        #     self.packages.extend(hardware_install.get_packages())
-        # except ImportError:
-        #     logging.warning(_("Can't import hardware module."))
-        # except:
-        #     logging.warning(_("Unknown error in hardware module."))
+        # Get packages needed for detected hardware
+        try:
+            import hardware.hardware as hardware
+            hardware_install = hardware.HardwareInstall()
+            self.packages.extend(hardware_install.get_packages())
+        except ImportError:
+            logging.warning(_("Can't import hardware module."))
+        except Exception as err:
+            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
 
         # Add filesystem packages
 
@@ -1069,7 +1067,7 @@ class InstallationProcess(multiprocessing.Process):
         except:
             logging.error('Unknown error while copying 10_linux into grub.d dir.')
 
-        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % uefi_arch)
+        self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
         try:
             subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
@@ -1613,15 +1611,15 @@ class InstallationProcess(multiprocessing.Process):
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
 
-        # # Configure detected hardware
-        # try:
-        #     import hardware.hardware as hardware
-        #     hardware_install = hardware.HardwareInstall()
-        #     hardware_install.post_install(self.dest_dir)
-        # except ImportError:
-        #     logging.warning(_("Can't import hardware module."))
-        # except:
-        #     logging.warning(_("Unknown error in hardware module."))
+        # Configure detected hardware
+        try:
+            import hardware.hardware as hardware
+            hardware_install = hardware.HardwareInstall()
+            hardware_install.post_install(self.dest_dir)
+        except ImportError:
+            logging.warning(_("Can't import hardware module."))
+        except Exception as err:
+            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
 
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
