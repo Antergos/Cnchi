@@ -546,15 +546,15 @@ class InstallationProcess(multiprocessing.Process):
 
             logging.debug("Added %s graphics drivers to the installation" % self.card)
 
-        # Get packages needed for detected hardware
-        try:
-            import hardware.hardware as hardware
-            hardware_install = hardware.HardwareInstall()
-            self.packages.extend(hardware_install.get_packages())
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except:
-            logging.warning(_("Unknown error in hardware module."))
+        # # Get packages needed for detected hardware
+        # try:
+        #     import hardware.hardware as hardware
+        #     hardware_install = hardware.HardwareInstall()
+        #     self.packages.extend(hardware_install.get_packages())
+        # except ImportError:
+        #     logging.warning(_("Can't import hardware module."))
+        # except:
+        #     logging.warning(_("Unknown error in hardware module."))
 
         # Add filesystem packages
 
@@ -732,9 +732,10 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
-        efivar = "/sys/firmware/efi/efivars"
-        mydir = os.path.join(self.dest_dir, efivar[1:])
-        subprocess.check_call(["mount", "-o", "bind", efivar, mydir])
+        efivars = "/sys/firmware/efi/efivars"
+        if os.path.exists(efivars):
+            mydir = os.path.join(self.dest_dir, efivars[1:])
+            subprocess.check_call(["mount", "-o", "bind", efivars, mydir])
 
         self.special_dirs_mounted = True
 
@@ -744,8 +745,11 @@ class InstallationProcess(multiprocessing.Process):
         if not self.special_dirs_mounted:
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
-
-        special_dirs = ["dev/pts", "sys/firmware/efi/efivars", "sys", "proc", "dev"]
+        efivars = "/sys/firmware/efi/efivars"
+        if os.path.exists(efivars):
+            special_dirs = ["dev/pts", "sys/firmware/efi/efivars", "sys", "proc", "dev"]
+        else:
+            special_dirs = ["dev/pts", "sys", "proc", "dev"]
 
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
@@ -904,8 +908,10 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader(self):
         """ Installs bootloader """
-        bootloader = self.settings.get('bootloader_type')
+        
+        self.modify_grub_default()
 
+        bootloader = self.settings.get('bootloader_type')
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
         else:
@@ -1046,6 +1052,7 @@ class InstallationProcess(multiprocessing.Process):
         try:
             shutil.copy2("/arch/10_linux", grub_d_dir)
         except FileNotFoundError:
+            logging.error('10_linux File Not Found')
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
@@ -1054,6 +1061,8 @@ class InstallationProcess(multiprocessing.Process):
                 pass
         except FileExistsError:
             pass
+        except:
+            logging.error('Unknown error while copying 10_linux into grub.d dir.')
 
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader in %s") % uefi_arch)
         try:
@@ -1061,11 +1070,11 @@ class InstallationProcess(multiprocessing.Process):
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
         except subprocess.CalledProcessError as err:
-            logging.ERROR('Command grub-install failed. Error output: %s' % err)
+            logging.error('Command grub-install failed. Error output: %s' % err)
         except subprocess.TimeoutExpired:
-            logging.ERROR('Command grub-install timed out.')
+            logging.error('Command grub-install timed out.')
         except:
-            logging.ERROR('Command grub-install failed. Unknown Error.')
+            logging.error('Command grub-install failed. Unknown Error.')
 
         self.queue_event('info', _("Command grub-install completed. Installing grub2 locales."))
         self.install_bootloader_grub2_locales()
@@ -1463,10 +1472,13 @@ class InstallationProcess(multiprocessing.Process):
         # TODO: This isnt working, why?
         modules_load = "/install/etc/modules-load.d/vbox.conf"
         if self.card == "virtualbox":
-            with open(modules_load, "x") as vbox_conf:
-                line = 'vboxsf'
-                vbox_conf.write(line)
-            self.enable_services(["vboxservice"])
+            try:
+                with open(modules_load, "x") as vbox_conf:
+                    line = 'vboxsf'
+                    vbox_conf.write(line)
+                self.enable_services(["vboxservice"])
+            except:
+                logging.error('Writing vbox.conf to modules-load.d failed.')
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:
@@ -1581,13 +1593,14 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', _("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
-        subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
-                               username, self.dest_dir, self.desktop, keyboard_layout, keyboard_variant])
-
-        # Prepare default grub file before running grub-install
-        if self.settings.get('install_bootloader'):
-            logging.debug(_("Configuring /etc/default/grub."))
-            self.modify_grub_default()
+        try:
+            subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
+                                   keyboard_layout, keyboard_variant], timeout=60)
+            logging.debug('Post install script completed successfully.')
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+        except subprocess.TimeoutExpired as err:
+            logging.error(err)
 
         # Set lightdm config including autologin if selected
         self.set_display_manager()
@@ -1595,15 +1608,15 @@ class InstallationProcess(multiprocessing.Process):
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
 
-        # Configure detected hardware
-        try:
-            import hardware.hardware as hardware
-            hardware_install = hardware.HardwareInstall()
-            hardware_install.post_install(self.dest_dir)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except:
-            logging.warning(_("Unknown error in hardware module."))
+        # # Configure detected hardware
+        # try:
+        #     import hardware.hardware as hardware
+        #     hardware_install = hardware.HardwareInstall()
+        #     hardware_install.post_install(self.dest_dir)
+        # except ImportError:
+        #     logging.warning(_("Can't import hardware module."))
+        # except:
+        #     logging.warning(_("Unknown error in hardware module."))
 
         # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
