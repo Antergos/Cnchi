@@ -303,13 +303,18 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err)
             self.queue_fatal_event(err.value)
             all_ok = False
-        except:
-            # unknown error
-            err = 'Unknown Error'
-            logging.error(err)
-            self.running = False
-            self.error = True
-            all_ok = False
+        except Exception as err:
+            try:
+                logging.debug(err)
+                logging.debug('Exception has occurred. Trying to continue.')
+                all_ok = True
+                pass
+            except Exception as err:
+                logging.debug(err)
+                logging.debug('Unknown Error. Unable to continue.')
+                self.running = False
+                self.error = True
+                all_ok = False
 
         if all_ok is False:
             return False
@@ -908,7 +913,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader(self):
         """ Installs bootloader """
-        
+
         self.modify_grub_default()
 
         bootloader = self.settings.get('bootloader_type')
