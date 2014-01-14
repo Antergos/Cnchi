@@ -180,8 +180,13 @@ class InstallationProcess(multiprocessing.Process):
                 self.mount_devices = auto.get_mount_devices()
                 self.fs_devices = auto.get_fs_devices()
             except subprocess.CalledProcessError as err:
-                logging.error(err.output)
-                self.queue_event('error', _("Error creating partitions and their filesystems"))
+                txt = _("Error creating partitions and their filesystems")
+                logging.error(txt)
+                cmd = _("Command %s has failed.") % err.cmd
+                logging.error(cmd)
+                out = _("Output : %s") % err.output 
+                logging.error(out)
+                self.queue_fatal_event(txt)
                 return
 
         if self.method == 'alongside':
@@ -229,8 +234,13 @@ class InstallationProcess(multiprocessing.Process):
                     self.queue_event('debug', txt)
                     subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
             except subprocess.CalledProcessError as err:
-                logging.error(err)
-                self.queue_fatal_event(_("Couldn't mount root and boot partitions"))
+                txt = _("Couldn't mount root and boot partitions")
+                logging.error(txt)
+                cmd = _("Command %s has failed") % err.cmd
+                logging.error(cmd)
+                out = _("Output : %s") % err.output 
+                logging.error(out)
+                self.queue_fatal_event(txt)
                 return False
 
         # In advanced mode, mount all partitions (root and boot are already mounted)
@@ -247,9 +257,12 @@ class InstallationProcess(multiprocessing.Process):
                         subprocess.check_call(['mount', mount_part, mount_dir])
                     except subprocess.CalledProcessError as err:
                         # We will continue as root and boot are already mounted
-                        logging.warning(err)
-                        self.queue_event('debug', _("Can't mount %s in %s") % (mount_part, mount_dir))
-
+                        txt = _("Can't mount %s in %s") % (mount_part, mount_dir)
+                        self.queue_event('warning', txt)
+                        cmd = _("Command %s has failed.") % err.cmd
+                        logging.warning(cmd)
+                        out = _("Output : %s") % err.output 
+                        logging.warning(out)
 
         # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
@@ -267,8 +280,13 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
             subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir])
         except subprocess.CalledProcessError as err:
-            logging.error(err)
-            self.queue_fatal_event(_("Can't create necessary directories on destination system"))
+            txt = _("Can't create necessary directories on destination system")
+            logging.error(txt)
+            cmd = _("Command %s has failed") % err.cmd
+            logging.error(cmd)
+            out = _("Output : %s") % err.output 
+            logging.error(out)
+            self.queue_fatal_event(txt)
             return False
 
         all_ok = True
@@ -294,30 +312,29 @@ class InstallationProcess(multiprocessing.Process):
             self.configure_system()
             self.queue_event('debug', _('System configured.'))
         except subprocess.CalledProcessError as err:
-            logging.error(err)
-            self.queue_fatal_event("CalledProcessError.output = %s" % err.output)
+            cmd = _("Command %s has failed.") % err.cmd
+            logging.error(cmd)
+            out = _("Output : %s") % err.output 
+            logging.error(out)
+            self.queue_fatal_event(cmd)
             all_ok = False
         except InstallError as err:
-            logging.error(err)
+            logging.error(err.value)
             self.queue_fatal_event(err.value)
             all_ok = False
         except Exception as err:
-            try:
-                logging.debug('Exception: %s. Trying to continue.' % err)
-                all_ok = True
-                pass
-            except Exception as err:
-                logging.debug('Unknown Error: %s. Unable to continue.' % err)
-                self.running = False
-                self.error = True
-                all_ok = False
+            # We won't catch fatal errors if we try to continue here.
+            logging.exception('Error: %s. Unable to continue.' % err)
+            all_ok = False
+
+        self.running = False
 
         if all_ok is False:
+            self.error = True
             return False
         else:
             # Installation finished successfully
-            self.queue_event("finished", _("Installation finished"))
-            self.running = False
+            self.queue_event('finished', _("Installation finished"))
             self.error = False
             return True
 
@@ -757,12 +774,16 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 subprocess.check_call(["umount", mydir])
             except subprocess.CalledProcessError as err:
-                logging.error(err)
+                # Can't unmount. Try -l to force it.
                 try:
                     subprocess.check_call(["umount", "-l", mydir])
-                except:
+                except subprocess.CalledProcessError as err:
                     self.queue_event('warning', _("Unable to umount %s") % mydir)
-            except:
+                    cmd = _("Command %s has failed.") % err.cmd
+                    logging.warning(cmd)
+                    out = _("Output : %s") % err.output 
+                    logging.warning(out)
+            except Exception as err:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
 
         self.special_dirs_mounted = False
@@ -1076,10 +1097,10 @@ class InstallationProcess(multiprocessing.Process):
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
         except subprocess.CalledProcessError as err:
-            logging.error('Command grub-install failed. Error output: %s' % err)
-        except subprocess.TimeoutExpired:
+            logging.error('Command grub-install failed. Error output: %s' % err.output)
+        except subprocess.TimeoutExpired as err:
             logging.error('Command grub-install timed out.')
-        except:
+        except Exception as err:
             logging.error('Command grub-install failed. Unknown Error.')
 
         self.queue_event('info', _("Command grub-install completed. Installing grub2 locales."))
@@ -1278,7 +1299,7 @@ class InstallationProcess(multiprocessing.Process):
     #
     #     step = 1.0 / len(items)
     #     for item in items:
-    #         self.queue_event("percent", percent)
+    #         self.queue_event('percent', percent)
     #         source = os.path.join(src, item)
     #         destination = os.path.join(dst, item)
     #         try:
@@ -1617,7 +1638,7 @@ class InstallationProcess(multiprocessing.Process):
                                    keyboard_layout, keyboard_variant], timeout=60)
             logging.debug('Post install script completed successfully.')
         except subprocess.CalledProcessError as err:
-            logging.error(err)
+            logging.error(err.output)
         except subprocess.TimeoutExpired as err:
             logging.error(err)
 
