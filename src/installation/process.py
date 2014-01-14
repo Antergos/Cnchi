@@ -1614,7 +1614,7 @@ class InstallationProcess(multiprocessing.Process):
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
-                                   keyboard_layout, keyboard_variant], timeout=60)
+                                   keyboard_layout, keyboard_variant], timeout=90)
             logging.debug('Post install script completed successfully.')
         except subprocess.CalledProcessError as err:
             logging.error(err)
@@ -1650,11 +1650,6 @@ class InstallationProcess(multiprocessing.Process):
             self.install_bootloader()
 
         # Copy installer log to the new installation (just in case something goes wrong)
-        src_path = os.path.join('/tmp/cnchi.log')
-        dst_path = os.path.join(self.dest_dir, 'var/log/cnchi.log')
-        try:
-            shutil.copy(src_path, dst_path)
-        except FileNotFoundError:
-            logging.warning(_("Can't copy the log file to the new installation"))
-        except FileExistsError:
-            pass
+        # Look at line 324, it wasn't my imagination after all!
+        logging.debug('Copying install log to /var/log.')
+        self.copy_log()
