@@ -137,7 +137,10 @@ def get_used_reiser(part):
 
     if result:
         vsize, fsize = (0, 0)
-        result = result.decode()
+
+        # Added 'replace' parameter (not tested) as it fails decoding. See issue #90
+        result = result.decode('utf-8', 'replace')
+        
         lines = result.split('\n')
         for line in lines:
             if "Count of blocks on the device" in line:
