@@ -283,7 +283,6 @@ class InstallationProcess(multiprocessing.Process):
                 self.download_packages()
                 self.queue_event('debug', _('Packages downloaded.'))
 
-
             # if len(cache_dir) > 0:
             #     self.copy_cache_files(cache_dir)
 
@@ -813,7 +812,12 @@ class InstallationProcess(multiprocessing.Process):
                 if os.path.exists(target_network):
                     continue
 
-                shutil.copy(source_network, target_network)
+                try:
+                    shutil.copy(source_network, target_network)
+                except FileNotFoundError:
+                    logging.warning(_("Can't copy network configuration files"))
+                except FileExistsError:
+                    pass
 
     def auto_fstab(self):
         """ Create /etc/fstab file """
@@ -1437,7 +1441,14 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
             src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
             dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
-            shutil.copy(src_path, dst_path)
+
+            try:
+                shutil.copy(src_path, dst_path)
+            except FileNotFoundError:
+                logging.warning(_("Can't copy network configuration profiles"))
+            except FileExistsError:
+                pass
+
             # Enable our profile
             self.chroot(['netctl', 'enable', profile])
             logging.warning('warning', _('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
@@ -1638,4 +1649,12 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
 
-
+        # Copy installer log to the new installation (just in case something goes wrong)
+        src_path = os.path.join('/tmp/cnchi.log')
+        dst_path = os.path.join(self.dest_dir, 'var/log/cnchi.log')
+        try:
+            shutil.copy(src_path, dst_path)
+        except FileNotFoundError:
+            logging.warning(_("Can't copy the log file to the new installation"))
+        except FileExistsError:
+            pass
