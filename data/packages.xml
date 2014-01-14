@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is supposed to be in antergos server -->
+<!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
 <packages>
     <!-- common to all desktops and to noX/Base -->
@@ -26,6 +26,7 @@
         <pkgname>unzip</pkgname>
         <pkgname>unrar</pkgname>
         <pkgname>usb_modeswitch</pkgname>
+        <pkgname>wget</pkgname>
         <pkgname>whois</pkgname>
         <pkgname>wireless_tools</pkgname>
         <pkgname>wpa_actiond</pkgname>
@@ -86,11 +87,7 @@
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
         <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-bad-plugins</pkgname>
-        <pkgname>gstreamer0.10-base-plugins</pkgname>
-        <pkgname>gstreamer0.10-ffmpeg</pkgname>
-        <pkgname>gstreamer0.10-good-plugins</pkgname>
-        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
@@ -102,10 +99,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>shotwell</pkgname>
-        <pkgname>telepathy-gabble</pkgname>
-        <pkgname>telepathy-salut</pkgname>
-        <pkgname>telepathy-rakia</pkgname>
-        <pkgname>telepathy-haze</pkgname>
+        <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -139,11 +133,7 @@
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
         <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-bad-plugins</pkgname>
-        <pkgname>gstreamer0.10-base-plugins</pkgname>
-        <pkgname>gstreamer0.10-ffmpeg</pkgname>
-        <pkgname>gstreamer0.10-good-plugins</pkgname>
-        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
@@ -156,10 +146,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>shotwell</pkgname>
-        <pkgname>telepathy-gabble</pkgname>
-        <pkgname>telepathy-salut</pkgname>
-        <pkgname>telepathy-rakia</pkgname>
-        <pkgname>telepathy-haze</pkgname>
+        <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -176,16 +163,14 @@
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
-        <pkgname>gstreamer0.10-bad-plugins</pkgname>
-        <pkgname>gstreamer0.10-base-plugins</pkgname>
-        <pkgname>gstreamer0.10-ffmpeg</pkgname>
-        <pkgname>gstreamer0.10-good-plugins</pkgname>
-        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
@@ -236,6 +221,9 @@
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
+        <pkgname>gst-vaapi</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>mate</pkgname>
@@ -284,11 +272,7 @@
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
         <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-bad-plugins</pkgname>
-        <pkgname>gstreamer0.10-base-plugins</pkgname>
-        <pkgname>gstreamer0.10-ffmpeg</pkgname>
-        <pkgname>gstreamer0.10-good-plugins</pkgname>
-        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>gvfs-atp</pkgname>
@@ -397,7 +381,6 @@
             <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
         <cups>
-            <!-- I removed what is automatically added by dependencies -->
             <pkgname>cups</pkgname>
             <pkgname>cups-pk-helper</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
