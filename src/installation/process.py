@@ -1123,19 +1123,19 @@ class InstallationProcess(multiprocessing.Process):
                                        '--recheck' % uefi_arch], shell=True, timeout=45)
                 break
             except subprocess.CalledProcessError as err:
-                output = err
+                output = err.output
                 if attempt < 2:
-                    logging.error('Command grub-install failed. Error output: %s. Trying again...' % err)
+                    logging.error('Command grub-install failed. Error output: %s. Trying again...' % output)
                     time.sleep(5)
             except subprocess.TimeoutExpired as err:
-                output = err
+                output = err.output
                 if attempt < 2:
                     logging.error('Command grub-install timed out. Trying again...')
                     time.sleep(5)
             except Exception as err:
-                output = err
+                output = err.output
                 if attempt < 2:
-                    logging.error('Command grub-install failed. Unknown Error: %s. Trying again...' % err)
+                    logging.error('Command grub-install failed. Unknown Error: %s. Trying again...' % output)
                     time.sleep(5)
         else:
             logging.error('Command grub-install failed second attempt. Error output: %s.' % output)
@@ -1191,6 +1191,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Generating grub.cfg"))
         locale = self.settings.get("locale")
         grub_cfg = "/boot/grub/grub.cfg"
+
         # Let's retry at least once if we get an exception.
         self.chroot_mount_special_dirs()
         for attempt in range(2):
@@ -1218,7 +1219,6 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Grub2 theme files not found"))
         except FileExistsError:
             logging.warning(_("Grub2 theme files already exist."))
-
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
