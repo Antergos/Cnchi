@@ -69,11 +69,8 @@ class Pac(object):
             self.handle.progresscb = self.cb_progress
             self.handle.logcb = self.cb_log
 
-    ###################################################################
-    # Transaction
-
     def finalize(self, t):
-        # Commit a transaction
+        """ Commit a transaction """
         try:
             t.prepare()
             t.commit()
@@ -86,7 +83,7 @@ class Pac(object):
         return True
 
     def init_transaction(self, **options):
-        # Transaction initialization
+        """ Transaction initialization """
         try:
             t = self.handle.init_transaction(**options)
         except pyalpm.error:
@@ -117,11 +114,8 @@ class Pac(object):
         return t
     '''
 
-    ###################################################################
-    # pacman -Sy (refresh) and pacman -S (install)
-
     def do_refresh(self):
-        # Sync databases like pacman -Sy
+        """ Sync databases like pacman -Sy """
         force = True
         for db in self.handle.get_syncdbs():
             t = self.init_transaction()
@@ -130,7 +124,7 @@ class Pac(object):
         return 0
 
     def do_install(self, pkgs, conflicts=[]):
-        # Install a list of packages like pacman -S
+        """ Install a list of packages like pacman -S """
         logging.debug("Install a list of packages like pacman -S")
         if len(pkgs) == 0:
             logging.error("No targets specified")
@@ -147,6 +141,7 @@ class Pac(object):
                 # Can't find this one, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
                 if group_pkgs != None:
+                    # It's a group
                     for pkg in group_pkgs:
                         # Check that added package is not in our conflicts list
                         # Ex: connman conflicts with netctl(openresolv), which is
@@ -154,7 +149,7 @@ class Pac(object):
                         if pkg.name not in conflicts and pkg.name not in pkgs:
                             targets.append(pkg)
                 else:
-                    # No, it wasn't neither a package nor a group
+                    # No, it wasn't neither a package nor a group. Show error message and continue.
                     logging.error(pkg)
 
         if len(targets) == 0:
@@ -179,7 +174,7 @@ class Pac(object):
         return (0 if ok else 1)
 
     def find_sync_package(self, pkgname, syncdbs):
-        # Finds a package name in a list of DBs
+        """ Finds a package name in a list of DBs """
         for db in syncdbs.values():
             pkg = db.get_pkg(pkgname)
             if pkg is not None:
@@ -187,7 +182,7 @@ class Pac(object):
         return False, "Package '%s' was not found." % pkgname
 
     def get_group_pkgs(self, group):
-        # Get group packages
+        """ Get group packages """
         for repo in self.handle.get_syncdbs():
             grp = repo.read_grp(group)
             if grp is None:
@@ -197,20 +192,17 @@ class Pac(object):
                 return pkgs
         return None
 
-    ###################################################################
-    # Queue event
-
     def queue_event(self, event_type, event_text=""):
+        """ Queues events to the event list in the GUI thread """
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:
-                # do not repeat same event
+                # Do not enqueue the same event twice
                 return
 
         self.last_event[event_type] = event_text
 
         if event_type == "error":
-            # format message to show file, function, and line where the error
-            # was issued
+            # Format message to show file, function, and line where the error was issued
             import inspect
             # Get the previous frame in the stack, otherwise it would be this function
             f = inspect.currentframe().f_back.f_code
@@ -224,13 +216,9 @@ class Pac(object):
 
         if event_type == "error":
             # We've queued a fatal event so we must exit installer_process process
-            # wait until queue is empty (is emptied in slides.py), then exit
+            # wait until queue is empty (is emptied in slides.py, in the GUI thread), then exit
             self.callback_queue.join()
             sys.exit(1)
-
-
-    ###################################################################
-    # Version functions
 
     def get_version(self):
         return "Cnchi running on pyalpm v%s - libalpm v%s" % (pyalpm.version(), pyalpm.alpmversion())
@@ -238,16 +226,17 @@ class Pac(object):
     def get_versions(self):
         return (pyalpm.version(), pyalpm.alpmversion())
 
-    ###################################################################
     # Callback functions
 
     def cb_conv(self, *args):
         pass
 
     def cb_totaldl(self, total_size):
+        """ Stores total download size for use in cb_progress """
         self.total_download_size = total_size
 
     def cb_event(self, ID, event, tupel):
+        """ Converts action ID to descriptive text and enqueues it to the events queue """
         action = ""
 
         if ID is 1:
@@ -280,6 +269,7 @@ class Pac(object):
             self.queue_event('action', action)
 
     def cb_log(self, level, line):
+        """ Log pyalpm warning and error messages """
         _logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
 
         # Only manage error and warning messages
@@ -296,6 +286,7 @@ class Pac(object):
         #    pass
 
     def cb_progress(self, _target, _percent, n, i):
+        """ Calculates progress and enqueues events with the information """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
             self.queue_event('global_percent', i / n)
@@ -310,32 +301,38 @@ class Pac(object):
         self.queue_event('percent', percent)
 
     def cb_dl(self, filename, tx, total):
+        """ Shows downloading progress """
         # Check if a new file is coming
-        # (if filename has changed or total file size has changed)
         if filename != self.last_dl_filename or self.last_dl_total != total:
             # Yes, new file
             self.last_dl_filename = filename
             self.last_dl_total = total
             self.last_dl_progress = 0
-            progress = 0
-            text = _("Downloading %s") % filename
-            self.queue_event('action', text)
-            self.queue_event('percent', progress)
 
-            # if pacman is just updating databases,
-            # total_download_size will be zero
-            if self.total_download_size > 0:
+            # If pacman is just updating databases total_download_size will be zero
+            if self.total_download_size == 0:
+                if filename.endswith(".db"):
+                    filename = filename[:-3]
+                text = _("Updating %s database") % filename
+            else:
+                if filename.endswith(".xz"):
+                    filename = filename[:-3]
+                text = _("Downloading %s") % filename
                 global_percent = self.total_downloaded / self.total_download_size
                 self.queue_event('global_percent', global_percent)
                 self.total_downloaded += total
+
+            self.queue_event('action', text)
+            self.queue_event('percent', 0)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
                 progress = tx / self.last_dl_total
             else:
-                # if total is unknown, use log(kBytes)²/2
+                # If total is unknown, use log(kBytes)²/2
                 progress = (math.log(1 + tx / 1024) ** 2 / 2) / 100
 
+            # Update progress only if it has grown
             if progress > self.last_dl_progress:
                 self.last_dl_progress = progress
                 #text = _("Downloading %s: %d/%d") % (filename, tx, total)

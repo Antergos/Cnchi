@@ -48,8 +48,7 @@ class InvalidSyntax(Warning):
     def __str__(self):
         return "unable to parse %s, %s: %r" % (self.filename, self.problem, self.arg)
 
-# Options that may occur several times in a section. Their values should be
-# accumulated in a list.
+# Options that may occur several times in a section. Their values should be accumulated in a list.
 LIST_OPTIONS = (
         'CacheDir',
         'HoldPkg',
