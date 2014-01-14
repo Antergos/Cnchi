@@ -73,7 +73,7 @@ class Pac(object):
     # Transaction
 
     def finalize(self, t):
-        # Commit a transaction
+        """ Commit a transaction """
         try:
             t.prepare()
             t.commit()
@@ -86,7 +86,7 @@ class Pac(object):
         return True
 
     def init_transaction(self, **options):
-        # Transaction initialization
+        """ Transaction initialization """
         try:
             t = self.handle.init_transaction(**options)
         except pyalpm.error:
@@ -121,7 +121,7 @@ class Pac(object):
     # pacman -Sy (refresh) and pacman -S (install)
 
     def do_refresh(self):
-        # Sync databases like pacman -Sy
+        """ Sync databases like pacman -Sy """
         force = True
         for db in self.handle.get_syncdbs():
             t = self.init_transaction()
@@ -130,7 +130,7 @@ class Pac(object):
         return 0
 
     def do_install(self, pkgs, conflicts=[]):
-        # Install a list of packages like pacman -S
+        """ Install a list of packages like pacman -S """
         logging.debug("Install a list of packages like pacman -S")
         if len(pkgs) == 0:
             logging.error("No targets specified")
@@ -147,6 +147,7 @@ class Pac(object):
                 # Can't find this one, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
                 if group_pkgs != None:
+                    # It's a group
                     for pkg in group_pkgs:
                         # Check that added package is not in our conflicts list
                         # Ex: connman conflicts with netctl(openresolv), which is
@@ -154,7 +155,7 @@ class Pac(object):
                         if pkg.name not in conflicts and pkg.name not in pkgs:
                             targets.append(pkg)
                 else:
-                    # No, it wasn't neither a package nor a group
+                    # No, it wasn't neither a package nor a group. Show error message and continue.
                     logging.error(pkg)
 
         if len(targets) == 0:
