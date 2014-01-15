@@ -116,6 +116,7 @@ class InstallationProcess(multiprocessing.Process):
         self.kernel_pkg = ""
         self.vmlinuz = ""
         self.dest_dir = ""
+        self.bootloader_ok = False
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -526,31 +527,31 @@ class InstallationProcess(multiprocessing.Process):
                         self.packages.append(pkg.text)
                 self.card.append('ati')
 
-            if "nvidia" in graphics:
+            elif "nvidia" in graphics:
                 for child in root.iter('nvidia'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
                 self.card.append('nvidia')
 
-            if "intel" in graphics or "lenovo" in graphics:
+            elif "intel" in graphics or "lenovo" in graphics:
                 for child in root.iter('intel'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
                 self.card.append('intel')
 
-            if "virtualbox" in graphics:
+            elif "virtualbox" in graphics:
                 for child in root.iter('virtualbox'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
                 self.card.append('virtualbox')
 
-            if "vmware" in graphics:
+            elif "vmware" in graphics:
                 for child in root.iter('vmware'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
                 self.card.append('vmware')
 
-            if "via " in graphics:
+            elif "via " in graphics:
                 for child in root.iter('via'):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
@@ -578,8 +579,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _("Adding filesystem packages"))
 
-        fs_types = subprocess.check_output(
-            ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
         for iii in self.fs_devices:
             fs_types += self.fs_devices[iii]
@@ -644,8 +644,8 @@ class InstallationProcess(multiprocessing.Process):
             if btype == "GRUB2":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        is_uefi = pkg.attrib.get('uefi')
-                        if not is_uefi:
+                        uefi = pkg.attrib.get('uefi')
+                        if not uefi:
                             self.packages.append(pkg.text)
             elif btype == "UEFI_x86_64":
                 for child in root.iter('grub'):
@@ -729,7 +729,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Special dirs already mounted."))
             return
 
-        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi/efivars"]
+        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi"]
         for s_dir in special_dirs:
             mydir = os.path.join(self.dest_dir, s_dir)
             if not os.path.exists(mydir):
@@ -750,10 +750,10 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
         subprocess.check_call(["chmod", "555", mydir])
 
-        efivars = "/sys/firmware/efi/efivars"
-        if os.path.exists(efivars):
-            mydir = os.path.join(self.dest_dir, efivars[1:])
-            subprocess.check_call(["mount", "-o", "bind", efivars, mydir])
+        efi = "/sys/firmware/efi"
+        if os.path.exists(efi):
+            mydir = os.path.join(self.dest_dir, efi[1:])
+            subprocess.check_call(["mount", "-o", "bind", efi, mydir])
 
         self.special_dirs_mounted = True
 
@@ -763,9 +763,9 @@ class InstallationProcess(multiprocessing.Process):
         if not self.special_dirs_mounted:
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
-        efivars = "/sys/firmware/efi/efivars"
-        if os.path.exists(efivars):
-            special_dirs = ["dev/pts", "sys/firmware/efi/efivars", "sys", "proc", "dev"]
+        efi = "/sys/firmware/efi/efivars"
+        if os.path.exists(efi):
+            special_dirs = ["dev/pts", "sys/firmware/efi", "sys", "proc", "dev"]
         else:
             special_dirs = ["dev/pts", "sys", "proc", "dev"]
 
@@ -1032,7 +1032,7 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
-                self.queue_event('warning', _(" ERROR installing GRUB(2) BIOS."))
+                self.queue_event('debug', _("Could not copy 10_linux to grub.d"))
             except FileExistsError:
                 pass
         except FileExistsError:
@@ -1055,6 +1055,7 @@ class InstallationProcess(multiprocessing.Process):
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
+            self.bootloader_ok = True
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
@@ -1064,12 +1065,12 @@ class InstallationProcess(multiprocessing.Process):
         # TODO: If tests show it still not working 100%, try to manually add entry to loader (efibootmgr).
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
-        spec_uefi_arch_2 = "X64"
+        spec_uefi_arch_caps = "X64"
 
         if arch == "UEFI_i386":
             uefi_arch = "i386"
             spec_uefi_arch = "ia32"
-            spec_uefi_arch_2 = "IA32"
+            spec_uefi_arch_caps = "IA32"
 
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
 
@@ -1088,8 +1089,6 @@ class InstallationProcess(multiprocessing.Process):
                 pass
         except FileExistsError:
             pass
-        except:
-            logging.error('Unknown error while copying 10_linux into grub.d dir.')
 
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
@@ -1097,47 +1096,38 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
-            except subprocess.CalledProcessError as err:
-                logging.error('Command grub-install failed. Error output: %s. Trying again...' % err.output)
-            except subprocess.TimeoutExpired as err:
-                logging.error('Command grub-install timed out. Trying again...')
-            except Exception as err:
-                logging.error('Command grub-install failed. Unknown Error: %s. Trying again...' % err)
+        except subprocess.CalledProcessError as err:
+            logging.error('Command grub-install failed. Error output: %s' % err.output)
+        except subprocess.TimeoutExpired as err:
+            logging.error('Command grub-install timed out.')
+        except Exception as err:
+            logging.error('Command grub-install failed. Unknown Error: %s' % err)
 
-        self.queue_event('info', _("Commnad grub-install completed. Installing Grub2 locales."))
+        self.queue_event('info', _("Installing Grub2 locales."))
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
-        default_1 = os.path.join(self.dest_dir, "boot/EFI/BOOT/")
-        default_2 = os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/")
+        defaults = [(os.path.join(self.dest_dir, "boot/EFI/BOOT/"), 'BOOT' + spec_uefi_arch_caps + '.efi'),
+                    (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi']
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
         grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
-        if not os.path.exists(default_1):
-            grub_efi_new = ('BOOT' + spec_uefi_arch_2 + '.efi')
-            self.queue_event('info', _("No OEM loader found in /EFI/BOOT. Copying Grub(2) into dir."))
-            os.makedirs(default_1)
-            try:
-                shutil.copy(grub_dir_src + grub_efi_old, default_1 + grub_efi_new)
-            except FileNotFoundError:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
-            except FileExistsError:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
-            except Exception as err:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
-        elif not os.path.exists(default_2):
-            grub_efi_new = 'bootmgfw.efi'
-            self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
-            os.makedirs(default_2)
-            try:
-                shutil.copy(grub_dir_src + grub_efi_old, default_2 + grub_efi_new)
-            except FileNotFoundError:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
-            except FileExistsError:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
-            except Exception as err:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
-
+        
+        for default in defaults:
+            path, grub_efi_new = default
+            if not os.path.exists(path):
+                self.queue_event('info', _("No OEM loader found in %s. Copying Grub(2) into dir.") % path)
+                os.makedirs(path)
+                try:
+                    shutil.copy(grub_dir_src + grub_efi_old, path + grub_efi_new)
+                except FileNotFoundError:
+                    logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+                except FileExistsError:
+                    logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+                except Exception as err:
+                    logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
+                    logging.warning(err)
+        
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
         shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
@@ -1149,6 +1139,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("UEFI Shell already exists at %s"), shell_dst)
         except Exception as err:
             logging.warning(_("UEFI Shell drop-in could not be copied."))
+            logging.warning(err)
 
         # Run grub-mkconfig last
         self.queue_event('info', _("Generating grub.cfg"))
@@ -1158,6 +1149,8 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale)])
 
         self.chroot_umount_special_dirs()
+        
+        self.bootloader_ok = True
 
 
     def copy_bootloader_theme_files(self):
@@ -1517,8 +1510,9 @@ class InstallationProcess(multiprocessing.Process):
                     vbox_conf.write('# Added by Cnchi - Antergos Installer\n')
                     vbox_conf.write('vboxsf\n')
                 self.enable_services(["vboxservice"])
-            except:
+            except Exception as err:
                 logging.error('Writing vbox.conf to modules-load.d failed.')
+                logging.error(err)
 
         # Wait FOREVER until the user sets the timezone
         while self.settings.get('timezone_done') is False:

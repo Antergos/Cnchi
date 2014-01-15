@@ -90,7 +90,6 @@
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -137,7 +136,6 @@
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -172,7 +170,6 @@
         <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
@@ -277,7 +274,6 @@
         <pkgname>gvfs-smb</pkgname>
         <pkgname>gvfs-atp</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxpolkit</pkgname>
@@ -323,7 +319,6 @@
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
-        <!-- <pkgname>kdeartwork-colorschemes</pkgname> -->
         <pkgname>kdeartwork-desktopthemes</pkgname>
         <pkgname>kdeartwork-iconthemes</pkgname>
         <pkgname>kdeartwork-kscreensaver</pkgname>
@@ -507,6 +502,8 @@
         <pkgname>os-prober</pkgname>
         <pkgname uefi="true">efibootmgr</pkgname>
         <pkgname uefi="true">dosfstools</pkgname>
+    </grub>
+
         <!--<efistub>
             <pkgname>efilinux-efi</pkgname>
         </efistub>
@@ -532,5 +529,4 @@
             <pkgname>dosfstools</pkgname>
             <pkgname>efibootmgr</pkgname>
         </uefi_x86_64>-->
-    </grub>
 </packages>
