@@ -446,8 +446,32 @@ def init_cnchi():
     if not check_gtk_version():
         sys.exit(1)
         
-    # TODO: Use argparse http://docs.python.org/3/howto/argparse.html
+    # argparse http://docs.python.org/3/howto/argparse.html
 
+    # Program options
+    '''
+         ["aria2", "cache=", "copycache=", "debug", "packages=", "update",
+          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing", "z-hidden"])
+
+    options = [
+        ("-a", "--aria2", _(""), "store_true"),
+        ("-c", "--cache", _(""), "count"),
+        ("-cc", "--copycache", _("")),
+        ("-v", "--verbose", _("Show logging messages to stdout"))]
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    for option in options:
+        parser.add_argument(option[0], option[1], help=option[2], action=option[3])
+
+    
+    #args = parser.parse_args()
+    #if args.verbosity:
+    #    print("verbosity turned on")
+    '''
+    
+    
+    
     # Check program args
     arguments_vector = sys.argv[1:]
 
