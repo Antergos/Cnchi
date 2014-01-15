@@ -36,6 +36,7 @@ class Settings(object):
             'auto_device' : '/dev/sda',
             'bootloader_device' : '/dev/sda',
             'bootloader_type' : 'GRUB2',
+            'btrfs' : False,
             'cache' : '',
             'cnchi' : '/usr/share/cnchi/',
             'installer_thread_call' : {},

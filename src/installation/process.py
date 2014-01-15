@@ -116,7 +116,6 @@ class InstallationProcess(multiprocessing.Process):
         self.kernel_pkg = ""
         self.vmlinuz = ""
         self.dest_dir = ""
-        self.grub_ok = True
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -1033,53 +1032,31 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
-                self.queue_event('debug', _(" ERROR while copying 10_linux for GRUB(2) BIOS."))
+                self.queue_event('warning', _(" ERROR installing GRUB(2) BIOS."))
             except FileExistsError:
                 pass
         except FileExistsError:
             pass
 
         self.chroot_mount_special_dirs()
-        # Let's retry at least once if we get an exception.
-        for attempt in range(2):
-            try:
-                self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
-                             '--target=i386-pc', '--boot-directory=/boot', '--recheck', grub_device])
-                break
-            except Exception as err:
-                output = err
-                if attempt < 2:
-                    logging.error('Command grub-install failed. Error Output: %s. Trying again...' % err)
-                    time.sleep(5)
-        else:
-            logging.error('Command grub-install failed second attempt. Error output: %s.' % output)
-            self.grub_ok = False
+        
+        self.chroot(['grub-install', '--directory=/usr/lib/grub/i386-pc',
+                     '--target=i386-pc', '--boot-directory=/boot', '--recheck', grub_device])
 
         self.install_bootloader_grub2_locales()
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
         self.copy_bootloader_theme_files()
+
         locale = self.settings.get("locale")
-        grub_cfg = "/boot/grub/grub.cfg"
-         # Let's retry at least once if we get an exception.
-        for attempt in range(2):
-            try:
-                self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
-                break
-            except Exception as err:
-                output = err
-                if attempt < 2:
-                    logging.warning('Error during grub-mkconfig: %s. Will retry..' % err)
-                    time.sleep(5)
-        else:
-            logging.warning('Error during grub-mkconfig: %s. Second attempt failed.' % output)
-            self.grub_ok = False
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
+
         self.chroot_umount_special_dirs()
+
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
-            self.grub_ok = False
 
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
@@ -1115,33 +1092,19 @@ class InstallationProcess(multiprocessing.Process):
             logging.error('Unknown error while copying 10_linux into grub.d dir.')
 
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
-        # Let's retry at least once if we get an exception.
-        for attempt in range(2):
-            try:
-                subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                                       '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                                       '--recheck' % uefi_arch], shell=True, timeout=45)
-                break
-            except subprocess.CalledProcessError as err:
-                output = err.output
-                if attempt < 2:
-                    logging.error('Command grub-install failed. Error output: %s. Trying again...' % output)
-                    time.sleep(5)
-            except subprocess.TimeoutExpired as err:
-                output = err.output
-                if attempt < 2:
-                    logging.error('Command grub-install timed out. Trying again...')
-                    time.sleep(5)
-            except Exception as err:
-                output = err.output
-                if attempt < 2:
-                    logging.error('Command grub-install failed. Unknown Error: %s. Trying again...' % output)
-                    time.sleep(5)
-        else:
-            logging.error('Command grub-install failed second attempt. Error output: %s.' % output)
-            self.grub_ok = False
 
-        self.queue_event('info', _("Installing Grub2 locales."))
+        try:
+            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+            except subprocess.CalledProcessError as err:
+                logging.error('Command grub-install failed. Error output: %s. Trying again...' % err.output)
+            except subprocess.TimeoutExpired as err:
+                logging.error('Command grub-install timed out. Trying again...')
+            except Exception as err:
+                logging.error('Command grub-install failed. Unknown Error: %s. Trying again...' % err)
+
+        self.queue_event('info', _("Commnad grub-install completed. Installing Grub2 locales."))
         self.install_bootloader_grub2_locales()
         self.copy_bootloader_theme_files()
 
@@ -1161,7 +1124,7 @@ class InstallationProcess(multiprocessing.Process):
             except FileExistsError:
                 logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
             except Exception as err:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error: %s" % err))
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
         elif not os.path.exists(default_2):
             grub_efi_new = 'bootmgfw.efi'
             self.queue_event('info', _("No OEM loader found in /EFI/Microsoft/Boot. Copying Grub(2) into dir."))
@@ -1173,7 +1136,7 @@ class InstallationProcess(multiprocessing.Process):
             except FileExistsError:
                 logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
             except Exception as err:
-                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error: %s" % err))
+                logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
 
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
@@ -1185,27 +1148,15 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             logging.warning(_("UEFI Shell already exists at %s"), shell_dst)
         except Exception as err:
-            logging.warning(_("UEFI Shell drop-in could not be copied. %s" % err))
+            logging.warning(_("UEFI Shell drop-in could not be copied."))
 
         # Run grub-mkconfig last
         self.queue_event('info', _("Generating grub.cfg"))
-        locale = self.settings.get("locale")
-        grub_cfg = "/boot/grub/grub.cfg"
-
-        # Let's retry at least once if we get an exception.
         self.chroot_mount_special_dirs()
-        for attempt in range(2):
-            try:
-                self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o %s' % (locale, grub_cfg)])
-                break
-            except Exception as err:
-                output = err
-                if attempt < 2:
-                    logging.warning('Error during grub-mkconfig: %s. Will retry..' % err)
-                    time.sleep(5)
-        else:
-            logging.warning('Error during grub-mkconfig: %s. Second attempt failed.' % output)
-            self.grub_ok = False
+
+        locale = self.settings.get("locale")
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale)])
+
         self.chroot_umount_special_dirs()
 
 
@@ -1718,9 +1669,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            # TODO: Warn user that Grub install may not have completed successfully and instruct how to fix.
-            if not self.grub_ok:
-                pass
+            # TODO: Warn user if Grub install hasn't completed successfully and instruct how to fix.
 
         # Copy installer log to the new installation (just in case something goes wrong)
         # Look at line 324, it wasn't my imagination after all!
