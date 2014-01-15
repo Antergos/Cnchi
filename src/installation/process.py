@@ -1663,9 +1663,15 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            # TODO: Warn user if Grub install hasn't completed successfully and instruct how to fix.
+            # Warn user if Grub install hasn't completed successfully
+            # TODO: instruct how to fix.
+            if not self.bootloader_ok:
+                msg = _("We apologize, but it seems Cnchi can't install the bootloader into your system.\n"
+                    "Please, before rebooting, do it by yourself.\n"
+                    "You can find more info in the GRUB archlinux's wiki page:\n"
+                    "\thttps://wiki.archlinux.org/index.php/GRUB.\n")
+                self.queue_event('info', msg)
 
         # Copy installer log to the new installation (just in case something goes wrong)
-        # Look at line 324, it wasn't my imagination after all!
         logging.debug('Copying install log to /var/log.')
         self.copy_log()
