@@ -1109,7 +1109,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
         defaults = [(os.path.join(self.dest_dir, "boot/EFI/BOOT/"), 'BOOT' + spec_uefi_arch_caps + '.efi'),
-                    (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi']
+                    (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi')]
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
         grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
         
@@ -1146,7 +1146,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         locale = self.settings.get("locale")
-        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale)])
+        self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
 
         self.chroot_umount_special_dirs()
         

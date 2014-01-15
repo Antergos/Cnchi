@@ -840,7 +840,13 @@ def is_wireless_enabled():
 def has_connection():
     import dbus
     bus = dbus.SystemBus()
-    manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+    try:
+        manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
+    except dbus.exceptions.DBusException as err:
+        # We can't talk to NM, so no idea.  Wild guess: we're connected
+        # using ssh with X forwarding, and are therefore connected.  This
+        # allows us to proceed with a minimum of complaint.
+        return True
     state = get_prop(manager, NM, 'state')
     return state == NM_STATE_CONNECTED_GLOBAL
 

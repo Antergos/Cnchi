@@ -58,10 +58,6 @@ import desktop
 import features
 import keymap
 import timezone
-from installation import ask as installation_ask
-from installation import automatic as installation_automatic
-from installation import alongside as installation_alongside
-from installation import advanced as installation_advanced
 import user_info
 import slides
 import canonical.misc as misc
@@ -70,18 +66,25 @@ import updater
 import show_message as show
 import desktop_environments as desktops
 
+from installation import ask as installation_ask
+from installation import automatic as installation_automatic
+from installation import alongside as installation_alongside
+from installation import advanced as installation_advanced
+
 # Command line options
-_alternate_package_list = ""
-_cache_dir = ""
-_force_grub_type = False
-_force_update = False
-_log_level = logging.INFO
-_update = False
-_use_aria2 = False
-_verbose = False
-_disable_tryit = False
-_testing = False
-_z_hidden = False
+cmd_line = {
+    "alternate_package_list" : "",
+    "cache_dir" : "",
+    "copy_cache" : False,
+    "force_grub_type" : False,
+    "force_update" : False,
+    "log_level" : logging.INFO,
+    "update" : False,
+    "use_aria2" : False,
+    "verbose" : False,
+    "disable_tryit" : False,
+    "testing" : False,
+    "z_hidden" : False }
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 800
@@ -154,10 +157,10 @@ class Main(Gtk.Window):
 
             self.ui_dir = self.settings.get('ui')
 
-        self.settings.set('cache', _cache_dir)
+        self.settings.set('cache', cmd_line['cache_dir'])
 
         # For things we are not ready for users to test
-        self.settings.set('z_hidden', _z_hidden)
+        self.settings.set('z_hidden', cmd_line['z_hidden'])
 
 
         # Set enabled desktops
@@ -167,7 +170,7 @@ class Main(Gtk.Window):
             self.settings.set("desktops", desktops.DESKTOPS)
 
         # Set if a grub type must be installed (user choice)
-        self.settings.set("force_grub_type", _force_grub_type)
+        self.settings.set("force_grub_type", cmd_line['force_grub_type'])
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")
@@ -206,8 +209,8 @@ class Main(Gtk.Window):
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # Save in config if we have to use aria2 to download pacman packages
-        self.settings.set("use_aria2", _use_aria2)
-        if _use_aria2:
+        self.settings.set("use_aria2", cmd_line['use_aria2'])
+        if cmd_line['use_aria2']:
             logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
 
         # Load all pages
@@ -223,12 +226,13 @@ class Main(Gtk.Window):
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
-        params['alternate_package_list'] = _alternate_package_list
-        params['disable_tryit'] = _disable_tryit
-        params['testing'] = _testing
+        
+        params['alternate_package_list'] = cmd_line['alternate_package_list']
+        params['disable_tryit'] = cmd_line['disable_tryit']
+        params['testing'] = cmd_line['testing']
 
-        if len(_alternate_package_list) > 0:
-            logging.info("Using '%s' file as package list", _alternate_package_list)
+        if len(cmd_line['alternate_package_list']) > 0:
+            logging.info("Using '%s' file as package list", cmd_line['alternate_package_list'])
 
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
@@ -245,7 +249,6 @@ class Main(Gtk.Window):
         self.pages["user_info"] = user_info.UserInfo(params)
         self.pages["slides"] = slides.Slides(params)
 
-        #self.connect("delete-event", Gtk.main_quit)
         self.connect('delete-event', self.on_exit_button_clicked)
         self.ui.connect_signals(self)
 
@@ -374,22 +377,21 @@ class Main(Gtk.Window):
 def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
-    logger.setLevel(_log_level)
+    logger.setLevel(cmd_line['log_level'])
     # Log format
-    formatter = logging.Formatter('%(asctime)s - %(filename)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
-    file_handler.setLevel(_log_level)
+    file_handler.setLevel(cmd_line['log_level'])
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    if _verbose:
+    if cmd_line['verbose']:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(_log_level)
+        stream_handler.setLevel(cmd_line['log_level'])
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
-
 
 def show_help():
     """ Show Cnchi command line options """
@@ -397,6 +399,7 @@ def show_help():
     print("Advanced options:")
     print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
     print("-c, --cache : Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)")
+    print("-cc, --copycache : Copy xz packages from a cache location before installing. (Cnchi will download them anyway if a new version is found)")
     print("-d, --debug : Set debug log level")
     print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
     print("-h, --help : Show this help message")
@@ -432,17 +435,7 @@ def init_cnchi():
     """ This function initialises Cnchi """
 
     # Command line options
-    global _alternate_package_list
-    global _cache_dir
-    global _force_grub_type
-    global _force_update
-    global _log_level
-    global _update
-    global _use_aria2
-    global _verbose
-    global _disable_tryit
-    global _testing
-    global _z_hidden
+    global cmd_line
 
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
@@ -452,13 +445,15 @@ def init_cnchi():
 
     if not check_gtk_version():
         sys.exit(1)
+        
+    # TODO: Use argparse http://docs.python.org/3/howto/argparse.html
 
     # Check program args
     arguments_vector = sys.argv[1:]
 
     try:
         options, arguments = getopt.getopt(arguments_vector, "ac:dp:ufvg:nhtz",
-         ["aria2", "cache=", "debug", "packages=", "update",
+         ["aria2", "cache=", "copycache=", "debug", "packages=", "update",
           "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing", "z-hidden"])
     except getopt.GetoptError as e:
         show_help()
@@ -467,49 +462,50 @@ def init_cnchi():
 
     for option, argument in options:
         if option in ('-a', '--aria2'):
-            _use_aria2 = True
+            cmd_line['use_aria2'] = True
         elif option in ('-c', '--cache'):
-            _cache_dir = argument
+            print("CACHE")
+            cmd_line['cache_dir'] = argument
+            #cmd_line['copy_cache = True
         elif option in ('-d', '--debug'):
-            _log_level = logging.DEBUG
+            cmd_line['log_level'] = logging.DEBUG
         elif option in ('-f', '--force-update'):
-            _force_update = True
-            _update = True
+            cmd_line['force_update'] = True
+            cmd_line['update'] = True
         elif option in ('-g', '--force-grub-type'):
             if argument in ('bios', 'efi', 'ask', 'none'):
-                _force_grub_type = argument
+                cmd_line['force_grub_type'] = argument
         elif option in ('-h', '--help'):
             show_help()
             sys.exit(0)
         elif option in ('-n', '--disable-tryit'):
-            _disable_tryit = True
+            cmd_line['disable_tryit'] = True
         elif option in ('-p', '--packages'):
-            _alternate_package_list = argument
+            cmd_line['alternate_package_list'] = argument
         elif option in ('-t', '--testing'):
-            _testing = True
+            cmd_line['testing'] = True
         elif option in ('-u', '--update'):
-            _update = True
+            cmd_line['update'] = True
         elif option in ('-v', '--verbose'):
-            _verbose = True
+            cmd_line['verbose'] = True
         elif option in ('-z', '--z-hidden'):
-            _z_hidden = True
+            cmd_line['z_hidden'] = True
         else:
             assert False, "Unhandled option"
 
 
-    if _update:
+    if cmd_line['update']:
         setup_logging()
         # Check if program needs to be updated
         upd = updater.Updater(_force_update)
         if upd.update():
             remove_temp_files()
-            if not _force_update:
+            if not cmd_line['force_update']:
                 print("Program updated! Restarting...")
                 # Run another instance of Cnchi (which will be the new version)
                 os.execl(sys.executable, *([sys.executable] + sys.argv))
             else:
                 print("Program updated! Please restart Cnchi.")
-
             # Exit and let the new instance do all the hard work
             sys.exit(0)
 
