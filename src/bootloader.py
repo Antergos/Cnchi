@@ -91,28 +91,12 @@ class BootLoader(object):
         return bootloader_type
 
     def ask(self):
-        """ Asks the user which bootloader to install if needed """
-        bootloader_type = ""
 
-        force_grub_type = self.settings.get('force_grub_type')
-
-        if force_grub_type == "ask":
-            # Ask bootloader type
-            # TODO: Fix this
-            #bootloader_type = bl.run()
-            pass
-        elif force_grub_type == "efi":
+        # Guess our bootloader type
+        if os.path.exists("/sys/firmware/efi"):
             bootloader_type = "UEFI_x86_64"
-        elif force_grub_type == "bios":
-            bootloader_type = "GRUB2"
-        elif force_grub_type == "none":
-            bootloader_type = ""
         else:
-            # Guess our bootloader type
-            if os.path.exists("/sys/firmware/efi"):
-                bootloader_type = "UEFI_x86_64"
-            else:
-                bootloader_type = "GRUB2"
+            bootloader_type = "GRUB2"
 
         if len(bootloader_type) > 0:
             self.settings.set('install_bootloader', True)
