@@ -396,10 +396,11 @@ class InstallationAlongside(Gtk.Box):
 
         # TODO: Ask where to install the bootloader (if the user wants to install it)
 
-        # Ask bootloader type
-        import bootloader
-        bl = bootloader.BootLoader(self.settings)
-        bl.ask()
+
+        if os.path.exists("/sys/firmware/efi/systab"):
+            self.settings.set('bootloader_type', "UEFI_x86_64")
+        else:
+            self.settings.set('bootloader_type', "GRUB2")
 
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', mount_devices["/"])

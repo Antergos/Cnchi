@@ -197,11 +197,14 @@ class InstallationAutomatic(Gtk.Box):
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
         logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
+        
+        # TODO: Ask user if GRUB must be installed
+        self.settings.set('install_bootloader', True)
 
-        # Ask (if guessing doesn't work) bootloader type
-        import bootloader
-        bl = bootloader.BootLoader(self.settings)
-        bl.ask()
+        if os.path.exists("/sys/firmware/efi/systab"):
+            self.settings.set('bootloader_type', "UEFI_x86_64")
+        else:
+            self.settings.set('bootloader_type', "GRUB2")
 
         if self.settings.get('install_bootloader'):
             self.settings.set('bootloader_device', self.auto_device)
