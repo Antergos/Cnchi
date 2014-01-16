@@ -324,7 +324,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(err.value)
             all_ok = False
         except Exception as err:
-            # We won't catch fatal errors if we try to continue here.
+            # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
             logging.exception('Error: %s. Unable to continue.' % err)
             all_ok = False
 
@@ -520,49 +520,22 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _("Getting graphics card drivers"))
 
             graphics = self.get_graphics_card()
-
-            if "ati " in graphics:
-                for child in root.iter('ati'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('ati')
-
-            elif "nvidia" in graphics:
-                for child in root.iter('nvidia'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('nvidia')
-
-            elif "intel" in graphics or "lenovo" in graphics:
-                for child in root.iter('intel'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('intel')
-
-            elif "virtualbox" in graphics:
-                for child in root.iter('virtualbox'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('virtualbox')
-
-            elif "vmware" in graphics:
-                for child in root.iter('vmware'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('vmware')
-
-            elif "via " in graphics:
-                for child in root.iter('via'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-                self.card.append('via')
+            card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
+            # Is this good? Might need to be revised,
+            for card in card_lib:
+                if card in graphics:
+                    if card is 'lenovo':
+                        card = 'intel'
+                    for child in root.iter(card):
+                        for pkg in child.iter('pkgname'):
+                            self.packages.append(pkg.text)
+                    self.card.append(card)
 
             # Add xorg-drivers group if cnchi can't figure it out
             # the graphic card driver.
             if self.card is None:
                 self.packages.append('xorg-drivers')
                 self.card.append('xorg')
-
             logging.debug("Added %s graphics drivers to the installation" % self.card)
 
         # Get packages needed for detected hardware
@@ -763,7 +736,7 @@ class InstallationProcess(multiprocessing.Process):
         if not self.special_dirs_mounted:
             self.queue_event('debug', _("Special dirs are not mounted. Skipping."))
             return
-        efi = "/sys/firmware/efi/efivars"
+        efi = "/sys/firmware/efi"
         if os.path.exists(efi):
             special_dirs = ["dev/pts", "sys/firmware/efi", "sys", "proc", "dev"]
         else:
@@ -785,6 +758,7 @@ class InstallationProcess(multiprocessing.Process):
                     logging.warning(out)
             except Exception as err:
                 self.queue_event('warning', _("Unable to umount %s") % mydir)
+                logging.error(err)
 
         self.special_dirs_mounted = False
 
@@ -1084,7 +1058,7 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
             except FileNotFoundError:
-                self.queue_event('warning', _("ERROR installing GRUB(2) UEFI."))
+                self.queue_event('debug', _("Could not copy 10_linux to grub.d"))
             except FileExistsError:
                 pass
         except FileExistsError:
