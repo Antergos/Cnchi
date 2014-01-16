@@ -153,6 +153,20 @@ class Slides(Gtk.Box):
                 self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'finished':
                 logging.info(event[1])
+
+                # Warn user about GRUB and ask if we should open wiki page.
+                if not self.settings.get('bootloader_ok'):
+                    import webbrowser
+                    self.boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+                                       "installation which could prevent your system from booting properly. Before\n"
+                                       "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+                                       "configured. The Arch Linux Wiki contains troubleshooting information:\n"
+                                       "\thttps://wiki.archlinux.org/index.php/GRUB\n"
+                                       "\nWould you like to view the wiki page now?")
+                    response = show.question(self.boot_warn)
+                    if response == Gtk.ResponseType.YES:
+                        webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
+
                 install_ok = _("Installation Complete!\n"
                     "Do you want to restart your system now?")
                 #self.set_message(install_ok)

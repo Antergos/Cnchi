@@ -116,7 +116,7 @@ class InstallationProcess(multiprocessing.Process):
         self.kernel_pkg = ""
         self.vmlinuz = ""
         self.dest_dir = ""
-        self.bootloader_ok = False
+        self.bootloader_ok = self.settings.get('bootloader_ok')
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -1072,7 +1072,7 @@ class InstallationProcess(multiprocessing.Process):
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
-        except subprocess.TimeoutExpired as err:
+        except subprocess.TimeoutExpired:
             logging.error('Command grub-install timed out.')
         except Exception as err:
             logging.error('Command grub-install failed. Unknown Error: %s' % err)
@@ -1123,8 +1123,17 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale])
 
         self.chroot_umount_special_dirs()
-        
-        self.bootloader_ok = True
+
+        path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
+               ("boot/EFI/antergos_grub/" + grub_efi_old))))
+
+        for p in path:
+            if not os.path.exists(p):
+                self.queue_event('warning', _("GRUB(2) UEFI install may not have completed successfully."))
+                self.bootloader_ok = False
+        else:
+            self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
+            self.bootloader_ok = True
 
 
     def copy_bootloader_theme_files(self):
@@ -1640,10 +1649,10 @@ class InstallationProcess(multiprocessing.Process):
             # Warn user if Grub install hasn't completed successfully
             # TODO: instruct how to fix.
             if not self.bootloader_ok:
-                msg = _("We apologize, but it seems Cnchi can't install the bootloader into your system.\n"
-                    "Please, before rebooting, do it by yourself.\n"
-                    "You can find more info in the GRUB archlinux's wiki page:\n"
-                    "\thttps://wiki.archlinux.org/index.php/GRUB.\n")
+                msg = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader installation which\n"
+                        "could prevent you from successfully booting your system. Before rebooting, you may want\n"
+                        "verify whether or not GRUB(2) is installed and configured. See the Arch Linux wiki page:\n"
+                        "for troubleshooting information:\thttps://wiki.archlinux.org/index.php/GRUB\n")
                 self.queue_event('info', msg)
 
         # Copy installer log to the new installation (just in case something goes wrong)
