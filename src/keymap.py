@@ -44,6 +44,8 @@ class Keymap(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
         self.testing = params['testing']
+        
+        self.prepare_called = False
 
         self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
@@ -100,6 +102,8 @@ class Keymap(Gtk.Box):
                 self.select_value_in_treeview(self.layout_treeview, selected_country)
 
             logging.info(_("keyboard_layout is %s") % selected_country)
+        
+        self.prepare_called = True
 
         self.show_all()
 
@@ -269,7 +273,7 @@ class Keymap(Gtk.Box):
         self.settings.set("keyboard_variant", self.keyboard_variant)
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
-        if not self.testing:
+        if not self.testing and self.prepare_called:
             self.setkb()
 
         return True
@@ -282,9 +286,6 @@ class Keymap(Gtk.Box):
 
     def setkb(self):
         subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])
-
-        # It makes no sense try loadkeys here (it's console)
-        #subprocess.check_call(['loadkeys', self.keyboard_layout])
 
         with misc.raised_privileges():
             subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
