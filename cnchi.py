@@ -22,6 +22,9 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
+# TODO: Remove all force_grub code
+
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
@@ -72,18 +75,7 @@ from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
 # Command line options
-cmd_line = {
-    "alternate_package_list" : "",
-    "cache_dir" : "",
-    "copy_cache" : False,
-    "force_update" : False,
-    "log_level" : logging.INFO,
-    "update" : False,
-    "use_aria2" : False,
-    "verbose" : False,
-    "disable_tryit" : False,
-    "testing" : False,
-    "z_hidden" : False }
+cmd_line = None
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 800
@@ -156,21 +148,21 @@ class Main(Gtk.Window):
 
             self.ui_dir = self.settings.get('ui')
 
-        self.settings.set('cache', cmd_line['cache_dir'])
+        if cmd_line.cache:
+            self.settings.set('cache', cmd_line.cache)
+
+        if cmd_line.copycache:
+            self.settings.set('cache', cmd_line.copycache)
+            self.settings.set('copy_cache', True)
 
         # For things we are not ready for users to test
-        self.settings.set('z_hidden', cmd_line['z_hidden'])
-
+        self.settings.set('z_hidden', cmd_line.z_hidden)
 
         # Set enabled desktops
         if self.settings.get('z_hidden'):
             self.settings.set("desktops", desktops.DESKTOPS_DEV)
         else:
             self.settings.set("desktops", desktops.DESKTOPS)
-
-        # Set if a grub type must be installed (user choice)
-        # TODO: Remove all force_grub code
-        self.settings.set("force_grub_type", False)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")
@@ -209,8 +201,8 @@ class Main(Gtk.Window):
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # Save in config if we have to use aria2 to download pacman packages
-        self.settings.set("use_aria2", cmd_line['use_aria2'])
-        if cmd_line['use_aria2']:
+        self.settings.set("use_aria2", cmd_line.aria2)
+        if cmd_line.aria2:
             logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
 
         # Load all pages
@@ -227,12 +219,14 @@ class Main(Gtk.Window):
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
         
-        params['alternate_package_list'] = cmd_line['alternate_package_list']
-        params['disable_tryit'] = cmd_line['disable_tryit']
-        params['testing'] = cmd_line['testing']
-
-        if len(cmd_line['alternate_package_list']) > 0:
-            logging.info("Using '%s' file as package list", cmd_line['alternate_package_list'])
+        if cmd_line.packages:
+            params['alternate_package_list'] = cmd_line.packages
+            logging.info("Using '%s' file as package list", params['alternate_package_list'])
+        else:
+            params['alternate_package_list'] = ""
+            
+        params['disable_tryit'] = cmd_line.disable_tryit
+        params['testing'] = cmd_line.testing
 
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
@@ -315,6 +309,7 @@ class Main(Gtk.Window):
         logging.info(_("Quiting installer..."))
         while Gtk.events_pending():
             Gtk.main_iteration()
+        logging.shutdown()
         Gtk.main_quit()
 
     def set_progressbar_step(self, add_value):
@@ -377,19 +372,27 @@ class Main(Gtk.Window):
 def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
-    logger.setLevel(cmd_line['log_level'])
+    
+    if cmd_line.debug:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.INFO
+    
+    logger.setLevel(log_level)
+    
     # Log format
-    formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(filename)s:%(funcName)s() - %(levelname)s: %(message)s')
+    
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
-    file_handler.setLevel(cmd_line['log_level'])
+    file_handler.setLevel(log_level)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    if cmd_line['verbose']:
+    if cmd_line.verbose:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(cmd_line['log_level'])
+        stream_handler.setLevel(log_level)
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
 
@@ -424,66 +427,23 @@ def parse_options():
     parser = argparse.ArgumentParser(description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
     parser.add_argument("-a", "--aria2", help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"), action="store_true")
     parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs=1)
-    parser.add_argument("-cc", "--copycache", help=_("As --cache but before it copies all xz packages to destination"), nargs=1)
-    parser.add_argument("-d", "--debug", help=_("Set log level to 'debug'"), action="store_true")
+    parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs=1)
+    parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
+    parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version (-uu will force the update)"), action="count")
     parser.add_argument("-p", "--packages", help=_("Install the packages referenced by file.xml instead of the default ones"), nargs=1)
     parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
     parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
+    parser.add_argument("--disable-tryit", help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"), action="store_true")
+    parser.add_argument("-z", "--z_hidden", help=_("Show options in development (DO NOT USE THIS!)"), action="store_true")
 
     return parser.parse_args()
 
 def init_cnchi():
     """ This function initialises Cnchi """
 
-
-    args = parse_options()
-
-    if args.verbose:
-        print("verbosity turned on")
-
     # Command line options
     global cmd_line
-    '''
-    for option, argument in options:
-        if option in ('-a', '--aria2'):
-            cmd_line['use_aria2'] = True
-        elif option in ('-c', '--cache'):
-            print("CACHE")
-            cmd_line['cache_dir'] = argument
-            #cmd_line['copy_cache = True
-        elif option in ('-d', '--debug'):
-            cmd_line['log_level'] = logging.DEBUG
-        elif option in ('-f', '--force-update'):
-            cmd_line['force_update'] = True
-            cmd_line['update'] = True
-        elif option in ('-g', '--force-grub-type'):
-            if argument in ('bios', 'efi', 'ask', 'none'):
-                cmd_line['force_grub_type'] = argument
-        elif option in ('-h', '--help'):
-            show_help()
-            sys.exit(0)
-        elif option in ('-n', '--disable-tryit'):
-            cmd_line['disable_tryit'] = True
-        elif option in ('-p', '--packages'):
-            cmd_line['alternate_package_list'] = argument
-        elif option in ('-t', '--testing'):
-            cmd_line['testing'] = True
-        elif option in ('-u', '--update'):
-            cmd_line['update'] = True
-        elif option in ('-v', '--verbose'):
-            cmd_line['verbose'] = True
-        elif option in ('-z', '--z-hidden'):
-            cmd_line['z_hidden'] = True
-        else:
-            assert False, "Unhandled option"
-
-    '''
-
-
-
-
-
-
+    cmd_line = parse_options()
 
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
@@ -493,12 +453,6 @@ def init_cnchi():
 
     if not check_gtk_version():
         sys.exit(1)
-
-        
-
-
-
-
 
     '''
     if cmd_line['update']:

@@ -302,8 +302,8 @@ class InstallationProcess(multiprocessing.Process):
                 self.download_packages()
                 self.queue_event('debug', _('Packages downloaded.'))
 
-            # if len(cache_dir) > 0:
-            #     self.copy_cache_files(cache_dir)
+            if self.settings.get('copy_cache'):
+                self.copy_cache_files(self.settings.get('cache'))
 
             self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
