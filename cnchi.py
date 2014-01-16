@@ -454,22 +454,26 @@ def init_cnchi():
     if not check_gtk_version():
         sys.exit(1)
 
-    '''
-    if cmd_line['update']:
+    if cmd_line.update is not None:
         setup_logging()
-        # Check if program needs to be updated
-        upd = updater.Updater(_force_update)
+        force = False
+        if cmd_line.update == 2:
+            force = True
+        upd = updater.Updater(force)
         if upd.update():
             remove_temp_files()
-            if not cmd_line['force_update']:
-                print("Program updated! Restarting...")
-                # Run another instance of Cnchi (which will be the new version)
-                os.execl(sys.executable, *([sys.executable] + sys.argv))
+            if force:
+                # Remove -uu option
+                new_argv = []
+                for argv in sys.argv:
+                    if argv != "-uu":
+                        new_argv.append(argv)
             else:
-                print("Program updated! Please restart Cnchi.")
-            # Exit and let the new instance do all the hard work
+                new_argv = sys.argv
+            print("Program updated! Restarting...")
+            # Run another instance of Cnchi (which will be the new version)
+            os.execl(sys.executable, *([sys.executable] + new_argv))
             sys.exit(0)
-    '''
     
     # Drop root privileges
     misc.drop_privileges()
