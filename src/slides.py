@@ -158,6 +158,7 @@ class Slides(Gtk.Box):
                 #self.set_message(install_ok)
                 response = show.question(install_ok)
                 if response == Gtk.ResponseType.YES:
+                    logging.shutdown()
                     self.reboot()
                 else:
                     tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log"]
@@ -170,6 +171,7 @@ class Slides(Gtk.Box):
                                 os.remove(p)
                     while Gtk.events_pending():
                         Gtk.main_iteration()
+                    logging.shutdown()
                     Gtk.main_quit()
                 return False
             elif event[0] == 'error':
