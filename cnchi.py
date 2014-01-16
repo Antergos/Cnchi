@@ -441,10 +441,6 @@ def parse_options():
 def init_cnchi():
     """ This function initialises Cnchi """
 
-    # Command line options
-    global cmd_line
-    cmd_line = parse_options()
-
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
@@ -454,8 +450,13 @@ def init_cnchi():
     if not check_gtk_version():
         sys.exit(1)
 
+    # Command line options
+    global cmd_line
+    cmd_line = parse_options()
+
+    setup_logging()
+
     if cmd_line.update is not None:
-        setup_logging()
         force = False
         if cmd_line.update == 2:
             force = True
