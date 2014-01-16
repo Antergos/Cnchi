@@ -454,7 +454,7 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
-    setup_logging()
+    #setup_logging()
 
     if cmd_line.update is not None:
         force = False
