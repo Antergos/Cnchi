@@ -1029,7 +1029,7 @@ class InstallationProcess(multiprocessing.Process):
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            self.bootloader_ok = True
+            self.settings.set('bootloader_ok', True)
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
@@ -1126,14 +1126,16 @@ class InstallationProcess(multiprocessing.Process):
 
         path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
                ("boot/EFI/antergos_grub/" + grub_efi_old))))
-
+        exists = []
         for p in path:
-            if not os.path.exists(p):
+            if os.path.exists(p):
+                exists.append(p)
+        if len(exists) == 0:
                 self.queue_event('warning', _("GRUB(2) UEFI install may not have completed successfully."))
-                self.bootloader_ok = False
+                self.settings.set('bootloader_ok', False)
         else:
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
-            self.bootloader_ok = True
+            self.settings.set('bootloader_ok', True)
 
 
     def copy_bootloader_theme_files(self):
