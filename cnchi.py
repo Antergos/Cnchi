@@ -76,7 +76,6 @@ cmd_line = {
     "alternate_package_list" : "",
     "cache_dir" : "",
     "copy_cache" : False,
-    "force_grub_type" : False,
     "force_update" : False,
     "log_level" : logging.INFO,
     "update" : False,
@@ -170,7 +169,8 @@ class Main(Gtk.Window):
             self.settings.set("desktops", desktops.DESKTOPS)
 
         # Set if a grub type must be installed (user choice)
-        self.settings.set("force_grub_type", cmd_line['force_grub_type'])
+        # TODO: Remove all force_grub code
+        self.settings.set("force_grub_type", False)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(self.ui_dir + "cnchi.ui")
@@ -393,20 +393,6 @@ def setup_logging():
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
 
-def show_help():
-    """ Show Cnchi command line options """
-    print("Cnchi Antergos Installer")
-    print("Advanced options:")
-    print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
-    print("-c, --cache : Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)")
-    print("-cc, --copycache : Copy xz packages from a cache location before installing. (Cnchi will download them anyway if a new version is found)")
-    print("-d, --debug : Set debug log level")
-    print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
-    print("-h, --help : Show this help message")
-    print("-p file.xml, --packages file.xml : Install the packages referenced by file.xml instead of the default ones")
-    print("-t, --testing : Do not perform any changes (useful for developers)")
-    print("-v, --verbose : Show logging messages to stdout")
-
 def check_gtk_version():
     """ Check GTK version """
     # Check desired GTK Version
@@ -431,59 +417,33 @@ def check_gtk_version():
 
     return True
 
+def parse_options():
+    """ argparse http://docs.python.org/3/howto/argparse.html """
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
+    parser.add_argument("-a", "--aria2", help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"), action="store_true")
+    parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs=1)
+    parser.add_argument("-cc", "--copycache", help=_("As --cache but before it copies all xz packages to destination"), nargs=1)
+    parser.add_argument("-d", "--debug", help=_("Set log level to 'debug'"), action="store_true")
+    parser.add_argument("-p", "--packages", help=_("Install the packages referenced by file.xml instead of the default ones"), nargs=1)
+    parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
+    parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
+
+    return parser.parse_args()
+
 def init_cnchi():
     """ This function initialises Cnchi """
 
+
+    args = parse_options()
+
+    if args.verbose:
+        print("verbosity turned on")
+
     # Command line options
     global cmd_line
-
-    # Check for hwinfo
-    # (this check is just for developers, in our liveCD hwinfo will always be installed)
-    if not os.path.exists("/usr/bin/hwinfo"):
-        print("Please install hwinfo before running this installer")
-        sys.exit(1)
-
-    if not check_gtk_version():
-        sys.exit(1)
-        
-    # argparse http://docs.python.org/3/howto/argparse.html
-
-    # Program options
     '''
-         ["aria2", "cache=", "copycache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing", "z-hidden"])
-
-    options = [
-        ("-a", "--aria2", _(""), "store_true"),
-        ("-c", "--cache", _(""), "count"),
-        ("-cc", "--copycache", _("")),
-        ("-v", "--verbose", _("Show logging messages to stdout"))]
-
-    import argparse
-    parser = argparse.ArgumentParser()
-    for option in options:
-        parser.add_argument(option[0], option[1], help=option[2], action=option[3])
-
-    
-    #args = parser.parse_args()
-    #if args.verbosity:
-    #    print("verbosity turned on")
-    '''
-    
-    
-    
-    # Check program args
-    arguments_vector = sys.argv[1:]
-
-    try:
-        options, arguments = getopt.getopt(arguments_vector, "ac:dp:ufvg:nhtz",
-         ["aria2", "cache=", "copycache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help", "testing", "z-hidden"])
-    except getopt.GetoptError as e:
-        show_help()
-        print(str(e))
-        sys.exit(2)
-
     for option, argument in options:
         if option in ('-a', '--aria2'):
             cmd_line['use_aria2'] = True
@@ -517,7 +477,30 @@ def init_cnchi():
         else:
             assert False, "Unhandled option"
 
+    '''
 
+
+
+
+
+
+
+    # Check for hwinfo
+    # (this check is just for developers, in our liveCD hwinfo will always be installed)
+    if not os.path.exists("/usr/bin/hwinfo"):
+        print("Please install hwinfo before running this installer")
+        sys.exit(1)
+
+    if not check_gtk_version():
+        sys.exit(1)
+
+        
+
+
+
+
+
+    '''
     if cmd_line['update']:
         setup_logging()
         # Check if program needs to be updated
@@ -532,7 +515,8 @@ def init_cnchi():
                 print("Program updated! Please restart Cnchi.")
             # Exit and let the new instance do all the hard work
             sys.exit(0)
-
+    '''
+    
     # Drop root privileges
     misc.drop_privileges()
 
