@@ -136,7 +136,8 @@ class AutoPartition(object):
         self.uefi = False
 
         if os.path.exists("/sys/firmware/efi"):
-            # TODO: Let user choose between GPT and MBR. For now always use MBR.
+            # TODO: Let user choose between GPT and MBR.
+            # As it is now, Grub has some GPT issues.  For now always use MBR.
             self.uefi = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
