@@ -295,7 +295,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(txt)
             return False
 
-        all_ok = True
+        all_ok = False
 
         try:
             self.queue_event('debug', _('Selecting packages...'))
@@ -317,25 +317,27 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Configuring system...'))
             self.configure_system()
             self.queue_event('debug', _('System configured.'))
+            
+            all_ok = True
         except subprocess.CalledProcessError as err:
             cmd = _("Command %s has failed.") % err.cmd
             logging.error(cmd)
             out = _("Output : %s") % err.output 
             logging.error(out)
             self.queue_fatal_event(cmd)
-            all_ok = False
         except InstallError as err:
             logging.error(err.value)
             self.queue_fatal_event(err.value)
-            all_ok = False
         except pyalpm.error as err:
-            logging.error(err.value)
-            self.queue_fatal_event(err.value)
-            all_ok = False
+            logging.error(err)
+            self.queue_fatal_event(err)
+        except KeyboardInterrupt as err:
+            logging.error(err)
+            self.queue_fatal_event(err)
         except Exception as err:
             # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
             logging.exception('Error: %s. Unable to continue.' % err)
-            all_ok = False
+            self.queue_fatal_event(err)
 
         self.running = False
 
