@@ -35,7 +35,11 @@ def get_used_ntfs(part):
         result = subprocess.check_output(shlex.split("ntfsinfo -m %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of NTFS partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         csize, vsize, fsize = (0, 0, 0)
@@ -59,7 +63,11 @@ def get_used_ext(part):
         result = subprocess.check_output(shlex.split("dumpe2fs -h %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of EXTFS partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         csize, vsize, fsize = (0, 0, 0)
@@ -83,7 +91,11 @@ def get_used_fat(part):
         result = subprocess.check_output(shlex.split("dosfsck -n -v %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of FAT partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         bperc = 0
@@ -111,7 +123,11 @@ def get_used_jfs(part):
         result = subprocess.check_output(shlex.split("jfs_fsck -n %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of JFS partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         vsize, fsize = (0, 0)
@@ -133,7 +149,11 @@ def get_used_reiser(part):
         result = subprocess.check_output(shlex.split("debugreiserfs -d %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of REISERFS partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         vsize, fsize = (0, 0)
@@ -155,21 +175,26 @@ def get_used_btrfs(part):
     """ Gets used space in a Btrfs partition """
     used = 0
     try:
-        x = subprocess.check_output(shlex.split("btrfs filesystem show %s" % part))
-    except Exception as e:
-        x = None
-        #print(e)
-    if x:
+        result = subprocess.check_output(shlex.split("btrfs filesystem show %s" % part))
+    except Exception as err:
+        result = None
+        txt = _("Can't detect used space of BTRFS partition %s") % part
+        logging.error(txt)
+        logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
+
+    if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)
-        x = x.decode()
-        y = x.split('\n')
+        result = result.decode()
+        result = result.split('\n')
         szmap = {"K":1000,
                  "M":1000000,
                  "G":1000000000,
                  "T":1000000000000,
                  "P":1000000000000000,
                 }
-        for z in y:
+        for z in result:
             if part in z:
                 vsize = z.split()[3]
                 usize = z.split()[5]
@@ -192,7 +217,11 @@ def get_used_xfs(part):
         result = subprocess.check_output(command)
     except subprocess.CalledProcessError as err:
         result = None
+        txt = _("Can't detect used space of XFS partition %s") % part
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err))
+        show.error(debugtxt)
 
     if result:
         vsize, fsize = (1, 0)

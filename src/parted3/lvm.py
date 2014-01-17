@@ -70,8 +70,12 @@ def remove_logical_volume(logical_volume):
     try:
         subprocess.check_call(["lvremove", "-f", logical_volume])
     except subprocess.CalledProcessError as err:
+        txt = _("Can't remove logical volume %s") % logical_volume
+        logging.error(txt)
         logging.error(err)
-
+        debugtxt = ("%s\n%s" % (txt, err)) 
+        show.error(debugtxt)
+        
 @misc.raise_privileges
 def remove_volume_group(volume_group):
     """ Removes an entire volume group """
@@ -84,12 +88,20 @@ def remove_volume_group(volume_group):
     try:
         subprocess.check_call(["vgremove", "-f", volume_group])
     except subprocess.CalledProcessError as err:
+        txt = _("Can't remove volume group %s") % volume_group
+        logging.error(txt)
         logging.error(err)
-
+        debugtxt = ("%s\n%s" % (txt, err)) 
+        show.error(debugtxt)
+        
 @misc.raise_privileges
 def remove_physical_volume(physical_volume):
     """ Removes a physical volume """
     try:
         subprocess.check_call(["pvremove", "-f", physical_volume])
     except subprocess.CalledProcessError as err:
+        txt = _("Can't remove physical volume %s") % physical_volume
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err)) 
+        show.error(debugtxt)
