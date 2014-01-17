@@ -43,6 +43,11 @@ import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
 
+try:
+    import pyalpm
+except ImportError:
+    pass
+    
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 
 class InstallError(Exception):
@@ -320,6 +325,10 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(cmd)
             all_ok = False
         except InstallError as err:
+            logging.error(err.value)
+            self.queue_fatal_event(err.value)
+            all_ok = False
+        except pyalpm.error as err:
             logging.error(err.value)
             self.queue_fatal_event(err.value)
             all_ok = False
