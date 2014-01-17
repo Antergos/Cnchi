@@ -927,7 +927,10 @@ class InstallationProcess(multiprocessing.Process):
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
         swap_partition = self.mount_devices["swap"]
         swap_uuid = fs.get_info(swap_partition)['UUID']
-        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+        if swap_partition:
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+        else:
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
 
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
