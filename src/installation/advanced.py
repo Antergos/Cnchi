@@ -125,9 +125,10 @@ class InstallationAdvanced(Gtk.Box):
             combo.remove_all()
             for mp in sorted(fs.COMMON_MOUNT_POINTS):
                 combo.append_text(mp)
-            # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
-            # if self.uefi:
-            #     combo.append_text('/boot/efi')
+            
+            if self.uefi:
+                # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
+                combo.append_text('/boot/efi')
 
         # We will store our devices here
         self.disks = None
@@ -1395,7 +1396,9 @@ class InstallationAdvanced(Gtk.Box):
                 if "fat" not in fs and "ntfs" not in fs:
                     #check_ok = True
                     exist_root = True
+            # /boot or /boot/efi ¿?
             if mnt == "/boot":
+            #if mnt == "/boot/efi":
                 # Only fat partitions
                 if "fat" in fs:
                     exist_efi = True

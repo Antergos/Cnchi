@@ -20,15 +20,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import xml.etree.ElementTree as etree
-
 from gi.repository import Gtk
-import subprocess
 import os
-import sys
 import canonical.misc as misc
 import logging
-#import installation_process
 from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed

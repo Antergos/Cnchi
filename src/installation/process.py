@@ -888,6 +888,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.settings.set('btrfs', True)
                 else:
                     chk = '1'
+                    self.settings.set('btrfs', False)
                 opts = "rw,relatime,data=ordered"
             else:
                 full_path = os.path.join(self.dest_dir, path)
@@ -1078,6 +1079,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
+            # /install/boot or /install/boot/efi ¿?
             subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)

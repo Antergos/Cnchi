@@ -23,7 +23,7 @@
 import os
 import subprocess
 import logging
-#import time
+import show_message as show
 
 """ AutoPartition class """
 
@@ -165,7 +165,9 @@ class AutoPartition(object):
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():
-                logging.error("Unkown filesystem type %s", fs_type)
+                txt = _("Unknown filesystem type %s") % fs_type
+                logging.error(txt)
+                show.error(txt)
                 return
 
             command = mkfs[fs_type]
@@ -177,7 +179,7 @@ class AutoPartition(object):
                 logging.error(txt)
                 logging.error(err.cmd)
                 logging.error(err.output)
-                show.fatal_error(txt)
+                show.error(txt)
                 return
 
             #time.sleep(4)
@@ -355,7 +357,7 @@ class AutoPartition(object):
         if self.uefi:
             gpt_bios_grub_part_size = 2
             uefisys_part_size = 512
-            empty_space_size = 1
+            empty_space_size = 2
         else:
             gpt_bios_grub_part_size = 0
             uefisys_part_size = 0
