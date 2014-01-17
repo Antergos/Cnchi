@@ -157,6 +157,11 @@ class InstallationAutomatic(Gtk.Box):
         #self.forward_button.set_sensitive(False)
 
     def store_values(self):
+        """ The user clicks 'Install now!' """
+        response = self.show_warning()
+        if response == Gtk.ResponseType.NO:
+            return False
+        
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_key_pass', luks_password)
         if luks_password != "":
@@ -233,3 +238,14 @@ class InstallationAutomatic(Gtk.Box):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
+
+    def show_warning(self):
+        txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s" % self.device_store.get_active_text())
+        message = Gtk.MessageDialog(None,
+                          Gtk.DialogFlags.MODAL,
+                          Gtk.MessageType.QUESTION,
+                          Gtk.ButtonsType.YES_NO,
+                          txt)
+        response = message.run()
+        message.destroy()
+        return response
