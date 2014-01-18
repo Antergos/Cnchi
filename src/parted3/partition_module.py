@@ -98,9 +98,9 @@ def get_devices():
             try:
                 diskob = parted.Disk(dev)
                 disk_dic[dev.path] = diskob
-            except Exception as e:
-                logging.error(e)
-
+            except Exception as err:
+                logging.error(err)
+                show.error((_("Exception: For more information take a look at /tmp/cnchi.log"), err))
                 disk_dic[dev.path] = None
 
     return disk_dic
@@ -163,8 +163,12 @@ def get_partitions(diskob):
 def delete_partition(diskob, part):
     try:
         diskob.deletePartition(part)
-    except Exception as e:
+    except Exception as err:
+        txt = _("Can't delete partition %s") % part
+        logging.error(txt)
         logging.error(e)
+        debugtxt = ("%s\n%s" % (txt, err)) 
+        show.error(debugtxt)        
 
 def get_partition_size(diskob, part):
     dev = diskob.device
@@ -211,7 +215,9 @@ def create_partition(diskob, part_type, geom):
     mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend-1)
     maxgeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
     if diskob.maxPartitionLength < maxgeom.length:
-        logging.error('Partition is too large!')
+        txt = _('Partition is too large!')
+        logging.error(txt)
+        show.error(txt)
         return None
     else:
         npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
@@ -268,7 +274,11 @@ def get_used_space_from_path(path):
         used_space = lines[1].split()[2]
     except subprocess.CalledProcessError as err:
         used_space = 0
+        txt = _("Can't detect used space from %s") % path
+        logging.error(txt)
         logging.error(err)
+        debugtxt = ("%s\n%s" % (txt, err)) 
+        show.error(debugtxt)
 
     return used_space
 

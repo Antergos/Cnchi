@@ -43,6 +43,11 @@ import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
 
+try:
+    import pyalpm
+except ImportError:
+    pass
+    
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 
 class InstallError(Exception):
@@ -290,7 +295,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(txt)
             return False
 
-        all_ok = True
+        all_ok = False
 
         try:
             self.queue_event('debug', _('Selecting packages...'))
@@ -312,21 +317,27 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Configuring system...'))
             self.configure_system()
             self.queue_event('debug', _('System configured.'))
+            
+            all_ok = True
         except subprocess.CalledProcessError as err:
             cmd = _("Command %s has failed.") % err.cmd
             logging.error(cmd)
             out = _("Output : %s") % err.output 
             logging.error(out)
             self.queue_fatal_event(cmd)
-            all_ok = False
         except InstallError as err:
             logging.error(err.value)
             self.queue_fatal_event(err.value)
-            all_ok = False
+        except pyalpm.error as err:
+            logging.error(err)
+            self.queue_fatal_event(err)
+        except KeyboardInterrupt as err:
+            logging.error(err)
+            self.queue_fatal_event(err)
         except Exception as err:
             # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
             logging.exception('Error: %s. Unable to continue.' % err)
-            all_ok = False
+            self.queue_fatal_event(err)
 
         self.running = False
 
@@ -877,6 +888,7 @@ class InstallationProcess(multiprocessing.Process):
                     self.settings.set('btrfs', True)
                 else:
                     chk = '1'
+                    self.settings.set('btrfs', False)
                 opts = "rw,relatime,data=ordered"
             else:
                 full_path = os.path.join(self.dest_dir, path)
@@ -1070,6 +1082,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
+            # /install/boot or /install/boot/efi ¿?
             subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
