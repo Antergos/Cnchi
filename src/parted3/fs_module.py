@@ -63,7 +63,7 @@ def label_fs(fstype, part, label):
     ladic = {'ext2':'e2label %(part)s %(label)s',
              'ext3':'e2label %(part)s %(label)s',
              'ext4':'e2label %(part)s %(label)s',
-             'f2fs':'blkid -s LABEL -o value %(part)s %(label)s'
+             'f2fs':'blkid -s LABEL -o value %(part)s %(label)s',
              'fat':'mlabel -i %(part)s ::%(label)s',
              'fat16':'mlabel -i %(part)s ::%(label)s',
              'fat32':'mlabel -i %(part)s ::%(label)s',
