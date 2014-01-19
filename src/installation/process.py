@@ -295,6 +295,14 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(txt)
             return False
 
+        # If kernel images exists in /boot they are most likely from a failed install attempt and need
+        # to be removed otherwise pyalpm will raise a fatal exception later on.
+        kernel_imgs = ("/install/boot/vmlinuz-linux", "/install/boot/initramfs-linux.img",
+                       "/install/boot/initramfs-linux-fallback.img")
+        for img in kernel_imgs:
+            if os.path.exists(img):
+                os.remove(img)
+
         all_ok = False
 
         try:
