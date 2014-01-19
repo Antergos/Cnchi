@@ -39,8 +39,9 @@ def get_used_ntfs(part):
         txt = _("Can't detect used space of NTFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        # debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         csize, vsize, fsize = (0, 0, 0)
@@ -67,8 +68,9 @@ def get_used_ext(part):
         txt = _("Can't detect used space of EXTFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        # debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         csize, vsize, fsize = (0, 0, 0)
@@ -91,13 +93,16 @@ def get_used_fat(part):
     try:
         result = subprocess.check_output(shlex.split("dosfsck -n -v %s" % part))
     except subprocess.CalledProcessError as err:
-        result = None
-        txt = _("Can't detect used space of FAT partition %s") % part
-        logging.error(txt)
-        logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
-
+        if b'Dirty bit is set' in err.output:
+            result = err.output
+        else:
+            result = None
+            txt = _("Can't detect used space of FAT partition %s") % part
+            logging.error(txt)
+            logging.error(err)
+            # Probably shouldn't scare the user just because we can't determine free space
+            # debugtxt = ("%s\n%s" % (txt, err))
+            # show.error(debugtxt)
     if result:
         bperc = 0
         cl = 0
@@ -116,6 +121,7 @@ def get_used_fat(part):
         used = (sbyte + (bperc * ucl)) / (bperc * cl)
     return used
 
+
 @misc.raise_privileges
 def get_used_jfs(part):
     """ Gets used space in a JFS partition """
@@ -127,8 +133,9 @@ def get_used_jfs(part):
         txt = _("Can't detect used space of JFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        #debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         vsize, fsize = (0, 0)
@@ -153,8 +160,9 @@ def get_used_reiser(part):
         txt = _("Can't detect used space of REISERFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        # debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         vsize, fsize = (0, 0)
@@ -182,8 +190,9 @@ def get_used_btrfs(part):
         txt = _("Can't detect used space of BTRFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        # debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)
@@ -221,8 +230,9 @@ def get_used_xfs(part):
         txt = _("Can't detect used space of XFS partition %s") % part
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err))
-        show.error(debugtxt)
+        # Probably shouldn't scare the user just because we can't determine free space
+        # debugtxt = ("%s\n%s" % (txt, err))
+        # show.error(debugtxt)
 
     if result:
         vsize, fsize = (1, 0)

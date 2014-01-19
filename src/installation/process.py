@@ -295,6 +295,14 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(txt)
             return False
 
+        # If kernel images exists in /boot they are most likely from a failed install attempt and need
+        # to be removed otherwise pyalpm will raise a fatal exception later on.
+        kernel_imgs = ("/install/boot/vmlinuz-linux", "/install/boot/initramfs-linux.img",
+                       "/install/boot/initramfs-linux-fallback.img")
+        for img in kernel_imgs:
+            if os.path.exists(img):
+                os.remove(img)
+
         all_ok = False
 
         try:
@@ -939,7 +947,10 @@ class InstallationProcess(multiprocessing.Process):
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
         swap_partition = self.mount_devices["swap"]
         swap_uuid = fs.get_info(swap_partition)['UUID']
-        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+        if swap_partition:
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+        else:
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
 
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
@@ -1041,7 +1052,7 @@ class InstallationProcess(multiprocessing.Process):
         core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
         if os.path.exists(core_path):
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            self.bootloader_ok = True
+            self.settings.set('bootloader_ok', True)
         else:
             self.queue_event('warning', _("ERROR installing GRUB(2) BIOS."))
 
@@ -1139,14 +1150,16 @@ class InstallationProcess(multiprocessing.Process):
 
         path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
                ("boot/EFI/antergos_grub/" + grub_efi_old))))
-
+        exists = []
         for p in path:
-            if not os.path.exists(p):
+            if os.path.exists(p):
+                exists.append(p)
+        if len(exists) == 0:
                 self.queue_event('warning', _("GRUB(2) UEFI install may not have completed successfully."))
-                self.bootloader_ok = False
+                self.settings.set('bootloader_ok', False)
         else:
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
-            self.bootloader_ok = True
+            self.settings.set('bootloader_ok', True)
 
 
     def copy_bootloader_theme_files(self):
