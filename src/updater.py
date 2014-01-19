@@ -73,7 +73,7 @@ class Updater():
              return True
 
         #version is always: x.y.z
-        cur_ver = info.cnchi_VERSION.split(".")
+        cur_ver = info.CNCHI_VERSION.split(".")
         web_ver = self.web_version.split(".")
 
         cur = [int(cur_ver[0]),int(cur_ver[1]),int(cur_ver[2])]
@@ -151,10 +151,10 @@ class Updater():
         return True
 
     def replace_old_with_new_versions(self):
-        logging.info("Replacing version %s with version %s..." % (info.cnchi_VERSION, self.web_version))
+        logging.info("Replacing version %s with version %s..." % (info.CNCHI_VERSION, self.web_version))
         for f in self.web_files:
             name = f['name']
-            old_name = os.path.join(_base_dir, name + "." + info.cnchi_VERSION.replace(".", "_"))
+            old_name = os.path.join(_base_dir, name + "." + info.CNCHI_VERSION.replace(".", "_"))
             new_name = os.path.join(_base_dir, name + "." + self.web_version.replace(".", "_"))
             cur_name = os.path.join(_base_dir, name)
 
