@@ -22,7 +22,8 @@
 
 """ Nouveau driver installation """
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware
 import os
 
 CLASS_NAME = "Nouveau"

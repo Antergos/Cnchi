@@ -22,7 +22,8 @@
 
 """ Broadcom-wl driver installation """
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware
 
 DEVICES = [('0x14e4', '0x4315')]
 

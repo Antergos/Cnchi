@@ -22,7 +22,9 @@
 
 """  driver installation """
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware, chroot
+import os
 
 DEVICES = [('0x80ee', '0xcafe')]
 
@@ -35,17 +37,17 @@ class Virtualbox(Hardware):
     def get_packages(self):
         return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
 
-    def chroot(self, cmd):
-        __super__().chroot(self, cmd)
-
     def post_install(self, dest_dir):
+        path = "%s/etc/modules-load.d" % dest_dir
+        if not os.path.exists(path):
+            os.makedirs(path)
         path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
         with open(path, 'w') as modules:
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
-        self.chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        self.chroot(["systemctl", "enable", "vboxservice"], dest_dir)
+        chroot(["systemctl", "disable", "openntpd"], dest_dir)
+        chroot(["systemctl", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """

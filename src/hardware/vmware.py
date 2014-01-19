@@ -22,7 +22,8 @@
 
 """  driver installation """
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware
 
 DEVICES = [
 ('0x15ad', '0x0405'),

@@ -24,7 +24,8 @@
 
 # Support for consumer fingerprint reader devices.
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware
 
 DEVICES = [
 ('0x045e', '0x00bb'),

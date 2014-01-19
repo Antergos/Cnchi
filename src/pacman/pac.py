@@ -311,12 +311,14 @@ class Pac(object):
 
             # If pacman is just updating databases total_download_size will be zero
             if self.total_download_size == 0:
-                if filename.endswith(".db"):
-                    filename = filename[:-3]
+                ext = ".db"
+                if filename.endswith(ext):
+                    filename = filename[:-len(ext)]
                 text = _("Updating %s database") % filename
             else:
-                if filename.endswith(".pkg.tar.xz"):
-                    filename = filename[:-11]
+                ext = ".pkg.tar.xz"
+                if filename.endswith(ext):
+                    filename = filename[:-len(ext)]
                 text = _("Downloading %s") % filename
                 global_percent = self.total_downloaded / self.total_download_size
                 self.queue_event('global_percent', global_percent)

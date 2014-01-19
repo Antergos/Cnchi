@@ -26,7 +26,8 @@
 # - http://www.x.org/archive/X11R7.5/doc/man/man4/evdev.4.html
 # - https://bbs.archlinux.org/viewtopic.php?id=126208
 
-from hardware import Hardware
+#from hardware import Hardware
+from hardware.hardware import Hardware
 import subprocess
 
 DEVICES = [('0x0eef', '0x0001')]
