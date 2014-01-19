@@ -948,10 +948,11 @@ class InstallationProcess(multiprocessing.Process):
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
-        swap_partition = self.mount_devices["swap"]
-        swap_uuid = fs.get_info(swap_partition)['UUID']
-        if swap_partition:
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=' + swap_uuid + ' quiet"'
+        
+        if "swap" in self.mount_devices:
+            swap_partition = self.mount_devices["swap"]
+            swap_uuid = fs.get_info(swap_partition)['UUID']
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=%s quiet"' % swap_uuid
         else:
             kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
 
@@ -966,12 +967,9 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             if self.settings.get("luks_key_pass") == "":
-                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos cryptkey=%s:ext2:/.keyfile-root"'
-                # % (root_device, boot_device)
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
                                'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
             else:
-                #default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=%s:cryptAntergos"' % root_device
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
             with open(default_grub) as grub_file:
