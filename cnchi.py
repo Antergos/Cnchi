@@ -112,8 +112,9 @@ class Main(Gtk.Window):
 
         # Check if we have administrative privileges
         if os.getuid() != 0:
-            show.fatal_error(_('This installer must be run with administrative'
+            show.error(_('This installer must be run with administrative'
                          ' privileges, and cannot continue without them.'))
+            sys.exit(1)
 
         setup_logging()
 
@@ -208,8 +209,6 @@ class Main(Gtk.Window):
         # Load all pages
         # (each one is a screen, a step in the install process)
 
-        self.pages = dict()
-
         params = dict()
         params['header'] = self.header
         params['ui_dir'] = self.ui_dir
@@ -219,15 +218,16 @@ class Main(Gtk.Window):
         params['settings'] = self.settings
         params['main_progressbar'] = self.ui.get_object('progressbar1')
         
-        if cmd_line.packages:
-            params['alternate_package_list'] = cmd_line.packages
+        if cmd_line.packagelist:
+            params['alternate_package_list'] = cmd_line.packagelist
             logging.info("Using '%s' file as package list", params['alternate_package_list'])
         else:
             params['alternate_package_list'] = ""
             
         params['disable_tryit'] = cmd_line.disable_tryit
         params['testing'] = cmd_line.testing
-
+        
+        self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(params)
         self.pages["language"] = language.Language(params)
         self.pages["location"] = location.Location(params)
@@ -430,7 +430,7 @@ def parse_options():
     parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs='?')
     parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
     parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version (-uu will force the update)"), action="count")
-    parser.add_argument("-p", "--packages", help=_("Install the packages referenced by file.xml instead of the default ones"), nargs='?')
+    parser.add_argument("-p", "--packagelist", help=_("Install the packages referenced by a local xml instead of the default ones"), nargs='?')
     parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
     parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
     parser.add_argument("--disable-tryit", help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"), action="store_true")

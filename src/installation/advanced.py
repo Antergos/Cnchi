@@ -126,9 +126,9 @@ class InstallationAdvanced(Gtk.Box):
             for mp in sorted(fs.COMMON_MOUNT_POINTS):
                 combo.append_text(mp)
             
-            if self.uefi:
-                # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
-                combo.append_text('/boot/efi')
+            #if self.uefi:
+            #    # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
+            #    combo.append_text('/boot/efi')
 
         # We will store our devices here
         self.disks = None
