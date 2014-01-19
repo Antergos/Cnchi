@@ -561,7 +561,10 @@ class InstallationProcess(multiprocessing.Process):
         try:
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
-            self.packages.extend(hardware_install.get_packages())
+            hardware_pkgs = hardware_install.get_packages()
+            if len(hardware_pkgs) > 0:
+                logging.debug("Hardware module added these packages : %s", hardware_pkgs)
+                self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
@@ -1655,6 +1658,7 @@ class InstallationProcess(multiprocessing.Process):
         try:
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
+            logging.debug("Running post-install scripts from hardware module...")
             hardware_install.post_install(self.dest_dir)
         except ImportError:
             logging.warning(_("Can't import hardware module."))

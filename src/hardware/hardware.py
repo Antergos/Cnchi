@@ -28,15 +28,19 @@ import logging
 
 DEVICES = []
 
+CLASS_NAME = ""
+
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
         pass
 
     def get_packages(self):
+        """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented!")
 
     def post_install(self, dest_dir):
+        """ Runs post install commands """
         raise NotImplementedError("postinstall is not implemented!")
 
     def check_device(self, device):
@@ -100,7 +104,7 @@ class HardwareInstall(object):
                 devices.append(("0x" + dev[0], "0x" + dev[1]))
 
         # Enable this for testing
-        #devices.append(('0x14e4', '0x4315'))
+        #devices.append(('0x80ee', '0xcafe'))
 
         # Find objects that support the found devices
         for obj in self.all_objects:
@@ -125,3 +129,4 @@ if __name__ == '__main__':
     hardware_install = HardwareInstall()
     pkgs = hardware_install.get_packages()
     print(pkgs)
+    hardware_install.post_install("/tmp")
