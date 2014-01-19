@@ -280,7 +280,7 @@ class Main(Gtk.Window):
         # Show main window
         self.show_all()
 
-        self.header.set_title("Cnchi")
+        self.header.set_title("Cnchi v%s" % info.CNCHI_VERSION)
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
 
