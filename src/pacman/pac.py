@@ -315,8 +315,8 @@ class Pac(object):
                     filename = filename[:-3]
                 text = _("Updating %s database") % filename
             else:
-                if filename.endswith(".xz"):
-                    filename = filename[:-3]
+                if filename.endswith(".pkg.tar.xz"):
+                    filename = filename[:-11]
                 text = _("Downloading %s") % filename
                 global_percent = self.total_downloaded / self.total_download_size
                 self.queue_event('global_percent', global_percent)
