@@ -143,7 +143,7 @@ class InstallationProcess(multiprocessing.Process):
         if timeout < 1:
             timeout = 1
         while tries < timeout and not self.callback_queue.empty():
-            time.wait(1)
+            time.sleep(1)
             tries += 1
 
     @misc.raise_privileges
