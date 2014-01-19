@@ -250,6 +250,8 @@ def get_used_space(part, part_type):
         space = get_used_btrfs(part)
     elif 'xfs' in part_type.lower():
         space = get_used_xfs(part)
+    elif 'f2fs' in part_type.lower():
+         space = get_used_f2fs(part)
     else:
         space = 0
     return space

@@ -74,8 +74,9 @@ class InstallationAdvanced(Gtk.Box):
         self.to_be_deleted = []
 
         self.uefi = False
-        if os.path.exists("/sys/firmware/efi/systab"):
-            self.uefi = True
+        if os.path.exists("/sys/firmware/efi"):
+            # self.uefi = True
+            pass
 
         # Call base class
         super().__init__()
@@ -379,10 +380,12 @@ class InstallationAdvanced(Gtk.Box):
                     uid = self.gen_partition_uid(path=partition_path)
                     if fs.get_type(partition_path):
                         fs_type = fs.get_type(partition_path)
-                    else:
+                    elif used_space.is_btrfs(partition_path):
                         # kludge, btrfs not being detected...
-                        if used_space.is_btrfs(partition_path):
-                            fs_type = 'btrfs'
+                        fs_type = 'btrfs'
+                    else:
+                        # Say unknown if we can't detect fs type instead of assumming btrfs
+                        fs_type = 'unknown'
 
                     if uid in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
@@ -1398,12 +1401,12 @@ class InstallationAdvanced(Gtk.Box):
                     exist_root = True
             # /boot or /boot/efi ¿?
             if mnt == "/boot":
-            #if mnt == "/boot/efi":
-                # Only fat partitions
-                if "fat" in fs:
-                    exist_efi = True
+                if os.path.exists('/sys/firmware/efi'):
+                    # Only fat partitions
+                    if "fat" in fs:
+                        exist_efi = True
 
-        if self.uefi:
+        if os.path.exists('/sys/firmware/efi'):
             check_ok = exist_root and exist_efi
         else:
             check_ok = exist_root

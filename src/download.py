@@ -159,8 +159,8 @@ class DownloadPackages(object):
 
         try:
             connection = xmlrpc.client.ServerProxy(aria2_url)
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as exception:
-            logging.exception(_("Can't connect to Aria2. Won't be able to speed up the download."))
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+            logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
 
         return connection
 
@@ -263,8 +263,8 @@ class DownloadPackages(object):
             try:
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
                 gids = self.connection.aria2.addMetalink(binary_metalink)
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as e:
-                logging.exception("Can't communicate with Aria2. Won't be able to speed up the download")
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+                logging.exception("Can't communicate with Aria2. Error Output: %s" % err)
 
         return gids
 
