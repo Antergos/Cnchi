@@ -28,8 +28,7 @@ import canonical.misc as misc
 import logging
 
 # constants
-NAMES = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'ntfs', 'jfs', \
-           'reiserfs', 'xfs', 'btrfs', 'swap']
+NAMES = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'xfs', 'btrfs', 'swap']
 
 COMMON_MOUNT_POINTS = [ '/', '/boot', '/home', '/usr', '/var' ]
 
@@ -64,6 +63,7 @@ def label_fs(fstype, part, label):
     ladic = {'ext2':'e2label %(part)s %(label)s',
              'ext3':'e2label %(part)s %(label)s',
              'ext4':'e2label %(part)s %(label)s',
+             'f2fs':'blkid -s LABEL -o value %(part)s %(label)s'
              'fat':'mlabel -i %(part)s ::%(label)s',
              'fat16':'mlabel -i %(part)s ::%(label)s',
              'fat32':'mlabel -i %(part)s ::%(label)s',
@@ -101,6 +101,7 @@ def create_fs(part, fstype, label='', other_opts=''):
     opt_dic = {'ext2':'-m 1',
                'ext3':'-m 1 -O dir_index',
                'ext4':'-m 1 -O dir_index',
+               'f2fs':'',
                'fat16':'',
                'fat32':'',
                'ntfs':'',
@@ -115,6 +116,7 @@ def create_fs(part, fstype, label='', other_opts=''):
     comdic = {'ext2':'mkfs.ext2 -L "%(label)s" %(other_opts)s %(part)s',
              'ext3':'mkfs.ext3 -L "%(label)s" %(other_opts)s %(part)s',
              'ext4':'mkfs.ext4 -L "%(label)s" %(other_opts)s %(part)s',
+             'f2fs':'mkfs.f2fs -l "%(label)s" %(other_opts)s %(part)s',
              'fat16':'mkfs.vfat -n "%(label)s" -F 16 %(other_opts)s %(part)s',
              'fat32':'mkfs.vfat -n "%(label)s" -F 32 %(other_opts)s %(part)s',
              'ntfs':'mkfs.ntfs -L "%(label)s" %(other_opts)s %(part)s',

@@ -7,12 +7,12 @@ reflector -p http -l 30 -f 5 --save /etc/pacman.d/mirrorlist;
 echo "Installing git..."
 pacman -Sy git grub efibootmgr f2fs-tools --noconfirm --needed;
 modprobe -a f2fs
-vbox_chk = "$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
+vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
 if [[ "${vbox_chk}" == "VirtualBox" ]]; then
 echo "VirtualBox detected. Checking kernel modules and starting vboxservice."
-modprobe -a vboxsf efivars dm-mod && systemctl start vboxservice;
+modprobe -a vboxsf efivarfs dm-mod && systemctl start vboxservice;
 else
-modprobe -a efivars dm-mod;
+modprobe -a efivarfs dm-mod;
 fi
 echo "Removing existing Cnchi..."
 rm -R /usr/share/cnchi;
