@@ -272,15 +272,13 @@ mate_settings() {
         fi
 
     # Set gsettings
-    # Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 
-
-	## Set defaults directories
+	## Set default directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
 	# Set mate in .dmrc
@@ -291,9 +289,15 @@ mate_settings() {
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 }
+
 nox_settings(){
 	echo "Done"
 }
+
+enlightenment_settings(){
+    echo "TODO"
+}
+
 
 desktop_files() {
     cat << EOF > ${DESTDIR}/usr/share/applications/antergos-wiki.desktop
