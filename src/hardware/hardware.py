@@ -112,7 +112,7 @@ class HardwareInstall(object):
         for obj in self.all_objects:
             for device in devices:
                 if obj.check_device(self=obj, device=device):
-                    logging.debug(device, "detected", obj, "supports it")
+                    #print(device, "detected", obj, "supports it")
                     self.objects_found.append(obj)
 
     def get_packages(self):

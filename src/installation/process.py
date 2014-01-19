@@ -138,6 +138,14 @@ class InstallationProcess(multiprocessing.Process):
         except queue.Full:
             pass
 
+    def wait_for_empty_queue(self, timeout):
+        tries = 0
+        if timeout < 1:
+            timeout = 1
+        while tries < timeout and not self.callback_queue.empty():
+            time.wait(1)
+            tries += 1
+
     @misc.raise_privileges
     def run(self):
         """ Run installation """
@@ -311,12 +319,17 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Packages selected'))
 
             if self.settings.get("use_aria2"):
-                self.queue_event('debug', _('Downloading packages...'))
+                self.queue_event('debug', _('Downloading packages using aria2...'))
                 self.download_packages()
                 self.queue_event('debug', _('Packages downloaded.'))
 
             if self.settings.get('copy_cache'):
                 self.copy_cache_files(self.settings.get('cache'))
+            else:
+                # Wait for all logs (logging and showing message to user is slower than just logging)
+                # if we don't wait, logs get mixed up (when copying cache files waiting more makes no sense
+                # as it is already a slow process)
+                self.wait_for_empty_queue(timeout=10)
 
             self.queue_event('debug', _('Installing packages...'))
             self.install_packages()
