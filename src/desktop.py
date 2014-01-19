@@ -132,10 +132,7 @@ class DesktopAsk(Gtk.Box):
             "without any type of graphical interface. After the installation you can " \
             "customize Antergos by installing packages with the command-line package manager.")
             txt = "<span weight='bold'>Command-line system</span>\n" + txt
-            
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.FILL)
-        label.set_size_request(-1, 100)
+        
         label.set_markup(txt)
 
         image.set_from_file(self.desktops_dir + desktop + ".png")

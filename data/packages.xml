@@ -44,6 +44,7 @@
         <pkgname>xf86-input-synaptics</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
+        <pkgname>ttf-liberation</pkgname>
     </graphic_system>
 
     <!-- Specific to noX/Base installation -->
@@ -359,7 +360,7 @@
             <pkgname>ttf-freefont</pkgname>
             <pkgname>ttf-arphic-uming</pkgname>
             <pkgname>ttf-baekmuk</pkgname>
-            <pkgname>ttf-ms-fonts</pkgname>
+            <pkgname>ttf-google-fonts</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>

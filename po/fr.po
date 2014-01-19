@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-04 14:04+0000\n"
+"POT-Creation-Date: 2013-12-01 22:18+PET\n"
+"PO-Revision-Date: 2013-12-02 03:18+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -191,15 +191,15 @@ msgid ""
 "Antergos by installing packages with the command-line package manager."
 msgstr "Ceci installera Antergos comme système de ligne de commande, sans bureau du tout. Après l’installation, vous pourrez installer le bureau de votre choix."
 
-#: src/desktop.py:143
+#: src/desktop.py:140
 msgid "Choose Your Desktop"
 msgstr ""
 
-#: src/desktop.py:153
+#: src/desktop.py:150
 msgid "Desktops"
 msgstr "Bureaux"
 
-#: src/desktop.py:186
+#: src/desktop.py:183
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi installera Antergos avec le bureau '%s'"
 
@@ -232,8 +232,8 @@ msgid "Warning! Can't resolve these dependencies: "
 msgstr "Attention ! Ces dépendances ne sont pas résolues :"
 
 #: src/features.py:99
-msgid "Feature Selection"
-msgstr "Sélection des fonctions"
+msgid "Features"
+msgstr ""
 
 #: src/features.py:104
 msgid "Bluetooth Support"
@@ -534,23 +534,37 @@ msgstr "Effacer le disque et installer Antergos"
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Avertissement : Ceci va effacer TOUTES les données sur le disque."
 
-#: src/installation_ask.py:114 src/installation_ask.py:116
+#: src/installation_ask.py:111
+msgid "Encrypt this installation for increased security."
+msgstr ""
+
+#: src/installation_ask.py:115
+msgid "You will be asked to create an encryption password in the next step."
+msgstr ""
+
+#: src/installation_ask.py:124
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr ""
+
+#: src/installation_ask.py:132 src/installation_ask.py:134
 msgid "Install Antergos alongside %s"
 msgstr "Installer Antergos à côté de %s"
 
-#: src/installation_ask.py:123
+#: src/installation_ask.py:141
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "Choisir manuellement où Antergos doit être installé (avancé)"
 
-#: src/installation_ask.py:126
+#: src/installation_ask.py:144
 msgid "Edit partition table and choose mount points."
 msgstr "Modifier la table de partition et choix du point d’amorce."
 
-#: src/installation_ask.py:146
+#: src/installation_ask.py:164
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr ""
 
-#: src/installation_ask.py:149
+#: src/installation_ask.py:167
 msgid "Antergos will be installed using LVM volumes"
 msgstr ""
 
@@ -592,123 +606,123 @@ msgstr ""
 msgid "Antergos will install the %s bootloader on %s"
 msgstr ""
 
-#: src/installation_process.py:79
+#: src/installation_process.py:78
 msgid "Installing using the '%s' method"
 msgstr "Installation à l'aide de la méthode '%s'"
 
-#: src/installation_process.py:177
+#: src/installation_process.py:176
 msgid "Error creating partitions and their filesystems"
 msgstr ""
 
-#: src/installation_process.py:216 src/installation_process.py:238
+#: src/installation_process.py:215 src/installation_process.py:237
 msgid "Mounting partition %s into %s directory"
 msgstr "Montage de la partition %s dans le répertoire %s"
 
-#: src/installation_process.py:222
+#: src/installation_process.py:221
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Montage de la partition %s dans le répertoire %s/boot"
 
-#: src/installation_process.py:226
+#: src/installation_process.py:225
 msgid "Couldn't mount root and boot partitions"
 msgstr "Impossible de monter les partitions root et boot"
 
-#: src/installation_process.py:243
+#: src/installation_process.py:242
 msgid "Can't mount %s in %s"
 msgstr "Ne peut monter %s sous %s"
 
-#: src/installation_process.py:263
+#: src/installation_process.py:262
 msgid "Can't create necessary directories on destination system"
 msgstr "Impossible de créer les répertoires nécessaires sur le système de destination"
 
-#: src/installation_process.py:408
+#: src/installation_process.py:407
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "Impossible de récupérer une liste de paquets en ligne, utilisation d’un fichier local à la place."
 
-#: src/installation_process.py:415
+#: src/installation_process.py:414
 msgid "Adding all desktops common packages"
 msgstr ""
 
-#: src/installation_process.py:426
+#: src/installation_process.py:425
 msgid "Adding '%s' desktop packages"
 msgstr ""
 
-#: src/installation_process.py:448
+#: src/installation_process.py:456
 msgid "Getting graphics card drivers"
 msgstr ""
 
-#: src/installation_process.py:494
+#: src/installation_process.py:502
 msgid "Adding filesystem packages"
 msgstr ""
 
-#: src/installation_process.py:541
+#: src/installation_process.py:549
 msgid "Check for user desired features and add them to our installation"
 msgstr ""
 
-#: src/installation_process.py:553
+#: src/installation_process.py:561
 msgid "Adding bootloader packages if needed"
 msgstr ""
 
-#: src/installation_process.py:607
+#: src/installation_process.py:628
 msgid "Special dirs already mounted."
 msgstr ""
 
-#: src/installation_process.py:633
+#: src/installation_process.py:654
 msgid "Special dirs already not mounted."
 msgstr ""
 
-#: src/installation_process.py:643
+#: src/installation_process.py:664
 msgid "Unable to umount %s"
 msgstr ""
 
-#: src/installation_process.py:804
+#: src/installation_process.py:825
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Installation du chargeur d’amorçage GRUB(2) BIOS dans %s"
 
-#: src/installation_process.py:830 src/installation_process.py:849
+#: src/installation_process.py:851 src/installation_process.py:870
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
 
-#: src/installation_process.py:847
+#: src/installation_process.py:868
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS a été installé avec succès."
 
-#: src/installation_process.py:860
+#: src/installation_process.py:881
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Installation du chargeur d’amorçage GRUB(2) UEFI %s dans %s"
 
-#: src/installation_process.py:888
+#: src/installation_process.py:909
 msgid "ERROR installing GRUB(2) configuration file."
 msgstr ""
 
-#: src/installation_process.py:916
+#: src/installation_process.py:937
 msgid "ERROR installing GRUB(2) locale."
 msgstr ""
 
-#: src/installation_process.py:930
+#: src/installation_process.py:951
 msgid "Error creating password hash for user %s"
 msgstr "Erreur de création du hash pour le mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:936
+#: src/installation_process.py:957
 msgid "Error changing password for user %s"
 msgstr "Erreur durant le changement du mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:1110
+#: src/installation_process.py:1131
 msgid "Configuring your new system"
 msgstr "Configuration de votre nouveau système"
 
-#: src/installation_process.py:1204
+#: src/installation_process.py:1248
 msgid "Generating locales..."
 msgstr "Créations des 'locales'"
 
-#: src/installation_process.py:1219
+#: src/installation_process.py:1263
 msgid "Adjusting hardware clock..."
 msgstr "Ajustement de l’horloge matérielle…"
 
-#: src/installation_process.py:1242
+#: src/installation_process.py:1284
 msgid "%s: Enable automatic login for user %s."
 msgstr ""
 
-#: src/installation_process.py:1302
+#: src/installation_process.py:1344
 msgid "Running mkinitcpio..."
 msgstr "Exécution de mkinitcpio…"
 
@@ -779,69 +793,57 @@ msgstr "Paramètres régionaux changés : %s"
 msgid "Can't change to locale '%s'"
 msgstr "Impossible de changer les paramètres régionaux '%s'"
 
-#: src/pacman/pac.py:236
-msgid "Package %s not found in any repo!"
-msgstr "Le paquet %s n’est présent dans aucun dépôt !"
-
-#: src/pacman/pac.py:289
+#: src/pacman/pac.py:253
 msgid "Checking dependencies..."
 msgstr "Vérification des dépendances..."
 
-#: src/pacman/pac.py:291
+#: src/pacman/pac.py:255
 msgid "Checking file conflicts..."
 msgstr "Vérification des conflits de fichiers..."
 
-#: src/pacman/pac.py:293
+#: src/pacman/pac.py:257
 msgid "Resolving dependencies..."
 msgstr "Résolution des dépendances..."
 
-#: src/pacman/pac.py:295
+#: src/pacman/pac.py:259
 msgid "Checking inter conflicts..."
 msgstr "Vérification des conflits internes..."
 
-#: src/pacman/pac.py:300
+#: src/pacman/pac.py:264
 msgid "Removing..."
 msgstr "Suppression..."
 
-#: src/pacman/pac.py:302
+#: src/pacman/pac.py:266
 msgid "Upgrading..."
 msgstr "Mise à niveau..."
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:268
 msgid "Checking integrity..."
 msgstr "Vérification de l'intégrité..."
 
-#: src/pacman/pac.py:307
+#: src/pacman/pac.py:270
 msgid "Loading packages files..."
 msgstr "Chargement des paquets..."
 
-#: src/pacman/pac.py:310
+#: src/pacman/pac.py:272
 msgid "Configuring..."
 msgstr "Configuration..."
 
-#: src/pacman/pac.py:311
-msgid "Configuring a package"
-msgstr "Configuration d'un paquet"
-
-#: src/pacman/pac.py:313
+#: src/pacman/pac.py:274
 msgid "Downloading a file"
 msgstr "Téléchargement d'un fichier"
 
-#: src/pacman/pac.py:389
-msgid "Downloading %s..."
-msgstr "Téléchargement de %s…"
-
-#: src/pacman/pac.py:398
-msgid "Refreshing %s..."
-msgstr "Rafraîchissage de %s..."
-
-#: src/pacman/pac.py:407
+#: src/pacman/pac.py:301
 msgid "Installing %s (%d/%d)"
 msgstr "Installation de %s (%d/%d)"
 
-#: src/pacman/pac.py:410
+#: src/pacman/pac.py:304
 msgid "Checking and loading packages..."
 msgstr "Vérification and chargement des paquets..."
+
+#: src/pacman/pac.py:320
+msgid "Downloading '%s'"
+msgstr ""
 
 #: src/parted/fs_module.py:134 src/parted/fs_module.py:135
 msgid "Can't verify if %s is a Solid State Drive or not"

@@ -1,16 +1,18 @@
-# Cnchi Catalan
-# Copyright (C) 2013 Antergos
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
 # tot3lmon <tot3lmon@gmail.com>, 2013
 # faidoc <alexfilgueira@antergos.com>, 2013
-# karasu <karasu@antergos.com>, 2013
+# karasu0 <karasu@antergos.com>, 2013
+# karasu0 <karasu@antergos.com>, 2013
+# tot3lmon <tot3lmon@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-05 09:49+0000\n"
-"Last-Translator: karasu0 <karasu@antergos.com>\n"
+"POT-Creation-Date: 2013-12-01 22:18+PET\n"
+"PO-Revision-Date: 2013-12-02 03:18+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +46,7 @@ msgstr "S'usarà el fitxer '%s' com a llista de paquets"
 
 #: cnchi.py:215
 msgid "Antergos Installer"
-msgstr "Instal·lador de Antergos"
+msgstr "Instal·lador d'Antergos"
 
 #: cnchi.py:288
 msgid "Quiting installer..."
@@ -93,7 +95,7 @@ msgstr "està connectat a Internet"
 
 #: src/check.py:80
 msgid "For best results, please ensure that this computer:"
-msgstr "Per obtenir els millors resultats, assegura't que:"
+msgstr "Per obtenir els millors resultats, assegura't que el teu equip:"
 
 #: src/check.py:85
 msgid ""
@@ -190,15 +192,15 @@ msgid ""
 "Antergos by installing packages with the command-line package manager."
 msgstr "Aquesta opció instal·larà l'Antergos com un sistema de línia de comandes, sense cap tipus d'interfície gràfica. Després de la instal·lació podràs configurar l'Antergos instal·lant paquets amb el gestor de paquets pacman."
 
-#: src/desktop.py:143
+#: src/desktop.py:140
 msgid "Choose Your Desktop"
 msgstr "Escull el teu Escriptori"
 
-#: src/desktop.py:153
+#: src/desktop.py:150
 msgid "Desktops"
 msgstr "Escriptoris"
 
-#: src/desktop.py:186
+#: src/desktop.py:183
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi instal·larà Antergos amb l'escriptori '%s'"
 
@@ -231,8 +233,8 @@ msgid "Warning! Can't resolve these dependencies: "
 msgstr "Avís! No puc resoldre les següents dependències:"
 
 #: src/features.py:99
-msgid "Feature Selection"
-msgstr "Selecció de Característiques"
+msgid "Features"
+msgstr ""
 
 #: src/features.py:104
 msgid "Bluetooth Support"
@@ -533,23 +535,37 @@ msgstr "Esborra el disc i instal·la l'Antergos"
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Avís: Això esborrarà TOTES les dades del teu disc."
 
-#: src/installation_ask.py:114 src/installation_ask.py:116
+#: src/installation_ask.py:111
+msgid "Encrypt this installation for increased security."
+msgstr ""
+
+#: src/installation_ask.py:115
+msgid "You will be asked to create an encryption password in the next step."
+msgstr ""
+
+#: src/installation_ask.py:124
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr ""
+
+#: src/installation_ask.py:132 src/installation_ask.py:134
 msgid "Install Antergos alongside %s"
 msgstr "Instal·la l'Antergos al costat de %s"
 
-#: src/installation_ask.py:123
+#: src/installation_ask.py:141
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "Escull on s'ha d'instal·lar l'Antergos. (avançat)"
 
-#: src/installation_ask.py:126
+#: src/installation_ask.py:144
 msgid "Edit partition table and choose mount points."
 msgstr "Edita la taula de particions i escull els punts de muntatge."
 
-#: src/installation_ask.py:146
+#: src/installation_ask.py:164
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "La instal·lació d'Antergos s'encriptarà mitjançant LUKS"
 
-#: src/installation_ask.py:149
+#: src/installation_ask.py:167
 msgid "Antergos will be installed using LVM volumes"
 msgstr "S'usaran volums LVM a la instal·lació d'Antergos"
 
@@ -591,123 +607,123 @@ msgstr "El Cnchi instal·larà Antergos a %s"
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos instal·larà el carregador d'arrencada %s a %s"
 
-#: src/installation_process.py:79
+#: src/installation_process.py:78
 msgid "Installing using the '%s' method"
 msgstr "Instal·lant usant el mètode '%s'"
 
-#: src/installation_process.py:177
+#: src/installation_process.py:176
 msgid "Error creating partitions and their filesystems"
 msgstr "Error creant les particions i els seus sistemes d'arxius"
 
-#: src/installation_process.py:216 src/installation_process.py:238
+#: src/installation_process.py:215 src/installation_process.py:237
 msgid "Mounting partition %s into %s directory"
 msgstr "Muntant la partició %s al directori %s"
 
-#: src/installation_process.py:222
+#: src/installation_process.py:221
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Muntant la partició %s al directori %s/boot"
 
-#: src/installation_process.py:226
+#: src/installation_process.py:225
 msgid "Couldn't mount root and boot partitions"
 msgstr "No puc muntar les particions de 'root' i 'boot'"
 
-#: src/installation_process.py:243
+#: src/installation_process.py:242
 msgid "Can't mount %s in %s"
 msgstr "No es pot muntar %s a %s"
 
-#: src/installation_process.py:263
+#: src/installation_process.py:262
 msgid "Can't create necessary directories on destination system"
 msgstr "No puc crear els directoris necessaris al sistema de destí"
 
-#: src/installation_process.py:408
+#: src/installation_process.py:407
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "No puc descarregar la llista de paquets, usaré la còpia local."
 
-#: src/installation_process.py:415
+#: src/installation_process.py:414
 msgid "Adding all desktops common packages"
 msgstr "Afegint els paquets comuns a tots els entorns d'escriptori"
 
-#: src/installation_process.py:426
+#: src/installation_process.py:425
 msgid "Adding '%s' desktop packages"
 msgstr "Afegint els paquets de l'escriptori '%s'"
 
-#: src/installation_process.py:448
+#: src/installation_process.py:456
 msgid "Getting graphics card drivers"
 msgstr "Obtenint els controladors de la tarja gràfica"
 
-#: src/installation_process.py:494
+#: src/installation_process.py:502
 msgid "Adding filesystem packages"
 msgstr "Afegint els paquets del sistema d'arxius"
 
-#: src/installation_process.py:541
+#: src/installation_process.py:549
 msgid "Check for user desired features and add them to our installation"
 msgstr "Comprova les característiques desitjades per l'usuari i les afegeix a la instal·lació"
 
-#: src/installation_process.py:553
+#: src/installation_process.py:561
 msgid "Adding bootloader packages if needed"
 msgstr "Afegint els paquets del carregador d'arrencada"
 
-#: src/installation_process.py:607
+#: src/installation_process.py:628
 msgid "Special dirs already mounted."
 msgstr "Els directoris especials ja estan muntats."
 
-#: src/installation_process.py:633
+#: src/installation_process.py:654
 msgid "Special dirs already not mounted."
 msgstr "Els directoris especials ja no estaven muntats."
 
-#: src/installation_process.py:643
+#: src/installation_process.py:664
 msgid "Unable to umount %s"
 msgstr "No puc muntar %s"
 
-#: src/installation_process.py:804
+#: src/installation_process.py:825
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Instal·lant el carregador d'arrencada GRUB(2) BIOS a %s"
 
-#: src/installation_process.py:830 src/installation_process.py:849
+#: src/installation_process.py:851 src/installation_process.py:870
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ERROR instal·lant el GRUB(2) BIOS."
 
-#: src/installation_process.py:847
+#: src/installation_process.py:868
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "S'ha instal·lat correctament el GRUB(2) BIOS."
 
-#: src/installation_process.py:860
+#: src/installation_process.py:881
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Instal·lant el carregador d'arrencada GRUB(2) UEFI a %s"
 
-#: src/installation_process.py:888
+#: src/installation_process.py:909
 msgid "ERROR installing GRUB(2) configuration file."
 msgstr "ERROR instal·lant el fitxer de configuració del GRUB(2)"
 
-#: src/installation_process.py:916
+#: src/installation_process.py:937
 msgid "ERROR installing GRUB(2) locale."
 msgstr "ERROR instal·lant la configuració local del GRUB(2)"
 
-#: src/installation_process.py:930
+#: src/installation_process.py:951
 msgid "Error creating password hash for user %s"
 msgstr "Error creant el 'hash' de la contrasenya per l'usuari %s"
 
-#: src/installation_process.py:936
+#: src/installation_process.py:957
 msgid "Error changing password for user %s"
 msgstr "No puc canviar la contrasenya per l'usuari %s"
 
-#: src/installation_process.py:1110
+#: src/installation_process.py:1131
 msgid "Configuring your new system"
 msgstr "Configurant el sistema"
 
-#: src/installation_process.py:1204
+#: src/installation_process.py:1248
 msgid "Generating locales..."
 msgstr "Generant localitzacions..."
 
-#: src/installation_process.py:1219
+#: src/installation_process.py:1263
 msgid "Adjusting hardware clock..."
 msgstr "Ajustant el rellotge..."
 
-#: src/installation_process.py:1242
+#: src/installation_process.py:1284
 msgid "%s: Enable automatic login for user %s."
 msgstr "%s: s'ha activat l'entrada automàtica per l'usuari %s."
 
-#: src/installation_process.py:1302
+#: src/installation_process.py:1344
 msgid "Running mkinitcpio..."
 msgstr "Executant mkinitcpio..."
 
@@ -778,69 +794,57 @@ msgstr "Lloc canviat a: %s"
 msgid "Can't change to locale '%s'"
 msgstr "No es pot canviar a lloc '%s'"
 
-#: src/pacman/pac.py:236
-msgid "Package %s not found in any repo!"
-msgstr "No puc trobar el paquet %s a cap repositori!"
-
-#: src/pacman/pac.py:289
+#: src/pacman/pac.py:253
 msgid "Checking dependencies..."
 msgstr "Comprovació de les dependències ..."
 
-#: src/pacman/pac.py:291
+#: src/pacman/pac.py:255
 msgid "Checking file conflicts..."
 msgstr "Comprovació de conflictes d'arxius ..."
 
-#: src/pacman/pac.py:293
+#: src/pacman/pac.py:257
 msgid "Resolving dependencies..."
 msgstr "Resolent dependències ..."
 
-#: src/pacman/pac.py:295
+#: src/pacman/pac.py:259
 msgid "Checking inter conflicts..."
 msgstr "Comprovació dels conflictes interns ..."
 
-#: src/pacman/pac.py:300
+#: src/pacman/pac.py:264
 msgid "Removing..."
 msgstr "Extracció de ..."
 
-#: src/pacman/pac.py:302
+#: src/pacman/pac.py:266
 msgid "Upgrading..."
 msgstr "Actualització de ..."
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:268
 msgid "Checking integrity..."
 msgstr "Comprovació d'integritat ..."
 
-#: src/pacman/pac.py:307
+#: src/pacman/pac.py:270
 msgid "Loading packages files..."
 msgstr "Càrrega d'arxius de paquets ..."
 
-#: src/pacman/pac.py:310
+#: src/pacman/pac.py:272
 msgid "Configuring..."
 msgstr "Configuració ..."
 
-#: src/pacman/pac.py:311
-msgid "Configuring a package"
-msgstr "Configuració d'un paquet"
-
-#: src/pacman/pac.py:313
+#: src/pacman/pac.py:274
 msgid "Downloading a file"
 msgstr "Descarregar un arxiu"
 
-#: src/pacman/pac.py:389
-msgid "Downloading %s..."
-msgstr "Descarregant %s..."
-
-#: src/pacman/pac.py:398
-msgid "Refreshing %s..."
-msgstr "Refrescant %s..."
-
-#: src/pacman/pac.py:407
+#: src/pacman/pac.py:301
 msgid "Installing %s (%d/%d)"
 msgstr "Instal·lant %s (%d/%d)"
 
-#: src/pacman/pac.py:410
+#: src/pacman/pac.py:304
 msgid "Checking and loading packages..."
 msgstr "Comprovant i carregant paquets..."
+
+#: src/pacman/pac.py:320
+msgid "Downloading '%s'"
+msgstr ""
 
 #: src/parted/fs_module.py:134 src/parted/fs_module.py:135
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -864,15 +868,15 @@ msgstr "No puc seleccionar un 'mirror' de manera automàtica"
 
 #: src/show_message.py:52
 msgid "Antergos Installer - Error"
-msgstr "Instal·lador Antergos - Error"
+msgstr "Instal·lador d'Antergos - Error"
 
 #: src/show_message.py:63
 msgid "Antergos Installer - Warning"
-msgstr "Instal·lador Antergos - Avís"
+msgstr "Instal·lador d'Antergos - Avís"
 
 #: src/show_message.py:74
 msgid "Antergos Installer - Information"
-msgstr "Instal·lador Antergos - Informació"
+msgstr "Instal·lador d'Antergos - Informació"
 
 #: src/show_message.py:84
 msgid "Antergos Installer - Confirmation"
@@ -1082,11 +1086,11 @@ msgstr "Prova-ho"
 
 #: src/welcome.py:93
 msgid "CLI Installer"
-msgstr "CLI l'instal·lador"
+msgstr "Instal·lador CLI"
 
 #: src/welcome.py:96
 msgid "Graphical Installer"
-msgstr "instal·lador gràfic"
+msgstr "Instal·lador gràfic"
 
 #: src/welcome.py:120
 msgid "Can't load the CLI installer"

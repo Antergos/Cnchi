@@ -20,8 +20,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-cnchi_VERSION = "0.4.1"
-cnchi_LAST_STABLE = "0.3.2"
+cnchi_VERSION = "0.4.3"
+cnchi_LAST_STABLE = "0.4.1"
 cnchi_WEBSITE = "http://www.antergos.com"
 cnchi_AUTHORS = "faidoc, karasu, skinner, arcnexus, omelchek"
 cnchi_LICENSE = '''

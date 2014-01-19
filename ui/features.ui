@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Tue Oct 29 22:19:31 2013 -->
+<!-- Generated with glade 3.16.0 on Mon Dec  2 02:44:32 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkBox" id="features">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -16,7 +16,7 @@
           <object class="GtkImage" id="image_firewall">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">network-server</property>
           </object>
@@ -54,6 +54,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Control the incoming and outgoing network traffic.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -73,7 +80,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -96,7 +104,7 @@
           <object class="GtkImage" id="image_cups">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">printer</property>
           </object>
@@ -134,6 +142,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Installation of printer drivers and management tools.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -153,7 +168,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -176,7 +192,7 @@
           <object class="GtkImage" id="image_bluetooth">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">bluetooth</property>
           </object>
@@ -214,6 +230,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Enables your system to make wireless connections via Bluetooth.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -233,7 +256,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -256,7 +280,7 @@
           <object class="GtkImage" id="image_visual">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">video-display</property>
           </object>
@@ -294,6 +318,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Enable 3D acceleration for transparency, shadows, and other desktop effects.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -313,7 +344,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -336,7 +368,7 @@
           <object class="GtkImage" id="image_office">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">accessories-text-editor</property>
           </object>
@@ -374,6 +406,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Open source office suite that supports editing MS Office files.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -393,7 +432,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -416,7 +456,7 @@
           <object class="GtkImage" id="image_third_party">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">80</property>
+            <property name="margin_left">40</property>
             <property name="pixel_size">48</property>
             <property name="icon_name">system-software-update</property>
           </object>
@@ -454,6 +494,13 @@
                 <property name="xalign">0</property>
                 <property name="xpad">20</property>
                 <property name="label" translatable="yes">Third-party software to play Flash videos, MP3 audio, and other media.</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="width_chars">50</property>
+                <property name="max_width_chars">50</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans 8"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -473,7 +520,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">center</property>
-            <property name="margin_right">80</property>
+            <property name="margin_left">90</property>
+            <property name="margin_right">20</property>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-14 09:49+0000\n"
-"Last-Translator: probil <m_lyashuk@ukr.net>\n"
+"POT-Creation-Date: 2013-12-01 22:18+PET\n"
+"PO-Revision-Date: 2013-12-02 03:24+0000\n"
+"Last-Translator: zubr139 <zubr139@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/antergos/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,7 +57,7 @@ msgstr "невідомо"
 
 #: src/bootloader.py:50
 msgid "What type of boot system are you using?"
-msgstr ""
+msgstr "Який типом системи завантаження ви користуєтесь?"
 
 #: src/bootloader.py:55
 msgid "BIOS (Most Common)"
@@ -73,11 +73,11 @@ msgstr "32-бітний UEFI (старі Маки)"
 
 #: src/bootloader.py:67
 msgid "Select 'cancel' if you don't want to install a boot loader."
-msgstr ""
+msgstr "Оберіть 'скасувати' якщо ви не хочете встановлювати завантажувач."
 
 #: src/check.py:63
 msgid "System Check"
-msgstr ""
+msgstr "Перевірка системи"
 
 #: src/check.py:68
 msgid "has at least 3GB available storage space"
@@ -100,7 +100,7 @@ msgid ""
 "Antergos uses third-party software to play Flash videos, MP3 and other "
 "media. Some of this software is proprietary. Use of this software is subject"
 " to license terms included with its documentation."
-msgstr ""
+msgstr "Antergos використовує стороннє програмне забезпечення для програвання флеш-відео, MP3 та іншого медіа-контенту.  Частина цих програм є приватною власністю. Використання їх дозволяється при дотриманні умов, що постачається разом з документацією."
 
 #: src/check.py:93
 msgid "Install this third-party software"
@@ -127,7 +127,7 @@ msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "Gnome 3 – простий та елегантний спосіб використання комп’ютера. Його функція Огляд діяльності з легкістю дозволяє отримати доступ до основних завдань. GNOME 3 – це типова стільниця для Antergos."
 
 #: src/desktop.py:83
 msgid ""
@@ -135,7 +135,7 @@ msgid ""
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
-msgstr ""
+msgstr "Cinnamon – це форк GNOME 3 розроблений в (і для) Linux Mint. Забезпечує більш традиціний інтерфейс робочого столу разом з найновішим техніками композиції GNOME 3. Cinnamon підходить для користувачі з різним рівнем досвіду . "
 
 #: src/desktop.py:90
 msgid ""
@@ -143,7 +143,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr ""
+msgstr "Xfce – легка стільниця. Позиціонує себе як швидка та невимоглива до ресурсів, зберігаючи при цьому візуальну привабливість та дружність до користувача. Це чудовий вибір для старих або комп’ютерів з низькими апаратними ресурсами . "
 
 #: src/desktop.py:97
 msgid ""
@@ -151,7 +151,7 @@ msgid ""
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
-msgstr ""
+msgstr "LXDE – екстремально швидка та енергозберігаюча стільниця. Менше ніж інші стільниці завантажує процесор та оперативну пам’ять. LXDE – створена спеціально для мережо-спрямованих комп’ютерів з низкими апаратними ресурсами, таких як: ноутбуки, мобільні телефони та старі комп’ютері."
 
 #: src/desktop.py:104
 msgid ""
@@ -159,7 +159,7 @@ msgid ""
 "extensive standards support. It's default theme, the *box visual style,is "
 "well known for its minimalistic appearance and flexibility. Your desktop "
 "becomes cleaner, faster, and is in your control with Openbox "
-msgstr ""
+msgstr "Openbox віконний менеджер наступного покоління з розширеною підтримкою стандартів. Може дуже гнучко налаштовуватись. Його типові теми, візуальні стилі  *box, добре відомі за свій мінімалізм та пристосовність. З Openbox ваша стільниця буде чистою, дуже швидкою, та повністю під вашим контролем.  "
 
 #: src/desktop.py:111
 msgid ""
@@ -174,31 +174,31 @@ msgid ""
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start. The look, feel, and behavior can"
 " be easily customized to the user's taste."
-msgstr ""
+msgstr "Якщо ви шукаєте якесь близьке робоче середовище, стільниця KDE's Plasma пропонує всі інструменти необхідні для відчуття сучасного комп’ютера, отже ви можете відразу приступити до плідної роботи. Вигляд, атмосферу та режим можна легко налаштувати на ваш смак."
 
 #: src/desktop.py:124
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt - передова, легка у використанні, та швидка стільниця на останові технологій Qt. Вона створена спеціально для користувачів, що віддають перевагу простому, швидкому, та інтуїтивному інтефейсу."
 
 #: src/desktop.py:131
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
-msgstr ""
+msgstr "Ця опція встановить Antergos в консольному режимі, без будь-якого графічного інтерфейсу. Після встановлення ви зможете налаштувати Antergos встановлюючи пакунки через командний рядок менеджером пакунків."
 
-#: src/desktop.py:143
+#: src/desktop.py:140
 msgid "Choose Your Desktop"
 msgstr "Оберіть для себе стільницю"
 
-#: src/desktop.py:153
+#: src/desktop.py:150
 msgid "Desktops"
 msgstr "Стільниці"
 
-#: src/desktop.py:186
+#: src/desktop.py:183
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi встановить Antergos зі стільницею '%s'"
 
@@ -216,11 +216,11 @@ msgstr "Завантаження пакунку '%s'..."
 
 #: src/download.py:158
 msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr ""
+msgstr "Невдалось підключиться до Aria2. Завантаження не буде прискорено."
 
 #: src/download.py:234
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "Неможливо створити чергу завантаження для пакунку %s"
 
 #: src/download.py:238
 msgid "Can't find these packages: "
@@ -231,8 +231,8 @@ msgid "Warning! Can't resolve these dependencies: "
 msgstr "Попередження! Неможливо вирішити залежності:"
 
 #: src/features.py:99
-msgid "Feature Selection"
-msgstr "Вибір функцій"
+msgid "Features"
+msgstr ""
 
 #: src/features.py:104
 msgid "Bluetooth Support"
@@ -269,7 +269,7 @@ msgstr "Увімкнути 3D-прискорення для прозорості
 
 #: src/features.py:132
 msgid "Uncomplicated Firewall"
-msgstr ""
+msgstr "Простий брандмауер"
 
 #: src/features.py:137
 msgid "Control the incoming and outgoing network traffic."
@@ -285,7 +285,7 @@ msgstr "Програмне забезпечення від третіх стор
 
 #: src/features.py:149
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr ""
+msgstr "Простий брандмауер встановиться з такими правилами:"
 
 #: src/installation_advanced.py:194 src/installation_advanced.py:484
 #: src/installation_advanced.py:498
@@ -368,7 +368,7 @@ msgstr "Розширений режим встановлення"
 
 #: src/installation_advanced.py:1062
 msgid "Use the device below for boot loader installation:"
-msgstr ""
+msgstr "Використовувати цей пристрій для встановлення завантажувача:"
 
 #: src/installation_advanced.py:1072
 msgid "New Partition Table"
@@ -400,11 +400,11 @@ msgstr "Розширений"
 
 #: src/installation_advanced.py:1105
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Початок цього простору"
 
 #: src/installation_advanced.py:1109
 msgid "End of this space"
-msgstr ""
+msgstr "Кінець цього простору"
 
 #: src/installation_advanced.py:1113 src/installation_advanced.py:1130
 msgid "Use As:"
@@ -448,7 +448,7 @@ msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s примонтовано в якості розділу підкачки.\nПродовження потребує відмонтування.\nНатисніть Так, щоб відмонтувати, або НІ щоб повернутись\n"
 
 #: src/installation_advanced.py:1341
 msgid ""
@@ -479,7 +479,7 @@ msgstr "Перевизначити"
 
 #: src/installation_advanced.py:1442
 msgid "We will make changes to partitions on these disks:"
-msgstr ""
+msgstr "Мають виконатись наступні зміни на дисках:"
 
 #: src/installation_advanced.py:1467
 msgid "Finished saving changes in %s"
@@ -499,11 +499,11 @@ msgstr "Невдалось завантажити %s css"
 
 #: src/installation_alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
-msgstr ""
+msgstr "Оберіть ОС, яку б ви хотіли встановити поряд з."
 
 #: src/installation_alongside.py:140
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Встановлення Antergos поряд з іншими ОС"
 
 #: src/installation_alongside.py:169
 msgid "Detected OS"
@@ -515,7 +515,7 @@ msgstr "Файлова система"
 
 #: src/installation_alongside.py:216
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "Неможливо створити список розділів для встановлення поряд з іншими ОС."
 
 #: src/installation_alongside.py:256
 msgid "Can't shrink the partition (maybe it's nearly full)"
@@ -533,25 +533,39 @@ msgstr "Очистити диск і встанивити Antergos"
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Увага: Це зітре ВСІ дані на вашому диску."
 
-#: src/installation_ask.py:114 src/installation_ask.py:116
+#: src/installation_ask.py:111
+msgid "Encrypt this installation for increased security."
+msgstr "Шифрування процесу встановлення для підвищення безпеки."
+
+#: src/installation_ask.py:115
+msgid "You will be asked to create an encryption password in the next step."
+msgstr "Вам буде запропоновано створити пароль для шифрування в наступному кроці."
+
+#: src/installation_ask.py:124
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr ""
+
+#: src/installation_ask.py:132 src/installation_ask.py:134
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "Встановити Antergos поряд з %s"
 
-#: src/installation_ask.py:123
+#: src/installation_ask.py:141
 msgid "Choose exactly where Antergos should be installed. (advanced)"
-msgstr ""
+msgstr "Точно вказати місце встановлення Antergos (розшерене налаштування)"
 
-#: src/installation_ask.py:126
+#: src/installation_ask.py:144
 msgid "Edit partition table and choose mount points."
-msgstr ""
+msgstr "Зміна таблиці розділів та вибір точок монтування."
 
-#: src/installation_ask.py:146
+#: src/installation_ask.py:164
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "Інсталяцію Antergos буде зашифровано використовуючи LUKS"
 
-#: src/installation_ask.py:149
+#: src/installation_ask.py:167
 msgid "Antergos will be installed using LVM volumes"
-msgstr ""
+msgstr "Antergos встановиться використовуючи томи LVM"
 
 #: src/installation_automatic.py:76
 msgid "Automatic Installation Mode"
@@ -563,13 +577,13 @@ msgstr "Оберіть диск:"
 
 #: src/installation_automatic.py:84
 msgid "WARNING! This will overwrite everything currently on your drive!"
-msgstr ""
+msgstr "УВАГА! Ця операція перезапише все що знаходиться на вашому диску!"
 
 #: src/installation_automatic.py:89
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr ""
+msgstr "Оберіть диск для встановлення Antergos і натисніть нижче щоб почати цей процес."
 
 #: src/installation_automatic.py:94
 msgid "Encryption Password:"
@@ -591,123 +605,123 @@ msgstr "Cnchi встановить Antergos на %s"
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos встановить завантажувач %s в %s"
 
-#: src/installation_process.py:79
+#: src/installation_process.py:78
 msgid "Installing using the '%s' method"
 msgstr "Інсталяція використовує '%s'"
 
-#: src/installation_process.py:177
+#: src/installation_process.py:176
 msgid "Error creating partitions and their filesystems"
 msgstr "Помилка створення розділів та їх файлових систем"
 
-#: src/installation_process.py:216 src/installation_process.py:238
+#: src/installation_process.py:215 src/installation_process.py:237
 msgid "Mounting partition %s into %s directory"
 msgstr "Монтування розділу %s в теку %s"
 
-#: src/installation_process.py:222
+#: src/installation_process.py:221
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Монтування розділу %s в теку %s/boot"
 
-#: src/installation_process.py:226
+#: src/installation_process.py:225
 msgid "Couldn't mount root and boot partitions"
-msgstr ""
+msgstr "Невдалось примонтувати розділи root та boot"
 
-#: src/installation_process.py:243
+#: src/installation_process.py:242
 msgid "Can't mount %s in %s"
 msgstr "Неможливо змонтувати %s у %s"
 
-#: src/installation_process.py:263
+#: src/installation_process.py:262
 msgid "Can't create necessary directories on destination system"
-msgstr ""
+msgstr "Невдається створити необхідні теки на призначеній системі"
 
-#: src/installation_process.py:408
+#: src/installation_process.py:407
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr ""
+msgstr "Невдалось отримати список пакунків сервера, замість нього використовується локальний файл."
 
-#: src/installation_process.py:415
+#: src/installation_process.py:414
 msgid "Adding all desktops common packages"
 msgstr "Додання загальних пакунків для всіх стільницб"
 
-#: src/installation_process.py:426
+#: src/installation_process.py:425
 msgid "Adding '%s' desktop packages"
 msgstr "Додання пакунків стільниці '%s'"
 
-#: src/installation_process.py:448
+#: src/installation_process.py:456
 msgid "Getting graphics card drivers"
 msgstr "Отримання драйверів графічної карти"
 
-#: src/installation_process.py:494
+#: src/installation_process.py:502
 msgid "Adding filesystem packages"
 msgstr "Додання пакунків файлової системи"
 
-#: src/installation_process.py:541
+#: src/installation_process.py:549
 msgid "Check for user desired features and add them to our installation"
-msgstr ""
+msgstr "Виберіть бажані функції та включіть їх до встановлення"
 
-#: src/installation_process.py:553
+#: src/installation_process.py:561
 msgid "Adding bootloader packages if needed"
 msgstr "Додання пакунків завантажувача, якщо це потрібно"
 
-#: src/installation_process.py:607
+#: src/installation_process.py:628
 msgid "Special dirs already mounted."
 msgstr "Спеціальні теки вже змонтовано."
 
-#: src/installation_process.py:633
+#: src/installation_process.py:654
 msgid "Special dirs already not mounted."
 msgstr "Спеціальні теки ще не змонтовано."
 
-#: src/installation_process.py:643
+#: src/installation_process.py:664
 msgid "Unable to umount %s"
 msgstr "Неможливо відмонтувати %s"
 
-#: src/installation_process.py:804
+#: src/installation_process.py:825
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Встановлення завантажувача GRUB(2) BIOS у %s"
 
-#: src/installation_process.py:830 src/installation_process.py:849
+#: src/installation_process.py:851 src/installation_process.py:870
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "ПОМИЛКА встановлення GRUB(2) BIOS."
 
-#: src/installation_process.py:847
+#: src/installation_process.py:868
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS успішно інстальовано."
 
-#: src/installation_process.py:860
+#: src/installation_process.py:881
 msgid "Installing GRUB(2) UEFI %s boot loader in %s"
 msgstr "Встановлення завантажувача GRUB(2) BIOS UEFI у %s"
 
-#: src/installation_process.py:888
+#: src/installation_process.py:909
 msgid "ERROR installing GRUB(2) configuration file."
 msgstr "ПОМИЛКА встановлення файла налаштувань GRUB(2)."
 
-#: src/installation_process.py:916
+#: src/installation_process.py:937
 msgid "ERROR installing GRUB(2) locale."
-msgstr ""
+msgstr "ПОМИЛКА встановлення мови для GRUB(2)."
 
-#: src/installation_process.py:930
+#: src/installation_process.py:951
 msgid "Error creating password hash for user %s"
 msgstr "Помилка створення хешу для паролю користувача %s"
 
-#: src/installation_process.py:936
+#: src/installation_process.py:957
 msgid "Error changing password for user %s"
 msgstr "Помилка зміни паролю користувача %s"
 
-#: src/installation_process.py:1110
+#: src/installation_process.py:1131
 msgid "Configuring your new system"
 msgstr "Налаштування вашої нової системи"
 
-#: src/installation_process.py:1204
+#: src/installation_process.py:1248
 msgid "Generating locales..."
-msgstr ""
+msgstr "Генерація локалей..."
 
-#: src/installation_process.py:1219
+#: src/installation_process.py:1263
 msgid "Adjusting hardware clock..."
-msgstr ""
+msgstr "Налаштування апаратного годинника..."
 
-#: src/installation_process.py:1242
+#: src/installation_process.py:1284
 msgid "%s: Enable automatic login for user %s."
 msgstr "%s: Увімкнути автовхід для користувача %s."
 
-#: src/installation_process.py:1302
+#: src/installation_process.py:1344
 msgid "Running mkinitcpio..."
 msgstr "Виконання mkinitcpio..."
 
@@ -725,7 +739,7 @@ msgstr "Варіанти"
 
 #: src/keymap.py:98
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "розкладка_клавіатури keyboard_layout"
 
 #: src/language.py:80
 msgid "Please choose your language:"
@@ -741,7 +755,7 @@ msgid ""
 "It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible! \n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi – це пре-реліз програмного забезпечення, що знаходиться в активній розробці.\nВоно ще не працює належним чином з RAID, підтомами btrfs, та іншими розширеними надбудованим. Будь ласка, парцюйте обережно, оскільки можлива втрата даних. \n\nЯкщо ви знайшли будь-який недолік, сповістіть про нього на <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:93 src/welcome.py:99
 msgid "Welcome to Antergos!"
@@ -764,7 +778,7 @@ msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "За місцерозташуванням яке ви обрали буде визначено системну мову.\nЗазвичай, це країна, в якій ви проживаєте.\nТут короткий список розміщень в залежності від обраної вами мови."
 
 #: src/location.py:73
 msgid "Country, territory or area:"
@@ -778,69 +792,57 @@ msgstr "мову змінено на : %s"
 msgid "Can't change to locale '%s'"
 msgstr "Неможливо змінити мову на '%s'"
 
-#: src/pacman/pac.py:236
-msgid "Package %s not found in any repo!"
-msgstr "Пакунок %s не знайдено в жодному з репозитаріїв!"
-
-#: src/pacman/pac.py:289
+#: src/pacman/pac.py:253
 msgid "Checking dependencies..."
 msgstr "Перевірка залежностей..."
 
-#: src/pacman/pac.py:291
+#: src/pacman/pac.py:255
 msgid "Checking file conflicts..."
 msgstr "Перевірка файлових конфліктів..."
 
-#: src/pacman/pac.py:293
+#: src/pacman/pac.py:257
 msgid "Resolving dependencies..."
 msgstr "Вирішення залежностей..."
 
-#: src/pacman/pac.py:295
+#: src/pacman/pac.py:259
 msgid "Checking inter conflicts..."
 msgstr "Перевірка внутнішніх конфліктів..."
 
-#: src/pacman/pac.py:300
+#: src/pacman/pac.py:264
 msgid "Removing..."
 msgstr "Вилучення..."
 
-#: src/pacman/pac.py:302
+#: src/pacman/pac.py:266
 msgid "Upgrading..."
 msgstr "Оновлення..."
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:268
 msgid "Checking integrity..."
 msgstr "Перевірка цілісності..."
 
-#: src/pacman/pac.py:307
+#: src/pacman/pac.py:270
 msgid "Loading packages files..."
 msgstr "Завантаження файлів пакунків..."
 
-#: src/pacman/pac.py:310
+#: src/pacman/pac.py:272
 msgid "Configuring..."
 msgstr "Налаштування..."
 
-#: src/pacman/pac.py:311
-msgid "Configuring a package"
-msgstr "Налаштування пакунку"
-
-#: src/pacman/pac.py:313
+#: src/pacman/pac.py:274
 msgid "Downloading a file"
 msgstr "Завантаження файлу"
 
-#: src/pacman/pac.py:389
-msgid "Downloading %s..."
-msgstr "Завантаження %s..."
-
-#: src/pacman/pac.py:398
-msgid "Refreshing %s..."
-msgstr "Оновлення %s..."
-
-#: src/pacman/pac.py:407
+#: src/pacman/pac.py:301
 msgid "Installing %s (%d/%d)"
 msgstr "Встановлення %s (%d/%d)"
 
-#: src/pacman/pac.py:410
+#: src/pacman/pac.py:304
 msgid "Checking and loading packages..."
 msgstr "Перевірка та завантаження пакунків"
+
+#: src/pacman/pac.py:320
+msgid "Downloading '%s'"
+msgstr "Завантаження '%s'"
 
 #: src/parted/fs_module.py:134 src/parted/fs_module.py:135
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -852,15 +854,15 @@ msgstr "Вибачте, але файлова система %s не може б
 
 #: src/rank_mirrors.py:56
 msgid "In rankmirrors, can't get network status"
-msgstr ""
+msgstr "В rankmirrors, невдалось отримати статус мережі"
 
 #: src/rank_mirrors.py:66
 msgid "Can't find rank mirrors script"
-msgstr ""
+msgstr "Не знайдено скріпт рангів дзеркал"
 
 #: src/rank_mirrors.py:73
 msgid "Couldn't execute auto mirroring selection"
-msgstr ""
+msgstr "Невдалось виконати автовибір дзеркала"
 
 #: src/show_message.py:52
 msgid "Antergos Installer - Error"
@@ -906,7 +908,7 @@ msgstr "Регіон:"
 
 #: src/timezone.py:120
 msgid "Use Network Time Protocol for clock synchronization:"
-msgstr ""
+msgstr "Використовувати NTP для синхронізації годинника:"
 
 #: src/timezone.py:131
 msgid "location changed to : %s"
@@ -922,19 +924,19 @@ msgstr "Зупинка потоків часових поясів..."
 
 #: src/timezone.py:310 src/timezone.py:361
 msgid "In timezone, can't get network status"
-msgstr ""
+msgstr "У часовій зоні, неможливо отримати статус мережі"
 
 #: src/timezone.py:385
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "Невдалось отримати код країни для створення списку дзеркал менеджера пакунків"
 
 #: src/timezone.py:406
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "Завантажений специфічний список дзеркал на основі коду країни %s"
 
 #: src/timezone.py:408
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "Невдалось згенерувати список дзеркал на основі коду країни"
 
 #: src/user_info.py:83
 msgid "Your name:"
@@ -950,7 +952,7 @@ msgstr "Назва комп’ютера:"
 
 #: src/user_info.py:95
 msgid "Pick a username:"
-msgstr ""
+msgstr "Виберіть ім'я користувача:"
 
 #: src/user_info.py:99
 msgid "Username"
@@ -970,7 +972,7 @@ msgstr "Підтвердіть пароль"
 
 #: src/user_info.py:119
 msgid "Identifies your system to other computers and devices."
-msgstr ""
+msgstr "Ідентифікує вашу систему для інших комп’ютерів та пристроїв."
 
 #: src/user_info.py:123
 msgid "You must enter a name"
@@ -998,31 +1000,31 @@ msgstr "Шифрувати домашню теку"
 
 #: src/user_info.py:139
 msgid "Create Your User Account"
-msgstr ""
+msgstr "Створення акаунту користувача"
 
 #: src/user_info.py:166
 msgid ""
 "Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n"
 "\n"
-msgstr ""
+msgstr "Antergos застосує до вашої домашньої директорії шифрування eCryptfs . На жаль, eCryptfs не дуже добре справляється з фрагментацією файлів.\n\n"
 
 #: src/user_info.py:167
 msgid ""
 "Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
 "\n"
-msgstr ""
+msgstr "Не хвилюйтесь, для більшості цілей та результатів цей недолік не є проблемою.\n\n"
 
 #: src/user_info.py:168
 msgid ""
 "One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
 "\n"
-msgstr ""
+msgstr "Одна популярна але не рекомендована для використання з eCryptfs програма – BitTorrent-клієнт. Не рекомендується встановлювати місце завантаження файлів в 10Гб або більше на шифрований диск оскільки це може значно знизити продуктивність диска.\n\n"
 
 #: src/user_info.py:169
 msgid ""
 "A simple workaround is to place sparse files in an unencrypted Public directory.\n"
 "\n"
-msgstr ""
+msgstr "Найпростіше рішення полягає в розміщенні фрагментованих файлів в незашифровану публічну теку.\n"
 
 #: src/user_info.py:170
 msgid ""
@@ -1074,7 +1076,7 @@ msgstr "Паролі не співпадають"
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
-msgstr ""
+msgstr "Ви можете спробувати Antergos без внесення змін до вашої  системи натиснувши 'Спробувати'.\nКоли ви будете готові до встановлення Antergos просто виберіть встановлювач за своїм бажанням."
 
 #: src/welcome.py:90
 msgid "Try It"
