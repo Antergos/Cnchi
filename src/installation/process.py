@@ -1674,14 +1674,6 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             self.queue_event('debug', _('Installing bootloader...'))
             self.install_bootloader()
-            # Warn user if Grub install hasn't completed successfully
-            # TODO: instruct how to fix.
-            if not self.bootloader_ok:
-                msg = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader installation which\n"
-                        "could prevent you from successfully booting your system. Before rebooting, you may want\n"
-                        "verify whether or not GRUB(2) is installed and configured. See the Arch Linux wiki page:\n"
-                        "for troubleshooting information:\thttps://wiki.archlinux.org/index.php/GRUB\n")
-                self.queue_event('info', msg)
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug('Copying install log to /var/log.')
