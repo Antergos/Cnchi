@@ -37,7 +37,7 @@ class Virtualbox(Hardware):
         pass
 
     def get_packages(self):
-        return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
+        return [ "virtualbox-guest-modules", "virtualbox-guest-utils", "virtualbox-oracle-ext"]
 
     def post_install(self, dest_dir):
         path = os.path.join(dest_dir, "etc/modules-load.d")
