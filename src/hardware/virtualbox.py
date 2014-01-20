@@ -38,11 +38,12 @@ class Virtualbox(Hardware):
         return [ "virtualbox-guest-modules", "virtualbox-guest-utils"]
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modules-load.d" % dest_dir
+        path = os.path.join(dest_dir, "etc/modules-load.d")
         if not os.path.exists(path):
             os.makedirs(path)
-        path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
+        path = os.path.join(dest_dir, "etc/modules-load.d/virtualbox-guest.conf")
         with open(path, 'w') as modules:
+            modules.write('# Virtualbox modules added by Cnchi - Antergos Installer\n')
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
