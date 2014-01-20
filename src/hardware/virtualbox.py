@@ -22,11 +22,13 @@
 
 """  driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware, chroot
 import os
 
-DEVICES = [('0x80ee', '0xcafe')]
+DEVICES = [
+('0x80ee', '0xcafe'),
+('0x80ee', '0xbeef'),
+('0x80ee', '0x7145')]
 
 CLASS_NAME = "Virtualbox"
 
