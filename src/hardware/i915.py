@@ -22,13 +22,33 @@
 
 """  driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 import os
 
 CLASS_NAME = "i915"
 
-DEVICES = []
+# X.org Intel i810/i830/i915/945G/G965+ video drivers
+
+# Source: http://en.wikipedia.org/wiki/Comparison_of_Intel_graphics_processing_units
+
+# TODO: NOT FINISHED!
+
+DEVICES = [
+('0x8086', '0x7121'), # Whitney
+('0x8086', '0x7123'),
+('0x8086', '0x7125'),
+('0x8086', '0x2582'), # Grantsdale
+('0x8086', '0x2782'),
+('0x8086', '0x2592'), # Alviso
+('0x8086', '0x2792'),
+('0x8086', '0x2772'), # Lakeport
+('0x8086', '0x2776'),
+('0x8086', '0x27A2'), # Calistoga
+('0x8086', '0x27A6'),
+('0x8086', '0x27AE'),
+('0x8086', '0x29A2'), # Broadwater
+('0x8086', '0x29A3')
+]
 
 class i915(Hardware):
     def __init__(self):

@@ -22,7 +22,6 @@
 
 """  driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 
 DEVICES = [('0x1180','0x0832')]
