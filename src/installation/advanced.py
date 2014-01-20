@@ -1379,10 +1379,9 @@ class InstallationAdvanced(Gtk.Box):
             At least root (/) partition must be defined and
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
-        check_ok = False
-
         exist_root = False
         exist_efi = False
+        exist_boot = False
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -1397,19 +1396,19 @@ class InstallationAdvanced(Gtk.Box):
                 # Don't allow vfat as / filesystem, it will not work!
                 # Don't allow ntfs as / filesystem, this is stupid!
                 if "fat" not in fs and "ntfs" not in fs:
-                    #check_ok = True
                     exist_root = True
             # /boot or /boot/efi ¿?
             if mnt == "/boot":
-                if os.path.exists('/sys/firmware/efi'):
+                if "fat" in fs:
                     # Only fat partitions
-                    if "fat" in fs:
-                        exist_efi = True
+                    exist_efi = True
+                if "f2fs" or "btrfs" not in fs:
+                    exist_boot = True
 
         if os.path.exists('/sys/firmware/efi'):
-            check_ok = exist_root and exist_efi
+            check_ok = exist_root and exist_boot and exist_efi
         else:
-            check_ok = exist_root
+            check_ok = exist_root and exist_boot
 
         self.forward_button.set_sensitive(check_ok)
 

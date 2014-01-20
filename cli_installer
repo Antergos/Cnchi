@@ -3149,7 +3149,7 @@ do_uefi_common() {
         check_uefisyspart
     fi
     
-    PACKAGES="dosfstools efibootmgr"
+    PACKAGES="grub os-prober dosfstools efibootmgr"
     run_pacman
     PACKAGES=""
     
