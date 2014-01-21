@@ -51,7 +51,6 @@ class Hardware(object):
         """ Get graphics card using hwinfo """
         vendor = ""
         model = ""
-        print("EEEEEEEEEEEEEOOOOOOOOOOOOOOOOOOOOOOOOO")
         
         try:
             process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
