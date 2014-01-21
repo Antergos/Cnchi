@@ -46,6 +46,7 @@ class Settings(object):
             'desktop' : 'gnome',
             'desktops' : [],
             'encrypt_home' : False,
+            'f2fs' : False,
             'feature_bluetooth' : False,
             'feature_cups' : False,
             'feature_office' : False,

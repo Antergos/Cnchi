@@ -161,7 +161,8 @@ class AutoPartition(object):
                      "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
                      "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
                      "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
-                     "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device) }
+                     "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
+                     "f2fs" : "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():

@@ -440,9 +440,12 @@
         <virtualbox>
             <pkgname>virtualbox-guest-modules</pkgname>
             <pkgname>virtualbox-guest-utils</pkgname>
+            <pkgname>virtualbox-ext-oracle</pkgname>
         </virtualbox>
         <vmware>
             <pkgname>xf86-video-vmware</pkgname>
+            <pkgname>open-vm-tools</pkgname>
+            <pkgname>open-vm-tools-dkms</pkgname>
         </vmware>
         <uvesafb>
             <pkgname>v86d</pkgname>

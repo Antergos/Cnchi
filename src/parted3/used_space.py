@@ -226,6 +226,13 @@ def get_used_xfs(part):
         used = (vsize-fsize) / vsize
     return used
 
+@misc.raise_privileges
+def get_used_f2fs(part):
+    # Need to do a test install using f2fs so I can get the output format when getting part info.
+    used =  0
+    return used
+
+
 def is_btrfs(part):
     """ Checks if part is a Btrfs partition """
     space = get_used_btrfs(part)
@@ -250,6 +257,8 @@ def get_used_space(part, part_type):
         space = get_used_btrfs(part)
     elif 'xfs' in part_type.lower():
         space = get_used_xfs(part)
+    elif 'f2fs' in part_type.lower():
+         space = get_used_f2fs(part)
     else:
         space = 0
     return space

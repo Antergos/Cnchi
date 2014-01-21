@@ -719,6 +719,15 @@ class InstallationProcess(multiprocessing.Process):
         out, err = process2.communicate()
         return out.decode().lower()
 
+    def get_cpu(self):
+        # Check if system is an intel system. Not sure if we want to move this to hardware module when its done.
+        process1 = subprocess.Popen(["hwinfo", "--cpu"], stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
+                                    stdin=process1.stdout, stdout=subprocess.PIPE)
+        process1.stdout.close()
+        out, err = process2.communicate()
+        return out.decode().lower()
+
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
@@ -900,21 +909,23 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
+            if "btrfs" in myfmt:
+                self.settings.set('btrfs', True)
+            if "f2fs" in myfmt:
+                self.settings.set('f2fs', True)
 
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
             if path == "":
                 continue
-
             if path == '/':
                 # We do not run fsck on btrfs partitions
                 if "btrfs" in myfmt:
                     chk = '0'
-                    self.settings.set('btrfs', True)
+                    opts = 'rw,relatime,space_cache,autodefrag,inode_cache'
                 else:
                     chk = '1'
-                    self.settings.set('btrfs', False)
-                opts = "rw,relatime,data=ordered"
+                    opts = "rw,relatime,data=ordered"
             else:
                 full_path = os.path.join(self.dest_dir, path)
                 subprocess.check_call(["mkdir", "-p", full_path])
@@ -922,12 +933,14 @@ class InstallationProcess(multiprocessing.Process):
             if self.ssd is not None:
                 for i in self.ssd:
                     if i in self.mount_devices[path] and self.ssd[i]:
-                        opts = 'defaults,noatime,nodiratime'
+                        opts = 'defaults,noatime'
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                         # If using a TRIM supported SSD, discard is a valid mount option for swap
-                        if myfmt == 'ext4' or myfmt == 'btrfs' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
+                        if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
                             opts += ',discard'
+                        elif myfmt == 'btrfs':
+                            opts = 'rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
                         if path == '/':
                             root_ssd = 1
 
@@ -1255,6 +1268,8 @@ class InstallationProcess(multiprocessing.Process):
         """ Runs mkinitcpio """
         # Add lvm and encrypt hooks if necessary
 
+        cpu = self.get_cpu()
+
         hooks = ["base", "udev", "autodetect", "modconf", "block"]
         modules = []
 
@@ -1265,18 +1280,32 @@ class InstallationProcess(multiprocessing.Process):
             hooks.append("encrypt")
             modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512"])
 
+        if self.settings.get("f2fs"):
+            modules.append("f2fs")
+
         if self.blvm or self.settings.get("use_lvm"):
             hooks.append("lvm2")
-        if self.settings.get('btrfs'):
-            hooks.extend(["filesystems", "keyboard"])
+
+        if "swap" in self.mount_devices:
+            hooks.extend(["resume", "filesystems", "keyboard"])
         else:
-            hooks.extend(["filesystems", "keyboard", "fsck"])
+            hooks.extend(["filesystems", "keyboard"])
+
+        if self.settings.get('btrfs') and cpu is not 'genuineintel':
+            modules.append('crc32c')
+        elif self.settings.get('btrfs') and cpu is 'genuineintel':
+            modules.append('crc32c-intel')
+        else:
+            hooks.append("fsck")
 
         self.set_mkinitcpio_hooks_and_modules(hooks, modules)
 
         # run mkinitcpio on the target system
+        # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
+        locale = self.settings.get('locale')
+        export = "export LANG=%s" % locale
         self.chroot_mount_special_dirs()
-        self.chroot(["/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
+        self.chroot(["%s", "&&", "/usr/bin/mkinitcpio", "-p", self.kernel_pkg] % export)
         self.chroot_umount_special_dirs()
 
     def uncomment_locale_gen(self, locale):
