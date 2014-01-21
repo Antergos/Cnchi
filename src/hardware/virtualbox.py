@@ -22,7 +22,7 @@
 
 """  driver installation """
 
-from hardware.hardware import Hardware, chroot
+from hardware.hardware import Hardware
 import os
 
 DEVICES = [('0x80ee', '0xbeef', "InnoTek Systemberatung GmbH VirtualBox Graphics Adapter")]
@@ -46,8 +46,8 @@ class Virtualbox(Hardware):
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
-        chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        chroot(["systemctl", "enable", "vboxservice"], dest_dir)
+        super().chroot(self, ["systemctl", "disable", "openntpd"], dest_dir)
+        super().chroot(self, ["systemctl", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """

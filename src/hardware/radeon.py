@@ -28,11 +28,7 @@ import os
 # TODO: Add all radeon (amd/ati) supported cards
 # TODO: User should be able to choose between radeon and catalyst
 
-DEVICES = [
-('0x1002','0x3154', ""),
-('0x1002', '0x4c66', ""),
-('0x1002', '0x5460', ""),
-('0x1002', '0x68f9', "")]
+DEVICES = []
 
 CLASS_NAME = "Radeon"
 
@@ -64,10 +60,12 @@ class Radeon(Hardware):
         #        print(description)
         #        return True
         #return False
-        
-        # TODO: Use vendorID and productID
+
         (vendor, product) = device
-        if vendor == "0x1002" or vendor == "0x1022":
-            return True
+        if vendor == "0x1022":
+            # Check that this is really a graphics card
+            (d_vendor, d_model) = super().get_graphics_card(self)
+            if vendor == d_vendor:
+                print (d_model)
+                return True
         return False
-        

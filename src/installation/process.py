@@ -554,7 +554,7 @@ class InstallationProcess(multiprocessing.Process):
 
             graphics = self.get_graphics_card()
             card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
-            # Is this good? Might need to be revised,
+            # Is this ok? Might need to be revised,
             for card in card_lib:
                 if card in graphics:
                     if card is 'lenovo':
@@ -569,7 +569,7 @@ class InstallationProcess(multiprocessing.Process):
             if self.card is None:
                 self.packages.append('xorg-drivers')
                 self.card.append('xorg')
-            logging.debug("Added %s graphics drivers to the installation" % self.card)
+            logging.debug(_("Added %s graphics drivers to the installation") % self.card)
 
         # Get packages needed for detected hardware
         try:
@@ -577,12 +577,12 @@ class InstallationProcess(multiprocessing.Process):
             hardware_install = hardware.HardwareInstall()
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
-                logging.debug("Hardware module added these packages : %s", hardware_pkgs)
+                logging.debug(_("Hardware module added these packages : "), hardware_pkgs)
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
+            logging.warning(_("Unknown error in hardware module. Output: %s") % err)
 
         # Add filesystem packages
 
@@ -1704,7 +1704,7 @@ class InstallationProcess(multiprocessing.Process):
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s" % err))
+            logging.warning(_("Unknown error in hardware module. Output: %s") % err)
 
         # Encrypt user's home directory if requested
         # TODO: Test this!

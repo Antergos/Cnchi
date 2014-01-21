@@ -79,7 +79,6 @@ class Nouveau(Hardware):
         with open(path, 'w') as modprobe:
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
 
-
     def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
@@ -89,10 +88,13 @@ class Nouveau(Hardware):
         #        return True
         #return False
         
-        # TODO: Use vendorID and productID
         (vendor, product) = device
         if vendor == "0x10de":
-            return True
+            # Check that this is really a graphics card
+            (d_vendor, d_model) = super().get_graphics_card(self)
+            if vendor == d_vendor:
+                print (d_model)
+                return True
         return False
         
             

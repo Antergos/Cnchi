@@ -37,17 +37,14 @@ class Vmware(Hardware):
     def get_packages(self):
         return [ "xf86-video-vmware" ]
 
-    def chroot(self, cmd):
-        __super__().chroot(self, cmd)
-
     def post_install(self, dest_dir):
         path = "%s/etc/modules-load.d/virtualbox-guest.conf" % dest_dir
         with open(path, 'w') as modules:
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
-        self.chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        self.chroot(["systemctl", "enable", "vboxservice"], dest_dir)
+        super().chroot(self, ["systemctl", "disable", "openntpd"], dest_dir)
+        super().chroot(self, ["systemctl", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, device):
         """ Device is (VendorID, ProductID)

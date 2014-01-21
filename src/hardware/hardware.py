@@ -30,23 +30,6 @@ DEVICES = []
 
 CLASS_NAME = ""
 
-def chroot(cmd, dest_dir, stdin=None, stdout=None):
-    """ Runs command inside the chroot """
-    run = [ 'chroot', dest_dir ]
-
-    for element in cmd:
-        run.append(element)
-
-    try:
-        proc = subprocess.Popen(run,
-                                stdin=stdin,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
-        out = proc.communicate()[0]
-        logging.debug(out.decode())
-    except OSError as err:
-        logging.exception(_("Error running command: %s"), err.strerror)
-
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
@@ -63,6 +46,48 @@ class Hardware(object):
     def check_device(self, device):
         """ Device is (VendorID, ProductID) """
         raise NotImplementedError("check_device is not implemented")
+
+    def get_graphics_card(self):
+        """ Get graphics card using hwinfo """
+        vendor = ""
+        model = ""
+        print("EEEEEEEEEEEEEOOOOOOOOOOOOOOOOOOOOOOOOO")
+        
+        try:
+            process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
+            process2 = subprocess.Popen(["grep", "[[:space:]]Vendor:[[:space:]]"],
+                                        stdin=process1.stdout, stdout=subprocess.PIPE)
+            process1.stdout.close()
+            out, err = process2.communicate()
+            vendor = out.decode().lower()
+            
+            process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
+            process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
+                                        stdin=process1.stdout, stdout=subprocess.PIPE)
+            process1.stdout.close()
+            out, err = process2.communicate()
+            model = out.decode().lower()
+        except OSError as err:
+            logging.exception(_("Error running hwinfo in hardware module: %s"), err.strerror)
+        
+        return (vendor, model)
+
+    def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
+        """ Runs command inside the chroot """
+        run = [ 'chroot', dest_dir ]
+
+        for element in cmd:
+            run.append(element)
+
+        try:
+            proc = subprocess.Popen(run,
+                                    stdin=stdin,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT)
+            out = proc.communicate()[0]
+            logging.debug(out.decode())
+        except OSError as err:
+            logging.exception(_("Error running command: %s"), err.strerror)
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
@@ -120,7 +145,14 @@ class HardwareInstall(object):
         packages = []
         for obj in self.objects_found:
             packages.extend(obj.get_packages(obj))
-        return packages
+        
+        # Remove duplicates (not necessary but it's cleaner)
+        pkgs = []
+        for pkg in packages:
+            if not pkg in pkgs:
+                pkgs.append(pkg)
+
+        return pkgs
 
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """

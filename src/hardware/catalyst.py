@@ -22,7 +22,7 @@
 
 """  driver installation """
 
-from hardware.hardware import Hardware, chroot
+from hardware.hardware import Hardware
 import os
 
 # TODO: Add all catalyst (amd/ati) supported cards ¿?
@@ -105,7 +105,7 @@ class Catalyst(Hardware):
             modprobe.write("# Load Catalyst (fglrx) driver")
             modprobe.write("fglrx")
         
-        chroot(["systemctl", "enable", "catalyst-hook"])
+        super().chroot(self, ["systemctl", "enable", "catalyst-hook"])
 
 
     def check_device(self, device):
