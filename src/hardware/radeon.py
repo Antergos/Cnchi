@@ -29,10 +29,10 @@ import os
 # TODO: User should be able to choose between radeon and catalyst
 
 DEVICES = [
-('0x1002','0x3154'),
-('0x1002', '0x4c66'),
-('0x1002', '0x5460'),
-('0x1002', '0x68f9')]
+('0x1002','0x3154', ""),
+('0x1002', '0x4c66', ""),
+('0x1002', '0x5460', ""),
+('0x1002', '0x68f9', "")]
 
 CLASS_NAME = "Radeon"
 
@@ -57,7 +57,11 @@ class Radeon(Hardware):
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

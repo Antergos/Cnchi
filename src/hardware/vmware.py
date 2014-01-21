@@ -25,8 +25,8 @@
 from hardware.hardware import Hardware
 
 DEVICES = [
-('0x15ad', '0x0405'),
-('0x15ad', '0x0710')]
+('0x15ad', '0x0405', "VMware Virtual SVGA II"),
+('0x15ad', '0x0710', "VMware Virtual SVGA")]
 
 CLASS_NAME = "Vmware"
 
@@ -50,7 +50,11 @@ class Vmware(Hardware):
         self.chroot(["systemctl", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

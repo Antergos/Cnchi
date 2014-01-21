@@ -25,10 +25,7 @@
 from hardware.hardware import Hardware, chroot
 import os
 
-DEVICES = [
-('0x80ee', '0xcafe'),
-('0x80ee', '0xbeef'),
-('0x80ee', '0x7145')]
+DEVICES = [('0x80ee', '0xbeef', "InnoTek Systemberatung GmbH VirtualBox Graphics Adapter")]
 
 CLASS_NAME = "Virtualbox"
 
@@ -57,3 +54,13 @@ class Virtualbox(Hardware):
         if device in DEVICES:
             return True
         return False
+
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
+        return False
+        

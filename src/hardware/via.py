@@ -28,16 +28,16 @@ import os
 CLASS_NAME = "Via"
 
 DEVICES = [
-('0x1106', '0x3122'),
-('0x1106', '0x7205'),
-('0x1106', '0x3118'),
-('0x1106', '0x3230'),
-('0x1106', '0x0505'),
-('0x1106', '0x0581'),
-('0x1106', '0x3205'),
-('0x1106', '0x3343'),
-('0x1106', '0x3344'),
-('0x1106', '0x0581')]
+('0x1106', '0x3122', ""),
+('0x1106', '0x7205', ""),
+('0x1106', '0x3118', ""),
+('0x1106', '0x3230', ""),
+('0x1106', '0x0505', ""),
+('0x1106', '0x0581', ""),
+('0x1106', '0x3205', ""),
+('0x1106', '0x3343', ""),
+('0x1106', '0x3344', ""),
+('0x1106', '0x0581', "")]
 
 class Via(Hardware):
     def __init__(self):
@@ -62,3 +62,13 @@ class Via(Hardware):
         if device in DEVICES:
             return True
         return False
+
+    def check_device(self, device):
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
+        return False
+        

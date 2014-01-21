@@ -30,8 +30,8 @@ import os
 # TODO: One should disable kernel mode setting.
 
 DEVICES = [
-('0x10de', '0x040c'),
-('0x10de', '0x040f')]
+('0x10de', '0x040c', ""),
+('0x10de', '0x040f', "")]
 
 CLASS_NAME = "NVidia"
 
@@ -64,7 +64,11 @@ class NVidia(Hardware):
             modprobe.write("options nvidia NVreg_EnableMSI=1\n")
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

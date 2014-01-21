@@ -29,7 +29,7 @@
 from hardware.hardware import Hardware
 import subprocess
 
-DEVICES = [('0x0eef', '0x0001')]
+DEVICES = [('0x0eef', '0x0001', "ETouchScreen")]
 
 CLASS_NAME = "ETouchScreen"
 
@@ -59,7 +59,11 @@ class ETouchScreen(Hardware):
             conf_file.write('EndSection\n')
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

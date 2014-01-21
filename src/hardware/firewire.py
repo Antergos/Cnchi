@@ -24,7 +24,7 @@
 
 from hardware.hardware import Hardware
 
-DEVICES = [('0x1180','0x0832')]
+DEVICES = [('0x1180','0x0832', "Firewire")]
 
 CLASS_NAME = "Firewire"
 
@@ -38,8 +38,13 @@ class Firewire(Hardware):
     def post_install(self, dest_dir):
         pass
 
+
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

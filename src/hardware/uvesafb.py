@@ -27,8 +27,7 @@ import os
 
 CLASS_NAME = "VesaFB"
 
-# TODO: Well, all modern cards support Vesa. This should be used as a fallback.
-
+# All modern cards support Vesa. This will be used as a fallback.
 DEVICES = []
 
 class VesaFB(Hardware):
@@ -42,7 +41,7 @@ class VesaFB(Hardware):
         pass
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
-        return False
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        # All modern cards support Vesa. This will be used as a fallback.
+        return True

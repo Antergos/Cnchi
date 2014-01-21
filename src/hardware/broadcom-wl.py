@@ -29,13 +29,13 @@ from hardware.hardware import Hardware
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-, BCM43227- and BCM43228-based hardware. 
 
 DEVICES = [
-('0x14e4', '0x4311'), # BCM4311
-('0x14e4', '0x04B5'), # BCM4312
-('0x14e4', '0x4727'), # BCM4313
-('0x14e4', '0x1361'), # BCM4313
-('0x14e4', '0x4315'), # BCM4315 (not sure about this one)
-('0x14e4', '0x4328'), # BCM4321KFBG
-('0x14e4', '0x432B')] # BCM4322
+('0x14e4', '0x4311', "BCM4311"),
+('0x14e4', '0x04B5', "BCM4312"),
+('0x14e4', '0x4727', "BCM4313"),
+('0x14e4', '0x1361', "BCM4313"),
+('0x14e4', '0x4315', "BCM4315"), # (not sure about this one)
+('0x14e4', '0x4328', "BCM4321KFBG"),
+('0x14e4', '0x432B', "BCM4322")]
 
 CLASS_NAME = "Broadcom_wl"
 
@@ -50,8 +50,11 @@ class Broadcom_wl(Hardware):
         pass
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
         

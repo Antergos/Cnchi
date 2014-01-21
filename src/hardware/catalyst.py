@@ -32,23 +32,59 @@ import os
 
 # From https://wiki.archlinux.org/index.php/AMD_Catalyst :
 # Owners of ATI/AMD video cards have a choice between AMD's proprietary driver (catalyst)
-# and the open source driver (xf86-video-ati). This article covers the proprietary driver.
-# AMD's Linux driver package catalyst was previously named fglrx (FireGL and Radeon X).
-# Only the package name has changed, while the kernel module retains its original fglrx.ko filename.
-# Therefore, any mention of fglrx below is specifically in reference to the kernel module, not the package.
-# Catalyst packages are no longer offered in the official repositories.
-# In the past, Catalyst has been dropped from official Arch support because of dissatisfaction with the quality
-# and speed of development. After a brief return they were dropped again in April 2013 and they have not returned since.
-# Compared to the open source driver, Catalyst performs worse in 2D graphics, but has a better support for 3D rendering
-# and power management. Supported devices are ATI/AMD Radeon video cards with chipset R600 and newer
+# and the open source driver (xf86-video-ati).
+# Supported devices are ATI/AMD Radeon video cards with chipset R600 and newer
 # (Radeon HD 2xxx and newer). See the Xorg decoder ring or this table, to translate model names (X1900, HD4850)
 # to/from chip names (R580, RV770 respectively) (http://en.wikipedia.org/wiki/Comparison_of_AMD_graphics_processing_units)
 
+# From: http://support.amd.com/en-us/kb-articles/Pages/latest-linux-beta-driver.aspx
+
+## AMD Desktop Product Family Compatibility
+# AMD Radeon™ R7 240 Series
+# AMD Radeon™ R7 250 Series
+# AMD Radeon™ R7 260X Series
+# AMD Radeon™ R9 270X Series
+# AMD Radeon™ R9 280X Series
+# AMD Radeon™ R9 290 Series
+# ATI Radeon™ HD 5000 Series
+# AMD Radeon™ HD 6000 Series
+# AMD Radeon™ HD 7000 Series
+# AMD Radeon™ HD 8000 Series
+
+## AMD All-In-One Desktop Product Family Compatibility
+# AMD Radeon™ HD 6350A Series
+# AMD Radeon™ HD 6600A Series
+# AMD Radeon™ HD 7450A Series
+# AMD Radeon™ HD 7600A Series
+
+## AMD Embedded Product Family Compatibility
+# AMD Radeon™ E6760
+# AMD Radeon™ E6460
+
+## AMD APU Product Family Compatibility
+## Desktop
+# AMD Radeon™ HD 6000D Series
+# AMD Radeon™ HD 7000D Series
+# AMD Radeon™ HD 8000D Series
+## Mobile
+# AMD Radeon™ HD 6000G Series
+# AMD Radeon™ HD 7000G Series
+# AMD Radeon™ HD 8000G Series
+
+## AMD Mobility Product Family Compatibility
+# ATI Mobility Radeon™ HD 5000 Series
+# AMD Radeon™ HD 6000M Series
+# AMD Radeon™ HD 7000M Series
+# AMD Radeon™ HD 8000M Series
+
+
+
+
 DEVICES = [
-('0x1002','0x3154'),
-('0x1002', '0x4c66'),
-('0x1002', '0x5460'),
-('0x1002', '0x68f9')]
+('0x1002','0x3154', ""),
+('0x1002', '0x4c66', ""),
+('0x1002', '0x5460', ""),
+('0x1002', '0x68f9', "")]
 
 CLASS_NAME = "Catalyst"
 
@@ -73,8 +109,13 @@ class Catalyst(Hardware):
         
         chroot(["systemctl", "enable", "catalyst-hook"])
 
+
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        

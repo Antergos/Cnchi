@@ -27,21 +27,21 @@
 from hardware.hardware import Hardware
 
 DEVICES = [
-('0x045e', '0x00bb'),
-('0x045e', '0x00bc'),
-('0x045e', '0x00bd'),
-('0x045e', '0x00ca'),
-('0x0483', '0x2015'),
-('0x0483', '0x2016'),
-('0x05ba', '0x000a'),
-('0x05ba', '0x0007'),
-('0x05ba', '0x0008'),
-('0x061a', '0x0110'),
-('0x08ff', '0x1600'),
-('0x08ff', '0x2550'),
-('0x08ff', '0x2580'),
-('0x08ff', '0x5501'),
-('0x147e', '0x2016')]
+('0x045e', '0x00bb', ""),
+('0x045e', '0x00bc', ""),
+('0x045e', '0x00bd', ""),
+('0x045e', '0x00ca', ""),
+('0x0483', '0x2015', ""),
+('0x0483', '0x2016', ""),
+('0x05ba', '0x000a', ""),
+('0x05ba', '0x0007', ""),
+('0x05ba', '0x0008', ""),
+('0x061a', '0x0110', ""),
+('0x08ff', '0x1600', ""),
+('0x08ff', '0x2550', ""),
+('0x08ff', '0x2580', ""),
+('0x08ff', '0x5501', ""),
+('0x147e', '0x2016', "")]
 
 CLASS_NAME = "FingerPrint"
 
@@ -55,8 +55,13 @@ class FingerPrint(Hardware):
     def post_install(self, dest_dir):
         pass
 
+
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
+        """ Device is (VendorID, ProductID)
+            DEVICES is (VendorID, ProductID, Description) """
+        for (vendor, product, description) in DEVICES:
+            if device == (vendor, product):
+                print(description)
+                return True
         return False
+        
