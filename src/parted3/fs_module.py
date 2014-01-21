@@ -113,9 +113,9 @@ def create_fs(part, fstype, label='', other_opts=''):
     fstype = fstype.lower()
     if not other_opts:
         other_opts = opt_dic[fstype]
-    comdic = {'ext2':'mkfs.ext2 -L "%(label)s" %(other_opts)s %(part)s',
-             'ext3':'mkfs.ext3 -L "%(label)s" %(other_opts)s %(part)s',
-             'ext4':'mkfs.ext4 -L "%(label)s" %(other_opts)s %(part)s',
+    comdic = {'ext2':'mkfs.ext2 -q -L "%(label)s" %(other_opts)s %(part)s',
+             'ext3':'mkfs.ext3 -q -L "%(label)s" %(other_opts)s %(part)s',
+             'ext4':'mkfs.ext4 -q -L "%(label)s" %(other_opts)s %(part)s',
              'f2fs':'mkfs.f2fs -l "%(label)s" %(other_opts)s %(part)s',
              'fat16':'mkfs.vfat -n "%(label)s" -F 16 %(other_opts)s %(part)s',
              'fat32':'mkfs.vfat -n "%(label)s" -F 32 %(other_opts)s %(part)s',

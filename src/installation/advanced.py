@@ -1666,7 +1666,10 @@ class InstallationAdvanced(Gtk.Box):
                         # FIX: Do not label or format extended or bios-gpt-boot partitions
                         if fisy == "extended" or fisy == "bios-gpt-boot":
                             continue
-                        logging.info(_("Creating %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
+                        if len(lbl) > 0:
+                            logging.info(_("Creating new %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
+                        else:
+                            logging.info(_("Creating new %s filesystem in %s") % (fisy, partition_path))
                         if (mnt == '/boot/efi'):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
                                 (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
@@ -1703,6 +1706,7 @@ class InstallationAdvanced(Gtk.Box):
                         if fmt:
                             # All of fs module takes paths, not partition objs
                             if not self.testing:
+                                # Create filesystem using mkfs
                                 (error, msg) = fs.create_fs(partition_path, fisy, lbl)
                                 if error == 0:
                                     logging.info(msg)
