@@ -25,8 +25,10 @@
 from hardware.hardware import Hardware, chroot
 import os
 
-# TODO: Add all catalyst (amd/ati) supported cards
+# TODO: Add all catalyst (amd/ati) supported cards ¿?
 # TODO: User should be able to choose between radeon and catalyst
+# TODO : One should disable kernel mode setting for this driver
+# TODO: Packages are from AUR. They should be added to Antergos repo, shouldn't they?
 
 # From https://wiki.archlinux.org/index.php/AMD_Catalyst :
 # Owners of ATI/AMD video cards have a choice between AMD's proprietary driver (catalyst)
@@ -42,8 +44,6 @@ import os
 # (Radeon HD 2xxx and newer). See the Xorg decoder ring or this table, to translate model names (X1900, HD4850)
 # to/from chip names (R580, RV770 respectively) (http://en.wikipedia.org/wiki/Comparison_of_AMD_graphics_processing_units)
 
-# TODO : One should disable kernel mode setting for this driver
-
 DEVICES = [
 ('0x1002','0x3154'),
 ('0x1002', '0x4c66'),
@@ -54,11 +54,6 @@ CLASS_NAME = "Catalyst"
 
 class Catalyst(Hardware):
     def __init__(self):
-        #self.KMS = "radeon"
-        #self.KMS_OPTIONS = "modeset=1"
-        #self.DRI = "ati-dri"
-        #self.DDX = "xf86-video-ati"
-        #self.DECODER = "libva-vdpau-driver"
         self.ARCH = os.uname()[-1]
 
     def get_packages(self):

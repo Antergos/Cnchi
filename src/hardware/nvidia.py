@@ -25,7 +25,7 @@
 from hardware.hardware import Hardware
 import os
 
-# TODO: Add all nVidia supported cards
+# TODO: Add all nVidia supported cards ¿?
 # TODO: User should be able to choose between nouveau and nvidia drivers
 # TODO: One should disable kernel mode setting.
 

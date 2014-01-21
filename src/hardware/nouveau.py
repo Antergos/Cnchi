@@ -38,7 +38,7 @@ CLASS_NAME = "Nouveau"
 # NVE0	GeForce 600, GeForce 700, GeForce GTX Titan	Kepler
 
 
-# TODO: Add all nouveau supported cards
+# TODO: Add all nouveau supported cards (this list is not complete)
 
 DEVICES = [
 ('0x10DE', '0x0020'), # Riva TNT
