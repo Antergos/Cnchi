@@ -41,22 +41,22 @@ CLASS_NAME = "Nouveau"
 # TODO: Add all nouveau supported cards (this list is not complete)
 
 DEVICES = [
-('0x10DE', '0x0020', "Riva TNT"),
-('0x10DE', '0x002D', "Riva TNT2"),
-('0x10DE', '0x0029', "Riva TNT2 Ultra"),
-('0x10DE', '0x002B', "Riva TNT2"),
-('0x10DE', '0x00A0', "Aladdin TNT2"),
-('0x10DE', '0x0101', "GeForce DDR"),
-('0x10DE', '0x0103', "Quadro"),
-('0x10DE', '0x0110', "GeForce2 MX"),
-('0x10DE', '0x0111', "GeForce2 MMX"),
-('0x10DE', '0x0112', "GeForce2 Go"),
-('0x10DE', '0x0113', "Quadro 2"),
-('0x10DE', '0x9876', "GeForce2 MX"),
-('0x10DE', '0x0150', "GeForce2 GTS"),
-('0x10DE', '0x0151', "GeForce2 Ti"),
-('0x10DE', '0x0152', "GeForce2 Ultra"),
-('0x10DE', '0x0153', "Quadro2 Pro")
+('0x10de', '0x0020', "Riva TNT"),
+('0x10de', '0x002d', "Riva TNT2"),
+('0x10de', '0x0029', "Riva TNT2 Ultra"),
+('0x10de', '0x002b', "Riva TNT2"),
+('0x10de', '0x00a0', "Aladdin TNT2"),
+('0x10de', '0x0101', "GeForce DDR"),
+('0x10de', '0x0103', "Quadro"),
+('0x10de', '0x0110', "GeForce2 MX"),
+('0x10de', '0x0111', "GeForce2 MMX"),
+('0x10de', '0x0112', "GeForce2 Go"),
+('0x10de', '0x0113', "Quadro 2"),
+('0x10de', '0x9876', "GeForce2 MX"),
+('0x10de', '0x0150', "GeForce2 GTS"),
+('0x10de', '0x0151', "GeForce2 Ti"),
+('0x10de', '0x0152', "GeForce2 Ultra"),
+('0x10de', '0x0153', "Quadro2 Pro")
 ]
 
 class Nouveau(Hardware):
@@ -83,10 +83,16 @@ class Nouveau(Hardware):
     def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                print(description)
-                return True
+        #for (vendor, product, description) in DEVICES:
+        #    if device == (vendor, product):
+        #        print(description)
+        #        return True
+        #return False
+        
+        # TODO: Use vendorID and productID
+        (vendor, product) = device
+        if vendor == "0x10de":
+            return True
         return False
         
             

@@ -78,8 +78,6 @@ import os
 # AMD Radeon™ HD 8000M Series
 
 
-
-
 DEVICES = [
 ('0x1002','0x3154', ""),
 ('0x1002', '0x4c66', ""),
@@ -113,9 +111,9 @@ class Catalyst(Hardware):
     def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                print(description)
-                return True
+        #for (vendor, product, description) in DEVICES:
+        #    if device == (vendor, product):
+        #        print(description)
+        #        return True
         return False
-        
+
