@@ -22,11 +22,12 @@
 
 """ VESA driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 import os
 
 CLASS_NAME = "VesaFB"
+
+# TODO: Well, all modern cards support Vesa. This should be used as a fallback.
 
 DEVICES = []
 

@@ -22,7 +22,6 @@
 
 """ Nouveau driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 import os
 
@@ -39,7 +38,7 @@ CLASS_NAME = "Nouveau"
 # NVE0	GeForce 600, GeForce 700, GeForce GTX Titan	Kepler
 
 
-# TODO: Add all devices NOT FINISHED!
+# TODO: Add all nouveau supported cards
 
 DEVICES = [
 ('0x10DE', '0x0020'), # Riva TNT

@@ -22,9 +22,11 @@
 
 """  driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 import os
+
+# TODO: Add all radeon (amd/ati) supported cards
+# TODO: User should be able to choose between radeon and catalyst
 
 DEVICES = [
 ('0x1002','0x3154'),

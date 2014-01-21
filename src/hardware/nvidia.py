@@ -22,9 +22,12 @@
 
 """  driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
 import os
+
+# TODO: Add all nVidia supported cards
+# TODO: User should be able to choose between nouveau and nvidia drivers
+# TODO: One should disable kernel mode setting.
 
 DEVICES = [
 ('0x10de', '0x040c'),
