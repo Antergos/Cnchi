@@ -355,6 +355,9 @@ class InstallationProcess(multiprocessing.Process):
         except KeyboardInterrupt as err:
             logging.error(err)
             self.queue_fatal_event(err)
+        except TypeError as err:
+            logging.exception('TypeError: %s. Unable to continue.' % err)
+            self.queue_fatal_event(err)
         except Exception as err:
             # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
             logging.exception('Error: %s. Unable to continue.' % err)
@@ -1305,7 +1308,7 @@ class InstallationProcess(multiprocessing.Process):
         locale = self.settings.get('locale')
         export = "export LANG=%s" % locale
         self.chroot_mount_special_dirs()
-        self.chroot(["%s", "&&", "/usr/bin/mkinitcpio", "-p", self.kernel_pkg] % export)
+        self.chroot([export, "&&", "/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
         self.chroot_umount_special_dirs()
 
     def uncomment_locale_gen(self, locale):
