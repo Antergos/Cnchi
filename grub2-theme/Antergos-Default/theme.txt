@@ -1,0 +1,67 @@
+# Antergos grub2 theme
+
+desktop-image: "background.png"
+
+title-text: ""
+
+terminal-box: "terminal_box_*.png"
+terminal-font: "Gnu Unifont Mono Regular 16"
+
++ boot_menu {
+  left = 45%
+  width = 50%
+  top = 30%
+  height = 50%	
+
+  item_font = "Raleway Regular 16"
+  item_color = "#fff"
+  item_height = 48
+  item_icon_space = 8
+  item_spacing = 2
+
+  selected_item_font = "Raleway Regular 16"
+  selected_item_color= "#000"
+  selected_item_pixmap_style = "select_*.png"
+
+  icon_height = 48
+  icon_width = 48
+
+  scrollbar = true
+  scrollbar_width = 20
+  scrollbar_thumb = "slider_*.png"
+}
+
++ progress_bar {
+  id = "__timeout__"
+
+  left = 28%
+  top = 100%-95
+  height = 20
+  width = 40%
+
+  font = "Raleway Regular 14"
+
+  text_color = "#000"
+  fg_color = "#236ee0"
+
+  bg_color = "#fff"
+  border_color = "#fff"
+
+  # instead of the above colors, use pixmaps
+  # bar_style = "progress_bar_*.png"
+  # highlight_style = "progress_highlight_*.png"
+
+  text = "@TIMEOUT_NOTIFICATION_LONG@"
+}
+# Show an informational message.
++ hbox {
+		top = 100%-60
+		left = 31%
+		height = 20
+		+ label {text = "Enter: Boot Selection     E: Edit Selection     C: GRUB Commandline" font = "Raleway Regular 14" color = "#FFFFFF" align = "center"}
+}
++ hbox {
+		top = 100%-30
+		left = 24%
+		+ label {text = "For Non-Graphical Boot: Add systemd.unit=multi-user.target to the kernel command line." font = "Raleway Regular 14" color = "#FFFFFF" align = "center"}
+}
