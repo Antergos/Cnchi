@@ -61,6 +61,7 @@ class Virtualbox(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
+                # TODO: Check that this debug line is working fine
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
