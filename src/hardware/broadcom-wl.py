@@ -22,8 +22,8 @@
 
 """ Broadcom-wl driver installation """
 
-#from hardware import Hardware
 from hardware.hardware import Hardware
+import logging
 
 # Broadcom's driver for:
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-, BCM43227- and BCM43228-based hardware. 
@@ -54,7 +54,7 @@ class Broadcom_wl(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         

@@ -24,6 +24,7 @@
 
 from hardware.hardware import Hardware
 import os
+import logging
 
 # TODO: Add all radeon (amd/ati) supported cards
 # TODO: User should be able to choose between radeon and catalyst
@@ -66,6 +67,6 @@ class Radeon(Hardware):
             # Check that this is really a graphics card
             (d_vendor, d_model) = super().get_graphics_card(self)
             if vendor == d_vendor:
-                print (d_model)
+                logging.debug(_("Found device: "), d_model)
                 return True
         return False

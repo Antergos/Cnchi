@@ -580,7 +580,10 @@ class InstallationProcess(multiprocessing.Process):
             hardware_install = hardware.HardwareInstall()
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
-                logging.debug(_("Hardware module added these packages : "), hardware_pkgs)
+                txt = ""
+                for hardware_pkg in hardware_pkgs:
+                    txt += hardware_pkg + " "
+                logging.debug(_("Hardware module added these packages : %s") % txt)
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))

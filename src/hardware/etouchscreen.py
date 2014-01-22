@@ -28,6 +28,7 @@
 
 from hardware.hardware import Hardware
 import subprocess
+import logging
 
 DEVICES = [('0x0eef', '0x0001', "ETouchScreen")]
 
@@ -63,7 +64,7 @@ class ETouchScreen(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         

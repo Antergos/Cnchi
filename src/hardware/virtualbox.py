@@ -24,6 +24,7 @@
 
 from hardware.hardware import Hardware
 import os
+import logging
 
 DEVICES = [('0x80ee', '0xbeef', "InnoTek Systemberatung GmbH VirtualBox Graphics Adapter")]
 
@@ -60,7 +61,7 @@ class Virtualbox(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         

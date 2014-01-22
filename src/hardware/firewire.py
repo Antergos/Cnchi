@@ -23,6 +23,7 @@
 """  driver installation """
 
 from hardware.hardware import Hardware
+import logging
 
 DEVICES = [('0x1180','0x0832', "Firewire")]
 
@@ -44,7 +45,7 @@ class Firewire(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         

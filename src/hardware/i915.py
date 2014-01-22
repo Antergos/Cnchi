@@ -24,6 +24,7 @@
 
 from hardware.hardware import Hardware
 import os
+import logging
 
 CLASS_NAME = "i915"
 
@@ -86,7 +87,7 @@ class i915(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         

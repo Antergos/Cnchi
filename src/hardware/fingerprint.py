@@ -25,6 +25,7 @@
 # Support for consumer fingerprint reader devices.
 
 from hardware.hardware import Hardware
+import logging
 
 DEVICES = [
 ('0x045e', '0x00bb', ""),
@@ -61,7 +62,7 @@ class FingerPrint(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                print(description)
+                logging.debug(_("Found device: "), description)
                 return True
         return False
         
