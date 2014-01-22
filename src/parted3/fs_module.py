@@ -28,14 +28,16 @@ import canonical.misc as misc
 import logging
 
 # constants
-NAMES = [ 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'xfs', 'btrfs', 'swap']
+NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'swap', 'xfs']
 
-COMMON_MOUNT_POINTS = [ '/', '/boot', '/home', '/usr', '/var' ]
+COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 
 @misc.raise_privileges
 def get_info(part):
     """ Get partition info using blkid """
     try:
+        # Parted uses sda-1, sda-2, sdb-1, ... let's check it's not the case now
+        part = part.replace("-", "")    
         ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
@@ -51,6 +53,8 @@ def get_info(part):
 def get_type(part):
     """ Get filesystem type using blkid """
     try:
+        # Parted uses sda-1, sda-2, sdb-1, ... let's check it's not the case now
+        part = part.replace("-", "")    
         ret = subprocess.check_output(shlex.split('blkid -o value -s TYPE %s' % part)).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
@@ -145,7 +149,7 @@ def is_ssd(disk_path):
         if "Solid State" in output:
             ssd = True
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.warning(err)
         logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
 
     return ssd
@@ -204,9 +208,11 @@ def resize_ext(part, new_size_in_mb):
     logging.debug("resize2fs %s %sM", part, str(new_size_in_mb))
 
     try:
-        subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
+        result = subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
     except subprocess.CalledProcessError as err:
         logging.error(err)
         return False
+
+    logging.debug(result)
 
     return True
