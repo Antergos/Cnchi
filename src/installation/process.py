@@ -1306,14 +1306,11 @@ class InstallationProcess(multiprocessing.Process):
 
         self.set_mkinitcpio_hooks_and_modules(hooks, modules)
 
-        # run mkinitcpio on the target system
+        # Run mkinitcpio on the target system
         # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
         locale = self.settings.get('locale')
-        
-        # TODO: Fix this (it throws a file not found)
-        export = "export LANG=%s" % locale
         self.chroot_mount_special_dirs()
-        self.chroot([export, "&&", "/usr/bin/mkinitcpio", "-p", self.kernel_pkg])
+        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p %s' % (locale, self.kernel)])
         self.chroot_umount_special_dirs()
 
     def uncomment_locale_gen(self, locale):
