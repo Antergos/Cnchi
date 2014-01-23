@@ -467,22 +467,17 @@ class InstallationAdvanced(Gtk.Box):
                     if '/dev/mapper' in path:
                         continue
 
-                    # Get file system
+                    # Get filesystem
                     if p.fileSystem and p.fileSystem.type:
                         fs_type = p.fileSystem.type
+                    # Check if its free space before trying to get the filesystem with blkid.
+                    elif 'free' in partition_path:
+                        fs_type = _("none")
                     elif fs.get_type(path):
                         fs_type = fs.get_type(path)
                     else:
-                        # kludge, btrfs not being detected...
-                        if 'free' not in partition_path:
-                            uid = self.gen_partition_uid(p=p)
-                            if uid not in self.stage_opts:
-                                if used_space.is_btrfs(p.path):
-                                    fs_type = 'btrfs'
-                            else:
-                                fs_type = '?'
-                        else:
-                            fs_type = _("none")
+                        # Unknown filesystem
+                        fs_type = '?'
 
                     # Nothing should be mounted at this point
 
