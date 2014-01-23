@@ -67,6 +67,6 @@ class Radeon(Hardware):
             # Check that this is really a graphics card
             (d_vendor, d_model) = super().get_graphics_card(self)
             if vendor == d_vendor:
-                logging.debug(_("Found device: "), d_model)
+                logging.debug(_("Found device: %s") % d_model)
                 return True
         return False
