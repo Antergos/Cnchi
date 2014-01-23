@@ -826,8 +826,9 @@ class InstallationProcess(multiprocessing.Process):
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
             out = proc.communicate()[0]
-            if len(out.decode()) > 0:
-                logging.debug(out.decode())
+            txt = out.decode()
+            if len(txt) > 0:
+                logging.debug(txt)
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
             raise
