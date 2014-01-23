@@ -826,7 +826,8 @@ class InstallationProcess(multiprocessing.Process):
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
             out = proc.communicate()[0]
-            logging.debug(out.decode())
+            if len(out.decode()) > 0:
+                logging.debug(out.decode())
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
             raise
@@ -1694,8 +1695,9 @@ class InstallationProcess(multiprocessing.Process):
         except subprocess.TimeoutExpired as err:
             logging.error(err)
 
-        # Set lightdm config including autologin if selected
-        self.set_display_manager()
+        if desktop != "nox":
+            # Set lightdm config including autologin if selected
+            self.set_display_manager()
 
         # Configure user features (third party software, libreoffice language pack, ...)
         self.setup_features()
