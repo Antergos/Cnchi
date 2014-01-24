@@ -1504,16 +1504,16 @@ class InstallationProcess(multiprocessing.Process):
 
         # Copy network profile when using netctl (and not networkmanager)
         # netctl is used in the noX desktop option
-        if self.network_manager == 'netctl':
+        elif self.network_manager == 'netctl':
+            # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
+            # edited by himself. Maybe we could ease this process?
+            profile = 'ethernet-dhcp'
             if misc.is_wireless_enabled():
-                # TODO: We should port wifi-menu from netctl package here. Just copying the default profile
-                # is NOT an elegant solution
+                # TODO: We should port wifi-menu from netctl package here.
                 profile = 'wireless-wpa'
-            else:
-                # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
-                # edited by himself. Maybe we could ease this process?
-                profile = 'ethernet-dhcp'
-        
+
+            # TODO: Just copying the default profile is NOT an elegant solution
+
             self.queue_event('debug', _('Cnchi will configure netctl using the %s profile') % profile)
             src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
             dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
