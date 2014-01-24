@@ -598,48 +598,23 @@ class InstallationProcess(multiprocessing.Process):
 
         fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
+        # Might fix the "fsck.ext4 not found error"
+        # Don't think we need all of these since "ext" is a substring of "ext4", "fat" of "fat32", ect but ???..
+        fs_lib = ('btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs',
+                  'reiserfs', 'vfat', 'xfs')
+
         for iii in self.fs_devices:
             fs_types += self.fs_devices[iii]
 
-        if "ntfs" in fs_types:
-            for child in root.iter('ntfs'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "btrfs" in fs_types:
-            for child in root.iter('btrfs'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "nilfs2" in fs_types:
-            for child in root.iter('nilfs2'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "ext" in fs_types:
-            for child in root.iter('ext'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "reiserfs" in fs_types:
-            for child in root.iter('reiserfs'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "xfs" in fs_types:
-            for child in root.iter('xfs'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "jfs" in fs_types:
-            for child in root.iter('jfs'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        if "vfat" in fs_types:
-            for child in root.iter('vfat'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+        for fsys in fs_lib:
+            if fsys in fs_types:
+                if fsys is 'ext2' or 'ext3' or 'ext4':
+                    fsys = 'ext'
+                if fsys is 'fat16' or 'fat32':
+                    fsys ='vfat'
+                for child in root.iter(fsys):
+                    for pkg in child.iter('pkgname'):
+                        self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))

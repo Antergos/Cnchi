@@ -215,6 +215,7 @@
     </razor_desktop>
 
     <mate_desktop>
+        <pkgname>cairo-dock</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
@@ -223,10 +224,12 @@
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hotot-gtk3</pkgname>
-        <pkgname>mate</pkgname>
-        <pkgname>mate-disk-utility</pkgname>
-        <pkgname>mate-extras</pkgname>
+        <pkgname>mate</pkgname> <!-- Group -->
+        <pkgname>mate-applets</pkgname>
         <pkgname>mate-applet-softupd</pkgname>
+        <pkgname>mate-disk-utility</pkgname>
+        <pkgname>mate-extra</pkgname> <!-- Group -->
+        <pkgname>mate-media</pkgname>
         <pkgname>mintmenu</pkgname>
         <pkgname>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -440,7 +443,6 @@
         <virtualbox>
             <pkgname>virtualbox-guest-modules</pkgname>
             <pkgname>virtualbox-guest-utils</pkgname>
-            <pkgname>virtualbox-ext-oracle</pkgname>
         </virtualbox>
         <vmware>
             <pkgname>xf86-video-vmware</pkgname>
@@ -465,9 +467,15 @@
         <ext>
             <pkgname>e2fsprogs</pkgname>
         </ext>
+        <f2fs>
+            <pkgname>f2fs-tools</pkgname>
+        </f2fs>
         <jfs>
             <pkgname>jfsutils</pkgname>
         </jfs>
+        <nfs>
+            <pkgname>nfs-utils</pkgname>
+        </nfs>
         <nilfs2>
             <pkgname>nilfs-utils</pkgname>
         </nilfs2>
@@ -507,29 +515,4 @@
         <pkgname uefi="true">dosfstools</pkgname>
     </grub>
 
-        <!--<efistub>
-            <pkgname>efilinux-efi</pkgname>
-        </efistub>
-        <grub>
-            <pkgname>grub</pkgname>
-            <pkgname>os-prober</pkgname>
-        </grub>
-        <grub-efi uefiarch="x86_64">
-            <pkgname>grub</pkgname>
-            <pkgname>os-prober</pkgname>
-        </grub-efi>
-        <grub-efi uefiarch="i386">
-            <pkgname>grub</pkgname>
-            <pkgname>os-prober</pkgname>
-        </grub-efi>
-        <gummiboot>
-            <pkgname>gummiboot-efi</pkgname>
-        </gummiboot>
-        <refind>
-            <pkgname>refind-efi</pkgname>
-        </refind>
-        <uefi_x86_64>
-            <pkgname>dosfstools</pkgname>
-            <pkgname>efibootmgr</pkgname>
-        </uefi_x86_64>-->
 </packages>
