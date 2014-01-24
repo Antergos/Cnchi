@@ -36,8 +36,6 @@ COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 def get_info(part):
     """ Get partition info using blkid """
     try:
-        # Parted uses sda-1, sda-2, sdb-1, ... let's check it's not the case now
-        part = part.replace("-", "")    
         ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
@@ -53,8 +51,6 @@ def get_info(part):
 def get_type(part):
     """ Get filesystem type using blkid """
     try:
-        # Parted uses sda-1, sda-2, sdb-1, ... let's check it's not the case now
-        part = part.replace("-", "")    
         ret = subprocess.check_output(shlex.split('blkid -o value -s TYPE %s' % part)).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
