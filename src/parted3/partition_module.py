@@ -27,6 +27,7 @@ import shlex
 import os
 import canonical.misc as misc
 import logging
+import show_message as show
 
 # To be able to test this installer in other systems
 # that do not have pyparted3 installed
@@ -74,7 +75,7 @@ def get_devices():
         myhome = subprocess.check_output(["df", "-P", myhomepath]).decode()
     else:
         myhome = ""
-
+    same_error = False
     for dev in device_list:
         if dev.path in myhome:
             continue
@@ -98,6 +99,14 @@ def get_devices():
             try:
                 diskob = parted.Disk(dev)
                 disk_dic[dev.path] = diskob
+            # This is not a fix. Only a sloppy work-around.
+            except parted.DiskLabelException as err:
+                if same_error:
+                    continue
+                else:
+                    logging.error(_('Exception in parted module: %s. Trying to continue.' % err))
+                    same_error = True
+                    continue
             except Exception as err:
                 logging.error(err)
                 show.error((_("Exception: For more information take a look at /tmp/cnchi.log"), err))
