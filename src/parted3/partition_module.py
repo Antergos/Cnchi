@@ -99,7 +99,7 @@ def get_devices():
             try:
                 diskob = parted.Disk(dev)
                 disk_dic[dev.path] = diskob
-            except diskob.DiskLabelException as err:
+            except parted.DiskLabelException as err:
                 logging.error(_('Exception in parted module: %s. Trying to continue.' % err))
                 continue
             except Exception as err:
