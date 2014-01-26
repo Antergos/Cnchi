@@ -153,35 +153,37 @@ openbox_settings(){
 
 	# Set settings
     
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    mkdir -p ${DESTDIR}/tmp
-    wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
-    unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    # copy slim theme
-    mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    # copy home files
-    cp ${DESTDIR}/tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
-    cp ${DESTDIR}/tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+	# Get zip file from github, unzip it and copy all setup files in their right places.
+	mkdir -p ${DESTDIR}/tmp
+	wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
+	unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
+
+	## Copy slim theme
+	#mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
+	#cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
     
-    # copy .config files
-    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
-    cp -R ${DESTDIR}/tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
-    # copy /etc setup files
-    cp -R ${DESTDIR}/tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
-	
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+	# Copy home files
+	cp ${DESTDIR}/tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
+	cp ${DESTDIR}/tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+    
+	# Copy .config files
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
+	cp -R ${DESTDIR}/tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
+
+    	# Copy /etc setup files
+    	cp -R ${DESTDIR}/tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
+    	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
     
-    # remove leftovers
-    rm -f ${DESTDIR}/tmp/master.zip
-    rm -rf ${DESTDIR}/tmp/openbox-setup-master
+    	# Remove leftovers
+    	rm -f ${DESTDIR}/tmp/master.zip
+    	rm -rf ${DESTDIR}/tmp/openbox-setup-master
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
