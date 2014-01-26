@@ -275,7 +275,7 @@
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>gvfs-atp</pkgname>
+        <!-- <pkgname>gvfs-atp</pkgname> -->
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
@@ -287,7 +287,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>obconf</pkgname>
-        <pkgname>obkey</pkgname>
+        <!-- <pkgname>obkey</pkgname> -->
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
         <pkgname>openbox</pkgname>
