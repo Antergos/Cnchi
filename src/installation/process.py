@@ -89,7 +89,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.method = self.settings.get('partition_mode')
 
-        self.queue_event('info', _("Installing using the '%s' method") % self.method)
+        self.queue_event('info', _("Installing using the '%s' method. Please wait...") % self.method)
 
         self.ssd = ssd
         self.mount_devices = mount_devices
@@ -1316,37 +1316,34 @@ class InstallationProcess(multiprocessing.Process):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    # def copy_cache_files(self, cache_dir):
-    #     """ Copy all packages fro specified directory to install's target """
-    #     # Check in case user has given a wrong folder
-    #     if not os.path.exists(cache_dir):
-    #         return
-    #     self.queue_event('info', _('Copying xz files from cache...'))
-    #     dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
-    #     if not os.path.exists(dest_dir):
-    #         os.makedirs(dest_dir)
-    #     self.copy_cache_files_progress(cache_dir, dest_dir)
-    #
-    # def copy_cache_files_progress(self, src, dst):
-    #     """ Copy files updating the slides' progress bar """
-    #     percent = 0.0
-    #     items = os.listdir(src)
-    #
-    #     step = 1.0 / len(items)
-    #     for item in items:
-    #         self.queue_event('percent', percent)
-    #         source = os.path.join(src, item)
-    #         destination = os.path.join(dst, item)
-    #         try:
-    #             shutil.copy2(source, destination)
-    #         except (FileExistsError, shutil.Error) as err:
-    #             logging.warning(err)
-    #         percent += step
+    def copy_cache_files(self, cache_dir):
+        """ Copy all packages from specified directory to install's target """
+        # Check in case user has given a wrong folder
+        if not os.path.exists(cache_dir):
+            return
+        self.queue_event('info', _('Copying xz files from cache...'))
+        dest_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+        if not os.path.exists(dest_dir):
+            os.makedirs(dest_dir)
+        self.copy_cache_files_progress(cache_dir, dest_dir)
+    
+    def copy_cache_files_progress(self, src, dst):
+        """ Copy files updating the slides' progress bar """
+        percent = 0.0
+        items = os.listdir(src)
+        step = 1.0 / len(items)
+        for item in items:
+            self.queue_event('percent', percent)
+            source = os.path.join(src, item)
+            destination = os.path.join(dst, item)
+            try:
+                shutil.copy2(source, destination)
+            except (FileExistsError, shutil.Error) as err:
+                logging.warning(err)
+            percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
-        #features = [ "aur", "bluetooth", "cups", "office", "visual", "firewall", "third_party" ]
-
         #if self.settings.get("feature_aur"):
         #    self.queue_event('debug', _("Configuring AUR..."))
 
@@ -1393,73 +1390,87 @@ class InstallationProcess(multiprocessing.Process):
                     'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
 
         if self.desktop_manager == 'lightdm':
-            # Systems with LightDM as Desktop Manager
-            lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
-            text = []
-            with open(lightdm_conf_path) as lightdm_conf:
-                text = lightdm_conf.readlines()
-            with open(lightdm_conf_path, "w") as lightdm_conf:
-                for line in text:
-                    if self.settings.get('require_password') is False:
-                        # Enable automatic login
-                        if '#autologin-user=' in line:
-                            line = 'autologin-user=%s\n' % username
-                        if '#autologin-user-timeout=0' in line:
-                            line = 'autologin-user-timeout=0\n'
-                    # Set correct DE session
-                    if '#user-session=default' in line:
-                        line = 'user-session=%s\n' % sessions[desktop]
-                    lightdm_conf.write(line)
-            logging.debug('Completed LightDM Configuration')
+            self.setup_lightdm()
+        elif self.desktop_manager == 'gdm':
+            self.setup_gdm()
+        elif self.desktop_manager == 'kdm':
+            self.setup_kdm()
+        elif self.desktop_manager == 'lxdm':
+            self.setup_lxdm()
+        eif self.desktop_manager == 'slim':
+            self.setup_slim()
+            
+        logging.debug('Completed %s display manager configuration.', self.desktop_manager)
+    
+    def setup_lightdm(self):
+        # Systems with LightDM as Desktop Manager
+        lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
+        text = []
+        with open(lightdm_conf_path) as lightdm_conf:
+            text = lightdm_conf.readlines()
+        with open(lightdm_conf_path, "w") as lightdm_conf:
+            for line in text:
+                if self.settings.get('require_password') is False:
+                    # Enable automatic login
+                    if '#autologin-user=' in line:
+                        line = 'autologin-user=%s\n' % username
+                    if '#autologin-user-timeout=0' in line:
+                        line = 'autologin-user-timeout=0\n'
+                # Set correct DE session
+                if '#user-session=default' in line:
+                    line = 'user-session=%s\n' % sessions[desktop]
+                lightdm_conf.write(line)
 
-        if self.desktop_manager == 'gdm':
-            # Systems with GDM as Desktop Manager
-            gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
-            with open(gdm_conf_path, "w") as gdm_conf:
-                gdm_conf.write('# Cnchi - Enable automatic login for user\n')
-                gdm_conf.write('[daemon]\n')
-                gdm_conf.write('AutomaticLogin=%s\n' % username)
-                gdm_conf.write('AutomaticLoginEnable=True\n')
+    def setup_gdm(self):
+        # Systems with GDM as Desktop Manager
+        gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+        with open(gdm_conf_path, "w") as gdm_conf:
+            gdm_conf.write('# Cnchi - Enable automatic login for user\n')
+            gdm_conf.write('[daemon]\n')
+            gdm_conf.write('AutomaticLogin=%s\n' % username)
+            gdm_conf.write('AutomaticLoginEnable=True\n')
 
-        if self.desktop_manager == 'kdm':
-            # Systems with KDM as Desktop Manager
-            kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
-            text = []
-            with open(kdm_conf_path) as kdm_conf:
-                text = kdm_conf.readlines()
-            with open(kdm_conf_path, "w") as kdm_conf:
-                for line in text:
-                    if '#AutoLoginEnable=true' in line:
-                        line = 'AutoLoginEnable=true\n'
-                    if 'AutoLoginUser=' in line:
-                        line = 'AutoLoginUser=%s\n' % username
-                    kdm_conf.write(line)
+    def setup_kdm(self):
+        # Systems with KDM as Desktop Manager
+        kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+        text = []
+        with open(kdm_conf_path) as kdm_conf:
+            text = kdm_conf.readlines()
+        with open(kdm_conf_path, "w") as kdm_conf:
+            for line in text:
+                if '#AutoLoginEnable=true' in line:
+                    line = 'AutoLoginEnable=true\n'
+                if 'AutoLoginUser=' in line:
+                    line = 'AutoLoginUser=%s\n' % username
+                kdm_conf.write(line)
 
-        if self.desktop_manager == 'lxdm':
-            # Systems with LXDM as Desktop Manager
-            lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
-            text = []
-            with open(lxdm_conf_path) as lxdm_conf:
-                text = lxdm_conf.readlines()
-            with open(lxdm_conf_path, "w") as lxdm_conf:
-                for line in text:
-                    if '# autologin=dgod' in line:
-                        line = 'autologin=%s\n' % username
-                    lxdm_conf.write(line)
+    def setup_lxdm(self):
+        # Systems with LXDM as Desktop Manager
+        lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+        text = []
+        with open(lxdm_conf_path) as lxdm_conf:
+            text = lxdm_conf.readlines()
+        with open(lxdm_conf_path, "w") as lxdm_conf:
+            for line in text:
+                if '# autologin=dgod' in line:
+                    line = 'autologin=%s\n' % username
+                lxdm_conf.write(line)
 
-        if self.desktop_manager == 'slim':
-            # Systems with Slim as Desktop Manager
-            slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
-            text = []
-            with open(slim_conf_path) as slim_conf:
-                text = slim_conf.readlines()
-            with open(slim_conf_path, "w") as slim_conf:
-                for line in text:
-                    if 'auto_login' in line:
-                        line = 'auto_login yes\n'
-                    if 'default_user' in line:
-                        line = 'default_user %s\n' % username
-                    slim_conf.write(line)
+    def setup_slim(self):
+        # Systems with SLiM as Desktop Manager
+        slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
+        text = []
+        with open(slim_conf_path) as slim_conf:
+            text = slim_conf.readlines()
+        with open(slim_conf_path, "w") as slim_conf:
+            for line in text:
+                if 'auto_login' in line:
+                    line = 'auto_login yes\n'
+                if 'default_user' in line:
+                    line = 'default_user %s\n' % username
+                if 'current_theme' in line:
+                    line = 'current_theme antergos-slim\n'
+                slim_conf.write(line)
 
     def configure_system(self):
         """ Final install steps

@@ -194,32 +194,38 @@ class InstallationAutomatic(Gtk.Box):
 
         self.forward_button.set_sensitive(install_ok)
 
+    def show_warning(self):
+        txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s") % self.device_store.get_active_text()
+        message = Gtk.MessageDialog(None,
+                          Gtk.DialogFlags.MODAL,
+                          Gtk.MessageType.QUESTION,
+                          Gtk.ButtonsType.YES_NO,
+                          txt)
+        response = message.run()
+        message.destroy()
+        return response
+
     def start_installation(self):
         #self.install_progress.set_sensitive(True)
+        self.settings.set('auto_device', self.auto_device)
         logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
         
-        # TODO: Ask user if GRUB must be installed
+        # In automatic installation we always install Grub
         self.settings.set('install_bootloader', True)
 
         if os.path.exists("/sys/firmware/efi/systab"):
-            self.settings.set('bootloader_type', "UEFI_x86_64")
+            bootloader_type = "UEFI_x86_64"
         else:
-            self.settings.set('bootloader_type', "GRUB2")
-
-        if self.settings.get('install_bootloader'):
-            self.settings.set('bootloader_device', self.auto_device)
-            logging.info(_("Antergos will install the %s bootloader on %s") % \
-                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device')))
-        else:
-            logging.warning(_("Antergos will not install any boot loader"))
+            bootloader_type = "GRUB2"
+        self.settings.set('bootloader_type', bootloader_type)
+        self.settings.set('bootloader_device', self.auto_device)
+        logging.info(_("Antergos will install the %s bootloader on %s"), bootloader_type, self.auto_device)
 
         # We don't need to pass which devices will be mounted nor which filesystems
         # the devices will be formatted with, as auto_partition.py takes care of everything
         # in an automatic installation.
         mount_devices = {}
         fs_devices = {}
-
-        self.settings.set('auto_device', self.auto_device)
 
         if not self.testing:
             self.process = installation_process.InstallationProcess( \
@@ -233,14 +239,3 @@ class InstallationAutomatic(Gtk.Box):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
-
-    def show_warning(self):
-        txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s" % self.device_store.get_active_text())
-        message = Gtk.MessageDialog(None,
-                          Gtk.DialogFlags.MODAL,
-                          Gtk.MessageType.QUESTION,
-                          Gtk.ButtonsType.YES_NO,
-                          txt)
-        response = message.run()
-        message.destroy()
-        return response

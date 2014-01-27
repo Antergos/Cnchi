@@ -116,6 +116,8 @@ def unmount_all(dest_dir):
         logging.warning(_("Can't close LUKS devices (see below)"))
         logging.warning(err)
 
+#self.queue_event('percent', progress)
+
 class AutoPartition(object):
     """ Class used by the automatic installation method """
     def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home, callback_queue):
@@ -182,8 +184,6 @@ class AutoPartition(object):
                 logging.error(err.output)
                 show.error(txt)
                 return
-
-            #time.sleep(4)
 
             # Flush file system buffers
             subprocess.check_call(["sync"])
@@ -545,7 +545,6 @@ class AutoPartition(object):
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
 
-        # Format the EFI partition
         if self.uefi:
             # Format EFI partition with fat32
             self.mkfs(efi_device, "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
@@ -568,22 +567,3 @@ class AutoPartition(object):
                 subprocess.check_call(['chmod', '0400', key_files[1]])
                 subprocess.check_call(["mkdir", "-p", '%s/etc/luks-keys' % self.dest_dir])
                 subprocess.check_call(['mv', key_files[1], '%s/etc/luks-keys' % self.dest_dir])
-
-if __name__ == '__main__':
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    sh.setFormatter(formatter)
-    logger.addHandler(sh)
-
-    ap = AutoPartition("/install",
-        "/dev/sdb",
-        use_luks=False,
-        use_lvm=True,
-        luks_key_pass="",
-        use_home=True,
-        callback_queue=None)
-
-#    ap.run()
