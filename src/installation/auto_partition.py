@@ -129,7 +129,7 @@ class AutoPartition(object):
         self.lvm = use_lvm
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
-        
+
         # Show some progress to the user
         self.progress = 0
 
@@ -155,17 +155,17 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 logging.warning(err.output)
         else:
-            mkfs = { "xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
-                     "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
-                     "reiserfs" : "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
-                     "ext2" : "mkfs.ext2 -q -L %s %s %s" % (fs_options, label_name, device),
-                     "ext3" : "mke2fs -q %s -L %s -t ext3 %s" % (fs_options, label_name, device),
-                     "ext4" : "mke2fs -q %s -L %s -t ext4 %s" % (fs_options, label_name, device),
-                     "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
-                     "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
-                     "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
-                     "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
-                     "f2fs" : "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
+            mkfs = {"xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
+                    "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
+                    "reiserfs" : "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
+                    "ext2" : "mkfs.ext2 -q -L %s %s %s" % (fs_options, label_name, device),
+                    "ext3" : "mke2fs -q %s -L %s -t ext3 %s" % (fs_options, label_name, device),
+                    "ext4" : "mke2fs -q %s -L %s -t ext4 %s" % (fs_options, label_name, device),
+                    "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
+                    "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
+                    "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
+                    "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
+                    "f2fs" : "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():
@@ -452,24 +452,24 @@ class AutoPartition(object):
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             self._check_call(["partprobe", device])
             # Create actual partitions
-            self._check_call(['sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s'
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s'
                 % (gpt_bios_grub_part_size, device)], shell=True)
-            self._check_call(['sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s'
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s'
                 % (uefisys_part_size, device)], shell=True)
-            self._check_call(['sgdisk --set-alignment="2048" --new=3:0:+%dM --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT %s'
+            subprocess.check_call(['sgdisk --set-alignment="2048" --new=3:0:+%dM --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT %s'
                 % (boot_part_size, device)], shell=True)
 
             if self.lvm:
-                self._check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8E00 --change-name=4:ANTERGOS_LVM %s'
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8E00 --change-name=4:ANTERGOS_LVM %s'
                     % (lvm_pv_part_size, device)], shell=True)
             else:
-                self._check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
                     % (swap_part_size, device)], shell=True)
-                self._check_call(['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
+                subprocess.check_call(['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
                     % (root_part_size, device)], shell=True)
 
                 if self.home:
-                    self._check_call(['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
+                    subprocess.check_call(['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
                         % (home_part_size, device)], shell=True)
 
             logging.debug(check_output("sgdisk --print %s" % device))
@@ -504,14 +504,12 @@ class AutoPartition(object):
                 # Create root partition
                 start = end
                 end = start + root_part_size
-                self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary",
-                    str(start), str(end)])
+                self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
 
                 if self.home:
                     # Create home partition
                     start = end
-                    self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary",
-                        str(start), "100%"])
+                    self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
 
         printk(True)
 
