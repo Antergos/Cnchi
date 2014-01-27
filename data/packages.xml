@@ -215,7 +215,6 @@
     </razor_desktop>
 
     <mate_desktop>
-        <pkgname>cairo-dock</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
@@ -226,11 +225,24 @@
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
         <pkgname>mate-applets</pkgname>
-        <pkgname>mate-applet-softupd</pkgname>
+        <pkgname>mate.calc</pkgname> 
+   <!--      <pkgname>mate-applet-softupd</pkgname> -->
         <pkgname>mate-disk-utility</pkgname>
-        <pkgname>mate-extra</pkgname> <!-- Group -->
+        <pkgname>mate-document-viewer</pkgname> 
+        <pkgname>mate-file-archiver</pkgname> 
+        <pkgname>mate-file-manager-open-terminal</pkgname> 
         <pkgname>mate-media</pkgname>
-        <pkgname>mintmenu</pkgname>
+        <pkgname>mate-media-pulseaudio</pkgname> 
+        <pkgname>mate-menu-editor</pkgname> 
+        <pkgname>mate-image-viewer</pkgname> 
+        <pkgname>mate-terminal</pkgname>
+        <pkgname>mate-power-manager</pkgname> 
+        <pkgname>mate-screensaver</pkgname> 
+        <pkgname>mate-system-monitor</pkgname> 
+        <pkgname>mate-system-tools</pkgname> 
+        <pkgname>mate-text-editor</pkgname> 
+        <pkgname>mate-utils</pkgname> 
+        <!-- <pkgname>mintmenu</pkgname> -->
         <pkgname>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
@@ -296,7 +308,6 @@
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>python2-xdg</pkgname>
-        <pkgname>python2-xdg</pkgname>
         <pkgname>sakura</pkgname>
         <pkgname>scrot</pkgname>
         <pkgname>tint2</pkgname>
@@ -318,7 +329,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
-        <pkgname>hotot-qt5</pkgname>
+        <pkgname>hotot-qt</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
