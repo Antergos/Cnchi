@@ -276,6 +276,8 @@ mate_settings() {
     # copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+	chroot ${DESTDIR} unlink /usr/share/icons/Faenza/places/24/start-here.png
+	chroot ${DESTDIR} ln -s /usr/share/antergos/antergos-menu.png /usr/share/icons/Faenza/places/24/start-here.png
 
     # Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
