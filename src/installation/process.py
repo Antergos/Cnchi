@@ -1397,7 +1397,7 @@ class InstallationProcess(multiprocessing.Process):
             self.setup_kdm()
         elif self.desktop_manager == 'lxdm':
             self.setup_lxdm()
-        eif self.desktop_manager == 'slim':
+        elif self.desktop_manager == 'slim':
             self.setup_slim()
             
         logging.debug('Completed %s display manager configuration.', self.desktop_manager)
