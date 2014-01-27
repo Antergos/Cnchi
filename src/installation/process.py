@@ -525,7 +525,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
                     self.packages.append(pkg.text)
             # Set KDE language pack
-            if self.desktop is 'kde':
+            if self.desktop == 'kde':
                 self.queue_event('debug', _('Add kde language package'))
                 pkg = 'kde-l10n-'
                 lang_name = self.settings.get("language_name").lower()
