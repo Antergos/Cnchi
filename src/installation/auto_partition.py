@@ -130,9 +130,6 @@ class AutoPartition(object):
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
 
-        # Show some progress to the user
-        self.progress = 0
-
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
 
@@ -177,7 +174,7 @@ class AutoPartition(object):
             command = mkfs[fs_type]
 
             try:
-                self._check_call(command.split())
+                subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
                 txt = _("Can't create file system %s") % fs_type
                 logging.error(txt)
@@ -353,15 +350,6 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
-    def _check_call(self, command):
-        # If subprocess fails, its exception is treated in process.py
-        subprocess.check_call(command)
-        try:
-            self.progress += 0.1
-            self.callback_queue.put_nowait(('percent', self.progress))
-        except queue.Full:
-            pass
-
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
@@ -442,15 +430,15 @@ class AutoPartition(object):
         if self.uefi:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
             # clean partition table to avoid issues!
-            self._check_call(["sgdisk", "--zap", device])
+            subprocess.check_call(["sgdisk", "--zap", device])
             
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            self._check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
-            self._check_call(["wipefs", "-a", device])
+            subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
+            subprocess.check_call(["wipefs", "-a", device])
             # Create fresh GPT
-            self._check_call(["sgdisk", "--clear", device])
+            subprocess.check_call(["sgdisk", "--clear", device])
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
-            self._check_call(["partprobe", device])
+            subprocess.check_call(["partprobe", device])
             # Create actual partitions
             subprocess.check_call(['sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s'
                 % (gpt_bios_grub_part_size, device)], shell=True)
@@ -476,45 +464,45 @@ class AutoPartition(object):
         else:
             # Start at sector 1 for 4k drive compatibility and correct alignment
             # Clean partitiontable to avoid issues!
-            self._check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
-            self._check_call(["wipefs", "-a", device])
+            subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
+            subprocess.check_call(["wipefs", "-a", device])
 
             # Create DOS MBR with parted
-            self._check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
+            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
             # Create boot partition (all sizes are in MB)
-            self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(boot_part_size)])
+            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(boot_part_size)])
             # Set boot partition as bootable
-            self._check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
+            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
 
             if self.lvm:
                 start = boot_part_size
                 end = start + lvm_pv_part_size
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
-                self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
                 # Set lvm flag
-                self._check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
             else:
                 # Create swap partition
                 start = boot_part_size
                 end = start + swap_part_size
-                self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
                     str(start), str(end)])
 
                 # Create root partition
                 start = end
                 end = start + root_part_size
-                self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
 
                 if self.home:
                     # Create home partition
                     start = end
-                    self._check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
 
         printk(True)
 
         # Wait until /dev initialized correct devices
-        self._check_call(["udevadm", "settle", "--quiet"])
+        subprocess.check_call(["udevadm", "settle", "--quiet"])
 
         (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
