@@ -1518,7 +1518,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Enable our profile
             self.chroot(['netctl', 'enable', profile])
-            logging.warning('warning', _('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
+            #logging.warning('warning', _('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
 
         self.queue_event('debug', _('Network configuration copied.'))
 
