@@ -150,7 +150,14 @@ if [[ ${DESKTOP} == 'mate' ]]; then
     dbus-launch gsettings set org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
 
     # Set icon theme
-	dbus-launch gsettings set org.gnome.desktop.interface icon-theme Faenza-Dark
+	dbus-launch gsettings set org.mate.desktop.interface icon-theme Faenza
 
+	dbus-launch gsettings set org.mate.background show-desktop-icons "false"
+
+	dbus-launch gsettings set org.mate.NotificationDaemon popup-location "top_right"
+
+	dbus-launch gsettings set org.mate.NotificationDaemon theme "slider"
+
+	dbus-launch gsettings set org.mate.Marco.general compositing-manager "true"
 fi
 
