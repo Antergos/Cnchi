@@ -605,17 +605,17 @@ class InstallationProcess(multiprocessing.Process):
 
         # Might fix the "fsck.ext4 not found error"
         # Don't think we need all of these since "ext" is a substring of "ext4", "fat" of "fat32", ect but ???..
-        fs_lib = {'btrfs': [], 'ext': ["ext2", "ext3", "ext4"], 'fat': ['fat16', 'fat32', 'vfat'], 'f2fs': [],
-                  'jfs': [], 'nfs': [], 'nilfs2': [], 'ntfs': [], 'reiserfs': [], 'xfs': []}
+        fs_lib = ('btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs',
+                  'reiserfs', 'vfat', 'xfs')
 
         for iii in self.fs_devices:
             fs_types += self.fs_devices[iii]
 
         for fsys in fs_lib:
             if fsys in fs_types:
-                if fsys in fs_lib['ext']:
+                if fsys == 'ext2' or fsys == 'ext3' or fsys == 'ext4':
                     fsys = 'ext'
-                if fsys in fs_lib['fat']:
+                if fsys == 'fat16' or fsys == 'fat32':
                     fsys ='vfat'
                 for child in root.iter(fsys):
                     for pkg in child.iter('pkgname'):
