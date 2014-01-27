@@ -116,8 +116,6 @@ def unmount_all(dest_dir):
         logging.warning(_("Can't close LUKS devices (see below)"))
         logging.warning(err)
 
-#self.queue_event('percent', progress)
-
 class AutoPartition(object):
     """ Class used by the automatic installation method """
     def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home, callback_queue):
@@ -131,6 +129,9 @@ class AutoPartition(object):
         self.lvm = use_lvm
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
+        
+        # Show some progress to the user
+        self.progress = 0
 
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
@@ -177,6 +178,7 @@ class AutoPartition(object):
 
             try:
                 subprocess.check_call(command.split())
+                #self._check_call(command.split())
             except subprocess.CalledProcessError as err:
                 txt = _("Can't create file system %s") % fs_type
                 logging.error(txt)
@@ -352,6 +354,15 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
+    def _check_call(self, command):
+        # If subprocess fails, its exception is treated in process.py
+        subprocess.check_call(command)
+        try:
+            self.progress += 0.1
+            self.callback_queue.put_nowait(('percent', progress))
+        except queue.Full:
+            pass
+
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
@@ -433,7 +444,7 @@ class AutoPartition(object):
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
             # clean partition table to avoid issues!
             subprocess.check_call(["sgdisk", "--zap", device])
-
+            
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
             subprocess.check_call(["wipefs", "-a", device])
