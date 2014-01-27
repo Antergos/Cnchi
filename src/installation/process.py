@@ -442,18 +442,6 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
 
-            # Packages from AUR that we build to easier include at install time.
-            tmp_file.write("[antergos-testing]\n")
-            tmp_file.write("SigLevel = Optional TrustAll\n")
-            tmp_file.write("Server = http://antergos.info/repo/testing\n\n")
-
-            # Until MATE makes it into the official repos..
-            # Mate has reached the official repos recently :p
-            #if self.desktop == 'mate':
-            #    tmp_file.write("[mate]\n")
-            #    tmp_file.write("SigLevel = Optional TrustAll\n")
-            #    tmp_file.write("Server = http://repo.mate-desktop.org/archlinux/$arch\n\n")
-
         # Init pyalpm
 
         try:
