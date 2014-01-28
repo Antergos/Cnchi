@@ -530,11 +530,9 @@
         </chinese>
     </special_fonts>
 
-    <clock_sync>
-        <ntp>
-            <pkgname>ntp</pkgname>
-        </ntp>
-    </clock_sync>
+    <ntp>
+        <pkgname>ntp</pkgname>
+    </ntp>
 
     <grub>
         <pkgname>grub</pkgname>

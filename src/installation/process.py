@@ -551,11 +551,11 @@ class InstallationProcess(multiprocessing.Process):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
                     self.packages.append(pkg.text)
 
-        # Always install ntp as the user may want to activate it
-        # later (or not) in the timezone screen
-        for child in root.iter('ntp'):
-            for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
+        # Add ntp package if user selected it in timezone screen
+        if self.settings.get('use_ntp'):
+            for child in root.iter('ntp'):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
 
         # TODO: Decide who takes care of graphics card, if packages.xml or HardwareInstall
         # Install graphic cards drivers except in NoX installs
@@ -1571,11 +1571,13 @@ class InstallationProcess(multiprocessing.Process):
         #        logging.error('Writing vbox.conf to modules-load.d failed.')
         #        logging.error(err)
 
-        # Wait FOREVER until the user sets the timezone
-        while self.settings.get('timezone_done') is False:
-            # wait five seconds and try again
-            time.sleep(5)
+        # We've moved timezone screen so this is no longer necessary
+        ## Wait FOREVER until the user sets the timezone
+        #while self.settings.get('timezone_done') is False:
+        #    # wait five seconds and try again
+        #    time.sleep(5)
 
+        # Enable ntp service
         if self.settings.get("use_ntp"):
             self.enable_services(["ntpd"])
 
@@ -1587,7 +1589,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Wait FOREVER until the user sets his params
         while self.settings.get('user_info_done') is False:
-            # wait five seconds and try again
+            # Wait five seconds and try again
             time.sleep(5)
 
         # Set user parameters
@@ -1605,10 +1607,10 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('debug', _('Sudo configuration for user %s done.') % username)
 
+        default_groups = 'lp,video,network,storage,wheel,audio'
+        
         if self.card is "virtualbox":
-            default_groups = 'lp,video,network,storage,wheel,audio,vboxusers'
-        else:
-            default_groups = 'lp,video,network,storage,wheel,audio'
+            default_groups += ',vboxusers'
 
         if self.settings.get('require_password') is False:
             self.chroot(['groupadd', 'autologin'])
