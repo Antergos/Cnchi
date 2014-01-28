@@ -1367,9 +1367,9 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_firewall"):
             self.queue_event('debug', _("Configuring firewall..."))
+            self.chroot_mount_special_dirs()
             # This won't work if we're installing a new linux kernel
             try:
-                self.chroot_mount_special_dirs()
                 self.chroot(["ufw", "default", "deny"])
                 toallow = misc.get_network()
                 if toallow:
@@ -1377,9 +1377,11 @@ class InstallationProcess(multiprocessing.Process):
                 self.chroot(["ufw", "allow", "Transmission"])
                 self.chroot(["ufw", "allow", "SSH"])
                 self.chroot(["ufw", "enable"])
-                self.chroot_umount_special_dirs()
             except OSError as err:
                 logging.warning(_("Couldn't configure the firewall: %s") % err)
+            finally:
+                self.chroot_umount_special_dirs()
+
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])
