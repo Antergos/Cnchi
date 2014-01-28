@@ -43,7 +43,8 @@ import canonical.misc as misc
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
 _next_page = "keymap"
-_prev_page = None
+#_prev_page = None
+_prev_page = "check"
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -227,8 +228,8 @@ class Timezone(Gtk.Box):
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
-        # restore forward button text (from install now! to next)
-        self.forward_button.set_label("gtk-go-forward")
+        ## restore forward button text (from install now! to next)
+        #self.forward_button.set_label("gtk-go-forward")
 
         self.show_all()
 

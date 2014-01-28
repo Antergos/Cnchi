@@ -49,7 +49,8 @@ import parted3.fs_module as fs
 
 from installation import process as installation_process
 
-_next_page = "timezone"
+#_next_page = "timezone"
+_next_page = "user_info"
 _prev_page = "installation_ask"
 
 # leave at least 3.5GB for Antergos when shrinking

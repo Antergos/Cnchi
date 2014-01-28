@@ -28,7 +28,8 @@ import config
 import show_message as show
 
 _next_page = "slides"
-_prev_page = "keymap"
+#_prev_page = "keymap"
+_prev_page = None
 
 class UserInfo(Gtk.Box):
     """ Asks for user information """
@@ -145,6 +146,9 @@ class UserInfo(Gtk.Box):
         #txt = _("Create Your User Account")
         #txt = "<span weight='bold' size='large'>%s</span>" % txt
         #self.title.set_markup(txt)
+
+        # Restore forward button text (from install now! to next)
+        self.forward_button.set_label("gtk-go-forward")
 
     def hide_widgets(self):
         """ Hide unused and message widgets """

@@ -32,7 +32,8 @@ import canonical.misc as misc
 import subprocess
 import keyboard_widget
 
-_next_page = "user_info"
+#_next_page = "user_info"
+_next_page = "desktop"
 _prev_page = "timezone"
 
 class Keymap(Gtk.Box):
