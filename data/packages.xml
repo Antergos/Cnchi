@@ -221,6 +221,7 @@
     </razor_desktop>
 
     <openbox_desktop>
+        <pkgname>antergos-slim-theme</pkgname>
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
