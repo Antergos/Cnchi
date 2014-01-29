@@ -81,10 +81,10 @@ def unmount_all(dest_dir):
     if dest_dir in mount_result:
         logging.warning(_("Unmounting %s"), dest_dir)
         try:
-            subprocess.call(["umount", "-l", dest_dir])
+            subprocess.call(["umount", dest_dir])
         except Exception:
-            logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
-            subprocess.call(["umount", "-l", directory])
+            logging.warning(_("Unmounting %s failed. Trying lazy arg."), dest_dir)
+            subprocess.call(["umount", "-l", dest_dir])
 
     # Remove all previous Antergos LVM volumes
     # (it may have been left created due to a previous failed installation)
