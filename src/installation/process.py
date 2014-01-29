@@ -1389,26 +1389,28 @@ class InstallationProcess(multiprocessing.Process):
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
-        desktop = self.settings.get('desktop')
-        username = self.settings.get('username')
 
         sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox-session',
                     'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
+        desktop = self.settings.get('desktop')
+        username = self.settings.get('username')
+        
+        session = sessions[desktop]
 
         if self.desktop_manager == 'lightdm':
-            self.setup_lightdm(desktop,username,sessions)
+            self.setup_lightdm(desktop, username, session)
         elif self.desktop_manager == 'gdm':
-            self.setup_gdm(desktop,username,sessions)
+            self.setup_gdm(desktop, username, session)
         elif self.desktop_manager == 'kdm':
-            self.setup_kdm(desktop,username,sessions)
+            self.setup_kdm(desktop, username, session)
         elif self.desktop_manager == 'lxdm':
-            self.setup_lxdm(desktop,username,sessions)
+            self.setup_lxdm(desktop, username, session)
         elif self.desktop_manager == 'slim':
-            self.setup_slim(desktop,username,sessions)
+            self.setup_slim(desktop, username, session)
             
         logging.debug('Completed %s display manager configuration.', self.desktop_manager)
     
-    def setup_lightdm(self,desktop,username,sessions):
+    def setup_lightdm(self, desktop, username, session):
         # Systems with LightDM as Desktop Manager
         lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
         text = []
@@ -1424,10 +1426,10 @@ class InstallationProcess(multiprocessing.Process):
                         line = 'autologin-user-timeout=0\n'
                 # Set correct DE session
                 if '#user-session=default' in line:
-                    line = 'user-session=%s\n' % sessions[desktop]
+                    line = 'user-session=%s\n' % session
                 lightdm_conf.write(line)
 
-    def setup_gdm(self):
+    def setup_gdm(self, desktop, username, session):
         # Systems with GDM as Desktop Manager
         gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
         with open(gdm_conf_path, "w") as gdm_conf:
@@ -1436,7 +1438,7 @@ class InstallationProcess(multiprocessing.Process):
             gdm_conf.write('AutomaticLogin=%s\n' % username)
             gdm_conf.write('AutomaticLoginEnable=True\n')
 
-    def setup_kdm(self):
+    def setup_kdm(self, desktop, username, session):
         # Systems with KDM as Desktop Manager
         kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
         text = []
@@ -1450,7 +1452,7 @@ class InstallationProcess(multiprocessing.Process):
                     line = 'AutoLoginUser=%s\n' % username
                 kdm_conf.write(line)
 
-    def setup_lxdm(self):
+    def setup_lxdm(self, desktop, username, session):
         # Systems with LXDM as Desktop Manager
         lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
         text = []
@@ -1462,7 +1464,7 @@ class InstallationProcess(multiprocessing.Process):
                     line = 'autologin=%s\n' % username
                 lxdm_conf.write(line)
 
-    def setup_slim(self):
+    def setup_slim(self, desktop, username, session):
         # Systems with SLiM as Desktop Manager
         slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
         text = []
