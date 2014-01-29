@@ -1396,19 +1396,19 @@ class InstallationProcess(multiprocessing.Process):
                     'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
 
         if self.desktop_manager == 'lightdm':
-            self.setup_lightdm()
+            self.setup_lightdm(desktop,username,sessions)
         elif self.desktop_manager == 'gdm':
-            self.setup_gdm()
+            self.setup_gdm(desktop,username,sessions)
         elif self.desktop_manager == 'kdm':
-            self.setup_kdm()
+            self.setup_kdm(desktop,username,sessions)
         elif self.desktop_manager == 'lxdm':
-            self.setup_lxdm()
+            self.setup_lxdm(desktop,username,sessions)
         elif self.desktop_manager == 'slim':
-            self.setup_slim()
+            self.setup_slim(desktop,username,sessions)
             
         logging.debug('Completed %s display manager configuration.', self.desktop_manager)
     
-    def setup_lightdm(self):
+    def setup_lightdm(self,desktop,username,sessions):
         # Systems with LightDM as Desktop Manager
         lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
         text = []
