@@ -1390,7 +1390,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Configures the installed desktop manager, including autologin. """
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
 
-        sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox-session',
+        sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox',
                     'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
