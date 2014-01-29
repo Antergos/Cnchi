@@ -1395,22 +1395,27 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
         
-        session = sessions[desktop]
+        if desktop in sessions:
+            session = sessions[desktop]
+        else:
+            session = "default"
 
+        autologin = not self.settings.get('require_password')
+        
         if self.desktop_manager == 'lightdm':
-            self.setup_lightdm(desktop, username, session)
+            self.setup_lightdm(desktop, username, session, autologin)
         elif self.desktop_manager == 'gdm':
-            self.setup_gdm(desktop, username, session)
+            self.setup_gdm(desktop, username, session, autologin)
         elif self.desktop_manager == 'kdm':
-            self.setup_kdm(desktop, username, session)
+            self.setup_kdm(desktop, username, session, autologin)
         elif self.desktop_manager == 'lxdm':
-            self.setup_lxdm(desktop, username, session)
+            self.setup_lxdm(desktop, username, session, autologin)
         elif self.desktop_manager == 'slim':
-            self.setup_slim(desktop, username, session)
+            self.setup_slim(desktop, username, session, autologin)
             
         logging.debug('Completed %s display manager configuration.', self.desktop_manager)
     
-    def setup_lightdm(self, desktop, username, session):
+    def setup_lightdm(self, desktop, username, session, autologin):
         # Systems with LightDM as Desktop Manager
         lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
         text = []
@@ -1418,7 +1423,7 @@ class InstallationProcess(multiprocessing.Process):
             text = lightdm_conf.readlines()
         with open(lightdm_conf_path, "w") as lightdm_conf:
             for line in text:
-                if self.settings.get('require_password') is False:
+                if autologin:
                     # Enable automatic login
                     if '#autologin-user=' in line:
                         line = 'autologin-user=%s\n' % username
@@ -1429,42 +1434,45 @@ class InstallationProcess(multiprocessing.Process):
                     line = 'user-session=%s\n' % session
                 lightdm_conf.write(line)
 
-    def setup_gdm(self, desktop, username, session):
+    def setup_gdm(self, desktop, username, session, autologin):
         # Systems with GDM as Desktop Manager
-        gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
-        with open(gdm_conf_path, "w") as gdm_conf:
-            gdm_conf.write('# Cnchi - Enable automatic login for user\n')
-            gdm_conf.write('[daemon]\n')
-            gdm_conf.write('AutomaticLogin=%s\n' % username)
-            gdm_conf.write('AutomaticLoginEnable=True\n')
+        if autologin:
+            gdm_conf_path = os.path.join(self.dest_dir, "etc/gdm/custom.conf")
+            with open(gdm_conf_path, "w") as gdm_conf:
+                gdm_conf.write('# Cnchi - Enable automatic login for user\n')
+                gdm_conf.write('[daemon]\n')
+                gdm_conf.write('AutomaticLogin=%s\n' % username)
+                gdm_conf.write('AutomaticLoginEnable=True\n')
 
-    def setup_kdm(self, desktop, username, session):
+    def setup_kdm(self, desktop, username, session, autologin):
         # Systems with KDM as Desktop Manager
-        kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
-        text = []
-        with open(kdm_conf_path) as kdm_conf:
-            text = kdm_conf.readlines()
-        with open(kdm_conf_path, "w") as kdm_conf:
-            for line in text:
-                if '#AutoLoginEnable=true' in line:
-                    line = 'AutoLoginEnable=true\n'
-                if 'AutoLoginUser=' in line:
-                    line = 'AutoLoginUser=%s\n' % username
-                kdm_conf.write(line)
+        if autologin:
+            kdm_conf_path = os.path.join(self.dest_dir, "usr/share/config/kdm/kdmrc")
+            text = []
+            with open(kdm_conf_path) as kdm_conf:
+                text = kdm_conf.readlines()
+            with open(kdm_conf_path, "w") as kdm_conf:
+                for line in text:
+                    if '#AutoLoginEnable=true' in line:
+                        line = 'AutoLoginEnable=true\n'
+                    if 'AutoLoginUser=' in line:
+                        line = 'AutoLoginUser=%s\n' % username
+                    kdm_conf.write(line)
 
-    def setup_lxdm(self, desktop, username, session):
+    def setup_lxdm(self, desktop, username, session, autologin):
         # Systems with LXDM as Desktop Manager
-        lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
-        text = []
-        with open(lxdm_conf_path) as lxdm_conf:
-            text = lxdm_conf.readlines()
-        with open(lxdm_conf_path, "w") as lxdm_conf:
-            for line in text:
-                if '# autologin=dgod' in line:
-                    line = 'autologin=%s\n' % username
-                lxdm_conf.write(line)
+        if autologin:
+            lxdm_conf_path = os.path.join(self.dest_dir, "etc/lxdm/lxdm.conf")
+            text = []
+            with open(lxdm_conf_path) as lxdm_conf:
+                text = lxdm_conf.readlines()
+            with open(lxdm_conf_path, "w") as lxdm_conf:
+                for line in text:
+                    if '# autologin=dgod' in line:
+                        line = 'autologin=%s\n' % username
+                    lxdm_conf.write(line)
 
-    def setup_slim(self, desktop, username, session):
+    def setup_slim(self, desktop, username, session, autologin):
         # Systems with SLiM as Desktop Manager
         slim_conf_path = os.path.join(self.dest_dir, "etc/slim.conf")
         text = []
@@ -1472,7 +1480,7 @@ class InstallationProcess(multiprocessing.Process):
             text = slim_conf.readlines()
         with open(slim_conf_path, "w") as slim_conf:
             for line in text:
-                if 'auto_login' in line:
+                if autologin and 'auto_login' in line:
                     line = 'auto_login yes\n'
                 if 'default_user' in line:
                     line = 'default_user %s\n' % username
