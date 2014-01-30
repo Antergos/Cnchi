@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" Nvidia driver installation """
 
 from hardware.hardware import Hardware
 import os
@@ -71,4 +71,3 @@ class NVidia(Hardware):
         #        print(description)
         #        return True
         return False
-        

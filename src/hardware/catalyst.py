@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" AMD Catalyst driver installation """
 
 from hardware.hardware import Hardware
 import os
@@ -107,7 +107,6 @@ class Catalyst(Hardware):
         
         super().chroot(self, ["systemctl", "enable", "catalyst-hook"])
 
-
     def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
@@ -116,4 +115,3 @@ class Catalyst(Hardware):
         #        print(description)
         #        return True
         return False
-

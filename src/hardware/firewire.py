@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" Firewire driver installation """
 
 from hardware.hardware import Hardware
 import logging
@@ -48,4 +48,3 @@ class Firewire(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Fingerprint driver installation """
+""" Various Fingerprint devices driver installation """
 
 # Support for consumer fingerprint reader devices.
 
@@ -56,7 +56,6 @@ class FingerPrint(Hardware):
     def post_install(self, dest_dir):
         pass
 
-
     def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
@@ -65,4 +64,3 @@ class FingerPrint(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

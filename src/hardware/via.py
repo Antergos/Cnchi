@@ -29,23 +29,23 @@ import logging
 CLASS_NAME = "Via"
 
 DEVICES = [
-('0x1106', '0x3122', ""),
-('0x1106', '0x7205', ""),
-('0x1106', '0x3118', ""),
-('0x1106', '0x3230', ""),
-('0x1106', '0x0505', ""),
-('0x1106', '0x0581', ""),
-('0x1106', '0x3205', ""),
-('0x1106', '0x3343', ""),
-('0x1106', '0x3344', ""),
-('0x1106', '0x0581', "")]
+('0x1106', '0x1122', "VX800/VX820 Chrome 9 HC3 Integrated Graphics"),
+('0x1106', '0x3122', "VT8623 [Apollo CLE266] integrated CastleRock graphics"),
+('0x1106', '0x3230', "K8M890CE/K8N890CE [Chrome 9]"),
+('0x1106', '0x3260', "VIA Chrome9 HC IGP"),
+#('0x1106', '0x3343', "P4M890 [S3 UniChrome Pro]"),
+#('0x1106', '0x3344', "CN700/P4M800 Pro/P4M800 CE/VN800 Graphics [S3 UniChrome Pro]"),
+('0x1106', '0x3371', "CN896/VN896/P4M900 [Chrome 9 HC]"),
+('0x1106', '0x7122', "VX900 Graphics [Chrome9 HD]"),
+#('0x1106', '0x7205', "KM400/KN400/P4M800 [S3 UniChrome]"),
+('0x1106', '0x8e48', "")]
 
 class Via(Hardware):
     def __init__(self):
         pass
 
     def get_packages(self):
-        return [ "xf86-video-openchrome" ]
+        return ["xf86-video-openchrome"]
 
     def post_install(self, dest_dir):
         path = "%s/etc/X11/xorg.conf.d/10-via.conf" % dest_dir
@@ -59,12 +59,6 @@ class Via(Hardware):
             video.write('EndSection\n')
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
-        return False
-
-    def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
@@ -72,4 +66,3 @@ class Via(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

@@ -67,4 +67,3 @@ class ETouchScreen(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

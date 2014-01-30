@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Nouveau driver installation """
+""" Nouveau (Nvidia) driver installation """
 
 from hardware.hardware import Hardware
 import os
@@ -70,9 +70,9 @@ class Nouveau(Hardware):
         self.ARCH = os.uname()[-1]
 
     def get_packages(self):
-        pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
+        pkgs = [self.DRI, self.DDX, self.DECODER, "libtxc_dxtn"]
         if self.ARCH == "x86_64":
-            pkgs.extend([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
+            pkgs.extend(["lib32-%s" % self.DRI, "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
@@ -97,5 +97,3 @@ class Nouveau(Hardware):
                 logging.debug(_("Found device: %s") % d_model)
                 return True
         return False
-        
-            

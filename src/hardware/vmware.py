@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" Vmware driver installation """
 
 from hardware.hardware import Hardware
 import logging
@@ -32,14 +32,14 @@ DEVICES = [
 CLASS_NAME = "Vmware"
 
 class Vmware(Hardware):
+    """ Vmware class definition """
     def __init__(self):
         pass
 
     def get_packages(self):
-        return [ "xf86-video-vmware", "svga-dri", "xf86-input-vmmouse", "open-vm-tools" ]
+        return ["xf86-video-vmware", "svga-dri", "xf86-input-vmmouse", "open-vm-tools"]
 
     def post_install(self, dest_dir):
-        # TODO: Setup Xorg
         pass
 
     def check_device(self, device):
@@ -50,4 +50,3 @@ class Vmware(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

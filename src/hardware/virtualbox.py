@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" Virtualbox driver installation """
 
 from hardware.hardware import Hardware
 import os
@@ -35,7 +35,7 @@ class Virtualbox(Hardware):
         pass
 
     def get_packages(self):
-        return [ "virtualbox-guest-modules", "virtualbox-guest-utils" ]
+        return ["virtualbox-guest-modules", "virtualbox-guest-utils"]
 
     def post_install(self, dest_dir):
         path = os.path.join(dest_dir, "etc/modules-load.d")
@@ -51,18 +51,10 @@ class Virtualbox(Hardware):
         super().chroot(self, ["systemctl", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
-        if device in DEVICES:
-            return True
-        return False
-
-    def check_device(self, device):
         """ Device is (VendorID, ProductID)
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
-                # TODO: Check that this debug line is working fine
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

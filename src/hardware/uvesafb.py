@@ -35,7 +35,7 @@ class VesaFB(Hardware):
         pass
 
     def get_packages(self):
-        return [ "v86d", "xf86-video-vesa" ]
+        return ["v86d", "xf86-video-vesa"]
 
     def post_install(self, dest_dir):
         pass

@@ -44,7 +44,7 @@ class Broadcom_wl(Hardware):
         pass
 
     def get_packages(self):
-        return [ "broadcom-wl" ]
+        return ["broadcom-wl"]
 
     def post_install(self, dest_dir):
         pass
@@ -57,4 +57,3 @@ class Broadcom_wl(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

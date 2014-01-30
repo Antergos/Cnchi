@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""  driver installation """
+""" Intel driver installation """
 
 from hardware.hardware import Hardware
 import os
@@ -72,9 +72,9 @@ class i915(Hardware):
         self.ARCH = os.uname()[-1]
 
     def get_packages(self):
-        pkgs = [ self.DRI, self.DDX, self.DECODER, "libtxc_dxtn" ]
+        pkgs = [self.DRI, self.DDX, self.DECODER, "libtxc_dxtn"]
         if self.ARCH == "x86_64":
-            pkgs.extend([ "lib32-%s" % self.DRI, "lib32-mesa-libgl" ])
+            pkgs.extend(["lib32-%s" % self.DRI, "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
@@ -90,4 +90,3 @@ class i915(Hardware):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
-        

@@ -73,7 +73,7 @@ class Hardware(object):
 
     def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
-        run = [ 'chroot', dest_dir ]
+        run = ['chroot', dest_dir]
 
         for element in cmd:
             run.append(element)
