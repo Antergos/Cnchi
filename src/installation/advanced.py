@@ -239,7 +239,7 @@ class InstallationAdvanced(Gtk.Box):
             self.disks = pm.get_devices()
 
         for path in sorted(self.disks):
-            disk = self.disks[path]
+            (disk, result) = self.disks[path]
             if disk is not None:
                 dev = disk.device
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
@@ -424,7 +424,7 @@ class InstallationAdvanced(Gtk.Box):
 
             is_ssd = self.ssd[disk_path]
 
-            disk = self.disks[disk_path]
+            (disk, result) = self.disks[disk_path]
 
             if disk is None:
                 # Maybe disk without a partition table?
@@ -647,7 +647,7 @@ class InstallationAdvanced(Gtk.Box):
         # Get disk_path and disk
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         try:
-            disk = self.disks[disk_path]
+            (disk, result) = self.disks[disk_path]
         except:
             disk = None
 
@@ -742,7 +742,7 @@ class InstallationAdvanced(Gtk.Box):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        disk = self.disks[disk_path]
+        (disk, result) = self.disks[disk_path]
 
         partitions = pm.get_partitions(disk)
 
@@ -835,7 +835,7 @@ class InstallationAdvanced(Gtk.Box):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        disk = self.disks[disk_path]
+        (disk, result) = self.disks[disk_path]
         dev = disk.device
 
         partitions = pm.get_partitions(disk)
@@ -1254,7 +1254,7 @@ class InstallationAdvanced(Gtk.Box):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        disk_sel = self.disks[disk_path]
+        (disk_sel, result) = self.disks[disk_path]
 
         dialog = self.ui.get_object("create_table_dialog")
         response = dialog.run()
@@ -1270,9 +1270,9 @@ class InstallationAdvanced(Gtk.Box):
                     ptype = 'gpt'
 
                 logging.info(_("Creating a new %s partition table for disk %s") % (ptype, disk_path))
-                # remove debug, this doesn't actually do anything...
+
                 new_disk = pm.make_new_disk(disk_path, ptype)
-                self.disks[disk_path] = new_disk
+                self.disks[disk_path] = (new_disk, pm.OK)
 
                 self.fill_grub_device_entry()
                 self.fill_partition_list()
@@ -1314,7 +1314,7 @@ class InstallationAdvanced(Gtk.Box):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        disk = self.disks[disk_path]
+        (disk, result) = self.disks[disk_path]
         dev = disk.device
 
         partitions = pm.get_partitions(disk)
@@ -1454,7 +1454,7 @@ class InstallationAdvanced(Gtk.Box):
 
         if self.disks:
             for disk_path in self.disks:
-                disk = self.disks[disk_path]
+                (disk, result) = self.disks[disk_path]
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
                     # Init vars
@@ -1637,7 +1637,7 @@ class InstallationAdvanced(Gtk.Box):
         partitions = {}
         if self.disks is not None:
             for disk_path in self.disks:
-                disk = self.disks[disk_path]
+                (disk, result) = self.disks[disk_path]
                 # Only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
                     pm.finalize_changes(disk)
@@ -1723,7 +1723,7 @@ class InstallationAdvanced(Gtk.Box):
         fs_devices = {}
         mount_devices = {}
         for disk_path in self.disks:
-            disk = self.disks[disk_path]
+            (disk, result) = self.disks[disk_path]
             partitions = pm.get_partitions(disk)
             self.all_partitions.append(partitions)
             partition_list = pm.order_partitions(partitions)
