@@ -1,0 +1,1209 @@
+0008	NV1 [EDGE 3D]	
+0009	NV1 [EDGE 3D]	
+0010		
+0020	NV4 [Riva TNT]	
+0028	NV5 [Riva TNT2 / TNT2 Pro]	
+0029	NV5 [Riva TNT2 Ultra]	
+002a	NV5 [Riva TNT2]	
+002b	NV5 [Riva TNT2]	
+002c	NV5 [Vanta / Vanta LT]	
+002d	NV5 [Riva TNT2 Model 64 / Model 64 Pro]	
+002e		
+002f		
+0034	MCP04 SMBus	
+0035	MCP04 IDE	
+0036	MCP04 Serial ATA Controller	
+0037	MCP04 Ethernet Controller	
+0038	MCP04 Ethernet Controller	
+003a	MCP04 AC'97 Audio Controller	
+003b	MCP04 USB Controller	
+003c	MCP04 USB Controller	
+003d	MCP04 PCI Bridge	
+003e	MCP04 Serial ATA Controller	
+0040	NV40 [GeForce 6800 Ultra]	
+0041	NV40 [GeForce 6800]	
+0042	NV40 [GeForce 6800 LE]	
+0043	NV40 [GeForce 6800 XE]	
+0044	NV40 [GeForce 6800 XT]	
+0045	NV40 [GeForce 6800 GT]	
+0046		
+0047	NV40 [GeForce 6800 GS]	
+0048	NV40 [GeForce 6800 XT]	
+0049		
+004d		
+004e	NV40GL [Quadro FX 4000]	
+0050	CK804 ISA Bridge	
+0051	CK804 ISA Bridge	
+0052	CK804 SMBus	
+0053	CK804 IDE	
+0054	CK804 Serial ATA Controller	
+0055	CK804 Serial ATA Controller	
+0056	CK804 Ethernet Controller	
+0057	CK804 Ethernet Controller	
+0058	CK804 AC'97 Modem	
+0059	CK804 AC'97 Audio Controller	
+005a	CK804 USB Controller	
+005b	CK804 USB Controller	
+005c	CK804 PCI Bridge	
+005d	CK804 PCIE Bridge	
+005e	CK804 Memory Controller	
+005f	CK804 Memory Controller	
+0060	nForce2 ISA Bridge	
+0064	nForce2 SMBus (MCP)	
+0065	nForce2 IDE	
+0066	nForce2 Ethernet Controller	
+0067	nForce2 USB Controller	
+0068	nForce2 USB Controller	
+006a	nForce2 AC97 Audio Controler (MCP)	
+006b	nForce Audio Processing Unit	
+006c	nForce2 External PCI Bridge	
+006d	nForce2 PCI Bridge	
+006e	nForce2 FireWire (IEEE 1394) Controller	
+0080	MCP2A ISA bridge	
+0084	MCP2A SMBus	
+0085	MCP2A IDE	
+0086	MCP2A Ethernet Controller	
+0087	MCP2A USB Controller	
+0088	MCP2A USB Controller	
+008a	MCP2S AC'97 Audio Controller	
+008b	MCP2A PCI Bridge	
+008c	MCP2A Ethernet Controller	
+008e	nForce2 Serial ATA Controller	
+0090	G70 [GeForce 7800 GTX]	
+0091	G70 [GeForce 7800 GTX]	
+0092	G70 [GeForce 7800 GT]	
+0093	G70 [GeForce 7800 GS]	
+0095	G70 [GeForce 7800 SLI]	
+0097	G70 [GeForce GTS 250]	
+0098	G70M [GeForce Go 7800]	
+0099	G70M [GeForce Go 7800 GTX]	
+009d	G70GL [Quadro FX 4500]	
+00a0	NV5 [Aladdin TNT2]	
+00c0	NV41 [GeForce 6800 GS]	
+00c1	NV41 [GeForce 6800]	
+00c2	NV41 [GeForce 6800 LE]	
+00c3	NV41 [GeForce 6800 XT]	
+00c5	NV41	
+00c6	NV41	
+00c7	NV41	
+00c8	NV41M [GeForce Go 6800]	
+00c9	NV41M [GeForce Go 6800 Ultra]	
+00cc	NV41GLM [Quadro FX Go1400]	
+00cd	NV41GL [Quadro FX 3450/4000 SDI]	
+00ce	NV41GL [Quadro FX 1400]	
+00cf	NV41	
+00d0	nForce3 LPC Bridge	
+00d1	nForce3 Host Bridge	
+00d2	nForce3 AGP Bridge	
+00d3	CK804 Memory Controller	
+00d4	nForce3 SMBus	
+00d5	nForce3 IDE	
+00d6	nForce3 Ethernet	
+00d7	nForce3 USB 1.1	
+00d8	nForce3 USB 2.0	
+00d9	nForce3 Audio	
+00da	nForce3 Audio	
+00dd	nForce3 PCI Bridge	
+00df	CK8S Ethernet Controller	
+00e0	nForce3 250Gb LPC Bridge	
+00e1	nForce3 250Gb Host Bridge	
+00e2	nForce3 250Gb AGP Host to PCI Bridge	
+00e3	nForce3 Serial ATA Controller	
+00e4	nForce 250Gb PCI System Management	
+00e5	CK8S Parallel ATA Controller (v2.5)	
+00e6	CK8S Ethernet Controller	
+00e7	CK8S USB Controller	
+00e8	nForce3 EHCI USB 2.0 Controller	
+00ea	nForce3 250Gb AC'97 Audio Controller	
+00ed	nForce3 250Gb PCI-to-PCI Bridge	
+00ee	nForce3 Serial ATA Controller 2	
+00f0		
+00f1	NV43 [GeForce 6600 GT]	
+00f2	NV43 [GeForce 6600]	
+00f3	NV43 [GeForce 6200]	
+00f4	NV43 [GeForce 6600 LE]	
+00f5	G71 [GeForce 7800 GS]	
+00f6	NV43 [GeForce 6800 GS/XT]	
+00f8	NV40GL [Quadro FX 3400/4400]	
+00f9	NV40 [GeForce 6800 GT/GTO/Ultra]	
+00fa	NV36 [GeForce PCX 5750]	
+00fb	NV38 [GeForce PCX 5900]	
+00fc	NV37GL [Quadro FX 330/GeForce PCX 5300]	
+00fd	NV37GL [Quadro PCI-E Series]	
+00fe	NV38GL [Quadro FX 1300]	
+00ff	NV18 [GeForce PCX 4300]	
+0100	NV10 [GeForce 256 SDR]	
+0101	NV10 [GeForce 256 DDR]	
+0103	NV10GL [Quadro]	
+0110	NV11 [GeForce2 MX/MX 400]	
+0111	NV11 [GeForce2 MX200]	
+0112	NV11M [GeForce2 Go]	
+0113	NV11GL [Quadro2 MXR/EX/Go]	
+0140	NV43 [GeForce 6600 GT]	
+0141	NV43 [GeForce 6600]	
+0142	NV43 [GeForce 6600 LE]	
+0143	NV43 [GeForce 6600 VE]	
+0144	NV43M [GeForce Go 6600]	
+0145	NV43 [GeForce 6610 XL]	
+0146	NV43M [GeForce Go6200 TE / 6600 TE]	
+0147	NV43 [GeForce 6700 XL]	
+0148	NV43M [GeForce Go 6600]	
+0149	NV43M [GeForce Go 6600 GT]	
+014a	NV43 [Quadro NVS 440]	
+014b	NV43	
+014c		
+014d	NV43GL [Quadro FX 550]	
+014e	NV43GL [Quadro FX 540]	
+014f	NV43 [GeForce 6200]	
+0150	NV15 [GeForce2 GTS/Pro]	
+0151	NV15 [GeForce2 Ti]	
+0152	NV15 [GeForce2 Ultra]	
+0153	NV15GL [Quadro2 Pro]	
+0160	NV44 [GeForce 6500]	
+0161	NV44 [GeForce 6200 TurboCache]	
+0162	NV44 [GeForce 6200 SE TurboCache]	
+0163	NV44 [GeForce 6200 LE]	
+0164	NV44M [GeForce Go 6200]	
+0165	NV44 [Quadro NVS 285]	
+0166	NV44M [GeForce Go 6400]	
+0167	NV44M [GeForce Go 6200]	
+0168	NV44M [GeForce Go 6400]	
+0169	NV44 [GeForce 6250]	
+016a	NV44 [GeForce 7100 GS]	
+016d	NV44	
+016e	NV44	
+016f	NV44	
+0170	NV17 [GeForce4 MX 460]	
+0171	NV17 [GeForce4 MX 440]	
+0172	NV17 [GeForce4 MX 420]	
+0173	NV17 [GeForce4 MX 440-SE]	
+0174	NV17M [GeForce4 440 Go]	
+0175	NV17M [GeForce4 420 Go]	
+0176	NV17M [GeForce4 420 Go 32M]	
+0177	NV17M [GeForce4 460 Go]	
+0178	NV17GL [Quadro4 550 XGL]	
+0179	NV17M [GeForce4 440 Go 64M]	
+017a	NV17GL [Quadro NVS]	
+017b	NV17GL [Quadro4 550 XGL]	
+017c	NV17GL [Quadro4 500 GoGL]	
+017d		
+017f	NV17	
+0181	NV18 [GeForce4 MX 440 AGP 8x]	
+0182	NV18 [GeForce4 MX 440SE AGP 8x]	
+0183	NV18 [GeForce4 MX 420 AGP 8x]	
+0184	NV18 [GeForce4 MX]	
+0185	NV18 [GeForce4 MX 4000]	
+0186	NV18M [GeForce4 448 Go]	
+0187	NV18M [GeForce4 488 Go]	
+0188	NV18GL [Quadro4 580 XGL]	
+0189	NV18 [GeForce4 MX with AGP8X (Mac)]	
+018a	NV18GL [Quadro NVS 280 SD]	
+018b	NV18GL [Quadro4 380 XGL]	
+018c	NV18GL [Quadro NVS 50 PCI]	
+018d	NV18M [GeForce4 448 Go]	
+018f	NV18	
+0190	G80 [GeForce 8800 GTS / 8800 GTX]	
+0191	G80 [GeForce 8800 GTX]	
+0192	G80 [GeForce 8800 GTS]	
+0193	G80 [GeForce 8800 GTS]	
+0194	G80 [GeForce 8800 Ultra]	
+0197	G80GL [Tesla C870]	
+019d	G80GL [Quadro FX 5600]	
+019e	G80GL [Quadro FX 4600]	
+01a0	nForce 220/420 NV11 [GeForce2 MX]	
+01a4	nForce CPU bridge	
+01ab	nForce 420 Memory Controller (DDR)	
+01ac	nForce 220/420 Memory Controller	
+01ad	nForce 220/420 Memory Controller	
+01b0	nForce Audio Processing Unit	
+01b1	nForce AC'97 Audio Controller	
+01b2	nForce ISA Bridge	
+01b4	nForce PCI System Management	
+01b7	nForce AGP to PCI Bridge	
+01b8	nForce PCI-to-PCI bridge	
+01bc	nForce IDE	
+01c1	nForce AC'97 Modem Controller	
+01c2	nForce USB Controller	
+01c3	nForce Ethernet Controller	
+01d0	G72 [GeForce 7350 LE]	
+01d1	G72 [GeForce 7300 LE]	
+01d2	G72 [GeForce 7550 LE]	
+01d3	G72 [GeForce 7200 GS / 7300 SE]	
+01d5	G72	
+01d6	G72M [GeForce Go 7200]	
+01d7	G72M [Quadro NVS 110M/GeForce Go 7300]	
+01d8	G72M [GeForce Go 7400]	
+01d9	G72M [GeForce Go 7450]	
+01da	G72M [Quadro NVS 110M]	
+01db	G72M [Quadro NVS 120M]	
+01dc	G72GLM [Quadro FX 350M]	
+01dd	G72 [GeForce 7500 LE]	
+01de	G72GL [Quadro FX 350]	
+01df	G72 [GeForce 7300 GS]	
+01e0	nForce2 IGP2	
+01e8	nForce2 AGP	
+01ea	nForce2 Memory Controller 0	
+01eb	nForce2 Memory Controller 1	
+01ec	nForce2 Memory Controller 2	
+01ed	nForce2 Memory Controller 3	
+01ee	nForce2 Memory Controller 4	
+01ef	nForce2 Memory Controller 5	
+01f0	C17 [GeForce4 MX IGP]	
+0200	NV20 [GeForce3]	
+0201	NV20 [GeForce3 Ti 200]	
+0202	NV20 [GeForce3 Ti 500]	
+0203	NV20GL [Quadro DCC]	
+0211	NV48 [GeForce 6800]	
+0212	NV48 [GeForce 6800 LE]	
+0215	NV48 [GeForce 6800 GT]	
+0218	NV48 [GeForce 6800 XT]	
+0221	NV44A [GeForce 6200]	
+0222	NV44 [GeForce 6200 A-LE]	
+0224	NV44	
+0240	C51PV [GeForce 6150]	
+0241	C51 [GeForce 6150 LE]	
+0242	C51G [GeForce 6100]	
+0243	C51 PCI Express Bridge	
+0244	C51 [GeForce Go 6150]	
+0245	C51 [Quadro NVS 210S/GeForce 6150LE]	
+0246	C51 PCI Express Bridge	
+0247	C51 [GeForce Go 6100]	
+0248	C51 PCI Express Bridge	
+0249	C51 PCI Express Bridge	
+024a	C51 PCI Express Bridge	
+024b	C51 PCI Express Bridge	
+024c	C51 PCI Express Bridge	
+024d	C51 PCI Express Bridge	
+024e	C51 PCI Express Bridge	
+024f	C51 PCI Express Bridge	
+0250	NV25 [GeForce4 Ti 4600]	
+0251	NV25 [GeForce4 Ti 4400]	
+0252	NV25 [GeForce4 Ti]	
+0253	NV25 [GeForce4 Ti 4200]	
+0258	NV25GL [Quadro4 900 XGL]	
+0259	NV25GL [Quadro4 750 XGL]	
+025b	NV25GL [Quadro4 700 XGL]	
+0260	MCP51 LPC Bridge	
+0261	MCP51 LPC Bridge	
+0262	MCP51 LPC Bridge	
+0263	MCP51 LPC Bridge	
+0264	MCP51 SMBus	
+0265	MCP51 IDE	
+0266	MCP51 Serial ATA Controller	
+0267	MCP51 Serial ATA Controller	
+0268	MCP51 Ethernet Controller	
+0269	MCP51 Ethernet Controller	
+026a	MCP51 MCI	
+026b	MCP51 AC97 Audio Controller	
+026c	MCP51 High Definition Audio	
+026d	MCP51 USB Controller	
+026e	MCP51 USB Controller	
+026f	MCP51 PCI Bridge	
+0270	MCP51 Host Bridge	
+0271	MCP51 PMU	
+0272	MCP51 Memory Controller 0	
+027e	C51 Memory Controller 2	
+027f	C51 Memory Controller 3	
+0280	NV28 [GeForce4 Ti 4800]	
+0281	NV28 [GeForce4 Ti 4200 AGP 8x]	
+0282	NV28 [GeForce4 Ti 4800 SE]	
+0286	NV28M [GeForce4 Ti 4200 Go AGP 8x]	
+0288	NV28GL [Quadro4 980 XGL]	
+0289	NV28GL [Quadro4 780 XGL]	
+028c	NV28GLM [Quadro4 Go700]	
+0290	G71 [GeForce 7900 GTX]	
+0291	G71 [GeForce 7900 GT/GTO]	
+0292	G71 [GeForce 7900 GS]	
+0293	G71 [GeForce 7900 GX2]	
+0294	G71 [GeForce 7950 GX2]	
+0295	G71 [GeForce 7950 GT]	
+0297	G71M [GeForce Go 7950 GTX]	
+0298	G71M [GeForce Go 7900 GS]	
+0299	G71M [GeForce Go 7900 GTX]	
+029a	G71GLM [Quadro FX 2500M]	
+029b	G71GLM [Quadro FX 1500M]	
+029c	G71GL [Quadro FX 5500]	
+029d	G71GL [Quadro FX 3500]	
+029e	G71GL [Quadro FX 1500]	
+029f	G71GL [Quadro FX 4500 X2]	
+02a0	NV2A [XGPU]	Xbox Graphics Processing Unit (Integrated). GeForce3 derivative (NV20 < NV2A < NV25).
+02a5	MCPX CPU Bridge	
+02a6	MCPX Memory Controller	
+02e0	G73 [GeForce 7600 GT]	
+02e1	G73 [GeForce 7600 GS]	
+02e2	G73 [GeForce 7300 GT]	
+02e3	G71 [GeForce 7900 GS]	
+02e4	G71 [GeForce 7950 GT]	
+02f0	C51 Host Bridge	
+02f1	C51 Host Bridge	
+02f2	C51 Host Bridge	
+02f3	C51 Host Bridge	
+02f4	C51 Host Bridge	
+02f5	C51 Host Bridge	
+02f6	C51 Host Bridge	
+02f7	C51 Host Bridge	
+02f8	C51 Memory Controller 5	
+02f9	C51 Memory Controller 4	
+02fa	C51 Memory Controller 0	
+02fb	C51 PCI Express Bridge	
+02fc	C51 PCI Express Bridge	
+02fd	C51 PCI Express Bridge	
+02fe	C51 Memory Controller 1	
+02ff	C51 Host Bridge	
+0300	NV30 [GeForce FX]	
+0301	NV30 [GeForce FX 5800 Ultra]	
+0302	NV30 [GeForce FX 5800]	
+0308	NV30GL [Quadro FX 2000]	
+0309	NV30GL [Quadro FX 1000]	
+0311	NV31 [GeForce FX 5600 Ultra]	
+0312	NV31 [GeForce FX 5600]	
+0313		
+0314	NV31 [GeForce FX 5600XT]	
+0316	NV31M	
+0317		
+0318	NV31GL	
+031a	NV31M [GeForce FX Go5600]	
+031b	NV31M [GeForce FX Go5650]	
+031c	NV31GLM [Quadro FX Go700]	
+031d		
+031e		
+031f		
+0320	NV34 [GeForce FX 5200]	
+0321	NV34 [GeForce FX 5200 Ultra]	
+0322	NV34 [GeForce FX 5200]	
+0323	NV34 [GeForce FX 5200LE]	
+0324	NV34M [GeForce FX Go5200 64M]	
+0325	NV34M [GeForce FX Go5250]	
+0326	NV34 [GeForce FX 5500]	
+0327	NV34 [GeForce FX 5100]	
+0328	NV34M [GeForce FX Go5200 32M/64M]	
+0329	NV34M [GeForce FX Go5200]	
+032a	NV34GL [Quadro NVS 280 PCI]	
+032b	NV34GL [Quadro FX 500/600 PCI]	
+032c	NV34M [GeForce FX Go5300 / Go5350]	
+032d	NV34M [GeForce FX Go5100]	
+032e	NV34	
+032f	NV34 [GeForce FX 5200]	
+0330	NV35 [GeForce FX 5900 Ultra]	
+0331	NV35 [GeForce FX 5900]	
+0332	NV35 [GeForce FX 5900XT]	
+0333	NV38 [GeForce FX 5950 Ultra]	
+0334	NV35 [GeForce FX 5900ZT]	
+0338	NV35GL [Quadro FX 3000]	
+033f	NV35GL [Quadro FX 700]	
+0341	NV36 [GeForce FX 5700 Ultra]	
+0342	NV36 [GeForce FX 5700]	
+0343	NV36 [GeForce FX 5700LE]	
+0344	NV36 [GeForce FX 5700VE]	
+0345		
+0347	NV36M [GeForce FX Go5700]	
+0348	NV36M [GeForce FX Go5700]	
+0349		
+034b		
+034c	NV36 [Quadro FX Go1000]	
+034d	NV36	
+034e	NV36GL [Quadro FX 1100]	
+034f		
+0360	MCP55 LPC Bridge	
+0361	MCP55 LPC Bridge	
+0362	MCP55 LPC Bridge	
+0363	MCP55 LPC Bridge	
+0364	MCP55 LPC Bridge	
+0365	MCP55 LPC Bridge	
+0366	MCP55 LPC Bridge	
+0367	MCP55 LPC Bridge	
+0368	MCP55 SMBus	
+0369	MCP55 Memory Controller	
+036a	MCP55 Memory Controller	
+036b	MCP55 SMU	
+036c	MCP55 USB Controller	
+036d	MCP55 USB Controller	
+036e	MCP55 IDE	
+036f		
+0370	MCP55 PCI bridge	
+0371	MCP55 High Definition Audio	
+0372	MCP55 Ethernet	
+0373	MCP55 Ethernet	
+0374	MCP55 PCI Express bridge	
+0375	MCP55 PCI Express bridge	
+0376	MCP55 PCI Express bridge	
+0377	MCP55 PCI Express bridge	
+0378	MCP55 PCI Express bridge	
+037a	MCP55 Memory Controller	
+037c		
+037e	MCP55 SATA Controller	
+037f	MCP55 SATA Controller	
+038b	G73 [GeForce 7650 GS]	
+0390	G73 [GeForce 7650 GS]	
+0391	G73 [GeForce 7600 GT]	
+0392	G73 [GeForce 7600 GS]	
+0393	G73 [GeForce 7300 GT]	
+0394	G73 [GeForce 7600 LE]	
+0395	G73 [GeForce 7300 GT]	
+0396	G73	
+0397	G73M [GeForce Go 7700]	
+0398	G73M [GeForce Go 7600]	
+0399	G73M [GeForce Go 7600 GT]	
+039a	G73M [Quadro NVS 300M]	
+039b	G73M [GeForce Go 7900 SE]	
+039c	G73GLM [Quadro FX 550M]	
+039d	G73	
+039e	G73GL [Quadro FX 560]	
+039f	G73	
+03a0	C55 Host Bridge	
+03a1	C55 Host Bridge	
+03a2	C55 Host Bridge	
+03a3	C55 Host Bridge	
+03a4	C55 Host Bridge	
+03a5	C55 Host Bridge	
+03a6	C55 Host Bridge	
+03a7	C55 Host Bridge	
+03a8	C55 Memory Controller	
+03a9	C55 Memory Controller	
+03aa	C55 Memory Controller	
+03ab	C55 Memory Controller	
+03ac	C55 Memory Controller	
+03ad	C55 Memory Controller	
+03ae	C55 Memory Controller	
+03af	C55 Memory Controller	
+03b0	C55 Memory Controller	
+03b1	C55 Memory Controller	
+03b2	C55 Memory Controller	
+03b3	C55 Memory Controller	
+03b4	C55 Memory Controller	
+03b5	C55 Memory Controller	
+03b6	C55 Memory Controller	
+03b7	C55 PCI Express bridge	
+03b8	C55 PCI Express bridge	
+03b9	C55 PCI Express bridge	
+03ba	C55 Memory Controller	
+03bb	C55 PCI Express bridge	
+03bc	C55 Memory Controller	
+03d0	C61 [GeForce 6150SE nForce 430]	
+03d1	C61 [GeForce 6100 nForce 405]	
+03d2	C61 [GeForce 6100 nForce 400]	
+03d5	C61 [GeForce 6100 nForce 420]	
+03d6	C61 [GeForce 7025 / nForce 630a]	
+03e0	MCP61 LPC Bridge	
+03e1	MCP61 LPC Bridge	
+03e2	MCP61 Host Bridge	
+03e3	MCP61 LPC Bridge	
+03e4	MCP61 High Definition Audio	
+03e5	MCP61 Ethernet	
+03e6	MCP61 Ethernet	
+03e7	MCP61 SATA Controller	
+03e8	MCP61 PCI Express bridge	
+03e9	MCP61 PCI Express bridge	
+03ea	MCP61 Memory Controller	
+03eb	MCP61 SMBus	
+03ec	MCP61 IDE	
+03ee	MCP61 Ethernet	
+03ef	MCP61 Ethernet	
+03f0	MCP61 High Definition Audio	
+03f1	MCP61 USB 1.1 Controller	
+03f2	MCP61 USB 2.0 Controller	
+03f3	MCP61 PCI bridge	
+03f4	MCP61 SMU	
+03f5	MCP61 Memory Controller	
+03f6	MCP61 SATA Controller	
+03f7	MCP61 SATA Controller	
+0400	G84 [GeForce 8600 GTS]	
+0401	G84 [GeForce 8600 GT]	
+0402	G84 [GeForce 8600 GT]	
+0403	G84 [GeForce 8600 GS]	
+0404	G84 [GeForce 8400 GS]	
+0405	G84M [GeForce 9500M GS]	
+0406	G84 [GeForce 8300 GS]	
+0407	G84M [GeForce 8600M GT]	
+0408	G84M [GeForce 9650M GS]	
+0409	G84M [GeForce 8700M GT]	
+040a	G84GL [Quadro FX 370]	
+040b	G84GLM [Quadro NVS 320M]	
+040c	G84GLM [Quadro FX 570M]	
+040d	G84GLM [Quadro FX 1600M]	
+040e	G84GL [Quadro FX 570]	
+040f	G84GL [Quadro FX 1700]	
+0410	G92 [GeForce GT 330]	
+0414	G92 [GeForce 9800 GT]	
+0420	G86 [GeForce 8400 SE]	
+0421	G86 [GeForce 8500 GT]	
+0422	G86 [GeForce 8400 GS]	
+0423	G86 [GeForce 8300 GS]	
+0424	G86 [GeForce 8400 GS]	
+0425	G86M [GeForce 8600M GS]	
+0426	G86M [GeForce 8400M GT]	
+0427	G86M [GeForce 8400M GS]	
+0428	G86M [GeForce 8400M G]	
+0429	G86M [Quadro NVS 140M]	
+042a	G86M [Quadro NVS 130M]	
+042b	G86M [Quadro NVS 135M]	
+042c	G86 [GeForce 9400 GT]	
+042d	G86GLM [Quadro FX 360M]	
+042e	G86M [GeForce 9300M G]	
+042f	G86 [Quadro NVS 290]	
+0440	MCP65 LPC Bridge	
+0441	MCP65 LPC Bridge	
+0442	MCP65 LPC Bridge	
+0443	MCP65 LPC Bridge	
+0444	MCP65 Memory Controller	
+0445	MCP65 Memory Controller	
+0446	MCP65 SMBus	
+0447	MCP65 SMU	
+0448	MCP65 IDE	
+0449	MCP65 PCI bridge	
+044a	MCP65 High Definition Audio	
+044b	MCP65 High Definition Audio	
+044c	MCP65 AHCI Controller	
+044d	MCP65 AHCI Controller	
+044e	MCP65 AHCI Controller	
+044f	MCP65 AHCI Controller	
+0450	MCP65 Ethernet	
+0451	MCP65 Ethernet	
+0452	MCP65 Ethernet	
+0453	MCP65 Ethernet	
+0454	MCP65 USB 1.1 OHCI Controller	
+0455	MCP65 USB 2.0 EHCI Controller	
+0456	MCP65 USB Controller	
+0457	MCP65 USB Controller	
+0458	MCP65 PCI Express bridge	
+0459	MCP65 PCI Express bridge	
+045a	MCP65 PCI Express bridge	
+045b	MCP65 PCI Express bridge	
+045c	MCP65 SATA Controller	
+045d	MCP65 SATA Controller	
+045e	MCP65 SATA Controller	
+045f	MCP65 SATA Controller	
+0531	C67 [GeForce 7150M / nForce 630M]	
+0533	C67 [GeForce 7000M / nForce 610M]	
+053a	C68 [GeForce 7050 PV / nForce 630a]	
+053b	C68 [GeForce 7050 PV / nForce 630a]	
+053e	C68 [GeForce 7025 / nForce 630a]	
+0541	MCP67 Memory Controller	
+0542	MCP67 SMBus	
+0543	MCP67 Co-processor	
+0547	MCP67 Memory Controller	
+0548	MCP67 ISA Bridge	
+054c	MCP67 Ethernet	
+054d	MCP67 Ethernet	
+054e	MCP67 Ethernet	
+054f	MCP67 Ethernet	
+0550	MCP67 AHCI Controller	
+0554	MCP67 AHCI Controller	
+0555	MCP67 SATA Controller	
+055c	MCP67 High Definition Audio	
+055d	MCP67 High Definition Audio	
+055e	MCP67 OHCI USB 1.1 Controller	
+055f	MCP67 EHCI USB 2.0 Controller	
+0560	MCP67 IDE Controller	
+0561	MCP67 PCI Bridge	
+0562	MCP67 PCI Express Bridge	
+0563	MCP67 PCI Express Bridge	
+0568	MCP78S [GeForce 8200] Memory Controller	
+0569	MCP78S [GeForce 8200] PCI Express Bridge	
+056a	MCP73 [nForce 630i] USB 2.0 Controller (EHCI)	
+056c	MCP73 IDE	
+056d	MCP73 PCI Express bridge	
+056e	MCP73 PCI Express bridge	
+056f	MCP73 PCI Express bridge	
+05b1	NF200 PCIe 2.0 switch	
+05b8	NF200 PCIe 2.0 switch for GTX 295	
+05be	NF200 PCIe 2.0 switch for Quadro Plex S4 / Tesla S870 / Tesla S1070 / Tesla S2050	
+05e0	GT200b [GeForce GTX 295]	
+05e1	GT200 [GeForce GTX 280]	
+05e2	GT200 [GeForce GTX 260]	
+05e3	GT200b [GeForce GTX 285]	
+05e6	GT200b [GeForce GTX 275]	
+05e7	GT200GL [Tesla C1060 / M1060]	
+05ea	GT200 [GeForce GTX 260]	
+05eb	GT200 [GeForce GTX 295]	
+05ed	GT200GL [Quadro Plex 2200 D2]	
+05f1	GT200 [GeForce GTX 280]	
+05f2	GT200 [GeForce GTX 260]	
+05f8	GT200GL [Quadro Plex 2200 S4]	
+05f9	GT200GL [Quadro CX]	
+05fd	GT200GL [Quadro FX 5800]	
+05fe	GT200GL [Quadro FX 4800]	
+05ff	GT200GL [Quadro FX 3800]	
+0600	G92 [GeForce 8800 GTS 512]	
+0601	G92 [GeForce 9800 GT]	
+0602	G92 [GeForce 8800 GT]	
+0603	G92 [GeForce GT 230 OEM]	
+0604	G92 [GeForce 9800 GX2]	
+0605	G92 [GeForce 9800 GT]	
+0606	G92 [GeForce 8800 GS]	
+0607	G92 [GeForce GTS 240]	
+0608	G92M [GeForce 9800M GTX]	
+0609	G92M [GeForce 8800M GTS]	
+060a	G92M [GeForce GTX 280M]	
+060b	G92M [GeForce 9800M GT]	
+060c	G92M [GeForce 8800M GTX]	
+060d	G92 [GeForce 8800 GS]	
+060f	G92M [GeForce GTX 285M]	
+0610	G92 [GeForce 9600 GSO]	
+0611	G92 [GeForce 8800 GT]	
+0612	G92 [GeForce 9800 GTX / 9800 GTX+]	
+0613	G92 [GeForce 9800 GTX+]	
+0614	G92 [GeForce 9800 GT]	
+0615	G92 [GeForce GTS 250]	
+0617	G92M [GeForce 9800M GTX]	
+0618	G92M [GeForce GTX 260M]	
+0619	G92GL [Quadro FX 4700 X2]	
+061a	G92GL [Quadro FX 3700]	
+061b	G92GL [Quadro VX 200]	
+061c	G92GLM [Quadro FX 3600M]	
+061d	G92GLM [Quadro FX 2800M]	
+061e	G92GLM [Quadro FX 3700M]	
+061f	G92GLM [Quadro FX 3800M]	
+0620	G94 [GeForce 9800 GT]	
+0621	G94 [GeForce GT 230]	
+0622	G94 [GeForce 9600 GT]	
+0623	G94 [GeForce 9600 GS]	
+0624	G94 [GeForce 9600 GT Green Edition]	
+0625	G94 [GeForce 9600 GSO 512]	
+0626	G94 [GeForce GT 130]	
+0627	G94 [GeForce GT 140]	
+0628	G94M [GeForce 9800M GTS]	
+062a	G94M [GeForce 9700M GTS]	
+062b	G94M [GeForce 9800M GS]	
+062c	G94M [GeForce 9800M GTS]	
+062d	G94 [GeForce 9600 GT]	
+062e	G94 [GeForce 9600 GT]	
+062f	G94 [GeForce 9800 S]	
+0630	G94 [GeForce 9600 GT]	
+0631	G94M [GeForce GTS 160M]	
+0632	G94M [GeForce GTS 150M]	
+0633	G94 [GeForce GT 220]	
+0635	G94 [GeForce 9600 GSO]	
+0637	G94 [GeForce 9600 GT]	
+0638	G94GL [Quadro FX 1800]	
+063a	G94GLM [Quadro FX 2700M]	
+063f	G94 [GeForce 9600 GE]	
+0640	G96 [GeForce 9500 GT]	
+0641	G96 [GeForce 9400 GT]	
+0643	G96 [GeForce 9500 GT]	
+0644	G96 [GeForce 9500 GS]	
+0645	G96 [GeForce 9500 GS]	
+0646	G96 [GeForce GT 120]	
+0647	G96M [GeForce 9600M GT]	
+0648	G96M [GeForce 9600M GS]	
+0649	G96M [GeForce 9600M GT]	
+064a	G96M [GeForce 9700M GT]	
+064b	G96M [GeForce 9500M G]	
+064c	G96M [GeForce 9650M GT]	
+064d	G96 [GeForce 9600 GT]	
+064e	G96 [GeForce 9600 GT / 9800 GT]	
+0651	G96M [GeForce G 110M]	
+0652	G96M [GeForce GT 130M]	
+0653	G96M [GeForce GT 120M]	
+0654	G96M [GeForce GT 220M]	
+0655	G96 [GeForce GT 120]	
+0656	G96 [GeForce 9650 S]	
+0658	G96GL [Quadro FX 380]	
+0659	G96GL [Quadro FX 580]	
+065a	G96GLM [Quadro FX 1700M]	
+065b	G96 [GeForce 9400 GT]	
+065c	G96GLM [Quadro FX 770M]	
+065d	G96 [GeForce 9500 GA / 9600 GT / GTS 250]	
+065f	G96 [GeForce G210]	
+06ac		
+06c0	GF100 [GeForce GTX 480]	
+06c4	GF100 [GeForce GTX 465]	
+06ca	GF100M [GeForce GTX 480M]	
+06cb	GF100 [GeForce GTX 480]	
+06cd	GF100 [GeForce GTX 470]	
+06d1	GF100GL [Tesla C2050 / C2070]	
+06d2	GF100GL [Tesla M2070]	
+06d8	GF100GL [Quadro 6000]	
+06d9	GF100GL [Quadro 5000]	
+06da	GF100GLM [Quadro 5000M]	
+06dc	GF100GL [Quadro 6000]	
+06dd	GF100GL [Quadro 4000]	
+06de	GF100GL [Tesla T20 Processor]	
+06df	GF100GL [Tesla M2070-Q]	
+06e0	G98 [GeForce 9300 GE]	
+06e1	G98 [GeForce 9300 GS]	
+06e2	G98 [GeForce 8400]	
+06e3	G98 [GeForce 8300 GS]	
+06e4	G98 [GeForce 8400 GS Rev. 2]	
+06e5	G98M [GeForce 9300M GS]	
+06e6	G98 [GeForce G 100]	
+06e7	G98 [GeForce 9300 SE]	
+06e8	G98M [GeForce 9200M GS]	
+06e9	G98M [GeForce 9300M GS]	
+06ea	G98M [Quadro NVS 150M]	
+06eb	G98M [Quadro NVS 160M]	
+06ec	G98M [GeForce G 105M]	
+06ed	G98 [GeForce 9600 GT / 9800 GT]	
+06ee	G98 [GeForce 9600 GT / 9800 GT]	
+06ef	G98M [GeForce G 103M]	
+06f1	G98M [GeForce G 105M]	
+06f8	G98 [Quadro NVS 420]	
+06f9	G98GL [Quadro FX 370 LP]	
+06fa	G98 [Quadro NVS 450]	
+06fb	G98GLM [Quadro FX 370M]	
+06fd	G98 [Quadro NVS 295]	
+06ff	G98 [HICx16 + Graphics]	
+0751	MCP78S [GeForce 8200] Memory Controller	
+0752	MCP78S [GeForce 8200] SMBus	
+0753	MCP78S [GeForce 8200] Co-Processor	
+0754	MCP78S [GeForce 8200] Memory Controller	
+0759	MCP78S [GeForce 8200] IDE	
+075a	MCP78S [GeForce 8200] PCI Bridge	
+075b	MCP78S [GeForce 8200] PCI Express Bridge	
+075c	MCP78S [GeForce 8200] LPC Bridge	
+075d	MCP78S [GeForce 8200] LPC Bridge	
+0760	MCP77 Ethernet	
+0761	MCP77 Ethernet	
+0762	MCP77 Ethernet	
+0763	MCP77 Ethernet	
+0774	MCP72XE/MCP72P/MCP78U/MCP78S High Definition Audio	
+0778	MCP78S [GeForce 8200] PCI Express Bridge	
+077a	MCP78S [GeForce 8200] PCI Bridge	
+077b	MCP78S [GeForce 8200] OHCI USB 1.1 Controller	
+077c	MCP78S [GeForce 8200] EHCI USB 2.0 Controller	
+077d	MCP78S [GeForce 8200] OHCI USB 1.1 Controller	
+077e	MCP78S [GeForce 8200] EHCI USB 2.0 Controller	
+07c0	MCP73 Host Bridge	
+07c1	MCP73 Host Bridge	
+07c2	MCP73 Host Bridge	
+07c5	MCP73 Host Bridge	
+07c8	MCP73 Memory Controller	
+07cb	nForce 630i memory controller	
+07cd	nForce 630i memory controller	
+07ce	nForce 630i memory controller	
+07cf	nForce 630i memory controller	
+07d0	nForce 630i memory controller	
+07d1	nForce 630i memory controller	
+07d2	nForce 630i memory controller	
+07d3	nForce 630i memory controller	
+07d6	nForce 630i memory controller	
+07d7	MCP73 LPC Bridge	
+07d8	MCP73 SMBus	
+07d9	MCP73 Memory Controller	
+07da	MCP73 Co-processor	
+07dc	MCP73 Ethernet	
+07dd	MCP73 Ethernet	
+07de	MCP73 Ethernet	
+07df	MCP73 Ethernet	
+07e0	C73 [GeForce 7150 / nForce 630i]	
+07e1	C73 [GeForce 7100 / nForce 630i]	
+07e2	C73 [GeForce 7050 / nForce 630i]	
+07e3	C73 [GeForce 7050 / nForce 610i]	
+07e5	C73 [GeForce 7100 / nForce 620i]	
+07f0	MCP73 IDE	
+07f4	GeForce 7100/nForce 630i SATA	
+07f8	MCP73 SATA RAID Controller	
+07fc	MCP73 High Definition Audio	
+07fe	GeForce 7100/nForce 630i USB	
+0840	C77 [GeForce 8200M]	
+0844	C77 [GeForce 9100M G]	
+0845	C77 [GeForce 8200M G]	
+0846	C77 [GeForce 9200]	
+0847	C78 [GeForce 9100]	
+0848	C77 [GeForce 8300]	
+0849	C77 [GeForce 8200]	
+084a	C77 [nForce 730a]	
+084b	C77 [GeForce 8200]	
+084c	C77 [nForce 780a/980a SLI]	
+084d	C77 [nForce 750a SLI]	
+084f	C77 [GeForce 8100 / nForce 720a]	
+0860	C79 [GeForce 9300]	
+0861	C79 [GeForce 9400]	
+0862	C79 [GeForce 9400M G]	
+0863	C79 [GeForce 9400M]	
+0864	C79 [GeForce 9300]	
+0865	C79 [GeForce 9300/ION]	
+0866	C79 [GeForce 9400M G]	
+0867	C79 [GeForce 9400]	
+0868	C79 [nForce 760i SLI]	
+0869	MCP7A [GeForce 9400]	
+086a	C79 [GeForce 9400]	
+086c	C79 [GeForce 9300 / nForce 730i]	
+086d	C79 [GeForce 9200]	
+086e	C79 [GeForce 9100M G]	
+086f	C79 [GeForce 9200M G]	
+0870	C79 [GeForce 9400M]	
+0871	C79 [GeForce 9200]	
+0872	C79 [GeForce G102M]	
+0873	C79 [GeForce G102M]	
+0874	C79 [ION]	
+0876	ION VGA [GeForce 9400M]	
+087a	C79 [GeForce 9400]	
+087d	ION VGA	
+087e	ION LE VGA	
+087f	ION LE VGA	
+08a0	MCP89 [GeForce 320M]	
+08a2	MCP89 [GeForce 320M]	
+08a3	MCP89 [GeForce 320M]	
+08a4	MCP89 [GeForce 320M]	
+08a5	MCP89 [GeForce 320M]	
+0a20	GT216 [GeForce GT 220]	
+0a21	GT216M [GeForce GT 330M]	
+0a22	GT216 [GeForce 315]	
+0a23	GT216 [GeForce 210]	
+0a26	GT216 [GeForce 405]	
+0a27	GT216 [GeForce 405]	
+0a28	GT216M [GeForce GT 230M]	
+0a29	GT216M [GeForce GT 330M]	
+0a2a	GT216M [GeForce GT 230M]	
+0a2b	GT216M [GeForce GT 330M]	
+0a2c	GT216M [NVS 5100M]	
+0a2d	GT216M [GeForce GT 320M]	
+0a30	GT216 [GeForce 505]	
+0a32	GT216 [GeForce GT 415]	
+0a34	GT216M [GeForce GT 240M]	
+0a35	GT216M [GeForce GT 325M]	
+0a38	GT216GL [Quadro 400]	
+0a3c	GT216GLM [Quadro FX 880M]	
+0a60	GT218 [GeForce G210]	
+0a62	GT218 [GeForce 205]	
+0a63	GT218 [GeForce 310]	
+0a64	GT218 [ION]	
+0a65	GT218 [GeForce 210]	
+0a66	GT218 [GeForce 310]	
+0a67	GT218 [GeForce 315]	
+0a68	GT218M [GeForce G 105M]	
+0a69	GT218M [GeForce G 105M]	
+0a6a	GT218M [NVS 2100M]	
+0a6c	GT218M [NVS 3100M]	
+0a6e	GT218M [GeForce 305M]	
+0a6f	GT218 [ION]	
+0a70	GT218M [GeForce 310M]	
+0a71	GT218M [GeForce 305M]	
+0a72	GT218M [GeForce 310M]	
+0a73	GT218M [GeForce 305M]	
+0a74	GT218M [GeForce G210M]	
+0a75	GT218M [GeForce 310M]	
+0a76	GT218 [ION 2]	
+0a78	GT218GL [Quadro FX 380 LP]	
+0a7a	GT218M [GeForce 315M]	
+0a7b	GT218 [GeForce 505]	
+0a7c	GT218GLM [Quadro FX 380M]	
+0a80	MCP79 Host Bridge	
+0a81	MCP79 Host Bridge	
+0a82	MCP79 Host Bridge	
+0a83	MCP79 Host Bridge	
+0a84	MCP79 Host Bridge	
+0a85	MCP79 Host Bridge	
+0a86	MCP79 Host Bridge	
+0a87	MCP79 Host Bridge	
+0a88	MCP79 Memory Controller	
+0a89	MCP79 Memory Controller	
+0a98	MCP79 Memory Controller	
+0aa0	MCP79 PCI Express Bridge	
+0aa2	MCP79 SMBus	
+0aa3	MCP79 Co-processor	
+0aa4	MCP79 Memory Controller	
+0aa5	MCP79 OHCI USB 1.1 Controller	
+0aa6	MCP79 EHCI USB 2.0 Controller	
+0aa7	MCP79 OHCI USB 1.1 Controller	
+0aa8	MCP79 OHCI USB 1.1 Controller	
+0aa9	MCP79 EHCI USB 2.0 Controller	
+0aaa	MCP79 EHCI USB 2.0 Controller	
+0aab	MCP79 PCI Bridge	
+0aac	MCP79 LPC Bridge	
+0aad	MCP79 LPC Bridge	
+0aae	MCP79 LPC Bridge	
+0aaf	MCP79 LPC Bridge	
+0ab0	MCP79 Ethernet	
+0ab1	MCP79 Ethernet	
+0ab2	MCP79 Ethernet	
+0ab3	MCP79 Ethernet	
+0ab4	MCP79 SATA Controller	
+0ab5	MCP79 SATA Controller	
+0ab6	MCP79 SATA Controller	
+0ab7	MCP79 SATA Controller	
+0ab8	MCP79 AHCI Controller	
+0ab9	MCP79 AHCI Controller	
+0aba	MCP79 AHCI Controller	
+0abb	MCP79 AHCI Controller	
+0abc	MCP79 RAID Controller	
+0abd	MCP79 RAID Controller	
+0abe	MCP79 RAID Controller	
+0abf	MCP79 RAID Controller	
+0ac0	MCP79 High Definition Audio	
+0ac1	MCP79 High Definition Audio	
+0ac2	MCP79 High Definition Audio	
+0ac3	MCP79 High Definition Audio	
+0ac4	MCP79 PCI Express Bridge	
+0ac5	MCP79 PCI Express Bridge	
+0ac6	MCP79 PCI Express Bridge	
+0ac7	MCP79 PCI Express Bridge	
+0ac8	MCP79 PCI Express Bridge	
+0ad0	MCP78S [GeForce 8200] SATA Controller (non-AHCI mode)	
+0ad4	MCP78S [GeForce 8200] AHCI Controller	
+0ad8	MCP78S [GeForce 8200] SATA Controller (RAID mode)	
+0be2	GT216 HDMI Audio Controller	
+0be3	High Definition Audio Controller	
+0be4	High Definition Audio Controller	
+0be5	GF100 High Definition Audio Controller	
+0be9	GF106 High Definition Audio Controller	
+0bea	GF108 High Definition Audio Controller	
+0beb	GF104 High Definition Audio Controller	
+0bee	GF116 High Definition Audio Controller	
+0ca0	GT215 [GeForce GT 330]	
+0ca2	GT215 [GeForce GT 320]	
+0ca3	GT215 [GeForce GT 240]	
+0ca4	GT215 [GeForce GT 340]	
+0ca5	GT215 [GeForce GT 220]	
+0ca7	GT215 [GeForce GT 330]	
+0ca8	GT215M [GeForce GTS 260M]	
+0ca9	GT215M [GeForce GTS 250M]	
+0cac	GT215 [GeForce GT 220/315]	
+0caf	GT215M [GeForce GT 335M]	
+0cb0	GT215M [GeForce GTS 350M]	
+0cb1	GT215M [GeForce GTS 360M]	
+0cbc	GT215GLM [Quadro FX 1800M]	
+0d60	MCP89 HOST Bridge	
+0d68	MCP89 Memory Controller	
+0d69	MCP89 Memory Controller	
+0d76	MCP89 PCI Express Bridge	
+0d79	MCP89 SMBus	
+0d7a	MCP89 Co-Processor	
+0d7b	MCP89 Memory Controller	
+0d7d	MCP89 Ethernet	
+0d80	MCP89 LPC Bridge	
+0d85	MCP89 SATA Controller	
+0d88	MCP89 SATA Controller (AHCI mode)	
+0d89	MCP89 SATA Controller (AHCI mode)	
+0d8d	MCP89 SATA Controller (RAID mode)	
+0d94	MCP89 High Definition Audio	
+0d9c	MCP89 OHCI USB 1.1 Controller	
+0d9d	MCP89 EHCI USB 2.0 Controller	
+0dc0	GF106 [GeForce GT 440]	
+0dc4	GF106 [GeForce GTS 450]	
+0dc5	GF106 [GeForce GTS 450 OEM]	
+0dc6	GF106 [GeForce GTS 450]	
+0dcd	GF106M [GeForce GT 555M]	
+0dce	GF106M [GeForce GT 555M]	
+0dd1	GF106M [GeForce GTX 460M]	
+0dd2	GF106M [GeForce GT 445M]	
+0dd3	GF106M [GeForce GT 435M]	
+0dd6	GF106M [GeForce GT 550M]	
+0dd8	GF106GL [Quadro 2000]	
+0dda	GF106GLM [Quadro 2000M]	
+0de0	GF108 [GeForce GT 440]	
+0de1	GF108 [GeForce GT 430]	
+0de2	GF108 [GeForce GT 420]	
+0de3	GF108M [GeForce GT 635M]	
+0de4	GF108 [GeForce GT 520]	
+0de5	GF108 [GeForce GT 530]	
+0de7	GF108 [GeForce GT 610]	
+0de8	GF108M [GeForce GT 620M]	
+0de9	GF108M [GeForce GT 630M]	
+0dea	GF108M [GeForce 610M]	
+0deb	GF108M [GeForce GT 555M]	
+0dec	GF108M [GeForce GT 525M]	
+0ded	GF108M [GeForce GT 520M]	
+0dee	GF108M [GeForce GT 415M]	
+0def	GF108M [NVS 5400M]	
+0df0	GF108M [GeForce GT 425M]	
+0df1	GF108M [GeForce GT 420M]	
+0df2	GF108M [GeForce GT 435M]	
+0df3	GF108M [GeForce GT 420M]	
+0df4	GF108M [GeForce GT 540M]	
+0df5	GF108M [GeForce GT 525M]	
+0df6	GF108M [GeForce GT 550M]	
+0df7	GF108M [GeForce GT 520M]	
+0df8	GF108GL [Quadro 600]	
+0df9	GF108GLM [Quadro 500M]	
+0dfa	GF108GLM [Quadro 1000M]	
+0dfc	GF108GLM [NVS 5200M]	
+0e08	GF119 HDMI Audio Controller	
+0e09	GF110 High Definition Audio Controller	
+0e0a	GK104 HDMI Audio Controller	
+0e0b	GK106 HDMI Audio Controller	
+0e0c	GF114 HDMI Audio Controller	
+0e1a	GK110 HDMI Audio	
+0e1b	GK107 HDMI Audio Controller	
+0e22	GF104 [GeForce GTX 460]	
+0e23	GF104 [GeForce GTX 460 SE]	
+0e24	GF104 [GeForce GTX 460 OEM]	
+0e30	GF104M [GeForce GTX 470M]	
+0e31	GF104M [GeForce GTX 485M]	
+0e3a	GF104GLM [Quadro 3000M]	
+0e3b	GF104GLM [Quadro 4000M]	
+0f00	GF108 [GeForce GT 630]	
+0f01	GF108 [GeForce GT 620]	
+0f3d		
+0fc0	GK107 [GeForce GT 640 OEM]	
+0fc1	GK107 [GeForce GT 640]	
+0fc2	GK107 [GeForce GT 630 OEM]	
+0fc6	GK107 [GeForce GTX 650]	
+0fcd	GK107M [GeForce GT 755M]	
+0fce	GK107M [GeForce GT 640M LE]	
+0fd1	GK107M [GeForce GT 650M]	
+0fd2	GK107M [GeForce GT 640M]	
+0fd3	GK107M [GeForce GT 640M LE]	
+0fd4	GK107M [GeForce GTX 660M]	
+0fd5	GK107M [GeForce GT 650M Mac Edition]	
+0fd8	GK107M [GeForce GT 640M Mac Edition]	
+0fd9	GK107M [GeForce GT 645M]	
+0fdf	GK107M [GeForce GT 740M]	
+0fe0	GK107M [GeForce GTX 660M Mac Edition]	
+0fe1	GK107M [GeForce GT 730M]	
+0fe2	GK107M [GeForce GT 745M]	
+0fe3	GK107M [GeForce GT 745M]	
+0fe4	GK107M [GeForce GT 750M]	
+0fe5	GK107 [GeForce K340 USM]	
+0fe6	GK107 [GRID K1 NVS USM]	
+0fe7	GK107GL [GRID K100 vGPU]	GRID K1 USM
+0fe9	GK107M [GeForce GT 750M Mac Edition]	
+0fea	GK107M [GeForce GT 755M Mac Edition]	
+0fef	GK107GL [GRID K340]	
+0ff1	GK107 [NVS 1000]	
+0ff2	GK107GL [GRID K1]	
+0ff5	GK107GL [GRID K1 Tesla USM]	
+0ff6	GK107GLM [Quadro K1100M]	
+0ff7	GK107GL [GRID K140Q vGPU]	GRID K1 Quadro USM
+0ff8	GK107GLM [Quadro K500M]	
+0ff9	GK107GL [Quadro K2000D]	
+0ffa	GK107GL [Quadro K600]	
+0ffb	GK107GLM [Quadro K2000M]	
+0ffc	GK107GLM [Quadro K1000M]	
+0ffd	GK107 [NVS 510]	
+0ffe	GK107GL [Quadro K2000]	
+0fff	GK107GL [Quadro 410]	
+1003	GK110 [GeForce GTX Titan LE]	
+1004	GK110 [GeForce GTX 780]	
+1005	GK110 [GeForce GTX Titan]	
+100a	GK110B [GeForce GTX 780 Ti]	
+101f	GK110GL [Tesla K20]	
+1020	GK110GL [Tesla K20X]	
+1021	GK110GL [Tesla K20Xm]	
+1022	GK110GL [Tesla K20c]	
+1023	GK110BGL [Tesla K40m]	
+1024	GK110BGL [Tesla K40c]	
+1026	GK110GL [Tesla K20s]	
+1027	GK110BGL [Tesla K40st]	
+1028	GK110GL [Tesla K20m]	
+1029	GK110BGL [Tesla K40s]	
+103a	GK110GL [Quadro K6000]	
+1040	GF119 [GeForce GT 520]	
+1042	GF119 [GeForce 510]	
+1048	GF119 [GeForce 605]	
+1049	GF119 [GeForce GT 620 OEM]	
+104a	GF119 [GeForce GT 610]	
+104b	GF119 [GeForce GT 625 OEM]	
+1050	GF119M [GeForce GT 520M]	
+1051	GF119M [GeForce GT 520MX]	
+1052	GF119M [GeForce GT 520M]	
+1054	GF119M [GeForce 410M]	
+1055	GF119M [GeForce 410M]	
+1056	GF119M [NVS 4200M]	
+1057	GF119M [Quadro NVS 4200M]	
+1058	GF119M [GeForce 610M]	
+1059	GF119M [GeForce 610M]	
+105a	GF119M [GeForce 610M]	
+105b	GF119M [GeForce 705M]	
+107c	GF119 [NVS 315]	
+107d	GF119 [NVS 310]	
+1080	GF110 [GeForce GTX 580]	
+1081	GF110 [GeForce GTX 570]	
+1082	GF110 [GeForce GTX 560 Ti OEM]	
+1084	GF110 [GeForce GTX 560 OEM]	
+1086	GF110 [GeForce GTX 570 Rev. 2]	
+1087	GF110 [GeForce GTX 560 Ti 448 Cores]	
+1088	GF110 [GeForce GTX 590]	
+1089	GF110 [GeForce GTX 580]	
+108b	GF110 [GeForce GTX 580]	
+108e	GF110GL [Tesla C2090]	
+1091	GF110GL [Tesla M2090]	
+1094	GF110GL [Tesla M2075]	
+1096	GF110GL [Tesla C2050 / C2075]	
+109a	GF100GLM [Quadro 5010M]	
+109b	GF100GL [Quadro 7000]	
+10c0	GT218 [GeForce 9300 GS Rev. 2]	
+10c3	GT218 [GeForce 8400 GS Rev. 3]	
+10c5	GT218 [GeForce 405]	
+10d8	GT218 [NVS 300]	
+10de		
+1140	GF117M [GeForce 610M/710M/820M / GT 620M/625M/630M/720M]	
+1180	GK104 [GeForce GTX 680]	
+1182	GK104 [GeForce GTX 760 Ti]	
+1183	GK104 [GeForce GTX 660 Ti]	
+1184	GK104 [GeForce GTX 770]	
+1185	GK104 [GeForce GTX 660 OEM]	
+1187	GK104 [GeForce GTX 760]	
+1188	GK104 [GeForce GTX 690]	
+1189	GK104 [GeForce GTX 670]	
+118a	GK104GL [GRID K520]	
+118b	GK104GL [GRID K2 GeForce USM]	
+118c	GK104 [GRID K2 NVS USM]	
+118d	GK104GL [GRID K200 vGPU]	GRID K2 USM
+118e	GK104 [GeForce GTX 760 OEM]	
+118f	GK104GL [Tesla K10]	
+1193	GK104 [GeForce GTX 760 Ti OEM]	
+1198	GK104M [GeForce GTX 880M]	
+119d	GK104M [GeForce GTX 775M Mac Edition]	
+119e	GK104M [GeForce GTX 780M Mac Edition]	
+119f	GK104M [GeForce GTX 780M]	
+11a0	GK104M [GeForce GTX 680M]	
+11a1	GK104M [GeForce GTX 670MX]	
+11a2	GK104M [GeForce GTX 675MX Mac Edition]	
+11a3	GK104M [GeForce GTX 680MX]	
+11a7	GK104M [GeForce GTX 675MX]	
+11ac		
+11b0	GK104GL [GRID K240Q\K260Q vGPU]	GRID K2 Quadro USM
+11b1	GK104GL [GRID K2 Tesla USM]	
+11b6	GK104GLM [Quadro K3100M]	
+11b7	GK104GLM [Quadro K4100M]	
+11b8	GK104GLM [Quadro K5100M]	
+11ba	GK104GL [Quadro K5000]	
+11bb	GK104GL [Quadro 4100]	
+11bc	GK104GLM [Quadro K5000M]	
+11bd	GK104GLM [Quadro K4000M]	
+11be	GK104GLM [Quadro K3000M]	
+11bf	GK104GL [GRID K2]	
+11c0	GK106 [GeForce GTX 660]	
+11c2	GK106 [GeForce GTX 650 Ti Boost]	
+11c3	GK106 [GeForce GTX 650 Ti OEM]	
+11c4	GK106 [GeForce GTX 645 OEM]	
+11c6	GK106 [GeForce GTX 650 Ti]	
+11c7	GK106 [GeForce GTX 750 Ti]	
+11c8	GK106 [GeForce GTX 650 OEM]	
+11e0	GK106M [GeForce GTX 770M]	
+11e1	GK106M [GeForce GTX 765M]	
+11e2	GK106M [GeForce GTX 765M]	
+11e3	GK106M [GeForce GTX 760M]	
+11fa	GK106GL [Quadro K4000]	
+11fc	GK106GLM [Quadro K2100M]	
+1200	GF114 [GeForce GTX 560 Ti]	
+1201	GF114 [GeForce GTX 560]	
+1202	GF114 [GeForce GTX 560 Ti OEM]	
+1203	GF114 [GeForce GTX 460 SE v2]	
+1205	GF114 [GeForce GTX 460 v2]	
+1206	GF114 [GeForce GTX 555]	
+1207	GF114 [GeForce GT 645 OEM]	
+1208	GF114 [GeForce GTX 560 SE]	
+1210	GF114M [GeForce GTX 570M]	
+1211	GF114M [GeForce GTX 580M]	
+1212	GF114M [GeForce GTX 675M]	
+1213	GF114M [GeForce GTX 670M]	
+1241	GF116 [GeForce GT 545 OEM]	
+1243	GF116 [GeForce GT 545]	
+1244	GF116 [GeForce GTX 550 Ti]	
+1245	GF116 [GeForce GTS 450 Rev. 2]	
+1246	GF116M [GeForce GT 550M]	
+1247	GF116M [GeForce GT 555M/635M]	
+1248	GF116M [GeForce GT 555M/635M]	
+1249	GF116 [GeForce GTS 450 Rev. 3]	
+124b	GF116 [GeForce GT 640 OEM]	
+124d	GF116M [GeForce GT 555M/635M]	
+1251	GF116M [GeForce GT 560M]	
+1280	GK208 [GeForce GT 635]	
+1281	GK208 [GeForce GT 710]	
+1282	GK208 [GeForce GT 640 Rev. 2]	
+1284	GK208 [GeForce GT 630 Rev. 2]	
+1290	GK208M [GeForce GT 730M]	
+1291	GK208M [GeForce GT 735M]	
+1292	GK208M [GeForce GT 740M]	
+1293	GK208M [GeForce GT 730M]	
+1294	GK208M [GeForce GT 740M]	
+1295	GK208M [GeForce 710M]	
+1298	GK208M [GeForce GT 720M]	
+12a0	GK208	
+12b9	GK208GLM [Quadro K610M]	
+12ba	GK208GLM [Quadro K510M]	
+1341	GM108M [GeForce 840M]	
+1380	GM107 [GeForce GTX 750 Ti]
