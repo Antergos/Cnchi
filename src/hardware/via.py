@@ -33,11 +33,8 @@ DEVICES = [
 ('0x1106', '0x3122', "VT8623 [Apollo CLE266] integrated CastleRock graphics"),
 ('0x1106', '0x3230', "K8M890CE/K8N890CE [Chrome 9]"),
 ('0x1106', '0x3260', "VIA Chrome9 HC IGP"),
-#('0x1106', '0x3343', "P4M890 [S3 UniChrome Pro]"),
-#('0x1106', '0x3344', "CN700/P4M800 Pro/P4M800 CE/VN800 Graphics [S3 UniChrome Pro]"),
 ('0x1106', '0x3371', "CN896/VN896/P4M900 [Chrome 9 HC]"),
 ('0x1106', '0x7122', "VX900 Graphics [Chrome9 HD]"),
-#('0x1106', '0x7205', "KM400/KN400/P4M800 [S3 UniChrome]"),
 ('0x1106', '0x8e48', "")]
 
 class Via(Hardware):
