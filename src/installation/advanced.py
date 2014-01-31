@@ -26,6 +26,7 @@ from gi.repository import Gtk, Gdk
 import subprocess
 import os
 import logging
+import canonical.gtkwidgets as gtkwidgets
 
 # Insert the src/parted directory at the front of the path.
 #base_dir = os.path.dirname(__file__) or '.'
@@ -190,6 +191,11 @@ class InstallationAdvanced(Gtk.Box):
     def check_buttons(self, selection):
         """ Activates/deactivates our buttons depending on which is selected in the
             partition treeview """
+            
+        if self.stage_opts:
+            button = self.ui.get_object('partition_button_undo')
+            button.set_sensitive(True)
+        
         button_new = self.ui.get_object('partition_button_new')
         button_new.set_sensitive(False)
 
@@ -1093,6 +1099,27 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
 
+        txt = _("Mount Checklist:")
+        txt = "<span weight='bold'>%s</span>" % txt
+        label = self.ui.get_object('mnt_chklist')
+        label.set_markup(txt)
+
+        self.root_part = self.ui.get_object('root_part')
+        txt = _("Root ( / )")
+        self.root_part.props.label = txt
+
+        self.boot_part = self.ui.get_object('boot_part')
+        txt = _("Boot ( /boot )")
+        self.boot_part.props.label = txt
+
+        self.boot_part_efi = self.ui.get_object('boot_part_efi')
+        txt = _("EFI ( /boot )")
+        self.boot_part_efi.props.label = txt
+
+        self.swap_part = self.ui.get_object('swap_part')
+        txt = _("Swap")
+        self.swap_part.props.label = txt
+
         #txt = _("TODO: Here goes a warning message")
         #txt = "<span weight='bold'>%s</span>" % txt
         #label = self.ui.get_object('part_advanced_warning_message')
@@ -1189,11 +1216,10 @@ class InstallationAdvanced(Gtk.Box):
 
     def prepare(self, direction):
         """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
+
         self.fill_grub_device_entry()
-
-        self.fill_partition_list()
-
         self.translate_ui()
+        self.fill_partition_list()
         self.show_all()
 
         # TODO: Enable this and finish LUKS encryption
@@ -1206,7 +1232,6 @@ class InstallationAdvanced(Gtk.Box):
 
         #label = self.ui.get_object('part_advanced_recalculating_label')
         #label.hide()
-
         spinner = self.ui.get_object('partition_recalculating_spinner')
         spinner.hide()
 
@@ -1232,7 +1257,7 @@ class InstallationAdvanced(Gtk.Box):
         button.set_sensitive(False)
 
         button = self.ui.get_object('partition_button_undo')
-        button.set_sensitive(True)
+        button.set_sensitive(False)
 
     def on_partition_list_new_label_activate(self, button):
         """ Create a new partition table """
@@ -1368,36 +1393,76 @@ class InstallationAdvanced(Gtk.Box):
             At least root (/) partition must be defined and
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
-        exist_root = False
-        exist_efi = False
-        exist_boot = False
+        # Initialize our mount point check widgets
+        # TODO: Rewrite this garbage :-/
+        has_root_part = False
+        has_boot_part = False
+        has_boot_efi = False
+        has_swap_part = False
+        need_swap = False
+        is_uefi = os.path.exists('/sys/firmware/efi')
+        
+        self.root_part = self.ui.get_object('root_part')
+        self.boot_part = self.ui.get_object('boot_part')
+        self.boot_part_efi = self.ui.get_object('boot_part_efi')
+        self.swap_part = self.ui.get_object('swap_part')
+        
+        self.root_part.set_state(has_root_part)
+        self.boot_part.set_state(has_boot_part)
+        self.boot_part_efi.set_state(has_boot_efi)
+        self.swap_part.set_state(has_swap_part)
+
+        # Only show mount checks that apply to current system.
+        self.boot_part_efi.set_hidden()
+        self.boot_part.set_hidden()
+        self.swap_part.set_hidden()
 
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        # No device should be mounted now except install media.
+        if is_uefi:
+            self.boot_part_efi.set_shown()
+        elif self.lv_partitions and not is_uefi:
+            self.boot_part.set_shown()
+        elif need_swap:
+            self.swap_part.set_shown()
 
-        # Check root and uefi fs
+        # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
                 # Don't allow vfat as / filesystem, it will not work!
                 # Don't allow ntfs as / filesystem, this is stupid!
                 if "fat" not in fs and "ntfs" not in fs:
-                    exist_root = True
+                    has_root_part = True
+                    self.root_part.set_state(has_root_part)
             # /boot or /boot/efi ¿?
             if mnt == "/boot":
-                if "fat" in fs:
+                if is_uefi and "fat" in fs:
                     # Only fat partitions
-                    exist_efi = True
-                if "f2fs" or "btrfs" not in fs:
-                    exist_boot = True
+                    has_boot_efi = True
+                    self.boot_part_efi.set_state(has_boot_efi)
+                else:
+                    if "f2fs" not in fs and "btrfs" not in fs and self.lv_partitions:
+                        has_boot_part = True
+                        self.boot_part.set_state(has_boot_part)
+            if mnt == "swap":
+                # TODO: Check total system RAM in hardware module so we can require swap for low memory systems
+                #has_swap_part = True
+                #self.swap_part.set_state(has_swap_part)
+                pass
 
-        if os.path.exists('/sys/firmware/efi'):
-            check_ok = exist_root and exist_boot and exist_efi
+        if is_uefi:
+            check_ok = has_root_part and has_boot_efi
+        elif self.lv_partitions and not is_uefi:
+            check_ok = has_root_part and has_boot_part
         else:
-            check_ok = exist_root and exist_boot
+            check_ok = has_root_part
+
+        if need_swap:
+            is_ok = check_ok and has_swap_part
+            check_ok = is_ok
 
         self.forward_button.set_sensitive(check_ok)
 
