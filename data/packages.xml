@@ -263,6 +263,7 @@
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-text-editor</pkgname>
         <pkgname>mate-utils</pkgname>
+        <pkgname>mint-menu</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
