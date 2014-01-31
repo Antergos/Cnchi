@@ -56,6 +56,7 @@ class DesktopAsk(Gtk.Box):
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
+         "mate" : "MATE",
          "cinnamon" : "Cinnamon",
          "xfce" : "Xfce",
          "lxde" : "Lxde",
@@ -78,6 +79,14 @@ class DesktopAsk(Gtk.Box):
             "is an easy way to access all your basic tasks. GNOME 3 is " \
             "the default desktop in Antergos.")
             txt = "<span weight='bold'>GNOME</span>\n" + txt
+
+        elif desktop == 'mate':
+            txt = _("MATE is a fork of GNOME 2.  It provides an " \
+            "intuitive and attractive desktop environment using " \
+            "traditional metaphors for Linux and other Unix-like " \
+            "operating systems. " \
+            "MATE is for users of all experience levels. ")
+            txt = "<span weight='bold'>MATE</span>\n" + txt
 
         elif desktop == 'cinnamon':
             txt = _("Cinnamon is a fork of GNOME 3 developed " \

@@ -2783,18 +2783,20 @@ select_desktop(){
 
         DIALOG --menu $"Select a desktop:" 10 35 3 \
         "1" "Gnome (Default)" \
-        "2" "Cinnamon" \
-        "3" "Xfce" \
-        "4" "Openbox" \
-        "5" "Razor-qt" \
-        "6" "Base" 2>${ANSWER} || return 1
+        "2" "MATE" \
+        "3" "Cinnamon" \
+        "4" "Xfce" \
+        "5" "Openbox" \
+        "6" "Razor-qt" \
+        "7" "Base" 2>${ANSWER} || return 1
         case $(cat ${ANSWER}) in
             "1") DESKTOP_SELECTED="gnome" ;;
-            "2") DESKTOP_SELECTED="cinnamon" ;;
-            "3") DESKTOP_SELECTED="xfce" ;;
-            "4") DESKTOP_SELECTED="openbox" ;;
-            "5") DESKTOP_SELECTED="razor" ;;
-            "6") DESKTOP_SELECTED="base" ;;
+            "1") DESKTOP_SELECTED="mate" ;;
+            "3") DESKTOP_SELECTED="cinnamon" ;;
+            "4") DESKTOP_SELECTED="xfce" ;;
+            "5") DESKTOP_SELECTED="openbox" ;;
+            "6") DESKTOP_SELECTED="razor" ;;
+            "7") DESKTOP_SELECTED="base" ;;
         esac
     done
 }
@@ -2830,6 +2832,9 @@ select_packages() {
     if [[ "${DESKTOP_SELECTED}" == 'gnome' ]];then
         PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist openssh haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nautilus gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor empathy transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar gnome-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gnome-shell accountsservice gtk3 gdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes gnome-tweak-tool gnome-shell-extensions networkmanager-pptp"
         DM_SELECTED='gdm'
+    elif [[ "${DESKTOP_SELECTED}" == 'mate' ]];then
+        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist openssh crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn chromium flashplugin xdg-user-dirs-gtk alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn pidgin transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell antergos-wallpapers unzip unrar python2 gobject-introspection libcanberra libxxf86vm startup-notification accountsservice gtk2 lightdm-gtk2-greeter net-tools xf86-input-synaptics networkmanager-pptp mate-backgrounds mate-control-center mate-desktop mate-dialogs mate-file-manager mate-icon-theme mate-keyring mate-menus mate-notification-daemon mate-panel mate-polkit mate-session-manager mate-settings-daemon-pulseaudio mate-themesmate-window-manager mate-applets mate-calc mate-character-map mate-document-viewer mate-file-archiver mate-file-manager-open-terminal mate-icon-theme-faenza mate-image-viewer mate-media-pulseaudio mate-menu-editor mate-netspeed mate-power-manager mate-screensaver mate-sensors-applet mate-system-monitor mate-terminal mate-text-editor mate-utils"
+        DM_SELECTED='lightdm'        
     elif [[ "${DESKTOP_SELECTED}" == 'cinnamon' ]];then
         PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nemo nemo-fileroller gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor pidgin transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar cinnamon-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gtk3 lxdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes cinnamon-screensaver cinnamon-theme-nadia networkmanager-pptp"
         DM_SELECTED='lxdm'
