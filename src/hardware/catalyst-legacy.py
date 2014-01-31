@@ -27,27 +27,25 @@ import os
 
 from amd_ati_db import DEVICES
 
-DEVICES = []
+CLASS_NAME = "Catalyst_legacy"
 
-CLASS_NAME = "Catalyst"
-
-class Catalyst(Hardware):
+class Catalyst_legacy(Hardware):
     def __init__(self):
         self.ARCH = os.uname()[-1]
 
     def get_packages(self):
-        pkgs = [ "base-devel", "linux-headers", "catalyst", "catalyst-utils", "catalyst-total", "catalyst-hook" ]
+        pkgs = ["catalyst-input", "catalyst-video", "catalyst-server", "catalyst-legacy-utils"]
         if self.ARCH == "x86_64":
-            pkgs.extend(["lib32-catalyst-utils"])
+            pkgs.extend(["lib32-catalyst-legacy-utils"])
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/radeon.conf" % (dest_dir, self.KMS)
+        path = "%s/etc/modprobe.d/radeon-blacklist.conf" % (dest_dir, self.KMS)
         with open(path, 'w') as modprobe:
             modprobe.write("blacklist radeon")
-        path = "%s/etc/modules-load/fglrx.conf" % (dest_dir, self.KMS)
+        path = "%s/etc/modules-load/fglrx-legacy.conf" % (dest_dir, self.KMS)
         with open(path, 'w') as modprobe:
-            modprobe.write("# Load Catalyst (fglrx) driver")
+            modprobe.write("# Load Catalyst-legacy (fglrx) driver")
             modprobe.write("fglrx")
         
         super().chroot(self, ["systemctl", "enable", "catalyst-hook"])

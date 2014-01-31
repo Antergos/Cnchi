@@ -34,13 +34,13 @@ class Catalyst(Hardware):
         self.ARCH = os.uname()[-1]
 
     def get_packages(self):
-        pkgs = [ "base-devel", "linux-headers", "catalyst", "catalyst-utils", "catalyst-total", "catalyst-hook" ]
+        pkgs = ["base-devel", "linux-headers", "catalyst", "catalyst-utils", "catalyst-total", "catalyst-hook"]
         if self.ARCH == "x86_64":
             pkgs.extend(["lib32-catalyst-utils"])
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/radeon.conf" % (dest_dir, self.KMS)
+        path = "%s/etc/modprobe.d/radeon-blacklist.conf" % (dest_dir, self.KMS)
         with open(path, 'w') as modprobe:
             modprobe.write("blacklist radeon")
         path = "%s/etc/modules-load/fglrx.conf" % (dest_dir, self.KMS)

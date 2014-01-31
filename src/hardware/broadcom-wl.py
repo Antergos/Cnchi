@@ -54,6 +54,7 @@ class Broadcom_wl(Hardware):
             DEVICES is (VendorID, ProductID, Description) """
         for (vendor, product, description) in DEVICES:
             if device == (vendor, product):
+                self.device_found = device
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False
