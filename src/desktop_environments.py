@@ -52,7 +52,7 @@ FEATURES = {
     'cinnamon' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'gnome' : [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ],
     'kde' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
-    'mate' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
+    'mate' : [ "aur", "cups", "fonts", "office", "firewall", "third_party" ],
     'enlightenment' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'nox' : [ "aur", "bluetooth", "cups", "fonts", "firewall" ],
     'openbox' : [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ],

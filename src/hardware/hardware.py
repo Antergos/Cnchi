@@ -34,7 +34,7 @@ class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
         pass
-
+        
     def get_packages(self):
         """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented!")
@@ -91,20 +91,24 @@ class Hardware(object):
 class HardwareInstall(object):
     """ This class checks user's hardware """
     def __init__(self):
+        # All available objects
         self.all_objects = []
-        self.objects_found = []
+        # All objects that support devices found (can have more than one object for each device)
+        self.objects_found = {}
+        # All objects that are really used
+        self.objects_used = []
 
         dirs = os.listdir('/usr/share/cnchi/src/hardware')
 
-        # This is unsafe, but we don't care if somebody wants
-        # Cnchi to run code arbitrarily.
+        # We scan the folder for py files.
+        # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
             if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
                 filename = filename[:-len(".py")]
                 try:
                     package = "hardware." + filename
                     name = filename.capitalize()
-                    # from package import name
+                    # This instruction is the same as "from package import name"
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
                     self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError as err:
@@ -129,22 +133,40 @@ class HardwareInstall(object):
                 dev = line.split()[5].split(":")
                 devices.append(("0x" + dev[0], "0x" + dev[1]))
 
-        # Enable this for testing
-        devices.append(('0x80ee', '0xcafe'))
-
         # Find objects that support the found devices
+        self.objects_found = {}
         for obj in self.all_objects:
             for device in devices:
                 if obj.check_device(self=obj, device=device):
-                    #print(device, "detected", obj, "supports it")
-                    self.objects_found.append(obj)
+                    #logging.debug(device, "detected and the object ", obj, "supports it")
+                    if device not in self.objects_found:
+                        self.objects_found[device] = [obj]
+                    else:
+                        self.objects_found[device].append(obj)
+
+        self.objects_used = []
+        for device in self.objects_found:
+            objects = self.objects_found[device]
+            if len(objects) > 1:
+                print("We have more than one driver for this device!")
+                print("What should we do? Ask the user?")
+            else:
+                self.objects_used.append(objects[0])
 
     def get_packages(self):
         """ Get pacman package list for all detected devices """
-        packages = []
-        for obj in self.objects_found:
-            packages.extend(obj.get_packages(obj))
-        
+        packages = {}
+        self.objects_used = []
+        for device in self.objects_found:
+            objects = self.objects_found[device]
+            if len(objects) > 1:
+                print("We have more than one driver for this device!")
+                print("What should we do? Ask the user?")
+            else:
+                obj = objects[0]
+                self.objects_used.append(obj)
+                packages.extend(obj.get_packages(obj))
+
         # Remove duplicates (not necessary but it's cleaner)
         pkgs = []
         for pkg in packages:
@@ -155,5 +177,5 @@ class HardwareInstall(object):
 
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
-        for obj in self.objects_found:
+        for obj in self.objects_used:
             obj.post_install(obj, dest_dir)
