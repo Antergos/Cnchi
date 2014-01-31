@@ -83,34 +83,34 @@ def get_devices():
     for dev in device_list:
         if dev.path in myhome:
             continue
-        #I left all of the below here but commented out to see some use cases
-        #isbusy = in use/mounted.  Needs to flag if 'yes' to prompt user to umount
-        #isbusy = dev.busy
-        #path gives /dev/sda or something similar
-        #myname = dev.path
-        #Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-        #limiter = 1000
-        #Some disk size calculations
-        #byte_size = dev.length * dev.sectorSize
-        #megabyte_size = byte_size / (limiter * limiter)
-        #gigabyte_size = megabyte_size / limiter
-        #print(byte_size)
-        #print(dev.length)
-        #Must create disk object to drill down
 
-        # skip cd drive and special devices like LUKS and LVM
+        # I left all of the below here but commented out to see some use cases
+        # isbusy = in use/mounted.  Needs to flag if 'yes' to prompt user to umount
+        # isbusy = dev.busy
+        # path gives /dev/sda or something similar
+        # myname = dev.path
+        # Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
+        # limiter = 1000
+        # Some disk size calculations
+        # byte_size = dev.length * dev.sectorSize
+        # megabyte_size = byte_size / (limiter * limiter)
+        # gigabyte_size = megabyte_size / limiter
+        # print(byte_size)
+        # print(dev.length)
+        # Must create disk object to drill down
+
+        # Skip cd drive and special devices like LUKS and LVM
         if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
             try:
                 diskob = parted.Disk(dev)
                 result = OK
-            # This is not a fix. Only a sloppy work-around.
             except parted.DiskLabelException as err:
                 logging.warning(_('Unrecognised disk label in device %s.') % dev.path)
                 diskob = None
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as err:
                 logging.error(err)
-                show.error((_("Exception: %s.\nFor more information take a look at /tmp/cnchi.log") % err))
+                show.error(_("Exception: %s.\nFor more information take a look at /tmp/cnchi.log") % err)
                 diskob = None
                 result = UNKNOWN_ERROR
             finally:
