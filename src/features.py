@@ -56,6 +56,7 @@ class Features(Gtk.Box):
         self.features_by_desktop = {}
         self.features_by_desktop["nox"] = [ "bluetooth", "cups", "firewall" ]
         self.features_by_desktop["gnome"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
+        self.features_by_desktop["mate"] = [ "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["cinnamon"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["xfce"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
         self.features_by_desktop["razor"] = [ "bluetooth", "cups", "office", "firewall", "third_party" ]
@@ -88,6 +89,7 @@ class Features(Gtk.Box):
         self.desktops = {
          "nox" : "Base",
          "gnome" : "Gnome",
+         "mate" : "MATE",
          "cinnamon" : "Cinnamon",
          "xfce" : "Xfce",
          "lxde" : "Lxde",

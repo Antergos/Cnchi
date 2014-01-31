@@ -81,6 +81,32 @@ gnome_settings(){
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 	}
 
+mate_settings(){
+    	# Set Adwaita cursor theme
+	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+
+	# Set gsettings input-source
+	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	else
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
+        fi
+	# Set gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+
+	rm ${DESTDIR}/usr/bin/set-settings
+
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	}
+}
+
 cinnamon_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default

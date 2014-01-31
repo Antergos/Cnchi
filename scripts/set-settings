@@ -26,6 +26,19 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 
 fi
 
+if [[ ${DESKTOP} == 'mate' ]];then
+
+	# Set menu icon
+	dbus-launch gsettings set org.mate menu-icon "/usr/share/antergos/antergos-menu.png"
+
+	# Disable keyboard flags
+	dbus-launch gsettings set org.mate keyboard-applet-use-flags "false"
+	
+	# Set background
+	dbus-launch gsettings set org.mate.background picture-filename /usr/share/antergos/wallpapers/antergos-wallpaper.png
+	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+fi
+
 if [[ ${DESKTOP} == 'cinnamon' ]];then
 
 	# Set menu icon
