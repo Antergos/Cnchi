@@ -251,7 +251,6 @@
         <pkgname>mate</pkgname> <!-- Group -->
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-calc</pkgname>
-        <pkgname>mate-character-map</pkgname>
         <pkgname>mate-document-viewer</pkgname>
         <pkgname>mate-file-archiver</pkgname>
         <pkgname>mate-file-manager-open-terminal</pkgname>
@@ -268,7 +267,6 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
-        <pkgname>shotwell</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
