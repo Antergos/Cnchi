@@ -242,7 +242,7 @@
         <pkgname>gstreamer0.10-good-plugins</pkgname>
         <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>gvfs-atp</pkgname>
+        <!--<pkgname>gvfs-atp</pkgname>-->
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-obexftp</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -255,7 +255,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>obconf</pkgname>
-        <pkgname>obkey</pkgname>
+        <!--<pkgname>obkey</pkgname>-->
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
         <pkgname>openbox</pkgname>
