@@ -258,10 +258,8 @@
         <pkgname>mate-image-viewer</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-menu-editor</pkgname>
-        <pkgname>mate-netspeed</pkgname>
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
-        <pkgname>mate-sensors-applet</pkgname>
         <pkgname>mate-system-monitor</pkgname>
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-text-editor</pkgname>
