@@ -25,6 +25,8 @@
 from hardware.hardware import Hardware
 import os
 
+from amd_ati_db import DEVICES
+
 DEVICES = []
 
 CLASS_NAME = "Catalyst"
