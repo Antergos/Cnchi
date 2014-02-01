@@ -617,7 +617,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Can't edit an partition with LVM filesystem type
         if "lvm2" in fs.lower():
-            logging.warning("Can't edit an partition with LVM filesystem type")
+            logging.warning(_("Can't edit a partition with LVM filesystem type"))
             return
 
         # Set fs in dialog combobox
@@ -1104,21 +1104,21 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('mnt_chklist')
         label.set_markup(txt)
 
-        self.root_part = self.ui.get_object('root_part')
+        part = self.ui.get_object('root_part')
         txt = _("Root ( / )")
-        self.root_part.props.label = txt
+        part.props.label = txt
 
-        self.boot_part = self.ui.get_object('boot_part')
+        part = self.ui.get_object('boot_part')
         txt = _("Boot ( /boot )")
-        self.boot_part.props.label = txt
+        part.props.label = txt
 
-        self.boot_part_efi = self.ui.get_object('boot_part_efi')
+        part = self.ui.get_object('boot_efi_part')
         txt = _("EFI ( /boot )")
-        self.boot_part_efi.props.label = txt
+        part.props.label = txt
 
-        self.swap_part = self.ui.get_object('swap_part')
+        part = self.ui.get_object('swap_part')
         txt = _("Swap")
-        self.swap_part.props.label = txt
+        part.props.label = txt
 
         #txt = _("TODO: Here goes a warning message")
         #txt = "<span weight='bold'>%s</span>" % txt
@@ -1394,39 +1394,39 @@ class InstallationAdvanced(Gtk.Box):
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
         # Initialize our mount point check widgets
-        # TODO: Rewrite this garbage :-/
-        has_root_part = False
-        has_boot_part = False
-        has_boot_efi = False
-        has_swap_part = False
-        need_swap = False
+        
+        check_parts = ["root", "boot", "boot_efi", "swap"]
+        
+        has_part = {}
+        for check_part in check_parts:
+            has_part[check_part] = False
+
+        # Are we in a EFI system?
         is_uefi = os.path.exists('/sys/firmware/efi')
+
+        # TODO: Check total system RAM in hardware module so we can require swap for low memory systems
+        need_swap = False
         
-        self.root_part = self.ui.get_object('root_part')
-        self.boot_part = self.ui.get_object('boot_part')
-        self.boot_part_efi = self.ui.get_object('boot_part_efi')
-        self.swap_part = self.ui.get_object('swap_part')
-        
-        self.root_part.set_state(has_root_part)
-        self.boot_part.set_state(has_boot_part)
-        self.boot_part_efi.set_state(has_boot_efi)
-        self.swap_part.set_state(has_swap_part)
+        part = {}
+        for check_part in check_parts:
+            part[check_part] = self.ui.get_object(check_part + "_part")
+            part[check_part].set_state(has_part[check_part])
 
         # Only show mount checks that apply to current system.
-        self.boot_part_efi.set_hidden()
-        self.boot_part.set_hidden()
-        self.swap_part.set_hidden()
+        part["boot_efi"].hide()
+        part["boot"].hide()
+        part["swap"].hide()
+
+        if is_uefi:
+            part["boot_efi"].show()
+        elif self.lv_partitions and not is_uefi:
+            part["boot"].show()
+        elif need_swap:
+            part["swap"].show()
 
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
-
-        if is_uefi:
-            self.boot_part_efi.set_shown()
-        elif self.lv_partitions and not is_uefi:
-            self.boot_part.set_shown()
-        elif need_swap:
-            self.swap_part.set_shown()
 
         # Check mount points and filesystems
         for part_path in self.stage_opts:
@@ -1435,34 +1435,31 @@ class InstallationAdvanced(Gtk.Box):
                 # Don't allow vfat as / filesystem, it will not work!
                 # Don't allow ntfs as / filesystem, this is stupid!
                 if "fat" not in fs and "ntfs" not in fs:
-                    has_root_part = True
-                    self.root_part.set_state(has_root_part)
-            # /boot or /boot/efi ¿?
+                    has_part["root"] = True
+                    part["root"].set_state(True)
+            # /boot or /boot/efi
             if mnt == "/boot":
                 if is_uefi and "fat" in fs:
                     # Only fat partitions
-                    has_boot_efi = True
-                    self.boot_part_efi.set_state(has_boot_efi)
+                    has_part["boot_efi"] = True
+                    part["boot_efi"].set_state(True)
                 else:
                     if "f2fs" not in fs and "btrfs" not in fs and self.lv_partitions:
-                        has_boot_part = True
-                        self.boot_part.set_state(has_boot_part)
+                        has_part["boot"] = True
+                        part["boot"].set_state(True)
             if mnt == "swap":
-                # TODO: Check total system RAM in hardware module so we can require swap for low memory systems
-                #has_swap_part = True
-                #self.swap_part.set_state(has_swap_part)
-                pass
+                has_part["swap"] = True
+                part["swap"].set_state(True)
 
         if is_uefi:
-            check_ok = has_root_part and has_boot_efi
+            check_ok = has_part["root"] and has_part["boot_efi"]
         elif self.lv_partitions and not is_uefi:
-            check_ok = has_root_part and has_boot_part
+            check_ok = has_part["root"] and has_part["boot"]
         else:
-            check_ok = has_root_part
+            check_ok = has_part["root"]
 
         if need_swap:
-            is_ok = check_ok and has_swap_part
-            check_ok = is_ok
+            check_ok = check_ok and has_part["swap"]
 
         self.forward_button.set_sensitive(check_ok)
 

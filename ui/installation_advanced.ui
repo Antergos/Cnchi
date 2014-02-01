@@ -950,7 +950,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="StateBox" id="boot_part_efi">
+                      <object class="StateBox" id="boot_efi_part">
                     <property name="visible">True</property>
                     <property name="label">EFI ( /boot )</property>
                     <property name="no_show_all">True</property>
