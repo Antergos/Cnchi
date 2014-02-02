@@ -459,6 +459,7 @@
         </third_party>
     </user_features>
 
+    <!--
     <graphics>
         <nvidia>
             <pkgname>nouveau-dri</pkgname>
@@ -488,6 +489,7 @@
             <pkgname>v86d</pkgname>
         </uvesafb>
     </graphics>
+    -->
 
     <net>
         <broadcom>

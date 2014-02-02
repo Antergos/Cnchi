@@ -556,30 +556,28 @@ class InstallationProcess(multiprocessing.Process):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
-        # TODO: Decide who takes care of graphics card, if packages.xml or HardwareInstall
-        
-        # Install graphic cards drivers except in NoX installs
-        if self.desktop != "nox":
-            self.queue_event('debug', _("Getting graphics card drivers"))
-        
-            graphics = self.get_graphics_card()
-        
-            card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
-        
-            for card in card_lib:
-                if card in graphics:
-                    if card is 'lenovo':
-                        card = 'intel'
-                    for child in root.iter(card):
-                        for pkg in child.iter('pkgname'):
-                            self.packages.append(pkg.text)
-
-            if len(self.card) > 0:
-                logging.debug(_("Added %s graphics drivers to the installation") % graphics)
-            else:
-                # Add xorg-drivers group if cnchi can't figure out the graphic card driver.
-                self.packages.append('xorg-drivers')
-                logging.debug(_("Added generic 'xorg-drivers' package to the installation"))
+        ## Install graphic cards drivers except in NoX installs
+        #if self.desktop != "nox":
+        #    self.queue_event('debug', _("Getting graphics card drivers"))
+        # 
+        #    graphics = self.get_graphics_card()
+        #
+        #    card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
+        #
+        #    for card in card_lib:
+        #        if card in graphics:
+        #            if card is 'lenovo':
+        #                card = 'intel'
+        #            for child in root.iter(card):
+        #                for pkg in child.iter('pkgname'):
+        #                    self.packages.append(pkg.text)
+        #
+        #    if len(self.card) > 0:
+        #        logging.debug(_("Added %s graphics drivers to the installation") % graphics)
+        #    else:
+        #        # Add xorg-drivers group if cnchi can't figure out the graphic card driver.
+        #        self.packages.append('xorg-drivers')
+        #        logging.debug(_("Added generic 'xorg-drivers' package to the installation"))
 
         # Get packages needed for detected hardware
         try:
