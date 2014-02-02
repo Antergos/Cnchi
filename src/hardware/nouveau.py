@@ -29,41 +29,30 @@ import logging
 from hardware.nvidia_db import DEVICES
 
 CLASS_NAME = "Nouveau"
+CLASS_ID = "0x0300"
 
 class Nouveau(Hardware):
     def __init__(self):
-        self.KMS = "nouveau"
-        self.KMS_OPTIONS = "modeset=1"
-        self.DRI = "nouveau-dri"
-        self.DDX = "xf86-video-nouveau"
-        self.DECODER = "libva-vdpau-driver"
-        self.ARCH = os.uname()[-1]
+        pass
 
     def get_packages(self):
-        pkgs = [self.DRI, self.DDX, self.DECODER, "libtxc_dxtn"]
-        if self.ARCH == "x86_64":
-            pkgs.extend(["lib32-%s" % self.DRI, "lib32-mesa-libgl"])
+        pkgs = ["nouveau-dri", "xf86-video-nouveau", "libva-vdpau-driver", "libtxc_dxtn"]
+        if os.uname()[-1] == "x86_64":
+            pkgs.extend(["lib32-nouveau-dri", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, self.KMS)
-        with open(path, 'w') as modprobe:
-            modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
+        KMS = "nouveau"
+        KMS_OPTIONS = "modeset=1"
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        #for (vendor, product, description) in DEVICES:
-        #    if device == (vendor, product):
-        #        print(description)
-        #        return True
-        #return False
-        
-        (vendor, product) = device
-        if vendor == "0x10de":
-            # Check that this is really a graphics card
-            (d_vendor, d_model) = super().get_graphics_card(self)
-            if vendor == d_vendor:
-                logging.debug(_("Found device: %s") % d_model)
+        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, KMS)
+        with open(path, 'w') as modprobe:
+            modprobe.write("options %s %s\n" % (KMS, KMS_OPTIONS))
+
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        for (vendor, product, description) in DEVICES:
+            if (vendor_id, product_id) == (vendor, product):
+                #logging.debug(_("Found device: %s") % description)
                 return True
         return False

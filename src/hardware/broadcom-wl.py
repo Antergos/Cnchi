@@ -38,6 +38,7 @@ DEVICES = [
 ('0x14e4', '0x432B', "BCM4322")]
 
 CLASS_NAME = "Broadcom_wl"
+CLASS_ID = ""
 
 class Broadcom_wl(Hardware):
     def __init__(self):
@@ -49,12 +50,10 @@ class Broadcom_wl(Hardware):
     def post_install(self, dest_dir):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                self.device_found = device
+            if (vendor_id, product_id) == (vendor, product):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False

@@ -26,6 +26,7 @@ from hardware.hardware import Hardware
 import os
 
 CLASS_NAME = "VesaFB"
+CLASS_ID = "0x0300"
 
 # All modern cards support Vesa. This will be used as a fallback.
 DEVICES = []
@@ -40,8 +41,10 @@ class VesaFB(Hardware):
     def post_install(self, dest_dir):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         # All modern cards support Vesa. This will be used as a fallback.
-        return True
+        if class_id == CLASS_ID:
+            return True
+        else:
+            return False

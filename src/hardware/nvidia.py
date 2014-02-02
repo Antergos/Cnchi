@@ -24,19 +24,22 @@
 
 from hardware.hardware import Hardware
 import os
+import logging
 
 from hardware.nvidia_db import DEVICES
 
 CLASS_NAME = "NVidia"
+CLASS_ID = "0x0300"
 
 class NVidia(Hardware):
     def __init__(self):
-        self.ARCH = os.uname()[-1]
+        pass
 
     def get_packages(self):
         pkgs = ["nvidia", "libva-vdpau-driver"]
-        if self.ARCH == "x86_64":
+        if os.uname()[-1] == "x86_64":
             pkgs.append("lib32-nvidia-libgl")
+        return pkgs
 
     def post_install(self, dest_dir):
         path = "%s/etc/X11/xorg.conf.d/10-nvidia.conf" % dest_dir
@@ -57,11 +60,11 @@ class NVidia(Hardware):
         with open(path, 'w') as modprobe:
             modprobe.write("options nvidia NVreg_EnableMSI=1\n")
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        #for (vendor, product, description) in DEVICES:
-        #    if device == (vendor, product):
-        #        print(description)
-        #        return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        for (vendor, product, description) in DEVICES:
+            if (vendor_id, product_id) == (vendor, product):
+                #logging.debug(_("Found device: %s") % description)
+                #return True
+                return False
         return False

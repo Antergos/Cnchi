@@ -30,6 +30,7 @@ DEVICES = [
 ('0x15ad', '0x0710', "VMware Virtual SVGA")]
 
 CLASS_NAME = "Vmware"
+CLASS_ID = ""
 
 class Vmware(Hardware):
     """ Vmware class definition """
@@ -42,11 +43,10 @@ class Vmware(Hardware):
     def post_install(self, dest_dir):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
+            if (vendor_id, product_id) == (vendor, product):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False

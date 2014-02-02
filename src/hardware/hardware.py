@@ -43,8 +43,8 @@ class Hardware(object):
         """ Runs post install commands """
         raise NotImplementedError("postinstall is not implemented!")
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         raise NotImplementedError("check_device is not implemented")
 
     def get_graphics_card(self):
@@ -123,22 +123,24 @@ class HardwareInstall(object):
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
+                class_id = line.split()[1].rstrip(":")
                 dev = line.split()[2].split(":")
-                devices.append(("0x" + dev[0], "0x" + dev[1]))
+                devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
         lines = subprocess.check_output(["lsusb"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")
-                devices.append(("0x" + dev[0], "0x" + dev[1]))
+                devices.append(("0", "0x" + dev[0], "0x" + dev[1]))
 
-        # Find objects that support the found devices
+        # Find objects that support the devices we've found.
         self.objects_found = {}
         for obj in self.all_objects:
             for device in devices:
-                if obj.check_device(self=obj, device=device):
-                    #logging.debug(device, "detected and the object ", obj, "supports it")
+                (class_id, vendor_id, product_id) = device
+                if obj.check_device(self=obj, class_id=class_id, vendor_id=vendor_id, product_id=product_id):
+                    #print(device, "detected and the object ", obj, "supports it")
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
@@ -148,25 +150,17 @@ class HardwareInstall(object):
         for device in self.objects_found:
             objects = self.objects_found[device]
             if len(objects) > 1:
-                print("We have more than one driver for this device!")
-                print("What should we do? Ask the user?")
+                # We have more than one driver for this device!
+                # What should we do? Ask the user?
+                self.objects_used.append(objects[0])
             else:
                 self.objects_used.append(objects[0])
 
     def get_packages(self):
         """ Get pacman package list for all detected devices """
-        packages = {}
-        self.objects_used = []
-        for device in self.objects_found:
-            objects = self.objects_found[device]
-            if len(objects) > 1:
-                #print("We have more than one driver for this device!")
-                #print("What should we do? Ask the user?")
-                pass
-            else:
-                obj = objects[0]
-                self.objects_used.append(obj)
-                packages.extend(obj.get_packages(obj))
+        packages = []
+        for obj in self.objects_used:
+            packages.extend(obj.get_packages(obj))
 
         # Remove duplicates (not necessary but it's cleaner)
         pkgs = []

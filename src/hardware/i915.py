@@ -26,9 +26,10 @@ from hardware.hardware import Hardware
 import os
 import logging
 
-CLASS_NAME = "i915"
-
 from hardware.i915_db import DEVICES
+
+CLASS_NAME = "i915"
+CLASS_ID = "0x0300"
 
 class i915(Hardware):
     def __init__(self):
@@ -50,11 +51,10 @@ class i915(Hardware):
         with open(path, 'w') as modprobe:
             modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
+            if (vendor_id, product_id) == (vendor, product):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False

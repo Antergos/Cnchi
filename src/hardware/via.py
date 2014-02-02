@@ -26,8 +26,6 @@ from hardware.hardware import Hardware
 import os
 import logging
 
-CLASS_NAME = "Via"
-
 DEVICES = [
 ('0x1106', '0x1122', "VX800/VX820 Chrome 9 HC3 Integrated Graphics"),
 ('0x1106', '0x3122', "VT8623 [Apollo CLE266] integrated CastleRock graphics"),
@@ -36,6 +34,9 @@ DEVICES = [
 ('0x1106', '0x3371', "CN896/VN896/P4M900 [Chrome 9 HC]"),
 ('0x1106', '0x7122', "VX900 Graphics [Chrome9 HD]"),
 ('0x1106', '0x8e48', "")]
+
+CLASS_NAME = "Via"
+CLASS_ID = "0x0300"
 
 class Via(Hardware):
     def __init__(self):
@@ -55,11 +56,10 @@ class Via(Hardware):
             video.write('\tVendorName     "VIA"\n')
             video.write('EndSection\n')
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
+            if (vendor_id, product_id) == (vendor, product):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False

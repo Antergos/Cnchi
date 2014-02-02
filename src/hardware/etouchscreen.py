@@ -33,6 +33,7 @@ import logging
 DEVICES = [('0x0eef', '0x0001', "ETouchScreen")]
 
 CLASS_NAME = "ETouchScreen"
+CLASS_ID = ""
 
 class ETouchScreen(Hardware):
     def __init__(self):
@@ -59,11 +60,10 @@ class ETouchScreen(Hardware):
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
+            if (vendor_id, product_id) == (vendor, product):
                 logging.debug(_("Found device: %s") % description)
                 return True
         return False

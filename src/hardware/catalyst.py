@@ -24,10 +24,12 @@
 
 from hardware.hardware import Hardware
 import os
+import logging
 
 from hardware.amd_ati_db import DEVICES
 
 CLASS_NAME = "Catalyst"
+CLASS_ID = "0x0300"
 
 class Catalyst(Hardware):
     def __init__(self):
@@ -50,11 +52,11 @@ class Catalyst(Hardware):
         
         super().chroot(self, ["systemctl", "enable", "catalyst-hook"])
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        #for (vendor, product, description) in DEVICES:
-        #    if device == (vendor, product):
-        #        print(description)
-        #        return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        for (vendor, product, description) in DEVICES:
+            if (vendor_id, product_id) == (vendor, product):
+                logging.debug(_("Found device: %s") % description)
+                #return True
+                return False
         return False
