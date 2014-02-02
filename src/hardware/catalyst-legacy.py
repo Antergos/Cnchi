@@ -25,7 +25,7 @@
 from hardware.hardware import Hardware
 import os
 
-from amd_ati_db import DEVICES
+from hardware.amd_ati_db import DEVICES
 
 CLASS_NAME = "Catalyst_legacy"
 

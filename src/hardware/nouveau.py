@@ -26,7 +26,7 @@ from hardware.hardware import Hardware
 import os
 import logging
 
-from nvidia_db import DEVICES
+from hardware.nvidia_db import DEVICES
 
 CLASS_NAME = "Nouveau"
 

@@ -103,7 +103,7 @@ class HardwareInstall(object):
         # We scan the folder for py files.
         # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
-            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
+            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename and not filename.endswith("_db.py"):
                 filename = filename[:-len(".py")]
                 try:
                     package = "hardware." + filename
@@ -160,8 +160,9 @@ class HardwareInstall(object):
         for device in self.objects_found:
             objects = self.objects_found[device]
             if len(objects) > 1:
-                print("We have more than one driver for this device!")
-                print("What should we do? Ask the user?")
+                #print("We have more than one driver for this device!")
+                #print("What should we do? Ask the user?")
+                pass
             else:
                 obj = objects[0]
                 self.objects_used.append(obj)

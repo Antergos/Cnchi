@@ -25,7 +25,7 @@
 from hardware.hardware import Hardware
 import os
 
-from nvidia_db import DEVICES
+from hardware.nvidia_db import DEVICES
 
 CLASS_NAME = "NVidia"
 

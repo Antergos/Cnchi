@@ -26,7 +26,7 @@ from hardware.hardware import Hardware
 import os
 import logging
 
-from amd_ati_db import DEVICES
+from hardware.amd_ati_db import DEVICES
 
 CLASS_NAME = "Radeon"
 

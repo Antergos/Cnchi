@@ -1,4 +1,4 @@
-DRIVERS = [
+DEVICES = [
 ('0x10de', '0x0008', 'NV1, [EDGE, 3D]'),
 ('0x10de', '0x0009', 'NV1, [EDGE, 3D]'),
 ('0x10de', '0x0010', ''),

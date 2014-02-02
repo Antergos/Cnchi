@@ -28,7 +28,7 @@ import logging
 
 CLASS_NAME = "i915"
 
-from i915_db import DEVICES
+from hardware.i915_db import DEVICES
 
 class i915(Hardware):
     def __init__(self):
