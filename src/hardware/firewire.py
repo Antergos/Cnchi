@@ -23,12 +23,11 @@
 """ Firewire driver installation """
 
 from hardware.hardware import Hardware
-import logging
-
-DEVICES = [('0x1180','0x0832', "Firewire")]
 
 CLASS_NAME = "Firewire"
 CLASS_ID = ""
+VENDOR_ID = "0x1180"
+DEVICES = [('0x0832', "Firewire")]
 
 class Firewire(Hardware):
     def __init__(self):
@@ -42,8 +41,8 @@ class Firewire(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        for (vendor, product, description) in DEVICES:
-            if (vendor_id, product_id) == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+        if vendor_id == VENDOR_ID:
+            for (product, description) in DEVICES:
+                if product_id == product:
+                    return True
         return False

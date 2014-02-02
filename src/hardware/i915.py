@@ -24,37 +24,29 @@
 
 from hardware.hardware import Hardware
 import os
-import logging
-
-from hardware.i915_db import DEVICES
 
 CLASS_NAME = "i915"
 CLASS_ID = "0x0300"
+VENDOR_ID = "0x8086"
+DEVICES = []
 
 class i915(Hardware):
     def __init__(self):
-        self.KMS = "i915"
-        self.KMS_OPTIONS = "modeset=1"
-        self.DRI = "intel-dri"
-        self.DDX = "xf86-video-intel"
-        self.DECODER = "libva-intel-driver"
-        self.ARCH = os.uname()[-1]
+        pass
 
     def get_packages(self):
-        pkgs = [self.DRI, self.DDX, self.DECODER, "libtxc_dxtn"]
-        if self.ARCH == "x86_64":
-            pkgs.extend(["lib32-%s" % self.DRI, "lib32-mesa-libgl"])
+        pkgs = ["intel-dri", "xf86-video-intel", "libva-intel-driver", "libtxc_dxtn"]
+        if os.uname()[-1] == "x86_64":
+            pkgs.extend(["lib32-intel-dri", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, self.KMS)
+        path = "%s/etc/modprobe.d/i915.conf" % dest_dir
         with open(path, 'w') as modprobe:
-            modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
+            modprobe.write("options i915 modeset=1\n")
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        for (vendor, product, description) in DEVICES:
-            if (vendor_id, product_id) == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+            return True
         return False

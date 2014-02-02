@@ -47,30 +47,6 @@ class Hardware(object):
         """ Checks if the driver supports this device """
         raise NotImplementedError("check_device is not implemented")
 
-    def get_graphics_card(self):
-        """ Get graphics card using hwinfo """
-        vendor = ""
-        model = ""
-        
-        try:
-            process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-            process2 = subprocess.Popen(["grep", "[[:space:]]Vendor:[[:space:]]"],
-                                        stdin=process1.stdout, stdout=subprocess.PIPE)
-            process1.stdout.close()
-            out, err = process2.communicate()
-            vendor = out.decode().lower()
-            
-            process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-            process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
-                                        stdin=process1.stdout, stdout=subprocess.PIPE)
-            process1.stdout.close()
-            out, err = process2.communicate()
-            model = out.decode().lower()
-        except OSError as err:
-            logging.exception(_("Error running hwinfo in hardware module: %s"), err.strerror)
-        
-        return (vendor, model)
-
     def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
         run = ['chroot', dest_dir]
@@ -93,8 +69,10 @@ class HardwareInstall(object):
     def __init__(self):
         # All available objects
         self.all_objects = []
+        
         # All objects that support devices found (can have more than one object for each device)
         self.objects_found = {}
+        
         # All objects that are really used
         self.objects_used = []
 
@@ -103,7 +81,7 @@ class HardwareInstall(object):
         # We scan the folder for py files.
         # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
-            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename and not filename.endswith("_db.py"):
+            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
                 filename = filename[:-len(".py")]
                 try:
                     package = "hardware." + filename
@@ -140,7 +118,6 @@ class HardwareInstall(object):
             for device in devices:
                 (class_id, vendor_id, product_id) = device
                 if obj.check_device(self=obj, class_id=class_id, vendor_id=vendor_id, product_id=product_id):
-                    #print(device, "detected and the object ", obj, "supports it")
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
@@ -151,8 +128,8 @@ class HardwareInstall(object):
             objects = self.objects_found[device]
             if len(objects) > 1:
                 # We have more than one driver for this device!
-                # What should we do? Ask the user?
-                self.objects_used.append(objects[0])
+                for obj in objects:
+                    self.objects_used.append(obj)
             else:
                 self.objects_used.append(objects[0])
 

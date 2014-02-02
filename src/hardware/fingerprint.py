@@ -25,8 +25,10 @@
 # Support for consumer fingerprint reader devices.
 
 from hardware.hardware import Hardware
-import logging
 
+CLASS_NAME = "FingerPrint"
+CLASS_ID = ""
+VENDOR_ID = ""
 DEVICES = [
 ('0x045e', '0x00bb', ""),
 ('0x045e', '0x00bc', ""),
@@ -44,9 +46,6 @@ DEVICES = [
 ('0x08ff', '0x5501', ""),
 ('0x147e', '0x2016', "")]
 
-CLASS_NAME = "FingerPrint"
-CLASS_ID = ""
-
 class FingerPrint(Hardware):
     def __init__(self):
         pass
@@ -61,6 +60,5 @@ class FingerPrint(Hardware):
         """ Checks if the driver supports this device """
         for (vendor, product, description) in DEVICES:
             if (vendor_id, product_id) == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
                 return True
         return False

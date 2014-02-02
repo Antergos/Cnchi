@@ -24,12 +24,11 @@
 
 from hardware.hardware import Hardware
 import os
-import logging
-
-from hardware.nvidia_db import DEVICES
 
 CLASS_NAME = "Nouveau"
 CLASS_ID = "0x0300"
+VENDOR_ID = "0x10de"
+DEVICES = []
 
 class Nouveau(Hardware):
     def __init__(self):
@@ -42,17 +41,12 @@ class Nouveau(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        KMS = "nouveau"
-        KMS_OPTIONS = "modeset=1"
-
-        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, KMS)
+        path = "%s/etc/modprobe.d/nouveau.conf" % dest_dir
         with open(path, 'w') as modprobe:
-            modprobe.write("options %s %s\n" % (KMS, KMS_OPTIONS))
+            modprobe.write("options nouveau modeset=1\n")
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        for (vendor, product, description) in DEVICES:
-            if (vendor_id, product_id) == (vendor, product):
-                #logging.debug(_("Found device: %s") % description)
-                return True
+        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+            return True
         return False

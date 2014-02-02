@@ -101,7 +101,6 @@ class InstallationProcess(multiprocessing.Process):
         self.desktop_manager = 'lightdm'
         self.network_manager = 'NetworkManager'
 
-        self.card = []
         # Packages to be removed
         self.conflicts = []
 
@@ -558,13 +557,15 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # TODO: Decide who takes care of graphics card, if packages.xml or HardwareInstall
+        
         # Install graphic cards drivers except in NoX installs
         if self.desktop != "nox":
             self.queue_event('debug', _("Getting graphics card drivers"))
-
+        
             graphics = self.get_graphics_card()
+        
             card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
-            # Is this ok? Might need to be revised,
+        
             for card in card_lib:
                 if card in graphics:
                     if card is 'lenovo':
@@ -572,14 +573,13 @@ class InstallationProcess(multiprocessing.Process):
                     for child in root.iter(card):
                         for pkg in child.iter('pkgname'):
                             self.packages.append(pkg.text)
-                    self.card.append(card)
 
-            # Add xorg-drivers group if cnchi can't figure it out
-            # the graphic card driver.
-            if self.card is None:
+            if len(self.card) > 0:
+                logging.debug(_("Added %s graphics drivers to the installation") % graphics)
+            else:
+                # Add xorg-drivers group if cnchi can't figure out the graphic card driver.
                 self.packages.append('xorg-drivers')
-                self.card.append('xorg')
-            logging.debug(_("Added %s graphics drivers to the installation") % self.card)
+                logging.debug(_("Added generic 'xorg-drivers' package to the installation"))
 
         # Get packages needed for detected hardware
         try:
