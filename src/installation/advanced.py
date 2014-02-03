@@ -1099,10 +1099,10 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
 
-        txt = _("Mount Checklist:")
-        txt = "<span weight='bold'>%s</span>" % txt
-        label = self.ui.get_object('mnt_chklist')
-        label.set_markup(txt)
+        #txt = _("Mount Checklist:")
+        #txt = "<span weight='bold'>%s</span>" % txt
+        #label = self.ui.get_object('mnt_chklist')
+        #label.set_markup(txt)
 
         #part = self.ui.get_object('root_part')
         #txt = _("Root ( / )")
