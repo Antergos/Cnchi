@@ -1104,21 +1104,21 @@ class InstallationAdvanced(Gtk.Box):
         label = self.ui.get_object('mnt_chklist')
         label.set_markup(txt)
 
-        part = self.ui.get_object('root_part')
-        txt = _("Root ( / )")
-        part.props.label = txt
+        #part = self.ui.get_object('root_part')
+        #txt = _("Root ( / )")
+        #part.props.label = txt
 
-        part = self.ui.get_object('boot_part')
-        txt = _("Boot ( /boot )")
-        part.props.label = txt
+        #part = self.ui.get_object('boot_part')
+        #txt = _("Boot ( /boot )")
+        #part.props.label = txt
 
-        part = self.ui.get_object('boot_efi_part')
-        txt = _("EFI ( /boot )")
-        part.props.label = txt
+        #part = self.ui.get_object('boot_efi_part')
+        #txt = _("EFI ( /boot )")
+        #part.props.label = txt
 
-        part = self.ui.get_object('swap_part')
-        txt = _("Swap")
-        part.props.label = txt
+        #part = self.ui.get_object('swap_part')
+        #txt = _("Swap")
+        #part.props.label = txt
 
         #txt = _("TODO: Here goes a warning message")
         #txt = "<span weight='bold'>%s</span>" % txt
@@ -1408,21 +1408,21 @@ class InstallationAdvanced(Gtk.Box):
         need_swap = False
         
         part = {}
-        for check_part in check_parts:
-            part[check_part] = self.ui.get_object(check_part + "_part")
-            part[check_part].set_state(has_part[check_part])
+        #for check_part in check_parts:
+        #    part[check_part] = self.ui.get_object(check_part + "_part")
+        #    part[check_part].set_state(has_part[check_part])
 
         # Only show mount checks that apply to current system.
-        part["boot_efi"].hide()
-        part["boot"].hide()
-        part["swap"].hide()
+        #part["boot_efi"].hide()
+        #part["boot"].hide()
+        #part["swap"].hide()
 
-        if is_uefi:
-            part["boot_efi"].show()
-        elif self.lv_partitions and not is_uefi:
-            part["boot"].show()
-        elif need_swap:
-            part["swap"].show()
+        #if is_uefi:
+        #    part["boot_efi"].show()
+        #elif self.lv_partitions and not is_uefi:
+        #    part["boot"].show()
+        #elif need_swap:
+        #    part["swap"].show()
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -1436,20 +1436,20 @@ class InstallationAdvanced(Gtk.Box):
                 # Don't allow ntfs as / filesystem, this is stupid!
                 if "fat" not in fs and "ntfs" not in fs:
                     has_part["root"] = True
-                    part["root"].set_state(True)
+                    #part["root"].set_state(True)
             # /boot or /boot/efi
             if mnt == "/boot":
                 if is_uefi and "fat" in fs:
                     # Only fat partitions
                     has_part["boot_efi"] = True
-                    part["boot_efi"].set_state(True)
+                    #part["boot_efi"].set_state(True)
                 else:
                     if "f2fs" not in fs and "btrfs" not in fs and self.lv_partitions:
                         has_part["boot"] = True
-                        part["boot"].set_state(True)
+                        #part["boot"].set_state(True)
             if mnt == "swap":
                 has_part["swap"] = True
-                part["swap"].set_state(True)
+                #part["swap"].set_state(True)
 
         if is_uefi:
             check_ok = has_part["root"] and has_part["boot_efi"]
