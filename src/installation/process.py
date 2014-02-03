@@ -589,6 +589,9 @@ class InstallationProcess(multiprocessing.Process):
                 for hardware_pkg in hardware_pkgs:
                     txt += hardware_pkg + " "
                 logging.debug(_("Hardware module added these packages : %s") % txt)
+                # Not sure where to put this :-/
+                if 'virtualbox-guest-utils' in hardware_pkgs:
+                    self.vbox = True
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
@@ -1619,7 +1622,7 @@ class InstallationProcess(multiprocessing.Process):
 
         default_groups = 'lp,video,network,storage,wheel,audio'
         
-        if self.card is "virtualbox":
+        if self.vbox:
             default_groups += ',vboxusers'
 
         if self.settings.get('require_password') is False:
