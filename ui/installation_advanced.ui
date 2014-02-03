@@ -961,52 +961,64 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-                <object class="StateBox" id="root_part">
+              <object class="GtkLabel" id="mnt_chklist">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_right">15</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="StateBox" id="root_part">
                     <property name="visible">True</property>
                     <property name="label">Root ( / )</property>
                 </object>
-                <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                </packing>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
             </child>
             <child>
-                <object class="StateBox" id="boot_part">
+              <object class="StateBox" id="boot_part">
                 <property name="visible">True</property>
                 <property name="label">Boot ( /boot )</property>
                 <property name="no_show_all">True</property>
                 </object>
-                <packing>
+              <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">4</property>
-                </packing>
+              </packing>
             </child>
             <child>
-                <object class="StateBox" id="boot_efi_part">
+              <object class="StateBox" id="boot_efi_part">
                 <property name="visible">True</property>
                 <property name="label">EFI ( /boot )</property>
                 <property name="no_show_all">True</property>
                 </object>
-                <packing>
+              <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">5</property>
-                </packing>
+              </packing>
             </child>
             <child>
-                <object class="StateBox" id="swap_part">
+              <object class="StateBox" id="swap_part">
                 <property name="visible">True</property>
                 <property name="label">Swap</property>
                 <property name="no_show_all">True</property>
                 </object>
-                <packing>
+              <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="pack_type">end</property>
                 <property name="position">6</property>
-                </packing>
+              </packing>
             </child>
           </object>
           <packing>
