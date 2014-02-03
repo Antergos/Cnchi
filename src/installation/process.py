@@ -121,6 +121,7 @@ class InstallationProcess(multiprocessing.Process):
         self.vmlinuz = ""
         self.dest_dir = ""
         self.bootloader_ok = self.settings.get('bootloader_ok')
+        self.vbox = False
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
