@@ -22,7 +22,7 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 import subprocess
 import os
 import logging
@@ -158,7 +158,7 @@ class Check(Gtk.Box):
 
         return False
 
-    def on_timer(self, time):
+    def on_timer(self):
         if not self.remove_timer:
             self.forward_button.set_sensitive(self.check_all())
         return not self.remove_timer
@@ -194,4 +194,5 @@ class Check(Gtk.Box):
         self.forward_button.set_sensitive(self.check_all())
 
         # set timer
-        self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
+        #self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
+        self.timeout_id = GLib.timeout_add(1000, self.on_timer)
