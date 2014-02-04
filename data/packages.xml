@@ -317,6 +317,7 @@
         <pkgname>lxinput</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>lxtask</pkgname>
+        <pkgname>lxterminal</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -332,7 +333,6 @@
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>python2-xdg</pkgname>
-        <pkgname>sakura</pkgname>
         <pkgname>scrot</pkgname>
         <pkgname>tint2</pkgname>
         <pkgname>transmission-gtk</pkgname>
