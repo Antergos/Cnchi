@@ -260,6 +260,9 @@ class InstallationProcess(multiprocessing.Process):
         # In advanced mode, mount all partitions (root and boot are already mounted)
         if self.method == 'advanced':
             for path in self.mount_devices:
+                # Ignore devices without a mount path (or they will be mounted at "self.dest_dir")
+                if path == "":
+                    continue
                 mount_part = self.mount_devices[path]
                 if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
                     try:
