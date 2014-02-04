@@ -256,6 +256,14 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
+                    # Add disk partitions
+                    partitions = pm.get_partitions(disk)
+                    partition_list = pm.order_partitions(partitions)
+                    for partition_path in partition_list:
+                        warning_txt = _("It's not recommended to install grub in a partition")
+                        line = '   {0} ({1})'.format(partition_path, warning_txt)
+                        self.grub_device_entry.append_text(line)
+                        self.grub_devices[line] = partition_path
 
         # Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
@@ -692,6 +700,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update the partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def get_disk_path_from_selection(self, model, tree_iter):
         """ This returns the disk path where the selected partition is in """
@@ -768,6 +777,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update the partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
@@ -972,6 +982,7 @@ class InstallationAdvanced(Gtk.Box):
                         self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
                 # Update partition list treeview
                 self.fill_partition_list()
+                self.fill_grub_device_entry()
 
         self.create_partition_dialog.hide()
 
@@ -1053,6 +1064,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Refresh our partition treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def on_partition_list_treeview_selection_changed(self, selection):
         """ Selection changed, call check_buttons to update them """
@@ -1384,6 +1396,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def on_partition_list_lvm_activate(self, button):
         pass
