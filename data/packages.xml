@@ -315,6 +315,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
+        <pkgname>lxmenu-data</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>lxtask</pkgname>
         <pkgname>lxterminal</pkgname>
