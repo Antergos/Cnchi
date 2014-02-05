@@ -482,9 +482,14 @@ class InstallationProcess(multiprocessing.Process):
         self.prepare_pacman()
         
         self.packages["base"] = []
+        self.packages["fs"] = []
+        self.packages["common"] = []
         self.packages["desktop"] = []
         self.packages["drivers"] = []
         self.packages["features"] = []
+        
+        # Always install base and base-devel
+        self.packages["base"].extend(["base", "base-devel"])
 
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
@@ -512,7 +517,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for child in root.iter('common_system'):
             for pkg in child.iter('pkgname'):
-                self.packages["base"].append(pkg.text)
+                self.packages["common"].append(pkg.text)
 
         if self.desktop != "nox":
             for child in root.iter('graphic_system'):
@@ -565,30 +570,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('use_ntp'):
             for child in root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
-                    self.packages["base"].append(pkg.text)
-
-        ## Install graphic cards drivers except in NoX installs
-        #if self.desktop != "nox":
-        #    self.queue_event('debug', _("Getting graphics card drivers"))
-        # 
-        #    graphics = self.get_graphics_card()
-        #
-        #    card_lib = ('ati', 'nvidia', 'intel', 'lenovo', 'virtualbox', 'vmware', 'via')
-        #
-        #    for card in card_lib:
-        #        if card in graphics:
-        #            if card is 'lenovo':
-        #                card = 'intel'
-        #            for child in root.iter(card):
-        #                for pkg in child.iter('pkgname'):
-        #                    self.packages.append(pkg.text)
-        #
-        #    if len(self.card) > 0:
-        #        logging.debug(_("Added %s graphics drivers to the installation") % graphics)
-        #    else:
-        #        # Add xorg-drivers group if cnchi can't figure out the graphic card driver.
-        #        self.packages.append('xorg-drivers')
-        #        logging.debug(_("Added generic 'xorg-drivers' package to the installation"))
+                    self.packages["common"].append(pkg.text)
 
         # Get packages needed for detected hardware
         try:
@@ -631,7 +613,7 @@ class InstallationProcess(multiprocessing.Process):
                     fsys ='vfat'
                 for child in root.iter(fsys):
                     for pkg in child.iter('pkgname'):
-                        self.packages["base"].append(pkg.text)
+                        self.packages["fs"].append(pkg.text)
 
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))
@@ -644,7 +626,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Selecting chinese fonts.'))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.packages["base"].append(pkg.text)
+                    self.packages["common"].append(pkg.text)
 
         # Add bootloader packages if needed
         self.queue_event('debug', _("Adding bootloader packages if needed"))
@@ -734,13 +716,25 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
+        # Install base packages first (base and base-devel)
+
+        print(self.packages)
+        
+        result = self.pac.do_install(self.packages["base"], self.conflicts)
+        if result == 1:
+            self.chroot_umount_special_dirs()
+            #self.queue_fatal_event(_("Can't download and install necessary packages."))
+            logging.error(_("Can't download and install necessary packages."))
+            return False
+
         for package_type in self.packages:
-            result = self.pac.do_install(self.packages[package_type], self.conflicts)
-            if result == 1:
-                self.chroot_umount_special_dirs()
-                #self.queue_fatal_event(_("Can't download and install necessary packages."))
-                logging.error(_("Can't download and install necessary packages."))
-                return False
+            if package_type != "base":
+                result = self.pac.do_install(self.packages[package_type], self.conflicts)
+                if result == 1:
+                    self.chroot_umount_special_dirs()
+                    #self.queue_fatal_event(_("Can't download and install necessary packages."))
+                    logging.error(_("Can't download and install necessary packages."))
+                    return False
 
         self.chroot_umount_special_dirs()
 
@@ -1699,7 +1693,7 @@ class InstallationProcess(multiprocessing.Process):
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             self.queue_event('debug', _("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
-            with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
+            with open(xorg_conf_xkb_path, "w+") as xorg_conf_xkb:
                 xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
                 xorg_conf_xkb.write('# manually too freely.\n')
                 xorg_conf_xkb.write('Section "InputClass"\n')
