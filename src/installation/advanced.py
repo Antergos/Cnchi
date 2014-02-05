@@ -75,11 +75,6 @@ class InstallationAdvanced(Gtk.Box):
         # hold deleted partitions that exist now
         self.to_be_deleted = []
 
-        self.uefi = False
-        if os.path.exists("/sys/firmware/efi"):
-            # self.uefi = True
-            pass
-
         # Call base class
         super().__init__()
 
@@ -129,7 +124,7 @@ class InstallationAdvanced(Gtk.Box):
             for mp in sorted(fs.COMMON_MOUNT_POINTS):
                 combo.append_text(mp)
             
-            #if self.uefi:
+            #if os.path.exists('/sys/firmware/efi'):
             #    # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
             #    combo.append_text('/boot/efi')
 

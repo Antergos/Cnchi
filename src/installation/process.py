@@ -397,7 +397,9 @@ class InstallationProcess(multiprocessing.Process):
         """ Downloads necessary packages using Aria2 """
         conf_file = "/tmp/pacman.conf"
         cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
-        download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
+        
+        for packages in self.packages:
+            download.DownloadPackages(packages, conf_file, cache_dir, self.callback_queue)
 
     def create_pacman_conf(self):
         """ Creates temporary pacman.conf file """
@@ -509,7 +511,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for child in root.iter('common_system'):
             for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
+                self.packages.append([pkg.text])
 
         if self.desktop != "nox":
             for child in root.iter('graphic_system'):
@@ -517,7 +519,7 @@ class InstallationProcess(multiprocessing.Process):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
-                    self.packages.append(pkg.text)
+                    self.packages.append([pkg.text])
 
             self.queue_event('debug', _("Adding '%s' desktop packages") % self.desktop)
 
@@ -529,7 +531,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
+                    self.packages.append([pkg.text])
             # Set KDE language pack
             if self.desktop == 'kde':
                 self.queue_event('debug', _('Add kde language package'))
@@ -546,7 +548,7 @@ class InstallationProcess(multiprocessing.Process):
                     lang_code = self.settings.get('language_code')
                     pkg = pkg + lang_code
                 self.queue_event('debug', _('Selected kde language pack: %s') % pkg)
-                self.packages.append(pkg)
+                self.packages.append([pkg])
         else:
             # Add specific NoX/Base packages
             for child in root.iter('nox'):
@@ -555,13 +557,13 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
+                    self.packages.append([pkg.text])
 
         # Add ntp package if user selected it in timezone screen
         if self.settings.get('use_ntp'):
             for child in root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+                    self.packages.append([pkg.text])
 
         ## Install graphic cards drivers except in NoX installs
         #if self.desktop != "nox":
@@ -599,7 +601,8 @@ class InstallationProcess(multiprocessing.Process):
                 # Not sure where to put this :-/
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
-                self.packages.extend(hardware_pkgs)
+                #self.packages.extend(hardware_pkgs)
+                self.packages.append(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
@@ -627,7 +630,7 @@ class InstallationProcess(multiprocessing.Process):
                     fsys ='vfat'
                 for child in root.iter(fsys):
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        self.packages.append([pkg.text])
 
         # Check for user desired features and add them to our installation
         self.queue_event('debug', _("Check for user desired features and add them to our installation"))
@@ -640,7 +643,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('debug', _('Selecting chinese fonts.'))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+                    self.packages.append([pkg.text])
 
         # Add bootloader packages if needed
         self.queue_event('debug', _("Adding bootloader packages if needed"))
@@ -651,15 +654,15 @@ class InstallationProcess(multiprocessing.Process):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
-                            self.packages.append(pkg.text)
+                            self.packages.append([pkg.text])
             elif btype == "UEFI_x86_64":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        self.packages.append([pkg.text])
             elif btype == "UEFI_i386":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        self.packages.append([pkg.text])
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -678,7 +681,7 @@ class InstallationProcess(multiprocessing.Process):
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and desktop in lib[plib]):
                             logging.debug("Selecting package: %s for feature: %s", pkg.text, feature)
-                            self.packages.append(pkg.text)
+                            self.packages.append([pkg.text])
                         else:
                             logging.debug("Skipping %s package: %s for feature: %s", plib, pkg.text, feature)
 
@@ -704,7 +707,7 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
-            self.packages.append(pkg)
+            self.packages.append([pkg])
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
@@ -728,11 +731,13 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
-        result = self.pac.do_install(self.packages, self.conflicts)
-        if result == 1:
-            self.chroot_umount_special_dirs()
-            self.queue_fatal_event(_("Can't download and install necessary packages."))
-            return False
+        for packages in self.packages:
+            result = self.pac.do_install(packages, self.conflicts)
+            if result == 1:
+                # TODO: Show error message and ask user what to do next
+                self.chroot_umount_special_dirs()
+                self.queue_fatal_event(_("Can't download and install necessary packages."))
+                return False
 
         self.chroot_umount_special_dirs()
 
