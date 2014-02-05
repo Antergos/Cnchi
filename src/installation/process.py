@@ -113,7 +113,10 @@ class InstallationProcess(multiprocessing.Process):
 
         # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
         self.auto_device = ""
+        
+        # List of lists of packages (must add packages with packages.append([ "p1", "p2"])
         self.packages = []
+        
         self.pac = None
         self.arch = ""
         self.initramfs = ""
