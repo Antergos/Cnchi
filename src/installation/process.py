@@ -720,21 +720,23 @@ class InstallationProcess(multiprocessing.Process):
 
         print(self.packages)
         
-        result = self.pac.do_install(self.packages["base"], self.conflicts)
-        if result == 1:
-            self.chroot_umount_special_dirs()
-            #self.queue_fatal_event(_("Can't download and install necessary packages."))
-            logging.error(_("Can't download and install necessary packages."))
-            return False
+        for pkg in self.packages["base"]:
+            result = self.pac.do_install_by_package(pkg, self.conflicts)
+            if result == 1:
+                self.chroot_umount_special_dirs()
+                #self.queue_fatal_event(_("Can't download and install necessary packages."))
+                logging.error(_("Can't download and install necessary packages."))
+                return False
 
         for package_type in self.packages:
             if package_type != "base":
-                result = self.pac.do_install(self.packages[package_type], self.conflicts)
-                if result == 1:
-                    self.chroot_umount_special_dirs()
-                    #self.queue_fatal_event(_("Can't download and install necessary packages."))
-                    logging.error(_("Can't download and install necessary packages."))
-                    return False
+                for pkg in self.packages[package_type]:
+                    result = self.pac.do_install_by_package(pkg, self.conflicts)
+                    if result == 1:
+                        self.chroot_umount_special_dirs()
+                        #self.queue_fatal_event(_("Can't download and install necessary packages."))
+                        logging.error(_("Can't download and install necessary packages."))
+                        return False
 
         self.chroot_umount_special_dirs()
 
