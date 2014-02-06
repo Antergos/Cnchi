@@ -207,7 +207,7 @@ class Pac(object):
                     # Check that added package is not in our conflicts list
                     # Ex: connman conflicts with netctl(openresolv), which is
                     # installed by default with base group
-                    if pkg.name not in conflicts
+                    if pkg.name not in conflicts:
                         targets.append(pkg)
             else:
                 # No, it wasn't neither a package nor a group. Show error message and leave.
