@@ -87,11 +87,10 @@ class Pac(object):
         try:
             t = self.handle.init_transaction(**options)
             
-            '''
             t = self.handle.init_transaction(
                     #cascade=False,
                     #nodeps=False,
-                    force=True,
+                    force=True)
                     #dbonly=False,
                     #downloadonly=False,
                     #nosave=False,
@@ -100,8 +99,8 @@ class Pac(object):
                     #unneeded=False,
                     #alldeps=None,
                     #allexplicit=None,
-                    needed=True)
-            '''
+                    #needed=True)
+
         except pyalpm.error:
             line = traceback.format_exc()
             logging.error(line)
