@@ -85,7 +85,7 @@ class Pac(object):
     def init_transaction(self, **options):
         """ Transaction initialization """
         try:
-            t = self.handle.init_transaction(**options)
+            #t = self.handle.init_transaction(**options)
             
             t = self.handle.init_transaction(
                     #cascade=False,
