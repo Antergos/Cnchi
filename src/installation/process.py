@@ -487,9 +487,6 @@ class InstallationProcess(multiprocessing.Process):
         self.packages["drivers"] = []
         self.packages["features"] = []
         
-        # Always install base and base-devel
-        self.packages["base"].extend(["base", "base-devel"])
-
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
         else:
@@ -715,25 +712,24 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
        
-        for pkg in self.packages["base"]:
-            logging.debug("INSTALLING %s", pkg)
-            result = self.pac.do_install_by_package(pkg, self.conflicts)
-            if result == 1:
-                self.chroot_umount_special_dirs()
-                #self.queue_fatal_event(_("Can't download and install necessary packages."))
-                logging.error(_("Can't download and install necessary packages."))
-                return False
-
+        # Always install base first
+        logging.debug("INSTALLING 'base'")
+        result = self.pac.do_install_by_package("base", self.conflicts)
+        if result == 1:
+            self.chroot_umount_special_dirs()
+            #self.queue_fatal_event(_("Can't download and install necessary packages."))
+            logging.error(_("Can't install 'base' package group."))
+            return False
+       
         for package_type in self.packages:
-            if package_type != "base":
-                for pkg in self.packages[package_type]:
-                    logging.debug("INSTALLING %s", pkg)
-                    result = self.pac.do_install_by_package(pkg, self.conflicts)
-                    if result == 1:
-                        self.chroot_umount_special_dirs()
-                        #self.queue_fatal_event(_("Can't download and install necessary packages."))
-                        logging.error(_("Can't download and install necessary packages."))
-                        return False
+            for pkg in self.packages[package_type]:
+                logging.debug("INSTALLING %s" % pkg)
+                result = self.pac.do_install_by_package(pkg, self.conflicts)
+                if result == 1:
+                    self.chroot_umount_special_dirs()
+                    #self.queue_fatal_event(_("Can't download and install necessary packages."))
+                    logging.error(_("Can't install %s necessary packages.") % package_type)
+                    #return False
 
         self.chroot_umount_special_dirs()
 
