@@ -85,8 +85,9 @@ class Pac(object):
     def init_transaction(self, **options):
         """ Transaction initialization """
         try:
-            #t = self.handle.init_transaction(**options)
+            t = self.handle.init_transaction(**options)
             
+            '''
             t = self.handle.init_transaction(
                     #cascade=False,
                     #nodeps=False,
@@ -100,12 +101,13 @@ class Pac(object):
                     #alldeps=None,
                     #allexplicit=None,
                     needed=True)
-            
+            '''
         except pyalpm.error:
             line = traceback.format_exc()
             logging.error(line)
-            return None
-        return t
+            t = None
+        finally:
+            return t
 
     '''
     def init_transaction(self, options):
@@ -185,6 +187,7 @@ class Pac(object):
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
+        logging.debug("Finalize transaction...")
         ok = self.finalize(t)
 
         return (0 if ok else 1)

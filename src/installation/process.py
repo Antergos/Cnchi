@@ -714,7 +714,7 @@ class InstallationProcess(multiprocessing.Process):
        
         # Always install base first
         logging.debug("INSTALLING 'base'")
-        result = self.pac.do_install_by_package("base", self.conflicts)
+        result = self.pac.do_install(["base"], self.conflicts)
         if result == 1:
             self.chroot_umount_special_dirs()
             #self.queue_fatal_event(_("Can't download and install necessary packages."))
@@ -726,7 +726,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug("INSTALLING %s" % pkg)
                 result = self.pac.do_install_by_package(pkg, self.conflicts)
                 if result == 1:
-                    self.chroot_umount_special_dirs()
+                    #self.chroot_umount_special_dirs()
                     #self.queue_fatal_event(_("Can't download and install necessary packages."))
                     logging.error(_("Can't install %s necessary packages.") % package_type)
                     #return False
