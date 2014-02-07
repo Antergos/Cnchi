@@ -409,21 +409,20 @@ class InstallationProcess(multiprocessing.Process):
 
         with open("/tmp/pacman.conf", "w") as tmp_file:
             tmp_file.write("[options]\n")
-            tmp_file.write("Architecture = auto\n")
-            tmp_file.write("SigLevel = PackageOptional\n")
-
             tmp_file.write("RootDir = %s\n" % self.dest_dir)
             tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
-
             if len(cache_dir) > 0:
                 tmp_file.write("CacheDir = %s\n" % cache_dir)
             else:
                 tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
 
-            tmp_file.write("LogFile = /tmp/pacman.log\n\n")
-
-            tmp_file.write("# Repositories\n\n")
-
+            tmp_file.write("LogFile = /tmp/pacman.log\n")
+            tmp_file.write("GPGDir = %s/etc/pacman.d/gnupg/\n" % self.dest_dir)
+            tmp_file.write("Architecture = auto\n")
+            tmp_file.write("CheckSpace\n")
+            tmp_file.write("SigLevel = PackageOptional\n\n")
+            
+            tmp_file.write("# Repositories\n")
             tmp_file.write("[core]\n")
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
@@ -715,12 +714,9 @@ class InstallationProcess(multiprocessing.Process):
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
-
-        # Install base packages first (base and base-devel)
-
-        print(self.packages)
-        
+       
         for pkg in self.packages["base"]:
+            logging.debug("INSTALLING %s", pkg)
             result = self.pac.do_install_by_package(pkg, self.conflicts)
             if result == 1:
                 self.chroot_umount_special_dirs()
@@ -731,6 +727,7 @@ class InstallationProcess(multiprocessing.Process):
         for package_type in self.packages:
             if package_type != "base":
                 for pkg in self.packages[package_type]:
+                    logging.debug("INSTALLING %s", pkg)
                     result = self.pac.do_install_by_package(pkg, self.conflicts)
                     if result == 1:
                         self.chroot_umount_special_dirs()
@@ -1695,7 +1692,7 @@ class InstallationProcess(multiprocessing.Process):
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             self.queue_event('debug', _("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
-            with open(xorg_conf_xkb_path, "w+") as xorg_conf_xkb:
+            with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
                 xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
                 xorg_conf_xkb.write('# manually too freely.\n')
                 xorg_conf_xkb.write('Section "InputClass"\n')
