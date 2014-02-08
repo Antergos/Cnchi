@@ -478,12 +478,11 @@ class InstallationProcess(multiprocessing.Process):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        self.packages["base"] = []
+        self.packages["boot"] = []
         self.packages["fs"] = []
         self.packages["common"] = []
         self.packages["desktop"] = []
         self.packages["drivers"] = []
-        self.packages["features"] = []
         
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
@@ -631,15 +630,15 @@ class InstallationProcess(multiprocessing.Process):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
-                            self.packages["base"].append(pkg.text)
+                            self.packages["boot"].append(pkg.text)
             elif btype == "UEFI_x86_64":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages["base"].append(pkg.text)
+                        self.packages["boot"].append(pkg.text)
             elif btype == "UEFI_i386":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages["base"].append(pkg.text)
+                        self.packages["boot"].append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -647,11 +646,10 @@ class InstallationProcess(multiprocessing.Process):
         lib = desktops.LIBS
         features = desktops.FEATURES
         
-        self.packages["features"] = []
-
         for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
+                self.packages[feature] = []
                 self.queue_event('debug', 'Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
@@ -660,7 +658,7 @@ class InstallationProcess(multiprocessing.Process):
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and desktop in lib[plib]):
                             logging.debug("Selecting package: %s for feature: %s", pkg.text, feature)
-                            self.packages["features"].append(pkg.text)
+                            self.packages[feature].append(pkg.text)
                         else:
                             logging.debug("Skipping %s package: %s for feature: %s", plib, pkg.text, feature)
 
@@ -686,7 +684,7 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
-            self.packages["features"].append(pkg)
+            self.packages["office"].append(pkg)
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
@@ -710,18 +708,19 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
+        self.queue_event('progress', 'hide_global')
+        
+        '''
         total_global = 0
         for package_type in self.packages:
             total_global += len(self.packages[package_type])
-
         total_global += 110       
-       
         step_global = 1 / total_global
         global_percent = 0
         self.queue_event('global_percent', global_percent)
+        '''
        
-        # Always install base first
-        logging.debug("INSTALLING 'base'")
+        # Always install 'base' group first
         try:
             alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as err:
@@ -733,9 +732,12 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(_("Can't install 'base' package group. Cnchi can't continue."))
             return False
 
+        '''
         global_percent += (step_global * 110)
         self.queue_event('global_percent', global_percent)
-       
+        '''
+
+        '''       
         for package_type in self.packages:
             for pkg in self.packages[package_type]:
                 try:
@@ -748,8 +750,21 @@ class InstallationProcess(multiprocessing.Process):
                     logging.error(_("Can't install '%s' package. Cnchi will continue but this package won't be installed.") % pkg)
                 global_percent += step_global
                 self.queue_event('global_percent', global_percent)
+        '''
+        for package_type in self.packages:
+            logging.debug(_("Installing packages from '%s' group...") % package_type)
+            try:
+                alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+            except Exception as err:
+                logging.error(err)
+                raise InstallError("Can't initialize pyalpm: %s" % err)        
+            result = alpm.do_install(self.packages[package_type], self.conflicts)
+            if result == 1:
+                logging.error(_("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type)
+            #global_percent += step_global
+            #self.queue_event('global_percent', global_percent)
 
-        self.queue_event('global_percent', 1)
+        #self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
 
     def chroot_mount_special_dirs(self):
