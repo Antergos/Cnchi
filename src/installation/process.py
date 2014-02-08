@@ -445,14 +445,6 @@ class InstallationProcess(multiprocessing.Process):
             tmp_file.write("SigLevel = PackageRequired\n")
             tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
 
-        # Init pyalpm
-
-        try:
-            self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception as err:
-            logging.error(err)
-            raise InstallError("Can't initialize pyalpm: %s" % err)
-
     def prepare_pacman_keychain(self):
         """ Add gnupg pacman files to installed system """
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
@@ -472,8 +464,14 @@ class InstallationProcess(multiprocessing.Process):
                 os.makedirs(mydir)
 
         self.prepare_pacman_keychain()
+        
+        try:
+            alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except Exception as err:
+            logging.error(err)
+            raise InstallError("Can't initialize pyalpm: %s" % err)
 
-        self.pac.do_refresh()
+        alpm.do_refresh()
 
     def select_packages(self):
         """ Prepare pacman and get package list from Internet """
@@ -714,7 +712,12 @@ class InstallationProcess(multiprocessing.Process):
        
         # Always install base first
         logging.debug("INSTALLING 'base'")
-        result = self.pac.do_install(["base"], self.conflicts)
+        try:
+            alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except Exception as err:
+            logging.error(err)
+            raise InstallError("Can't initialize pyalpm: %s" % err)        
+        result = alpm.do_install(["base"], self.conflicts)
         if result == 1:
             self.chroot_umount_special_dirs()
             #self.queue_fatal_event(_("Can't download and install necessary packages."))
@@ -724,7 +727,12 @@ class InstallationProcess(multiprocessing.Process):
         for package_type in self.packages:
             for pkg in self.packages[package_type]:
                 logging.debug("INSTALLING %s" % pkg)
-                result = self.pac.do_install_by_package(pkg, self.conflicts)
+                try:
+                    alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+                except Exception as err:
+                    logging.error(err)
+                    raise InstallError("Can't initialize pyalpm: %s" % err)        
+                result = alpm.do_install_by_package(pkg, self.conflicts)
                 if result == 1:
                     #self.chroot_umount_special_dirs()
                     #self.queue_fatal_event(_("Can't download and install necessary packages."))
