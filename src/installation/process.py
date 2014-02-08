@@ -709,6 +709,16 @@ class InstallationProcess(multiprocessing.Process):
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
+
+        total_global = 0
+        for package_type in self.packages:
+            total_global += len(self.packages[package_type])
+
+        total_global += 110       
+       
+        step_global = 1 / total_global
+        global_percent = 0
+        self.queue_event('global_percent', global_percent)
        
         # Always install base first
         logging.debug("INSTALLING 'base'")
@@ -720,13 +730,14 @@ class InstallationProcess(multiprocessing.Process):
         result = alpm.do_install(["base"], self.conflicts)
         if result == 1:
             self.chroot_umount_special_dirs()
-            #self.queue_fatal_event(_("Can't download and install necessary packages."))
-            logging.error(_("Can't install 'base' package group."))
+            self.queue_fatal_event(_("Can't install 'base' package group. Cnchi can't continue."))
             return False
+
+        global_percent += (step_global * 110)
+        self.queue_event('global_percent', global_percent)
        
         for package_type in self.packages:
             for pkg in self.packages[package_type]:
-                logging.debug("INSTALLING %s" % pkg)
                 try:
                     alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
                 except Exception as err:
@@ -734,11 +745,11 @@ class InstallationProcess(multiprocessing.Process):
                     raise InstallError("Can't initialize pyalpm: %s" % err)        
                 result = alpm.do_install_by_package(pkg, self.conflicts)
                 if result == 1:
-                    #self.chroot_umount_special_dirs()
-                    #self.queue_fatal_event(_("Can't download and install necessary packages."))
-                    logging.error(_("Can't install %s necessary packages.") % package_type)
-                    #return False
+                    logging.error(_("Can't install '%s' package. Cnchi will continue but this package won't be installed.") % pkg)
+                global_percent += step_global
+                self.queue_event('global_percent', global_percent)
 
+        self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
 
     def chroot_mount_special_dirs(self):

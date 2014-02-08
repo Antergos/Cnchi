@@ -90,7 +90,7 @@ class Pac(object):
             t = self.handle.init_transaction(
                     #cascade=False,
                     #nodeps=False,
-                    force=True)
+                    force=True,
                     #dbonly=False,
                     #downloadonly=False,
                     #nosave=False,
@@ -99,7 +99,7 @@ class Pac(object):
                     #unneeded=False,
                     #alldeps=None,
                     #allexplicit=None,
-                    #needed=True)
+                    needed=True)
 
         except pyalpm.error:
             line = traceback.format_exc()
@@ -357,12 +357,13 @@ class Pac(object):
         """ Calculates progress and enqueues events with the information """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
-            self.queue_event('global_percent', i / n)
+            #self.queue_event('global_percent', i / n)
         else:
             target = _("Checking and loading packages...")
             if _percent == 0:
                 # Hide global bar (left by cb_dl)
-                self.queue_event('progress', 'hide_global')
+                #self.queue_event('progress', 'hide_global')
+                pass
 
         percent = _percent / 100
         self.queue_event('target', target)
@@ -389,7 +390,7 @@ class Pac(object):
                     filename = filename[:-len(ext)]
                 text = _("Downloading %s") % filename
                 global_percent = self.total_downloaded / self.total_download_size
-                self.queue_event('global_percent', global_percent)
+                #self.queue_event('global_percent', global_percent)
                 self.total_downloaded += total
 
             self.queue_event('action', text)
