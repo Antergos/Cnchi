@@ -575,7 +575,6 @@ class InstallationProcess(multiprocessing.Process):
                 for hardware_pkg in hardware_pkgs:
                     txt += hardware_pkg + " "
                 logging.debug(_("Hardware module added these packages : %s") % txt)
-                # Not sure where to put this :-/
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
                 self.packages["drivers"].extend(hardware_pkgs)
@@ -1686,6 +1685,8 @@ class InstallationProcess(multiprocessing.Process):
         default_groups = 'lp,video,network,storage,wheel,audio'
         
         if self.vbox:
+            # Why there is no vboxusers group?
+            self.chroot(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers'
 
         if self.settings.get('require_password') is False:
