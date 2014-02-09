@@ -86,20 +86,7 @@ class Pac(object):
         """ Transaction initialization """
         try:
             #t = self.handle.init_transaction(**options)
-            
-            t = self.handle.init_transaction(
-                    #cascade=False,
-                    #nodeps=False,
-                    force=True)
-                    #dbonly=False,
-                    #downloadonly=False,
-                    #nosave=False,
-                    #recurse=0,
-                    #recurseall=0,
-                    #unneeded=False,
-                    #alldeps=None,
-                    #allexplicit=None,
-                    #needed=True)
+            t = self.handle.init_transaction(force=True)
 
         except pyalpm.error:
             line = traceback.format_exc()
