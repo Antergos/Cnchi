@@ -716,7 +716,7 @@ class InstallationProcess(multiprocessing.Process):
         
     def number_of_packages_by_type(self, alpm, package_type):
         total = 0
-        for pkg_name in self.packages[package_type]
+        for pkg_name in self.packages[package_type]:
             group_pkgs = alpm.get_group_pkgs(pkg_name)
             if group_pkgs == None:
                 total += 1
