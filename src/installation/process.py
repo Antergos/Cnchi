@@ -711,7 +711,7 @@ class InstallationProcess(multiprocessing.Process):
         
         total = 0        
         for package_type in self.packages:
-            total += number_of_packages_by_type(alpm, package_type)
+            total += self.number_of_packages_by_type(alpm, package_type)
         return total
         
     def number_of_packages_by_type(self, alpm, package_type):
