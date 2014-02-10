@@ -472,6 +472,8 @@ class InstallationProcess(multiprocessing.Process):
             raise InstallError("Can't initialize pyalpm: %s" % err)
 
         alpm.do_refresh()
+        
+        del alpm
 
     def select_packages(self):
         """ Prepare pacman and get package list from Internet """
@@ -712,6 +714,9 @@ class InstallationProcess(multiprocessing.Process):
         total = 0        
         for package_type in self.packages:
             total += self.number_of_packages_by_type(alpm, package_type)
+
+        del alpm
+
         return total
         
     def number_of_packages_by_type(self, alpm, package_type):
@@ -750,6 +755,8 @@ class InstallationProcess(multiprocessing.Process):
         group_pkgs = alpm.get_group_pkgs("base")
         global_percent += step_global * len(group_pkgs)
         self.queue_event('global_percent', global_percent)
+        
+        del alpm
 
         for package_type in self.packages:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
@@ -763,6 +770,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(_("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type)
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
             self.queue_event('global_percent', global_percent)
+            del alpm
 
         #self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
