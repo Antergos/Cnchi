@@ -1238,10 +1238,10 @@ class InstallationProcess(multiprocessing.Process):
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
+        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default/*"
         theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/")
         try:
-            shutil.move(theme_dir_src, theme_dir_dst)
+            shutil.copytree(theme_dir_src, theme_dir_dst)
         except FileNotFoundError:
             logging.warning(_("Grub2 theme files not found"))
         except FileExistsError:
