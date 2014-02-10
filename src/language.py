@@ -35,7 +35,7 @@ LOCALE_DIR = "/usr/share/locale"
 import config
 import canonical.i18n as i18n
 
-_next_page = "location"
+_next_page = "check"
 _prev_page = "welcome"
 
 class Language(Gtk.Box):

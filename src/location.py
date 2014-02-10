@@ -29,8 +29,8 @@ import logging
 import show_message as show
 import xml.etree.ElementTree as etree
 
-_next_page = "check"
-_prev_page = "language"
+_next_page = "timezone"
+_prev_page = "check"
 
 class Location(Gtk.Box):
     def __init__(self, params):
