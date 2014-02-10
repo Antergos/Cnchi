@@ -178,56 +178,6 @@ class Pac(object):
 
         return (0 if ok else 1)
 
-    def do_install_by_package(self, pkg_name, conflicts=[]):
-        """ Install a package like pacman -S """
-
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
-
-        targets = []
-        ok, pkg = self.find_sync_package(pkg_name, repos)
-        if ok:
-            targets.append(pkg)
-        else:
-            # Can't find this one, check if it's a group
-            group_pkgs = self.get_group_pkgs(pkg_name)
-            if group_pkgs != None:
-                # It's a group
-                for pkg in group_pkgs:
-                    # Check that added package is not in our conflicts list
-                    # Ex: connman conflicts with netctl(openresolv), which is
-                    # installed by default with base group
-                    if pkg.name not in conflicts:
-                        targets.append(pkg)
-            else:
-                # No, it wasn't neither a package nor a group. Show error message and leave.
-                logging.error(pkg)
-                return 1
-
-        if len(targets) == 0:
-            logging.error("No targets found")
-            return 1
-
-        for pkg in targets:
-            t = self.init_transaction()
-
-            if t is None:
-                return 1
-
-            pkg_names = []
-
-            # Avoid duplicates
-            if pkg.name not in pkg_names:
-                logging.debug("Adding %s to transaction" % pkg.name)
-                t.add_pkg(pkg)
-                pkg_names.append(pkg.name)
-
-            ok = self.finalize(t)
-            
-            if not ok:
-                return 1
-
-        return 0
-
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
         for db in syncdbs.values():
