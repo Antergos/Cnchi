@@ -706,12 +706,13 @@ class InstallationProcess(multiprocessing.Process):
         return out.decode().lower()
 
     def number_of_packages(self):
+        total = 0
         try:
             alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as err:
             logging.error(err)
+            return total
         
-        total = 0        
         for package_type in self.packages:
             total += self.number_of_packages_by_type(alpm, package_type)
 
@@ -733,12 +734,14 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
-        self.queue_event('progress_bars', 'hide_global')
+        #self.queue_event('progress_bars', 'hide_global')
         
         total_global = self.number_of_packages()
+        logging.debug(_("Cnchi will install %d packages.") % total_global)
         step_global = 1 / total_global
         global_percent = 0
-        self.queue_event('global_percent', global_percent)      
+        self.queue_event('global_percent', 0)
+        self.queue_event('local_percent', 0)
        
         # Always install 'base' group first
         try:
@@ -754,15 +757,12 @@ class InstallationProcess(multiprocessing.Process):
 
         group_pkgs = alpm.get_group_pkgs("base")
         global_percent += step_global * len(group_pkgs)
+        logging.debug("global_percent : %f", global_percent)
         self.queue_event('global_percent', global_percent)
+        self.queue_event('local_percent', 0)
         
         del alpm
 
-        package_types = []
-        for package_type in self.packages:
-            package_types.append(package_type)
-
-        #while len(package_types) > 0:
         for package_type in self.packages:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
             try:
@@ -776,11 +776,16 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(txt)
                 show
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
+            logging.debug("global_percent : %f", global_percent)
             self.queue_event('global_percent', global_percent)
+            self.queue_event('local_percent', 0)
             del alpm
 
         #self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
+        
+        # All downloading and installing has been done, so we hide progress bars
+        self.queue_event('progress_bars', 'hide_all')
         
     def chroot_mount_special_dirs(self):
         """ Mount special directories for our chroot """
@@ -1568,10 +1573,6 @@ class InstallationProcess(multiprocessing.Process):
             Populate pacman keyring
             Setup systemd services
             ... and more """
-
-        # All downloading and installing has been done, so we hide progress bars
-        # (they are 100% both so it makes no sense to still show them)
-        self.queue_event('progress_bars', 'hide_all')
 
         self.queue_event('info', _("Configuring your new system"))
 
