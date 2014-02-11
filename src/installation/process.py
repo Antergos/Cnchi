@@ -1360,6 +1360,13 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p %s' % (locale, self.kernel_pkg)])
         self.chroot_umount_special_dirs()
 
+    def generate_pacmanconf(self):
+        with open("%s/etc/pacman.conf" % self.dest_dir, "a") as pacmanconf:
+            pacmanconf.write("\n\n")
+            pacmanconf.write("[antergos]\n")
+            pacmanconf.write("SigLevel = PackageRequired\n")
+            pacmanconf.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+
     def uncomment_locale_gen(self, locale):
         """ Uncomment selected locale in /etc/locale.gen """
         #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
@@ -1614,18 +1621,10 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-        # Copy important /etc config files to target system
-        files = ["/etc/pacman.conf", "/etc/yaourtrc"]
+        # Generate /etc/pacman.conf
+        self.generate_pacmanconf()
 
-        for path in files:
-            try:
-                shutil.copy2(path, os.path.join(self.dest_dir, 'etc/'))
-            except FileNotFoundError:
-                logging.error(_("Can't copy %s file, file not found.") % path)
-            except FileExistsError:
-                logging.error(_("Can't copy %s file, file already exists.") % path)
-
-        logging.debug(_('Important configuration files copied.'))
+        logging.debug(_('Generated /etc/pacman.conf'))
 
         desktop = self.settings.get('desktop')
 
