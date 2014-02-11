@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is supposed to be in the antergos server -->
+<!-- Preliminary xml file for Cnchi. This file is supposed to be in antergos server -->
 <!-- Please add new packages alphabetically -->
 <packages>
     <!-- common to all desktops and to noX/Base -->
@@ -14,7 +14,6 @@
         <pkgname>dnsutils</pkgname>
         <pkgname>dosfstools</pkgname>
         <pkgname>haveged</pkgname>
-        <pkgname>gzip</pkgname>
         <pkgname>ipw2100-fw</pkgname>
         <pkgname>ipw2200-fw</pkgname>
         <pkgname>modemmanager</pkgname>
@@ -23,61 +22,34 @@
         <pkgname>openssh</pkgname>
         <pkgname>pkgfile</pkgname>
         <pkgname>sudo</pkgname>
-        <pkgname>tar</pkgname>
         <pkgname>transmission-cli</pkgname>
         <pkgname>unzip</pkgname>
         <pkgname>unrar</pkgname>
         <pkgname>usb_modeswitch</pkgname>
-        <pkgname>wget</pkgname>
         <pkgname>whois</pkgname>
         <pkgname>wireless_tools</pkgname>
         <pkgname>wpa_actiond</pkgname>
         <pkgname>zd1211-firmware</pkgname>
     </common_system>
-
+    
     <!-- Common to all graphic desktops -->
     <!-- It's best to put here apps that are qt/gtk agnostic -->
     <graphic_system>
-        <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
+        <pkgname>faenza-hotot-icon</pkgname>
+        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>libreoffice-installer</pkgname>
-        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname>lightdm-webkit-greeter</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>pacmanxg4</pkgname>
-        <pkgname>ttf-bitstream-vera</pkgname>
-        <pkgname>ttf-dejavu</pkgname>
-        <pkgname>ttf-liberation</pkgname>
-        <pkgname>upower</pkgname>
         <pkgname>xf86-input-synaptics</pkgname>
-        <pkgname>xf86-video-fbdev</pkgname>
-        <pkgname>xf86-video-vesa</pkgname>
-        <pkgname>xorg-apps</pkgname>
-        <pkgname>xorg-fonts</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
+        <pkgname>ttf-liberation</pkgname>
     </graphic_system>
 
     <!-- Specific to noX/Base installation -->
     <nox>
         <pkgname nm='true' name='netctl'>netctl</pkgname>
-        <!-- archivers -->
-        <pkgname>arj</pkgname>
-        <pkgname>cabextract</pkgname>
-        <pkgname>bzip2</pkgname>
-        <pkgname>fastjar</pkgname>
-        <pkgname>lha</pkgname>
-        <pkgname>lz4</pkgname>
-        <pkgname>lzo2</pkgname>
-        <pkgname>lzop</pkgname>
-        <pkgname>rpmextract</pkgname>
-        <pkgname>sharutils</pkgname>
-        <pkgname>unace</pkgname>
-        <pkgname>uudeview</pkgname>
-        <pkgname>unrar</pkgname>
-        <pkgname>xz</pkgname>
-        <pkgname>zip</pkgname>
     </nox>
 
     <gnome_desktop>
@@ -85,9 +57,8 @@
         <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
+        <pkgname dm='true' name='gdm'>gdm</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-control-center</pkgname>
@@ -104,10 +75,13 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>gstreamer0.10-bad-plugins</pkgname>
+        <pkgname>gstreamer0.10-base-plugins</pkgname>
+        <pkgname>gstreamer0.10-ffmpeg</pkgname>
+        <pkgname>gstreamer0.10-good-plugins</pkgname>
+        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -116,8 +90,13 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>shotwell</pkgname>
-        <pkgname>telepathy</pkgname>  <!-- Group -->
+        <pkgname>telepathy-gabble</pkgname>
+        <pkgname>telepathy-salut</pkgname>
+        <pkgname>telepathy-rakia</pkgname>
+        <pkgname>telepathy-haze</pkgname>
         <pkgname>transmission-gtk</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
@@ -133,8 +112,6 @@
         <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
@@ -149,21 +126,29 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>gstreamer0.10-bad-plugins</pkgname>
+        <pkgname>gstreamer0.10-base-plugins</pkgname>
+        <pkgname>gstreamer0.10-ffmpeg</pkgname>
+        <pkgname>gstreamer0.10-good-plugins</pkgname>
+        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-smb</pkgname>
+        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
+        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
         <pkgname>nemo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>shotwell</pkgname>
-        <pkgname>telepathy</pkgname> <!-- Group -->
+        <pkgname>telepathy-gabble</pkgname>
+        <pkgname>telepathy-salut</pkgname>
+        <pkgname>telepathy-rakia</pkgname>
+        <pkgname>telepathy-haze</pkgname>
         <pkgname>transmission-gtk</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
@@ -174,21 +159,23 @@
         <pkgname>cdrkit</pkgname>
         <pkgname>dvdauthor</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gstreamer0.10-bad-plugins</pkgname>
+        <pkgname>gstreamer0.10-base-plugins</pkgname>
+        <pkgname>gstreamer0.10-ffmpeg</pkgname>
+        <pkgname>gstreamer0.10-good-plugins</pkgname>
+        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>hotot-gtk3</pkgname>
+        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -223,6 +210,7 @@
         <pkgname>kdesdk-kate</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kovpn</pkgname>
+        <pkgname dm='true' name='lxdm'>lxdm</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>openbox-themes</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
@@ -232,73 +220,12 @@
         <pkgname>vlc</pkgname>
     </razor_desktop>
 
-    <mate_desktop>
-        <pkgname>cdrkit</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
-        <pkgname>gksu</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-smb</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
-        <pkgname>mate</pkgname> <!-- Group -->
-        <pkgname>mate-applets</pkgname>
-        <pkgname>mate-calc</pkgname>
-        <pkgname>mate-character-map</pkgname>
-        <pkgname>mate-document-viewer</pkgname>
-        <pkgname>mate-file-archiver</pkgname>
-        <pkgname>mate-file-manager-open-terminal</pkgname>
-        <pkgname>mate-image-viewer</pkgname>
-        <pkgname>mate-media-pulseaudio</pkgname>
-        <pkgname>mate-menu-editor</pkgname>
-        <pkgname>mate-power-manager</pkgname>
-        <pkgname>mate-screensaver</pkgname>
-        <pkgname>mate-system-monitor</pkgname>
-        <pkgname>mate-terminal</pkgname>
-        <pkgname>mate-text-editor</pkgname>
-        <pkgname>mate-utils</pkgname>
-        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-        <pkgname>networkmanager-openvpn</pkgname>
-        <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>pidgin</pkgname>
-        <pkgname>shotwell</pkgname>
-        <pkgname>transmission-gtk</pkgname>
-        <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
-        <pkgname>xnoise</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
-    </mate_desktop>
-
-    <enlightenment_desktop>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
-        <pkgname>gksu</pkgname>
-        <pkgname>gvfs-smb</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
-        <pkgname>enlightenment</pkgname>        
-        <pkgname>network-manager-applet</pkgname>
-        <pkgname>networkmanager-openvpn</pkgname>
-        <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>xdg-user-dirs</pkgname>
-        <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
-    </enlightenment_desktop>
-
     <openbox_desktop>
         <pkgname>antergos-slim-theme</pkgname>
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>dvdauthor</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
@@ -309,12 +236,15 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>
-        <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>gstreamer0.10-bad-plugins</pkgname>
+        <pkgname>gstreamer0.10-base-plugins</pkgname>
+        <pkgname>gstreamer0.10-ffmpeg</pkgname>
+        <pkgname>gstreamer0.10-good-plugins</pkgname>
+        <pkgname>gstreamer0.10-ugly-plugins</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <!-- <pkgname>gvfs-atp</pkgname> -->
+        <!--<pkgname>gvfs-atp</pkgname>-->
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-obexftp</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxpolkit</pkgname>
@@ -325,7 +255,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>obconf</pkgname>
-        <!-- <pkgname>obkey</pkgname> -->
+        <!--<pkgname>obkey</pkgname>-->
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
         <pkgname>openbox</pkgname>
@@ -334,10 +264,14 @@
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>python2-xdg</pkgname>
+        <pkgname>python2-xdg</pkgname>
         <pkgname>sakura</pkgname>
         <pkgname>scrot</pkgname>
+        <pkgname dm='true' name='slim'>slim</pkgname>
         <pkgname>tint2</pkgname>
         <pkgname>transmission-gtk</pkgname>
+        <pkgname>ttf-droid</pkgname>
+        <pkgname>ttf-ubuntu-font-family</pkgname>
         <pkgname>udiskie</pkgname>
         <pkgname>volumeicon</pkgname>
         <pkgname>xfburn</pkgname>
@@ -348,55 +282,50 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </openbox_desktop>
-
+    
     <kde_desktop>
+        <pkgname>kde-meta-kdebase</pkgname>
+        <pkgname>kde-meta-kdenetwork</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+        <pkgname>apper</pkgname>
         <pkgname>cdrdao</pkgname>
-        <pkgname>clementine</pkgname>
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
+        <pkgname>emovix</pkgname>
         <pkgname>grub2-editor</pkgname>
-        <pkgname>hotot-qt</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
+        <pkgname>kde-meta-kdeartwork</pkgname>
+        <pkgname>kde-telepathy-meta</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
-        <pkgname>kdeartwork-desktopthemes</pkgname>
-        <pkgname>kdeartwork-iconthemes</pkgname>
-        <pkgname>kdeartwork-kscreensaver</pkgname>
-        <pkgname>kdeartwork-styles</pkgname>
-        <pkgname>kdebase-dolphin</pkgname>
-        <pkgname>kdebase-kdepasswd</pkgname>
-        <pkgname>kdebase-kdialog</pkgname>
-        <pkgname>kdebase-kfind</pkgname>
-        <pkgname>kdebase-konsole</pkgname>
-        <pkgname>kdebase-plasma</pkgname>
         <pkgname>kdegraphics-gwenview</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
         <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
         <pkgname>kdemultimedia-kmix</pkgname>
-        <pkgname>kdenetwork-filesharing</pkgname>
-        <pkgname>kdenetwork-kopete</pkgname>
-        <pkgname>kde-servicemenus-rootactions</pkgname>
+        <pkgname>kdepim-kmail</pkgname>
+        <pkgname>kdepim-kontact</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
-        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+        <pkgname>kdeplasma-addons-applets-notes</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
         <pkgname>kdesdk-kate</pkgname>
-        <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
-        <pkgname>kdeutils-kcalc</pkgname>
+        <pkgname>kdeutils-kgpg</pkgname>
         <pkgname>kdeutils-kwallet</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
-        <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
+        <pkgname>lightdm-kde-greeter</pkgname>
+        <pkgname>lightdm-webkit-greeter</pkgname>
+        <pkgname>oxyfaenza-git</pkgname>
         <pkgname>oxygen-gtk2</pkgname>
         <pkgname>oxygen-gtk3</pkgname>
-        <pkgname>qtcurve-kde4</pkgname>
-        <pkgname>qtcurve-qt4</pkgname>
-        <pkgname>qtcurve-qt5</pkgname>
-        <pkgname>qtcurve-gtk2</pkgname>
+        <pkgname>qt5-webkit</pkgname>
         <pkgname>transmission-qt</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>webkitgtk</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
@@ -406,34 +335,33 @@
     <user_features>
         <aur>
             <pkgname>yaourt</pkgname>
-            <pkgname>cmake</pkgname>
-            <pkgname>git</pkgname>
-            <pkgname>bzr</pkgname>
         </aur>
         <bluetooth>
             <pkgname lib='qt'>bluedevil</pkgname>
+            <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>
             <pkgname lib='gtk'>gnome-bluetooth</pkgname>
         </bluetooth>
         <cups>
             <pkgname>cups</pkgname>
-            <pkgname>cups-pk-helper</pkgname>
             <pkgname>foomatic-db-nonfree</pkgname>
             <pkgname>gsfonts</pkgname>
             <pkgname>gutenprint</pkgname>
             <pkgname>hplip</pkgname>
             <pkgname lib='qt'>kdeutils-print-manager</pkgname>
             <pkgname lib='gtk'>system-config-printer</pkgname>
-            <pkgname>splix</pkgname>
+            <pkgname>splix</pkgname>  
         </cups>
         <gnome_extra>
             <pkgname>gnome-extra</pkgname>
         </gnome_extra>
         <fonts>
-            <pkgname>ttf-droid</pkgname>
+            <pkgname>ttf-dejavu</pkgname>
+            <pkgname>ttf-bitstream-vera</pkgname>
             <pkgname>ttf-freefont</pkgname>
+            <pkgname>ttf-arphic-uming</pkgname>
+            <pkgname>ttf-baekmuk</pkgname>
             <pkgname>ttf-google-fonts</pkgname>
-            <pkgname>ttf-ubuntu-font-family</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
@@ -441,7 +369,7 @@
             <pkgname lib='gtk'>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
             <pkgname lib='qt'>libreoffice-kde4</pkgname>
-            <pkgname>libreoffice-writer</pkgname>
+            <pkgname>libreoffice-writer</pkgname>   
         </office>
         <!-- visual effects for openbox -->
         <visual>
@@ -454,11 +382,11 @@
             <pkgname lib='qt'>kcm-ufw</pkgname>
             <pkgname>ufw</pkgname>
         </firewall>
-        <!-- Third party software. Some of it is proprietary -->
+        <!-- Third party software. Some of it is propietary -->
         <third_party>
             <pkgname>flashplugin</pkgname>
             <pkgname>libdvdcss</pkgname>
-        </third_party>
+        </third_party>    
     </user_features>
 
     <graphics>
@@ -483,8 +411,6 @@
         </virtualbox>
         <vmware>
             <pkgname>xf86-video-vmware</pkgname>
-            <pkgname>open-vm-tools</pkgname>
-            <pkgname>open-vm-tools-dkms</pkgname>
         </vmware>
         <uvesafb>
             <pkgname>v86d</pkgname>
@@ -504,15 +430,9 @@
         <ext>
             <pkgname>e2fsprogs</pkgname>
         </ext>
-        <f2fs>
-            <pkgname>f2fs-tools</pkgname>
-        </f2fs>
         <jfs>
             <pkgname>jfsutils</pkgname>
         </jfs>
-        <nfs>
-            <pkgname>nfs-utils</pkgname>
-        </nfs>
         <nilfs2>
             <pkgname>nilfs-utils</pkgname>
         </nilfs2>
@@ -539,15 +459,37 @@
         </chinese>
     </special_fonts>
 
-    <ntp>
-        <pkgname>ntp</pkgname>
-    </ntp>
+    <clock_sync>
+        <ntp>
+            <pkgname>ntp</pkgname>
+        </ntp>
+    </clock_sync>
 
-    <grub>
-        <pkgname>grub</pkgname>
-        <pkgname>os-prober</pkgname>
-        <pkgname uefi="true">efibootmgr</pkgname>
-        <pkgname uefi="true">dosfstools</pkgname>
-    </grub>
-
+    <bootloaders>
+        <efistub>
+            <pkgname>efilinux-efi</pkgname>
+        </efistub>
+        <grub>
+            <pkgname>grub</pkgname>
+            <pkgname>os-prober</pkgname>
+        </grub>
+        <grub-efi uefiarch="x86_64">
+            <pkgname>grub</pkgname>
+            <pkgname>os-prober</pkgname>
+        </grub-efi>
+        <grub-efi uefiarch="i386">
+            <pkgname>grub</pkgname>
+            <pkgname>os-prober</pkgname>
+        </grub-efi>
+        <gummiboot>
+            <pkgname>gummiboot-efi</pkgname>
+        </gummiboot>
+        <refind>
+            <pkgname>refind-efi</pkgname>
+        </refind>
+        <uefi_x86_64>
+            <pkgname>dosfstools</pkgname>
+            <pkgname>efibootmgr</pkgname>
+        </uefi_x86_64>
+    </bootloaders>
 </packages>

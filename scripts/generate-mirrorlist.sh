@@ -28,5 +28,5 @@ function generate_new_mirrorlist(){
     
 generate_new_mirrorlist
 
-cp ${MIRRORLIST} ${ORIG_MIRRORLIST}
+#cp ${MIRRORLIST} ${ORIG_MIRRORLIST}
 
