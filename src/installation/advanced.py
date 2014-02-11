@@ -255,10 +255,11 @@ class InstallationAdvanced(Gtk.Box):
                     partitions = pm.get_partitions(disk)
                     partition_list = pm.order_partitions(partitions)
                     for partition_path in partition_list:
-                        warning_txt = _("It's not recommended to install grub in a partition")
-                        line = '   {0} ({1})'.format(partition_path, warning_txt)
-                        self.grub_device_entry.append_text(line)
-                        self.grub_devices[line] = partition_path
+                        if not "free" in partition_path:
+                            warning_txt = _("It's not recommended to install grub in a partition")
+                            line = '   {0} ({1})'.format(partition_path, warning_txt)
+                            self.grub_device_entry.append_text(line)
+                            self.grub_devices[line] = partition_path
 
         # Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
