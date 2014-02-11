@@ -1635,26 +1635,6 @@ class InstallationProcess(multiprocessing.Process):
 
         self.enable_services([self.network_manager])
 
-        # Alredy done in hardware/virtualbox.py
-        ## Check if we are installed in vbox and configure accordingly.
-        ## This should be done in the hardware module when it's finished.
-        #if self.card == "virtualbox":
-        #    modules_load = "%s/etc/modules-load.d/vbox.conf" % self.dest_dir
-        #    try:
-        #        with open(modules_load, "w") as vbox_conf:
-        #            vbox_conf.write('# Added by Cnchi - Antergos Installer\n')
-        #            vbox_conf.write('vboxsf\n')
-        #        self.enable_services(["vboxservice"])
-        #    except Exception as err:
-        #        logging.error('Writing vbox.conf to modules-load.d failed.')
-        #        logging.error(err)
-
-        # We've moved timezone screen so this is no longer necessary
-        ## Wait FOREVER until the user sets the timezone
-        #while self.settings.get('timezone_done') is False:
-        #    # wait five seconds and try again
-        #    time.sleep(5)
-
         # Enable ntp service
         if self.settings.get("use_ntp"):
             self.enable_services(["ntpd"])
