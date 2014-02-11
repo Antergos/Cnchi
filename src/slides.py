@@ -217,18 +217,18 @@ class Slides(Gtk.Box):
                 else:
                     self.fatal_error = True
                     return False
-            elif event[0] == 'debug':
-                logging.debug(event[1])
-            elif event[0] == 'warning':
-                logging.warning(event[1])
+            #elif event[0] == 'debug':
+            #    logging.debug(event[1])
+            #elif event[0] == 'warning':
+            #    logging.warning(event[1])
             elif event[0] == 'progress':
                 if event[1] == 'hide_all' or event[1] == 'hide_global':
                     self.global_progress_bar.hide()
                     self.global_progress_bar_is_hidden = True
                 if event[1] == 'hide_all' or event[1] == 'hide_local':
                     self.progress_bar.hide()
-            else:
-                logging.info(event[1])
+            elif event[0] == 'info' or event[0] == 'action' or event[0] == 'target':
+                #logging.info(event[1])
                 self.set_message(event[1])
 
             self.callback_queue.task_done()

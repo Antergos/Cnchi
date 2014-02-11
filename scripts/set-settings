@@ -2,7 +2,7 @@
 
 DESKTOP=$1
 
-# Change keyboard layaout
+# Change keyboard layout
 dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 # Set gtk theme

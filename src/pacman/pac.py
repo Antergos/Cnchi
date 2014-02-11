@@ -85,12 +85,15 @@ class Pac(object):
     def init_transaction(self, **options):
         """ Transaction initialization """
         try:
-            t = self.handle.init_transaction(**options)
+            #t = self.handle.init_transaction(**options)
+            t = self.handle.init_transaction(force=True)
+
         except pyalpm.error:
             line = traceback.format_exc()
             logging.error(line)
-            return None
-        return t
+            t = None
+        finally:
+            return t
 
     '''
     def init_transaction(self, options):
@@ -164,11 +167,13 @@ class Pac(object):
         pkg_names = []
 
         for pkg in targets:
+            # Avoid duplicates
             if pkg.name not in pkg_names:
                 logging.debug("Adding %s to transaction" % pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
+        logging.debug("Finalize transaction...")
         ok = self.finalize(t)
 
         return (0 if ok else 1)
@@ -289,12 +294,13 @@ class Pac(object):
         """ Calculates progress and enqueues events with the information """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
-            self.queue_event('global_percent', i / n)
+            #self.queue_event('global_percent', i / n)
         else:
             target = _("Checking and loading packages...")
             if _percent == 0:
                 # Hide global bar (left by cb_dl)
-                self.queue_event('progress', 'hide_global')
+                #self.queue_event('progress', 'hide_global')
+                pass
 
         percent = _percent / 100
         self.queue_event('target', target)
@@ -321,7 +327,7 @@ class Pac(object):
                     filename = filename[:-len(ext)]
                 text = _("Downloading %s") % filename
                 global_percent = self.total_downloaded / self.total_download_size
-                self.queue_event('global_percent', global_percent)
+                #self.queue_event('global_percent', global_percent)
                 self.total_downloaded += total
 
             self.queue_event('action', text)

@@ -43,8 +43,7 @@ import canonical.misc as misc
 _geoname_url = 'http://geoname-lookup.ubuntu.com/?query=%s&release=%s'
 
 _next_page = "keymap"
-#_prev_page = None
-_prev_page = "check"
+_prev_page = "location"
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
