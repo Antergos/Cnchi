@@ -733,7 +733,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
-        self.queue_event('progress', 'hide_global')
+        self.queue_event('progress_bars', 'hide_global')
         
         total_global = self.number_of_packages()
         step_global = 1 / total_global
@@ -758,6 +758,11 @@ class InstallationProcess(multiprocessing.Process):
         
         del alpm
 
+        package_types = []
+        for package_type in self.packages:
+            package_types.append(package_type)
+
+        #while len(package_types) > 0:
         for package_type in self.packages:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
             try:
@@ -767,14 +772,16 @@ class InstallationProcess(multiprocessing.Process):
                 raise InstallError("Can't initialize pyalpm: %s" % err)        
             result = alpm.do_install(self.packages[package_type], self.conflicts)
             if result == 1:
-                logging.error(_("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type)
+                txt = _("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type
+                logging.error(txt)
+                show
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
             self.queue_event('global_percent', global_percent)
             del alpm
 
         #self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
-
+        
     def chroot_mount_special_dirs(self):
         """ Mount special directories for our chroot """
         # Don't try to remount them
@@ -1389,7 +1396,7 @@ class InstallationProcess(multiprocessing.Process):
         items = os.listdir(src)
         step = 1.0 / len(items)
         for item in items:
-            self.queue_event('percent', percent)
+            self.queue_event('local_percent', percent)
             source = os.path.join(src, item)
             destination = os.path.join(dst, item)
             try:
@@ -1557,9 +1564,9 @@ class InstallationProcess(multiprocessing.Process):
 
         # All downloading and installing has been done, so we hide progress bars
         # (they are 100% both so it makes no sense to still show them)
-        self.queue_event('progress', 'hide_all')
+        self.queue_event('progress_bars', 'hide_all')
 
-        self.queue_event('action', _("Configuring your new system"))
+        self.queue_event('info', _("Configuring your new system"))
 
         self.auto_fstab()
         logging.debug(_('fstab file generated.'))

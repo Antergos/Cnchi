@@ -136,14 +136,14 @@ class DownloadPackages(object):
                         basename = basename[:-11]
 
                     action = _("Downloading package '%s'...") % basename
-                    self.queue_event('action', action)
+                    self.queue_event('info', action)
 
                     while result['status'] == "active":
                         result = self.connection.aria2.tellStatus(gid)
                         completed = int(result['completedLength'])
                         percent = float(completed / total)
                         if percent != old_percent:
-                            self.queue_event('percent', percent)
+                            self.queue_event('local_percent', percent)
                             old_percent = percent
 
                 gids = self.remove_old_gids(gids, gids_to_remove)

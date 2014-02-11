@@ -271,7 +271,7 @@ class Pac(object):
             action = ""
 
         if len(action) > 0:
-            self.queue_event('action', action)
+            self.queue_event('info', action)
 
     def cb_log(self, level, line):
         """ Log pyalpm warning and error messages """
@@ -299,12 +299,12 @@ class Pac(object):
             target = _("Checking and loading packages...")
             if _percent == 0:
                 # Hide global bar (left by cb_dl)
-                #self.queue_event('progress', 'hide_global')
+                #self.queue_event('progress_bars', 'hide_global')
                 pass
 
         percent = _percent / 100
-        self.queue_event('target', target)
-        self.queue_event('percent', percent)
+        self.queue_event('info', target)
+        self.queue_event('local_percent', percent)
 
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
@@ -330,8 +330,8 @@ class Pac(object):
                 #self.queue_event('global_percent', global_percent)
                 self.total_downloaded += total
 
-            self.queue_event('action', text)
-            self.queue_event('percent', 0)
+            self.queue_event('info', text)
+            self.queue_event('local_percent', 0)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
@@ -345,5 +345,5 @@ class Pac(object):
                 self.last_dl_progress = progress
                 #text = _("Downloading %s: %d/%d") % (filename, tx, total)
                 #text = _("Downloading '%s'") % filename
-                #self.queue_event('action', text)
-                self.queue_event('percent', progress)
+                #self.queue_event('info', text)
+                self.queue_event('local_percent', progress)
