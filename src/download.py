@@ -100,7 +100,10 @@ class DownloadPackages(object):
                     old_percent = -1
 
                     try:
-                        result = self.connection.aria2.tellStatus(gid)
+                        keys = ["gid", "status", "totalLength", "completedLength", "files"]
+                        result = self.connection.aria2.tellStatus(gid, keys)
+                        #pprint(result)
+                        logging.debug(result)
                     except xmlrpc.client.Fault as e:
                         logging.exception(e)
                         gids_to_remove.append(gid)
@@ -116,10 +119,15 @@ class DownloadPackages(object):
                     if result['status'] != "active":
                         continue
 
+                    # There's still an active download
                     all_gids_done = False
 
-                    total_length = int(result['totalLength'])
+                    # Get files managed by this gid.
                     files = result['files']
+                    #pprint(files)
+                    logging.debug(files)
+
+                    total_length = int(result['totalLength'])
                     if total_length == 0:
                         total_length = int(files[0]['length'])
                     total += total_length
@@ -132,8 +140,9 @@ class DownloadPackages(object):
                     # packages from metapackages like base or base-devel)
                     uri = files[0]['uris'][0]['uri']
                     basename = os.path.basename(uri)
-                    if basename.endswith(".pkg.tar.xz"):
-                        basename = basename[:-11]
+                    ext = ".pkg.tar.xz"
+                    if basename.endswith(ext):
+                        basename = basename[:-len(ext)]
 
                     action = _("Downloading package '%s'...") % basename
                     self.queue_event('info', action)
@@ -147,6 +156,11 @@ class DownloadPackages(object):
                             old_percent = percent
 
                 gids = self.remove_old_gids(gids, gids_to_remove)
+                
+                # Show some debug info
+                result = self.connection.aria2.getGlobalStat()
+                #pprint(result)
+                logging.debug(result)
 
             # This method purges completed/error/removed downloads to free memory
             self.connection.aria2.purgeDownloadResult()
@@ -172,20 +186,26 @@ class DownloadPackages(object):
                 new_gids_list.append(gid)
         return new_gids_list
 
-    def set_aria2_defaults(self, dest_dir):
+    def set_aria2_defaults(self, cache_dir):
         """ Set aria2 defaults """
         self.rpc_user = "antergos"
         self.rpc_passwd = "antergos"
         self.rpc_port = "6800"
 
         self.aria2_args = [
-            "--log=/tmp/cnchi-downloads.log",
             #"--max-concurrent-downloads=1",
             #"--split=5",
-            "--min-split-size=5M",
-            "--max-connection-per-server=2",
             #"--check-integrity",
             #"--continue=false",
+            #"--always-resume=false",
+            #"--auto-save-interval=0",
+            #"--summary-interval=0",
+            #"--remove-control-file",
+            #"--metalink-file=/tmp/packages.metalink",
+            #"--pause"
+            "--log=/tmp/cnchi-downloads.log",
+            "--min-split-size=5M",
+            "--max-connection-per-server=2",
             "--max-tries=2",
             "--timeout=5",
             "--enable-rpc",
@@ -195,23 +215,17 @@ class DownloadPackages(object):
             "--rpc-save-upload-metadata=false",
             "--rpc-max-request-size=16M",
             "--allow-overwrite=false",
-            #"--always-resume=false",
-            #"--auto-save-interval=0",
             "--auto-file-renaming=false",
             "--log-level=error",
             "--show-console-readout=false",
-            #"--summary-interval=0",
             "--no-conf",
             "--quiet",
-            #"--remove-control-file",
             "--stop-with-process=%d" % os.getpid(),
-            #"--metalink-file=/tmp/packages.metalink",
-            #"--pause",
             "--file-allocation=none",
             "--max-file-not-found=5",
             "--remote-time=true",
             "--conditional-get=true",
-            "--dir=%s" % dest_dir ]
+            "--dir=%s" % cache_dir]
 
     def run_aria2_as_daemon(self):
         """ Start aria2 as a daemon """
