@@ -129,6 +129,9 @@ class DownloadPackages(object):
                 percent = round(float(completed_length / total_length), 2)
                 
                 if path != old_path and percent == 0:
+                    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
+                    self.queue_event('local_percent', 1.0)
+                    # Update download file name
                     self.queue_event('info', _("Downloading %s...") % path)
                     old_path = path
                 
