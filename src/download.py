@@ -156,21 +156,23 @@ class DownloadPackages(object):
         connection = None
 
         user = self.rpc["user"]
-        password = self.rpc["passwd"]
+        passwd = self.rpc["passwd"]
         port = self.rpc["port"]
         
-        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, password, port)
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
 
         try:
             connection = xmlrpc.client.ServerProxy(aria2_url)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
             logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
 
+        '''
         try:
             result = connection.aria2.getVersion()
             logging.debug(_("Using aria2 (version %s) to download xz packages") % result['version'])
         except xmlrpc.client.Fault as e:
             logging.exception(e)
+        '''
 
         return connection
 
@@ -178,7 +180,7 @@ class DownloadPackages(object):
         """ Set aria2 options """
 
         user = self.rpc["user"]
-        password = self.rpc["passwd"]
+        passwd = self.rpc["passwd"]
         port = self.rpc["port"]
         pid = os.getpid()
 
@@ -206,7 +208,7 @@ class DownloadPackages(object):
             "--remove-control-file=true",   # Remove control file before download. 
             "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
             "--rpc-user=%s" % user,
-            "--rpc-passwd=%s" % password,
+            "--rpc-passwd=%s" % passwd,
             "--rpc-listen-port=%s" % port,
             "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
                                                 # specified by --dir option. 
