@@ -393,7 +393,12 @@ class InstallationProcess(multiprocessing.Process):
     def download_packages(self):
         """ Downloads necessary packages using Aria2 """
         conf_file = "/tmp/pacman.conf"
-        cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
+
+        if len(self.settings.get('cache')) > 0:
+            cache_dir = self.settings.get('cache'))
+        else:
+            cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
+
         for package_type in self.packages:
             download.DownloadPackages(self.packages[package_type], conf_file, cache_dir, self.callback_queue)
 
