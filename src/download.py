@@ -68,16 +68,17 @@ class DownloadPackages(object):
         self.rpc["port"] = "6800"
         
         self.aria2_options = []
-
         self.set_aria2_options(self.cache_dir)
 
+        '''
         self.run_aria2_as_daemon()
-
+        
         self.connection = self.aria2_connect()
 
         if self.connection == None:
             logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
             return
+        '''
 
         self.aria2_download(package_names)
 
@@ -89,92 +90,119 @@ class DownloadPackages(object):
                 logging.error(_("Error creating metalink for package %s"), package_name)
                 continue
 
-            gids = self.add_metalink(metalink)
-
-            if len(gids) <= 0:
-                logging.error(_("Error adding metalink for package %s"), package_name)
-                continue
-
-            global_stat = self.connection.aria2.getGlobalStat()
-            num_active = int(global_stat["numActive"])
+            self.start_metalink_download(metalink)
             
+            self.aria2_process.poll()
+            if self.aria2_process.returncode != None:
+                logging.error(_("Error running aria2 to download %s package"), package_name)
+                continue
+                
+            num_active = self.num_active()
+
             old_percent = -1
             old_path = ""
-                        
-            action = _("Downloading package '%s' and its dependencies...") % package_name
-            self.queue_event('info', action)
+
+            logging.debug(_("Downloading package '%s' and its dependencies...") % package_name)
 
             while num_active > 0:
-                try:
-                    keys = ["gid", "status", "totalLength", "completedLength", "files"]
-                    result = self.connection.aria2.tellActive(keys)
-                    #pprint(result)
-                    #logging.debug(result)
-                except xmlrpc.client.Fault as e:
-                    logging.exception(e)
+                result = self.tell_active()
+                
+                if result == None:
+                    logging.error(_("Can't comunicate with aria2."))
+                else:
+                    total_length = 0
+                    completed_length = 0
 
-                total_length = 0
-                completed_length = 0
+                    for x in range(0, num_active):
+                        total_length += int(result[x]['totalLength'])
+                        completed_length += int(result[x]['completedLength'])
+                    
+                    # As --max-concurrent-downloads=1 we can be sure only one xz file is downloaded at a time
+                    path = result[x]['files'][0]['path']
+                    
+                    # Clean up file name
+                    path = os.path.basename(path)
+                    ext = ".pkg.tar.xz"
+                    if path.endswith(ext):
+                        path = path[:-len(ext)]
+                                    
+                    percent = round(float(completed_length / total_length), 2)
+                    
+                    if path != old_path and percent == 0:
+                        # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
+                        self.queue_event('local_percent', 1.0)
+                        # Update download file name
+                        self.queue_event('info', _("Downloading %s...") % path)
+                        old_path = path
+                    
+                    if percent != old_percent:
+                        self.queue_event('local_percent', percent)
+                        old_percent = percent
 
-                for x in range(0, num_active):
-                    total_length += int(result[x]['totalLength'])
-                    completed_length += int(result[x]['completedLength'])
-                
-                # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
-                path = result[x]['files'][0]['path']
-                ext = ".pkg.tar.xz"
-                if path.endswith(ext):
-                    path = path[:-len(ext)]
-                                
-                percent = round(float(completed_length / total_length), 2)
-                
-                if path != old_path and percent == 0:
-                    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
-                    self.queue_event('local_percent', 1.0)
-                    # Update download file name
-                    self.queue_event('info', _("Downloading %s...") % path)
-                    old_path = path
-                
-                if percent != old_percent:
-                    self.queue_event('local_percent', percent)
-                    old_percent = percent
-
-                # Get global statistics
-                global_stat = self.connection.aria2.getGlobalStat()
-                #pprint(global_stat)
-                #logging.debug(global_stat)
-                
-                num_active = int(global_stat["numActive"])
+                    num_active = self.num_active()
 
             # This method purges completed/error/removed downloads to free memory
-            self.connection.aria2.purgeDownloadResult()
+            self.purge_download_result()
             
-        self.connection.aria2.shutdown()
-    
-    def aria2_connect(self):
-        """ Connect to aria2 daemon """
-        connection = None
+        #self.connection.aria2.shutdown()
 
-        user = self.rpc["user"]
-        passwd = self.rpc["passwd"]
-        port = self.rpc["port"]
+    def num_active(self):
+        """ Asks for active downloads """
+        num_active = 0
         
-        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
+        self.aria2_process.poll()
+        if self.aria2_process.returncode == None:
+            user = self.rpc["user"]
+            passwd = self.rpc["passwd"]
+            port = self.rpc["port"]
+            
+            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
 
-        try:
-            connection = xmlrpc.client.ServerProxy(aria2_url)
-        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-            logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
+            try:
+                connection = xmlrpc.client.ServerProxy(aria2_url)
+                global_stat = self.connection.aria2.getGlobalStat()
+                num_active = int(global_stat["numActive"])
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+                logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
+            
+        return num_active
 
-        '''
-        try:
-            result = connection.aria2.getVersion()
-            logging.debug(_("Using aria2 (version %s) to download xz packages") % result['version'])
-        except xmlrpc.client.Fault as e:
-            logging.exception(e)
-        '''
+    def tell_active(self):
+        """ Asks for active downloads """
+        result = None
+        
+        self.aria2_process.poll()
+        if self.aria2_process.returncode == None:
+            user = self.rpc["user"]
+            passwd = self.rpc["passwd"]
+            port = self.rpc["port"]
+            
+            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
 
-        return connection
+            try:
+                connection = xmlrpc.client.ServerProxy(aria2_url)
+                keys = ["gid", "status", "totalLength", "completedLength", "files"]
+                result = connection.aria2.tellActive(keys)
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+                logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
+            
+        return result
+
+    def purge_download_result(self):
+        """ This method purges completed/error/removed downloads to free memory """
+        self.aria2_process.poll()
+        if self.aria2_process.returncode == None:
+            user = self.rpc["user"]
+            passwd = self.rpc["passwd"]
+            port = self.rpc["port"]
+            
+            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
+
+            try:
+                connection = xmlrpc.client.ServerProxy(aria2_url)
+                connection.aria2.purgeDownloadResult()
+            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+                logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
 
     def set_aria2_options(self, cache_dir):
         """ Set aria2 options """
@@ -189,6 +217,7 @@ class DownloadPackages(object):
             "--always-resume=true",         # Always resume download.
             "--auto-file-renaming=false",   # Rename file name if the same file already exists.
             "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
+            "--daemon=false",               # Run aria2 as a daemon
             "--dir=%s" % cache_dir,         # The directory to store the downloaded file(s).
             "--enable-rpc",                 # Enable XML-RPC server. It is strongly recommended to set username and
                                             # password using --rpc-user and --rpc-passwd option. See also
@@ -220,12 +249,6 @@ class DownloadPackages(object):
             "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
                                             # suppresses the output (default 60)
             "--timeout=60"]                 # Set timeout in seconds (default 60)
-
-    def run_aria2_as_daemon(self):
-        """ Start aria2 as a daemon """
-        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options + ['--daemon=true']
-        self.aria2_process = subprocess.Popen(aria2_cmd)
-        self.aria2_process.wait()
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
@@ -264,17 +287,15 @@ class DownloadPackages(object):
         )
         return metalink
 
-    def add_metalink(self, metalink):
-        """ Adds a metalink to the download queue """
-        gids = []
-        if metalink != None:
-            try:
-                binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
-                gids = self.connection.aria2.addMetalink(binary_metalink)
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-                logging.exception("Can't communicate with Aria2. Error Output: %s" % err)
-
-        return gids
+    def start_metalink_download(self, metalink):
+        """ Runs aria2 and makes it download the metalink """
+        try:
+            aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options
+            #'--metalink-file=',
+            self.aria2_process = subprocess.Popen(aria2_cmd, stdin=subprocess.PIPE)            
+            self.aria2_process.communicate(input=str(metalink).encode())
+        except OSError as err:
+            logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
@@ -286,6 +307,8 @@ class DownloadPackages(object):
             if self.last_event[event_type] == event_text:
                 # do not repeat same event
                 return
+        
+        print(event_text)
 
         self.last_event[event_type] = event_text
 
