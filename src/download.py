@@ -146,8 +146,8 @@ class DownloadPackages(object):
                 
                 num_active = int(global_stat["numActive"])
 
-                # This method purges completed/error/removed downloads to free memory
-                self.connection.aria2.purgeDownloadResult()
+            # This method purges completed/error/removed downloads to free memory
+            self.connection.aria2.purgeDownloadResult()
             
         self.connection.aria2.shutdown()
     
