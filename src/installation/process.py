@@ -395,7 +395,7 @@ class InstallationProcess(multiprocessing.Process):
         conf_file = "/tmp/pacman.conf"
 
         if len(self.settings.get('cache')) > 0:
-            cache_dir = self.settings.get('cache'))
+            cache_dir = self.settings.get('cache')
         else:
             cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
 
