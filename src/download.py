@@ -26,6 +26,8 @@ import logging
 import xmlrpc.client
 import queue
 
+from pprint import pprint
+
 """ Module to download packages using Aria2 """
 
 try:
@@ -97,6 +99,7 @@ class DownloadPackages(object):
             num_active = int(global_stat["numActive"])
             
             old_percent = -1
+            old_path = ""
                         
             action = _("Downloading package '%s' and its dependencies...") % package_name
             self.queue_event('info', action)
@@ -105,8 +108,8 @@ class DownloadPackages(object):
                 try:
                     keys = ["gid", "status", "totalLength", "completedLength", "files"]
                     result = self.connection.aria2.tellActive(keys)
-                    pprint(result)
-                    logging.debug(result)
+                    #pprint(result)
+                    #logging.debug(result)
                 except xmlrpc.client.Fault as e:
                     logging.exception(e)
 
@@ -117,7 +120,18 @@ class DownloadPackages(object):
                     total_length += int(result[x]['totalLength'])
                     completed_length += int(result[x]['completedLength'])
                 
-                percent = float(completed_length / total_length)
+                # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
+                path = result[x]['files'][0]['path']
+                ext = ".pkg.tar.xz"
+                if path.endswith(ext):
+                    path = path[:-len(ext)]
+                                
+                percent = round(float(completed_length / total_length), 2)
+                
+                if path != old_path and percent == 0:
+                    self.queue_event('info', _("Downloading %s...") % path)
+                    old_path = path
+                
                 if percent != old_percent:
                     self.queue_event('local_percent', percent)
                     old_percent = percent
@@ -125,7 +139,7 @@ class DownloadPackages(object):
                 # Get global statistics
                 global_stat = self.connection.aria2.getGlobalStat()
                 #pprint(global_stat)
-                logging.debug(global_stat)
+                #logging.debug(global_stat)
                 
                 num_active = int(global_stat["numActive"])
 
@@ -189,7 +203,7 @@ class DownloadPackages(object):
             "--remove-control-file=true",   # Remove control file before download. 
             "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
             "--rpc-user=%s" % user,
-            "--rpc-passwd=%s" % passwd,
+            "--rpc-passwd=%s" % password,
             "--rpc-listen-port=%s" % port,
             "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
                                                 # specified by --dir option. 
@@ -279,7 +293,7 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/download.log", level=logging.DEBUG)
+    logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
-    DownloadPackages(["base", "base-devel"])
+    DownloadPackages(package_names=["base", "base-devel"], cache_dir="/aria2")
 
