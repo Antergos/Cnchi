@@ -186,12 +186,8 @@ class DownloadPackages(object):
 
             global_stat = self.connection.aria2.getGlobalStat()
             num_active = int(global_stat["numActive"])
-            
+                        
             while num_active > 0:
-                total = 0
-                completed = 0
-                old_percent = -1
-
                 try:
                     keys = ["gid", "status", "totalLength", "completedLength", "files"]
                     result = self.connection.aria2.tellActive(keys)
@@ -200,27 +196,24 @@ class DownloadPackages(object):
                 except xmlrpc.client.Fault as e:
                     logging.exception(e)
 
-                # Get files managed by this gid.
-                files = result['files']
-                #pprint(files)
-                logging.debug(files)
+                total_length = 0
+                completed_length = 0
 
-                total_length = int(result['totalLength'])
-                if total_length == 0:
-                    total_length = int(files[0]['length'])
-                total += total_length
+                for x in range(0, num_active):
+                    # Get files managed by this gid.
+                    files = result[x]['files']
+                    #pprint(files)
+                    logging.debug(files)
 
-                if total <= 0:
-                    continue
+                    total_length += int(result[x]['totalLength'])
+                    #total_length += int(files['totalLength'])
+                    path = files['path']
 
-                # Get first uri to get the real package name
-                # (we need to use this if we want to show individual
-                # packages from metapackages like base or base-devel)
-                uri = files[0]['uris'][0]['uri']
-                basename = os.path.basename(uri)
                 ext = ".pkg.tar.xz"
-                if basename.endswith(ext):
-                    basename = basename[:-len(ext)]
+                if path.endswith(ext):
+                    path = path[:-len(ext)]
+                    
+                ####
 
                 action = _("Downloading package '%s'...") % basename
                 self.queue_event('info', action)
