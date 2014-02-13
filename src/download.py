@@ -160,20 +160,24 @@ class DownloadPackages(object):
     def set_aria2_options(self, cache_dir):
         """ Set aria2 options """
 
-        user = self.rpc["user"],
-        password = self.rpc["passwd"],
-        port = self.rpc["port"],
+        user = self.rpc["user"]
+        password = self.rpc["passwd"]
+        port = self.rpc["port"]
+        pid = os.getpid()
 
         self.aria2_options = [
             "--allow-overwrite=false",      # If file is already downloaded overwrite it
             "--always-resume=true",         # Always resume download.
             "--auto-file-renaming=false",   # Rename file name if the same file already exists.
             "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
-            "--dir=%s" % cache_dir,
-            "--enable-rpc",
+            "--dir=%s" % cache_dir,         # The directory to store the downloaded file(s).
+            "--enable-rpc",                 # Enable XML-RPC server. It is strongly recommended to set username and
+                                            # password using --rpc-user and --rpc-passwd option. See also
+                                            # --rpc-listen-port option (default false)
             "--file-allocation=prealloc",   # Specify file allocation method (default 'prealloc')
-            "--log=/tmp/cnchi-aria2.log",
-            "--log-level=warn",
+            "--log=/tmp/cnchi-aria2.log",   # The file name of the log file
+            "--log-level=warn",             # Set log level to output to console. LEVEL is either debug, info, notice,
+                                            # warn or error (default notice)
             "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
             "--max-concurrent-downloads=1", # Set maximum number of parallel downloads for each metalink (default 5)
             "--max-connection-per-server=1",# The maximum number of connections to one server for each download
@@ -193,9 +197,10 @@ class DownloadPackages(object):
                                             # than SIZE bytes, it drops connection (default 2M)
             "--show-console-readout=false", # Show console readout (default true)
             "--split=5",                    # Download a file using N connections (default 5)
-            "--stop-with-process=%d" % os.getpid(),
-            #"--summary-interval=0",
-            "--timeout=5"]
+            "--stop-with-process=%d" % pid, # Stop aria2 if Cnchi ends unexpectedly
+            "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
+                                            # suppresses the output (default 60)
+            "--timeout=60"]                 # Set timeout in seconds (default 60)
 
     def run_aria2_as_daemon(self):
         """ Start aria2 as a daemon """
