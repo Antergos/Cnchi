@@ -1,3 +1,4 @@
 #!/bin/sh
-sudo -E ./cnchi.py -dvz -c /pkg -p /usr/share/cnchi/data/packages.xml
+sudo -E ./cnchi.py -dvz -c /pkg -p /usr/share/cnchi/data/packages.xml $1 $2 $3 $4
+
 
