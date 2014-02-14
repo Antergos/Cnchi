@@ -146,8 +146,8 @@ class DownloadPackages(object):
                                             # password using --rpc-user and --rpc-passwd option. See also
                                             # --rpc-listen-port option (default false)
             "--file-allocation=prealloc",   # Specify file allocation method (default 'prealloc')
-            "--log=/tmp/cnchi-aria2.log",   # The file name of the log file
-            "--log-level=warn",             # Set log level to output to console. LEVEL is either debug, info, notice,
+            "--log=/tmp/aria2.log",         # The file name of the log file
+            "--log-level=info",             # Set log level to output to console. LEVEL is either debug, info, notice,
                                             # warn or error (default notice)
             "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
             "--max-concurrent-downloads=1", # Set maximum number of parallel downloads for each metalink (default 5)
@@ -213,13 +213,13 @@ class DownloadPackages(object):
     def start_metalink_download(self, package_name, metalink):
         """ Runs aria2 and makes it download the metalink """
         metalink_name = "/tmp/" + package_name + ".metalink"
-        print(metalink_name)
+        #print(metalink_name)
         with open(metalink_name, "wb") as mf:
             mf.write(str(metalink).encode())
 
         metalink_option = ['--metalink-file= %s' % metalink_name]
         aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options + metalink_option
-        print(aria2_cmd)
+        #print(aria2_cmd)
         try:
             self.aria2_pid = subprocess.Popen(aria2_cmd).pid
         except OSError as err:
@@ -253,7 +253,7 @@ class DownloadPackages(object):
                 # do not repeat same event
                 return
         
-        print(event_text)
+        #print(event_text)
 
         self.last_event[event_type] = event_text
 
