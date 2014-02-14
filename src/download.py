@@ -25,13 +25,9 @@ import subprocess
 import logging
 import xmlrpc.client
 import queue
-import crypt
-import sys
 import errno
 
-from pprint import pprint
-
-""" Module to download packages using Aria2 """
+""" Module to download xz packages using Aria2 """
 
 try:
     import pm2ml
@@ -43,6 +39,7 @@ class DownloadPackages(object):
         This class tries to previously download all necessary packages for
         Antergos installation using aria2.
         It's known to use too much memory so it's not advised to use it """
+
     def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
         if conf_file == None:
@@ -89,8 +86,6 @@ class DownloadPackages(object):
                 logging.error(_("Aria2 is not running"))
                 continue
                 
-            num_active = self.num_active()
-
             old_percent = -1
             old_path = ""
 
@@ -99,11 +94,7 @@ class DownloadPackages(object):
             while self.pid_exists(self.aria2_pid):
                 result = self.tell_active()
                 
-                print(result)
-                
-                if result == None:
-                    logging.debug(_("Can't comunicate with aria2. Will try again."))
-                else:
+                if len(result) > 0:
                     total_length = 0
                     completed_length = 0
 
@@ -112,8 +103,8 @@ class DownloadPackages(object):
                     total_length = int(result[0]['totalLength'])
                     completed_length = int(result[0]['completedLength'])
                     
-                    print("completed_length:", completed_length)
-                    print("total_length:", total_length)
+                    #print("completed_length:", completed_length)
+                    #print("total_length:", total_length)
                     
                     path = result[0]['files'][0]['path']
                     
@@ -135,35 +126,6 @@ class DownloadPackages(object):
                     if percent != old_percent:
                         self.queue_event('local_percent', percent)
                         old_percent = percent
-
-                    num_active = self.num_active()
-
-            ## This method purges completed/error/removed downloads to free memory
-            #self.purge_download_result()
-            
-        #self.connection.aria2.shutdown()
-
-    def num_active(self):
-        """ Asks for active downloads """
-        num_active = 0
-        
-        if self.pid_exists(self.aria2_pid):
-            user = self.rpc["user"]
-            passwd = self.rpc["passwd"]
-            port = self.rpc["port"]
-            
-            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
-
-            try:
-                connection = xmlrpc.client.ServerProxy(aria2_url)
-                global_stat = connection.aria2.getGlobalStat()
-                num_active = int(global_stat["numActive"])
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-                logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
-        else:
-            logging.error(_("Aria2 is not running"))
-            
-        return num_active
 
     def set_aria2_options(self, cache_dir):
         """ Set aria2 options """
@@ -265,42 +227,20 @@ class DownloadPackages(object):
 
     def tell_active(self):
         """ Asks for active downloads """
-        result = None
+        result = []
         
         if self.pid_exists(self.aria2_pid):
-            user = self.rpc["user"]
-            passwd = self.rpc["passwd"]
-            port = self.rpc["port"]
-            
-            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
-
+            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc["user"], self.rpc["passwd"], self.rpc["port"])
+            keys = ["gid", "status", "totalLength", "completedLength", "files"]
             try:
                 connection = xmlrpc.client.ServerProxy(aria2_url)
-                keys = ["gid", "status", "totalLength", "completedLength", "files"]
                 result = connection.aria2.tellActive(keys)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
                 logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
-        else:
-            logging.error(_("Aria2 is not running"))
+        #else:
+        #    logging.error(_("Aria2 is not running"))
             
         return result
-
-    def purge_download_result(self):
-        """ This method purges completed/error/removed downloads to free memory """
-        if self.pid_exists(self.aria2_pid):
-            user = self.rpc["user"]
-            passwd = self.rpc["passwd"]
-            port = self.rpc["port"]
-            
-            aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
-
-            try:
-                connection = xmlrpc.client.ServerProxy(aria2_url)
-                connection.aria2.purgeDownloadResult()
-            except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-                logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
-        else:
-            logging.error(_("Aria2 is not running"))
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
