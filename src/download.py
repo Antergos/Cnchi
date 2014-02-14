@@ -79,12 +79,14 @@ class DownloadPackages(object):
             if metalink == None:
                 logging.error(_("Error creating metalink for package %s"), package_name)
                 continue
+                
+            self.run_aria2()
 
-            self.start_metalink_download(package_name, metalink)
-            
             if not self.pid_exists(self.aria2_pid):
                 logging.error(_("Aria2 is not running"))
-                continue
+                return
+
+            self.download_metalink(metalink)
                 
             old_percent = -1
             old_path = ""
@@ -210,16 +212,19 @@ class DownloadPackages(object):
         )
         return metalink
 
-    def start_metalink_download(self, package_name, metalink):
-        """ Runs aria2 and makes it download the metalink """
-        metalink_name = "/tmp/" + package_name + ".metalink"
-        #print(metalink_name)
-        with open(metalink_name, "wb") as mf:
-            mf.write(str(metalink).encode())
+    def download_metalink(self, metalink):
+        """ Makes aria2 download the metalink """
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc["user"], self.rpc["passwd"], self.rpc["port"])
+        try:
+            connection = xmlrpc.client.ServerProxy(aria2_url)
+            connection.aria2.addMetalink(str(metalink).encode())
+        except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
+            logging.debug(_("Can't add a metalink to Aria2. Error Output: %s") % err)
 
-        metalink_option = ['--metalink-file= %s' % metalink_name]
-        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options + metalink_option
-        #print(aria2_cmd)
+    def run_aria2(self):
+        """ Runs aria2 """
+        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options
+
         try:
             self.aria2_pid = subprocess.Popen(aria2_cmd).pid
         except OSError as err:
