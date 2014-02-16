@@ -300,4 +300,5 @@ if __name__ == '__main__':
 
     logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
-    DownloadPackages(package_names=["base", "base-devel"], cache_dir="/aria2")
+    DownloadPackages(package_names=["glib", "linux"], cache_dir="/aria2")
+    #DownloadPackages(package_names=["base", "base-devel"], cache_dir="/aria2")
