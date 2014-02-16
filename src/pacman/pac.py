@@ -311,6 +311,11 @@ class Pac(object):
         # Check if a new file is coming
         if filename != self.last_dl_filename or self.last_dl_total != total:
             # Yes, new file
+            
+            ## Check if progress reached 100 (sometimes it does not have time to show it)
+            #if self.last_dl_progress != None and self.last_dl_progress < 100:
+            #    self.queue_event('local_percent', 100)
+            
             self.last_dl_filename = filename
             self.last_dl_total = total
             self.last_dl_progress = 0
