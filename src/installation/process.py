@@ -486,6 +486,7 @@ class InstallationProcess(multiprocessing.Process):
         self.prepare_pacman()
         
         self.packages["boot"] = []
+        self.packages["base"] = []
         self.packages["fs"] = []
         self.packages["common"] = []
         self.packages["desktop"] = []
@@ -512,6 +513,12 @@ class InstallationProcess(multiprocessing.Process):
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
+        
+        # Always install base group no matter what
+        
+        self.packages["base"] = ["base"]
+        
+        # Add common packages
 
         logging.debug(_("Adding all desktops common packages"))
 
@@ -711,63 +718,40 @@ class InstallationProcess(multiprocessing.Process):
         return out.decode().lower()
 
     def number_of_packages(self):
-        total = 0
-        try:
-            alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception as err:
-            logging.error(err)
-            return total
-        
-        for package_type in self.packages:
-            total += self.number_of_packages_by_type(alpm, package_type)
-
-        del alpm
-
-        return total
-        
-    def number_of_packages_by_type(self, alpm, package_type):
-        total = 0
-        for pkg_name in self.packages[package_type]:
-            group_pkgs = alpm.get_group_pkgs(pkg_name)
-            if group_pkgs == None:
-                total += 1
-            else:
-                total += len(group_pkgs)
-        return total
-
-    def install_packages(self):
-        """ Start pacman installation of packages """
-        self.chroot_mount_special_dirs()
-
-        #self.queue_event('progress_bars', 'hide_global')
-        
-        total_global = self.number_of_packages()
-        logging.debug(_("Cnchi will install %d packages.") % total_global)
-        step_global = 1 / total_global
-        global_percent = 0
-        self.queue_event('global_percent', 0)
-        self.queue_event('local_percent', 0)
-       
-        # Always install 'base' group first
         try:
             alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as err:
             logging.error(err)
             raise InstallError("Can't initialize pyalpm: %s" % err)
-        result = alpm.do_install(["base"], self.conflicts)
-        if result == 1:
-            self.chroot_umount_special_dirs()
-            self.queue_fatal_event(_("Can't install 'base' package group. Cnchi can't continue."))
-            return False
 
-        group_pkgs = alpm.get_group_pkgs("base")
-        global_percent += step_global * len(group_pkgs)
-        logging.debug("global_percent : %f", global_percent)
-        self.queue_event('global_percent', global_percent)
-        self.queue_event('local_percent', 0)
+        total = 0
+        for package_type in self.packages:
+            total += self.number_of_packages_by_type(alpm, package_type)
         
         del alpm
+        
+        return total
 
+    def number_of_packages_by_type(self, alpm, package_type):
+        pkg_list = []
+        for pkg_name in self.packages[package_type]:
+            targets = alpm.get_targets(pkg_name)
+            for target in targets:
+                if target not in pkg_list:
+                    pkg_list.append(target)
+        return len(pkg_list)
+
+    def install_packages(self):
+        """ Start pacman installation of packages """
+        self.chroot_mount_special_dirs()
+
+        total_global = self.number_of_packages()
+        logging.debug(_("Cnchi will install a total of %d packages.") % total_global)
+        step_global = 1 / total_global
+        global_percent = 0
+        self.queue_event('global_percent', 0)
+        self.queue_event('local_percent', 0)
+        
         for package_type in self.packages:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
             try:
@@ -775,18 +759,20 @@ class InstallationProcess(multiprocessing.Process):
             except Exception as err:
                 logging.error(err)
                 raise InstallError("Can't initialize pyalpm: %s" % err)        
+
             result = alpm.do_install(self.packages[package_type], self.conflicts)
+
             if result == 1:
                 txt = _("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type
                 logging.error(txt)
-                show
+
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
             logging.debug("global_percent : %f", global_percent)
+
             self.queue_event('global_percent', global_percent)
             self.queue_event('local_percent', 0)
             del alpm
 
-        #self.queue_event('global_percent', 1)
         self.chroot_umount_special_dirs()
         
         # All downloading and installing has been done, so we hide progress bars

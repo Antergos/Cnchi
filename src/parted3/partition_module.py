@@ -34,7 +34,7 @@ import show_message as show
 try:
     import parted
 except ImportError:
-    print("Can't import parted module! This installer won't work.")
+    logging.error("Can't import parted module! This installer won't work.")
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1
