@@ -85,8 +85,7 @@ class Pac(object):
     def init_transaction(self, **options):
         """ Transaction initialization """
         try:
-            #t = self.handle.init_transaction(**options)
-            t = self.handle.init_transaction(force=True)
+            t = self.handle.init_transaction(**options)
 
         except pyalpm.error:
             line = traceback.format_exc()
@@ -126,50 +125,60 @@ class Pac(object):
             t.release()
         return 0
 
-    def do_install(self, pkgs, conflicts=[]):
-        """ Install a list of packages like pacman -S """
-        logging.debug("Install a list of packages like pacman -S")
-        if len(pkgs) == 0:
-            logging.error("No targets specified")
-            return 1
+    def download_only(self, pkgs, conflicts=[]):
+        """ Download a list of packages (and its dependencies) like pacman -Sw """
+        logging.debug("Downloading a list of packages like pacman -Sw")
 
         repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
-        targets = []
-        for name in pkgs:
-            ok, pkg = self.find_sync_package(name, repos)
-            if ok:
-                targets.append(pkg)
-            else:
-                # Can't find this one, check if it's a group
-                group_pkgs = self.get_group_pkgs(name)
-                if group_pkgs != None:
-                    # It's a group
-                    for pkg in group_pkgs:
-                        # Check that added package is not in our conflicts list
-                        # Ex: connman conflicts with netctl(openresolv), which is
-                        # installed by default with base group
-                        if pkg.name not in conflicts and pkg.name not in pkgs:
-                            targets.append(pkg)
-                else:
-                    # No, it wasn't neither a package nor a group. Show error message and continue.
-                    logging.error(pkg)
+        targets = self.get_targets(pkgs, conflicts)
 
         if len(targets) == 0:
             logging.error("No targets found")
             return 1
-
-        t = self.init_transaction()
+                    
+        t = self.init_transaction(downloadonly=True)
 
         if t is None:
             return 1
 
         pkg_names = []
-
+        
         for pkg in targets:
             # Avoid duplicates
             if pkg.name not in pkg_names:
-                logging.debug("Adding %s to transaction" % pkg.name)
+                logging.debug("Adding %s to download transaction" % pkg.name)
+                t.add_pkg(pkg)
+                pkg_names.append(pkg.name)
+
+        logging.debug("Finalize transaction...")
+        ok = self.finalize(t)
+
+        return (0 if ok else 1)
+
+    def do_install(self, pkgs, conflicts=[]):
+        """ Install a list of packages like pacman -S """
+        logging.debug("Install a list of packages like pacman -S")
+
+        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
+
+        targets = self.get_targets(pkgs, conflicts)
+
+        if len(targets) == 0:
+            logging.error("No targets found")
+            return 1
+        
+        t = self.init_transaction(force=True)
+
+        if t is None:
+            return 1
+
+        pkg_names = []
+        
+        for pkg in targets:
+            # Avoid duplicates
+            if pkg.name not in pkg_names:
+                logging.debug("Adding %s to install transaction" % pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
@@ -201,18 +210,11 @@ class Pac(object):
                         # installed by default with base group
                         if pkg.name not in conflicts and pkg.name not in pkgs:
                             targets.append(pkg)
+                else:
+                    # No, it wasn't neither a package nor a group. Show error message and continue.
+                    logging.error(pkg)
 
-        if len(targets) == 0:
-            return []
-
-        pkg_names = []
-
-        for pkg in targets:
-            # Avoid duplicates
-            if pkg.name not in pkg_names:
-                pkg_names.append(pkg.name)
-        return pkg_names
-        
+        return targets      
 
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
