@@ -1106,7 +1106,7 @@ class InstallationProcess(multiprocessing.Process):
     def prepare_grub_d(self):
         # Copy 01_antergos script into /etc/grub.d.
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
-        script_dir = "/usr/share/cnchi/scripts/"
+        script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
         script = "10_antergos"
 
         if not os.path.exists(grub_d_dir):
@@ -1114,7 +1114,7 @@ class InstallationProcess(multiprocessing.Process):
 
         try:
             shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
-            os.chmod(os.path.join(self.dest_dir, script), 755)
+            os.chmod(os.path.join(grub_d_dir, script), 755)
         except FileNotFoundError:
             logging.debug(_("Could not copy %s to grub.d" % script))
         except FileExistsError:
