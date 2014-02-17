@@ -717,7 +717,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err)
             return 0
         
-        pkgs_list = []
+        pkg_list = []
         for package_type in self.packages:
             for pkg_name in self.packages[package_type]:
                 targets = alpm.get_targets(pkg_name)
@@ -726,7 +726,7 @@ class InstallationProcess(multiprocessing.Process):
                         pkg_list.append(target)
         del alpm
 
-        return len(pkgs_list)
+        return len(pkg_list)
 
     def install_packages(self):
         """ Start pacman installation of packages """
