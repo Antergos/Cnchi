@@ -369,7 +369,7 @@ class Pac(object):
 
             self.queue_event('info', text)
             self.queue_event('local_percent', 0)
-        elif self.total_downlad_size > 0 and self.last_dl_total >= tx:
+        elif self.total_download_size > 0 and self.last_dl_total >= tx:
             self.queue_event('local_percent', 1)
         else:
             # Compute a progress indicator
