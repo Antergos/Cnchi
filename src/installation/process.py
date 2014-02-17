@@ -973,10 +973,13 @@ class InstallationProcess(multiprocessing.Process):
             if path == "":
                 continue
             if path == '/':
-                # We do not run fsck on btrfs partitions
+                # We do not run fsck on btrfs or f2fs partitions
                 if "btrfs" in myfmt:
                     chk = '0'
                     opts = 'rw,relatime,space_cache,autodefrag,inode_cache'
+                elif "f2fs" in myfmt:
+                    chk = '0'
+                    opts = 'rw,noatime'
                 else:
                     chk = '1'
                     opts = "rw,relatime,data=ordered"
@@ -1015,8 +1018,10 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader(self):
         """ Installs bootloader """
+        # TODO Move bootloader functions into bootloader.py
 
         self.modify_grub_default()
+        self.prepare_grub_d()
 
         bootloader = self.settings.get('bootloader_type')
         if bootloader == "GRUB2":
@@ -1090,34 +1095,36 @@ class InstallationProcess(multiprocessing.Process):
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
 
+        # This is no longer needed
         # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
-        with open(default_grub, 'a') as grub_file:
-            grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
-            grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
+        #with open(default_grub, 'a') as grub_file:
+        #    grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
+        #    grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
 
         logging.debug('/etc/default/grub configuration completed successfully.')
+
+    def prepare_grub_d(self):
+        # Copy 01_antergos script into /etc/grub.d.
+        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
+        script_dir = "/usr/share/cnchi/scripts/"
+        script = "10_antergos"
+
+        if not os.path.exists(grub_d_dir):
+            os.makedirs(grub_d_dir)
+
+        try:
+            shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
+            os.chmod(os.path.join(self.dest_dir, script), 755)
+        except FileNotFoundError:
+            logging.debug(_("Could not copy %s to grub.d" % script))
+        except FileExistsError:
+            pass
 
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
         grub_location = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_location)
 
-        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
-
-        if not os.path.exists(grub_d_dir):
-            os.makedirs(grub_d_dir)
-
-        try:
-            shutil.copy2("/arch/10_linux", grub_d_dir)
-        except FileNotFoundError:
-            try:
-                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
-            except FileNotFoundError:
-                logging.debug(_("Could not copy 10_linux to grub.d"))
-            except FileExistsError:
-                pass
-        except FileExistsError:
-            pass
 
         self.chroot_mount_special_dirs()
         
@@ -1146,11 +1153,10 @@ class InstallationProcess(multiprocessing.Process):
             self.settings.set('bootloader_ok', True)
         else:
             logging.warning(_("ERROR installing GRUB(2) BIOS."))
+            self.settings.set('bootloader_ok', False)
 
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
-        # TODO: Clean this up a bit. It is working in vbox but needs testing on other hardware.
-        # TODO: If tests show it still not working 100%, try to manually add entry to loader (efibootmgr).
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
@@ -1160,28 +1166,9 @@ class InstallationProcess(multiprocessing.Process):
             spec_uefi_arch = "ia32"
             spec_uefi_arch_caps = "IA32"
 
-        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
-
-        if not os.path.exists(grub_d_dir):
-            os.makedirs(grub_d_dir)
-
-        try:
-            shutil.copy2("/arch/10_linux", grub_d_dir)
-        except FileNotFoundError:
-            logging.error('10_linux File Not Found')
-            try:
-                shutil.copy2("/etc/grub.d/10_linux", grub_d_dir)
-            except FileNotFoundError:
-                logging.debug(_("Could not copy 10_linux to grub.d"))
-            except FileExistsError:
-                pass
-        except FileExistsError:
-            pass
-
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            # /install/boot or /install/boot/efi ¿?
             subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
                                    '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                                    '--recheck' % uefi_arch], shell=True, timeout=45)
@@ -1219,13 +1206,13 @@ class InstallationProcess(multiprocessing.Process):
         
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/EFI/shellx64_v2.efi")
+        shell_dst = os.path.join(self.dest_dir, "boot/EFI/")
         try:
-            shutil.move(shell_src, shell_dst)
+            shutil.copy2(shell_src, shell_dst)
         except FileNotFoundError:
             logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
         except FileExistsError:
-            logging.warning(_("UEFI Shell already exists at %s"), shell_dst)
+            pass
         except Exception as err:
             logging.warning(_("UEFI Shell drop-in could not be copied."))
             logging.warning(err)
