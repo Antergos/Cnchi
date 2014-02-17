@@ -179,7 +179,7 @@ class Pac(object):
         return (0 if ok else 1)
 
     def get_targets(self, pkgs, conflicts=[]):
-        """ Get the list of packages needed to install pkgs """
+        """ Get the list of packages needed to install package list 'pkgs' """
         if len(pkgs) == 0:
             return []
 
@@ -369,8 +369,6 @@ class Pac(object):
 
             self.queue_event('info', text)
             self.queue_event('local_percent', 0)
-        elif self.total_download_size > 0 and self.last_dl_total >= tx:
-            self.queue_event('local_percent', 1)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:

@@ -726,19 +726,23 @@ class InstallationProcess(multiprocessing.Process):
 
         total = 0
         for package_type in self.packages:
-            total += self.number_of_packages_by_type(alpm, package_type)
+            num = self.number_of_packages_by_type(alpm, package_type)
+            logging.debug(_("Package group '%s' has %d packages") % (package_type, num))
+            total += num
         
         del alpm
         
         return total
 
     def number_of_packages_by_type(self, alpm, package_type):
+        #from pprint import pprint
         pkg_list = []
-        for pkg_name in self.packages[package_type]:
-            targets = alpm.get_targets(pkg_name)
-            for target in targets:
-                if target not in pkg_list:
-                    pkg_list.append(target)
+        targets = alpm.get_targets(self.packages[package_type])
+        #pprint(targets)
+        for target in targets:
+            if target not in pkg_list:
+                pkg_list.append(target)
+        #pprint(pkg_list)
         return len(pkg_list)
 
     def install_packages(self):
