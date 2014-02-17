@@ -3,8 +3,9 @@
 #
 #  pac.py
 #
-#  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 #  Copyright (C) 2013 Antergos
+#
+#  This code is based on previous work by Rémy Oudompheng <remy@archlinux.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +28,6 @@ import traceback
 import sys
 import math
 import logging
-#from multiprocessing import Queue
 import queue
 
 try:
@@ -178,6 +178,42 @@ class Pac(object):
 
         return (0 if ok else 1)
 
+    def get_targets(self, pkgs, conflicts=[]):
+        """ Get the list of packages needed to install pkgs """
+        if len(pkgs) == 0:
+            return []
+
+        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
+
+        targets = []
+        for name in pkgs:
+            ok, pkg = self.find_sync_package(name, repos)
+            if ok:
+                targets.append(pkg)
+            else:
+                # Can't find this one, check if it's a group
+                group_pkgs = self.get_group_pkgs(name)
+                if group_pkgs != None:
+                    # It's a group
+                    for pkg in group_pkgs:
+                        # Check that added package is not in our conflicts list
+                        # Ex: connman conflicts with netctl(openresolv), which is
+                        # installed by default with base group
+                        if pkg.name not in conflicts and pkg.name not in pkgs:
+                            targets.append(pkg)
+
+        if len(targets) == 0:
+            return []
+
+        pkg_names = []
+
+        for pkg in targets:
+            # Avoid duplicates
+            if pkg.name not in pkg_names:
+                pkg_names.append(pkg.name)
+        return pkg_names
+        
+
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
         for db in syncdbs.values():
@@ -310,11 +346,7 @@ class Pac(object):
         """ Shows downloading progress """
         # Check if a new file is coming
         if filename != self.last_dl_filename or self.last_dl_total != total:
-            # Yes, new file
-            
-            ## Check if progress reached 100 (sometimes it does not have time to show it)
-            #if self.last_dl_progress != None and self.last_dl_progress < 100:
-            #    self.queue_event('local_percent', 100)
+            # Yes, new file          
             
             self.last_dl_filename = filename
             self.last_dl_total = total
@@ -330,13 +362,15 @@ class Pac(object):
                 ext = ".pkg.tar.xz"
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
-                text = _("Downloading %s") % filename
-                global_percent = self.total_downloaded / self.total_download_size
+                text = _("Downloading %s...") % filename
+                #global_percent = self.total_downloaded / self.total_download_size
                 #self.queue_event('global_percent', global_percent)
                 self.total_downloaded += total
 
             self.queue_event('info', text)
             self.queue_event('local_percent', 0)
+        elif self.last_dl_total > 0 and self.last_dl_total == tx:
+            self.queue_event('local_percent', 100)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
@@ -348,7 +382,4 @@ class Pac(object):
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
                 self.last_dl_progress = progress
-                #text = _("Downloading %s: %d/%d") % (filename, tx, total)
-                #text = _("Downloading '%s'") % filename
-                #self.queue_event('info', text)
                 self.queue_event('local_percent', progress)

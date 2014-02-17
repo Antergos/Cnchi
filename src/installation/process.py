@@ -710,30 +710,23 @@ class InstallationProcess(multiprocessing.Process):
         out, err = process2.communicate()
         return out.decode().lower()
 
-    def number_of_packages(self):
-        total = 0
+    def total_number_of_packages(self):
         try:
             alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as err:
             logging.error(err)
-            return total
+            return 0
         
+        pkgs_list = []
         for package_type in self.packages:
-            total += self.number_of_packages_by_type(alpm, package_type)
-
+            for pkg_name in self.packages[package_type]:
+                targets = alpm.get_targets(pkg_name)
+                for target in targets:
+                    if target not in pkg_list:
+                        pkg_list.append(target)
         del alpm
 
-        return total
-        
-    def number_of_packages_by_type(self, alpm, package_type):
-        total = 0
-        for pkg_name in self.packages[package_type]:
-            group_pkgs = alpm.get_group_pkgs(pkg_name)
-            if group_pkgs == None:
-                total += 1
-            else:
-                total += len(group_pkgs)
-        return total
+        return len(pkgs_list)
 
     def install_packages(self):
         """ Start pacman installation of packages """
@@ -741,8 +734,8 @@ class InstallationProcess(multiprocessing.Process):
 
         #self.queue_event('progress_bars', 'hide_global')
         
-        total_global = self.number_of_packages()
-        logging.debug(_("Cnchi will install %d packages.") % total_global)
+        total_global = self.total_number_of_packages()
+        logging.debug(_("Cnchi will install a total of %d packages.") % total_global)
         step_global = 1 / total_global
         global_percent = 0
         self.queue_event('global_percent', 0)
@@ -760,10 +753,11 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_fatal_event(_("Can't install 'base' package group. Cnchi can't continue."))
             return False
 
-        group_pkgs = alpm.get_group_pkgs("base")
-        global_percent += step_global * len(group_pkgs)
-        logging.debug("global_percent : %f", global_percent)
-        self.queue_event('global_percent', global_percent)
+        #group_pkgs = alpm.get_group_pkgs("base")
+        #global_percent += step_global * len(group_pkgs)
+        #logging.debug("global_percent : %f", global_percent)
+        #self.queue_event('global_percent', global_percent)
+
         self.queue_event('local_percent', 0)
         
         del alpm

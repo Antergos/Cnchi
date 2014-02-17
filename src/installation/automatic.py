@@ -30,7 +30,7 @@ from installation import process as installation_process
 try:
     import parted
 except:
-    print("Can't import parted module! This installer won't work.")
+    logging.error("Can't import parted module! This installer won't work.")
 
 #_next_page = "timezone"
 _next_page = "user_info"
