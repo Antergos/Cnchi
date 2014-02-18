@@ -2,15 +2,18 @@
 <!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
 <packages>
-    <!-- common to all desktops and to noX/Base -->
-    <common_system>
+    <!-- base and base-devel packages (always installed) -->
+    <base>
+        <pkgname>base</pkgname> <!-- Group -->
+        <pkgname>base-devel</pkgname> <!-- Group -->
+    </base>
+
+    <!-- common to all desktops and to noX/Base (always installed) -->
+    <common>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
         <pkgname>antergos-mirrorlist</pkgname>
         <pkgname>b43-fwcutter</pkgname>
-	<!-- Base is always installed -->
-        <!-- <pkgname>base</pkgname> --> <!-- Group -->
-        <pkgname>base-devel</pkgname> <!-- Group -->
         <pkgname>crda</pkgname>
         <pkgname>dnsutils</pkgname>
         <pkgname>dosfstools</pkgname>
@@ -34,11 +37,11 @@
         <pkgname>wireless_tools</pkgname>
         <pkgname>wpa_actiond</pkgname>
         <pkgname>zd1211-firmware</pkgname>
-    </common_system>
+    </common>
 
     <!-- Common to all graphic desktops -->
     <!-- It's best to put here apps that are qt/gtk agnostic -->
-    <graphic_system>
+    <graphic>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
@@ -58,7 +61,7 @@
         <pkgname>xorg-fonts</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
-    </graphic_system>
+    </graphic>
 
     <!-- Specific to noX/Base installation -->
     <nox>
@@ -282,9 +285,18 @@
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hotot-gtk3</pkgname>
         <pkgname>enlightenment</pkgname>        
-        <pkgname>network-manager-applet</pkgname>
-        <pkgname>networkmanager-openvpn</pkgname>
-        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>gst-libav</pkgname>
+        <pkgname>gst-plugins-bad</pkgname>
+        <pkgname>gst-plugins-base</pkgname>
+        <pkgname>gst-plugins-good</pkgname>
+        <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>
+        <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>gvfs-smb</pkgname>
+        <!-- <pkgname>gvfs-atp</pkgname> -->
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>zukitwo-themes</pkgname>
@@ -460,38 +472,6 @@
             <pkgname>libdvdcss</pkgname>
         </third_party>
     </user_features>
-
-    <!--
-    <graphics>
-        <nvidia>
-            <pkgname>nouveau-dri</pkgname>
-            <pkgname>xf86-video-nouveau</pkgname>
-        </nvidia>
-        <ati>
-            <pkgname>ati-dri</pkgname>
-            <pkgname>xf86-video-ati</pkgname>
-        </ati>
-        <intel>
-            <pkgname>intel-dri</pkgname>
-            <pkgname>xf86-video-intel</pkgname>
-        </intel>
-        <via>
-            <pkgname>xf86-video-openchrome</pkgname>
-        </via>
-        <virtualbox>
-            <pkgname>virtualbox-guest-modules</pkgname>
-            <pkgname>virtualbox-guest-utils</pkgname>
-        </virtualbox>
-        <vmware>
-            <pkgname>xf86-video-vmware</pkgname>
-            <pkgname>open-vm-tools</pkgname>
-            <pkgname>open-vm-tools-dkms</pkgname>
-        </vmware>
-        <uvesafb>
-            <pkgname>v86d</pkgname>
-        </uvesafb>
-    </graphics>
-    -->
 
     <net>
         <broadcom>

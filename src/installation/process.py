@@ -514,20 +514,22 @@ class InstallationProcess(multiprocessing.Process):
         tree = etree.parse(packages_xml)
         root = tree.getroot()
         
-        # Always install base group no matter what
+        # Add base and base-devel
         
-        self.packages["base"] = ["base"]
+        for child in root.iter('base'):
+            for pkg in child.iter('pkgname'):
+                self.packages["base"].append(pkg.text)
         
         # Add common packages
 
         logging.debug(_("Adding all desktops common packages"))
 
-        for child in root.iter('common_system'):
+        for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
                 self.packages["common"].append(pkg.text)
 
         if self.desktop != "nox":
-            for child in root.iter('graphic_system'):
+            for child in root.iter('graphic'):
                 for pkg in child.iter('pkgname'):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
@@ -538,8 +540,7 @@ class InstallationProcess(multiprocessing.Process):
 
             for child in root.iter(self.desktop + '_desktop'):
                 for pkg in child.iter('pkgname'):
-                    # If package is Desktop Manager, save name to
-                    # activate the correct service
+                    # If package is Network Manager, save the name to activate the correct service later
                     if pkg.attrib.get('nm'):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
