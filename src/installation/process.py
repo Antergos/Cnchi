@@ -1165,7 +1165,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot(grub_install)
 
         self.install_bootloader_grub2_locales()
-        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
+
         self.copy_bootloader_theme_files()
 
         locale = self.settings.get("locale")
@@ -1205,8 +1205,8 @@ class InstallationProcess(multiprocessing.Process):
         except Exception as err:
             logging.error('Command grub-install failed. Unknown Error: %s' % err)
 
-        self.queue_event('info', _("Installing Grub2 locales."))
         self.install_bootloader_grub2_locales()
+        
         self.copy_bootloader_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
@@ -1265,11 +1265,10 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
             self.settings.set('bootloader_ok', True)
 
-
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default/"
-        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/")
+        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
+        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
         try:
             shutil.copytree(theme_dir_src, theme_dir_dst)
         except FileNotFoundError:
@@ -1279,6 +1278,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader_grub2_locales(self):
         """ Install Grub2 locales """
+        self.queue_event('info', _("Installing Grub2 locales."))
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
         if not os.path.exists(dest_locale_dir):
