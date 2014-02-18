@@ -485,12 +485,11 @@ class InstallationProcess(multiprocessing.Process):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        self.packages["boot"] = []
-        self.packages["base"] = []
-        self.packages["fs"] = []
         self.packages["common"] = []
-        self.packages["desktop"] = []
+        self.packages["fs"] = []
+        self.packages["boot"] = []
         self.packages["drivers"] = []
+        self.packages["desktop"] = []
         
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
@@ -514,20 +513,14 @@ class InstallationProcess(multiprocessing.Process):
         tree = etree.parse(packages_xml)
         root = tree.getroot()
         
-        # Add base and base-devel
-        
-        for child in root.iter('base'):
-            for pkg in child.iter('pkgname'):
-                self.packages["base"].append(pkg.text)
-        
         # Add common packages
-
         logging.debug(_("Adding all desktops common packages"))
 
         for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
                 self.packages["common"].append(pkg.text)
 
+        # Add specific desktop packages
         if self.desktop != "nox":
             for child in root.iter('graphic'):
                 for pkg in child.iter('pkgname'):
@@ -604,8 +597,6 @@ class InstallationProcess(multiprocessing.Process):
 
         fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
 
-        # Might fix the "fsck.ext4 not found error"
-        # Don't think we need all of these since "ext" is a substring of "ext4", "fat" of "fat32", ect but ???..
         fs_lib = ('btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs',
                   'reiserfs', 'vfat', 'xfs')
 
@@ -796,6 +787,7 @@ class InstallationProcess(multiprocessing.Process):
         
         # Ok, now we can install all downloaded packages
         pacman_options = {}
+        # This does not work (pyalpm does not honour it)
         pacman_options["needed"] = True
         for package_type in downloaded_ok:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
@@ -808,8 +800,8 @@ class InstallationProcess(multiprocessing.Process):
             result = alpm.do_install(self.packages[package_type], self.conflicts, pacman_options)
 
             if result == 1:
-                if package_type == "base":
-                    raise InstallError("Can't install group 'base'. Cnchi can't continue.")
+                if package_type == "common":
+                    raise InstallError("Can't install necessary packages. Cnchi can't continue.")
                 else:
                     txt = _("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type
                     logging.error(txt)

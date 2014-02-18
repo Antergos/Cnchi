@@ -2,18 +2,14 @@
 <!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
 <packages>
-    <!-- base and base-devel packages (always installed) -->
-    <base>
-        <pkgname>base</pkgname> <!-- Group -->
-        <pkgname>base-devel</pkgname> <!-- Group -->
-    </base>
-
     <!-- common to all desktops and to noX/Base (always installed) -->
     <common>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
         <pkgname>antergos-mirrorlist</pkgname>
         <pkgname>b43-fwcutter</pkgname>
+        <pkgname>base</pkgname> <!-- Group -->
+        <pkgname>base-devel</pkgname> <!-- Group -->
         <pkgname>crda</pkgname>
         <pkgname>dnsutils</pkgname>
         <pkgname>dosfstools</pkgname>
