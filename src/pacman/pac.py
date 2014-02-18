@@ -291,7 +291,7 @@ class Pac(object):
         """ Calculates progress and enqueues events with the information """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
-            percent = n / i
+            percent = i / n
         else:
             target = _("Checking and loading packages...")
             percent = _percent / 100
