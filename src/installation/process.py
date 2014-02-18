@@ -1366,9 +1366,9 @@ class InstallationProcess(multiprocessing.Process):
             hooks.append("lvm2")
 
         if "swap" in self.mount_devices:
-            hooks.extend(["resume", "filesystems", "keyboard"])
+            hooks.extend(["resume", "filesystems", "keyboard", "keymap"])
         else:
-            hooks.extend(["filesystems", "keyboard"])
+            hooks.extend(["filesystems", "keyboard", "keymap"])
 
         if self.settings.get('btrfs') and cpu is not 'genuineintel':
             modules.append('crc32c')
