@@ -759,6 +759,11 @@ class InstallationProcess(multiprocessing.Process):
         
         downloaded_ok = []
         
+        # First try to download all necessary packages
+        
+        pacman_options = {}
+        pacman_options["downloadonly"] = True
+        
         for package_type in self.packages:
             logging.debug(_("Downloading packages from '%s' group...") % package_type)
             try:
@@ -767,7 +772,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(err)
                 raise InstallError("Can't initialize pyalpm: %s" % err)        
 
-            result = alpm.download_only(self.packages[package_type], self.conflicts)
+            result = alpm.do_install(self.packages[package_type], self.conflicts, pacman_options)
 
             if result == 1:
                 if package_type == "base":
@@ -788,7 +793,10 @@ class InstallationProcess(multiprocessing.Process):
         global_percent = 0
         self.queue_event('global_percent', 0)
         self.queue_event('local_percent', 0)
-
+        
+        # Ok, now we can install all downloaded packages
+        pacman_options = {}
+        pacman_options["needed"] = True
         for package_type in downloaded_ok:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
             try:
@@ -797,7 +805,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(err)
                 raise InstallError("Can't initialize pyalpm: %s" % err)        
 
-            result = alpm.do_install(self.packages[package_type], self.conflicts)
+            result = alpm.do_install(self.packages[package_type], self.conflicts, pacman_options)
 
             if result == 1:
                 if package_type == "base":
@@ -1044,7 +1052,6 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_bootloader(self):
         """ Installs bootloader """
-        # TODO Move bootloader functions into bootloader.py
 
         self.modify_grub_default()
         self.prepare_grub_d()
@@ -1120,12 +1127,6 @@ class InstallationProcess(multiprocessing.Process):
 
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
-
-        # This is no longer needed
-        # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
-        #with open(default_grub, 'a') as grub_file:
-        #    grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
-        #    grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
 
         logging.debug('/etc/default/grub configuration completed successfully.')
 
@@ -1594,6 +1595,8 @@ class InstallationProcess(multiprocessing.Process):
             Populate pacman keyring
             Setup systemd services
             ... and more """
+            
+        # TODO: Update progress bars to show progress to the user
 
         self.queue_event('info', _("Configuring your new system"))
 

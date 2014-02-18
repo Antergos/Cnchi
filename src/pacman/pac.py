@@ -82,10 +82,22 @@ class Pac(object):
         t.release()
         return True
 
-    def init_transaction(self, **options):
+    def init_transaction(self, options={}):
         """ Transaction initialization """
         try:
-            t = self.handle.init_transaction(**options)
+            t = self.handle.init_transaction(
+                    cascade = getattr(options, "cascade", False),
+                    nodeps = getattr(options, "nodeps", False),
+                    force = getattr(options, 'force', False),
+                    dbonly = getattr(options, 'dbonly', False),
+                    downloadonly = getattr(options, 'downloadonly', False),
+                    needed = getattr(options, 'needed', False),
+                    nosave = getattr(options, 'nosave', False),
+                    recurse = (getattr(options, 'recursive', 0) > 0),
+                    recurseall = (getattr(options, 'recursive', 0) > 1),
+                    unneeded = getattr(options, 'unneeded', False),
+                    alldeps = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_DEPEND),
+                    allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
 
         except pyalpm.error:
             line = traceback.format_exc()
@@ -93,28 +105,6 @@ class Pac(object):
             t = None
         finally:
             return t
-
-    '''
-    def init_transaction(self, options):
-        # Transaction initialization
-        #self.handle.dlcb = self.cb_dl
-        #self.handle.eventcb = self.cb_event
-        #self.handle.questioncb = self.cb_conv
-        #self.handle.progresscb = self.cb_progress
-        t = self.handle.init_transaction(
-                cascade = getattr(options, "cascade", False),
-                nodeps = getattr(options, "nodeps", False),
-                force = getattr(options, 'force', False),
-                dbonly = getattr(options, 'dbonly', False),
-                downloadonly = getattr(options, 'downloadonly', False),
-                nosave = getattr(options, 'nosave', False),
-                recurse = (getattr(options, 'recursive', 0) > 0),
-                recurseall = (getattr(options, 'recursive', 0) > 1),
-                unneeded = getattr(options, 'unneeded', False),
-                alldeps = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_DEPEND),
-                allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
-        return t
-    '''
 
     def do_refresh(self):
         """ Sync databases like pacman -Sy """
@@ -125,38 +115,7 @@ class Pac(object):
             t.release()
         return 0
 
-    def download_only(self, pkgs, conflicts=[]):
-        """ Download a list of packages (and its dependencies) like pacman -Sw """
-        logging.debug("Downloading a list of packages like pacman -Sw")
-
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
-
-        targets = self.get_targets(pkgs, conflicts)
-
-        if len(targets) == 0:
-            logging.error("No targets found")
-            return 1
-                    
-        t = self.init_transaction(downloadonly=True)
-
-        if t is None:
-            return 1
-
-        pkg_names = []
-        
-        for pkg in targets:
-            # Avoid duplicates
-            if pkg.name not in pkg_names:
-                logging.debug("Adding %s to download transaction" % pkg.name)
-                t.add_pkg(pkg)
-                pkg_names.append(pkg.name)
-
-        logging.debug("Finalize transaction...")
-        ok = self.finalize(t)
-
-        return (0 if ok else 1)
-
-    def do_install(self, pkgs, conflicts=[]):
+    def do_install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
         logging.debug("Install a list of packages like pacman -S")
 
@@ -168,7 +127,7 @@ class Pac(object):
             logging.error("No targets found")
             return 1
         
-        t = self.init_transaction(force=True)
+        t = self.init_transaction(options)
 
         if t is None:
             return 1
@@ -332,17 +291,14 @@ class Pac(object):
         """ Calculates progress and enqueues events with the information """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
-            #self.queue_event('global_percent', i / n)
+            percent = n / i
         else:
             target = _("Checking and loading packages...")
-            if _percent == 0:
-                # Hide global bar (left by cb_dl)
-                #self.queue_event('progress_bars', 'hide_global')
-                pass
-
-        percent = _percent / 100
+            percent = _percent / 100
+        
         self.queue_event('info', target)
         self.queue_event('local_percent', percent)
+
 
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
