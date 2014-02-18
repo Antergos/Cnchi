@@ -440,7 +440,6 @@
             <pkgname>ttf-droid</pkgname>
             <pkgname>ttf-freefont</pkgname>
             <pkgname>ttf-google-fonts</pkgname>
-            <pkgname>ttf-ubuntu-font-family</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
