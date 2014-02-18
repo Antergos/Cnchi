@@ -137,7 +137,7 @@ class Pac(object):
         for pkg in targets:
             # Avoid duplicates
             if pkg.name not in pkg_names:
-                logging.debug("Adding %s to install transaction" % pkg.name)
+                logging.debug("Adding %s to transaction" % pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
