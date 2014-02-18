@@ -71,7 +71,6 @@
         <pkgname>cabextract</pkgname>
         <pkgname>bzip2</pkgname>
         <pkgname>fastjar</pkgname>
-        <pkgname>lha</pkgname>
         <pkgname>lz4</pkgname>
         <pkgname>lzo2</pkgname>
         <pkgname>lzop</pkgname>
