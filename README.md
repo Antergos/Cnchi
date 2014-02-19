@@ -14,7 +14,7 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * python-dbus
  * python-cairo
  * libtimezonemap
- * webkitgtk3
+ * webkitgtk
  * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
  * py3parted (pyparted on python3) -> https://github.com/antergos/antergos-packages/tree/master/py3parted
  * pacman

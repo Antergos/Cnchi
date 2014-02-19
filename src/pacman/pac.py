@@ -28,7 +28,6 @@ import traceback
 import sys
 import math
 import logging
-import queue
 
 try:
     import pyalpm
@@ -37,7 +36,12 @@ except ImportError:
     print(msg)
     logging.error(msg)
 
-import pacman.config
+try:
+    from pacman.config import config
+except ImportError:
+    import config
+
+import queue
 
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
@@ -58,7 +62,7 @@ class Pac(object):
         self.last_event = {}
 
         if conf_path != None:
-            self.config = pacman.config.PacmanConfig(conf_path)
+            self.config = config.PacmanConfig(conf_path)
             self.handle = self.config.initialize_alpm()
 
             # Set callback functions
