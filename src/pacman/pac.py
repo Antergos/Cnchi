@@ -84,7 +84,7 @@ class Pac(object):
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
-        downloadonly = getattr(options, 'downloadonly', False),
+        downloadonly = getattr(options, 'downloadonly', False)
         print("downloadonly: ", downloadonly)
         try:
             t = self.handle.init_transaction(
