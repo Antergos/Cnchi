@@ -43,8 +43,6 @@ except ImportError:
 
 import queue
 
-from pprint import pprint
-
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
     def __init__(self, conf_path, callback_queue=None):
@@ -364,6 +362,6 @@ if __name__ == "__main__":
         raise InstallError("Can't initialize pyalpm: %s" % err)        
 
     #alpm.do_refresh()
-
+    pacman_options = {}
     pacman_options["downloadonly"] = True
     alpm.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
