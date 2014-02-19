@@ -294,6 +294,7 @@ class DownloadPackages(object):
         except queue.Full:
             pass
 
+''' Test case '''
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext

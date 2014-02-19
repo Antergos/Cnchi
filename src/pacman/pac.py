@@ -41,7 +41,7 @@ import pacman.config
 
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
-    def __init__(self, conf_path, callback_queue):
+    def __init__(self, conf_path, callback_queue=None):
         self.callback_queue = callback_queue
 
         self.conflict_to_remove = None
@@ -84,6 +84,8 @@ class Pac(object):
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
+        downloadonly = getattr(options, 'downloadonly', False),
+        print("downloadonly: ", downloadonly)
         try:
             t = self.handle.init_transaction(
                     cascade = getattr(options, "cascade", False),
@@ -210,10 +212,17 @@ class Pac(object):
             f = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
+        
+        if self.callback_queue is None:
+            print(event_type, event_text)
+            if event_type == "error":
+                sys.exit(1)
+            else:
+                return
 
         try:
             self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
+        except queue.Full as err:
             pass
 
         if event_type == "error":
@@ -339,3 +348,19 @@ class Pac(object):
             if progress > self.last_dl_progress:
                 self.last_dl_progress = progress
                 self.queue_event('local_percent', progress)
+
+''' Test case '''
+if __name__ == "__main__":
+    try:
+        alpm = Pac("/etc/pacman.conf")
+    except Exception as err:
+        logging.error(err)
+        raise InstallError("Can't initialize pyalpm: %s" % err)        
+
+    alpm.do_refresh()
+
+    pacman_options = {}
+    # This does not work. pyalpm downloads AND installs everything. Why?
+    # TODO: Fix this!
+    pacman_options["downloadonly"] = True
+    alpm.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
