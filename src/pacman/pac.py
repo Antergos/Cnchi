@@ -37,7 +37,7 @@ except ImportError:
     logging.error(msg)
 
 try:
-    from pacman.config import config
+    import pacman.config as config
 except ImportError:
     import config
 
