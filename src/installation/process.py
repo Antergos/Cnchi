@@ -753,8 +753,6 @@ class InstallationProcess(multiprocessing.Process):
         # First try to download all necessary packages
         
         pacman_options = {}
-        # This does not work. pyalpm downloads AND installs everything. Why?
-        # TODO: Fix this!
         pacman_options["downloadonly"] = True
         
         for package_type in self.packages:
@@ -789,8 +787,6 @@ class InstallationProcess(multiprocessing.Process):
         
         # Ok, now we can install all downloaded packages
         pacman_options = {}
-        # This does not work. pyalpm reinstalls everything. Why?
-        # TODO: Fix this!
         pacman_options["needed"] = True
         for package_type in downloaded_ok:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
