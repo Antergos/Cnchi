@@ -245,7 +245,7 @@ class InstallationProcess(multiprocessing.Process):
                 subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir])
                 if "/boot" in self.mount_devices:
                     txt = _("Mounting partition %s into %s/boot directory") % (boot_partition, self.dest_dir)
-                    logging.debug('debug', txt)
+                    logging.debug(txt)
                     subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
             except subprocess.CalledProcessError as err:
                 txt = _("Couldn't mount root and boot partitions")
