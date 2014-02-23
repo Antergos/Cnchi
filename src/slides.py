@@ -158,22 +158,21 @@ class Slides(Gtk.Box):
                     self.progress_bar.hide()
             elif event[0] == 'finished':
                 logging.info(event[1])
-                # Warn user about GRUB and ask if we should open wiki page.
                 if not self.settings.get('bootloader_ok'):
-                    import webbrowser
-                    self.boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
-                                       "installation which could prevent your system from booting properly. Before\n"
-                                       "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
-                                       "configured. The Arch Linux Wiki contains troubleshooting information:\n"
-                                       "\thttps://wiki.archlinux.org/index.php/GRUB\n"
-                                       "\nWould you like to view the wiki page now?")
-                    response = show.question(self.boot_warn)
+                    # Warn user about GRUB and ask if we should open wiki page.
+                    boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+                                  "installation which could prevent your system from booting properly. Before\n"
+                                  "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+                                  "configured. The Arch Linux Wiki contains troubleshooting information:\n"
+                                  "\thttps://wiki.archlinux.org/index.php/GRUB\n"
+                                  "\nWould you like to view the wiki page now?")
+                    response = show.question(boot_warn)
                     if response == Gtk.ResponseType.YES:
+                        import webbrowser
+                        misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
-                install_ok = _("Installation Complete!\n"
-                    "Do you want to restart your system now?")
-                #self.set_message(install_ok)
+                install_ok = _("Installation Complete!\nDo you want to restart your system now?")
                 response = show.question(install_ok)
                 if response == Gtk.ResponseType.YES:
                     logging.shutdown()
@@ -207,14 +206,8 @@ class Slides(Gtk.Box):
                     logging.debug("Restarting installation process...")
                     p = self.settings.get('installer_thread_call')
 
-                    self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        p['mount_devices'], \
-                        p['fs_devices'], \
-                        p['ssd'], \
-                        p['alternate_package_list'], \
-                        p['blvm'])
+                    self.process = installation_process.InstallationProcess(self.settings, self.callback_queue,
+                        p['mount_devices'], p['fs_devices'], p['ssd'], p['alternate_package_list'], p['blvm'])
 
                     self.process.start()
                     return True
