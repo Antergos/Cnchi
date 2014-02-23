@@ -1251,8 +1251,8 @@ class InstallationProcess(multiprocessing.Process):
             if os.path.exists(p):
                 exists.append(p)
         if len(exists) == 0:
-                logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
-                self.settings.set('bootloader_ok', False)
+            logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
+            self.settings.set('bootloader_ok', False)
         else:
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
             self.settings.set('bootloader_ok', True)
