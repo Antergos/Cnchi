@@ -47,7 +47,12 @@ class DesktopAsk(Gtk.Box):
         self.desktops_dir = os.path.join(self.settings.get('data'), "desktops/")
 
         self.desktop_info = self.ui.get_object("desktop_info")
-        self.treeview_desktop = self.ui.get_object("treeview_desktop")
+        #self.treeview_desktop = self.ui.get_object("treeview_desktop")
+        # Set up list box
+        self.listbox = self.ui.get_object("listbox_desktop")
+        self.listbox.connect("row-selected", self.on_listbox_row_selected)
+        self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        
 
         self.ui.connect_signals(self)
 
@@ -81,23 +86,29 @@ class DesktopAsk(Gtk.Box):
         self.show_all()
 
     def set_desktop_list(self):
-        """ Set desktop list in the TreeView """
-        render = Gtk.CellRendererText()
-        col_desktops = Gtk.TreeViewColumn(_("Desktops"), render, text=0)
-        liststore_desktop = Gtk.ListStore(str)
-        self.treeview_desktop.append_column(col_desktops)
-        self.treeview_desktop.set_model(liststore_desktop)
-
-        names = []
+        """ Set desktop list in the ListBox """
+        desktop_names = []
         for desktop in self.enabled_desktops:
-            names.append(desktops.NAMES[desktop])
+            desktop_names.append(desktops.NAMES[desktop])
 
-        names.sort()
+        desktop_names.sort()
 
-        for name in names:
-            liststore_desktop.append([name])
+        for desktop_name in desktop_names:
+            box = Gtk.VBox()
+            label = Gtk.Label(desktop_name)
+            label.set_alignment(0, 0.5)
+            box.add(label)
+            self.listbox.add(box)
+            if desktop_name == desktops.NAMES["gnome"]:
+                self.select_default_row(desktop_name)
 
-        self.select_default_row(self.treeview_desktop, 'Gnome')
+    def select_default_row(self, desktop_name):
+        for listbox_row in self.listbox.get_children():
+            for vbox in listbox_row.get_children():
+                label = vbox.get_children()[0]
+                if desktop_name == label.get_text():
+                    self.listbox.select_row(listbox_row)
+                    return
 
     def set_desktop(self, desktop):
         """ Show desktop info """
@@ -107,32 +118,20 @@ class DesktopAsk(Gtk.Box):
                 self.translate_ui(self.desktop_choice)
                 return
 
-    def on_treeview_desktop_cursor_changed(self, treeview):
-        selected = treeview.get_selection()
-        if selected:
-            (selection, iterator) = selected.get_selected()
-            if iterator:
-                desktop = selection.get_value(iterator, 0)
-                self.set_desktop(desktop)
-
+    def on_listbox_row_selected(self, listbox, listbox_row):
+        """ Someone selected a different row of the listbox """
+        if listbox_row is not None:
+            for vbox in listbox_row:
+                for label in vbox.get_children():
+                    desktop = label.get_text()
+                    self.set_desktop(desktop)
+    
     def store_values(self):
         """ Store desktop """
         self.settings.set('desktop', self.desktop_choice)
         logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice)
         return True
-
-    def select_default_row(self, treeview, desktop):
-        """ Select default treeview row """
-        model = treeview.get_model()
-        iterator = model.iter_children(None)
-        while iterator is not None:
-            if model.get_value(iterator, 0) == desktop:
-                path = model.get_path(iterator)
-                treeview.get_selection().select_path(path)
-                GLib.idle_add(self.scroll_to_cell, treeview, path)
-                break
-            iterator = model.iter_next(iterator)
-
+    
     def scroll_to_cell(self, treeview, path):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
