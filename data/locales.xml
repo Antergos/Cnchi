@@ -80,6 +80,10 @@
 		<locale_name>ar_YE.UTF-8</locale_name>
 	</language>
 	<language>
+		<language_name>Asturian (ES)</language_name>
+		<locale_name>ast_ES.UTF-8</locale_name>
+	</language>
+	<language>
 		<language_name>Belarusian (BY)</language_name>
 		<locale_name>be_BY.UTF-8</locale_name>
 	</language>
