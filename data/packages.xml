@@ -94,6 +94,7 @@
         <pkgname>gnome-keyring</pkgname>
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
+        <pkgname>gnome-shell-extensions</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>

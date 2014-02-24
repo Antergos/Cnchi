@@ -37,7 +37,7 @@ except ImportError:
     logging.error(msg)
 
 try:
-    from pacman.config import config
+    import pacman.config as config
 except ImportError:
     import config
 
@@ -88,23 +88,20 @@ class Pac(object):
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
-        downloadonly = getattr(options, 'downloadonly', False)
-        print("downloadonly: ", downloadonly)
         try:
             t = self.handle.init_transaction(
-                    cascade = getattr(options, "cascade", False),
-                    nodeps = getattr(options, "nodeps", False),
-                    force = getattr(options, 'force', False),
-                    dbonly = getattr(options, 'dbonly', False),
-                    downloadonly = getattr(options, 'downloadonly', False),
-                    needed = getattr(options, 'needed', False),
-                    nosave = getattr(options, 'nosave', False),
-                    recurse = (getattr(options, 'recursive', 0) > 0),
-                    recurseall = (getattr(options, 'recursive', 0) > 1),
-                    unneeded = getattr(options, 'unneeded', False),
-                    alldeps = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_DEPEND),
-                    allexplicit = (getattr(options, 'mode', None) == pyalpm.PKG_REASON_EXPLICIT))
-
+                    cascade = options.get('cascade', False),
+                    nodeps = options.get('nodeps', False),
+                    force = options.get('force', False),
+                    dbonly = options.get('dbonly', False),
+                    downloadonly = options.get('downloadonly', False),
+                    needed = options.get('needed', False),
+                    nosave = options.get('nosave', False),
+                    recurse = (options.get('recursive', 0) > 0),
+                    recurseall = (options.get('recursive', 0) > 1),
+                    unneeded = options.get('unneeded', False),
+                    alldeps = (options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
+                    allexplicit = (options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         except pyalpm.error:
             line = traceback.format_exc()
             logging.error(line)
@@ -355,16 +352,16 @@ class Pac(object):
 
 ''' Test case '''
 if __name__ == "__main__":
+    import gettext
+    _ = gettext.gettext
+
     try:
         alpm = Pac("/etc/pacman.conf")
     except Exception as err:
         logging.error(err)
         raise InstallError("Can't initialize pyalpm: %s" % err)        
 
-    alpm.do_refresh()
-
+    #alpm.do_refresh()
     pacman_options = {}
-    # This does not work. pyalpm downloads AND installs everything. Why?
-    # TODO: Fix this!
     pacman_options["downloadonly"] = True
     alpm.do_install(pkgs=["base"], conflicts=[], options=pacman_options)

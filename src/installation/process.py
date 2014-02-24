@@ -245,7 +245,7 @@ class InstallationProcess(multiprocessing.Process):
                 subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir])
                 if "/boot" in self.mount_devices:
                     txt = _("Mounting partition %s into %s/boot directory") % (boot_partition, self.dest_dir)
-                    logging.debug('debug', txt)
+                    logging.debug(txt)
                     subprocess.check_call(['mount', boot_partition, "%s/boot" % self.dest_dir])
             except subprocess.CalledProcessError as err:
                 txt = _("Couldn't mount root and boot partitions")
@@ -753,8 +753,6 @@ class InstallationProcess(multiprocessing.Process):
         # First try to download all necessary packages
         
         pacman_options = {}
-        # This does not work. pyalpm downloads AND installs everything. Why?
-        # TODO: Fix this!
         pacman_options["downloadonly"] = True
         
         for package_type in self.packages:
@@ -789,8 +787,6 @@ class InstallationProcess(multiprocessing.Process):
         
         # Ok, now we can install all downloaded packages
         pacman_options = {}
-        # This does not work. pyalpm reinstalls everything. Why?
-        # TODO: Fix this!
         pacman_options["needed"] = True
         for package_type in downloaded_ok:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
@@ -1255,8 +1251,8 @@ class InstallationProcess(multiprocessing.Process):
             if os.path.exists(p):
                 exists.append(p)
         if len(exists) == 0:
-                logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
-                self.settings.set('bootloader_ok', False)
+            logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
+            self.settings.set('bootloader_ok', False)
         else:
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
             self.settings.set('bootloader_ok', True)
