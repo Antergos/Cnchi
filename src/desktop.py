@@ -28,7 +28,7 @@ import logging
 import desktop_environments as desktops
 
 _next_page = "features"
-_prev_page = "check"
+_prev_page = "keymap"
 
 class DesktopAsk(Gtk.Box):
     """ Class to show the Desktop screen """

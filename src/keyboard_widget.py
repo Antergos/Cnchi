@@ -359,16 +359,28 @@ class KeyboardWidget(Gtk.DrawingArea):
             self.rounded_rectangle(cr, x, y, remaining_widths[2], kw)
 
     def regular_text(self, index):
-        return self.codes[index - 1][0]
+        try:
+            return self.codes[index - 1][0]
+        except IndexError as err:
+            return " "
 
     def shift_text(self, index):
-        return self.codes[index - 1][1]
+        try:
+            return self.codes[index - 1][1]
+        except IndexError as err:
+            return " "
 
     def ctrl_text(self, index):
-        return self.codes[index - 1][2]
+        try:
+            return self.codes[index - 1][2]
+        except IndexError as err:
+            return " "
 
     def alt_text(self, index):
-        return self.codes[index - 1][3]
+        try:
+            return self.codes[index - 1][3]
+        except IndexError as err:
+            return " "
 
     def load_codes(self):
         if self.layout is None:
