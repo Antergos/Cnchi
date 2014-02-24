@@ -17,21 +17,16 @@
         <property name="spacing">40</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
-            <property name="width_request">150</property>
-            <property name="height_request">50</property>
+            <property name="width_request">170</property>
+            <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_right">10</property>
             <property name="shadow_type">in</property>
             <child>
-              <object class="GtkTreeView" id="treeview_desktop">
+              <object class="GtkListBox" id="listbox_desktop">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="headers_visible">False</property>
-                <signal name="cursor-changed" handler="on_treeview_desktop_cursor_changed" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treeview-selection"/>
-                </child>
               </object>
             </child>
           </object>

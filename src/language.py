@@ -75,7 +75,7 @@ class Language(Gtk.Box):
         super().add(self.ui.get_object("language"))
 
     def on_listbox_row_selected(self, listbox, listbox_row):
-        # Someone selected a different row of the listbox
+        """ Someone selected a different row of the listbox """
         if listbox_row is not None:
             for vbox in listbox_row:
                 for label in vbox.get_children():
