@@ -108,6 +108,12 @@ class Location(Gtk.Box):
             self.translate_ui()
             self.show_all()
 
+        # Enable forward button
+        # If timezone does not work, forward button is disabled. If user doesn't choose timezone and
+        # goes back to this screen, forward button will still be disabled.
+        self.forward_button.set_sensitive(True)
+            
+
     def load_locales(self):
         data_dir = self.settings.get('data')
         xml_path = os.path.join(data_dir, "locales.xml")
