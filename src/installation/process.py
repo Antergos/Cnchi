@@ -1372,7 +1372,7 @@ class InstallationProcess(multiprocessing.Process):
 
         cpu = self.get_cpu()
 
-        hooks = ["base", "udev", "autodetect", "modconf", "block"]
+        hooks = ["base", "udev", "autodetect", "modconf", "block", "keyboard", "keymap"]
         modules = []
 
         # It is important that the encrypt hook comes before the filesystems hook
@@ -1392,14 +1392,14 @@ class InstallationProcess(multiprocessing.Process):
             hooks.append("lvm2")
 
         if "swap" in self.mount_devices:
-            hooks.extend(["resume", "filesystems", "keyboard", "keymap"])
+            hooks.extend(["resume", "filesystems"])
         else:
-            hooks.extend(["filesystems", "keyboard", "keymap"])
+            hooks.append("filesystems")
 
         if self.settings.get('btrfs') and cpu is not 'genuineintel':
-            modules.append('crc32c')
+            modules.append("crc32c")
         elif self.settings.get('btrfs') and cpu is 'genuineintel':
-            modules.append('crc32c-intel')
+            modules.append("crc32c-intel")
         else:
             hooks.append("fsck")
 
