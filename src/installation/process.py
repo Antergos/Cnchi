@@ -1046,7 +1046,10 @@ class InstallationProcess(multiprocessing.Process):
 
         self.modify_grub_default()
         self.prepare_grub_d()
-
+        
+        # Freeze and unfreeze xfs filesystems to enable grub(2) installation on xfs filesystems
+        self.freeze_xfs()
+        
         bootloader = self.settings.get('bootloader_type')
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
@@ -1285,6 +1288,37 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             # Ignore if already exists
             pass
+    
+    def freeze_xfs(self):
+        """ Freeze and unfreeze xfs, as hack for grub(2) installing """
+        if not os.path.exists("/usr/bin/xfs_freeze"):
+            return
+
+        xfs_boot = False
+        xfs_root = False
+
+        try:
+            subprocess.check_call(["sync"])
+            with open("/proc/mounts", "r") as mounts_file:
+                mounts = mounts_file.readlines()
+            # We leave a blank space in the end as we want to search exactly for this mount points
+            boot_mount_point = self.dest_dir + "/boot "
+            root_mount_point = self.dest_dir + " "
+            for line in mounts:
+                if " xfs " in line:
+                    if boot_mount_point in line:
+                        xfs_boot = True
+                    elif root_mount_point in line:
+                        xfs_root = True
+            if xfs_boot:
+                boot_mount_point = boot_mount_point.rstrip()
+                subprocess.check_call(["/usr/bin/xfs_freeze", "-f", boot_mount_point])
+                subprocess.check_call(["/usr/bin/xfs_freeze", "-u", boot_mount_point])
+            if xfs_root:
+                subprocess.check_call(["/usr/bin/xfs_freeze", "-f", self.dest_dir])
+                subprocess.check_call(["/usr/bin/xfs_freeze", "-u", self.dest_dir])
+        except subprocess.CalledProcessError as err:
+            logging.warning(_("Can't freeze/unfreeze xfs system"))
 
     def enable_services(self, services):
         """ Enables all services that are in the list 'services' """
