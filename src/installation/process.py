@@ -748,8 +748,6 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('global_percent', 0)
         self.queue_event('local_percent', 0)
         
-        downloaded_ok = []
-        
         # First try to download all necessary packages
         
         pacman_options = {}
@@ -769,10 +767,8 @@ class InstallationProcess(multiprocessing.Process):
                 if package_type == "base":
                     raise InstallError("Can't download group 'base'. Cnchi can't continue.")
                 else:
-                    txt = _("Can't download group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type
+                    txt = _("Can't download group '%s'. Cnchi will continue and try again this download later.") % package_type
                     logging.error(txt)
-            else:
-                downloaded_ok.append(package_type)
 
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
             logging.debug("global_percent : %f", global_percent)
@@ -788,7 +784,7 @@ class InstallationProcess(multiprocessing.Process):
         # Ok, now we can install all downloaded packages
         pacman_options = {}
         pacman_options["needed"] = True
-        for package_type in downloaded_ok:
+        for package_type in self.packages:
             logging.debug(_("Installing packages from '%s' group...") % package_type)
             try:
                 alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
