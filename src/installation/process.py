@@ -585,11 +585,18 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Hardware module added these packages : %s") % txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
-                self.packages["drivers"].extend(hardware_pkgs)
+                self.packages['drivers'].extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s") % err)
+            
+        # By default, hardware module adds vesa driver but in a NoX install we don't want it
+        if self.desktop == "nox":
+            if "v86d" in self.packages['drivers']:
+                self.packages['drivers'].remove("v86d")
+            if "xf86-video-vesa" in self.packages['drivers']:
+                self.packages['drivers'].remove("xf86-video-vesa")
 
         # Add filesystem packages
 
@@ -972,7 +979,7 @@ class InstallationProcess(multiprocessing.Process):
                     home_keyfile = "/etc/luks-keys/home"
                 subprocess.check_call(['chmod', '0777', '%s/etc/crypttab' % self.dest_dir])
                 with open('%s/etc/crypttab' % self.dest_dir, 'a') as crypttab_file:
-                    line = "cryptManjaroHome /dev/disk/by-uuid/%s %s luks\n" % (uuid, home_keyfile)
+                    line = "cryptAntergosHome /dev/disk/by-uuid/%s %s luks\n" % (uuid, home_keyfile)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
                 subprocess.check_call(['chmod', '0600', '%s/etc/crypttab' % self.dest_dir])
@@ -1141,7 +1148,6 @@ class InstallationProcess(multiprocessing.Process):
         """ Install bootloader in a BIOS system """
         grub_location = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_location)
-
 
         self.chroot_mount_special_dirs()
         
@@ -1617,7 +1623,9 @@ class InstallationProcess(multiprocessing.Process):
             Setup systemd services
             ... and more """
 
-        self.queue_event('pulse', _("Configuring your new system"))
+        self.queue_event('pulse', 'start')
+        
+        self.queue_event('info', _("Configuring your new system"))
 
         self.auto_fstab()
         logging.debug(_('fstab file generated.'))
@@ -1754,7 +1762,7 @@ class InstallationProcess(multiprocessing.Process):
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
-        self.queue_event('pulse', _("Generating locales..."))
+        self.queue_event('info', _("Generating locales..."))
 
         self.uncomment_locale_gen(locale)
 
@@ -1770,7 +1778,7 @@ class InstallationProcess(multiprocessing.Process):
         with open(vconsole_conf_path, "w") as vconsole_conf:
             vconsole_conf.write('KEYMAP=%s\n' % keyboard_layout)
 
-        self.queue_event('pulse', _("Adjusting hardware clock..."))
+        self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
         if desktop != "nox":
@@ -1793,7 +1801,7 @@ class InstallationProcess(multiprocessing.Process):
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
-        self.queue_event('pulse', _("Configuring System Startup..."))
+        self.queue_event('info', _("Configuring System Startup..."))
         self.run_mkinitcpio()
 
         logging.debug(_("Call Cnchi post-install script"))
