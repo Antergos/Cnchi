@@ -139,7 +139,7 @@ class Slides(Gtk.Box):
         self.should_pulse = False
         self.progress_bar.hide()
 
-    def start_pulse(self):
+    def pulse(self, text):
         """ Start pulsing progressbar """
         def pbar_pulse():
             """ Pulse progressbar """
@@ -147,9 +147,11 @@ class Slides(Gtk.Box):
                 self.progress_bar.pulse()
             return self.should_pulse
 
-        self.progress_bar.show_all()
+        self.progress_bar.set_text(text)
         
         if not self.should_pulse:
+            self.progress_bar.show_all()
+            self.progress_bar.set_show_text(True)
             self.should_pulse = True
             GLib.timeout_add(100, pbar_pulse)
     
@@ -172,10 +174,11 @@ class Slides(Gtk.Box):
                 self.show_global_progress_bar_if_hidden()
                 self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'pulse':
-                if event[1] == 'start':
-                    self.start_pulse()
-                elif event[1] == 'stop':
+                if event[1] == 'stop':
                     self.stop_pulse()
+                else:
+                    self.pulse(event[1])
+                    logging.info(event[1])
             elif event[0] == 'progress_bars':
                 if event[1] == 'hide_all' or event[1] == 'hide_global':
                     self.global_progress_bar.hide()
