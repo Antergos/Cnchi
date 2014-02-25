@@ -1617,9 +1617,7 @@ class InstallationProcess(multiprocessing.Process):
             Setup systemd services
             ... and more """
 
-        self.queue_event('info', _("Configuring your new system"))
-        
-        self.queue_event('pulse', 'start')
+        self.queue_event('pulse', _("Configuring your new system"))
 
         self.auto_fstab()
         logging.debug(_('fstab file generated.'))
@@ -1756,7 +1754,7 @@ class InstallationProcess(multiprocessing.Process):
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
-        self.queue_event('info', _("Generating locales..."))
+        self.queue_event('pulse', _("Generating locales..."))
 
         self.uncomment_locale_gen(locale)
 
@@ -1772,7 +1770,7 @@ class InstallationProcess(multiprocessing.Process):
         with open(vconsole_conf_path, "w") as vconsole_conf:
             vconsole_conf.write('KEYMAP=%s\n' % keyboard_layout)
 
-        self.queue_event('info', _("Adjusting hardware clock..."))
+        self.queue_event('pulse', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
         if desktop != "nox":
@@ -1795,7 +1793,7 @@ class InstallationProcess(multiprocessing.Process):
         # I think it should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
-        self.queue_event('info', _("Configuring System Startup..."))
+        self.queue_event('pulse', _("Configuring System Startup..."))
         self.run_mkinitcpio()
 
         logging.debug(_("Call Cnchi post-install script"))
