@@ -87,6 +87,7 @@ class Slides(Gtk.Box):
 
         self.fatal_error = False
         self.global_progress_bar_is_hidden = True
+        self.should_pulse = False
 
     def translate_ui(self):
         if len(self.info_label.get_label()) <= 0:
@@ -110,6 +111,7 @@ class Slides(Gtk.Box):
         self.global_progress_bar.hide()
         self.global_progress_bar_is_hidden = True
 
+        # Hide backwards and forwards button
         self.backwards_button.hide()
         self.forward_button.hide()
 
@@ -132,6 +134,25 @@ class Slides(Gtk.Box):
         #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
+    def stop_pulse(self):
+        """ Stop pulsing progressbar """
+        self.should_pulse = False
+        self.progress_bar.hide()
+
+    def start_pulse(self):
+        """ Start pulsing progressbar """
+        def pbar_pulse():
+            """ Pulse progressbar """
+            if self.should_pulse:
+                self.progress_bar.pulse()
+            return self.should_pulse
+
+        self.progress_bar.show_all()
+        
+        if not self.should_pulse:
+            self.should_pulse = True
+            GLib.timeout_add(100, pbar_pulse)
+    
     def manage_events_from_cb_queue(self):
         """ This function is called from cnchi.py with a timeout function
             We should do as less as possible here, we want to maintain our
@@ -150,6 +171,11 @@ class Slides(Gtk.Box):
             elif event[0] == 'global_percent':
                 self.show_global_progress_bar_if_hidden()
                 self.global_progress_bar.set_fraction(event[1])
+            elif event[0] == 'pulse':
+                if event[1] == 'start':
+                    self.start_pulse()
+                elif event[1] == 'stop':
+                    self.stop_pulse()
             elif event[0] == 'progress_bars':
                 if event[1] == 'hide_all' or event[1] == 'hide_global':
                     self.global_progress_bar.hide()

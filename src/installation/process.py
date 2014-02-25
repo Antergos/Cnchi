@@ -1620,10 +1620,10 @@ class InstallationProcess(multiprocessing.Process):
             Populate pacman keyring
             Setup systemd services
             ... and more """
-            
-        # TODO: Update progress bars to show progress to the user
 
         self.queue_event('info', _("Configuring your new system"))
+        
+        self.queue_event('pulse', 'start')
 
         self.auto_fstab()
         logging.debug(_('fstab file generated.'))
@@ -1839,3 +1839,6 @@ class InstallationProcess(multiprocessing.Process):
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug('Copying install log to /var/log.')
         self.copy_log()
+
+        self.queue_event('pulse', 'stop')
+
