@@ -28,7 +28,7 @@ import show_message as show
 """ AutoPartition class """
 
 # Partition sizes are in MB
-MAX_ROOT_SIZE = 10000
+MAX_ROOT_SIZE = 20000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
@@ -113,8 +113,7 @@ def unmount_all(dest_dir):
         if os.path.exists("/dev/mapper/cryptAntergosHome"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't close LUKS devices (see below)"))
-        logging.warning(err)
+        logging.warning(_("Can't close LUKS devices : %s") % err.output)
 
 class AutoPartition(object):
     """ Class used by the automatic installation method """
@@ -373,7 +372,11 @@ class AutoPartition(object):
             with open("%s/size" % base_path, 'r') as f:
                 size = int(f.read())
 
-            disc_size = ((logical_block_size * size) / 1024) / 1024
+            # Divide to get MB 1000*1000
+            disc_size = logical_block_size * size / 1000000
+            logging.debug("The device %s has a size of %dMB" % (self.auto_device, disc_size))
+            # leave 1MB alone
+            disc_size -= 1
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
                 "installation method for partitioning and mounting devices.")
@@ -395,6 +398,7 @@ class AutoPartition(object):
         root_part_size = disc_size - (empty_space_size + gpt_bios_grub_part_size + uefisys_part_size + boot_part_size + swap_part_size)
 
         home_part_size = 0
+        
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
             new_root_part_size = root_part_size / 5
