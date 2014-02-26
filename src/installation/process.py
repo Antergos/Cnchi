@@ -155,7 +155,16 @@ class InstallationProcess(multiprocessing.Process):
         self.dest_dir = "/install"
 
         if not os.path.exists(self.dest_dir):
-            os.makedirs(self.dest_dir)
+            try:
+                with misc.raised_privileges():
+                    os.makedirs(self.dest_dir)
+            except os.Error as err:
+                # Already exists or can't create it
+                logging.warning(err.strerror)
+                if not os.path.exists(self.dest_dir):
+                    txt = _("Can't create %s directory, Cnchi can't continue") % self.dest_dir
+                    logging.error(txt)
+                    raise InstallError(txt)
         else:
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
