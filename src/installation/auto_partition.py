@@ -372,9 +372,9 @@ class AutoPartition(object):
             with open("%s/size" % base_path, 'r') as f:
                 size = int(f.read())
 
-            #disc_size = ((logical_block_size * size) / 1024) / 1024
-            disc_size = (logical_block_size * size / 1000 / 1000)
-            logging.debug("The device %s has a size of %dGB" % (self.auto_device, disc_size/1000))
+            # Divide to get MB 1000*1000
+            disc_size = logical_block_size * size / 1000000
+            logging.debug("The device %s has a size of %dMB" % (self.auto_device, disc_size))
             # leave 1MB alone
             disc_size -= 1
         else:
