@@ -160,7 +160,10 @@ class Pac(object):
         for name in pkgs:
             ok, pkg = self.find_sync_package(name, repos)
             if ok:
-                targets.append(pkg)
+                # Check that added package is not in our conflicts list
+                # Ex: gnome-extra adds brasero, then we don't want xfburn (which is a default) to be installed
+                if pkg.name not in conflicts:
+                    targets.append(pkg)
             else:
                 # Can't find this one, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
@@ -168,13 +171,13 @@ class Pac(object):
                     # It's a group
                     for pkg in group_pkgs:
                         # Check that added package is not in our conflicts list
-                        # Ex: connman conflicts with netctl(openresolv), which is
-                        # installed by default with base group
+                        # Ex: connman conflicts with netctl(openresolv),
+                        # which is installed by default with base group
                         if pkg.name not in conflicts and pkg.name not in pkgs:
                             targets.append(pkg)
                 else:
                     # No, it wasn't neither a package nor a group. Show error message and continue.
-                    logging.error(pkg)
+                    logging.error(_("Can't find a package or group called '%s'") % name)
 
         return targets      
 
