@@ -164,7 +164,7 @@ class DownloadPackages(object):
         try:
             connection = xmlrpc.client.ServerProxy(aria2_url)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-            logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
+            logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
 
         '''
         try:
