@@ -666,7 +666,9 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages[feature].append(pkg.text)
                         else:
                             logging.debug("Skipping %s package: %s for feature: %s", plib, pkg.text, feature)
-
+                        
+                        if pkg.attrib.get('conflicts'):
+                            self.conflicts.append(pkg.attrib.get('conflicts'))
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):

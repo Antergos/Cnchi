@@ -435,12 +435,13 @@
             <pkgname>splix</pkgname>
         </cups>
         <gnome_extra>
-            <pkgname>gnome-extra</pkgname>
+            <!-- Gnome extra installs brasero, so why install xfburn too? -->
+            <pkgname conflicts='xfburn'>gnome-extra</pkgname>
         </gnome_extra>
         <fonts>
             <!-- <pkgname>ttf-droid</pkgname> -->
             <pkgname>ttf-freefont</pkgname>
-            <pkgname conflicts="ttf-droid">ttf-google-fonts</pkgname>
+            <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
