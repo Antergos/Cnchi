@@ -438,9 +438,9 @@
             <pkgname>gnome-extra</pkgname>
         </gnome_extra>
         <fonts>
-            <pkgname>ttf-droid</pkgname>
+            <!-- <pkgname>ttf-droid</pkgname> -->
             <pkgname>ttf-freefont</pkgname>
-            <pkgname>ttf-google-fonts</pkgname>
+            <pkgname conflicts="ttf-droid">ttf-google-fonts</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>

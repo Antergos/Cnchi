@@ -669,7 +669,7 @@ class InstallationAdvanced(Gtk.Box):
             mymount = mount_combo_entry.get_text().strip()
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
-                show.warning(_('Cannot use same mount twice.'))
+                show.warning(_('Cannot use the same mount point twice.'))
             elif mymount == "/" and not format_check.get_active():
                 show.warning(_('Root partition must be formatted.'))
             else:
@@ -924,7 +924,7 @@ class InstallationAdvanced(Gtk.Box):
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic['mounts']:
-                show.warning(_('Cannot use same mount twice...'))
+                show.warning(_('Cannot use the same mount point twice...'))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
@@ -945,7 +945,7 @@ class InstallationAdvanced(Gtk.Box):
 
                 # User wants to create an extended, logical or primary partition
                 if primary_radio.get_active():
-                    logging.debug(_("Creating primary partition"))
+                    logging.debug(_("Creating a primary partition"))
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif extended_radio.get_active():
                     # No mounting extended partitions.
@@ -956,13 +956,13 @@ class InstallationAdvanced(Gtk.Box):
                     mylabel = ''
                     myfmt = 'extended'
                     formatme = False
-                    logging.debug(_("Creating extended partition"))
+                    logging.debug(_("Creating an extended partition"))
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif logical_radio.get_active():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
-                        logging.debug(_("Creating logical partition"))
+                        logging.debug(_("Creating a logical partition"))
                         # Which geometry should we use here?
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
@@ -1619,6 +1619,8 @@ class InstallationAdvanced(Gtk.Box):
 
         bold = "<b>%s</b>"
         y = 0
+        
+        self.to_be_deleted.sort()
 
         # First, show partitions that will be deleted
         for ea in self.to_be_deleted:
@@ -1658,13 +1660,15 @@ class InstallationAdvanced(Gtk.Box):
             Gtk.main_iteration()
 
         return response
-
+    
     def store_values(self):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
         if changelist == []:
             # Something wrong has happened or nothing to change
             return False
+            
+        changelist.sort()
 
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
@@ -1802,14 +1806,11 @@ class InstallationAdvanced(Gtk.Box):
                 uid = self.gen_partition_uid(p=p)
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
-                    # FIX: Do not mount extended or bios-gpt-boot partitions
+                    # Do not mount extended or bios-gpt-boot partitions
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         continue
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
-                #elif pm.check_mounted(p):
-                #    mount_point, fs, writable = self.get_mount_point(p.path)
-                #    mount_devices[mount_point] = partition_path
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() is False:

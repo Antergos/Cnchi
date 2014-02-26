@@ -138,6 +138,7 @@ class Slides(Gtk.Box):
         """ Stop pulsing progressbar """
         self.should_pulse = False
         self.progress_bar.hide()
+        self.info_label.show_all()
 
     def start_pulse(self):
         """ Start pulsing progressbar """
@@ -146,13 +147,17 @@ class Slides(Gtk.Box):
             if self.should_pulse:
                 self.progress_bar.pulse()
             return self.should_pulse
-
-        self.progress_bar.show_all()
         
         if not self.should_pulse:
+            # Hide any text that might be in info area
+            self.info_label.set_markup("")
+            self.info_label.hide()
+            # Show progress bar (just in case)
+            self.progress_bar.show_all()
+            self.progress_bar.set_show_text(True)
             self.should_pulse = True
             GLib.timeout_add(100, pbar_pulse)
-    
+
     def manage_events_from_cb_queue(self):
         """ This function is called from cnchi.py with a timeout function
             We should do as less as possible here, we want to maintain our
@@ -172,10 +177,10 @@ class Slides(Gtk.Box):
                 self.show_global_progress_bar_if_hidden()
                 self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'pulse':
-                if event[1] == 'start':
-                    self.start_pulse()
-                elif event[1] == 'stop':
+                if event[1] == 'stop':
                     self.stop_pulse()
+                elif event[1] == 'start':
+                    self.start_pulse()
             elif event[0] == 'progress_bars':
                 if event[1] == 'hide_all' or event[1] == 'hide_global':
                     self.global_progress_bar.hide()
@@ -242,7 +247,10 @@ class Slides(Gtk.Box):
                     return False
             elif event[0] == 'info':
                 logging.info(event[1])
-                self.set_message(event[1])
+                if self.should_pulse:
+                    self.progress_bar.set_text(event[1])
+                else:
+                    self.set_message(event[1])
 
             self.callback_queue.task_done()
 
