@@ -83,6 +83,7 @@
         <pkgname>cdrkit</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>eog</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
@@ -114,7 +115,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>shotwell</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -130,6 +130,7 @@
         <pkgname>cinnamon-screensaver</pkgname>
         <pkgname>cinnamon-theme-nadia</pkgname>
         <pkgname>empathy</pkgname>
+        <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
@@ -159,7 +160,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>shotwell</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
