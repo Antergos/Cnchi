@@ -771,6 +771,7 @@ class InstallationProcess(multiprocessing.Process):
         
         pacman_options = {}
         pacman_options["downloadonly"] = True
+        
         for package_type in self.packages:
             logging.debug(_("Downloading packages from '%s' group...") % package_type)
             try:
