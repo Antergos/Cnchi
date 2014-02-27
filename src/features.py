@@ -120,6 +120,7 @@ class Features(Gtk.Box):
         self.titles["aur"].set_markup(txt)
         txt = _("The AUR is a community-driven repository for Arch users.")
         self.labels["aur"].set_markup(txt)
+
         txt = _("Use yaourt to install AUR packages.\n"
                 "The AUR was created to organize and share new packages\n"
                 "from the community and to help expedite popular packages'\n"
@@ -134,6 +135,7 @@ class Features(Gtk.Box):
         self.titles["bluetooth"].set_markup(txt)
         txt = _("Enables your system to make wireless connections via Bluetooth.")
         self.labels["bluetooth"].set_markup(txt)
+
         txt = _("Bluetooth is a standard for the short-range wireless\n"
                 "interconnection of cellular phones, computers, and\n"
                 "other electronic devices. In Linux, the canonical\n"
@@ -148,6 +150,7 @@ class Features(Gtk.Box):
         self.titles["fonts"].set_markup(txt)
         txt = _("Installation of extra TrueType fonts")
         self.labels["fonts"].set_markup(txt)
+
         txt = _("TrueType is an outline font standard developed by\n"
                 "Apple and Microsoft in the late 1980s as a competitor\n"
                 "to Adobe's Type 1 fonts used in PostScript. It has\n"
@@ -163,6 +166,7 @@ class Features(Gtk.Box):
         self.titles["gnome_extra"].set_markup(txt)
         txt = _("Installation of extra Gnome applications")
         self.labels["gnome_extra"].set_markup(txt)
+
         txt = _("Contains various optional tools such as a media\n"
                 "player, a calculator, an editor and other non-critical\n"
                 "applications that go well with the GNOME desktop.\n")
@@ -170,25 +174,13 @@ class Features(Gtk.Box):
         self.switches["gnome_extra"].set_tooltip_markup(txt)
         self.labels["gnome_extra"].set_tooltip_markup(txt)
 
-        # Mate Extra
-        txt = _("Mate Extra")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["mate_extra"].set_markup(txt)
-        txt = _("Installation of extra Mate applications")
-        self.labels["mate_extra"].set_markup(txt)
-        txt = _("Contains various optional tools such as a media\n"
-                "player, a calculator, an editor and other non-critical\n"
-                "applications that go well with the MATE desktop.\n")
-        self.titles["mate_extra"].set_tooltip_markup(txt)
-        self.switches["mate_extra"].set_tooltip_markup(txt)
-        self.labels["mate_extra"].set_tooltip_markup(txt)
-
         # Printing support (cups)
         txt = _("Printing Support")
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
         txt = _("Installation of printer drivers and management tools.")
         self.labels["cups"].set_markup(txt)
+
         txt = _("CUPS is the standards-based, open source printing\n"
                 "system developed by Apple Inc. for OS® X and other\n"
                 "UNIX®-like operating systems.")
@@ -202,6 +194,7 @@ class Features(Gtk.Box):
         self.titles["office"].set_markup(txt)
         txt = _("Open source office suite. Supports editing MS Office files.")
         self.labels["office"].set_markup(txt)
+
         txt = _("LibreOffice is the free power-packed Open Source\n"
                 "personal productivity suite for Windows, Macintosh\n"
                 "and Linux, that gives you six feature-rich applications\n"
@@ -217,6 +210,7 @@ class Features(Gtk.Box):
         self.titles["visual"].set_markup(txt)
         txt = _("Enable transparency, shadows, and other desktop effects.")
         self.labels["visual"].set_markup(txt)
+
         txt = _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
@@ -232,6 +226,7 @@ class Features(Gtk.Box):
         self.titles["firewall"].set_markup(txt)
         txt = _("Control the incoming and outgoing network traffic.")
         self.labels["firewall"].set_markup(txt)
+
         txt = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                 "managing a netfilter firewall. It provides a command line\n"
                 "interface and aims to be uncomplicated and easy to use.")
