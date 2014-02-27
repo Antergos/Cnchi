@@ -84,7 +84,6 @@
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>eog</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
@@ -109,7 +108,6 @@
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
         <pkgname>nautilus</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -132,7 +130,6 @@
         <pkgname>empathy</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
@@ -154,7 +151,6 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
         <pkgname>libgnomeui</pkgname>
         <pkgname>nemo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -171,7 +167,6 @@
     <xfce_desktop>
         <pkgname>cdrkit</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
@@ -185,7 +180,6 @@
         <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -212,7 +206,6 @@
 
     <razor_desktop>
         <pkgname>clementine</pkgname>
-        <pkgname>hotot-qt</pkgname>
         <pkgname>kdeartwork-desktopthemes</pkgname>
         <pkgname>kdebase-konsole</pkgname>
         <pkgname>kdegraphics-gwenview</pkgname>
@@ -232,7 +225,6 @@
 
     <mate_desktop>
         <pkgname>cdrkit</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gst-libav</pkgname>
@@ -245,7 +237,6 @@
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-calc</pkgname>
@@ -273,11 +264,9 @@
     </mate_desktop>
 
     <enlightenment_desktop>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>hotot-gtk3</pkgname>
         <pkgname>enlightenment</pkgname>        
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
@@ -301,7 +290,6 @@
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
-        <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>galculator</pkgname>
@@ -361,7 +349,6 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
-        <pkgname>hotot-qt</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
