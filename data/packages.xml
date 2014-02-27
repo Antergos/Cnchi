@@ -81,7 +81,6 @@
 
     <gnome_desktop>
         <pkgname>cdrkit</pkgname>
-        <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
@@ -130,7 +129,6 @@
         <pkgname>cinnamon-control-center</pkgname>
         <pkgname>cinnamon-screensaver</pkgname>
         <pkgname>cinnamon-theme-nadia</pkgname>
-        <pkgname>dvdauthor</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
@@ -172,7 +170,6 @@
 
     <xfce_desktop>
         <pkgname>cdrkit</pkgname>
-        <pkgname>dvdauthor</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
@@ -303,7 +300,6 @@
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
-        <pkgname>dvdauthor</pkgname>
         <pkgname>faenza-hotot-icon</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
