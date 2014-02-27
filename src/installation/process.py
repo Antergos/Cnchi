@@ -551,21 +551,22 @@ class InstallationProcess(multiprocessing.Process):
 
             # Set KDE language pack
             if self.desktop == 'kde':
-                logging.debug(_('Add kde language package'))
-                pkg = 'kde-l10n-'
+                pkg = ""
+                base_name = 'kde-l10n-'
                 lang_name = self.settings.get("language_name").lower()
                 if lang_name == "english":
                     # There're some English variants available but not all of them.
                     lang_packs = ['en_gb']
                     locale = self.settings.get('locale').split('.')[0]
                     if locale in lang_packs:
-                        pkg = pkg + locale
+                        pkg = base_name + locale
                 else:
                     # All the other language packs use their language code
                     lang_code = self.settings.get('language_code')
-                    pkg = pkg + lang_code
-                logging.debug(_('Selected kde language pack: %s') % pkg)
-                self.packages["desktop"].append(pkg)
+                    pkg = base_name + lang_code
+                if len(pkg) > 0:
+                    logging.debug(_('Selected kde language pack: %s') % pkg)
+                    self.packages["desktop"].append(pkg)
         else:
             # Add specific NoX/Base packages
             for child in root.iter('nox'):
