@@ -191,6 +191,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
         <pkgname>thunar-archive-plugin</pkgname>
