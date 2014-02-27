@@ -421,8 +421,11 @@
         </cups>
         <gnome_extra>
             <!-- Gnome extra installs brasero, so why install xfburn too? -->
-            <pkgname conflicts='xfburn'>gnome-extra</pkgname>
+            <pkgname conflicts='xfburn'>gnome-extra</pkgname> <!-- Group -->
         </gnome_extra>
+        <mate_extra>
+            <pkgname>mate-extra</pkgname> <!-- Group -->
+        </mate_extra>
         <fonts>
             <!-- <pkgname>ttf-droid</pkgname> -->
             <pkgname>ttf-freefont</pkgname>
