@@ -226,7 +226,7 @@ razor_settings(){
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
-kde_settings() {
+kde_settings(){
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
