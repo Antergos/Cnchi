@@ -106,20 +106,20 @@ linux_entry ()
             check=$(( $entry % 2 ))
             if (([ "$entry" != "0" ] && [ "$check" -eq "0" ]) || [ "$entry" == "0" ]); then
                   if [ "$version" == "linux" ]; then
-	                title="$(gettext_printf "%s, with Arch Core Kernel" "${os}")"
+	                title="$(gettext_printf "%s" "${os}")"
 	          elif [ "$version" == "linux-lts" ]; then
-	                title="$(gettext_printf "%s, with Arch LTS Kernel" "${os}")"
+	                title="$(gettext_printf "%s LTS Kernel" "${os}")"
 	          else
 	                title="$(gettext_printf "%s, with %s Kernel" "${os}" "${version}")"
 	          fi
                   entry=$((entry + 1))
             else
                   if [ "$version" == "linux" ]; then
-	                title="$(gettext_printf "%s, with Arch Core Kernel (fallback initramfs)" "${os}")"
+	                title="$(gettext_printf "%s - Fallback" "${os}")"
 	          elif [ "$version" == "linux-lts" ]; then
-	                title="$(gettext_printf "%s, with Arch LTS Kernel (fallback initramfs)" "${os}")"
+	                title="$(gettext_printf "%s LTS Kernel - Fallback" "${os}")"
 	          else
-	                title="$(gettext_printf "%s, with %s Kernel (fallback initramfs)" "${os}" "${version}")"
+	                title="$(gettext_printf "%s, with %s Kernel - Fallback" "${os}" "${version}")"
 	          fi
                   entry=$((entry + 1))
             fi
