@@ -189,6 +189,8 @@ class UserInfo(Gtk.Box):
 
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
+            '''
+            # This is not true anymore, we use encFS now.
             message = _("Antergos will use eCryptfs to encrypt your home directory.\n"
                 "Unfortunately, eCryptfs does not handle sparse files very well.\n\n"
                 "Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n\n"
@@ -197,7 +199,9 @@ class UserInfo(Gtk.Box):
                 "lead to intense disk starvation.\n\n"
                 "A simple workaround is to place sparse files in an unencrypted Public directory.\n\n"
                 "Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n\n"
-                "Are you sure you want to encrypt your home directory?\n")
+                "Are you sure you want to encrypt your home directory?")
+            '''
+            message = _("Are you sure you want to encrypt your home directory?")
             res = show.question(message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
