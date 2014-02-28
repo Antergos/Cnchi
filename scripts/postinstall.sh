@@ -234,7 +234,6 @@ kde_settings() {
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
-	rm -R ${DESTDIR}/usr/share/apps/desktoptheme/slim-glow/lancelot
     wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
     unzip -o -qq /tmp/master.zip
     cd kde-setup-master
@@ -244,7 +243,7 @@ kde_settings() {
     mv home/user home/${USER_NAME}
     cp -R home ${DESTDIR}
     cp -R usr ${DESTDIR}
-    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
+    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0
 
 	# Set Root environment
 	cd /tmp/kde-setup-master
@@ -252,12 +251,12 @@ kde_settings() {
 	usr_new=root
     grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
     cd /tmp/kde-setup-master
-    mv home/${USER_NAME} home/root
-    cp -R home/root ${DESTDIR}
-    chroot ${DESTDIR} ln -s /home/root/.gtkrc-2.0 /home/root/.gtkrc-2.0-kde4
+    mv home/${USER_NAME} /root
+    cp -R /root ${DESTDIR}
+    chroot ${DESTDIR} ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0
 
 	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update
+	chroot ${DESTDIR} su -c xdg-user-dirs-update --system
 	
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
