@@ -278,7 +278,7 @@ mate_settings() {
     wget -q "https://github.com/Antergos/mate-setup/archive/master.zip"
     unzip -o -qq /tmp/master.zip
     cd mate-setup-master
-    usr_old=dustin
+    usr_old=antergos
     grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
     cd /tmp/mate-setup-master
     cp -R usr ${DESTDIR}
