@@ -256,14 +256,35 @@ kde_settings(){
     chroot ${DESTDIR} ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0
 
 	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update --system
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 	
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
+	# Set skel directory
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+
 }
 
 mate_settings() {
+
+	# Set MATE in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+
+	# Get zip file from github, unzip it and copy all setup files in their right places.
+	cd /tmp
+    wget -q "https://github.com/Antergos/mate-setup/archive/master.zip"
+    unzip -o -qq /tmp/master.zip
+    cd mate-setup-master
+    usr_old=dustin
+    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
+    cd /tmp/mate-setup-master
+    cp -R usr ${DESTDIR}
+
+	## Set default directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -285,15 +306,10 @@ mate_settings() {
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 
-	## Set default directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-
 	# Set mate in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-
-	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
 }
 
