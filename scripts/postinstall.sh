@@ -234,7 +234,7 @@ kde_settings(){
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
-    wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
+    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
     unzip -o -qq /tmp/master.zip
     cd kde-setup-master
     usr_old=dustin

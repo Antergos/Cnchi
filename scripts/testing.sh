@@ -18,7 +18,7 @@ echo "Removing existing Cnchi..."
 rm -R /usr/share/cnchi;
 cd /usr/share;
 echo "Getting latest version of Cnchi..."
-git clone https://github.com/lots0logs/Cnchi.git cnchi;
+git clone https://github.com/Antergos/Cnchi.git cnchi;
 else
 echo "Previous setup detected, skipping downloads"
 fi
