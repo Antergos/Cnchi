@@ -237,7 +237,7 @@ kde_settings(){
     wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
     unzip -o -qq /tmp/master.zip
     cd kde-setup-master
-    usr_old=dustin
+    usr_old=antergos
     grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
     cd /tmp/kde-setup-master
     mv home/user home/${USER_NAME}
