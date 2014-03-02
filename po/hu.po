@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-02-28 14:49+0000\n"
+"Last-Translator: i_sty <szollosi.istv4n@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/antergos/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -58,13 +58,13 @@ msgstr "Kilépés a telepítőből..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Használj Aria2-t az Antergos csomagok letöltéséhez (KÍSÉRLETI)"
 
 #: cnchi.py:429
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "Használj előre letöltött xz csomagokat (Cnchi frissülni fog, ha egy újabb verzió elérhető)"
 
 #: cnchi.py:430
 msgid ""
@@ -73,20 +73,20 @@ msgstr ""
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Állítsd a Cnchi naplózást debug-ra"
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Frissítsd a Cnchi-t a legfrissebb verzióra (erőltetett frissítés -uu)"
 
 #: cnchi.py:433
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr ""
+msgstr "Telepítse a csomagokat egy helyi xml fájl szerint az alapértelmezett helyett"
 
 #: cnchi.py:434
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "Ne végezzen semmilyen változtatást (fejlesztők számára hasznos)"
 
 #: cnchi.py:435
 msgid "Show logging messages to stdout"
@@ -271,11 +271,11 @@ msgstr ""
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "'%s' letöltése"
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
-msgstr ""
+msgstr "Nem lehet kapcsolódni az Aria2-hőz. Hibajelentés: %s"
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
@@ -307,7 +307,7 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr ""
+msgstr "Használd a yaourt-ot az AUR csomagok telepítéséhez.\nAz AUR azzal céllal jött létre, hogy rendezve és megosztva legyenek az új csomagok,\namelyeket a közösség készít és felgyorsítsa a programok népszerűségét,\nez magában foglalja a [community] tárolót is."
 
 #: src/features.py:133
 msgid "Bluetooth Support"
@@ -323,15 +323,15 @@ msgid ""
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr ""
+msgstr "A Bluetooth egy szabvány a rövid hatótávolságú vezeték nélküli\nösszekapcsolásnak mobiltelefonok, számítógépek és\nmás elektronikus eszközök között. Linuxon a\nBluetooth protokoll végrehajtását a BlueZ köteg biztosítja. "
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "TrueType betűkészletek"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "TrueType betűtípusok telepítése"
 
 #: src/features.py:154
 msgid ""
@@ -340,7 +340,7 @@ msgid ""
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr ""
+msgstr "TrueType betűkészlet szabványt az Apple és a Microsoft\naz 1980-as években fejlesztette ki, mint versenytárs\naz Adobe Type 1 betűtípusnak, amelyet a PostScript használ.\nEz vált a leggyakoribb betűtípus formátummá mind a\nMac OS és Microsoft Windows operációs rendszereken."
 
 #: src/features.py:164
 msgid "Gnome Extra"
@@ -512,7 +512,7 @@ msgstr ""
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Nem használható ugyanaz a csatolás kétszer."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
@@ -520,19 +520,19 @@ msgstr "Root partíciót muszáj formázni."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Nem lehet kétszer használni ugyanazt a csatolási pontot..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Elsődleges partíció létrehozása"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "Kiterjesztett partíció létrehozása"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "Logikai partíció létrehozása"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
@@ -544,23 +544,23 @@ msgstr "Használja a készüléket az alábbi rendszerindító telepítéséhez:
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "Csatolási lista:"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
@@ -694,11 +694,11 @@ msgstr "Változtatások mentése befejeződött itt %s"
 
 #: src/installation/advanced.py:1736
 msgid "Creating new %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "%s fájlrendszer készítése ebben: %s, ezzel a címkével: %s"
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "%s fájlrendszer készítése ebben: %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"

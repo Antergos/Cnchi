@@ -6,13 +6,14 @@
 # faidoc <alexfilgueira@antergos.com>, 2013
 # karasu0 <karasu@antergos.com>, 2013-2014
 # karasu0 <karasu@antergos.com>, 2013
+# ArcNexus <marcmirallesbiosca@gmail.com>, 2014
 # tot3lmon <tot3lmon@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-02-27 00:40+0000\n"
+"Last-Translator: ArcNexus <marcmirallesbiosca@gmail.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -455,7 +456,7 @@ msgstr "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow S
 
 #: src/hardware/hardware.py:65 src/installation/process.py:918
 msgid "Error running command: %s"
-msgstr ""
+msgstr "Error al córrer la ordre: %s"
 
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
@@ -1047,7 +1048,7 @@ msgstr "S'han afegit tots els paquets per a les característiques escollides"
 
 #: src/installation/process.py:640
 msgid "Selecting chinese fonts."
-msgstr ""
+msgstr "Sel·leccionant les fonts xineses."
 
 #: src/installation/process.py:646
 msgid "Adding bootloader packages if needed"
@@ -1055,7 +1056,7 @@ msgstr "Afegint els paquets del carregador d'arrencada"
 
 #: src/installation/process.py:691
 msgid "Add libreoffice language package"
-msgstr ""
+msgstr "Afegir paquet de llenguatge de lliureoffice"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
@@ -1103,7 +1104,7 @@ msgstr ""
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
-msgstr ""
+msgstr "Afegit a fstab :UUID= %s %s %s %s 0 %s"
 
 #: src/installation/process.py:995
 msgid "Added to crypttab : %s"
@@ -1195,7 +1196,7 @@ msgstr ""
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
-msgstr ""
+msgstr "No es pot instal·lar el GRUB(2) en local"
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
@@ -1203,7 +1204,7 @@ msgstr ""
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
-msgstr ""
+msgstr "Activat"
 
 #: src/installation/process.py:1347
 msgid "Error creating password hash for user %s"
@@ -1223,15 +1224,15 @@ msgstr ""
 
 #: src/installation/process.py:1486
 msgid "Configuring bluetooth..."
-msgstr ""
+msgstr "Configurant el bluetooth..."
 
 #: src/installation/process.py:1492
 msgid "Configuring CUPS..."
-msgstr ""
+msgstr "Configurant el CUPS..."
 
 #: src/installation/process.py:1504
 msgid "Configuring firewall..."
-msgstr ""
+msgstr "Configurant el tallafocs..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
@@ -1255,7 +1256,7 @@ msgstr "Configurant el nou sistema"
 
 #: src/installation/process.py:1642
 msgid "fstab file generated."
-msgstr ""
+msgstr "fitxer fstab generat."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
@@ -1275,7 +1276,7 @@ msgstr ""
 
 #: src/installation/process.py:1683
 msgid "Can't copy mirrorlist file"
-msgstr ""
+msgstr "No es pot copiar el fitxer de la llista de miralls"
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
