@@ -137,7 +137,7 @@ class AutoPartition(object):
         if os.path.exists("/sys/firmware/efi"):
             # TODO: Let user choose between GPT and MBR.
             # As it is now, Grub has some GPT issues.  For now always use MBR.
-            self.uefi = False
+            self.uefi = True
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -219,19 +219,11 @@ class AutoPartition(object):
 
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
-        if self.uefi:
-            efi = self.auto_device + "2"
-            boot = self.auto_device + "3"
-            swap = self.auto_device + "4"
-            root = self.auto_device + "5"
-            if self.home:
-                home = self.auto_device + "6"
-        else:
-            boot = self.auto_device + "1"
-            swap = self.auto_device + "2"
-            root = self.auto_device + "3"
-            if self.home:
-                home = self.auto_device + "4"
+        boot = self.auto_device + "1"
+        swap = self.auto_device + "2"
+        root = self.auto_device + "3"
+        if self.home:
+             home = self.auto_device + "4"
 
         if self.luks:
             if self.lvm:
@@ -262,15 +254,13 @@ class AutoPartition(object):
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py """
 
-        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         mount_devices = {}
         mount_devices["/boot"] = boot_device
         mount_devices["/"] = root_device
         mount_devices["/home"] = home_device
 
-        if self.uefi:
-            mount_devices["/boot/efi"] = efi_device
 
         if self.luks:
             mount_devices["/"] = luks_devices[0]
@@ -287,15 +277,18 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ fs_devices will be used when configuring the fstab file in installation_process.py """
 
-        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         fs_devices = {}
 
-        fs_devices[boot_device] = "ext2"
+        if self.uefi:
+            fs_devices[boot_device] = "vfat"
+        else:
+            fs_devices[boot_device] = "ext2"
+
         fs_devices[swap_device] = "swap"
 
-        if self.uefi:
-            fs_devices[efi_device] = "vfat"
+
 
         if self.luks:
             fs_devices[luks_devices[0]] = "ext4"
@@ -352,14 +345,14 @@ class AutoPartition(object):
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
-        if self.uefi:
-            gpt_bios_grub_part_size = 2
-            uefisys_part_size = 512
-            empty_space_size = 2
-        else:
-            gpt_bios_grub_part_size = 0
-            uefisys_part_size = 0
-            empty_space_size = 0
+        # if self.uefi:
+        #     gpt_bios_grub_part_size = 2
+        #     uefisys_part_size = 512
+        #     empty_space_size = 2
+        #else:
+        gpt_bios_grub_part_size = 0
+        uefisys_part_size = 0
+        empty_space_size = 0
 
         # Get just the disk size in 1000*1000 MB
         device = self.auto_device
@@ -431,11 +424,13 @@ class AutoPartition(object):
         printk(False)
 
         # We assume a /dev/hdX format (or /dev/sdX)
-        if self.uefi:
+        # We are not using GPT for UEFI at this time
+        use_gpt = False
+        if self.uefi and use_gpt:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
             # clean partition table to avoid issues!
             subprocess.check_call(["sgdisk", "--zap", device])
-            
+
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
             subprocess.check_call(["wipefs", "-a", device])
@@ -508,16 +503,18 @@ class AutoPartition(object):
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle", "--quiet"])
 
-        (efi_device, boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
-        if not self.home and self.uefi:
-            logging.debug("EFI %s, Boot %s, Swap %s, Root %s", efi_device, boot_device, swap_device, root_device)
-        elif not self.home and not self.uefi:
-            logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
-        elif self.home and self.uefi:
-            logging.debug("EFI %s, Boot %s, Swap %s, Root %s, Home %s", efi_device, boot_device, swap_device, root_device, home_device)
-        else:
+        # if not self.home and self.uefi:
+        #     logging.debug("EFI %s, Boot %s, Swap %s, Root %s", efi_device, boot_device, swap_device, root_device)
+        # elif not self.home and not self.uefi:
+        #     logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
+        # elif self.home and self.uefi:
+        #     logging.debug("EFI %s, Boot %s, Swap %s, Root %s, Home %s", efi_device, boot_device, swap_device, root_device, home_device)
+        if self.home:
             logging.debug("Boot %s, Swap %s, Root %s, Home %s", boot_device, swap_device, root_device, home_device)
+        else:
+            logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
 
         if self.luks:
             self.setup_luks(luks_devices[0], "cryptAntergos", key_files[0])
@@ -543,11 +540,11 @@ class AutoPartition(object):
         # Make sure the "root" partition is defined first!
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
-        self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
-
         if self.uefi:
-            # Format EFI partition with fat32
-            self.mkfs(efi_device, "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
+            # Format /boot partition with vfat
+            self.mkfs(boot_device, "vfat", "/boot", "AntergosEFI", "-F 32")
+        else:
+            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
 
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
