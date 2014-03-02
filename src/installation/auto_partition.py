@@ -249,7 +249,7 @@ class AutoPartition(object):
             if self.home:
                 home = "/dev/AntergosVG/AntergosHome"
 
-        return (efi, boot, swap, root, luks, lvm, home)
+        return (boot, swap, root, luks, lvm, home)
 
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py """
