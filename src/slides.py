@@ -62,6 +62,9 @@ class Slides(Gtk.Box):
         self.global_progress_bar = builder.get_object("global_progressbar")
         self.global_progress_bar.set_show_text(True)
 
+        self.progress_bar.set_name('i_progressbar')
+        self.global_progress_bar.set_name('a_progressbar')
+
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
 
