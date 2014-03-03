@@ -105,6 +105,7 @@ cinnamon_settings(){
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
@@ -141,6 +142,7 @@ xfce_settings(){
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 openbox_settings(){
@@ -194,6 +196,7 @@ openbox_settings(){
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 razor_settings(){
@@ -222,6 +225,7 @@ razor_settings(){
 	# Set Razor in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 	
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
@@ -231,6 +235,7 @@ kde_settings(){
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
@@ -272,16 +277,7 @@ mate_settings() {
 	# Set MATE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-
-	# Get zip file from github, unzip it and copy all setup files in their right places.
-	cd /tmp
-    wget -q "https://github.com/Antergos/mate-setup/archive/master.zip"
-    unzip -o -qq /tmp/master.zip
-    cd mate-setup-master
-    usr_old=antergos
-    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
-    cd /tmp/mate-setup-master
-    cp -R usr ${DESTDIR}
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
 	## Set default directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -301,15 +297,13 @@ mate_settings() {
 
     # Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	cp /usr/share/cnchi/scripts/mate-schemas ${DESTDIR}/usr/bin/mate-schemas
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
+	rm ${DESTDIR}/usr/bin/mate-schemas
 
-	# Set mate in .dmrc
-	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
-	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
 }
 
