@@ -2,12 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# Radek <radek@fastlinux.eu>, 2014
+# Japhy <zeman.filip@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-01 20:13+0000\n"
+"Last-Translator: Japhy <zeman.filip@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/antergos/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +22,7 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "Tento instalátor musí být spuštěn s oprávněními správce a bez nich nemůže pokračovat."
 
 #: cnchi.py:124
 msgid ""
@@ -29,7 +31,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Nelze spustit dvě instance tohoto instalačního programu.\n\nPokud jste si jisti, že instalační program není spuštěn\nmůžete ručně odstranit soubor %s\na spustit instalátor znovu."
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
@@ -37,7 +39,7 @@ msgstr ""
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "Využít Aria2 pro stažení balíčků - EXPERIMENTÁLNÍ"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
@@ -45,11 +47,11 @@ msgstr ""
 
 #: cnchi.py:284
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Antergos Instalátor"
 
 #: cnchi.py:309
 msgid "Quiting installer..."
-msgstr ""
+msgstr "Dokončuji instalaci ..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
@@ -98,88 +100,88 @@ msgstr ""
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
 msgid "unknown"
-msgstr ""
+msgstr "neznámý"
 
 #: src/canonical/misc.py:929
 msgid "Can't set locale %s"
-msgstr ""
+msgstr "Nelze nastavit národní prostředí %s"
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
-msgstr ""
+msgstr "heslo je příliš krátké"
 
 #: src/canonical/validation.py:135
 msgid "weak password"
-msgstr ""
+msgstr "slabé heslo"
 
 #: src/canonical/validation.py:138
 msgid "fair password"
-msgstr ""
+msgstr "reálné heslo"
 
 #: src/canonical/validation.py:141
 msgid "good password"
-msgstr ""
+msgstr "dobré heslo"
 
 #: src/canonical/validation.py:144
 msgid "strong password"
-msgstr ""
+msgstr "silné heslo"
 
 #: src/canonical/validation.py:159
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Hesla se neshodují"
 
 #: src/check.py:74
 msgid "System Check"
-msgstr ""
+msgstr "Kontrola systému"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
-msgstr ""
+msgstr "máte k dispozici alespoň %dGB  volného místa."
 
 #: src/check.py:86
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr ""
+msgstr "toto závisí na desktopovém prostředí které jste vybrali, možná bude zapotřebí více místa."
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
-msgstr ""
+msgstr "je připojen ke zdroji napájení"
 
 #: src/check.py:95
 msgid "is connected to the Internet"
-msgstr ""
+msgstr "je připojen k Internetu"
 
 #: src/check.py:99
 msgid "For best results, please ensure that this computer:"
-msgstr ""
+msgstr "Pro dosažení nejlepších výsledků se ujistěte, že tento počítač:"
 
 #: src/check.py:169
 msgid "We have Internet connection."
-msgstr ""
+msgstr "Jsme připojení k internetu."
 
 #: src/check.py:170
 msgid "We're connected to a power source."
-msgstr ""
+msgstr "Jsme připojeni ke zdroji napájení."
 
 #: src/check.py:171
 msgid "We have enough disk space."
-msgstr ""
+msgstr "Máme dostatek místa na disku."
 
 #: src/desktop.py:79
 msgid "Choose Your Desktop"
-msgstr ""
+msgstr "Vyberte si svůj desktop"
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi nainstaluje distribuci Antergos spolu s pracovním prostředím '%s'"
 
 #: src/desktop_environments.py:64
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "Gnome 3 je jednoduchý a elegantní způsob, jak používat váš počítač. Je vybaveno přehledem aktivit, které usnadní přístup ke všem základním úkolům. GNOME 3 je výchozí desktop distribuce Antergos."
 
 #: src/desktop_environments.py:69
 msgid ""
@@ -195,7 +197,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr ""
+msgstr "XFCE je odlehčené desktopové prostředí. Cílí na rychlost a být nenáročné na systémové požadavky, ačkoli zůstává vizuálně přitažlivé a uživatelsky přívětivé. Je skvělou volbou pro použití na starších počítačích nebo ty s nízkou hardwarovou specifikací."
 
 #: src/desktop_environments.py:79
 msgid ""
@@ -218,7 +220,7 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Enlightenment není jen správce oken pro Linux/X11 a další, ale také celá sada knihoven, které vám pomohou vytvořit krásné uživatelské rozhraní s vynaložením méně práce"
 
 #: src/desktop_environments.py:93
 msgid ""
@@ -232,7 +234,7 @@ msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt je moderní, snadno ovladatelné a rychlé desktopové prostředí založené na Qt technologiích. Je vhodné pro uživatele, kteří ocení jednoduchost, rychlost a intuitivní rozhraní."
 
 #: src/desktop_environments.py:102
 msgid ""
@@ -266,7 +268,7 @@ msgstr ""
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "Stahování %s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
@@ -278,11 +280,11 @@ msgstr ""
 
 #: src/download.py:249
 msgid "Can't find these packages: "
-msgstr ""
+msgstr "Nepodařilo se nalézt následující balíčky:"
 
 #: src/download.py:255
 msgid "Warning! Can't resolve these dependencies: "
-msgstr ""
+msgstr "Varování! Nelze vyřešit tyto závislosti:"
 
 #: src/features.py:110
 msgid "Feature Selection"
@@ -294,7 +296,7 @@ msgstr ""
 
 #: src/features.py:121
 msgid "The AUR is a community-driven repository for Arch users."
-msgstr ""
+msgstr "AUR je repositář pro uživatele Arch linuxu spravovaný komunitou."
 
 #: src/features.py:124
 msgid ""
@@ -306,11 +308,11 @@ msgstr ""
 
 #: src/features.py:133
 msgid "Bluetooth Support"
-msgstr ""
+msgstr "Podpora Bluetooth"
 
 #: src/features.py:136
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "Umožní systému zajistit bezdrátové spojení pomocí bluetooth."
 
 #: src/features.py:139
 msgid ""
@@ -354,7 +356,7 @@ msgstr ""
 
 #: src/features.py:178
 msgid "Printing Support"
-msgstr ""
+msgstr "Podpora tisku"
 
 #: src/features.py:181
 msgid "Installation of printer drivers and management tools."
@@ -369,11 +371,11 @@ msgstr ""
 
 #: src/features.py:192
 msgid "LibreOffice"
-msgstr ""
+msgstr "LibreOffice"
 
 #: src/features.py:195
 msgid "Open source office suite. Supports editing MS Office files."
-msgstr ""
+msgstr "Kancelářská sada s otevřeným zdrojovým kódem. Podporuje úpravu souborů MS Office. "
 
 #: src/features.py:198
 msgid ""
@@ -386,11 +388,11 @@ msgstr ""
 
 #: src/features.py:208
 msgid "Visual Effects"
-msgstr ""
+msgstr "Vizuální efekty"
 
 #: src/features.py:211
 msgid "Enable transparency, shadows, and other desktop effects."
-msgstr ""
+msgstr "Povolit průhlednost, stíny, a ostatní destkopové efekty."
 
 #: src/features.py:214
 msgid ""
@@ -403,7 +405,7 @@ msgstr ""
 
 #: src/features.py:224
 msgid "Uncomplicated Firewall"
-msgstr ""
+msgstr "Jednoduchý firewall"
 
 #: src/features.py:227
 msgid "Control the incoming and outgoing network traffic."
@@ -418,11 +420,11 @@ msgstr ""
 
 #: src/features.py:238
 msgid "Proprietary Software"
-msgstr ""
+msgstr "Proprietární software"
 
 #: src/features.py:241
 msgid "Software to play Flash videos, MP3 audio, and other media."
-msgstr ""
+msgstr "Software pro přehrávání Flash videí, hudby ve formátu MP3, a ostatních multimediálních souborů."
 
 #: src/features.py:305
 msgid "Arch User Repository - Disclaimer"
@@ -450,12 +452,12 @@ msgstr ""
 
 #: src/hardware/hardware.py:65 src/installation/process.py:918
 msgid "Error running command: %s"
-msgstr ""
+msgstr "Chyba při spuštění příkazu: %s"
 
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
 msgid "free space"
-msgstr ""
+msgstr "volné místo"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
@@ -463,19 +465,19 @@ msgstr ""
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
-msgstr ""
+msgstr "Zařízení"
 
 #: src/installation/advanced.py:290
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: src/installation/advanced.py:293
 msgid "Mount point"
-msgstr ""
+msgstr "Přípojný bod"
 
 #: src/installation/advanced.py:296
 msgid "Label"
-msgstr ""
+msgstr "Název"
 
 #: src/installation/advanced.py:302 src/installation/advanced.py:1634
 msgid "Format"
@@ -483,23 +485,23 @@ msgstr ""
 
 #: src/installation/advanced.py:305
 msgid "Size"
-msgstr ""
+msgstr "Velikost"
 
 #: src/installation/advanced.py:308
 msgid "Used"
-msgstr ""
+msgstr "Využito"
 
 #: src/installation/advanced.py:311
 msgid "Flags"
-msgstr ""
+msgstr "Příznak"
 
 #: src/installation/advanced.py:317
 msgid "SSD"
-msgstr ""
+msgstr "SSD"
 
 #: src/installation/advanced.py:486
 msgid "none"
-msgstr ""
+msgstr "žádný"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
@@ -507,19 +509,19 @@ msgstr ""
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Nelze použít stejný přípojný bod dvakrát."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
-msgstr ""
+msgstr "Root oddíl musí být naformátován."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Nelze použít stejný přípojný bod dvakrát..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Vytváření primární oblasti"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
@@ -531,7 +533,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "Pokročilý režim instalace"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
@@ -543,43 +545,43 @@ msgstr ""
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
-msgstr ""
+msgstr "Nová tabulka oblastí"
 
 #: src/installation/advanced.py:1144
 msgid "Change..."
-msgstr ""
+msgstr "Změnit..."
 
 #: src/installation/advanced.py:1149
 msgid "Size:"
-msgstr ""
+msgstr "Velikost:"
 
 #: src/installation/advanced.py:1153
 msgid "Type:"
-msgstr ""
+msgstr "Typ"
 
 #: src/installation/advanced.py:1157
 msgid "Primary"
-msgstr ""
+msgstr "Primární"
 
 #: src/installation/advanced.py:1161
 msgid "Logical"
-msgstr ""
+msgstr "Logická"
 
 #: src/installation/advanced.py:1165
 msgid "Extended"
@@ -587,11 +589,11 @@ msgstr ""
 
 #: src/installation/advanced.py:1169
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Začátek dostupného místa"
 
 #: src/installation/advanced.py:1173
 msgid "End of this space"
-msgstr ""
+msgstr "Konec dostupného místa"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
@@ -599,11 +601,11 @@ msgstr ""
 
 #: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
-msgstr ""
+msgstr "Přípojný bod:"
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
-msgstr ""
+msgstr "Název (volitelné):"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
@@ -611,7 +613,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1206
 msgid "Format:"
-msgstr ""
+msgstr "Formátovat:"
 
 #: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
@@ -619,12 +621,12 @@ msgstr ""
 
 #: src/installation/advanced.py:1216
 msgid "Create Partition Table"
-msgstr ""
+msgstr "Vytvořit tabulku oblastí"
 
 #: src/installation/advanced.py:1219 src/installation/alongside.py:149
 #: src/installation/automatic.py:95
 msgid "Install Now!"
-msgstr ""
+msgstr "Instalovat!"
 
 #: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
@@ -661,7 +663,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1627
 msgid "Partition %s will be deleted"
-msgstr ""
+msgstr "Oddíl %s bude smazán"
 
 #: src/installation/advanced.py:1634
 msgid "Mount"
@@ -669,11 +671,11 @@ msgstr ""
 
 #: src/installation/advanced.py:1634
 msgid "New"
-msgstr ""
+msgstr "Nový"
 
 #: src/installation/advanced.py:1634
 msgid "Partition"
-msgstr ""
+msgstr "Oddíl"
 
 #: src/installation/advanced.py:1634
 msgid "Relabel"
@@ -681,7 +683,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1655
 msgid "We will make changes to partitions on these disks:"
-msgstr ""
+msgstr "Budou provedeny změny oddílů na těchto discích:"
 
 #: src/installation/advanced.py:1712
 msgid "Finished saving changes in %s"
@@ -693,7 +695,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "Vytváří se nový souborový systém %s v %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
@@ -701,7 +703,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
-msgstr ""
+msgstr "Nebude instalován zavaděč systému"
 
 #: src/installation/advanced.py:1827
 msgid "Antergos will install the bootloader of type %s in %s"
@@ -713,7 +715,7 @@ msgstr ""
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
-msgstr ""
+msgstr "Nelze nahrát %s css"
 
 #: src/installation/alongside.py:138
 msgid "Select the OS you would like Antergos installed next to."
@@ -725,11 +727,11 @@ msgstr ""
 
 #: src/installation/alongside.py:174
 msgid "Detected OS"
-msgstr ""
+msgstr "Detekovaný operační systém"
 
 #: src/installation/alongside.py:177
 msgid "Filesystem"
-msgstr ""
+msgstr "Souborový systém"
 
 #: src/installation/alongside.py:221
 msgid "Unable to create list of partitions for alongside installation."
@@ -741,15 +743,15 @@ msgstr ""
 
 #: src/installation/ask.py:97
 msgid "Installation Type"
-msgstr ""
+msgstr "Typ instalace"
 
 #: src/installation/ask.py:113
 msgid "Erase disk and install Antergos"
-msgstr ""
+msgstr "Vymazat disk a nainstalovat Antergos"
 
 #: src/installation/ask.py:116
 msgid "Warning: This will erase ALL data on your disk."
-msgstr ""
+msgstr "Varování: Tímto vymažete veškerá data na disku."
 
 #: src/installation/ask.py:122
 msgid "Encrypt this installation for increased security."
@@ -808,7 +810,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
 msgid "Unmounting %s failed. Trying lazy arg."
-msgstr ""
+msgstr "Odpojování %s selhalo. Probíhá pokus s opožděnými arg."
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
@@ -820,11 +822,11 @@ msgstr ""
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "Neznámý typ souborového systému %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "Nelze vytvořit souborový systém %s"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
@@ -842,17 +844,17 @@ msgstr ""
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
-msgstr ""
+msgstr "Vyberte disk:"
 
 #: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
-msgstr ""
+msgstr "VAROVÁNÍ\" Tímto přepíšete veškerá data na vašem disku!"
 
 #: src/installation/automatic.py:80
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr ""
+msgstr "Vyberte disk, kde má být nainstalován Antergos a klikněte níže pro zahájení instalace."
 
 #: src/installation/automatic.py:85
 msgid "Encryption Password:"
@@ -860,15 +862,15 @@ msgstr ""
 
 #: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Znovu zadejte heslo pro ověření:"
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
-msgstr ""
+msgstr "zobrazit heslo"
 
 #: src/installation/automatic.py:99
 msgid "Automatic Installation Mode"
-msgstr ""
+msgstr "Automatická instalace"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
@@ -883,15 +885,15 @@ msgid ""
 "Do you really want to proceed and delete all your content on your hard drive?\n"
 "\n"
 "%s"
-msgstr ""
+msgstr "Opravdu chcete pokračovat a vymazat tak veškerý obsah na vašem pevném disku?\n\n%s"
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
-msgstr ""
+msgstr "Cnchi nainstaluje Antergos na %s"
 
 #: src/installation/automatic.py:222
 msgid "Antergos will install the %s bootloader on %s"
-msgstr ""
+msgstr "Antergos nainstaluje zavaděč %s na "
 
 #: src/installation/process.py:92
 msgid "Installing using the '%s' method. Please wait..."
@@ -899,7 +901,7 @@ msgstr ""
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
-msgstr ""
+msgstr "Nelze vytvořit %s adresář. Cnchi nemůže pokračovat"
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
@@ -907,38 +909,38 @@ msgstr ""
 
 #: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
-msgstr ""
+msgstr "Chyba při vytváření oddílů a jejich souborových systémů"
 
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:891
 msgid "Command %s has failed."
-msgstr ""
+msgstr "Provedení příkazu %s selhalo."
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "Výstup : %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
-msgstr ""
+msgstr "Připojuje se oddíl %s do adresáře %s"
 
 #: src/installation/process.py:256
 msgid "Mounting partition %s into %s/boot directory"
-msgstr ""
+msgstr "Připojuje se oddíl %s do adresáře %s/boot"
 
 #: src/installation/process.py:260
 msgid "Couldn't mount root and boot partitions"
-msgstr ""
+msgstr "Nedaří se připojit oddíly root a boot"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "Provedení příkazu %s selhalo"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
-msgstr ""
+msgstr "Nelze připojit %s v %s"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
@@ -946,11 +948,11 @@ msgstr ""
 
 #: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
-msgstr ""
+msgstr "Na cílovém systému nelze vytvořit potřebné adresáře"
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
-msgstr ""
+msgstr "Probíhá výběr balíků..."
 
 #: src/installation/process.py:331
 msgid "Packages selected"
@@ -958,7 +960,7 @@ msgstr ""
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Stahování balíčků pomocí aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
@@ -966,23 +968,23 @@ msgstr ""
 
 #: src/installation/process.py:346
 msgid "Installing packages..."
-msgstr ""
+msgstr "Instalují se balíčky..."
 
 #: src/installation/process.py:348
 msgid "Packages installed."
-msgstr ""
+msgstr "Balíčky nainstalovány."
 
 #: src/installation/process.py:350
 msgid "Configuring system..."
-msgstr ""
+msgstr "Konfigurace systému..."
 
 #: src/installation/process.py:352
 msgid "System configured."
-msgstr ""
+msgstr "Systém nakonfigurován."
 
 #: src/installation/process.py:387
 msgid "Installation finished"
-msgstr ""
+msgstr "Instalace dokončena"
 
 #: src/installation/process.py:398
 msgid "Can't copy Cnchi log to %s"
@@ -994,7 +996,7 @@ msgstr ""
 
 #: src/installation/process.py:509
 msgid "Getting package list..."
-msgstr ""
+msgstr "Získává se seznamu balíků..."
 
 #: src/installation/process.py:518
 msgid "Can't retrieve remote package list, using a local file instead."
@@ -1022,11 +1024,11 @@ msgstr ""
 
 #: src/installation/process.py:599 src/installation/process.py:1734
 msgid "Can't import hardware module."
-msgstr ""
+msgstr "Nelze importovat hardwarové moduly."
 
 #: src/installation/process.py:601 src/installation/process.py:1736
 msgid "Unknown error in hardware module. Output: %s"
-msgstr ""
+msgstr "Neznámá chyba v hardwarovém modulu. Výstup: %s"
 
 #: src/installation/process.py:612
 msgid "Adding filesystem packages"
@@ -1050,35 +1052,35 @@ msgstr ""
 
 #: src/installation/process.py:691
 msgid "Add libreoffice language package"
-msgstr ""
+msgstr "Přidat jazykový balíček pro LibreOffice"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
-msgstr ""
+msgstr "Skupina balíčků '%s' má %s balíčků"
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi nainstaluje celkem %d balíčků."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "Stahují se balíčky ze skupiny '%s'..."
 
 #: src/installation/process.py:788
 msgid ""
 "Can't download group '%s'. Cnchi will continue and try again this download "
 "later."
-msgstr ""
+msgstr "Nedaří se stáhnout skupinu '%s'. Cnchi bude pokračovat a pokusí se je stáhnout později."
 
 #: src/installation/process.py:806
 msgid "Installing packages from '%s' group..."
-msgstr ""
+msgstr "Instalují se  balíčky ze skupiny '%s'..."
 
 #: src/installation/process.py:819
 msgid ""
 "Can't install group '%s'. Cnchi will continue but this group of packages "
 "won't be installed."
-msgstr ""
+msgstr "Nedaří se instalovat skupinu '%s'. Cnchi bude pokračovat, ale tato skupina balíčků nebude nainstalována."
 
 #: src/installation/process.py:838
 msgid "Special dirs already mounted."
@@ -1090,11 +1092,11 @@ msgstr ""
 
 #: src/installation/process.py:890 src/installation/process.py:896
 msgid "Unable to umount %s"
-msgstr ""
+msgstr "Nelze připojit %s"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
-msgstr ""
+msgstr "Nelze kopírovat síťové konfigurační soubory "
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
@@ -1114,7 +1116,7 @@ msgstr ""
 
 #: src/installation/process.py:1056
 msgid "fstab written."
-msgstr ""
+msgstr "fstab byl zapsán."
 
 #: src/installation/process.py:1154
 msgid "Could not copy %s to grub.d"
@@ -1122,15 +1124,15 @@ msgstr ""
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
-msgstr ""
+msgstr "Instaluje se zavaděč GRUB(2) BIOS do %s"
 
 #: src/installation/process.py:1186
 msgid "GRUB(2) BIOS has been successfully installed."
-msgstr ""
+msgstr "GRUB(2) BIOS byl úspěšně nainstalován."
 
 #: src/installation/process.py:1189
 msgid "ERROR installing GRUB(2) BIOS."
-msgstr ""
+msgstr "CHYBA při instalaci GRUB(2) BIOS."
 
 #: src/installation/process.py:1203
 msgid "Installing GRUB(2) UEFI %s boot loader"
@@ -1162,7 +1164,7 @@ msgstr ""
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "Generování grub.cfg"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
@@ -1170,7 +1172,7 @@ msgstr ""
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "Instalace GRUB(2) UEFI byla úspěšně dokončena"
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
@@ -1202,11 +1204,11 @@ msgstr ""
 
 #: src/installation/process.py:1347
 msgid "Error creating password hash for user %s"
-msgstr ""
+msgstr "Chyba při vytváření hesla pro uživatele %s"
 
 #: src/installation/process.py:1353
 msgid "Error changing password for user %s"
-msgstr ""
+msgstr "CHYBA při změně hesla uživatele %s"
 
 #: src/installation/process.py:1365
 msgid "Setting hooks and modules in mkinitcpio.conf"
@@ -1218,19 +1220,19 @@ msgstr ""
 
 #: src/installation/process.py:1486
 msgid "Configuring bluetooth..."
-msgstr ""
+msgstr "Konfigurace bluetooth..."
 
 #: src/installation/process.py:1492
 msgid "Configuring CUPS..."
-msgstr ""
+msgstr "Konfigurace CUPS..."
 
 #: src/installation/process.py:1504
 msgid "Configuring firewall..."
-msgstr ""
+msgstr "Konfigurace firewallu..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "Nedaří se konfigurovat firewall: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
@@ -1246,15 +1248,15 @@ msgstr ""
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
-msgstr ""
+msgstr "Konfigurace vašeho nového systému"
 
 #: src/installation/process.py:1642
 msgid "fstab file generated."
-msgstr ""
+msgstr "byl vygenerován soubor fstab."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi nakonfiguruje netctl pomocí profilu %s"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
@@ -1262,7 +1264,7 @@ msgstr ""
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
-msgstr ""
+msgstr "Síťová konfigurace zkopírována."
 
 #: src/installation/process.py:1681
 msgid "Mirror list copied."
@@ -1274,39 +1276,39 @@ msgstr ""
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "Vygenerován /etc/pacman.conf"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
-msgstr ""
+msgstr "Časová zóna nastavena."
 
 #: src/installation/process.py:1725
 msgid "Sudo configuration for user %s done."
-msgstr ""
+msgstr "Konfigurace sudo pro uživatele %s hotova."
 
 #: src/installation/process.py:1753
 msgid "User %s added."
-msgstr ""
+msgstr "Uživatel %s přidán."
 
 #: src/installation/process.py:1766
 msgid "Hostname set to %s."
-msgstr ""
+msgstr "Jméno počítače nastaveno na %s."
 
 #: src/installation/process.py:1770
 msgid "Set the same password to root."
-msgstr ""
+msgstr "Zadejte stejné heslo pro uživatele root."
 
 #: src/installation/process.py:1776
 msgid "Generating locales..."
-msgstr ""
+msgstr "Vytváří se národní prostředí..."
 
 #: src/installation/process.py:1792
 msgid "Adjusting hardware clock..."
-msgstr ""
+msgstr "Seřizují se hardwarové hodiny..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
-msgstr ""
+msgstr "Nastavte /etc/X11/xorg.conf.d/00-keyboard.conf pro xkblayout"
 
 #: src/installation/process.py:1809
 msgid "00-keyboard.conf written."
@@ -1322,39 +1324,39 @@ msgstr ""
 
 #: src/installation/process.py:1840
 msgid "Encrypting user home dir..."
-msgstr ""
+msgstr "Šifrování domovského adresáře..."
 
 #: src/installation/process.py:1842
 msgid "User home dir encrypted"
-msgstr ""
+msgstr "Domovský adresář zašifrován"
 
 #: src/installation/process.py:1846
 msgid "Installing bootloader..."
-msgstr ""
+msgstr "Instalace zavaděče systému..."
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
-msgstr ""
+msgstr "Vyberte si rozložení klávesnice"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Rozvržení klávesnice"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Varianty klávesnice"
 
 #: src/keymap.py:81
 msgid "Layouts"
-msgstr ""
+msgstr "Rozložení"
 
 #: src/keymap.py:87
 msgid "Variants"
-msgstr ""
+msgstr "Varianty"
 
 #: src/keymap.py:108
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "rozložení klávesnice je %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
@@ -1371,82 +1373,82 @@ msgstr ""
 
 #: src/language.py:97 src/welcome.py:100
 msgid "Welcome to Antergos!"
-msgstr ""
+msgstr "Vítejte v distribuci Antergos!"
 
 #: src/language.py:130
 msgid "Can't find translation file for the %s language"
-msgstr ""
+msgstr "Nelze nalézt soubor s překladem pro jazyk %s"
 
 #: src/location.py:67
 msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "Umístění, které zvolíte, bude využito pro stanovení místního prostředí pro celý systém.\nTo by měla být obvykle země, ve které žijete.\nNásleduje výběr lokalit na základě jazyka, který jste zvolili."
 
 #: src/location.py:72
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "Země, území nebo oblast:"
 
 #: src/location.py:76
 msgid "Select your location"
-msgstr ""
+msgstr "Vyberte umístění"
 
 #: src/location.py:197
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "národní prostředí změněno na : %s"
 
 #: src/location.py:199
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "Nelze změnit národní prostředí na '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "Nedaří se nalézt balíček nebo skupinu s názvem '%s'"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
-msgstr ""
+msgstr "Kontrolují se závislosti..."
 
 #: src/pacman/pac.py:260
 msgid "Checking file conflicts..."
-msgstr ""
+msgstr "Kontrolují se konflikty souborů..."
 
 #: src/pacman/pac.py:262
 msgid "Resolving dependencies..."
-msgstr ""
+msgstr "Řeší se závislosti..."
 
 #: src/pacman/pac.py:264
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "Kontrolují se interní konflikty..."
 
 #: src/pacman/pac.py:269
 msgid "Removing..."
-msgstr ""
+msgstr "Odstraňování..."
 
 #: src/pacman/pac.py:271
 msgid "Upgrading..."
-msgstr ""
+msgstr "Aktualizace..."
 
 #: src/pacman/pac.py:273
 msgid "Checking integrity..."
-msgstr ""
+msgstr "Kontrola integrity..."
 
 #: src/pacman/pac.py:275
 msgid "Loading packages files..."
-msgstr ""
+msgstr "Nahrávají se soubory s balíky..."
 
 #: src/pacman/pac.py:277
 msgid "Configuring..."
-msgstr ""
+msgstr "Konfigurace..."
 
 #: src/pacman/pac.py:279
 msgid "Downloading a file"
-msgstr ""
+msgstr "Stahování souboru"
 
 #: src/pacman/pac.py:306
 msgid "Installing %s (%d/%d)"
-msgstr ""
+msgstr "Instaluje se %s (%d/%d)"
 
 #: src/pacman/pac.py:309
 msgid "Checking and loading packages..."
@@ -1454,7 +1456,7 @@ msgstr ""
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Aktualizace %s databáze"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1488,11 +1490,11 @@ msgstr ""
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Nedaří se odstranit oddíl %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "Oddíl je příliš velký!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
@@ -1536,27 +1538,27 @@ msgstr ""
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
-msgstr ""
+msgstr "Instalace Antergos - Chyba"
 
 #: src/show_message.py:62
 msgid "Antergos Installer - Warning"
-msgstr ""
+msgstr "Instalace distribuce Antergos - Varování"
 
 #: src/show_message.py:73
 msgid "Antergos Installer - Information"
-msgstr ""
+msgstr "Instalace distribuce Antergos - Informace"
 
 #: src/show_message.py:83
 msgid "Antergos Installer - Confirmation"
-msgstr ""
+msgstr "Instalátor Antergos - Potvrzení"
 
 #: src/slides.py:94
 msgid "Please wait..."
-msgstr ""
+msgstr "Prosím čekejte..."
 
 #: src/slides.py:96
 msgid "Installing Antergos..."
-msgstr ""
+msgstr "Instaluji Antergos..."
 
 #: src/slides.py:194
 msgid ""
@@ -1573,7 +1575,7 @@ msgstr ""
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "Instalace dokončena!\nChcete nyní restartovat Váš systém?"
 
 #: src/slides.py:234
 msgid "Do you want to retry the installation using the same configuration?"
@@ -1581,11 +1583,11 @@ msgstr ""
 
 #: src/timezone.py:108
 msgid "Zone:"
-msgstr ""
+msgstr "Pásmo:"
 
 #: src/timezone.py:112
 msgid "Region:"
-msgstr ""
+msgstr "Oblast:"
 
 #: src/timezone.py:116
 msgid "Use Network Time Protocol for clock synchronization:"
@@ -1593,15 +1595,15 @@ msgstr ""
 
 #: src/timezone.py:120
 msgid "Select Your Timezone"
-msgstr ""
+msgstr "Vyberte Vaši časovou zónu"
 
 #: src/timezone.py:134
 msgid "location changed to : %s"
-msgstr ""
+msgstr "Oblast změněna na : %s"
 
 #: src/timezone.py:222
 msgid "Can't autodetect timezone coordinates"
-msgstr ""
+msgstr "Nedaří se automaticky detekovat souřadnice pro časové pásmo"
 
 #: src/timezone.py:280
 msgid "Stoping timezone threads..."
@@ -1617,11 +1619,11 @@ msgstr ""
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Časová zóna detekována."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Nepodařilo se zjistit časovou zónu uživatele."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
@@ -1641,35 +1643,35 @@ msgstr ""
 
 #: src/user_info.py:84
 msgid "Your name:"
-msgstr ""
+msgstr "Vaše jméno:"
 
 #: src/user_info.py:88
 msgid "Your name"
-msgstr ""
+msgstr "Vaše jméno"
 
 #: src/user_info.py:92
 msgid "Your computer's name:"
-msgstr ""
+msgstr "Jméno počítače:"
 
 #: src/user_info.py:96
 msgid "Pick a username:"
-msgstr ""
+msgstr "Zvolte si uživatelské jméno:"
 
 #: src/user_info.py:100
 msgid "Username"
-msgstr ""
+msgstr "Uživatelské jméno"
 
 #: src/user_info.py:104
 msgid "Choose a password:"
-msgstr ""
+msgstr "Zvolte si heslo:"
 
 #: src/user_info.py:108
 msgid "Password"
-msgstr ""
+msgstr "Heslo"
 
 #: src/user_info.py:116
 msgid "Confirm password"
-msgstr ""
+msgstr "Potvrdit heslo"
 
 #: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
@@ -1677,31 +1679,31 @@ msgstr ""
 
 #: src/user_info.py:124
 msgid "You must enter a name"
-msgstr ""
+msgstr "Je potřeba vyplnit jméno"
 
 #: src/user_info.py:128
 msgid "You must enter a username"
-msgstr ""
+msgstr "Je zapotřebí zadat uživatelské jméno"
 
 #: src/user_info.py:132
 msgid "You must enter a password"
-msgstr ""
+msgstr "Je zapotřebí vyplnit heslo:"
 
 #: src/user_info.py:136
 msgid "Log in automatically"
-msgstr ""
+msgstr "Přihlásit automaticky"
 
 #: src/user_info.py:137
 msgid "Require my password to log in"
-msgstr ""
+msgstr "Vyžadovat moje heslo pro přihlášení"
 
 #: src/user_info.py:138
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "Zašifrovat můj domovský adresář"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
-msgstr ""
+msgstr "Vytvořte si uživatelský účet"
 
 #: src/user_info.py:192
 msgid ""
@@ -1721,15 +1723,15 @@ msgstr ""
 
 #: src/user_info.py:267
 msgid "Invalid characters entered"
-msgstr ""
+msgstr "Zadány nesprávné znaky"
 
 #: src/user_info.py:271
 msgid "Username can't contain dots"
-msgstr ""
+msgstr "Uživatelské jméno nemůže obsahovat tečky"
 
 #: src/user_info.py:275
 msgid "Too many characters"
-msgstr ""
+msgstr "Příliš mnoho znaků"
 
 #: src/welcome.py:85
 msgid ""
@@ -1743,12 +1745,12 @@ msgstr ""
 
 #: src/welcome.py:93
 msgid "CLI Installer"
-msgstr ""
+msgstr "CLI instalace"
 
 #: src/welcome.py:96
 msgid "Graphical Installer"
-msgstr ""
+msgstr "Grafická instalace"
 
 #: src/welcome.py:125
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "Nedaří se načíst CLI instalátor"

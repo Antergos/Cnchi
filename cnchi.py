@@ -183,6 +183,7 @@ class Main(Gtk.Window):
 
         self.main_box = self.ui.get_object("main_box")
         self.progressbar = self.ui.get_object("progressbar1")
+        self.progressbar.set_name('process_progressbar')
 
         self.forward_button = self.ui.get_object("forward_button")
         self.backwards_button = self.ui.get_object("backwards_button")

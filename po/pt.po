@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-02-28 09:41+0000\n"
+"Last-Translator: Helder Meneses <helder.meneses@gmail.com>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/antergos/language/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -359,7 +359,7 @@ msgstr ""
 
 #: src/features.py:178
 msgid "Printing Support"
-msgstr ""
+msgstr "Suporte de impressão"
 
 #: src/features.py:181
 msgid "Installation of printer drivers and management tools."
@@ -564,7 +564,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
-msgstr ""
+msgstr "Nova tabela de partição"
 
 #: src/installation/advanced.py:1144
 msgid "Change..."
@@ -600,11 +600,11 @@ msgstr "Fim deste espaço"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
-msgstr ""
+msgstr "Usar como:"
 
 #: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
-msgstr ""
+msgstr "Ponto de montagem:"
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
@@ -612,7 +612,7 @@ msgstr "Rótulo (opcional)"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
-msgstr ""
+msgstr "Opções de encriptação..."
 
 #: src/installation/advanced.py:1206
 msgid "Format:"
@@ -620,16 +620,16 @@ msgstr "Formatar:"
 
 #: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
-msgstr ""
+msgstr "Tipo de tabela de partição:"
 
 #: src/installation/advanced.py:1216
 msgid "Create Partition Table"
-msgstr ""
+msgstr "Criar tabela de partição"
 
 #: src/installation/advanced.py:1219 src/installation/alongside.py:149
 #: src/installation/automatic.py:95
 msgid "Install Now!"
-msgstr ""
+msgstr "Instalar agora!"
 
 #: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
@@ -746,7 +746,7 @@ msgstr ""
 
 #: src/installation/ask.py:97
 msgid "Installation Type"
-msgstr ""
+msgstr "Tipo de instalação"
 
 #: src/installation/ask.py:113
 msgid "Erase disk and install Antergos"
@@ -873,7 +873,7 @@ msgstr ""
 
 #: src/installation/automatic.py:99
 msgid "Automatic Installation Mode"
-msgstr ""
+msgstr "Modo de instalação automática"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
@@ -881,7 +881,7 @@ msgstr ""
 
 #: src/installation/automatic.py:165
 msgid "Automatic install on %s"
-msgstr ""
+msgstr "Instalação automática em %s"
 
 #: src/installation/automatic.py:198
 msgid ""
@@ -892,7 +892,7 @@ msgstr ""
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
-msgstr ""
+msgstr "Cnchi vai instalar Antergos em %s"
 
 #: src/installation/automatic.py:222
 msgid "Antergos will install the %s bootloader on %s"
@@ -1339,7 +1339,7 @@ msgstr ""
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
-msgstr ""
+msgstr "Selecione o layout de seu teclado"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
@@ -1553,7 +1553,7 @@ msgstr "Instalador do Antergos - Informação"
 
 #: src/show_message.py:83
 msgid "Antergos Installer - Confirmation"
-msgstr ""
+msgstr "Instalador do Antergos - Confirmação"
 
 #: src/slides.py:94
 msgid "Please wait..."

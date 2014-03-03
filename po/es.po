@@ -3,7 +3,7 @@
 # 
 # Translators:
 # faidoc <faidoc@gmail.com>, 2013
-# faidoc <faidoc@gmail.com>, 2013
+# faidoc <faidoc@gmail.com>, 2013-2014
 # faidoc <alexfilgueira@antergos.com>, 2013
 # faidoc <faidoc@gmail.com>, 2013
 # faidoc <faidoc@gmail.com>, 2013
@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
+"PO-Revision-Date: 2014-02-26 22:25+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/antergos/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "Saliendo del instalador..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Usar aria2 para descargas paquetes de Antergos (EXPERIMENTAL)"
 
 #: cnchi.py:429
 msgid ""

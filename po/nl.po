@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-02-28 12:31+0000\n"
+"Last-Translator: fpsgamer101 <randy.hofstede@outlook.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,47 +54,47 @@ msgstr "installatieprogramma aan het stoppen..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Gebruik aria2 on Antergos pakketten te downloaden (EXPERIMENTEEL)"
 
 #: cnchi.py:429
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "Gebruik Voor-gedownloade xz pakketten(Cnchi zal nieuwe pakketten toch downloaden als er een nieuwe versie wordt gevonden)"
 
 #: cnchi.py:430
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
-msgstr ""
+msgstr "Als -cache maar voordat Cnchi alle xz pakketten kopieert naar bestemming"
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Stelt Cnchi log level naar 'debug'"
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Update Cnchi naar de laatste versie (-uu zal de update forceren)"
 
 #: cnchi.py:433
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr ""
+msgstr "Installeer de pakketten verwezen door een lokale xml in plaats van de standaard instellingen"
 
 #: cnchi.py:434
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "Maak geen veranderingen (handig voor ontwikkelaars)"
 
 #: cnchi.py:435
 msgid "Show logging messages to stdout"
-msgstr ""
+msgstr "Toon log meldingen aan stdout"
 
 #: cnchi.py:436
 msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
-msgstr ""
+msgstr "Schakelt de tryit optie uit(handig als Cnchi niet wordt gedraaid vanaf een LiveCD)"
 
 #: cnchi.py:437
 msgid "Show options in development (DO NOT USE THIS!)"
-msgstr ""
+msgstr "Toon opties in ontwikkeling (GEBRUIK DIT NIET!)"
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
@@ -251,7 +251,7 @@ msgstr "MATE is een fork van GNOME 2. het heeft een intuïtieve en aantrekelijke
 
 #: src/download.py:79
 msgid "Can't connect with aria2, downloading will be performed by alpm."
-msgstr ""
+msgstr "Kan geen verbinding maken met aria2, het downloaden wordt uitgevoerd door alpm."
 
 #: src/download.py:89
 msgid "Error creating metalink for package %s"
@@ -263,15 +263,15 @@ msgstr "Fout bij het toevoegen van metalink voor pakket %s"
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "Bezig met downloaden van pakket '%s' en zijn afhankelijkheden..."
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "Bezig met downloaden van %s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
-msgstr ""
+msgstr "Kan geen verbinding maken aria2. Fout Melding: %s"
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
@@ -303,7 +303,7 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr ""
+msgstr "Gebruik yaourt om AUR pakketten te installeren. \nDe AUR werd opgericht om nieuwe pakketten organiseren en delen \nuit de gemeenschap en het helpen van versnellen met het opname van populaire pakketten'\nin de [community] repository."
 
 #: src/features.py:133
 msgid "Bluetooth Support"

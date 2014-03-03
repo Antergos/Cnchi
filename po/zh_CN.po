@@ -2,12 +2,13 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# zhqh100 <1483586698@qq.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-01 14:54+0000\n"
+"Last-Translator: zhqh100 <1483586698@qq.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/antergos/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr ""
+msgstr "必须以管理员权限执行安装器，否则无法继续。"
 
 #: cnchi.py:124
 msgid ""
@@ -29,7 +30,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "不能同时执行两个安装器实例。\n\n如果你确信安装器没有在运行，你可以手动删除文件%s，然后再次运行安装器。"
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
@@ -37,7 +38,7 @@ msgstr ""
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "使用Aria2下载包 - 试验"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
@@ -45,11 +46,11 @@ msgstr ""
 
 #: cnchi.py:284
 msgid "Antergos Installer"
-msgstr ""
+msgstr "Antergos安装器"
 
 #: cnchi.py:309
 msgid "Quiting installer..."
-msgstr ""
+msgstr "正在退出安装器..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
@@ -98,7 +99,7 @@ msgstr ""
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
 msgid "unknown"
-msgstr ""
+msgstr "未知"
 
 #: src/canonical/misc.py:929
 msgid "Can't set locale %s"
@@ -106,31 +107,31 @@ msgstr ""
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
-msgstr ""
+msgstr "密码太短"
 
 #: src/canonical/validation.py:135
 msgid "weak password"
-msgstr ""
+msgstr "弱密码"
 
 #: src/canonical/validation.py:138
 msgid "fair password"
-msgstr ""
+msgstr "可用密码"
 
 #: src/canonical/validation.py:141
 msgid "good password"
-msgstr ""
+msgstr "良好密码"
 
 #: src/canonical/validation.py:144
 msgid "strong password"
-msgstr ""
+msgstr "强壮密码"
 
 #: src/canonical/validation.py:159
 msgid "Passwords do not match"
-msgstr ""
+msgstr "密码不匹配"
 
 #: src/check.py:74
 msgid "System Check"
-msgstr ""
+msgstr "系统检测"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
@@ -144,27 +145,27 @@ msgstr ""
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
-msgstr ""
+msgstr "已插入电源"
 
 #: src/check.py:95
 msgid "is connected to the Internet"
-msgstr ""
+msgstr "已连接互联网"
 
 #: src/check.py:99
 msgid "For best results, please ensure that this computer:"
-msgstr ""
+msgstr "为达到理想结果，请保证该电脑："
 
 #: src/check.py:169
 msgid "We have Internet connection."
-msgstr ""
+msgstr "有互联网连接."
 
 #: src/check.py:170
 msgid "We're connected to a power source."
-msgstr ""
+msgstr "已连接到电源."
 
 #: src/check.py:171
 msgid "We have enough disk space."
-msgstr ""
+msgstr "拥有足够的磁盘空间."
 
 #: src/desktop.py:79
 msgid "Choose Your Desktop"
@@ -172,7 +173,7 @@ msgstr ""
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi 将安装带有 '%s' 桌面的 Antergos"
 
 #: src/desktop_environments.py:64
 msgid ""
@@ -218,7 +219,7 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Enlightenment不仅是Linux/X11或其他系统的窗口管理器，同时也是一套可帮助你很方便创建漂亮UI的一套库。"
 
 #: src/desktop_environments.py:93
 msgid ""
@@ -232,7 +233,7 @@ msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt是一个基于Qt的强大、易用、快速的桌面环境.为喜欢简洁、速度和直观的用户量身打造."
 
 #: src/desktop_environments.py:102
 msgid ""
@@ -254,11 +255,11 @@ msgstr ""
 
 #: src/download.py:89
 msgid "Error creating metalink for package %s"
-msgstr ""
+msgstr "为包 %s 创建 metalink 错误"
 
 #: src/download.py:95
 msgid "Error adding metalink for package %s"
-msgstr ""
+msgstr "为包 %s 添加 metalink 错误"
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
@@ -274,15 +275,15 @@ msgstr ""
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "无法为包 %s 创建下载队列"
 
 #: src/download.py:249
 msgid "Can't find these packages: "
-msgstr ""
+msgstr "无法找到这些包："
 
 #: src/download.py:255
 msgid "Warning! Can't resolve these dependencies: "
-msgstr ""
+msgstr "警告! 无法解决这些依赖："
 
 #: src/features.py:110
 msgid "Feature Selection"
@@ -455,7 +456,7 @@ msgstr ""
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
 msgid "free space"
-msgstr ""
+msgstr "可用空间"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
@@ -463,43 +464,43 @@ msgstr ""
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
-msgstr ""
+msgstr "设备"
 
 #: src/installation/advanced.py:290
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: src/installation/advanced.py:293
 msgid "Mount point"
-msgstr ""
+msgstr "挂载点"
 
 #: src/installation/advanced.py:296
 msgid "Label"
-msgstr ""
+msgstr "标签"
 
 #: src/installation/advanced.py:302 src/installation/advanced.py:1634
 msgid "Format"
-msgstr ""
+msgstr "格式化"
 
 #: src/installation/advanced.py:305
 msgid "Size"
-msgstr ""
+msgstr "大小："
 
 #: src/installation/advanced.py:308
 msgid "Used"
-msgstr ""
+msgstr "已用"
 
 #: src/installation/advanced.py:311
 msgid "Flags"
-msgstr ""
+msgstr "标志"
 
 #: src/installation/advanced.py:317
 msgid "SSD"
-msgstr ""
+msgstr "SSD"
 
 #: src/installation/advanced.py:486
 msgid "none"
-msgstr ""
+msgstr "无"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
@@ -563,35 +564,35 @@ msgstr ""
 
 #: src/installation/advanced.py:1144
 msgid "Change..."
-msgstr ""
+msgstr "修改..."
 
 #: src/installation/advanced.py:1149
 msgid "Size:"
-msgstr ""
+msgstr "大小："
 
 #: src/installation/advanced.py:1153
 msgid "Type:"
-msgstr ""
+msgstr "类型："
 
 #: src/installation/advanced.py:1157
 msgid "Primary"
-msgstr ""
+msgstr "主"
 
 #: src/installation/advanced.py:1161
 msgid "Logical"
-msgstr ""
+msgstr "逻辑"
 
 #: src/installation/advanced.py:1165
 msgid "Extended"
-msgstr ""
+msgstr "扩展"
 
 #: src/installation/advanced.py:1169
 msgid "Beginning of this space"
-msgstr ""
+msgstr "空间起点"
 
 #: src/installation/advanced.py:1173
 msgid "End of this space"
-msgstr ""
+msgstr "空间终点"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
@@ -603,7 +604,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
-msgstr ""
+msgstr "标签(可选):"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
@@ -611,7 +612,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1206
 msgid "Format:"
-msgstr ""
+msgstr "格式化："
 
 #: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
@@ -653,7 +654,7 @@ msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s 挂载到 '%s'.\n必须先卸载才能继续.\n点击 Yes 卸载，No 返回\n"
 
 #: src/installation/advanced.py:1566
 msgid "%s shows as mounted (busy) but it has no mount point"
@@ -661,23 +662,23 @@ msgstr ""
 
 #: src/installation/advanced.py:1627
 msgid "Partition %s will be deleted"
-msgstr ""
+msgstr "分区 %s 将被删除"
 
 #: src/installation/advanced.py:1634
 msgid "Mount"
-msgstr ""
+msgstr "挂载"
 
 #: src/installation/advanced.py:1634
 msgid "New"
-msgstr ""
+msgstr "新建"
 
 #: src/installation/advanced.py:1634
 msgid "Partition"
-msgstr ""
+msgstr "分区"
 
 #: src/installation/advanced.py:1634
 msgid "Relabel"
-msgstr ""
+msgstr "修改标签"
 
 #: src/installation/advanced.py:1655
 msgid "We will make changes to partitions on these disks:"
@@ -705,7 +706,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1827
 msgid "Antergos will install the bootloader of type %s in %s"
-msgstr ""
+msgstr "Antergos将安装bootload %s 到 %s"
 
 #: src/installation/advanced.py:1841 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
@@ -713,7 +714,7 @@ msgstr ""
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
-msgstr ""
+msgstr "无法加载 %s css"
 
 #: src/installation/alongside.py:138
 msgid "Select the OS you would like Antergos installed next to."
@@ -725,11 +726,11 @@ msgstr ""
 
 #: src/installation/alongside.py:174
 msgid "Detected OS"
-msgstr ""
+msgstr "已检测到OS"
 
 #: src/installation/alongside.py:177
 msgid "Filesystem"
-msgstr ""
+msgstr "文件系统"
 
 #: src/installation/alongside.py:221
 msgid "Unable to create list of partitions for alongside installation."
@@ -842,7 +843,7 @@ msgstr ""
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
-msgstr ""
+msgstr "选择驱动器:"
 
 #: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
@@ -860,7 +861,7 @@ msgstr ""
 
 #: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
-msgstr ""
+msgstr "确认密码："
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
@@ -922,15 +923,15 @@ msgstr ""
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
-msgstr ""
+msgstr "正在挂在分区 %s 到 %s 目录"
 
 #: src/installation/process.py:256
 msgid "Mounting partition %s into %s/boot directory"
-msgstr ""
+msgstr "正在挂载分区 %s 到 %s/boot 目录"
 
 #: src/installation/process.py:260
 msgid "Couldn't mount root and boot partitions"
-msgstr ""
+msgstr "无法挂载 root 和 boot 分区"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
@@ -938,7 +939,7 @@ msgstr ""
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
-msgstr ""
+msgstr "无法挂载 %s 到 %s"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
@@ -946,7 +947,7 @@ msgstr ""
 
 #: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
-msgstr ""
+msgstr "无法在目标系统创建必要的目录"
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
@@ -998,7 +999,7 @@ msgstr ""
 
 #: src/installation/process.py:518
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr ""
+msgstr "无法获取远程包列表，使用本地文件代替."
 
 #: src/installation/process.py:526
 msgid "Adding all desktops common packages"
@@ -1122,15 +1123,15 @@ msgstr ""
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
-msgstr ""
+msgstr "正在安装 bootloader GRUB(2) 到 %s"
 
 #: src/installation/process.py:1186
 msgid "GRUB(2) BIOS has been successfully installed."
-msgstr ""
+msgstr "GRUB(2) BIOS 安装成功"
 
 #: src/installation/process.py:1189
 msgid "ERROR installing GRUB(2) BIOS."
-msgstr ""
+msgstr "GRUB(2) BIOS 安装错误"
 
 #: src/installation/process.py:1203
 msgid "Installing GRUB(2) UEFI %s boot loader"
@@ -1202,11 +1203,11 @@ msgstr ""
 
 #: src/installation/process.py:1347
 msgid "Error creating password hash for user %s"
-msgstr ""
+msgstr "%s 用户创建hash密码错误"
 
 #: src/installation/process.py:1353
 msgid "Error changing password for user %s"
-msgstr ""
+msgstr "%s 用户修改密码错误"
 
 #: src/installation/process.py:1365
 msgid "Setting hooks and modules in mkinitcpio.conf"
@@ -1246,7 +1247,7 @@ msgstr ""
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
-msgstr ""
+msgstr "配置你的新系统"
 
 #: src/installation/process.py:1642
 msgid "fstab file generated."
@@ -1298,11 +1299,11 @@ msgstr ""
 
 #: src/installation/process.py:1776
 msgid "Generating locales..."
-msgstr ""
+msgstr "正在生成语言环境..."
 
 #: src/installation/process.py:1792
 msgid "Adjusting hardware clock..."
-msgstr ""
+msgstr "正在调整硬件时钟..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
@@ -1346,15 +1347,15 @@ msgstr ""
 
 #: src/keymap.py:81
 msgid "Layouts"
-msgstr ""
+msgstr "布局"
 
 #: src/keymap.py:87
 msgid "Variants"
-msgstr ""
+msgstr "变量"
 
 #: src/keymap.py:108
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "键盘布局是 %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
@@ -1371,11 +1372,11 @@ msgstr ""
 
 #: src/language.py:97 src/welcome.py:100
 msgid "Welcome to Antergos!"
-msgstr ""
+msgstr "欢迎来到 Antergos!"
 
 #: src/language.py:130
 msgid "Can't find translation file for the %s language"
-msgstr ""
+msgstr "无法为 %s 语言找到翻译文件"
 
 #: src/location.py:67
 msgid ""
@@ -1386,19 +1387,19 @@ msgstr ""
 
 #: src/location.py:72
 msgid "Country, territory or area:"
-msgstr ""
+msgstr "国家或地区"
 
 #: src/location.py:76
 msgid "Select your location"
-msgstr ""
+msgstr "选择你的位置"
 
 #: src/location.py:197
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "语言修改为: %s"
 
 #: src/location.py:199
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "不能修改语言为  '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
@@ -1406,51 +1407,51 @@ msgstr ""
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
-msgstr ""
+msgstr "正在检测依赖..."
 
 #: src/pacman/pac.py:260
 msgid "Checking file conflicts..."
-msgstr ""
+msgstr "正在检测文件冲突..."
 
 #: src/pacman/pac.py:262
 msgid "Resolving dependencies..."
-msgstr ""
+msgstr "正在解决依赖..."
 
 #: src/pacman/pac.py:264
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "正在检测内部冲突..."
 
 #: src/pacman/pac.py:269
 msgid "Removing..."
-msgstr ""
+msgstr "正在删除..."
 
 #: src/pacman/pac.py:271
 msgid "Upgrading..."
-msgstr ""
+msgstr "正在升级..."
 
 #: src/pacman/pac.py:273
 msgid "Checking integrity..."
-msgstr ""
+msgstr "正在检测完整性..."
 
 #: src/pacman/pac.py:275
 msgid "Loading packages files..."
-msgstr ""
+msgstr "正在加载包文件..."
 
 #: src/pacman/pac.py:277
 msgid "Configuring..."
-msgstr ""
+msgstr "正在配置..."
 
 #: src/pacman/pac.py:279
 msgid "Downloading a file"
-msgstr ""
+msgstr "正在下载一个文件"
 
 #: src/pacman/pac.py:306
 msgid "Installing %s (%d/%d)"
-msgstr ""
+msgstr "正在安装 %s(%d%d)"
 
 #: src/pacman/pac.py:309
 msgid "Checking and loading packages..."
-msgstr ""
+msgstr "正在检测和加载包..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
@@ -1536,15 +1537,15 @@ msgstr ""
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
-msgstr ""
+msgstr "Antergos 安装器 - 错误"
 
 #: src/show_message.py:62
 msgid "Antergos Installer - Warning"
-msgstr ""
+msgstr "Antergos 安装器 - 警告"
 
 #: src/show_message.py:73
 msgid "Antergos Installer - Information"
-msgstr ""
+msgstr "Antergos 安装器 - 消息"
 
 #: src/show_message.py:83
 msgid "Antergos Installer - Confirmation"
@@ -1552,11 +1553,11 @@ msgstr ""
 
 #: src/slides.py:94
 msgid "Please wait..."
-msgstr ""
+msgstr "请等待..."
 
 #: src/slides.py:96
 msgid "Installing Antergos..."
-msgstr ""
+msgstr "正在安装Antergos ..."
 
 #: src/slides.py:194
 msgid ""
@@ -1581,11 +1582,11 @@ msgstr ""
 
 #: src/timezone.py:108
 msgid "Zone:"
-msgstr ""
+msgstr "时区:"
 
 #: src/timezone.py:112
 msgid "Region:"
-msgstr ""
+msgstr "区域:"
 
 #: src/timezone.py:116
 msgid "Use Network Time Protocol for clock synchronization:"
@@ -1597,15 +1598,15 @@ msgstr ""
 
 #: src/timezone.py:134
 msgid "location changed to : %s"
-msgstr ""
+msgstr "位置改变为： %s"
 
 #: src/timezone.py:222
 msgid "Can't autodetect timezone coordinates"
-msgstr ""
+msgstr "无法自动检测时区坐标"
 
 #: src/timezone.py:280
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "停止时区线程..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
@@ -1625,51 +1626,51 @@ msgstr ""
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
-msgstr ""
+msgstr "无法获取网络状态"
 
 #: src/timezone.py:403
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "需要获取国家码来创建pacman的mirrorlist，但无法获取国家码"
 
 #: src/timezone.py:424
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "根据国家码 %s 下载特定的pacman mirrorlist"
 
 #: src/timezone.py:426
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "无法根据国家码为pacman产生mirrorlist"
 
 #: src/user_info.py:84
 msgid "Your name:"
-msgstr ""
+msgstr "你的名字："
 
 #: src/user_info.py:88
 msgid "Your name"
-msgstr ""
+msgstr "你的名字"
 
 #: src/user_info.py:92
 msgid "Your computer's name:"
-msgstr ""
+msgstr "电脑名称："
 
 #: src/user_info.py:96
 msgid "Pick a username:"
-msgstr ""
+msgstr "用户名："
 
 #: src/user_info.py:100
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 
 #: src/user_info.py:104
 msgid "Choose a password:"
-msgstr ""
+msgstr "密码："
 
 #: src/user_info.py:108
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 #: src/user_info.py:116
 msgid "Confirm password"
-msgstr ""
+msgstr "确认密码"
 
 #: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
@@ -1677,27 +1678,27 @@ msgstr ""
 
 #: src/user_info.py:124
 msgid "You must enter a name"
-msgstr ""
+msgstr "必须输入名字"
 
 #: src/user_info.py:128
 msgid "You must enter a username"
-msgstr ""
+msgstr "必须输入用户名"
 
 #: src/user_info.py:132
 msgid "You must enter a password"
-msgstr ""
+msgstr "必须输入密码"
 
 #: src/user_info.py:136
 msgid "Log in automatically"
-msgstr ""
+msgstr "自动登录"
 
 #: src/user_info.py:137
 msgid "Require my password to log in"
-msgstr ""
+msgstr "需要密码才能登陆"
 
 #: src/user_info.py:138
 msgid "Encrypt my home folder"
-msgstr ""
+msgstr "加密home文件夹"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
@@ -1721,15 +1722,15 @@ msgstr ""
 
 #: src/user_info.py:267
 msgid "Invalid characters entered"
-msgstr ""
+msgstr "输入了无效字符"
 
 #: src/user_info.py:271
 msgid "Username can't contain dots"
-msgstr ""
+msgstr "用户名不能包含点号"
 
 #: src/user_info.py:275
 msgid "Too many characters"
-msgstr ""
+msgstr "字符过多"
 
 #: src/welcome.py:85
 msgid ""
@@ -1743,12 +1744,12 @@ msgstr ""
 
 #: src/welcome.py:93
 msgid "CLI Installer"
-msgstr ""
+msgstr "CLI 安装器"
 
 #: src/welcome.py:96
 msgid "Graphical Installer"
-msgstr ""
+msgstr "图形界面安装器"
 
 #: src/welcome.py:125
 msgid "Can't load the CLI installer"
-msgstr ""
+msgstr "无法加载CLI 安装器"
