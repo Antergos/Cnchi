@@ -2,14 +2,15 @@
 
 DESKTOP=$1
 
-# Change keyboard layout
-dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
-
-# Set gtk theme
-dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
-dbus-launch gsettings set org.gnome.desktop.wm.preferences theme Zukitwo
 
 if [[ ${DESKTOP} == 'gnome' ]];then
+
+	# Change keyboard layout
+	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
+
+	# Set gtk theme
+	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
+	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme Zukitwo
 
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
@@ -27,6 +28,13 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 fi
 
 if [[ ${DESKTOP} == 'cinnamon' ]];then
+
+	# Change keyboard layout
+	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
+
+	# Set gtk theme
+	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme Zukitwo
+	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences theme Zukitwo
 
 	# Set menu icon
 	dbus-launch gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos-menu.png"
@@ -55,10 +63,6 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 
 	# Set theme
 	dbus-launch gsettings set org.cinnamon.theme name "Nadia"
-
-	# Set GTK Theme
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme Zukitwo
 
 	# Set icon theme
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme Faenza-Dark
@@ -146,13 +150,16 @@ fi
 
 if [[ ${DESKTOP} == 'mate' ]]; then
 
-    cat /usr/bin/mate-schemas | while read line
-    do
+	cat /usr/bin/mate-schemas | while read line
+	do
 
-        schema="${line}"
-        dbus-launch gsettings set "${schema}";
+		schema="${line}"
+		gsettings set "${schema}";
 
-    done
+	done
+
+	# Change keyboard layout
+	gsettings set org.mate.desktop.input-sources sources "[('xkb','us')]"
 
 fi
 
