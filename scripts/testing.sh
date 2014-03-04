@@ -33,10 +33,10 @@ if ! [ -f "${previous}" ]; then
 	cd /usr/share;
 	echo "Getting latest version of Cnchi from testing branch..."
 	# Check commandline arguments to choose repo
-	if [ "$1" = "-a" ] || [ "$1" = "--antergos" ] || [ "$1" = "--Antergos" ]; then
-		git clone https://github.com/Antergos/Cnchi.git cnchi;
-	else
+	if [ "$1" = "-l" ] || [ "$1" = "--lots0logs" ]; then
 		git clone https://github.com/lots0logs/Cnchi.git cnchi;
+	else
+		git clone https://github.com/Antergos/Cnchi.git cnchi;
 	fi
 	cd /usr/share/cnchi
 	echo "Switching to testing branch..."
