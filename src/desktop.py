@@ -70,7 +70,8 @@ class DesktopAsk(Gtk.Box):
         label = self.ui.get_object("desktop_info")
 
         txt = "<span weight='bold'>%s</span>\n" % desktops.NAMES[desktop]
-        txt += desktops.DESCRIPTIONS[desktop]
+        description = desktops.DESCRIPTIONS[desktop]
+        txt += _(description)
 
         label.set_markup(txt)
 
@@ -78,7 +79,6 @@ class DesktopAsk(Gtk.Box):
 
         txt = _("Choose Your Desktop")
         self.header.set_subtitle(txt)
-
 
     def prepare(self, direction):
         """ Prepare screen """

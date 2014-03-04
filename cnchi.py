@@ -445,8 +445,8 @@ def init_cnchi():
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
-        print("Please install hwinfo before running this installer")
-        sys.exit(1)
+        print(_("Please install hwinfo before running this installer"))
+        #sys.exit(1)
 
     if not check_gtk_version():
         sys.exit(1)
@@ -472,7 +472,7 @@ def init_cnchi():
                         new_argv.append(argv)
             else:
                 new_argv = sys.argv
-            print("Program updated! Restarting...")
+            print(_("Program updated! Restarting..."))
             # Run another instance of Cnchi (which will be the new version)
             os.execl(sys.executable, *([sys.executable] + new_argv))
             sys.exit(0)

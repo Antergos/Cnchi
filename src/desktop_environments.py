@@ -61,48 +61,48 @@ FEATURES = {
 
 
 DESCRIPTIONS = {
-    'gnome' : _("Gnome 3 is an easy and elegant way to use your "
-                "computer. It features the Activities Overview which "
-                "is an easy way to access all your basic tasks. GNOME 3 is "
-                "the default desktop in Antergos."),
+    'gnome' : "Gnome 3 is an easy and elegant way to use your "
+              "computer. It features the Activities Overview which "
+              "is an easy way to access all your basic tasks. GNOME 3 is "
+              "the default desktop in Antergos.",
 
-    'cinnamon' : _("Cinnamon is a fork of GNOME 3 developed "
-                   "by (and for) Linux Mint. It provides users a more traditional desktop "
-                   "interface along with the newest compositing techniques of GNOME 3. "
-                   "Cinnamon is for users of all experience levels. "),
+    'cinnamon' : "Cinnamon is a fork of GNOME 3 developed "
+                 "by (and for) Linux Mint. It provides users a more traditional desktop "
+                 "interface along with the newest compositing techniques of GNOME 3. "
+                 "Cinnamon is for users of all experience levels. ",
 
-    'xfce' : _("Xfce is a lightweight desktop environment. It aims to "
-               "be fast and low on system resources, while remaining visually "
-               "appealing and user friendly. It is a great option for use "
-               "on older computers or those with low hardware specifications. "),
+    'xfce' : "Xfce is a lightweight desktop environment. It aims to "
+             "be fast and low on system resources, while remaining visually "
+             "appealing and user friendly. It is a great option for use "
+             "on older computers or those with low hardware specifications. ",
 
-    'lxde': _("LXDE is an extremely fast-performing and energy-saving desktop "
-              "environment. It uses less CPU and RAM than other environments. "
-              "LXDE is especially designed for cloud computers with low hardware "
-              "specifications such as netbooks, mobile devices, and older computers."),
+    'lxde': "LXDE is an extremely fast-performing and energy-saving desktop "
+            "environment. It uses less CPU and RAM than other environments. "
+            "LXDE is especially designed for cloud computers with low hardware "
+            "specifications such as netbooks, mobile devices, and older computers.",
 
-    'openbox' : _("Openbox is a highly configurable, next generation window "
-                  "manager with extensive standards support. It's default theme "
-                  "is well known for its minimalistic appearance and flexibility. "
-                  "Your desktop becomes cleaner, faster."),
+    'openbox' : "Openbox is a highly configurable, next generation window "
+                "manager with extensive standards support. It's default theme "
+                "is well known for its minimalistic appearance and flexibility. "
+                "Your desktop becomes cleaner, faster.",
 
-    'enlightenment' : _("Enlightenment is not just a window manager for Linux/X11 "
-                        "and others, but also a whole suite of libraries to help "
-                        "you create beautiful user interfaces with much less work"),
+    'enlightenment' : "Enlightenment is not just a window manager for Linux/X11 "
+                      "and others, but also a whole suite of libraries to help "
+                      "you create beautiful user interfaces with much less work",
 
-    'kde' : _("If you are looking for a familiar working environment, KDE's "
-              "Plasma Desktop offers all the tools required for a modern desktop "
-              "computing experience so you can be productive right from the start."),
+    'kde' : "If you are looking for a familiar working environment, KDE's "
+            "Plasma Desktop offers all the tools required for a modern desktop "
+            "computing experience so you can be productive right from the start.",
 
-    'razor' : _("Razor-qt is an advanced, easy-to-use, and fast desktop "
-                "environment based on Qt technologies. It has been "
-                "tailored for users who value simplicity, speed, and "
-                "an intuitive interface."),
+    'razor' : "Razor-qt is an advanced, easy-to-use, and fast desktop "
+              "environment based on Qt technologies. It has been "
+              "tailored for users who value simplicity, speed, and "
+              "an intuitive interface.",
 
-    'nox' : _("This option will install Antergos as command-line only system, "
-              "without any type of graphical interface. After the installation you can "
-              "customize Antergos by installing packages with the command-line package manager."),
+    'nox' : "This option will install Antergos as command-line only system, "
+            "without any type of graphical interface. After the installation you can "
+            "customize Antergos by installing packages with the command-line package manager.",
 
-    'mate': _("MATE is a fork of GNOME 2. It provides an intuitive and attractive "
-              "desktop environment using traditional metaphors for Linux and other Unix-like "
-              "operating systems.")}
+    'mate': "MATE is a fork of GNOME 2. It provides an intuitive and attractive "
+            "desktop environment using traditional metaphors for Linux and other Unix-like "
+            "operating systems."}

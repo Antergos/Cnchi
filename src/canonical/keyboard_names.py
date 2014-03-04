@@ -47,6 +47,7 @@ class KeyboardNames:
         # on 3.3, this should be:
         #   for line in kbdnames:
         #       line = line.rstrip("\n")
+
         for line in kbdnames.read().splitlines():
             got_lang, element, name, value = line.split("*", 3)
             if got_lang != lang:
@@ -71,7 +72,7 @@ class KeyboardNames:
 
         raw = gzip.open(self._filename)
         try:
-            with io.TextIOWrapper(raw) as kbdnames:
+            with io.TextIOWrapper(raw, encoding='utf-8') as kbdnames:
                 self._load_file(lang, kbdnames)
         finally:
             raw.close()
