@@ -174,7 +174,7 @@ org.mate.media-handling automount-open false
 org.mate.media-handling autorun-x-content-ignore @as []
 org.mate.media-handling autorun-x-content-open-folder @as []
 org.mate.caja.desktop font 'Sans 10'
-org.mate.file-views icon-theme 'Faenza-Darkest'
+org.mate.file-views icon-theme 'Faenza-Dark'
 org.gnome.desktop.notifications application-children @as []
 org.freedesktop.Geoclue gps-baudrate uint32 0
 org.gnome.desktop.privacy old-files-age uint32 30
@@ -182,7 +182,7 @@ org.gnome.desktop.interface document-font-name 'Sans 11'
 org.gnome.desktop.interface font-name 'Cantarell 11'
 org.gnome.desktop.interface gtk-color-palette 'black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90'
 org.gnome.desktop.interface gtk-theme 'Zukitwo'
-org.gnome.desktop.interface icon-theme 'Faenza-Darkest'
+org.gnome.desktop.interface icon-theme 'Faenza-Dark'
 org.gnome.desktop.interface monospace-font-name 'Monospace 11'
 org.gnome.desktop.interface scaling-factor uint32 0
 org.mate.SettingsDaemon.plugins.xrandr turn-on-external-monitors-at-startup true
@@ -203,7 +203,7 @@ org.mate.interface file-chooser-backend 'gtk+'
 org.mate.interface font-name 'Sans 10'
 org.mate.interface gtk-key-theme 'Zukitwo'
 org.mate.interface gtk-theme 'Zukitwo'
-org.mate.interface icon-theme 'Faenza-Darkest'
+org.mate.interface icon-theme 'Faenza-Dark'
 org.mate.interface monospace-font-name 'Monospace 10'
 org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
 org.mate.eom.plugins active-plugins @as []
