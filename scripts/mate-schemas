@@ -75,7 +75,6 @@ org.gnome.desktop.media-handling autorun-x-content-open-folder @as []
 org.mate.search-tool default-window-height 350
 org.mate.search-tool default-window-width 554
 org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
-org.mate.search-tool search-history {'gsearchtool-file-entry': ['netbeans']}
 org.mate.caja.desktop font 'Sans 10'
 org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
 org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
