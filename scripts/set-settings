@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -v
 
 DESKTOP=$1
 
@@ -150,16 +150,13 @@ fi
 
 if [[ ${DESKTOP} == 'mate' ]]; then
 
-	cat /usr/bin/mate-schemas | while read line
+	cat mate-schemas | while read line
 	do
 
-		schema="${line}"
-		gsettings set "${schema}";
+		${line};
+		sleep 0.2
 
 	done
-
-	# Change keyboard layout
-	gsettings set org.mate.desktop.input-sources sources "[('xkb','us')]"
 
 fi
 

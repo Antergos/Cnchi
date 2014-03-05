@@ -1,312 +1,290 @@
-org.mate.Marco.general audible-bell false
-org.mate.Marco.general compositing-manager true
-org.mate.Marco.general num-workspaces 2
-org.mate.Marco.general theme 'Zukitwo'
-org.mate.Marco.general titlebar-font 'Sans Bold 10'
-org.mate.Marco.general wrap-style 'no wrap'
-com.linuxmint.mintmenu.plugins.applications search-command 'mate-search-tool --named "%s" --start'
-com.linuxmint.mintmenu.plugins.applications swap-generic-name true
-com.linuxmint.mintmenu.plugins.applications use-apt false
-org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
-org.mate.background primary-color '#58589191bcbc'
-org.mate.background secondary-color '#3c3c8f8f2525'
-org.mate.background show-desktop-icons false
-org.mate.session required-components-list ['windowmanager', 'panel', 'filemanager']
-org.mate.session session-start 1393808701
-org.mate.system-monitor.disktreenew columns-order [0, 1, 2, 3, 4, 5, 6]
-org.mate.peripherals-keyboard-xkb.kbd layouts @as []
-org.mate.peripherals-keyboard-xkb.kbd options @as []
-org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
-org.mate.caja.list-view default-visible-columns ['name', 'size', 'type', 'date_modified']
-org.mate.disk-usage-analyzer.preferences excluded-uris @as []
-org.mate.eom.plugins active-plugins @as []
-org.gnome.desktop.screensaver lock-delay uint32 0
-org.gnome.desktop.screensaver logout-delay uint32 7200
-org.mate.pluma.plugins.filebrowser.on-load root 'file:///'
-org.mate.pluma.plugins.filebrowser.on-load virtual-root 'file:///etc/gconf/2'
-org.mate.power-manager check-type-cpu true
-org.mate.power-manager lock-hibernate false
-org.mate.power-manager lock-keyring-hibernate false
-org.mate.power-manager network-sleep true
-org.mate.applications-browser exec 'chromium'
-org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
-org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
-org.mate.peripherals-keyboard bell-mode 'off'
-org.mate.peripherals-keyboard numlock-state 'on'
-org.mate.peripherals-mouse cursor-size 24
-org.mate.peripherals-mouse cursor-theme 'Adwaita'
-org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
-org.mate.Marco.keybinding-commands command-1 'sudo killall X'
-org.mate.Marco.keybinding-commands command-10 ' '
-org.mate.Marco.keybinding-commands command-11 ' '
-org.mate.Marco.keybinding-commands command-12 ' '
-org.mate.Marco.keybinding-commands command-2 ' '
-org.mate.Marco.keybinding-commands command-3 ' '
-org.mate.Marco.keybinding-commands command-4 ' '
-org.mate.Marco.keybinding-commands command-5 ' '
-org.mate.Marco.keybinding-commands command-6 ' '
-org.mate.Marco.keybinding-commands command-7 ' '
-org.mate.Marco.keybinding-commands command-8 ' '
-org.mate.Marco.keybinding-commands command-9 ' '
-org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
-org.mate.thumbnailers disable @as []
-org.mate.system-monitor current-tab 3
-org.mate.system-monitor view-as 0
-org.mate.system-monitor width 602
-org.mate.system-monitor.disktreenew columns-order [0, 1, 2, 3, 4, 5, 6]
-org.mate.system-monitor.proctree col-11-width 53
-org.mate.system-monitor.proctree col-12-width 38
-org.mate.system-monitor.proctree col-13-width 0
-org.mate.system-monitor.proctree col-14-width 0
-org.mate.system-monitor.proctree col-15-width 77
-org.mate.system-monitor.proctree col-16-width 217
-org.mate.system-monitor.proctree col-2-width 67
-org.mate.system-monitor.proctree col-4-width 0
-org.mate.system-monitor.proctree col-8-width 68
-org.mate.system-monitor.proctree col-9-width 0
-org.mate.system-monitor.proctree columns-order [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-org.gnome.desktop.wm.preferences theme 'Zukitwo'
-org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
-org.gnome.desktop.wm.preferences workspace-names @as []
-org.gnome.desktop.session idle-delay uint32 300
-org.mate.accessibility-startup exec-ats @as []
-org.gnome.desktop.media-handling autorun-x-content-ignore @as []
-org.gnome.desktop.media-handling autorun-x-content-open-folder @as []
-org.mate.search-tool default-window-height 350
-org.mate.search-tool default-window-width 554
-org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
-org.mate.search-tool search-history {'gsearchtool-file-entry': ['netbeans']}
-org.mate.caja.desktop font 'Sans 10'
-org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
-org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
-org.mate.caja.list-view default-visible-columns ['name', 'size', 'type', 'date_modified']
-org.mate.caja.preferences always-use-location-entry true
-org.mate.caja.preferences background-color '#5BA7CF'
-org.mate.caja.preferences date-format 'informal'
-org.mate.caja.preferences enable-delete true
-org.mate.caja.preferences show-advanced-permissions true
-org.mate.caja.preferences side-pane-background-color '#6689BD'
-org.mate.caja.preferences side-pane-background-set true
-org.mate.caja.preferences thumbnail-limit uint64 10485760
-org.mate.caja.window-state geometry '800x550+157+136'
-org.mate.caja.window-state sidebar-width 159
-org.mate.panel disabled-applets @as []
-org.mate.panel history-mate-run ['mate-system-monitor']
-org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'object_0']
-org.mate.panel toplevel-id-list ['top', 'bottom']
-org.mate.system-monitor.proctree col-11-width 53
-org.mate.system-monitor.proctree col-12-width 38
-org.mate.system-monitor.proctree col-13-width 0
-org.mate.system-monitor.proctree col-14-width 0
-org.mate.system-monitor.proctree col-15-width 77
-org.mate.system-monitor.proctree col-16-width 217
-org.mate.system-monitor.proctree col-2-width 67
-org.mate.system-monitor.proctree col-4-width 0
-org.mate.system-monitor.proctree col-8-width 68
-org.mate.system-monitor.proctree col-9-width 0
-org.mate.system-monitor.proctree columns-order [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-org.mate.terminal.global active-encodings ['UTF-8', 'current']
-org.mate.disk-usage-analyzer.preferences excluded-uris @as []
-org.mate.engrampa.general editors @as []
-org.gnome.desktop.input-sources current uint32 0
-org.gnome.desktop.input-sources sources [('xkb', 'us')]
-org.gnome.desktop.input-sources xkb-options @as []
-org.gtk.Settings.ColorChooser custom-colors @a(dddd) []
-org.gtk.Settings.ColorChooser selected-color (false, 1.0, 1.0, 1.0, 1.0)
-org.gtk.exampleapp font 'Monospace 12'
-org.mate.caja.preferences always-use-location-entry true
-org.mate.caja.preferences background-color '#5BA7CF'
-org.mate.caja.preferences date-format 'informal'
-org.mate.caja.preferences enable-delete true
-org.mate.caja.preferences show-advanced-permissions true
-org.mate.caja.preferences side-pane-background-color '#6689BD'
-org.mate.caja.preferences side-pane-background-set true
-org.mate.caja.preferences thumbnail-limit uint64 10485760
-org.mate.engrampa.general editors @as []
-org.mate.engrampa.listing show-path false
-org.mate.Atril.Default window-ratio (0.0, 0.0)
-org.mate.stickynotes default-font 'Sans 10'
-org.mate.system-log filters @as []
-org.mate.system-log logfiles @as []
-org.mate.keybindings.onscreenkeyboard action 'mate-gsettings-toggle screen-keyboard-enabled'
-org.mate.keybindings.onscreenkeyboard name 'Toggle on-screen keyboard'
-org.mate.peripherals-keyboard-xkb.general known-file-list @as []
-org.mate.peripherals-keyboard-xkb.general update-handlers @as []
-org.mate.peripherals-keyboard-xkb.kbd layouts @as []
-org.mate.peripherals-keyboard-xkb.kbd options @as []
-com.linuxmint.mintmenu applet-icon '/usr/share/antergos/antergos-menu.png'
-com.linuxmint.mintmenu applet-icon-size 25
-com.linuxmint.mintmenu custom-color '#FFFFFF'
-com.linuxmint.mintmenu plugins-list ['places', 'system_management', 'newpane', 'applications']
-com.linuxmint.mintmenu start-with-favorites true
-org.mate.SettingsDaemon.plugins.housekeeping ignore-paths @as []
-com.linuxmint.mintmenu.plugins.system_management height 160
-com.linuxmint.mintmenu.plugins.system_management show-software-manager false
-org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
-org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
-org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
-org.mate.dictionary print-font 'Serif 12'
-org.mate.pluma active-plugins ['docinfo', 'modelines', 'filebrowser', 'spell', 'time']
-org.mate.pluma auto-detected-encodings ['UTF-8', 'CURRENT', 'ISO-8859-15', 'UTF-16']
-org.mate.pluma auto-indent true
-org.mate.pluma color-scheme 'tango'
-org.mate.pluma display-right-margin true
-org.mate.pluma editor-font 'Monospace 12'
-org.mate.pluma highlight-current-line true
-org.mate.pluma history-replace-with @as []
-org.mate.pluma history-search-for @as []
-org.mate.pluma print-font-body-pango 'Monospace 9'
-org.mate.pluma print-font-header-pango 'Sans 11'
-org.mate.pluma print-font-numbers-pango 'Sans 8'
-org.mate.pluma writable-vfs-schemes ['dav', 'davs', 'ftp', 'sftp', 'smb', 'ssh']
-org.mate.Atril.Default window-ratio (0.0, 0.0)
-org.mate.keybindings.magnifier action 'mate-gsettings-toggle screen-keyboard-enabled'
-org.mate.keybindings.magnifier name 'Toggle magnifier'
-org.mate.keybindings.magnifier action 'mate-gsettings-toggle screen-keyboard-enabled'
-org.mate.keybindings.magnifier name 'Toggle magnifier'
-org.mate.keybindings.onscreenkeyboard action 'mate-gsettings-toggle screen-keyboard-enabled'
-org.mate.keybindings.onscreenkeyboard name 'Toggle on-screen keyboard'
-org.mate.keybindings.screenreader action 'mate-gsettings-toggle screen-reader-enabled'
-org.mate.keybindings.screenreader name 'Toggle screen reader'
-org.mate.sound default-mixer-tracks @as []
-org.mate.sound event-sounds true
-org.mate.media-handling automount-open false
-org.mate.media-handling autorun-x-content-ignore @as []
-org.mate.media-handling autorun-x-content-open-folder @as []
-org.mate.caja.desktop font 'Sans 10'
-org.mate.file-views icon-theme 'Faenza-Darkest'
-org.gnome.desktop.notifications application-children @as []
-org.freedesktop.Geoclue gps-baudrate uint32 0
-org.gnome.desktop.privacy old-files-age uint32 30
-org.gnome.desktop.interface document-font-name 'Sans 11'
-org.gnome.desktop.interface font-name 'Cantarell 11'
-org.gnome.desktop.interface gtk-color-palette 'black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90'
-org.gnome.desktop.interface gtk-theme 'Zukitwo'
-org.gnome.desktop.interface icon-theme 'Faenza-Darkest'
-org.gnome.desktop.interface monospace-font-name 'Monospace 11'
-org.gnome.desktop.interface scaling-factor uint32 0
-org.mate.SettingsDaemon.plugins.xrandr turn-on-external-monitors-at-startup true
-org.mate.pluma.plugins.time custom-format '%d/%m/%Y %H:%M:%S'
-com.linuxmint.mintmenu.plugins.places custom-names @as []
-com.linuxmint.mintmenu.plugins.places custom-paths @as []
-com.linuxmint.mintmenu.plugins.places show-gtk-bookmarks true
-org.mate.engrampa.listing show-path false
-org.mate.font-rendering antialiasing 'rgba'
-org.mate.font-rendering dpi 92.0
-org.mate.peripherals-touchpad scroll-method 2
-org.mate.peripherals-touchpad tap-to-click true
-org.gnome.desktop.datetime automatic-timezone true
-org.mate.Marco.global-keybindings run-command-1 '<Control><Alt><Backspace>'
-org.gnome.system.proxy ignore-hosts ['localhost', '127.0.0.0/8', '::1']
-org.mate.interface document-font-name 'Sans 10'
-org.mate.interface file-chooser-backend 'gtk+'
-org.mate.interface font-name 'Sans 10'
-org.mate.interface gtk-key-theme 'Zukitwo'
-org.mate.interface gtk-theme 'Zukitwo'
-org.mate.interface icon-theme 'Faenza-Darkest'
-org.mate.interface monospace-font-name 'Monospace 10'
-org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
-org.mate.eom.plugins active-plugins @as []
-org.gtk.Settings.FileChooser window-position (-1, -1)
-org.gtk.Settings.FileChooser window-size (-1, -1)
+gsettings set org.mate.Marco.general audible-bell false
+gsettings set org.mate.Marco.general compositing-manager true
+gsettings set org.mate.Marco.general num-workspaces 2
+gsettings set org.mate.Marco.general theme 'Zukitwo'
+gsettings set org.mate.Marco.general titlebar-font 'Sans Bold 10'
+gsettings set org.mate.Marco.general wrap-style 'no wrap'
+gsettings set com.linuxmint.mintmenu.plugins.applications search-command 'mate-search-tool --named "%s" --start'
+gsettings set com.linuxmint.mintmenu.plugins.applications swap-generic-name true
+gsettings set com.linuxmint.mintmenu.plugins.applications use-apt false
+gsettings set org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+gsettings set org.mate.background primary-color '#58589191bcbc'
+gsettings set org.mate.background secondary-color '#3c3c8f8f2525'
+gsettings set org.mate.background show-desktop-icons false
+gsettings set org.mate.session required-components-list ['windowmanager', 'panel', 'filemanager']
+gsettings set org.mate.session session-start 1393808701
+gsettings set org.mate.system-monitor.disktreenew columns-order [0, 1, 2, 3, 4, 5, 6]
+gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts @as []
+gsettings set org.mate.peripherals-keyboard-xkb.kbd options @as []
+gsettings set org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
+gsettings set org.mate.caja.list-view default-visible-columns ['name', 'size', 'type', 'date_modified']
+gsettings set org.mate.disk-usage-analyzer.preferences excluded-uris @as []
+gsettings set org.mate.eom.plugins active-plugins @as []
+gsettings set org.gnome.desktop.screensaver lock-delay uint32 0
+gsettings set org.gnome.desktop.screensaver logout-delay uint32 7200
+gsettings set org.mate.pluma.plugins.filebrowser.on-load root 'file:///'
+gsettings set org.mate.pluma.plugins.filebrowser.on-load virtual-root 'file:///etc/gconf/2'
+gsettings set org.mate.power-manager check-type-cpu true
+gsettings set org.mate.power-manager lock-hibernate false
+gsettings set org.mate.power-manager lock-keyring-hibernate false
+gsettings set org.mate.power-manager network-sleep true
+gsettings set org.mate.applications-browser exec 'chromium'
+gsettings set org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
+gsettings set org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
+gsettings set org.mate.peripherals-keyboard bell-mode 'off'
+gsettings set org.mate.peripherals-keyboard numlock-state 'on'
+gsettings set org.mate.peripherals-mouse cursor-size 24
+gsettings set org.mate.peripherals-mouse cursor-theme 'Adwaita'
+gsettings set org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
+gsettings set org.mate.Marco.keybinding-commands command-1 'sudo killall X'
+gsettings set org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
+gsettings set org.mate.thumbnailers disable @as []
+gsettings set org.mate.system-monitor current-tab 3
+gsettings set org.mate.system-monitor view-as 0
+gsettings set org.mate.system-monitor width 602
+gsettings set org.mate.system-monitor.disktreenew columns-order [0, 1, 2, 3, 4, 5, 6]
+gsettings set org.mate.system-monitor.proctree col-11-width 53
+gsettings set org.mate.system-monitor.proctree col-12-width 38
+gsettings set org.mate.system-monitor.proctree col-13-width 0
+gsettings set org.mate.system-monitor.proctree col-14-width 0
+gsettings set org.mate.system-monitor.proctree col-15-width 77
+gsettings set org.mate.system-monitor.proctree col-16-width 217
+gsettings set org.mate.system-monitor.proctree col-2-width 67
+gsettings set org.mate.system-monitor.proctree col-4-width 0
+gsettings set org.mate.system-monitor.proctree col-8-width 68
+gsettings set org.mate.system-monitor.proctree col-9-width 0
+gsettings set org.mate.system-monitor.proctree columns-order [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+gsettings set org.gnome.desktop.wm.preferences theme 'Zukitwo'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
+gsettings set org.gnome.desktop.wm.preferences workspace-names @as []
+gsettings set org.gnome.desktop.session idle-delay uint32 300
+gsettings set org.mate.accessibility-startup exec-ats @as []
+gsettings set org.gnome.desktop.media-handling autorun-x-content-ignore @as []
+gsettings set org.gnome.desktop.media-handling autorun-x-content-open-folder @as []
+gsettings set org.mate.search-tool default-window-height 350
+gsettings set org.mate.search-tool default-window-width 554
+gsettings set org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
+gsettings set org.mate.search-tool search-history {'gsearchtool-file-entry': ['netbeans']}
+gsettings set org.mate.caja.desktop font 'Sans 10'
+gsettings set org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
+gsettings set org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
+gsettings set org.mate.caja.list-view default-visible-columns ['name', 'size', 'type', 'date_modified']
+gsettings set org.mate.caja.preferences always-use-location-entry true
+gsettings set org.mate.caja.preferences background-color '#5BA7CF'
+gsettings set org.mate.caja.preferences date-format 'informal'
+gsettings set org.mate.caja.preferences enable-delete true
+gsettings set org.mate.caja.preferences show-advanced-permissions true
+gsettings set org.mate.caja.preferences side-pane-background-color '#6689BD'
+gsettings set org.mate.caja.preferences side-pane-background-set true
+gsettings set org.mate.caja.preferences thumbnail-limit uint64 10485760
+gsettings set org.mate.caja.window-state geometry '800x550+157+136'
+gsettings set org.mate.caja.window-state sidebar-width 159
+gsettings set org.mate.panel disabled-applets @as []
+gsettings set org.mate.panel history-mate-run ['mate-system-monitor']
+gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'object_0']
+gsettings set org.mate.panel toplevel-id-list ['top', 'bottom']
+gsettings set org.mate.system-monitor.proctree col-11-width 53
+gsettings set org.mate.system-monitor.proctree col-12-width 38
+gsettings set org.mate.system-monitor.proctree col-13-width 0
+gsettings set org.mate.system-monitor.proctree col-14-width 0
+gsettings set org.mate.system-monitor.proctree col-15-width 77
+gsettings set org.mate.system-monitor.proctree col-16-width 217
+gsettings set org.mate.system-monitor.proctree col-2-width 67
+gsettings set org.mate.system-monitor.proctree col-4-width 0
+gsettings set org.mate.system-monitor.proctree col-8-width 68
+gsettings set org.mate.system-monitor.proctree col-9-width 0
+gsettings set org.mate.system-monitor.proctree columns-order [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+gsettings set org.mate.terminal.global active-encodings ['UTF-8', 'current']
+gsettings set org.mate.disk-usage-analyzer.preferences excluded-uris @as []
+gsettings set org.mate.engrampa.general editors @as []
+gsettings set org.gnome.desktop.input-sources current uint32 0
+gsettings set org.gnome.desktop.input-sources sources [('xkb', 'us')]
+gsettings set org.gnome.desktop.input-sources xkb-options @as []
+gsettings set org.gtk.Settings.ColorChooser custom-colors @a(dddd) []
+gsettings set org.gtk.Settings.ColorChooser selected-color (false, 1.0, 1.0, 1.0, 1.0)
+gsettings set org.gtk.exampleapp font 'Monospace 12'
+gsettings set org.mate.caja.preferences always-use-location-entry true
+gsettings set org.mate.caja.preferences background-color '#5BA7CF'
+gsettings set org.mate.caja.preferences date-format 'informal'
+gsettings set org.mate.caja.preferences enable-delete true
+gsettings set org.mate.caja.preferences show-advanced-permissions true
+gsettings set org.mate.caja.preferences side-pane-background-color '#6689BD'
+gsettings set org.mate.caja.preferences side-pane-background-set true
+gsettings set org.mate.caja.preferences thumbnail-limit uint64 10485760
+gsettings set org.mate.engrampa.general editors @as []
+gsettings set org.mate.engrampa.listing show-path false
+gsettings set org.mate.Atril.Default window-ratio (0.0, 0.0)
+gsettings set org.mate.stickynotes default-font 'Sans 10'
+gsettings set org.mate.system-log filters @as []
+gsettings set org.mate.system-log logfiles @as []
+gsettings set org.mate.keybindings.onscreenkeyboard action 'mate-gsettings-toggle screen-keyboard-enabled'
+gsettings set org.mate.keybindings.onscreenkeyboard name 'Toggle on-screen keyboard'
+gsettings set org.mate.peripherals-keyboard-xkb.general known-file-list @as []
+gsettings set org.mate.peripherals-keyboard-xkb.general update-handlers @as []
+gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts @as []
+gsettings set org.mate.peripherals-keyboard-xkb.kbd options @as []
+gsettings set com.linuxmint.mintmenu applet-icon '/usr/share/antergos/antergos-menu.png'
+gsettings set com.linuxmint.mintmenu applet-icon-size 25
+gsettings set com.linuxmint.mintmenu custom-color '#FFFFFF'
+gsettings set com.linuxmint.mintmenu plugins-list ['places', 'system_management', 'newpane', 'applications']
+gsettings set com.linuxmint.mintmenu start-with-favorites true
+gsettings set org.mate.SettingsDaemon.plugins.housekeeping ignore-paths @as []
+gsettings set com.linuxmint.mintmenu.plugins.system_management height 160
+gsettings set com.linuxmint.mintmenu.plugins.system_management show-software-manager false
+gsettings set org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
+gsettings set org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
+gsettings set org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
+gsettings set org.mate.dictionary print-font 'Serif 12'
+gsettings set org.mate.pluma active-plugins ['docinfo', 'modelines', 'filebrowser', 'spell', 'time']
+gsettings set org.mate.pluma auto-detected-encodings ['UTF-8', 'CURRENT', 'ISO-8859-15', 'UTF-16']
+gsettings set org.mate.pluma auto-indent true
+gsettings set org.mate.pluma color-scheme 'tango'
+gsettings set org.mate.pluma display-right-margin true
+gsettings set org.mate.pluma editor-font 'Monospace 12'
+gsettings set org.mate.pluma highlight-current-line true
+gsettings set org.mate.pluma history-replace-with @as []
+gsettings set org.mate.pluma history-search-for @as []
+gsettings set org.mate.pluma print-font-body-pango 'Monospace 9'
+gsettings set org.mate.pluma print-font-header-pango 'Sans 11'
+gsettings set org.mate.pluma print-font-numbers-pango 'Sans 8'
+gsettings set org.mate.pluma writable-vfs-schemes ['dav', 'davs', 'ftp', 'sftp', 'smb', 'ssh']
+gsettings set org.mate.Atril.Default window-ratio (0.0, 0.0)
+gsettings set org.mate.keybindings.magnifier action 'mate-gsettings-toggle screen-keyboard-enabled'
+gsettings set org.mate.keybindings.magnifier name 'Toggle magnifier'
+gsettings set org.mate.keybindings.magnifier action 'mate-gsettings-toggle screen-keyboard-enabled'
+gsettings set org.mate.keybindings.magnifier name 'Toggle magnifier'
+gsettings set org.mate.keybindings.onscreenkeyboard action 'mate-gsettings-toggle screen-keyboard-enabled'
+gsettings set org.mate.keybindings.onscreenkeyboard name 'Toggle on-screen keyboard'
+gsettings set org.mate.keybindings.screenreader action 'mate-gsettings-toggle screen-reader-enabled'
+gsettings set org.mate.keybindings.screenreader name 'Toggle screen reader'
+gsettings set org.mate.sound default-mixer-tracks @as []
+gsettings set org.mate.sound event-sounds true
+gsettings set org.mate.media-handling automount-open false
+gsettings set org.mate.media-handling autorun-x-content-ignore @as []
+gsettings set org.mate.media-handling autorun-x-content-open-folder @as []
+gsettings set org.mate.caja.desktop font 'Sans 10'
+gsettings set org.mate.file-views icon-theme 'Faenza-Darkest'
+gsettings set org.gnome.desktop.notifications application-children @as []
+gsettings set org.freedesktop.Geoclue gps-baudrate uint32 0
+gsettings set org.gnome.desktop.privacy old-files-age uint32 30
+gsettings set org.gnome.desktop.interface document-font-name 'Sans 11'
+gsettings set org.gnome.desktop.interface font-name 'Cantarell 11'
+gsettings set org.gnome.desktop.interface gtk-color-palette 'black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90'
+gsettings set org.gnome.desktop.interface gtk-theme 'Zukitwo'
+gsettings set org.gnome.desktop.interface icon-theme 'Faenza-Darkest'
+gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 11'
+gsettings set org.gnome.desktop.interface scaling-factor uint32 0
+gsettings set org.mate.SettingsDaemon.plugins.xrandr turn-on-external-monitors-at-startup true
+gsettings set org.mate.pluma.plugins.time custom-format '%d/%m/%Y %H:%M:%S'
+gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
+gsettings set com.linuxmint.mintmenu.plugins.places custom-paths @as []
+gsettings set com.linuxmint.mintmenu.plugins.places show-gtk-bookmarks true
+gsettings set org.mate.engrampa.listing show-path false
+gsettings set org.mate.font-rendering antialiasing 'rgba'
+gsettings set org.mate.font-rendering dpi 92.0
+gsettings set org.mate.peripherals-touchpad scroll-method 2
+gsettings set org.mate.peripherals-touchpad tap-to-click true
+gsettings set org.gnome.desktop.datetime automatic-timezone true
+gsettings set org.mate.Marco.global-keybindings run-command-1 '<Control><Alt><Backspace>'
+gsettings set org.gnome.system.proxy ignore-hosts ['localhost', '127.0.0.0/8', '::1']
+gsettings set org.mate.interface document-font-name 'Sans 10'
+gsettings set org.mate.interface file-chooser-backend 'gtk+'
+gsettings set org.mate.interface font-name 'Sans 10'
+gsettings set org.mate.interface gtk-key-theme 'Zukitwo'
+gsettings set org.mate.interface gtk-theme 'Zukitwo'
+gsettings set org.mate.interface icon-theme 'Faenza-Darkest'
+gsettings set org.mate.interface monospace-font-name 'Monospace 10'
+gsettings set org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
+gsettings set org.mate.eom.plugins active-plugins @as []
+gsettings set org.gtk.Settings.FileChooser window-position (-1, -1)
+gsettings set org.gtk.Settings.FileChooser window-size (-1, -1)
 ca.desrt.dconf-editor.Settings window-height 642
-org.gnome.desktop.wm.keybindings cycle-group-backward @as []
-org.gnome.desktop.wm.keybindings cycle-panels-backward @as []
-org.gnome.desktop.wm.keybindings cycle-windows-backward @as []
-org.gnome.desktop.wm.keybindings lower @as []
-org.gnome.desktop.wm.keybindings maximize-horizontally @as []
-org.gnome.desktop.wm.keybindings maximize-vertically @as []
-org.gnome.desktop.wm.keybindings move-to-center @as []
-org.gnome.desktop.wm.keybindings move-to-corner-ne @as []
-org.gnome.desktop.wm.keybindings move-to-corner-nw @as []
-org.gnome.desktop.wm.keybindings move-to-corner-se @as []
-org.gnome.desktop.wm.keybindings move-to-corner-sw @as []
-org.gnome.desktop.wm.keybindings move-to-side-e @as []
-org.gnome.desktop.wm.keybindings move-to-side-n @as []
-org.gnome.desktop.wm.keybindings move-to-side-s @as []
-org.gnome.desktop.wm.keybindings move-to-side-w @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-1 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-10 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-11 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-12 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-2 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-3 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-4 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-5 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-6 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-7 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-8 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-9 @as []
-org.gnome.desktop.wm.keybindings move-to-workspace-down ['<Super><Shift>Page_Down', '<Control><Shift><Alt>Down']
-org.gnome.desktop.wm.keybindings move-to-workspace-up ['<Super><Shift>Page_Up', '<Control><Shift><Alt>Up']
-org.gnome.desktop.wm.keybindings panel-main-menu ['<Super>s', '<Alt>F1']
-org.gnome.desktop.wm.keybindings raise @as []
-org.gnome.desktop.wm.keybindings raise-or-lower @as []
-org.gnome.desktop.wm.keybindings set-spew-mark @as []
-org.gnome.desktop.wm.keybindings show-desktop @as []
-org.gnome.desktop.wm.keybindings switch-applications ['<Super>Tab', '<Alt>Tab']
-org.gnome.desktop.wm.keybindings switch-applications-backward @as []
-org.gnome.desktop.wm.keybindings switch-group ['<Super>Above_Tab', '<Alt>Above_Tab']
-org.gnome.desktop.wm.keybindings switch-group-backward @as []
-org.gnome.desktop.wm.keybindings switch-input-source-backward @as []
-org.gnome.desktop.wm.keybindings switch-panels-backward @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-1 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-10 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-11 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-12 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-2 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-3 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-4 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-5 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-6 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-7 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-8 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-9 @as []
-org.gnome.desktop.wm.keybindings switch-to-workspace-down ['<Super>Page_Down', '<Control><Alt>Down']
-org.gnome.desktop.wm.keybindings switch-to-workspace-up ['<Super>Page_Up', '<Control><Alt>Up']
-org.gnome.desktop.wm.keybindings switch-windows @as []
-org.gnome.desktop.wm.keybindings switch-windows-backward @as []
-org.gnome.desktop.wm.keybindings toggle-above @as []
-org.gnome.desktop.wm.keybindings toggle-fullscreen @as []
-org.gnome.desktop.wm.keybindings toggle-on-all-workspaces @as []
-org.gnome.desktop.wm.keybindings toggle-shaded @as []
-org.gnome.desktop.wm.keybindings unmaximize ['<Super>Down', '<Alt>F5']
-org.mate.keybindings.screenreader action 'mate-gsettings-toggle screen-reader-enabled'
-org.mate.keybindings.screenreader name 'Toggle screen reader'
-org.mate.mucharmap font @ms nothing
-org.mate.terminal.global active-encodings ['UTF-8', 'current']
-org.mate.NotificationDaemon theme 'slider'
-org.mate.Marco.general audible-bell false
-org.mate.Marco.general compositing-manager true
-org.mate.Marco.general num-workspaces 2
-org.mate.Marco.general theme 'Zukitwo'
-org.mate.Marco.general titlebar-font 'Sans Bold 10'
-org.mate.Marco.general wrap-style 'no wrap'
-org.mate.Marco.global-keybindings run-command-1 '<Control><Alt><Backspace>'
-org.mate.Marco.keybinding-commands command-1 'sudo killall X'
-org.mate.Marco.keybinding-commands command-10 ' '
-org.mate.Marco.keybinding-commands command-11 ' '
-org.mate.Marco.keybinding-commands command-12 ' '
-org.mate.Marco.keybinding-commands command-2 ' '
-org.mate.Marco.keybinding-commands command-3 ' '
-org.mate.Marco.keybinding-commands command-4 ' '
-org.mate.Marco.keybinding-commands command-5 ' '
-org.mate.Marco.keybinding-commands command-6 ' '
-org.mate.Marco.keybinding-commands command-7 ' '
-org.mate.Marco.keybinding-commands command-8 ' '
-org.mate.Marco.keybinding-commands command-9 ' '
-org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
-org.mate.mucharmap.WindowState size (-1, -1)
-org.mate.peripherals-keyboard-xkb.general known-file-list @as []
-org.mate.peripherals-keyboard-xkb.general update-handlers @as []
-org.mate.screensaver logout-command '/usr/bin/mate-session-save --logout-dialog  '
-org.mate.screensaver logout-enabled true
-org.mate.screensaver themes @as []
-org.mate.pluma.plugins.filebrowser.on-load root 'file:///'
-org.mate.pluma.plugins.filebrowser.on-load virtual-root 'file:///etc/gconf/2'
-org.mate.caja.window-state geometry '800x550+157+136'
-org.mate.caja.window-state sidebar-width 159
-org.mate.control-center cc-actions-list ['Change Theme;mate-appearance-properties.desktop', 'Set Preferred Applications;mate-default-applications-properties.desktop']
-org.gnome.desktop.search-providers disabled @as []
-org.gnome.desktop.search-providers sort-order ['gnome-contacts.desktop', 'gnome-documents.desktop', 'nautilus.desktop']
-org.gnome.desktop.thumbnailers disable @as []
+gsettings set org.gnome.desktop.wm.keybindings cycle-group-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings cycle-panels-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings cycle-windows-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings lower @as []
+gsettings set org.gnome.desktop.wm.keybindings maximize-horizontally @as []
+gsettings set org.gnome.desktop.wm.keybindings maximize-vertically @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-center @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-corner-ne @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-corner-nw @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-corner-se @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-corner-sw @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-side-e @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-side-n @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-side-s @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-side-w @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-10 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-11 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-12 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-2 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-3 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-4 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-5 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-6 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-7 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-8 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-9 @as []
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down ['<Super><Shift>Page_Down', '<Control><Shift><Alt>Down']
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up ['<Super><Shift>Page_Up', '<Control><Shift><Alt>Up']
+gsettings set org.gnome.desktop.wm.keybindings panel-main-menu ['<Super>s', '<Alt>F1']
+gsettings set org.gnome.desktop.wm.keybindings raise @as []
+gsettings set org.gnome.desktop.wm.keybindings raise-or-lower @as []
+gsettings set org.gnome.desktop.wm.keybindings set-spew-mark @as []
+gsettings set org.gnome.desktop.wm.keybindings show-desktop @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-applications ['<Super>Tab', '<Alt>Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-group ['<Super>Above_Tab', '<Alt>Above_Tab']
+gsettings set org.gnome.desktop.wm.keybindings switch-group-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-panels-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-10 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-11 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-12 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-4 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-9 @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down ['<Super>Page_Down', '<Control><Alt>Down']
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up ['<Super>Page_Up', '<Control><Alt>Up']
+gsettings set org.gnome.desktop.wm.keybindings switch-windows @as []
+gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward @as []
+gsettings set org.gnome.desktop.wm.keybindings toggle-above @as []
+gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen @as []
+gsettings set org.gnome.desktop.wm.keybindings toggle-on-all-workspaces @as []
+gsettings set org.gnome.desktop.wm.keybindings toggle-shaded @as []
+gsettings set org.gnome.desktop.wm.keybindings unmaximize ['<Super>Down', '<Alt>F5']
+gsettings set org.mate.keybindings.screenreader action 'mate-gsettings-toggle screen-reader-enabled'
+gsettings set org.mate.keybindings.screenreader name 'Toggle screen reader'
+gsettings set org.mate.mucharmap font @ms nothing
+gsettings set org.mate.terminal.global active-encodings ['UTF-8', 'current']
+gsettings set org.mate.NotificationDaemon theme 'slider'
+gsettings set org.mate.Marco.general audible-bell false
+gsettings set org.mate.Marco.general compositing-manager true
+gsettings set org.mate.Marco.general num-workspaces 2
+gsettings set org.mate.Marco.general theme 'Zukitwo'
+gsettings set org.mate.Marco.general titlebar-font 'Sans Bold 10'
+gsettings set org.mate.Marco.general wrap-style 'no wrap'
+gsettings set org.mate.Marco.global-keybindings run-command-1 '<Control><Alt><Backspace>'
+gsettings set org.mate.Marco.keybinding-commands command-1 'sudo killall X'
+gsettings set org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
+gsettings set org.mate.mucharmap.WindowState size (-1, -1)
+gsettings set org.mate.peripherals-keyboard-xkb.general known-file-list @as []
+gsettings set org.mate.peripherals-keyboard-xkb.general update-handlers @as []
+gsettings set org.mate.screensaver logout-command '/usr/bin/mate-session-save --logout-dialog  '
+gsettings set org.mate.screensaver logout-enabled true
+gsettings set org.mate.screensaver themes @as []
+gsettings set org.mate.pluma.plugins.filebrowser.on-load root 'file:///'
+gsettings set org.mate.pluma.plugins.filebrowser.on-load virtual-root 'file:///etc/gconf/2'
+gsettings set org.mate.caja.window-state geometry '800x550+157+136'
+gsettings set org.mate.caja.window-state sidebar-width 159
+gsettings set org.mate.control-center cc-actions-list ['Change Theme;mate-appearance-properties.desktop', 'Set Preferred Applications;mate-default-applications-properties.desktop']
+gsettings set org.gnome.desktop.search-providers disabled @as []
+gsettings set org.gnome.desktop.search-providers sort-order ['gnome-contacts.desktop', 'gnome-documents.desktop', 'nautilus.desktop']
+gsettings set org.gnome.desktop.thumbnailers disable @as []
