@@ -439,6 +439,32 @@ def parse_options():
 
     return parser.parse_args()
 
+def threads_init():
+    """
+    For applications that wish to use Python threads to interact with the GNOME platform,
+    GObject.threads_init() must be called prior to running or creating threads and starting
+    main loops (see notes below for PyGObject 3.10 and greater). Generally, this should be done
+    in the first stages of an applications main entry point or right after importing GObject.
+    For multi-threaded GUI applications Gdk.threads_init() must also be called prior to running
+    Gtk.main() or Gio/Gtk.Application.run()."""
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+    
+    if minor == 10 and micro < 2:
+        # Unfortunately these versions of PyGObject suffer a bug which require a workaround to get
+        # threading working properly. Workaround:
+        # Force GIL creation
+        import threading
+        threading.Thread(target=lambda: None).start()
+
+    # Since version 3.10.2, calling threads_init is no longer needed.
+    # See: https://wiki.gnome.org/PyGObject/Threading
+    if minor < 10 or (minor == 10 and micro < 2):
+        # Start Gdk stuff and main window app
+        GObject.threads_init()
+    
+    Gdk.threads_init()
+
 def init_cnchi():
     """ This function initialises Cnchi """
 
@@ -479,14 +505,12 @@ def init_cnchi():
     
     # Drop root privileges
     misc.drop_privileges()
-
-    # Since version 3.11, calling threads_init is no longer needed. See: https://wiki.gnome.org/PyGObject/Threading
-    if Gtk.get_minor_version() < 11:
-        # Start Gdk stuff and main window app
-        GObject.threads_init()
-
+    
+    # Init PyObject Threads
+    threads_init()
+    
+    # Create Gtk Application    
     myapp = Main()
-
     Gtk.main()
 
 if __name__ == '__main__':
