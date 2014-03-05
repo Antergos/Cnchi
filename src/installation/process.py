@@ -1137,6 +1137,11 @@ class InstallationProcess(multiprocessing.Process):
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
 
+        # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
+        with open(default_grub, 'a') as grub_file:
+            grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
+            grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
+
         logging.debug('/etc/default/grub configuration completed successfully.')
 
     def prepare_grub_d(self):
