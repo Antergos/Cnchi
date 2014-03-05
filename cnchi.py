@@ -374,6 +374,8 @@ def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
     
+    logger.handlers = []
+   
     if cmd_line.debug:
         log_level = logging.DEBUG
     else:
