@@ -80,7 +80,7 @@ class Slides(Gtk.Box):
             with open(html_file) as html_stream:
                 html = html_stream.read(None)
                 data = os.path.join(os.getcwd(), "data")
-                self.webview.load_html_string(html, "file://" + data)
+                self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
         except IOError:
             pass
 

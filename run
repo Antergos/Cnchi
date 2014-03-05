@@ -1,15 +1,20 @@
 #!/bin/sh
 
+# WARNING:
+# This script is a helper that the developers use to call Cnchi (testing purposes only)
+# Please, do not use if your intention is to do a "normal" installation
+
 _PYTHON="/usr/bin/python"
+_PYTHON_OPTIONS="-Wall"
 _CACHE="/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
-_OPTIONS="-dvz"
+_CNCHI_OPTIONS="-dvz"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON cnchi.py $_OPTIONS -c $_CACHE -p $_XML $1 $2 $3 $4
+sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi.py $_CNICHI_OPTIONS -c $_CACHE -p $_XML $1 $2 $3 $4
 
 
 
