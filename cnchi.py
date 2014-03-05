@@ -480,8 +480,10 @@ def init_cnchi():
     # Drop root privileges
     misc.drop_privileges()
 
-    # Start Gdk stuff and main window app
-    GObject.threads_init()
+    # Since version 3.11, calling threads_init is no longer needed. See: https://wiki.gnome.org/PyGObject/Threading
+    if Gtk.get_minor_version() < 11:
+        # Start Gdk stuff and main window app
+        GObject.threads_init()
 
     myapp = Main()
 
