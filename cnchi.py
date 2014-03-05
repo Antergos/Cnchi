@@ -465,7 +465,7 @@ def threads_init():
         # Start Gdk stuff and main window app
         GObject.threads_init()
     
-    Gdk.threads_init()
+    #Gdk.threads_init()
 
 def init_cnchi():
     """ This function initialises Cnchi """
