@@ -95,7 +95,8 @@ class DesktopAsk(Gtk.Box):
 
         for desktop_name in desktop_names:
             box = Gtk.VBox()
-            label = Gtk.Label(desktop_name)
+            label = Gtk.Label()
+            label.set_markup(desktop_name)
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)

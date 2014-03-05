@@ -111,7 +111,8 @@ class Language(Gtk.Box):
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             box = Gtk.VBox()
-            label = Gtk.Label(lang)
+            label = Gtk.Label()
+            label.set_markup(lang)
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
