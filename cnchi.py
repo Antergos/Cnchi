@@ -301,7 +301,7 @@ class Main(Gtk.Window):
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
-
+            
         GLib.timeout_add(1000, self.pages["slides"].manage_events_from_cb_queue)
 
     def on_exit_button_clicked(self, widget, data=None):
@@ -374,6 +374,8 @@ def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
     
+    logger.handlers = []
+   
     if cmd_line.debug:
         log_level = logging.DEBUG
     else:
@@ -439,14 +441,40 @@ def parse_options():
 
     return parser.parse_args()
 
+def threads_init():
+    """
+    For applications that wish to use Python threads to interact with the GNOME platform,
+    GObject.threads_init() must be called prior to running or creating threads and starting
+    main loops (see notes below for PyGObject 3.10 and greater). Generally, this should be done
+    in the first stages of an applications main entry point or right after importing GObject.
+    For multi-threaded GUI applications Gdk.threads_init() must also be called prior to running
+    Gtk.main() or Gio/Gtk.Application.run()."""
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+    
+    if minor == 10 and micro < 2:
+        # Unfortunately these versions of PyGObject suffer a bug which require a workaround to get
+        # threading working properly. Workaround:
+        # Force GIL creation
+        import threading
+        threading.Thread(target=lambda: None).start()
+
+    # Since version 3.10.2, calling threads_init is no longer needed.
+    # See: https://wiki.gnome.org/PyGObject/Threading
+    if minor < 10 or (minor == 10 and micro < 2):
+        # Start Gdk stuff and main window app
+        GObject.threads_init()
+    
+    #Gdk.threads_init()
+
 def init_cnchi():
     """ This function initialises Cnchi """
 
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
-        print("Please install hwinfo before running this installer")
-        sys.exit(1)
+        print(_("Please install hwinfo before running this installer"))
+        #sys.exit(1)
 
     if not check_gtk_version():
         sys.exit(1)
@@ -472,19 +500,19 @@ def init_cnchi():
                         new_argv.append(argv)
             else:
                 new_argv = sys.argv
-            print("Program updated! Restarting...")
+            print(_("Program updated! Restarting..."))
             # Run another instance of Cnchi (which will be the new version)
             os.execl(sys.executable, *([sys.executable] + new_argv))
             sys.exit(0)
     
     # Drop root privileges
     misc.drop_privileges()
-
-    # Start Gdk stuff and main window app
-    GObject.threads_init()
-
+    
+    # Init PyObject Threads
+    threads_init()
+    
+    # Create Gtk Application    
     myapp = Main()
-
     Gtk.main()
 
 if __name__ == '__main__':

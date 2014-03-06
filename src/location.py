@@ -171,7 +171,8 @@ class Location(Gtk.Box):
 
         for area in areas:
             box = Gtk.VBox()
-            label = Gtk.Label(area)
+            label = Gtk.Label()
+            label.set_markup(area)
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
