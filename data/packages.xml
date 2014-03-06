@@ -465,36 +465,51 @@
 
     <filesystems>
         <btrfs>
+            <!-- for btrfs partitions -->
             <pkgname>btrfs-progs</pkgname>
         </btrfs>
+        <exfat>
+            <!-- for exFAT partitions -->
+            <pkgname>exfat-utils</pkgname>
+        </exfat>
         <ext>
+            <!-- Ext2/3/4 filesystem utilities -->
             <pkgname>e2fsprogs</pkgname>
         </ext>
         <f2fs>
+            <!-- for Flash-Friendly File System -->
             <pkgname>f2fs-tools</pkgname>
         </f2fs>
         <jfs>
+            <!-- for jfs partitions -->
             <pkgname>jfsutils</pkgname>
         </jfs>
         <nfs>
+            <!-- Support programs for Network File Systems -->
             <pkgname>nfs-utils</pkgname>
         </nfs>
         <nilfs2>
+            <!-- for nilfs2 support -->
             <pkgname>nilfs-utils</pkgname>
         </nilfs2>
         <ntfs>
+            <!-- for ntfs partitions -->
             <pkgname>ntfs-3g</pkgname>
         </ntfs>
         <raid>
+            <!-- Device mapper RAID interface -->
             <pkgname>dmraid</pkgname>
         </raid>
         <reiserfs>
+            <!-- for reiser partitions -->
             <pkgname>reiserfsprogs</pkgname>
         </reiserfs>
         <vfat>
+            <!-- for FAT16 and FAT32 partitions -->
             <pkgname>dosfstools</pkgname>
         </vfat>
         <xfs>
+            <!-- for xfs partitions -->
             <pkgname>xfsprogs</pkgname>
         </xfs>
     </filesystems>
