@@ -284,21 +284,21 @@ class Features(Gtk.Box):
 
         # Show ufw info message if ufw is selected (only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
-            info = self.prepare_info_dialog("ufw")
-            info.run()
-            info.hide()
+            info = self.show_info_dialog("ufw")
+            #info.run()
+            #info.hide()
             self.info_already_shown["ufw"] = True
 
         # Show AUR disclaimer if AUR is selected (only once)
         if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
-            info = self.prepare_info_dialog("aur")
-            info.run()
-            info.hide()
+            info = self.show_info_dialog("aur")
+            #info.run()
+            #info.hide()
             self.info_already_shown["aur"] = True
 
         return True
 
-    def prepare_info_dialog(self, feature):
+    def show_info_dialog(self, feature):
         """ Some features show an information dialog when this screen is accepted """
         if feature == "aur":
             # Aur disclaimer
@@ -306,8 +306,7 @@ class Features(Gtk.Box):
             txt2 = _("The Arch User Repository is a collection of user-submitted PKGBUILDs\n" \
                 "that supplement software available from the official repositories.\n\n" \
                 "The AUR is community driven and NOT supported by Arch or Antergos.\n")
-
-        if feature == "ufw":
+        elif feature == "ufw":
             # Ufw rules info
             txt1 = _("Uncomplicated Firewall will be installed with these rules:")
             toallow = misc.get_network()
@@ -316,11 +315,15 @@ class Features(Gtk.Box):
         txt1 = "<big>%s</big>" % txt1
         txt2 = "<i>%s</i>" % txt2
 
-        info = self.ui.get_object("info")
-        info.set_markup(txt1)
+        info = Gtk.MessageDialog(transient_for=None,
+                                 modal=True,
+                                 destroy_with_parent=True,
+                                 message_type=Gtk.MessageType.INFO,
+                                 buttons=Gtk.ButtonsType.CLOSE)
+        info.set_markup(txt1)                                        
         info.format_secondary_markup(txt2)
-
-        return info
+        info.run()
+        info.destroy()
 
     def get_prev_page(self):
         return _prev_page
