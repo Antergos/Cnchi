@@ -1,3 +1,6 @@
+#main {
+    engine: Zukitwo;
+}
 
 #logo {
     background-color: transparent;
@@ -7,7 +10,7 @@
     margin-top: 0px;
     color: #5082d4;
     font: 14px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 }
 
 #title {
@@ -19,7 +22,7 @@
     margin-top: 0px;
     color: #5082d4;
     font: 17px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     padding-top:7.5px;
 }
 
@@ -61,6 +64,6 @@
     border-width: 1px;
     border-style: solid;
     border-color: shade(@theme_selected_bg_color, 0.9);
-    background-color: #1A86FF;
+    background-color: #4d82d6;
     background-image: none;
 }
