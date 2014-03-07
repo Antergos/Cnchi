@@ -1,4 +1,4 @@
-CNCHI TODO LIST (4th October 2013)
+CNCHI TODO LIST (7th March 2014)
 
 * General:
  - Check if we can remove subprocess calls to pythonian code
@@ -9,14 +9,11 @@ CNCHI TODO LIST (4th October 2013)
    again, delete it again...) in the end it gets confused.
  - Add LVM support (create / delete)
 
-* Timezone screen:
- - Add NTP switch
+* Slides screen:
+ - Redo some slides
+ - Remove popup (install completed) and add a message inside the slides screen.
 
 * Alongside install:
- - Rethink this option. Doesn't work as it is.
-
-* Automatic install:
- - Encrypt whole partition in automatic install
-
-FUTURE:
-* EFI support
+ - Rethink and redo this option. Doesn't work as it is.
+ 
+And much more... (see issues in github)
