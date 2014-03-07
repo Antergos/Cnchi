@@ -179,6 +179,20 @@ class Slides(Gtk.Box):
             elif event[0] == 'global_percent':
                 self.show_global_progress_bar_if_hidden()
                 self.global_progress_bar.set_fraction(event[1])
+            elif event[0] == 'local_text':
+                if event[1] == 'hide':
+                    self.progress_bar.set_show_text(False)
+                    self.progress_bar.set_text("")
+                else:
+                    self.progress_bar.set_show_text(True)
+                    self.progress_bar.set_text(event[1])
+            elif event[0] == 'global_text':
+                if event[1] == 'hide':
+                    self.global_progress_bar.set_show_text(False)
+                    self.global_progress_bar.set_text("")
+                else:
+                    self.global_progress_bar.set_show_text(True)
+                    self.global_progress_bar.set_text(event[1])
             elif event[0] == 'pulse':
                 if event[1] == 'stop':
                     self.stop_pulse()

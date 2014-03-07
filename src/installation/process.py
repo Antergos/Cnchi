@@ -771,9 +771,12 @@ class InstallationProcess(multiprocessing.Process):
         
         pacman_options = {}
         pacman_options["downloadonly"] = True
-        
+               
         for package_type in self.packages:
-            logging.debug(_("Downloading packages from '%s' group...") % package_type)
+            txt = _("Downloading packages from '%s' group...") % package_type
+            logging.debug(txt)
+            self.queue_event('global_text', txt)
+            
             try:
                 alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
             except Exception as err:
@@ -790,7 +793,6 @@ class InstallationProcess(multiprocessing.Process):
                     logging.error(txt)
 
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
-            logging.debug("global_percent : %f", global_percent)
 
             self.queue_event('global_percent', global_percent)
             self.queue_event('local_percent', 0)
@@ -799,12 +801,17 @@ class InstallationProcess(multiprocessing.Process):
         global_percent = 0
         self.queue_event('global_percent', 0)
         self.queue_event('local_percent', 0)
+        self.queue_event('global_text', 'hide')
         
         # Ok, now we can install all downloaded packages
         pacman_options = {}
         pacman_options["needed"] = True
+
         for package_type in self.packages:
-            logging.debug(_("Installing packages from '%s' group...") % package_type)
+            txt = _("Installing packages from '%s' group...") % package_type
+            logging.debug(txt)
+            self.queue_event('global_text', txt)
+
             try:
                 alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
             except Exception as err:
@@ -821,11 +828,15 @@ class InstallationProcess(multiprocessing.Process):
                     logging.error(txt)
 
             global_percent += step_global * self.number_of_packages_by_type(alpm, package_type)
-            logging.debug("global_percent : %f", global_percent)
 
             self.queue_event('global_percent', global_percent)
             self.queue_event('local_percent', 0)
             del alpm
+
+        global_percent = 0
+        self.queue_event('global_percent', 0)
+        self.queue_event('local_percent', 0)
+        self.queue_event('global_text', 'hide')
 
         self.chroot_umount_special_dirs()
         
