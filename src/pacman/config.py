@@ -94,6 +94,7 @@ def pacman_conf_enumerator(path):
         line = f.readline()
         if len(line) == 0:
             # end of file
+            f.close()
             filestack.pop()
             continue
 

@@ -80,7 +80,7 @@ class Slides(Gtk.Box):
             with open(html_file) as html_stream:
                 html = html_stream.read(None)
                 data = os.path.join(os.getcwd(), "data")
-                self.webview.load_html_string(html, "file://" + data)
+                self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
         except IOError:
             pass
 
@@ -179,6 +179,20 @@ class Slides(Gtk.Box):
             elif event[0] == 'global_percent':
                 self.show_global_progress_bar_if_hidden()
                 self.global_progress_bar.set_fraction(event[1])
+            elif event[0] == 'local_text':
+                if event[1] == 'hide':
+                    self.progress_bar.set_show_text(False)
+                    self.progress_bar.set_text("")
+                else:
+                    self.progress_bar.set_show_text(True)
+                    self.progress_bar.set_text(event[1])
+            elif event[0] == 'global_text':
+                if event[1] == 'hide':
+                    self.global_progress_bar.set_show_text(False)
+                    self.global_progress_bar.set_text("")
+                else:
+                    self.global_progress_bar.set_show_text(True)
+                    self.global_progress_bar.set_text(event[1])
             elif event[0] == 'pulse':
                 if event[1] == 'stop':
                     self.stop_pulse()
