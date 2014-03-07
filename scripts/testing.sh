@@ -18,6 +18,9 @@ if ! [ -f "${previous}" ]; then
 	else
 		pacman -Sy git grub os-prober f2fs-tools --noconfirm --needed;
 	fi
+	wget http://antergos.info/lato.zip
+	unzip lato.zip -d /usr/share/fonts/TTF
+	fc-cache -r
 	# Enable kernel modules and other services
 	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then
 		echo "VirtualBox detected. Checking kernel modules and starting services."
