@@ -304,6 +304,9 @@ mate_settings() {
 	rm ${DESTDIR}/usr/bin/set-settings
 	rm ${DESTDIR}/usr/bin/mate-schemas
 
+	# Copy panel layout
+	cp /usr/share/cnchi/scripts/panel-default-layout.dist ${DESTDIR}/usr/share/mate-panel/panel-default-layout.dist
+
 
 }
 

@@ -42,6 +42,7 @@
             <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
+            <property name="margin_left">20</property>
           </packing>
         </child>
         <child>

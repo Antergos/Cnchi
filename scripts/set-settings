@@ -150,32 +150,9 @@ fi
 
 if [[ ${DESKTOP} == 'mate' ]]; then
 
-	dbus-launch gsettings set org.mate.Marco.general action-double-click-titlebar 'toggle_maximize'
-	dbus-launch gsettings set org.mate.Marco.general action-middle-click-titlebar 'lower'
-	dbus-launch gsettings set org.mate.Marco.general action-right-click-titlebar 'menu'
-	dbus-launch gsettings set org.mate.Marco.general application-based false
-	dbus-launch gsettings set org.mate.Marco.general audible-bell false
-	dbus-launch gsettings set org.mate.Marco.general auto-raise false
-	dbus-launch gsettings set org.mate.Marco.general auto-raise-delay 500
-	dbus-launch gsettings set org.mate.Marco.general button-layout 'menu:minimize,maximize,close'
-	dbus-launch gsettings set org.mate.Marco.general center-new-windows false
-	dbus-launch gsettings set org.mate.Marco.general compositing-fast-alt-tab false
-	dbus-launch gsettings set org.mate.Marco.general compositing-manager true
-	dbus-launch gsettings set org.mate.Marco.general disable-workarounds false
-	dbus-launch gsettings set org.mate.Marco.general focus-mode 'click'
-	dbus-launch gsettings set org.mate.Marco.general focus-new-windows 'smart'
-	dbus-launch gsettings set org.mate.Marco.general mouse-button-modifier '<Alt>'
-	dbus-launch gsettings set org.mate.Marco.general num-workspaces 2
-	dbus-launch gsettings set org.mate.Marco.general raise-on-click true
-	dbus-launch gsettings set org.mate.Marco.general reduced-resources false
-	dbus-launch gsettings set org.mate.Marco.general resize-with-right-button true
+
 	dbus-launch gsettings set org.mate.Marco.general theme 'Zukitwo'
-	dbus-launch gsettings set org.mate.Marco.general titlebar-font 'Sans Bold 10'
-	dbus-launch gsettings set org.mate.Marco.general titlebar-uses-system-font false
 	dbus-launch gsettings set org.mate.Marco.general visual-bell false
-	dbus-launch gsettings set org.mate.Marco.general visual-bell-type 'fullscreen'
-	dbus-launch gsettings set org.mate.Marco.general wrap-style 'no wrap'
-	dbus-launch gsettings set org.gtk.Demo color 'red'
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.datetime active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.datetime priority 99
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.applications categories-mouse-over true
@@ -201,7 +178,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.background background-fade true
 	dbus-launch gsettings set org.mate.background color-shading-type 'vertical-gradient'
 	dbus-launch gsettings set org.mate.background draw-background true
-	dbus-launch gsettings set org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
+	dbus-launch gsettings set org.mate.background picture-filename 'file:///usr/share/antergos/wallpapers/antergos-wallpaper.png'
 	dbus-launch gsettings set org.mate.background picture-opacity 100
 	dbus-launch gsettings set org.mate.background picture-options 'zoom'
 	dbus-launch gsettings set org.mate.background primary-color '#58589191bcbc'
@@ -209,144 +186,22 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.background show-desktop-icons false
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.keyboard active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.keyboard priority 6
-	dbus-launch gsettings set org.mate.engrampa.dialogs.extract overwrite true
-	dbus-launch gsettings set org.mate.engrampa.dialogs.extract recreate-folders true
-	dbus-launch gsettings set org.mate.engrampa.dialogs.extract skip-newer false
-	dbus-launch gsettings set org.mate.session auto-save-session false
-	dbus-launch gsettings set org.mate.session default-session ['mate-settings-daemon']
 	dbus-launch gsettings set org.mate.session idle-delay 5
 	dbus-launch gsettings set org.mate.session logout-prompt true
-	dbus-launch gsettings set org.mate.session required-components-list ['windowmanager', 'panel', 'filemanager']
-	dbus-launch gsettings set org.mate.session session-start 1394194030
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.preview height -1
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.preview width -1
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.preview x -1
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.preview y -1
-	dbus-launch gsettings set org.mate.system-monitor.disktreenew columns-order [0, 1, 2, 3, 4, 5, 6]
-	dbus-launch gsettings set org.mate.system-monitor.disktreenew sort-col 1
-	dbus-launch gsettings set org.mate.system-monitor.disktreenew sort-order 0
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts @as []
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.kbd model ''
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.kbd options @as []
-	dbus-launch gsettings set org.mate.caja.list-view default-column-order ['name', 'size', 'type', 'date_modified', 'date_accessed', 'group', 'where', 'mime_type', 'octal_permissions', 'owner', 'permissions']
-	dbus-launch gsettings set org.mate.caja.list-view default-visible-columns ['name', 'size', 'type', 'date_modified']
-	dbus-launch gsettings set org.mate.caja.list-view default-zoom-level 'smaller'
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.preferences excluded-uris @as []
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.preferences monitor-home false
-	dbus-launch gsettings set org.mate.applications-at screen-keyboard-enabled false
-	dbus-launch gsettings set org.mate.applications-at screen-magnifier-enabled false
-	dbus-launch gsettings set org.mate.applications-at screen-reader-enabled false
-	dbus-launch gsettings set org.gnome.system.proxy.http authentication-password ''
-	dbus-launch gsettings set org.gnome.system.proxy.http authentication-user ''
-	dbus-launch gsettings set org.gnome.system.proxy.http enabled false
-	dbus-launch gsettings set org.gnome.system.proxy.http host ''
-	dbus-launch gsettings set org.gnome.system.proxy.http port 8080
-	dbus-launch gsettings set org.gnome.system.proxy.http use-authentication false
-	dbus-launch gsettings set org.mate.eom.plugins active-plugins @as []
-	dbus-launch gsettings set org.gnome.desktop.screensaver color-shading-type 'solid'
-	dbus-launch gsettings set org.gnome.desktop.screensaver embedded-keyboard-command ''
-	dbus-launch gsettings set org.gnome.desktop.screensaver embedded-keyboard-enabled false
 	dbus-launch gsettings set org.gnome.desktop.screensaver idle-activation-enabled true
-	dbus-launch gsettings set org.gnome.desktop.screensaver lock-delay uint32 0
+	dbus-launch gsettings set org.gnome.desktop.screensaver lock-delay 0
 	dbus-launch gsettings set org.gnome.desktop.screensaver lock-enabled true
-	dbus-launch gsettings set org.gnome.desktop.screensaver logout-command ''
-	dbus-launch gsettings set org.gnome.desktop.screensaver logout-delay uint32 7200
-	dbus-launch gsettings set org.gnome.desktop.screensaver logout-enabled false
-	dbus-launch gsettings set org.gnome.desktop.screensaver picture-opacity 100
-	dbus-launch gsettings set org.gnome.desktop.screensaver picture-options 'zoom'
-	dbus-launch gsettings set org.gnome.desktop.screensaver picture-uri 'file:///usr/share/backgrounds/gnome/Locked.jpg'
+	dbus-launch gsettings set org.gnome.desktop.screensaver picture-uri 'file://usr/share/antergos/wallpapers/antergos-wallpaper.png'
 	dbus-launch gsettings set org.gnome.desktop.screensaver primary-color '#023c88'
 	dbus-launch gsettings set org.gnome.desktop.screensaver secondary-color '#5789ca'
 	dbus-launch gsettings set org.gnome.desktop.screensaver show-full-name-in-top-bar true
 	dbus-launch gsettings set org.gnome.desktop.screensaver status-message-enabled true
 	dbus-launch gsettings set org.gnome.desktop.screensaver user-switch-enabled true
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser.on-load enable-remote false
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser.on-load root 'file:///'
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser.on-load tree-view true
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser.on-load virtual-root 'file:///home/dustin'
-	dbus-launch gsettings set org.mate.applications-at-visual exec 'orca'
-	dbus-launch gsettings set org.mate.applications-at-visual startup false
-	dbus-launch gsettings set org.mate.caja.compact-view all-columns-have-same-width true
-	dbus-launch gsettings set org.mate.caja.compact-view default-zoom-level 'standard'
-	dbus-launch gsettings set org.mate.power-manager action-critical-battery 'hibernate'
-	dbus-launch gsettings set org.mate.power-manager action-critical-ups 'shutdown'
-	dbus-launch gsettings set org.mate.power-manager action-low-ups 'hibernate'
-	dbus-launch gsettings set org.mate.power-manager action-sleep-type-ac 'suspend'
-	dbus-launch gsettings set org.mate.power-manager action-sleep-type-battery 'hibernate'
-	dbus-launch gsettings set org.mate.power-manager backlight-battery-reduce true
-	dbus-launch gsettings set org.mate.power-manager backlight-enable true
-	dbus-launch gsettings set org.mate.power-manager brightness-ac 100.0
-	dbus-launch gsettings set org.mate.power-manager brightness-dim-battery 50
-	dbus-launch gsettings set org.mate.power-manager button-hibernate 'hibernate'
-	dbus-launch gsettings set org.mate.power-manager button-lid-ac 'suspend'
-	dbus-launch gsettings set org.mate.power-manager button-lid-battery 'suspend'
-	dbus-launch gsettings set org.mate.power-manager button-power 'interactive'
-	dbus-launch gsettings set org.mate.power-manager button-suspend 'suspend'
-	dbus-launch gsettings set org.mate.power-manager check-type-cpu true
-	dbus-launch gsettings set org.mate.power-manager dpms-method-ac 'off'
-	dbus-launch gsettings set org.mate.power-manager dpms-method-battery 'off'
-	dbus-launch gsettings set org.mate.power-manager enable-sound true
-	dbus-launch gsettings set org.mate.power-manager event-when-closed-battery true
-	dbus-launch gsettings set org.mate.power-manager icon-policy 'present'
-	dbus-launch gsettings set org.mate.power-manager idle-brightness 30
-	dbus-launch gsettings set org.mate.power-manager idle-dim-ac false
-	dbus-launch gsettings set org.mate.power-manager idle-dim-battery true
-	dbus-launch gsettings set org.mate.power-manager idle-dim-time 10
-	dbus-launch gsettings set org.mate.power-manager info-history-graph-points true
-	dbus-launch gsettings set org.mate.power-manager info-history-graph-smooth true
-	dbus-launch gsettings set org.mate.power-manager info-history-time 21600
-	dbus-launch gsettings set org.mate.power-manager info-history-type 'power'
-	dbus-launch gsettings set org.mate.power-manager info-last-device ''
-	dbus-launch gsettings set org.mate.power-manager info-page-number 0
-	dbus-launch gsettings set org.mate.power-manager info-stats-graph-points true
-	dbus-launch gsettings set org.mate.power-manager info-stats-graph-smooth true
-	dbus-launch gsettings set org.mate.power-manager info-stats-type 'power'
-	dbus-launch gsettings set org.mate.power-manager kbd-backlight-battery-reduce true
-	dbus-launch gsettings set org.mate.power-manager kbd-brightness-dim-by-on-battery 50
-	dbus-launch gsettings set org.mate.power-manager kbd-brightness-dim-by-on-idle 75
-	dbus-launch gsettings set org.mate.power-manager kbd-brightness-on-ac 100
-	dbus-launch gsettings set org.mate.power-manager lock-blank-screen true
-	dbus-launch gsettings set org.mate.power-manager lock-hibernate false
-	dbus-launch gsettings set org.mate.power-manager lock-keyring-hibernate false
-	dbus-launch gsettings set org.mate.power-manager lock-keyring-suspend false
-	dbus-launch gsettings set org.mate.power-manager lock-suspend true
-	dbus-launch gsettings set org.mate.power-manager lock-use-screensaver true
-	dbus-launch gsettings set org.mate.power-manager network-sleep true
-	dbus-launch gsettings set org.mate.power-manager notify-discharging true
-	dbus-launch gsettings set org.mate.power-manager notify-fully-charged false
-	dbus-launch gsettings set org.mate.power-manager notify-low-capacity true
-	dbus-launch gsettings set org.mate.power-manager notify-low-power true
-	dbus-launch gsettings set org.mate.power-manager notify-perhaps-recall true
-	dbus-launch gsettings set org.mate.power-manager notify-sleep-failed true
-	dbus-launch gsettings set org.mate.power-manager notify-sleep-failed-uri ''
-	dbus-launch gsettings set org.mate.power-manager percentage-action 2
-	dbus-launch gsettings set org.mate.power-manager percentage-critical 3
-	dbus-launch gsettings set org.mate.power-manager percentage-low 10
-	dbus-launch gsettings set org.mate.power-manager show-actions true
-	dbus-launch gsettings set org.mate.power-manager sleep-computer-ac 0
-	dbus-launch gsettings set org.mate.power-manager sleep-computer-battery 0
-	dbus-launch gsettings set org.mate.power-manager sleep-computer-ups 0
-	dbus-launch gsettings set org.mate.power-manager sleep-display-ac 1800
-	dbus-launch gsettings set org.mate.power-manager sleep-display-battery 600
-	dbus-launch gsettings set org.mate.power-manager sleep-display-ups 600
-	dbus-launch gsettings set org.mate.power-manager spindown-enable-ac false
-	dbus-launch gsettings set org.mate.power-manager spindown-enable-battery true
-	dbus-launch gsettings set org.mate.power-manager spindown-timeout-ac 600
-	dbus-launch gsettings set org.mate.power-manager spindown-timeout-battery 60
-	dbus-launch gsettings set org.mate.power-manager time-action 120
-	dbus-launch gsettings set org.mate.power-manager time-critical 300
-	dbus-launch gsettings set org.mate.power-manager time-low 1200
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.background active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.background priority 97
 	dbus-launch gsettings set org.mate.applications-browser exec 'chromium'
 	dbus-launch gsettings set org.mate.applications-browser needs-term false
 	dbus-launch gsettings set org.mate.applications-browser nremote true
-	dbus-launch gsettings set org.mate.applications-at-mobility exec 'dasher'
-	dbus-launch gsettings set org.mate.applications-at-mobility startup false
-	dbus-launch gsettings set org.freedesktop.ColorHelper display-gamma 2.3999999999999999
-	dbus-launch gsettings set org.freedesktop.ColorHelper display-whitepoint 6500
-	dbus-launch gsettings set org.freedesktop.ColorHelper profile-upload-uri 'http://www.hughski.com/profile-store.php'
-	dbus-launch gsettings set org.freedesktop.ColorHelper sample-delay 400
 	dbus-launch gsettings set org.gnome.desktop.background color-shading-type 'solid'
 	dbus-launch gsettings set org.gnome.desktop.background picture-opacity 100
 	dbus-launch gsettings set org.gnome.desktop.background picture-options 'zoom'
@@ -367,78 +222,14 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.peripherals-keyboard rate 30
 	dbus-launch gsettings set org.mate.peripherals-keyboard remember-numlock-state true
 	dbus-launch gsettings set org.mate.peripherals-keyboard repeat true
-	dbus-launch gsettings set org.mate.eom.view autorotate true
-	dbus-launch gsettings set org.mate.eom.view background-color '#000000'
-	dbus-launch gsettings set org.mate.eom.view extrapolate true
-	dbus-launch gsettings set org.mate.eom.view interpolate true
-	dbus-launch gsettings set org.mate.eom.view scroll-wheel-zoom true
-	dbus-launch gsettings set org.mate.eom.view trans-color '#000000'
-	dbus-launch gsettings set org.mate.eom.view transparency 'CHECK_PATTERN'
-	dbus-launch gsettings set org.mate.eom.view use-background-color true
-	dbus-launch gsettings set org.mate.eom.view zoom-multiplier 0.050000000000000003
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrdb active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrdb priority 90
-	dbus-launch gsettings set org.mate.peripherals-mouse cursor-font ''
-	dbus-launch gsettings set org.mate.peripherals-mouse cursor-size 24
-	dbus-launch gsettings set org.mate.peripherals-mouse cursor-theme 'Adwaita'
-	dbus-launch gsettings set org.mate.peripherals-mouse double-click 400
-	dbus-launch gsettings set org.mate.peripherals-mouse drag-threshold 8
-	dbus-launch gsettings set org.mate.peripherals-mouse left-handed false
-	dbus-launch gsettings set org.mate.peripherals-mouse locate-pointer false
-	dbus-launch gsettings set org.mate.peripherals-mouse motion-acceleration -1.0
-	dbus-launch gsettings set org.mate.peripherals-mouse motion-threshold -1
-	dbus-launch gsettings set org.mate.peripherals-mouse single-click true
-	dbus-launch gsettings set org.gnome.desktop.default-applications.office.tasks exec 'evolution -c tasks'
-	dbus-launch gsettings set org.gnome.desktop.default-applications.office.tasks needs-term false
 	dbus-launch gsettings set org.mate.applications-terminal exec 'mate-terminal'
 	dbus-launch gsettings set org.mate.applications-terminal exec-arg '-x'
-	dbus-launch gsettings set org.gnome.system.proxy.https host ''
-	dbus-launch gsettings set org.gnome.system.proxy.https port 0
 	dbus-launch gsettings set org.mate.Marco.keybinding-commands command-1 'sudo killall X'
 	dbus-launch gsettings set org.mate.Marco.keybinding-commands command-screenshot 'mate-screenshot'
 	dbus-launch gsettings set org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
-	dbus-launch gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false
-	dbus-launch gsettings set org.gnome.desktop.a11y.applications screen-magnifier-enabled false
-	dbus-launch gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false
-	dbus-launch gsettings set org.mate.thumbnail-cache maximum-age 180
-	dbus-launch gsettings set org.mate.thumbnail-cache maximum-size 512
-	dbus-launch gsettings set org.mate.thumbnailers disable @as []
 	dbus-launch gsettings set org.mate.thumbnailers disable-all false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'toggle-maximize'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences action-middle-click-titlebar 'lower'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences action-right-click-titlebar 'menu'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell true
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences auto-raise false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences auto-raise-delay 500
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences disable-workarounds false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences focus-mode 'click'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences focus-new-windows 'smart'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences mouse-button-modifier '<Super>'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences raise-on-click true
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences resize-with-right-button false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme 'Zukitwo'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Cantarell Bold 11'
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences titlebar-uses-system-font false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences visual-bell false
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences visual-bell-type 'fullscreen-flash'
-	dbus-launch gsettings set org.gnome.desktop.session idle-delay uint32 300
-	dbus-launch gsettings set org.mate.accessibility-startup exec-ats @as []
-	dbus-launch gsettings set org.gnome.desktop.media-handling automount true
-	dbus-launch gsettings set org.gnome.desktop.media-handling automount-open true
-	dbus-launch gsettings set org.gnome.desktop.media-handling autorun-never false
-	dbus-launch gsettings set org.gnome.desktop.media-handling autorun-x-content-ignore @as []
-	dbus-launch gsettings set org.gnome.desktop.media-handling autorun-x-content-open-folder @as []
-	dbus-launch gsettings set org.gnome.desktop.media-handling autorun-x-content-start-app ['x-content/unix-software']
-	dbus-launch gsettings set org.gnome.system.locale region ''
-	dbus-launch gsettings set org.mate.search-tool columns-order [0]
-	dbus-launch gsettings set org.mate.search-tool default-window-height 350
-	dbus-launch gsettings set org.mate.search-tool default-window-maximized false
-	dbus-launch gsettings set org.mate.search-tool default-window-width 554
-	dbus-launch gsettings set org.mate.search-tool disable-quick-search false
-	dbus-launch gsettings set org.mate.search-tool disable-quick-search-second-scan false
-	dbus-launch gsettings set org.mate.search-tool look-in-folder '/home/dustin'
 	dbus-launch gsettings set org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
 	dbus-launch gsettings set org.mate.search-tool quick-search-second-scan-excluded-paths ['/']
 	dbus-launch gsettings set org.mate.search-tool search-history {'gsearchtool-file-entry': ['netbeans']}
@@ -465,146 +256,12 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.panel highlight-launchers-on-mouseover true
 	dbus-launch gsettings set org.mate.panel history-mate-run []
 	dbus-launch gsettings set org.mate.panel locked-down false
-	dbus-launch gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'object_0']
+	dbus-launch gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'menu-bar']
 	dbus-launch gsettings set org.mate.panel show-program-list false
 	dbus-launch gsettings set org.mate.panel tooltips-enabled true
 	dbus-launch gsettings set org.mate.panel toplevel-id-list ['top', 'bottom']
-	dbus-launch gsettings set org.gnome.nm-applet disable-connected-notifications false
-	dbus-launch gsettings set org.gnome.nm-applet disable-disconnected-notifications false
-	dbus-launch gsettings set org.gnome.nm-applet disable-vpn-notifications false
-	dbus-launch gsettings set org.gnome.nm-applet disable-wifi-create false
-	dbus-launch gsettings set org.gnome.nm-applet stamp 0
-	dbus-launch gsettings set org.gnome.nm-applet suppress-wireless-networks-available false
-	dbus-launch gsettings set org.gnome.desktop.sound event-sounds true
-	dbus-launch gsettings set org.gnome.desktop.sound input-feedback-sounds false
-	dbus-launch gsettings set org.gnome.desktop.sound theme-name 'freedesktop'
-	dbus-launch gsettings set org.mate.crypto.pgp ascii-armor true
-	dbus-launch gsettings set org.mate.crypto.pgp default-key ''
-	dbus-launch gsettings set org.mate.crypto.pgp encrypt-to-self true
-	dbus-launch gsettings set org.mate.crypto.pgp last-signer ''
-	dbus-launch gsettings set org.mate.crypto.pgp sort-recipients-by 'name'
-	dbus-launch gsettings set org.mate.engrampa.general compression-level 'normal'
-	dbus-launch gsettings set org.mate.engrampa.general editors @as []
-	dbus-launch gsettings set org.mate.engrampa.general encrypt-header false
-	dbus-launch gsettings set org.mate.engrampa.general migrate-directories true
-	dbus-launch gsettings set org.gnome.desktop.input-sources current uint32 0
-	dbus-launch gsettings set org.gnome.desktop.input-sources per-window false
-	dbus-launch gsettings set org.gnome.desktop.input-sources show-all-sources false
-	dbus-launch gsettings set org.gnome.desktop.input-sources sources [('xkb', 'us')]
-	dbus-launch gsettings set org.gnome.desktop.input-sources xkb-options @as []
-	dbus-launch gsettings set org.gtk.Settings.ColorChooser custom-colors @a(dddd) []
-	dbus-launch gsettings set org.gtk.Settings.ColorChooser selected-color (false, 1.0, 1.0, 1.0, 1.0)
-	dbus-launch gsettings set org.mate.Marco.window-keybindings activate-window-menu '<Alt>space'
-	dbus-launch gsettings set org.mate.accessibility-keyboard bouncekeys-beep-reject true
-	dbus-launch gsettings set org.mate.accessibility-keyboard bouncekeys-delay 300
-	dbus-launch gsettings set org.mate.accessibility-keyboard bouncekeys-enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard feature-state-change-beep false
-	dbus-launch gsettings set org.mate.accessibility-keyboard mousekeys-accel-time 1200
-	dbus-launch gsettings set org.mate.accessibility-keyboard mousekeys-enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard mousekeys-init-delay 160
-	dbus-launch gsettings set org.mate.accessibility-keyboard mousekeys-max-speed 750
-	dbus-launch gsettings set org.mate.accessibility-keyboard slowkeys-beep-accept true
-	dbus-launch gsettings set org.mate.accessibility-keyboard slowkeys-beep-press true
-	dbus-launch gsettings set org.mate.accessibility-keyboard slowkeys-beep-reject false
-	dbus-launch gsettings set org.mate.accessibility-keyboard slowkeys-delay 300
-	dbus-launch gsettings set org.mate.accessibility-keyboard slowkeys-enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard stickykeys-enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard stickykeys-modifier-beep true
-	dbus-launch gsettings set org.mate.accessibility-keyboard stickykeys-two-key-off true
-	dbus-launch gsettings set org.mate.accessibility-keyboard timeout 120
-	dbus-launch gsettings set org.mate.accessibility-keyboard timeout-enable false
-	dbus-launch gsettings set org.mate.accessibility-keyboard togglekeys-enable false
-	dbus-launch gsettings set org.mate.engrampa.ui history-len 5
-	dbus-launch gsettings set org.mate.engrampa.ui sidebar-width 200
-	dbus-launch gsettings set org.mate.engrampa.ui view-folders false
-	dbus-launch gsettings set org.mate.engrampa.ui view-statusbar true
-	dbus-launch gsettings set org.mate.engrampa.ui view-toolbar true
-	dbus-launch gsettings set org.mate.engrampa.ui window-height 480
-	dbus-launch gsettings set org.mate.engrampa.ui window-width 600
-	dbus-launch gsettings set org.gtk.exampleapp font 'Monospace 12'
-	dbus-launch gsettings set org.gtk.exampleapp show-words false
-	dbus-launch gsettings set org.gtk.exampleapp transition 'none'
-	dbus-launch gsettings set org.mate.caja.preferences always-use-browser true
-	dbus-launch gsettings set org.mate.caja.preferences always-use-location-entry true
-	dbus-launch gsettings set org.mate.caja.preferences background-color '#5BA7CF'
-	dbus-launch gsettings set org.mate.caja.preferences background-set false
-	dbus-launch gsettings set org.mate.caja.preferences background-uri ''
-	dbus-launch gsettings set org.mate.caja.preferences click-policy 'double'
-	dbus-launch gsettings set org.mate.caja.preferences confirm-trash true
-	dbus-launch gsettings set org.mate.caja.preferences date-format 'informal'
-	dbus-launch gsettings set org.mate.caja.preferences default-folder-viewer 'icon-view'
-	dbus-launch gsettings set org.mate.caja.preferences default-sort-in-reverse-order false
-	dbus-launch gsettings set org.mate.caja.preferences default-sort-order 'name'
-	dbus-launch gsettings set org.mate.caja.preferences desktop-is-home-dir false
-	dbus-launch gsettings set org.mate.caja.preferences enable-delete true
-	dbus-launch gsettings set org.mate.caja.preferences executable-text-activation 'ask'
-	dbus-launch gsettings set org.mate.caja.preferences exit-with-last-window false
-	dbus-launch gsettings set org.mate.caja.preferences install-mime-activation true
-	dbus-launch gsettings set org.mate.caja.preferences mouse-back-button 8
-	dbus-launch gsettings set org.mate.caja.preferences mouse-forward-button 9
-	dbus-launch gsettings set org.mate.caja.preferences mouse-use-extra-buttons true
-	dbus-launch gsettings set org.mate.caja.preferences preview-sound 'local-only'
-	dbus-launch gsettings set org.mate.caja.preferences show-advanced-permissions true
-	dbus-launch gsettings set org.mate.caja.preferences show-directory-item-counts 'local-only'
-	dbus-launch gsettings set org.mate.caja.preferences show-hidden-files false
-	dbus-launch gsettings set org.mate.caja.preferences show-icon-text 'local-only'
-	dbus-launch gsettings set org.mate.caja.preferences show-image-thumbnails 'local-only'
-	dbus-launch gsettings set org.mate.caja.preferences side-pane-background-color '#6689BD'
-	dbus-launch gsettings set org.mate.caja.preferences side-pane-background-set true
-	dbus-launch gsettings set org.mate.caja.preferences side-pane-background-uri ''
-	dbus-launch gsettings set org.mate.caja.preferences sort-directories-first true
-	dbus-launch gsettings set org.mate.caja.preferences tabs-open-position 'after-current-tab'
-	dbus-launch gsettings set org.mate.caja.preferences thumbnail-limit uint64 10485760
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.typing-break active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.typing-break priority 99
-	dbus-launch gsettings set org.mate.eom.full-screen loop true
-	dbus-launch gsettings set org.mate.eom.full-screen seconds 5
-	dbus-launch gsettings set org.mate.eom.full-screen upscale true
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add current-folder ''
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add exclude-files ''
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add exclude-folders ''
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add filename ''
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add include-files ''
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add no-symlinks false
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add recursive true
-	dbus-launch gsettings set org.mate.engrampa.dialogs.add update false
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.clipboard active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.clipboard priority 99
-	dbus-launch gsettings set org.gnome.desktop.default-applications.terminal exec 'gnome-terminal'
-	dbus-launch gsettings set org.gnome.desktop.default-applications.terminal exec-arg '-x'
-	dbus-launch gsettings set org.mate.Atril.Default continuous true
-	dbus-launch gsettings set org.mate.Atril.Default dual-page false
-	dbus-launch gsettings set org.mate.Atril.Default fullscreen false
-	dbus-launch gsettings set org.mate.Atril.Default inverted-colors false
-	dbus-launch gsettings set org.mate.Atril.Default show-sidebar true
-	dbus-launch gsettings set org.mate.Atril.Default show-toolbar true
-	dbus-launch gsettings set org.mate.Atril.Default sidebar-page 'links'
-	dbus-launch gsettings set org.mate.Atril.Default sidebar-size 132
-	dbus-launch gsettings set org.mate.Atril.Default sizing-mode 'fit-width'
-	dbus-launch gsettings set org.mate.Atril.Default window-ratio (0.0, 0.0)
-	dbus-launch gsettings set org.mate.stickynotes confirm-deletion true
-	dbus-launch gsettings set org.mate.stickynotes date-format '%x'
-	dbus-launch gsettings set org.mate.stickynotes default-color '#ECF833'
-	dbus-launch gsettings set org.mate.stickynotes default-font 'Sans 10'
-	dbus-launch gsettings set org.mate.stickynotes default-font-color '#000000'
-	dbus-launch gsettings set org.mate.stickynotes default-height 100
-	dbus-launch gsettings set org.mate.stickynotes default-width 100
-	dbus-launch gsettings set org.mate.stickynotes desktop-hide true
-	dbus-launch gsettings set org.mate.stickynotes force-default false
-	dbus-launch gsettings set org.mate.stickynotes locked false
-	dbus-launch gsettings set org.mate.stickynotes sticky true
-	dbus-launch gsettings set org.mate.stickynotes use-system-color true
-	dbus-launch gsettings set org.mate.stickynotes use-system-font true
-	dbus-launch gsettings set org.mate.system-log filters @as []
-	dbus-launch gsettings set org.mate.system-log fontsize 10
-	dbus-launch gsettings set org.mate.system-log height 400
-	dbus-launch gsettings set org.mate.system-log logfile '/var/log/messages'
-	dbus-launch gsettings set org.mate.system-log logfiles @as []
-	dbus-launch gsettings set org.mate.system-log width 600
-	dbus-launch gsettings set org.mate.keybindings.onscreenkeyboard action 'mate-gsettings-toggle screen-keyboard-enabled'
-	dbus-launch gsettings set org.mate.keybindings.onscreenkeyboard binding ''
-	dbus-launch gsettings set org.mate.keybindings.onscreenkeyboard name 'Toggle on-screen keyboard'
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.keybindings active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.keybindings priority 6
 	dbus-launch gsettings set com.linuxmint.mintmenu applet-icon '/usr/share/antergos/antergos-menu.png'
@@ -623,27 +280,6 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set com.linuxmint.mintmenu theme-name 'default'
 	dbus-launch gsettings set com.linuxmint.mintmenu tooltips-enabled true
 	dbus-launch gsettings set com.linuxmint.mintmenu use-custom-color false
-	dbus-launch gsettings set org.gnome.system.proxy.socks host ''
-	dbus-launch gsettings set org.gnome.system.proxy.socks port 0
-	dbus-launch gsettings set org.mate.system-monitor.openfilestree sort-col 0
-	dbus-launch gsettings set org.mate.system-monitor.openfilestree sort-order 0
-	dbus-launch gsettings set org.mate.applications-office.tasks exec 'evolution'
-	dbus-launch gsettings set org.mate.applications-office.tasks needs-term false
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping free-percent-notify 0.050000000000000003
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping free-percent-notify-again 0.01
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping free-size-gb-no-notify 2
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping ignore-paths @as []
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping min-notify-period 10
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.housekeeping priority 99
-	dbus-launch gsettings set org.mate.engrampa.dialogs.batch-add default-extension '.tar.gz'
-	dbus-launch gsettings set org.mate.engrampa.dialogs.batch-add other-options false
-	dbus-launch gsettings set org.mate.engrampa.dialogs.batch-add volume-size 0
-	dbus-launch gsettings set org.mate.caja-open-terminal desktop-opens-home-dir false
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.ui active-chart 'rings'
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.ui statusbar-visible false
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.ui subfoldertips-visible true
-	dbus-launch gsettings set org.mate.disk-usage-analyzer.ui toolbar-visible true
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management allow-scrollbar false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management height 160
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management hide-separator false
@@ -659,163 +295,11 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management show-terminal true
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management sticky false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.system_management width 200
-	dbus-launch gsettings set org.mate.calc accuracy 9
-	dbus-launch gsettings set org.mate.calc angle-units 'degrees'
-	dbus-launch gsettings set org.mate.calc base 10
-	dbus-launch gsettings set org.mate.calc button-mode 'basic'
-	dbus-launch gsettings set org.mate.calc number-format 'automatic'
-	dbus-launch gsettings set org.mate.calc show-thousands false
-	dbus-launch gsettings set org.mate.calc show-zeroes false
-	dbus-launch gsettings set org.mate.calc source-currency ''
-	dbus-launch gsettings set org.mate.calc source-units 'degree'
-	dbus-launch gsettings set org.mate.calc target-currency ''
-	dbus-launch gsettings set org.mate.calc target-units 'radian'
-	dbus-launch gsettings set org.mate.calc word-size 64
-	dbus-launch gsettings set org.gnome.desktop.a11y always-show-universal-access-status false
-	dbus-launch gsettings set org.gnome.desktop.default-applications.office.calendar exec 'evolution -c calendar'
-	dbus-launch gsettings set org.gnome.desktop.default-applications.office.calendar needs-term false
-	dbus-launch gsettings set org.gnome.system.proxy.ftp host ''
-	dbus-launch gsettings set org.gnome.system.proxy.ftp port 0
-	dbus-launch gsettings set org.mate.dictionary database '!'
-	dbus-launch gsettings set org.mate.dictionary print-font 'Serif 12'
-	dbus-launch gsettings set org.mate.dictionary source-name 'Default'
-	dbus-launch gsettings set org.mate.dictionary strategy 'exact'
-	dbus-launch gsettings set org.mate.pluma active-plugins ['docinfo', 'modelines', 'filebrowser', 'spell', 'time']
-	dbus-launch gsettings set org.mate.pluma auto-indent true
-	dbus-launch gsettings set org.mate.pluma auto-save false
-	dbus-launch gsettings set org.mate.pluma auto-save-interval 10
-	dbus-launch gsettings set org.mate.pluma bottom-panel-visible false
-	dbus-launch gsettings set org.mate.pluma bracket-matching false
-	dbus-launch gsettings set org.mate.pluma color-scheme 'tango'
-	dbus-launch gsettings set org.mate.pluma create-backup-copy false
-	dbus-launch gsettings set org.mate.pluma display-line-numbers true
-	dbus-launch gsettings set org.mate.pluma display-right-margin true
-	dbus-launch gsettings set org.mate.pluma editor-font 'Monospace 12'
-	dbus-launch gsettings set org.mate.pluma enable-search-highlighting true
-	dbus-launch gsettings set org.mate.pluma enable-syntax-highlighting true
-	dbus-launch gsettings set org.mate.pluma highlight-current-line true
-	dbus-launch gsettings set org.mate.pluma history-replace-with @as []
-	dbus-launch gsettings set org.mate.pluma side-pane-visible false
-	dbus-launch gsettings set org.mate.pluma smart-home-end 'after'
-	dbus-launch gsettings set org.mate.pluma statusbar-visible true
-	dbus-launch gsettings set org.mate.pluma tabs-size 4
-	dbus-launch gsettings set org.mate.pluma toolbar-buttons-style 'PLUMA_TOOLBAR_SYSTEM'
-	dbus-launch gsettings set org.mate.pluma toolbar-visible true
-	dbus-launch gsettings set org.mate.pluma use-default-font true
-	dbus-launch gsettings set org.mate.pluma wrap-mode 'GTK_WRAP_WORD'
-	dbus-launch gsettings set org.mate.pluma writable-vfs-schemes ['dav', 'davs', 'ftp', 'sftp', 'smb', 'ssh']
-	dbus-launch gsettings set org.mate.Atril override-restrictions true
-	dbus-launch gsettings set org.mate.keybindings.magnifier action 'mate-gsettings-toggle screen-keyboard-enabled'
-	dbus-launch gsettings set org.mate.keybindings.magnifier binding ''
-	dbus-launch gsettings set org.mate.keybindings.magnifier name 'Toggle magnifier'
-	dbus-launch gsettings set org.gnome.desktop.thumbnail-cache maximum-age 180
-	dbus-launch gsettings set org.gnome.desktop.thumbnail-cache maximum-size 512
-	dbus-launch gsettings set org.mate.control-center.appearance more-backgrounds-url 'http://art.gnome.org/backgrounds/'
-	dbus-launch gsettings set org.mate.control-center.appearance more-themes-url 'http://art.gnome.org/themes/'
-	dbus-launch gsettings set org.mate.sound default-mixer-device ''
-	dbus-launch gsettings set org.mate.sound default-mixer-tracks @as []
-	dbus-launch gsettings set org.mate.sound enable-esd false
-	dbus-launch gsettings set org.mate.sound event-sounds true
-	dbus-launch gsettings set org.mate.sound input-feedback-sounds false
-	dbus-launch gsettings set org.mate.sound theme-name 'freedesktop'
-	dbus-launch gsettings set org.mate.crypto.cache gpg-cache-authorize false
-	dbus-launch gsettings set org.mate.crypto.cache gpg-cache-method 'session'
-	dbus-launch gsettings set org.mate.crypto.cache gpg-cache-ttl 300
-	dbus-launch gsettings set org.mate.media-handling automount true
-	dbus-launch gsettings set org.mate.media-handling automount-open false
-	dbus-launch gsettings set org.mate.media-handling autorun-never false
-	dbus-launch gsettings set org.mate.media-handling autorun-x-content-ignore @as []
-	dbus-launch gsettings set org.mate.media-handling autorun-x-content-open-folder @as []
-	dbus-launch gsettings set org.mate.media-handling autorun-x-content-start-app ['x-content/software']
-	dbus-launch gsettings set org.mate.caja.desktop computer-icon-name ''
-	dbus-launch gsettings set org.mate.caja.desktop computer-icon-visible true
-	dbus-launch gsettings set org.mate.caja.desktop font 'Sans 10'
-	dbus-launch gsettings set org.mate.caja.desktop home-icon-name ''
-	dbus-launch gsettings set org.mate.caja.desktop home-icon-visible true
-	dbus-launch gsettings set org.mate.caja.desktop network-icon-name ''
-	dbus-launch gsettings set org.mate.caja.desktop network-icon-visible false
-	dbus-launch gsettings set org.mate.caja.desktop text-ellipsis-limit 3
-	dbus-launch gsettings set org.mate.caja.desktop trash-icon-name ''
-	dbus-launch gsettings set org.mate.caja.desktop trash-icon-visible true
-	dbus-launch gsettings set org.mate.caja.desktop volumes-visible true
-	dbus-launch gsettings set org.mate.screenshot border-effect 'none'
-	dbus-launch gsettings set org.mate.screenshot delay 0
-	dbus-launch gsettings set org.mate.screenshot include-border true
-	dbus-launch gsettings set org.mate.screenshot include-pointer true
-	dbus-launch gsettings set org.mate.screenshot last-save-directory ''
-	dbus-launch gsettings set org.mate.file-views icon-theme 'Faenza-Darkest'
-	dbus-launch gsettings set org.mate.lockdown disable-application-handlers false
-	dbus-launch gsettings set org.mate.lockdown disable-command-line false
-	dbus-launch gsettings set org.mate.lockdown disable-lock-screen false
-	dbus-launch gsettings set org.mate.lockdown disable-print-setup false
-	dbus-launch gsettings set org.mate.lockdown disable-printing false
-	dbus-launch gsettings set org.mate.lockdown disable-save-to-disk false
-	dbus-launch gsettings set org.mate.lockdown disable-theme-settings false
-	dbus-launch gsettings set org.mate.lockdown disable-user-switching false
-	dbus-launch gsettings set org.gnome.desktop.notifications application-children @as []
-	dbus-launch gsettings set org.gnome.desktop.notifications show-banners true
-	dbus-launch gsettings set org.gnome.desktop.notifications show-in-lock-screen true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.mpris active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.mpris priority 99
-	dbus-launch gsettings set org.mate.session.required-components filemanager 'caja'
-	dbus-launch gsettings set org.mate.session.required-components panel 'mate-panel'
-	dbus-launch gsettings set org.mate.session.required-components windowmanager 'marco'
-	dbus-launch gsettings set org.freedesktop.Geoclue gps-baudrate uint32 0
-	dbus-launch gsettings set org.freedesktop.Geoclue gps-device ''
-	dbus-launch gsettings set org.gnome.desktop.privacy hide-identity false
-	dbus-launch gsettings set org.gnome.desktop.privacy old-files-age uint32 30
-	dbus-launch gsettings set org.gnome.desktop.privacy recent-files-max-age -1
-	dbus-launch gsettings set org.gnome.desktop.privacy remember-app-usage true
-	dbus-launch gsettings set org.gnome.desktop.privacy remember-recent-files true
-	dbus-launch gsettings set org.gnome.desktop.privacy remove-old-temp-files false
-	dbus-launch gsettings set org.gnome.desktop.privacy remove-old-trash-files false
-	dbus-launch gsettings set org.gnome.desktop.privacy show-full-name-in-top-bar true
-	dbus-launch gsettings set org.gnome.system.smb workgroup ''
-	dbus-launch gsettings set org.gnome.desktop.interface can-change-accels false
-	dbus-launch gsettings set org.gnome.desktop.interface clock-format '24h'
-	dbus-launch gsettings set org.gnome.desktop.interface clock-show-date false
+	dbus-launch gsettings set org.gnome.desktop.interface clock-format '12h'
+	dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-seconds false
-	dbus-launch gsettings set org.gnome.desktop.interface cursor-blink true
-	dbus-launch gsettings set org.gnome.desktop.interface cursor-blink-time 1200
-	dbus-launch gsettings set org.gnome.desktop.interface cursor-blink-timeout 10
-	dbus-launch gsettings set org.gnome.desktop.interface cursor-size 24
-	dbus-launch gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
-	dbus-launch gsettings set org.gnome.desktop.interface document-font-name 'Sans 11'
-	dbus-launch gsettings set org.gnome.desktop.interface enable-animations true
-	dbus-launch gsettings set org.gnome.desktop.interface font-name 'Cantarell 11'
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-color-palette 'black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90'
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-color-scheme ''
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-im-module ''
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-im-preedit-style 'callback'
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-im-status-style 'callback'
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-key-theme 'Default'
 	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme 'Zukitwo'
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-timeout-initial 200
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-timeout-repeat 20
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Faenza-Darkest'
-	dbus-launch gsettings set org.gnome.desktop.interface menubar-accel 'F10'
-	dbus-launch gsettings set org.gnome.desktop.interface menubar-detachable false
-	dbus-launch gsettings set org.gnome.desktop.interface menus-have-tearoff false
-	dbus-launch gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 11'
-	dbus-launch gsettings set org.gnome.desktop.interface scaling-factor uint32 0
-	dbus-launch gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
-	dbus-launch gsettings set org.gnome.desktop.interface toolbar-detachable false
-	dbus-launch gsettings set org.gnome.desktop.interface toolbar-icons-size 'large'
-	dbus-launch gsettings set org.gnome.desktop.interface toolbar-style 'both-horiz'
-	dbus-launch gsettings set org.gnome.desktop.interface toolkit-accessibility false
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr priority 1
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr show-notification-icon false
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr turn-on-external-monitors-at-startup true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr turn-on-laptop-monitor-at-startup true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.xrandr use-xorg-monitor-settings true
-	dbus-launch gsettings set org.mate.pluma.plugins.time custom-format '%d/%m/%Y %H:%M:%S'
-	dbus-launch gsettings set org.mate.pluma.plugins.time prompt-type 'prompt-selected-format'
-	dbus-launch gsettings set org.mate.pluma.plugins.time selected-format '%c'
-	dbus-launch gsettings set org.mate.typing-break allow-postpone false
-	dbus-launch gsettings set org.mate.typing-break break-time 3
-	dbus-launch gsettings set org.mate.typing-break enabled false
-	dbus-launch gsettings set org.mate.typing-break type-time 60
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-paths @as []
@@ -832,22 +316,6 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places show-trash true
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places sticky false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places width 200
-	dbus-launch gsettings set org.mate.engrampa.listing list-mode 'as-folder'
-	dbus-launch gsettings set org.mate.engrampa.listing name-column-width 250
-	dbus-launch gsettings set org.mate.engrampa.listing show-path false
-	dbus-launch gsettings set org.mate.engrampa.listing show-size true
-	dbus-launch gsettings set org.mate.engrampa.listing show-time true
-	dbus-launch gsettings set org.mate.engrampa.listing show-type true
-	dbus-launch gsettings set org.mate.engrampa.listing sort-method 'name'
-	dbus-launch gsettings set org.mate.engrampa.listing sort-type 'ascending'
-	dbus-launch gsettings set org.mate.engrampa.listing use-mime-icons true
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.indicator background-color ''
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.indicator font-family ''
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.indicator foreground-color ''
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.indicator secondary 0
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.indicator show-flags false
-	dbus-launch gsettings set org.mate.engrampa.dialogs.last-output height -1
-	dbus-launch gsettings set org.mate.engrampa.dialogs.last-output width -1
 	dbus-launch gsettings set org.mate.font-rendering antialiasing 'rgba'
 	dbus-launch gsettings set org.mate.font-rendering dpi 92.0
 	dbus-launch gsettings set org.mate.font-rendering hinting 'medium'
@@ -857,175 +325,12 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.peripherals-touchpad scroll-method 2
 	dbus-launch gsettings set org.mate.peripherals-touchpad tap-to-click true
 	dbus-launch gsettings set org.mate.peripherals-touchpad touchpad-enabled true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.mouse active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.mouse priority 7
-	dbus-launch gsettings set org.gnome.desktop.datetime automatic-timezone true
-	dbus-launch gsettings set org.gnome.system.proxy ignore-hosts ['localhost', '127.0.0.0/8', '::1']
-	dbus-launch gsettings set org.gnome.system.proxy mode 'none'
-	dbus-launch gsettings set org.gnome.system.proxy use-same-proxy true
-	dbus-launch gsettings set org.mate.interface accessibility false
-	dbus-launch gsettings set org.mate.interface buttons-have-icons true
-	dbus-launch gsettings set org.mate.interface can-change-accels false
-	dbus-launch gsettings set org.mate.interface cursor-blink true
-	dbus-launch gsettings set org.mate.interface cursor-blink-time 1200
-	dbus-launch gsettings set org.mate.interface document-font-name 'Sans 10'
 	dbus-launch gsettings set org.mate.interface enable-animations true
 	dbus-launch gsettings set org.mate.interface file-chooser-backend 'gtk+'
 	dbus-launch gsettings set org.mate.interface font-name 'Sans 10'
 	dbus-launch gsettings set org.mate.interface gtk-color-scheme ''
-	dbus-launch gsettings set org.mate.interface gtk-im-module ''
-	dbus-launch gsettings set org.mate.interface gtk-im-preedit-style 'callback'
-	dbus-launch gsettings set org.mate.interface gtk-im-status-style 'callback'
-	dbus-launch gsettings set org.mate.interface gtk-key-theme 'Zukitwo'
 	dbus-launch gsettings set org.mate.interface gtk-theme 'Zukitwo'
 	dbus-launch gsettings set org.mate.interface icon-theme 'Faenza-Darkest'
-	dbus-launch gsettings set org.mate.interface menubar-accel 'F10'
-	dbus-launch gsettings set org.mate.interface menubar-detachable false
-	dbus-launch gsettings set org.mate.interface menus-have-icons true
-	dbus-launch gsettings set org.mate.interface menus-have-tearoff false
-	dbus-launch gsettings set org.mate.interface monospace-font-name 'Monospace 10'
-	dbus-launch gsettings set org.mate.interface show-input-method-menu true
-	dbus-launch gsettings set org.mate.interface show-unicode-menu true
-	dbus-launch gsettings set org.mate.interface status-bar-meter-on-right false
-	dbus-launch gsettings set org.mate.interface toolbar-detachable false
-	dbus-launch gsettings set org.mate.interface toolbar-icons-size 'large-toolbar'
-	dbus-launch gsettings set org.mate.interface toolbar-style 'both-horiz'
-	dbus-launch gsettings set org.mate.interface use-custom-font false
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.sound active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.sound priority 5
-	dbus-launch gsettings set org.mate.caja.icon-view captions ['none', 'size', 'date_modified']
-	dbus-launch gsettings set org.mate.caja.icon-view default-use-tighter-layout false
-	dbus-launch gsettings set org.mate.caja.icon-view default-zoom-level 'standard'
-	dbus-launch gsettings set org.mate.caja.icon-view labels-beside-icons false
-	dbus-launch gsettings set org.mate.caja.icon-view text-ellipsis-limit ['3']
-	dbus-launch gsettings set org.mate.caja.icon-view thumbnail-size 64
-	dbus-launch gsettings set org.gtk.Settings.FileChooser expand-folders false
-	dbus-launch gsettings set org.gtk.Settings.FileChooser last-folder-uri ''
-	dbus-launch gsettings set org.gtk.Settings.FileChooser location-mode 'path-bar'
-	dbus-launch gsettings set org.gtk.Settings.FileChooser show-hidden false
-	dbus-launch gsettings set org.gtk.Settings.FileChooser show-size-column true
-	dbus-launch gsettings set org.gtk.Settings.FileChooser sidebar-width 148
-	dbus-launch gsettings set org.gtk.Settings.FileChooser sort-column 'name'
-	dbus-launch gsettings set org.gtk.Settings.FileChooser sort-order 'ascending'
-	dbus-launch gsettings set org.gtk.Settings.FileChooser startup-mode 'recent'
-	dbus-launch gsettings set org.gtk.Settings.FileChooser window-position (-1, -1)
-	dbus-launch gsettings set org.gtk.Settings.FileChooser window-size (-1, -1)
-	dbus-launch gsettings set ca.desrt.dconf-editor.Settings window-height 607
-	dbus-launch gsettings set ca.desrt.dconf-editor.Settings window-is-fullscreen false
-	dbus-launch gsettings set ca.desrt.dconf-editor.Settings window-is-maximized false
-	dbus-launch gsettings set ca.desrt.dconf-editor.Settings window-width 800
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-application-handlers false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-command-line false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-lock-screen false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-log-out false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-print-setup false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-printing false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-save-to-disk false
-	dbus-launch gsettings set org.gnome.desktop.lockdown disable-user-switching false
-	dbus-launch gsettings set org.gnome.desktop.lockdown user-administration-disabled false
-	dbus-launch gsettings set org.mate.system-monitor.memmapstree sort-col 0
-	dbus-launch gsettings set org.mate.system-monitor.memmapstree sort-order 0
-	dbus-launch gsettings set org.mate.eom.ui disable-trash-confirmation false
-	dbus-launch gsettings set org.mate.eom.ui filechooser-xdg-fallback true
-	dbus-launch gsettings set org.mate.eom.ui image-collection false
-	dbus-launch gsettings set org.mate.eom.ui image-collection-position 0
-	dbus-launch gsettings set org.mate.eom.ui image-collection-resizable false
-	dbus-launch gsettings set org.mate.eom.ui propsdialog-netbook-mode true
-	dbus-launch gsettings set org.mate.eom.ui scroll-buttons true
-	dbus-launch gsettings set org.mate.eom.ui sidebar true
-	dbus-launch gsettings set org.mate.eom.ui statusbar true
-	dbus-launch gsettings set org.mate.eom.ui toolbar true
-	dbus-launch gsettings set org.mate.keybindings.screenreader action 'mate-gsettings-toggle screen-reader-enabled'
-	dbus-launch gsettings set org.mate.keybindings.screenreader binding ''
-	dbus-launch gsettings set org.mate.keybindings.screenreader name 'Toggle screen reader'
-	dbus-launch gsettings set org.mate.mucharmap font @ms nothing
-	dbus-launch gsettings set org.mate.mucharmap group-by 'script'
-	dbus-launch gsettings set org.mate.mucharmap last-char 'A'
-	dbus-launch gsettings set org.mate.mucharmap snap-cols-pow2 false
-	dbus-launch gsettings set org.mate.terminal.global active-encodings ['UTF-8', 'current']
-	dbus-launch gsettings set org.mate.terminal.global confirm-window-close true
-	dbus-launch gsettings set org.mate.terminal.global default-profile 'default'
-	dbus-launch gsettings set org.mate.terminal.global profile-list ['default']
-	dbus-launch gsettings set org.mate.terminal.global use-menu-accelerators true
-	dbus-launch gsettings set org.mate.terminal.global use-mnemonics true
-	dbus-launch gsettings set org.mate.NotificationDaemon default-sound ''
-	dbus-launch gsettings set org.mate.NotificationDaemon monitor-number 0
-	dbus-launch gsettings set org.mate.NotificationDaemon popup-location 'top_right'
-	dbus-launch gsettings set org.mate.NotificationDaemon sound-enabled true
-	dbus-launch gsettings set org.mate.NotificationDaemon theme 'slider'
-	dbus-launch gsettings set org.mate.NotificationDaemon use-active-monitor true
-	dbus-launch gsettings set org.mate.mucharmap.WindowState fullscreen false
-	dbus-launch gsettings set org.mate.mucharmap.WindowState maximized false
-	dbus-launch gsettings set org.mate.mucharmap.WindowState size (-1, -1)
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general default-group -1
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general disable-indicator false
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general disable-sysconfig-changed-warning false
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general duplicate-leds false
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general group-per-window true
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general handle-indicators false
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general known-file-list @as []
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general layout-names-as-group-names true
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general load-extra-items false
-	dbus-launch gsettings set org.mate.peripherals-keyboard-xkb.general update-handlers @as []
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.a11y-keyboard active true
-	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.a11y-keyboard priority 7
-	dbus-launch gsettings set org.mate.screensaver cycle-delay 10
-	dbus-launch gsettings set org.mate.screensaver embedded-keyboard-command ''
-	dbus-launch gsettings set org.mate.screensaver embedded-keyboard-enabled false
-	dbus-launch gsettings set org.mate.screensaver idle-activation-enabled true
-	dbus-launch gsettings set org.mate.screensaver lock-delay 0
-	dbus-launch gsettings set org.mate.screensaver lock-dialog-theme 'default'
-	dbus-launch gsettings set org.mate.screensaver lock-enabled true
-	dbus-launch gsettings set org.mate.screensaver logout-command '/usr/bin/mate-session-save --logout-dialog  '
-	dbus-launch gsettings set org.mate.screensaver logout-delay 120
-	dbus-launch gsettings set org.mate.screensaver logout-enabled true
-	dbus-launch gsettings set org.mate.screensaver mode 'blank-only'
-	dbus-launch gsettings set org.mate.screensaver power-management-delay 30
-	dbus-launch gsettings set org.mate.screensaver status-message-enabled true
-	dbus-launch gsettings set org.mate.screensaver themes @as []
-	dbus-launch gsettings set org.mate.screensaver user-switch-enabled true
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser filter-mode 'hidden_and_binary'
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser filter-pattern ''
-	dbus-launch gsettings set org.mate.pluma.plugins.filebrowser open-at-first-doc true
-	dbus-launch gsettings set org.mate.caja.window-state geometry '800x550+157+81'
-	dbus-launch gsettings set org.mate.caja.window-state maximized false
-	dbus-launch gsettings set org.mate.caja.window-state side-pane-view 'places'
-	dbus-launch gsettings set org.mate.caja.window-state sidebar-width 159
-	dbus-launch gsettings set org.mate.caja.window-state start-with-location-bar true
-	dbus-launch gsettings set org.mate.caja.window-state start-with-sidebar true
-	dbus-launch gsettings set org.mate.caja.window-state start-with-status-bar true
-	dbus-launch gsettings set org.mate.caja.window-state start-with-toolbar true
-	dbus-launch gsettings set org.mate.control-center cc-actions-list ['Change Theme;mate-appearance-properties.desktop', 'Set Preferred Applications;mate-default-applications-properties.desktop']
-	dbus-launch gsettings set org.mate.control-center cc-exit-shell-on-action-add-remove false
-	dbus-launch gsettings set org.mate.control-center cc-exit-shell-on-action-help false
-	dbus-launch gsettings set org.mate.control-center cc-exit-shell-on-action-start false
-	dbus-launch gsettings set org.mate.control-center cc-exit-shell-on-action-upgrade-uninstall false
-	dbus-launch gsettings set org.mate.control-center cc-exit-shell-on-static-action false
-	dbus-launch gsettings set org.gnome.desktop.search-providers disable-external false
-	dbus-launch gsettings set org.gnome.desktop.search-providers disabled @as []
-	dbus-launch gsettings set org.gnome.desktop.search-providers sort-order ['gnome-contacts.desktop', 'gnome-documents.desktop', 'nautilus.desktop']
-	dbus-launch gsettings set org.gnome.desktop.thumbnailers disable @as []
-	dbus-launch gsettings set org.gnome.desktop.thumbnailers disable-all false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard bouncekeys-beep-reject false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard bouncekeys-delay 300
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard bouncekeys-enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard disable-timeout 200
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard feature-state-change-beep false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard mousekeys-accel-time 300
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard mousekeys-enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard mousekeys-init-delay 300
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard mousekeys-max-speed 10
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard slowkeys-beep-accept false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard slowkeys-beep-press false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard slowkeys-beep-reject false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard slowkeys-delay 300
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard slowkeys-enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard stickykeys-enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard stickykeys-modifier-beep false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard stickykeys-two-key-off false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard timeout-enable false
-	dbus-launch gsettings set org.gnome.desktop.a11y.keyboard togglekeys-enable false
 
 fi
 
