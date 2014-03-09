@@ -178,7 +178,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.background background-fade true
 	dbus-launch gsettings set org.mate.background color-shading-type 'vertical-gradient'
 	dbus-launch gsettings set org.mate.background draw-background true
-	dbus-launch gsettings set org.mate.background picture-filename 'file:///usr/share/antergos/wallpapers/antergos-wallpaper.png'
+	dbus-launch gsettings set org.mate.background picture-filename '/usr/share/antergos/wallpapers/antergos-wallpaper.png'
 	dbus-launch gsettings set org.mate.background picture-opacity 100
 	dbus-launch gsettings set org.mate.background picture-options 'zoom'
 	dbus-launch gsettings set org.mate.background primary-color '#58589191bcbc'
@@ -299,7 +299,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-seconds false
 	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme 'Zukitwo'
-	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Faenza-Darkest'
+	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Faenza-Dark'
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-paths @as []
@@ -330,7 +330,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.interface font-name 'Sans 10'
 	dbus-launch gsettings set org.mate.interface gtk-color-scheme ''
 	dbus-launch gsettings set org.mate.interface gtk-theme 'Zukitwo'
-	dbus-launch gsettings set org.mate.interface icon-theme 'Faenza-Darkest'
+	dbus-launch gsettings set org.mate.interface icon-theme 'Faenza-Dark'
 
 fi
 

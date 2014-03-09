@@ -10,7 +10,7 @@ orientation=bottom
 size=24
 background=[color=#000000, opacity=38228, type=none]
 
-[Object menu-bar]
+[Object mintMenu]
 object-type=applet
 applet-iid=MintMenuAppletFactory::MintMenuApplet
 toplevel-id=top

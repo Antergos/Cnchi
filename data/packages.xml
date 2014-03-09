@@ -226,6 +226,8 @@
     </razor_desktop>
 
     <mate_desktop>
+        <pkgname>caja</pkgname>
+        <pkgname>caja-extensions</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
@@ -244,16 +246,16 @@
         <pkgname>mate-calc</pkgname>
         <pkgname>mate-document-viewer</pkgname>
         <pkgname>mate-file-archiver</pkgname>
-        <pkgname>mate-file-manager-open-terminal</pkgname>
         <pkgname>mate-image-viewer</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-menu-editor</pkgname>
+        <pkgname>mate-menus</pkgname>
         <pkgname>mate-mint-menu</pkgname>
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>
         <pkgname>mate-terminal</pkgname>
-        <pkgname>mate-text-editor</pkgname>
+        <pkgname>pluma</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
