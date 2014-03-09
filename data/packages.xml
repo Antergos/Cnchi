@@ -279,10 +279,10 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gvfs-smb</pkgname>
-        <!-- <pkgname>gvfs-atp</pkgname> -->
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-smb</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
+        <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>zukitwo-themes</pkgname>
@@ -308,9 +308,8 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gvfs-smb</pkgname>
-        <!-- <pkgname>gvfs-atp</pkgname> -->
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>gvfs-smb</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>
@@ -485,7 +484,7 @@
             <pkgname>jfsutils</pkgname>
         </jfs>
         <nfs>
-            <!-- Support programs for Network File Systems -->
+            <!-- for Network File Systems -->
             <pkgname>nfs-utils</pkgname>
         </nfs>
         <nilfs2>
