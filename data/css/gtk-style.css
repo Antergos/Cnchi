@@ -57,9 +57,29 @@
 .progressbar row:hover,
 .progressbar row:selected,
 .progressbar row:selected:focus {
-    border-width: 1px;
+    background-image: -gtk-gradient (linear,
+                                  left top,
+                                  left bottom,
+                                  color-stop(0.0,rgba(28,82,144,1)),
+                                  color-stop(0.50,rgba(37,129,205,1)),
+                                  color-stop(0.51,rgba(30,115,190,1)),
+                                  color-stop(1.00,rgba(107,176,229,1)));
+    border-style: solid;
+    border-radius: 3;
+    border-width: 0;
+    color: white;   /* font color after the progress bar covers the text */
+    /*border-width: 1px;
     border-style: solid;
     border-color: shade(@theme_selected_bg_color, 0.9);
     background-color: #acceee;
-    background-image: none;
+    background-image: none;*/
+}
+
+.trough {
+    background-color: grey;
+    border-style: solid;
+    border-radius: 3;
+    border-width: 1;
+    border-color: blue;
+    color: black;   /* font color before the progress bar covers the text */
 }

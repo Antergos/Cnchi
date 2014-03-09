@@ -773,7 +773,7 @@ class InstallationProcess(multiprocessing.Process):
         pacman_options["downloadonly"] = True
                
         for package_type in self.packages:
-            txt = _("Downloading packages from '%s' group...") % package_type
+            txt = _("Downloading package group: '%s'...") % package_type
             logging.debug(txt)
             self.queue_event('global_text', txt)
             
@@ -808,7 +808,7 @@ class InstallationProcess(multiprocessing.Process):
         pacman_options["needed"] = True
 
         for package_type in self.packages:
-            txt = _("Installing packages from '%s' group...") % package_type
+            txt = _("Installing package group: '%s'...") % package_type
             logging.debug(txt)
             self.queue_event('global_text', txt)
 

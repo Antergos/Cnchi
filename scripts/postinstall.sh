@@ -300,7 +300,7 @@ mate_settings() {
 	cp /usr/share/cnchi/scripts/mate-schemas ${DESTDIR}/usr/bin/mate-schemas
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/tmp/post-install.log 2>&1
+	chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 	rm ${DESTDIR}/usr/bin/mate-schemas
 
