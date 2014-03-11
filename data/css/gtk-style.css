@@ -1,3 +1,6 @@
+#main {
+font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
+}
 #logo {
     background-color: transparent;
     background-position: top;
@@ -60,10 +63,9 @@
     background-image: -gtk-gradient (linear,
                                   left top,
                                   left bottom,
-                                  color-stop(0.0,rgb(2,98,208)),
-                                  color-stop(0.50,rgb(61,159,239)),
-                                  color-stop(0.51,rgb(87,179,249)),
-                                  color-stop(1.00,rgb(17,120,205)));
+                                  color-stop(0.0,rgb(240,249,255)),
+                                  color-stop(0.47,rgb(203,235,255)),
+                                  color-stop(0.100,rgb(161,219,255)));
     color: white;
     border-color: shade(@theme_selected_bg_color, 0.9);   /* font color after the progress bar covers the text */
     border-width: 1px;

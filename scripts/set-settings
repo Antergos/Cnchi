@@ -245,6 +245,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.caja.sidebar-panels.tree show-only-directories true
 	dbus-launch gsettings set org.gnome.system.dns_sd display-local 'merged'
 	dbus-launch gsettings set org.gnome.system.dns_sd extra-domains ''
+	dbus-launch gsettings set org.mate.panel default-layout 'antergos'
 	dbus-launch gsettings set org.mate.panel confirm-panel-remove true
 	dbus-launch gsettings set org.mate.panel disable-force-quit false
 	dbus-launch gsettings set org.mate.panel disable-log-out false
@@ -256,7 +257,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.panel highlight-launchers-on-mouseover true
 	dbus-launch gsettings set org.mate.panel history-mate-run []
 	dbus-launch gsettings set org.mate.panel locked-down false
-	dbus-launch gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'mintMenu']
+	dbus-launch gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'menu-bar']
 	dbus-launch gsettings set org.mate.panel show-program-list false
 	dbus-launch gsettings set org.mate.panel tooltips-enabled true
 	dbus-launch gsettings set org.mate.panel toplevel-id-list ['top', 'bottom']

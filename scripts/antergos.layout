@@ -2,15 +2,13 @@
 expand=true
 orientation=top
 size=24
-background=[color=#000000, opacity=38228, type=none]
 
 [Toplevel bottom]
 expand=true
 orientation=bottom
 size=24
-background=[color=#000000, opacity=38228, type=none]
 
-[Object mintMenu]
+[Object menu-bar]
 object-type=applet
 applet-iid=MintMenuAppletFactory::MintMenuApplet
 toplevel-id=top

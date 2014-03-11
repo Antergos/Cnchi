@@ -303,7 +303,7 @@ mate_settings() {
 	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Copy panel layout
-	cp /usr/share/cnchi/scripts/panel-default-layout.dist ${DESTDIR}/usr/share/mate-panel/panel-default-layout.dist
+	cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
 
 
 }
