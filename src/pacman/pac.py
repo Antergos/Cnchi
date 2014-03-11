@@ -316,9 +316,7 @@ class Pac(object):
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
         # Check if a new file is coming
-        
-        logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
-        
+                
         if filename != self.last_dl_filename or self.last_dl_total != total:
             # Yes, new file
             
@@ -352,6 +350,7 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
+                logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('local_percent', progress)
 
