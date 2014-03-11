@@ -301,8 +301,7 @@ class Main(Gtk.Window):
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
-            
-        GLib.timeout_add(1000, self.pages["slides"].manage_events_from_cb_queue)
+
 
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """

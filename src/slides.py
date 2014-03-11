@@ -119,6 +119,8 @@ class Slides(Gtk.Box):
         self.forward_button.hide()
 
         self.header.set_show_close_button(False)
+        
+        GLib.timeout_add(100, self.manage_events_from_cb_queue)
 
     def store_values(self):
         """ Nothing to be done here """
@@ -162,9 +164,9 @@ class Slides(Gtk.Box):
             GLib.timeout_add(100, pbar_pulse)
 
     def manage_events_from_cb_queue(self):
-        """ This function is called from cnchi.py with a timeout function
-            We should do as less as possible here, we want to maintain our
+        """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
+        
         if self.fatal_error:
             return False
 
