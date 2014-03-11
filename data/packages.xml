@@ -261,6 +261,7 @@
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
+        <pkgname>vlc</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>

@@ -288,7 +288,9 @@ mate_settings() {
 	else
 		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
     fi
-
+	# Fix for Zukitwo Metacity Theme
+	cp ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
+	
     # copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -301,6 +303,20 @@ mate_settings() {
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
+	
+	# Set MintMenu Favorites
+	cat << EOF > ${DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
+location:/usr/share/applications/chromium.desktop
+location:/usr/share/applications/pacmanxg.desktop
+separator
+location:/usr/share/applications/mate-calc.desktop
+location:/usr/share/applications/pluma.desktop
+location:/usr/share/applications/mate-terminal.desktop
+location:/usr/share/applications/mate-system-monitor.desktop
+separator
+location:/usr/share/applications/vlc.desktop
+location:/usr/share/applications/xnoise.desktop
+EOF
 
 	# Copy panel layout
 	cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout

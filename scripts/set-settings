@@ -153,6 +153,10 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 
 	dbus-launch gsettings set org.mate.Marco.general theme 'Zukitwo'
 	dbus-launch gsettings set org.mate.Marco.general visual-bell false
+	dbus-launch gsettings set org.mate.Marco.general num-workspaces 2
+	dbus-launch gsettings set org.mate.Marco.general compositing-manager true
+	dbus-launch gsettings set org.mate.Marco.general side-by-side-tiling true
+	dbus-launch gsettings set org.mate.NotificationDaemon theme Slider
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.datetime active true
 	dbus-launch gsettings set org.mate.SettingsDaemon.plugins.datetime priority 99
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.applications categories-mouse-over true
