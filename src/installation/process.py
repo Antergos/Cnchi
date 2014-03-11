@@ -796,7 +796,7 @@ class InstallationProcess(multiprocessing.Process):
         # First try to download all necessary packages (download only)
         for package_type in self.packages:
             self.do_install(package_type, download_only=True)
-            global_percent += step_global * self.self.num_packages[package_type]
+            global_percent += step_global * self.num_packages[package_type]
             self.queue_event('global_percent', global_percent)
 
         global_percent = 0
@@ -807,7 +807,7 @@ class InstallationProcess(multiprocessing.Process):
         # (alpm will try to download again those that couldn't download before)
         for package_type in self.packages:
             self.do_install(package_type)
-            global_percent += step_global * self.self.num_packages[package_type]
+            global_percent += step_global * self.num_packages[package_type]
             self.queue_event('global_percent', global_percent)
 
         self.queue_event('global_percent', 0)
