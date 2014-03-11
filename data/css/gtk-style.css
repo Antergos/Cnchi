@@ -62,8 +62,8 @@
                                   left bottom,
                                   color-stop(0.0,rgb(2,98,208)),
                                   color-stop(0.50,rgb(61,159,239)),
-                                  color-stop(0.51,rgb(17,120,205)),
-                                  color-stop(1.00,rgb(87,179,249)));
+                                  color-stop(0.51,rgb(87,179,249)),
+                                  color-stop(1.00,rgb(17,120,205)));
     color: white;
     border-color: shade(@theme_selected_bg_color, 0.9);   /* font color after the progress bar covers the text */
     border-width: 1px;

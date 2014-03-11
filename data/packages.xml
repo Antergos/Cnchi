@@ -226,9 +226,12 @@
     </razor_desktop>
 
     <mate_desktop>
+        <pkgname>atril</pkgname>
         <pkgname>caja</pkgname>
         <pkgname>caja-extensions</pkgname>
         <pkgname>cdrkit</pkgname>
+        <pkgname>engrampa</pkgname>
+        <pkgname>eom</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gst-libav</pkgname>
@@ -244,23 +247,19 @@
         <pkgname>mate</pkgname> <!-- Group -->
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-calc</pkgname>
-        <pkgname>mate-document-viewer</pkgname>
-        <pkgname>mate-file-archiver</pkgname>
-        <pkgname>mate-image-viewer</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
-        <pkgname>mate-menu-editor</pkgname>
-        <pkgname>mate-menus</pkgname>
         <pkgname>mate-mint-menu</pkgname>
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>
         <pkgname>mate-terminal</pkgname>
-        <pkgname>pluma</pkgname>
         <pkgname>mate-utils</pkgname>
+        <pkgname>mozo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
+        <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>

@@ -1543,7 +1543,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
 
         sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox',
-                    'xfce': 'startxfce4', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
+                    'xfce': 'xfce', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
         
