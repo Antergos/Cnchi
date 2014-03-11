@@ -115,6 +115,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
+        <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -159,6 +160,7 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
+        <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -249,6 +251,7 @@
         <pkgname>mate-calc</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-mint-menu</pkgname>
+        <pkgname>mate-mplayer</pkgname>
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>
@@ -261,7 +264,6 @@
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
-        <pkgname>vlc</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
