@@ -314,7 +314,7 @@ location:/usr/share/applications/pluma.desktop
 location:/usr/share/applications/mate-terminal.desktop
 location:/usr/share/applications/mate-system-monitor.desktop
 separator
-location:/usr/share/applications/vlc.desktop
+location:/usr/share/applications/mate-mplayer.desktop
 location:/usr/share/applications/xnoise.desktop
 EOF
 
