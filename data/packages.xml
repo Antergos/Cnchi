@@ -228,6 +228,7 @@
     <mate_desktop>
         <pkgname>atril</pkgname>
         <pkgname>caja</pkgname>
+        <pkgname>caja-extensions</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>engrampa</pkgname>
         <pkgname>eom</pkgname>
@@ -241,7 +242,6 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gucharmap</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
@@ -261,6 +261,7 @@
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
+        <pkgname>vlc</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>

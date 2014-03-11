@@ -1,4 +1,6 @@
-
+#main {
+font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
+}
 #logo {
     background-color: transparent;
     background-position: top;
@@ -7,7 +9,7 @@
     margin-top: 0px;
     color: #5082d4;
     font: 14px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 }
 
 #title {
@@ -19,7 +21,7 @@
     margin-top: 0px;
     color: #5082d4;
     font: 17px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     padding-top:7.5px;
 }
 
@@ -58,9 +60,21 @@
 .progressbar row:hover,
 .progressbar row:selected,
 .progressbar row:selected:focus {
+    background-image: -gtk-gradient (linear,
+                                  left top,
+                                  left bottom,
+                                  color-stop(0.0,rgb(246,248,249)),
+                                  color-stop(0.50,rgb(229,235,238)),
+                                  color-stop(0.51, rgb(215,222,227)),
+                                  color-stop(0.100,rgb(245,247,249)));
+    color: white;
+    border-color: shade(@theme_selected_bg_color, 0.9);   /* font color after the progress bar covers the text */
     border-width: 1px;
     border-style: solid;
-    border-color: shade(@theme_selected_bg_color, 0.9);
-    background-color: #1A86FF;
-    background-image: none;
+    /*background-color: #acceee;
+    background-image: none;*/
+}
+
+.progressbar .trough {
+    color: black;   /* font color before the progress bar covers the text */
 }

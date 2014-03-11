@@ -522,7 +522,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
-                self.packages['common'].append(pkg.text)
+                self.packages["common"].append(pkg.text)
 
         # Add specific desktop packages
         if self.desktop != "nox":
@@ -531,7 +531,7 @@ class InstallationProcess(multiprocessing.Process):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
-                    self.packages['desktop'].append(pkg.text)
+                    self.packages["desktop"].append(pkg.text)
 
             logging.debug(_("Adding '%s' desktop packages") % self.desktop)
 
@@ -542,7 +542,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages['desktop'].append(pkg.text)
+                    self.packages["desktop"].append(pkg.text)
 
             # Set KDE language pack
             if self.desktop == 'kde':
@@ -561,7 +561,7 @@ class InstallationProcess(multiprocessing.Process):
                     pkg = base_name + lang_code
                 if len(pkg) > 0:
                     logging.debug(_('Selected kde language pack: %s') % pkg)
-                    self.packages['desktop'].append(pkg)
+                    self.packages["desktop"].append(pkg)
         else:
             # Add specific NoX/Base packages
             for child in root.iter('nox'):
@@ -570,13 +570,13 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages['desktop'].append(pkg.text)
+                    self.packages["desktop"].append(pkg.text)
 
         # Add ntp package if user selected it in timezone screen
         if self.settings.get('use_ntp'):
             for child in root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
-                    self.packages['common'].append(pkg.text)
+                    self.packages["common"].append(pkg.text)
 
         # Get packages needed for detected hardware
         try:
@@ -604,11 +604,27 @@ class InstallationProcess(multiprocessing.Process):
                 self.packages['drivers'].remove("xf86-video-vesa")
 
         # Add filesystem packages
+
         logging.debug(_("Adding filesystem packages"))
-        for child in root.iter('filesystems'):
-            for pkg in child.iter('pkgname'):
-                self.packages['filesystems'].append(pkg.text)
-        
+
+        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+
+        fs_lib = ('btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs',
+                  'reiserfs', 'vfat', 'xfs')
+
+        for iii in self.fs_devices:
+            fs_types += self.fs_devices[iii]
+
+        for fsys in fs_lib:
+            if fsys in fs_types:
+                if fsys == 'ext2' or fsys == 'ext3' or fsys == 'ext4':
+                    fsys = 'ext'
+                if fsys == 'fat16' or fsys == 'fat32':
+                    fsys ='vfat'
+                for child in root.iter(fsys):
+                    for pkg in child.iter('pkgname'):
+                        self.packages["fs"].append(pkg.text)
+
         # Check for user desired features and add them to our installation
         logging.debug(_("Check for user desired features and add them to our installation"))
         self.add_features_packages(root)
@@ -620,7 +636,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_('Selecting chinese fonts.'))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.packages['common'].append(pkg.text)
+                    self.packages["common"].append(pkg.text)
 
         # Add bootloader packages if needed
         logging.debug(_("Adding bootloader packages if needed"))
@@ -631,15 +647,15 @@ class InstallationProcess(multiprocessing.Process):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
-                            self.packages['boot'].append(pkg.text)
+                            self.packages["boot"].append(pkg.text)
             elif btype == "UEFI_x86_64":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages['boot'].append(pkg.text)
+                        self.packages["boot"].append(pkg.text)
             elif btype == "UEFI_i386":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages['boot'].append(pkg.text)
+                        self.packages["boot"].append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -687,7 +703,7 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
-            self.packages['office'].append(pkg)
+            self.packages["office"].append(pkg)
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
@@ -1106,6 +1122,11 @@ class InstallationProcess(multiprocessing.Process):
 
             with open(default_grub, 'w') as grub_file:
                 grub_file.write("\n".join(lines) + "\n")
+
+        # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
+        with open(default_grub, 'a') as grub_file:
+            grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
+            grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
 
         logging.debug('/etc/default/grub configuration completed successfully.')
 
