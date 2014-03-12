@@ -59,11 +59,7 @@ class Slides(Gtk.Box):
         self.progress_bar = builder.get_object("progressbar")
         self.progress_bar.set_show_text(True)
 
-        self.global_progress_bar = builder.get_object("global_progressbar")
-        self.global_progress_bar.set_show_text(True)
-
         self.progress_bar.set_name('i_progressbar')
-        self.global_progress_bar.set_name('a_progressbar')
 
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
@@ -89,7 +85,6 @@ class Slides(Gtk.Box):
         super().add(builder.get_object("slides"))
 
         self.fatal_error = False
-        self.global_progress_bar_is_hidden = True
         self.should_pulse = False
 
     def translate_ui(self):
@@ -98,21 +93,12 @@ class Slides(Gtk.Box):
 
         self.header.set_subtitle(_("Installing Antergos..."))
 
-    def show_global_progress_bar_if_hidden(self):
-        if self.global_progress_bar_is_hidden:
-            self.global_progress_bar.show_all()
-            self.global_progress_bar_is_hidden = False
-
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 
         # Last screen reached, hide main progress bar.
         self.main_progressbar.hide()
-
-        # Hide global progress bar
-        self.global_progress_bar.hide()
-        self.global_progress_bar_is_hidden = True
 
         # Hide backwards and forwards button
         self.backwards_button.hide()
@@ -178,9 +164,6 @@ class Slides(Gtk.Box):
 
             if event[0] == 'local_percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == 'global_percent':
-                self.show_global_progress_bar_if_hidden()
-                self.global_progress_bar.set_fraction(event[1])
             elif event[0] == 'local_text':
                 if event[1] == 'hide':
                     self.progress_bar.set_show_text(False)
@@ -188,22 +171,12 @@ class Slides(Gtk.Box):
                 else:
                     self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
-            elif event[0] == 'global_text':
-                if event[1] == 'hide':
-                    self.global_progress_bar.set_show_text(False)
-                    self.global_progress_bar.set_text("")
-                else:
-                    self.global_progress_bar.set_show_text(True)
-                    self.global_progress_bar.set_text(event[1])
             elif event[0] == 'pulse':
                 if event[1] == 'stop':
                     self.stop_pulse()
                 elif event[1] == 'start':
                     self.start_pulse()
             elif event[0] == 'progress_bars':
-                if event[1] == 'hide_all' or event[1] == 'hide_global':
-                    self.global_progress_bar.hide()
-                    self.global_progress_bar_is_hidden = True
                 if event[1] == 'hide_all' or event[1] == 'hide_local':
                     self.progress_bar.hide()
             elif event[0] == 'finished':

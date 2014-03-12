@@ -55,8 +55,7 @@ class Pac(object):
         self.last_dl_progress = 0
         self.last_dl_total = 0
 
-        # Used to show a global download progress bar
-        self.total_downloaded = 0
+        # Store package total download size
         self.total_download_size = 0
 
         self.last_event = {}
@@ -336,7 +335,7 @@ class Pac(object):
                     filename = filename[:-len(ext)]
                 text = _("Downloading %s...") % filename
                 
-                self.total_downloaded += total
+                #self.total_downloaded += total
 
             self.queue_event('info', text)
             self.queue_event('local_percent', 0)
