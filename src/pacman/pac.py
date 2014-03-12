@@ -350,7 +350,7 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
-                logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
+                #logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('local_percent', progress)
 

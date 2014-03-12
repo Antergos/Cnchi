@@ -732,7 +732,7 @@ class InstallationProcess(multiprocessing.Process):
             txt = _("Downloading packages...")
         else:
             pacman_options["needed"] = True
-            txt = _("Installing packages...") % package_type          
+            txt = _("Installing packages...")
         logging.debug(txt)
         
         alpm = self.init_alpm()
