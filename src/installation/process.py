@@ -113,7 +113,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
         self.auto_device = ""
-        self.packages = {}
+        self.packages = []
         self.pac = None
         self.arch = ""
         self.initramfs = ""
@@ -151,7 +151,7 @@ class InstallationProcess(multiprocessing.Process):
     def run(self):
         """ Run installation """
         # Common vars
-        self.packages = {}
+        self.packages = []
 
         self.dest_dir = "/install"
 
@@ -409,8 +409,7 @@ class InstallationProcess(multiprocessing.Process):
         else:
             cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
 
-        for package_type in self.packages:
-            download.DownloadPackages(self.packages[package_type], conf_file, cache_dir, self.callback_queue)
+        download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
 
     def create_pacman_conf(self):
         """ Creates temporary pacman.conf file """
@@ -489,11 +488,7 @@ class InstallationProcess(multiprocessing.Process):
         self.create_pacman_conf()
         self.prepare_pacman()
         
-        self.packages['boot'] = []
-        self.packages['common'] = []
-        self.packages['filesystems'] = []
-        self.packages['desktop'] = []
-        self.packages['drivers'] = []
+        self.packages = []
         
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
@@ -522,7 +517,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
-                self.packages["common"].append(pkg.text)
+                self.packages.append(pkg.text)
 
         # Add specific desktop packages
         if self.desktop != "nox":
@@ -531,7 +526,7 @@ class InstallationProcess(multiprocessing.Process):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
-                    self.packages["desktop"].append(pkg.text)
+                    self.packages.append(pkg.text)
 
             logging.debug(_("Adding '%s' desktop packages") % self.desktop)
 
@@ -542,7 +537,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages["desktop"].append(pkg.text)
+                    self.packages.append(pkg.text)
 
             # Set KDE language pack
             if self.desktop == 'kde':
@@ -561,7 +556,7 @@ class InstallationProcess(multiprocessing.Process):
                     pkg = base_name + lang_code
                 if len(pkg) > 0:
                     logging.debug(_('Selected kde language pack: %s') % pkg)
-                    self.packages["desktop"].append(pkg)
+                    self.packages.append(pkg)
         else:
             # Add specific NoX/Base packages
             for child in root.iter('nox'):
@@ -570,13 +565,13 @@ class InstallationProcess(multiprocessing.Process):
                         self.network_manager = pkg.attrib.get('name')
                     if pkg.attrib.get('conflicts'):
                         self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages["desktop"].append(pkg.text)
+                    self.packages.append(pkg.text)
 
         # Add ntp package if user selected it in timezone screen
         if self.settings.get('use_ntp'):
             for child in root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
-                    self.packages["common"].append(pkg.text)
+                    self.packages.append(pkg.text)
 
         # Get packages needed for detected hardware
         try:
@@ -590,7 +585,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Hardware module added these packages : %s") % txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
-                self.packages['drivers'].extend(hardware_pkgs)
+                self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
@@ -598,10 +593,10 @@ class InstallationProcess(multiprocessing.Process):
             
         # By default, hardware module adds vesa driver but in a NoX install we don't want it
         if self.desktop == "nox":
-            if "v86d" in self.packages['drivers']:
-                self.packages['drivers'].remove("v86d")
-            if "xf86-video-vesa" in self.packages['drivers']:
-                self.packages['drivers'].remove("xf86-video-vesa")
+            if "v86d" in self.packages:
+                self.packages.remove("v86d")
+            if "xf86-video-vesa" in self.packages:
+                self.packages.remove("xf86-video-vesa")
 
         # Add filesystem packages
 
@@ -623,7 +618,7 @@ class InstallationProcess(multiprocessing.Process):
                     fsys ='vfat'
                 for child in root.iter(fsys):
                     for pkg in child.iter('pkgname'):
-                        self.packages["fs"].append(pkg.text)
+                        self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
         logging.debug(_("Check for user desired features and add them to our installation"))
@@ -636,7 +631,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_('Selecting chinese fonts.'))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.packages["common"].append(pkg.text)
+                    self.packages.append(pkg.text)
 
         # Add bootloader packages if needed
         logging.debug(_("Adding bootloader packages if needed"))
@@ -647,15 +642,15 @@ class InstallationProcess(multiprocessing.Process):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
-                            self.packages["boot"].append(pkg.text)
+                            self.packages.append(pkg.text)
             elif btype == "UEFI_x86_64":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages["boot"].append(pkg.text)
+                        self.packages.append(pkg.text)
             elif btype == "UEFI_i386":
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
-                        self.packages["boot"].append(pkg.text)
+                        self.packages.append(pkg.text)
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -666,7 +661,6 @@ class InstallationProcess(multiprocessing.Process):
         for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
-                self.packages[feature] = []
                 logging.debug('Adding packages for "%s" feature.' % feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
@@ -675,7 +669,7 @@ class InstallationProcess(multiprocessing.Process):
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and desktop in lib[plib]):
                             logging.debug("Selecting package: %s for feature: %s", pkg.text, feature)
-                            self.packages[feature].append(pkg.text)
+                            self.packages.append(pkg.text)
                         else:
                             logging.debug("Skipping %s package: %s for feature: %s", plib, pkg.text, feature)
                         
@@ -703,7 +697,7 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
-            self.packages["office"].append(pkg)
+            self.packages.append(pkg)
 
     def get_graphics_card(self):
         """ Get graphics card using hwinfo """
@@ -731,87 +725,37 @@ class InstallationProcess(multiprocessing.Process):
             raise InstallError("Can't initialize pyalpm: %s" % err)
         return alpm       
 
-    def number_of_packages(self):
-        """ Get how many packages (and its dependencies) Cnchi is going to install """
-        total = 0
-        self.num_packages = {}
-        alpm = self.init_alpm()
-        for package_type in self.packages:
-            num = self.number_of_packages_by_type(alpm, package_type)
-            logging.debug(_("Package group '%s' has %d packages") % (package_type, num))
-            self.num_packages[package_type] = num
-            total += num        
-        del alpm
-        return total
-
-    def number_of_packages_by_type(self, alpm, package_type):
-        """ Get how many packages (and its dependencies) in group package_type Cnchi is going to install """
-        pkg_list = []
-        targets = alpm.get_targets(self.packages[package_type])
-        for target in targets:
-            if target not in pkg_list:
-                pkg_list.append(target)
-        return len(pkg_list)
-
-    def do_install(self, package_type, download_only=False):
+    def do_install(self, download_only=False):
         pacman_options = {}
         if download_only:
             pacman_options["downloadonly"] = True
-            txt = _("Downloading packages from '%s' group...") % package_type
+            txt = _("Downloading packages...")
         else:
             pacman_options["needed"] = True
-            txt = _("Installing packages from '%s' group...") % package_type          
+            txt = _("Installing packages...")
         logging.debug(txt)
-        self.queue_event('global_text', txt)
-        self.queue_event('local_percent', 0)
         
         alpm = self.init_alpm()
-        result = alpm.do_install(pkgs=self.packages[package_type], conflicts=self.conflicts, options=pacman_options)
+        result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
         del alpm
 
         if result == 1:
             if download_only:
-                txt = _("Can't download group '%s'. Cnchi will continue and try again this download later.") % package_type
+                txt = _("Can't download all necessary packages. Cnchi will continue and try again this download later.")
                 logging.error(txt)
             else:
-                if package_type == "common":
-                    raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
-                else:
-                    txt = _("Can't install group '%s'. Cnchi will continue but this group of packages won't be installed.") % package_type
-                    logging.error(txt)
-        self.queue_event('local_percent', 0)
+                raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
 
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
-        total_global = self.number_of_packages()
-        logging.debug(_("Cnchi will install a total of %d packages.") % total_global)
-        step_global = 1 / total_global
-
-        global_percent = 0
-        self.queue_event('global_percent', 0)
-        self.queue_event('global_text', 'hide')
-                
         # First try to download all necessary packages (download only)
-        for package_type in self.packages:
-            self.do_install(package_type, download_only=True)
-            global_percent += step_global * self.num_packages[package_type]
-            self.queue_event('global_percent', global_percent)
-
-        global_percent = 0
-        self.queue_event('global_percent', 0)
-        self.queue_event('global_text', 'hide')
+        self.do_install(download_only=True)
         
         # Ok, now we can install all downloaded packages
         # (alpm will try to download again those that couldn't download before)
-        for package_type in self.packages:
-            self.do_install(package_type)
-            global_percent += step_global * self.num_packages[package_type]
-            self.queue_event('global_percent', global_percent)
-
-        self.queue_event('global_percent', 0)
-        self.queue_event('global_text', 'hide')
+        self.do_install()
 
         self.chroot_umount_special_dirs()
         

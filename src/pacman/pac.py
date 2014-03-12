@@ -52,11 +52,10 @@ class Pac(object):
 
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
-        self.last_dl_progress = None
-        self.last_dl_total = None
+        self.last_dl_progress = 0
+        self.last_dl_total = 0
 
-        # Used to show a global download progress bar
-        self.total_downloaded = 0
+        # Store package total download size
         self.total_download_size = 0
 
         self.last_event = {}
@@ -301,7 +300,7 @@ class Pac(object):
         #    pass
 
     def cb_progress(self, _target, _percent, n, i):
-        """ Calculates progress and enqueues events with the information """
+        """ Shows install progress """
         if _target:
             target = _("Installing %s (%d/%d)") % (_target, i, n)
             percent = i / n
@@ -316,8 +315,9 @@ class Pac(object):
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
         # Check if a new file is coming
+                
         if filename != self.last_dl_filename or self.last_dl_total != total:
-            # Yes, new file          
+            # Yes, new file
             
             self.last_dl_filename = filename
             self.last_dl_total = total
@@ -334,9 +334,8 @@ class Pac(object):
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
                 text = _("Downloading %s...") % filename
-                #global_percent = self.total_downloaded / self.total_download_size
-                #self.queue_event('global_percent', global_percent)
-                self.total_downloaded += total
+                
+                #self.total_downloaded += total
 
             self.queue_event('info', text)
             self.queue_event('local_percent', 0)
@@ -350,6 +349,7 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
+                #logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('local_percent', progress)
 
