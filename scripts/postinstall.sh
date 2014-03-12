@@ -102,6 +102,9 @@ cinnamon_settings(){
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 
+	# Copy menu@cinnamon.org.json to set menu icon
+	cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/
+
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc

@@ -58,13 +58,14 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.cinnamon keyboard-applet-use-flags "false"
 	
 	# Set background
-	dbus-launch gsettings set org.cinnamon.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
+	dbus-launch gsettings set org.cinnamon.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
 	# Set theme
 	dbus-launch gsettings set org.cinnamon.theme name "Nadia"
 
 	# Set icon theme
+	dbus-launch gsettings set org.cinnamon.desktop.interface icon-theme "Faenza-Dark"
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Faenza-Dark"
 	
 fi
