@@ -80,6 +80,7 @@ if [ "$1" != "-d" ] && [ "$1" != "--dev-repo" ]; then
         else
             cnchi -d -v -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml &
         fi
+    fi
 elif [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
     cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml &
 else
