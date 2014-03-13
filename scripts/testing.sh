@@ -23,7 +23,7 @@ if ! [ -f "${previous}" ]; then
 	wget http://antergos.info/lato.zip
 	unzip lato.zip -d /usr/share/fonts/TTF
 	fc-cache -r
-	gsettings set org.gnome.desktop.interface font-name 'Lato'
+	su -c "gsettings set org.gnome.desktop.interface font-name 'Lato'" antergos
 	# Enable kernel modules and other services
 	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then
 		echo "VirtualBox detected. Checking kernel modules and starting services."
