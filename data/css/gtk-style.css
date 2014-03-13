@@ -62,12 +62,12 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 .progressbar row:selected:focus {
     background-image: -gtk-gradient (linear,
                                   left top,
-                                  left bottom,
+                                  right top,
                                   color-stop(0.0,rgb(192,225,240)),
                                   color-stop(0.31,rgb(127,190,227)),
                                   color-stop(0.100, rgb(4,109,174)));
-    color: white;
-    border-color: shade(@theme_selected_bg_color, 0.3);   /* font color after the progress bar covers the text */
+    color: white; /* font color after the progress bar covers the text */
+    border-color: rgb(0,0,0,0);   
     border-width: 1px;
     border-style: solid;
     /*background-color: #acceee;
