@@ -76,6 +76,7 @@ class Settings(object):
             'timezone_latitude' : 0,
             'timezone_longitude' : 0,
             'timezone_done' : False,
+            'timezone_stop' : False,
             'tmp' : '/tmp',
             'ui' : '/usr/share/cnchi/ui/',
             'use_aria2' : False,

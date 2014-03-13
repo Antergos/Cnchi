@@ -25,6 +25,7 @@ import subprocess, sys, os
 import gettext
 import os
 import canonical.misc as misc
+import logging
 
 from show_message import warning
 
@@ -115,6 +116,11 @@ class Welcome(Gtk.Box):
 
     def on_tryit_button_clicked(self, widget, data=None):
         self.remove_temp_files()
+        logging.info(_("Quiting installer..."))
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        self.settings.set('timezone_stop', True)
+        logging.shutdown()
         Gtk.main_quit()
 
     def on_cli_button_clicked(self, widget, data=None):
