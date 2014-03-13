@@ -1455,7 +1455,8 @@ class InstallationAdvanced(Gtk.Box):
                 else:
                     if "f2fs" not in fs and "btrfs" not in fs and self.lv_partitions:
                         has_part["boot"] = True
-                        #part["boot"].set_state(True)
+                        # Not sure if this was an oversight or intended?
+                        part["boot"].set_state(True)
             if mnt == "swap":
                 has_part["swap"] = True
                 part["swap"].set_state(True)
@@ -1736,31 +1737,24 @@ class InstallationAdvanced(Gtk.Box):
                             logging.info(_("Creating new %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
                         else:
                             logging.info(_("Creating new %s filesystem in %s") % (fisy, partition_path))
-                        if (mnt == '/boot/efi'):
+
+                        if ((mnt == '/' and noboot) or (mnt == '/boot')) and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
-                            if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)
-                        if (mnt == '/boot' and efiboot):
-                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_LEGACY_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_LEGACY_BOOT, partitions[partition_path])
-                            if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)
-                        if ((mnt == '/' and noboot) or (mnt == '/boot' and not efiboot)) and ('/dev/mapper' not in partition_path):
-                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
+                                if self.grub_device or self.grub_device is not None:
+                                    (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                             if not self.testing:
                                 pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
                             vgname = vgname.split('-')[0]
-                            if (mnt == '/' and noboot) or (mnt == '/boot' and not efiboot):
+                            if (mnt == '/' and noboot) or (mnt == '/boot'):
                                 self.blvm = True
                                 for ee in pvs[vgname]:
                                     #print(partitions)
                                     if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
-                                        x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
+                                        if self.grub_device or self.grub_device is not None:
+                                            x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
 
