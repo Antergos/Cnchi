@@ -114,7 +114,7 @@ class Welcome(Gtk.Box):
             if os.path.exists(p):
                 os.remove(p)
 
-    def on_tryit_button_clicked(self, widget, data=None):
+    def quit_cnchi(self):
         self.remove_temp_files()
         logging.info(_("Quiting installer..."))
         while Gtk.events_pending():
@@ -122,15 +122,16 @@ class Welcome(Gtk.Box):
         self.settings.set('timezone_stop', True)
         logging.shutdown()
         Gtk.main_quit()
+        
+    def on_tryit_button_clicked(self, widget, data=None):
+        self.quit_cnchi()
 
     def on_cli_button_clicked(self, widget, data=None):
-        cli_installer = "antergos-setup"
         try:
-            subprocess.Popen([cli_installer])
+            subprocess.Popen(["antergos-setup"])
+            self.quit_cnchi()
         except:
             warning(_("Can't load the CLI installer"))
-        finally:
-            self.remove_temp_files()
 
     def on_graph_button_clicked(self, widget, data=None):
         self.forward_button.emit("clicked")
