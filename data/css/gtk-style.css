@@ -63,12 +63,11 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     background-image: -gtk-gradient (linear,
                                   left top,
                                   left bottom,
-                                  color-stop(0.0,rgb(246,248,249)),
-                                  color-stop(0.50,rgb(229,235,238)),
-                                  color-stop(0.51, rgb(215,222,227)),
-                                  color-stop(0.100,rgb(245,247,249)));
+                                  color-stop(0.0,rgb(192,225,240)),
+                                  color-stop(0.31,rgb(127,190,227)),
+                                  color-stop(0.100, rgb(4,109,174)));
     color: white;
-    border-color: shade(@theme_selected_bg_color, 0.9);   /* font color after the progress bar covers the text */
+    border-color: shade(@theme_selected_bg_color, 0.3);   /* font color after the progress bar covers the text */
     border-width: 1px;
     border-style: solid;
     /*background-color: #acceee;
