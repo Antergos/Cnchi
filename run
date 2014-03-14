@@ -8,7 +8,7 @@ _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _CACHE="/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-dvz"
+_CNCHI_OPTIONS="-dv"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
