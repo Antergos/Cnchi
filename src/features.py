@@ -52,7 +52,6 @@ class Features(Gtk.Box):
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
 
         # Available features (for reference)
@@ -103,15 +102,6 @@ class Features(Gtk.Box):
 
         # Strings must be swaped, return > 0
         return 1
-
-    def on_listbox_row_selected(self, listbox, listbox_row):
-        """ Someone selected a different row of the listbox """
-        pass
-        #if listbox_row is not None:
-        #    for box in listbox_row:
-        #        for child in box.get_children():
-        #            desktop = label.get_text()
-        #            self.set_desktop(desktop)
 
     def translate_ui(self):
         """ Translates features ui """
