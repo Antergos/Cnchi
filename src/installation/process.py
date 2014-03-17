@@ -829,7 +829,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.special_dirs_mounted = False
 
-    def chroot(self, cmd, timeout=None, stdin=None):
+    def chroot(self, cmd, time_out=None, stdin=None):
         """ Runs command inside the chroot """
         run = ['chroot', self.dest_dir]
 
@@ -840,16 +840,17 @@ class InstallationProcess(multiprocessing.Process):
             proc = subprocess.Popen(run,
                                     stdin=stdin,
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT,
-                                    timeout=timeout)
-            out = proc.communicate()[0]
-            txt = out.decode()
-            if len(txt) > 0:
-                logging.debug(txt)
+                                    stderr=subprocess.STDOUT,)
+            try:
+                out = proc.communicate(timeout=time_out)[0]
+                txt = out.decode()
+                if len(txt) > 0:
+                    logging.debug(txt)
+            except TimeoutExpired:
+                logging.error('%s is taking too long to complete--terminating' % proc)
+                proc.kill()
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
-            raise
-        except subprocess.TimeoutExpired:
             raise
 
     def is_running(self):
@@ -1117,7 +1118,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 60)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1201,7 +1202,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 60)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
