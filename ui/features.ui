@@ -50,7 +50,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;The Arch User Repository (AUR)&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -65,7 +65,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">The Arch User Repository (AUR) is a community-driven repository for Arch users.</property>
+                            <property name="label" translatable="yes"></property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -130,7 +130,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Gnome Extra&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -145,7 +145,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Gnome Extra</property>
+                            <property name="label" translatable="yes"></property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -210,7 +210,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Bluetooth support&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -225,7 +225,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Enables your system to make wireless connections via Bluetooth.</property>
+                            <property name="label" translatable="yes"></property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -290,7 +290,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Printing support&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -305,7 +305,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Installation of printer drivers and management tools.</property>
+                            <property name="label" translatable="yes"></property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -370,7 +370,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Uncomplicated Firewall&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -385,14 +385,11 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Control the incoming and outgoing network traffic.</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="justify">fill</property>
                             <property name="wrap">True</property>
                             <property name="width_chars">50</property>
                             <property name="max_width_chars">50</property>
-                            <attributes>
-                                <attribute name="font-desc" value="Sans 8"/>
-                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -457,7 +454,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Extra Fonts&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -472,14 +469,11 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Installation of extra fonts.</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="justify">fill</property>
                             <property name="wrap">True</property>
                             <property name="width_chars">50</property>
                             <property name="max_width_chars">50</property>
-                            <attributes>
-                                <attribute name="font-desc" value="Sans 8"/>
-                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -544,7 +538,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;LibreOffice&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -559,14 +553,11 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Open source office suite that supports editing MS Office files.</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="justify">fill</property>
                             <property name="wrap">True</property>
                             <property name="width_chars">50</property>
                             <property name="max_width_chars">50</property>
-                            <attributes>
-                                <attribute name="font-desc" value="Sans 8"/>
-                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -631,7 +622,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Propietary packages&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -646,14 +637,11 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Third-party software to play Flash videos, MP3 audio, and other media.</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="justify">fill</property>
                             <property name="wrap">True</property>
                             <property name="width_chars">50</property>
                             <property name="max_width_chars">50</property>
-                            <attributes>
-                                <attribute name="font-desc" value="Sans 8"/>
-                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -718,7 +706,7 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">&lt;span weight='bold' size='large'&gt;Visual effects&lt;/span&gt;</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -733,14 +721,11 @@
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Enable 3D acceleration for transparency, shadows, and other desktop effects.</property>
+                            <property name="label" translatable="yes"></property>
                             <property name="justify">fill</property>
                             <property name="wrap">True</property>
                             <property name="width_chars">50</property>
                             <property name="max_width_chars">50</property>
-                            <attributes>
-                                <attribute name="font-desc" value="Sans 8"/>
-                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>

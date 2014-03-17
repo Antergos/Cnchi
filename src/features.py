@@ -108,10 +108,6 @@ class Features(Gtk.Box):
         desktop = self.settings.get('desktop')
 
         txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
         # AUR
@@ -119,6 +115,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["aur"].set_markup(txt)
         txt = _("The AUR is a community-driven repository for Arch users.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["aur"].set_markup(txt)
 
         txt = _("Use yaourt to install AUR packages.\n"
@@ -134,6 +131,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["bluetooth"].set_markup(txt)
         txt = _("Enables your system to make wireless connections via Bluetooth.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["bluetooth"].set_markup(txt)
 
         txt = _("Bluetooth is a standard for the short-range wireless\n"
@@ -149,6 +147,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["fonts"].set_markup(txt)
         txt = _("Installation of extra TrueType fonts")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["fonts"].set_markup(txt)
 
         txt = _("TrueType is an outline font standard developed by\n"
@@ -165,6 +164,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["gnome_extra"].set_markup(txt)
         txt = _("Installation of extra Gnome applications")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["gnome_extra"].set_markup(txt)
 
         txt = _("Contains various optional tools such as a media\n"
@@ -179,6 +179,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["cups"].set_markup(txt)
         txt = _("Installation of printer drivers and management tools.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["cups"].set_markup(txt)
 
         txt = _("CUPS is the standards-based, open source printing\n"
@@ -193,6 +194,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["office"].set_markup(txt)
         txt = _("Open source office suite. Supports editing MS Office files.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["office"].set_markup(txt)
 
         txt = _("LibreOffice is the free power-packed Open Source\n"
@@ -209,6 +211,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["visual"].set_markup(txt)
         txt = _("Enable transparency, shadows, and other desktop effects.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["visual"].set_markup(txt)
 
         txt = _("Compton is a lightweight, standalone composite manager,\n"
@@ -225,6 +228,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["firewall"].set_markup(txt)
         txt = _("Control the incoming and outgoing network traffic.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["firewall"].set_markup(txt)
 
         txt = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
@@ -239,6 +243,7 @@ class Features(Gtk.Box):
         txt = "<span weight='bold' size='large'>%s</span>" % txt
         self.titles["third_party"].set_markup(txt)
         txt = _("Software to play Flash videos, MP3 audio, and other media.")
+        txt = "<span size='small'>%s</span>" % txt
         self.labels["third_party"].set_markup(txt)
 
         # txt = _("")
