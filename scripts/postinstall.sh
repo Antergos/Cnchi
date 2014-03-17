@@ -259,8 +259,8 @@ kde_settings(){
 	usr_new=root
     grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
     cd /tmp/kde-setup-master
-    mv home/${USER_NAME} /root
-    cp -R /root ${DESTDIR}
+    mv home/${USER_NAME} root
+    cp -R root ${DESTDIR}/root
     chroot ${DESTDIR} ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0
 
 	## Set defaults directories
@@ -270,7 +270,15 @@ kde_settings(){
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cd ${DESTDIR}/home/${USER_NAME}
+	for file in * 
+	do
+		if [[ -d "${file}" ]]; then
+			cp -R ${file} ${DESTDIR}/etc/skel
+		else
+			cp ${file} ${DESTDIR}/etc/skel
+		fi
+	done
 
 
 }
