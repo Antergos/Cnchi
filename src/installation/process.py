@@ -1287,7 +1287,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Enables all services that are in the list 'services' """
         for name in services:
             self.chroot(['systemctl', 'enable', name + ".service"])
-            logging.debug(_('Enabled %s service.') % name)
+            #logging.debug(_('Enabled %s service.') % name)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
