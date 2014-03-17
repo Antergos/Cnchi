@@ -202,7 +202,6 @@ class Timezone(Gtk.Box):
     def set_cursor(self, cursor_type):
         cursor = Gdk.Cursor(cursor_type)
         window = super().get_root_window()
-
         if window:
             window.set_cursor(cursor)
             self.refresh()
@@ -227,13 +226,10 @@ class Timezone(Gtk.Box):
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
-        ## restore forward button text (from install now! to next)
-        #self.forward_button.set_label("gtk-go-forward")
-
         self.show_all()
 
     def start_auto_timezone_thread(self):
-        self.auto_timezone_thread = AutoTimezoneThread(self.auto_timezone_coords)
+        self.auto_timezone_thread = AutoTimezoneThread(self.auto_timezone_coords, self.settings)
         self.auto_timezone_thread.start()
 
     def start_mirrorlist_thread(self):
@@ -287,9 +283,10 @@ class Timezone(Gtk.Box):
         self.settings['use_ntp'] = ntp_switch.get_active()
 
 class AutoTimezoneThread(threading.Thread):
-    def __init__(self, coords_queue):
+    def __init__(self, coords_queue, settings):
         super(AutoTimezoneThread, self).__init__()
         self.coords_queue = coords_queue
+        self.settings = settings
         self.stop_event = threading.Event()
 
     def stop(self):
@@ -327,10 +324,10 @@ class AutoTimezoneThread(threading.Thread):
     def run(self):
         # wait until there is an Internet connection available
         while not self.has_connection():
+            if self.stop_event.is_set() or self.settings.get('timezone_stop'):
+                return
             time.sleep(2)  # Delay and try again
             logging.warning(_("Can't get network status. Will try again later."))
-            if self.stop_event.is_set():
-                return
 
         # ok, now get our timezone
 
@@ -424,5 +421,3 @@ class GenerateMirrorListThread(threading.Thread):
                 logging.info(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
         except subprocess.CalledProcessError as e:
             logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
-
-

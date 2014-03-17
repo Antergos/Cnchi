@@ -302,13 +302,13 @@ class Main(Gtk.Window):
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
-
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """
         remove_temp_files()
         logging.info(_("Quiting installer..."))
         while Gtk.events_pending():
             Gtk.main_iteration()
+        self.settings.set('timezone_stop', True)
         logging.shutdown()
         Gtk.main_quit()
 
