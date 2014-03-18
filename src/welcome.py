@@ -31,7 +31,7 @@ from show_message import warning
 
 # Import functions
 import config
-import info
+import src.info as info
 
 _next_page = "language"
 _prev_page = None
@@ -148,7 +148,7 @@ class Welcome(Gtk.Box):
         if self.disable_tryit:
             box_tryit = self.ui.get_object("box_tryit")
             box_tryit.hide()
-        if "0.4.3" is not CNCHI_VERSION:
+        if info.CNCHI_VERSION is not "0.4.3":
             self.button['cli'].set_sensitive(False)
 
 
