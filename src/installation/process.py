@@ -841,16 +841,15 @@ class InstallationProcess(multiprocessing.Process):
                                     stdin=stdin,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
-                                    # popen does not support timeout (issue #151)
-                                    # timeout=timeout)
-            out = proc.communicate()[0]
+            out = proc.communicate(timeout=timeout)[0]
             txt = out.decode()
             if len(txt) > 0:
                 logging.debug(txt)
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
             raise
-        except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired as err:
+            logging.exception(_("Timeout running command: %s"), run)
             raise
 
     def is_running(self):
@@ -1118,7 +1117,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 60)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1202,7 +1201,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 60)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")

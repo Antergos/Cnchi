@@ -248,10 +248,8 @@ kde_settings(){
     usr_old=antergos
     grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
     cd /tmp/kde-setup-master
-    mv home/user home/${USER_NAME}
-    cp -R home ${DESTDIR}
+    cp -R home/user ${DESTDIR}/home/${USER_NAME}
     cp -R usr ${DESTDIR}
-    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0
 
 	# Set Root environment
 	cd /tmp/kde-setup-master
@@ -259,9 +257,7 @@ kde_settings(){
 	usr_new=root
     grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
     cd /tmp/kde-setup-master
-    mv home/${USER_NAME} /root
-    cp -R /root ${DESTDIR}
-    chroot ${DESTDIR} ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0
+    cp -R home/${USER_NAME} ${DESTDIR}/root
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -270,7 +266,8 @@ kde_settings(){
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cd /tmp/kde-setup-master
+	mv home ${DESTDIR}/skel
 
 
 }
