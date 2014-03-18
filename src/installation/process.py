@@ -829,7 +829,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.special_dirs_mounted = False
 
-    def chroot(self, cmd, time_out=None, stdin=None):
+    def chroot(self, cmd, timeout=None, stdin=None):
         """ Runs command inside the chroot """
         run = ['chroot', self.dest_dir]
 
@@ -840,17 +840,16 @@ class InstallationProcess(multiprocessing.Process):
             proc = subprocess.Popen(run,
                                     stdin=stdin,
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT,)
-            try:
-                out = proc.communicate(timeout=time_out)[0]
-                txt = out.decode()
-                if len(txt) > 0:
-                    logging.debug(txt)
-            except TimeoutExpired:
-                logging.error('%s is taking too long to complete--terminating' % proc)
-                proc.kill()
+                                    stderr=subprocess.STDOUT)
+            out = proc.communicate(timeout=timeout)[0]
+            txt = out.decode()
+            if len(txt) > 0:
+                logging.debug(txt)
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
+            raise
+        except subprocess.TimeoutExpired as err:
+            logging.exception(_("Timeout running command: %s"), run)
             raise
 
     def is_running(self):
