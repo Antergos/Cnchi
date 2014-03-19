@@ -895,14 +895,13 @@ class InstallationProcess(multiprocessing.Process):
                      "# that works even if disks are added and removed. See fstab(5).", "#",
                      "# <file system> <mount point>   <type>  <options>       <dump>  <pass>", "#"]
 
-        root_ssd = 0
-
         for path in self.mount_devices:
             opts = 'defaults'
             chk = '0'
             parti = self.mount_devices[path]
             part_info = fs.get_info(parti)
             uuid = part_info['UUID']
+
             if parti in self.fs_devices:
                 myfmt = self.fs_devices[parti]
             else:
@@ -936,31 +935,30 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
-            if "btrfs" in myfmt:
-                self.settings.set('btrfs', True)
-            if "f2fs" in myfmt:
-                self.settings.set('f2fs', True)
 
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
             if path == "":
                 continue
-            if path == '/':
-                # We do not run fsck on btrfs or f2fs partitions
+            else:
+                full_path = os.path.join(self.dest_dir, path)
+                subprocess.check_call(["mkdir", "-p", full_path])
+
+            if not self.ssd:
                 if "btrfs" in myfmt:
                     chk = '0'
                     opts = 'rw,relatime,space_cache,autodefrag,inode_cache'
                 elif "f2fs" in myfmt:
                     chk = '0'
                     opts = 'rw,noatime'
-                else:
+                elif path == '/':
                     chk = '1'
                     opts = "rw,relatime,data=ordered"
-            else:
-                full_path = os.path.join(self.dest_dir, path)
-                subprocess.check_call(["mkdir", "-p", full_path])
+                else:
+                    chk = '0'
+                    opts = "rw,relatime,data=ordered"
 
-            if self.ssd is not None:
+            else:
                 for i in self.ssd:
                     if i in self.mount_devices[path] and self.ssd[i]:
                         opts = 'defaults,noatime'
@@ -971,13 +969,13 @@ class InstallationProcess(multiprocessing.Process):
                             opts += ',discard'
                         elif myfmt == 'btrfs':
                             opts = 'rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
-                        if path == '/':
-                            root_ssd = 1
+                        elif myfmt == 'f2fs':
+                            opts = 'rw,noatime'
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
 
-        if root_ssd:
+            # Why were we only adding this line if root was an ssd? It should be the default.
             all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
             logging.debug(_("Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"))
 
@@ -1286,7 +1284,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Enables all services that are in the list 'services' """
         for name in services:
             self.chroot(['systemctl', 'enable', name + ".service"])
-            #logging.debug(_('Enabled %s service.') % name)
+            logging.debug(_('Enabled %s service.') % name)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
