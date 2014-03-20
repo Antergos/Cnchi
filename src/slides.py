@@ -58,7 +58,6 @@ class Slides(Gtk.Box):
 
         self.progress_bar = builder.get_object("progressbar")
         self.progress_bar.set_show_text(True)
-
         self.progress_bar.set_name('i_progressbar')
 
         self.info_label = builder.get_object("info_label")
@@ -97,7 +96,7 @@ class Slides(Gtk.Box):
         self.translate_ui()
         self.show_all()
 
-        # Last screen reached, hide main progress bar.
+        # Last screen reached, hide main progress bar (the one at the top).
         self.main_progressbar.hide()
 
         # Hide backwards and forwards button
@@ -162,9 +161,9 @@ class Slides(Gtk.Box):
             except queue.Empty:
                 return True
 
-            if event[0] == 'local_percent':
+            if event[0] == 'percent' or event[0] == 'local_percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == 'local_text':
+            elif event[0] == 'text' or event[0] == 'local_text':
                 if event[1] == 'hide':
                     self.progress_bar.set_show_text(False)
                     self.progress_bar.set_text("")
@@ -178,6 +177,9 @@ class Slides(Gtk.Box):
                     self.start_pulse()
             elif event[0] == 'progress_bars':
                 if event[1] == 'hide_all' or event[1] == 'hide_local':
+                    self.progress_bar.hide()
+            elif event[0] == 'progress_bar':
+                if event[1] == 'hide':
                     self.progress_bar.hide()
             elif event[0] == 'finished':
                 logging.info(event[1])

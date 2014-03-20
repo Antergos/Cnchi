@@ -32,7 +32,7 @@ class Settings(object):
         # Creates a one element size queue
         self.settings = Queue(1)
 
-        self.settings.put( {
+        self.settings.put({
             'auto_device' : '/dev/sda',
             'bootloader_device' : '/dev/sda',
             'bootloader_type' : 'GRUB2',
@@ -90,18 +90,18 @@ class Settings(object):
 
     def _get_settings(self):
         """ Get a copy of our settings """
-        global_settings = self.settings.get()
-        copy = global_settings.copy()
-        self.settings.put(global_settings)
+        settings = self.settings.get()
+        copy = settings.copy()
+        self.settings.put(settings)
         return copy
 
     def _update_settings(self, new_settings):
         """ Updates global settings """
-        global_settings = self.settings.get()
+        settings = self.settings.get()
         try:
-            global_settings.update(new_settings)
+            settings.update(new_settings)
         finally:
-            self.settings.put(global_settings)
+            self.settings.put(settings)
 
     def get(self, key):
         """ Get one setting value """
