@@ -45,3 +45,5 @@
 
  
 And much more... (see issues in github)
+
+<input type="checkbox">
