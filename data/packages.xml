@@ -230,11 +230,13 @@
     <mate_desktop>
         <pkgname>atril</pkgname>
         <pkgname>caja</pkgname>
-        <pkgname>caja-extensions</pkgname>
+        <pkgname>caja-gksu</pkgname>
+        <pkgname>caja-open-terminal</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>engrampa</pkgname>
         <pkgname>eom</pkgname>
         <pkgname>faenza-icon-theme</pkgname>
+        <pkgname>galculator-gtk2</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
@@ -248,7 +250,6 @@
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
         <pkgname>mate-applets</pkgname>
-        <pkgname>mate-calc</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-mint-menu</pkgname>
         <pkgname>mate-mplayer</pkgname>
