@@ -1697,7 +1697,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot(['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username])
 
-        logging.debug(_('User %s added.') % username)
+        logging.debug(_('User %s added.' % username))
 
         self.change_user_password(username, password)
 

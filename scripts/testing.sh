@@ -69,22 +69,22 @@ fi
 # Start Cnchi with appropriate options
 echo "Starting Cnchi..."
 # Are we using an alternate PKG cache?
-if [ "$1" != "-d" ] && [ "$1" != "--dev-repo" ]; then
+if [ "$1" != "-d" ] && [ "$1" != "--dev-repo" ] && [ "$1" != "" ]; then
     if [ "$1" = "-c" ] || [ "$1" = "--cache" ]; then
         if [ "$2" != "" ]; then
             if [ "$3" = "-z" ]; then
-                cnchi -d -v -z -c "$2" -p /usr/share/cnchi/data/packages.xml &
+                cnchi -d -v -z -c "$2" -p /usr/share/cnchi/data/packages.xml & exit 0;
             else
-                cnchi -d -v -c "$2" -p /usr/share/cnchi/data/packages.xml &
+                cnchi -d -v -c "$2" -p /usr/share/cnchi/data/packages.xml & exit 0;
             fi
         else
-            cnchi -d -v -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml &
+            cnchi -d -v -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml & exit 0;
         fi
     fi
 elif [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
-    cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml &
+    cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml & exit 0;
 else
-    cnchi -d -v -p /usr/share/cnchi/data/packages.xml &
+    cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit 0;
 fi
 
-exit 0;
+exit 1;
