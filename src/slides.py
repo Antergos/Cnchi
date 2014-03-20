@@ -161,9 +161,9 @@ class Slides(Gtk.Box):
             except queue.Empty:
                 return True
 
-            if event[0] == 'percent' or event[0] == 'local_percent':
+            if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == 'text' or event[0] == 'local_text':
+            elif event[0] == 'text':
                 if event[1] == 'hide':
                     self.progress_bar.set_show_text(False)
                     self.progress_bar.set_text("")
@@ -175,9 +175,6 @@ class Slides(Gtk.Box):
                     self.stop_pulse()
                 elif event[1] == 'start':
                     self.start_pulse()
-            elif event[0] == 'progress_bars':
-                if event[1] == 'hide_all' or event[1] == 'hide_local':
-                    self.progress_bar.hide()
             elif event[0] == 'progress_bar':
                 if event[1] == 'hide':
                     self.progress_bar.hide()

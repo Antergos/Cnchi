@@ -753,8 +753,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_umount_special_dirs()
         
-        # All downloading and installing has been done, so we hide progress bars
-        self.queue_event('progress_bars', 'hide_all')
+        # All downloading and installing has been done, so we hide progress bar
+        self.queue_event('progress_bar', 'hide')
         
     def chroot_mount_special_dirs(self):
         """ Mount special directories for our chroot """
@@ -1411,7 +1411,7 @@ class InstallationProcess(multiprocessing.Process):
         items = os.listdir(src)
         step = 1.0 / len(items)
         for item in items:
-            self.queue_event('local_percent', percent)
+            self.queue_event('percent', percent)
             source = os.path.join(src, item)
             destination = os.path.join(dst, item)
             try:

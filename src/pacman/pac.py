@@ -309,7 +309,7 @@ class Pac(object):
             percent = _percent / 100
         
         self.queue_event('info', target)
-        self.queue_event('local_percent', percent)
+        self.queue_event('percent', percent)
 
 
     def cb_dl(self, filename, tx, total):
@@ -338,7 +338,7 @@ class Pac(object):
                 #self.total_downloaded += total
 
             self.queue_event('info', text)
-            self.queue_event('local_percent', 0)
+            self.queue_event('percent', 0)
         else:
             # Compute a progress indicator
             if self.last_dl_total > 0:
@@ -351,7 +351,7 @@ class Pac(object):
             if progress > self.last_dl_progress:
                 #logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
-                self.queue_event('local_percent', progress)
+                self.queue_event('percent', progress)
 
 ''' Test case '''
 if __name__ == "__main__":
