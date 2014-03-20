@@ -46,4 +46,6 @@
  
 And much more... (see issues in github)
 
-<form><input type="checkbox">Testing</form>
+@import('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
+
+<i class="fa fa-check"></i>
