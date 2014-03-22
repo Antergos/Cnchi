@@ -2,13 +2,14 @@
 # Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
+# Heimen Stoffels <motionshot@vivaldi.net>, 2014
 # fpsgamer101 <randy.hofstede@outlook.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-28 12:31+0000\n"
-"Last-Translator: fpsgamer101 <randy.hofstede@outlook.com>\n"
+"PO-Revision-Date: 2014-03-13 21:31+0000\n"
+"Last-Translator: Heimen Stoffels <motionshot@vivaldi.net>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/antergos/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +22,7 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "Dit installatieprogramma moet worden uitgevoerd met beheerdersrechten, en kan niet verder zonder."
+msgstr "Dit installatieprogramma moet worden uitgevoerd met beheerdersrechten en kan niet verder zonder."
 
 #: cnchi.py:124
 msgid ""
@@ -30,7 +31,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr "u kan dit installatieprogramma niet meerdere keren tegelijk draaien.\n\nals u niet weet of het programma al op uw systeem draait\nkunt u handmatig het bestand %s verwijderen\nen start u het programma nog een keer."
+msgstr "U kunt dit installatieprogramma niet meerdere keren tegelijk draaien.\n\nAls u niet weet of het installatieprogramma reeds draait\nkunt u handmatig het bestand %s verwijderen\nen het installatieprogramma opnieuw starten."
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
@@ -38,7 +39,7 @@ msgstr "Cnchi installeerder versie %s"
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr " aria2 gebruiken om pakketten te downloaden - EXPERIMENTAAL"
+msgstr "Aria2 gebruiken om pakketten te downloaden - EXPERIMENTEEL"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
@@ -46,11 +47,11 @@ msgstr "Cnchi - Antergos Installeerder"
 
 #: cnchi.py:284
 msgid "Antergos Installer"
-msgstr "Antergos installatieprogramma"
+msgstr "Antergos-installatieprogramma"
 
 #: cnchi.py:309
 msgid "Quiting installer..."
-msgstr "installatieprogramma aan het stoppen..."
+msgstr "Bezig met stoppen van installatieprogramma..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
@@ -107,7 +108,7 @@ msgstr "Kan lokalisatie %s niet instellen"
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
-msgstr "Wachtwoord is te kort"
+msgstr "wachtwoord is te kort"
 
 #: src/canonical/validation.py:135
 msgid "weak password"
@@ -119,7 +120,7 @@ msgstr "middelmatig wachtwoord"
 
 #: src/canonical/validation.py:141
 msgid "good password"
-msgstr "goed wachtoord"
+msgstr "goed wachtwoord"
 
 #: src/canonical/validation.py:144
 msgid "strong password"
@@ -131,7 +132,7 @@ msgstr "Wachtwoorden komen niet overeen"
 
 #: src/check.py:74
 msgid "System Check"
-msgstr "Systeem Check"
+msgstr "Systeemcontrole"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
@@ -145,11 +146,11 @@ msgstr "Dit hangt grotendeels af welk bureaublad omgeving u kiest, dus u kunt me
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
-msgstr "is aangesloten op een stroombron"
+msgstr "is aangesloten op netstroom"
 
 #: src/check.py:95
 msgid "is connected to the Internet"
-msgstr "is aangesloten op het internet"
+msgstr "is verbonden met het internet"
 
 #: src/check.py:99
 msgid "For best results, please ensure that this computer:"
@@ -157,15 +158,15 @@ msgstr "Voor de beste resultaten, zorg er voor dat deze computer:"
 
 #: src/check.py:169
 msgid "We have Internet connection."
-msgstr "We hebben internet verbinding."
+msgstr "We hebben internetverbinding."
 
 #: src/check.py:170
 msgid "We're connected to a power source."
-msgstr "We zijn aangesloten op een stroombron."
+msgstr "We zijn aangesloten op netstroom."
 
 #: src/check.py:171
 msgid "We have enough disk space."
-msgstr "We hebben genoeg schijf ruimte."
+msgstr "We hebben genoeg schijfruimte."
 
 #: src/desktop.py:79
 msgid "Choose Your Desktop"
@@ -173,14 +174,14 @@ msgstr "Kies Uw Bureaublad"
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr "Cnchi zal Antergos installeren met de '% s' bureaublad"
+msgstr "Cnchi zal Antergos installeren met de werkomgeving '%s'"
 
 #: src/desktop_environments.py:64
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr "Gnome 3 is een eenvoudig en elegante manier om uw computer te gebruiken. Het beschikt over de activiteiten overzicht dat is een gemakkelijke manier om toegang te krijgen tot al je basistaken. GNOME 3 is de standaard Bureaublad in Antergos."
+msgstr "Gnome 3 is een eenvoudige en elegante manier om uw computer te gebruiken. Het beschikt over een activiteitenoverzicht, wat een gemakkelijke manier is om toegang te krijgen tot al uw basistaken. GNOME 3 is de standaard-werkomgeving in Antergos."
 
 #: src/desktop_environments.py:69
 msgid ""
@@ -188,7 +189,7 @@ msgid ""
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
-msgstr "Cinnamon is een fork van GNOME 3 ontwikkeld door (en voor) Linux Mint. Het geeft gebruikers een meer traditionele bureaublad interface, samen met de nieuwste compositing technieken van GNOME 3. Cinnamon is voor gebruikers van alle ervaringsniveaus."
+msgstr "Cinnamon is een fork van GNOME 3 ontwikkeld door (en voor) Linux Mint. Het geeft gebruikers een meer traditionele werkomgeving, samen met de nieuwste compositing-technieken van GNOME 3. Cinnamon is voor gebruikers van alle ervaringsniveaus."
 
 #: src/desktop_environments.py:74
 msgid ""
@@ -196,7 +197,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr "Xfce is een lichtgewicht bureaublad omgeving. Het doel is om snel te zijn en weinig systeembronnen te gebruiken, terwijl het visueel aantrekkelijk en gebruiksvriendelijk blijft. Het is een geweldige optie voor gebruik op oudere computers of mensen met lage hardware specificaties."
+msgstr "Xfce is een lichtgewicht werkomgeving. Het doel is om snel te zijn en weinig systeembronnen te gebruiken, terwijl het visueel aantrekkelijk en gebruiksvriendelijk blijft. Het is een geweldige optie voor gebruik op oudere computers of mensen met lage hardwarespecificaties."
 
 #: src/desktop_environments.py:79
 msgid ""
@@ -219,7 +220,7 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment is niet alleen een window manager voor Linux/X11 en anderen, maar ook een hele suite van bibliotheken om u te helpen prachtige gebruikers interfaces te creëren met veel minder werk"
+msgstr "Enlightenment is niet alleen een vensterbeheerder voor Linux/X11 en anderen, maar ook een verzameling van bibliotheken om u te helpen prachtige gebruikersinterfaces te creëren met veel minder werk"
 
 #: src/desktop_environments.py:93
 msgid ""
@@ -233,7 +234,7 @@ msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr "Razor-qt is een geavanceerd, eenvoudig te gebruiken en snelle desktop-omgeving op basis van Qt technologieën. Het is gemaakt voor gebruikers die eenvoud, snelheid, en een intuïtieve interface waarderen."
+msgstr "Razor-qt is een geavanceerd, eenvoudig te gebruiken en snelle werkomgeving op basis van Qt-technologieën. Het is gemaakt voor gebruikers die eenvoud, snelheid, en een intuïtieve interface waarderen."
 
 #: src/desktop_environments.py:102
 msgid ""
@@ -255,7 +256,7 @@ msgstr "Kan geen verbinding maken met aria2, het downloaden wordt uitgevoerd doo
 
 #: src/download.py:89
 msgid "Error creating metalink for package %s"
-msgstr "Fout bij het maken van de metalink voor pakket %s"
+msgstr "Fout bij het maken van metalink voor pakket %s"
 
 #: src/download.py:95
 msgid "Error adding metalink for package %s"
@@ -275,7 +276,7 @@ msgstr "Kan geen verbinding maken aria2. Fout Melding: %s"
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
-msgstr "Kan geen download wachtrij creëren voor pakket %s"
+msgstr "Kan geen downloadwachtrij aanmaken voor pakket %s"
 
 #: src/download.py:249
 msgid "Can't find these packages: "
@@ -283,7 +284,7 @@ msgstr "Kan deze pakketten niet vinden:"
 
 #: src/download.py:255
 msgid "Warning! Can't resolve these dependencies: "
-msgstr "Waarschuwing! kan deze afhankelijkheden niet oplossen:"
+msgstr "Waarschuwing! Kan deze afhankelijkheden niet oplossen:"
 
 #: src/features.py:110
 msgid "Feature Selection"
@@ -307,7 +308,7 @@ msgstr "Gebruik yaourt om AUR pakketten te installeren. \nDe AUR werd opgericht 
 
 #: src/features.py:133
 msgid "Bluetooth Support"
-msgstr "Bluetooth Ondersteuning"
+msgstr "Bluetooth-ondersteuning"
 
 #: src/features.py:136
 msgid "Enables your system to make wireless connections via Bluetooth."
@@ -319,15 +320,15 @@ msgid ""
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr ""
+msgstr "Bluetooth is een standaard voor de korte afstand draadloze \nconnectie van mobiele telefoons, computers en \nandere elektronische apparaten. In Linux, de canonical \nuitvoering van het Bluetooth protocol stack is BlueZ"
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "Extra Truetype Lettertypes"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "installatie van extra TrueType Lettertypes"
 
 #: src/features.py:154
 msgid ""
@@ -336,7 +337,7 @@ msgid ""
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr ""
+msgstr "TrueType is een outline font standaard ontwikkeld door \nApple en Microsoft in de late jaren 1980 als een concurrent \nAdobe's Type 1-lettertypen gebruikt in PostScript. het is \nuitgegroeid tot de meest voorkomende formaat voor lettertypes op zowel de \nMac OS en Microsoft Windows besturingssystemen."
 
 #: src/features.py:164
 msgid "Gnome Extra"
@@ -351,22 +352,22 @@ msgid ""
 "Contains various optional tools such as a media\n"
 "player, a calculator, an editor and other non-critical\n"
 "applications that go well with the GNOME desktop.\n"
-msgstr ""
+msgstr "Bevat diverse optionele tools zoals een media\nspeler, een rekenmachine, een editor en andere niet-kritieke \ntoepassingen die goed passen bij de GNOME desktop.\n"
 
 #: src/features.py:178
 msgid "Printing Support"
-msgstr "Printer Ondersteuning"
+msgstr "Printer-ondersteuning"
 
 #: src/features.py:181
 msgid "Installation of printer drivers and management tools."
-msgstr "Installeren van de printerdrivers en management tools."
+msgstr "Installeren van de printerdrivers en beheerprogramma's."
 
 #: src/features.py:184
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
-msgstr ""
+msgstr "CUPS is de op standaard gebaseerde, open source afdruk software \nontwikkeld door Apple Inc voor OS \\ 302 \\ 256 X en andere \nUNIX\\302\\256-achtige besturingssystemen."
 
 #: src/features.py:192
 msgid "LibreOffice"
@@ -383,11 +384,11 @@ msgid ""
 "and Linux, that gives you six feature-rich applications\n"
 "for all your document production and data processing\n"
 "needs: Writer, Calc, Impress, Draw, Math and Base."
-msgstr ""
+msgstr "LibreOffice is de gratis power-verpakte Open Source \npersoonlijke productiviteit suite voor Windows, Macintosh \nen Linux, dat je de zes functie-rijke toepassingen geeft\nvoor al uw document productie en verwerking van gegevens \nnodig heeft: Writer, Calc, Impress, Draw, Math en Base."
 
 #: src/features.py:208
 msgid "Visual Effects"
-msgstr "Visuele Effecten"
+msgstr "Visuele effecten"
 
 #: src/features.py:211
 msgid "Enable transparency, shadows, and other desktop effects."
@@ -400,7 +401,7 @@ msgid ""
 "provide compositing functionality. Compton itself is a fork\n"
 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
 "See the compton github page for further information."
-msgstr ""
+msgstr "Compton is een lichtgewicht, standalone composite-manager, \ngeschikt voor gebruik met window managers die niet zelf\ncompositing functionaliteit bieden. Compton zelf is een vork \nvan xcompmgr-dana, die op zijn beurt is een vork van xcompmgr. \nZie de Compton GitHub pagina voor meer informatie."
 
 #: src/features.py:224
 msgid "Uncomplicated Firewall"
@@ -408,18 +409,18 @@ msgstr "Uncomplicated Firewall"
 
 #: src/features.py:227
 msgid "Control the incoming and outgoing network traffic."
-msgstr "Controleer het inkomende en uitgaande netwerkverkeer."
+msgstr "Beheer het inkomende en uitgaande netwerkverkeer."
 
 #: src/features.py:230
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
-msgstr ""
+msgstr "Ufw staat voor Ongecompliceerde Firewall, en is een programma voor \nhet beheren van een netfilter firewall. Het heeft commando lijn\ninterface en heeft als doel om ongecompliceerd en makkelijk te gebruiken te zijn."
 
 #: src/features.py:238
 msgid "Proprietary Software"
-msgstr "Gepatenteerde Software"
+msgstr "Gepatenteerde software"
 
 #: src/features.py:241
 msgid "Software to play Flash videos, MP3 audio, and other media."
@@ -456,11 +457,11 @@ msgstr "Fout bij het uitvoeren van commando: %s"
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
 msgid "free space"
-msgstr "lege ruimte"
+msgstr "vrije ruimte"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
-msgstr ""
+msgstr "het is niet aangeraden  om grub in een partitie te installeren"
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
@@ -472,7 +473,7 @@ msgstr "Type"
 
 #: src/installation/advanced.py:293
 msgid "Mount point"
-msgstr "Koppelpunt"
+msgstr "Aankoppelpunt"
 
 #: src/installation/advanced.py:296
 msgid "Label"
@@ -504,63 +505,63 @@ msgstr "geen"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
-msgstr ""
+msgstr "kan een partitie met LVM bestandssysteem niet bewerken"
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Kan hetzelfde koppelpunt niet twee keer gebruiken."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
-msgstr "Root partitie moet worden geformatteerd."
+msgstr "Root-partitie moet worden geformatteerd."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Kan hetzelfde koppelpunt niet twee keer gebruiken..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Bezig met creëren van primaire partitie"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "Bezig met creëren van uitgebreide partitie"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "Bezig met creëren van logische partitie"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
-msgstr "Geavanceerde installatie modus"
+msgstr "Geavanceerde installatiemodus"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
-msgstr "Gebruik het apparaat hieronder om de bootloader te installeren:"
+msgstr "Gebruik het apparaat hieronder om de bootloader op te installeren:"
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "Checklist Koppelen:"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
-msgstr "Nieuwe Partitie Tafel"
+msgstr "Nieuwe partitietabel"
 
 #: src/installation/advanced.py:1144
 msgid "Change..."
@@ -596,11 +597,11 @@ msgstr "Einde van deze ruimte"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
-msgstr "Gebruik Als:"
+msgstr "Gebruiken als:"
 
 #: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
-msgstr "Koppelpunt:"
+msgstr "Aankoppelpunt:"
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
@@ -608,7 +609,7 @@ msgstr "Label (optioneel):"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
-msgstr "Encryptie Opties..."
+msgstr "Versleutelingsopties..."
 
 #: src/installation/advanced.py:1206
 msgid "Format:"
@@ -616,16 +617,16 @@ msgstr "Formaat:"
 
 #: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
-msgstr "Partitie Tafel Type:"
+msgstr "Partitietabel-type:"
 
 #: src/installation/advanced.py:1216
 msgid "Create Partition Table"
-msgstr "creëer Partitie Tafel"
+msgstr "Partitietabel aanmaken"
 
 #: src/installation/advanced.py:1219 src/installation/alongside.py:149
 #: src/installation/automatic.py:95
 msgid "Install Now!"
-msgstr "Installeer Nu!"
+msgstr "Nu installeren!"
 
 #: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
@@ -640,7 +641,7 @@ msgid ""
 "The GPT partition also creates a protective MBR partition to stop unsupported tools from modifying it. You may need to set a bootable flag on this protective MBR partition if yoursystem doesnt boot successfully after installation.\n"
 "\n"
 "Cnchi will create the BIOS Boot Partition for you."
-msgstr ""
+msgstr "GRUB heeft een BIOS Boot partitie (2 MiB, geen bestandssysteem type EF02 code in gdisk of bios_grub vlag in GNU Parted) nodig in BIOS systemen on zijn core.img bestand in te sluiten door gebrek aan post-MBR embed gat in GPT-schijven. \n\nVoor een BIOS-GPT configuratie, maak dan een 1007 KB partitie aan het begin van de schijf zonder bestandssysteem. Dat zal voor de volgende partitie op de schijf op 1024 KiB correct worden uitgelijnd. Indien nodig, de partitie kan ook elders op de schijf, maar het moet binnen de eerste 2 TB regio. De partitie type moet EF02 zijn. \n\nDe GPT-partitie creëert ook een beschermende MBR partitie om niet ondersteunde gereedschappen te stoppen van het wijzigen van de partitie. Het kan nodig zijn om een ​\nboot vlag te zetten op deze beschermende MBR partitie als jouw systeem niet succesvol\nopstart na installatie. \n\nCnchi zal de BIOS boot partitie aan maken voor je."
 
 #: src/installation/advanced.py:1539
 msgid ""
@@ -662,11 +663,11 @@ msgstr "%s wordt gezien als gekoppelt (bezig) maar heeft geen koppelpunt"
 
 #: src/installation/advanced.py:1627
 msgid "Partition %s will be deleted"
-msgstr "Partitie %s wordt verwijderd"
+msgstr "Partitie %s zal worden verwijderd"
 
 #: src/installation/advanced.py:1634
 msgid "Mount"
-msgstr "Koppelen"
+msgstr "Aankoppelen"
 
 #: src/installation/advanced.py:1634
 msgid "New"
@@ -678,7 +679,7 @@ msgstr "Partitie"
 
 #: src/installation/advanced.py:1634
 msgid "Relabel"
-msgstr "Herlabel"
+msgstr "Herlabelen"
 
 #: src/installation/advanced.py:1655
 msgid "We will make changes to partitions on these disks:"
@@ -690,15 +691,15 @@ msgstr "Klaar met opslaan van wijzigingen in %s"
 
 #: src/installation/advanced.py:1736
 msgid "Creating new %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "Bezig met creëren van nieuwe %s bestandssysteem in %s gelabeled %s"
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "Bezig met creëren van nieuwe %s bestandssysteem in %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
-msgstr ""
+msgstr "Kan partitie '%s' met label '%s' niet formatteren als '%s'"
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
@@ -714,19 +715,19 @@ msgstr "Test modus. Cnchi zal niets wijzigen!"
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
-msgstr "Kan %s css niet laden"
+msgstr "Kan %s-css niet laden"
 
 #: src/installation/alongside.py:138
 msgid "Select the OS you would like Antergos installed next to."
-msgstr "Selecteer het OS Dat je Antergos naast wilt installeren."
+msgstr "Selecteer het besturingssysteem waar u Antergos naast wilt installeren."
 
 #: src/installation/alongside.py:143
 msgid "Antergos Alongside Installation"
-msgstr "Antergos dualboot installatie"
+msgstr "Antergos dualboot-installatie"
 
 #: src/installation/alongside.py:174
 msgid "Detected OS"
-msgstr "Gedetecteerd OS"
+msgstr "Besturingssysteem gedetecteerd"
 
 #: src/installation/alongside.py:177
 msgid "Filesystem"
@@ -742,7 +743,7 @@ msgstr "Kan de partitie niet krimpen (misschien is de partitie bijna vol)"
 
 #: src/installation/ask.py:97
 msgid "Installation Type"
-msgstr "Installatie type"
+msgstr "Installatietype"
 
 #: src/installation/ask.py:113
 msgid "Erase disk and install Antergos"
@@ -809,7 +810,7 @@ msgstr "%s aan het ontkoppelen"
 
 #: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
 msgid "Unmounting %s failed. Trying lazy arg."
-msgstr ""
+msgstr "Ontkoppelen van %s mislukt. lazy arg aan het proberen."
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
@@ -817,15 +818,15 @@ msgstr "Kan bestaande LVM volumes niet verwijderen (kijk hieronder)"
 
 #: src/installation/auto_partition.py:116
 msgid "Can't close LUKS devices : %s"
-msgstr ""
+msgstr "Kan LUKS apparaten niet sluiten: %s"
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "onbekend bestandsysteem type %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "Kan bestandsysteem %s niet creëren"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
@@ -835,7 +836,7 @@ msgstr "Cnchi zal LUKS instellen op apparaat %s"
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "method for partitioning and mounting devices."
-msgstr ""
+msgstr "Setup kan de grootte van uw apparaat niet detecteren, gebruik alstublieft de geavanceerde installatiemethode voor het partitioneren en koppelen van apparaten."
 
 #: src/installation/auto_partition.py:528
 msgid "Will setup LVM on device %s"
@@ -843,7 +844,7 @@ msgstr "Zal LVM instellen op apparaat %s"
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
-msgstr "Selecteer schijf:"
+msgstr "Schijf selecteren:"
 
 #: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
@@ -861,7 +862,7 @@ msgstr "Encryptie Wachtwoord:"
 
 #: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
-msgstr "Verifieer uw wachtwoord:"
+msgstr "Bevestig uw wachtwoord:"
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
@@ -884,7 +885,7 @@ msgid ""
 "Do you really want to proceed and delete all your content on your hard drive?\n"
 "\n"
 "%s"
-msgstr ""
+msgstr "Weet u zeker dat u wilt doorgaan en alle bestanden van uw harde schijf verwijderen?\n\n%s"
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
@@ -896,11 +897,11 @@ msgstr "Antergos zal de %s bootlader installeren op %s"
 
 #: src/installation/process.py:92
 msgid "Installing using the '%s' method. Please wait..."
-msgstr ""
+msgstr "aan het installeren via de '%s' methode. een ogenblik geduld..."
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
-msgstr ""
+msgstr "Kan %s map niet creëren. Cnchi kan niet doorgaan"
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
@@ -913,33 +914,33 @@ msgstr "Fout bij het creëren van de partities en hun bestandssystemen"
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:891
 msgid "Command %s has failed."
-msgstr ""
+msgstr "Commando %s heeft gefaald."
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "Output : %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
-msgstr "Partitie %s in directory %s aan het koppelen"
+msgstr "Partitie %s in map %s aan het aankoppelen"
 
 #: src/installation/process.py:256
 msgid "Mounting partition %s into %s/boot directory"
-msgstr "Partitie %s koppelen naar %s/boot"
+msgstr "Partitie %s aankoppelen naar %s/boot"
 
 #: src/installation/process.py:260
 msgid "Couldn't mount root and boot partitions"
-msgstr "Kan root en opstart partities niet koppelen"
+msgstr "Kon root- en opstartpartities niet aankoppelen"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "Commando %s heeft gefaald"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
-msgstr "Kan %s niet koppelen in %s"
+msgstr "Kan %s niet aankoppelen in %s"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
@@ -959,7 +960,7 @@ msgstr "Pakketten geselecteerd"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Pakketten aan het downloaden met gebruik van aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
@@ -999,7 +1000,7 @@ msgstr "Bezig met verkrijgen van pakketten lijst..."
 
 #: src/installation/process.py:518
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr "Kan afstand pakket lijst niet krijgen, gebruikt in plaats daarvan van een lokaal bestand."
+msgstr "Kan externe pakketlijst niet verkrijgen; een lokaal bestand wordt gebruikt."
 
 #: src/installation/process.py:526
 msgid "Adding all desktops common packages"
@@ -1011,23 +1012,23 @@ msgstr "Bezig met het toevoegen van '%s' bureaublad pakketten"
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "Kde taal pakket toevoegen"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "Geselecteerde kde taal pakket: %s"
 
 #: src/installation/process.py:594
 msgid "Hardware module added these packages : %s"
-msgstr ""
+msgstr "Hardware module heeft deze pakketten toegevoegd : %s"
 
 #: src/installation/process.py:599 src/installation/process.py:1734
 msgid "Can't import hardware module."
-msgstr ""
+msgstr "Kan hardware module niet importeren."
 
 #: src/installation/process.py:601 src/installation/process.py:1736
 msgid "Unknown error in hardware module. Output: %s"
-msgstr ""
+msgstr "Onbekende fout in hardware module. Output: %s"
 
 #: src/installation/process.py:612
 msgid "Adding filesystem packages"
@@ -1055,31 +1056,31 @@ msgstr "Libreoffice taalpakket toevoegen"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
-msgstr ""
+msgstr "Pakket groep '%s' heeft %d pakketten"
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi zal in totaal %d pakketten downloaden."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "Pakketten aan het downloaden van de '%s' groep..."
 
 #: src/installation/process.py:788
 msgid ""
 "Can't download group '%s'. Cnchi will continue and try again this download "
 "later."
-msgstr ""
+msgstr "Kan groep '%s' niet downloaden. Cnchi zal doorgaan en later deze download opnieuw proberen."
 
 #: src/installation/process.py:806
 msgid "Installing packages from '%s' group..."
-msgstr ""
+msgstr "Pakketten aan het installeren van '%s' groep..."
 
 #: src/installation/process.py:819
 msgid ""
 "Can't install group '%s'. Cnchi will continue but this group of packages "
 "won't be installed."
-msgstr ""
+msgstr "Kan groep '%s' niet installeren. Cnchi zal doorgaan maar deze groep pakketten zal niet worden geïnstalleerd."
 
 #: src/installation/process.py:838
 msgid "Special dirs already mounted."
@@ -1095,7 +1096,7 @@ msgstr "Kan %s niet ontkoppelen"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
-msgstr ""
+msgstr "Kan netwerk-configuratiebestanden niet kopiëren"
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
@@ -1103,27 +1104,27 @@ msgstr "Toegevoegd aan fstab : UUID=%s %s %s %s 0 %s"
 
 #: src/installation/process.py:995
 msgid "Added to crypttab : %s"
-msgstr ""
+msgstr "Toegevoegd aan crypttab : %s"
 
 #: src/installation/process.py:999
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
-msgstr ""
+msgstr "Toegevoegd aan fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:1048
 msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-msgstr ""
+msgstr "Toegevoegd aan fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
 
 #: src/installation/process.py:1056
 msgid "fstab written."
-msgstr ""
+msgstr "fstab geschreven."
 
 #: src/installation/process.py:1154
 msgid "Could not copy %s to grub.d"
-msgstr ""
+msgstr "Kon %s niet kopiëren naar grub.d"
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
-msgstr "GRUB (2) BIOS boot loader aan het installeren in %s"
+msgstr "GRUB (2) BIOS bootloader aan het installeren in %s"
 
 #: src/installation/process.py:1186
 msgid "GRUB(2) BIOS has been successfully installed."
@@ -1135,59 +1136,59 @@ msgstr "FOUT bij het installeren van GRUB(2) BIOS"
 
 #: src/installation/process.py:1203
 msgid "Installing GRUB(2) UEFI %s boot loader"
-msgstr ""
+msgstr "Installeren van GRUB(2) UEFI %s-bootloader"
 
 #: src/installation/process.py:1229
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
-msgstr ""
+msgstr "Geen OEM-lader gevonden in %s. Kopiëren van Grub(2) naar map."
 
 #: src/installation/process.py:1234
 msgid "Copying Grub(2) into OEM dir failed. File Not Found."
-msgstr ""
+msgstr "Kopiëren van Grub(2) naar OEM-map mislukt. Bestand niet gevonden."
 
 #: src/installation/process.py:1236
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
-msgstr ""
+msgstr "Kopiëren van Grub(2) naar OEM-map mislukt. Bestand bestaat."
 
 #: src/installation/process.py:1238
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
-msgstr ""
+msgstr "Kopiëren van Grub(2) naar OEM-map mislukt. Onbekende fout."
 
 #: src/installation/process.py:1247
 msgid "UEFI Shell drop-in not found at %s"
-msgstr ""
+msgstr "UEFI Shell-vervanger niet gevonden op %s"
 
 #: src/installation/process.py:1251
 msgid "UEFI Shell drop-in could not be copied."
-msgstr ""
+msgstr "UEFI Shell-vervanger kon niet worden gekopieerd."
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "grub.cfg aan het genereren"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
-msgstr ""
+msgstr "GRUB(2) UEFI-installatie is mogelijk niet succesvol voltooid."
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "GRUB(2) UEFI-installatie is succesvol voltooid."
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
-msgstr ""
+msgstr "Kopiëren van GRUB(2)-themabestanden"
 
 #: src/installation/process.py:1283
 msgid "Grub2 theme files not found"
-msgstr ""
+msgstr "Grub2-themabestanden niet gevonden"
 
 #: src/installation/process.py:1285
 msgid "Grub2 theme files already exist."
-msgstr ""
+msgstr "Grub2-themabestanden bestaan al."
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "Installeren van Grub2-vertalingen."
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
@@ -1195,7 +1196,7 @@ msgstr "Kan GRUB(2) lokalisatie niet installeren."
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "Kan Xfs-systeem niet bevriezen/ontdooien"
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
@@ -1203,11 +1204,11 @@ msgstr "%s service geactiveerd."
 
 #: src/installation/process.py:1347
 msgid "Error creating password hash for user %s"
-msgstr "Fout bij het aanmaken van de wachtwoord hash voor de gebruiker %s"
+msgstr "Fout bij het aanmaken van de wachtwoordhash voor gebruiker %s"
 
 #: src/installation/process.py:1353
 msgid "Error changing password for user %s"
-msgstr "Fout bij het wijzigen van het wachtwoord voor de gebruiker %s"
+msgstr "Fout bij het wijzigen van het wachtwoord voor gebruiker %s"
 
 #: src/installation/process.py:1365
 msgid "Setting hooks and modules in mkinitcpio.conf"
@@ -1231,7 +1232,7 @@ msgstr "Firewall configureren..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "Kon de firewall niet configureren: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
@@ -1239,15 +1240,15 @@ msgstr "%s: schermbeheer aan het configureren."
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
-msgstr ""
+msgstr "%s schermbeheerder-configuratie voltooid."
 
 #: src/installation/process.py:1554
 msgid "Error while trying to configure '%s' display manager"
-msgstr ""
+msgstr "Fout tijdens het configureren van '%s' schermbeheerder"
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
-msgstr "Bezig met het configureren van uw nieuwe systeem"
+msgstr "Configureren van uw nieuwe systeem"
 
 #: src/installation/process.py:1642
 msgid "fstab file generated."
@@ -1255,11 +1256,11 @@ msgstr "fstab bestand gegenereerd."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi zal netctl configureren met het %s-profiel"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "Kan netwerk-configuratiebestanden niet kopiëren"
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
@@ -1275,7 +1276,7 @@ msgstr "Kan mirrorlijst bestand niet kopieren"
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "/etc/pacman.conf gegenereerd"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
@@ -1299,11 +1300,11 @@ msgstr "Stel het zelfde wachtwoord in voor root."
 
 #: src/installation/process.py:1776
 msgid "Generating locales..."
-msgstr "Locales aan het genereren..."
+msgstr "Talen aan het genereren..."
 
 #: src/installation/process.py:1792
 msgid "Adjusting hardware clock..."
-msgstr "Hardware klok aan het Aanpassen..."
+msgstr "Hardwareklok aan het afstellen..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
@@ -1315,7 +1316,7 @@ msgstr "00-keyboard.conf geschreven."
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "Configureren van systeemopstart..."
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
@@ -1339,15 +1340,15 @@ msgstr "Selecteer Uw Toetsenbord Layout"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Toetsenbord-layouts"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Toetsenbord-varianten"
 
 #: src/keymap.py:81
 msgid "Layouts"
-msgstr "Ontwerpen"
+msgstr "Layouts"
 
 #: src/keymap.py:87
 msgid "Variants"
@@ -1355,7 +1356,7 @@ msgstr "Varianten"
 
 #: src/keymap.py:108
 msgid "keyboard_layout is %s"
-msgstr "Toetsenbord_ontwerp is %s"
+msgstr "Toetsenbord_layout is %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
@@ -1376,7 +1377,7 @@ msgstr "Welkom bij Antergos!"
 
 #: src/language.py:130
 msgid "Can't find translation file for the %s language"
-msgstr "Kan geen vertaling's bestand vinden voor de %s taal"
+msgstr "Kan geen vertalingsbestand vinden voor de taal %s"
 
 #: src/location.py:67
 msgid ""
@@ -1395,23 +1396,23 @@ msgstr "Selecteer uw locatie"
 
 #: src/location.py:197
 msgid "locale changed to : %s"
-msgstr "locatie gewijzigd naar : %s"
+msgstr "taal gewijzigd naar : %s"
 
 #: src/location.py:199
 msgid "Can't change to locale '%s'"
-msgstr "Kan de locatie niet veranderen naar '%s'"
+msgstr "Kan de taal niet veranderen naar '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "Kan bestand of groep genaamd '%s' niet vinden"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
-msgstr "Controleren van afhankelijkheden ..."
+msgstr "Controleren van afhankelijkheden..."
 
 #: src/pacman/pac.py:260
 msgid "Checking file conflicts..."
-msgstr "Controleren van bestand conflicten..."
+msgstr "Controleren van bestandsconflicten..."
 
 #: src/pacman/pac.py:262
 msgid "Resolving dependencies..."
@@ -1435,7 +1436,7 @@ msgstr "Controleren van integriteit ..."
 
 #: src/pacman/pac.py:275
 msgid "Loading packages files..."
-msgstr "Pakket bestanden aan het laden..."
+msgstr "Pakketbestanden aan het laden..."
 
 #: src/pacman/pac.py:277
 msgid "Configuring..."
@@ -1451,11 +1452,11 @@ msgstr "Aan het installeren: %s (%d/%d)"
 
 #: src/pacman/pac.py:309
 msgid "Checking and loading packages..."
-msgstr "Pakketten aan het controleren en laden ..."
+msgstr "Laden en controleren van pakketten..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Updaten van database %s"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1467,85 +1468,85 @@ msgstr "Sorry maar bestandssysteem %s kan niet gekrompen worden"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "Kan logisch volume %s niet verwijderen"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Kan volume %s niet verwijderen"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "Kan fysiek volume %s niet verwijderen"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
-msgstr ""
+msgstr "Onherkenbaar schijflabel in apparaat %s."
 
 #: src/parted3/partition_module.py:113
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "Uitzondering: %s.\nVoor meer informatie, neem een kijkje in /tmp/cnchi.log"
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Kan partitie %s niet verwijderen"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "Partitie is te groot!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van %s niet detecteren"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van NTFS-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van EXTFS-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van FAT-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van JFS-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van REISERFS-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van BTRFS-partitie %s niet detecteren"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "Kan gebruikte ruimte van XFS-partitie %s niet detecteren"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "Kan spiegelbeeldscript niet vinden"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "Kon automatische spiegelserver-selectie niet uitvoeren"
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
-msgstr "Antergos installatieprogramma - Fout"
+msgstr "Antergos-installatieprogramma - Fout"
 
 #: src/show_message.py:62
 msgid "Antergos Installer - Warning"
-msgstr "Antergos installatieprogramma - Waarschuwing"
+msgstr "Antergos-installatieprogramma - Waarschuwing"
 
 #: src/show_message.py:73
 msgid "Antergos Installer - Information"
-msgstr "Antergos installatieprogramma - informatie"
+msgstr "Antergos-installatieprogramma - informatie"
 
 #: src/show_message.py:83
 msgid "Antergos Installer - Confirmation"
@@ -1553,11 +1554,11 @@ msgstr "Antergos Installeerder - Bevestiging"
 
 #: src/slides.py:94
 msgid "Please wait..."
-msgstr "Even wachten..."
+msgstr "Even geduld alstublieft..."
 
 #: src/slides.py:96
 msgid "Installing Antergos..."
-msgstr "Antergos aan het installeren..."
+msgstr "Bezig met installeren van Antergos..."
 
 #: src/slides.py:194
 msgid ""
@@ -1568,7 +1569,7 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr ""
+msgstr "BELANGRIJK: Er is mogelijk een probleem geweest met de Grub(2)-bootloader-installatie\nwat zou kunnen leiden tot een niet-opstartbaar systeem. Voordat u herstart,\nwilt u mogelijk verifiëren of GRUB(2) al dan niet geïnstalleerd en geconfigureerd is.\nDe Arch Linux-wiki bevat probleemoplossings-informatie:\nhttps://wiki.archlinux.org/index.php/GRUB\n\nWilt u de wikipagina nu openen?"
 
 #: src/slides.py:206
 msgid ""
@@ -1602,39 +1603,39 @@ msgstr "locatie veranderd naar : %s"
 
 #: src/timezone.py:222
 msgid "Can't autodetect timezone coordinates"
-msgstr "Kan tijdzone coordinaten niet detecteren"
+msgstr "Kan tijdzone-coördinaten niet automatisch detecteren"
 
 #: src/timezone.py:280
 msgid "Stoping timezone threads..."
-msgstr "Tijdzone draaden aan het stoppen..."
+msgstr "Tijdzone-processen aan het stoppen..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "Kan netwerkstatus niet verkrijgen. Zal het later opnieuw proberen."
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "We hebben verbinding. Laten we onze tijdzone verkrijgen"
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Tijdzone gedetecteerd."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Kan gebruikerstijdzone niet detecteren."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
-msgstr "In tijdzone, kan de netwerk status niet krijgen"
+msgstr "In tijdzone; kan de netwerkstatus niet verkrijgen"
 
 #: src/timezone.py:403
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr "Kan de landcode gebruikt om een ​​pacman mirrorlist maken niet vinden"
+msgstr "Kan de landcode, welke gebruikt wordt om een pacman-mirrorlist aan te maken, niet verkrijgen"
 
 #: src/timezone.py:424
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr "Download een specifieke mirrorlist voor pacman op basis van %s landcode"
+msgstr "Een specifieke mirrorlist voor pacman, gebaseerd op basis van landcode %s, is gedownload"
 
 #: src/timezone.py:426
 msgid "Couldn't generate mirrorlist for pacman based on country code"
@@ -1650,7 +1651,7 @@ msgstr "Uw naam"
 
 #: src/user_info.py:92
 msgid "Your computer's name:"
-msgstr "Naam van de computer:"
+msgstr "Uw computernaam:"
 
 #: src/user_info.py:96
 msgid "Pick a username:"
@@ -1670,7 +1671,7 @@ msgstr "Wachtwoord"
 
 #: src/user_info.py:116
 msgid "Confirm password"
-msgstr "Wachtwoord verifiëren"
+msgstr "Wachtwoord bevestigen"
 
 #: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
@@ -1686,7 +1687,7 @@ msgstr "U moet een gebruikersnaam opgeven"
 
 #: src/user_info.py:132
 msgid "You must enter a password"
-msgstr "u moet een wachtwoord opgeven"
+msgstr "U moet een wachtwoord opgeven"
 
 #: src/user_info.py:136
 msgid "Log in automatically"
@@ -1694,11 +1695,11 @@ msgstr "Automatisch inloggen"
 
 #: src/user_info.py:137
 msgid "Require my password to log in"
-msgstr "Om een wachtwoord vragen als de computer opstart"
+msgstr "Mijn wachtwoord vereisen bij inloggen"
 
 #: src/user_info.py:138
 msgid "Encrypt my home folder"
-msgstr "Encrypt mijn Gebruiker's folder"
+msgstr "Mijn persoonlijke map versleutelen"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
@@ -1744,12 +1745,12 @@ msgstr "Proberen"
 
 #: src/welcome.py:93
 msgid "CLI Installer"
-msgstr "Text installatieprogramma"
+msgstr "CLI-installatieprogramma"
 
 #: src/welcome.py:96
 msgid "Graphical Installer"
-msgstr "Visueel installatieprogramma"
+msgstr "Grafisch installatieprogramma"
 
 #: src/welcome.py:125
 msgid "Can't load the CLI installer"
-msgstr "Kand het CLI installatieprogramma niet laden"
+msgstr "Kan het CLI-installatieprogramma niet laden"

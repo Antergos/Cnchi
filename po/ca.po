@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-27 00:40+0000\n"
-"Last-Translator: ArcNexus <marcmirallesbiosca@gmail.com>\n"
+"PO-Revision-Date: 2014-03-14 20:46+0000\n"
+"Last-Translator: karasu0 <karasu@antergos.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,47 +59,47 @@ msgstr "Sortint de l'instal·lador..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Usa aria2 per descarregar els paquets d'Antergos (EXPERIMENTAL)"
 
 #: cnchi.py:429
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "Usar paquets xz pre-descarregats (Cnchi els descarregarà igualment si troba una versió més nova)"
 
 #: cnchi.py:430
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
-msgstr ""
+msgstr "Igual que --cache però abans d'instal·lar, Cnchi copiarà tots els paquets xz al destí"
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Posa el nivell de registre a 'debug'"
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Actualitza Cnchi a la última versió (-uu en forçarà l'actualització)"
 
 #: cnchi.py:433
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr ""
+msgstr "Instal·la els paquets d'un fitxer xml local enlloc dels paquets per defecte"
 
 #: cnchi.py:434
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "No facis cap canvi (útil pels desenvolupadors)"
 
 #: cnchi.py:435
 msgid "Show logging messages to stdout"
-msgstr ""
+msgstr "Mostra els missatges de registra a stdout"
 
 #: cnchi.py:436
 msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
-msgstr ""
+msgstr "Desactiva la opció 'tryit' (útil si el Cnchi no es crida des de un liveCD)"
 
 #: cnchi.py:437
 msgid "Show options in development (DO NOT USE THIS!)"
-msgstr ""
+msgstr "Mostra opcions que encara estan en desenvolupament (NO USIS AIXÒ)"
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
@@ -256,7 +256,7 @@ msgstr "MATE és una bifuració del Gnome 2. Proveeix un entorn d'escriptori int
 
 #: src/download.py:79
 msgid "Can't connect with aria2, downloading will be performed by alpm."
-msgstr ""
+msgstr "No puc connectar amb l'aria2, les descàrregues les farà l'alpm."
 
 #: src/download.py:89
 msgid "Error creating metalink for package %s"
@@ -268,15 +268,15 @@ msgstr "No s'ha pogut afegir el metaenllaç pel paquet %s"
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "Descarregant el paquet '%s' i les seves dependències..."
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "Descarregant %s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
-msgstr ""
+msgstr "No puc connectar amb l'Aria2. Error: %s"
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
@@ -308,7 +308,7 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr ""
+msgstr "Usa el yaourt per instal·lar paquets de l'AUR.\nL'AUR es creà per organitzar i compartir nous paquets\nde la comunitat i per ajudar a accelerar la inclusió dels\npaquets populars al repositori [community]."
 
 #: src/features.py:133
 msgid "Bluetooth Support"
@@ -324,15 +324,15 @@ msgid ""
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr ""
+msgstr "El Bluetooth és un estàndard per les connexions sense\ncables a curta distància de mòbils, ordinadors i d'altres\nelements electrònics. A Linux, la implementació que fem\nservir de la pila de protocol de Bluetooth s'anomena BlueZ"
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "Fonts Truetype extra"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "Instal·lació de fonts TrueType extra"
 
 #: src/features.py:154
 msgid ""
@@ -341,7 +341,7 @@ msgid ""
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr ""
+msgstr "TrueType és un estàndard de font de contorn desenvolupat per\nApple i Microsoft a finals de 1980 com a competidor\nde les fonts d'Adobe Type 1 utilitzats en PostScript. S'ha\nconvertit en el format més comú per a les fonts en\nels sistemes operatius Mac OS i Microsoft Windows."
 
 #: src/features.py:164
 msgid "Gnome Extra"
@@ -356,7 +356,7 @@ msgid ""
 "Contains various optional tools such as a media\n"
 "player, a calculator, an editor and other non-critical\n"
 "applications that go well with the GNOME desktop.\n"
-msgstr ""
+msgstr "Conté diferents eines opcionals com un reproductor\nmultimèdia, una calculadora, un editor i d'altres\naplicacions no essencials que s'adapten bé a l'entorn\nd'escriptori GNOME.\n"
 
 #: src/features.py:178
 msgid "Printing Support"
@@ -371,7 +371,7 @@ msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
-msgstr ""
+msgstr "Apple Inc. desenvolupà CUPS, el sistema d'impressió\nestàndard en els sistemes operatius OS\\302\\256 X i d'altres\nderivats de UNIX\\302\\256."
 
 #: src/features.py:192
 msgid "LibreOffice"
@@ -388,7 +388,7 @@ msgid ""
 "and Linux, that gives you six feature-rich applications\n"
 "for all your document production and data processing\n"
 "needs: Writer, Calc, Impress, Draw, Math and Base."
-msgstr ""
+msgstr "LibreOffice és el paquet Open Source de productivitat\npersonal d'ofimàtica per a Windows, Macintosh i Linux,\nque ofereix sis aplicacions riques en característiques\nper a tota la producció de documents i processament de dades:\nWriter, Calc, Impress, Draw, Math i Base."
 
 #: src/features.py:208
 msgid "Visual Effects"
@@ -405,7 +405,7 @@ msgid ""
 "provide compositing functionality. Compton itself is a fork\n"
 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
 "See the compton github page for further information."
-msgstr ""
+msgstr "Compton és un gestor de composició o 'compositor' lleuger, autònom,\nadequat per al seu ús amb els gestors de finestres que no proporcionen\nla funcionalitat de composició. Compton és un programa derivat de\nxcompmgr-na, que al seu torn és un derivat de xcompmgr.\nVegeu la pàgina de GitHub del compton per a més informació."
 
 #: src/features.py:224
 msgid "Uncomplicated Firewall"
@@ -420,7 +420,7 @@ msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
-msgstr ""
+msgstr "Ufw vol dir Uncomplicated Firewall o Tallafocs Senzill, que\nés un programa per gestionar el tallafocs de línux. Fa que\nes pugui controlar el tallafocs mitjançant unes comandes molt simples."
 
 #: src/features.py:238
 msgid "Proprietary Software"
@@ -465,7 +465,7 @@ msgstr "espai lliure"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
-msgstr ""
+msgstr "No es recomana instal·lar el Grub dins d'una partició"
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
@@ -509,11 +509,11 @@ msgstr "cap"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
-msgstr ""
+msgstr "No es pot editar una partició de tipus LVM"
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "No es pot usar el mateix punt de muntatge dues vegades"
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
@@ -521,19 +521,19 @@ msgstr "S'ha de formatar la partició Root."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "No es pot usar el mateix punt de muntatge dues vegades..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Creant una partició primaria"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "Creant una partició extesa"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "Creant una partició lògica"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
@@ -545,23 +545,23 @@ msgstr "Usa el següent dispositiu per a instal·lar-hi el carregador d'arrencad
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "Llista de punts de muntatge:"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Arrel (/)"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot (/boot)"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI (/boot)"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Intercanvi"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
@@ -645,7 +645,7 @@ msgid ""
 "The GPT partition also creates a protective MBR partition to stop unsupported tools from modifying it. You may need to set a bootable flag on this protective MBR partition if yoursystem doesnt boot successfully after installation.\n"
 "\n"
 "Cnchi will create the BIOS Boot Partition for you."
-msgstr ""
+msgstr "GRUB requereix una partició d'arrencada de la BIOS (2 MiB, cap sistema d'arxius, codi de tipus EF02 en gdisk o bandera bios_grub en GNU Parted) en els sistemes BIOS per incrustar seu arxiu core.img degut a la falta de separació post-MBR als discos GPT.\n \nPer a una configuració BIOS-GPT, s'ha de crear una partició de 1007 Kb en el principi del disc sense sistema de fitxers. Això permetrà a la següent partició de disc estar alineada correctament a 1024 Kb Si cal, la partició també pot estar ubicada en un altre lloc en el disc, però ha d'estar dins de la primera regió de 2 d'TiB. S'ha d'ajustar el tipus de partició a EF02\n\nLa partició GPT també crea una partició MBR de protecció per aturar les eines sense suport a GPT. Podria ser necessari establir un indicador d'arrencada d'aquesta partició MBR de protecció si el teu sistema ja no arrenca després de la instal · lació.\n\nCnchi crearà automàticament la partició d'arrencada de la BIOS per a tu."
 
 #: src/installation/advanced.py:1539
 msgid ""
@@ -695,15 +695,15 @@ msgstr "S'han guardat els canvis fets a %s"
 
 #: src/installation/advanced.py:1736
 msgid "Creating new %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "Creant un sistema d'arxius %s a %s etiquetat com a %s"
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "Creant un nou sistema d'arxius %s a %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
-msgstr ""
+msgstr "No es pot formatar la partició '%s' amb etiqueta '%s' com a '%s'"
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
@@ -814,7 +814,7 @@ msgstr "Desmuntant %s"
 
 #: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
 msgid "Unmounting %s failed. Trying lazy arg."
-msgstr ""
+msgstr "No es pot desmuntar %s. Es provarà amb el paràmetre \"lazy\" (mandrós)."
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
@@ -822,15 +822,15 @@ msgstr "No es poden esborrar els volums LVM existents"
 
 #: src/installation/auto_partition.py:116
 msgid "Can't close LUKS devices : %s"
-msgstr ""
+msgstr "No puc tancar els dispositius LUKS : %s"
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "Sistema d'arxius %s desconegut"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "No es pot crear un sistema d'arxius %s"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
@@ -840,7 +840,7 @@ msgstr "Cnchi configurarà el LUKS al dispositiu %s"
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "method for partitioning and mounting devices."
-msgstr ""
+msgstr "Impossible detectar la mida del teu dispositiu, usa el mètode d'instal·lació avançat per fer les particions i muntar els dispositius."
 
 #: src/installation/auto_partition.py:528
 msgid "Will setup LVM on device %s"
@@ -889,7 +889,7 @@ msgid ""
 "Do you really want to proceed and delete all your content on your hard drive?\n"
 "\n"
 "%s"
-msgstr ""
+msgstr "Estàs segur que vols continuar i esborrar tots els continguts del teu disc dur?\n\n%s"
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
@@ -901,11 +901,11 @@ msgstr "Antergos instal·larà el carregador d'arrencada %s a %s"
 
 #: src/installation/process.py:92
 msgid "Installing using the '%s' method. Please wait..."
-msgstr ""
+msgstr "Instal·lant usant el mètode '%s'. Un moment..."
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
-msgstr ""
+msgstr "No es pot crear el directori %s, la instal·lació no pot continuar"
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
@@ -918,13 +918,13 @@ msgstr "Error creant les particions i els seus sistemes d'arxius"
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:891
 msgid "Command %s has failed."
-msgstr ""
+msgstr "L'ordre %s ha fallat."
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "Sortida : %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
@@ -940,7 +940,7 @@ msgstr "No puc muntar les particions de 'root' i 'boot'"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "L'ordre %s ha fallat"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
@@ -964,7 +964,7 @@ msgstr "Paquets seleccionats"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Descarregant paquets usant l'aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
@@ -1016,23 +1016,23 @@ msgstr "Afegint els paquets de l'escriptori '%s'"
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "Afegir el paquet de llenguatge del kde"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "S'ha sel·leccionat el paquet de llenguatge kde : %s"
 
 #: src/installation/process.py:594
 msgid "Hardware module added these packages : %s"
-msgstr ""
+msgstr "El mòdul de maquinar ha afegit aquests paquets : %s"
 
 #: src/installation/process.py:599 src/installation/process.py:1734
 msgid "Can't import hardware module."
-msgstr ""
+msgstr "No puc importar el mòdul de maquinari."
 
 #: src/installation/process.py:601 src/installation/process.py:1736
 msgid "Unknown error in hardware module. Output: %s"
-msgstr ""
+msgstr "Error desconegut en el mòdul de maquinari. Sortida: %s"
 
 #: src/installation/process.py:612
 msgid "Adding filesystem packages"
@@ -1060,31 +1060,31 @@ msgstr "Afegir paquet de llenguatge de lliureoffice"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
-msgstr ""
+msgstr "El grup '%s' té %d paquets"
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi instal·larà un total de %d paquets."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "Descarregant els paquets del grup '%s'..."
 
 #: src/installation/process.py:788
 msgid ""
 "Can't download group '%s'. Cnchi will continue and try again this download "
 "later."
-msgstr ""
+msgstr "No puc descarregar el grup '%s'. Cnchi continuarà i intentarà descarregar-los més tard."
 
 #: src/installation/process.py:806
 msgid "Installing packages from '%s' group..."
-msgstr ""
+msgstr "Instal·lant els paquets del grup '%s'..."
 
 #: src/installation/process.py:819
 msgid ""
 "Can't install group '%s'. Cnchi will continue but this group of packages "
 "won't be installed."
-msgstr ""
+msgstr "No es pot instal·lar el grup '%s'. Cnchi continuarà però aquest grup no s'instal·larà."
 
 #: src/installation/process.py:838
 msgid "Special dirs already mounted."
@@ -1092,7 +1092,7 @@ msgstr "Els directoris especials ja estan muntats."
 
 #: src/installation/process.py:873
 msgid "Special dirs are not mounted. Skipping."
-msgstr ""
+msgstr "Els directoris especials no estan muntats."
 
 #: src/installation/process.py:890 src/installation/process.py:896
 msgid "Unable to umount %s"
@@ -1100,7 +1100,7 @@ msgstr "No puc muntar %s"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
-msgstr ""
+msgstr "No es poden copiar els fitxers de configuració"
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
@@ -1108,23 +1108,23 @@ msgstr "Afegit a fstab :UUID= %s %s %s %s 0 %s"
 
 #: src/installation/process.py:995
 msgid "Added to crypttab : %s"
-msgstr ""
+msgstr "S'ha afegit %s al fitxer crypttab"
 
 #: src/installation/process.py:999
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
-msgstr ""
+msgstr "S'ha afegit al fitxer fstab: /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:1048
 msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-msgstr ""
+msgstr "S'ha afegit al fitxer fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
 
 #: src/installation/process.py:1056
 msgid "fstab written."
-msgstr ""
+msgstr "S'ha escrit el fitxer fstab."
 
 #: src/installation/process.py:1154
 msgid "Could not copy %s to grub.d"
-msgstr ""
+msgstr "No es pot copiar el fitxer %s al grub.d"
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
@@ -1140,59 +1140,59 @@ msgstr "ERROR instal·lant el GRUB(2) BIOS."
 
 #: src/installation/process.py:1203
 msgid "Installing GRUB(2) UEFI %s boot loader"
-msgstr ""
+msgstr "Instal.lant el gestor d'arrencada GRUB(2) UEFI %s"
 
 #: src/installation/process.py:1229
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
-msgstr ""
+msgstr "No s'ha trobat cap gestor d'arrencada OEM a %s. S'hi copiarà el Grub(2)"
 
 #: src/installation/process.py:1234
 msgid "Copying Grub(2) into OEM dir failed. File Not Found."
-msgstr ""
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. Fitxer no trobat."
 
 #: src/installation/process.py:1236
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
-msgstr ""
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. El fitxer ja existeix."
 
 #: src/installation/process.py:1238
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
-msgstr ""
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. Error desconegut."
 
 #: src/installation/process.py:1247
 msgid "UEFI Shell drop-in not found at %s"
-msgstr ""
+msgstr "L'UEFI Shell no s'ha trobat a %s"
 
 #: src/installation/process.py:1251
 msgid "UEFI Shell drop-in could not be copied."
-msgstr ""
+msgstr "No s'ha pogut copiar l'UEFI Shell."
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "Generant el fitxer grub.cfg"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
-msgstr ""
+msgstr "La instal·lació del GRUB(2) UEFI no s'ha completat."
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "La instal·lació del GRUB(2) UEFI s'ha completat."
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
-msgstr ""
+msgstr "Copiant els fitxers del tema del GRUB(2)"
 
 #: src/installation/process.py:1283
 msgid "Grub2 theme files not found"
-msgstr ""
+msgstr "No s'han trobat els fitxers del tema del Grub2"
 
 #: src/installation/process.py:1285
 msgid "Grub2 theme files already exist."
-msgstr ""
+msgstr "Els fitxers del tema del Grub2 ja existeixen."
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "Instal·lant els fitxers de localització del Grub2"
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
@@ -1200,7 +1200,7 @@ msgstr "No es pot instal·lar el GRUB(2) en local"
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "No es pot congelar/descongelar el sistema xfs"
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
@@ -1216,11 +1216,11 @@ msgstr "No puc canviar la contrasenya de l'usuari %s"
 
 #: src/installation/process.py:1365
 msgid "Setting hooks and modules in mkinitcpio.conf"
-msgstr ""
+msgstr "Posant els ganxos i mòduls a mkinitcpio.conf"
 
 #: src/installation/process.py:1459
 msgid "Copying xz files from cache..."
-msgstr ""
+msgstr "Copiant els fitxers xz de la memòria cau..."
 
 #: src/installation/process.py:1486
 msgid "Configuring bluetooth..."
@@ -1236,19 +1236,19 @@ msgstr "Configurant el tallafocs..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "No es pot configurar el tallafocs: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
-msgstr ""
+msgstr "%s: Es configura el gestor gràfic."
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
-msgstr ""
+msgstr "S'ha completat la configuració del gestor %s"
 
 #: src/installation/process.py:1554
 msgid "Error while trying to configure '%s' display manager"
-msgstr ""
+msgstr "Error configurant el gestor %s"
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
@@ -1260,19 +1260,19 @@ msgstr "fitxer fstab generat."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Configurant el netctl usant el perfil %s"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "No es poden copiar els perfils de configuració de xarxa"
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
-msgstr ""
+msgstr "S'ha copiat la configuració de xarxa."
 
 #: src/installation/process.py:1681
 msgid "Mirror list copied."
-msgstr ""
+msgstr "Copiada la llista de servidors de rèplica."
 
 #: src/installation/process.py:1683
 msgid "Can't copy mirrorlist file"
@@ -1280,7 +1280,7 @@ msgstr "No es pot copiar el fitxer de la llista de miralls"
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "S'ha generat el fitxer /etc/pacman.conf"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
@@ -1288,7 +1288,7 @@ msgstr "S'ha fixat la zona horària."
 
 #: src/installation/process.py:1725
 msgid "Sudo configuration for user %s done."
-msgstr ""
+msgstr "S'ha canviat la configuració Sudo per l'usuari %s"
 
 #: src/installation/process.py:1753
 msgid "User %s added."
@@ -1312,7 +1312,7 @@ msgstr "Ajustant el rellotge..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
-msgstr ""
+msgstr "S'ha guardat la configuració del teclat a /etc/X11/xorg.conf.d/00-keyboard.conf"
 
 #: src/installation/process.py:1809
 msgid "00-keyboard.conf written."
@@ -1320,11 +1320,11 @@ msgstr "S'ha escrit el fitxer 00-keyboard.conf"
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "Configurant l'arrencada del sistema..."
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
-msgstr ""
+msgstr "Crida al fitxer de post-instal·lació de Cnchi"
 
 #: src/installation/process.py:1840
 msgid "Encrypting user home dir..."
@@ -1344,11 +1344,11 @@ msgstr "Escull la teva disposició del teclat"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Disposicions de teclat"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Variants de teclat"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1373,7 +1373,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi és un programari en fase beta amb un desenvolupament molt actiu.\nEncara no pot gestionar RAID, subvolums btrfs o d'altres configuracions avançades.\nSi us plau, procedeix amb precaució ja que pots perdre les teves dades!\n\nSi trobes qualsevol errada, informa'n a <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:97 src/welcome.py:100
 msgid "Welcome to Antergos!"
@@ -1408,7 +1408,7 @@ msgstr "No es pot canviar la configuració local a '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "No es pot trobar el paquet o grup anomenat '%s'"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
@@ -1460,7 +1460,7 @@ msgstr "Comprovant i carregant paquets..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Actualitzant la base de dades %s"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1472,73 +1472,73 @@ msgstr "El sistema d'arxius %s no es pot empetitir."
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "No es pot esborrar el volum lògic %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "No es pot esborrar el grup de volums %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "No es pot esborrar el volum físic %s"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
-msgstr ""
+msgstr "No es reconeix l'etiqueta de disc del dispositiu %s."
 
 #: src/parted3/partition_module.py:113
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "Excepció: %s.\nMés informació al fitxer /tmp/cnchi.log"
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "No es pot esborrar la partició %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "La partició és massa gran!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a %s"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició NTFS %s"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició EXTFS %s"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició FAT %s"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició JFS %s"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició REISERFS %s"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició BTRFS %s"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "No es pot detectar l'espai usat a la partició XFS %s"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "No puc trobar el fitxer d'ordres reflector"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "No es pot executar la selecció automàtica de servidors mirall"
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
@@ -1573,7 +1573,7 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr ""
+msgstr "IMPORTANT: Potser hi ha hagut un problema amb el gestor d'arrencada grub\nque pot fer que el seu sistema no arrenqui correctament. Abans de  reiniciar,\nés possible que vulgueu verificar si el GRUB(2) està instal · lat i configurat.\nLa wiki de Arch Linux conté informació per solucionar problemes:\n⇥https://wiki.archlinux.org/index.php/GRUB\n\nT'agradaria veure la pàgina wiki ara?"
 
 #: src/slides.py:206
 msgid ""
@@ -1583,7 +1583,7 @@ msgstr "Instalació Completada!\nVols reiniciar el sistema?"
 
 #: src/slides.py:234
 msgid "Do you want to retry the installation using the same configuration?"
-msgstr ""
+msgstr "Vols tornar a intentar la instal·lació usant la mateixa configuració?"
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1615,19 +1615,19 @@ msgstr "Detenció del fil de zona horària..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "No es pot obtenir l'estat de la xarxa. S'intentarà de nou més endavant."
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "Tenim connexió. Esbrinem ara quina és la nostra zona horària."
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Zona horària esbrinada."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "No puc esbrinar la zona horària."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
@@ -1723,7 +1723,7 @@ msgid ""
 "Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
 "\n"
 "Are you sure you want to encrypt your home directory?\n"
-msgstr ""
+msgstr "Antergos usarà eCryptfs per xifrar el directori personal.\nDesafortunadament, eCryptfs no gestiona arxius dispersos molt bé.\n \nPerò no et preocupis, per a la majoria dels efectes, aquesta deficiència no representa un problema.\n\nUna aplicació molt popular però poc aconsellable d'eCryptfs és xifrar una descàrrega BitTorrent ja que sovint requereix eCryptfs per manejar arxius dispersos de 10 GB o més i pot donar lloc a un ús intensiu del disc.\n\nUna solució senzilla és posar els arxius dispersos en un directori públic sense xifrar.\n\nRevisa https://wiki.archlinux.org/index.php/ECryptfs per obtenir informació més detallada.\n\nEstàs segur que vols xifrar el directori personal?\n"
 
 #: src/user_info.py:267
 msgid "Invalid characters entered"

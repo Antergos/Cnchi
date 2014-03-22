@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-19 07:59+0000\n"
+"Last-Translator: Ivica  Kolić <ikoli@yahoo.com>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/antergos/language/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +30,7 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr ""
+msgstr "Ne možete porenuti dvije instance ovog instalacijskog programa.\n\nAko ste sigurni da instalacijski program nije već pokrenut\nmožete ručno izbrisati datoteku %s\ni ponovno pokrenuti ovaj instalacijski program."
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
@@ -54,7 +54,7 @@ msgstr "Završavam instalacijski program..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Koristi aria2 za preuzimanje Antergos paketa (EKSPERIMENTALNO)"
 
 #: cnchi.py:429
 msgid ""
@@ -73,7 +73,7 @@ msgstr ""
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Ažuriraj Cnchi na zadnju verziju (-uu će prisiliti ažuriranje)"
 
 #: cnchi.py:433
 msgid ""
@@ -94,7 +94,7 @@ msgstr ""
 
 #: cnchi.py:437
 msgid "Show options in development (DO NOT USE THIS!)"
-msgstr ""
+msgstr "Pokaži opcije u razvoju (NE KORISTI OVO!)"
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
@@ -263,7 +263,7 @@ msgstr ""
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "Preuzimam paket '%s' i njegove zavisnosti..."
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
@@ -323,11 +323,11 @@ msgstr ""
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "Dodatni Truetype fontovi"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "Instalacija dodatnih TrueType fontova"
 
 #: src/features.py:154
 msgid ""
@@ -508,7 +508,7 @@ msgstr ""
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Ne mogu koristiti istu točku montiranja dva puta."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
@@ -516,19 +516,19 @@ msgstr "Root particija mora biti formatirana."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Ne mogu koristiti istu točku montiranja dva puta..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Stvaram primarnu particiju"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "Stvaram proširenu particiju"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "Stvaram logičku particiju"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
@@ -544,19 +544,19 @@ msgstr ""
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
@@ -694,7 +694,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "Stvaram novi %s datotečni sustav u %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
@@ -821,11 +821,11 @@ msgstr ""
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "Nepoznata vrsta datotečnog sustava %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "Ne mogu napraviti datotečni sustav %s"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
@@ -884,7 +884,7 @@ msgid ""
 "Do you really want to proceed and delete all your content on your hard drive?\n"
 "\n"
 "%s"
-msgstr ""
+msgstr "Želite li doista nastaviti i izbrisati sav sadržaj na vašem tvrdom disku?\n\n%s"
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
@@ -896,7 +896,7 @@ msgstr "Antergos će instalirati boot učitavač na %s"
 
 #: src/installation/process.py:92
 msgid "Installing using the '%s' method. Please wait..."
-msgstr ""
+msgstr "Instalira koristeći '%s' metodu. Molim pričekajte..."
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
@@ -919,7 +919,7 @@ msgstr ""
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "Izlaz : %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
@@ -959,7 +959,7 @@ msgstr "Paketi su odabrani"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Preuzimam pakete koristeći aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
@@ -1011,11 +1011,11 @@ msgstr ""
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "Dodaj kde jezični paket"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "Izabrani kde jezični paket: %s"
 
 #: src/installation/process.py:594
 msgid "Hardware module added these packages : %s"
@@ -1059,11 +1059,11 @@ msgstr ""
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi će instalirati ukupno %d paketa."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "Preuzimam pakete iz '%s'  grupe..."
 
 #: src/installation/process.py:788
 msgid ""
@@ -1147,11 +1147,11 @@ msgstr ""
 
 #: src/installation/process.py:1236
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
-msgstr ""
+msgstr "Kopiranje Grub(2) into OEM dir nije uspjelo. Datoteka postoji."
 
 #: src/installation/process.py:1238
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
-msgstr ""
+msgstr "Kopiranje Grub(2) into OEM dir nije uspjelo. Nepoznata greška."
 
 #: src/installation/process.py:1247
 msgid "UEFI Shell drop-in not found at %s"
@@ -1339,7 +1339,7 @@ msgstr "Odaberite vaš raspored tipkovnice"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Rasporedi tipkovnice"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
@@ -1455,7 +1455,7 @@ msgstr "Provjeravam i učitavam pakete..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Ažuriranje %s baze podataka"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1471,7 +1471,7 @@ msgstr ""
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Ne mogu ukloniti logičku grupu %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
@@ -1489,11 +1489,11 @@ msgstr ""
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Ne mogu izbrisati particiju %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "Particija je prevelika!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
@@ -1618,11 +1618,11 @@ msgstr ""
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Vremenska zona otkrivena."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Ne mogu otkriti korisnikovu vremensku zonu."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
