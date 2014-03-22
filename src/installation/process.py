@@ -945,6 +945,9 @@ class InstallationProcess(multiprocessing.Process):
                 elif "f2fs" in myfmt:
                     chk = '0'
                     opts = 'rw,noatime'
+                elif "ext2" in myfmt:
+                    chk = '0'
+                    opts = 'rw,relatime'
                 elif path == '/':
                     chk = '1'
                     opts = "rw,relatime,data=ordered"
@@ -969,10 +972,10 @@ class InstallationProcess(multiprocessing.Process):
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
 
-            # Why were we only adding this line if root was an ssd? It should be the default.
-            tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-            all_lines.append(tmpfs)
-            logging.debug(_("Added to fstab : %s"), tmpfs)
+        # Create tmpfs line in fstab
+        tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
+        all_lines.append(tmpfs)
+        logging.debug(_("Added to fstab : %s"), tmpfs)
 
         full_text = '\n'.join(all_lines)
         full_text += '\n'
