@@ -59,21 +59,13 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 .progressbar row,
 .progressbar row:hover,
 .progressbar row:selected,
-.progressbar row:selected:focus {
+.progressbar row:selected:focused {
     background-image: -gtk-gradient (linear,
-                                  left top,
-                                  right top,
-                                  color-stop(0, rgb(192,225,240)),
-                                  color-stop(0.31, rgb(127,190,227)),
-                                  color-stop(0.100, rgb(4,109,174)));
-    color: white; /* font color after the progress bar covers the text */
-    border-color: rgba(0,0,0,0);   
+                                     left top, left bottom,
+                                     from (@progressbar_background_a),
+                                     to (@progressbar_background_b));
+ 
+    border-radius: 3px;
     border-width: 1px;
-    border-style: solid;
-    /*background-color: #acceee;
-    background-image: none;*/
-}
-
-.progressbar .trough {
-    color: black;   /* font color before the progress bar covers the text */
+    border-style: none;
 }
