@@ -103,6 +103,7 @@ cinnamon_settings(){
 	rm ${DESTDIR}/usr/bin/set-settings
 
 	# Copy menu@cinnamon.org.json to set menu icon
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 	cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
 	# Set Cinnamon in .dmrc
