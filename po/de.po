@@ -6,6 +6,7 @@
 # faidoc <faidoc@gmail.com>, 2013
 # benjaminbummler <benjaminbummler@googlemail.com>, 2013
 # Poscaenium <harald.hager@harrys-net.at>, 2013
+# Karen.Eliot <karen.eliot@zoho.com>, 2014
 # snow2k9, 2013
 # orschiro <orschiro@gmail.com>, 2014
 # t_bb_ <tabbo.hankel@bremen.piratenpartei.de>, 2013
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-03-01 17:56+0000\n"
-"Last-Translator: orschiro <orschiro@gmail.com>\n"
+"PO-Revision-Date: 2014-03-21 16:07+0000\n"
+"Last-Translator: Karen.Eliot <karen.eliot@zoho.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/antergos/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -225,7 +226,7 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment ist nicht nur eine Fensterverwaltung für Linux/X11 und andere, sondern auch eine komplette Sammlung von Bibliotheken, die Ihnen helfen eine Benutzeroberfläche mit sehr geringem Aufwand selbst zu erstellen."
+msgstr "Enlightenment ist nicht nur eine Fensterverwaltung für Linux/X11 und andere, sondern auch eine komplette Sammlung von Bibliotheken, die Ihnen hilft, eine Benutzeroberfläche mit sehr geringem Aufwand selbst zu erstellen."
 
 #: src/desktop_environments.py:93
 msgid ""
@@ -660,7 +661,7 @@ msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s ist eingehangen in '%s'.\nUm fortzufahren muss das Medium erst ausgworfen werden.\nKlicken Sie auf Ja um das Medium auszuwerfen oder auf Nein um zurückzukehren\n"
+msgstr "%s ist eingehängt in '%s'.\nUm fortzufahren muss das Medium erst ausgeworfen werden.\nKlicken Sie auf Ja um das Medium auszuwerfen oder auf Nein um zurückzukehren\n"
 
 #: src/installation/advanced.py:1566
 msgid "%s shows as mounted (busy) but it has no mount point"
@@ -945,7 +946,7 @@ msgstr "Befehl %s ist fehlgeschlagen"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
-msgstr "Es kann nicht %s in %s eingehangen werden"
+msgstr "Es kann nicht %s in %s eingehängt werden"
 
 #: src/installation/process.py:301
 msgid "%s deleted"

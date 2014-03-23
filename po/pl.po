@@ -5,14 +5,16 @@
 # adiq <adiq117@gmail.com>, 2013
 # kuboslawik <kuboslawik@gmail.com>, 2014
 # kuboslawik <kuboslawik@gmail.com>, 2014
+# rehemiau <michal.lepicki@gmail.com>, 2014
 # Pieter19 <pieter1911@gmail.com>, 2013
+# siamer <siamer@wp.pl>, 2014
 # galkowskit <galkowski.t@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-20 20:42+0000\n"
+"Last-Translator: kuboslawik <kuboslawik@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/antergos/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -58,13 +60,13 @@ msgstr "Zamykanie instalatora..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Użyj aria2 do pobrania pakietów Antergos (funkcja eksperymentalna)"
 
 #: cnchi.py:429
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "Użyj już pobranego pakietu xz (Cnchi i tak go pobierze, jeśli jest dostępna nowa wersja)"
 
 #: cnchi.py:430
 msgid ""
@@ -73,11 +75,11 @@ msgstr ""
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Ustaw poziom logów Cnchi na \"debug\""
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Aktualizuj Cnchi do najnowszej wersji (-uu wymusi akutalizację)"
 
 #: cnchi.py:433
 msgid ""
@@ -1191,7 +1193,7 @@ msgstr ""
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "Instalowanie pakietów językowych GRUB2."
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
@@ -1199,7 +1201,7 @@ msgstr "Nie można zainstalować języka dla GRUB(2)."
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "Nie można zamrozić/odmrozić systemu xfs "
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
@@ -1235,7 +1237,7 @@ msgstr "Konfigurowanie zapory systemowej..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "Nie można skonfigurować zapory systemu: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
@@ -1243,11 +1245,11 @@ msgstr "%s: Konfigurowanie menedżera wyświetlania."
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
-msgstr ""
+msgstr "Zakończono konfigurację menedżera wyświetlania %s."
 
 #: src/installation/process.py:1554
 msgid "Error while trying to configure '%s' display manager"
-msgstr ""
+msgstr "Wystąpił błąd podczas konfiguracji menedżera wyświetlania '%s'"
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
@@ -1259,11 +1261,11 @@ msgstr "Plik fstab został wygenerowany."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi skonfiguruje netctl używając profilu %s"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "Nie można skopiować profilu konfiguracji sieci."
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
@@ -1279,7 +1281,7 @@ msgstr "Nie można skopiować pliku zawierającego listę źródeł."
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "Generowanie /etc/pacman.conf"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
@@ -1319,7 +1321,7 @@ msgstr "Zapisano 00-keyboard.conf"
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "Konfiguracja rozruchu systemu"
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
@@ -1343,11 +1345,11 @@ msgstr "Wybierz swój układ klawiatury"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Układy klawiatury"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Odmiany klawiatury"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1407,7 +1409,7 @@ msgstr "Nie można zmienić języka na '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "Nie można znaleźć pakietu lub grupy o nazwie '%s'"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
@@ -1459,7 +1461,7 @@ msgstr "Sprawdzanie i ładowanie pakietów..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Aktualizowanie bazy danych %s"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1471,73 +1473,73 @@ msgstr "Przepraszamy ale system plików %s nie może zostać zmniejszony"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "Nie można usunąć woluminu logicznego %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Nie można usunąć grupy woluminów %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "Nie można usunąć woluminu fizycznego %s"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
-msgstr ""
+msgstr "Nierozpoznana nazwa dysku w urządzeniu %s."
 
 #: src/parted3/partition_module.py:113
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "Wyjątek: %s\nPo więcej informacji zajrzyj do /tmp/cnchi.log"
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Nie można usunąć partycji %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "Partycja jest za duża!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca od %s"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji NTFS %s"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji EXTFS %s"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji FAT %s"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji JFS %s"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji REISERFS %s"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji BTRFS %s"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "Nie można wykryć użytego miejsca na partycji XFS %s"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "Nie można odnaleźć skryptu reflector"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "Nie można wykonać automatycznego wyboru mirrora."
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
@@ -1572,7 +1574,7 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr ""
+msgstr "WAŻNE: Może być problem z instalacją bootloader'a GRUB(2)\nktóry może spowodować problemy z prawidłowym uruchomieniem systemu. Przed\nponownym uruchomieniu komputera, możesz sprawdzić, czy GRUB (2) jest zainstalowany i\nskonfigurowany. Arch Linux Wiki zawiera informacje dotyczące rozwiązywania problemów:\n⇥ https://wiki.archlinux.org/index.php/GRUB \n \nCzy chciałbyś zobaczyć tą strone wiki teraz?"
 
 #: src/slides.py:206
 msgid ""
@@ -1614,19 +1616,19 @@ msgstr "Zatrzymywanie wątków stref czasowych..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "Nie można uzyskać statusu sieci. Spróbuje ponownie za chwilę."
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "Mamy połączenie. Sprawdzmy naszą strefę czasową."
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Strefa czasowa wykryta."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Nie można wykryć strefy czasowej użytkownika"
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"

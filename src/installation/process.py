@@ -61,7 +61,6 @@ class InstallError(Exception):
         """ Returns exception message """
         return repr(self.value)
 
-
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
     def __init__(self, settings, callback_queue, mount_devices,
@@ -183,7 +182,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.method == 'automatic':
             self.auto_device = self.settings.get('auto_device')
 
-            logging.debug(_("Creating partitions and their filesystems in %s") % self.auto_device)
+            logging.debug(_("Creating partitions and their filesystems in %s"), self.auto_device)
 
             # If no key password is given a key file is generated and stored in /boot
             # (see auto_partition.py)
@@ -327,14 +326,14 @@ class InstallationProcess(multiprocessing.Process):
         all_ok = False
 
         try:
-            logging.debug(_('Selecting packages...'))
+            logging.debug(_("Selecting packages..."))
             self.select_packages()
-            logging.debug(_('Packages selected'))
+            logging.debug(_("Packages selected"))
 
             if self.settings.get("use_aria2"):
-                logging.debug(_('Downloading packages using aria2...'))
+                logging.debug(_("Downloading packages using aria2..."))
                 self.download_packages()
-                logging.debug(_('Packages downloaded.'))
+                logging.debug(_("Packages downloaded."))
 
             if self.settings.get('copy_cache'):
                 self.copy_cache_files(self.settings.get('cache'))
@@ -344,13 +343,13 @@ class InstallationProcess(multiprocessing.Process):
                 # as it is already a slow process)
                 self.wait_for_empty_queue(timeout=10)
 
-            logging.debug(_('Installing packages...'))
+            logging.debug(_("Installing packages..."))
             self.install_packages()
-            logging.debug(_('Packages installed.'))
+            logging.debug(_("Packages installed."))
 
-            logging.debug(_('Configuring system...'))
+            logging.debug(_("Configuring system..."))
             self.configure_system()
-            logging.debug(_('System configured.'))
+            logging.debug(_("System configured."))
             
             all_ok = True
         except subprocess.CalledProcessError as err:
@@ -413,14 +412,11 @@ class InstallationProcess(multiprocessing.Process):
 
     def create_pacman_conf(self):
         """ Creates temporary pacman.conf file """
-        logging.debug(_("Creating a temporary pacman.conf for %s architecture") % self.arch)
-
-        # Common repos
-
-        # TODO: Instead of hardcoding pacman.conf, we could use an external file
+        logging.debug(_("Creating a temporary pacman.conf for %s architecture"), self.arch)
 
         cache_dir = self.settings.get("cache")
 
+        # Create a pacman.conf specific for our installation
         with open("/tmp/pacman.conf", "w") as tmp_file:
             tmp_file.write("[options]\n")
             tmp_file.write("RootDir = %s\n" % self.dest_dir)
@@ -528,7 +524,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.desktop_manager = pkg.attrib.get('name')
                     self.packages.append(pkg.text)
 
-            logging.debug(_("Adding '%s' desktop packages") % self.desktop)
+            logging.debug(_("Adding '%s' desktop packages"), self.desktop)
 
             for child in root.iter(self.desktop + '_desktop'):
                 for pkg in child.iter('pkgname'):
@@ -555,7 +551,7 @@ class InstallationProcess(multiprocessing.Process):
                     lang_code = self.settings.get('language_code')
                     pkg = base_name + lang_code
                 if len(pkg) > 0:
-                    logging.debug(_('Selected kde language pack: %s') % pkg)
+                    logging.debug(_("Selected kde language pack: %s"), pkg)
                     self.packages.append(pkg)
         else:
             # Add specific NoX/Base packages
@@ -579,17 +575,15 @@ class InstallationProcess(multiprocessing.Process):
             hardware_install = hardware.HardwareInstall()
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
-                txt = ""
-                for hardware_pkg in hardware_pkgs:
-                    txt += hardware_pkg + " "
-                logging.debug(_("Hardware module added these packages : %s") % txt)
+                txt = " ".join(hardware_pkgs)
+                logging.debug(_("Hardware module added these packages : %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s") % err)
+            logging.warning(_("Unknown error in hardware module. Output: %s"), err)
             
         # By default, hardware module adds vesa driver but in a NoX install we don't want it
         if self.desktop == "nox":
@@ -628,7 +622,7 @@ class InstallationProcess(multiprocessing.Process):
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
-            logging.debug(_('Selecting chinese fonts.'))
+            logging.debug(_("Selecting chinese fonts."))
             for child in root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -661,24 +655,24 @@ class InstallationProcess(multiprocessing.Process):
         for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
-                logging.debug('Adding packages for "%s" feature.' % feature)
+                logging.debug("Adding packages for '%s' feature.", feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and desktop in lib[plib]):
-                            logging.debug("Selecting package: %s for feature: %s", pkg.text, feature)
+                            logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
                             self.packages.append(pkg.text)
-                        else:
-                            logging.debug("Skipping %s package: %s for feature: %s", plib, pkg.text, feature)
+                        #else:
+                        #    logging.debug(_("Skipping a %s lib package: %s for feature %s"), plib, pkg.text, feature)
                         
                         if pkg.attrib.get('conflicts'):
                             self.conflicts.append(pkg.attrib.get('conflicts'))
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            logging.debug(_('Add libreoffice language package'))
+            logging.debug(_("Add libreoffice language package"))
             pkg = ""
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
@@ -759,8 +753,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_umount_special_dirs()
         
-        # All downloading and installing has been done, so we hide progress bars
-        self.queue_event('progress_bars', 'hide_all')
+        # All downloading and installing has been done, so we hide progress bar
+        self.queue_event('progress_bar', 'hide')
         
     def chroot_mount_special_dirs(self):
         """ Mount special directories for our chroot """
@@ -951,6 +945,9 @@ class InstallationProcess(multiprocessing.Process):
                 elif "f2fs" in myfmt:
                     chk = '0'
                     opts = 'rw,noatime'
+                elif "ext2" in myfmt:
+                    chk = '0'
+                    opts = 'rw,relatime'
                 elif path == '/':
                     chk = '1'
                     opts = "rw,relatime,data=ordered"
@@ -975,14 +972,16 @@ class InstallationProcess(multiprocessing.Process):
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
 
-            # Why were we only adding this line if root was an ssd? It should be the default.
-            all_lines.append("tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0")
-            logging.debug(_("Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"))
+        # Create tmpfs line in fstab
+        tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
+        all_lines.append(tmpfs)
+        logging.debug(_("Added to fstab : %s"), tmpfs)
 
         full_text = '\n'.join(all_lines)
         full_text += '\n'
 
-        with open('%s/etc/fstab' % self.dest_dir, 'w') as fstab_file:
+        fstab_path = '%s/etc/fstab' % self.dest_dir
+        with open(fstab_path, 'w') as fstab_file:
             fstab_file.write(full_text)
             
         logging.debug(_("fstab written."))
@@ -1073,7 +1072,7 @@ class InstallationProcess(multiprocessing.Process):
             grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
             grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
 
-        logging.debug('/etc/default/grub configuration completed successfully.')
+        logging.debug(_("/etc/default/grub configuration completed successfully."))
 
     def prepare_grub_d(self):
         # Copy 01_antergos script into /etc/grub.d.
@@ -1088,7 +1087,7 @@ class InstallationProcess(multiprocessing.Process):
             shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
             os.chmod(os.path.join(grub_d_dir, script), 755)
         except FileNotFoundError:
-            logging.debug(_("Could not copy %s to grub.d") % script)
+            logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:
             pass
 
@@ -1284,20 +1283,20 @@ class InstallationProcess(multiprocessing.Process):
         """ Enables all services that are in the list 'services' """
         for name in services:
             self.chroot(['systemctl', 'enable', name + ".service"])
-            logging.debug(_('Enabled %s service.') % name)
+            logging.debug(_("Enabled %s service."), name)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
         try:
             shadow_password = crypt.crypt(new_password, "$6$%s$" % user)
         except:
-            logging.warning(_('Error creating password hash for user %s') % user)
+            logging.warning(_("Error creating password hash for user %s"), user)
             return False
 
         try:
             self.chroot(['usermod', '-p', shadow_password, user])
         except:
-            logging.warning(_('Error changing password for user %s') % user)
+            logging.warning(_("Error changing password for user %s"), user)
             return False
 
         return True
@@ -1309,9 +1308,9 @@ class InstallationProcess(multiprocessing.Process):
 
     def set_mkinitcpio_hooks_and_modules(self, hooks, modules):
         """ Set up mkinitcpio.conf """
-        logging.debug(_('Setting hooks and modules in mkinitcpio.conf'))
-        logging.debug('HOOKS="%s"' % ' '.join(hooks))
-        logging.debug('MODULES="%s"' % ' '.join(modules))
+        logging.debug(_("Setting hooks and modules in mkinitcpio.conf"))
+        logging.debug('HOOKS="%s"', ' '.join(hooks))
+        logging.debug('MODULES="%s"', ' '.join(modules))
 
         with open("/etc/mkinitcpio.conf") as mkinitcpio_file:
             mklins = [x.strip() for x in mkinitcpio_file.readlines()]
@@ -1352,9 +1351,9 @@ class InstallationProcess(multiprocessing.Process):
             hooks.append("lvm2")
 
         if "swap" in self.mount_devices:
-            hooks.extend(["resume", "filesystems"])
-        else:
-            hooks.append("filesystems")
+            hooks.append("resume")
+
+        hooks.append("filesystems")
 
         if self.settings.get('btrfs') and cpu is not 'genuineintel':
             modules.append("crc32c")
@@ -1415,7 +1414,7 @@ class InstallationProcess(multiprocessing.Process):
         items = os.listdir(src)
         step = 1.0 / len(items)
         for item in items:
-            self.queue_event('local_percent', percent)
+            self.queue_event('percent', percent)
             source = os.path.join(src, item)
             destination = os.path.join(dst, item)
             try:
@@ -1496,9 +1495,9 @@ class InstallationProcess(multiprocessing.Process):
             elif self.desktop_manager == 'slim':
                 self.setup_slim(desktop, username, session, autologin)
                 
-            logging.debug(_("Completed %s display manager configuration.") % self.desktop_manager)
+            logging.debug(_("Completed %s display manager configuration."), self.desktop_manager)
         except FileNotFoundError:
-            logging.debug(_("Error while trying to configure '%s' display manager") % self.desktop_manager)
+            logging.debug(_("Error while trying to configure '%s' display manager"), self.desktop_manager)
     
     def setup_lightdm(self, desktop, username, session, autologin):
         # Systems with LightDM as Desktop Manager
@@ -1582,11 +1581,10 @@ class InstallationProcess(multiprocessing.Process):
             ... and more """
 
         self.queue_event('pulse', 'start')
-        
         self.queue_event('info', _("Configuring your new system"))
 
         self.auto_fstab()
-        logging.debug(_('fstab file generated.'))
+        logging.debug(_("fstab file generated."))
 
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
@@ -1603,8 +1601,7 @@ class InstallationProcess(multiprocessing.Process):
                 profile = 'wireless-wpa'
 
             # TODO: Just copying the default profile is NOT an elegant solution
-
-            logging.debug(_('Cnchi will configure netctl using the %s profile') % profile)
+            logging.debug(_("Cnchi will configure netctl using the %s profile"), profile)
             src_path = os.path.join(self.dest_dir, 'etc/netctl/examples/%s' % profile)
             dst_path = os.path.join(self.dest_dir, 'etc/netctl/%s' % profile)
 
@@ -1614,18 +1611,17 @@ class InstallationProcess(multiprocessing.Process):
                 logging.warning(_("Can't copy network configuration profiles"))
             except FileExistsError:
                 pass
-
             # Enable our profile
             self.chroot(['netctl', 'enable', profile])
             #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
 
-        logging.debug(_('Network configuration copied.'))
+        logging.debug(_("Network configuration copied."))
 
         # Copy mirror list
         mirrorlist_path = os.path.join(self.dest_dir, 'etc/pacman.d/mirrorlist')
         try:
             shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
-            logging.debug(_('Mirror list copied.'))
+            logging.debug(_("Mirror list copied."))
         except FileNotFoundError:
             logging.warning(_("Can't copy mirrorlist file"))
         except FileExistsError:
@@ -1634,7 +1630,7 @@ class InstallationProcess(multiprocessing.Process):
         # Generate /etc/pacman.conf
         self.generate_pacmanconf()
 
-        logging.debug(_('Generated /etc/pacman.conf'))
+        logging.debug(_("Generated /etc/pacman.conf"))
 
         desktop = self.settings.get('desktop')
 
@@ -1652,7 +1648,7 @@ class InstallationProcess(multiprocessing.Process):
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
 
-        logging.debug(_('Timezone set.'))
+        logging.debug(_("Timezone set."))
 
         # Wait FOREVER until the user sets his params
         while self.settings.get('user_info_done') is False:
@@ -1669,13 +1665,13 @@ class InstallationProcess(multiprocessing.Process):
         with open(sudoers_path, "w") as sudoers:
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         subprocess.check_call(["chmod", "440", sudoers_path])
-        logging.debug(_('Sudo configuration for user %s done.') % username)
+        logging.debug(_("Sudo configuration for user %s done."), username)
 
         # Configure detected hardware
         try:
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
-            logging.debug("Running post-install scripts from hardware module...")
+            logging.debug(_("Running post-install scripts from hardware module..."))
             hardware_install.post_install(self.dest_dir)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
@@ -1697,7 +1693,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot(['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username])
 
-        logging.debug(_('User %s added.' % username))
+        logging.debug(_("User %s added."), username)
 
         self.change_user_password(username, password)
 
@@ -1710,11 +1706,11 @@ class InstallationProcess(multiprocessing.Process):
             with open(hostname_path, "w") as hostname_file:
                 hostname_file.write(hostname)
 
-        logging.debug(_('Hostname set to %s.') % hostname)
+        logging.debug(_("Hostname set to %s."), hostname)
 
         # User password is the root password
         self.change_user_password('root', password)
-        logging.debug(_('Set the same password to root.'))
+        logging.debug(_("Set the same password to root."))
 
         # Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
@@ -1768,7 +1764,7 @@ class InstallationProcess(multiprocessing.Process):
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
                                    keyboard_layout, keyboard_variant], timeout=300)
-            logging.debug('Post install script completed successfully.')
+            logging.debug("Post install script completed successfully.")
         except subprocess.CalledProcessError as err:
             logging.error(err.output)
         except subprocess.TimeoutExpired as err:
@@ -1790,11 +1786,11 @@ class InstallationProcess(multiprocessing.Process):
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('install_bootloader'):
-            logging.debug(_('Installing bootloader...'))
+            logging.debug(_("Installing bootloader..."))
             self.install_bootloader()
 
         # Copy installer log to the new installation (just in case something goes wrong)
-        logging.debug('Copying install log to /var/log.')
+        logging.debug("Copying install log to /var/log.")
         self.copy_log()
 
         self.queue_event('pulse', 'stop')

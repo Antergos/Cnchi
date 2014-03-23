@@ -6,12 +6,13 @@
 # bidu <clubvascodagama@yahoo.ca>, 2013
 # fagianijunior <fagianijunior@gmail.com>, 2013
 # Helder Meneses <helder.meneses@gmail.com>, 2013-2014
+# Nuno Santos <nunofilipesantos@gmail.com>, 2014
 # skinnie <andrepsfaria@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-28 09:41+0000\n"
+"PO-Revision-Date: 2014-03-21 10:37+0000\n"
 "Last-Translator: Helder Meneses <helder.meneses@gmail.com>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/antergos/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -173,7 +174,7 @@ msgstr "Nós temos espaço em disco suficiente."
 
 #: src/desktop.py:79
 msgid "Choose Your Desktop"
-msgstr ""
+msgstr "Escolha o seu Ambiente de Trabalho"
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
@@ -184,7 +185,7 @@ msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "O GNOME 3 é um modo fácil e elegante de usar o seu computador. Tem a Visão Geral de Atividades que é um modo fácil de aceder às tuas tarefas básicas. O GNOME 3 é o ambiente de trabalho padrão no Antergos."
 
 #: src/desktop_environments.py:69
 msgid ""
@@ -271,7 +272,7 @@ msgstr ""
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "A descarregar %s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
@@ -291,15 +292,15 @@ msgstr "Atenção! Não foi possivel resolver as seguintes dependências:"
 
 #: src/features.py:110
 msgid "Feature Selection"
-msgstr ""
+msgstr "Seleção de Funcionalidades"
 
 #: src/features.py:118
 msgid "Arch User Repository (AUR) Support"
-msgstr ""
+msgstr "Suporte ao Repositório de Utilizadores Arch (AUR) "
 
 #: src/features.py:121
 msgid "The AUR is a community-driven repository for Arch users."
-msgstr ""
+msgstr "O AUR é um repositório mantido pela comunidade de utilizadores Arch"
 
 #: src/features.py:124
 msgid ""
@@ -327,11 +328,11 @@ msgstr ""
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "Fontes TrueType Extra"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "Instalação de fontes TrueType extra"
 
 #: src/features.py:154
 msgid ""
@@ -344,11 +345,11 @@ msgstr ""
 
 #: src/features.py:164
 msgid "Gnome Extra"
-msgstr ""
+msgstr "GNOME Extra"
 
 #: src/features.py:167
 msgid "Installation of extra Gnome applications"
-msgstr ""
+msgstr "Instalação de aplicações GNOME extra"
 
 #: src/features.py:170
 msgid ""
@@ -363,7 +364,7 @@ msgstr "Suporte de impressão"
 
 #: src/features.py:181
 msgid "Installation of printer drivers and management tools."
-msgstr ""
+msgstr "Instalação dos drivers da impressora e ferramentas de gestão."
 
 #: src/features.py:184
 msgid ""
@@ -408,11 +409,11 @@ msgstr ""
 
 #: src/features.py:224
 msgid "Uncomplicated Firewall"
-msgstr ""
+msgstr "Firewall Descomplicada"
 
 #: src/features.py:227
 msgid "Control the incoming and outgoing network traffic."
-msgstr ""
+msgstr "Controla o tráfego que entra e sai na tua rede."
 
 #: src/features.py:230
 msgid ""
@@ -443,7 +444,7 @@ msgstr ""
 
 #: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr ""
+msgstr "Firewall Descomplicada será instalada com estas regras:"
 
 #: src/features.py:314
 msgid ""
@@ -508,35 +509,35 @@ msgstr "nenhum"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
-msgstr ""
+msgstr "Não pode editar uma partição de ficheiros do tipo LVM"
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Não é possível usar o mesmo ponto de montagem duas vezes."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
-msgstr ""
+msgstr "A partição Raiz tem que ser formatada."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Não é possível usar o mesmo ponto de montagem duas vezes..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "A criar a partição primária"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "A criar a partição extendida"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "A criar a partição lógica"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "Modo Avançado de instalação"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
@@ -544,19 +545,19 @@ msgstr ""
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "Lista de Montagem"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Raiz ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
@@ -706,7 +707,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
-msgstr ""
+msgstr "Cnchi não instalará nenhum bootloader"
 
 #: src/installation/advanced.py:1827
 msgid "Antergos will install the bootloader of type %s in %s"
@@ -714,7 +715,7 @@ msgstr "O Antergos vai instalar o \"boot loader\" do tipo %s em %s"
 
 #: src/installation/advanced.py:1841 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr ""
+msgstr "Modo de testes. O Cnchi não modificará nada!"
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
@@ -772,12 +773,12 @@ msgstr ""
 
 #: src/installation/ask.py:140
 msgid "Set your Home in a different partition/volume"
-msgstr ""
+msgstr "Defina a sua Home numa partição/volume diferente"
 
 #: src/installation/ask.py:144
 msgid ""
 "This will setup you /home directory in a different partition or volume."
-msgstr ""
+msgstr "Isto irá configurar a sua pasta /home numa partição ou volume diferentes."
 
 #: src/installation/ask.py:152 src/installation/ask.py:154
 msgid "Install Antergos alongside %s"
@@ -801,15 +802,15 @@ msgstr ""
 
 #: src/installation/ask.py:195
 msgid "Antergos will be installed using a separate /home volume."
-msgstr ""
+msgstr "O Antergos será instalado usando um volume /home separado."
 
 #: src/installation/ask.py:197
 msgid "Antergos will be installed using a separate /home partition."
-msgstr ""
+msgstr "O Antergos será instalado usando uma partição /home separada."
 
 #: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
 msgid "Unmounting %s"
-msgstr ""
+msgstr "A desmontar %s"
 
 #: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
 msgid "Unmounting %s failed. Trying lazy arg."
@@ -861,7 +862,7 @@ msgstr ""
 
 #: src/installation/automatic.py:85
 msgid "Encryption Password:"
-msgstr ""
+msgstr "Palavra-passe de Encriptação:"
 
 #: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
@@ -869,7 +870,7 @@ msgstr "Confirme sua senha:"
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
-msgstr ""
+msgstr "mostrar palavra-passe"
 
 #: src/installation/automatic.py:99
 msgid "Automatic Installation Mode"
@@ -877,7 +878,7 @@ msgstr "Modo de instalação automática"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
-msgstr ""
+msgstr "A palavra-passe LUKS foi definida"
 
 #: src/installation/automatic.py:165
 msgid "Automatic install on %s"
@@ -908,7 +909,7 @@ msgstr ""
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
-msgstr ""
+msgstr "A criar partições e sistema de ficheiros em %s"
 
 #: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
@@ -939,7 +940,7 @@ msgstr "Não foi possível montar as partições de boot e raiz (/)"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "O comando %s falhou"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
@@ -947,7 +948,7 @@ msgstr "Não pode montar %s em %s"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
-msgstr ""
+msgstr "%s apagados"
 
 #: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
@@ -955,39 +956,39 @@ msgstr "Não foi possível criar as directorias necessárias no sistema"
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
-msgstr ""
+msgstr "A selecionar pacotes"
 
 #: src/installation/process.py:331
 msgid "Packages selected"
-msgstr ""
+msgstr "Pacotes selecionados"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "A descarregar os pacotes atravez do aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
-msgstr ""
+msgstr "Pacotes descarregados."
 
 #: src/installation/process.py:346
 msgid "Installing packages..."
-msgstr ""
+msgstr "A instalar pacotes."
 
 #: src/installation/process.py:348
 msgid "Packages installed."
-msgstr ""
+msgstr "Pacotes instalados."
 
 #: src/installation/process.py:350
 msgid "Configuring system..."
-msgstr ""
+msgstr "A configurar o sistema..."
 
 #: src/installation/process.py:352
 msgid "System configured."
-msgstr ""
+msgstr "Sistema configurado."
 
 #: src/installation/process.py:387
 msgid "Installation finished"
-msgstr ""
+msgstr "Instalação terminada"
 
 #: src/installation/process.py:398
 msgid "Can't copy Cnchi log to %s"
@@ -999,7 +1000,7 @@ msgstr ""
 
 #: src/installation/process.py:509
 msgid "Getting package list..."
-msgstr ""
+msgstr "A gerar lista de pacotes..."
 
 #: src/installation/process.py:518
 msgid "Can't retrieve remote package list, using a local file instead."
@@ -1015,7 +1016,7 @@ msgstr ""
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "Adicionar pacote de linguagem KDE"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
@@ -1047,7 +1048,7 @@ msgstr ""
 
 #: src/installation/process.py:640
 msgid "Selecting chinese fonts."
-msgstr ""
+msgstr "Selecionar fontes chinesas."
 
 #: src/installation/process.py:646
 msgid "Adding bootloader packages if needed"
@@ -1095,7 +1096,7 @@ msgstr ""
 
 #: src/installation/process.py:890 src/installation/process.py:896
 msgid "Unable to umount %s"
-msgstr ""
+msgstr "Incapaz de desmontar %s"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
@@ -1159,39 +1160,39 @@ msgstr ""
 
 #: src/installation/process.py:1247
 msgid "UEFI Shell drop-in not found at %s"
-msgstr ""
+msgstr "UEFI Shell drop-in não encontrada em %s"
 
 #: src/installation/process.py:1251
 msgid "UEFI Shell drop-in could not be copied."
-msgstr ""
+msgstr "UEFI Shell drop-in não foi possível de ser copiada."
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "A gerar grub.cfg"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
-msgstr ""
+msgstr "A instalação do GRUB(2) UEFI pode não ter sido completada com sucesso."
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "GRUB(2) UEFI foi instalado com sucesso"
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
-msgstr ""
+msgstr "A copiar ficheiro de temas do GRUB(2)"
 
 #: src/installation/process.py:1283
 msgid "Grub2 theme files not found"
-msgstr ""
+msgstr "Ficheiros de temas do GRUB2 não encontrados"
 
 #: src/installation/process.py:1285
 msgid "Grub2 theme files already exist."
-msgstr ""
+msgstr "Ficheiros de temas do GRUB2 já existem."
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "A instalar as localizações do GRUB2"
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
@@ -1199,7 +1200,7 @@ msgstr ""
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "Não é possível congelar/descongelar um sistema XFS"
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
@@ -1231,11 +1232,11 @@ msgstr ""
 
 #: src/installation/process.py:1504
 msgid "Configuring firewall..."
-msgstr ""
+msgstr "A configurar firewall..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "Não foi possível configurar a firewall: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
@@ -1243,11 +1244,11 @@ msgstr ""
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
-msgstr ""
+msgstr "Configuração do gestor de visualização %s completa."
 
 #: src/installation/process.py:1554
 msgid "Error while trying to configure '%s' display manager"
-msgstr ""
+msgstr "Erro durante a configuração do gestor de visualização '%s'"
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
@@ -1259,15 +1260,15 @@ msgstr ""
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi irá configurar netctl com o perfil %s"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "Não é possível copiar os perfis de configuração de rede"
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
-msgstr ""
+msgstr "Configuração de rede copiada."
 
 #: src/installation/process.py:1681
 msgid "Mirror list copied."
@@ -1279,11 +1280,11 @@ msgstr ""
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "Gerado /etc/pacman.conf"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
-msgstr ""
+msgstr "Fuso horário definido."
 
 #: src/installation/process.py:1725
 msgid "Sudo configuration for user %s done."
@@ -1299,7 +1300,7 @@ msgstr ""
 
 #: src/installation/process.py:1770
 msgid "Set the same password to root."
-msgstr ""
+msgstr "Defina a mesma palavra-passe para a raiz."
 
 #: src/installation/process.py:1776
 msgid "Generating locales..."
@@ -1319,7 +1320,7 @@ msgstr ""
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "A configurar o arranque do sistema..."
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
@@ -1335,7 +1336,7 @@ msgstr ""
 
 #: src/installation/process.py:1846
 msgid "Installing bootloader..."
-msgstr ""
+msgstr "A instalar o bootloader..."
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1343,11 +1344,11 @@ msgstr "Selecione o layout de seu teclado"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Esquemas de Teclado"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Variações de Teclado"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1363,7 +1364,7 @@ msgstr "Layout do teclado é %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
-msgstr ""
+msgstr "Aviso: O instalador Cnchi é uma versão beta."
 
 #: src/language.py:89
 msgid ""
@@ -1387,7 +1388,7 @@ msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "A localização que selecionar será usada para ajudar a determinar o local do sistema.\nIsto deve ser normalmente o país em que reside.\nAqui está uma pequena lista de localizações baseada na linguagem que selecionou."
 
 #: src/location.py:72
 msgid "Country, territory or area:"
@@ -1407,7 +1408,7 @@ msgstr "Não foi possível mudar a localização para '%s\""
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "Não é possível encontrar o pacote ou grupo com o nome '%s'"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
@@ -1459,85 +1460,85 @@ msgstr "A verificar e a carregar os pacotes..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "A atualizar a base de dados %s"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr ""
+msgstr "Impossível de verificar de %s é uma Solid State Drive ou não"
 
 #: src/parted3/fs_module.py:174
 msgid "Sorry but filesystem %s can't be shrinked"
-msgstr ""
+msgstr "Desculpe mas o sistema de ficheiros %s não pode ser comprimido"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "Não é possível remover o volume lógico %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Não é possível remover o volume de grupo %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "Não é possível remover o volume físico %s"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
-msgstr ""
+msgstr "Etiqueta de disco desconhecida no dispositivo %s. "
 
 #: src/parted3/partition_module.py:113
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "Exceção: %s.\nPara mais informações veja /tmp/cnchi.log"
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Não é possível apagar a partição %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "A partição é muito grande!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço de %s"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição NTFS %s"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição EXTFS %s"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição FAT %s"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição JFS %s"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição RESERFS %s"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição BTRFS %s"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "Não é possível detetar o espaço da partição XFS %s"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "Não encontro o script de reflexão"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "Não foi possível executar a selecção automática de endereços de servidor"
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
@@ -1572,13 +1573,13 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr ""
+msgstr "IMPORTANTE: Pode ter ocorrido um problema com a instalação do bootloader\ndo GRUB(2), isto poderá prevenir que o seu sistema carregue adequadamente.\nAntes de reiniciar, poderá querer verificar se o GRUB(2) está instalado, ou não,\ne se está configurado. A Wiki do Arch Linux contém informação para resolver problemas:\n⇥https://wiki.archlinux.org/index.php/GRUB\n\nQuer visualizar a página da wiki agora?"
 
 #: src/slides.py:206
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "Instalação completa!\nPretende reiniciar o seu sistema agora?"
 
 #: src/slides.py:234
 msgid "Do you want to retry the installation using the same configuration?"
@@ -1598,7 +1599,7 @@ msgstr ""
 
 #: src/timezone.py:120
 msgid "Select Your Timezone"
-msgstr ""
+msgstr "Selecione a sua zona horária"
 
 #: src/timezone.py:134
 msgid "location changed to : %s"
@@ -1614,19 +1615,19 @@ msgstr "A parar as tarefas de horario local..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "Não foi possível obter o estado da rede. Tentaremos mais tarde."
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "Temos ligação. Vamos obter o nosso fuso horário."
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Fuso horário detetado."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Não foi possível detetar o fuso horário do utilizador."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
@@ -1678,7 +1679,7 @@ msgstr "Confirme a palavra passe"
 
 #: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
-msgstr ""
+msgstr "Identifica o seu sistema para outros computadores e dispositivos."
 
 #: src/user_info.py:124
 msgid "You must enter a name"
@@ -1706,7 +1707,7 @@ msgstr "Criptografar minha pasta home"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
-msgstr ""
+msgstr "Crie a sua Conta de Utilizador"
 
 #: src/user_info.py:192
 msgid ""
@@ -1744,7 +1745,7 @@ msgstr ""
 
 #: src/welcome.py:90
 msgid "Try It"
-msgstr ""
+msgstr "Experimente"
 
 #: src/welcome.py:93
 msgid "CLI Installer"

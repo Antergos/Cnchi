@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-03-01 14:54+0000\n"
+"PO-Revision-Date: 2014-03-06 14:42+0000\n"
 "Last-Translator: zhqh100 <1483586698@qq.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/antergos/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "不能同时执行两个安装器实例。\n\n如果你确信安装器�
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
-msgstr ""
+msgstr "Cnchi 安装器版本 %s"
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
@@ -42,7 +42,7 @@ msgstr "使用Aria2下载包 - 试验"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
-msgstr ""
+msgstr "Cnchi - Antergos 安装器"
 
 #: cnchi.py:284
 msgid "Antergos Installer"
@@ -54,47 +54,47 @@ msgstr "正在退出安装器..."
 
 #: cnchi.py:428
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "使用 aria2 下载Antergos 安装包(试验阶段)"
 
 #: cnchi.py:429
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "使用预下载的 xz 包(如果发现一个新版本，Cnchi在任何情况下都会下载它们)"
 
 #: cnchi.py:430
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
-msgstr ""
+msgstr "作为缓存，不过在安装前，Cnchi将复制所有的xz包到目的路径"
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "设置Cnchi的日志级别为'debug'"
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "升级Cnchi到最新版本(-uu将会强制升级)"
 
 #: cnchi.py:433
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr ""
+msgstr "使用一个本地的xml而不是默认的来安装包"
 
 #: cnchi.py:434
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "不会执行任何修改(对开发人员很有用)"
 
 #: cnchi.py:435
 msgid "Show logging messages to stdout"
-msgstr ""
+msgstr "显示日志信息到标准输出"
 
 #: cnchi.py:436
 msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
-msgstr ""
+msgstr "禁用'Try it'选项(当Cnchi不能启动liveCD时会用到)"
 
 #: cnchi.py:437
 msgid "Show options in development (DO NOT USE THIS!)"
-msgstr ""
+msgstr "显示开发选项(不要使用!)"
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:217
@@ -103,7 +103,7 @@ msgstr "未知"
 
 #: src/canonical/misc.py:929
 msgid "Can't set locale %s"
-msgstr ""
+msgstr "无法设置语言环境 %s"
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
@@ -135,13 +135,13 @@ msgstr "系统检测"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
-msgstr ""
+msgstr "有至少 %dGB 的可用存储空间"
 
 #: src/check.py:86
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr ""
+msgstr "这高度依赖于你选择的桌面环境，所以你可能需要更多的空间."
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
@@ -169,7 +169,7 @@ msgstr "拥有足够的磁盘空间."
 
 #: src/desktop.py:79
 msgid "Choose Your Desktop"
-msgstr ""
+msgstr "选择你的桌面"
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
@@ -180,7 +180,7 @@ msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "Gnome 3 让我们简介优雅地使用电脑.GNOME 3采用了活动视图，为用户提供了简单的方法来访问所有任务.GNOME 3 是Antergos的默认桌面."
 
 #: src/desktop_environments.py:69
 msgid ""
@@ -188,7 +188,7 @@ msgid ""
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
-msgstr ""
+msgstr "Cinnamon 是GNOME 3 的衍生版本，开发于(并用于)Linux Mint. 它基于GNOME 3的最新技术，向用户提供了一个传统的桌面.Cinnamon 为有经验用户使用."
 
 #: src/desktop_environments.py:74
 msgid ""
@@ -196,7 +196,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr ""
+msgstr "Xfce是一个轻量级的桌面环境.它致力于运行快速并占用很少的系统资源,但仍提供了吸引人的友好可视化界面.这是使用较旧电脑或低配电脑的极好选择."
 
 #: src/desktop_environments.py:79
 msgid ""
@@ -204,7 +204,7 @@ msgid ""
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
-msgstr ""
+msgstr "LXDE是一个性能极快，节省资源的桌面环境.它比其他桌面环境占用更少的CPU和RAM.LXDE是专为采用低硬件配置的云电脑设计的，如netbooks, 移动设备, 和较老的电脑."
 
 #: src/desktop_environments.py:84
 msgid ""
@@ -212,7 +212,7 @@ msgid ""
 "extensive standards support. It's default theme is well known for its "
 "minimalistic appearance and flexibility. Your desktop becomes cleaner, "
 "faster."
-msgstr ""
+msgstr "Openbox具有高度可定制性，支持大量标准的下一代窗口管理器.其默认的主题以简约的外观和灵活性而著名.你的桌面将变得干净、快速."
 
 #: src/desktop_environments.py:89
 msgid ""
@@ -226,7 +226,7 @@ msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
-msgstr ""
+msgstr "如果你打算寻找一个熟悉的桌面环境.KDE的Plasma 桌面提供现代桌面需要的所有工具，所以你开机即可工作。"
 
 #: src/desktop_environments.py:97
 msgid ""
@@ -240,18 +240,18 @@ msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
-msgstr ""
+msgstr "该选项将会安装仅带有命令行的Antergos,没有任何图形界面.安装后你可以使用命令行下的包管理器安装包来自定义Antergos."
 
 #: src/desktop_environments.py:106
 msgid ""
 "MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
 "environment using traditional metaphors for Linux and other Unix-like "
 "operating systems."
-msgstr ""
+msgstr "MATE 桌面环境是GNOME 2 的一个分支,旨在使用传统的方式，为Linux和其他类Unix系统提供一个有吸引力的和直观的桌面. "
 
 #: src/download.py:79
 msgid "Can't connect with aria2, downloading will be performed by alpm."
-msgstr ""
+msgstr "无法用aria2链接,下载将由alpm执行."
 
 #: src/download.py:89
 msgid "Error creating metalink for package %s"
@@ -263,15 +263,15 @@ msgstr "为包 %s 添加 metalink 错误"
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "下载包'%s'及其依赖..."
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "正在下载%s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
-msgstr ""
+msgstr "不能连接到Aria2.错误输出:%s"
 
 #: src/download.py:245
 msgid "Unable to create download queue for package %s"
@@ -287,15 +287,15 @@ msgstr "警告! 无法解决这些依赖："
 
 #: src/features.py:110
 msgid "Feature Selection"
-msgstr ""
+msgstr "功能选择"
 
 #: src/features.py:118
 msgid "Arch User Repository (AUR) Support"
-msgstr ""
+msgstr "Arch 用户软件仓库(AUR) 支持"
 
 #: src/features.py:121
 msgid "The AUR is a community-driven repository for Arch users."
-msgstr ""
+msgstr "AUR是一个为 Arch 用户提供的社区驱动的软件仓库."
 
 #: src/features.py:124
 msgid ""
@@ -303,15 +303,15 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr ""
+msgstr "使用yaourt来安装AUR包.\n创建AUR是为了从社区中组织\n和共享新包，并帮助促进流行包\n进入[社区]库."
 
 #: src/features.py:133
 msgid "Bluetooth Support"
-msgstr ""
+msgstr "蓝牙支持"
 
 #: src/features.py:136
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "使能系统中的无线蓝牙连接."
 
 #: src/features.py:139
 msgid ""
@@ -319,15 +319,15 @@ msgid ""
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr ""
+msgstr "蓝牙是一个标准的与手机、电脑\n和其他电子设备近距离无线通信\n的技术.BlueZ是Linux世界蓝牙\n协议栈的实现典范"
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "补充全真字体"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "补充全真字体安装"
 
 #: src/features.py:154
 msgid ""
@@ -336,45 +336,45 @@ msgid ""
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr ""
+msgstr "TrueType是由美国苹果公司和微软公司\n为了对抗Adobe公司的Type 1PostScript\n字体在1980年代共同开发的一种电脑轮廓\n字体类型标准。它已经成为苹果和微软公\n司最常用的字体标准。"
 
 #: src/features.py:164
 msgid "Gnome Extra"
-msgstr ""
+msgstr "Gnome 扩展"
 
 #: src/features.py:167
 msgid "Installation of extra Gnome applications"
-msgstr ""
+msgstr "Gnome扩展程序安装"
 
 #: src/features.py:170
 msgid ""
 "Contains various optional tools such as a media\n"
 "player, a calculator, an editor and other non-critical\n"
 "applications that go well with the GNOME desktop.\n"
-msgstr ""
+msgstr "包含各种可选工具，如媒体播放器，\n计算器，编辑器和其他与GNOME\n桌面共存的非关键应用.\n"
 
 #: src/features.py:178
 msgid "Printing Support"
-msgstr ""
+msgstr "打印支持"
 
 #: src/features.py:181
 msgid "Installation of printer drivers and management tools."
-msgstr ""
+msgstr "安装打印机驱动和管理工具."
 
 #: src/features.py:184
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
-msgstr ""
+msgstr "CUPS 是苹果公司为OS\\302\\256 X 和其\n他类 UNIX\\302\\256 的操作系统开发的\n基于标准的、开源的打印系统."
 
 #: src/features.py:192
 msgid "LibreOffice"
-msgstr ""
+msgstr "LibreOffice"
 
 #: src/features.py:195
 msgid "Open source office suite. Supports editing MS Office files."
-msgstr ""
+msgstr "开源office 包.支持编辑MS Office 文件."
 
 #: src/features.py:198
 msgid ""
@@ -383,15 +383,15 @@ msgid ""
 "and Linux, that gives you six feature-rich applications\n"
 "for all your document production and data processing\n"
 "needs: Writer, Calc, Impress, Draw, Math and Base."
-msgstr ""
+msgstr "LibreOffice是一套功能强大，面向个人生产的免费开源\n办公软件，支持Windows、Macintosh以及Linux平台。\n同时套件为用户提供了6个特色功能的应用程序，用来处\n理日常的文档处理和数据管理，包括：Writer, Calc, \nImpress, Draw, Math和Base。"
 
 #: src/features.py:208
 msgid "Visual Effects"
-msgstr ""
+msgstr "视觉效果"
 
 #: src/features.py:211
 msgid "Enable transparency, shadows, and other desktop effects."
-msgstr ""
+msgstr "使能透明，阴影，和其他桌面功能."
 
 #: src/features.py:214
 msgid ""
@@ -400,34 +400,34 @@ msgid ""
 "provide compositing functionality. Compton itself is a fork\n"
 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
 "See the compton github page for further information."
-msgstr ""
+msgstr "Compton是一个轻量级的，独立的复合管理器，适合\n和不能提供复合功能的管理器共同使用。Compton 本\n身是xcompmgr-dana的一个衍生版本，而xcompmgr\n-dana又是xcompmgr的一个衍生版本。更多信息请访\n问compton github页面."
 
 #: src/features.py:224
 msgid "Uncomplicated Firewall"
-msgstr ""
+msgstr "简单防火墙（ufw）"
 
 #: src/features.py:227
 msgid "Control the incoming and outgoing network traffic."
-msgstr ""
+msgstr "控制输入/输出网络流量."
 
 #: src/features.py:230
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
-msgstr ""
+msgstr "Ufw意思是不复杂的防火墙，是用来管理网络\n过滤的防火墙。它提供一个命令行接口，并致\n力于简单易用。"
 
 #: src/features.py:238
 msgid "Proprietary Software"
-msgstr ""
+msgstr "专用软件"
 
 #: src/features.py:241
 msgid "Software to play Flash videos, MP3 audio, and other media."
-msgstr ""
+msgstr "播放Flash，MP3和其他媒体的软件."
 
 #: src/features.py:305
 msgid "Arch User Repository - Disclaimer"
-msgstr ""
+msgstr "Arch 用户软件仓库 - 免责声明"
 
 #: src/features.py:306
 msgid ""
@@ -435,11 +435,11 @@ msgid ""
 "that supplement software available from the official repositories.\n"
 "\n"
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
-msgstr ""
+msgstr "Arch用户软件仓库由用户提交的 PKGBUILD 组成.\n这些补充软件可以从其官方库中获取.\n\nAUR是由社区驱动，不受Arch或Antergos支持.\n"
 
 #: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr ""
+msgstr "简单防火墙将会基于这些规则进行安装:"
 
 #: src/features.py:314
 msgid ""
@@ -447,11 +447,11 @@ msgid ""
 "ufw allow from %s\n"
 "ufw allow Transmission\n"
 "ufw allow SSH"
-msgstr ""
+msgstr "ufw 默认拒绝\nufw 允许 %s\nufs 允许Transmission\nufs 允许 SSH"
 
 #: src/hardware/hardware.py:65 src/installation/process.py:918
 msgid "Error running command: %s"
-msgstr ""
+msgstr "运行命令错误: %s"
 
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
@@ -460,7 +460,7 @@ msgstr "可用空间"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
-msgstr ""
+msgstr "不建议安装grub到一个分区"
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
@@ -504,63 +504,63 @@ msgstr "无"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
-msgstr ""
+msgstr "不能在LVM文件系统类型下编辑一个分区"
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "不能两次使用同一个挂载点."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
-msgstr ""
+msgstr "根分区必须格式化."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "不能两次使用同一个挂载点..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "正在创建主分区"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "正在创建扩展分区"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "正在创建逻辑分区"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "高级安装模式"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
-msgstr ""
+msgstr "boot loader将安装到下面设备上:"
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "挂载列表:"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot(/boot)"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
-msgstr ""
+msgstr "新分区表"
 
 #: src/installation/advanced.py:1144
 msgid "Change..."
@@ -596,11 +596,11 @@ msgstr "空间终点"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
-msgstr ""
+msgstr "用作:"
 
 #: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
-msgstr ""
+msgstr "挂载点:"
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
@@ -608,7 +608,7 @@ msgstr "标签(可选):"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
-msgstr ""
+msgstr "加密选项..."
 
 #: src/installation/advanced.py:1206
 msgid "Format:"
@@ -616,20 +616,20 @@ msgstr "格式化："
 
 #: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
-msgstr ""
+msgstr "分区表类型:"
 
 #: src/installation/advanced.py:1216
 msgid "Create Partition Table"
-msgstr ""
+msgstr "创建分区表"
 
 #: src/installation/advanced.py:1219 src/installation/alongside.py:149
 #: src/installation/automatic.py:95
 msgid "Install Now!"
-msgstr ""
+msgstr "现在安装!"
 
 #: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
-msgstr ""
+msgstr "创建一个新的分区 %s 在磁盘 %s 上"
 
 #: src/installation/advanced.py:1315
 msgid ""
@@ -640,14 +640,14 @@ msgid ""
 "The GPT partition also creates a protective MBR partition to stop unsupported tools from modifying it. You may need to set a bootable flag on this protective MBR partition if yoursystem doesnt boot successfully after installation.\n"
 "\n"
 "Cnchi will create the BIOS Boot Partition for you."
-msgstr ""
+msgstr "GRUB2 需要一个2 MiB 的“BIOS引导分区” (在 gdisk 中分区代码为 EF02，在 GNU Parted 中使用 bios_grub 标志)\n\n进行BIOS-GPT配置，需要在磁盘开始创建一个1007KiB的无文件系统的分区。这将能使该磁盘上的下个分区准确的进行1024 KiB的对齐。需要的话，该分区也可以放置在该磁盘的其他位置，不过它应该在开始的2TiB区域内。设置该分区类型为 ef02。\n\n该GPT分区也可以创建一个保护MBR分区，来阻止不支持的工具的修改。你可能需要在这个保护MBR分区上设置一个可启动标志，如果你的系统在安装后不能成功启动的话。\n\nCnchi将会为你创建一个BIOS 启动分区。"
 
 #: src/installation/advanced.py:1539
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s将挂在为swap分区.\n必须卸载后才能继续.\n点击 Yes 卸载,点击 No 返回\n"
 
 #: src/installation/advanced.py:1543
 msgid ""
@@ -658,7 +658,7 @@ msgstr "%s 挂载到 '%s'.\n必须先卸载才能继续.\n点击 Yes 卸载，No
 
 #: src/installation/advanced.py:1566
 msgid "%s shows as mounted (busy) but it has no mount point"
-msgstr ""
+msgstr "%s 看起来已经挂载(繁忙)但没有挂载点"
 
 #: src/installation/advanced.py:1627
 msgid "Partition %s will be deleted"
@@ -682,27 +682,27 @@ msgstr "修改标签"
 
 #: src/installation/advanced.py:1655
 msgid "We will make changes to partitions on these disks:"
-msgstr ""
+msgstr "我们将会执行这些磁盘上的分区变更:"
 
 #: src/installation/advanced.py:1712
 msgid "Finished saving changes in %s"
-msgstr ""
+msgstr "保存 %s 上的修改完成"
 
 #: src/installation/advanced.py:1736
 msgid "Creating new %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "正在创建新的 %s 文件在系统，在%s ，标签为 %s"
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "正在创建新的 %s 文件系统在 %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
-msgstr ""
+msgstr "不能格式化分区'%s' 用标签,因为 %s"
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
-msgstr ""
+msgstr "Cnchi将不会安装任何boot loader"
 
 #: src/installation/advanced.py:1827
 msgid "Antergos will install the bootloader of type %s in %s"
@@ -710,7 +710,7 @@ msgstr "Antergos将安装bootload %s 到 %s"
 
 #: src/installation/advanced.py:1841 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr ""
+msgstr "测试模式.Cnchi不会进行任何修改!"
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
@@ -718,11 +718,11 @@ msgstr "无法加载 %s css"
 
 #: src/installation/alongside.py:138
 msgid "Select the OS you would like Antergos installed next to."
-msgstr ""
+msgstr "选择你希望 Antergos 接下来安装的操作系统."
 
 #: src/installation/alongside.py:143
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Antergos 双系统安装"
 
 #: src/installation/alongside.py:174
 msgid "Detected OS"
@@ -734,112 +734,112 @@ msgstr "文件系统"
 
 #: src/installation/alongside.py:221
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "不能为双系统安装创建分区列表"
 
 #: src/installation/alongside.py:261
 msgid "Can't shrink the partition (maybe it's nearly full)"
-msgstr ""
+msgstr "不能压缩分区(可能分区已满)"
 
 #: src/installation/ask.py:97
 msgid "Installation Type"
-msgstr ""
+msgstr "安装类型"
 
 #: src/installation/ask.py:113
 msgid "Erase disk and install Antergos"
-msgstr ""
+msgstr "清空磁盘并安装Antergos"
 
 #: src/installation/ask.py:116
 msgid "Warning: This will erase ALL data on your disk."
-msgstr ""
+msgstr "警告: 将删除磁盘上的全部数据."
 
 #: src/installation/ask.py:122
 msgid "Encrypt this installation for increased security."
-msgstr ""
+msgstr "加密本次安装来提高安全性."
 
 #: src/installation/ask.py:126
 msgid "You will be asked to create an encryption password in the next step."
-msgstr ""
+msgstr "下一步你需要创建一个加密密码."
 
 #: src/installation/ask.py:135
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
-msgstr ""
+msgstr "这将会安装LVM，允许你便捷地管理分区并创建快照."
 
 #: src/installation/ask.py:140
 msgid "Set your Home in a different partition/volume"
-msgstr ""
+msgstr "把你的Home设置为一个不同的分区/卷"
 
 #: src/installation/ask.py:144
 msgid ""
 "This will setup you /home directory in a different partition or volume."
-msgstr ""
+msgstr "这将会把你的/home目录安装到不同的分区或卷上"
 
 #: src/installation/ask.py:152 src/installation/ask.py:154
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "安装 Antergos 和 %s 共存"
 
 #: src/installation/ask.py:161
 msgid "Choose exactly where Antergos should be installed. (advanced)"
-msgstr ""
+msgstr "手动选择Antergos安装位置.(高级)"
 
 #: src/installation/ask.py:164
 msgid "Edit partition table and choose mount points."
-msgstr ""
+msgstr "编辑分区表并选择挂载点."
 
 #: src/installation/ask.py:190
 msgid "Antergos installation will be encrypted using LUKS"
-msgstr ""
+msgstr "Antergos 安装将用 LUKS 加密"
 
 #: src/installation/ask.py:193
 msgid "Antergos will be installed using LVM volumes"
-msgstr ""
+msgstr "Antergos 将安装在LVM 卷上"
 
 #: src/installation/ask.py:195
 msgid "Antergos will be installed using a separate /home volume."
-msgstr ""
+msgstr "Antergos将使用一个独立的/home卷进行安装."
 
 #: src/installation/ask.py:197
 msgid "Antergos will be installed using a separate /home partition."
-msgstr ""
+msgstr "Antergos将使用一个独立的/home分区进行安装."
 
 #: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
 msgid "Unmounting %s"
-msgstr ""
+msgstr "正在卸载 %s"
 
 #: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
 msgid "Unmounting %s failed. Trying lazy arg."
-msgstr ""
+msgstr "卸载 %s 失败。正在尝试 -l 参数."
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
-msgstr ""
+msgstr "无法删除现存的 LVM 卷(如下)"
 
 #: src/installation/auto_partition.py:116
 msgid "Can't close LUKS devices : %s"
-msgstr ""
+msgstr "无法关闭LUKS设备: %s"
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "未知文件系统类型 %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "无法创建文件系统 %s"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
-msgstr ""
+msgstr "Cnchi 将把 LUKS 安装到 %s 设备"
 
 #: src/installation/auto_partition.py:381
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "method for partitioning and mounting devices."
-msgstr ""
+msgstr "安装无法检测你设备的大小,请使用高级安装方式来分区和挂载设备."
 
 #: src/installation/auto_partition.py:528
 msgid "Will setup LVM on device %s"
-msgstr ""
+msgstr "将安装 LVM 到设备 %s"
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -847,17 +847,17 @@ msgstr "选择驱动器:"
 
 #: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
-msgstr ""
+msgstr "警告! 将覆盖你磁盘上当前所有的数据."
 
 #: src/installation/automatic.py:80
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr ""
+msgstr "选择我们要用来安装Antergos的驱动器，然后点击下面开始."
 
 #: src/installation/automatic.py:85
 msgid "Encryption Password:"
-msgstr ""
+msgstr "加密密码:"
 
 #: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
@@ -865,61 +865,61 @@ msgstr "确认密码："
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
-msgstr ""
+msgstr "显示密码"
 
 #: src/installation/automatic.py:99
 msgid "Automatic Installation Mode"
-msgstr ""
+msgstr "自动安装模式"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
-msgstr ""
+msgstr "LUKS密码已设定"
 
 #: src/installation/automatic.py:165
 msgid "Automatic install on %s"
-msgstr ""
+msgstr "在 %s 上自动安装"
 
 #: src/installation/automatic.py:198
 msgid ""
 "Do you really want to proceed and delete all your content on your hard drive?\n"
 "\n"
 "%s"
-msgstr ""
+msgstr "你确定要继续并删除你硬盘上的所有内容？\n\n%s"
 
 #: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
-msgstr ""
+msgstr "Cnchi 将把 Antergos 安装到 %s 上"
 
 #: src/installation/automatic.py:222
 msgid "Antergos will install the %s bootloader on %s"
-msgstr ""
+msgstr "Antergos 将安装bootloader %s 到 %s"
 
 #: src/installation/process.py:92
 msgid "Installing using the '%s' method. Please wait..."
-msgstr ""
+msgstr "正在用 '%s' 方法安装.请等待..."
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
-msgstr ""
+msgstr "无法创建目录 %s, Cnchi无法继续"
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
-msgstr ""
+msgstr "在 %s 上创建分区和文件系统"
 
 #: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
-msgstr ""
+msgstr "创建分区和文件系统错误"
 
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:891
 msgid "Command %s has failed."
-msgstr ""
+msgstr "命令 %s 失败."
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "输出: %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
@@ -935,7 +935,7 @@ msgstr "无法挂载 root 和 boot 分区"
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "命令 %s 失败"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
@@ -943,7 +943,7 @@ msgstr "无法挂载 %s 到 %s"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
-msgstr ""
+msgstr "%s 已删除"
 
 #: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
@@ -951,51 +951,51 @@ msgstr "无法在目标系统创建必要的目录"
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
-msgstr ""
+msgstr "正在选择包..."
 
 #: src/installation/process.py:331
 msgid "Packages selected"
-msgstr ""
+msgstr "已选中的包"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "正在用 aria2 下载包..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
-msgstr ""
+msgstr "已下载的包"
 
 #: src/installation/process.py:346
 msgid "Installing packages..."
-msgstr ""
+msgstr "正在安装包..."
 
 #: src/installation/process.py:348
 msgid "Packages installed."
-msgstr ""
+msgstr " 已安装的包."
 
 #: src/installation/process.py:350
 msgid "Configuring system..."
-msgstr ""
+msgstr "正在配置系统..."
 
 #: src/installation/process.py:352
 msgid "System configured."
-msgstr ""
+msgstr "系统已配置."
 
 #: src/installation/process.py:387
 msgid "Installation finished"
-msgstr ""
+msgstr "安装已完成"
 
 #: src/installation/process.py:398
 msgid "Can't copy Cnchi log to %s"
-msgstr ""
+msgstr "无法复制Cnchi 日志到 %s"
 
 #: src/installation/process.py:416
 msgid "Creating a temporary pacman.conf for %s architecture"
-msgstr ""
+msgstr "为 %s 架构创建一个临时的pacman.conf"
 
 #: src/installation/process.py:509
 msgid "Getting package list..."
-msgstr ""
+msgstr "正在获取包列表..."
 
 #: src/installation/process.py:518
 msgid "Can't retrieve remote package list, using a local file instead."
@@ -1003,123 +1003,123 @@ msgstr "无法获取远程包列表，使用本地文件代替."
 
 #: src/installation/process.py:526
 msgid "Adding all desktops common packages"
-msgstr ""
+msgstr "添加所有桌面公用包"
 
 #: src/installation/process.py:541
 msgid "Adding '%s' desktop packages"
-msgstr ""
+msgstr "添加桌面包 '%s'"
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "添加 kde 语言包"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "已选中 kde 语言包: %s"
 
 #: src/installation/process.py:594
 msgid "Hardware module added these packages : %s"
-msgstr ""
+msgstr "硬件模块添加这些包: %s"
 
 #: src/installation/process.py:599 src/installation/process.py:1734
 msgid "Can't import hardware module."
-msgstr ""
+msgstr "无法导入硬件模块。"
 
 #: src/installation/process.py:601 src/installation/process.py:1736
 msgid "Unknown error in hardware module. Output: %s"
-msgstr ""
+msgstr "硬件模块未知错误。输出: %s"
 
 #: src/installation/process.py:612
 msgid "Adding filesystem packages"
-msgstr ""
+msgstr "添加文件系统包"
 
 #: src/installation/process.py:633
 msgid "Check for user desired features and add them to our installation"
-msgstr ""
+msgstr "检测用户需要的特性并添加到安装中"
 
 #: src/installation/process.py:635
 msgid "All features needed packages have been added"
-msgstr ""
+msgstr "所有功能需要的包都已添加"
 
 #: src/installation/process.py:640
 msgid "Selecting chinese fonts."
-msgstr ""
+msgstr "正在选择中文字体."
 
 #: src/installation/process.py:646
 msgid "Adding bootloader packages if needed"
-msgstr ""
+msgstr "正在按需添加bootloader包"
 
 #: src/installation/process.py:691
 msgid "Add libreoffice language package"
-msgstr ""
+msgstr "添加 libreoffice 语言包"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
-msgstr ""
+msgstr "包组 '%s' 有 %d 个包"
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi 将安装包共 %d 个."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "正在从 '%s' 组下载包..."
 
 #: src/installation/process.py:788
 msgid ""
 "Can't download group '%s'. Cnchi will continue and try again this download "
 "later."
-msgstr ""
+msgstr "无法下载组 '%s' 。Cnchi将继续并在之后重新尝试下载。"
 
 #: src/installation/process.py:806
 msgid "Installing packages from '%s' group..."
-msgstr ""
+msgstr "正在从组 '%s' 安装包..."
 
 #: src/installation/process.py:819
 msgid ""
 "Can't install group '%s'. Cnchi will continue but this group of packages "
 "won't be installed."
-msgstr ""
+msgstr "无法安装组 '%s'.Cnchi将继续改组包不会安装."
 
 #: src/installation/process.py:838
 msgid "Special dirs already mounted."
-msgstr ""
+msgstr "特定路径已经挂载"
 
 #: src/installation/process.py:873
 msgid "Special dirs are not mounted. Skipping."
-msgstr ""
+msgstr "特定的文件夹未挂载.正在跳过."
 
 #: src/installation/process.py:890 src/installation/process.py:896
 msgid "Unable to umount %s"
-msgstr ""
+msgstr "无法卸载 %s"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
-msgstr ""
+msgstr "无法复制网络配置文件"
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
-msgstr ""
+msgstr "已添加至 fstab: UUID=%s %s %s %s 0 %s"
 
 #: src/installation/process.py:995
 msgid "Added to crypttab : %s"
-msgstr ""
+msgstr "已添加至 crypttab: %s"
 
 #: src/installation/process.py:999
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
-msgstr ""
+msgstr "已添加至fstab:  /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:1048
 msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-msgstr ""
+msgstr "已添加至fstab:  tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
 
 #: src/installation/process.py:1056
 msgid "fstab written."
-msgstr ""
+msgstr "已写入 fstab."
 
 #: src/installation/process.py:1154
 msgid "Could not copy %s to grub.d"
-msgstr ""
+msgstr "无法复制 %s 到grub.d"
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
@@ -1135,71 +1135,71 @@ msgstr "GRUB(2) BIOS 安装错误"
 
 #: src/installation/process.py:1203
 msgid "Installing GRUB(2) UEFI %s boot loader"
-msgstr ""
+msgstr "正在安装GRUB(2) UEFI %s boot loader"
 
 #: src/installation/process.py:1229
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
-msgstr ""
+msgstr "没有在 %s 发现OEM 加载器.正在复制 Grub(2) 到目录。"
 
 #: src/installation/process.py:1234
 msgid "Copying Grub(2) into OEM dir failed. File Not Found."
-msgstr ""
+msgstr "复制Grub(2) 到OEM目录失败。文件未找到。"
 
 #: src/installation/process.py:1236
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
-msgstr ""
+msgstr "复制Grub(2) 到OEM目录失败。文件已存在。"
 
 #: src/installation/process.py:1238
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
-msgstr ""
+msgstr "复制Grub(2) 到OEM目录失败。未知错误。"
 
 #: src/installation/process.py:1247
 msgid "UEFI Shell drop-in not found at %s"
-msgstr ""
+msgstr "UEFI Shell drop-in 未在 %s 找到"
 
 #: src/installation/process.py:1251
 msgid "UEFI Shell drop-in could not be copied."
-msgstr ""
+msgstr "无法复制UEFI Shell drop-in ."
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "正在生成grub.cfg"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
-msgstr ""
+msgstr "GRUB(2) UEFI 安装可能没有完全成功."
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "GRUB(2) UEFI 安装成功完成"
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
-msgstr ""
+msgstr "正在复制GRUB(2) Theme主题"
 
 #: src/installation/process.py:1283
 msgid "Grub2 theme files not found"
-msgstr ""
+msgstr "Grub2 主题文件未找到"
 
 #: src/installation/process.py:1285
 msgid "Grub2 theme files already exist."
-msgstr ""
+msgstr "Grub2 主题文件已存在"
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "正在安装Grub2 语言环境"
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
-msgstr ""
+msgstr "无法安装GRUB(2) 的语言环境."
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "无法冻结/解冻 xfs 系统"
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
-msgstr ""
+msgstr "使能 %s 服务."
 
 #: src/installation/process.py:1347
 msgid "Error creating password hash for user %s"
@@ -1211,39 +1211,39 @@ msgstr "%s 用户修改密码错误"
 
 #: src/installation/process.py:1365
 msgid "Setting hooks and modules in mkinitcpio.conf"
-msgstr ""
+msgstr "在 mkinitcpio.conf 中设置 hooks 和 modules"
 
 #: src/installation/process.py:1459
 msgid "Copying xz files from cache..."
-msgstr ""
+msgstr "正在从缓存中复制 xz 文件..."
 
 #: src/installation/process.py:1486
 msgid "Configuring bluetooth..."
-msgstr ""
+msgstr "正在配置蓝牙..."
 
 #: src/installation/process.py:1492
 msgid "Configuring CUPS..."
-msgstr ""
+msgstr "正在配置CUPS..."
 
 #: src/installation/process.py:1504
 msgid "Configuring firewall..."
-msgstr ""
+msgstr "正在配置防火墙..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "无法配置防火墙: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
-msgstr ""
+msgstr "%s:正在配置显示管理器."
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
-msgstr ""
+msgstr "完成 %s 显示管理器配置."
 
 #: src/installation/process.py:1554
 msgid "Error while trying to configure '%s' display manager"
-msgstr ""
+msgstr "当尝试配置 '%s' 显示管理器时错误"
 
 #: src/installation/process.py:1639
 msgid "Configuring your new system"
@@ -1251,51 +1251,51 @@ msgstr "配置你的新系统"
 
 #: src/installation/process.py:1642
 msgid "fstab file generated."
-msgstr ""
+msgstr "fstab文件已生成."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi将用 %s 参数配置netctl"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "无法复制网络配置参数"
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
-msgstr ""
+msgstr "网络配置已复制."
 
 #: src/installation/process.py:1681
 msgid "Mirror list copied."
-msgstr ""
+msgstr "镜像列表已复制."
 
 #: src/installation/process.py:1683
 msgid "Can't copy mirrorlist file"
-msgstr ""
+msgstr "不能复制镜像列表文件"
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "已生成 "
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
-msgstr ""
+msgstr "时区已设置."
 
 #: src/installation/process.py:1725
 msgid "Sudo configuration for user %s done."
-msgstr ""
+msgstr "用户 %s 的sudo 配置已完成."
 
 #: src/installation/process.py:1753
 msgid "User %s added."
-msgstr ""
+msgstr "已添加用户 %s."
 
 #: src/installation/process.py:1766
 msgid "Hostname set to %s."
-msgstr ""
+msgstr "主机名设置为 %s."
 
 #: src/installation/process.py:1770
 msgid "Set the same password to root."
-msgstr ""
+msgstr "与root设置为相同的密码."
 
 #: src/installation/process.py:1776
 msgid "Generating locales..."
@@ -1307,43 +1307,43 @@ msgstr "正在调整硬件时钟..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
-msgstr ""
+msgstr "为xkblayout设置 /etc/X11/xorg.conf.d/00-keyboard.conf"
 
 #: src/installation/process.py:1809
 msgid "00-keyboard.conf written."
-msgstr ""
+msgstr "已写入00-keyboard.conf."
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "正在配置系统启动..."
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
-msgstr ""
+msgstr "调用Cnchi 的后续安装脚本"
 
 #: src/installation/process.py:1840
 msgid "Encrypting user home dir..."
-msgstr ""
+msgstr "加密用户home 目录..."
 
 #: src/installation/process.py:1842
 msgid "User home dir encrypted"
-msgstr ""
+msgstr "用户home目录已加密"
 
 #: src/installation/process.py:1846
 msgid "Installing bootloader..."
-msgstr ""
+msgstr "正在安装bootloader..."
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
-msgstr ""
+msgstr "选择你的键盘布局"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "键盘布局"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "键盘参数"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1359,7 +1359,7 @@ msgstr "键盘布局是 %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
-msgstr ""
+msgstr "注意: Cnchi 安装器尚处于 beta 版本."
 
 #: src/language.py:89
 msgid ""
@@ -1368,7 +1368,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi 是一个尚处于开发阶段的预发布beta版软件.\n它尚不能合理的处理RAID,  btrfs字卷和其他高级安装.\n请小心丢失数据的可能!\n\n如果你发现任何bug,请报告给<a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:97 src/welcome.py:100
 msgid "Welcome to Antergos!"
@@ -1383,7 +1383,7 @@ msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "你选择的位置将用于帮助确定系统语言环境.\n这通常应该在你居住的国家.\n这是一个基于你选择的语言的位置简表."
 
 #: src/location.py:72
 msgid "Country, territory or area:"
@@ -1403,7 +1403,7 @@ msgstr "不能修改语言为  '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "无法找到名字为 '%s' 的包或组"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
@@ -1455,85 +1455,85 @@ msgstr "正在检测和加载包..."
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "正在升级 %s 数据库"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr ""
+msgstr "无法验证 %s 是否是一个固态硬盘"
 
 #: src/parted3/fs_module.py:174
 msgid "Sorry but filesystem %s can't be shrinked"
-msgstr ""
+msgstr "对不起, 文件系统 %s 无法被压缩"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "无法删除逻辑卷 %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "无法删除卷组 %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "无法删除物理卷 %s"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
-msgstr ""
+msgstr "在设备 %s 上未识别的磁盘卷标"
 
 #: src/parted3/partition_module.py:113
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "异常: %s.\n更多信息请查看/tmp/cnchi.log "
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "无法删除分区 %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "分区太大!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "无法从 %s 获取已使用空间"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "无法检测NTFS分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "无法检测 EXTFS 分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "无法检测 FAT分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "无法检测 JFS分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "无法检测 REISERFS 分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "无法检测 BTRFS 分区 %s 的已使用空间"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "无法检测 XFS 分区 %s 的已使用空间"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "无法找到映射脚本"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "无法执行自动镜像选择"
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
@@ -1549,7 +1549,7 @@ msgstr "Antergos 安装器 - 消息"
 
 #: src/show_message.py:83
 msgid "Antergos Installer - Confirmation"
-msgstr ""
+msgstr "Antergos 安装器 - 确认"
 
 #: src/slides.py:94
 msgid "Please wait..."
@@ -1568,17 +1568,17 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr ""
+msgstr "重要: Grub(2) bootloader安装可能有一个问题，\n这可能导致你的系统无法正常启动。启动前也许\n你需要验证是否GRUB(2)已安装和已配置. Arch \nLinux Wiki包含问题定位信息:\nhttps://wiki.archlinux.org/index.php/GRUB\n\n你是否要现在查看wiki页面？"
 
 #: src/slides.py:206
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
-msgstr ""
+msgstr "安装完成!\n你是否现在重启电脑？"
 
 #: src/slides.py:234
 msgid "Do you want to retry the installation using the same configuration?"
-msgstr ""
+msgstr "你是否要使用相同配置重试安装？"
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1590,11 +1590,11 @@ msgstr "区域:"
 
 #: src/timezone.py:116
 msgid "Use Network Time Protocol for clock synchronization:"
-msgstr ""
+msgstr "使用网络时间协议来实现时钟同步"
 
 #: src/timezone.py:120
 msgid "Select Your Timezone"
-msgstr ""
+msgstr "选择你的时区"
 
 #: src/timezone.py:134
 msgid "location changed to : %s"
@@ -1610,19 +1610,19 @@ msgstr "停止时区线程..."
 
 #: src/timezone.py:331
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "无法获取网络状态。稍后将重试。"
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "已连接.让我们获取时区"
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "以检测到时区."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "无法检测到用户时区."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"
@@ -1674,7 +1674,7 @@ msgstr "确认密码"
 
 #: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
-msgstr ""
+msgstr "认证你的系统到其他的电脑和设备上."
 
 #: src/user_info.py:124
 msgid "You must enter a name"
@@ -1702,7 +1702,7 @@ msgstr "加密home文件夹"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
-msgstr ""
+msgstr "创建用户账户"
 
 #: src/user_info.py:192
 msgid ""
@@ -1718,7 +1718,7 @@ msgid ""
 "Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
 "\n"
 "Are you sure you want to encrypt your home directory?\n"
-msgstr ""
+msgstr "Antergos 将使用eCryptfs来加密你的home目录.\n可惜的是，eCryptfs还不能很好的处理稀疏文件.\n\n不要太担心,大多数情况下这个不足都不会出现问题.\n\n一个常见但不建议的eCryptfs应用是加密BitTorrent下载路径, 因为这里通常需要eCryptfs来处理10GB或以上的稀疏文件，这可能导致磁盘空间不足.\n\n更多信息参考https://wiki.archlinux.org/index.php/ECryptfs.\n\n你是否确定加密你的home目录？\n"
 
 #: src/user_info.py:267
 msgid "Invalid characters entered"
@@ -1736,11 +1736,11 @@ msgstr "字符过多"
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
-msgstr ""
+msgstr "你可以选择‘Try it’来试用 Antergos,这不会对你的系统进行任何修改.\n当你准备安装Antergos, 你只需选择你喜欢的安装器即可."
 
 #: src/welcome.py:90
 msgid "Try It"
-msgstr ""
+msgstr "试用"
 
 #: src/welcome.py:93
 msgid "CLI Installer"

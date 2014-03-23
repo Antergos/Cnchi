@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-21 05:27+0000\n"
+"Last-Translator: mohemohe <mohemohe@ghippos.net>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/antergos/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,15 +38,15 @@ msgstr "インストーラーを同時に実行することはできません。
 
 #: cnchi.py:132
 msgid "Cnchi installer version %s"
-msgstr ""
+msgstr "Cnchi インストーラー version %s"
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "パッケージのダウンロードに Aria2 を使用する - 実験的"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
-msgstr ""
+msgstr "Cnchi - Antergos インストーラー"
 
 #: cnchi.py:284
 msgid "Antergos Installer"
@@ -223,7 +223,7 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Enlightenment は Linux/X11 やその他のウィンドウマネージャだけでなく、大きなライブラリ集によって、美しいユーザーインターフェースを僅かな作業で構築できます"
 
 #: src/desktop_environments.py:93
 msgid ""
@@ -706,7 +706,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1818
 msgid "Cnchi will not install any boot loader"
-msgstr ""
+msgstr "Cnchi はどのブートローダーもインストールしません"
 
 #: src/installation/advanced.py:1827
 msgid "Antergos will install the bootloader of type %s in %s"
@@ -714,7 +714,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1841 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr ""
+msgstr "テストモード。 Cnchiは何も変更しません！"
 
 #: src/installation/alongside.py:111
 msgid "Can't load %s css"
@@ -1372,7 +1372,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr "Cnchi プレリリース版のソフトウェアで、活発に開発しています。\nRAID、btrfs subvolumes、その他の高度なセットアップは、まだ適切に処理できません。\nデータの損失に可能な限り注意しながら進めてください。\n\nもし何かバグを見つけたら、 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> に報告してください。"
+msgstr "Cnchiはプレリリース版のソフトウェアで、活発に開発しています。\nRAID、btrfs subvolumes、その他の高度なセットアップは、まだ適切に処理できません。\nデータの損失に可能な限り注意しながら進めてください。\n\nもし何かバグを見つけたら、 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> に報告してください。"
 
 #: src/language.py:97 src/welcome.py:100
 msgid "Welcome to Antergos!"
@@ -1634,7 +1634,7 @@ msgstr "タイムゾーンでは、ネットワークステータスを取得で
 
 #: src/timezone.py:403
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr ""
+msgstr "pacman のミラーリスト生成に使用する国名コードを取得できません"
 
 #: src/timezone.py:424
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
@@ -1642,7 +1642,7 @@ msgstr ""
 
 #: src/timezone.py:426
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr ""
+msgstr "国名コードに基づいた pacman のミラーリストを生成できませんでした"
 
 #: src/user_info.py:84
 msgid "Your name:"

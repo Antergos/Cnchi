@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-11 14:49+0000\n"
+"Last-Translator: probil <m_lyashuk@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/antergos/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -71,11 +71,11 @@ msgstr ""
 
 #: cnchi.py:431
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Встановлює рівень логування Cnchi в 'debug'"
 
 #: cnchi.py:432
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Оновити Cnchi до останньої версії (-uu примусове оновлення)"
 
 #: cnchi.py:433
 msgid ""
@@ -84,7 +84,7 @@ msgstr ""
 
 #: cnchi.py:434
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "Не вносити ніяких змін (корисно для розробників)"
 
 #: cnchi.py:435
 msgid "Show logging messages to stdout"
@@ -105,7 +105,7 @@ msgstr "невідомо"
 
 #: src/canonical/misc.py:929
 msgid "Can't set locale %s"
-msgstr ""
+msgstr "Не вдалось встановити локалізацію %s"
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
@@ -265,11 +265,11 @@ msgstr "Помилка додання метапосилання для паку
 
 #: src/download.py:104
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "Завантаження пакунку '%s' та його залежностей..."
 
 #: src/download.py:135 src/pacman/pac.py:336
 msgid "Downloading %s..."
-msgstr ""
+msgstr "Завантаження %s..."
 
 #: src/download.py:167
 msgid "Can't connect to Aria2. Error Output: %s"
@@ -325,11 +325,11 @@ msgstr ""
 
 #: src/features.py:148
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "Додаткові шрифти Truetype"
 
 #: src/features.py:151
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "Встановлення додаткових шрифтів TrueType"
 
 #: src/features.py:154
 msgid ""
@@ -449,7 +449,7 @@ msgid ""
 "ufw allow from %s\n"
 "ufw allow Transmission\n"
 "ufw allow SSH"
-msgstr ""
+msgstr "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH"
 
 #: src/hardware/hardware.py:65 src/installation/process.py:918
 msgid "Error running command: %s"
@@ -462,7 +462,7 @@ msgstr "вільне місце"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
-msgstr ""
+msgstr "Не рекомендується встановлювати grub в розділі"
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:171
 msgid "Device"
@@ -506,11 +506,11 @@ msgstr "нічого"
 
 #: src/installation/advanced.py:624
 msgid "Can't edit a partition with LVM filesystem type"
-msgstr ""
+msgstr "Не можливо змінити розділ з типом файлової системи LVM"
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "Не можна встановлювати одну і ту ж точку монтування двічі..."
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
@@ -518,19 +518,19 @@ msgstr "Коренева тека має бути відформатованою
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "Не можна встановлювати одну точку монтування двічі..."
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "Створення основного розділу"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "Створення розширеного розділу"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "Створення логічного розділу"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
@@ -546,19 +546,19 @@ msgstr ""
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "Root ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "Boot ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
@@ -660,7 +660,7 @@ msgstr "%s змонтовано в '%s'.\nПродовження потребу�
 
 #: src/installation/advanced.py:1566
 msgid "%s shows as mounted (busy) but it has no mount point"
-msgstr ""
+msgstr "%s відображається як змонтований (зайнятий) проте точка монтування відсутня"
 
 #: src/installation/advanced.py:1627
 msgid "Partition %s will be deleted"
@@ -692,11 +692,11 @@ msgstr "Завершено внесення змін до %s"
 
 #: src/installation/advanced.py:1736
 msgid "Creating new %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "Створення файлової системи %s в %s з міткою %s"
 
 #: src/installation/advanced.py:1738
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "Створення нової файлової системи %s в %s"
 
 #: src/installation/advanced.py:1780
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
@@ -823,11 +823,11 @@ msgstr ""
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "Невідомий тип файлової системи %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
-msgstr ""
+msgstr "Неможливо створити файлову систему %s"
 
 #: src/installation/auto_partition.py:324
 msgid "Cnchi will setup LUKS on device %s"
@@ -841,7 +841,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:528
 msgid "Will setup LVM on device %s"
-msgstr ""
+msgstr "LVM встановиться на пристрій %s"
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -902,7 +902,7 @@ msgstr ""
 
 #: src/installation/process.py:165
 msgid "Can't create %s directory, Cnchi can't continue"
-msgstr ""
+msgstr "Не вдається створити теку %s, Cnchi не може продовжити"
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
@@ -915,13 +915,13 @@ msgstr "Помилка створення розділів та їх файло�
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:891
 msgid "Command %s has failed."
-msgstr ""
+msgstr "Помилка виконання команди %s."
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
 #: src/installation/process.py:358 src/installation/process.py:893
 msgid "Output : %s"
-msgstr ""
+msgstr "Вивід : %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
@@ -937,7 +937,7 @@ msgstr "Невдалось примонтувати розділи root та boo
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "Помилка виконання команди %s"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
@@ -961,7 +961,7 @@ msgstr "Пакунки обрані"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Завантаження пакунків використовуючи aria2..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
@@ -1013,11 +1013,11 @@ msgstr "Додання пакунків стільниці '%s'"
 
 #: src/installation/process.py:554
 msgid "Add kde language package"
-msgstr ""
+msgstr "Додати мовний пакунок kde"
 
 #: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "Обрано мовний пакунок kde: %s"
 
 #: src/installation/process.py:594
 msgid "Hardware module added these packages : %s"
@@ -1053,19 +1053,19 @@ msgstr "Додання пакунків завантажувача, якщо ц�
 
 #: src/installation/process.py:691
 msgid "Add libreoffice language package"
-msgstr ""
+msgstr "Додати пакет локалізації для libreoffice"
 
 #: src/installation/process.py:740
 msgid "Package group '%s' has %d packages"
-msgstr ""
+msgstr "В групі '%s' міститься %d пакунків"
 
 #: src/installation/process.py:763
 msgid "Cnchi will install a total of %d packages."
-msgstr ""
+msgstr "Cnchi встановить %d загалом."
 
 #: src/installation/process.py:775
 msgid "Downloading packages from '%s' group..."
-msgstr ""
+msgstr "Завантаження пакунку з групи '%s'..."
 
 #: src/installation/process.py:788
 msgid ""
@@ -1075,7 +1075,7 @@ msgstr ""
 
 #: src/installation/process.py:806
 msgid "Installing packages from '%s' group..."
-msgstr ""
+msgstr "Завантаження пакунків з групи '%s'..."
 
 #: src/installation/process.py:819
 msgid ""
@@ -1097,7 +1097,7 @@ msgstr "Неможливо відмонтувати %s"
 
 #: src/installation/process.py:951
 msgid "Can't copy network configuration files"
-msgstr ""
+msgstr "Не вдалось скопіювати файли налаштування мережі"
 
 #: src/installation/process.py:981 src/installation/process.py:1044
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
@@ -1105,23 +1105,23 @@ msgstr "До fstab додано : UUID=%s %s %s %s 0 %s"
 
 #: src/installation/process.py:995
 msgid "Added to crypttab : %s"
-msgstr ""
+msgstr "До crypttab додано : %s"
 
 #: src/installation/process.py:999
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
-msgstr ""
+msgstr "До fstab додано : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:1048
 msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-msgstr ""
+msgstr "До fstab додано : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
 
 #: src/installation/process.py:1056
 msgid "fstab written."
-msgstr ""
+msgstr "fstab записано."
 
 #: src/installation/process.py:1154
 msgid "Could not copy %s to grub.d"
-msgstr ""
+msgstr "Не вдалось скопіювати %s до grub.d"
 
 #: src/installation/process.py:1161
 msgid "Installing GRUB(2) BIOS boot loader in %s"
@@ -1165,7 +1165,7 @@ msgstr ""
 
 #: src/installation/process.py:1255
 msgid "Generating grub.cfg"
-msgstr ""
+msgstr "Створення grub.cfg"
 
 #: src/installation/process.py:1270
 msgid "GRUB(2) UEFI install may not have completed successfully."
@@ -1173,31 +1173,31 @@ msgstr ""
 
 #: src/installation/process.py:1273
 msgid "GRUB(2) UEFI install completed successfully"
-msgstr ""
+msgstr "GRUB(2) UEFI успішно інстальовано."
 
 #: src/installation/process.py:1277
 msgid "Copying GRUB(2) Theme Files"
-msgstr ""
+msgstr "Копіювання тем GRUB(2)"
 
 #: src/installation/process.py:1283
 msgid "Grub2 theme files not found"
-msgstr ""
+msgstr "Файли тем Grub2 не знайдено"
 
 #: src/installation/process.py:1285
 msgid "Grub2 theme files already exist."
-msgstr ""
+msgstr "Файли тем Grub2 вже існують."
 
 #: src/installation/process.py:1289
 msgid "Installing Grub2 locales."
-msgstr ""
+msgstr "Встановлення мов Grub2."
 
 #: src/installation/process.py:1300
 msgid "Can't install GRUB(2) locale."
-msgstr ""
+msgstr "Помилка встановлення мови для GRUB(2)."
 
 #: src/installation/process.py:1334
 msgid "Can't freeze/unfreeze xfs system"
-msgstr ""
+msgstr "Неможливо заморозити/розморозити файлову систему xfs"
 
 #: src/installation/process.py:1340
 msgid "Enabled %s service."
@@ -1233,11 +1233,11 @@ msgstr "Налаштування фаєрволу..."
 
 #: src/installation/process.py:1516
 msgid "Couldn't configure the firewall: %s"
-msgstr ""
+msgstr "Не вдалося налаштувати фаєрвол: %s"
 
 #: src/installation/process.py:1526
 msgid "%s: Configuring display manager."
-msgstr ""
+msgstr "%s: Налаштування менеджера екрану."
 
 #: src/installation/process.py:1552
 msgid "Completed %s display manager configuration."
@@ -1257,11 +1257,11 @@ msgstr "Файл fstab згенеровано."
 
 #: src/installation/process.py:1660
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr ""
+msgstr "Cnchi налаштує netctl використовуючи профіль %s"
 
 #: src/installation/process.py:1667
 msgid "Can't copy network configuration profiles"
-msgstr ""
+msgstr "Не вдалось скопіювати налаштування профілів мережі"
 
 #: src/installation/process.py:1675
 msgid "Network configuration copied."
@@ -1277,7 +1277,7 @@ msgstr "Невдалось скопіювати файл зі списком д�
 
 #: src/installation/process.py:1690
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "Створено /etc/pacman.conf"
 
 #: src/installation/process.py:1708
 msgid "Timezone set."
@@ -1293,7 +1293,7 @@ msgstr "Додано користувача %s."
 
 #: src/installation/process.py:1766
 msgid "Hostname set to %s."
-msgstr ""
+msgstr "Встановлено ім’я комп’ютера – %s."
 
 #: src/installation/process.py:1770
 msgid "Set the same password to root."
@@ -1309,7 +1309,7 @@ msgstr "Налаштування апаратного годинника..."
 
 #: src/installation/process.py:1797
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
-msgstr ""
+msgstr "Встановлення /etc/X11/xorg.conf.d/00-keyboard.conf для xkblayout"
 
 #: src/installation/process.py:1809
 msgid "00-keyboard.conf written."
@@ -1317,7 +1317,7 @@ msgstr "00-keyboard.conf записано."
 
 #: src/installation/process.py:1815
 msgid "Configuring System Startup..."
-msgstr ""
+msgstr "Налаштування автозапуску системи..."
 
 #: src/installation/process.py:1818
 msgid "Call Cnchi post-install script"
@@ -1341,11 +1341,11 @@ msgstr "Оберіть розкладку клавіатури"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Розкладки клавіатури"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Варіанти клавіатури"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1405,7 +1405,7 @@ msgstr "Неможливо змінити мову на '%s'"
 
 #: src/pacman/pac.py:180
 msgid "Can't find a package or group called '%s'"
-msgstr ""
+msgstr "Не вдалось знайти пакунок або ж групу з назвою '%s'"
 
 #: src/pacman/pac.py:258
 msgid "Checking dependencies..."
@@ -1457,7 +1457,7 @@ msgstr "Перевірка та завантаження пакунків"
 
 #: src/pacman/pac.py:331
 msgid "Updating %s database"
-msgstr ""
+msgstr "Оновлення бази даних %s"
 
 #: src/parted3/fs_module.py:149
 msgid "Can't verify if %s is a Solid State Drive or not"
@@ -1469,15 +1469,15 @@ msgstr "Вибачте, але файлова система %s не може б
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "Не вдалось вилучити логічний розділ %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Не вдалось вилучити групу розділів %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "Не вдалось вилучити фізичний розділ розділ %s"
 
 #: src/parted3/partition_module.py:108
 msgid "Unrecognised disk label in device %s."
@@ -1491,15 +1491,15 @@ msgstr ""
 
 #: src/parted3/partition_module.py:180
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "Невдалось видалити розділ %s"
 
 #: src/parted3/partition_module.py:231
 msgid "Partition is too large!"
-msgstr ""
+msgstr "Розділ завеликий!"
 
 #: src/parted3/partition_module.py:290
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "Не вдалось виявити використане місце на %s"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
@@ -1535,7 +1535,7 @@ msgstr ""
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "Невдалось виконати автовибір дзеркала"
 
 #: src/show_message.py:51
 msgid "Antergos Installer - Error"
@@ -1616,15 +1616,15 @@ msgstr ""
 
 #: src/timezone.py:337
 msgid "We have connection. Let's get our timezone"
-msgstr ""
+msgstr "Є підключення. Отримаймо часову зону"
 
 #: src/timezone.py:348
 msgid "Timezone detected."
-msgstr ""
+msgstr "Часовий пояс виявлено."
 
 #: src/timezone.py:350
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Не вдалось виявити часову зону."
 
 #: src/timezone.py:379
 msgid "In timezone, can't get network status"

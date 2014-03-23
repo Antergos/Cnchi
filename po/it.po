@@ -3,15 +3,15 @@
 # 
 # Translators:
 # faidoc <faidoc@gmail.com>, 2013
-# DSAureli <ds.aureli@gmail.com>, 2013
+# DSAureli <ds.aureli@gmail.com>, 2013-2014
 # Davide_IT <davide.mauri88@tiscali.it>, 2013
 # skinth <skinth91@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-26 22:10+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-03-13 14:12+0000\n"
+"Last-Translator: DSAureli <ds.aureli@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/antergos/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,7 +41,7 @@ msgstr ""
 
 #: cnchi.py:207
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "Utilizzando Aria2 per los caricamento dei pacchetti - SPERIMENTALE"
+msgstr "Utilizzando Aria2 per lo scaricamento dei pacchetti - SPERIMENTALE"
 
 #: cnchi.py:249
 msgid "Cnchi - Antergos Installer"
@@ -183,7 +183,7 @@ msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "Gnome 3 è un modo semplice ed elegante di utilizzare il computer. Presenta la Panoramica Attività, che è un modo semplice per accedere a tutte le funzioni di base. GNOME 3 è il desktop di default in Antergos."
 
 #: src/desktop_environments.py:69
 msgid ""
@@ -310,11 +310,11 @@ msgstr ""
 
 #: src/features.py:133
 msgid "Bluetooth Support"
-msgstr ""
+msgstr "Supporto Bluetooth"
 
 #: src/features.py:136
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "Consente al sistema di effettuare connessioni wireless via Bluetooth."
 
 #: src/features.py:139
 msgid ""
@@ -373,7 +373,7 @@ msgstr ""
 
 #: src/features.py:192
 msgid "LibreOffice"
-msgstr ""
+msgstr "LibreOffice"
 
 #: src/features.py:195
 msgid "Open source office suite. Supports editing MS Office files."
@@ -411,7 +411,7 @@ msgstr ""
 
 #: src/features.py:227
 msgid "Control the incoming and outgoing network traffic."
-msgstr ""
+msgstr "Controlla il traffico di rete in entrata e in uscita."
 
 #: src/features.py:230
 msgid ""
@@ -422,7 +422,7 @@ msgstr ""
 
 #: src/features.py:238
 msgid "Proprietary Software"
-msgstr ""
+msgstr "Software Proprietario"
 
 #: src/features.py:241
 msgid "Software to play Flash videos, MP3 audio, and other media."
@@ -515,7 +515,7 @@ msgstr ""
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
-msgstr ""
+msgstr "La partizione di root deve essere formattata."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
@@ -535,7 +535,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "Modalità di installazione avanzata"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
@@ -650,7 +650,7 @@ msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s è montato come swap.\nPer continuare necessita di essere smontato.\nClicca Si per smontare, o No per annullare\n"
 
 #: src/installation/advanced.py:1543
 msgid ""
@@ -749,11 +749,11 @@ msgstr ""
 
 #: src/installation/ask.py:113
 msgid "Erase disk and install Antergos"
-msgstr ""
+msgstr "Cancella il disco ed installa Antergos"
 
 #: src/installation/ask.py:116
 msgid "Warning: This will erase ALL data on your disk."
-msgstr ""
+msgstr "Attenzione: questo cancellerà TUTTI i dati sul disco."
 
 #: src/installation/ask.py:122
 msgid "Encrypt this installation for increased security."
