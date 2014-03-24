@@ -221,7 +221,7 @@ class Main(Gtk.Window):
         
         if cmd_line.packagelist:
             params['alternate_package_list'] = cmd_line.packagelist
-            logging.info("Using '%s' file as package list", params['alternate_package_list'])
+            logging.info(_("Using '%s' file as package list"), params['alternate_package_list'])
         else:
             params['alternate_package_list'] = ""
             
