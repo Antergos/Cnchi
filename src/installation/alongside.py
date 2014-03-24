@@ -32,12 +32,10 @@ import show_message as show
 import bootinfo
 import subprocess
 
-# To be able to test this installer in other systems
-# that do not have pyparted3 installed
 try:
     import parted
 except:
-    print("Can't import parted module! This installer won't work.")
+    pass
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'

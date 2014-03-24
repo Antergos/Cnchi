@@ -655,7 +655,7 @@ class InstallationProcess(multiprocessing.Process):
         for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
-                logging.debug("Adding packages for '%s' feature.", feature)
+                logging.debug(_("Adding packages for '%s' feature."), feature)
                 for child in root.iter(feature):
                     for pkg in child.iter('pkgname'):
                         # If it's a specific gtk or qt package we have to check it
@@ -1764,7 +1764,7 @@ class InstallationProcess(multiprocessing.Process):
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
                                    keyboard_layout, keyboard_variant], timeout=300)
-            logging.debug("Post install script completed successfully.")
+            logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as err:
             logging.error(err.output)
         except subprocess.TimeoutExpired as err:
@@ -1790,7 +1790,7 @@ class InstallationProcess(multiprocessing.Process):
             self.install_bootloader()
 
         # Copy installer log to the new installation (just in case something goes wrong)
-        logging.debug("Copying install log to /var/log.")
+        logging.debug(_("Copying install log to /var/log."))
         self.copy_log()
 
         self.queue_event('pulse', 'stop')

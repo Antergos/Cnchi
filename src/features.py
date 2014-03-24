@@ -270,7 +270,7 @@ class Features(Gtk.Box):
             process1.stdout.close()
             out, err = process2.communicate()
             if out.decode() is not '':
-                logging.debug("Detected bluetooth device. Enabling by default...")
+                logging.debug(_("Detected bluetooth device. Enabling by default..."))
                 self.switches['bluetooth'].set_active(True)
 
         if 'firewall' in self.features:
@@ -285,7 +285,7 @@ class Features(Gtk.Box):
             isactive = self.switches[feature].get_active()
             self.settings.set("feature_" + feature, isactive)
             if isactive:
-                logging.debug("Selected '%s' feature to install", feature)
+                logging.debug(_("Selected '%s' feature to install"), feature)
 
         # Show ufw info message if ufw is selected (only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:

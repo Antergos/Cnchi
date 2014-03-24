@@ -32,9 +32,7 @@ import logging
 try:
     import pyalpm
 except ImportError:
-    msg = "pyalpm not found! This installer won't work."
-    print(msg)
-    logging.error(msg)
+    logging.error(_("pyalpm not found! This installer won't work."))
 
 try:
     import pacman.config as config

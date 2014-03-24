@@ -25,6 +25,7 @@ import subprocess
 import logging
 import xmlrpc.client
 import queue
+import logging
 
 from pprint import pprint
 
@@ -33,7 +34,7 @@ from pprint import pprint
 try:
     import pm2ml
 except:
-    print("pm2ml not found. Aria2 download won't work.")
+    logging.error(_("pm2ml not found. Aria2 download won't work."))
 
 class DownloadPackages(object):
     """ Class to download packages using Aria2

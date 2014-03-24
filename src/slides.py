@@ -225,7 +225,7 @@ class Slides(Gtk.Box):
                 res = show.question(_("Do you want to retry the installation using the same configuration?"))
                 if res == GTK_RESPONSE_YES:
                     # Restart installation process
-                    logging.debug("Restarting installation process...")
+                    logging.debug(_("Restarting installation process..."))
                     p = self.settings.get('installer_thread_call')
 
                     self.process = installation_process.InstallationProcess(self.settings, self.callback_queue,

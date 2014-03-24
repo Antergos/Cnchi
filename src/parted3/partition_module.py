@@ -29,12 +29,10 @@ import canonical.misc as misc
 import logging
 import show_message as show
 
-# To be able to test this installer in other systems
-# that do not have pyparted3 installed
 try:
     import parted
 except ImportError:
-    logging.error("Can't import parted module! This installer won't work.")
+    logging.error(_("Can't import parted module! This installer won't work."))
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1

@@ -204,7 +204,7 @@ class AutoPartition(object):
 
         fs_uuid = get_fs_uuid(device)
         fs_label = get_fs_label(device)
-        logging.debug("Device details: %s UUID=%s LABEL=%s", device, fs_uuid, fs_label)
+        logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
@@ -270,7 +270,7 @@ class AutoPartition(object):
         mount_devices["swap"] = swap_device
 
         for md in mount_devices:
-            logging.debug("mount_devices[%s] = %s", md, mount_devices[md])
+            logging.debug(_("%s will be mount as %s"), mount_devices[md], md)
 
         return mount_devices
 
@@ -288,8 +288,6 @@ class AutoPartition(object):
 
         fs_devices[swap_device] = "swap"
 
-
-
         if self.luks:
             fs_devices[luks_devices[0]] = "ext4"
             if self.home:
@@ -305,7 +303,7 @@ class AutoPartition(object):
                 fs_devices[home_device] = "ext4"
 
         for f in fs_devices:
-            logging.debug("fs_devices[%s] = %s", f, fs_devices[f])
+            logging.debug(_("Device %s will have a %s filesystem"), f, fs_devices[f])
 
         return fs_devices
 
@@ -345,6 +343,7 @@ class AutoPartition(object):
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
+        # TODO: Fix GPT
         # if self.uefi:
         #     gpt_bios_grub_part_size = 2
         #     uefisys_part_size = 512
@@ -367,7 +366,7 @@ class AutoPartition(object):
 
             # Divide to get MB 1000*1000
             disc_size = logical_block_size * size / 1000000
-            logging.debug("The device %s has a size of %dMB" % (self.auto_device, disc_size))
+            logging.debug(_("The device %s has a size of %dMB"), self.auto_device, disc_size)
             # leave 1MB alone
             disc_size -= 1
         else:
@@ -377,7 +376,7 @@ class AutoPartition(object):
             show.warning(txt)
             return
 
-        # Partition sizes are expressed in MB
+        # Note: Partition sizes are expressed in MB
 
         boot_part_size = 256
 
@@ -404,19 +403,20 @@ class AutoPartition(object):
 
         lvm_pv_part_size = swap_part_size + root_part_size + home_part_size
 
-        logging.debug("disc_size %dMB", disc_size)
-        logging.debug("gpt_bios_grub_part_size %dMB", gpt_bios_grub_part_size)
-        logging.debug("uefisys_part_size %dMB", uefisys_part_size)
-        logging.debug("boot_part_size %dMB", boot_part_size)
+        logging.debug(_("Total disc size: %dMB"), disc_size)
+        if self.uefi:
+            logging.debug(_("GPT-BIOS partition size: %dMB"), gpt_bios_grub_part_size)
+            logging.debug(_("UEFI partition size: %dMB"), uefisys_part_size)
+        logging.debug(_("Boot partition size: %dMB"), boot_part_size)
 
         if self.lvm:
-            logging.debug("lvm_pv_part_size %dMB", lvm_pv_part_size)
+            logging.debug(_("LVM physical volume size: %dMB"), lvm_pv_part_size)
 
-        logging.debug("swap_part_size %dMB", swap_part_size)
-        logging.debug("root_part_size %dMB", root_part_size)
+        logging.debug(_("Swap partition size: %dMB"), swap_part_size)
+        logging.debug(_("Root partition size: %dMB"), root_part_size)
 
         if self.home:
-            logging.debug("home_part_size %dMB", home_part_size)
+            logging.debug(_("Home partition size: %dMB"), home_part_size)
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
@@ -425,7 +425,10 @@ class AutoPartition(object):
 
         # We assume a /dev/hdX format (or /dev/sdX)
         # We are not using GPT for UEFI at this time
+
+        # TODO: Fix GPT
         use_gpt = False
+
         if self.uefi and use_gpt:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
             # clean partition table to avoid issues!
@@ -505,16 +508,10 @@ class AutoPartition(object):
 
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
-        # if not self.home and self.uefi:
-        #     logging.debug("EFI %s, Boot %s, Swap %s, Root %s", efi_device, boot_device, swap_device, root_device)
-        # elif not self.home and not self.uefi:
-        #     logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
-        # elif self.home and self.uefi:
-        #     logging.debug("EFI %s, Boot %s, Swap %s, Root %s, Home %s", efi_device, boot_device, swap_device, root_device, home_device)
         if self.home:
-            logging.debug("Boot %s, Swap %s, Root %s, Home %s", boot_device, swap_device, root_device, home_device)
+            logging.debug("Boot: %s, Swap: %s, Root: %s, Home: %s", boot_device, swap_device, root_device, home_device)
         else:
-            logging.debug("Boot %s, Swap %s, Root %s", boot_device, swap_device, root_device)
+            logging.debug("Boot: %s, Swap: %s, Root: %s", boot_device, swap_device, root_device)
 
         if self.luks:
             self.setup_luks(luks_devices[0], "cryptAntergos", key_files[0])
@@ -522,11 +519,10 @@ class AutoPartition(object):
                 self.setup_luks(luks_devices[1], "cryptAntergosHome", key_files[1])
 
         if self.lvm:
-            logging.debug(_("Will setup LVM on device %s"), lvm_device)
+            logging.debug(_("Cnchi will setup LVM on device %s"), lvm_device)
 
             subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
             subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
-
             subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(root_part_size)), "AntergosVG"])
 
             if not self.home:
@@ -537,7 +533,7 @@ class AutoPartition(object):
                 # Use the remainig space for our home volume
                 subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
 
-        # Make sure the "root" partition is defined first!
+        # Note: Make sure the "root" partition is defined first!
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         if self.uefi:
@@ -549,8 +545,8 @@ class AutoPartition(object):
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
 
-        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
-        # NOTE: /etc/default/grub, /etc/fstab and /etc/crypttab will be modified in installation_process.py, too.
+        # Note: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
+        # Note: /etc/default/grub, /etc/fstab and /etc/crypttab will be modified in installation_process.py, too.
 
         if self.luks and self.luks_key_pass == "":
             # Copy keyfile to boot partition and home keyfile to root partition.
