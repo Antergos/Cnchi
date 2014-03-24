@@ -472,11 +472,11 @@ def init_cnchi():
     # Check for hwinfo
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
-        print(_("Please install %s before running this installer") % hwinfo)
+        print(_("Please install %s before running this installer") % "hwinfo")
         sys.exit(1)
 
     if not os.path.exists("/usr/bin/hdparm"):
-        print(_("Please install %s before running this installer") % hdparm)
+        print(_("Please install %s before running this installer") % "hdparm")
         sys.exit(1)
     
     if not check_gtk_version():
