@@ -475,7 +475,7 @@ def init_cnchi():
         print(_("Please install %s before running this installer") % "hwinfo")
         sys.exit(1)
 
-    if not os.path.exists("/usr/bin/hdparm"):
+    if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
         print(_("Please install %s before running this installer") % "hdparm")
         sys.exit(1)
     
