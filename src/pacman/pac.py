@@ -117,14 +117,14 @@ class Pac(object):
 
     def do_install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
-        logging.debug("Install a list of packages like pacman -S")
+        logging.debug(_("Cnchi will install a list of packages like pacman -S"))
 
         repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
         targets = self.get_targets(pkgs, conflicts)
 
         if len(targets) == 0:
-            logging.error("No targets found")
+            logging.error(_("No targets found"))
             return 1
         
         t = self.init_transaction(options)
@@ -137,11 +137,11 @@ class Pac(object):
         for pkg in targets:
             # Avoid duplicates
             if pkg.name not in pkg_names:
-                logging.debug("Adding %s to transaction" % pkg.name)
+                logging.debug(_("Adding %s to transaction"), pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
-        logging.debug("Finalize transaction...")
+        logging.debug(_("Finalize transaction..."))
         ok = self.finalize(t)
 
         return (0 if ok else 1)
@@ -174,7 +174,7 @@ class Pac(object):
                             targets.append(pkg)
                 else:
                     # No, it wasn't neither a package nor a group. Show error message and continue.
-                    logging.error(_("Can't find a package or group called '%s'") % name)
+                    logging.error(_("Can't find a package or group called '%s'"), name)
 
         return targets      
 
