@@ -747,7 +747,7 @@ class InstallationAdvanced(Gtk.Box):
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
-        logging.info("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
+        logging.info(_("You will delete the partition %s from disk %s"), partition_path, disk_path)
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -764,7 +764,7 @@ class InstallationAdvanced(Gtk.Box):
         # Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
             # We unmount the partition. Should we ask first?
-            logging.info("Unmounting %s..." % part.path)
+            logging.info(_("Unmounting %s..."), part.path)
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
         # Is it worth to show some warning message here?
