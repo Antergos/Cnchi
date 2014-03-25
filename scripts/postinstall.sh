@@ -242,33 +242,21 @@ kde_settings(){
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-	cd /tmp
-    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
-    unzip -o -qq /tmp/master.zip
-    cd kde-setup-master
-    usr_old=antergos
-    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
-    cd /tmp/kde-setup-master
-    cp -R home/user ${DESTDIR}/home/${USER_NAME}
-    cp -R usr ${DESTDIR}
+	cd ${DESTDIR}/tmp
+    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip" -o ${DESTDIR}/tmp
+    unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
+    cp -R ${DESTDIR}/tmp/kde-setup-master/* ${DESTDIR}/
+    rm ${DESTDIR}/README.md
 
-	# Set Root environment
-	cd /tmp/kde-setup-master
-	usr_nm=${USER_NAME}
-	usr_new=root
-    grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
-    cd /tmp/kde-setup-master
-    cp -R home/${USER_NAME} ${DESTDIR}/root
+	# Set User & Root environments
+	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/home/${USER_NAME}
+	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/root
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 	
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
-
-	# Set skel directory
-	cd /tmp/kde-setup-master
-	mv home ${DESTDIR}/skel
 
 
 }
