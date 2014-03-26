@@ -41,19 +41,23 @@ class InstallationAsk(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_ask.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "ask.ui"))
 
-        #partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/")
-        partitioner_dir = os.path.join(self.settings.get("data"), "partitioner/small/")
+        data_dir = self.settings.get("data")
+        #partitioner_dir = os.path.join(data_dir, "images", "partitioner")
+        partitioner_dir = os.path.join(data_dir, "images", "partitioner", "small")
 
         image = self.ui.get_object("automatic_image")
-        image.set_from_file(partitioner_dir + "automatic.png")
+        path = os.path.join(partitioner_dir, "automatic.png")
+        image.set_from_file(path)
 
         image = self.ui.get_object("alongside_image")
-        image.set_from_file(partitioner_dir + "alongside.png")
+        path = os.path.join(partitioner_dir, "alongside.png")
+        image.set_from_file(path)
 
         image = self.ui.get_object("advanced_image")
-        image.set_from_file(partitioner_dir + "advanced.png")
+        path = os.path.join(partitioner_dir, "advanced.png")
+        image.set_from_file(path)
 
         self.ui.connect_signals(self)
 

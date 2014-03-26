@@ -49,7 +49,7 @@ class InstallationAutomatic(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_automatic.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "automatic.ui"))
 
         self.ui.connect_signals(self)
 
