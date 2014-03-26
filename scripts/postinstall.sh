@@ -243,7 +243,7 @@ kde_settings(){
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd ${DESTDIR}/tmp
-    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip" -o ${DESTDIR}/tmp
+    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
     unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
     cp -R ${DESTDIR}/tmp/kde-setup-master/* ${DESTDIR}/
     rm ${DESTDIR}/README.md
