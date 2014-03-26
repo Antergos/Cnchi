@@ -52,7 +52,7 @@ class Welcome(Gtk.Box):
         self.ui.connect_signals(self)
 
         data_dir = self.settings.get('data')
-        welcome_dir = os.path.join(data_dir, "welcome")
+        welcome_dir = os.path.join(data_dir, "images", "welcome")
 
         self.label = {}
         self.label['welcome'] = self.ui.get_object("welcome_label")
