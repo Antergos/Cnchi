@@ -245,12 +245,12 @@ kde_settings(){
 	cd ${DESTDIR}/tmp
     wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
     unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
-    cp -R ${DESTDIR}/tmp/kde-setup-master/* ${DESTDIR}/
-    rm ${DESTDIR}/README.md
+    cp -R ${DESTDIR}/tmp/kde-setup-master/etc ${DESTDIR}/
+    cp -R ${DESTDIR}/tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
-	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/home/${USER_NAME}
-	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/root
+	cp -R ${DESTDIR}/etc/skel ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel ${DESTDIR}/root
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
