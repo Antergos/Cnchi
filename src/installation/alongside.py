@@ -67,7 +67,7 @@ class InstallationAlongside(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "alongside.ui"))
 
         self.ui.connect_signals(self)
 

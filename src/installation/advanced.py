@@ -81,7 +81,7 @@ class InstallationAdvanced(Gtk.Box):
         # Get UI items
         self.ui = Gtk.Builder()
         self.ui_dir = self.settings.get('ui')
-        ui_file = os.path.join(self.ui_dir, "installation_advanced.ui")
+        ui_file = os.path.join(self.ui_dir, "advanced.ui")
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
