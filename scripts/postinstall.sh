@@ -240,6 +240,12 @@ kde_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	# Download Flattr Icon Set
+    cd ${DESTDIR}/usr/share/icons
+    git clone https://github.com/KaOSx/flattr-icons-kde.git flattr-icons-kde
+    cd flattr-icons-kde
+    rm -R .git
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd ${DESTDIR}/tmp
