@@ -34,10 +34,10 @@
 
 
 .cb-slideshow li:nth-child(1) span {
-    background-image: url(../images/1.png)
+    background-image: url(../images/slides/1.png)
 }
 .cb-slideshow li:nth-child(2) span {
-    background-image: url(../images/2.png);
+    background-image: url(../images/slides/2.png);
     -webkit-animation-delay: 12s;
     -moz-animation-delay: 12s;
     -o-animation-delay: 12s;
@@ -45,7 +45,7 @@
     animation-delay: 12s;
 }
 .cb-slideshow li:nth-child(3) span {
-    background-image: url(../images/3.png);
+    background-image: url(../images/slides/3.png);
     -webkit-animation-delay: 24s;
     -moz-animation-delay: 24s;
     -o-animation-delay: 24s;
