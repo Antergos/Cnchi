@@ -331,7 +331,7 @@ postinstall(){
 	# Specific user configurations
 
 	## Set desktop-specific settings
-	"${DESKTOP}_settings"
+	"${DESKTOP}_settings" > /tmp/postinstall.log 2>&1
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
