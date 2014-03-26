@@ -44,7 +44,8 @@ class DesktopAsk(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "desktop.ui"))
 
-        self.desktops_dir = os.path.join(self.settings.get('data'), "desktops/")
+        data_dir = self.settings.get('data')
+        self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
         self.desktop_info = self.ui.get_object("desktop_info")
         #self.treeview_desktop = self.ui.get_object("treeview_desktop")
@@ -52,7 +53,6 @@ class DesktopAsk(Gtk.Box):
         self.listbox = self.ui.get_object("listbox_desktop")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        
 
         self.ui.connect_signals(self)
 
@@ -66,16 +66,15 @@ class DesktopAsk(Gtk.Box):
 
     def translate_ui(self, desktop):
         """ Translates all ui elements """
-        image = self.ui.get_object("image_desktop")
         label = self.ui.get_object("desktop_info")
-
         txt = "<span weight='bold'>%s</span>\n" % desktops.NAMES[desktop]
         description = desktops.DESCRIPTIONS[desktop]
         txt += _(description)
-
         label.set_markup(txt)
 
-        image.set_from_file(self.desktops_dir + desktop + ".png")
+        image = self.ui.get_object("image_desktop")
+        path = os.path.join(self.desktops_dir, desktop + ".png")
+        image.set_from_file(path)
 
         txt = _("Choose Your Desktop")
         self.header.set_subtitle(txt)
