@@ -174,7 +174,7 @@ class Main(Gtk.Window):
 
         self.logo = self.ui.get_object("logo")
         data_dir = self.settings.get('data')
-        logo_dir = os.path.join(data_dir, "antergos-logo-mini2.png")
+        logo_dir = os.path.join(data_dir, "antergos/antergos-logo-mini2.png")
         self.logo.set_from_file(logo_dir)
 
         # To honor our css
@@ -253,7 +253,7 @@ class Main(Gtk.Window):
         self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
 
         # Set window icon
-        icon_dir = os.path.join(data_dir, 'antergos-icon.png')
+        icon_dir = os.path.join(data_dir, 'antergos/antergos-icon.png')
 
         self.set_icon_from_file(icon_dir)
 
