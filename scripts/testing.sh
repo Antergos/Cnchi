@@ -19,10 +19,6 @@ if ! [ -f "${previous}" ]; then
 		pacman -Sy git grub os-prober f2fs-tools --noconfirm --needed;
 	fi
 	# Test different font, GNOME default is :-/
-	cd /tmp
-	wget http://antergos.info/lato.zip
-	unzip lato.zip -d /usr/share/fonts/TTF
-	fc-cache -r
 	su -c "gsettings set org.gnome.desktop.interface font-name 'Lato'" antergos
 	# Enable kernel modules and other services
 	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then

@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo -E /usr/share/cnchi/scripts/testing.sh ${@}

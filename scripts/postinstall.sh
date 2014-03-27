@@ -240,17 +240,23 @@ kde_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	# Download Flattr Icon Set
+    cd ${DESTDIR}/usr/share/icons
+    git clone https://github.com/KaOSx/flattr-icons-kde.git flattr-icons-kde
+    cd flattr-icons-kde
+    rm -R .git
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd ${DESTDIR}/tmp
-    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip" -o ${DESTDIR}/tmp
+    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
     unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
-    cp -R ${DESTDIR}/tmp/kde-setup-master/* ${DESTDIR}/
-    rm ${DESTDIR}/README.md
+    cp -R ${DESTDIR}/tmp/kde-setup-master/etc ${DESTDIR}/
+    cp -R ${DESTDIR}/tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
-	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/home/${USER_NAME}
-	cp -R ${DESTDIR}/etc/skel/* ${DESTDIR}/root
+	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -331,7 +337,7 @@ postinstall(){
 	# Specific user configurations
 
 	## Set desktop-specific settings
-	"${DESKTOP}_settings"
+	"${DESKTOP}_settings" > /tmp/postinstall.log 2>&1
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
