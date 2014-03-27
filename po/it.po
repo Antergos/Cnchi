@@ -5,12 +5,13 @@
 # faidoc <faidoc@gmail.com>, 2013
 # Davide_IT <davide.mauri88@tiscali.it>, 2013
 # skinth <skinth91@gmail.com>, 2013
+# Muflone <webreg@vbsimple.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2013-12-01 22:18+PET\n"
 "PO-Revision-Date: 2013-12-02 03:18+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"Last-Translator: Muflone <webreg@vbsimple.net>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/antergos/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +24,8 @@ msgstr ""
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "Questo installer necessita dei privilegi di amministrazione, forniscili per continuare."
+msgstr "Questo installer necessita dei privilegi di amministrazione, e non può "
+"continuare senza."
 
 #: cnchi.py:105
 msgid ""
@@ -32,15 +34,19 @@ msgid ""
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr "Non è possibile eseguire due istanze di questo installer.\n\nSe sei sicuro che l'installer non è in esecuzione\npuoi eliminare manualmente il file %s\ne ripetere di nuovo l'operazione."
+msgstr "Non è possibile eseguire due istanze di questo installer.\n"
+"\n"
+"Se sei sicuro che l'installer non sia già in esecuzione\n"
+"puoi eliminare manualmente il file %s\n"
+"e ripetere nuovamente l'operazione."
 
 #: cnchi.py:175
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr ""
+msgstr "Utilizzando Aria2 per scaricare i pacchetti - SPERIMENTALE"
 
 #: cnchi.py:195
 msgid "Using '%s' file as package list"
-msgstr ""
+msgstr "Utilizzando il file '%s' come elenco dei pacchetti"
 
 #: cnchi.py:215
 msgid "Antergos Installer"
@@ -48,48 +54,48 @@ msgstr "Installer di Antergos"
 
 #: cnchi.py:288
 msgid "Quiting installer..."
-msgstr ""
+msgstr "Uscita dall'installer"
 
 #: src/bootinfo.py:35 src/bootinfo.py:55 src/bootinfo.py:60 src/bootinfo.py:81
 #: src/installation_alongside.py:212
 msgid "unknown"
-msgstr ""
+msgstr "sconosciuto"
 
 #: src/bootloader.py:50
 msgid "What type of boot system are you using?"
-msgstr ""
+msgstr "Quale sistema di avvio stai utilizzando?"
 
 #: src/bootloader.py:55
 msgid "BIOS (Most Common)"
-msgstr ""
+msgstr "BIOS (Più comune)"
 
 #: src/bootloader.py:59
 msgid "64-bit UEFI"
-msgstr ""
+msgstr "UEFI a 64 bit"
 
 #: src/bootloader.py:63
 msgid "32-bit UEFI (old Macs)"
-msgstr ""
+msgstr "UEFI a 32 bit (vecchi Mac)"
 
 #: src/bootloader.py:67
 msgid "Select 'cancel' if you don't want to install a boot loader."
-msgstr ""
+msgstr "Scegli 'annulla' se non desideri installare un gestore di avvio."
 
 #: src/check.py:63
 msgid "System Check"
-msgstr ""
+msgstr "Controllo del sistema"
 
 #: src/check.py:68
 msgid "has at least 3GB available storage space"
-msgstr ""
+msgstr "abbia almeno 3GB di spazio su disco disponibile"
 
 #: src/check.py:72
 msgid "is plugged in to a power source"
-msgstr "Sia connesso alla corrente elettrica"
+msgstr "sia connesso alla corrente elettrica"
 
 #: src/check.py:76
 msgid "is connected to the Internet"
-msgstr "Sia connesso a internet"
+msgstr "sia connesso a internet"
 
 #: src/check.py:80
 msgid "For best results, please ensure that this computer:"
@@ -100,11 +106,13 @@ msgid ""
 "Antergos uses third-party software to play Flash videos, MP3 and other "
 "media. Some of this software is proprietary. Use of this software is subject"
 " to license terms included with its documentation."
-msgstr ""
+msgstr "Antergos usa alcuni software di terze parti per riprodurre video Flash, MP3 e altri "
+"supporti multimediali. Alcuni di questi software sono proprietari. L'uso di questo software"
+"è soggetto ai termini di licenza inclusi con la sua documentazione."
 
 #: src/check.py:93
 msgid "Install this third-party software"
-msgstr ""
+msgstr "Installa questo software di terze parti"
 
 #: src/check.py:113
 msgid "Can't get network status"
@@ -120,14 +128,16 @@ msgstr "Connesso alla corrente elettrica."
 
 #: src/check.py:191
 msgid "We have enough disk space."
-msgstr ""
+msgstr "C'è abbastanza spazio su disco."
 
 #: src/desktop.py:76
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "GNOME 3 è una modalità facile ed elegante di utilizzare il tuo computer. "
+"Fornisce l'anteprima Attività che è una maniera semplice di accedere a tutte le attività di base. "
+"GNOME 3 è il desktop predefinito in Antergos."
 
 #: src/desktop.py:83
 msgid ""
@@ -135,7 +145,10 @@ msgid ""
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
-msgstr ""
+msgstr "Cinnamon è un software derivato da GNOME 3 sviluppato da (e per) Linux Mint. "
+"Fornisce agli utenti un'interfaccia desktop più tradizionale assieme alle tecniche "
+"di compositing più recenti di GNOME 3. Cinnamon è per utenti di tutti i livelli di "
+"esperienza. "
 
 #: src/desktop.py:90
 msgid ""
@@ -143,7 +156,10 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr ""
+msgstr "Xfce è un ambiente desktop leggero. Punta ad essere semplice e richiedere "
+"poche risorse di sistema, pur restando gradevole graficamente e amichevole per l'utente. "
+"E' una ottima opzione da usare su computer meno recenti oppure quelli con specifiche "
+"hardware inferiori. "
 
 #: src/desktop.py:97
 msgid ""
@@ -151,7 +167,10 @@ msgid ""
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
-msgstr ""
+msgstr "LXDE è un ambiente desktop estremamente veloce e a risparmio di energia. "
+"Utilizza meno CPU e memoria RAM degli altri ambienti. LXDE è particolarmente "
+"adeguato per computer cloud con specifiche hardware inferiori come netbook, "
+"dispositivi mobili e computer meno recenti."
 
 #: src/desktop.py:104
 msgid ""
@@ -159,14 +178,19 @@ msgid ""
 "extensive standards support. It's default theme, the *box visual style,is "
 "well known for its minimalistic appearance and flexibility. Your desktop "
 "becomes cleaner, faster, and is in your control with Openbox "
-msgstr ""
+msgstr "Openbox è un gestore di finestre di ultima generazione, altamente configurabile "
+"con supporto standard estendibile. Il suo tema predefinito, lo stile visuale *box, è "
+"ben noto per il suo aspetto minimalista e la sua flessibilità. Il tuo desktop "
+"diverrà più pulito, veloce e sotto controllo con Openbox. "
 
 #: src/desktop.py:111
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment non è solo un window manager per Linux/X11 e altri, ma anche una raccolta di librerie che ti aiuteranno a creare bellissime interfacce utente con molto meno lavoro"
+msgstr "Enlightenment non è solo un gestore finestre per Linux/X11 e altri, ma "
+"anche un'intera raccolta di librerie che ti aiuteranno a creare bellissime "
+"interfacce utente con molto meno lavoro"
 
 #: src/desktop.py:117
 msgid ""
@@ -175,13 +199,19 @@ msgid ""
 "you can be productive right from the start. The look, feel, and behavior can"
 " be easily customized to the user's taste."
 msgstr ""
+"Se stai cercando un ambiente di lavoro familiare, il desktop Plasma di KDE "
+"offre tutti gli strumenti richiesti da un'esperienza desktop per computer moderna "
+"così da poter essere produttivo sin dall'inizio. Lo stile, l'esperienza e il "
+"comportamento possono essere facilmente personalizzati sui gusti dell'utente."
 
 #: src/desktop.py:124
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt è un ambiente desktop avanzato, semplice da usare e veloce, "
+"basato su tecnologie Qt. E' stato studiato per utenti che apprezzano la semplicità, "
+"la velocità e un'interfaccia intuitiva."
 
 #: src/desktop.py:131
 msgid ""
@@ -189,10 +219,13 @@ msgid ""
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr ""
+"Questa opzione installerà Antergos come sistema con la sola riga riga di comando, "
+"senza alcun'interfaccia grafica. Dopo l'installazione potrai personalizzare "
+"Antergos installando i pacchetti con il gestore pacchetti da riga di comando."
 
 #: src/desktop.py:140
 msgid "Choose Your Desktop"
-msgstr ""
+msgstr "Scegli il tuo Desktop"
 
 #: src/desktop.py:150
 msgid "Desktops"
@@ -200,97 +233,98 @@ msgstr "Desktops"
 
 #: src/desktop.py:183
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi installerà Antergos con il desktop '%s'"
 
 #: src/download.py:79
 msgid "Error creating metalink for package %s"
-msgstr ""
+msgstr "Errore nel creare il metalink per il pacchetto %s"
 
 #: src/download.py:85
 msgid "Error adding metalink for package %s"
-msgstr ""
+msgstr "Errore nell'aggiungere il metalink per il pacchetto %s"
 
 #: src/download.py:134
 msgid "Downloading package '%s'..."
-msgstr ""
+msgstr "Scaricamento del pacchetto '%s'..."
 
 #: src/download.py:158
 msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr ""
+msgstr "Impossibile collegarsi con Aria2. Non sarà possibile velocizzare lo scaricamento."
 
 #: src/download.py:234
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "Impossibile creare la coda di scaricamento per il pacchetto %s"
 
 #: src/download.py:238
 msgid "Can't find these packages: "
-msgstr ""
+msgstr "Impossibile trovare i seguenti pacchetti: "
 
 #: src/download.py:244
 msgid "Warning! Can't resolve these dependencies: "
-msgstr ""
+msgstr "Attenzione! Non è possibile risolvere le seguenti dipendenze: "
 
 #: src/features.py:99
 msgid "Features"
-msgstr ""
+msgstr "Funzionalità"
 
 #: src/features.py:104
 msgid "Bluetooth Support"
-msgstr ""
+msgstr "Supporto Bluetooth"
 
 #: src/features.py:107
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "Permette al tuo sistema di effettuare connessioni wireless via Bluetooth"
 
 #: src/features.py:111
 msgid "Printing Support"
-msgstr ""
+msgstr "Supporto di Stampa"
 
 #: src/features.py:114
 msgid "Installation of printer drivers and management tools."
-msgstr ""
+msgstr "Installazione di driver e strumenti di gestione di stampanti."
 
 #: src/features.py:118
 msgid "LibreOffice"
-msgstr ""
+msgstr "LibreOffice"
 
 #: src/features.py:121
 msgid "Open source office suite that supports editing MS Office files."
-msgstr ""
+msgstr "La suite d'ufficio Open source che supporta la modifica di files MS Office."
 
 #: src/features.py:125
 msgid "Visual Effects"
-msgstr ""
+msgstr "Effetti Visuali"
 
 #: src/features.py:128
 msgid ""
 "Enable 3D acceleration for transparency, shadows, and other desktop effects."
 msgstr ""
+"Abilita l'accelerazione 3D per trasparenza, ombre ed altri effetti desktop."
 
 #: src/features.py:132
 msgid "Uncomplicated Firewall"
-msgstr ""
+msgstr "Uncomplicated Firewall"
 
 #: src/features.py:137
 msgid "Control the incoming and outgoing network traffic."
-msgstr ""
+msgstr "Controlla il traffico di rete entrante ed uscente."
 
 #: src/features.py:141
 msgid "Proprietary Software"
-msgstr ""
+msgstr "Software Proprietario"
 
 #: src/features.py:144
 msgid "Third-party software to play Flash videos, MP3 audio, and other media."
-msgstr ""
+msgstr "Software di terze parti per riprodurre video Flash, audio MP3 ed altri supporti multimediali."
 
 #: src/features.py:149
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr ""
+msgstr "Uncomplicated Firewall sarà installato con le seguenti regole:"
 
 #: src/installation_advanced.py:194 src/installation_advanced.py:484
 #: src/installation_advanced.py:498
 msgid "free space"
-msgstr "Spazio libero"
+msgstr "spazio libero"
 
 #: src/installation_advanced.py:262 src/installation_alongside.py:166
 msgid "Device"
@@ -340,11 +374,11 @@ msgstr "estesa"
 
 #: src/installation_advanced.py:650
 msgid "Cannot use same mount twice."
-msgstr ""
+msgstr "Non puoi usare lo stesso punto di montaggio due volte."
 
 #: src/installation_advanced.py:652
 msgid "Root partition must be formatted."
-msgstr ""
+msgstr "La partizione di root deve essere formattata."
 
 #: src/installation_advanced.py:891
 msgid "Cannot use same mount twice..."
@@ -364,15 +398,15 @@ msgstr "Creazione partizione logica"
 
 #: src/installation_advanced.py:1058
 msgid "Advanced Installation Mode"
-msgstr ""
+msgstr "Modalità di installazione Avanzata"
 
 #: src/installation_advanced.py:1062
 msgid "Use the device below for boot loader installation:"
-msgstr ""
+msgstr "Utilizza il dispositivo sotto per l'installazione del gestore di avvio:"
 
 #: src/installation_advanced.py:1072
 msgid "New Partition Table"
-msgstr ""
+msgstr "Nuova tabella delle partizioni"
 
 #: src/installation_advanced.py:1080
 msgid "Change..."
@@ -408,11 +442,11 @@ msgstr "Spazio finale"
 
 #: src/installation_advanced.py:1113 src/installation_advanced.py:1130
 msgid "Use As:"
-msgstr ""
+msgstr "Utilizza come:"
 
 #: src/installation_advanced.py:1117 src/installation_advanced.py:1134
 msgid "Mount Point:"
-msgstr ""
+msgstr "Punto di montaggio:"
 
 #: src/installation_advanced.py:1121 src/installation_advanced.py:1138
 msgid "Label (optional):"
@@ -420,7 +454,7 @@ msgstr "Nome (opzionale):"
 
 #: src/installation_advanced.py:1125
 msgid "Encryption Options..."
-msgstr ""
+msgstr "Opzioni di cifratura..."
 
 #: src/installation_advanced.py:1142
 msgid "Format:"
@@ -428,20 +462,20 @@ msgstr "Formato:"
 
 #: src/installation_advanced.py:1147
 msgid "Partition Table Type:"
-msgstr ""
+msgstr "Tipo di tabella delle partizioni:"
 
 #: src/installation_advanced.py:1152
 msgid "Create Partition Table"
-msgstr ""
+msgstr "Crea tabella delle partizioni"
 
 #: src/installation_advanced.py:1155 src/installation_alongside.py:144
 #: src/installation_automatic.py:101
 msgid "Install Now!"
-msgstr ""
+msgstr "Installa ora!"
 
 #: src/installation_advanced.py:1243
 msgid "Creating a new %s partition table for disk %s"
-msgstr ""
+msgstr "Creazione di una nuova tabella delle partizioni %s per il disco %s"
 
 #: src/installation_advanced.py:1339
 msgid ""
@@ -449,13 +483,18 @@ msgid ""
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr ""
+"%s è montato come swap.\n"
+"Per continuare è necessario smontarlo.\n"
+"Clicca Sì per smontarlo, oppure No per tornare indietro\n"
 
 #: src/installation_advanced.py:1341
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s è già montato in '%s'.\nPer continuare deve essere smontato.\nPremi Si per smontarlo, oppure No per tornare indietro\n"
+msgstr "%s è già montato in '%s'.\n"
+"Per continuare deve essere smontato.\n"
+"Premi Sì per smontarlo, oppure No per tornare indietro\n"
 
 #: src/installation_advanced.py:1414
 msgid "Partition %s will be deleted"
@@ -479,81 +518,83 @@ msgstr "Rinomina"
 
 #: src/installation_advanced.py:1442
 msgid "We will make changes to partitions on these disks:"
-msgstr ""
+msgstr "Saranno applicate le modifiche alle partizioni di questi dischi:"
 
 #: src/installation_advanced.py:1467
 msgid "Finished saving changes in %s"
-msgstr ""
+msgstr "Completato il salvataggio delle modifiche a %s"
 
 #: src/installation_advanced.py:1481
 msgid "Creating %s filesystem in %s labeled %s"
-msgstr ""
+msgstr "Creazione del filesystem %s su %s con etichetta %s"
 
 #: src/installation_advanced.py:1563
 msgid "Antergos will install the bootloader of type %s in %s"
-msgstr ""
+msgstr "Antergos installerà il gestore di avvio di tipo %s su %s"
 
 #: src/installation_alongside.py:109
 msgid "Can't load %s css"
-msgstr ""
+msgstr "Impossibile caricare il css di %s"
 
 #: src/installation_alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
-msgstr ""
+msgstr "Scegli il sistema accanto al quale desideri installare Antergos."
 
 #: src/installation_alongside.py:140
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Installazione di Antergos affiancata"
 
 #: src/installation_alongside.py:169
 msgid "Detected OS"
-msgstr ""
+msgstr "Sistema Operativo rilevato"
 
 #: src/installation_alongside.py:172
 msgid "Filesystem"
-msgstr ""
+msgstr "Filesystem"
 
 #: src/installation_alongside.py:216
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "Impossibile creare un elenco delle partizioni per l'installazione affiancata."
 
 #: src/installation_alongside.py:256
 msgid "Can't shrink the partition (maybe it's nearly full)"
-msgstr ""
+msgstr "Non posso stringere la partizione (forse è quasi piena)"
 
 #: src/installation_ask.py:91
 msgid "Installation Type"
-msgstr ""
+msgstr "Tipo di installazione"
 
 #: src/installation_ask.py:102
 msgid "Erase disk and install Antergos"
-msgstr ""
+msgstr "Cancella il disco ed installa Antergos"
 
 #: src/installation_ask.py:105
 msgid "Warning: This will erase ALL data on your disk."
-msgstr ""
+msgstr "Attenzione: questo cancellerà TUTTI i dati sul disco."
 
 #: src/installation_ask.py:111
 msgid "Encrypt this installation for increased security."
-msgstr ""
+msgstr "Cifra questa installazione per una sicurezza superiore."
 
 #: src/installation_ask.py:115
 msgid "You will be asked to create an encryption password in the next step."
-msgstr ""
+msgstr "Verrà richiesto di creazione una password di cifratura nel prossimo passaggio."
 
 #: src/installation_ask.py:124
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
 msgstr ""
+"Questo installerà LVM e permetterà di gestire facilmente le partizioni e "
+"creare snapshot."
 
 #: src/installation_ask.py:132 src/installation_ask.py:134
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "Installa Antergos a fianco di %s"
 
 #: src/installation_ask.py:141
 msgid "Choose exactly where Antergos should be installed. (advanced)"
-msgstr ""
+msgstr "Scegli esattamente dove Antergos dovrebbe essere installato. (avanzato)"
 
 #: src/installation_ask.py:144
 msgid "Edit partition table and choose mount points."
