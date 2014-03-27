@@ -96,7 +96,7 @@ def remove_temp_files():
         if os.path.exists(path):
             os.remove(path)
 
-class Main(Gtk.Window):
+class Main(Gtk.ApplicationWindow):
     """ Cnchi main window """
     def __init__(self):
         ## This allows to translate all py texts (not the glade ones)
@@ -170,9 +170,15 @@ class Main(Gtk.Window):
 
         self.add(self.ui.get_object("main"))
 
-        self.header = self.ui.get_object("header")
+        self.header_ui = Gtk.Builder()
+        self.header_ui.add_from_file(self.ui_dir + "header.ui")
+        self.header = self.header_ui.get_object("header")
 
-        self.logo = self.ui.get_object("logo")
+        self.header.set_title("Cnchi v%s" % info.CNCHI_VERSION)
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(True)
+
+        self.logo = self.header_ui.get_object("logo")
         data_dir = self.settings.get('data')
         logo_path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
         self.logo.set_from_file(logo_path)
@@ -185,8 +191,8 @@ class Main(Gtk.Window):
         self.progressbar = self.ui.get_object("progressbar1")
         self.progressbar.set_name('process_progressbar')
 
-        self.forward_button = self.ui.get_object("forward_button")
-        self.backwards_button = self.ui.get_object("backwards_button")
+        self.forward_button = self.header_ui.get_object("forward_button")
+        self.backwards_button = self.header_ui.get_object("backwards_button")
 
         image1 = Gtk.Image()
         image1.set_from_icon_name("go-next", Gtk.IconSize.BUTTON)
@@ -206,6 +212,8 @@ class Main(Gtk.Window):
         self.settings.set("use_aria2", cmd_line.aria2)
         if cmd_line.aria2:
             logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
+            
+        self.set_titlebar(self.header)
 
         # Load all pages
         # (each one is a screen, a step in the install process)
@@ -246,6 +254,7 @@ class Main(Gtk.Window):
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.ui.connect_signals(self)
+        self.header_ui.connect_signals(self)
 
         self.set_title(_('Cnchi - Antergos Installer'))
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -280,18 +289,14 @@ class Main(Gtk.Window):
         # Show main window
         self.show_all()
 
-        self.header.set_title("Cnchi v%s" % info.CNCHI_VERSION)
-        self.header.set_subtitle(_("Antergos Installer"))
-        self.header.set_show_close_button(True)
-
         self.current_page.prepare('forwards')
 
         # Hide backwards button
         self.backwards_button.hide()
 
         # Hide titlebar but show border decoration
-        self.get_window().set_accept_focus(True)
-        self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
+        #self.get_window().set_accept_focus(True)
+        #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
 
         # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
