@@ -23,3 +23,8 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * hdparm
  * upower
 
+## Translations
+
+We manage our translations in transifex:
+
+* https://www.transifex.com/projects/p/antergos/
