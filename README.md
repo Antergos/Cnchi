@@ -19,3 +19,8 @@ Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
  * hdparm
  * upower
 
+## Translations
+
+We manage our translations in transifex:
+
+* https://www.transifex.com/projects/p/antergos/
