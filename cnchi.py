@@ -39,7 +39,7 @@ locale_code, encoding = locale.getdefaultlocale()
 lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
 lang.install()
 
-from gi.repository import Gtk, Gdk, GObject, GLib
+from gi.repository import Gtk, Gdk, GObject, GLib, Gio
 import os
 import sys
 import getopt
@@ -96,7 +96,26 @@ def remove_temp_files():
         if os.path.exists(path):
             os.remove(path)
 
-class Main(Gtk.ApplicationWindow):
+class Application(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self, application_id="cnchi.antergos",
+                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.connect("activate", self.on_activate)
+        self.connect("startup", self.on_startup)
+        
+    def on_activate(self, data=None):
+        window = ApplicationWindow()
+        window.show_all()
+        self.add_window(window)
+    
+    def on_startup(self, data=None):
+        menu = Gio.menu()
+        menu.append("About", "win.about")
+        menu.append("Quit", "app.quit")
+        this.app_menu = menu
+        
+
+class ApplicationWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
     def __init__(self):
         ## This allows to translate all py texts (not the glade ones)
@@ -519,7 +538,11 @@ def init_cnchi():
     threads_init()
     
     # Create Gtk Application    
-    myapp = Main()
+    #myapp = Application()
+    #myapp.run(None)
+
+    # Create Gtk Application    
+    myapp = ApplicationWindow()
     Gtk.main()
 
 if __name__ == '__main__':
