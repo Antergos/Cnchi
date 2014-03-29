@@ -243,9 +243,14 @@ kde_settings(){
 
 	# Download Flattr Icon Set
     cd ${DESTDIR}/usr/share/icons
-    git clone https://github.com/KaOSx/flattr-icons-kde.git flattr-icons-kde
-    cd flattr-icons-kde
+    git clone https://github.com/NitruxSA/flattr-icons.git flattr-icons
+    cd flattr-icons
+    rm index.theme
+    mv index.theme.kde index.theme
+    sed -i 's|Example=x-directory-normal|Example=folder|g' index.theme
+    sed -i 's|Inherits=Flattr|Inherits=KFaenza,Oxygen|g' index.theme
     rm -R .git
+    chroot ${DESTDIR} ln -sf /usr/share/icons/flattr-icons /usr/share/icons/default 
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd ${DESTDIR}/tmp
