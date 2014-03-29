@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-02-28 13:50+0000\n"
-"Last-Translator: 柏諺 黃 <s8321414@gmail.com>\n"
+"POT-Creation-Date: 2014-03-29 10:36+PET\n"
+"PO-Revision-Date: 2014-03-29 15:37+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/antergos/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,13 +18,13 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: cnchi.py:115
+#: cnchi.py:134
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "本安裝程式必須以管理者的身份執行，如果不是以管理者身份就不能繼續。"
 
-#: cnchi.py:124
+#: cnchi.py:143
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -33,72 +33,84 @@ msgid ""
 "and run this installer again."
 msgstr "您不能同時執行兩個安裝程式。\n\n如果您確定您並沒有執行安裝程式\n您可以手動刪除這個檔案： %s\n然後再次執行安裝程式。"
 
-#: cnchi.py:132
+#: cnchi.py:151
 msgid "Cnchi installer version %s"
 msgstr "Cnchi 安裝程式版本 %s"
 
-#: cnchi.py:207
-msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "正在使用 Aria2 下載軟體包 - 實驗性"
-
-#: cnchi.py:249
-msgid "Cnchi - Antergos Installer"
-msgstr "Cnchi － Antergos 安裝程式"
-
-#: cnchi.py:284
+#: cnchi.py:197
 msgid "Antergos Installer"
 msgstr "Antergos安裝程式"
 
-#: cnchi.py:309
+#: cnchi.py:233
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr "正在使用 Aria2 下載軟體包 - 實驗性"
+
+#: cnchi.py:251
+msgid "Using '%s' file as package list"
+msgstr ""
+
+#: cnchi.py:278
+msgid "Cnchi - Antergos Installer"
+msgstr "Cnchi － Antergos 安裝程式"
+
+#: cnchi.py:331 src/welcome.py:120
 msgid "Quiting installer..."
 msgstr "正在離開安裝程式..."
 
-#: cnchi.py:428
+#: cnchi.py:453
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
 msgstr "使用 Aria2 下載 Antergos 軟體包 （）實驗性"
 
-#: cnchi.py:429
+#: cnchi.py:454
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
 msgstr "使用預先下載的 xz 軟體包（Cnchi 將會下載他們即便已經有新的版本）"
 
-#: cnchi.py:430
+#: cnchi.py:455
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
 msgstr "就像 --快取 一樣，但是在安裝前，Cnchi會複製所有的 xz 軟體包到目的地"
 
-#: cnchi.py:431
+#: cnchi.py:456
 msgid "Sets Cnchi log level to 'debug'"
 msgstr "將 Cnchi 記錄檔層級設定為 'debug'"
 
-#: cnchi.py:432
+#: cnchi.py:457
 msgid "Update Cnchi to the latest version (-uu will force the update)"
 msgstr "將 Cnchi 升級到最新版（-uu 將會強制更新）"
 
-#: cnchi.py:433
+#: cnchi.py:458
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
 msgstr "參考本機的 xml 檔而不是預設值安裝軟體包"
 
-#: cnchi.py:434
+#: cnchi.py:459
 msgid "Do not perform any changes (useful for developers)"
 msgstr "不要進行任何變更（對開發者很有用）"
 
-#: cnchi.py:435
+#: cnchi.py:460
 msgid "Show logging messages to stdout"
 msgstr "顯示記錄訊息到標準輸出"
 
-#: cnchi.py:436
+#: cnchi.py:461
 msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
 msgstr "停用試用選項（如果 Cnchi 不是從 LiveCD 中執行的話很有用）"
 
-#: cnchi.py:437
+#: cnchi.py:462
 msgid "Show options in development (DO NOT USE THIS!)"
 msgstr "顯示仍在開發中的選項（不要使用這個！）"
 
+#: cnchi.py:498 cnchi.py:502
+msgid "Please install %s before running this installer"
+msgstr ""
+
+#: cnchi.py:529
+msgid "Program updated! Restarting..."
+msgstr ""
+
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
-#: src/installation/alongside.py:217
+#: src/installation/alongside.py:215
 msgid "unknown"
 msgstr "未知"
 
@@ -176,14 +188,14 @@ msgstr "選擇您的桌面環境"
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi 將會以 '%s' 桌面環境安裝 Antergos"
 
-#: src/desktop_environments.py:64
+#: src/desktop_environments.py:65
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "Gnome 3 是一個使用您的電腦簡單且優雅的方式。它的主要特性是有一個概覽按鈕來讓您很容易的可以進行您所有的基礎工作。GNOME 3 是 Antergos 的預設桌面環境。"
 
-#: src/desktop_environments.py:69
+#: src/desktop_environments.py:70
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -191,7 +203,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon 是 GNOME 3 的一個分支，由（且專為）Linux Mint 開發。它提供使用者 GNOME 3 的現代科技與傳統桌面的完美結合。Cinnamon 是為所有人所設計的。"
 
-#: src/desktop_environments.py:74
+#: src/desktop_environments.py:75
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -199,7 +211,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce 是一個輕量的桌面環境。它非常快速且占用很少系統資源，但仍非常具有視覺吸引力，且對使用者仍相當友善。它在那些低階配置的老電腦上是很好的選擇。"
 
-#: src/desktop_environments.py:79
+#: src/desktop_environments.py:80
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -207,7 +219,7 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE 是一個非常快速且節省能源的桌面環境。它使用與其他桌面環境相比較少的 CPU 及 RAM。LXDE 被設計用於那些低階配置的雲端裝置，像是小筆電、行動裝置或是老電腦等。"
 
-#: src/desktop_environments.py:84
+#: src/desktop_environments.py:85
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
 "extensive standards support. It's default theme is well known for its "
@@ -215,74 +227,78 @@ msgid ""
 "faster."
 msgstr "Openbox 是一個高自訂性，次世代的視窗管理員，支援許多延伸標準。它的預設主題以簡單有彈性著名。您的桌面將會變得簡潔且快速。"
 
-#: src/desktop_environments.py:89
+#: src/desktop_environments.py:90
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
 msgstr "Enlightenment 不只是 Linux/X11 或其他系統上的視窗管理員，同時也是可以幫助你花費較少的時間創造一個漂亮的使用者介面的一套完整的函式庫"
 
-#: src/desktop_environments.py:93
+#: src/desktop_environments.py:94
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
 msgstr "如果您在尋找熟悉的工作環境，KDE Plasma 工作空間提供了所有現代桌面所需要的工具，所以您可以從一開始就很有生產力。"
 
-#: src/desktop_environments.py:97
+#: src/desktop_environments.py:98
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
 msgstr "Razor-qt 是一個基於 Qt 的進階，易於使用，且反應快速的桌面環境。它非常適合那些注重簡潔，快速。且直覺的介面的使用者。"
 
-#: src/desktop_environments.py:102
+#: src/desktop_environments.py:103
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "這個選項將會把 Antergos 安裝成只有命令列的系統，而不包含任何的圖型介面。安裝完後您可以利用命令列軟體包管理員安裝軟體的方式自訂 Antergos。"
 
-#: src/desktop_environments.py:106
+#: src/desktop_environments.py:107
 msgid ""
 "MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
 "environment using traditional metaphors for Linux and other Unix-like "
 "operating systems."
 msgstr "MATE 是 GNOME 2 的分支。它提供了直覺且具吸引力的桌面環境給 Linux 及其他類 Unix 系統。"
 
-#: src/download.py:79
+#: src/download.py:37
+msgid "pm2ml not found. Aria2 download won't work."
+msgstr ""
+
+#: src/download.py:80
 msgid "Can't connect with aria2, downloading will be performed by alpm."
 msgstr "無法連接到 aria2，將會使用 alpm 下載。"
 
-#: src/download.py:89
+#: src/download.py:90
 msgid "Error creating metalink for package %s"
 msgstr "在創建 %s 軟體包的 metalink 時發生錯誤"
 
-#: src/download.py:95
+#: src/download.py:96
 msgid "Error adding metalink for package %s"
 msgstr "在添加 %s 軟體包的 metalink 時發生錯誤"
 
-#: src/download.py:104
+#: src/download.py:105
 msgid "Downloading package '%s' and its dependencies..."
 msgstr "正在下載軟體包 '%s' 及它的相依性..."
 
-#: src/download.py:135 src/pacman/pac.py:336
+#: src/download.py:136 src/pacman/pac.py:334
 msgid "Downloading %s..."
 msgstr "正在下載: %s..."
 
-#: src/download.py:167
+#: src/download.py:168
 msgid "Can't connect to Aria2. Error Output: %s"
 msgstr "無法連接到 Aria2。錯誤輸出：%s"
 
-#: src/download.py:245
+#: src/download.py:246
 msgid "Unable to create download queue for package %s"
 msgstr "無法添加軟體包 %s 的下載佇列"
 
-#: src/download.py:249
+#: src/download.py:250
 msgid "Can't find these packages: "
 msgstr "找不到下列軟體包："
 
-#: src/download.py:255
+#: src/download.py:256
 msgid "Warning! Can't resolve these dependencies: "
 msgstr "警告！無法解決下列這些相依性："
 
@@ -290,15 +306,15 @@ msgstr "警告！無法解決下列這些相依性："
 msgid "Feature Selection"
 msgstr "特性選擇"
 
-#: src/features.py:118
+#: src/features.py:114
 msgid "Arch User Repository (AUR) Support"
 msgstr "Arch Linux社群使用者軟體倉庫 (AUR) 支援"
 
-#: src/features.py:121
+#: src/features.py:117
 msgid "The AUR is a community-driven repository for Arch users."
 msgstr "AUR 是一個為 Arch Linux 使用者設計的社群驅動的套件庫。"
 
-#: src/features.py:124
+#: src/features.py:121
 msgid ""
 "Use yaourt to install AUR packages.\n"
 "The AUR was created to organize and share new packages\n"
@@ -306,15 +322,15 @@ msgid ""
 "inclusion into the [community] repository."
 msgstr "使用 yaourt 以安裝 AUR 軟體包。\nAUR 被創造用來組織和分享從社群而來的新的軟體包\n並且幫助流行的軟體包'\n包含到 [community] 套件庫。"
 
-#: src/features.py:133
+#: src/features.py:130
 msgid "Bluetooth Support"
 msgstr "藍牙支援"
 
-#: src/features.py:136
+#: src/features.py:133
 msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "啟用您系統上經由藍牙的無線連線。"
 
-#: src/features.py:139
+#: src/features.py:137
 msgid ""
 "Bluetooth is a standard for the short-range wireless\n"
 "interconnection of cellular phones, computers, and\n"
@@ -322,15 +338,15 @@ msgid ""
 "implementation of the Bluetooth protocol stack is BlueZ"
 msgstr "藍牙是一個短距離無線通訊的標準\n為手機、電腦以及\n其他電子設備設計。在 Linux 中，最完整且廣為使用的\n藍牙協議堆疊實作是 BlueZ"
 
-#: src/features.py:148
+#: src/features.py:146
 msgid "Extra Truetype Fonts"
 msgstr "額外的 Truetype 字型"
 
-#: src/features.py:151
+#: src/features.py:149
 msgid "Installation of extra TrueType fonts"
 msgstr "安裝額外的 TrueType 字型"
 
-#: src/features.py:154
+#: src/features.py:153
 msgid ""
 "TrueType is an outline font standard developed by\n"
 "Apple and Microsoft in the late 1980s as a competitor\n"
@@ -339,11 +355,11 @@ msgid ""
 "Mac OS and Microsoft Windows operating systems."
 msgstr "TrueType 是一種輪廓字型標準\n由蘋果公司及微軟公司在 1980 年代晚期所開發\n作為 Adobe 使用 PostScript 的 Type 1 字型的競爭者。\n它已經變成相當普遍的字型\n在 Mac OS 以及 Microsoft Windows 作業系統上都是。"
 
-#: src/features.py:164
+#: src/features.py:163
 msgid "Gnome Extra"
 msgstr "Gnome 額外軟體包"
 
-#: src/features.py:167
+#: src/features.py:166
 msgid "Installation of extra Gnome applications"
 msgstr "安裝額外的 Gnome 應用程式"
 
@@ -362,22 +378,22 @@ msgstr "列印支援"
 msgid "Installation of printer drivers and management tools."
 msgstr "安裝印表機驅動程式及管理軟體。"
 
-#: src/features.py:184
+#: src/features.py:185
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
 msgstr "CUPS 是一個基於標準，且開放原始碼的\n列印系統，由蘋果公司所開發給 OS\\302\\256 X 及其他\nUNIX\\302\\256-like 作業系統所使用。"
 
-#: src/features.py:192
+#: src/features.py:193
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: src/features.py:195
+#: src/features.py:196
 msgid "Open source office suite. Supports editing MS Office files."
 msgstr "開放原始碼辦公軟體套裝。支援微軟 Office 檔案。"
 
-#: src/features.py:198
+#: src/features.py:200
 msgid ""
 "LibreOffice is the free power-packed Open Source\n"
 "personal productivity suite for Windows, Macintosh\n"
@@ -386,15 +402,15 @@ msgid ""
 "needs: Writer, Calc, Impress, Draw, Math and Base."
 msgstr "LibreOffice 是一套自由且開放原始碼的\n個人生產力套裝軟體，可在 Windows、Macintosh\n及 Linux 上執行，裡面包含了六個多功能的應用程式\n專為你所有文件生產及資料處理設計\n內含：Writer、Calc、Impress、Draw、Math 及 Base。"
 
-#: src/features.py:208
+#: src/features.py:210
 msgid "Visual Effects"
 msgstr "視覺效果"
 
-#: src/features.py:211
+#: src/features.py:213
 msgid "Enable transparency, shadows, and other desktop effects."
 msgstr "啟用半透明、陰影以及其他桌面效果。"
 
-#: src/features.py:214
+#: src/features.py:217
 msgid ""
 "Compton is a lightweight, standalone composite manager,\n"
 "suitable for use with window managers that do not natively\n"
@@ -403,34 +419,42 @@ msgid ""
 "See the compton github page for further information."
 msgstr "Compton 是一個輕量、獨立的合成管理器，\n適合與不包含原生合成效果的視窗管理器一起使用。\nCompton 衍生自 xcompmgr-dana，\n而 xcompmgr-dana 則是衍生自 xcompmgr。\n參見 compton 的 github 頁面以取得更多資訊。"
 
-#: src/features.py:224
+#: src/features.py:227
 msgid "Uncomplicated Firewall"
 msgstr "簡易的防火牆"
 
-#: src/features.py:227
+#: src/features.py:230
 msgid "Control the incoming and outgoing network traffic."
 msgstr "控管進出的網路連線。"
 
-#: src/features.py:230
+#: src/features.py:234
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
 msgstr "Ufw 全名為 Uncomplicated Firewall，也就是簡易型的防火牆，\n是用來管理網路過濾的防火牆。它提供了一個命令列介面\n其目標是將防火牆的複雜設定簡單化，且易於使用。"
 
-#: src/features.py:238
+#: src/features.py:242
 msgid "Proprietary Software"
 msgstr "專有軟體"
 
-#: src/features.py:241
+#: src/features.py:245
 msgid "Software to play Flash videos, MP3 audio, and other media."
 msgstr "可以播放 Flash 影片、MP3 音樂及其他媒體。"
 
-#: src/features.py:305
+#: src/features.py:273
+msgid "Detected bluetooth device. Enabling by default..."
+msgstr ""
+
+#: src/features.py:288
+msgid "Selected '%s' feature to install"
+msgstr ""
+
+#: src/features.py:306
 msgid "Arch User Repository - Disclaimer"
 msgstr "Arch Linux社群使用者軟體倉庫－拒絕"
 
-#: src/features.py:306
+#: src/features.py:307
 msgid ""
 "The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
 "that supplement software available from the official repositories.\n"
@@ -450,7 +474,7 @@ msgid ""
 "ufw allow SSH"
 msgstr "ufw 預設拒絕\nufw 從 %s 允許\nufw 允許通過\nufw 允許 SSH"
 
-#: src/hardware/hardware.py:65 src/installation/process.py:918
+#: src/hardware/hardware.py:65 src/installation/process.py:843
 msgid "Error running command: %s"
 msgstr "執行命令錯誤： %s"
 
@@ -463,7 +487,7 @@ msgstr "剩餘空間"
 msgid "It's not recommended to install grub in a partition"
 msgstr "並不建議將 grub 安裝在分割區中"
 
-#: src/installation/advanced.py:287 src/installation/alongside.py:171
+#: src/installation/advanced.py:287 src/installation/alongside.py:169
 msgid "Device"
 msgstr "裝置"
 
@@ -479,7 +503,7 @@ msgstr "掛載點"
 msgid "Label"
 msgstr "標籤"
 
-#: src/installation/advanced.py:302 src/installation/advanced.py:1634
+#: src/installation/advanced.py:302 src/installation/advanced.py:1635
 msgid "Format"
 msgstr "格式化"
 
@@ -514,6 +538,14 @@ msgstr "無法使用同一個掛載點兩次。"
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
 msgstr "根目錄分割區必須格式化。"
+
+#: src/installation/advanced.py:750
+msgid "You will delete the partition %s from disk %s"
+msgstr ""
+
+#: src/installation/advanced.py:767
+msgid "Unmounting %s..."
+msgstr ""
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
@@ -623,7 +655,7 @@ msgstr "分割表類型："
 msgid "Create Partition Table"
 msgstr "創建分割表"
 
-#: src/installation/advanced.py:1219 src/installation/alongside.py:149
+#: src/installation/advanced.py:1219 src/installation/alongside.py:147
 #: src/installation/automatic.py:95
 msgid "Install Now!"
 msgstr "現在就安裝！"
@@ -643,164 +675,172 @@ msgid ""
 "Cnchi will create the BIOS Boot Partition for you."
 msgstr "GRUB需要BIOS啟動分割區（2MiB，無檔案系統，在 gdisk 中是 EF02 模式碼或是在 GNU Parted 中是 bios_grub旗標）在BIOS系統中需要嵌入 core.img 檔案，因為 GPT 分割的系統缺乏 post-MBR 分隔。\n\nBIOS-GPT 設定中，創建無檔案系統的1007 KiB 分割區在磁碟的開頭。1007 KiB 的大小可以讓後面的分割區準確的校準到1024 KiB。若有其他需求，這個分割區也可以置於硬碟中的其他地方，但必須在第一個2 TiB 的範圍中。設定分割區類型為 ef02。\n\nGPT 分割區也會創建一個受保護的 MBR 分割區以防止不受支援的工具更動它。您也許會需要設定一個可開機旗標在這個受保護的 MBR 上，否則部份 BIOS/EFI可能會拒絕開機。\n\nCnchi 將會幫您創建這個特殊分割區。"
 
-#: src/installation/advanced.py:1539
+#: src/installation/advanced.py:1540
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s 已被掛載為 swap。\n要繼續其必須被卸載。\n按確定以卸載，或按否以返回\n"
 
-#: src/installation/advanced.py:1543
+#: src/installation/advanced.py:1544
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s 已經掛載到 '%s'。\n要繼續必須先將其卸載。\n按是以卸載，或否以返回\n"
 
-#: src/installation/advanced.py:1566
+#: src/installation/advanced.py:1551 src/installation/advanced.py:1565
+msgid "%s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1562
+msgid "Swap partition %s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1567
 msgid "%s shows as mounted (busy) but it has no mount point"
 msgstr "%s 似乎正掛載著（忙碌）但是它並沒有掛載點"
 
-#: src/installation/advanced.py:1627
+#: src/installation/advanced.py:1628
 msgid "Partition %s will be deleted"
 msgstr "分割區 %s 將會被刪除"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Mount"
 msgstr "裝載"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "New"
 msgstr "新的"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Partition"
 msgstr "分區"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Relabel"
 msgstr "重新標籤"
 
-#: src/installation/advanced.py:1655
+#: src/installation/advanced.py:1656
 msgid "We will make changes to partitions on these disks:"
 msgstr "我們將會在此磁碟的分割區上做出變更"
 
-#: src/installation/advanced.py:1712
+#: src/installation/advanced.py:1713
 msgid "Finished saving changes in %s"
 msgstr "儲存變更到 %s 中完成"
 
-#: src/installation/advanced.py:1736
+#: src/installation/advanced.py:1737
 msgid "Creating new %s filesystem in %s labeled %s"
 msgstr "正在創建新的 %s 檔案系統在 %s 中被標籤為 %s"
 
-#: src/installation/advanced.py:1738
+#: src/installation/advanced.py:1739
 msgid "Creating new %s filesystem in %s"
 msgstr "正在創建新的 %s 檔案系統在 %s"
 
-#: src/installation/advanced.py:1780
+#: src/installation/advanced.py:1774
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
 msgstr "無法格式化分割區 '%s' 使用標籤 '%s' 作為 '%s'"
 
-#: src/installation/advanced.py:1818
+#: src/installation/advanced.py:1812
 msgid "Cnchi will not install any boot loader"
 msgstr "Cnchi 將不會安裝任何開機載入器"
 
-#: src/installation/advanced.py:1827
+#: src/installation/advanced.py:1821
 msgid "Antergos will install the bootloader of type %s in %s"
 msgstr "Antergos 將會安裝 %s 類型的開機載入器在 %s"
 
-#: src/installation/advanced.py:1841 src/installation/automatic.py:241
+#: src/installation/advanced.py:1835 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
 msgstr "測試模式。Cnchi 將不會改動任何東西！"
 
-#: src/installation/alongside.py:111
+#: src/installation/alongside.py:109
 msgid "Can't load %s css"
 msgstr "無法載入 %s css"
 
-#: src/installation/alongside.py:138
+#: src/installation/alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
 msgstr "選擇您想要與 Antergos 並存安裝的作業系統。"
 
-#: src/installation/alongside.py:143
+#: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
 msgstr "Anteros 並存安裝"
 
-#: src/installation/alongside.py:174
+#: src/installation/alongside.py:172
 msgid "Detected OS"
 msgstr "已偵測到的作業系統"
 
-#: src/installation/alongside.py:177
+#: src/installation/alongside.py:175
 msgid "Filesystem"
 msgstr "檔案系統"
 
-#: src/installation/alongside.py:221
+#: src/installation/alongside.py:219
 msgid "Unable to create list of partitions for alongside installation."
 msgstr "無法創建並存安裝的分割區列表。"
 
-#: src/installation/alongside.py:261
+#: src/installation/alongside.py:259
 msgid "Can't shrink the partition (maybe it's nearly full)"
 msgstr "無法縮小分割區（它可能已經快滿了）"
 
-#: src/installation/ask.py:97
+#: src/installation/ask.py:101
 msgid "Installation Type"
 msgstr "安裝類型"
 
-#: src/installation/ask.py:113
+#: src/installation/ask.py:117
 msgid "Erase disk and install Antergos"
 msgstr "抹除磁碟並安裝 Antergos"
 
-#: src/installation/ask.py:116
+#: src/installation/ask.py:120
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "警告：這樣將會抹除所有在您磁碟上的資料。"
 
-#: src/installation/ask.py:122
+#: src/installation/ask.py:126
 msgid "Encrypt this installation for increased security."
 msgstr "加密本次安裝以獲得更高的安全性。"
 
-#: src/installation/ask.py:126
+#: src/installation/ask.py:130
 msgid "You will be asked to create an encryption password in the next step."
 msgstr "您將會在下一個步驟輸入加密的密碼。"
 
-#: src/installation/ask.py:135
+#: src/installation/ask.py:139
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
 msgstr "將會設定 LVM 讓您以更簡單的方法產生快照及變更分割區大小。"
 
-#: src/installation/ask.py:140
+#: src/installation/ask.py:144
 msgid "Set your Home in a different partition/volume"
 msgstr "將您的家目錄設定在不同的分割區/卷中"
 
-#: src/installation/ask.py:144
+#: src/installation/ask.py:148
 msgid ""
 "This will setup you /home directory in a different partition or volume."
 msgstr "這將會將您的 /home 目錄設定到不同的分割區或卷中"
 
-#: src/installation/ask.py:152 src/installation/ask.py:154
+#: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
 msgstr "Antergos 與 %s 並存安裝"
 
-#: src/installation/ask.py:161
+#: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "選擇 Antergos 應該要如何安裝。（進階）"
 
-#: src/installation/ask.py:164
+#: src/installation/ask.py:168
 msgid "Edit partition table and choose mount points."
 msgstr "編輯分割表並選擇掛載點。"
 
-#: src/installation/ask.py:190
+#: src/installation/ask.py:194
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "Antergos 將會使用 LUKS 進行加密安裝"
 
-#: src/installation/ask.py:193
+#: src/installation/ask.py:197
 msgid "Antergos will be installed using LVM volumes"
 msgstr "Antergos 將會使用 LVM 卷安裝"
 
-#: src/installation/ask.py:195
+#: src/installation/ask.py:199
 msgid "Antergos will be installed using a separate /home volume."
 msgstr "Antergos 將會使用分離的 /home 卷安裝。"
 
-#: src/installation/ask.py:197
+#: src/installation/ask.py:201
 msgid "Antergos will be installed using a separate /home partition."
 msgstr "Antergos 將會使用分離的 /home 分割區安裝。"
 
@@ -828,19 +868,67 @@ msgstr "未知的檔案系統類型 %s"
 msgid "Can't create file system %s"
 msgstr "無法創建檔案系統 %s"
 
-#: src/installation/auto_partition.py:324
+#: src/installation/auto_partition.py:207
+msgid "Device details: %s UUID=%s LABEL=%s"
+msgstr ""
+
+#: src/installation/auto_partition.py:273
+msgid "%s will be mount as %s"
+msgstr ""
+
+#: src/installation/auto_partition.py:306
+msgid "Device %s will have a %s filesystem"
+msgstr ""
+
+#: src/installation/auto_partition.py:315
 msgid "Cnchi will setup LUKS on device %s"
 msgstr "Cnchi 將會在裝置 %s 上設定 LUKS"
 
-#: src/installation/auto_partition.py:381
+#: src/installation/auto_partition.py:369
+msgid "The device %s has a size of %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:373
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "method for partitioning and mounting devices."
 msgstr "無法偵測您的裝置大小，請使用進階安裝模式以分割及掛載裝置。"
 
-#: src/installation/auto_partition.py:528
-msgid "Will setup LVM on device %s"
-msgstr "將會在裝置 %s 上設定 LVM"
+#: src/installation/auto_partition.py:406
+msgid "Total disc size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:408
+msgid "GPT-BIOS partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:409
+msgid "UEFI partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:410
+msgid "Boot partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:413
+msgid "LVM physical volume size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:415
+msgid "Swap partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:416
+msgid "Root partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:419
+msgid "Home partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:522
+msgid "Cnchi will setup LVM on device %s"
+msgstr ""
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -895,7 +983,7 @@ msgstr "Cnchi 將會把 Antergos 安裝到 %s"
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos 將會安裝 %s 開機載入器到 %s"
 
-#: src/installation/process.py:92
+#: src/installation/process.py:91
 msgid "Installing using the '%s' method. Please wait..."
 msgstr "正在使用 '%s' 模式安裝。請稍候..."
 
@@ -912,13 +1000,13 @@ msgid "Error creating partitions and their filesystems"
 msgstr "在創建分割區及其檔案系統時發生錯誤"
 
 #: src/installation/process.py:208 src/installation/process.py:288
-#: src/installation/process.py:356 src/installation/process.py:891
+#: src/installation/process.py:356 src/installation/process.py:816
 msgid "Command %s has failed."
 msgstr "指令 %s 執行失敗。"
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
-#: src/installation/process.py:358 src/installation/process.py:893
+#: src/installation/process.py:358 src/installation/process.py:818
 msgid "Output : %s"
 msgstr "輸出：%s"
 
@@ -966,7 +1054,7 @@ msgstr "正在使用 aria2 下載軟體包..."
 msgid "Packages downloaded."
 msgstr "軟體包已下載。"
 
-#: src/installation/process.py:346
+#: src/installation/process.py:346 src/installation/process.py:729
 msgid "Installing packages..."
 msgstr "正在安裝軟體包..."
 
@@ -990,349 +1078,365 @@ msgstr "安裝完成。"
 msgid "Can't copy Cnchi log to %s"
 msgstr "無法複製 Cnchi 的記錄檔到 %s"
 
-#: src/installation/process.py:416
+#: src/installation/process.py:415
 msgid "Creating a temporary pacman.conf for %s architecture"
 msgstr "創建一個 %s 架構的暫時性的 pacman.conf"
 
-#: src/installation/process.py:509
+#: src/installation/process.py:495
 msgid "Getting package list..."
 msgstr "正在取的軟體包列表..."
 
-#: src/installation/process.py:518
+#: src/installation/process.py:504
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "無法擷取遠端軟體包列表，正在使用本機檔案做為替代。"
 
-#: src/installation/process.py:526
+#: src/installation/process.py:512
 msgid "Adding all desktops common packages"
 msgstr "添加所有桌面的普通軟體包"
 
-#: src/installation/process.py:541
+#: src/installation/process.py:527
 msgid "Adding '%s' desktop packages"
 msgstr "添加 '%s' 桌面軟體包"
 
 #: src/installation/process.py:554
-msgid "Add kde language package"
-msgstr "加入 kde 語言包"
-
-#: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
 msgstr "已選取的 kde 語言包：%s"
 
-#: src/installation/process.py:594
+#: src/installation/process.py:579
 msgid "Hardware module added these packages : %s"
 msgstr "已經加入這些硬體模組軟體包：%s"
 
-#: src/installation/process.py:599 src/installation/process.py:1734
+#: src/installation/process.py:584 src/installation/process.py:1677
 msgid "Can't import hardware module."
 msgstr "無法匯入硬體模組。"
 
-#: src/installation/process.py:601 src/installation/process.py:1736
+#: src/installation/process.py:586 src/installation/process.py:1679
 msgid "Unknown error in hardware module. Output: %s"
 msgstr "在硬體模組中有未知的錯誤。輸出：%s"
 
-#: src/installation/process.py:612
+#: src/installation/process.py:597
 msgid "Adding filesystem packages"
 msgstr "加入檔案系統軟體包"
 
-#: src/installation/process.py:633
+#: src/installation/process.py:618
 msgid "Check for user desired features and add them to our installation"
 msgstr "檢查使用者需要的特性並將它們加入到安裝中"
 
-#: src/installation/process.py:635
+#: src/installation/process.py:620
 msgid "All features needed packages have been added"
 msgstr "所有必須的軟體包都已加入"
 
-#: src/installation/process.py:640
+#: src/installation/process.py:625
 msgid "Selecting chinese fonts."
 msgstr "正在選擇中文字體。"
 
-#: src/installation/process.py:646
+#: src/installation/process.py:631
 msgid "Adding bootloader packages if needed"
 msgstr "需要時添加開機載入器軟體包"
 
-#: src/installation/process.py:691
+#: src/installation/process.py:658
+msgid "Adding packages for '%s' feature."
+msgstr ""
+
+#: src/installation/process.py:665
+msgid "Selecting package %s for feature %s"
+msgstr ""
+
+#: src/installation/process.py:675
 msgid "Add libreoffice language package"
 msgstr "加入 libreoffice 語言包"
 
-#: src/installation/process.py:740
-msgid "Package group '%s' has %d packages"
-msgstr "軟體包群組 '%s' 有 %d 個軟體包"
+#: src/installation/process.py:726
+msgid "Downloading packages..."
+msgstr ""
+
+#: src/installation/process.py:738
+msgid ""
+"Can't download all necessary packages. Cnchi will continue and try again "
+"this download later."
+msgstr ""
+
+#: src/installation/process.py:741
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr ""
 
 #: src/installation/process.py:763
-msgid "Cnchi will install a total of %d packages."
-msgstr "Cnchi 將會安裝總共 %d 個軟體包。"
-
-#: src/installation/process.py:775
-msgid "Downloading packages from '%s' group..."
-msgstr "正在從 '%s' 群組下載軟體包..."
-
-#: src/installation/process.py:788
-msgid ""
-"Can't download group '%s'. Cnchi will continue and try again this download "
-"later."
-msgstr "無法下載群組 '%s'。Cnchi 將會在稍候繼續嘗試下載。"
-
-#: src/installation/process.py:806
-msgid "Installing packages from '%s' group..."
-msgstr "正在從 '%s' 群組安裝軟體包..."
-
-#: src/installation/process.py:819
-msgid ""
-"Can't install group '%s'. Cnchi will continue but this group of packages "
-"won't be installed."
-msgstr "無法安裝群組 '%s'。Cnchi 將會在稍候繼續嘗試安裝這個群組裡尚未安裝的軟體包。"
-
-#: src/installation/process.py:838
 msgid "Special dirs already mounted."
 msgstr "特殊資料夾已經掛載。"
 
-#: src/installation/process.py:873
+#: src/installation/process.py:798
 msgid "Special dirs are not mounted. Skipping."
 msgstr "特殊目錄未掛載。略過。"
 
-#: src/installation/process.py:890 src/installation/process.py:896
+#: src/installation/process.py:815 src/installation/process.py:821
 msgid "Unable to umount %s"
 msgstr "無法卸載 %s"
 
-#: src/installation/process.py:951
+#: src/installation/process.py:846
+msgid "Timeout running command: %s"
+msgstr ""
+
+#: src/installation/process.py:879
 msgid "Can't copy network configuration files"
 msgstr "無法複製網路設定檔案"
 
-#: src/installation/process.py:981 src/installation/process.py:1044
+#: src/installation/process.py:908 src/installation/process.py:973
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
 msgstr "加入到fstab： UUID=%s %s %s %s 0 %s"
 
-#: src/installation/process.py:995
+#: src/installation/process.py:922
 msgid "Added to crypttab : %s"
 msgstr "已加入 crypttab：%s"
 
-#: src/installation/process.py:999
+#: src/installation/process.py:926
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 msgstr "已加入 fstab：/dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
-#: src/installation/process.py:1048
-msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-msgstr "已加入 fstab：tmpfs /tmp tmpfs 預設，noatime，模式=1777 0 0"
+#: src/installation/process.py:978
+msgid "Added to fstab : %s"
+msgstr ""
 
-#: src/installation/process.py:1056
+#: src/installation/process.py:987
 msgid "fstab written."
 msgstr "fstab 已寫入。"
 
-#: src/installation/process.py:1154
+#: src/installation/process.py:1075
+msgid "/etc/default/grub configuration completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1090
 msgid "Could not copy %s to grub.d"
 msgstr "無法複製 %s 到 grub.d"
 
-#: src/installation/process.py:1161
+#: src/installation/process.py:1097
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "正在安裝 GRUB(2) BIOS 開機載入器到 %s"
 
-#: src/installation/process.py:1186
+#: src/installation/process.py:1119 src/installation/process.py:1203
+msgid ""
+"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+" continue."
+msgstr ""
+
+#: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS 已經成功安裝。"
 
-#: src/installation/process.py:1189
+#: src/installation/process.py:1130
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "安裝 GRUB(2) BIOS 時發生錯誤。"
 
-#: src/installation/process.py:1203
+#: src/installation/process.py:1144
 msgid "Installing GRUB(2) UEFI %s boot loader"
 msgstr "正在安裝 GRUB(2) UEFI %s 開機載入器"
 
-#: src/installation/process.py:1229
+#: src/installation/process.py:1170
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
 msgstr "在 %s 沒有發現 OEM 載入器。正在複製 Grub(2) 到目錄中。"
 
-#: src/installation/process.py:1234
+#: src/installation/process.py:1175
 msgid "Copying Grub(2) into OEM dir failed. File Not Found."
 msgstr "複製 Grub(2) 到 OEM 目錄中失敗。檔案找不到。"
 
-#: src/installation/process.py:1236
+#: src/installation/process.py:1177
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
 msgstr "複製 Grub(2) 到 OEM 目錄失敗。檔案存在。"
 
-#: src/installation/process.py:1238
+#: src/installation/process.py:1179
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
 msgstr "複製 Grub(2) 到 OEM 目錄失敗。未知錯誤。"
 
-#: src/installation/process.py:1247
+#: src/installation/process.py:1188
 msgid "UEFI Shell drop-in not found at %s"
 msgstr "未在 %s 中發現內建的 UEFI 殼層"
 
-#: src/installation/process.py:1251
+#: src/installation/process.py:1192
 msgid "UEFI Shell drop-in could not be copied."
 msgstr "內建的 UEFI 殼層無法複製。"
 
-#: src/installation/process.py:1255
+#: src/installation/process.py:1196
 msgid "Generating grub.cfg"
 msgstr "正在產生 grub.cfg"
 
-#: src/installation/process.py:1270
+#: src/installation/process.py:1216
 msgid "GRUB(2) UEFI install may not have completed successfully."
 msgstr "GRUB(2) UEFI 的安裝可能沒有成功的完成。"
 
-#: src/installation/process.py:1273
+#: src/installation/process.py:1219
 msgid "GRUB(2) UEFI install completed successfully"
 msgstr "GRUB(2) BIOS 成功安裝。"
 
-#: src/installation/process.py:1277
+#: src/installation/process.py:1223
 msgid "Copying GRUB(2) Theme Files"
 msgstr "正在複製 GRUB(2) 主題檔案"
 
-#: src/installation/process.py:1283
+#: src/installation/process.py:1229
 msgid "Grub2 theme files not found"
 msgstr "Grub2 主題檔案找不到"
 
-#: src/installation/process.py:1285
+#: src/installation/process.py:1231
 msgid "Grub2 theme files already exist."
 msgstr "Grub2 主題檔案已經存在。"
 
-#: src/installation/process.py:1289
+#: src/installation/process.py:1235
 msgid "Installing Grub2 locales."
 msgstr "正在安裝 Grub2 語系。"
 
-#: src/installation/process.py:1300
+#: src/installation/process.py:1246
 msgid "Can't install GRUB(2) locale."
 msgstr "無法安裝 GRUB(2) 語系。"
 
-#: src/installation/process.py:1334
+#: src/installation/process.py:1280
 msgid "Can't freeze/unfreeze xfs system"
 msgstr "無法 凍結/解凍 xfs 系統"
 
-#: src/installation/process.py:1340
+#: src/installation/process.py:1286
 msgid "Enabled %s service."
 msgstr "啟動 %s 服務。"
 
-#: src/installation/process.py:1347
+#: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
 msgstr "創建使用者 %s 的密碼雜湊值時發生錯誤"
 
-#: src/installation/process.py:1353
+#: src/installation/process.py:1299
 msgid "Error changing password for user %s"
 msgstr "更換使用者 %s 的密碼時發生錯誤"
 
-#: src/installation/process.py:1365
+#: src/installation/process.py:1311
 msgid "Setting hooks and modules in mkinitcpio.conf"
 msgstr "正在設定 mkinitcpio.conf 中的 hooks 和模組"
 
-#: src/installation/process.py:1459
+#: src/installation/process.py:1405
 msgid "Copying xz files from cache..."
 msgstr "正在從快取中複製 xz 檔案..."
 
-#: src/installation/process.py:1486
+#: src/installation/process.py:1432
 msgid "Configuring bluetooth..."
 msgstr "正在設定藍牙..."
 
-#: src/installation/process.py:1492
+#: src/installation/process.py:1438
 msgid "Configuring CUPS..."
 msgstr "正在設定 CUPS..."
 
-#: src/installation/process.py:1504
+#: src/installation/process.py:1450
 msgid "Configuring firewall..."
 msgstr "正在設定防火牆..."
 
-#: src/installation/process.py:1516
+#: src/installation/process.py:1462
 msgid "Couldn't configure the firewall: %s"
 msgstr "無法設定防火牆：%s"
 
-#: src/installation/process.py:1526
+#: src/installation/process.py:1472
 msgid "%s: Configuring display manager."
 msgstr "%s：正在設定顯示管理員。"
 
-#: src/installation/process.py:1552
+#: src/installation/process.py:1498
 msgid "Completed %s display manager configuration."
 msgstr "已完成 %s 顯示管理器設定。"
 
-#: src/installation/process.py:1554
+#: src/installation/process.py:1500
 msgid "Error while trying to configure '%s' display manager"
 msgstr "嘗試設定 '%s' 顯示管理器時遇到錯誤"
 
-#: src/installation/process.py:1639
+#: src/installation/process.py:1584
 msgid "Configuring your new system"
 msgstr "正在設定新系統"
 
-#: src/installation/process.py:1642
+#: src/installation/process.py:1587
 msgid "fstab file generated."
 msgstr "fstab 檔案已生成。"
 
-#: src/installation/process.py:1660
+#: src/installation/process.py:1604
 msgid "Cnchi will configure netctl using the %s profile"
 msgstr "Cnchi 將會使用 %s 設定檔設定 netctl"
 
-#: src/installation/process.py:1667
+#: src/installation/process.py:1611
 msgid "Can't copy network configuration profiles"
 msgstr "無法複製網路設定檔"
 
-#: src/installation/process.py:1675
+#: src/installation/process.py:1618
 msgid "Network configuration copied."
 msgstr "網路設定已複製。"
 
-#: src/installation/process.py:1681
+#: src/installation/process.py:1624
 msgid "Mirror list copied."
 msgstr "鏡像列表已複製。"
 
-#: src/installation/process.py:1683
+#: src/installation/process.py:1626
 msgid "Can't copy mirrorlist file"
 msgstr "無法複製鏡像列表檔案"
 
-#: src/installation/process.py:1690
+#: src/installation/process.py:1633
 msgid "Generated /etc/pacman.conf"
 msgstr "已經生成 /etc/pacman.conf"
 
-#: src/installation/process.py:1708
+#: src/installation/process.py:1651
 msgid "Timezone set."
 msgstr "時區設定。"
 
-#: src/installation/process.py:1725
+#: src/installation/process.py:1668
 msgid "Sudo configuration for user %s done."
 msgstr "使用者 %s 的 sudo 設定已完成。"
 
-#: src/installation/process.py:1753
+#: src/installation/process.py:1674
+msgid "Running post-install scripts from hardware module..."
+msgstr ""
+
+#: src/installation/process.py:1696
 msgid "User %s added."
 msgstr "使用者 %s 已加入。"
 
-#: src/installation/process.py:1766
+#: src/installation/process.py:1709
 msgid "Hostname set to %s."
 msgstr "主機名稱設定為 %s。"
 
-#: src/installation/process.py:1770
+#: src/installation/process.py:1713
 msgid "Set the same password to root."
 msgstr "設定相同的密碼給 root。"
 
-#: src/installation/process.py:1776
+#: src/installation/process.py:1719
 msgid "Generating locales..."
 msgstr "正在產生語系碼..."
 
-#: src/installation/process.py:1792
+#: src/installation/process.py:1735
 msgid "Adjusting hardware clock..."
 msgstr "正在調整硬體時鐘..."
 
-#: src/installation/process.py:1797
+#: src/installation/process.py:1740
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
 msgstr "為 xkblayout 設定 /etc/X11/xorg.conf.d/00-keyboard.conf"
 
-#: src/installation/process.py:1809
+#: src/installation/process.py:1752
 msgid "00-keyboard.conf written."
 msgstr "00-keyboard.conf 已寫入。"
 
-#: src/installation/process.py:1815
+#: src/installation/process.py:1758
 msgid "Configuring System Startup..."
 msgstr "正在設定系統啟動..."
 
-#: src/installation/process.py:1818
+#: src/installation/process.py:1761
 msgid "Call Cnchi post-install script"
 msgstr "呼叫 Cnchi 安裝後腳本"
 
-#: src/installation/process.py:1840
+#: src/installation/process.py:1767
+msgid "Post install script completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1783
 msgid "Encrypting user home dir..."
 msgstr "正在加密使用者家目錄..."
 
-#: src/installation/process.py:1842
+#: src/installation/process.py:1785
 msgid "User home dir encrypted"
 msgstr "使用者家目錄已加密"
 
-#: src/installation/process.py:1846
+#: src/installation/process.py:1789
 msgid "Installing bootloader..."
 msgstr "正在安裝開機載入器..."
+
+#: src/installation/process.py:1793
+msgid "Copying install log to /var/log."
+msgstr ""
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1371,11 +1475,11 @@ msgid ""
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr "Cnchi 是仍在積極開發中測試版軟體。\n它仍無法處理 RAID ，btrfs 子卷，或是其他\n進階設定。請注意可能會有資料遺失的危險！\n\n如果您發現任何程式錯誤，請在 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> 回報"
 
-#: src/language.py:97 src/welcome.py:100
+#: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
 msgstr "歡迎來到Antergos!"
 
-#: src/language.py:130
+#: src/language.py:131
 msgid "Can't find translation file for the %s language"
 msgstr "找不到 %s 語言的翻譯檔"
 
@@ -1394,75 +1498,95 @@ msgstr "國家，地區或區域："
 msgid "Select your location"
 msgstr "選擇您的地區"
 
-#: src/location.py:197
+#: src/location.py:198
 msgid "locale changed to : %s"
 msgstr "語系變更為： %s"
 
-#: src/location.py:199
+#: src/location.py:200
 msgid "Can't change to locale '%s'"
 msgstr "無法變更語系為 '%s'"
 
-#: src/pacman/pac.py:180
+#: src/pacman/pac.py:35
+msgid "pyalpm not found! This installer won't work."
+msgstr ""
+
+#: src/pacman/pac.py:120
+msgid "Cnchi will install a list of packages like pacman -S"
+msgstr ""
+
+#: src/pacman/pac.py:127
+msgid "No targets found"
+msgstr ""
+
+#: src/pacman/pac.py:140
+msgid "Adding %s to transaction"
+msgstr ""
+
+#: src/pacman/pac.py:144
+msgid "Finalize transaction..."
+msgstr ""
+
+#: src/pacman/pac.py:177
 msgid "Can't find a package or group called '%s'"
 msgstr "無法找到名為 '%s' 的軟體包或群組"
 
-#: src/pacman/pac.py:258
+#: src/pacman/pac.py:255
 msgid "Checking dependencies..."
 msgstr "正在檢查相依性..."
 
-#: src/pacman/pac.py:260
+#: src/pacman/pac.py:257
 msgid "Checking file conflicts..."
 msgstr "正在檢查檔案衝突..."
 
-#: src/pacman/pac.py:262
+#: src/pacman/pac.py:259
 msgid "Resolving dependencies..."
 msgstr "正在解決相依性..."
 
-#: src/pacman/pac.py:264
+#: src/pacman/pac.py:261
 msgid "Checking inter conflicts..."
 msgstr "正在檢查內部衝突..."
 
-#: src/pacman/pac.py:269
+#: src/pacman/pac.py:266
 msgid "Removing..."
 msgstr "正在移除......"
 
-#: src/pacman/pac.py:271
+#: src/pacman/pac.py:268
 msgid "Upgrading..."
 msgstr "正在升級......"
 
-#: src/pacman/pac.py:273
+#: src/pacman/pac.py:270
 msgid "Checking integrity..."
 msgstr "正在檢查完整性..."
 
-#: src/pacman/pac.py:275
+#: src/pacman/pac.py:272
 msgid "Loading packages files..."
 msgstr "正在載入軟體包檔案..."
 
-#: src/pacman/pac.py:277
+#: src/pacman/pac.py:274
 msgid "Configuring..."
 msgstr "正在設定......"
 
-#: src/pacman/pac.py:279
+#: src/pacman/pac.py:276
 msgid "Downloading a file"
 msgstr "正在下載一個檔案"
 
-#: src/pacman/pac.py:306
+#: src/pacman/pac.py:303
 msgid "Installing %s (%d/%d)"
 msgstr "正在安裝 %s (%d/%d)"
 
-#: src/pacman/pac.py:309
+#: src/pacman/pac.py:306
 msgid "Checking and loading packages..."
 msgstr "正在檢查並載入軟體包..."
 
-#: src/pacman/pac.py:331
+#: src/pacman/pac.py:329
 msgid "Updating %s database"
 msgstr "正在升級 %s 資料庫"
 
-#: src/parted3/fs_module.py:149
+#: src/parted3/fs_module.py:150
 msgid "Can't verify if %s is a Solid State Drive or not"
 msgstr "無法確認 %s 是否為固態硬碟"
 
-#: src/parted3/fs_module.py:174
+#: src/parted3/fs_module.py:175
 msgid "Sorry but filesystem %s can't be shrinked"
 msgstr "抱歉，但是檔案系統 %s 無法縮小"
 
@@ -1478,25 +1602,29 @@ msgstr "無法刪除卷群組 %s"
 msgid "Can't remove physical volume %s"
 msgstr "無法刪除物理卷 %s"
 
-#: src/parted3/partition_module.py:108
+#: src/parted3/partition_module.py:35
+msgid "Can't import parted module! This installer won't work."
+msgstr ""
+
+#: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
 msgstr "在裝置 %s 中有未被認可的磁碟標籤。"
 
-#: src/parted3/partition_module.py:113
+#: src/parted3/partition_module.py:111
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
 msgstr "例外：%s.\n要取得更多資訊請見 /tmp/cnchi.log"
 
-#: src/parted3/partition_module.py:180
+#: src/parted3/partition_module.py:178
 msgid "Can't delete partition %s"
 msgstr "無法刪除分割區 %s"
 
-#: src/parted3/partition_module.py:231
+#: src/parted3/partition_module.py:229
 msgid "Partition is too large!"
 msgstr "分割區太大了！"
 
-#: src/parted3/partition_module.py:290
+#: src/parted3/partition_module.py:288
 msgid "Can't detect used space from %s"
 msgstr "無法偵測 %s 的已使用空間"
 
@@ -1536,31 +1664,31 @@ msgstr "無法找到鏡像腳本"
 msgid "Couldn't execute auto mirror selection"
 msgstr "無法執行自動鏡像選擇"
 
-#: src/show_message.py:51
+#: src/show_message.py:52
 msgid "Antergos Installer - Error"
 msgstr "Antergos安裝程式-錯誤"
 
-#: src/show_message.py:62
+#: src/show_message.py:64
 msgid "Antergos Installer - Warning"
 msgstr "Antergos安裝程式-警告"
 
-#: src/show_message.py:73
+#: src/show_message.py:76
 msgid "Antergos Installer - Information"
 msgstr "Antergos安裝程式-訊息"
 
-#: src/show_message.py:83
+#: src/show_message.py:87
 msgid "Antergos Installer - Confirmation"
 msgstr "Antergos 安裝程式 - 確認"
 
-#: src/slides.py:94
+#: src/slides.py:91
 msgid "Please wait..."
 msgstr "請燒等......"
 
-#: src/slides.py:96
+#: src/slides.py:93
 msgid "Installing Antergos..."
 msgstr "正在安裝 Antergos..."
 
-#: src/slides.py:194
+#: src/slides.py:185
 msgid ""
 "IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
 "installation which could prevent your system from booting properly. Before\n"
@@ -1571,15 +1699,19 @@ msgid ""
 "Would you like to view the wiki page now?"
 msgstr "重要：Grub(2) 開機載入器可能有問題\n可能會造成您的系統無法正確開機。\n在您重新開機前，您可能必須檢查 GRUB(2) 是否安裝並設定完成。\nArch Linux 的 Wiki 包含了疑難排解資訊：\n\thttps://wiki.archlinux.org/index.php/GRUB\n\n您想要立即觀看這個 wiki 頁面嗎？"
 
-#: src/slides.py:206
+#: src/slides.py:197
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr "安裝完成！\n您想要立即重新啟動您的系統嗎？"
 
-#: src/slides.py:234
+#: src/slides.py:225
 msgid "Do you want to retry the installation using the same configuration?"
 msgstr "您想要使用同樣的設定重試安裝嗎？"
+
+#: src/slides.py:228
+msgid "Restarting installation process..."
+msgstr ""
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1601,45 +1733,57 @@ msgstr "選擇您的時區"
 msgid "location changed to : %s"
 msgstr "地區變更至： %s"
 
-#: src/timezone.py:222
+#: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
 msgstr "無法自動偵測所在時區"
 
-#: src/timezone.py:280
+#: src/timezone.py:276
 msgid "Stoping timezone threads..."
 msgstr "正在停止時區線程..."
 
-#: src/timezone.py:331
+#: src/timezone.py:330
 msgid "Can't get network status. Will try again later."
 msgstr "無法取得網路狀態。將會在稍候繼續嘗試。"
 
-#: src/timezone.py:337
+#: src/timezone.py:334
 msgid "We have connection. Let's get our timezone"
 msgstr "我們有網路連線了。讓我們取得我們的時區"
 
-#: src/timezone.py:348
+#: src/timezone.py:345
 msgid "Timezone detected."
 msgstr "時區已偵測。"
 
-#: src/timezone.py:350
+#: src/timezone.py:347
 msgid "Can't detect user timezone."
 msgstr "無法偵測使用者時區。"
 
-#: src/timezone.py:379
+#: src/timezone.py:376
 msgid "In timezone, can't get network status"
 msgstr "無法在所在時區中取得網路狀態"
 
-#: src/timezone.py:403
+#: src/timezone.py:400
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr "無法獲得國家代碼以創建 pacman 的鏡像列表"
 
-#: src/timezone.py:424
+#: src/timezone.py:421
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
 msgstr "已下載基於 %s 國家代碼的特殊鏡像列表"
 
-#: src/timezone.py:426
+#: src/timezone.py:423
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr "無法利用國家代碼創建 pacman 的鏡像列表"
+
+#: src/updater.py:67
+msgid "Cnchi Internet version: %s"
+msgstr ""
+
+#: src/updater.py:96
+msgid "New version found. Updating installer..."
+msgstr ""
+
+#: src/updater.py:154
+msgid "Replacing version %s with version %s..."
+msgstr ""
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1705,52 +1849,40 @@ msgstr "加密您的家目錄"
 msgid "Create Your User Account"
 msgstr "創建您的使用者帳戶"
 
-#: src/user_info.py:192
-msgid ""
-"Antergos will use eCryptfs to encrypt your home directory.\n"
-"Unfortunately, eCryptfs does not handle sparse files very well.\n"
-"\n"
-"Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
-"\n"
-"One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download locationw as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
-"\n"
-"A simple workaround is to place sparse files in an unencrypted Public directory.\n"
-"\n"
-"Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
-"\n"
-"Are you sure you want to encrypt your home directory?\n"
-msgstr "Antergos 將會使用 eCryptfs 來加密您的家目錄。\n不幸的是，eCryptfs 無法很好的處理稀疏檔案。\n\n但別擔心，在大多數情況下這都不會是個問題。\n\neCryptfs 其中一個最常被誤用的方式就是用來加密 BitTorrent 下載的暫存位置，因為這經常會導致 eCryptfs 需要管理10GB甚至更多的稀疏檔案，甚至可能會導致磁碟空間經常性的不足。\n\n一個簡單的解決方法是將稀疏檔案置於未加密的公共目錄中。\n\n見 https://wiki.archlinux.org/index.php/ECryptfs 以獲得更多細節。\n\n您確定要加密您的家目錄嗎？\n"
+#: src/user_info.py:204
+msgid "Are you sure you want to encrypt your home directory?"
+msgstr ""
 
-#: src/user_info.py:267
+#: src/user_info.py:271
 msgid "Invalid characters entered"
 msgstr "輸入了不允許使用的字元"
 
-#: src/user_info.py:271
+#: src/user_info.py:275
 msgid "Username can't contain dots"
 msgstr "使用者名稱不能包含小數點"
 
-#: src/user_info.py:275
+#: src/user_info.py:279
 msgid "Too many characters"
 msgstr "過多字元"
 
-#: src/welcome.py:85
+#: src/welcome.py:87
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
 msgstr "您可以試用 Antergos 而不對您的電腦做出任何變更，請選擇「試用」。\n當您準備好安裝 Antergos 時，只要簡單地選擇您想要安裝的方式就可以了。"
 
-#: src/welcome.py:90
+#: src/welcome.py:92
 msgid "Try It"
 msgstr "試用"
 
-#: src/welcome.py:93
+#: src/welcome.py:95
 msgid "CLI Installer"
 msgstr "文字安裝"
 
-#: src/welcome.py:96
+#: src/welcome.py:98
 msgid "Graphical Installer"
 msgstr "圖形化安裝"
 
-#: src/welcome.py:125
+#: src/welcome.py:135
 msgid "Can't load the CLI installer"
 msgstr "無法載入命令列安裝程式"

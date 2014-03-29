@@ -3,16 +3,17 @@
 # 
 # Translators:
 # GNU/ひよこ大佐 <thel.vadam2485@gmail.com>, 2013
+# enkunkun, 2014
 # GNU/ひよこ大佐 <thel.vadam2485@gmail.com>, 2013
-# Hotaka Hitagi, 2013
+# Hotaka Hitagi, 2013-2014
 # mohemohe <mohemohe@ghippos.net>, 2014
 # Hotaka Hitagi, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2014-02-26 17:09+PET\n"
-"PO-Revision-Date: 2014-03-21 05:27+0000\n"
-"Last-Translator: mohemohe <mohemohe@ghippos.net>\n"
+"POT-Creation-Date: 2014-03-29 10:36+PET\n"
+"PO-Revision-Date: 2014-03-29 15:37+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/antergos/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,13 +22,13 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: cnchi.py:115
+#: cnchi.py:134
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "このインストーラーは管理者権限で実行する必要があり、権限無しで続けることはできません。"
 
-#: cnchi.py:124
+#: cnchi.py:143
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -36,72 +37,84 @@ msgid ""
 "and run this installer again."
 msgstr "インストーラーを同時に実行することはできません。\n\nインストーラーが同時に実行されていない場合\n手動で %s を削除し\nインストーラーを再実行してください。"
 
-#: cnchi.py:132
+#: cnchi.py:151
 msgid "Cnchi installer version %s"
 msgstr "Cnchi インストーラー version %s"
 
-#: cnchi.py:207
-msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "パッケージのダウンロードに Aria2 を使用する - 実験的"
-
-#: cnchi.py:249
-msgid "Cnchi - Antergos Installer"
-msgstr "Cnchi - Antergos インストーラー"
-
-#: cnchi.py:284
+#: cnchi.py:197
 msgid "Antergos Installer"
 msgstr "Antergos インストーラー"
 
-#: cnchi.py:309
+#: cnchi.py:233
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr "パッケージのダウンロードに Aria2 を使用する - 実験的"
+
+#: cnchi.py:251
+msgid "Using '%s' file as package list"
+msgstr ""
+
+#: cnchi.py:278
+msgid "Cnchi - Antergos Installer"
+msgstr "Cnchi - Antergos インストーラー"
+
+#: cnchi.py:331 src/welcome.py:120
 msgid "Quiting installer..."
 msgstr "インストーラを終了しています..."
 
-#: cnchi.py:428
+#: cnchi.py:453
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Antergos のパッケージのダウンロードに aria2 を使用する (実験的)"
 
-#: cnchi.py:429
+#: cnchi.py:454
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
 msgstr ""
 
-#: cnchi.py:430
+#: cnchi.py:455
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
 msgstr ""
 
-#: cnchi.py:431
+#: cnchi.py:456
 msgid "Sets Cnchi log level to 'debug'"
 msgstr ""
 
-#: cnchi.py:432
+#: cnchi.py:457
 msgid "Update Cnchi to the latest version (-uu will force the update)"
 msgstr ""
 
-#: cnchi.py:433
+#: cnchi.py:458
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
 msgstr ""
 
-#: cnchi.py:434
+#: cnchi.py:459
 msgid "Do not perform any changes (useful for developers)"
 msgstr ""
 
-#: cnchi.py:435
+#: cnchi.py:460
 msgid "Show logging messages to stdout"
-msgstr ""
+msgstr "ロギングメッセージを標準出力に表示する"
 
-#: cnchi.py:436
+#: cnchi.py:461
 msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
 msgstr ""
 
-#: cnchi.py:437
+#: cnchi.py:462
 msgid "Show options in development (DO NOT USE THIS!)"
+msgstr "開発用のオプションを表示する (使用しないでください！)"
+
+#: cnchi.py:498 cnchi.py:502
+msgid "Please install %s before running this installer"
+msgstr ""
+
+#: cnchi.py:529
+msgid "Program updated! Restarting..."
 msgstr ""
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
-#: src/installation/alongside.py:217
+#: src/installation/alongside.py:215
 msgid "unknown"
 msgstr "不明"
 
@@ -139,7 +152,7 @@ msgstr "システムチェック"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
-msgstr ""
+msgstr "%dGB 以上の空き領域がドライブにあること"
 
 #: src/check.py:86
 msgid ""
@@ -177,16 +190,16 @@ msgstr "デスクトップを選択して下さい"
 
 #: src/desktop.py:132
 msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr ""
+msgstr "Cnchi は Antergos を '%s' デスクトップにインストールします"
 
-#: src/desktop_environments.py:64
+#: src/desktop_environments.py:65
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr ""
+msgstr "Gnome 3 はあなたのコンピューターを簡単かつエレガントに使用できます。 あなたの基本的なタスクに簡単にアクセスできるアクティビティー オーバービュー機能を特徴としています。 GNOME 3 は Antergos のデフォルト デスクトップです。"
 
-#: src/desktop_environments.py:69
+#: src/desktop_environments.py:70
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -194,7 +207,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon は GNOME 3 のフォーク(派生)であり、 Linux Mint により自身のために開発されています。 Cinnamon は ユーザーに GNOME 3 由来の最新の技術と共に、より伝統的なデスクトップインターフェースを提供します。Cinnamon はあらゆるレベルのユーザーを対象としています。"
 
-#: src/desktop_environments.py:74
+#: src/desktop_environments.py:75
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -202,7 +215,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce は軽量なデスクトップ環境です。視覚的にも魅力的でユーザーフレンドリーでありながら、低いシステムリソースでも高速に動作することを目指しています。これは古いコンピューターやハードウェア性能の低いコンピューター上で使用するための素晴らしい選択肢です。"
 
-#: src/desktop_environments.py:79
+#: src/desktop_environments.py:80
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -210,98 +223,102 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE は非常に高速かつ省エネルギーなデスクトップ環境です。他の環境よりも CPU や RAM の使用量が少ないです。LXDE は、特にネットブック、モバイル機器および古いコンピューターなどのハードウェア性能の低い、クラウド利用が主なコンピューター向けに設計されています。"
 
-#: src/desktop_environments.py:84
+#: src/desktop_environments.py:85
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
 "extensive standards support. It's default theme is well known for its "
 "minimalistic appearance and flexibility. Your desktop becomes cleaner, "
 "faster."
-msgstr ""
+msgstr "Openbox は高度な設定が可能で、 拡張が標準でサポートされている次世代のウィンドウ マネージャーです。 デフォルトのテーマはミニマルな外観と柔軟性で有名です。 あなたのデスクトップをよりクリーンで高速にします。"
 
-#: src/desktop_environments.py:89
+#: src/desktop_environments.py:90
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment は Linux/X11 やその他のウィンドウマネージャだけでなく、大きなライブラリ集によって、美しいユーザーインターフェースを僅かな作業で構築できます"
+msgstr "Enlightenment は Linux/X11 やその他のためのウィンドウマネージャであるだけでなく、膨大なライブラリ集によって、美しいユーザーインターフェースを僅かな作業で構築できます"
 
-#: src/desktop_environments.py:93
+#: src/desktop_environments.py:94
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
-msgstr ""
+msgstr "あなたが見慣れたデスクトップ環境を探しているのなら、 KDE のプラズマデスクトップがモダンなデスクトップ コンピューティング体験に必要なツールを提供します。だから、すぐに生産活動を始めることができます。"
 
-#: src/desktop_environments.py:97
+#: src/desktop_environments.py:98
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
-msgstr ""
+msgstr "Razor-qt は Qt テクノロジーに基づいた、先進的で、簡単に使用でき、高速に動作するデスクトップ環境です。シンプルさ、速さ、そして直感的なインターフェースを重視するユーザーに合わせて作られています。"
 
-#: src/desktop_environments.py:102
+#: src/desktop_environments.py:103
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
-msgstr ""
+msgstr "このオプションはグラフィカル インターフェースなしで、コマンドライン専用のシステムとして Antergos をインストールします。インストール後にコマンドラインのパッケージ マネージャーから Antergos をカスタマイズできます。"
 
-#: src/desktop_environments.py:106
+#: src/desktop_environments.py:107
 msgid ""
 "MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
 "environment using traditional metaphors for Linux and other Unix-like "
 "operating systems."
+msgstr "MATE は GNOME 2 のフォークです。 これは伝統的な Linux や他の Unix ライクなオペレーティングシステムのように直感的で魅力的なデスクトップ環境を提供します。"
+
+#: src/download.py:37
+msgid "pm2ml not found. Aria2 download won't work."
 msgstr ""
 
-#: src/download.py:79
+#: src/download.py:80
 msgid "Can't connect with aria2, downloading will be performed by alpm."
 msgstr ""
 
-#: src/download.py:89
+#: src/download.py:90
 msgid "Error creating metalink for package %s"
-msgstr ""
+msgstr "パッケージ %s のメタリンクの作成でエラーが発生しました"
 
-#: src/download.py:95
+#: src/download.py:96
 msgid "Error adding metalink for package %s"
-msgstr ""
+msgstr "パッケージ %s のメタリンクの追加中にエラーが発生しました"
 
-#: src/download.py:104
+#: src/download.py:105
 msgid "Downloading package '%s' and its dependencies..."
-msgstr ""
+msgstr "依存パッケージ '%s' をダウンロードしています..."
 
-#: src/download.py:135 src/pacman/pac.py:336
+#: src/download.py:136 src/pacman/pac.py:334
 msgid "Downloading %s..."
-msgstr ""
+msgstr "%s をダウンロード中..."
 
-#: src/download.py:167
+#: src/download.py:168
 msgid "Can't connect to Aria2. Error Output: %s"
-msgstr ""
+msgstr "Aria2 に接続できませんでした。エラー出力: %s"
 
-#: src/download.py:245
+#: src/download.py:246
 msgid "Unable to create download queue for package %s"
-msgstr ""
+msgstr "パッケージ %s のダウンロード キューを作成できませんでした"
 
-#: src/download.py:249
+#: src/download.py:250
 msgid "Can't find these packages: "
 msgstr "次のパッケージを見つけられませんでした:"
 
-#: src/download.py:255
+#: src/download.py:256
 msgid "Warning! Can't resolve these dependencies: "
 msgstr "警告！ これらの依存関係を解決できません:"
 
 #: src/features.py:110
 msgid "Feature Selection"
-msgstr ""
+msgstr "機能の選択"
 
-#: src/features.py:118
+#: src/features.py:114
 msgid "Arch User Repository (AUR) Support"
 msgstr "Arch User Repository (AUR) サポート"
 
-#: src/features.py:121
+#: src/features.py:117
 msgid "The AUR is a community-driven repository for Arch users."
 msgstr "AUR はコミュニティーが運営している Arch ユーザーのためのリポジトリです。"
 
-#: src/features.py:124
+#: src/features.py:121
 msgid ""
 "Use yaourt to install AUR packages.\n"
 "The AUR was created to organize and share new packages\n"
@@ -309,46 +326,46 @@ msgid ""
 "inclusion into the [community] repository."
 msgstr ""
 
-#: src/features.py:133
+#: src/features.py:130
 msgid "Bluetooth Support"
 msgstr "Bluetooth サポート"
 
-#: src/features.py:136
+#: src/features.py:133
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "システムに Bluetooth を利用したワイヤレス接続を有効化します。"
 
-#: src/features.py:139
+#: src/features.py:137
 msgid ""
 "Bluetooth is a standard for the short-range wireless\n"
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr ""
+msgstr "Bluetooth は携帯電話、コンピューター、その他の電子機器と\n相互接続するための近距離無線通信の標準規格です。\nLinuxでの Bluetooth プロトコル スタック の標準的な実装は BlueZ です。"
 
-#: src/features.py:148
+#: src/features.py:146
 msgid "Extra Truetype Fonts"
-msgstr ""
+msgstr "追加の Truetype フォント"
 
-#: src/features.py:151
+#: src/features.py:149
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "追加の TrueType フォントをインストールします"
 
-#: src/features.py:154
+#: src/features.py:153
 msgid ""
 "TrueType is an outline font standard developed by\n"
 "Apple and Microsoft in the late 1980s as a competitor\n"
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr ""
+msgstr "TrueType は アウトライン フォントの標準規格で PostScript で使用されていた\nAdobe's Type 1 フォントに対抗するために Apple と Microsoft によって\n1980年代後半に開発されました。 Mac OS と Microsoft Windows の両方の\nオペレーティングシステムで最も一般的な形式になっています。"
 
-#: src/features.py:164
+#: src/features.py:163
 msgid "Gnome Extra"
-msgstr ""
+msgstr "Gnome Extra"
 
-#: src/features.py:167
+#: src/features.py:166
 msgid "Installation of extra Gnome applications"
-msgstr ""
+msgstr "追加の Gnome アプリケーションをインストールします"
 
 #: src/features.py:170
 msgid ""
@@ -365,22 +382,22 @@ msgstr "印刷のサポート"
 msgid "Installation of printer drivers and management tools."
 msgstr "プリンタドライバと管理ツールのインストール"
 
-#: src/features.py:184
+#: src/features.py:185
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
 msgstr ""
 
-#: src/features.py:192
+#: src/features.py:193
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: src/features.py:195
+#: src/features.py:196
 msgid "Open source office suite. Supports editing MS Office files."
 msgstr "オープンソースのオフィス スイートです。MS Office ファイルの編集をサポートしています。"
 
-#: src/features.py:198
+#: src/features.py:200
 msgid ""
 "LibreOffice is the free power-packed Open Source\n"
 "personal productivity suite for Windows, Macintosh\n"
@@ -389,15 +406,15 @@ msgid ""
 "needs: Writer, Calc, Impress, Draw, Math and Base."
 msgstr ""
 
-#: src/features.py:208
+#: src/features.py:210
 msgid "Visual Effects"
 msgstr "視覚効果"
 
-#: src/features.py:211
+#: src/features.py:213
 msgid "Enable transparency, shadows, and other desktop effects."
 msgstr "透過や影、その他のデスクトップ効果を有効化する。"
 
-#: src/features.py:214
+#: src/features.py:217
 msgid ""
 "Compton is a lightweight, standalone composite manager,\n"
 "suitable for use with window managers that do not natively\n"
@@ -406,44 +423,52 @@ msgid ""
 "See the compton github page for further information."
 msgstr ""
 
-#: src/features.py:224
-msgid "Uncomplicated Firewall"
-msgstr ""
-
 #: src/features.py:227
-msgid "Control the incoming and outgoing network traffic."
-msgstr ""
+msgid "Uncomplicated Firewall"
+msgstr "簡単なファイアウォール"
 
 #: src/features.py:230
+msgid "Control the incoming and outgoing network traffic."
+msgstr "受信および送信のネットワーク トラフィックを制御します。"
+
+#: src/features.py:234
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
 msgstr ""
 
-#: src/features.py:238
+#: src/features.py:242
 msgid "Proprietary Software"
 msgstr "プロプライエタリなソフトウェア"
 
-#: src/features.py:241
+#: src/features.py:245
 msgid "Software to play Flash videos, MP3 audio, and other media."
+msgstr "Flash、MP3、その他のメディアを再生するソフトウェアです。"
+
+#: src/features.py:273
+msgid "Detected bluetooth device. Enabling by default..."
 msgstr ""
 
-#: src/features.py:305
-msgid "Arch User Repository - Disclaimer"
+#: src/features.py:288
+msgid "Selected '%s' feature to install"
 msgstr ""
 
 #: src/features.py:306
+msgid "Arch User Repository - Disclaimer"
+msgstr "Arch User Repository - 免責事項"
+
+#: src/features.py:307
 msgid ""
 "The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
 "that supplement software available from the official repositories.\n"
 "\n"
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
-msgstr ""
+msgstr "Arch User Repository はユーザーが投稿した PKGBUILD が集められており、\n公式リポジトリから入手できるソフトウェアを補います。\n\nAUR はコミュニティーによって運営されており、Arch や Antergos のサポート外です。\n"
 
 #: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr ""
+msgstr "簡単なファイアウォールは次の設定でインストールされます:"
 
 #: src/features.py:314
 msgid ""
@@ -453,9 +478,9 @@ msgid ""
 "ufw allow SSH"
 msgstr ""
 
-#: src/hardware/hardware.py:65 src/installation/process.py:918
+#: src/hardware/hardware.py:65 src/installation/process.py:843
 msgid "Error running command: %s"
-msgstr ""
+msgstr "コマンドの実行でエラーが発生しました: %s"
 
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
@@ -466,7 +491,7 @@ msgstr "空き領域"
 msgid "It's not recommended to install grub in a partition"
 msgstr ""
 
-#: src/installation/advanced.py:287 src/installation/alongside.py:171
+#: src/installation/advanced.py:287 src/installation/alongside.py:169
 msgid "Device"
 msgstr "デバイス"
 
@@ -482,7 +507,7 @@ msgstr "マウントポイント"
 msgid "Label"
 msgstr "ラベル"
 
-#: src/installation/advanced.py:302 src/installation/advanced.py:1634
+#: src/installation/advanced.py:302 src/installation/advanced.py:1635
 msgid "Format"
 msgstr "フォーマット"
 
@@ -518,21 +543,29 @@ msgstr ""
 msgid "Root partition must be formatted."
 msgstr "root パーティションはフォーマットされている必要があります。"
 
+#: src/installation/advanced.py:750
+msgid "You will delete the partition %s from disk %s"
+msgstr ""
+
+#: src/installation/advanced.py:767
+msgid "Unmounting %s..."
+msgstr ""
+
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
 msgstr ""
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
-msgstr ""
+msgstr "基本パーティションを作成しています"
 
 #: src/installation/advanced.py:959
 msgid "Creating an extended partition"
-msgstr ""
+msgstr "拡張パーティションを作成しています"
 
 #: src/installation/advanced.py:965
 msgid "Creating a logical partition"
-msgstr ""
+msgstr "論理パーティションを作成しています"
 
 #: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
@@ -540,27 +573,27 @@ msgstr "高度なインストール"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
-msgstr ""
+msgstr "ブートローダーのインストールには以下のデバイスが使用されます:"
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
-msgstr ""
+msgstr "マウント チェックリスト:"
 
 #: src/installation/advanced.py:1116
 msgid "Root ( / )"
-msgstr ""
+msgstr "ルート ( / )"
 
 #: src/installation/advanced.py:1120
 msgid "Boot ( /boot )"
-msgstr ""
+msgstr "ブート ( /boot )"
 
 #: src/installation/advanced.py:1124
 msgid "EFI ( /boot )"
-msgstr ""
+msgstr "EFI ( /boot )"
 
 #: src/installation/advanced.py:1128
 msgid "Swap"
-msgstr ""
+msgstr "スワップ"
 
 #: src/installation/advanced.py:1136
 msgid "New Partition Table"
@@ -626,7 +659,7 @@ msgstr "パーティションテーブルの種類:"
 msgid "Create Partition Table"
 msgstr "パーティションテーブルの作成"
 
-#: src/installation/advanced.py:1219 src/installation/alongside.py:149
+#: src/installation/advanced.py:1219 src/installation/alongside.py:147
 #: src/installation/automatic.py:95
 msgid "Install Now!"
 msgstr "インストール"
@@ -646,166 +679,174 @@ msgid ""
 "Cnchi will create the BIOS Boot Partition for you."
 msgstr ""
 
-#: src/installation/advanced.py:1539
+#: src/installation/advanced.py:1540
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s はスワップ パーティションとしてマウントされています。\n続けるにはアンマウントする必要があります。\nはい をクリックしてアンマウント、 いいえ をクリックして戻ります\n"
 
-#: src/installation/advanced.py:1543
+#: src/installation/advanced.py:1544
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s は '%s' にマウントされています。\n続けるにはアンマウントする必要があります。\nはい をクリックしてアンマウント、 いいえ をクリックして戻ります\n"
 
-#: src/installation/advanced.py:1566
-msgid "%s shows as mounted (busy) but it has no mount point"
+#: src/installation/advanced.py:1551 src/installation/advanced.py:1565
+msgid "%s unmounted"
 msgstr ""
 
-#: src/installation/advanced.py:1627
+#: src/installation/advanced.py:1562
+msgid "Swap partition %s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1567
+msgid "%s shows as mounted (busy) but it has no mount point"
+msgstr "%s はマウント済み (ビジー) のように見えますが、マウントポイントが存在しません。"
+
+#: src/installation/advanced.py:1628
 msgid "Partition %s will be deleted"
 msgstr "パーティション %s は削除されます"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Mount"
 msgstr "マウント"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "New"
 msgstr "新規"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Partition"
 msgstr "パーティション"
 
-#: src/installation/advanced.py:1634
+#: src/installation/advanced.py:1635
 msgid "Relabel"
 msgstr "再ラベル"
 
-#: src/installation/advanced.py:1655
+#: src/installation/advanced.py:1656
 msgid "We will make changes to partitions on these disks:"
 msgstr "これらのディスクのパーティションに変更を加えます:"
 
-#: src/installation/advanced.py:1712
+#: src/installation/advanced.py:1713
 msgid "Finished saving changes in %s"
 msgstr "%s へ変更を保存完了"
 
-#: src/installation/advanced.py:1736
+#: src/installation/advanced.py:1737
 msgid "Creating new %s filesystem in %s labeled %s"
 msgstr ""
 
-#: src/installation/advanced.py:1738
+#: src/installation/advanced.py:1739
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "新しいファイルシステム %s を %s に作成しています"
 
-#: src/installation/advanced.py:1780
+#: src/installation/advanced.py:1774
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
 msgstr ""
 
-#: src/installation/advanced.py:1818
+#: src/installation/advanced.py:1812
 msgid "Cnchi will not install any boot loader"
 msgstr "Cnchi はどのブートローダーもインストールしません"
 
-#: src/installation/advanced.py:1827
+#: src/installation/advanced.py:1821
 msgid "Antergos will install the bootloader of type %s in %s"
-msgstr ""
+msgstr "Antergos は %s タイプのブートローダーを %s にインストールします"
 
-#: src/installation/advanced.py:1841 src/installation/automatic.py:241
+#: src/installation/advanced.py:1835 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr "テストモード。 Cnchiは何も変更しません！"
+msgstr "テストモード。 Cnchi は何も変更しません！"
 
-#: src/installation/alongside.py:111
+#: src/installation/alongside.py:109
 msgid "Can't load %s css"
 msgstr "%s のCSSを読み込めません"
 
-#: src/installation/alongside.py:138
+#: src/installation/alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
 msgstr ""
 
-#: src/installation/alongside.py:143
+#: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Antergos 共存インストール"
 
-#: src/installation/alongside.py:174
+#: src/installation/alongside.py:172
 msgid "Detected OS"
 msgstr "検出されたOS"
 
-#: src/installation/alongside.py:177
+#: src/installation/alongside.py:175
 msgid "Filesystem"
 msgstr "ファイルシステム"
 
-#: src/installation/alongside.py:221
+#: src/installation/alongside.py:219
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "共存インストールに必要なパーティションのリストの作成ができませんでした。"
 
-#: src/installation/alongside.py:261
+#: src/installation/alongside.py:259
 msgid "Can't shrink the partition (maybe it's nearly full)"
-msgstr ""
+msgstr "パーティションを縮小できません (おそらくほぼいっぱいです)"
 
-#: src/installation/ask.py:97
+#: src/installation/ask.py:101
 msgid "Installation Type"
 msgstr "インストールの種類"
 
-#: src/installation/ask.py:113
+#: src/installation/ask.py:117
 msgid "Erase disk and install Antergos"
 msgstr "ディスクを消去してAntergosをインストール"
 
-#: src/installation/ask.py:116
+#: src/installation/ask.py:120
 msgid "Warning: This will erase ALL data on your disk."
-msgstr ""
-
-#: src/installation/ask.py:122
-msgid "Encrypt this installation for increased security."
-msgstr ""
+msgstr "警告: ディスクのデータを全て消去します。"
 
 #: src/installation/ask.py:126
-msgid "You will be asked to create an encryption password in the next step."
-msgstr ""
+msgid "Encrypt this installation for increased security."
+msgstr "暗号化してインストールするとセキュリティが向上します。"
 
-#: src/installation/ask.py:135
+#: src/installation/ask.py:130
+msgid "You will be asked to create an encryption password in the next step."
+msgstr "暗号化に使用するパスワードを次の手順で求められます。"
+
+#: src/installation/ask.py:139
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
-msgstr ""
-
-#: src/installation/ask.py:140
-msgid "Set your Home in a different partition/volume"
-msgstr ""
+msgstr "LVM をセットアップして、簡単にパーティションを管理したり、スナップショットを作成できるようにします。"
 
 #: src/installation/ask.py:144
+msgid "Set your Home in a different partition/volume"
+msgstr "Home は異なるパーティションかボリュームに設定してください"
+
+#: src/installation/ask.py:148
 msgid ""
 "This will setup you /home directory in a different partition or volume."
-msgstr ""
+msgstr "/home ディレクトリを異なるパーティションかボリュームにセットアップします。"
 
-#: src/installation/ask.py:152 src/installation/ask.py:154
+#: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "Antergos を %s と共存させてインストールします"
 
-#: src/installation/ask.py:161
+#: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
-msgstr ""
+msgstr "Antergos をインストールする場所を正確に選ぶ (上級者向け)"
 
-#: src/installation/ask.py:164
+#: src/installation/ask.py:168
 msgid "Edit partition table and choose mount points."
 msgstr "パーティションテーブルを編集しマウントポイントを選択"
 
-#: src/installation/ask.py:190
+#: src/installation/ask.py:194
 msgid "Antergos installation will be encrypted using LUKS"
-msgstr ""
+msgstr "LUKS を使用して Antergos のインストールを暗号化する"
 
-#: src/installation/ask.py:193
+#: src/installation/ask.py:197
 msgid "Antergos will be installed using LVM volumes"
 msgstr "Antergos は LVMボリューム にインストールされます"
 
-#: src/installation/ask.py:195
+#: src/installation/ask.py:199
 msgid "Antergos will be installed using a separate /home volume."
-msgstr ""
+msgstr "Antergos は /home ボリュームを分離してインストールされます。"
 
-#: src/installation/ask.py:197
+#: src/installation/ask.py:201
 msgid "Antergos will be installed using a separate /home partition."
-msgstr ""
+msgstr "Antergos は /home パーティションを分離してインストールされます。"
 
 #: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
 msgid "Unmounting %s"
@@ -817,7 +858,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
-msgstr ""
+msgstr "現存する LVM ボリュームを削除できません (以下を確認してください)"
 
 #: src/installation/auto_partition.py:116
 msgid "Can't close LUKS devices : %s"
@@ -825,25 +866,73 @@ msgstr ""
 
 #: src/installation/auto_partition.py:168
 msgid "Unknown filesystem type %s"
-msgstr ""
+msgstr "不明なファイルシステム %s"
 
 #: src/installation/auto_partition.py:178
 msgid "Can't create file system %s"
+msgstr "ファイルシステム %s を作成できませんでした"
+
+#: src/installation/auto_partition.py:207
+msgid "Device details: %s UUID=%s LABEL=%s"
 msgstr ""
 
-#: src/installation/auto_partition.py:324
+#: src/installation/auto_partition.py:273
+msgid "%s will be mount as %s"
+msgstr ""
+
+#: src/installation/auto_partition.py:306
+msgid "Device %s will have a %s filesystem"
+msgstr ""
+
+#: src/installation/auto_partition.py:315
 msgid "Cnchi will setup LUKS on device %s"
+msgstr "Cnchi は LUKS をデバイス %s にセットアップします"
+
+#: src/installation/auto_partition.py:369
+msgid "The device %s has a size of %dMB"
 msgstr ""
 
-#: src/installation/auto_partition.py:381
+#: src/installation/auto_partition.py:373
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "method for partitioning and mounting devices."
 msgstr ""
 
-#: src/installation/auto_partition.py:528
-msgid "Will setup LVM on device %s"
-msgstr "LVM をデバイス %s にセットアップします"
+#: src/installation/auto_partition.py:406
+msgid "Total disc size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:408
+msgid "GPT-BIOS partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:409
+msgid "UEFI partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:410
+msgid "Boot partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:413
+msgid "LVM physical volume size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:415
+msgid "Swap partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:416
+msgid "Root partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:419
+msgid "Home partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:522
+msgid "Cnchi will setup LVM on device %s"
+msgstr ""
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -857,7 +946,7 @@ msgstr "警告！ 現在のドライブの全てを上書きします！"
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr ""
+msgstr "Antergos のインストールに使用するドライブを選択してください。上の インストール をクリックするとインストールを開始します。"
 
 #: src/installation/automatic.py:85
 msgid "Encryption Password:"
@@ -877,7 +966,7 @@ msgstr "自動インストール"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
-msgstr ""
+msgstr "LUKS のパスワードが設定されました"
 
 #: src/installation/automatic.py:165
 msgid "Automatic install on %s"
@@ -898,7 +987,7 @@ msgstr "ChinchiはAntergosを %s にインストールします"
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos は %s ブートローダーを %s にインストールします"
 
-#: src/installation/process.py:92
+#: src/installation/process.py:91
 msgid "Installing using the '%s' method. Please wait..."
 msgstr ""
 
@@ -912,18 +1001,18 @@ msgstr "%s にパーティションとファイルシステムを作成してい
 
 #: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
-msgstr "パーティションとファイルシステムの作成にエラーが発生しました"
+msgstr "パーティションとファイルシステムの作成中にエラーが発生しました"
 
 #: src/installation/process.py:208 src/installation/process.py:288
-#: src/installation/process.py:356 src/installation/process.py:891
+#: src/installation/process.py:356 src/installation/process.py:816
 msgid "Command %s has failed."
-msgstr ""
+msgstr "コマンド %s に失敗しました。"
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
-#: src/installation/process.py:358 src/installation/process.py:893
+#: src/installation/process.py:358 src/installation/process.py:818
 msgid "Output : %s"
-msgstr ""
+msgstr "出力: %s"
 
 #: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
@@ -939,7 +1028,7 @@ msgstr "ルート及びブート用パーティションをマウントできま
 
 #: src/installation/process.py:262 src/installation/process.py:311
 msgid "Command %s has failed"
-msgstr ""
+msgstr "コマンド %s に失敗しました"
 
 #: src/installation/process.py:286
 msgid "Can't mount %s in %s"
@@ -955,21 +1044,21 @@ msgstr "必要なディレクトリを目的のシステム上で作成できま
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
-msgstr ""
+msgstr "パッケージを選択しています..."
 
 #: src/installation/process.py:331
 msgid "Packages selected"
-msgstr ""
+msgstr "パッケージを選択しました"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
-msgstr ""
+msgstr "Aria2 を使用して パッケージをダウンロードしています..."
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
-msgstr ""
+msgstr "パッケージをダウンロードしました。"
 
-#: src/installation/process.py:346
+#: src/installation/process.py:346 src/installation/process.py:729
 msgid "Installing packages..."
 msgstr "パッケージをインストールしています..."
 
@@ -983,7 +1072,7 @@ msgstr "システムを設定しています..."
 
 #: src/installation/process.py:352
 msgid "System configured."
-msgstr ""
+msgstr "システムを設定しました。"
 
 #: src/installation/process.py:387
 msgid "Installation finished"
@@ -993,349 +1082,365 @@ msgstr "インストールが完了しました"
 msgid "Can't copy Cnchi log to %s"
 msgstr "Cnchi のログを %s にコピーできませんでした"
 
-#: src/installation/process.py:416
+#: src/installation/process.py:415
 msgid "Creating a temporary pacman.conf for %s architecture"
-msgstr ""
+msgstr "%s アーキテクチャ向けの一時的な pacman.conf を作成しています"
 
-#: src/installation/process.py:509
+#: src/installation/process.py:495
 msgid "Getting package list..."
-msgstr ""
+msgstr "パッケージ リストを取得しています..."
 
-#: src/installation/process.py:518
+#: src/installation/process.py:504
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr ""
+msgstr "リモートのパッケージリストが取得できないため、代わりにローカルのファイルを使用します。"
 
-#: src/installation/process.py:526
+#: src/installation/process.py:512
 msgid "Adding all desktops common packages"
 msgstr "全てのデスクトップに共通のパッケージを追加しています"
 
-#: src/installation/process.py:541
+#: src/installation/process.py:527
 msgid "Adding '%s' desktop packages"
 msgstr "'%s' デスクトップ パッケージを追加しています"
 
 #: src/installation/process.py:554
-msgid "Add kde language package"
-msgstr ""
-
-#: src/installation/process.py:567
 msgid "Selected kde language pack: %s"
-msgstr ""
+msgstr "選択した KDE 言語パック: %s"
 
-#: src/installation/process.py:594
+#: src/installation/process.py:579
 msgid "Hardware module added these packages : %s"
 msgstr ""
 
-#: src/installation/process.py:599 src/installation/process.py:1734
+#: src/installation/process.py:584 src/installation/process.py:1677
 msgid "Can't import hardware module."
 msgstr ""
 
-#: src/installation/process.py:601 src/installation/process.py:1736
+#: src/installation/process.py:586 src/installation/process.py:1679
 msgid "Unknown error in hardware module. Output: %s"
 msgstr ""
 
-#: src/installation/process.py:612
+#: src/installation/process.py:597
 msgid "Adding filesystem packages"
 msgstr "ファイルシステムのパッケージを追加"
 
-#: src/installation/process.py:633
+#: src/installation/process.py:618
 msgid "Check for user desired features and add them to our installation"
-msgstr ""
+msgstr "ユーザーが追加した機能を確認し、インストールに追加します"
 
-#: src/installation/process.py:635
+#: src/installation/process.py:620
 msgid "All features needed packages have been added"
-msgstr ""
+msgstr "全ての機能に必要なパッケージは追加されました"
 
-#: src/installation/process.py:640
+#: src/installation/process.py:625
 msgid "Selecting chinese fonts."
-msgstr ""
+msgstr "中国語フォントを選択しています。"
 
-#: src/installation/process.py:646
+#: src/installation/process.py:631
 msgid "Adding bootloader packages if needed"
 msgstr "必要ならブートローダーのパッケージを追加してください"
 
-#: src/installation/process.py:691
+#: src/installation/process.py:658
+msgid "Adding packages for '%s' feature."
+msgstr ""
+
+#: src/installation/process.py:665
+msgid "Selecting package %s for feature %s"
+msgstr ""
+
+#: src/installation/process.py:675
 msgid "Add libreoffice language package"
 msgstr "LibreOffice の言語パッケージを追加する"
 
-#: src/installation/process.py:740
-msgid "Package group '%s' has %d packages"
+#: src/installation/process.py:726
+msgid "Downloading packages..."
+msgstr ""
+
+#: src/installation/process.py:738
+msgid ""
+"Can't download all necessary packages. Cnchi will continue and try again "
+"this download later."
+msgstr ""
+
+#: src/installation/process.py:741
+msgid "Can't install necessary packages. Cnchi can't continue."
 msgstr ""
 
 #: src/installation/process.py:763
-msgid "Cnchi will install a total of %d packages."
-msgstr ""
-
-#: src/installation/process.py:775
-msgid "Downloading packages from '%s' group..."
-msgstr ""
-
-#: src/installation/process.py:788
-msgid ""
-"Can't download group '%s'. Cnchi will continue and try again this download "
-"later."
-msgstr ""
-
-#: src/installation/process.py:806
-msgid "Installing packages from '%s' group..."
-msgstr ""
-
-#: src/installation/process.py:819
-msgid ""
-"Can't install group '%s'. Cnchi will continue but this group of packages "
-"won't be installed."
-msgstr ""
-
-#: src/installation/process.py:838
 msgid "Special dirs already mounted."
-msgstr ""
+msgstr "特殊ディレクトリは既にマウントされています。"
 
-#: src/installation/process.py:873
+#: src/installation/process.py:798
 msgid "Special dirs are not mounted. Skipping."
-msgstr ""
+msgstr "特殊ディレクトリがマウントされませんでした。スキップしています。"
 
-#: src/installation/process.py:890 src/installation/process.py:896
+#: src/installation/process.py:815 src/installation/process.py:821
 msgid "Unable to umount %s"
 msgstr "%s をアンマウントできません"
 
-#: src/installation/process.py:951
+#: src/installation/process.py:846
+msgid "Timeout running command: %s"
+msgstr ""
+
+#: src/installation/process.py:879
 msgid "Can't copy network configuration files"
 msgstr ""
 
-#: src/installation/process.py:981 src/installation/process.py:1044
+#: src/installation/process.py:908 src/installation/process.py:973
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
 msgstr "fstab に追加しました : UUID=%s %s %s %s 0 %s"
 
-#: src/installation/process.py:995
+#: src/installation/process.py:922
 msgid "Added to crypttab : %s"
 msgstr ""
 
-#: src/installation/process.py:999
+#: src/installation/process.py:926
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 msgstr ""
 
-#: src/installation/process.py:1048
-msgid "Added to fstab : tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
+#: src/installation/process.py:978
+msgid "Added to fstab : %s"
 msgstr ""
 
-#: src/installation/process.py:1056
+#: src/installation/process.py:987
 msgid "fstab written."
 msgstr ""
 
-#: src/installation/process.py:1154
+#: src/installation/process.py:1075
+msgid "/etc/default/grub configuration completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1090
 msgid "Could not copy %s to grub.d"
 msgstr ""
 
-#: src/installation/process.py:1161
+#: src/installation/process.py:1097
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "GRUB(2) BIOS ブートローダーを %s にインストールしています"
 
-#: src/installation/process.py:1186
+#: src/installation/process.py:1119 src/installation/process.py:1203
+msgid ""
+"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+" continue."
+msgstr ""
+
+#: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) のインストールは完了しました。"
 
-#: src/installation/process.py:1189
+#: src/installation/process.py:1130
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "GRUB(2) のインストール中にエラーが発生しました。"
 
-#: src/installation/process.py:1203
+#: src/installation/process.py:1144
 msgid "Installing GRUB(2) UEFI %s boot loader"
 msgstr ""
 
-#: src/installation/process.py:1229
+#: src/installation/process.py:1170
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
 msgstr ""
 
-#: src/installation/process.py:1234
+#: src/installation/process.py:1175
 msgid "Copying Grub(2) into OEM dir failed. File Not Found."
 msgstr ""
 
-#: src/installation/process.py:1236
+#: src/installation/process.py:1177
 msgid "Copying Grub(2) into OEM dir failed. File Exists."
 msgstr ""
 
-#: src/installation/process.py:1238
+#: src/installation/process.py:1179
 msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
 msgstr ""
 
-#: src/installation/process.py:1247
+#: src/installation/process.py:1188
 msgid "UEFI Shell drop-in not found at %s"
 msgstr ""
 
-#: src/installation/process.py:1251
+#: src/installation/process.py:1192
 msgid "UEFI Shell drop-in could not be copied."
 msgstr ""
 
-#: src/installation/process.py:1255
+#: src/installation/process.py:1196
 msgid "Generating grub.cfg"
 msgstr ""
 
-#: src/installation/process.py:1270
+#: src/installation/process.py:1216
 msgid "GRUB(2) UEFI install may not have completed successfully."
 msgstr ""
 
-#: src/installation/process.py:1273
+#: src/installation/process.py:1219
 msgid "GRUB(2) UEFI install completed successfully"
 msgstr ""
 
-#: src/installation/process.py:1277
+#: src/installation/process.py:1223
 msgid "Copying GRUB(2) Theme Files"
 msgstr ""
 
-#: src/installation/process.py:1283
+#: src/installation/process.py:1229
 msgid "Grub2 theme files not found"
 msgstr ""
 
-#: src/installation/process.py:1285
+#: src/installation/process.py:1231
 msgid "Grub2 theme files already exist."
 msgstr ""
 
-#: src/installation/process.py:1289
+#: src/installation/process.py:1235
 msgid "Installing Grub2 locales."
 msgstr ""
 
-#: src/installation/process.py:1300
+#: src/installation/process.py:1246
 msgid "Can't install GRUB(2) locale."
-msgstr ""
+msgstr "GRUB(2) のロケールをインストールできませんでした。"
 
-#: src/installation/process.py:1334
+#: src/installation/process.py:1280
 msgid "Can't freeze/unfreeze xfs system"
 msgstr ""
 
-#: src/installation/process.py:1340
+#: src/installation/process.py:1286
 msgid "Enabled %s service."
 msgstr "%s サービスを有効化しました。"
 
-#: src/installation/process.py:1347
+#: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
-msgstr "%s のパスワード ハッシュを作成できませんでした"
+msgstr "ユーザー %s のパスワード ハッシュを作成できませんでした"
 
-#: src/installation/process.py:1353
+#: src/installation/process.py:1299
 msgid "Error changing password for user %s"
-msgstr "%s のパスワードを変更できませんでした"
+msgstr "ユーザー %s のパスワードを変更できませんでした"
 
-#: src/installation/process.py:1365
+#: src/installation/process.py:1311
 msgid "Setting hooks and modules in mkinitcpio.conf"
-msgstr ""
+msgstr "mkinitcpio.conf のモジュールとフックを設定しています"
 
-#: src/installation/process.py:1459
+#: src/installation/process.py:1405
 msgid "Copying xz files from cache..."
 msgstr "キャッシュから xz ファイルをコピーしています..."
 
-#: src/installation/process.py:1486
+#: src/installation/process.py:1432
 msgid "Configuring bluetooth..."
 msgstr "Bluetooth を設定しています..."
 
-#: src/installation/process.py:1492
+#: src/installation/process.py:1438
 msgid "Configuring CUPS..."
-msgstr ""
+msgstr "CUPSを設定しています..."
 
-#: src/installation/process.py:1504
+#: src/installation/process.py:1450
 msgid "Configuring firewall..."
 msgstr "ファイアウォールを設定しています..."
 
-#: src/installation/process.py:1516
+#: src/installation/process.py:1462
 msgid "Couldn't configure the firewall: %s"
 msgstr ""
 
-#: src/installation/process.py:1526
+#: src/installation/process.py:1472
 msgid "%s: Configuring display manager."
 msgstr "%s: ディスプレイ マネージャーを設定しています。"
 
-#: src/installation/process.py:1552
+#: src/installation/process.py:1498
 msgid "Completed %s display manager configuration."
 msgstr ""
 
-#: src/installation/process.py:1554
+#: src/installation/process.py:1500
 msgid "Error while trying to configure '%s' display manager"
 msgstr ""
 
-#: src/installation/process.py:1639
+#: src/installation/process.py:1584
 msgid "Configuring your new system"
 msgstr "新しいシステムを設定しています"
 
-#: src/installation/process.py:1642
+#: src/installation/process.py:1587
 msgid "fstab file generated."
 msgstr "fstab ファイルを生成しました。"
 
-#: src/installation/process.py:1660
+#: src/installation/process.py:1604
 msgid "Cnchi will configure netctl using the %s profile"
 msgstr ""
 
-#: src/installation/process.py:1667
+#: src/installation/process.py:1611
 msgid "Can't copy network configuration profiles"
 msgstr ""
 
-#: src/installation/process.py:1675
+#: src/installation/process.py:1618
 msgid "Network configuration copied."
 msgstr "ネットワーク設定をコピーしました。"
 
-#: src/installation/process.py:1681
+#: src/installation/process.py:1624
 msgid "Mirror list copied."
 msgstr "ミラーリストをコピーしました。"
 
-#: src/installation/process.py:1683
+#: src/installation/process.py:1626
 msgid "Can't copy mirrorlist file"
 msgstr "ミラーリスト ファイルをコピーできません。"
 
-#: src/installation/process.py:1690
+#: src/installation/process.py:1633
 msgid "Generated /etc/pacman.conf"
-msgstr ""
+msgstr "/etc/pacman.conf を生成しました"
 
-#: src/installation/process.py:1708
+#: src/installation/process.py:1651
 msgid "Timezone set."
 msgstr "タイムゾーンを設定しました。"
 
-#: src/installation/process.py:1725
+#: src/installation/process.py:1668
 msgid "Sudo configuration for user %s done."
+msgstr "ユーザー %s の sudo 設定が完了しました。"
+
+#: src/installation/process.py:1674
+msgid "Running post-install scripts from hardware module..."
 msgstr ""
 
-#: src/installation/process.py:1753
+#: src/installation/process.py:1696
 msgid "User %s added."
-msgstr ""
+msgstr "ユーザー %s が追加されました。"
 
-#: src/installation/process.py:1766
+#: src/installation/process.py:1709
 msgid "Hostname set to %s."
 msgstr "ホスト名を %s に設定しました。"
 
-#: src/installation/process.py:1770
+#: src/installation/process.py:1713
 msgid "Set the same password to root."
 msgstr "root に同じパスワードを設定します。"
 
-#: src/installation/process.py:1776
+#: src/installation/process.py:1719
 msgid "Generating locales..."
 msgstr "ロケールの生成中..."
 
-#: src/installation/process.py:1792
+#: src/installation/process.py:1735
 msgid "Adjusting hardware clock..."
 msgstr "ハードウェアの時計を調整しています..."
 
-#: src/installation/process.py:1797
+#: src/installation/process.py:1740
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
 msgstr ""
 
-#: src/installation/process.py:1809
+#: src/installation/process.py:1752
 msgid "00-keyboard.conf written."
 msgstr ""
 
-#: src/installation/process.py:1815
+#: src/installation/process.py:1758
 msgid "Configuring System Startup..."
 msgstr ""
 
-#: src/installation/process.py:1818
+#: src/installation/process.py:1761
 msgid "Call Cnchi post-install script"
 msgstr ""
 
-#: src/installation/process.py:1840
+#: src/installation/process.py:1767
+msgid "Post install script completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1783
 msgid "Encrypting user home dir..."
 msgstr "ホーム ディレクトリを暗号化しています..."
 
-#: src/installation/process.py:1842
+#: src/installation/process.py:1785
 msgid "User home dir encrypted"
 msgstr "ホーム ディレクトリを暗号化しました"
 
-#: src/installation/process.py:1846
+#: src/installation/process.py:1789
 msgid "Installing bootloader..."
 msgstr "ブートローダーをインストールしています..."
+
+#: src/installation/process.py:1793
+msgid "Copying install log to /var/log."
+msgstr ""
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1343,11 +1448,11 @@ msgstr "キーボードレイアウトの選択"
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "キーボード レイアウト"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "キーボードの種類"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1374,11 +1479,11 @@ msgid ""
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 msgstr "Cnchiはプレリリース版のソフトウェアで、活発に開発しています。\nRAID、btrfs subvolumes、その他の高度なセットアップは、まだ適切に処理できません。\nデータの損失に可能な限り注意しながら進めてください。\n\nもし何かバグを見つけたら、 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> に報告してください。"
 
-#: src/language.py:97 src/welcome.py:100
+#: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
 msgstr "Antergos へようこそ！"
 
-#: src/language.py:130
+#: src/language.py:131
 msgid "Can't find translation file for the %s language"
 msgstr "言語 %s の翻訳ファイルが見つかりません"
 
@@ -1387,7 +1492,7 @@ msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "選択した場所はシステム ロケールを決定するために使用されます。\nこれは通常、あなたの住む国でなければなりません。\nあなたが選んだ言語に基づく場所のショートリストは、こちらです。"
 
 #: src/location.py:72
 msgid "Country, territory or area:"
@@ -1397,77 +1502,97 @@ msgstr "国、領域または地域:"
 msgid "Select your location"
 msgstr "現在地を選択してください"
 
-#: src/location.py:197
+#: src/location.py:198
 msgid "locale changed to : %s"
 msgstr "ロケールを %s に変更しました"
 
-#: src/location.py:199
+#: src/location.py:200
 msgid "Can't change to locale '%s'"
 msgstr "ロケールを %s に変更できませんでした"
 
-#: src/pacman/pac.py:180
+#: src/pacman/pac.py:35
+msgid "pyalpm not found! This installer won't work."
+msgstr ""
+
+#: src/pacman/pac.py:120
+msgid "Cnchi will install a list of packages like pacman -S"
+msgstr ""
+
+#: src/pacman/pac.py:127
+msgid "No targets found"
+msgstr ""
+
+#: src/pacman/pac.py:140
+msgid "Adding %s to transaction"
+msgstr ""
+
+#: src/pacman/pac.py:144
+msgid "Finalize transaction..."
+msgstr ""
+
+#: src/pacman/pac.py:177
 msgid "Can't find a package or group called '%s'"
 msgstr ""
 
-#: src/pacman/pac.py:258
+#: src/pacman/pac.py:255
 msgid "Checking dependencies..."
 msgstr "依存関係をチェックしています..."
 
-#: src/pacman/pac.py:260
+#: src/pacman/pac.py:257
 msgid "Checking file conflicts..."
 msgstr "ファイルの整合性を確認しています..."
 
-#: src/pacman/pac.py:262
+#: src/pacman/pac.py:259
 msgid "Resolving dependencies..."
 msgstr "依存関係を解決しています..."
 
-#: src/pacman/pac.py:264
+#: src/pacman/pac.py:261
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "内部の競合を確認しています..."
 
-#: src/pacman/pac.py:269
+#: src/pacman/pac.py:266
 msgid "Removing..."
 msgstr "削除しています..."
 
-#: src/pacman/pac.py:271
+#: src/pacman/pac.py:268
 msgid "Upgrading..."
 msgstr "アップグレード中..."
 
-#: src/pacman/pac.py:273
+#: src/pacman/pac.py:270
 msgid "Checking integrity..."
-msgstr ""
+msgstr "整合性を確認しています..."
 
-#: src/pacman/pac.py:275
+#: src/pacman/pac.py:272
 msgid "Loading packages files..."
 msgstr "パッケージファイルを読み込んでいます..."
 
-#: src/pacman/pac.py:277
+#: src/pacman/pac.py:274
 msgid "Configuring..."
 msgstr "設定中..."
 
-#: src/pacman/pac.py:279
+#: src/pacman/pac.py:276
 msgid "Downloading a file"
 msgstr "ファイルをダウンロード中"
 
-#: src/pacman/pac.py:306
+#: src/pacman/pac.py:303
 msgid "Installing %s (%d/%d)"
 msgstr "%s をインストールしています (%d/%d)"
 
-#: src/pacman/pac.py:309
+#: src/pacman/pac.py:306
 msgid "Checking and loading packages..."
 msgstr "パッケージの確認と読み込み中..."
 
-#: src/pacman/pac.py:331
+#: src/pacman/pac.py:329
 msgid "Updating %s database"
 msgstr ""
 
-#: src/parted3/fs_module.py:149
+#: src/parted3/fs_module.py:150
 msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr ""
+msgstr "%s がソリッドステートドライブかどうか確認できません"
 
-#: src/parted3/fs_module.py:174
+#: src/parted3/fs_module.py:175
 msgid "Sorry but filesystem %s can't be shrinked"
-msgstr ""
+msgstr "残念ながら、ファイルシステム %s は縮小できません"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
@@ -1481,89 +1606,93 @@ msgstr ""
 msgid "Can't remove physical volume %s"
 msgstr ""
 
-#: src/parted3/partition_module.py:108
+#: src/parted3/partition_module.py:35
+msgid "Can't import parted module! This installer won't work."
+msgstr ""
+
+#: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
 msgstr ""
 
-#: src/parted3/partition_module.py:113
+#: src/parted3/partition_module.py:111
 msgid ""
 "Exception: %s.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr ""
+msgstr "例外: %s\n詳細な情報は /tmp/cnchi.log を確認してください"
 
-#: src/parted3/partition_module.py:180
+#: src/parted3/partition_module.py:178
 msgid "Can't delete partition %s"
-msgstr ""
+msgstr "パーティション %s の消去ができません"
 
-#: src/parted3/partition_module.py:231
+#: src/parted3/partition_module.py:229
 msgid "Partition is too large!"
-msgstr ""
+msgstr "パーティションが大きすぎます!"
 
-#: src/parted3/partition_module.py:290
+#: src/parted3/partition_module.py:288
 msgid "Can't detect used space from %s"
-msgstr ""
+msgstr "%s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:39
 msgid "Can't detect used space of NTFS partition %s"
-msgstr ""
+msgstr "NTFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:65
 msgid "Can't detect used space of EXTFS partition %s"
-msgstr ""
+msgstr "EXTFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:94
 msgid "Can't detect used space of FAT partition %s"
-msgstr ""
+msgstr "FAT パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:125
 msgid "Can't detect used space of JFS partition %s"
-msgstr ""
+msgstr "JFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:149
 msgid "Can't detect used space of REISERFS partition %s"
-msgstr ""
+msgstr "REISERFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:176
 msgid "Can't detect used space of BTRFS partition %s"
-msgstr ""
+msgstr "BTRFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/parted3/used_space.py:213
 msgid "Can't detect used space of XFS partition %s"
-msgstr ""
+msgstr "XFS パーティション %s の使用済み領域が取得できませんでした"
 
 #: src/rank_mirrors.py:48
 msgid "Can't find reflector script"
-msgstr ""
+msgstr "reflector スクリプトを見つけられませんでした"
 
 #: src/rank_mirrors.py:55
 msgid "Couldn't execute auto mirror selection"
-msgstr ""
+msgstr "ミラーの自動選択を実行できませんでした"
 
-#: src/show_message.py:51
+#: src/show_message.py:52
 msgid "Antergos Installer - Error"
 msgstr "Antergos インストーラー - エラー"
 
-#: src/show_message.py:62
+#: src/show_message.py:64
 msgid "Antergos Installer - Warning"
 msgstr "Antergos インストーラー - 警告"
 
-#: src/show_message.py:73
+#: src/show_message.py:76
 msgid "Antergos Installer - Information"
 msgstr "Antergos インストーラー - 情報"
 
-#: src/show_message.py:83
+#: src/show_message.py:87
 msgid "Antergos Installer - Confirmation"
 msgstr "Antergos インストーラー - 確認"
 
-#: src/slides.py:94
+#: src/slides.py:91
 msgid "Please wait..."
 msgstr "お待ち下さい..."
 
-#: src/slides.py:96
+#: src/slides.py:93
 msgid "Installing Antergos..."
 msgstr "Antergos をインストール中..."
 
-#: src/slides.py:194
+#: src/slides.py:185
 msgid ""
 "IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
 "installation which could prevent your system from booting properly. Before\n"
@@ -1574,14 +1703,18 @@ msgid ""
 "Would you like to view the wiki page now?"
 msgstr ""
 
-#: src/slides.py:206
+#: src/slides.py:197
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
+msgstr "インストールが完了しました!\n今すぐシステムを再起動しますか?"
+
+#: src/slides.py:225
+msgid "Do you want to retry the installation using the same configuration?"
 msgstr ""
 
-#: src/slides.py:234
-msgid "Do you want to retry the installation using the same configuration?"
+#: src/slides.py:228
+msgid "Restarting installation process..."
 msgstr ""
 
 #: src/timezone.py:108
@@ -1602,47 +1735,59 @@ msgstr "タイムゾーンを選択してください"
 
 #: src/timezone.py:134
 msgid "location changed to : %s"
-msgstr ""
+msgstr "場所を変更しました : %s"
 
-#: src/timezone.py:222
+#: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
 msgstr "タイムゾーンを自動検出できません"
 
-#: src/timezone.py:280
+#: src/timezone.py:276
 msgid "Stoping timezone threads..."
 msgstr "タイムゾーンスレッドの終了中..."
 
-#: src/timezone.py:331
+#: src/timezone.py:330
 msgid "Can't get network status. Will try again later."
-msgstr ""
+msgstr "ネットワークの状態を確認できません。 あとでもう一度試してください。"
 
-#: src/timezone.py:337
+#: src/timezone.py:334
 msgid "We have connection. Let's get our timezone"
 msgstr ""
 
-#: src/timezone.py:348
+#: src/timezone.py:345
 msgid "Timezone detected."
-msgstr ""
+msgstr "タイムゾーンを検出しました。"
 
-#: src/timezone.py:350
+#: src/timezone.py:347
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "ユーザー タイムゾーンを検出できませんでした。"
 
-#: src/timezone.py:379
+#: src/timezone.py:376
 msgid "In timezone, can't get network status"
 msgstr "タイムゾーンでは、ネットワークステータスを取得できません"
 
-#: src/timezone.py:403
+#: src/timezone.py:400
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr "pacman のミラーリスト生成に使用する国名コードを取得できません"
 
-#: src/timezone.py:424
+#: src/timezone.py:421
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr ""
+msgstr "国名コード %s に基づいた pacman のミラーリストをダウンロードしました"
 
-#: src/timezone.py:426
+#: src/timezone.py:423
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr "国名コードに基づいた pacman のミラーリストを生成できませんでした"
+
+#: src/updater.py:67
+msgid "Cnchi Internet version: %s"
+msgstr ""
+
+#: src/updater.py:96
+msgid "New version found. Updating installer..."
+msgstr ""
+
+#: src/updater.py:154
+msgid "Replacing version %s with version %s..."
+msgstr ""
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1708,52 +1853,40 @@ msgstr "ホームフォルダを暗号化する"
 msgid "Create Your User Account"
 msgstr "ユーザーアカウントを作成してください"
 
-#: src/user_info.py:192
-msgid ""
-"Antergos will use eCryptfs to encrypt your home directory.\n"
-"Unfortunately, eCryptfs does not handle sparse files very well.\n"
-"\n"
-"Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
-"\n"
-"One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download locationw as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
-"\n"
-"A simple workaround is to place sparse files in an unencrypted Public directory.\n"
-"\n"
-"Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
-"\n"
-"Are you sure you want to encrypt your home directory?\n"
+#: src/user_info.py:204
+msgid "Are you sure you want to encrypt your home directory?"
 msgstr ""
 
-#: src/user_info.py:267
+#: src/user_info.py:271
 msgid "Invalid characters entered"
 msgstr "無効な文字が入力されました"
 
-#: src/user_info.py:271
+#: src/user_info.py:275
 msgid "Username can't contain dots"
 msgstr "ユーザー名にドットは使えません"
 
-#: src/user_info.py:275
+#: src/user_info.py:279
 msgid "Too many characters"
 msgstr "文字数が多過ぎます"
 
-#: src/welcome.py:85
+#: src/welcome.py:87
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
-msgstr ""
+msgstr "あなたのシステムに変更を加えずに Antergos を試すには '試す' を選んでください。\nAntergos をインストールする準備ができたらお好みのインストーラーを選んでください。"
 
-#: src/welcome.py:90
+#: src/welcome.py:92
 msgid "Try It"
 msgstr "試す"
 
-#: src/welcome.py:93
+#: src/welcome.py:95
 msgid "CLI Installer"
 msgstr "コマンドライン インストーラー"
 
-#: src/welcome.py:96
+#: src/welcome.py:98
 msgid "Graphical Installer"
 msgstr "グラフィカル インストーラー"
 
-#: src/welcome.py:125
+#: src/welcome.py:135
 msgid "Can't load the CLI installer"
 msgstr "コマンドライン インストーラーを読み込めません。"
