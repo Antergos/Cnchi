@@ -122,6 +122,10 @@ class Welcome(Gtk.Box):
             Gtk.main_iteration()
         self.settings.set('timezone_stop', True)
         logging.shutdown()
+        
+        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+        self.get_window().set_cursor(watch_cursor)
+        
         Gtk.main_quit()
 
         
