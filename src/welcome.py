@@ -123,6 +123,7 @@ class Welcome(Gtk.Box):
         self.settings.set('timezone_stop', True)
         logging.shutdown()
         Gtk.main_quit()
+
         
     def on_tryit_button_clicked(self, widget, data=None):
         self.quit_cnchi()
@@ -135,6 +136,9 @@ class Welcome(Gtk.Box):
             warning(_("Can't load the CLI installer"))
 
     def on_graph_button_clicked(self, widget, data=None):
+        # Tell timezone thread to start searching now
+        self.settings.set('timezone_start', True)
+        # Simulate a forward button click
         self.forward_button.emit("clicked")
 
     def store_values(self):
@@ -157,3 +161,8 @@ class Welcome(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+    def start_auto_timezone_thread(self):
+        import timezone
+        self.auto_timezone_thread = timezone.AutoTimezoneThread(self.auto_timezone_coords, self.settings)
+        self.auto_timezone_thread.start()

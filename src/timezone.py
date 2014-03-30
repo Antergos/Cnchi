@@ -49,7 +49,6 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 class Timezone(Gtk.Box):
-
     def __init__(self, params):
         self.header = params['header']
         self.ui_dir = params['ui_dir']
@@ -329,8 +328,14 @@ class AutoTimezoneThread(threading.Thread):
             time.sleep(2)  # Delay and try again
             logging.warning(_("Can't get network status. Will try again later."))
 
-        # ok, now get our timezone
+        # Do not start looking for our timezone until we've reached the language screen
+        while self.settings.get('timezone_start') == False:
+            if self.stop_event.is_set() or self.settings.get('timezone_stop'):
+                return
+            time.sleep(2)
 
+        # ok, now get our timezone
+        
         logging.info(_("We have connection. Let's get our timezone"))
         try:
             url = "http://geo.antergos.com"
