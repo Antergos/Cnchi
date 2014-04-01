@@ -66,7 +66,7 @@ class Application(Gtk.Application):
         Gtk.Application.__init__(self)
         
     def do_activate(self):
-        window = ApplicationWindow(self, cmd_line)
+        window = mainwindow.ApplicationWindow(self, cmd_line)
         window.show_all()
         #self.add_window(window)
     
