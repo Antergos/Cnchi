@@ -26,6 +26,7 @@ import gettext
 import os
 import canonical.misc as misc
 import logging
+import sys
 
 from show_message import warning
 
@@ -118,16 +119,9 @@ class Welcome(Gtk.Box):
     def quit_cnchi(self):
         self.remove_temp_files()
         logging.info(_("Quiting installer..."))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
         self.settings.set('timezone_stop', True)
         logging.shutdown()
-        
-        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
-        self.get_window().set_cursor(watch_cursor)
-        
-        Gtk.main_quit()
-
+        sys.exit(0)
         
     def on_tryit_button_clicked(self, widget, data=None):
         self.quit_cnchi()

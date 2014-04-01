@@ -66,7 +66,7 @@ def remove_temp_files():
         if os.path.exists(path):
             os.remove(path)
 
-class ApplicationWindow(Gtk.ApplicationWindow):
+class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
     def __init__(self, app, cmd_line):
         Gtk.Window.__init__(self, title="Cnchi", application=app)
@@ -212,6 +212,7 @@ class ApplicationWindow(Gtk.ApplicationWindow):
         self.pages["slides"] = slides.Slides(params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
+        
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
@@ -219,6 +220,7 @@ class ApplicationWindow(Gtk.ApplicationWindow):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
+        self.set_default_size(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
 
         # Set window icon
         icon_path = os.path.join(data_dir, "images", "antergos", "antergos-icon.png")
@@ -269,11 +271,8 @@ class ApplicationWindow(Gtk.ApplicationWindow):
         """ Quit Cnchi """
         remove_temp_files()
         logging.info(_("Quiting installer..."))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
         self.settings.set('timezone_stop', True)
         logging.shutdown()
-        Gtk.main_quit()
 
     def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value

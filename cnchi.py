@@ -57,13 +57,13 @@ cmd_line = None
 # At least this GTK version is needed
 _gtk_version_needed = "3.9.6"
 
-class Application(Gtk.Application):
+class MyApplication(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self)
         
     def do_activate(self):
-        window = mainwindow.ApplicationWindow(self, cmd_line)
-        self.add_window(window)
+        window = mainwindow.MainWindow(self, cmd_line)
+        #self.add_window(window)
         window.show_all()
     
     def do_startup(self):
@@ -73,7 +73,6 @@ class Application(Gtk.Application):
         #menu.append("About", "win.about")
         #menu.append("Quit", "app.quit")
         #self.set_app_menu(menu)
-        
 
 def setup_logging():
     """ Configure our logger """
@@ -222,12 +221,10 @@ def init_cnchi():
     setup_logging()
     
     # Create Gtk Application    
-    myapp = Application()
-    myapp.run(None)
-
-    # Create Gtk Window    
-    #myapp = mainwindow.ApplicationWindow(cmd_line)
-    #Gtk.main()
+    myapp = MyApplication()
+    #exit_status = myapp.run(sys.argv)
+    exit_status = myapp.run(None)
+    sys.exit(exit_status)
 
 if __name__ == '__main__':
     init_cnchi()
