@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_advanced.py
+#  show_message.py
 #
 #  Copyright 2013 Antergos
 #
