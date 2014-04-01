@@ -59,17 +59,19 @@ _gtk_version_needed = "3.9.6"
 
 class Application(Gtk.Application):
     def __init__(self):
-        Gtk.Application.__init__(self, application_id="cnchi.installer.antergos",
-                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self.connect("activate", self.on_activate)
-        self.connect("startup", self.on_startup)
+        #Gtk.Application.__init__(self, application_id="cnchi.installer.antergos",
+        #                         flags=Gio.ApplicationFlags.FLAGS_NONE)
+        #self.connect("activate", self.on_activate)
+        #self.connect("startup", self.on_startup)
+        Gtk.Application.__init__(self)
         
-    def on_activate(self, data=None):
-        window = ApplicationWindow(cmd_line)
+    def do_activate(self):
+        window = ApplicationWindow(self, cmd_line)
         window.show_all()
-        self.add_window(window)
+        #self.add_window(window)
     
-    def on_startup(self, data=None):
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
         menu = Gio.menu()
         menu.append("About", "win.about")
         menu.append("Quit", "app.quit")

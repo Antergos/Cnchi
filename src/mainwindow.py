@@ -68,7 +68,9 @@ def remove_temp_files():
 
 class ApplicationWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
-    def __init__(self, cmd_line):
+    def __init__(self, app, cmd_line):
+        Gtk.Window.__init__(self, title="Cnchi", application=app)
+
         # Check if we have administrative privileges
         if os.getuid() != 0:
             show.error(_('This installer must be run with administrative'
@@ -84,7 +86,7 @@ class ApplicationWindow(Gtk.ApplicationWindow):
                           'and run this installer again.') % tmp_running)
             sys.exit(1)
 
-        super().__init__()
+        #super().__init__()
 
         logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
 
