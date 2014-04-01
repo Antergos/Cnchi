@@ -43,7 +43,7 @@ import queue
 
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
-    def __init__(self, conf_path, callback_queue=None):
+    def __init__(self, conf_path="/etc/pacman.conf", callback_queue=None):
         self.callback_queue = callback_queue
 
         self.conflict_to_remove = None
