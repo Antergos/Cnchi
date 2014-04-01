@@ -250,7 +250,7 @@ kde_settings(){
     sed -i 's|Example=x-directory-normal|Example=folder|g' index.theme
     sed -i 's|Inherits=Flattr|Inherits=KFaenza,Oxygen|g' index.theme
     rm -R .git
-    chroot ${DESTDIR} ln -sf /usr/share/icons/flattr-icons /usr/share/icons/default 
+    chroot ${DESTDIR} ln -sf /usr/share/icons/flattr-icons /usr/share/icons/default.kde4
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd ${DESTDIR}/tmp
@@ -309,7 +309,7 @@ mate_settings() {
 location:/usr/share/applications/chromium.desktop
 location:/usr/share/applications/pacmanxg.desktop
 separator
-location:/usr/share/applications/mate-calc.desktop
+location:/usr/share/applications/galculator.desktop
 location:/usr/share/applications/pluma.desktop
 location:/usr/share/applications/mate-terminal.desktop
 location:/usr/share/applications/mate-system-monitor.desktop
@@ -343,6 +343,9 @@ postinstall(){
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings" > /tmp/postinstall.log 2>&1
+
+	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
+	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1

@@ -259,6 +259,7 @@
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname>mozo</pkgname>
+        <pkgname>mplayer</pkgname> <!--mate-mplayer can't play media without this -->
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
