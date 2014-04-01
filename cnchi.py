@@ -55,7 +55,7 @@ import updater
 cmd_line = None
 
 # At least this GTK version is needed
-_gtk_version_needed = "3.9.6"
+GTK_VERSION_NEEDED = "3.9.6"
 
 class MyApplication(Gtk.Application):
     def __init__(self):
@@ -106,9 +106,9 @@ def setup_logging():
 def check_gtk_version():
     """ Check GTK version """
     # Check desired GTK Version
-    major_needed = int(_gtk_version_needed.split(".")[0])
-    minor_needed = int(_gtk_version_needed.split(".")[1])
-    micro_needed = int(_gtk_version_needed.split(".")[2])
+    major_needed = int(GTK_VERSION_NEEDED.split(".")[0])
+    minor_needed = int(GTK_VERSION_NEEDED.split(".")[1])
+    micro_needed = int(GTK_VERSION_NEEDED.split(".")[2])
 
     # Check system GTK Version
     major = Gtk.get_major_version()
@@ -171,6 +171,26 @@ def threads_init():
     
     #Gdk.threads_init()
 
+def update_cnchi():
+    force = False
+    if cmd_line.update == 2:
+        force = True
+    upd = updater.Updater(force)
+    if upd.update():
+        remove_temp_files()
+        if force:
+            # Remove -uu option
+            new_argv = []
+            for argv in sys.argv:
+                if argv != "-uu":
+                    new_argv.append(argv)
+        else:
+            new_argv = sys.argv
+        print(_("Program updated! Restarting..."))
+        # Run another instance of Cnchi (which will be the new version)
+        os.execl(sys.executable, *([sys.executable] + new_argv))
+        sys.exit(0)   
+
 def init_cnchi():
     """ This function initialises Cnchi """
 
@@ -192,24 +212,7 @@ def init_cnchi():
     cmd_line = parse_options()
 
     if cmd_line.update is not None:
-        force = False
-        if cmd_line.update == 2:
-            force = True
-        upd = updater.Updater(force)
-        if upd.update():
-            remove_temp_files()
-            if force:
-                # Remove -uu option
-                new_argv = []
-                for argv in sys.argv:
-                    if argv != "-uu":
-                        new_argv.append(argv)
-            else:
-                new_argv = sys.argv
-            print(_("Program updated! Restarting..."))
-            # Run another instance of Cnchi (which will be the new version)
-            os.execl(sys.executable, *([sys.executable] + new_argv))
-            sys.exit(0)
+        update_cnchi()
     
     # Drop root privileges
     misc.drop_privileges()
