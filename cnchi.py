@@ -59,23 +59,21 @@ _gtk_version_needed = "3.9.6"
 
 class Application(Gtk.Application):
     def __init__(self):
-        #Gtk.Application.__init__(self, application_id="cnchi.installer.antergos",
-        #                         flags=Gio.ApplicationFlags.FLAGS_NONE)
-        #self.connect("activate", self.on_activate)
-        #self.connect("startup", self.on_startup)
         Gtk.Application.__init__(self)
         
     def do_activate(self):
         window = mainwindow.ApplicationWindow(self, cmd_line)
+        self.add_window(window)
         window.show_all()
-        #self.add_window(window)
     
     def do_startup(self):
         Gtk.Application.do_startup(self)
-        menu = Gio.menu()
-        menu.append("About", "win.about")
-        menu.append("Quit", "app.quit")
-        this.app_menu = menu
+        
+        #menu = Gio.Menu()
+        #menu.append("About", "win.about")
+        #menu.append("Quit", "app.quit")
+        #self.set_app_menu(menu)
+        
 
 def setup_logging():
     """ Configure our logger """
@@ -224,12 +222,12 @@ def init_cnchi():
     setup_logging()
     
     # Create Gtk Application    
-    #myapp = Application(cmd_line)
-    #myapp.run(None)
+    myapp = Application()
+    myapp.run(None)
 
     # Create Gtk Window    
-    myapp = mainwindow.ApplicationWindow(cmd_line)
-    Gtk.main()
+    #myapp = mainwindow.ApplicationWindow(cmd_line)
+    #Gtk.main()
 
 if __name__ == '__main__':
     init_cnchi()
