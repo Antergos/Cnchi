@@ -335,8 +335,10 @@ class AutoTimezoneThread(threading.Thread):
         # ok, now get our timezone
         
         logging.info(_("We have connection. Let's get our timezone"))
+        logo = "data/images/antergos/antergos-logo-mini2.png"
+        logopath = os.path.join(self.settings.get("cnchi"), img )
         try:
-            with open("/path/to/ourlogo", "rb") as logofile:
+            with open(logopath, "rb") as logofile:
                 logobytes = logofile.read()
             logohasher = hashlib.sha1()
             logohasher.update(logobytes)
