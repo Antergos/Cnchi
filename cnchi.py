@@ -26,20 +26,12 @@
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-# This allows to translate all py texts (not the glade ones)
-import gettext
-gettext.textdomain(APP_NAME)
-gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
-
-import locale
-locale_code, encoding = locale.getdefaultlocale()
-lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
-lang.install()
-
 from gi.repository import Gtk, Gdk, GObject, Gio
 import os
 import sys
 import logging
+import gettext
+import locale
 
 # Insert the src directory at the front of the path
 BASE_DIR = os.path.dirname(__file__) or '.'
@@ -57,18 +49,24 @@ cmd_line = None
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.9.6"
 
-class MyApplication(Gtk.Application):
+class CnchiApp(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self)
         
     def do_activate(self):
         window = mainwindow.MainWindow(self, cmd_line)
+        
+        # Some tutorials show that this line is needed, some don't
+        # It seems to work ok without
         #self.add_window(window)
+        
         window.show_all()
     
     def do_startup(self):
         Gtk.Application.do_startup(self)
         
+        # Application main menu (we don't need one atm)
+        # Leaving this here for future reference
         #menu = Gio.Menu()
         #menu.append("About", "win.about")
         #menu.append("Quit", "app.quit")
@@ -191,19 +189,38 @@ def update_cnchi():
         os.execl(sys.executable, *([sys.executable] + new_argv))
         sys.exit(0)   
 
-def init_cnchi():
-    """ This function initialises Cnchi """
+def setup_gettext():
+    # This allows to translate all py texts (not the glade ones)
+    gettext.textdomain(APP_NAME)
+    gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 
+    locale_code, encoding = locale.getdefaultlocale()
+    lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
+    lang.install()
+
+def check_for_files():
     # Check for hwinfo and hdparm
     # (this check is just for developers, in our liveCD hwinfo will always be installed)
     if not os.path.exists("/usr/bin/hwinfo"):
         print(_("Please install %s before running this installer") % "hwinfo")
-        sys.exit(1)
+        return False
 
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
         print(_("Please install %s before running this installer") % "hdparm")
-        sys.exit(1)
+        return False
     
+    return True
+
+def init_cnchi():
+    """ This function initialises Cnchi """
+
+    # Configures gettext to be able to translate messages, using _()
+    setup_gettext()
+    
+    if not check_for_files():
+        sys.exit(1)
+        
+    # Check installed GTK version
     if not check_gtk_version():
         sys.exit(1)
 
@@ -219,15 +236,15 @@ def init_cnchi():
     
     # Init PyObject Threads
     threads_init()
-    
+
     # Setup our logging framework
     setup_logging()
     
-    # Create Gtk Application    
-    myapp = MyApplication()
-    #exit_status = myapp.run(sys.argv)
-    exit_status = myapp.run(None)
-    sys.exit(exit_status)
 
 if __name__ == '__main__':
     init_cnchi()
+
+    # Create Gtk Application    
+    myapp = CnchiApp()
+    exit_status = myapp.run(None)
+    sys.exit(exit_status)
