@@ -336,7 +336,7 @@ class AutoTimezoneThread(threading.Thread):
         
         logging.info(_("We have connection. Let's get our timezone"))
         logo = "data/images/antergos/antergos-logo-mini2.png"
-        logopath = os.path.join(self.settings.get("cnchi"), img )
+        logopath = os.path.join(self.settings.get("cnchi"), logo )
         try:
             with open(logopath, "rb") as logofile:
                 logobytes = logofile.read()
