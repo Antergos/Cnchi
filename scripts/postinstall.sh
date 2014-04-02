@@ -55,6 +55,11 @@ EOF
 gnome_settings(){
 	# Set Adwaita cursor theme
 	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
+	
+	# Install lockscreen extension
+	cp -R /usr/share/cnchi/scripts/lockscreen@dev.antergos.org ${DESTDIR}/home/${USER_NAME}/.local/share/gnome-shell/extensions/
+	mkdir -p ${DESTDIR}/etc/skel/.local/share/gnome-shell/extensions/
+	cp -R /usr/share/cnchi/scripts/lockscreen@dev.antergos.org ${DESTDIR}/etc/skel/.local/share/gnome-shell/extensions/
 
 	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
