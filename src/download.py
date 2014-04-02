@@ -27,15 +27,9 @@ import xmlrpc.client
 import queue
 import logging
 
-from pprint import pprint
+#from pprint import pprint
 
 """ Module to download packages using Aria2 """
-
-try:
-    import pm2ml
-except:
-    logging.error(_("pm2ml not found. Aria2 download won't work."))
-
 class DownloadPackages(object):
     """ Class to download packages using Aria2
         This class tries to previously download all necessary packages for
@@ -43,6 +37,13 @@ class DownloadPackages(object):
         It's known to use too much memory so it's not advised to use it """
     def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
+
+        try:
+            import pm2ml
+        except:
+            logging.warning(_("pm2ml not found. Aria2 download won't work."))
+            return
+
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
         else:
