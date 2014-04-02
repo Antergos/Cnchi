@@ -258,7 +258,7 @@ class Timezone(Gtk.Box):
             else:
                 self.settings.set("timezone_longitude", "")
 
-        # this way installer_process will know all info has been entered
+        # This way installer_process will know all info has been entered
         self.settings.set("timezone_done", True)
 
         return True
@@ -319,32 +319,36 @@ class AutoTimezoneThread(threading.Thread):
         return state == NM_STATE_CONNECTED_GLOBAL
 
     def run(self):
-        # wait until there is an Internet connection available
+        # Calculate logo hash
+        logo = "data/images/antergos/antergos-logo-mini2.png"
+        logo_path = os.path.join(self.settings.get("cnchi"), logo)
+        with open(logo_path, "rb") as logo_file:
+            logo_bytes = logo_file.read()
+        logo_hasher = hashlib.sha1()
+        logo_hasher.update(logo_bytes)
+        logo_digest = logo_hasher.digest()
+        
+        # Wait until there is an Internet connection available
         while not self.has_connection():
-            if self.stop_event.is_set() or self.settings.get('timezone_stop'):
+            if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
-            time.sleep(2)  # Delay and try again
+            time.sleep(1)  # Delay and try again
             logging.warning(_("Can't get network status. Will try again later."))
 
         # Do not start looking for our timezone until we've reached the language screen
+        # (welcome.py sets timezone_start to true when next is clicked)
         while self.settings.get('timezone_start') == False:
-            if self.stop_event.is_set() or self.settings.get('timezone_stop'):
+            if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
-            time.sleep(2)
+            time.sleep(1)
 
-        # ok, now get our timezone
+        # OK, now get our timezone
         
         logging.info(_("We have connection. Let's get our timezone"))
-        logo = "data/images/antergos/antergos-logo-mini2.png"
-        logopath = os.path.join(self.settings.get("cnchi"), logo )
         try:
-            with open(logopath, "rb") as logofile:
-                logobytes = logofile.read()
-            logohasher = hashlib.sha1()
-            logohasher.update(logobytes)
-            url = urllib.request.Request("http://geo.antergos.com", logohasher.digest(), {"User-Agent": "Antergos Installer"})
-            conn = urllib.request.urlopen(url)
-            coords = conn.read().decode('utf-8').strip()
+            url = urllib.request.Request(url="http://geo.antergos.com", data=logo_digest, headers={"User-Agent": "Antergos Installer", "Connection":"close"})
+            with urllib.request.urlopen(url) as conn:
+                coords = conn.read().decode('utf-8').strip()
         except:
             coords = 'error'
 
@@ -355,8 +359,9 @@ class AutoTimezoneThread(threading.Thread):
         else:
             logging.info(_("Can't detect user timezone."))
 
-# Creates a mirror list for pacman based on country code
 class GenerateMirrorListThread(threading.Thread):
+    """ Creates a mirror list for pacman based on country code """
+    
     def __init__(self, coords_queue, scripts_dir):
         super(GenerateMirrorListThread, self).__init__()
         self.coords_queue = coords_queue
@@ -388,11 +393,11 @@ class GenerateMirrorListThread(threading.Thread):
 
     @misc.raise_privileges
     def run(self):
-        # wait until there is an Internet connection available
+        # Wait until there is an Internet connection available
         while not self.has_connection():
-            time.sleep(2)  # Delay and try again
-            if self.stop_event.is_set():
+            if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
+            time.sleep(1)  # Delay and try again
 
         timezone = ""
 
@@ -407,6 +412,7 @@ class GenerateMirrorListThread(threading.Thread):
                 country_code = loc.country
         except (queue.Empty, IndexError) as e:
             logging.warning(_("Can't get the country code used to create a pacman mirrorlist"))
+            return
 
         try:
             url = 'https://www.archlinux.org/mirrorlist/?country=%s&protocol=http&ip_version=4&use_mirror_status=on' % country_code
@@ -418,15 +424,16 @@ class GenerateMirrorListThread(threading.Thread):
                 with open('/tmp/country_mirrorlist','wb') as f:
                     f.write(country_mirrorlist)
         except URLError as e:
-            logging.error(e.reason)
-            self.queue_event('error', "Can't retrieve country mirrorlist.")
+            logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
+            logging.warning(e.reason)
+            return
 
-        try:
-            if country_mirrorlist is '':
-                pass
-            else:
+        if country_mirrorlist is '':
+            pass
+        else:
+            try:
                 script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
                 subprocess.check_call(['/usr/bin/bash', script])
                 logging.info(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
-        except subprocess.CalledProcessError as e:
-            logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
+            except subprocess.CalledProcessError as e:
+                logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))

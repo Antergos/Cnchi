@@ -42,7 +42,9 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
-            time.sleep(4)  # Delay
+            if self.settings.get('stop_all_threads'):
+                return
+            time.sleep(1)  # Delay
 
         if not os.path.exists(self.reflector_script):
             logging.warning(_("Can't find reflector script"))
@@ -54,3 +56,5 @@ class AutoRankmirrorsThread(threading.Thread):
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(err)
+        logging.debug(_("Auto mirror selection has been run successfully"))
+

@@ -119,7 +119,7 @@ class Welcome(Gtk.Box):
     def quit_cnchi(self):
         self.remove_temp_files()
         logging.info(_("Quiting installer..."))
-        self.settings.set('timezone_stop', True)
+        self.settings.set('stop_all_threads', True)
         logging.shutdown()
         sys.exit(0)
         

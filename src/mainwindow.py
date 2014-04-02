@@ -271,7 +271,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Quit Cnchi """
         remove_temp_files()
         logging.info(_("Quiting installer..."))
-        self.settings.set('timezone_stop', True)
+        self.settings.set('stop_all_threads', True)
         logging.shutdown()
 
     def set_progressbar_step(self, add_value):
