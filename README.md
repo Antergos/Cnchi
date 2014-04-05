@@ -9,6 +9,7 @@ Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
  * python-gobject 3
  * python-dbus
  * python-cairo
+ * python-mako
  * libtimezonemap
  * webkitgtk3
  * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
@@ -18,6 +19,7 @@ Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
  * hwinfo
  * hdparm
  * upower
+ * python-mock (only needed for unit tests)
 
 ## Translations
 
