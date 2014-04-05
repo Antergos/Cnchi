@@ -191,7 +191,7 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.info(_("Using '%s' file as package list"), params['alternate_package_list'])
         else:
             params['alternate_package_list'] = ""
-            
+        
         params['disable_tryit'] = cmd_line.disable_tryit
         params['testing'] = cmd_line.testing
         

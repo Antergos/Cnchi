@@ -84,9 +84,11 @@ class Welcome(Gtk.Box):
         super().add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
-        #label = self.ui.get_object("infowelcome_label")
-        txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n" \
-        "When you are ready to install Antergos simply choose which installer you prefer.")
+        txt = ""
+        if not self.disable_tryit:
+            txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")
+
+        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
@@ -99,14 +101,8 @@ class Welcome(Gtk.Box):
         txt = _("Graphical Installer")
         self.button['graph'].set_label(txt)
 
-        #self.header.set_title("Cnchi")
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
-
-
-        #txt = _("Welcome to Antergos!")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
     @misc.raise_privileges
     def remove_temp_files(self):
@@ -148,10 +144,9 @@ class Welcome(Gtk.Box):
         self.show_all()
         self.forward_button.hide()
         if self.disable_tryit:
-            box_tryit = self.ui.get_object("box_tryit")
-            box_tryit.hide()
-        if info.CNCHI_VERSION is not "0.4.3":
-            self.button['cli'].set_sensitive(False)
+            self.button['tryit'].set_sensitive(False)
+        #if info.CNCHI_VERSION is not "0.4.3":
+        #    self.button['cli'].set_sensitive(False)
 
 
     def get_prev_page(self):
