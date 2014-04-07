@@ -53,6 +53,7 @@ class CnchiApp(Gtk.Application):
         Gtk.Application.__init__(self)
         
     def do_activate(self):
+        """ Override the 'activate' signal of GLib.Application. """
         try:
             import mainwindow
         except:
@@ -68,6 +69,7 @@ class CnchiApp(Gtk.Application):
         window.show_all()
     
     def do_startup(self):
+        """ Override the 'startup' signal of GLib.Application. """
         Gtk.Application.do_startup(self)
         
         # Application main menu (we don't need one atm)
