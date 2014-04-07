@@ -38,7 +38,6 @@ BASE_DIR = os.path.dirname(__file__) or '.'
 SRC_DIR = os.path.join(BASE_DIR, 'src')
 sys.path.insert(0, SRC_DIR)
 
-import mainwindow
 import canonical.misc as misc
 import info
 import updater
@@ -54,6 +53,12 @@ class CnchiApp(Gtk.Application):
         Gtk.Application.__init__(self)
         
     def do_activate(self):
+        try:
+            import mainwindow
+        except:
+            logging.error(_("Can't create Cnchi's main window. Exiting..."))
+            sys.exit(1)
+            
         window = mainwindow.MainWindow(self, cmd_line)
         
         # Some tutorials show that this line is needed, some don't

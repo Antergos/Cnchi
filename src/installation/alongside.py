@@ -190,7 +190,7 @@ class InstallationAlongside(Gtk.Box):
         try:
             device_list = parted.getAllDevices()
         except:
-            logging.error("pyparted3 not found!")
+            logging.error(_("Can't import parted module! This installer won't work."))
             device_list = []
 
         for dev in device_list:
