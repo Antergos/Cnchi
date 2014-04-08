@@ -10,6 +10,7 @@
         <pkgname>b43-fwcutter</pkgname>
         <pkgname>base</pkgname> <!-- Group -->
         <pkgname>base-devel</pkgname> <!-- Group -->
+        <pkgname>bash-completion</pkgname>
         <pkgname>crda</pkgname>
         <pkgname>dnsutils</pkgname>
         <pkgname>dosfstools</pkgname>
