@@ -13,6 +13,7 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * python-gobject 3
  * python-dbus
  * python-cairo
+ * python-mako
  * libtimezonemap
  * webkitgtk
  * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
@@ -22,6 +23,7 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * hwinfo
  * hdparm
  * upower
+ * python-mock (only needed for unit tests)
 
 ## Translations
 

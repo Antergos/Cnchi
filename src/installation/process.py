@@ -37,6 +37,9 @@ import urllib.request
 import urllib.error
 import xml.etree.ElementTree as etree
 import encfs
+from mako.template import Template
+from mako.lookup import TemplateLookup
+
 from installation import auto_partition
 import desktop_environments as desktops
 import parted3.fs_module as fs
@@ -410,50 +413,37 @@ class InstallationProcess(multiprocessing.Process):
 
         download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
 
+    def write_file(self, filecontents, filename):
+        """ writes a string of data to disk """
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+
+        try:
+            with open(filename, "w") as fh:
+                fh.write(filecontents)
+        except IOError as e:
+            logging.exception(e)
+
+        return True
+
+    def create_pacman_conf_file(self):
+        """ Needs Mako (see http://www.makotemplates.org/) """
+        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
+
+        # Add template functionality ;-)
+        template_file_name = os.path.join(self.settings['data'], 'pacman.tmpl')
+        file_template = Template(filename=template_file_name)
+        self.write_file(file_template.render(destDir=self.dest_dir, arch=self.arch), os.path.join("/tmp", "pacman.conf"))
+
     def create_pacman_conf(self):
-        """ Creates temporary pacman.conf file """
-        logging.debug(_("Creating a temporary pacman.conf for %s architecture"), self.arch)
 
-        cache_dir = self.settings.get("cache")
+        self.create_pacman_conf_file()
 
-        # Create a pacman.conf specific for our installation
-        with open("/tmp/pacman.conf", "w") as tmp_file:
-            tmp_file.write("[options]\n")
-            tmp_file.write("RootDir = %s\n" % self.dest_dir)
-            tmp_file.write("DBPath = %s/var/lib/pacman/\n" % self.dest_dir)
-            if len(cache_dir) > 0:
-                tmp_file.write("CacheDir = %s\n" % cache_dir)
-            else:
-                tmp_file.write("CacheDir = %s/var/cache/pacman/pkg\n" % self.dest_dir)
-
-            tmp_file.write("LogFile = /tmp/pacman.log\n")
-            tmp_file.write("GPGDir = %s/etc/pacman.d/gnupg/\n" % self.dest_dir)
-            tmp_file.write("Architecture = auto\n")
-            tmp_file.write("CheckSpace\n")
-            tmp_file.write("SigLevel = PackageOptional\n\n")
-            
-            tmp_file.write("# Repositories\n")
-            tmp_file.write("[core]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-            tmp_file.write("[extra]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-            tmp_file.write("[community]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-            # x86_64 repos only
-            if self.arch == 'x86_64':
-                tmp_file.write("[multilib]\n")
-                tmp_file.write("SigLevel = PackageRequired\n")
-                tmp_file.write("Include = /etc/pacman.d/mirrorlist\n\n")
-
-            tmp_file.write("[antergos]\n")
-            tmp_file.write("SigLevel = PackageRequired\n")
-            tmp_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
+        ## Init pyalpm
+        try:
+            self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except:
+            raise InstallError("Can't initialize pyalpm.")
 
     def prepare_pacman_keychain(self):
         """ Add gnupg pacman files to installed system """
