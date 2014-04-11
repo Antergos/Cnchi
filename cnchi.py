@@ -2,446 +2,257 @@
 # -*- coding: utf-8 -*-
 #
 #  cnchi.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, Gdk, GObject, GLib
-import os
-import sys
-import getopt
-import gettext
-import locale
-import multiprocessing
-import logging
-
-# Insert the src directory at the front of the path.
-base_dir = os.path.dirname(__file__) or '.'
-src_dir = os.path.join(base_dir, 'src')
-sys.path.insert(0, src_dir)
-
-import config
-
-import welcome
-import language
-import location
-import check
-import desktop
-import features
-import keymap
-import timezone
-import installation_ask
-import installation_automatic
-import installation_alongside
-import installation_advanced
-import user_info
-import slides
-import misc
-import info
-import updater
-import show_message as show
-
-# Enabled desktops (remember to update features_by_desktop in features.py if this is changed)
-#_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox", "lxde", "enlightenment", "kde" ]
-_desktops = [ "nox", "gnome", "cinnamon", "xfce", "razor", "openbox" ]
-
-# Command line options
-_alternate_package_list = ""
-_cache_dir = ""
-_debug = False
-_force_grub_type = False
-_force_update = False
-_log_level = logging.INFO
-_update = False
-_use_aria2 = False
-_verbose = False
-_disable_tryit = False
+""" Main Cnchi (Antergos Installer) module """
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-_main_window_width = 800
-_main_window_height = 500
+from gi.repository import Gtk, Gdk, GObject, Gio
+import os
+import sys
+import logging
+import gettext
+import locale
 
-class Main(Gtk.Window):
+# Insert the src directory at the front of the path
+BASE_DIR = os.path.dirname(__file__) or '.'
+SRC_DIR = os.path.join(BASE_DIR, 'src')
+sys.path.insert(0, SRC_DIR)
 
+import canonical.misc as misc
+import info
+import updater
+
+# Command line options
+cmd_line = None
+
+# At least this GTK version is needed
+GTK_VERSION_NEEDED = "3.9.6"
+
+class CnchiApp(Gtk.Application):
     def __init__(self):
-        # This allows to translate all py texts (not the glade ones)
-        gettext.textdomain(APP_NAME)
-        gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
-
-        locale_code, encoding = locale.getdefaultlocale()
-        lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
-        lang.install()
-
-        # With this we can use _("string") to translate
-        gettext.install(APP_NAME, localedir=LOCALE_DIR, codeset=None, names=[locale_code])
-
-        # Check if we have administrative privileges
-        if os.getuid() != 0:
-            show.fatal_error(_('This installer must be run with administrative'
-                         ' privileges, and cannot continue without them.'))
+        Gtk.Application.__init__(self)
         
-        setup_logging()
-
-        # Check if we're already running
-        tmp_running = "/tmp/.setup-running"
-        if os.path.exists(tmp_running):
-            show.error(_('You cannot run two instances of this installer.\n\n'
-                          'If you are sure that the installer is not already running\n'
-                          'you can manually delete the file %s\n'
-                          'and run this installer again.') % tmp_running)
+    def do_activate(self):
+        """ Override the 'activate' signal of GLib.Application. """
+        try:
+            import mainwindow
+        except Exception as err:
+            logging.exception(err)
+            logging.error(_("Can't create Cnchi's main window. Exiting..."))
             sys.exit(1)
-                
-        super().__init__()       
-        
-        logging.info("Cnchi installer version %s" % info.cnchi_VERSION)
-        
-        p = multiprocessing.current_process()
-        logging.debug("[%d] %s started" % (p.pid, p.name))
-        
-        self.settings = config.Settings()        
-        self.ui_dir = self.settings.get('ui')
-
-        if not os.path.exists(self.ui_dir):
-            cnchi_dir = os.path.join(os.path.dirname(__file__), './')
-            self.settings.set('cnchi', cnchi_dir)
             
-            ui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
-            self.settings.set('ui', ui_dir)
-            
-            data_dir = os.path.join(os.path.dirname(__file__), 'data/')
-            self.settings.set('data', data_dir)           
-            
-            self.ui_dir = self.settings.get('ui')
-
-        self.settings.set('cache', _cache_dir)
-            
-        # Set enabled desktops
-        self.settings.set("desktops", _desktops)
+        window = mainwindow.MainWindow(self, cmd_line)
         
-        # Set if a grub type must be installed (user choice)
-        self.settings.set("force_grub_type", _force_grub_type)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(self.ui_dir + "cnchi.ui")
-
-        self.add(self.ui.get_object("main"))
-
-        self.header = self.ui.get_object("header")
-
-        self.forward_button = self.ui.get_object("forward_button")
+        # Some tutorials show that this line is needed, some don't
+        # It seems to work ok without
+        #self.add_window(window)
         
-        self.logo = self.ui.get_object("logo")
-        data_dir = self.settings.get('data')
-        logo_dir = os.path.join(data_dir, "antergos-logo-mini.png")
-        self.logo.set_from_file(logo_dir)
+        window.show_all()
+    
+    def do_startup(self):
+        """ Override the 'startup' signal of GLib.Application. """
+        Gtk.Application.do_startup(self)
         
-        self.title = self.ui.get_object("title")
-
-        # To honor our css
-        self.title.set_name("title")
-        self.logo.set_name("logo")
-
-        self.main_box = self.ui.get_object("main_box")
-        self.progressbar = self.ui.get_object("progressbar1")
-
-        self.forward_button = self.ui.get_object("forward_button")
-        self.exit_button = self.ui.get_object("exit_button")
-        self.backwards_button = self.ui.get_object("backwards_button")
-        
-        # Create a queue. Will be used to report pacman messages (pac.py)
-        # to the main thread (installer_*.py)
-        self.callback_queue = multiprocessing.JoinableQueue()
-
-        # Save in config if we have to use aria2 to download pacman packages
-        self.settings.set("use_aria2", _use_aria2)
-        if _use_aria2:
-            logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
-
-        # Load all pages
-        # (each one is a screen, a step in the install process)
-
-        self.pages = dict()
-
-        params = dict()
-        params['title'] = self.title
-        params['ui_dir'] = self.ui_dir
-        params['forward_button'] = self.forward_button
-        params['backwards_button'] = self.backwards_button
-        params['exit_button'] = self.exit_button
-        params['callback_queue'] = self.callback_queue
-        params['settings'] = self.settings
-        params['main_progressbar'] = self.ui.get_object('progressbar1')
-        params['alternate_package_list'] = _alternate_package_list
-        params['disable_tryit'] = _disable_tryit
-        
-        if len(_alternate_package_list) > 0:
-            logging.info(_("Using '%s' file as package list") % _alternate_package_list)
-        
-        self.pages["welcome"] = welcome.Welcome(params)
-        self.pages["language"] = language.Language(params)
-        self.pages["location"] = location.Location(params)
-        self.pages["check"] = check.Check(params)
-        self.pages["desktop"] = desktop.DesktopAsk(params)
-        self.pages["features"] = features.Features(params)
-        self.pages["keymap"] = keymap.Keymap(params)
-        self.pages["timezone"] = timezone.Timezone(params)
-        self.pages["installation_ask"] = installation_ask.InstallationAsk(params)
-        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(params)
-        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(params)
-        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(params)
-        self.pages["user_info"] = user_info.UserInfo(params)
-        self.pages["slides"] = slides.Slides(params)
-
-        self.connect("delete-event", Gtk.main_quit)
-        self.ui.connect_signals(self)
-
-        self.set_title(_('Antergos Installer'))
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(False)
-        self.set_size_request(_main_window_width, _main_window_height);
-
-        # Set window icon
-        icon_dir = os.path.join(data_dir, 'antergos-icon.png')
-        
-        self.set_icon_from_file(icon_dir)
-
-        # Set the first page to show
-        self.current_page = self.pages["welcome"]
-
-        self.main_box.add(self.current_page)
-
-        # Header style testing
-        style_provider = Gtk.CssProvider()
-
-        style_css = os.path.join(data_dir, "css", "gtk-style.css")
-
-        with open(style_css, 'rb') as css:
-            css_data = css.read()
-
-        style_provider.load_from_data(css_data)
-
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider,     
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
-
-        # Show main window
-        self.show_all()
-
-        self.vertical_image = self.ui.get_object('vertical_image')
-        self.vertical_image.hide()
-        #logo_90_dir = os.path.join(data_dir, "antergos-logo-mini-90.png")
-        #self.vertical_image.set_from_file(logo_90_dir)
-
-        self.current_page.prepare('forwards')
-
-        # Hide backwards button
-        self.backwards_button.hide()
-
-        # Hide titlebar but show border decoration
-        self.get_window().set_accept_focus(True)
-        self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
-        
-        # Hide progress bar as it's value is zero
-        self.progressbar.set_fraction(0)
-        self.progressbar.hide()
-        self.progressbar_step = 1.0 / (len(self.pages) - 2)
-
-        # We drop privileges, but where we should do it? before this? ¿?
-        misc.drop_privileges()
-
-        with open(tmp_running, "wt") as tmp_file:
-            tmp_file.write("Cnchi %d\n" % 1234)
-
-        GLib.timeout_add(1000, self.pages["slides"].manage_events_from_cb_queue)
-
-    # TODO: some of these tmp files are created with sudo privileges
-    # (this should be fixed) meanwhile, we need sudo privileges to remove them
-    @misc.raise_privileges
-    def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", \
-                "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log" ]
-        for t in tmp_files:
-            p = os.path.join("/tmp", t)
-            if os.path.exists(p):
-                os.remove(p)
-         
-    def on_exit_button_clicked(self, widget, data=None):
-        self.remove_temp_files()
-        logging.info(_("Quiting installer..."))
-        Gtk.main_quit()
-
-    def set_progressbar_step(self, add_value):
-        new_value = self.progressbar.get_fraction() + add_value
-        if new_value > 1:
-            new_value = 1
-        if new_value < 0:
-            new_value = 0
-        self.progressbar.set_fraction(new_value)        
-        if new_value > 0:
-            self.progressbar.show()
-        else:
-            self.progressbar.hide()
-
-    def on_forward_button_clicked(self, widget, data=None):
-        next_page = self.current_page.get_next_page()
-
-        if next_page != None:
-            stored = self.current_page.store_values()
-            
-            if stored != False:
-                self.set_progressbar_step(self.progressbar_step)     
-                self.main_box.remove(self.current_page)
-
-                self.current_page = self.pages[next_page]
-
-                if self.current_page != None:
-                    self.current_page.prepare('forwards')
-                    self.main_box.add(self.current_page)
-
-                    if self.current_page.get_prev_page() != None:
-                        # There is a previous page, show button
-                        self.backwards_button.show()
-                        self.backwards_button.set_sensitive(True)
-                    else:
-                        self.backwards_button.hide()
-
-    def on_backwards_button_clicked(self, widget, data=None):
-        prev_page = self.current_page.get_prev_page()
-
-        if prev_page != None:
-            self.set_progressbar_step(-self.progressbar_step)
-
-            # If we go backwards, don't store user changes
-            # self.current_page.store_values()
-            
-            self.main_box.remove(self.current_page)
-            self.current_page = self.pages[prev_page]
-
-            if self.current_page != None:
-                self.current_page.prepare('backwards')
-                self.main_box.add(self.current_page)
-
-                if self.current_page.get_prev_page() == None:
-                    # We're at the first page
-                    self.backwards_button.hide()
+        # Application main menu (we don't need one atm)
+        # Leaving this here for future reference
+        #menu = Gio.Menu()
+        #menu.append("About", "win.about")
+        #menu.append("Quit", "app.quit")
+        #self.set_app_menu(menu)
 
 def setup_logging():
+    """ Configure our logger """
     logger = logging.getLogger()
-    logger.setLevel(_log_level)
+    
+    logger.handlers = []
+   
+    if cmd_line.debug:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.INFO
+    
+    logger.setLevel(log_level)
+    
     # Log format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('[%(asctime)s] [%(filename)s] %(levelname)s: %(message)s', "%Y-%m-%d %H:%M:%S")
+    
     # Create file handler
-    fh = logging.FileHandler('/tmp/cnchi.log', mode='w')
-    fh.setLevel(_log_level)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
+    file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
+    file_handler.setLevel(log_level)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
-    if _verbose:
+    if cmd_line.verbose:
         # Show log messages to stdout
-        sh = logging.StreamHandler()
-        sh.setLevel(_log_level)
-        sh.setFormatter(formatter)
-        logger.addHandler(sh)
-        
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(log_level)
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
 
-def show_help():
-    print("Cnchi Antergos Installer")
-    print("Advanced options:")
-    print("-a, --aria2 : Use aria2 to download Antergos packages (EXPERIMENTAL)")
-    print("-c, --cache : Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)")
-    print("-d, --debug : Set debug log level")
-    print("-g type, --force-grub-type type : force grub type to install, type can be bios, efi, ask or none")
-    print("-h, --help : Show this help message")
-    print("-p file.xml, --packages file.xml : Antergos will install the packages referenced by file.xml instead of the default ones")
-    print("-v, --verbose : Show logging messages to stdout")
+def check_gtk_version():
+    """ Check GTK version """
+    # Check desired GTK Version
+    major_needed = int(GTK_VERSION_NEEDED.split(".")[0])
+    minor_needed = int(GTK_VERSION_NEEDED.split(".")[1])
+    micro_needed = int(GTK_VERSION_NEEDED.split(".")[2])
+
+    # Check system GTK Version
+    major = Gtk.get_major_version()
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+
+    # Cnchi will be called from our liveCD that already has the latest GTK version
+    # This is here just to help testing Cnchi in our environment.
+    if major_needed > major or (major_needed == major and minor_needed > minor) or \
+      (major_needed == major and minor_needed == minor and micro_needed > micro):
+        print("Detected GTK %d.%d.%d but %s is needed. Can't run this installer." \
+            % (major, minor, micro, _gtk_version_needed))
+        return False
+    else:
+        print("Using GTK v%d.%d.%d" % (major, minor, micro))
+
+    return True
+
+def parse_options():
+    """ argparse http://docs.python.org/3/howto/argparse.html """
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
+    parser.add_argument("-a", "--aria2", help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"), action="store_true")
+    parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs='?')
+    parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs='?')
+    parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
+    parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version (-uu will force the update)"), action="count")
+    parser.add_argument("-p", "--packagelist", help=_("Install the packages referenced by a local xml instead of the default ones"), nargs='?')
+    parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
+    parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
+    parser.add_argument("--disable-tryit", help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"), action="store_true")
+    parser.add_argument("-z", "--z_hidden", help=_("Show options in development (DO NOT USE THIS!)"), action="store_true")
+
+    return parser.parse_args()
+
+def threads_init():
+    """
+    For applications that wish to use Python threads to interact with the GNOME platform,
+    GObject.threads_init() must be called prior to running or creating threads and starting
+    main loops (see notes below for PyGObject 3.10 and greater). Generally, this should be done
+    in the first stages of an applications main entry point or right after importing GObject.
+    For multi-threaded GUI applications Gdk.threads_init() must also be called prior to running
+    Gtk.main() or Gio/Gtk.Application.run().
+    """
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+    
+    if minor == 10 and micro < 2:
+        # Unfortunately these versions of PyGObject suffer a bug which require a workaround to get
+        # threading working properly. Workaround:
+        # Force GIL creation
+        import threading
+        threading.Thread(target=lambda: None).start()
+
+    # Since version 3.10.2, calling threads_init is no longer needed.
+    # See: https://wiki.gnome.org/PyGObject/Threading
+    if minor < 10 or (minor == 10 and micro < 2):
+        GObject.threads_init()
+    
+    #Gdk.threads_init()
+
+def update_cnchi():
+    force = False
+    if cmd_line.update == 2:
+        force = True
+    upd = updater.Updater(force)
+    if upd.update():
+        remove_temp_files()
+        if force:
+            # Remove -uu option
+            new_argv = []
+            for argv in sys.argv:
+                if argv != "-uu":
+                    new_argv.append(argv)
+        else:
+            new_argv = sys.argv
+        print(_("Program updated! Restarting..."))
+        # Run another instance of Cnchi (which will be the new version)
+        os.execl(sys.executable, *([sys.executable] + new_argv))
+        sys.exit(0)   
+
+def setup_gettext():
+    # This allows to translate all py texts (not the glade ones)
+    gettext.textdomain(APP_NAME)
+    gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+
+    locale_code, encoding = locale.getdefaultlocale()
+    lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
+    lang.install()
+
+def check_for_files():
+    # Check for hwinfo and hdparm
+    # (this check is just for developers, in our liveCD hwinfo will always be installed)
+    if not os.path.exists("/usr/bin/hwinfo"):
+        print(_("Please install %s before running this installer") % "hwinfo")
+        return False
+
+    if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
+        print(_("Please install %s before running this installer") % "hdparm")
+        return False
+    
+    return True
+
+def init_cnchi():
+    """ This function initialises Cnchi """
+
+    # Configures gettext to be able to translate messages, using _()
+    setup_gettext()
+    
+    if not check_for_files():
+        sys.exit(1)
+        
+    # Check installed GTK version
+    if not check_gtk_version():
+        sys.exit(1)
+
+    # Command line options
+    global cmd_line
+    cmd_line = parse_options()
+
+    if cmd_line.update is not None:
+        update_cnchi()
+    
+    # Drop root privileges
+    misc.drop_privileges()
+    
+    # Init PyObject Threads
+    threads_init()
+
+    # Setup our logging framework
+    setup_logging()
+    
 
 if __name__ == '__main__':
-    
-    # Check for hwinfo
-    if not os.path.exists("/usr/bin/hwinfo"):
-        print("Please install hwinfo before running this installer")
-        sys.exit(1)
-    
-    # Check program args
-    argv = sys.argv[1:]
-    
-    try:
-        opts, args = getopt.getopt(argv, "ac:dp:ufvg:h",
-         ["aria2", "cache=", "debug", "packages=", "update",
-          "force-update", "verbose", "force-grub=", "disable-tryit", "help"])
-    except getopt.GetoptError as e:
-        show_help()
-        print(str(e))
-        sys.exit(2)
-    
-    for opt, arg in opts:
-        if opt in ('-d', '--debug'):
-            _log_level = logging.DEBUG
-        elif opt in ('-v', '--verbose'):
-            _verbose = True
-        elif opt in ('-u', '--update'):
-            _update = True
-        elif opt in ('-f', '--force-update'):
-            _force_update = True
-            _update = True
-        elif opt in ('-p', '--packages'):
-            _alternate_package_list = arg
-        elif opt in ('-a', '--aria2'):
-            _use_aria2 = True
-        elif opt in ('-c', '--cache'):
-            _cache_dir = arg
-        elif opt in ('-g', '--force-grub-type'):
-            if arg in ('bios', 'efi', 'ask', 'none'):
-                _force_grub_type = arg
-        elif opt in ('--disable-tryit'):
-            _disable_tryit = True
-        elif opt in ('-h', '--help'):
-            show_help()
-            sys.exit(0)
-        else:
-            assert False, "unhandled option"
-        
-    if _update:
-        setup_logging()
-        # Check if program needs to be updated
-        upd = updater.Updater(_force_update)
-        if upd.update():
-            # Remove /tmp/.setup-running to be able to run another
-            # instance of Cnchi
-            p = "/tmp/.setup-running"
-            if os.path.exists(p):
-                os.remove(p)
-            if not _force_update:
-                print("Program updated! Restarting...")
-                # Run another instance of Cnchi (which will be the new version)
-                os.execl(sys.executable, *([sys.executable] + sys.argv))
-            else:
-                print("Program updated! Please restart Cnchi.")
+    init_cnchi()
 
-            # Exit and let the new instance do all the hard work
-            sys.exit(0)
-
-    # Start Gdk stuff and main window app 
-    GObject.threads_init()
-
-    app = Main()
-
-    Gtk.main()
+    # Create Gtk Application    
+    myapp = CnchiApp()
+    exit_status = myapp.run(None)
+    sys.exit(exit_status)

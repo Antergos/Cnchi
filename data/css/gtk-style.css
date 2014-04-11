@@ -1,25 +1,71 @@
-
+#main {
+font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
+}
 #logo {
     background-color: transparent;
-    background-image: url('/usr/share/cnchi/data/images/header.png');                                 
     background-position: top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 0px;
     color: #5082d4;
     font: 14px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 }
 
 #title {
     background-color: transparent;
-    background-image: url('/usr/share/cnchi/data/images/header.png');                                 
+    background-image: url('/usr/share/cnchi/data/images/header.png');
     background-position: top;
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 0px;
     color: #5082d4;
+    font: 17px;
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
+    padding-top:7.5px;
+}
+
+#header {
+    background-color: transparent;
+    background-image: url('/usr/share/cnchi/data/images/header.png');
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: 100% 100%;
+    margin-top: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+    /*
+    color: #5082d4;
     font: 14px;
     font-family: 'DejaVu Sans', Helvetica, sans-serif;
     padding-top:7.5px;
+    */
+}
+
+#process_progressbar, #i_progressbar, #a_progressbar{
+    border-radius: 5px;  
+}
+
+#process_progressbar{
+    -GtkProgressBar-min-horizontal-bar-height: 1;
+}
+
+#i_progressbar, #a_progressbar{
+    -GtkProgressBar-min-horizontal-bar-height: 12;
+}
+
+.progressbar,
+.progressbar row,
+.progressbar row:hover,
+.progressbar row:selected,
+.progressbar row:selected:focused {
+    background-image: -gtk-gradient (linear,
+                                     left top, left bottom,
+                                     from (@progressbar_background_a),
+                                     to (@progressbar_background_b));
+ 
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: none;
 }

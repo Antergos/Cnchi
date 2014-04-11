@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Sat Nov 30 14:54:02 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <!-- interface-requires gtkwidgets 0.0 -->
@@ -100,10 +101,12 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel" id="third_party_info">
+                  <object class="GtkLabel" id="label_space">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Antergos uses third-party software to play Flash, MP3 and other media. Some of this software is propietary. The software is subject to license terms included with its documentation.</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">(*) This highly depends on which desktop environment you choose, so you might need more space (for instance, KDE needs 6.5GB).</property>
+                    <property name="use_markup">True</property>
                     <property name="wrap">True</property>
                   </object>
                   <packing>
@@ -113,22 +116,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton" id="third_party_checkbutton">
-                    <property name="label" translatable="yes">Install this third-party software</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="margin_left">20</property>
-                    <property name="margin_top">5</property>
-                    <property name="xalign">0</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_third_party_checkbutton_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
             </child>

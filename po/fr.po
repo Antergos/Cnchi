@@ -4,13 +4,15 @@
 # Translators:
 # faidoc <faidoc@gmail.com>, 2013
 # Apos <jeandavidmoisan@gmail.com>, 2013
+# Calinou, 2014
 # Gatien Bovyn <gatien.bovyn@hotmail.com>, 2013
+# Oettam <luca@mondada.net>, 2014
 # Ti_Paul <tipaul2003@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-12-01 22:18+PET\n"
-"PO-Revision-Date: 2013-12-02 03:18+0000\n"
+"POT-Creation-Date: 2014-03-29 10:36+PET\n"
+"PO-Revision-Date: 2014-03-29 15:37+0000\n"
 "Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -20,13 +22,13 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: cnchi.py:97
+#: cnchi.py:134
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "Ce programme d'installation doit être exécuté avec les droits d'administrateur, et ne peut pas continuer sans eux."
+msgstr "Ce programme d'installation doit être exécuté avec les droits d'administrateur et ne peut pas continuer sans eux."
 
-#: cnchi.py:105
+#: cnchi.py:143
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -35,102 +37,169 @@ msgid ""
 "and run this installer again."
 msgstr "Vous ne pouvez pas exécuter deux instances de ce programme d'installation.\n\nSi vous êtes sûr que l'installateur n'est pas déjà en cours d'exécution, \nvous pouvez supprimer manuellement le fichier %s \net relancer ce programme d'installation."
 
-#: cnchi.py:175
-msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "Utilisation de Aria2 pour télécharger les paquets - EXPÉRIMENTAL"
+#: cnchi.py:151
+msgid "Cnchi installer version %s"
+msgstr "Installateur Cnchi version %s"
 
-#: cnchi.py:195
-msgid "Using '%s' file as package list"
-msgstr "Utilisation du fichier '%s' comme liste de paquets"
-
-#: cnchi.py:215
+#: cnchi.py:197
 msgid "Antergos Installer"
 msgstr "Installateur Antergos"
 
-#: cnchi.py:288
+#: cnchi.py:233
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr "Utilisation de Aria2 pour télécharger les paquets - EXPÉRIMENTAL"
+
+#: cnchi.py:251
+msgid "Using '%s' file as package list"
+msgstr ""
+
+#: cnchi.py:278
+msgid "Cnchi - Antergos Installer"
+msgstr "Cnchi - Installateur d'Antergos"
+
+#: cnchi.py:331 src/welcome.py:120
 msgid "Quiting installer..."
 msgstr "Fermeture de l’installateur…"
 
-#: src/bootinfo.py:35 src/bootinfo.py:55 src/bootinfo.py:60 src/bootinfo.py:81
-#: src/installation_alongside.py:212
+#: cnchi.py:453
+msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
+msgstr "Utiliser aria2 pour télécharger les paquets d'Antergos (EXPÉRIMENTAL)"
+
+#: cnchi.py:454
+msgid ""
+"Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
+"version is found)"
+msgstr "Utiliser les paquets xz pré-téléchargés (Cnchi va de toute façon les télécharger si une nouvelle version est disponible)"
+
+#: cnchi.py:455
+msgid ""
+"As --cache but before installing Cnchi copies all xz packages to destination"
+msgstr "Comme --cache mais avant d'installer, Cnchi copie tous les paquets xz à la destination"
+
+#: cnchi.py:456
+msgid "Sets Cnchi log level to 'debug'"
+msgstr "Définit le niveau de journalisation de Cnchi à « debug »"
+
+#: cnchi.py:457
+msgid "Update Cnchi to the latest version (-uu will force the update)"
+msgstr "Met à jour Cnchi à la dernière version (-uu forcera la mise à jour)"
+
+#: cnchi.py:458
+msgid ""
+"Install the packages referenced by a local xml instead of the default ones"
+msgstr "Installer les paquets référencés par un xml local plutôt que ceux par défaut"
+
+#: cnchi.py:459
+msgid "Do not perform any changes (useful for developers)"
+msgstr "Ne rien changer (utile pour les développeurs)"
+
+#: cnchi.py:460
+msgid "Show logging messages to stdout"
+msgstr "Montrer les messages du journal vers la sortie standard"
+
+#: cnchi.py:461
+msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
+msgstr "Désactive l'option tryit (utile si Cnchi n'est pas éxécuté depuis un média « live »)"
+
+#: cnchi.py:462
+msgid "Show options in development (DO NOT USE THIS!)"
+msgstr "Montrer les options en développement (N'UTILISEZ PAS CELA !)"
+
+#: cnchi.py:498 cnchi.py:502
+msgid "Please install %s before running this installer"
+msgstr ""
+
+#: cnchi.py:529
+msgid "Program updated! Restarting..."
+msgstr ""
+
+#: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
+#: src/installation/alongside.py:215
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/bootloader.py:50
-msgid "What type of boot system are you using?"
-msgstr "Quel système d’amorçage utilisez-vous ?"
+#: src/canonical/misc.py:929
+msgid "Can't set locale %s"
+msgstr "Ne peut définir la langue %s"
 
-#: src/bootloader.py:55
-msgid "BIOS (Most Common)"
-msgstr "BIOS (le plus courant)"
+#: src/canonical/validation.py:132
+msgid "password is too short"
+msgstr "mot de passe trop court"
 
-#: src/bootloader.py:59
-msgid "64-bit UEFI"
-msgstr "UEFI 64-bit"
+#: src/canonical/validation.py:135
+msgid "weak password"
+msgstr "mot de passe faible"
 
-#: src/bootloader.py:63
-msgid "32-bit UEFI (old Macs)"
-msgstr "UEFI 32-bit (vieux Macs)"
+#: src/canonical/validation.py:138
+msgid "fair password"
+msgstr "mot de passe passable"
 
-#: src/bootloader.py:67
-msgid "Select 'cancel' if you don't want to install a boot loader."
-msgstr "Sélectionnez 'annuler' si vous ne souhaitez pas installer de chargeur d’amorçage."
+#: src/canonical/validation.py:141
+msgid "good password"
+msgstr "mot de passe correct"
 
-#: src/check.py:63
+#: src/canonical/validation.py:144
+msgid "strong password"
+msgstr "mot de passe fort"
+
+#: src/canonical/validation.py:159
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#: src/check.py:74
 msgid "System Check"
 msgstr "Vérification du système"
 
-#: src/check.py:68
-msgid "has at least 3GB available storage space"
-msgstr "a au moins 3 GB d’espace libre disponible"
+#: src/check.py:81
+msgid "has at least %dGB available storage space."
+msgstr "a au moins %d Go d'espace disponible."
 
-#: src/check.py:72
+#: src/check.py:86
+msgid ""
+"This highly depends on which desktop environment you choose, so you might "
+"need more space."
+msgstr "Cela dépend fortement de l'environnement de bureau que vous choisissez, vous aurez peut être besoin de plus d'espace."
+
+#: src/check.py:91
 msgid "is plugged in to a power source"
 msgstr "est branché à une source d'alimentation"
 
-#: src/check.py:76
+#: src/check.py:95
 msgid "is connected to the Internet"
-msgstr "est connecté à internet"
+msgstr "est connecté à l'Internet"
 
-#: src/check.py:80
+#: src/check.py:99
 msgid "For best results, please ensure that this computer:"
 msgstr "Pour de meilleurs résultats, veuillez faire en sorte que cet ordinateur :"
 
-#: src/check.py:85
-msgid ""
-"Antergos uses third-party software to play Flash videos, MP3 and other "
-"media. Some of this software is proprietary. Use of this software is subject"
-" to license terms included with its documentation."
-msgstr "Antergos utilise des logiciels tiers pour jouer les animations Flash, MP3 et autres médias. Certains de ces logiciels sont propriétaires. Le logiciel est sujet à une licence disponible avec sa documentation."
-
-#: src/check.py:93
-msgid "Install this third-party software"
-msgstr "Installer les logiciels tiers"
-
-#: src/check.py:113
-msgid "Can't get network status"
-msgstr "Impossible d'obtenir l'état du réseau"
-
-#: src/check.py:189
+#: src/check.py:169
 msgid "We have Internet connection."
 msgstr "Nous avons une connexion Internet."
 
-#: src/check.py:190
+#: src/check.py:170
 msgid "We're connected to a power source."
 msgstr "Nous sommes connectés à une source d'alimentation."
 
-#: src/check.py:191
+#: src/check.py:171
 msgid "We have enough disk space."
 msgstr "Nous avons assez d’espace disque libre."
 
-#: src/desktop.py:76
+#: src/desktop.py:79
+msgid "Choose Your Desktop"
+msgstr "Choisissez votre bureau"
+
+#: src/desktop.py:132
+msgid "Cnchi will install Antergos with the '%s' desktop"
+msgstr "Cnchi installera Antergos avec le bureau '%s'"
+
+#: src/desktop_environments.py:65
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "Gnome 3 est une manière facile et élégante d’utiliser votre ordinateur. Il fournit un Aperçu des Activités qui permet d’accéder à toutes vos tâches basiques. Gnome 3 est le bureau par défaut dans Antergos."
 
-#: src/desktop.py:83
+#: src/desktop_environments.py:70
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -138,7 +207,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon est un fork de Gnome 3 développé par (et pour) Linux Mint. Il fournit une interface de bureau plus traditionnelle en plus des nouvelles techniques de composition de Gnome 3. Cinnamon est adapté aux utilisateurs de tous niveaux."
 
-#: src/desktop.py:90
+#: src/desktop_environments.py:75
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -146,7 +215,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce est un environnement de bureau léger. Il vise à être rapide et léger pour le système, tout en restant visuellement agréable et facile d’utilisation. Un bon choix pour des ordinateurs vieillissants ou pour des matériels avec peu de ressources."
 
-#: src/desktop.py:97
+#: src/desktop_environments.py:80
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -154,943 +223,1670 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE est un environnement de bureau extrêmement rapide et économe en énergie. Il utilise moins de CPU et de RAM que les autres environnements. LXDE est désigné spécifiquement pour les ordinateurs peu puissants comme des netbooks, des appareils mobiles et de vieux ordinateurs."
 
-#: src/desktop.py:104
+#: src/desktop_environments.py:85
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
-"extensive standards support. It's default theme, the *box visual style,is "
-"well known for its minimalistic appearance and flexibility. Your desktop "
-"becomes cleaner, faster, and is in your control with Openbox "
-msgstr "Openbox est un gestionnaire de fenêtres hautement configurables avec un support élargi des standards. Son thème par défaut est bien connu pour son apparence minimaliste et sa flexibilité. Votre bureau devient plus propres, rapide, et en votre contrôle grâce à Openbox."
+"extensive standards support. It's default theme is well known for its "
+"minimalistic appearance and flexibility. Your desktop becomes cleaner, "
+"faster."
+msgstr "Openbox est un gestionnaire de fenêtres hautement configurable avec une prise en charge des standards étendue. Son thème par défaut est réputé pour son apparence minimaliste et sa flexibilité. Votre bureau devient plus rapide, plus simple."
 
-#: src/desktop.py:111
+#: src/desktop_environments.py:90
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
 msgstr "Enlightenment n'est pas qu'un gestionnaire de fenêtre pour Linux/X11 et autres, mais aussi une suite complète de librairies pour vous aider à créer de belles interfaces sans trop de travail."
 
-#: src/desktop.py:117
+#: src/desktop_environments.py:94
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
-"you can be productive right from the start. The look, feel, and behavior can"
-" be easily customized to the user's taste."
-msgstr "Si vous êtes à la recherche d’un environnement de travail familier, KDE's Plasma Desktop vous offre tous les outils requis pour une expérience de navigation sur un poste moderne, vous permettant d’être productif dès le début. Son aspect et son comportement peuvent être facilement customisés au goût de l’utilisateur."
+"you can be productive right from the start."
+msgstr "Si vous êtes à la recherche d’un environnement de travail familier, le bureau Plasma de KDE vous offre tous les outils requis pour une expérience de navigation sur un poste moderne, vous permettant d’être productif dès le début. Son aspect et son comportement peuvent être facilement personnalisés au goût de l’utilisateur."
 
-#: src/desktop.py:124
+#: src/desktop_environments.py:98
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
 msgstr "Razor-qt est un environnement de bureau avancé, facile d'utilisation et rapide basé sur la technologie Qt. Il a été conçu pour les utilitateurs qui accorde de l'importance à la simplicité, la vitesse et une interface intuitive."
 
-#: src/desktop.py:131
+#: src/desktop_environments.py:103
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "Ceci installera Antergos comme système de ligne de commande, sans bureau du tout. Après l’installation, vous pourrez installer le bureau de votre choix."
 
-#: src/desktop.py:140
-msgid "Choose Your Desktop"
+#: src/desktop_environments.py:107
+msgid ""
+"MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
+"environment using traditional metaphors for Linux and other Unix-like "
+"operating systems."
+msgstr "MATE est un dérivé de GNOME 2. Il vous apporte une interface utilisateur intuitive et attrayante en utilisant des métaphores de bureau traditionnels."
+
+#: src/download.py:37
+msgid "pm2ml not found. Aria2 download won't work."
 msgstr ""
 
-#: src/desktop.py:150
-msgid "Desktops"
-msgstr "Bureaux"
+#: src/download.py:80
+msgid "Can't connect with aria2, downloading will be performed by alpm."
+msgstr "Ne peut se connecter avec aria2, le téléchargement sera effectué par alpm."
 
-#: src/desktop.py:183
-msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr "Cnchi installera Antergos avec le bureau '%s'"
-
-#: src/download.py:79
+#: src/download.py:90
 msgid "Error creating metalink for package %s"
 msgstr "Erreur de création du métalien pour le package %s"
 
-#: src/download.py:85
+#: src/download.py:96
 msgid "Error adding metalink for package %s"
 msgstr "Erreur lors de la création du métalien pour le package %s"
 
-#: src/download.py:134
-msgid "Downloading package '%s'..."
-msgstr "Téléchargement du paquet '%s'..."
+#: src/download.py:105
+msgid "Downloading package '%s' and its dependencies..."
+msgstr "Téléchargement du paquet « %s » et ses dépendances..."
 
-#: src/download.py:158
-msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr "Connexion à Aria2 impossible. Le téléchargement ne sera pas accéléré."
+#: src/download.py:136 src/pacman/pac.py:334
+msgid "Downloading %s..."
+msgstr "Téléchargement de %s..."
 
-#: src/download.py:234
+#: src/download.py:168
+msgid "Can't connect to Aria2. Error Output: %s"
+msgstr "Ne peut se connecter à Aria2. Erreur : %s"
+
+#: src/download.py:246
 msgid "Unable to create download queue for package %s"
 msgstr "Impossible de créer la file de téléchargement pour le paquet %s"
 
-#: src/download.py:238
+#: src/download.py:250
 msgid "Can't find these packages: "
 msgstr "Impossible de trouver ces paquets :"
 
-#: src/download.py:244
+#: src/download.py:256
 msgid "Warning! Can't resolve these dependencies: "
 msgstr "Attention ! Ces dépendances ne sont pas résolues :"
 
-#: src/features.py:99
-msgid "Features"
-msgstr ""
+#: src/features.py:110
+msgid "Feature Selection"
+msgstr "Sélection des fonctionnalités"
 
-#: src/features.py:104
+#: src/features.py:114
+msgid "Arch User Repository (AUR) Support"
+msgstr "Prise en charge de l'Arch User Repository (AUR)"
+
+#: src/features.py:117
+msgid "The AUR is a community-driven repository for Arch users."
+msgstr "L'AUR est un dépôt géré par la communauté pour les utilisateurs d'Arch."
+
+#: src/features.py:121
+msgid ""
+"Use yaourt to install AUR packages.\n"
+"The AUR was created to organize and share new packages\n"
+"from the community and to help expedite popular packages'\n"
+"inclusion into the [community] repository."
+msgstr "Utilisez yaourt pour installer des paquets AUR.\nL'AUR a été créé pour organiser et partager les nouveaux paquets\nde la communauté et pour aider les paquets populaires\nà être inclus dans le dépot [community]."
+
+#: src/features.py:130
 msgid "Bluetooth Support"
 msgstr "Support du Bluetooth"
 
-#: src/features.py:107
+#: src/features.py:133
 msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "Permet à votre système de créer des connexions sans fil en Bluetooth."
 
-#: src/features.py:111
+#: src/features.py:137
+msgid ""
+"Bluetooth is a standard for the short-range wireless\n"
+"interconnection of cellular phones, computers, and\n"
+"other electronic devices. In Linux, the canonical\n"
+"implementation of the Bluetooth protocol stack is BlueZ"
+msgstr "Bluetooth est un standard pour le sans-fil de courte distance\npour interconnecter les téléphones, les ordinateurs\net d'autres appareils électroniques. Sous Linux, l'implémentation\ncanonique du protocole Bluetooth est BlueZ"
+
+#: src/features.py:146
+msgid "Extra Truetype Fonts"
+msgstr "Polices TrueType supplémentaires"
+
+#: src/features.py:149
+msgid "Installation of extra TrueType fonts"
+msgstr "Installation de polices TrueType supplémentaire"
+
+#: src/features.py:153
+msgid ""
+"TrueType is an outline font standard developed by\n"
+"Apple and Microsoft in the late 1980s as a competitor\n"
+"to Adobe's Type 1 fonts used in PostScript. It has\n"
+"become the most common format for fonts on both the\n"
+"Mac OS and Microsoft Windows operating systems."
+msgstr "TrueType est un standard et police développé par\nApple et Microsoft à la fin des années 1980 en tant\nque compétiteur au format Type 1 d'Adobe, utilisé\ndans PostScript. Il est devenu le format de polices le\nplus commun sur tous les systèmes d'exploitation majeurs."
+
+#: src/features.py:163
+msgid "Gnome Extra"
+msgstr "Gnome Extra"
+
+#: src/features.py:166
+msgid "Installation of extra Gnome applications"
+msgstr "Installation d'applications GNOME supplémentaires"
+
+#: src/features.py:170
+msgid ""
+"Contains various optional tools such as a media\n"
+"player, a calculator, an editor and other non-critical\n"
+"applications that go well with the GNOME desktop.\n"
+msgstr "Contient divers outils optionnels comme un lecteur\nde médias, une calculatrice, un éditeur et d'autres\nlogiciels qui vont bien avec le bureau GNOME.\n"
+
+#: src/features.py:178
 msgid "Printing Support"
 msgstr "Support d’Impression"
 
-#: src/features.py:114
+#: src/features.py:181
 msgid "Installation of printer drivers and management tools."
 msgstr "Installation des pilotes pour les imprimantes et outils de configuration."
 
-#: src/features.py:118
+#: src/features.py:185
+msgid ""
+"CUPS is the standards-based, open source printing\n"
+"system developed by Apple Inc. for OS\\302\\256 X and other\n"
+"UNIX\\302\\256-like operating systems."
+msgstr "CUPS est un système d'impression libre développé\npar Apple pour OS/302/256 X et d'autres\nsystèmes similaires, comme UNIX."
+
+#: src/features.py:193
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: src/features.py:121
-msgid "Open source office suite that supports editing MS Office files."
-msgstr "Suite bureautique qui supporte les fichiers MS Office."
+#: src/features.py:196
+msgid "Open source office suite. Supports editing MS Office files."
+msgstr "Suite bureautique libre. Les fichiers MS Office sont pris en charge."
 
-#: src/features.py:125
+#: src/features.py:200
+msgid ""
+"LibreOffice is the free power-packed Open Source\n"
+"personal productivity suite for Windows, Macintosh\n"
+"and Linux, that gives you six feature-rich applications\n"
+"for all your document production and data processing\n"
+"needs: Writer, Calc, Impress, Draw, Math and Base."
+msgstr "LibreOffice est une suite bureautique gratuite et\nlibre pour Windows, OS X et GNU/Linux, qui vous\napporte six applications riches en fonctionnalités\npour tous vos besoins de production : Writer, Calc,\nImpress, Draw, Math et Base."
+
+#: src/features.py:210
 msgid "Visual Effects"
 msgstr "Effets Visuels"
 
-#: src/features.py:128
-msgid ""
-"Enable 3D acceleration for transparency, shadows, and other desktop effects."
-msgstr "Active l’accélération 3D pour la transparenc, les ombres et d’autres effets pour le bureau."
+#: src/features.py:213
+msgid "Enable transparency, shadows, and other desktop effects."
+msgstr "Activer la transparence, les ombres et d'autres effets."
 
-#: src/features.py:132
+#: src/features.py:217
+msgid ""
+"Compton is a lightweight, standalone composite manager,\n"
+"suitable for use with window managers that do not natively\n"
+"provide compositing functionality. Compton itself is a fork\n"
+"of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+"See the compton github page for further information."
+msgstr "Compton est un compositeur léger, adapté à l'utilisation\navec des gestionnaires de fenêtres qui ne proposent pas\nd'option de composition. Compton est un dérivé de\nxcompmgr-dana, qui est à son tour un dérivé de xcompmgr.\nConsultez la page GitHub du projet pour plus d'information."
+
+#: src/features.py:227
 msgid "Uncomplicated Firewall"
 msgstr "Uncomplicated Firewall"
 
-#: src/features.py:137
+#: src/features.py:230
 msgid "Control the incoming and outgoing network traffic."
 msgstr "Contrôle le trafic du réseau entrant et sortant."
 
-#: src/features.py:141
+#: src/features.py:234
+msgid ""
+"Ufw stands for Uncomplicated Firewall, and is a program for\n"
+"managing a netfilter firewall. It provides a command line\n"
+"interface and aims to be uncomplicated and easy to use."
+msgstr "Ufw signifie Uncompliacted Firewall (« Pare-feu pas compliqué »),\nc'est un programme pour gérer un pare-feu netfilter. Il utilise\nune interface en ligne de commandes et vise la facilité d'utilisation."
+
+#: src/features.py:242
 msgid "Proprietary Software"
 msgstr "Logiciels propriétaires"
 
-#: src/features.py:144
-msgid "Third-party software to play Flash videos, MP3 audio, and other media."
-msgstr "Logiciels tiers pour jouer des vidéos Flash, des morceaux MP3 et d’autres médias."
+#: src/features.py:245
+msgid "Software to play Flash videos, MP3 audio, and other media."
+msgstr "Logiciel pour jouer les vidéos Flash, l'audio MP3 et d'autres formats."
 
-#: src/features.py:149
+#: src/features.py:273
+msgid "Detected bluetooth device. Enabling by default..."
+msgstr ""
+
+#: src/features.py:288
+msgid "Selected '%s' feature to install"
+msgstr ""
+
+#: src/features.py:306
+msgid "Arch User Repository - Disclaimer"
+msgstr "Arch User Repository - décharge"
+
+#: src/features.py:307
+msgid ""
+"The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
+"that supplement software available from the official repositories.\n"
+"\n"
+"The AUR is community driven and NOT supported by Arch or Antergos.\n"
+msgstr "L'Arch User Repository est une collection de PKGBUILDs par les utilisateurs\nqui s'ajoute aux logiciels disponibles depuis les dépôts officiels.\n\nL'AUR est géré par la communauté et n'est PAS supporté par Arch ou Antergos.\n"
+
+#: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
 msgstr "Uncomplicated Firewall sera installé avec ces règles :"
 
-#: src/installation_advanced.py:194 src/installation_advanced.py:484
-#: src/installation_advanced.py:498
+#: src/features.py:314
+msgid ""
+"ufw default deny\n"
+"ufw allow from %s\n"
+"ufw allow Transmission\n"
+"ufw allow SSH"
+msgstr "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH"
+
+#: src/hardware/hardware.py:65 src/installation/process.py:843
+msgid "Error running command: %s"
+msgstr "Erreur d'éxécution de la commande : %s"
+
+#: src/installation/advanced.py:210 src/installation/advanced.py:505
+#: src/installation/advanced.py:519
 msgid "free space"
 msgstr "espace libre"
 
-#: src/installation_advanced.py:262 src/installation_alongside.py:166
+#: src/installation/advanced.py:259
+msgid "It's not recommended to install grub in a partition"
+msgstr "Ce n'est pas recommandé d'installer GRUB dans une partition"
+
+#: src/installation/advanced.py:287 src/installation/alongside.py:169
 msgid "Device"
 msgstr "Périphérique"
 
-#: src/installation_advanced.py:265
+#: src/installation/advanced.py:290
 msgid "Type"
 msgstr "Type"
 
-#: src/installation_advanced.py:268
+#: src/installation/advanced.py:293
 msgid "Mount point"
 msgstr "Point de montage"
 
-#: src/installation_advanced.py:271
+#: src/installation/advanced.py:296
 msgid "Label"
 msgstr "Étiquette"
 
-#: src/installation_advanced.py:277 src/installation_advanced.py:1421
+#: src/installation/advanced.py:302 src/installation/advanced.py:1635
 msgid "Format"
 msgstr "Format"
 
-#: src/installation_advanced.py:280
+#: src/installation/advanced.py:305
 msgid "Size"
 msgstr "Taille"
 
-#: src/installation_advanced.py:283
+#: src/installation/advanced.py:308
 msgid "Used"
 msgstr "Utilisé"
 
-#: src/installation_advanced.py:286
+#: src/installation/advanced.py:311
 msgid "Flags"
 msgstr "Drapeaux"
 
-#: src/installation_advanced.py:292
+#: src/installation/advanced.py:317
 msgid "SSD"
 msgstr "SSD"
 
-#: src/installation_advanced.py:470
+#: src/installation/advanced.py:486
 msgid "none"
 msgstr "aucun"
 
-#: src/installation_advanced.py:519 src/installation_advanced.py:921
-#: src/installation_advanced.py:1303 src/installation_advanced.py:1376
-#: src/installation_advanced.py:1544
-msgid "extended"
-msgstr "prolongé"
+#: src/installation/advanced.py:624
+msgid "Can't edit a partition with LVM filesystem type"
+msgstr "Ne peut éditer une partition avec un type de système de fichiers LVM"
 
-#: src/installation_advanced.py:650
-msgid "Cannot use same mount twice."
-msgstr "Vous ne pouvez pas utiliser le même point de montage deux fois."
+#: src/installation/advanced.py:672
+msgid "Cannot use the same mount point twice."
+msgstr "Ne peut utiliser le même point de montage 2 fois."
 
-#: src/installation_advanced.py:652
+#: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
 msgstr "La partition racine doit être formatée."
 
-#: src/installation_advanced.py:891
-msgid "Cannot use same mount twice..."
-msgstr "Vous ne pouvez pas utiliser le même point de montage deux fois..."
+#: src/installation/advanced.py:750
+msgid "You will delete the partition %s from disk %s"
+msgstr ""
 
-#: src/installation_advanced.py:912
-msgid "Creating primary partition"
-msgstr "Création de la partition primaire"
+#: src/installation/advanced.py:767
+msgid "Unmounting %s..."
+msgstr ""
 
-#: src/installation_advanced.py:923
-msgid "Creating extended partition"
+#: src/installation/advanced.py:927
+msgid "Cannot use the same mount point twice..."
+msgstr "Ne peut utiliser le même point de montage 2 fois..."
+
+#: src/installation/advanced.py:948
+msgid "Creating a primary partition"
+msgstr "Création d'une partition primaire"
+
+#: src/installation/advanced.py:959
+msgid "Creating an extended partition"
 msgstr "Création d'une partition étendue"
 
-#: src/installation_advanced.py:929
-msgid "Creating logical partition"
+#: src/installation/advanced.py:965
+msgid "Creating a logical partition"
 msgstr "Création d'une partition logique"
 
-#: src/installation_advanced.py:1058
+#: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
 msgstr "Mode d’installation avancé"
 
-#: src/installation_advanced.py:1062
+#: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
 msgstr "Installer le chargeur d’amorçage sur le périphérique :"
 
-#: src/installation_advanced.py:1072
+#: src/installation/advanced.py:1110
+msgid "Mount Checklist:"
+msgstr "Check-list du montage :"
+
+#: src/installation/advanced.py:1116
+msgid "Root ( / )"
+msgstr "Racine ( / )"
+
+#: src/installation/advanced.py:1120
+msgid "Boot ( /boot )"
+msgstr "Amorçage ( /boot )"
+
+#: src/installation/advanced.py:1124
+msgid "EFI ( /boot )"
+msgstr "EFI ( /boot )"
+
+#: src/installation/advanced.py:1128
+msgid "Swap"
+msgstr "Échange"
+
+#: src/installation/advanced.py:1136
 msgid "New Partition Table"
 msgstr "Nouvelle table de partition"
 
-#: src/installation_advanced.py:1080
+#: src/installation/advanced.py:1144
 msgid "Change..."
 msgstr "Changer..."
 
-#: src/installation_advanced.py:1085
+#: src/installation/advanced.py:1149
 msgid "Size:"
 msgstr "Taille :"
 
-#: src/installation_advanced.py:1089
+#: src/installation/advanced.py:1153
 msgid "Type:"
 msgstr "Type :"
 
-#: src/installation_advanced.py:1093
+#: src/installation/advanced.py:1157
 msgid "Primary"
 msgstr "Primaire"
 
-#: src/installation_advanced.py:1097
+#: src/installation/advanced.py:1161
 msgid "Logical"
 msgstr "Logique"
 
-#: src/installation_advanced.py:1101
+#: src/installation/advanced.py:1165
 msgid "Extended"
 msgstr "Étendue"
 
-#: src/installation_advanced.py:1105
+#: src/installation/advanced.py:1169
 msgid "Beginning of this space"
 msgstr "Début de cet espace"
 
-#: src/installation_advanced.py:1109
+#: src/installation/advanced.py:1173
 msgid "End of this space"
 msgstr "Fin de cet espace"
 
-#: src/installation_advanced.py:1113 src/installation_advanced.py:1130
+#: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
 msgstr "Utilisé comme :"
 
-#: src/installation_advanced.py:1117 src/installation_advanced.py:1134
+#: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
 msgstr "Point de montage :"
 
-#: src/installation_advanced.py:1121 src/installation_advanced.py:1138
+#: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
 msgstr "Étiquette (facultatif) :"
 
-#: src/installation_advanced.py:1125
+#: src/installation/advanced.py:1189
 msgid "Encryption Options..."
 msgstr "Options de chiffrement…"
 
-#: src/installation_advanced.py:1142
+#: src/installation/advanced.py:1206
 msgid "Format:"
 msgstr "Format :"
 
-#: src/installation_advanced.py:1147
+#: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
 msgstr "Type de la table de partition :"
 
-#: src/installation_advanced.py:1152
+#: src/installation/advanced.py:1216
 msgid "Create Partition Table"
 msgstr "Créer une table de partition"
 
-#: src/installation_advanced.py:1155 src/installation_alongside.py:144
-#: src/installation_automatic.py:101
+#: src/installation/advanced.py:1219 src/installation/alongside.py:147
+#: src/installation/automatic.py:95
 msgid "Install Now!"
 msgstr "Installer maintenant !"
 
-#: src/installation_advanced.py:1243
+#: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
 msgstr "Création d’une nouvelle table de partition %s pour le disque %s"
 
-#: src/installation_advanced.py:1339
+#: src/installation/advanced.py:1315
+msgid ""
+"GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk or bios_grub flag in GNU Parted) in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
+"\n"
+"For a BIOS-GPT configuration, create a 1007 KiB partition at the beginning of the disk with no filesystem. That will allow for the next partition on the disk to be correctly aligned at 1024 KiB. If needed, the partition can also be located somewhere else on the disk, but it should be within the first 2 TiB region. Set the partition type to ef02.\n"
+"\n"
+"The GPT partition also creates a protective MBR partition to stop unsupported tools from modifying it. You may need to set a bootable flag on this protective MBR partition if yoursystem doesnt boot successfully after installation.\n"
+"\n"
+"Cnchi will create the BIOS Boot Partition for you."
+msgstr "GRUB nécessite une partition de démarrage BIOS (2 Mio, pas de système de fichiers, code de type EF02 dans gdisk ou le drapeau bios_grub dans GNU Parted) dans les systèmes BIOS pour insérer son fichier core.img dû à l'absence d'un trou d'insertion post-MBR dans les disques GPT.\n\nPour une configuration BIOS-GPT, créez une partition de 1007 Kio au début du disque sans système de fichiers. Cela permettra à la partition suivante d'être correctement alignée sur 1024 Kio. Si nécessaire, la partition peut aussi être située autre part sur le disque, mais elle doit être située avant les 2 Tio. Définissez le type de partition à ef02.\n\nLa partition GPT crée également une partition MBR protectrice pour éviter que les outils non pris en charge la modifient. Vous aurez peut-être besoin d'un drapeau « bootable » sur cette partition MBR protectrice si votre système ne démarre pas après l'installation.\n\nCnchi va créer la partition de démarrage BIOS pour vous."
+
+#: src/installation/advanced.py:1540
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s est monté comme partition swap.\nPour continuer, il nécessite d’être démonté.\nCliquez sur Oui pour le démonter, Non pour retourner.\n"
 
-#: src/installation_advanced.py:1341
+#: src/installation/advanced.py:1544
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s est monté sous '%s'.\nPour continuer il faut le démonter.\nCliquez sur Oui pour démonter, ou Non pour revenir\n"
 
-#: src/installation_advanced.py:1414
+#: src/installation/advanced.py:1551 src/installation/advanced.py:1565
+msgid "%s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1562
+msgid "Swap partition %s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1567
+msgid "%s shows as mounted (busy) but it has no mount point"
+msgstr "%s se dit monté (occupé) mais n'a pas de point de montage"
+
+#: src/installation/advanced.py:1628
 msgid "Partition %s will be deleted"
 msgstr "La partition %s sera détruite"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Mount"
 msgstr "Monter"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "New"
 msgstr "Nouveau"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Partition"
 msgstr "Partition"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Relabel"
 msgstr "Réétiqueter"
 
-#: src/installation_advanced.py:1442
+#: src/installation/advanced.py:1656
 msgid "We will make changes to partitions on these disks:"
 msgstr "Les disques suivants vont être modifiés :"
 
-#: src/installation_advanced.py:1467
+#: src/installation/advanced.py:1713
 msgid "Finished saving changes in %s"
 msgstr "Sauvegarde des changements dans %s terminés"
 
-#: src/installation_advanced.py:1481
-msgid "Creating %s filesystem in %s labeled %s"
-msgstr "Création du système de fichier %s dans %s labelé %s"
+#: src/installation/advanced.py:1737
+msgid "Creating new %s filesystem in %s labeled %s"
+msgstr "Création d'un système de fichiers %s dans %s étiqueté %s"
 
-#: src/installation_advanced.py:1563
+#: src/installation/advanced.py:1739
+msgid "Creating new %s filesystem in %s"
+msgstr "Création d'un système de fichiers %s dans %s"
+
+#: src/installation/advanced.py:1774
+msgid "Couldn't format partition '%s' with label '%s' as '%s'"
+msgstr "N'a pas pu formater la partition « %s » avec l'étiquette « %s » en tant que « %s »"
+
+#: src/installation/advanced.py:1812
+msgid "Cnchi will not install any boot loader"
+msgstr "Cnchi n'installera pas de chargeur d'amorçage"
+
+#: src/installation/advanced.py:1821
 msgid "Antergos will install the bootloader of type %s in %s"
 msgstr "Antergos installera le chargeur d’amorçage de type %s sur la partition %s"
 
-#: src/installation_alongside.py:109
+#: src/installation/advanced.py:1835 src/installation/automatic.py:241
+msgid "Testing mode. Cnchi will not change anything!"
+msgstr "Mode de test. Cnchi ne changera rien !"
+
+#: src/installation/alongside.py:109
 msgid "Can't load %s css"
 msgstr "Impossible de charger le CSS de %s"
 
-#: src/installation_alongside.py:136
+#: src/installation/alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
 msgstr "Choisissez l’OS à côté duquel vous voulez installer Antergos."
 
-#: src/installation_alongside.py:140
+#: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
 msgstr "Installer Antergos à côté d’un autre OS"
 
-#: src/installation_alongside.py:169
+#: src/installation/alongside.py:172
 msgid "Detected OS"
 msgstr "OS détecté(s)"
 
-#: src/installation_alongside.py:172
+#: src/installation/alongside.py:175
 msgid "Filesystem"
 msgstr "Système de fichier"
 
-#: src/installation_alongside.py:216
+#: src/installation/alongside.py:219
 msgid "Unable to create list of partitions for alongside installation."
 msgstr "Impossible de créer la liste des partitions pour une installation à côté d’un autre OS."
 
-#: src/installation_alongside.py:256
+#: src/installation/alongside.py:259
 msgid "Can't shrink the partition (maybe it's nearly full)"
 msgstr "Impossible de détruire la partition (peut-être est-elle presque pleine)"
 
-#: src/installation_ask.py:91
+#: src/installation/ask.py:101
 msgid "Installation Type"
 msgstr "Type d’installation"
 
-#: src/installation_ask.py:102
+#: src/installation/ask.py:117
 msgid "Erase disk and install Antergos"
 msgstr "Effacer le disque et installer Antergos"
 
-#: src/installation_ask.py:105
+#: src/installation/ask.py:120
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Avertissement : Ceci va effacer TOUTES les données sur le disque."
 
-#: src/installation_ask.py:111
+#: src/installation/ask.py:126
 msgid "Encrypt this installation for increased security."
-msgstr ""
+msgstr "Chiffrer cette installation pour une sécurité accrue."
 
-#: src/installation_ask.py:115
+#: src/installation/ask.py:130
 msgid "You will be asked to create an encryption password in the next step."
-msgstr ""
+msgstr "On vous demandera de créer un mot de passe pour le chiffrement dans la prochaine étape."
 
-#: src/installation_ask.py:124
+#: src/installation/ask.py:139
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
-msgstr ""
+msgstr "Cela configurera LVM et vous permettra de facilement gérer les partitions et créer des instantanés."
 
-#: src/installation_ask.py:132 src/installation_ask.py:134
+#: src/installation/ask.py:144
+msgid "Set your Home in a different partition/volume"
+msgstr "Placez votre dossier personnel dans une autre partition ou volum"
+
+#: src/installation/ask.py:148
+msgid ""
+"This will setup you /home directory in a different partition or volume."
+msgstr "Cela déplacera votre dossier personnel (/home) dans une partition ou un volume différent."
+
+#: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
 msgstr "Installer Antergos à côté de %s"
 
-#: src/installation_ask.py:141
+#: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "Choisir manuellement où Antergos doit être installé (avancé)"
 
-#: src/installation_ask.py:144
+#: src/installation/ask.py:168
 msgid "Edit partition table and choose mount points."
 msgstr "Modifier la table de partition et choix du point d’amorce."
 
-#: src/installation_ask.py:164
+#: src/installation/ask.py:194
 msgid "Antergos installation will be encrypted using LUKS"
-msgstr ""
+msgstr "L'installation d'Antergos sera cryptée avec LUKS"
 
-#: src/installation_ask.py:167
+#: src/installation/ask.py:197
 msgid "Antergos will be installed using LVM volumes"
+msgstr "Antegos sera installé en utilisant les volumes LVM"
+
+#: src/installation/ask.py:199
+msgid "Antergos will be installed using a separate /home volume."
+msgstr "Antegros sera installé en utilisant un volume /home séparé."
+
+#: src/installation/ask.py:201
+msgid "Antergos will be installed using a separate /home partition."
+msgstr "Antegos sera installé en utilisant une partition /home séparée."
+
+#: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
+msgid "Unmounting %s"
+msgstr "Démontage de %s"
+
+#: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
+msgid "Unmounting %s failed. Trying lazy arg."
+msgstr "Le émontage de %s a échoué. Essai avec l'argument « lazy »."
+
+#: src/installation/auto_partition.py:106
+msgid "Can't delete existent LVM volumes (see below)"
+msgstr "Ne peut supprimer les volumes LVM existants (voir ci-dessous)"
+
+#: src/installation/auto_partition.py:116
+msgid "Can't close LUKS devices : %s"
+msgstr "Ne peut fermer les disques LUKS : %s"
+
+#: src/installation/auto_partition.py:168
+msgid "Unknown filesystem type %s"
+msgstr "Système de fichiers inconnu %s"
+
+#: src/installation/auto_partition.py:178
+msgid "Can't create file system %s"
+msgstr "Ne peut créer le système de fichiers %s"
+
+#: src/installation/auto_partition.py:207
+msgid "Device details: %s UUID=%s LABEL=%s"
 msgstr ""
 
-#: src/installation_automatic.py:76
-msgid "Automatic Installation Mode"
+#: src/installation/auto_partition.py:273
+msgid "%s will be mount as %s"
 msgstr ""
 
-#: src/installation_automatic.py:80
+#: src/installation/auto_partition.py:306
+msgid "Device %s will have a %s filesystem"
+msgstr ""
+
+#: src/installation/auto_partition.py:315
+msgid "Cnchi will setup LUKS on device %s"
+msgstr "Cnchi paramétrera LUKS sur le disque %s"
+
+#: src/installation/auto_partition.py:369
+msgid "The device %s has a size of %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:373
+msgid ""
+"Setup cannot detect size of your device, please use advanced installation "
+"method for partitioning and mounting devices."
+msgstr "Impossible de détecter la taille de votre disque, veuillez utiliser la méthode d'installation avancée pour le partitionnement et le montage des disques."
+
+#: src/installation/auto_partition.py:406
+msgid "Total disc size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:408
+msgid "GPT-BIOS partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:409
+msgid "UEFI partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:410
+msgid "Boot partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:413
+msgid "LVM physical volume size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:415
+msgid "Swap partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:416
+msgid "Root partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:419
+msgid "Home partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:522
+msgid "Cnchi will setup LVM on device %s"
+msgstr ""
+
+#: src/installation/automatic.py:71
 msgid "Select drive:"
 msgstr "Sélectionnez le disque :"
 
-#: src/installation_automatic.py:84
+#: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
-msgstr ""
+msgstr "ATTENTION! Toutes les données actuellement sur votre disque seront effacées!"
 
-#: src/installation_automatic.py:89
+#: src/installation/automatic.py:80
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr ""
+msgstr "Sélectionnez le disque sur lequel vous souhaitez installer Antergos et cliquez ensuite ci-dessous pour démarrer le procesus."
 
-#: src/installation_automatic.py:94
+#: src/installation/automatic.py:85
 msgid "Encryption Password:"
-msgstr ""
+msgstr "Mot de passe du chiffrement :"
 
-#: src/installation_automatic.py:98 src/user_info.py:111
+#: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
 msgstr "Confirmez votre mot de passe :"
 
-#: src/installation_automatic.py:152
+#: src/installation/automatic.py:93 src/user_info.py:141
+msgid "show password"
+msgstr "montrer le mot de passe"
+
+#: src/installation/automatic.py:99
+msgid "Automatic Installation Mode"
+msgstr "Installation en mode automatique"
+
+#: src/installation/automatic.py:163
+msgid "A LUKS password has been set"
+msgstr "Un mot de passe LUKS a été défini"
+
+#: src/installation/automatic.py:165
 msgid "Automatic install on %s"
-msgstr ""
+msgstr "Installation automatique sur %s"
 
-#: src/installation_automatic.py:186
+#: src/installation/automatic.py:198
+msgid ""
+"Do you really want to proceed and delete all your content on your hard drive?\n"
+"\n"
+"%s"
+msgstr "Voulez-vous vraiment procéder et supprimer tout ce qui se trouve sur votre disque ?\n\n%s"
+
+#: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
-msgstr ""
+msgstr "Cnchi installera Antergos sur %s"
 
-#: src/installation_automatic.py:195
+#: src/installation/automatic.py:222
 msgid "Antergos will install the %s bootloader on %s"
-msgstr ""
+msgstr "Antergos installera le chargeur d'amorçage %s sur %s"
 
-#: src/installation_process.py:78
-msgid "Installing using the '%s' method"
-msgstr "Installation à l'aide de la méthode '%s'"
+#: src/installation/process.py:91
+msgid "Installing using the '%s' method. Please wait..."
+msgstr "Installation avec la méthode « %s ». Veuillez petienter..."
 
-#: src/installation_process.py:176
+#: src/installation/process.py:165
+msgid "Can't create %s directory, Cnchi can't continue"
+msgstr "Ne peut créer le dossier %s, Cnchi ne peut pas continuer"
+
+#: src/installation/process.py:185
+msgid "Creating partitions and their filesystems in %s"
+msgstr "Création des partitions et de leurs systèmes de fichiers dans %s"
+
+#: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
-msgstr ""
+msgstr "Erreur lors de la création des partitions et leurs systèmes de fichiers"
 
-#: src/installation_process.py:215 src/installation_process.py:237
+#: src/installation/process.py:208 src/installation/process.py:288
+#: src/installation/process.py:356 src/installation/process.py:816
+msgid "Command %s has failed."
+msgstr "La commande %s a échoué."
+
+#: src/installation/process.py:210 src/installation/process.py:264
+#: src/installation/process.py:290 src/installation/process.py:313
+#: src/installation/process.py:358 src/installation/process.py:818
+msgid "Output : %s"
+msgstr "Sortie : %s"
+
+#: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
 msgstr "Montage de la partition %s dans le répertoire %s"
 
-#: src/installation_process.py:221
+#: src/installation/process.py:256
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Montage de la partition %s dans le répertoire %s/boot"
 
-#: src/installation_process.py:225
+#: src/installation/process.py:260
 msgid "Couldn't mount root and boot partitions"
 msgstr "Impossible de monter les partitions root et boot"
 
-#: src/installation_process.py:242
+#: src/installation/process.py:262 src/installation/process.py:311
+msgid "Command %s has failed"
+msgstr "La commande %s a échoué"
+
+#: src/installation/process.py:286
 msgid "Can't mount %s in %s"
 msgstr "Ne peut monter %s sous %s"
 
-#: src/installation_process.py:262
+#: src/installation/process.py:301
+msgid "%s deleted"
+msgstr "%s supprimé"
+
+#: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
 msgstr "Impossible de créer les répertoires nécessaires sur le système de destination"
 
-#: src/installation_process.py:407
+#: src/installation/process.py:329
+msgid "Selecting packages..."
+msgstr "Sélection des paquets..."
+
+#: src/installation/process.py:331
+msgid "Packages selected"
+msgstr "Paquets sélectionnés"
+
+#: src/installation/process.py:334
+msgid "Downloading packages using aria2..."
+msgstr "Téléchargement des paquets avec aria2..."
+
+#: src/installation/process.py:336
+msgid "Packages downloaded."
+msgstr "Paquets téléchargés."
+
+#: src/installation/process.py:346 src/installation/process.py:729
+msgid "Installing packages..."
+msgstr "Installation des paquets..."
+
+#: src/installation/process.py:348
+msgid "Packages installed."
+msgstr "Paquets installés."
+
+#: src/installation/process.py:350
+msgid "Configuring system..."
+msgstr "Configuration du système..."
+
+#: src/installation/process.py:352
+msgid "System configured."
+msgstr "Système configuré."
+
+#: src/installation/process.py:387
+msgid "Installation finished"
+msgstr "Installation terminée"
+
+#: src/installation/process.py:398
+msgid "Can't copy Cnchi log to %s"
+msgstr "Ne peut copier le journal de Cnchi dans %s"
+
+#: src/installation/process.py:415
+msgid "Creating a temporary pacman.conf for %s architecture"
+msgstr "Création d'un pacman.conf temporaire pour l'architecture %s"
+
+#: src/installation/process.py:495
+msgid "Getting package list..."
+msgstr "Obtention de la liste de paquets..."
+
+#: src/installation/process.py:504
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "Impossible de récupérer une liste de paquets en ligne, utilisation d’un fichier local à la place."
 
-#: src/installation_process.py:414
+#: src/installation/process.py:512
 msgid "Adding all desktops common packages"
-msgstr ""
+msgstr "Ajout des paquets communs à tous les environnements graphiques"
 
-#: src/installation_process.py:425
+#: src/installation/process.py:527
 msgid "Adding '%s' desktop packages"
-msgstr ""
+msgstr "Ajout des paquets de bureau « %s »"
 
-#: src/installation_process.py:456
-msgid "Getting graphics card drivers"
-msgstr ""
+#: src/installation/process.py:554
+msgid "Selected kde language pack: %s"
+msgstr "Pack de langues KDE sélectionné : %s"
 
-#: src/installation_process.py:502
+#: src/installation/process.py:579
+msgid "Hardware module added these packages : %s"
+msgstr "Un module matériel a ajouté ces paquets : %s"
+
+#: src/installation/process.py:584 src/installation/process.py:1677
+msgid "Can't import hardware module."
+msgstr "Ne peut importer le module matériel."
+
+#: src/installation/process.py:586 src/installation/process.py:1679
+msgid "Unknown error in hardware module. Output: %s"
+msgstr "Erreur inconnue dans le module matériel. Sortie : %s"
+
+#: src/installation/process.py:597
 msgid "Adding filesystem packages"
-msgstr ""
+msgstr "Ajout des paquets du système de fichiers"
 
-#: src/installation_process.py:549
+#: src/installation/process.py:618
 msgid "Check for user desired features and add them to our installation"
-msgstr ""
+msgstr "Rechercher des fonctions désirées par des utilisateurs et les ajouter à notre installation"
 
-#: src/installation_process.py:561
+#: src/installation/process.py:620
+msgid "All features needed packages have been added"
+msgstr "Tous les paquets nécessaires ont été ajoutés"
+
+#: src/installation/process.py:625
+msgid "Selecting chinese fonts."
+msgstr "Sélection des polices chinoises."
+
+#: src/installation/process.py:631
 msgid "Adding bootloader packages if needed"
+msgstr "Ajout des paquets du chargeur d'amorçage si nécessaire"
+
+#: src/installation/process.py:658
+msgid "Adding packages for '%s' feature."
 msgstr ""
 
-#: src/installation_process.py:628
+#: src/installation/process.py:665
+msgid "Selecting package %s for feature %s"
+msgstr ""
+
+#: src/installation/process.py:675
+msgid "Add libreoffice language package"
+msgstr "Ajouter le pack de langues LibreOffice"
+
+#: src/installation/process.py:726
+msgid "Downloading packages..."
+msgstr ""
+
+#: src/installation/process.py:738
+msgid ""
+"Can't download all necessary packages. Cnchi will continue and try again "
+"this download later."
+msgstr ""
+
+#: src/installation/process.py:741
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr ""
+
+#: src/installation/process.py:763
 msgid "Special dirs already mounted."
-msgstr ""
+msgstr "Dossiers spéciaux déjà montés"
 
-#: src/installation_process.py:654
-msgid "Special dirs already not mounted."
-msgstr ""
+#: src/installation/process.py:798
+msgid "Special dirs are not mounted. Skipping."
+msgstr "Les répertoires spéciaux ne sont pas montés, passe."
 
-#: src/installation_process.py:664
+#: src/installation/process.py:815 src/installation/process.py:821
 msgid "Unable to umount %s"
+msgstr "Impossible de démonter %s"
+
+#: src/installation/process.py:846
+msgid "Timeout running command: %s"
 msgstr ""
 
-#: src/installation_process.py:825
+#: src/installation/process.py:879
+msgid "Can't copy network configuration files"
+msgstr "Ne peut copier les fichiers de configuration réseau"
+
+#: src/installation/process.py:908 src/installation/process.py:973
+msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
+msgstr "Ajouté à fstab : UUID=%s %s %s %s 0 %s"
+
+#: src/installation/process.py:922
+msgid "Added to crypttab : %s"
+msgstr "Ajouté à crypttab : %s"
+
+#: src/installation/process.py:926
+msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+msgstr "Ajouté au fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+
+#: src/installation/process.py:978
+msgid "Added to fstab : %s"
+msgstr ""
+
+#: src/installation/process.py:987
+msgid "fstab written."
+msgstr "fstab écrit."
+
+#: src/installation/process.py:1075
+msgid "/etc/default/grub configuration completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1090
+msgid "Could not copy %s to grub.d"
+msgstr "Ne peut copier %s vers grub.d"
+
+#: src/installation/process.py:1097
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Installation du chargeur d’amorçage GRUB(2) BIOS dans %s"
 
-#: src/installation_process.py:851 src/installation_process.py:870
-msgid "ERROR installing GRUB(2) BIOS."
-msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
+#: src/installation/process.py:1119 src/installation/process.py:1203
+msgid ""
+"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+" continue."
+msgstr ""
 
-#: src/installation_process.py:868
+#: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS a été installé avec succès."
 
-#: src/installation_process.py:881
-msgid "Installing GRUB(2) UEFI %s boot loader in %s"
-msgstr "Installation du chargeur d’amorçage GRUB(2) UEFI %s dans %s"
+#: src/installation/process.py:1130
+msgid "ERROR installing GRUB(2) BIOS."
+msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
 
-#: src/installation_process.py:909
-msgid "ERROR installing GRUB(2) configuration file."
-msgstr ""
+#: src/installation/process.py:1144
+msgid "Installing GRUB(2) UEFI %s boot loader"
+msgstr "Installation de GRUB(2) UEFI %s chargeur d'amorçage"
 
-#: src/installation_process.py:937
-msgid "ERROR installing GRUB(2) locale."
-msgstr ""
+#: src/installation/process.py:1170
+msgid "No OEM loader found in %s. Copying Grub(2) into dir."
+msgstr "Pas de chargeur OEM trouvé dans %s. Copie de GRUB (2) dans le dossier."
 
-#: src/installation_process.py:951
+#: src/installation/process.py:1175
+msgid "Copying Grub(2) into OEM dir failed. File Not Found."
+msgstr "La copie de GRUB (2) dans le dossier OEM a échoué, fichier non trouvé."
+
+#: src/installation/process.py:1177
+msgid "Copying Grub(2) into OEM dir failed. File Exists."
+msgstr "La copie de GRUB 2 dans le dossier OEM a échoué, le fichier existe."
+
+#: src/installation/process.py:1179
+msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
+msgstr "La copie de GRUB 2 dans le dossier OEM a échoué, erreur inconnue."
+
+#: src/installation/process.py:1188
+msgid "UEFI Shell drop-in not found at %s"
+msgstr "Le remplacement du shell UEFI non trouvé à %s"
+
+#: src/installation/process.py:1192
+msgid "UEFI Shell drop-in could not be copied."
+msgstr "Le remplacement du shell UEFI n'a pas pu être copié."
+
+#: src/installation/process.py:1196
+msgid "Generating grub.cfg"
+msgstr "Génération de grub.cfg"
+
+#: src/installation/process.py:1216
+msgid "GRUB(2) UEFI install may not have completed successfully."
+msgstr "L'installation de GRUB (2) UEFI ne s'est peut-être pas bien terminée."
+
+#: src/installation/process.py:1219
+msgid "GRUB(2) UEFI install completed successfully"
+msgstr "Installation de GRUB (2) UEFI terminée"
+
+#: src/installation/process.py:1223
+msgid "Copying GRUB(2) Theme Files"
+msgstr "Copie de fichiers de thème GRUB (2)"
+
+#: src/installation/process.py:1229
+msgid "Grub2 theme files not found"
+msgstr "Fichiers de thème GRUB 2 non trouvés"
+
+#: src/installation/process.py:1231
+msgid "Grub2 theme files already exist."
+msgstr "Les fichiers de thème GRUB 2 existent déjà."
+
+#: src/installation/process.py:1235
+msgid "Installing Grub2 locales."
+msgstr "Installation des langues GRUB 2."
+
+#: src/installation/process.py:1246
+msgid "Can't install GRUB(2) locale."
+msgstr "Ne peut installer la langue de GRUB(2)."
+
+#: src/installation/process.py:1280
+msgid "Can't freeze/unfreeze xfs system"
+msgstr "Ne peut geler ou dégeler le système xfs"
+
+#: src/installation/process.py:1286
+msgid "Enabled %s service."
+msgstr "Service %s activé."
+
+#: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
 msgstr "Erreur de création du hash pour le mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:957
+#: src/installation/process.py:1299
 msgid "Error changing password for user %s"
 msgstr "Erreur durant le changement du mot de passe de l'utilisateur %s"
 
-#: src/installation_process.py:1131
+#: src/installation/process.py:1311
+msgid "Setting hooks and modules in mkinitcpio.conf"
+msgstr "Paramétrage des crochets et modules dans mkinitcpio.conf"
+
+#: src/installation/process.py:1405
+msgid "Copying xz files from cache..."
+msgstr "Copie des fichiers xz depuis le cache..."
+
+#: src/installation/process.py:1432
+msgid "Configuring bluetooth..."
+msgstr "Configuration du Bluetooth..."
+
+#: src/installation/process.py:1438
+msgid "Configuring CUPS..."
+msgstr "Configuration de CUPS..."
+
+#: src/installation/process.py:1450
+msgid "Configuring firewall..."
+msgstr "Configuration du pare-feu..."
+
+#: src/installation/process.py:1462
+msgid "Couldn't configure the firewall: %s"
+msgstr "N'a pas pu configurer le pare-feu : %s"
+
+#: src/installation/process.py:1472
+msgid "%s: Configuring display manager."
+msgstr "%s : configuration du gestionnaire d'affichage."
+
+#: src/installation/process.py:1498
+msgid "Completed %s display manager configuration."
+msgstr "Configuration du gestionnaire d'affichage %s terminée."
+
+#: src/installation/process.py:1500
+msgid "Error while trying to configure '%s' display manager"
+msgstr "Erreur en essayant de configurer le gestionnaire d'affichage « %s »"
+
+#: src/installation/process.py:1584
 msgid "Configuring your new system"
 msgstr "Configuration de votre nouveau système"
 
-#: src/installation_process.py:1248
+#: src/installation/process.py:1587
+msgid "fstab file generated."
+msgstr "Fichier fstab généré."
+
+#: src/installation/process.py:1604
+msgid "Cnchi will configure netctl using the %s profile"
+msgstr "Cnchi configurera netcl en utilisant le profil %s"
+
+#: src/installation/process.py:1611
+msgid "Can't copy network configuration profiles"
+msgstr "Ne peut copier les profils de configuration réseau"
+
+#: src/installation/process.py:1618
+msgid "Network configuration copied."
+msgstr "Configuration du réseau copiée."
+
+#: src/installation/process.py:1624
+msgid "Mirror list copied."
+msgstr "Liste des miroirs copiée."
+
+#: src/installation/process.py:1626
+msgid "Can't copy mirrorlist file"
+msgstr "Ne peut copier le fichier mirrorlist"
+
+#: src/installation/process.py:1633
+msgid "Generated /etc/pacman.conf"
+msgstr "/etc/pacman.conf généré"
+
+#: src/installation/process.py:1651
+msgid "Timezone set."
+msgstr "Fuseau horaire défini."
+
+#: src/installation/process.py:1668
+msgid "Sudo configuration for user %s done."
+msgstr "Configuration sudo pour l'utilisateur %s terminée."
+
+#: src/installation/process.py:1674
+msgid "Running post-install scripts from hardware module..."
+msgstr ""
+
+#: src/installation/process.py:1696
+msgid "User %s added."
+msgstr "Utilisateur %s ajouté."
+
+#: src/installation/process.py:1709
+msgid "Hostname set to %s."
+msgstr "Nom d'hôte défini à %s."
+
+#: src/installation/process.py:1713
+msgid "Set the same password to root."
+msgstr "Même mot de passe défini pour root."
+
+#: src/installation/process.py:1719
 msgid "Generating locales..."
 msgstr "Créations des 'locales'"
 
-#: src/installation_process.py:1263
+#: src/installation/process.py:1735
 msgid "Adjusting hardware clock..."
 msgstr "Ajustement de l’horloge matérielle…"
 
-#: src/installation_process.py:1284
-msgid "%s: Enable automatic login for user %s."
+#: src/installation/process.py:1740
+msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
+msgstr "Définir /etc/X11/xorg.conf.d/00-keyboard.conf pour le xkblayout"
+
+#: src/installation/process.py:1752
+msgid "00-keyboard.conf written."
+msgstr "00.keyboard.conf écrit."
+
+#: src/installation/process.py:1758
+msgid "Configuring System Startup..."
+msgstr "Configuration du démarrage système..."
+
+#: src/installation/process.py:1761
+msgid "Call Cnchi post-install script"
+msgstr "Appeler le script post-installation de Cnchi"
+
+#: src/installation/process.py:1767
+msgid "Post install script completed successfully."
 msgstr ""
 
-#: src/installation_process.py:1344
-msgid "Running mkinitcpio..."
-msgstr "Exécution de mkinitcpio…"
+#: src/installation/process.py:1783
+msgid "Encrypting user home dir..."
+msgstr "Chiffrement du dossier personnel..."
 
-#: src/keymap.py:62
+#: src/installation/process.py:1785
+msgid "User home dir encrypted"
+msgstr "Dossier personnel chiffré"
+
+#: src/installation/process.py:1789
+msgid "Installing bootloader..."
+msgstr "Installation du chargeur d'amorçage..."
+
+#: src/installation/process.py:1793
+msgid "Copying install log to /var/log."
+msgstr ""
+
+#: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
-msgstr ""
+msgstr "Sélectionnez la disposition de votre clavier"
 
-#: src/keymap.py:70
+#: src/keymap.py:74
+msgid "Keyboard Layouts"
+msgstr "Dispositions du clavie"
+
+#: src/keymap.py:77
+msgid "Keyboard Variants"
+msgstr "Variantes du clavie"
+
+#: src/keymap.py:81
 msgid "Layouts"
 msgstr "Dispositions"
 
-#: src/keymap.py:76
+#: src/keymap.py:87
 msgid "Variants"
 msgstr "Variantes"
 
-#: src/keymap.py:98
+#: src/keymap.py:108
 msgid "keyboard_layout is %s"
 msgstr "La disposition du clavier est %s"
 
-#: src/language.py:80
-msgid "Please choose your language:"
-msgstr "Veuillez choisir votre langue :"
-
-#: src/language.py:85
+#: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
-msgstr ""
+msgstr "Note: L'installeur Cnchi est en version béta."
 
-#: src/language.py:86
+#: src/language.py:89
 msgid ""
-"Cnchi is pre-release beta software that is under active development. \n"
-"It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible! \n"
+"Cnchi is pre-release beta software that is under active development.\n"
+"It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+"setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi est un logiciel en version bêta qui est en développement actif.\nLe RAID n'est pas pris en charge, tout comme les sous-volumes btrfs ou d'autres\nparamètres avancés. Veuillez procéder avec prudence car des pertes de données\nsont possibles !\nSi vous trouvez des bogues, veuillez les rapporter à <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>, en anglais."
 
-#: src/language.py:93 src/welcome.py:99
+#: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
 msgstr "Bienvenue sur Antergos !"
 
-#: src/language.py:110
-msgid "Languages"
-msgstr "Langues"
-
-#: src/language.py:130
+#: src/language.py:131
 msgid "Can't find translation file for the %s language"
 msgstr "Impossible de trouver le fichier de traduction pour la langue %s"
 
-#: src/location.py:64
-msgid "Select your location"
-msgstr "Sélectionnez votre emplacement"
-
-#: src/location.py:68
+#: src/location.py:67
 msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
-msgstr ""
+msgstr "L'emplacement choisi sera utilisé pour déterminer la langue du système.\nIl s'agit généralement de votre pays de résidence.\nVoici une liste des régions correspondant à la langue sélectionnée."
 
-#: src/location.py:73
+#: src/location.py:72
 msgid "Country, territory or area:"
 msgstr "Pays, territoire ou région :"
 
-#: src/location.py:197
+#: src/location.py:76
+msgid "Select your location"
+msgstr "Sélectionnez votre emplacement"
+
+#: src/location.py:198
 msgid "locale changed to : %s"
 msgstr "Paramètres régionaux changés : %s"
 
-#: src/location.py:199
+#: src/location.py:200
 msgid "Can't change to locale '%s'"
 msgstr "Impossible de changer les paramètres régionaux '%s'"
 
-#: src/pacman/pac.py:253
+#: src/pacman/pac.py:35
+msgid "pyalpm not found! This installer won't work."
+msgstr ""
+
+#: src/pacman/pac.py:120
+msgid "Cnchi will install a list of packages like pacman -S"
+msgstr ""
+
+#: src/pacman/pac.py:127
+msgid "No targets found"
+msgstr ""
+
+#: src/pacman/pac.py:140
+msgid "Adding %s to transaction"
+msgstr ""
+
+#: src/pacman/pac.py:144
+msgid "Finalize transaction..."
+msgstr ""
+
+#: src/pacman/pac.py:177
+msgid "Can't find a package or group called '%s'"
+msgstr "Ne peut trouver un paquet ou une groupe nommé « %s »"
+
+#: src/pacman/pac.py:255
 msgid "Checking dependencies..."
 msgstr "Vérification des dépendances..."
 
-#: src/pacman/pac.py:255
+#: src/pacman/pac.py:257
 msgid "Checking file conflicts..."
 msgstr "Vérification des conflits de fichiers..."
 
-#: src/pacman/pac.py:257
+#: src/pacman/pac.py:259
 msgid "Resolving dependencies..."
 msgstr "Résolution des dépendances..."
 
-#: src/pacman/pac.py:259
+#: src/pacman/pac.py:261
 msgid "Checking inter conflicts..."
 msgstr "Vérification des conflits internes..."
 
-#: src/pacman/pac.py:264
+#: src/pacman/pac.py:266
 msgid "Removing..."
 msgstr "Suppression..."
 
-#: src/pacman/pac.py:266
+#: src/pacman/pac.py:268
 msgid "Upgrading..."
 msgstr "Mise à niveau..."
 
-#: src/pacman/pac.py:268
+#: src/pacman/pac.py:270
 msgid "Checking integrity..."
 msgstr "Vérification de l'intégrité..."
 
-#: src/pacman/pac.py:270
+#: src/pacman/pac.py:272
 msgid "Loading packages files..."
 msgstr "Chargement des paquets..."
 
-#: src/pacman/pac.py:272
+#: src/pacman/pac.py:274
 msgid "Configuring..."
 msgstr "Configuration..."
 
-#: src/pacman/pac.py:274
+#: src/pacman/pac.py:276
 msgid "Downloading a file"
 msgstr "Téléchargement d'un fichier"
 
-#: src/pacman/pac.py:301
+#: src/pacman/pac.py:303
 msgid "Installing %s (%d/%d)"
 msgstr "Installation de %s (%d/%d)"
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:306
 msgid "Checking and loading packages..."
 msgstr "Vérification and chargement des paquets..."
 
-#: src/pacman/pac.py:320
-msgid "Downloading '%s'"
-msgstr ""
+#: src/pacman/pac.py:329
+msgid "Updating %s database"
+msgstr "Mise à jour de la base de données %s"
 
-#: src/parted/fs_module.py:134 src/parted/fs_module.py:135
+#: src/parted3/fs_module.py:150
 msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr ""
+msgstr "Impossible de vérifier si %s est un Solid State Drive"
 
-#: src/parted/fs_module.py:159 src/parted/fs_module.py:160
+#: src/parted3/fs_module.py:175
 msgid "Sorry but filesystem %s can't be shrinked"
+msgstr "Le système de fichiers %s ne peut malheureusement pas être réduit"
+
+#: src/parted3/lvm.py:73
+msgid "Can't remove logical volume %s"
+msgstr "Ne peut supprimer le volume logique %s"
+
+#: src/parted3/lvm.py:91
+msgid "Can't remove volume group %s"
+msgstr "Ne peut supprimer le groupe de volumes %s"
+
+#: src/parted3/lvm.py:103
+msgid "Can't remove physical volume %s"
+msgstr "Ne peut supprimer le volume physique %s"
+
+#: src/parted3/partition_module.py:35
+msgid "Can't import parted module! This installer won't work."
 msgstr ""
 
-#: src/rank_mirrors.py:56
-msgid "In rankmirrors, can't get network status"
-msgstr "Impossible d'obtenir l'état du réseau pour rankmirrors"
+#: src/parted3/partition_module.py:106
+msgid "Unrecognised disk label in device %s."
+msgstr "Label de disque non reconnu dans le disque %s."
 
-#: src/rank_mirrors.py:66
-msgid "Can't find rank mirrors script"
-msgstr ""
+#: src/parted3/partition_module.py:111
+msgid ""
+"Exception: %s.\n"
+"For more information take a look at /tmp/cnchi.log"
+msgstr "Erreur : %s.\nPour plus d'information, regardez /tmp/cnchi.log"
 
-#: src/rank_mirrors.py:73
-msgid "Couldn't execute auto mirroring selection"
-msgstr "Impossible d'exécuter la sélection automatique des miroirs"
+#: src/parted3/partition_module.py:178
+msgid "Can't delete partition %s"
+msgstr "Ne peut supprimer la partition %s"
+
+#: src/parted3/partition_module.py:229
+msgid "Partition is too large!"
+msgstr "La partition est trop grande !"
+
+#: src/parted3/partition_module.py:288
+msgid "Can't detect used space from %s"
+msgstr "Ne peut détecter l'espace utilisé de %s"
+
+#: src/parted3/used_space.py:39
+msgid "Can't detect used space of NTFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition NTFS %s"
+
+#: src/parted3/used_space.py:65
+msgid "Can't detect used space of EXTFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition EXTFS %s"
+
+#: src/parted3/used_space.py:94
+msgid "Can't detect used space of FAT partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition FAT %s"
+
+#: src/parted3/used_space.py:125
+msgid "Can't detect used space of JFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition JFS %s"
+
+#: src/parted3/used_space.py:149
+msgid "Can't detect used space of REISERFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition REISERFS %s"
+
+#: src/parted3/used_space.py:176
+msgid "Can't detect used space of BTRFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition BTRFS %s"
+
+#: src/parted3/used_space.py:213
+msgid "Can't detect used space of XFS partition %s"
+msgstr "Ne peut détecter l'espace utilisé de la partition XFS %s"
+
+#: src/rank_mirrors.py:48
+msgid "Can't find reflector script"
+msgstr "Ne peut trouver le script « reflector »"
+
+#: src/rank_mirrors.py:55
+msgid "Couldn't execute auto mirror selection"
+msgstr "N'a pas pu exécuter la sélection du miroir automatique"
 
 #: src/show_message.py:52
 msgid "Antergos Installer - Error"
 msgstr "Installateur Antergos - Erreur"
 
-#: src/show_message.py:63
+#: src/show_message.py:64
 msgid "Antergos Installer - Warning"
 msgstr "Installateur Antergos - Attention"
 
-#: src/show_message.py:74
+#: src/show_message.py:76
 msgid "Antergos Installer - Information"
 msgstr "Installateur Antergos - Informations"
 
-#: src/show_message.py:84
+#: src/show_message.py:87
 msgid "Antergos Installer - Confirmation"
-msgstr ""
+msgstr "Installateur Antergos - Confirmation"
 
-#: src/slides.py:84 src/slides.py:99
-msgid ""
-"Installation Complete!\n"
-"Do you want to restart your system now?"
-msgstr ""
-
-#: src/slides.py:92
-msgid "Installing Antergos..."
-msgstr "Installation d'Antergos..."
-
-#: src/slides.py:97
+#: src/slides.py:91
 msgid "Please wait..."
 msgstr "Patientez s'il vous plaît..."
 
-#: src/timezone.py:107
-msgid "Select Your Timezone"
+#: src/slides.py:93
+msgid "Installing Antergos..."
+msgstr "Installation d'Antergos..."
+
+#: src/slides.py:185
+msgid ""
+"IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+"installation which could prevent your system from booting properly. Before\n"
+"rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+"configured. The Arch Linux Wiki contains troubleshooting information:\n"
+"\thttps://wiki.archlinux.org/index.php/GRUB\n"
+"\n"
+"Would you like to view the wiki page now?"
+msgstr "IMPORTANT : il y a peut-être eu un problème avec l'installation du chargeur de démarrage\nGRUB (2) qui empêchera peut-être votre système de démarrer correctement. Avant\nde redémarrer, vous voudrez peut-être vérifier si GRUB (2) est installé et configuré ou non.\nLe wiki d'Arch Linux contient des informations supplémentaires :\n    http://wiki.archlinux.fr/GRUB\n\nVoulez-vous voir la page de wiki maintenant ?"
+
+#: src/slides.py:197
+msgid ""
+"Installation Complete!\n"
+"Do you want to restart your system now?"
+msgstr "Installation terminée!\nVoulez-vous redémarrer le système maintenant?"
+
+#: src/slides.py:225
+msgid "Do you want to retry the installation using the same configuration?"
+msgstr "Voulez-vous réessayer l'installation en utilisant la même configuration ?"
+
+#: src/slides.py:228
+msgid "Restarting installation process..."
 msgstr ""
 
-#: src/timezone.py:112
+#: src/timezone.py:108
 msgid "Zone:"
 msgstr "Zone :"
 
-#: src/timezone.py:116
+#: src/timezone.py:112
 msgid "Region:"
 msgstr "Région :"
 
-#: src/timezone.py:120
+#: src/timezone.py:116
 msgid "Use Network Time Protocol for clock synchronization:"
-msgstr ""
+msgstr "Utiliser le Protocole d'Heure Réseau pour synchroniser l'heure:"
 
-#: src/timezone.py:131
+#: src/timezone.py:120
+msgid "Select Your Timezone"
+msgstr "Choisissez votre fuseau horraire"
+
+#: src/timezone.py:134
 msgid "location changed to : %s"
 msgstr "emplacement modifié : %s"
 
-#: src/timezone.py:219
+#: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
 msgstr "Impossible de détecter votre fuseau horaire automatiquement"
 
-#: src/timezone.py:277
+#: src/timezone.py:276
 msgid "Stoping timezone threads..."
 msgstr "Fermeture du fil d’exécution du fuseau horaire..."
 
-#: src/timezone.py:310 src/timezone.py:361
+#: src/timezone.py:330
+msgid "Can't get network status. Will try again later."
+msgstr "Ne peut obtenir le statut du réseau. Ré-essai plus tard."
+
+#: src/timezone.py:334
+msgid "We have connection. Let's get our timezone"
+msgstr "On a la connexion. Obtenons notre fuseau horaire"
+
+#: src/timezone.py:345
+msgid "Timezone detected."
+msgstr "Fuseau horaire détecté."
+
+#: src/timezone.py:347
+msgid "Can't detect user timezone."
+msgstr "Ne peut détecter le fuseau horaire."
+
+#: src/timezone.py:376
 msgid "In timezone, can't get network status"
 msgstr "Impossible d'obtenir l'état réseau du fuseau horaire"
 
-#: src/timezone.py:385
+#: src/timezone.py:400
 msgid "Can't get the country code used to create a pacman mirrorlist"
 msgstr "Impossible d'obtenir le code du pays utilisé pour créer le mirrorlist de pacman"
 
-#: src/timezone.py:406
+#: src/timezone.py:421
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
 msgstr "Fin du téléchargement d'une mirrorlist spécifique pour pacman basée sur le code du pays %s"
 
-#: src/timezone.py:408
+#: src/timezone.py:423
 msgid "Couldn't generate mirrorlist for pacman based on country code"
 msgstr "Impossible de générer une mirrorlist pour pacman basée sur le code du pays"
 
-#: src/user_info.py:83
+#: src/updater.py:67
+msgid "Cnchi Internet version: %s"
+msgstr ""
+
+#: src/updater.py:96
+msgid "New version found. Updating installer..."
+msgstr ""
+
+#: src/updater.py:154
+msgid "Replacing version %s with version %s..."
+msgstr ""
+
+#: src/user_info.py:84
 msgid "Your name:"
 msgstr "Votre nom :"
 
-#: src/user_info.py:87
+#: src/user_info.py:88
 msgid "Your name"
 msgstr "Votre nom"
 
-#: src/user_info.py:91
+#: src/user_info.py:92
 msgid "Your computer's name:"
 msgstr "Le nom de votre ordinateur :"
 
-#: src/user_info.py:95
+#: src/user_info.py:96
 msgid "Pick a username:"
 msgstr "Choisissez un nom d'utilisateur :"
 
-#: src/user_info.py:99
+#: src/user_info.py:100
 msgid "Username"
 msgstr "Nom d’utilisateur"
 
-#: src/user_info.py:103
+#: src/user_info.py:104
 msgid "Choose a password:"
 msgstr "Choisissez un mot de passe :"
 
-#: src/user_info.py:107
+#: src/user_info.py:108
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/user_info.py:115
+#: src/user_info.py:116
 msgid "Confirm password"
 msgstr "Confirmez votre mot de passe"
 
-#: src/user_info.py:119
+#: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
-msgstr ""
+msgstr "Identifie votre système envers les autres ordinateurs et appareils."
 
-#: src/user_info.py:123
+#: src/user_info.py:124
 msgid "You must enter a name"
 msgstr "Vous devez entrer un nom"
 
-#: src/user_info.py:127
+#: src/user_info.py:128
 msgid "You must enter a username"
 msgstr "Vous devez entrer un nom d'utilisateur"
 
-#: src/user_info.py:131
+#: src/user_info.py:132
 msgid "You must enter a password"
 msgstr "Vous devez entrer un mot de passe"
 
-#: src/user_info.py:135
+#: src/user_info.py:136
 msgid "Log in automatically"
 msgstr "Se connecter automatiquement"
 
-#: src/user_info.py:136
+#: src/user_info.py:137
 msgid "Require my password to log in"
 msgstr "Exiger mon mot de passe pour se connecter"
 
-#: src/user_info.py:137
+#: src/user_info.py:138
 msgid "Encrypt my home folder"
 msgstr "Chiffrer le dossier 'home'"
 
-#: src/user_info.py:139
+#: src/user_info.py:144
 msgid "Create Your User Account"
+msgstr "Créer votre compte utilisateur"
+
+#: src/user_info.py:204
+msgid "Are you sure you want to encrypt your home directory?"
 msgstr ""
 
-#: src/user_info.py:166
-msgid ""
-"Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n"
-"\n"
-msgstr ""
-
-#: src/user_info.py:167
-msgid ""
-"Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
-"\n"
-msgstr ""
-
-#: src/user_info.py:168
-msgid ""
-"One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
-"\n"
-msgstr ""
-
-#: src/user_info.py:169
-msgid ""
-"A simple workaround is to place sparse files in an unencrypted Public directory.\n"
-"\n"
-msgstr ""
-
-#: src/user_info.py:170
-msgid ""
-"Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
-"\n"
-msgstr ""
-
-#: src/user_info.py:171
-msgid "Are you sure you want to encrypt your home directory?\n"
-msgstr ""
-
-#: src/user_info.py:229
+#: src/user_info.py:271
 msgid "Invalid characters entered"
 msgstr "Caractères non valides entrés"
 
-#: src/user_info.py:233
+#: src/user_info.py:275
 msgid "Username can't contain dots"
 msgstr "Le nom d’utilisateur ne peut pas contenir de point."
 
-#: src/user_info.py:237
+#: src/user_info.py:279
 msgid "Too many characters"
 msgstr "Trop de caractères"
 
-#: src/validation.py:132
-msgid "password is too short"
-msgstr "mot de passe trop court"
-
-#: src/validation.py:135
-msgid "weak password"
-msgstr "mot de passe faible"
-
-#: src/validation.py:138
-msgid "fair password"
-msgstr "mot de passe passable"
-
-#: src/validation.py:141
-msgid "good password"
-msgstr "mot de passe correct"
-
-#: src/validation.py:144
-msgid "strong password"
-msgstr "mot de passe fort"
-
-#: src/validation.py:159
-msgid "Passwords do not match"
-msgstr "Les mots de passe ne correspondent pas"
-
-#: src/welcome.py:85
+#: src/welcome.py:87
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
-msgstr ""
+msgstr "Vous pouvez essayer Antergos sans rien changer à votre système en sélectionnant « Essayez-le ».\nQuand vous êtes prêt à installer Antergos, sélectionnez l'installateur que vous préférez."
 
-#: src/welcome.py:90
+#: src/welcome.py:92
 msgid "Try It"
-msgstr ""
+msgstr "Essayez-le"
 
-#: src/welcome.py:93
+#: src/welcome.py:95
 msgid "CLI Installer"
 msgstr "Installateur CLI"
 
-#: src/welcome.py:96
+#: src/welcome.py:98
 msgid "Graphical Installer"
 msgstr "Installateur graphique"
 
-#: src/welcome.py:120
+#: src/welcome.py:135
 msgid "Can't load the CLI installer"
 msgstr "Impossible de charger l'installateur CLI"
