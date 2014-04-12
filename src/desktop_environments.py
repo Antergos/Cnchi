@@ -27,7 +27,6 @@
 DESKTOPS_DEV = [ "cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
 DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
 
-
 # Descriptive names
 NAMES = {
     'nox' : "Base",
@@ -36,7 +35,7 @@ NAMES = {
     'xfce' : "Xfce",
     'lxde' : "LXDE",
     'openbox' : "Openbox",
-    'enlightenment' : "Enlightenment (e17)",
+    'enlightenment' : "Enlightenment",
     'kde' : "KDE",
     'razor' : "Razor-qt",
     'mate' : "MATE"}
@@ -59,6 +58,8 @@ FEATURES = {
     'razor' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'xfce' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]}
 
+# See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
+def _(message): return message
 
 DESCRIPTIONS = {
     'gnome' : _("Gnome 3 is an easy and elegant way to use your "
@@ -106,3 +107,7 @@ DESCRIPTIONS = {
     'mate': _("MATE is a fork of GNOME 2. It provides an intuitive and attractive "
               "desktop environment using traditional metaphors for Linux and other Unix-like "
               "operating systems.")}
+
+# Delete previous _() dummy declaration
+del _
+

@@ -351,9 +351,8 @@ class StateBox(StylizedFrame):
         hbox = Gtk.Box()
         hbox.set_spacing(10)
         self.image = Gtk.Image()
-        self.image.set_from_stock(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
+        self.image.set_from_icon_name("yes", Gtk.IconSize.LARGE_TOOLBAR)
         self.label = Gtk.Label(label=text)
-
         self.label.set_alignment(0, 0.5)
         hbox.pack_start(self.image, False, True, 0)
         hbox.pack_start(self.label, True, True, 0)
@@ -366,14 +365,18 @@ class StateBox(StylizedFrame):
     def set_state(self, state):
         self.status = state
         if state:
-            self.image.set_from_stock(Gtk.STOCK_YES,
-                                      Gtk.IconSize.LARGE_TOOLBAR)
+            self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         else:
-            self.image.set_from_stock(Gtk.STOCK_NO,
-                                      Gtk.IconSize.LARGE_TOOLBAR)
+            self.image.set_from_icon_name(Gtk.STOCK_NO, Gtk.IconSize.LARGE_TOOLBAR)
 
     def get_state(self):
         return self.status
+
+    def show(self):
+        super().show()
+    
+    def hide(self):
+        super().hide()
 
 GObject.type_register(StateBox)
 

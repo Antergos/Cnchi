@@ -23,13 +23,11 @@
 """ Vmware driver installation """
 
 from hardware.hardware import Hardware
-import logging
-
-DEVICES = [
-('0x15ad', '0x0405', "VMware Virtual SVGA II"),
-('0x15ad', '0x0710', "VMware Virtual SVGA")]
 
 CLASS_NAME = "Vmware"
+CLASS_ID = ""
+VENDOR_ID = "0x15ad"
+DEVICES = [('0x0405', "VMware Virtual SVGA II"), ('0x0710', "VMware Virtual SVGA")]
 
 class Vmware(Hardware):
     """ Vmware class definition """
@@ -42,11 +40,10 @@ class Vmware(Hardware):
     def post_install(self, dest_dir):
         pass
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        if vendor_id == VENDOR_ID:
+            for (product, description) in DEVICES:
+                if product_id == product:
+                    return True
         return False

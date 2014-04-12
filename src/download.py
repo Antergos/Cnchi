@@ -25,14 +25,11 @@ import subprocess
 import logging
 import xmlrpc.client
 import queue
+import logging
+
+#from pprint import pprint
 
 """ Module to download packages using Aria2 """
-
-try:
-    import pm2ml
-except:
-    print("pm2ml not found. Aria2 download won't work.")
-
 class DownloadPackages(object):
     """ Class to download packages using Aria2
         This class tries to previously download all necessary packages for
@@ -40,6 +37,13 @@ class DownloadPackages(object):
         It's known to use too much memory so it's not advised to use it """
     def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
+
+        try:
+            import pm2ml
+        except:
+            logging.warning(_("pm2ml not found. Aria2 download won't work."))
+            return
+
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
         else:
@@ -53,24 +57,28 @@ class DownloadPackages(object):
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
+        # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
         self.aria2_process = None
 
         self.callback_queue = callback_queue
 
-        self.rpc_user = ""
-        self.rpc_passwd = ""
-        self.aria2_args = ""
-        self.rpc_port = ""
+        self.rpc = {}
+        self.rpc["user"] = "antergos"
+        self.rpc["passwd"] = "antergos"
+        self.rpc["port"] = "6800"
+        
+        self.aria2_options = []
 
-        self.set_aria2_defaults(self.cache_dir)
+        self.set_aria2_options(self.cache_dir)
 
         self.run_aria2_as_daemon()
 
         self.connection = self.aria2_connect()
 
         if self.connection == None:
+            logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
             return
 
         self.aria2_download(package_names)
@@ -89,133 +97,135 @@ class DownloadPackages(object):
                 logging.error(_("Error adding metalink for package %s"), package_name)
                 continue
 
-            all_gids_done = False
+            global_stat = self.connection.aria2.getGlobalStat()
+            num_active = int(global_stat["numActive"])
+            
+            old_percent = -1
+            old_path = ""
+                        
+            action = _("Downloading package '%s' and its dependencies...") % package_name
+            self.queue_event('info', action)
 
-            while all_gids_done == False:
-                all_gids_done = True
-                gids_to_remove = []
-                for gid in gids:
-                    total = 0
-                    completed = 0
-                    old_percent = -1
+            while num_active > 0:
+                try:
+                    keys = ["gid", "status", "totalLength", "completedLength", "files"]
+                    result = self.connection.aria2.tellActive(keys)
+                    #pprint(result)
+                    #logging.debug(result)
+                except xmlrpc.client.Fault as e:
+                    logging.exception(e)
 
-                    try:
-                        result = self.connection.aria2.tellStatus(gid)
-                    except xmlrpc.client.Fault as e:
-                        logging.exception(e)
-                        gids_to_remove.append(gid)
-                        continue
+                total_length = 0
+                completed_length = 0
 
-                    # remove completed gid's
-                    if result['status'] == "complete":
-                        self.connection.aria2.removeDownloadResult(gid)
-                        gids_to_remove.append(gid)
-                        continue
+                for x in range(0, num_active):
+                    total_length += int(result[x]['totalLength'])
+                    completed_length += int(result[x]['completedLength'])
+                
+                # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
+                path = result[x]['files'][0]['path']
+                ext = ".pkg.tar.xz"
+                if path.endswith(ext):
+                    path = path[:-len(ext)]
+                                
+                percent = round(float(completed_length / total_length), 2)
+                
+                if path != old_path and percent == 0:
+                    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
+                    self.queue_event('percent', 1.0)
+                    # Update download file name
+                    self.queue_event('info', _("Downloading %s...") % path)
+                    old_path = path
+                
+                if percent != old_percent:
+                    self.queue_event('percent', percent)
+                    old_percent = percent
 
-                    # if gid is not active, go to the next gid
-                    if result['status'] != "active":
-                        continue
-
-                    all_gids_done = False
-
-                    total_length = int(result['totalLength'])
-                    files = result['files']
-                    if total_length == 0:
-                        total_length = int(files[0]['length'])
-                    total += total_length
-
-                    if total <= 0:
-                        continue
-
-                    # Get first uri to get the real package name
-                    # (we need to use this if we want to show individual
-                    # packages from metapackages like base or base-devel)
-                    uri = files[0]['uris'][0]['uri']
-                    basename = os.path.basename(uri)
-                    if basename.endswith(".pkg.tar.xz"):
-                        basename = basename[:-11]
-
-                    action = _("Downloading package '%s'...") % basename
-                    self.queue_event('action', action)
-
-                    while result['status'] == "active":
-                        result = self.connection.aria2.tellStatus(gid)
-                        completed = int(result['completedLength'])
-                        percent = float(completed / total)
-                        if percent != old_percent:
-                            self.queue_event('percent', percent)
-                            old_percent = percent
-
-                gids = self.remove_old_gids(gids, gids_to_remove)
+                # Get global statistics
+                global_stat = self.connection.aria2.getGlobalStat()
+                #pprint(global_stat)
+                #logging.debug(global_stat)
+                
+                num_active = int(global_stat["numActive"])
 
             # This method purges completed/error/removed downloads to free memory
             self.connection.aria2.purgeDownloadResult()
-
+            
+        self.connection.aria2.shutdown()
+    
     def aria2_connect(self):
         """ Connect to aria2 daemon """
         connection = None
 
-        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (self.rpc_user, self.rpc_passwd, self.rpc_port)
+        user = self.rpc["user"]
+        passwd = self.rpc["passwd"]
+        port = self.rpc["port"]
+        
+        aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
 
         try:
             connection = xmlrpc.client.ServerProxy(aria2_url)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-            logging.debug(_("Can't connect to Aria2. Error Output: %s" % err))
+            logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
+
+        '''
+        try:
+            result = connection.aria2.getVersion()
+            logging.debug(_("Using aria2 (version %s) to download xz packages") % result['version'])
+        except xmlrpc.client.Fault as e:
+            logging.exception(e)
+        '''
 
         return connection
 
-    def remove_old_gids(self, gids, gids_to_remove):
-        """ Remove old downloads """
-        new_gids_list = []
-        for gid in gids:
-            if gid not in gids_to_remove:
-                new_gids_list.append(gid)
-        return new_gids_list
+    def set_aria2_options(self, cache_dir):
+        """ Set aria2 options """
 
-    def set_aria2_defaults(self, dest_dir):
-        """ Set aria2 defaults """
-        self.rpc_user = "antergos"
-        self.rpc_passwd = "antergos"
-        self.rpc_port = "6800"
+        user = self.rpc["user"]
+        passwd = self.rpc["passwd"]
+        port = self.rpc["port"]
+        pid = os.getpid()
 
-        self.aria2_args = [
-            "--log=/tmp/cnchi-downloads.log",
-            #"--max-concurrent-downloads=1",
-            #"--split=5",
-            "--min-split-size=5M",
-            "--max-connection-per-server=2",
-            #"--check-integrity",
-            #"--continue=false",
-            "--max-tries=2",
-            "--timeout=5",
-            "--enable-rpc",
-            "--rpc-user=%s" % self.rpc_user,
-            "--rpc-passwd=%s" % self.rpc_passwd,
-            "--rpc-listen-port=%s" % self.rpc_port,
-            "--rpc-save-upload-metadata=false",
-            "--rpc-max-request-size=16M",
-            "--allow-overwrite=false",
-            #"--always-resume=false",
-            #"--auto-save-interval=0",
-            "--auto-file-renaming=false",
-            "--log-level=error",
-            "--show-console-readout=false",
-            #"--summary-interval=0",
-            "--no-conf",
-            "--quiet",
-            #"--remove-control-file",
-            "--stop-with-process=%d" % os.getpid(),
-            #"--metalink-file=/tmp/packages.metalink",
-            #"--pause",
-            "--file-allocation=none",
-            "--max-file-not-found=5",
-            "--remote-time=true",
-            "--conditional-get=true",
-            "--dir=%s" % dest_dir ]
+        self.aria2_options = [
+            "--allow-overwrite=false",      # If file is already downloaded overwrite it
+            "--always-resume=true",         # Always resume download.
+            "--auto-file-renaming=false",   # Rename file name if the same file already exists.
+            "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
+            "--dir=%s" % cache_dir,         # The directory to store the downloaded file(s).
+            "--enable-rpc",                 # Enable XML-RPC server. It is strongly recommended to set username and
+                                            # password using --rpc-user and --rpc-passwd option. See also
+                                            # --rpc-listen-port option (default false)
+            "--file-allocation=prealloc",   # Specify file allocation method (default 'prealloc')
+            "--log=/tmp/cnchi-aria2.log",   # The file name of the log file
+            "--log-level=warn",             # Set log level to output to console. LEVEL is either debug, info, notice,
+                                            # warn or error (default notice)
+            "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
+            "--max-concurrent-downloads=1", # Set maximum number of parallel downloads for each metalink (default 5)
+            "--max-connection-per-server=1",# The maximum number of connections to one server for each download
+            "--max-tries=5",                # Set number of tries (default 5)
+            "--no-conf=true",               # Disable loading aria2.conf file.
+            "--quiet=true",                 # Make aria2 quiet (no console output).
+            "--remote-time=false",          # Retrieve timestamp of the remote file from the remote HTTP/FTP server
+                                            # and if it is available, apply it to the local file.
+            "--remove-control-file=true",   # Remove control file before download. 
+            "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
+            "--rpc-user=%s" % user,
+            "--rpc-passwd=%s" % passwd,
+            "--rpc-listen-port=%s" % port,
+            "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
+                                                # specified by --dir option. 
+            "--rpc-max-request-size=16M",   # Set max size of XML-RPC request. If aria2 detects the request is more
+                                            # than SIZE bytes, it drops connection (default 2M)
+            "--show-console-readout=false", # Show console readout (default true)
+            "--split=5",                    # Download a file using N connections (default 5)
+            "--stop-with-process=%d" % pid, # Stop aria2 if Cnchi ends unexpectedly
+            "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
+                                            # suppresses the output (default 60)
+            "--timeout=60"]                 # Set timeout in seconds (default 60)
 
     def run_aria2_as_daemon(self):
         """ Start aria2 as a daemon """
-        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_args + ['--daemon=true']
+        aria2_cmd = ['/usr/bin/aria2c'] + self.aria2_options + ['--daemon=true']
         self.aria2_process = subprocess.Popen(aria2_cmd)
         self.aria2_process.wait()
 
@@ -286,11 +296,12 @@ class DownloadPackages(object):
         except queue.Full:
             pass
 
+''' Test case '''
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/download.log", level=logging.DEBUG)
+    logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
-    DownloadPackages(["base", "base-devel"])
-
+    DownloadPackages(package_names=["glib", "linux"], cache_dir="/aria2")
+    #DownloadPackages(package_names=["base", "base-devel"], cache_dir="/aria2")

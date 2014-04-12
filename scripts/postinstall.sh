@@ -102,12 +102,17 @@ cinnamon_settings(){
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 
+	# Copy menu@cinnamon.org.json to set menu icon
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
+	cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
+
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -141,6 +146,7 @@ xfce_settings(){
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 openbox_settings(){
@@ -194,6 +200,7 @@ openbox_settings(){
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 razor_settings(){
@@ -222,49 +229,58 @@ razor_settings(){
 	# Set Razor in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 	
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
-kde_settings() {
+kde_settings(){
 
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	# Download Flattr Icon Set
+    cd ${DESTDIR}/usr/share/icons
+    git clone https://github.com/NitruxSA/flattr-icons.git flattr-icons
+    cd flattr-icons
+    rm index.theme
+    mv index.theme.kde index.theme
+    sed -i 's|Example=x-directory-normal|Example=folder|g' index.theme
+    sed -i 's|Inherits=Flattr|Inherits=KFaenza,Oxygen|g' index.theme
+    rm -R .git
+    chroot ${DESTDIR} ln -sf /usr/share/icons/flattr-icons /usr/share/icons/default.kde4
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-	cd /tmp
-	rm -R ${DESTDIR}/usr/share/apps/desktoptheme/slim-glow/lancelot
-    wget -q "https://github.com/lots0logs/kde-setup/archive/master.zip"
-    unzip -o -qq /tmp/master.zip
-    cd kde-setup-master
-    usr_old=dustin
-    grep -lr -e "${usr_old}" | xargs sed -i "s|${usr_old}|${USER_NAME}|g"
-    cd /tmp/kde-setup-master
-    mv home/user home/${USER_NAME}
-    cp -R home ${DESTDIR}
-    cp -R usr ${DESTDIR}
-    chroot ${DESTDIR} ln -s /home/${USER_NAME}/.gtkrc-2.0 /home/${USER_NAME}/.gtkrc-2.0-kde4
+	cd ${DESTDIR}/tmp
+    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
+    unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
+    cp -R ${DESTDIR}/tmp/kde-setup-master/etc ${DESTDIR}/
+    cp -R ${DESTDIR}/tmp/kde-setup-master/usr ${DESTDIR}/
 
-	# Set Root environment
-	cd /tmp/kde-setup-master
-	usr_nm=${USER_NAME}
-	usr_new=root
-    grep -lr -e "${usr_nm}" | xargs sed -i "s|${usr_nm}|${usr_new}|g"
-    cd /tmp/kde-setup-master
-    mv home/${USER_NAME} home/root
-    cp -R home/root ${DESTDIR}
-    chroot ${DESTDIR} ln -s /home/root/.gtkrc-2.0 /home/root/.gtkrc-2.0-kde4
+	# Set User & Root environments
+	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
 
 	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 	
 	# Fix Permissions
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
+
 }
 
 mate_settings() {
+
+	# Set MATE in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	## Set default directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -272,7 +288,9 @@ mate_settings() {
 	else
 		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
     fi
-
+	# Fix for Zukitwo Metacity Theme
+	cp ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
+	
     # copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -283,18 +301,26 @@ mate_settings() {
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
+	
+	# Set MintMenu Favorites
+	cat << EOF > ${DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
+location:/usr/share/applications/chromium.desktop
+location:/usr/share/applications/pacmanxg.desktop
+separator
+location:/usr/share/applications/galculator.desktop
+location:/usr/share/applications/pluma.desktop
+location:/usr/share/applications/mate-terminal.desktop
+location:/usr/share/applications/mate-system-monitor.desktop
+separator
+location:/usr/share/applications/mate-mplayer.desktop
+location:/usr/share/applications/xnoise.desktop
+EOF
 
-	## Set default directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	# Copy panel layout
+	cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
 
-	# Set mate in .dmrc
-	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
-	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-
-	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
 }
 
@@ -316,7 +342,10 @@ postinstall(){
 	# Specific user configurations
 
 	## Set desktop-specific settings
-	"${DESKTOP}_settings"
+	"${DESKTOP}_settings" > /tmp/postinstall.log 2>&1
+
+	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
+	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
 	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1

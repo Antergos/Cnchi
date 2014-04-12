@@ -825,7 +825,7 @@ def get_prop(obj, iface, prop):
     import dbus
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-    except dbus.DBusException as e:
+    except (dbus.DBusException, dbus.exceptions.DBusException) as e:
         if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
             return None
         else:
@@ -842,12 +842,12 @@ def has_connection():
     bus = dbus.SystemBus()
     try:
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-    except dbus.exceptions.DBusException as err:
+        state = get_prop(manager, NM, 'state')
+    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
         # We can't talk to NM, so no idea.  Wild guess: we're connected
         # using ssh with X forwarding, and are therefore connected.  This
         # allows us to proceed with a minimum of complaint.
         return True
-    state = get_prop(manager, NM, 'state')
     return state == NM_STATE_CONNECTED_GLOBAL
 
 def add_connection_watch(func):
@@ -860,7 +860,7 @@ def add_connection_watch(func):
     bus.add_signal_receiver(connection_cb, 'StateChanged', NM, NM)
     try:
         func(has_connection())
-    except dbus.DBusException:
+    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
         # We can't talk to NM, so no idea.  Wild guess: we're connected
         # using ssh with X forwarding, and are therefore connected.  This
         # allows us to proceed with a minimum of complaint.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_advanced.py
+#  show_message.py
 #
 #  Copyright 2013 Antergos
 #
@@ -44,43 +44,47 @@ def fatal_error(message):
 
 def error(message):
     logging.error(message)
-    msg_dialog = Gtk.MessageDialog(None,\
-        Gtk.DialogFlags.MODAL,\
-        Gtk.MessageType.ERROR,\
-        Gtk.ButtonsType.CLOSE,\
-        _("Antergos Installer - Error"))
+    msg_dialog = Gtk.MessageDialog(transient_for=None,
+                                   modal=True,
+                                   destroy_with_parent=True,
+                                   message_type=Gtk.MessageType.ERROR,
+                                   buttons=Gtk.ButtonsType.CLOSE,
+                                   text=_("Antergos Installer - Error"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
 
 def warning(message):
     logging.warning(message)
-    msg_dialog = Gtk.MessageDialog(None,\
-        Gtk.DialogFlags.MODAL,\
-        Gtk.MessageType.WARNING,\
-        Gtk.ButtonsType.CLOSE,\
-        _("Antergos Installer - Warning"))
+    msg_dialog = Gtk.MessageDialog(transient_for=None,
+                                   modal=True,
+                                   destroy_with_parent=True,
+                                   message_type=Gtk.MessageType.WARNING,
+                                   buttons=Gtk.ButtonsType.CLOSE,
+                                   text=_("Antergos Installer - Warning"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
     msg_dialog.destroy()
 
 def message(message):
     logging.info(message)
-    msg_dialog = Gtk.MessageDialog(None,\
-        Gtk.DialogFlags.MODAL,\
-        Gtk.MessageType.INFO,\
-        Gtk.ButtonsType.CLOSE,\
-        _("Antergos Installer - Information"))
+    msg_dialog = Gtk.MessageDialog(transient_for=None,
+                                   modal=True,
+                                   destroy_with_parent=True,
+                                   message_type=Gtk.MessageType.INFO,
+                                   buttons=Gtk.ButtonsType.CLOSE,
+                                   text=_("Antergos Installer - Information"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
 
 def question(message):
     logging.info(message)
-    msg_dialog = Gtk.MessageDialog(None,\
-        Gtk.DialogFlags.MODAL,\
-        Gtk.MessageType.QUESTION,\
-        Gtk.ButtonsType.YES_NO,\
-        _("Antergos Installer - Confirmation"))
+    msg_dialog = Gtk.MessageDialog(transient_for=None,
+                                   modal=True,
+                                   destroy_with_parent=True,
+                                   message_type=Gtk.MessageType.QUESTION,
+                                   buttons=Gtk.ButtonsType.YES_NO,
+                                   text=_("Antergos Installer - Confirmation"))
     msg_dialog.format_secondary_text(message)
     response = msg_dialog.run()
     msg_dialog.destroy()

@@ -38,30 +38,20 @@ def get_files(path):
     """ Returns all files from a directory """
     all_files = []
     for filename in os.listdir(path):
-        if os.path.isfile(os.path.join(path, filename)) and filename[0] != ".": # and filename[-3:] == ".py":
-            all_files.append(os.path.join(path, filename))
+        file_path = os.path.join(path, filename)
+        # Do not parse hidden files
+        if filename[0] != ".":
+            if os.path.isfile(file_path):
+                print(file_path)
+                all_files.append(file_path)
+            elif os.path.isdir(file_path) and filename != "." and filename != "..":
+                all_files.extend(get_files(file_path))
     return all_files
 
 def create_update_info():
     """ Creates update.info file """
-    myfiles = []
 
-    myfiles.extend(get_files("."))
-
-    myfiles.extend(get_files("src"))
-    myfiles.extend(get_files("src/pacman"))
-    myfiles.extend(get_files("src/parted3"))
-    myfiles.extend(get_files("src/installation"))
-    myfiles.extend(get_files("src/hardware"))
-    myfiles.extend(get_files("src/canonical"))
-
-    myfiles.extend(get_files("data"))
-
-    myfiles.extend(get_files("po"))
-
-    myfiles.extend(get_files("ui"))
-
-    myfiles.extend(get_files("scripts"))
+    myfiles = get_files("/usr/share/cnchi")
 
     txt = '{"version":"%s","files":[\n' % info.CNCHI_VERSION
 

@@ -24,18 +24,11 @@
 
 from hardware.hardware import Hardware
 import os
-import logging
 
 CLASS_NAME = "Via"
-
-DEVICES = [
-('0x1106', '0x1122', "VX800/VX820 Chrome 9 HC3 Integrated Graphics"),
-('0x1106', '0x3122', "VT8623 [Apollo CLE266] integrated CastleRock graphics"),
-('0x1106', '0x3230', "K8M890CE/K8N890CE [Chrome 9]"),
-('0x1106', '0x3260', "VIA Chrome9 HC IGP"),
-('0x1106', '0x3371', "CN896/VN896/P4M900 [Chrome 9 HC]"),
-('0x1106', '0x7122', "VX900 Graphics [Chrome9 HD]"),
-('0x1106', '0x8e48', "")]
+CLASS_ID = "0x0300"
+VENDOR_ID = "0x1106"
+DEVICES = []
 
 class Via(Hardware):
     def __init__(self):
@@ -50,16 +43,11 @@ class Via(Hardware):
             video.write('Section "Device"\n')
             video.write('\tIdentifier     "Device0"\n')
             video.write('\tDriver         "openchrome"\n')
-            #video.write('\tOption         "EnableAGPDMA" "false"\n')
-            #video.write('\tOption         "XaaNoImageWriteRect"\n')
             video.write('\tVendorName     "VIA"\n')
             video.write('EndSection\n')
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+            return True
         return False

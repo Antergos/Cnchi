@@ -30,9 +30,8 @@ from installation import process as installation_process
 try:
     import parted
 except:
-    print("Can't import parted module! This installer won't work.")
+    logging.error("Can't import parted module! This installer won't work.")
 
-#_next_page = "timezone"
 _next_page = "user_info"
 _prev_page = "installation_ask"
 
@@ -50,7 +49,7 @@ class InstallationAutomatic(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_automatic.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "automatic.ui"))
 
         self.ui.connect_signals(self)
 

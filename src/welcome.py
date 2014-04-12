@@ -25,11 +25,14 @@ import subprocess, sys, os
 import gettext
 import os
 import canonical.misc as misc
+import logging
+import sys
 
 from show_message import warning
 
 # Import functions
 import config
+import src.info as info
 
 _next_page = "language"
 _prev_page = None
@@ -50,7 +53,7 @@ class Welcome(Gtk.Box):
         self.ui.connect_signals(self)
 
         data_dir = self.settings.get('data')
-        welcome_dir = os.path.join(data_dir, "welcome")
+        welcome_dir = os.path.join(data_dir, "images", "welcome")
 
         self.label = {}
         self.label['welcome'] = self.ui.get_object("welcome_label")
@@ -81,9 +84,11 @@ class Welcome(Gtk.Box):
         super().add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
-        #label = self.ui.get_object("infowelcome_label")
-        txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n" \
-        "When you are ready to install Antergos simply choose which installer you prefer.")
+        txt = ""
+        if not self.disable_tryit:
+            txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")
+
+        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
 
@@ -96,14 +101,8 @@ class Welcome(Gtk.Box):
         txt = _("Graphical Installer")
         self.button['graph'].set_label(txt)
 
-        #self.header.set_title("Cnchi")
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
-
-
-        #txt = _("Welcome to Antergos!")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
     @misc.raise_privileges
     def remove_temp_files(self):
@@ -113,20 +112,27 @@ class Welcome(Gtk.Box):
             if os.path.exists(p):
                 os.remove(p)
 
-    def on_tryit_button_clicked(self, widget, data=None):
+    def quit_cnchi(self):
         self.remove_temp_files()
-        Gtk.main_quit()
+        logging.info(_("Quiting installer..."))
+        self.settings.set('stop_all_threads', True)
+        logging.shutdown()
+        sys.exit(0)
+        
+    def on_tryit_button_clicked(self, widget, data=None):
+        self.quit_cnchi()
 
     def on_cli_button_clicked(self, widget, data=None):
-        cli_installer = "antergos-setup"
         try:
-            subprocess.Popen([cli_installer])
+            subprocess.Popen(["antergos-setup"])
+            self.quit_cnchi()
         except:
             warning(_("Can't load the CLI installer"))
-        finally:
-            self.remove_temp_files()
 
     def on_graph_button_clicked(self, widget, data=None):
+        # Tell timezone thread to start searching now
+        self.settings.set('timezone_start', True)
+        # Simulate a forward button click
         self.forward_button.emit("clicked")
 
     def store_values(self):
@@ -138,11 +144,18 @@ class Welcome(Gtk.Box):
         self.show_all()
         self.forward_button.hide()
         if self.disable_tryit:
-            box_tryit = self.ui.get_object("box_tryit")
-            box_tryit.hide()
+            self.button['tryit'].set_sensitive(False)
+        #if info.CNCHI_VERSION is not "0.4.3":
+        #    self.button['cli'].set_sensitive(False)
+
 
     def get_prev_page(self):
         return _prev_page
 
     def get_next_page(self):
         return _next_page
+
+    def start_auto_timezone_thread(self):
+        import timezone
+        self.auto_timezone_thread = timezone.AutoTimezoneThread(self.auto_timezone_coords, self.settings)
+        self.auto_timezone_thread.start()

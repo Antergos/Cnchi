@@ -13,8 +13,9 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * python-gobject 3
  * python-dbus
  * python-cairo
+ * python-mako
  * libtimezonemap
- * webkitgtk3
+ * webkitgtk
  * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
  * py3parted (pyparted on python3) -> https://github.com/antergos/antergos-packages/tree/master/py3parted
  * pacman
@@ -22,4 +23,10 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * hwinfo
  * hdparm
  * upower
+ * python-mock (only needed for unit tests)
 
+## Translations
+
+We manage our translations in transifex:
+
+* https://www.transifex.com/projects/p/antergos/

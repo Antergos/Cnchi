@@ -58,9 +58,7 @@ class Slides(Gtk.Box):
 
         self.progress_bar = builder.get_object("progressbar")
         self.progress_bar.set_show_text(True)
-
-        self.global_progress_bar = builder.get_object("global_progressbar")
-        self.global_progress_bar.set_show_text(True)
+        self.progress_bar.set_name('i_progressbar')
 
         self.info_label = builder.get_object("info_label")
         self.scrolled_window = builder.get_object("scrolledwindow")
@@ -77,7 +75,7 @@ class Slides(Gtk.Box):
             with open(html_file) as html_stream:
                 html = html_stream.read(None)
                 data = os.path.join(os.getcwd(), "data")
-                self.webview.load_html_string(html, "file://" + data)
+                self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
         except IOError:
             pass
 
@@ -86,7 +84,7 @@ class Slides(Gtk.Box):
         super().add(builder.get_object("slides"))
 
         self.fatal_error = False
-        self.global_progress_bar_is_hidden = True
+        self.should_pulse = False
 
     def translate_ui(self):
         if len(self.info_label.get_label()) <= 0:
@@ -94,27 +92,20 @@ class Slides(Gtk.Box):
 
         self.header.set_subtitle(_("Installing Antergos..."))
 
-    def show_global_progress_bar_if_hidden(self):
-        # TODO: Check if this is still throwing an error
-        if self.global_progress_bar_is_hidden:
-            self.global_progress_bar.show_all()
-            self.global_progress_bar_is_hidden = False
-
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 
-        # Last screen reached, hide main progress bar.
+        # Last screen reached, hide main progress bar (the one at the top).
         self.main_progressbar.hide()
 
-        # Hide global progress bar
-        self.global_progress_bar.hide()
-        self.global_progress_bar_is_hidden = True
-
+        # Hide backwards and forwards button
         self.backwards_button.hide()
         self.forward_button.hide()
 
         self.header.set_show_close_button(False)
+        
+        GLib.timeout_add(100, self.manage_events_from_cb_queue)
 
     def store_values(self):
         """ Nothing to be done here """
@@ -133,10 +124,34 @@ class Slides(Gtk.Box):
         #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
+    def stop_pulse(self):
+        """ Stop pulsing progressbar """
+        self.should_pulse = False
+        self.progress_bar.hide()
+        self.info_label.show_all()
+
+    def start_pulse(self):
+        """ Start pulsing progressbar """
+        def pbar_pulse():
+            """ Pulse progressbar """
+            if self.should_pulse:
+                self.progress_bar.pulse()
+            return self.should_pulse
+        
+        if not self.should_pulse:
+            # Hide any text that might be in info area
+            self.info_label.set_markup("")
+            self.info_label.hide()
+            # Show progress bar (just in case)
+            self.progress_bar.show_all()
+            self.progress_bar.set_show_text(True)
+            self.should_pulse = True
+            GLib.timeout_add(100, pbar_pulse)
+
     def manage_events_from_cb_queue(self):
-        """ This function is called from cnchi.py with a timeout function
-            We should do as less as possible here, we want to maintain our
+        """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
+        
         if self.fatal_error:
             return False
 
@@ -148,28 +163,38 @@ class Slides(Gtk.Box):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
-            elif event[0] == 'global_percent':
-                self.show_global_progress_bar_if_hidden()
-                self.global_progress_bar.set_fraction(event[1])
+            elif event[0] == 'text':
+                if event[1] == 'hide':
+                    self.progress_bar.set_show_text(False)
+                    self.progress_bar.set_text("")
+                else:
+                    self.progress_bar.set_show_text(True)
+                    self.progress_bar.set_text(event[1])
+            elif event[0] == 'pulse':
+                if event[1] == 'stop':
+                    self.stop_pulse()
+                elif event[1] == 'start':
+                    self.start_pulse()
+            elif event[0] == 'progress_bar':
+                if event[1] == 'hide':
+                    self.progress_bar.hide()
             elif event[0] == 'finished':
                 logging.info(event[1])
-
-                # Warn user about GRUB and ask if we should open wiki page.
                 if not self.settings.get('bootloader_ok'):
-                    import webbrowser
-                    self.boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
-                                       "installation which could prevent your system from booting properly. Before\n"
-                                       "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
-                                       "configured. The Arch Linux Wiki contains troubleshooting information:\n"
-                                       "\thttps://wiki.archlinux.org/index.php/GRUB\n"
-                                       "\nWould you like to view the wiki page now?")
-                    response = show.question(self.boot_warn)
+                    # Warn user about GRUB and ask if we should open wiki page.
+                    boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+                                  "installation which could prevent your system from booting properly. Before\n"
+                                  "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+                                  "configured. The Arch Linux Wiki contains troubleshooting information:\n"
+                                  "\thttps://wiki.archlinux.org/index.php/GRUB\n"
+                                  "\nWould you like to view the wiki page now?")
+                    response = show.question(boot_warn)
                     if response == Gtk.ResponseType.YES:
+                        import webbrowser
+                        misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
-                install_ok = _("Installation Complete!\n"
-                    "Do you want to restart your system now?")
-                #self.set_message(install_ok)
+                install_ok = _("Installation Complete!\nDo you want to restart your system now?")
                 response = show.question(install_ok)
                 if response == Gtk.ResponseType.YES:
                     logging.shutdown()
@@ -200,36 +225,23 @@ class Slides(Gtk.Box):
                 res = show.question(_("Do you want to retry the installation using the same configuration?"))
                 if res == GTK_RESPONSE_YES:
                     # Restart installation process
-                    logging.debug("Restarting installation process...")
+                    logging.debug(_("Restarting installation process..."))
                     p = self.settings.get('installer_thread_call')
 
-                    self.process = installation_process.InstallationProcess( \
-                        self.settings, \
-                        self.callback_queue, \
-                        p['mount_devices'], \
-                        p['fs_devices'], \
-                        p['ssd'], \
-                        p['alternate_package_list'], \
-                        p['blvm'])
+                    self.process = installation_process.InstallationProcess(self.settings, self.callback_queue,
+                        p['mount_devices'], p['fs_devices'], p['ssd'], p['alternate_package_list'], p['blvm'])
 
                     self.process.start()
                     return True
                 else:
                     self.fatal_error = True
                     return False
-            elif event[0] == 'debug':
-                logging.debug(event[1])
-            elif event[0] == 'warning':
-                logging.warning(event[1])
-            elif event[0] == 'progress':
-                if event[1] == 'hide_all' or event[1] == 'hide_global':
-                    self.global_progress_bar.hide()
-                    self.global_progress_bar_is_hidden = True
-                if event[1] == 'hide_all' or event[1] == 'hide_local':
-                    self.progress_bar.hide()
-            else:
+            elif event[0] == 'info':
                 logging.info(event[1])
-                self.set_message(event[1])
+                if self.should_pulse:
+                    self.progress_bar.set_text(event[1])
+                else:
+                    self.set_message(event[1])
 
             self.callback_queue.task_done()
 

@@ -26,6 +26,7 @@ from gi.repository import Gtk, Gdk
 import subprocess
 import os
 import logging
+import canonical.gtkwidgets as gtkwidgets
 
 # Insert the src/parted directory at the front of the path.
 #base_dir = os.path.dirname(__file__) or '.'
@@ -74,18 +75,13 @@ class InstallationAdvanced(Gtk.Box):
         # hold deleted partitions that exist now
         self.to_be_deleted = []
 
-        self.uefi = False
-        if os.path.exists("/sys/firmware/efi"):
-            # self.uefi = True
-            pass
-
         # Call base class
         super().__init__()
 
         # Get UI items
         self.ui = Gtk.Builder()
         self.ui_dir = self.settings.get('ui')
-        ui_file = os.path.join(self.ui_dir, "installation_advanced.ui")
+        ui_file = os.path.join(self.ui_dir, "advanced.ui")
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
@@ -128,7 +124,7 @@ class InstallationAdvanced(Gtk.Box):
             for mp in sorted(fs.COMMON_MOUNT_POINTS):
                 combo.append_text(mp)
             
-            #if self.uefi:
+            #if os.path.exists('/sys/firmware/efi'):
             #    # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
             #    combo.append_text('/boot/efi')
 
@@ -190,6 +186,11 @@ class InstallationAdvanced(Gtk.Box):
     def check_buttons(self, selection):
         """ Activates/deactivates our buttons depending on which is selected in the
             partition treeview """
+            
+        if self.stage_opts:
+            button = self.ui.get_object('partition_button_undo')
+            button.set_sensitive(True)
+        
         button_new = self.ui.get_object('partition_button_new')
         button_new.set_sensitive(False)
 
@@ -250,6 +251,15 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
+                    # Add disk partitions
+                    partitions = pm.get_partitions(disk)
+                    partition_list = pm.order_partitions(partitions)
+                    for partition_path in partition_list:
+                        if not "free" in partition_path:
+                            warning_txt = _("It's not recommended to install grub in a partition")
+                            line = '   {0} ({1})'.format(partition_path, warning_txt)
+                            self.grub_device_entry.append_text(line)
+                            self.grub_devices[line] = partition_path
 
         # Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
@@ -611,7 +621,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Can't edit an partition with LVM filesystem type
         if "lvm2" in fs.lower():
-            logging.warning("Can't edit an partition with LVM filesystem type")
+            logging.warning(_("Can't edit a partition with LVM filesystem type"))
             return
 
         # Set fs in dialog combobox
@@ -659,7 +669,7 @@ class InstallationAdvanced(Gtk.Box):
             mymount = mount_combo_entry.get_text().strip()
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
-                show.warning(_('Cannot use same mount twice.'))
+                show.warning(_('Cannot use the same mount point twice.'))
             elif mymount == "/" and not format_check.get_active():
                 show.warning(_('Root partition must be formatted.'))
             else:
@@ -686,6 +696,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update the partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def get_disk_path_from_selection(self, model, tree_iter):
         """ This returns the disk path where the selected partition is in """
@@ -736,7 +747,7 @@ class InstallationAdvanced(Gtk.Box):
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
-        logging.info("You will delete from disk [%s] partition [%s]" % (disk_path, partition_path))
+        logging.info(_("You will delete the partition %s from disk %s"), partition_path, disk_path)
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -753,7 +764,7 @@ class InstallationAdvanced(Gtk.Box):
         # Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
             # We unmount the partition. Should we ask first?
-            logging.info("Unmounting %s..." % part.path)
+            logging.info(_("Unmounting %s..."), part.path)
             subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
 
         # Is it worth to show some warning message here?
@@ -762,6 +773,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update the partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
@@ -912,7 +924,7 @@ class InstallationAdvanced(Gtk.Box):
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic['mounts']:
-                show.warning(_('Cannot use same mount twice...'))
+                show.warning(_('Cannot use the same mount point twice...'))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
@@ -933,7 +945,7 @@ class InstallationAdvanced(Gtk.Box):
 
                 # User wants to create an extended, logical or primary partition
                 if primary_radio.get_active():
-                    logging.debug(_("Creating primary partition"))
+                    logging.debug(_("Creating a primary partition"))
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif extended_radio.get_active():
                     # No mounting extended partitions.
@@ -944,13 +956,13 @@ class InstallationAdvanced(Gtk.Box):
                     mylabel = ''
                     myfmt = 'extended'
                     formatme = False
-                    logging.debug(_("Creating extended partition"))
+                    logging.debug(_("Creating an extended partition"))
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif logical_radio.get_active():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
-                        logging.debug(_("Creating logical partition"))
+                        logging.debug(_("Creating a logical partition"))
                         # Which geometry should we use here?
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
@@ -966,6 +978,7 @@ class InstallationAdvanced(Gtk.Box):
                         self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
                 # Update partition list treeview
                 self.fill_partition_list()
+                self.fill_grub_device_entry()
 
         self.create_partition_dialog.hide()
 
@@ -1047,6 +1060,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Refresh our partition treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def on_partition_list_treeview_selection_changed(self, selection):
         """ Selection changed, call check_buttons to update them """
@@ -1092,6 +1106,27 @@ class InstallationAdvanced(Gtk.Box):
         txt = "<span weight='bold' size='small'>%s</span>" % txt
         label = self.ui.get_object('grub_device_label')
         label.set_markup(txt)
+
+        txt = _("Mount Checklist:")
+        txt = "<span weight='bold'>%s</span>" % txt
+        label = self.ui.get_object('mnt_chklist')
+        label.set_markup(txt)
+
+        part = self.ui.get_object('root_part')
+        txt = _("Root ( / )")
+        part.props.label = txt
+
+        part = self.ui.get_object('boot_part')
+        txt = _("Boot ( /boot )")
+        part.props.label = txt
+
+        part = self.ui.get_object('boot_efi_part')
+        txt = _("EFI ( /boot )")
+        part.props.label = txt
+
+        part = self.ui.get_object('swap_part')
+        txt = _("Swap")
+        part.props.label = txt
 
         #txt = _("TODO: Here goes a warning message")
         #txt = "<span weight='bold'>%s</span>" % txt
@@ -1189,11 +1224,10 @@ class InstallationAdvanced(Gtk.Box):
 
     def prepare(self, direction):
         """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
+
         self.fill_grub_device_entry()
-
-        self.fill_partition_list()
-
         self.translate_ui()
+        self.fill_partition_list()
         self.show_all()
 
         # TODO: Enable this and finish LUKS encryption
@@ -1206,7 +1240,6 @@ class InstallationAdvanced(Gtk.Box):
 
         #label = self.ui.get_object('part_advanced_recalculating_label')
         #label.hide()
-
         spinner = self.ui.get_object('partition_recalculating_spinner')
         spinner.hide()
 
@@ -1232,7 +1265,7 @@ class InstallationAdvanced(Gtk.Box):
         button.set_sensitive(False)
 
         button = self.ui.get_object('partition_button_undo')
-        button.set_sensitive(True)
+        button.set_sensitive(False)
 
     def on_partition_list_new_label_activate(self, button):
         """ Create a new partition table """
@@ -1359,6 +1392,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # Update partition list treeview
         self.fill_partition_list()
+        self.fill_grub_device_entry()
 
     def on_partition_list_lvm_activate(self, button):
         pass
@@ -1368,36 +1402,74 @@ class InstallationAdvanced(Gtk.Box):
             At least root (/) partition must be defined and
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
-        exist_root = False
-        exist_efi = False
-        exist_boot = False
+        # Initialize our mount point check widgets
+        
+        check_parts = ["root", "boot", "boot_efi", "swap"]
+        
+        has_part = {}
+        for check_part in check_parts:
+            has_part[check_part] = False
+
+        # Are we in a EFI system?
+        is_uefi = os.path.exists('/sys/firmware/efi')
+
+        # TODO: Check total system RAM in hardware module so we can require swap for low memory systems
+        need_swap = False
+        
+        part = {}
+        for check_part in check_parts:
+            part[check_part] = self.ui.get_object(check_part + "_part")
+            part[check_part].set_state(has_part[check_part])
+
+        # Only show mount checks that apply to current system.
+        part["boot_efi"].hide()
+        part["boot"].hide()
+        part["swap"].hide()
+
+        if is_uefi:
+            part["boot_efi"].show()
+        elif self.lv_partitions and not is_uefi:
+            part["boot"].show()
+        elif need_swap:
+            part["swap"].show()
 
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        # No device should be mounted now except install media.
-
-        # Check root and uefi fs
+        # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fs, fmt) = self.stage_opts[part_path]
             if mnt == "/":
                 # Don't allow vfat as / filesystem, it will not work!
                 # Don't allow ntfs as / filesystem, this is stupid!
                 if "fat" not in fs and "ntfs" not in fs:
-                    exist_root = True
-            # /boot or /boot/efi ¿?
+                    has_part["root"] = True
+                    part["root"].set_state(True)
+            # /boot or /boot/efi
             if mnt == "/boot":
-                if "fat" in fs:
+                if is_uefi and "fat" in fs:
                     # Only fat partitions
-                    exist_efi = True
-                if "f2fs" or "btrfs" not in fs:
-                    exist_boot = True
+                    has_part["boot_efi"] = True
+                    part["boot_efi"].set_state(True)
+                else:
+                    if "f2fs" not in fs and "btrfs" not in fs and self.lv_partitions:
+                        has_part["boot"] = True
+                        # Not sure if this was an oversight or intended?
+                        part["boot"].set_state(True)
+            if mnt == "swap":
+                has_part["swap"] = True
+                part["swap"].set_state(True)
 
-        if os.path.exists('/sys/firmware/efi'):
-            check_ok = exist_root and exist_boot and exist_efi
+        if is_uefi:
+            check_ok = has_part["root"] and has_part["boot_efi"]
+        elif self.lv_partitions and not is_uefi:
+            check_ok = has_part["root"] and has_part["boot"]
         else:
-            check_ok = exist_root and exist_boot
+            check_ok = has_part["root"]
+
+        if need_swap:
+            check_ok = check_ok and has_part["swap"]
 
         self.forward_button.set_sensitive(check_ok)
 
@@ -1476,7 +1548,7 @@ class InstallationAdvanced(Gtk.Box):
                                     # If we're recovering from a failed/stopped install, there'll be
                                     # some mounted directories. Unmount them without asking.
                                     subp = subprocess.Popen(['umount', '-l', partition_path], stdout=subprocess.PIPE)
-                                    logging.debug("%s unmounted", mount_point)
+                                    logging.debug(_("%s unmounted"), mount_point)
                                 elif mounted:
                                     response = show.question(msg)
                                     if response != Gtk.ResponseType.YES:
@@ -1487,10 +1559,10 @@ class InstallationAdvanced(Gtk.Box):
                                         if swap_partition == partition_path:
                                             subp = subprocess.Popen(['sh', '-c', 'swapoff %s'
                                                                     % partition_path], stdout=subprocess.PIPE)
-                                            logging.debug("Swap partition %s unmounted", partition_path)
+                                            logging.debug(_("Swap partition %s unmounted"), partition_path)
                                         else:
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
-                                            logging.debug("%s unmounted", mount_point)
+                                            logging.debug(_("%s unmounted"), mount_point)
                                 else:
                                     msg = _("%s shows as mounted (busy) but it has no mount point")
                                     logging.warning(msg, partition_path)
@@ -1548,6 +1620,8 @@ class InstallationAdvanced(Gtk.Box):
 
         bold = "<b>%s</b>"
         y = 0
+        
+        self.to_be_deleted.sort()
 
         # First, show partitions that will be deleted
         for ea in self.to_be_deleted:
@@ -1587,13 +1661,15 @@ class InstallationAdvanced(Gtk.Box):
             Gtk.main_iteration()
 
         return response
-
+    
     def store_values(self):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
         if changelist == []:
             # Something wrong has happened or nothing to change
             return False
+            
+        changelist.sort()
 
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
@@ -1661,31 +1737,24 @@ class InstallationAdvanced(Gtk.Box):
                             logging.info(_("Creating new %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
                         else:
                             logging.info(_("Creating new %s filesystem in %s") % (fisy, partition_path))
-                        if (mnt == '/boot/efi'):
+
+                        if ((mnt == '/' and noboot) or (mnt == '/boot')) and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
-                            if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)
-                        if (mnt == '/boot' and efiboot):
-                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_LEGACY_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_LEGACY_BOOT, partitions[partition_path])
-                            if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)
-                        if ((mnt == '/' and noboot) or (mnt == '/boot' and not efiboot)) and ('/dev/mapper' not in partition_path):
-                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
+                                if self.grub_device or self.grub_device is not None:
+                                    (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                             if not self.testing:
                                 pm.finalize_changes(partitions[partition_path].disk)
                         if "/dev/mapper" in partition_path:
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
                             vgname = vgname.split('-')[0]
-                            if (mnt == '/' and noboot) or (mnt == '/boot' and not efiboot):
+                            if (mnt == '/' and noboot) or (mnt == '/boot'):
                                 self.blvm = True
                                 for ee in pvs[vgname]:
                                     #print(partitions)
                                     if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
-                                        x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
+                                        if self.grub_device or self.grub_device is not None:
+                                            x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
 
@@ -1731,14 +1800,11 @@ class InstallationAdvanced(Gtk.Box):
                 uid = self.gen_partition_uid(p=p)
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
-                    # FIX: Do not mount extended or bios-gpt-boot partitions
+                    # Do not mount extended or bios-gpt-boot partitions
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         continue
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
-                #elif pm.check_mounted(p):
-                #    mount_point, fs, writable = self.get_mount_point(p.path)
-                #    mount_devices[mount_point] = partition_path
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() is False:

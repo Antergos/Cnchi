@@ -24,37 +24,29 @@
 
 from hardware.hardware import Hardware
 import os
-import logging
-
-from amd_ati_db import DEVICES
 
 CLASS_NAME = "Radeon"
+CLASS_ID = "0x0300"
+VENDOR_ID = "0x1002"
+DEVICES = []
 
 class Radeon(Hardware):
     def __init__(self):
-        self.KMS = "radeon"
-        self.KMS_OPTIONS = "modeset=1"
-        self.DRI = "ati-dri"
-        self.DDX = "xf86-video-ati"
-        self.DECODER = "libva-vdpau-driver"
-        self.ARCH = os.uname()[-1]
+        pass
 
     def get_packages(self):
-        pkgs = [self.DRI, self.DDX, self.DECODER, "libtxc_dxtn"]
-        if self.ARCH == "x86_64":
-            pkgs.extend(["lib32-%s" % self.DRI, "lib32-mesa-libgl"])
+        pkgs = ["ati-dri", "xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
+        if os.uname()[-1] == "x86_64":
+            pkgs.extend(["lib32-ati-dri", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/%s.conf" % (dest_dir, self.KMS)
+        path = "%s/etc/modprobe.d/radeon.conf" % dest_dir
         with open(path, 'w') as modprobe:
-            modprobe.write("options %s %s\n" % (self.KMS, self.KMS_OPTIONS))
+            modprobe.write("options radeon modeset=1\n")
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+            return True
         return False

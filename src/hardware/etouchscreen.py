@@ -28,11 +28,11 @@
 
 from hardware.hardware import Hardware
 import subprocess
-import logging
-
-DEVICES = [('0x0eef', '0x0001', "ETouchScreen")]
 
 CLASS_NAME = "ETouchScreen"
+CLASS_ID = ""
+VENDOR_ID = "0x0eef"
+DEVICES = [('0x0001', "ETouchScreen")]
 
 class ETouchScreen(Hardware):
     def __init__(self):
@@ -59,11 +59,10 @@ class ETouchScreen(Hardware):
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
 
-    def check_device(self, device):
-        """ Device is (VendorID, ProductID)
-            DEVICES is (VendorID, ProductID, Description) """
-        for (vendor, product, description) in DEVICES:
-            if device == (vendor, product):
-                logging.debug(_("Found device: %s") % description)
-                return True
+    def check_device(self, class_id, vendor_id, product_id):
+        """ Checks if the driver supports this device """
+        if vendor_id == VENDOR_ID:
+            for (product, description) in DEVICES:
+                if product_id == product:
+                    return True
         return False

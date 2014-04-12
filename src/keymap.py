@@ -32,7 +32,6 @@ import canonical.misc as misc
 import subprocess
 import keyboard_widget
 
-#_next_page = "user_info"
 _next_page = "desktop"
 _prev_page = "timezone"
 
@@ -70,8 +69,12 @@ class Keymap(Gtk.Box):
 
     def translate_ui(self):
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
+        
+        lbl = self.ui.get_object("label_layouts")
+        lbl.set_markup(_("Keyboard Layouts"))
 
-        # TODO: Also change layouts and variants text column
+        lbl = self.ui.get_object("label_variants")
+        lbl.set_markup(_("Keyboard Variants"))
 
     def create_toolviews(self):
         render = Gtk.CellRendererText()

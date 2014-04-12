@@ -5,4 +5,7 @@
 # downloading the 4kb mirrorlist file. If ran with --verbose and without --save param it
 # will output the speed test results to STDOUT.
 
-reflector -l 40 -p http -f 10 --save /etc/pacman.d/mirrorlist
+if [ -f /usr/bin/reflector ]; then
+    reflector -l 40 -p http -f 10 --save /etc/pacman.d/mirrorlist
+fi
+

@@ -32,12 +32,10 @@ import show_message as show
 import bootinfo
 import subprocess
 
-# To be able to test this installer in other systems
-# that do not have pyparted3 installed
 try:
     import parted
 except:
-    print("Can't import parted module! This installer won't work.")
+    pass
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -69,7 +67,7 @@ class InstallationAlongside(Gtk.Box):
 
         super().__init__()
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "installation_alongside.ui"))
+        self.ui.add_from_file(os.path.join(self.ui_dir, "alongside.ui"))
 
         self.ui.connect_signals(self)
 
@@ -192,7 +190,7 @@ class InstallationAlongside(Gtk.Box):
         try:
             device_list = parted.getAllDevices()
         except:
-            logging.error("pyparted3 not found!")
+            logging.error(_("Can't import parted module! This installer won't work."))
             device_list = []
 
         for dev in device_list:

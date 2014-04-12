@@ -29,8 +29,8 @@ import logging
 import show_message as show
 import xml.etree.ElementTree as etree
 
-_next_page = "check"
-_prev_page = "language"
+_next_page = "timezone"
+_prev_page = "check"
 
 class Location(Gtk.Box):
     def __init__(self, params):
@@ -108,6 +108,12 @@ class Location(Gtk.Box):
             self.translate_ui()
             self.show_all()
 
+        # Enable forward button
+        # If timezone does not work, forward button is disabled. If user doesn't choose timezone and
+        # goes back to this screen, forward button will still be disabled.
+        self.forward_button.set_sensitive(True)
+            
+
     def load_locales(self):
         data_dir = self.settings.get('data')
         xml_path = os.path.join(data_dir, "locales.xml")
@@ -165,7 +171,8 @@ class Location(Gtk.Box):
 
         for area in areas:
             box = Gtk.VBox()
-            label = Gtk.Label(area)
+            label = Gtk.Label()
+            label.set_markup(area)
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)

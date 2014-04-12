@@ -64,7 +64,7 @@ class Updater():
             self.web_version = updateInfo['version']
             self.web_files = updateInfo['files']
 
-            logging.info("Cnchi Internet version: %s" % self.web_version)
+            logging.info(_("Cnchi Internet version: %s"), self.web_version)
 
             self.force = force_update
 
@@ -93,7 +93,7 @@ class Updater():
     # This will update all files only if necessary (or forced)
     def update(self):
         if self.is_web_version_newer():
-            logging.info("New version found. Updating installer...")
+            logging.info(_("New version found. Updating installer..."))
             num_files = len(self.web_files)
             i = 1
             for f in self.web_files:
@@ -151,7 +151,7 @@ class Updater():
         return True
 
     def replace_old_with_new_versions(self):
-        logging.info("Replacing version %s with version %s..." % (info.CNCHI_VERSION, self.web_version))
+        logging.info(_("Replacing version %s with version %s..."), info.CNCHI_VERSION, self.web_version)
         for f in self.web_files:
             name = f['name']
             old_name = os.path.join(_base_dir, name + "." + info.CNCHI_VERSION.replace(".", "_"))

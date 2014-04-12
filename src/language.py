@@ -35,7 +35,7 @@ LOCALE_DIR = "/usr/share/locale"
 import config
 import canonical.i18n as i18n
 
-_next_page = "location"
+_next_page = "check"
 _prev_page = "welcome"
 
 class Language(Gtk.Box):
@@ -67,7 +67,7 @@ class Language(Gtk.Box):
         self.set_languages_list()
 
         image1 = self.ui.get_object("image1")
-        image1.set_from_file(os.path.join(data_dir, "languages.png"))
+        image1.set_from_file(os.path.join(data_dir, "images/languages.png"))
 
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
@@ -75,7 +75,7 @@ class Language(Gtk.Box):
         super().add(self.ui.get_object("language"))
 
     def on_listbox_row_selected(self, listbox, listbox_row):
-        # Someone selected a different row of the listbox
+        """ Someone selected a different row of the listbox """
         if listbox_row is not None:
             for vbox in listbox_row:
                 for label in vbox.get_children():
@@ -111,7 +111,8 @@ class Language(Gtk.Box):
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             box = Gtk.VBox()
-            label = Gtk.Label(lang)
+            label = Gtk.Label()
+            label.set_markup(lang)
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)

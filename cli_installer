@@ -1,5 +1,6 @@
 #!/usr/bin/bash
-INSTALLER_VERSION=1.2
+INSTALLER_VERSION=2.0
+CNCHI_VERSION=0.5
 
 TEXTDOMAIN=cli_installer
 # we rely on some output which is parsed in english!
@@ -2785,16 +2786,20 @@ select_desktop(){
         "1" "Gnome (Default)" \
         "2" "Cinnamon" \
         "3" "Xfce" \
-        "4" "Openbox" \
-        "5" "Razor-qt" \
-        "6" "Base" 2>${ANSWER} || return 1
+        "4" "KDE" \
+        "5" "Mate" \
+        "6" "Openbox" \
+        "7" "Razor-qt" \
+        "8" "Base" 2>${ANSWER} || return 1
         case $(cat ${ANSWER}) in
             "1") DESKTOP_SELECTED="gnome" ;;
             "2") DESKTOP_SELECTED="cinnamon" ;;
             "3") DESKTOP_SELECTED="xfce" ;;
-            "4") DESKTOP_SELECTED="openbox" ;;
-            "5") DESKTOP_SELECTED="razor" ;;
-            "6") DESKTOP_SELECTED="base" ;;
+            "4") DESKTOP_SELECTED="kde" ;;
+            "5") DESKTOP_SELECTED="mate" ;;
+            "6") DESKTOP_SELECTED="openbox" ;;
+            "7") DESKTOP_SELECTED="razor" ;;
+            "8") DESKTOP_SELECTED="base" ;;
         esac
     done
 }
@@ -2821,31 +2826,51 @@ select_packages() {
 
 
   
-    # Add packages which are not in core repository
-    if [[ "$(grep -w uvesafb /proc/cmdline)" ]]; then
-        ! [[ "$(echo ${PACKAGES} | grep -w v86d)" ]] && PACKAGES="${PACKAGES} v86d"
-    fi
+    # # Add packages which are not in core repository
+    # if [[ "$(grep -w uvesafb /proc/cmdline)" ]]; then
+    #     ! [[ "$(echo ${PACKAGES} | grep -w v86d)" ]] && PACKAGES="${PACKAGES} v86d"
+    # fi
 
+    wget --content-disposition -P /tmp/ "http://install.antergos.com/packages-${CNCHI_VERSION}.xml"
+
+    COMMON_PKG=`xmllint --xpath '//common/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
+    FILESYSTEMS_PKG=`xmllint --xpath '//filesystems/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
+    # Set Desktop Manager and select graphic packages
+    if [[ "${DESKTOP_SELECTED}" == 'base' ]]; then
+        DM_SELECTED='none'
+        GRAPHIC_PKG=''
+    else
+        DM_SELECTED='lightdm'
+        GRAPHIC_PKG=`xmllint --xpath '//graphic/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname dm="true" name="lightdm">| |g'`
+    fi
 
     if [[ "${DESKTOP_SELECTED}" == 'gnome' ]];then
-        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist openssh haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nautilus gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor empathy transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar gnome-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gnome-shell accountsservice gtk3 gdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes gnome-tweak-tool gnome-shell-extensions networkmanager-pptp"
-        DM_SELECTED='gdm'
+        SYSTEM_PKG=`xmllint --xpath '//gnome_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'cinnamon' ]];then
-        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2100-fw ipw2200-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter btrfs-progs ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile ttf-dejavu ttf-bitstream-vera network-manager-applet usb_modeswitch modemmanager networkmanager-openvpn gnome-terminal chromium file-roller evince gnome-screenshot flashplugin gnome-bluetooth nemo nemo-fileroller gnome-calculator xdg-user-dirs-gtk gedit alsa-utils gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav whois dnsutils xfburn gnome-system-monitor pidgin transmission-cli transmission-gtk libreoffice-installer xnoise faenza-hotot-icon hotot-gtk3 shotwell faenza-icon-theme gnome-themes-standard antergos-wallpapers hicolor-icon-theme unzip unrar cinnamon-control-center python2 clutter gconf gobject-introspection libcanberra libxxf86vm startup-notification zenity gtk3 lxdm net-tools gnome-keyring xf86-input-synaptics libgnomeui zukitwo-themes cinnamon-screensaver cinnamon-theme-nadia networkmanager-pptp"
-        DM_SELECTED='lxdm'
+        SYSTEM_PKG=`xmllint --xpath '//cinnamon_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'xfce' ]];then
-        PACKAGES="${PACKAGES} lxdm xfce4 gamin mousepad ristretto thunar-archive-plugin xfburn xfce4-battery-plugin xfce4-datetime-plugin xfce4-notifyd xfce4-screenshooter xfce4-taskmanager network-manager-applet xnoise evince transmission-gtk pidgin gnome-calculator zukitwo-themes gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav xdg-user-dirs-gtk hotot-gtk3 base  base-devel  antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile chromium flashplugin alsa-utils whois dnsutils transmission-cli libreoffice-installer faenza-hotot-icon faenza-icon-theme antergos-wallpapers unzip unrar net-tools xf86-input-synaptics usb_modeswitch modemmanager networkmanager-pptp"
-        DM_SELECTED='lxdm'
+        SYSTEM_PKG=`xmllint --xpath '//xfce_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'openbox' ]];then
-        PACKAGES="${PACKAGES} base  base-devel  antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile chromium flashplugin alsa-utils whois dnsutils transmission-cli libreoffice-installer faenza-hotot-icon faenza-icon-theme antergos-wallpapers unzip unrar net-tools xf86-input-synaptics usb_modeswitch modemmanager openbox obmenu oblogout obconf obkey lxappearance-obconf python2-xdg tint2 volumeicon pcmanfm slim gmrun nitrogen network-manager-applet networkmanager-openvpn networkmanager-pptp sakura mousepad zukitwo-theme-openbox openbox-menu compton xorg-xinit xorg-xkill xnoise slimlock"
-        DM_SELECTED='slim'
+        SYSTEM_PKG=`xmllint --xpath '//openbox_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'razor' ]];then
-        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools xorg-server xorg-server-utils sudo pacmanxg4 pkgfile chromium flashplugin alsa-utils whois dnsutils transmission-cli libreoffice-installer faenza-hotot-icon faenza-icon-theme antergos-wallpapers unzip unrar net-tools xf86-input-synaptics usb_modeswitch modemmanager razor-qt openbox openbox-themes qtfm kdebase-konsole kdeartwork-desktopthemes kdeplasma-applets-networkmanagement kovpn kdesdk-kate kdenetwork-kopete kdegraphics-gwenview clementine vlc kdeutils-kcalc kdegraphics-ksnapshot transmission-qt phonon-vlc hotot-qt qconnman-ui"
-        DM_SELECTED='lxdm'
+        SYSTEM_PKG=`xmllint --xpath '//razor_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="connman" conflicts="netctl">| |g'`
+        NM_SELECTED='connman'
     elif [[ "${DESKTOP_SELECTED}" == 'base' ]];then
-        PACKAGES="${PACKAGES} base base-devel antergos-keyring antergos-mirrorlist haveged crda ipw2200-fw ipw2100-fw zd1211-firmware wireless_tools wpa_actiond b43-fwcutter ntfs-3g dosfstools sudo pkgfile alsa-utils whois dnsutils transmission-cli unzip unrar net-tools usb_modeswitch modemmanager openssh"
-        DM_SELECTED='none'
+        SYSTEM_PKG=`xmllint --xpath '//nox_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="netctl">| |g'`
+        NM_SELECTED='netctl'
+    elif [[ "${DESKTOP_SELECTED}" == 'kde' ]];then
+        SYSTEM_PKG=`xmllint --xpath '//kde_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
+    elif [[ "${DESKTOP_SELECTED}" == 'mate' ]];then
+        SYSTEM_PKG=`xmllint --xpath '//mate_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        NM_SELECTED='NetworkManager'
     fi
+
+    PACKAGES="${PACKAGES} ${COMMON_PKG} ${FILESYSTEMS_PKG} ${GRAPHIC_PKG} ${SYSTEM_PKG}"
 
     
     if [[ -f /tmp/use_ntp ]];then
@@ -4572,7 +4597,7 @@ configure_system() {
     CONTROL_USER=0
 
 
-    chroot ${DESTDIR} systemctl enable ${DM_SELECTED}.service NetworkManager.service  >/dev/null 2>&1
+    chroot ${DESTDIR} systemctl enable ${DM_SELECTED}.service ${NM_SELECTED}.service  >/dev/null 2>&1
     if [[ -f /tmp/use_ntp ]];then
         chroot ${DESTDIR} systemctl enable ntpd.service >/dev/null 2>&1
     fi
@@ -4745,6 +4770,10 @@ configure_system() {
 
         # Fix QT apps
         echo 'export GTK2_RC_FILES="$HOME/.gtkrc-2.0"' >> ${DESTDIR}/etc/bash.bashrc
+
+        # Copy Grub2 theme
+        cp /usr/share/cnchi/grub2-theme/Antergos-Default ${DESTDIR}/boot/grub/themes/Antergos-Default
+        sed -i 's/#GRUB_THEME="/path/to/gfxtheme"/GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"/' ${DESTDIR}/etc/default/grub
 
         ## END POSTPROCESSING ##
     fi
@@ -4919,7 +4948,7 @@ if [[ "$NETWORK_ALIVE" = "" ]];then
 
 
     DIALOG --msgbox $"Welcome to the Antergos Installation program.\n\nThe install process is fairly straightforward, and you should run through the options in the order they are presented.\n\nIf you are unfamiliar with partitioning/making filesystems, you may want to consult some documentation before continuing.\n\nYou have Gparted as a visual app for the partition task available with Antergos" 18 65
-    sh /arch/rankmirrors-script &
+    /usr/bin/reflector -l 40 -p http -f 10 --save /etc/pacman.d/mirrorlist &
 
     while true; do
         mainmenu
