@@ -2,9 +2,9 @@
 Architecture = auto
 SigLevel = PackageOptional
             
-RootDir = {destDir}
-DBPath = {destDir}/var/lib/pacman/
-CacheDir = {destDir}/var/cache/pacman/pkg
+RootDir = ${destDir}
+DBPath = ${destDir}/var/lib/pacman/
+CacheDir = ${destDir}/var/cache/pacman/pkg
 LogFile = /tmp/pacman.log
                        
 # Repositories
@@ -24,7 +24,7 @@ Include = /etc/pacman.d/mirrorlist
 % if arch == 'x86_64':
 [multilib]
 SigLevel = PackageRequired
-Include = /etc/pacman.d/mirrorlist\n
+Include = /etc/pacman.d/mirrorlist
 % endif
 
 [antergos] 
