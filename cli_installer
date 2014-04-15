@@ -4061,10 +4061,11 @@ dogrub_bios() {
         "${bootdev}" &>"/tmp/grub_bios_install.log"
 
     mkdir -p ${DESTDIR}/etc/grub.d
-    cp -f /arch/10_linux ${DESTDIR}/etc/grub.d/
+    cp -f /usr/share/cnchi/scripts/10_antergos ${DESTDIR}/etc/grub.d/
 
     sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=10/' ${DESTDIR}/etc/default/grub
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT=""/' ${DESTDIR}/etc/default/grub
+    sed -i 's/#GRUB_THEME="/path/to/gfxtheme"/GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"/' ${DESTDIR}/etc/default/grub
     chroot "${DESTDIR}" grub-mkconfig -o /boot/grub/grub.cfg &>"/tmp/grub_config.log"
     
     chroot_umount
@@ -4572,7 +4573,6 @@ auto_ftpmirror() {
     while [[ -f '/tmp/.rankmirrors' ]]; do
         /usr/bin/true
     done;
-    mv /tmp/.mirrorlist "${DESTDIR}/etc/pacman.d/mirrorlist"
 }
 
 
