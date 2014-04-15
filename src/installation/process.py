@@ -431,12 +431,11 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
 
         # Add template functionality ;-)
-        template_file_name = os.path.join(self.settings['data'], 'pacman.tmpl')
+        template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
         self.write_file(file_template.render(destDir=self.dest_dir, arch=self.arch), os.path.join("/tmp", "pacman.conf"))
 
     def create_pacman_conf(self):
-
         self.create_pacman_conf_file()
 
         ## Init pyalpm
