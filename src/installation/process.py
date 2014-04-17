@@ -929,34 +929,31 @@ class InstallationProcess(multiprocessing.Process):
 
             if not self.ssd:
                 if "btrfs" in myfmt:
-                    chk = '0'
-                    opts = 'rw,relatime,space_cache,autodefrag,inode_cache'
+                    opts += ',rw,relatime,space_cache,autodefrag,inode_cache'
                 elif "f2fs" in myfmt:
-                    chk = '0'
-                    opts = 'rw,noatime'
+                    opts += ',rw,noatime'
                 elif "ext2" in myfmt:
-                    chk = '0'
-                    opts = 'rw,relatime'
-                elif path == '/':
-                    chk = '1'
-                    opts = "rw,relatime,data=ordered"
+                    opts += ',rw,relatime'
+                elif "ext3" in myfmt or "ext4" in myfmt:
+                    opts += ',rw,relatime,data=ordered'
                 else:
-                    chk = '0'
-                    opts = "rw,relatime,data=ordered"
+                    opts += ",rw,relatime"
 
             else:
                 for i in self.ssd:
-                    if i in self.mount_devices[path] and self.ssd[i]:
-                        opts = 'defaults,noatime'
+                    if i in self.mount_devices[path]:
+                        opts = 'defaults,relatime'
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                         # If using a TRIM supported SSD, discard is a valid mount option for swap
                         if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
                             opts += ',discard'
                         elif myfmt == 'btrfs':
-                            opts = 'rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
-                        elif myfmt == 'f2fs':
-                            opts = 'rw,noatime'
+                            opts += ',rw,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+
+            no_check = ["btrfs", "f2fs"]
+            if path == "/" and myfmt not in no_check:
+                chk = '1'
 
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
