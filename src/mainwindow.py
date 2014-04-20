@@ -133,10 +133,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_ui.add_from_file(self.ui_dir + "header.ui")
         self.header = self.header_ui.get_object("header")
 
-        self.header.set_title("Cnchi v%s" % info.CNCHI_VERSION)
-        self.header.set_subtitle(_("Antergos Installer"))
-        self.header.set_show_close_button(True)
-
         self.logo = self.header_ui.get_object("logo")
         data_dir = self.settings.get('data')
         logo_path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
@@ -216,7 +212,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
-        self.set_title(_('Cnchi - Antergos Installer'))
+        title = "Cnchi %s" % info.CNCHI_VERSION
+        self.set_title(title)
+        self.header.set_title(title)
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(True)
+
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
