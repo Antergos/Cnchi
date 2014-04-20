@@ -16,29 +16,6 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="backwards_button">
-            <property name="label">gtk-go-back</property>
-            <property name="use_action_appearance">False</property>
-            <!--<property name="width_request">115</property>-->
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="no_show_all">True</property>
-            <property name="halign">end</property>
-            <!--<property name="margin_left">10</property>-->
-            <!--<property name="margin_right">10</property>-->
-            <property name="margin_top">8</property>
-            <property name="margin_bottom">8</property>
-            <property name="use_action_appearance">False</property>
-            <property name="use_stock">True</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="forward_button">
             <property name="label">gtk-go-forward</property>
             <property name="use_action_appearance">False</property>
@@ -57,6 +34,29 @@
             <property name="image_position">right</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="backwards_button">
+            <property name="label">gtk-go-back</property>
+            <property name="use_action_appearance">False</property>
+            <!--<property name="width_request">115</property>-->
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">end</property>
+            <!--<property name="margin_left">10</property>-->
+            <!--<property name="margin_right">10</property>-->
+            <property name="margin_top">8</property>
+            <property name="margin_bottom">8</property>
+            <property name="use_action_appearance">False</property>
+            <property name="use_stock">True</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="pack_type">end</property>
