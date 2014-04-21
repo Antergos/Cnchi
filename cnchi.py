@@ -67,7 +67,8 @@ class CnchiApp(Gtk.Application):
         # It seems to work ok without
         #self.add_window(window)
         
-        window.show_all()
+        # This is unnecessary as show_all is called in MainWindow
+        #window.show_all()
     
     def do_startup(self):
         """ Override the 'startup' signal of GLib.Application. """

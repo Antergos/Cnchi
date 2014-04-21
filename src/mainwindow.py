@@ -143,7 +143,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
-        self.progressbar = self.ui.get_object("progressbar1")
+        self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
 
         self.forward_button = self.header_ui.get_object("forward_button")
@@ -180,7 +180,7 @@ class MainWindow(Gtk.ApplicationWindow):
         params['backwards_button'] = self.backwards_button
         params['callback_queue'] = self.callback_queue
         params['settings'] = self.settings
-        params['main_progressbar'] = self.ui.get_object('progressbar1')
+        params['main_progressbar'] = self.progressbar
         
         if cmd_line.packagelist:
             params['alternate_package_list'] = cmd_line.packagelist
@@ -255,7 +255,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Hide backwards button
         self.backwards_button.hide()
-
+        
         # Hide titlebar but show border decoration
         #self.get_window().set_accept_focus(True)
         #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)

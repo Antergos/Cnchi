@@ -46,6 +46,7 @@ class Language(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
+        self.main_progressbar = params['main_progressbar']
 
         super().__init__()
 
@@ -154,7 +155,7 @@ class Language(Gtk.Box):
 
     def prepare(self, direction):
         self.translate_ui()
-
+        
         # scroll language treeview to selected item
         #self.scroll_to_selected_item(self.treeview_language)
 
