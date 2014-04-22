@@ -129,8 +129,13 @@
         <pkgname>cdrkit</pkgname>
         <pkgname>cinnamon</pkgname>
         <pkgname>cinnamon-control-center</pkgname>
+        <pkgname>cinnamon-desktop</pkgname>
+        <pkgname>cinnamon-menus</pkgname>
+        <pkgname>cinnamon-session</pkgname>
+        <pkgname>cinnamon-settings-daemon</pkgname>
         <pkgname>cinnamon-screensaver</pkgname>
         <pkgname>cinnamon-theme-nadia</pkgname>
+        <pkgname>cjs</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
@@ -156,6 +161,7 @@
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
+        <pkgname>muffin</pkgname>
         <pkgname>nemo</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>

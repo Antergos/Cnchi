@@ -8,15 +8,22 @@ vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
 if ! [ -f "${previous}" ]; then
 	touch ${previous};
 	# Find the best mirrors (fastest and latest)
-	echo "Updating mirrorlist..."
+	echo "Selecting the best mirrors..."
+	echo "Testing Arch mirrors..."
 	reflector -p http -l 30 -f 5 --save /etc/pacman.d/mirrorlist;
+	echo "Done."
+	sudo -u antergos wget http://antergos.info/antergos-mirrorlist
+	echo "Testing Antergos mirrors..."
+	rankmirrors -n 0 -r antergos antergos-mirrorlist > /tmp/antergos-mirrorlist
+	cp /tmp/antergos-mirrorlist /etc/pacman.d/
+	echo "Done."
 	# Install any packages that haven't been added to the iso yet but are needed.
 	echo "Installing missing packages..."
 	# Check if system is UEFI boot.
 	if [ -d "${uefi}" ]; then
-		pacman -Sy git grub os-prober efibootmgr f2fs-tools --noconfirm --needed;
+		pacman -Syy git grub os-prober efibootmgr f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
 	else
-		pacman -Sy git grub os-prober f2fs-tools --noconfirm --needed;
+		pacman -Syy git grub os-prober f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
 	fi
 	# Enable kernel modules and other services
 	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then
@@ -42,10 +49,12 @@ if ! [ -f "${previous}" ]; then
 	
 else
 	echo "Previous testing setup detected, skipping downloads"
+	echo "Verifying that nothing is mounted from a previous install attempt."
+	umount -lf /install/boot >/dev/null 2&>1
+	umount -lf /install >/dev/null 2&>1
 	# Check for changes on github since last time script was executed
 	# Update Cnchi with latest testing code
 	echo "Getting latest version of Cnchi from testing branch..."
-	# Check commandline arguments to choose repo
 	cd /usr/share/cnchi
 	git pull origin master;
 fi
