@@ -340,7 +340,7 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
-    def get_part_sizes(self, disc_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size):
+    def get_part_sizes(self, disc_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size):
         part_sizes = {}
         
         part_sizes['boot'] = 256
@@ -409,7 +409,7 @@ class AutoPartition(object):
 
         # Note: Partition sizes are expressed in MB
 
-        part_sizes = self.get_part_sizes(disc_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size)      
+        part_sizes = self.get_part_sizes(disc_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size)      
         # TODO: Rewrite this to use dict in all code and not different independent vars
         boot_part_size = part_sizes['boot']
         lvm_pv_part_size = part_sizes['lvm_pv']
@@ -547,7 +547,7 @@ class AutoPartition(object):
             # TODO: check space we have now for creating logical volumes, something like:
             # vg_size = subprocess.check_output(["vgdisplay", "-c", "8", "AntergosVG"])
             
-            part_sizes = self.get_part_sizes(vg_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size)      
+            part_sizes = self.get_part_sizes(vg_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size)      
             # TODO: Rewrite this to use dict in all code and not different independent vars
             boot_part_size = part_sizes['boot']
             lvm_pv_part_size = part_sizes['lvm_pv']
