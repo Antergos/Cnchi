@@ -343,6 +343,8 @@ class AutoPartition(object):
     def get_part_sizes(self, disc_size, start_part_sizes=0):
         part_sizes = {}
         
+        part_sizes['disc'] = disc_size
+        
         part_sizes['boot'] = 256
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
@@ -369,6 +371,19 @@ class AutoPartition(object):
         part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
         
         return part_sizes
+
+    def show_part_sizes(self, part_sizes):
+        logging.debug(_("Total disc size: %dMB"), part_sizes['disc'])
+        logging.debug(_("Boot partition size: %dMB"), part_sizes['boot'])
+
+        if self.lvm:
+            logging.debug(_("LVM physical volume size: %dMB"), part_sizes['lvm_pv'])
+
+        logging.debug(_("Swap partition size: %dMB"), part_sizes['swap'])
+        logging.debug(_("Root partition size: %dMB"), part_sizes['root'])
+
+        if self.home:
+            logging.debug(_("Home partition size: %dMB"), part_sizes['home'])
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
@@ -410,21 +425,7 @@ class AutoPartition(object):
 
         start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
         part_sizes = self.get_part_sizes(disc_size, start_part_sizes)
-
-        logging.debug(_("Total disc size: %dMB"), disc_size)
-        if self.uefi:
-            logging.debug(_("GPT-BIOS partition size: %dMB"), gpt_bios_grub_part_size)
-            logging.debug(_("UEFI partition size: %dMB"), uefisys_part_size)
-        logging.debug(_("Boot partition size: %dMB"), part_sizes['boot'])
-
-        if self.lvm:
-            logging.debug(_("LVM physical volume size: %dMB"), part_sizes['lvm_pv'])
-
-        logging.debug(_("Swap partition size: %dMB"), part_sizes['swap'])
-        logging.debug(_("Root partition size: %dMB"), part_sizes['root'])
-
-        if self.home:
-            logging.debug(_("Home partition size: %dMB"), part_sizes['home'])
+        self.show_part_sizes(part_sizes)
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
@@ -535,20 +536,22 @@ class AutoPartition(object):
 
             subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
             subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
-
-            vg_size = disc_size
             
+            # Fix issue 180
             try:
                 # Check space we have now for creating logical volumes
                 vg_info = check_output("vgdisplay -c AntergosVG")
                 # Get column number 12: Size of volume group in kilobytes
                 vg_size = int(vg_info.split(":")[11]) / 1024
-                logging.debug("Real AntergosVG volume group size: %d MB", vg_size)
+                if part_sizes['lvm_pv'] > vg_size:
+                    logging.debug("Real AntergosVG volume group size: %d MB", vg_size)
+                    logging.debug("Reajusting logical volume sizes")
+                    diff_size = part_sizes['lvm_pv'] - vg_size
+                    start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+                    part_sizes = self.get_part_sizes(disc_size - diff_size, start_part_sizes)
+                    self.show_part_sizes(part_sizes)
             except Exception as err:
                 logging.exception(err)
-            
-            start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
-            part_sizes = self.get_part_sizes(disc_size, start_part_sizes)
             
             subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(part_sizes['root'])), "AntergosVG"])
 
