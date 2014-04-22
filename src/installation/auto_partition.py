@@ -340,7 +340,7 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
-    def get_part_sizes(self, disc_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size):
+    def get_part_sizes(self, disc_size, start_part_sizes=0):
         part_sizes = {}
         
         part_sizes['boot'] = 256
@@ -352,7 +352,6 @@ class AutoPartition(object):
         if mem_total <= 1572864:
             part_sizes['swap'] = mem_total / 1024
 
-        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
         part_sizes['root'] = disc_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
         
         if self.home:
@@ -409,28 +408,23 @@ class AutoPartition(object):
 
         # Note: Partition sizes are expressed in MB
 
-        part_sizes = self.get_part_sizes(disc_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size)      
-        # TODO: Rewrite this to use dict in all code and not different independent vars
-        boot_part_size = part_sizes['boot']
-        lvm_pv_part_size = part_sizes['lvm_pv']
-        swap_part_size = part_sizes['swap']
-        root_part_size = part_sizes['root']
-        home_part_size = part_sizes['home']
+        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+        part_sizes = self.get_part_sizes(disc_size, start_part_sizes)
 
         logging.debug(_("Total disc size: %dMB"), disc_size)
         if self.uefi:
             logging.debug(_("GPT-BIOS partition size: %dMB"), gpt_bios_grub_part_size)
             logging.debug(_("UEFI partition size: %dMB"), uefisys_part_size)
-        logging.debug(_("Boot partition size: %dMB"), boot_part_size)
+        logging.debug(_("Boot partition size: %dMB"), part_sizes['boot'])
 
         if self.lvm:
-            logging.debug(_("LVM physical volume size: %dMB"), lvm_pv_part_size)
+            logging.debug(_("LVM physical volume size: %dMB"), part_sizes['lvm_pv'])
 
-        logging.debug(_("Swap partition size: %dMB"), swap_part_size)
-        logging.debug(_("Root partition size: %dMB"), root_part_size)
+        logging.debug(_("Swap partition size: %dMB"), part_sizes['swap'])
+        logging.debug(_("Root partition size: %dMB"), part_sizes['root'])
 
         if self.home:
-            logging.debug(_("Home partition size: %dMB"), home_part_size)
+            logging.debug(_("Home partition size: %dMB"), part_sizes['home'])
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
@@ -461,20 +455,20 @@ class AutoPartition(object):
             subprocess.check_call(['sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s'
                 % (uefisys_part_size, device)], shell=True)
             subprocess.check_call(['sgdisk --set-alignment="2048" --new=3:0:+%dM --typecode=3:8300 --attributes=3:set:2 --change-name=3:ANTERGOS_BOOT %s'
-                % (boot_part_size, device)], shell=True)
+                % (part_sizes['boot'], device)], shell=True)
 
             if self.lvm:
                 subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8E00 --change-name=4:ANTERGOS_LVM %s'
-                    % (lvm_pv_part_size, device)], shell=True)
+                    % (part_sizes['lvm_pv'], device)], shell=True)
             else:
                 subprocess.check_call(['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
-                    % (swap_part_size, device)], shell=True)
+                    % (part_sizes['swap'], device)], shell=True)
                 subprocess.check_call(['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
-                    % (root_part_size, device)], shell=True)
+                    % (part_sizes['root'], device)], shell=True)
 
                 if self.home:
                     subprocess.check_call(['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
-                        % (home_part_size, device)], shell=True)
+                        % (part_sizes['home'], device)], shell=True)
 
             logging.debug(check_output("sgdisk --print %s" % device))
         else:
@@ -487,28 +481,28 @@ class AutoPartition(object):
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
             # Create boot partition (all sizes are in MB)
-            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(boot_part_size)])
+            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(part_sizes['boot'])])
             # Set boot partition as bootable
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
 
             if self.lvm:
-                start = boot_part_size
-                end = start + lvm_pv_part_size
+                start = part_sizes['boot']
+                end = start + part_sizes['lvm_pv']
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
                 # Set lvm flag
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
             else:
                 # Create swap partition
-                start = boot_part_size
-                end = start + swap_part_size
+                start = part_sizes['boot']
+                end = start + part_sizes['swap']
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
                     str(start), str(end)])
 
                 if self.home:
                     # Create root partition
                     start = end
-                    end = start + root_part_size
+                    end = start + part_sizes['root']
                     subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
 
                     # Create home partition
@@ -544,24 +538,25 @@ class AutoPartition(object):
 
             vg_size = disc_size
             
-            # TODO: check space we have now for creating logical volumes, something like:
-            # vg_size = subprocess.check_output(["vgdisplay", "-c", "8", "AntergosVG"])
+            try:
+                # Check space we have now for creating logical volumes
+                vg_info = check_output(["vgdisplay -c AntergosVG"])
+                # Get column number 12: Size of volume group in kilobytes
+                vg_size = int(vg_info.split(":")[11]) / 1024
+                logging.debug("Real AntergosVG volume group size: %d MB", vg_size)
+            except Exception as err:
+                logging.exception(err)
             
-            part_sizes = self.get_part_sizes(vg_size, empty_space_size, gpt_bios_grub_part_size, uefisys_part_size)      
-            # TODO: Rewrite this to use dict in all code and not different independent vars
-            boot_part_size = part_sizes['boot']
-            lvm_pv_part_size = part_sizes['lvm_pv']
-            swap_part_size = part_sizes['swap']
-            root_part_size = part_sizes['root']
-            home_part_size = part_sizes['home']
+            start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+            part_sizes = self.get_part_sizes(disc_size, start_part_sizes)
             
-            subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(root_part_size)), "AntergosVG"])
+            subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(part_sizes['root'])), "AntergosVG"])
 
             if not self.home:
                 # Use the remainig space for our swap volume
                 subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
             else:
-                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(swap_part_size)), "AntergosVG"])
+                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(part_sizes['swap'])), "AntergosVG"])
                 # Use the remainig space for our home volume
                 subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
 
