@@ -540,7 +540,7 @@ class AutoPartition(object):
             
             try:
                 # Check space we have now for creating logical volumes
-                vg_info = check_output(["vgdisplay -c AntergosVG"])
+                vg_info = check_output("vgdisplay -c AntergosVG")
                 # Get column number 12: Size of volume group in kilobytes
                 vg_size = int(vg_info.split(":")[11]) / 1024
                 logging.debug("Real AntergosVG volume group size: %d MB", vg_size)
