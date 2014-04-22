@@ -342,7 +342,7 @@ postinstall(){
 	# Specific user configurations
 
 	## Set desktop-specific settings
-	"${DESKTOP}_settings" > /tmp/postinstall.log 2>&1
+	"${DESKTOP}_settings"
 
 	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
@@ -368,5 +368,5 @@ postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4 $5
+postinstall $1 $2 $3 $4 $5 > /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock

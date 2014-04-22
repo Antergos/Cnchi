@@ -395,8 +395,10 @@ class InstallationProcess(multiprocessing.Process):
         # Copy Cnchi log to new installation
         datetime = time.strftime("%Y%m%d") + "-" + time.strftime("%H%M%S")
         dst = os.path.join(self.dest_dir, "var/log/cnchi-%s.log" % datetime)
+        pidst = os.path.join(self.dest_dir, "var/log/postinstall-%s.log" % datetime)
         try:
             shutil.copy("/tmp/cnchi.log", dst)
+            shutil.copy("/tmp/postinstall.log", pidst)
         except FileNotFoundError:
             logging.warning(_("Can't copy Cnchi log to %s"), dst)
         except FileExistsError:
