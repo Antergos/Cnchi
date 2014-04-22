@@ -340,6 +340,37 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
+    def get_part_sizes(disc_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size):
+        part_sizes = {}
+        
+        part_sizes['boot'] = 256
+
+        mem_total = check_output("grep MemTotal /proc/meminfo")
+        mem_total = int(mem_total.split()[1])
+
+        part_sizes['swap'] = 1536
+        if mem_total <= 1572864:
+            part_sizes['swap'] = mem_total / 1024
+
+        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+        part_sizes['root'] = disc_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
+        
+        if self.home:
+            # Decide how much we leave to root and how much we leave to /home
+            new_root_part_size = part_sizes['root'] / 5
+            if new_root_part_size > MAX_ROOT_SIZE:
+                new_root_part_size = MAX_ROOT_SIZE
+            elif new_root_part_size < MIN_ROOT_SIZE:
+                new_root_part_size = MIN_ROOT_SIZE
+            part_sizes['home'] = part_sizes['root'] - new_root_part_size
+            part_sizes['root'] = new_root_part_size
+        else:
+            part_sizes['home'] = 0
+
+        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
+        
+        return part_sizes
+
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
@@ -378,30 +409,13 @@ class AutoPartition(object):
 
         # Note: Partition sizes are expressed in MB
 
-        boot_part_size = 256
-
-        mem_total = check_output("grep MemTotal /proc/meminfo")
-        mem_total = int(mem_total.split()[1])
-
-        swap_part_size = 1536
-        if mem_total <= 1572864:
-            swap_part_size = mem_total / 1024
-
-        root_part_size = disc_size - (empty_space_size + gpt_bios_grub_part_size + uefisys_part_size + boot_part_size + swap_part_size)
-
-        home_part_size = 0
-        
-        if self.home:
-            # Decide how much we leave to root and how much we leave to /home
-            new_root_part_size = root_part_size / 5
-            if new_root_part_size > MAX_ROOT_SIZE:
-                new_root_part_size = MAX_ROOT_SIZE
-            elif new_root_part_size < MIN_ROOT_SIZE:
-                new_root_part_size = MIN_ROOT_SIZE
-            home_part_size = root_part_size - new_root_part_size
-            root_part_size = new_root_part_size
-
-        lvm_pv_part_size = swap_part_size + root_part_size + home_part_size
+        part_sizes = get_part_sizes(disc_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size)      
+        # TODO: Rewrite this to use dict in all code and not different independent vars
+        boot_part_size = part_sizes['boot']
+        lvm_pv_part_size = part_sizes['lvm_pv']
+        swap_part_size = part_sizes['swap']
+        root_part_size = part_sizes['root']
+        home_part_size = part_sizes['home']
 
         logging.debug(_("Total disc size: %dMB"), disc_size)
         if self.uefi:
@@ -491,13 +505,17 @@ class AutoPartition(object):
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
                     str(start), str(end)])
 
-                # Create root partition
-                start = end
-                end = start + root_part_size
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
-
                 if self.home:
+                    # Create root partition
+                    start = end
+                    end = start + root_part_size
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+
                     # Create home partition
+                    start = end
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                else:
+                    # Create root partition
                     start = end
                     subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
 
@@ -523,6 +541,20 @@ class AutoPartition(object):
 
             subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
             subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
+
+            vg_size = disc_size
+            
+            # TODO: check space we have now for creating logical volumes, something like:
+            # vg_size = subprocess.check_output(["vgdisplay", "-c", "8", "AntergosVG"])
+            
+            part_sizes = get_part_sizes(vg_size, empty_space_size, gpt_bios_grup_part_size, uefisys_part_size)      
+            # TODO: Rewrite this to use dict in all code and not different independent vars
+            boot_part_size = part_sizes['boot']
+            lvm_pv_part_size = part_sizes['lvm_pv']
+            swap_part_size = part_sizes['swap']
+            root_part_size = part_sizes['root']
+            home_part_size = part_sizes['home']
+            
             subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(root_part_size)), "AntergosVG"])
 
             if not self.home:
@@ -532,6 +564,8 @@ class AutoPartition(object):
                 subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(swap_part_size)), "AntergosVG"])
                 # Use the remainig space for our home volume
                 subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
+
+        # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
         # Note: Make sure the "root" partition is defined first!
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
