@@ -48,7 +48,7 @@ class Language(Gtk.Box):
         self.settings = params['settings']
         self.main_progressbar = params['main_progressbar']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "language.ui"))
@@ -73,7 +73,7 @@ class Language(Gtk.Box):
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
-        super().add(self.ui.get_object("language"))
+        self.add(self.ui.get_object("language"))
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
@@ -166,3 +166,7 @@ class Language(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Language')

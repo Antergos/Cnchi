@@ -40,7 +40,7 @@ class Location(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
 
@@ -61,7 +61,7 @@ class Location(Gtk.Box):
 
         self.selected_country = ""
 
-        super().add(self.ui.get_object("location"))
+        self.add(self.ui.get_object("location"))
 
     def translate_ui(self):
         txt = _("The location you select will be used to help determine the system locale.\n" \
@@ -206,3 +206,7 @@ class Location(Gtk.Box):
 
     def get_next_page(self):
         return _next_page
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Location')

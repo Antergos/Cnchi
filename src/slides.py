@@ -50,7 +50,7 @@ class Slides(Gtk.Box):
         self.settings = params['settings']
         self.main_progressbar = params['main_progressbar']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         builder = Gtk.Builder()
 
@@ -82,7 +82,7 @@ class Slides(Gtk.Box):
 
         self.scrolled_window.add(self.webview)
 
-        super().add(builder.get_object("slides"))
+        self.add(builder.get_object("slides"))
 
         self.fatal_error = False
         self.should_pulse = False
