@@ -167,6 +167,12 @@ class Language(Gtk.Box):
     def get_next_page(self):
         return _next_page
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Language')

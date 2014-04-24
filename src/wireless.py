@@ -202,6 +202,12 @@ class Wireless(Gtk.Box):
     def store_values(self):
         return True
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Wireless')

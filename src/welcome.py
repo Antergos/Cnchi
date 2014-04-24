@@ -163,6 +163,12 @@ class Welcome(Gtk.Box):
         self.auto_timezone_thread = timezone.AutoTimezoneThread(self.auto_timezone_coords, self.settings)
         self.auto_timezone_thread.start()
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Welcome')

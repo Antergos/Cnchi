@@ -196,6 +196,12 @@ class Check(Gtk.Box):
         #self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Check')

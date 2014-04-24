@@ -343,6 +343,12 @@ class Features(Gtk.Box):
             self.enable_defaults()
             self.defaults = False
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Features')

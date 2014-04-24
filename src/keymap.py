@@ -300,6 +300,12 @@ class Keymap(Gtk.Box):
         self.keyboard_widget.set_variant(self.keyboard_variant)
         self.keyboard_widget.show_all()
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 if __name__ == '__main__':
     from test_screen import _,run
     run('Keymap')
