@@ -77,7 +77,7 @@ fi
 
 GNOME_SESSION=`which gnome-session`
 CINNAMON_SESSION=`which cinnamon-session`
-KDE_SESSION=`which kde-plasma`
+KDE_SESSION=`which startkde`
 
 GNOME_INSTALLED="FALSE"
 CINNAMON_INSTALLED="FALSE"
@@ -95,7 +95,11 @@ if [ "$KDE_SESSION" != "" ]; then
     KDE_INSTALLED="TRUE"
 fi
 
-ANS=$(zenity  --list  --text "Desktop Install/Uninstall script" --checklist  --column "Installed" --column "Desktop" $GNOME_INSTALLED "Gnome" $CINNAMON_INSTALLED "Cinnamon" $KDE_INSTALLED "KDE" --separator="|")
+ANS=$(zenity --title="Antergos - Desktops" --height=300 --list  --text "Choose your desired desktops" --checklist  --column "Installed" --column "Desktop" $GNOME_INSTALLED "Gnome" $CINNAMON_INSTALLED "Cinnamon" $KDE_INSTALLED "KDE" --separator="|")
+
+if [ "$ANS" == "" ]; then
+    exit 0
+fi
 
 WANTS_GNOME="FALSE"
 WANTS_CINNAMON="FALSE"
@@ -150,16 +154,22 @@ else
     fi
 fi
 
-if [ $(zenity --question --text="Are you sure you wish to proceed?") ]; then
-    echo "YES"
-else
-    echo "NO"
+if [ "$INSTALL" == "" ] && [ "$UNINSTALL" == "" ]; then
+    # Nothing to be done. Exit
+    zenity --info --text="Nothing to be done. This script will end. Bye!"
+    exit 0
+fi
+
+if ! zenity --question --text="Are you sure you wish to proceed?"; then
+    exit 0
 fi
 
 for item in ${UNINSTALL// / }; do
-    do_uninstall(item)
+    echo "UNINSTALLING $item"
+    do_uninstall()
 done
 
 for item in ${INSTALL// / }; do
-    do_install(item)
+    echo "INSTALLING $item"
+    do_install()
 done
