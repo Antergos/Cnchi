@@ -46,7 +46,7 @@ class Welcome(Gtk.Box):
         self.settings = params['settings']
         self.disable_tryit = params['disable_tryit']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "welcome.ui"))
@@ -81,7 +81,7 @@ class Welcome(Gtk.Box):
 
         self.set_name("welcome")
 
-        super().add(self.ui.get_object("welcome"))
+        self.add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
         txt = ""
@@ -159,3 +159,7 @@ class Welcome(Gtk.Box):
         import timezone
         self.auto_timezone_thread = timezone.AutoTimezoneThread(self.auto_timezone_coords, self.settings)
         self.auto_timezone_thread.start()
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Welcome')

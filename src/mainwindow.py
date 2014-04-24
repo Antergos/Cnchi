@@ -86,8 +86,6 @@ class MainWindow(Gtk.ApplicationWindow):
                           'and run this installer again.') % tmp_running)
             sys.exit(1)
 
-        #super().__init__()
-
         logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
 
         current_process = multiprocessing.current_process()

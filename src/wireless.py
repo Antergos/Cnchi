@@ -39,7 +39,7 @@ class Wireless(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         # Check whether we can talk to NM at all
         try:
@@ -70,7 +70,7 @@ class Wireless(Gtk.Box):
         self.stop_text = None
         self.skip = False
         
-        super().add(self.ui.get_object("wireless"))
+        self.add(self.ui.get_object("wireless"))
 
     def plugin_translate(self, lang):
         pass
@@ -203,17 +203,5 @@ class Wireless(Gtk.Box):
         return True
 
 if __name__ == '__main__':
-    window = Gtk.Window()
-    window.connect('destroy', Gtk.main_quit)
-    window.set_size_request(300, 300)
-    window.set_border_width(12)
-    params = {}
-    params['title'] = "Cnchi"
-    params['ui_dir'] = "/usr/share/cnchi/ui"
-    params['settings'] = None
-    params['forward_button'] = Gtk.Button.new()
-    params['backwards_button'] = Gtk.Button.new()
-    screen = Wireless(params)
-    window.add(screen)
-    window.show_all()
-    Gtk.main()
+    from test_screen import _,run
+    run('Wireless')
