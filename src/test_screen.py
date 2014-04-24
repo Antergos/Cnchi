@@ -45,6 +45,7 @@ def run(screen_name):
     params = {}
     params['title'] = "Cnchi"
     params['ui_dir'] = "/usr/share/cnchi/ui"
+    params['disable_tryit'] = False
     import config
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')

@@ -32,7 +32,10 @@ from show_message import warning
 
 # Import functions
 import config
-import src.info as info
+try:
+    import src.info as info
+except ImportError:
+    import info
 
 _next_page = "language"
 _prev_page = None
