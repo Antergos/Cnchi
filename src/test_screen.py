@@ -61,6 +61,9 @@ def get_screen(screen_name, params):
     elif screen_name == "Slides":
         import slides
         screen = slides.Slides(params)
+    elif screen_name == "InstallationAsk":
+        import ask
+        screen = ask.InstallationAsk(params)
     return screen
 
 def run(screen_name):

@@ -26,11 +26,12 @@ from gi.repository import Gtk, Gdk
 
 import sys
 import os
-import canonical.misc as misc
 import logging
+import subprocess
+
+import canonical.misc as misc
 import show_message as show
 import bootinfo
-import subprocess
 
 try:
     import parted

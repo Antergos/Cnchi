@@ -22,8 +22,9 @@
 
 from gi.repository import Gtk
 import os
-import canonical.misc as misc
 import logging
+
+import canonical.misc as misc
 from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed

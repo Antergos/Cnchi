@@ -26,6 +26,7 @@ from gi.repository import Gtk, Gdk
 import subprocess
 import os
 import logging
+
 import canonical.gtkwidgets as gtkwidgets
 
 # Insert the src/parted directory at the front of the path.

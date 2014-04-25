@@ -24,6 +24,16 @@
 
 from gi.repository import Gtk
 
+import os
+import sys
+
+if __name__ == '__main__':
+    # Insert the parent directory at the front of the path.
+    # This is used only when we want to test this screen
+    base_dir = os.path.dirname(__file__) or '.'
+    parent_dir = os.path.join(base_dir, '..')
+    sys.path.insert(0, parent_dir)
+
 import bootinfo
 import logging
 import os
@@ -232,3 +242,13 @@ class InstallationAsk(Gtk.Box):
         if widget.get_active():
             self.next_page = "installation_advanced"
             self.enable_automatic_options(False)
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('InstallationAsk')
