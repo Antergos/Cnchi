@@ -63,12 +63,12 @@ class Pac(object):
             self.handle = self.config.initialize_alpm()
 
             # Set callback functions
+            self.handle.logcb = self.cb_log
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_conv
             self.handle.progresscb = self.cb_progress
-            self.handle.logcb = self.cb_log
 
     def finalize(self, t):
         """ Commit a transaction """
@@ -297,26 +297,23 @@ class Pac(object):
         #elif level & pyalpm.LOG_FUNCTION:
         #    pass
 
-    def cb_progress(self, _target, _percent, n, i):
+    def cb_progress(self, target, percent, n, i):
         """ Shows install progress """
-        if _target:
-            target = _("Installing %s (%d/%d)") % (_target, i, n)
+        if target:
+            msg = _("Installing %s (%d/%d)") % (target, i, n)
             percent = i / n
         else:
-            target = _("Checking and loading packages...")
-            percent = _percent / 100
+            msg = _("Checking and loading packages... (%d targets)") % n
+            percent = percent / 100
         
-        self.queue_event('info', target)
+        self.queue_event('info', msg)
         self.queue_event('percent', percent)
 
 
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
         # Check if a new file is coming
-                
         if filename != self.last_dl_filename or self.last_dl_total != total:
-            # Yes, new file
-            
             self.last_dl_filename = filename
             self.last_dl_total = total
             self.last_dl_progress = 0
@@ -332,8 +329,6 @@ class Pac(object):
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
                 text = _("Downloading %s...") % filename
-                
-                #self.total_downloaded += total
 
             self.queue_event('info', text)
             self.queue_event('percent', 0)
