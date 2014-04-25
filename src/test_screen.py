@@ -64,6 +64,15 @@ def get_screen(screen_name, params):
     elif screen_name == "InstallationAsk":
         import ask
         screen = ask.InstallationAsk(params)
+    elif screen_name == "InstallationAdvanced":
+        import advanced
+        screen = advanced.InstallationAdvanced(params)
+    elif screen_name == "InstallationAlongside":
+        import alongside
+        screen = alongside.InstallationAlongside(params)
+    elif screen_name == "InstallationAutomatic":
+        import automatic
+        screen = automatic.InstallationAutomatic(params)
     return screen
 
 def run(screen_name):
@@ -90,6 +99,7 @@ def run(screen_name):
     params['header'] = Gtk.HeaderBar.new()
     params['testing'] = True
     params['callback_queue'] = None
+    params['alternate_package_list'] = ""
     screen = get_screen(screen_name, params)
     if screen != None:
         screen.prepare('forward')
