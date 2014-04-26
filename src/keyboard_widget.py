@@ -70,11 +70,10 @@ class KeyboardWidget(Gtk.DrawingArea):
         ()]
     }
 
-    def __init__(self, parent=None):
+    def __init__(self):
         Gtk.DrawingArea.__init__(self)
         
-        #self.set_size_request(460, 130)
-        self.set_size_request(460, 60)
+        self.set_size_request(460, 130)
         
         self.codes = []
 
