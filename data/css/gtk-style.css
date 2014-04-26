@@ -69,3 +69,29 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     border-width: 1px;
     border-style: none;
 }
+
+/* close */
+.titlebar .left .titlebutton:first-child,
+.titlebar .right .titlebutton:last-child {
+	background-image: url('assets/close.png');
+}
+
+.titlebar .left .titlebutton:first-child:backdrop,
+.titlebar .right .titlebutton:last-child:backdrop {
+	background-image: url('assets/close.png');
+}
+
+.titlebar .left .titlebutton:first-child:hover,
+.titlebar .right .titlebutton:last-child:hover {
+	background-image: url('assets/close-hover.png');
+}
+
+.titlebar .left .titlebutton:first-child:backdrop:hover,
+.titlebar .right .titlebutton:last-child:backdrop:hover {
+	background-image: url('assets/close-hover.png');
+}
+
+.titlebar .left .titlebutton:first-child:active,
+.titlebar .right .titlebutton:last-child:active {
+	background-image: url('assets/close.png');
+}
