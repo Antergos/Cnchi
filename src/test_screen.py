@@ -87,7 +87,8 @@ def run(screen_name):
     settings.set('data', '/usr/share/cnchi/data')
     from desktop_environments import DESKTOPS
     settings.set('desktops', DESKTOPS)
-
+    settings.set('language_code', 'ca')
+    
     params = {}
     params['title'] = "Cnchi"
     params['ui_dir'] = "/usr/share/cnchi/ui"
