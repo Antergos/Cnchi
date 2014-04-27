@@ -49,7 +49,7 @@ class Keymap(Gtk.Box):
 
         self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
 
@@ -65,7 +65,7 @@ class Keymap(Gtk.Box):
 
         self.create_toolviews()
 
-        super().add(self.ui.get_object("keymap"))
+        self.add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
@@ -299,3 +299,13 @@ class Keymap(Gtk.Box):
         self.keyboard_widget.set_layout(self.keyboard_layout)
         self.keyboard_widget.set_variant(self.keyboard_variant)
         self.keyboard_widget.show_all()
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Keymap')

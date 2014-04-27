@@ -25,13 +25,17 @@
 from gi.repository import Gtk, Gdk
 import subprocess
 import os
+import sys
 import logging
-import canonical.gtkwidgets as gtkwidgets
 
-# Insert the src/parted directory at the front of the path.
-#base_dir = os.path.dirname(__file__) or '.'
-#parted_dir = os.path.join(base_dir, 'parted3')
-#sys.path.insert(0, parted_dir)
+if __name__ == '__main__':
+    # Insert the parent directory at the front of the path.
+    # This is used only when we want to test this screen
+    base_dir = os.path.dirname(__file__) or '.'
+    parent_dir = os.path.join(base_dir, '..')
+    sys.path.insert(0, parent_dir)
+
+import canonical.gtkwidgets as gtkwidgets
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
@@ -1833,3 +1837,13 @@ class InstallationAdvanced(Gtk.Box):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('InstallationAdvanced')

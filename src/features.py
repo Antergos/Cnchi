@@ -42,7 +42,7 @@ class Features(Gtk.Box):
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
 
@@ -84,7 +84,7 @@ class Features(Gtk.Box):
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
 
-        super().add(self.ui.get_object("features"))
+        self.add(self.ui.get_object("features"))
 
     def listbox_sort_by_name(self, row1, row2, user_data):
         """ Sort function for listbox
@@ -342,3 +342,13 @@ class Features(Gtk.Box):
         if self.defaults:
             self.enable_defaults()
             self.defaults = False
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Features')

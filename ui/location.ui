@@ -57,7 +57,7 @@ This is a shortlist of locations based on the language you selected.</property>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
@@ -67,6 +67,7 @@ This is a shortlist of locations based on the language you selected.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
+                <property name="hexpand">true</property>
                 <child>
                   <object class="GtkListBox" id="listbox">
                     <property name="visible">True</property>
@@ -75,7 +76,7 @@ This is a shortlist of locations based on the language you selected.</property>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -90,7 +91,7 @@ This is a shortlist of locations based on the language you selected.</property>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>

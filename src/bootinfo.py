@@ -26,6 +26,12 @@ import os
 import subprocess
 import re
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 # constants
 WIN_DIRS = ["windows", "Windows", "WINDOWS"]
 SYSTEM_DIRS = ["System32", "system32"]

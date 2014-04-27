@@ -70,11 +70,10 @@ class KeyboardWidget(Gtk.DrawingArea):
         ()]
     }
 
-    def __init__(self, parent=None):
+    def __init__(self):
         Gtk.DrawingArea.__init__(self)
         
-        #self.set_size_request(460, 130)
-        self.set_size_request(460, 60)
+        self.set_size_request(460, 130)
         
         self.codes = []
 
@@ -219,8 +218,11 @@ class KeyboardWidget(Gtk.DrawingArea):
     def do_draw(self, cr):
         ''' The 'cr' variable is the current Cairo context '''        
         alloc = self.get_allocation()
-        width = alloc.width
-        height = alloc.height
+        real_width = alloc.width
+        real_height = alloc.height
+        
+        width = 460
+        height = 130
         
         usable_width = width - 6
         key_w = (usable_width - 14 * self.space) / 15
@@ -242,6 +244,9 @@ class KeyboardWidget(Gtk.DrawingArea):
         space = self.space
         w = usable_width
         kw = key_w
+
+        # Use this to show real widget size (useful when debugging this widget)
+        # cr.rectangle(0, 0, real_width, real_height)
 
         def draw_row(row, sx, sy, last_end=False):
             x = sx

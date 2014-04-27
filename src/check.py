@@ -51,7 +51,7 @@ class Check(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.testing = params['testing']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
         self.ui_dir = self.settings.get('ui')
@@ -68,7 +68,7 @@ class Check(Gtk.Box):
         self.timeout_id = None
         self.prepare_best_results = None
 
-        super().add(self.ui.get_object("check"))
+        self.add(self.ui.get_object("check"))
 
     def translate_ui(self):
         txt = _("System Check")
@@ -195,3 +195,13 @@ class Check(Gtk.Box):
         # set timer
         #self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Check')

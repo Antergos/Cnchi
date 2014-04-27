@@ -54,7 +54,7 @@ class Timezone(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "timezone.ui"))
@@ -96,7 +96,7 @@ class Timezone(Gtk.Box):
         self.mirrorlist_thread = None
         #self.start_mirrorlist_thread()
 
-        super().add(self.ui.get_object('location'))
+        self.add(self.ui.get_object('location'))
 
         self.autodetected_coords = None
 
@@ -198,7 +198,8 @@ class Timezone(Gtk.Box):
 
     def set_cursor(self, cursor_type):
         cursor = Gdk.Cursor(cursor_type)
-        window = super().get_root_window()
+        #window = super().get_root_window()
+        window = self.get_root_window()
         if window:
             window.set_cursor(cursor)
             self.refresh()
@@ -437,3 +438,13 @@ class GenerateMirrorListThread(threading.Thread):
                 logging.info(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
             except subprocess.CalledProcessError as e:
                 logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Timezone')

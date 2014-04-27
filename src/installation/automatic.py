@@ -22,8 +22,17 @@
 
 from gi.repository import Gtk
 import os
-import canonical.misc as misc
+import sys
 import logging
+
+if __name__ == '__main__':
+    # Insert the parent directory at the front of the path.
+    # This is used only when we want to test this screen
+    base_dir = os.path.dirname(__file__) or '.'
+    parent_dir = os.path.join(base_dir, '..')
+    sys.path.insert(0, parent_dir)
+
+import canonical.misc as misc
 from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed
@@ -239,3 +248,13 @@ class InstallationAutomatic(Gtk.Box):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('InstallationAutomatic')

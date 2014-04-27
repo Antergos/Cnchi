@@ -40,7 +40,7 @@ class UserInfo(Gtk.Box):
         self.backwards_button = params['backwards_button']
         self.settings = params['settings']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
 
@@ -76,7 +76,7 @@ class UserInfo(Gtk.Box):
         self.require_password = True
         self.encrypt_home = False
 
-        super().add(self.ui.get_object("user_info"))
+        self.add(self.ui.get_object("user_info"))
 
     def translate_ui(self):
         """ Translate all widgets """
@@ -320,3 +320,13 @@ class UserInfo(Gtk.Box):
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('UserInfo')
