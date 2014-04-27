@@ -70,7 +70,7 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     border-style: none;
 }
 
-/* close */
+/* close
 .titlebar .left .titlebutton:first-child,
 .titlebar .right .titlebutton:last-child {
 	background-image: url('assets/close.png');
@@ -95,3 +95,4 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 .titlebar .right .titlebutton:last-child:active {
 	background-image: url('assets/close.png');
 }
+*/
