@@ -70,7 +70,42 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     border-style: none;
 }
 
- close
+close
+.titlebar .left .titlebutton:first-child,
+.titlebar .right .titlebutton:last-child {
+	background-image: url('/usr/share/icons/Faenza/actions/scalable/window-close-symbolic.svg');
+        padding: 4.5px 7px;
+        transition: 3s ease-in;
+        
+}
+.titlebar .right .titlebutton {
+     margin-top: 15px;
+}
+.titlebar .left .titlebutton:first-child:backdrop,
+.titlebar .right .titlebutton:last-child:backdrop {
+	background-image: url('/usr/share/icons/Faenza/actions/scalable/window-close-symbolic.svg');
+        }
+
+.titlebar .left .titlebutton:first-child:hover,
+.titlebar .right .titlebutton:last-child:hover {
+	box-shadow:         inset 0px 0px 0px 1px rgba(50, 50, 50, 0.45);
+        background-color: rgba(230, 230, 230, 0.45);
+        background-image: url('/usr/share/icons/Faenza/actions/16/remove.png');
+}
+
+.titlebar .left .titlebutton:first-child:backdrop:hover,
+.titlebar .right .titlebutton:last-child:backdrop:hover {
+	box-shadow:         inset 0px 0px 0px 1px rgba(50, 50, 50, 0.45);
+}
+
+.titlebar .left .titlebutton:first-child:active,
+.titlebar .right .titlebutton:last-child:active {
+	box-shadow:         inset 0px 0px 0px 1px rgba(255, 0, 0, 0.85);
+        background-color: rgba(230, 230, 230, 0.45);
+        background-image: url('/usr/share/icons/Faenza/actions/16/remove.png');
+}
+
+ /*close
 .titlebar .left .titlebutton:first-child,
 .titlebar .right .titlebutton:last-child {
 	background-image: url('/usr/share/cnchi/data/css/assets/close.png');
@@ -94,5 +129,4 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 .titlebar .left .titlebutton:first-child:active,
 .titlebar .right .titlebutton:last-child:active {
 	background-image: url('/usr/share/cnchi/data/css/assets/close.png');
-}
-
+}*/
