@@ -267,9 +267,6 @@ kde_settings(){
     cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
     cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
 	
-	# Fix Permissions
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
-	
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
@@ -347,6 +344,9 @@ postinstall(){
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings"
+	
+	## Ensure user permissions are set in /home
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
