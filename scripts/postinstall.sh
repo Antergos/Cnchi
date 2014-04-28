@@ -241,33 +241,34 @@ kde_settings(){
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
-	# Download Flattr Icon Set
-    cd ${DESTDIR}/usr/share/icons
-    git clone https://github.com/NitruxSA/flattr-icons.git flattr-icons
-    cd flattr-icons
-    rm index.theme
-    mv index.theme.kde index.theme
-    sed -i 's|Example=x-directory-normal|Example=folder|g' index.theme
-    sed -i 's|Inherits=Flattr|Inherits=KFaenza,Oxygen|g' index.theme
-    rm -R .git
-    chroot ${DESTDIR} ln -sf /usr/share/icons/flattr-icons /usr/share/icons/default.kde4
+	# Download Numix Icon Set
+    cd /tmp
+    wget http://github.com/numixproject/numix-icon-theme/archive/master.zip
+    unzip -o -qq numix-icon-theme-master.zip -d /tmp
+    cd /tmp/numix-icon-theme-master/Numix
+    sed -i 's|Inherits=gnome,hicolor|Inherits=KFaenza,hicolor|g' index.theme
+    cd ..
+    cp -R Numix ${DESTDIR}/usr/share/icons/
+    chroot ${DESTDIR} ln -sf /usr/share/icons/Numix /usr/share/icons/default.kde4
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-	cd ${DESTDIR}/tmp
-    wget -q "https://github.com/Antergos/kde-setup/archive/master.zip"
-    unzip -o -qq ${DESTDIR}/tmp/master.zip -d ${DESTDIR}/tmp
-    cp -R ${DESTDIR}/tmp/kde-setup-master/etc ${DESTDIR}/
-    cp -R ${DESTDIR}/tmp/kde-setup-master/usr ${DESTDIR}/
+	cd /tmp
+    wget -q "http://github.com/Antergos/kde-setup/archive/master.zip"
+    unzip -o -qq /tmp/kde-setup-master.zip -d /tmp
+    mv /tmp/kde-setup-master/usr/share/icons/Numix-Square.zip /tmp
+    unzip -o -qq /tmp/Numix-Square.zip -d /tmp
+    cp -R /tmp/Numix-Square ${DESTDIR}/usr/share/icons/
+    cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
+    cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
 	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
     cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
-
+	
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-	
-	# Fix Permissions
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 
 }
@@ -343,6 +344,9 @@ postinstall(){
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings"
+	
+	## Ensure user permissions are set in /home
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
 	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
