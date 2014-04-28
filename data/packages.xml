@@ -357,54 +357,6 @@
         <pkgname>zukitwo-theme-openbox</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </openbox_desktop>
-    
-    <kde_desktop>
-        <pkgname>kde-meta-kdebase</pkgname>
-        <pkgname>kde-meta-kdenetwork</pkgname>
-        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
-        <pkgname>apper</pkgname>
-        <pkgname>cdrdao</pkgname>
-        <pkgname>digikam</pkgname>
-        <pkgname>dvd+rw-tools</pkgname>
-        <pkgname>emovix</pkgname>
-        <pkgname>grub2-editor</pkgname>
-        <pkgname>k3b</pkgname>
-        <pkgname>kde-gtk-config</pkgname>
-        <pkgname>kde-meta-kdeartwork</pkgname>
-        <pkgname>kde-telepathy-meta</pkgname>
-        <pkgname>kdeadmin-kuser</pkgname>
-        <pkgname>kdegraphics-gwenview</pkgname>
-        <pkgname>kdegraphics-ksnapshot</pkgname>
-        <pkgname>kdegraphics-okular</pkgname>
-        <pkgname>kdegraphics-thumbnailers</pkgname>
-        <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-        <pkgname>kdemultimedia-kmix</pkgname>
-        <pkgname>kdepim-kmail</pkgname>
-        <pkgname>kdepim-kontact</pkgname>
-        <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
-        <pkgname>kdeplasma-addons-applets-notes</pkgname>
-        <pkgname>kdesdk-dolphin-plugins</pkgname>
-        <pkgname>kdesdk-kate</pkgname>
-        <pkgname>kdeutils-ark</pkgname>
-        <pkgname>kdeutils-kgpg</pkgname>
-        <pkgname>kdeutils-kwallet</pkgname>
-        <pkgname>kdeutils-sweeper</pkgname>
-        <pkgname>kipi-plugins</pkgname>
-        <pkgname>kwebkitpart</pkgname>
-        <pkgname>lightdm-kde-greeter</pkgname>
-        <pkgname>lightdm-webkit-greeter</pkgname>
-        <pkgname>oxyfaenza-git</pkgname>
-        <pkgname>oxygen-gtk2</pkgname>
-        <pkgname>oxygen-gtk3</pkgname>
-        <pkgname>qt5-webkit</pkgname>
-        <pkgname>transmission-qt</pkgname>
-        <pkgname>ttf-bitstream-vera</pkgname>
-        <pkgname>ttf-dejavu</pkgname>
-        <pkgname>vlc</pkgname>
-        <pkgname>webkitgtk</pkgname>
-        <pkgname>xdg-user-dirs</pkgname>
-    </kde_desktop>
 
     <kde_desktop>
         <pkgname>cdrdao</pkgname>
@@ -446,12 +398,11 @@
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>oxygen-gtk2</pkgname>
-        <pkgname>oxygen-gtk3</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
         <pkgname>qtcurve-gtk2</pkgname>
+        <pkgname>qtcurve-utils</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>webkitgtk</pkgname>
