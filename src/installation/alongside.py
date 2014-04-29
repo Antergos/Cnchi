@@ -212,15 +212,15 @@ class InstallationAlongside(Gtk.Box):
 
                     for p in partition_list:
                         if p.type != pm.PARTITION_EXTENDED:
-                            ## Get file system
+                            ## Get filesystem
                             fs_type = ""
                             if p.fileSystem and p.fileSystem.type:
                                 fs_type = p.fileSystem.type
                             if "swap" not in fs_type:
                                 if p.path in oses:
-                                    row = [ p.path, oses[p.path], fs_type ]
+                                    row = [p.path, oses[p.path], fs_type]
                                 else:
-                                    row = [ p.path, _("unknown"), fs_type ]
+                                    row = [p.path, _("unknown"), fs_type]
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
@@ -253,7 +253,7 @@ class InstallationAlongside(Gtk.Box):
         try:
             subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
             x = subprocess.check_output(['df', partition_path]).decode()
-            subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
+            subprocess.call(["umount", "-l", "/mnt"], stderr=subprocess.DEVNULL)
             x = x.split('\n')
             x = x[1].split()
             self.max_size = int(x[1]) / 1000
@@ -271,7 +271,6 @@ class InstallationAlongside(Gtk.Box):
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
-
 
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")
@@ -349,6 +348,7 @@ class InstallationAlongside(Gtk.Box):
         logging.debug("extended partition: %s" % extended_path)
         logging.debug("primary partitions: %s" % primary_partitions)
 
+        # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
         if len(primary_partitions) >= 4:
             logging.error("There're too many primary partitions, can't create a new one")
             return False
@@ -375,44 +375,119 @@ class InstallationAlongside(Gtk.Box):
 
         new_size = self.new_size
 
-        # first, shrink file system
+        # first, shrink filesystem
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
+            print("Filesystem on " + partition_path + " shrunk.\nWill recreate partition now on device " + device_path + " partition " + partition_path)
             # destroy original partition and create a new resized one
-            pm.split_partition(device_path, partition_path, new_size)
+            res = pm.split_partition(device_path, partition_path, new_size)
         else:
             logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
             return
 
-
-
-        '''
-        # Prepare info for installer_process
-        mount_devices = {}
-        mount_devices["/"] =
-        mount_devices["swap"] =
-
-        root = mount_devices["/"]
-        swap = mount_devices["swap"]
-
-        fs_devices = {}
-        fs_devices[root] = "ext4"
-        fs_devices[swap] = "swap"
-        fs_devices[partition_path] = self.row[2]
-
-
-        # TODO: Ask where to install the bootloader (if the user wants to install it)
-
-
-        if os.path.exists("/sys/firmware/efi/systab"):
-            self.settings.set('bootloader_type', "UEFI_x86_64")
+        # res is either False or a parted.Geometry for the new free space
+        if res is not None:
+            print("Partition " + partition_path + " shrink complete.")
         else:
-            self.settings.set('bootloader_type', "GRUB2")
+            txt = _("Can't shrink %s(%s) partition") % (otherOS, fs_type)
+            logging.error(txt)
+            show.error(txt)
+            print("*** FILESYSTEM IN UNSAFE STATE ***\nFilesystem shrink succeeded but partition shrink failed.")
+            return
 
+        disc_dic = pm.get_devices()
+        disk = disc_dic[device_path][0]
+        mount_devices = {}
+        fs_devices = {}
+
+        # logic: if geometry gives us at least 7.5GB (MIN_ROOT_SIZE + 1GB) we'll create ROOT and SWAP, otherwise no SWAP
+        no_swap = False
+        if res.getLength('MB') < MIN_ROOT_SIZE + 1:
+            no_swap = True
+
+        if no_swap:
+            npart = pm.create_partition(device_path, 0, res)
+            if npart is None:
+                txt = _("Cannot create new partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+            pm.finalize_changes(disk)
+            mount_devices["/"] = npart.path
+            fs_devices[npart.path] = "ext4"
+            fs.create_fs(npart.path, 'ext4', label='ROOT')
+        else:
+            # we know for a fact we have at least MIN_ROOT_SIZE+1GB of space, and at least MIN_ROOT_SIZE
+            # of those must go to ROOT.
+            # how about 10% of whatever is the geometry, capped at mem/2?
+            mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
+            mem_total = int(mem_total.split()[1])
+            mem = mem_total / 1024
+
+            # Suggested sizes from Anaconda installer
+            if mem < 2048:
+                swap_part_size = 2 * mem
+            elif 2048 <= mem < 8192:
+                swap_part_size = mem
+            elif 8192 <= mem < 65536:
+                swap_part_size = mem / 2
+            else:
+                swap_part_size = 4096
+
+            # Max swap size is 10% of all available disk size
+            max_swap = res.getLength('MB') * 0.1
+            if swap_part_size > max_swap:
+                swap_part_size = max_swap
+
+            # Create swap partition
+            units = 1000000
+            sec_size = disk.device.sectorSize
+            new_length = int(swap_part_size * units / sec_size)
+            new_end_sector = res.start + new_length
+            my_geometry = pm.geom_builder(disk, res.start, new_end_sector, swap_part_size)
+            logging.debug("create_partition %s", my_geometry)
+            swappart = pm.create_partition(disk, 0, my_geometry)
+            if swappart is None:
+                txt = _("Cannot create new swap partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+
+            # Create new partition for /
+            new_size_in_mb = res.getLength('MB') - swap_part_size
+            start_sector = new_end_sector + 1
+            my_geometry = pm.geom_builder(disk, start_sector, res.end, new_size_in_mb)
+            logging.debug("create_partition %s", my_geometry)
+            npart = pm.create_partition(disk, 0, my_geometry)
+            if npart is None:
+                txt = _("Cannot create new partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+
+            pm.finalize_changes(disk)
+
+            # Mount points
+            mount_devices["swap"] = swappart.path
+            fs_devices[swappart.path] = "swap"
+            fs.create_fs(swappart.path, 'swap', 'SWAP')
+
+            mount_devices["/"] = npart.path
+            fs_devices[npart.path] = "ext4"
+            fs.create_fs(npart.path, 'ext4', 'ROOT')
+
+        self.settings.set('install_bootloader', True)
         if self.settings.get('install_bootloader'):
-            self.settings.set('bootloader_device', mount_devices["/"])
-            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
-                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device'))
+            if self.settings.get('efi'):
+                self.settings.set('bootloader_type', "UEFI_x86_64")
+                self.settings.set('bootloader_location', '/boot/efi')
+            else:
+                self.settings.set('bootloader_type', "GRUB2")
+                self.settings.set('bootloader_location', device_path)
+
+            logging.info(_("Thus will install the bootloader of type %s in %s") %
+                          (self.settings.get('bootloader_type'),
+                           self.settings.get('bootloader_location')))
         else:
             logging.warning("Cnchi will not install any boot loader")
 
@@ -426,7 +501,7 @@ class InstallationAlongside(Gtk.Box):
                             self.alternate_package_list)
 
             self.process.start()
-        '''
+
 
 # When testing, no _() is available
 try:

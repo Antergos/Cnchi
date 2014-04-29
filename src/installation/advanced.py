@@ -123,14 +123,15 @@ class InstallationAdvanced(Gtk.Box):
         mount_combos.append(self.ui.get_object('partition_mount_combo'))
         mount_combos.append(self.ui.get_object('partition_mount_combo2'))
 
+        if os.path.exists('/sys/firmware/efi'):
+            mount_points = fs.COMMON_MOUNT_POINTS_EFI
+        else:
+            mount_points = fs.COMMON_MOUNT_POINTS
+
         for combo in mount_combos:
             combo.remove_all()
-            for mp in sorted(fs.COMMON_MOUNT_POINTS):
+            for mp in mount_points:
                 combo.append_text(mp)
-            
-            #if os.path.exists('/sys/firmware/efi'):
-            #    # Add "/boot/efi" mountpoint in the mountpoint combobox when in uefi mode
-            #    combo.append_text('/boot/efi')
 
         # We will store our devices here
         self.disks = None
@@ -141,6 +142,9 @@ class InstallationAdvanced(Gtk.Box):
         self.grub_device_entry = self.ui.get_object('grub_device_entry')
         self.grub_devices = dict()
         self.grub_device = {}
+        # Disable boot device selection in uefi systems
+        if os.path.exists('/sys/firmware/efi'):
+            self.grub_device_entry.set_sensitive(False)
 
         # Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -190,11 +194,11 @@ class InstallationAdvanced(Gtk.Box):
     def check_buttons(self, selection):
         """ Activates/deactivates our buttons depending on which is selected in the
             partition treeview """
-            
+
         if self.stage_opts:
             button = self.ui.get_object('partition_button_undo')
             button.set_sensitive(True)
-        
+
         button_new = self.ui.get_object('partition_button_new')
         button_new.set_sensitive(False)
 
@@ -999,10 +1003,10 @@ class InstallationAdvanced(Gtk.Box):
         enable_luks_dialog_options(widget.get_activate())
 
     def enable_luks_dialog_options(self, status):
-        w_sensitive = [ 'label_luks_vol_name', 'label_luks_password',
-                        'label_luks_password_confirm', 'entry_luks_vol_name',
-                        'entry_luks_password', 'entry_luks_password_confirm' ]
-        w_hide = [ 'image_luks_password_confirm', 'label_luks_password_status' ]
+        w_sensitive = ['label_luks_vol_name', 'label_luks_password',
+                       'label_luks_password_confirm', 'entry_luks_vol_name',
+                       'entry_luks_password', 'entry_luks_password_confirm']
+        w_hide = ['image_luks_password_confirm', 'label_luks_password_status']
 
         for w in w_sensitive:
             w.set_sensitive(status)
@@ -1407,9 +1411,9 @@ class InstallationAdvanced(Gtk.Box):
             in UEFI systems the efi partition (/boot/efi) must be defined too """
 
         # Initialize our mount point check widgets
-        
+
         check_parts = ["root", "boot", "boot_efi", "swap"]
-        
+
         has_part = {}
         for check_part in check_parts:
             has_part[check_part] = False
@@ -1419,7 +1423,7 @@ class InstallationAdvanced(Gtk.Box):
 
         # TODO: Check total system RAM in hardware module so we can require swap for low memory systems
         need_swap = False
-        
+
         part = {}
         for check_part in check_parts:
             part[check_part] = self.ui.get_object(check_part + "_part")
@@ -1624,7 +1628,7 @@ class InstallationAdvanced(Gtk.Box):
 
         bold = "<b>%s</b>"
         y = 0
-        
+
         self.to_be_deleted.sort()
 
         # First, show partitions that will be deleted
@@ -1665,14 +1669,14 @@ class InstallationAdvanced(Gtk.Box):
             Gtk.main_iteration()
 
         return response
-    
+
     def store_values(self):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
         if changelist == []:
             # Something wrong has happened or nothing to change
             return False
-            
+
         changelist.sort()
 
         response = self.show_changes(changelist)
