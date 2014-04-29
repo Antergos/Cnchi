@@ -35,26 +35,21 @@ import logging
 import subprocess
 import canonical.misc as misc
 
-# When we reach this page we can't go neither backwards nor forwards
-_next_page = None
-_prev_page = None
+from gtkbasebox import GtkBaseBox
 
-class Slides(Gtk.Box):
+# When we reach this page we can't go neither backwards nor forwards
+
+class Slides(GtkBaseBox):
     def __init__(self, params):
         """ Initialize class and its vars """
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
+        self.next_page = None
+        self.prev_page = None
+
         self.callback_queue = params['callback_queue']
-        self.settings = params['settings']
         self.main_progressbar = params['main_progressbar']
 
-        Gtk.Box.__init__(self)
+        super().__init__(params, "slides")
 
-        builder = Gtk.Builder()
-
-        builder.add_from_file(os.path.join(self.ui_dir, "slides.ui"))
         builder.connect_signals(self)
 
         self.progress_bar = builder.get_object("progressbar")
@@ -111,14 +106,6 @@ class Slides(Gtk.Box):
     def store_values(self):
         """ Nothing to be done here """
         return False
-
-    def get_prev_page(self):
-        """ No previous page available """
-        return _prev_page
-
-    def get_next_page(self):
-        """ This is the last page """
-        return _next_page
 
     def set_message(self, txt):
         """ Show information message """

@@ -27,22 +27,15 @@ import os
 import logging
 import desktop_environments as desktops
 
-_next_page = "features"
-_prev_page = "keymap"
+from gtkbasebox import GtkBaseBox
 
-class DesktopAsk(Gtk.Box):
+class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
+        self.next_page = "features"
+        self.prev_page = "keymap"
 
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "desktop.ui"))
+        super().__init__(params, "desktop")
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
@@ -136,12 +129,6 @@ class DesktopAsk(Gtk.Box):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
         return False
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
 # When testing, no _() is available
 try:

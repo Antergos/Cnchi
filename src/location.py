@@ -29,22 +29,15 @@ import logging
 import show_message as show
 import xml.etree.ElementTree as etree
 
-_next_page = "timezone"
-_prev_page = "check"
+from gtkbasebox import GtkBaseBox
 
-class Location(Gtk.Box):
+class Location(GtkBaseBox):
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
 
-        Gtk.Box.__init__(self)
+        self.next_page = "timezone"
+        self.prev_page = "check"
 
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "location.ui"))
+        super().__init__(params, "location")
 
         self.ui.connect_signals(self)
 
@@ -200,12 +193,6 @@ class Location(Gtk.Box):
                     logging.warning(_("Can't change to locale '%s'") % mylocale)
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
 # When testing, no _() is available
 try:

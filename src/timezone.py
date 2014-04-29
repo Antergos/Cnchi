@@ -40,24 +40,18 @@ import subprocess
 import hashlib
 import canonical.misc as misc
 
-_next_page = "keymap"
-_prev_page = "location"
+from gtkbasebox import GtkBaseBox
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
-class Timezone(Gtk.Box):
+class Timezone(GtkBaseBox):
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
+        self.next_page = "keymap"
+        self.prev_page = "location"
 
-        Gtk.Box.__init__(self)
+        super().__init__(params, "timezone")
 
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "timezone.ui"))
         self.ui.connect_signals(self)
 
         self.map_window = self.ui.get_object('timezone_map_window')
@@ -263,12 +257,6 @@ class Timezone(Gtk.Box):
         self.settings.set("timezone_done", True)
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def stop_threads(self):
         logging.debug(_("Stoping timezone threads..."))

@@ -30,6 +30,8 @@ import sys
 
 from show_message import warning
 
+from gtkbasebox import GtkBaseBox
+
 # Import functions
 import config
 try:
@@ -37,22 +39,16 @@ try:
 except ImportError:
     import info
 
-_next_page = "language"
-_prev_page = None
 
-class Welcome(Gtk.Box):
+class Welcome(GtkBaseBox):
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
         self.disable_tryit = params['disable_tryit']
 
-        Gtk.Box.__init__(self)
+        self.next_page = "language"
+        self.prev_page = None
 
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "welcome.ui"))
+        super().__init__(params, "welcome")
+
         self.ui.connect_signals(self)
 
         data_dir = self.settings.get('data')
@@ -151,12 +147,6 @@ class Welcome(Gtk.Box):
         #if info.CNCHI_VERSION is not "0.4.3":
         #    self.button['cli'].set_sensitive(False)
 
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def start_auto_timezone_thread(self):
         import timezone

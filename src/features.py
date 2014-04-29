@@ -29,24 +29,17 @@ import logging
 import desktop_environments as desktops
 import canonical.misc as misc
 
-_next_page = "installation_ask"
-_prev_page = "desktop"
+from gtkbasebox import GtkBaseBox
 
 class Features(Gtk.Box):
     """ Features screen class """
     def __init__(self, params):
         """ Initializes features ui """
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
+        self.next_page = "installation_ask"
+        self.prev_page = "desktop"
 
-        Gtk.Box.__init__(self)
+        super().__init__(params, "features")
 
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
         self.ui.connect_signals(self)
 
         # Set up list box
@@ -325,12 +318,6 @@ class Features(Gtk.Box):
         info.format_secondary_markup(txt2)
         info.run()
         info.destroy()
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def prepare(self, direction):
         """ Prepare features screen to get ready to show itself """
