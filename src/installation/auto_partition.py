@@ -27,8 +27,8 @@ import show_message as show
 
 """ AutoPartition class """
 
-# Partition sizes are in MB
-MAX_ROOT_SIZE = 20000
+# Partition sizes are in MiB
+MAX_ROOT_SIZE = 30000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
@@ -144,6 +144,7 @@ class AutoPartition(object):
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
+        logging.debug(_("Will format device %s as %s"), device, fs_type)
         if fs_type == "swap":
             try:
                 swap_devices = check_output("swapon -s")
@@ -601,12 +602,12 @@ class AutoPartition(object):
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
 
-        # Note: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
-        # Note: /etc/default/grub, /etc/fstab and /etc/crypttab will be modified in installation_process.py, too.
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
+        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in installation_process.py, too.
 
         if self.luks and self.luks_key_pass == "":
-            # Copy keyfile to boot partition and home keyfile to root partition.
-            # User will choose what to do with it
+            # Copy root keyfile to boot partition and home keyfile to root partition
+            # user will choose what to do with it
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
             # (boot partition is not)
