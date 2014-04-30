@@ -51,7 +51,7 @@ from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
 # Constants (must be uppercase)
-MAIN_WINDOW_WIDTH = 800
+MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
 
 # Some of these tmp files are created with sudo privileges
