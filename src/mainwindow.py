@@ -215,12 +215,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_title(title)
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
-
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(False)
-        self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
-        self.set_default_size(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
-
+        
+        self.set_geometry()
+        
         # Set window icon
         icon_path = os.path.join(data_dir, "images", "antergos", "antergos-icon.png")
         self.set_icon_from_file(icon_path)
@@ -265,6 +262,23 @@ class MainWindow(Gtk.ApplicationWindow):
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
+
+    def set_geometry(self):
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_resizable(False)
+        self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
+        self.set_default_size(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
+
+        geom = Gdk.Geometry()
+        geom.min_width = MAIN_WINDOW_WIDTH
+        geom.min_height = MAIN_WINDOW_HEIGHT
+        geom.max_width = MAIN_WINDOW_WIDTH
+        geom.max_height = MAIN_WINDOW_HEIGHT
+        geom.base_width = MAIN_WINDOW_WIDTH
+        geom.base_height = MAIN_WINDOW_HEIGHT
+
+        hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE
+        self.set_geometry_hints(None, geom, hints)
 
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """

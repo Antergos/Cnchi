@@ -215,14 +215,7 @@ class InstallationProcess(multiprocessing.Process):
                 self.queue_fatal_event(txt)
                 return
 
-        if self.method == 'alongside':
-            # Alongside method shrinks selected partition
-            # and creates root and swap partition in the available space
-            boot_partition, root_partition = fs.shrink(self.mount_devices["alongside"])
-            # Alongside method formats root by default (as it is always a new partition)
-            (error, msg) = fs.create_fs(self.mount_devices["/"], "ext4")
-
-        if self.method == 'advanced':
+        if self.method == 'advanced' or self.method == 'alongside':
             root_partition = self.mount_devices["/"]
 
             # NOTE: Advanced method formats root by default in installation_advanced
