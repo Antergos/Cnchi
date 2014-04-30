@@ -123,11 +123,13 @@ class InstallationAdvanced(Gtk.Box):
         mount_combos.append(self.ui.get_object('partition_mount_combo'))
         mount_combos.append(self.ui.get_object('partition_mount_combo2'))
 
-        if os.path.exists('/sys/firmware/efi'):
-            mount_points = fs.COMMON_MOUNT_POINTS_EFI
-        else:
-            mount_points = fs.COMMON_MOUNT_POINTS
-
+        #if os.path.exists('/sys/firmware/efi'):
+        #    mount_points = fs.COMMON_MOUNT_POINTS_EFI
+        #else:
+        #    mount_points = fs.COMMON_MOUNT_POINTS
+        
+        mount_points = fs.COMMON_MOUNT_POINTS
+        
         for combo in mount_combos:
             combo.remove_all()
             for mp in mount_points:
@@ -142,9 +144,10 @@ class InstallationAdvanced(Gtk.Box):
         self.grub_device_entry = self.ui.get_object('grub_device_entry')
         self.grub_devices = dict()
         self.grub_device = {}
-        # Disable boot device selection in uefi systems
-        if os.path.exists('/sys/firmware/efi'):
-            self.grub_device_entry.set_sensitive(False)
+        
+        ## Disable boot device selection in uefi systems
+        #if os.path.exists('/sys/firmware/efi'):
+        #    self.grub_device_entry.set_sensitive(False)
 
         # Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -259,15 +262,15 @@ class InstallationAdvanced(Gtk.Box):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
-                    # Add disk partitions
-                    partitions = pm.get_partitions(disk)
-                    partition_list = pm.order_partitions(partitions)
-                    for partition_path in partition_list:
-                        if not "free" in partition_path:
-                            warning_txt = _("It's not recommended to install grub in a partition")
-                            line = '   {0} ({1})'.format(partition_path, warning_txt)
-                            self.grub_device_entry.append_text(line)
-                            self.grub_devices[line] = partition_path
+                    ## Add disk partitions
+                    #partitions = pm.get_partitions(disk)
+                    #partition_list = pm.order_partitions(partitions)
+                    #for partition_path in partition_list:
+                    #    if not "free" in partition_path:
+                    #        warning_txt = _("It's not recommended to install grub in a partition")
+                    #        line = '   {0} ({1})'.format(partition_path, warning_txt)
+                    #        self.grub_device_entry.append_text(line)
+                    #        self.grub_devices[line] = partition_path
 
         # Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)

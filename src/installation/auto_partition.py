@@ -31,7 +31,7 @@ import show_message as show
 MAX_ROOT_SIZE = 30000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
-# KDE needs 4.5 GB for its files. Need to leave extra space also.
+# KDE needs 6.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
 
 def check_output(command):

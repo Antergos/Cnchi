@@ -6,15 +6,16 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">40</property>
+    <property name="spacing">25</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">80</property>
+        <property name="margin_left">63</property>
         <property name="margin_right">20</property>
         <property name="margin_top">10</property>
-        <property name="spacing">40</property>
+<property name="margin_bottom">0</property>        
+<property name="spacing">40</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="width_request">170</property>
@@ -61,15 +62,16 @@
       <object class="GtkLabel" id="desktop_info">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">20</property>
-        <property name="margin_right">10</property>
-        <property name="xalign">0</property>
+        <property name="margin_left">64</property>
+        <property name="margin_right">20</property>
+<property name="margin_top">0</property>        
+<property name="xalign">0</property>
         <property name="label" translatable="yes">label</property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
         <property name="wrap">True</property>
-        <property name="width_chars">85</property>
-        <property name="max_width_chars">85</property>
+       
+        <property name="max_width_chars">65</property>
       </object>
       <packing>
         <property name="expand">False</property>
