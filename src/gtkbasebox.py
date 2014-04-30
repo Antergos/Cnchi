@@ -28,11 +28,13 @@ class GtkBaseBox(Gtk.Box):
 
     def __init__(self, params, name):
         self.header = params['header']
-        self.title = params['title']
         self.ui_dir = params['ui_dir']
         self.settings = params['settings']
         self.forward_button = params['forward_button']
         self.backwards_button = params['backwards_button']
+
+        if 'title' in params.keys():
+            self.title = params['title']
 
         super().__init__()
 

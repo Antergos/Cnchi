@@ -44,8 +44,8 @@ class Check(GtkBaseBox):
     """ Check class """
     def __init__(self, params):
         """ Init class ui """
-        _next_page = "location"
-        _prev_page = "language"
+        self.next_page = "location"
+        self.prev_page = "language"
 
         self.testing = params['testing']
 

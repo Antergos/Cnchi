@@ -44,9 +44,9 @@ class Keymap(GtkBaseBox):
 
         self.prepare_called = False
 
-        self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
-
         super().__init__(params, "keymap")
+
+        self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
         self.ui.connect_signals(self)
 

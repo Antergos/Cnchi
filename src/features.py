@@ -31,7 +31,7 @@ import canonical.misc as misc
 
 from gtkbasebox import GtkBaseBox
 
-class Features(Gtk.Box):
+class Features(GtkBaseBox):
     """ Features screen class """
     def __init__(self, params):
         """ Initializes features ui """

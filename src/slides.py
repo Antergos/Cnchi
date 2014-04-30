@@ -50,14 +50,14 @@ class Slides(GtkBaseBox):
 
         super().__init__(params, "slides")
 
-        builder.connect_signals(self)
+        self.ui.connect_signals(self)
 
-        self.progress_bar = builder.get_object("progressbar")
+        self.progress_bar = self.ui.get_object("progressbar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
 
-        self.info_label = builder.get_object("info_label")
-        self.scrolled_window = builder.get_object("scrolledwindow")
+        self.info_label = self.ui.get_object("info_label")
+        self.scrolled_window = self.ui.get_object("scrolledwindow")
 
         # Add a webkit view to show the slides
         self.webview = WebKit.WebView()
@@ -77,7 +77,7 @@ class Slides(GtkBaseBox):
 
         self.scrolled_window.add(self.webview)
 
-        self.add(builder.get_object("slides"))
+        self.add(self.ui.get_object("slides"))
 
         self.fatal_error = False
         self.should_pulse = False
