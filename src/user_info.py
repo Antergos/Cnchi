@@ -146,7 +146,8 @@ class UserInfo(GtkBaseBox):
             self.login['encrypt'].hide()
 
         # TODO: Fix home encryption and stop hidding its widget
-        self.login['encrypt'].hide()
+        if not self.settings.get('z_hidden'):
+            self.login['encrypt'].hide()
 
     def store_values(self):
         """ Store all user values in self.settings """
