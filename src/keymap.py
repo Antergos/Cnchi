@@ -32,28 +32,21 @@ import canonical.misc as misc
 import subprocess
 import keyboard_widget
 
-_next_page = "desktop"
-_prev_page = "timezone"
+from gtkbasebox import GtkBaseBox
 
-class Keymap(Gtk.Box):
+class Keymap(GtkBaseBox):
 
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
+        self.next_page = "desktop"
+        self.prev_page = "timezone"
+
         self.testing = params['testing']
-        
+
         self.prepare_called = False
 
+        super().__init__(params, "keymap")
+
         self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "keymap.ui"))
 
         self.ui.connect_signals(self)
 
@@ -281,12 +274,6 @@ class Keymap(Gtk.Box):
             self.setkb()
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def setkb(self):
         subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])

@@ -27,24 +27,17 @@ import canonical.validation as validation
 import config
 import show_message as show
 
-_next_page = "slides"
-#_prev_page = "keymap"
-_prev_page = None
+from gtkbasebox import GtkBaseBox
 
-class UserInfo(Gtk.Box):
+class UserInfo(GtkBaseBox):
     """ Asks for user information """
     def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
 
-        Gtk.Box.__init__(self)
+        self.next_page = "slides"
+        #_prev_page = "keymap"
+        self.prev_page = None
 
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "user_info.ui"))
+        super().__init__(params, "user_info")
 
         self.is_ok = dict()
         self.is_ok['fullname'] = self.ui.get_object('fullname_ok')
@@ -222,12 +215,6 @@ class UserInfo(Gtk.Box):
             self.login['auto'].set_sensitive(False)
         if not self.settings.get('z_hidden'):
             self.forward_button.set_sensitive(False)
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def on_checkbutton_show_password_toggled(self, widget):
         """ show/hide user password """

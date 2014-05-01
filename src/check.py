@@ -29,6 +29,8 @@ import logging
 import canonical.gtkwidgets as gtkwidgets
 import canonical.misc as misc
 
+from gtkbasebox import GtkBaseBox
+
 from rank_mirrors import AutoRankmirrorsThread
 
 # Constants
@@ -38,24 +40,16 @@ UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 4000000000
 
-_next_page = "location"
-_prev_page = "language"
-
-class Check(Gtk.Box):
+class Check(GtkBaseBox):
     """ Check class """
     def __init__(self, params):
         """ Init class ui """
-        self.header = params['header']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
+        self.next_page = "location"
+        self.prev_page = "language"
+
         self.testing = params['testing']
 
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui_dir = self.settings.get('ui')
-        self.ui.add_from_file(os.path.join(self.ui_dir, "check.ui"))
+        super().__init__(params, "check")
         self.ui.connect_signals(self)
 
         self.remove_timer = False
@@ -179,12 +173,6 @@ class Check(Gtk.Box):
             self.thread.start()
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def prepare(self, direction):
         self.translate_ui()
