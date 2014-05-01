@@ -42,14 +42,9 @@ MIN_ROOT_SIZE = 4000000000
 
 class Check(GtkBaseBox):
     """ Check class """
-    def __init__(self, params):
+    def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
-        self.next_page = "location"
-        self.prev_page = "language"
-
-        self.testing = params['testing']
-
-        super().__init__(params, "check")
+        super().__init__(params, "check", prev_page, next_page)
         self.ui.connect_signals(self)
 
         self.remove_timer = False

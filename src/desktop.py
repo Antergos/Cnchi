@@ -31,11 +31,8 @@ from gtkbasebox import GtkBaseBox
 
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
-    def __init__(self, params):
-        self.next_page = "features"
-        self.prev_page = "keymap"
-
-        super().__init__(params, "desktop")
+    def __init__(self, params, prev_page="keymap", next_page="features"):
+        super().__init__(params, "desktop", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")

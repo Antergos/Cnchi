@@ -32,11 +32,8 @@ import xml.etree.ElementTree as etree
 from gtkbasebox import GtkBaseBox
 
 class Location(GtkBaseBox):
-    def __init__(self, params):
-        self.next_page = "timezone"
-        self.prev_page = "check"
-
-        super().__init__(params, "location")
+    def __init__(self, params, prev_page="check", next_page="timezone"):
+        super().__init__(params, "location", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -147,9 +144,8 @@ class Location(GtkBaseBox):
             if lang_code in locale_name:
                 areas.append(self.locales[locale_name])
 
-        # FIXME: What do we have to do when can't find any country?
-        # Right now we put them all!
-        # I've observed this with Esperanto and Asturianu at least.
+        # When we don't find any country we put all language codes.
+        # This happends with Esperanto and Asturianu at least.
         if len(areas) == 0:
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
@@ -169,7 +165,6 @@ class Location(GtkBaseBox):
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
-            #self.select_default_row(current_language)
 
         self.selected_country = areas[0]
 

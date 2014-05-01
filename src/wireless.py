@@ -31,10 +31,7 @@ NAME = 'wireless'
 WEIGHT = 12
 
 class Wireless(GtkBaseBox):
-    def __init__(self, params):
-        self.next_page = "desktop"
-        self.prev_page = "check"
-
+    def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
         try:
             misc.has_connection()
@@ -42,7 +39,7 @@ class Wireless(GtkBaseBox):
             self.page = None
             return
 
-        super().__init__(params, "wireless")
+        super().__init__(params, "wireless", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -62,9 +59,7 @@ class Wireless(GtkBaseBox):
         self.connect_text = None
         self.stop_text = None
         self.skip = False
-        
-        self.translate_ui()
-        
+
         self.add(self.ui.get_object("wireless"))
 
     def translate_ui(self):
@@ -189,6 +184,7 @@ class Wireless(GtkBaseBox):
         #self.controller.allow_go_forward(validated)
 
     def prepare(self, direction):
+        self.translate_ui()
         self.show_all()
 
     def store_values(self):

@@ -45,22 +45,15 @@ import parted3.used_space as used_space
 from installation import process as installation_process
 import show_message as show
 
-#_next_page = "timezone"
-_next_page = "user_info"
-_prev_page = "installation_ask"
+from gtkbasebox import GtkBaseBox
 
-class InstallationAdvanced(Gtk.Box):
+class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
-    def __init__(self, params):
-        """ Store class parameters """
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+        # Call base class
+        super().__init__(params, "advanced", prev_page, next_page)
+
         self.blvm = False
-        self.header = params['header']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.callback_queue = params['callback_queue']
-        self.settings = params['settings']
-        self.alternate_package_list = params['alternate_package_list']
-        self.testing = params['testing']
 
         self.lv_partitions = []
         self.disks_changed = []
@@ -78,15 +71,6 @@ class InstallationAdvanced(Gtk.Box):
 
         # hold deleted partitions that exist now
         self.to_be_deleted = []
-
-        # Call base class
-        super().__init__()
-
-        # Get UI items
-        self.ui = Gtk.Builder()
-        self.ui_dir = self.settings.get('ui')
-        ui_file = os.path.join(self.ui_dir, "advanced.ui")
-        self.ui.add_from_file(ui_file)
 
         # Connect UI signals
         self.ui.connect_signals(self)
@@ -123,16 +107,9 @@ class InstallationAdvanced(Gtk.Box):
         mount_combos.append(self.ui.get_object('partition_mount_combo'))
         mount_combos.append(self.ui.get_object('partition_mount_combo2'))
 
-        #if os.path.exists('/sys/firmware/efi'):
-        #    mount_points = fs.COMMON_MOUNT_POINTS_EFI
-        #else:
-        #    mount_points = fs.COMMON_MOUNT_POINTS
-        
-        mount_points = fs.COMMON_MOUNT_POINTS
-        
         for combo in mount_combos:
             combo.remove_all()
-            for mp in mount_points:
+            for mp in fs.COMMON_MOUNT_POINTS:
                 combo.append_text(mp)
 
         # We will store our devices here
@@ -144,10 +121,6 @@ class InstallationAdvanced(Gtk.Box):
         self.grub_device_entry = self.ui.get_object('grub_device_entry')
         self.grub_devices = dict()
         self.grub_device = {}
-        
-        ## Disable boot device selection in uefi systems
-        #if os.path.exists('/sys/firmware/efi'):
-        #    self.grub_device_entry.set_sensitive(False)
 
         # Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -163,8 +136,7 @@ class InstallationAdvanced(Gtk.Box):
 
         self.show_changes_grid = None
 
-        # Add ourselves to the parent class
-        super().add(self.ui.get_object("installation_advanced"))
+        self.add(self.ui.get_object("installation_advanced"))
 
         # Initialize some attributes
         self.process = None
@@ -1700,14 +1672,6 @@ class InstallationAdvanced(Gtk.Box):
         self.forward_button.set_label("gtk-go-forward")
         self.forward_button.set_use_stock(True)
         return True
-
-    def get_prev_page(self):
-        """ Tell which one is our previous page (in our case installation_ask) """
-        return _prev_page
-
-    def get_next_page(self):
-        """ Tell which one is our next page """
-        return _next_page
 
     def create_staged_partitions(self):
         """ Create staged partitions """

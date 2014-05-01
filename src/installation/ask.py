@@ -38,20 +38,11 @@ import bootinfo
 import logging
 import os
 
-_prev_page = "features"
+from gtkbasebox import GtkBaseBox
 
-class InstallationAsk(Gtk.Box):
-
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-
-        super().__init__()
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "ask.ui"))
+class InstallationAsk(GtkBaseBox):
+    def __init__(self, params, prev_page="features", next_page=None):
+        super().__init__(params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
         #partitioner_dir = os.path.join(data_dir, "images", "partitioner")
@@ -71,7 +62,7 @@ class InstallationAsk(Gtk.Box):
 
         self.ui.connect_signals(self)
 
-        super().add(self.ui.get_object("installation_ask"))
+        self.add(self.ui.get_object("installation_ask"))
 
         oses = {}
         oses = bootinfo.get_os_dict()
@@ -81,7 +72,7 @@ class InstallationAsk(Gtk.Box):
             if "sda" in k and oses[k] != "unknown":
                 self.other_os = oses[k]
 
-        # by default, select automatic installation
+        # By default, select automatic installation
         self.next_page = "installation_automatic"
 
     def enable_automatic_options(self, status):
@@ -221,9 +212,6 @@ class InstallationAsk(Gtk.Box):
 
     def get_next_page(self):
         return self.next_page
-
-    def get_prev_page(self):
-        return _prev_page
 
     def on_automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """

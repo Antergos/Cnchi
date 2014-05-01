@@ -55,26 +55,14 @@ import parted3.fs_module as fs
 
 from installation import process as installation_process
 
-_next_page = "user_info"
-_prev_page = "installation_ask"
+from gtkbasebox import GtkBaseBox
 
 # leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
 
-class InstallationAlongside(Gtk.Box):
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.callback_queue = params['callback_queue']
-        self.settings = params['settings']
-        self.alternate_package_list = params['alternate_package_list']
-        self.testing = params['testing']
-
-        super().__init__()
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "alongside.ui"))
+class InstallationAlongside(GtkBaseBox):
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+        super().__init__(params, "alongside", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -88,7 +76,7 @@ class InstallationAlongside(Gtk.Box):
         # Init dialog slider
         self.init_slider()
 
-        super().add(self.ui.get_object("installation_alongside"))
+        self.add(self.ui.get_object("installation_alongside"))
 
     def init_slider(self):
         dialog = self.ui.get_object("shrink-dialog")
@@ -157,12 +145,6 @@ class InstallationAlongside(Gtk.Box):
     def store_values(self):
         self.start_installation()
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def prepare_treeview(self):
         """ Create columns for our treeview """

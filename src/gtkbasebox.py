@@ -25,18 +25,25 @@ from gi.repository import Gtk, GObject
 import os
 
 class GtkBaseBox(Gtk.Box):
-""" Base class for our screens """
-    def __init__(self, params, name):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
+    """ Base class for our screens """
+    def __init__(self, params, name, prev_page, next_page):
+        self.alternate_package_list = params['alternate_package_list']
         self.backwards_button = params['backwards_button']
+        self.callback_queue = params['callback_queue']
+        self.disable_tryit = params['disable_tryit']
+        self.forward_button = params['forward_button']
+        self.header = params['header']
+        self.main_progressbar = params['main_progressbar']
+        self.settings = params['settings']
+        self.testing = params['testing']
+        self.ui_dir = params['ui_dir']
 
-        if 'title' in params.keys():
-            self.title = params['title']
+        self.prev_page = prev_page
+        self.next_page = next_page        
 
         Gtk.Box.__init__(self)
+        
+        self.set_name(name)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "{}.ui".format(name)))

@@ -46,11 +46,8 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 class Timezone(GtkBaseBox):
-    def __init__(self, params):
-        self.next_page = "keymap"
-        self.prev_page = "location"
-
-        super().__init__(params, "timezone")
+    def __init__(self, params, prev_page="location", next_page="keymap"):
+        super().__init__(params, "timezone", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -65,10 +62,10 @@ class Timezone(GtkBaseBox):
         self.tzdb = tz.Database()
         self.timezone = None
 
-        # this is for populate_cities
+        # This is for populate_cities
         self.old_zone = None
 
-        # setup window
+        # Setup window
         self.tzmap = TimezoneMap.TimezoneMap()
         self.tzmap.connect('location-changed', self.on_location_changed)
 
@@ -78,14 +75,14 @@ class Timezone(GtkBaseBox):
         self.map_window.add(self.tzmap)
         self.tzmap.show()
 
-        # autotimezone thread will store detected coords in this queue
+        # Autotimezone thread will store detected coords in this queue
         self.auto_timezone_coords = multiprocessing.Queue()
 
-        # thread to try to determine timezone.
+        # Thread to try to determine timezone.
         self.auto_timezone_thread = None
         self.start_auto_timezone_thread()
 
-        # thread to generate a pacman mirrorlist based on country code
+        # Thread to generate a pacman mirrorlist based on country code
         # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
         self.mirrorlist_thread = None
         #self.start_mirrorlist_thread()
@@ -108,15 +105,9 @@ class Timezone(GtkBaseBox):
         txt = _("Use Network Time Protocol for clock synchronization:")
         label.set_markup(txt)
 
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Select Your Timezone"))
 
-        #txt = _("Select Your Timezone")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-
     def on_location_changed(self, unused_widget, city):
-        #("timezone.location_changed started!")
         self.timezone = city.get_property('zone')
         loc = self.tzdb.get_loc(self.timezone)
         if not loc:
@@ -193,7 +184,6 @@ class Timezone(GtkBaseBox):
 
     def set_cursor(self, cursor_type):
         cursor = Gdk.Cursor(cursor_type)
-        #window = super().get_root_window()
         window = self.get_root_window()
         if window:
             window.set_cursor(cursor)
@@ -208,8 +198,6 @@ class Timezone(GtkBaseBox):
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-                # Put the coords again in the queue (in case GenerateMirrorList still needs them)
-                #self.autodetected_coords.put_nowait(self.autodetected_coords)
             except queue.Empty:
                 logging.warning(_("Can't autodetect timezone coordinates"))
 

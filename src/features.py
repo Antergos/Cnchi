@@ -33,12 +33,9 @@ from gtkbasebox import GtkBaseBox
 
 class Features(GtkBaseBox):
     """ Features screen class """
-    def __init__(self, params):
+    def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
         """ Initializes features ui """
-        self.next_page = "installation_ask"
-        self.prev_page = "desktop"
-
-        super().__init__(params, "features")
+        super().__init__(params, "features", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -239,11 +236,6 @@ class Features(GtkBaseBox):
         txt = "<span size='small'>%s</span>" % txt
         self.labels["third_party"].set_markup(txt)
 
-        # txt = _("")
-        #self.titles["third_party"].set_tooltip_markup(txt)
-        #self.switches["third_party"].set_tooltip_markup(txt)
-        #self.labels["third_party"].set_tooltip_markup(txt)
-
         # Sort listbox items
         self.listbox.invalidate_sort()
 
@@ -309,11 +301,8 @@ class Features(GtkBaseBox):
         txt1 = "<big>%s</big>" % txt1
         txt2 = "<i>%s</i>" % txt2
 
-        info = Gtk.MessageDialog(transient_for=None,
-                                 modal=True,
-                                 destroy_with_parent=True,
-                                 message_type=Gtk.MessageType.INFO,
-                                 buttons=Gtk.ButtonsType.CLOSE)
+        info = Gtk.MessageDialog(transient_for=None, modal=True, destroy_with_parent=True,
+                                 message_type=Gtk.MessageType.INFO, buttons=Gtk.ButtonsType.CLOSE)
         info.set_markup(txt1)                                        
         info.format_secondary_markup(txt2)
         info.run()

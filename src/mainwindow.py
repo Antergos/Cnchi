@@ -88,9 +88,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
 
-        current_process = multiprocessing.current_process()
-        #logging.debug("[%d] %s started", current_process.pid, current_process.name)
-
         self.settings = config.Settings()
         self.ui_dir = self.settings.get('ui')
 

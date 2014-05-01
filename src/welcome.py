@@ -40,13 +40,8 @@ except ImportError:
     import info
 
 class Welcome(GtkBaseBox):
-    def __init__(self, params):
-        self.disable_tryit = params['disable_tryit']
-
-        self.next_page = "language"
-        self.prev_page = None
-
-        super().__init__(params, "welcome")
+    def __init__(self, params, prev_page=None, next_page="language"):
+        super().__init__(params, "welcome", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -77,8 +72,6 @@ class Welcome(GtkBaseBox):
 
         self.translate_ui()
 
-        self.set_name("welcome")
-
         self.add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
@@ -86,7 +79,6 @@ class Welcome(GtkBaseBox):
         txt = ""
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")
-
         txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
@@ -144,9 +136,6 @@ class Welcome(GtkBaseBox):
         self.forward_button.hide()
         if self.disable_tryit:
             self.button['tryit'].set_sensitive(False)
-        #if info.CNCHI_VERSION is not "0.4.3":
-        #    self.button['cli'].set_sensitive(False)
-
 
     def start_auto_timezone_thread(self):
         import timezone

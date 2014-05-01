@@ -40,15 +40,12 @@ from gtkbasebox import GtkBaseBox
 # When we reach this page we can't go neither backwards nor forwards
 
 class Slides(GtkBaseBox):
-    def __init__(self, params):
+    def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
-        self.next_page = None
-        self.prev_page = None
-
         self.callback_queue = params['callback_queue']
         self.main_progressbar = params['main_progressbar']
 
-        super().__init__(params, "slides")
+        super().__init__(params, "slides", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -110,7 +107,6 @@ class Slides(GtkBaseBox):
 
     def set_message(self, txt):
         """ Show information message """
-        #txt = "<span color='darkred'>%s</span>" % txt
         self.info_label.set_markup(txt)
 
     def stop_pulse(self):
@@ -195,8 +191,6 @@ class Slides(GtkBaseBox):
                 response = show.question(install_ok)
                 self.remove_temp_files()
                 self.settings.set('stop_all_threads', True)
-                #while Gtk.events_pending():
-                #    Gtk.main_iteration()
                 logging.shutdown()
                 if response == Gtk.ResponseType.YES:
                     self.reboot()

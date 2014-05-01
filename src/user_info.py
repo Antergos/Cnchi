@@ -31,11 +31,8 @@ from gtkbasebox import GtkBaseBox
 
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
-    def __init__(self, params):
-        self.next_page = "slides"
-        self.prev_page = None
-
-        super().__init__(params, "user_info")
+    def __init__(self, params, prev_page=None, next_page="slides"):
+        super().__init__(params, "user_info", prev_page, next_page)
 
         self.is_ok = dict()
         self.is_ok['fullname'] = self.ui.get_object('fullname_ok')
@@ -131,12 +128,7 @@ class UserInfo(GtkBaseBox):
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("show password"))
 
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Create Your User Account"))
-
-        #txt = _("Create Your User Account")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
         # Restore forward button text (from install now! to next)
         self.forward_button.set_label("gtk-go-forward")
@@ -176,28 +168,14 @@ class UserInfo(GtkBaseBox):
             self.settings.set('password', self.entry['password'].get_text())
             self.settings.set('require_password', self.require_password)
 
-
-
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
-            '''
-            # This is not true anymore, we use encFS now.
-            message = _("Antergos will use eCryptfs to encrypt your home directory.\n"
-                "Unfortunately, eCryptfs does not handle sparse files very well.\n\n"
-                "Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n\n"
-                "One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download "
-                "locationw as this often requires eCryptfs to handle sparse files of 10 GB or more and can "
-                "lead to intense disk starvation.\n\n"
-                "A simple workaround is to place sparse files in an unencrypted Public directory.\n\n"
-                "Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n\n"
-                "Are you sure you want to encrypt your home directory?")
-            '''
             message = _("Are you sure you want to encrypt your home directory?")
             res = show.question(message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
 
-        # this way installer_process will know all info has been entered
+        # Let installer_process know that all info has been entered
         self.settings.set('user_info_done', True)
 
     def prepare(self, direction):

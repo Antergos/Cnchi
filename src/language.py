@@ -38,14 +38,8 @@ import config
 import canonical.i18n as i18n
 
 class Language(GtkBaseBox):
-
-    def __init__(self, params):
-        self.next_page = "check"
-        self.prev_page = "welcome"
-
-        self.main_progressbar = params['main_progressbar']
-
-        super().__init__(params, "language")
+    def __init__(self, params, prev_page="welcome", next_page="check"):
+        super().__init__(params, "language", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -151,10 +145,6 @@ class Language(GtkBaseBox):
 
     def prepare(self, direction):
         self.translate_ui()
-        
-        # scroll language treeview to selected item
-        #self.scroll_to_selected_item(self.treeview_language)
-
         self.show_all()
 
 # When testing, no _() is available

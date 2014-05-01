@@ -35,15 +35,13 @@ import keyboard_widget
 from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
-    def __init__(self, params):
-        self.next_page = "desktop"
-        self.prev_page = "timezone"
+    def __init__(self, params, prev_page="timezone", next_page="desktop"):
 
         self.testing = params['testing']
 
         self.prepare_called = False
 
-        super().__init__(params, "keymap")
+        super().__init__(params, "keymap", prev_page, next_page)
 
         self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
 
@@ -131,7 +129,6 @@ class Keymap(GtkBaseBox):
         for layout in kbd_names._layout_by_human:
             sorted_layouts.append(layout)
 
-        #sorted_layouts.sort()
         sorted_layouts = misc.sort_list(sorted_layouts, self.settings.get("locale"))
 
         # Block signal
@@ -182,7 +179,7 @@ class Keymap(GtkBaseBox):
 
                 keyboard_layout = ls.get_value(iter, 0)
 
-                # store layout selected
+                # Store layout selected
                 self.keyboard_layout_human = keyboard_layout
 
                 lang = self.settings.get("language_code")
@@ -203,7 +200,6 @@ class Keymap(GtkBaseBox):
                 for variant in variants[country_code]:
                     sorted_variants.append(variant)
 
-                #sorted_variants.sort()
                 sorted_variants = misc.sort_list(sorted_variants, self.settings.get("locale"))
                 
                 # Block signal
@@ -220,7 +216,6 @@ class Keymap(GtkBaseBox):
                 # Unblock signal
                 self.variant_treeview.handler_unblock_by_func(self.on_keyboardvariant_cursor_changed)
 
-                #selection = self.variant_treeview.get_selection()
                 self.variant_treeview.set_cursor(0)
         else:
             liststore = self.variant_treeview.get_model()
