@@ -65,10 +65,8 @@ class Check(GtkBaseBox):
         self.add(self.ui.get_object("check"))
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("System Check")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
@@ -144,8 +142,7 @@ class Check(GtkBaseBox):
                     size = int(col[3])
                     if size > max_size:
                         max_size = size
-        # we need 4GB
-        #3221225472
+
         if max_size >= MIN_ROOT_SIZE:
             return True
 
@@ -157,7 +154,7 @@ class Check(GtkBaseBox):
         return not self.remove_timer
 
     def store_values(self):
-        # remove timer
+        # Remove timer
         self.remove_timer = True
 
         logging.info(_("We have Internet connection."))
@@ -180,8 +177,7 @@ class Check(GtkBaseBox):
 
         self.forward_button.set_sensitive(self.check_all())
 
-        # set timer
-        #self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
+        # Set timer
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
 
 # When testing, no _() is available

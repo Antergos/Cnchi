@@ -32,7 +32,6 @@ WEIGHT = 12
 
 class Wireless(GtkBaseBox):
     def __init__(self, params):
-
         self.next_page = "desktop"
         self.prev_page = "check"
 
@@ -64,8 +63,13 @@ class Wireless(GtkBaseBox):
         self.stop_text = None
         self.skip = False
         
+        self.translate_ui()
+        
         self.add(self.ui.get_object("wireless"))
 
+    def translate_ui(self):
+        pass
+        
     def plugin_translate(self, lang):
         pass
         # get_s = self.controller.get_string

@@ -41,7 +41,7 @@ class DesktopAsk(GtkBaseBox):
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
         self.desktop_info = self.ui.get_object("desktop_info")
-        #self.treeview_desktop = self.ui.get_object("treeview_desktop")
+
         # Set up list box
         self.listbox = self.ui.get_object("listbox_desktop")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)

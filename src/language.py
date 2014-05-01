@@ -40,7 +40,6 @@ import canonical.i18n as i18n
 class Language(GtkBaseBox):
 
     def __init__(self, params):
-
         self.next_page = "check"
         self.prev_page = "welcome"
 
@@ -82,6 +81,7 @@ class Language(GtkBaseBox):
                     self.set_language(lang_code)
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
         txt = _("Cnchi is pre-release beta software that is under active development.\n"
         "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"

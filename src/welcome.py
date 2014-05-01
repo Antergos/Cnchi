@@ -39,7 +39,6 @@ try:
 except ImportError:
     import info
 
-
 class Welcome(GtkBaseBox):
     def __init__(self, params):
         self.disable_tryit = params['disable_tryit']
@@ -83,6 +82,7 @@ class Welcome(GtkBaseBox):
         self.add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = ""
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")

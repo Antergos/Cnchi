@@ -83,6 +83,7 @@ class Slides(GtkBaseBox):
         self.should_pulse = False
 
     def translate_ui(self):
+        """ Translates all ui elements """
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
 

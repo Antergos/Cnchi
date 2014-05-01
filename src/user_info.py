@@ -32,9 +32,7 @@ from gtkbasebox import GtkBaseBox
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
     def __init__(self, params):
-
         self.next_page = "slides"
-        #_prev_page = "keymap"
         self.prev_page = None
 
         super().__init__(params, "user_info")
@@ -72,7 +70,7 @@ class UserInfo(GtkBaseBox):
         self.add(self.ui.get_object("user_info"))
 
     def translate_ui(self):
-        """ Translate all widgets """
+        """ Translates all ui elements """
         label = self.ui.get_object('fullname_label')
         txt = _("Your name:")
         label.set_markup(txt)

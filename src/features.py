@@ -97,7 +97,7 @@ class Features(GtkBaseBox):
         return 1
 
     def translate_ui(self):
-        """ Translates features ui """
+        """ Translates all ui elements """
         desktop = self.settings.get('desktop')
 
         txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")

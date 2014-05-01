@@ -35,7 +35,6 @@ import keyboard_widget
 from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
-
     def __init__(self, params):
         self.next_page = "desktop"
         self.prev_page = "timezone"
@@ -61,6 +60,7 @@ class Keymap(GtkBaseBox):
         self.add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
+        """ Translates all ui elements """
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
         
         lbl = self.ui.get_object("label_layouts")

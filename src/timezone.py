@@ -95,6 +95,7 @@ class Timezone(GtkBaseBox):
         self.autodetected_coords = None
 
     def translate_ui(self):
+        """ Translates all ui elements """
         label = self.ui.get_object('label_zone')
         txt = _("Zone:")
         label.set_markup(txt)

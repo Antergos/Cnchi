@@ -33,7 +33,6 @@ from gtkbasebox import GtkBaseBox
 
 class Location(GtkBaseBox):
     def __init__(self, params):
-
         self.next_page = "timezone"
         self.prev_page = "check"
 
@@ -57,6 +56,7 @@ class Location(GtkBaseBox):
         self.add(self.ui.get_object("location"))
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("The location you select will be used to help determine the system locale.\n" \
             "This should normally be the country in which you reside.\n" \
             "Here is a shortlist of locations based on the language you selected.")

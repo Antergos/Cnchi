@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  features.py
+#  gtkbasebox.py
 #
 #  Copyright 2013 Antergos
 #
@@ -25,7 +25,7 @@ from gi.repository import Gtk, GObject
 import os
 
 class GtkBaseBox(Gtk.Box):
-
+""" Base class for our screens """
     def __init__(self, params, name):
         self.header = params['header']
         self.ui_dir = params['ui_dir']
@@ -36,7 +36,7 @@ class GtkBaseBox(Gtk.Box):
         if 'title' in params.keys():
             self.title = params['title']
 
-        super().__init__()
+        Gtk.Box.__init__(self)
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "{}.ui".format(name)))
@@ -46,3 +46,12 @@ class GtkBaseBox(Gtk.Box):
 
     def get_next_page(self):
         return self.next_page
+
+    def translate_ui(self):
+        raise NotImplementedError
+
+    def prepare(self, direction):
+        raise NotImplementedError
+    
+    def store_values(self):
+        raise NotImplementedError
