@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_ask.py
+#  ask.py
 #
 #  Copyright 2013 Antergos
 #
@@ -42,7 +42,7 @@ from gtkbasebox import GtkBaseBox
 
 class InstallationAsk(GtkBaseBox):
     def __init__(self, params, prev_page="features", next_page=None):
-        super().__init__(params, "ask", prev_page, next_page)
+        super().__init__(self, params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
         #partitioner_dir = os.path.join(data_dir, "images", "partitioner")
@@ -59,10 +59,6 @@ class InstallationAsk(GtkBaseBox):
         image = self.ui.get_object("advanced_image")
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
-
-        self.ui.connect_signals(self)
-
-        self.add(self.ui.get_object("installation_ask"))
 
         oses = {}
         oses = bootinfo.get_os_dict()

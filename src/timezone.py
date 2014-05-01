@@ -47,9 +47,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
-        super().__init__(params, "timezone", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "timezone", prev_page, next_page)
 
         self.map_window = self.ui.get_object('timezone_map_window')
 
@@ -86,8 +84,6 @@ class Timezone(GtkBaseBox):
         # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
         self.mirrorlist_thread = None
         #self.start_mirrorlist_thread()
-
-        self.add(self.ui.get_object('location'))
 
         self.autodetected_coords = None
 

@@ -36,16 +36,11 @@ from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
     def __init__(self, params, prev_page="timezone", next_page="desktop"):
-
-        self.testing = params['testing']
+        super().__init__(self, params, "keymap", prev_page, next_page)
 
         self.prepare_called = False
 
-        super().__init__(params, "keymap", prev_page, next_page)
-
         self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
-
-        self.ui.connect_signals(self)
 
         self.layout_treeview = self.ui.get_object("keyboardlayout")
         self.variant_treeview = self.ui.get_object("keyboardvariant")
@@ -54,8 +49,6 @@ class Keymap(GtkBaseBox):
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
         self.create_toolviews()
-
-        self.add(self.ui.get_object("keymap"))
 
     def translate_ui(self):
         """ Translates all ui elements """

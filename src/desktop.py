@@ -32,7 +32,7 @@ from gtkbasebox import GtkBaseBox
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
     def __init__(self, params, prev_page="keymap", next_page="features"):
-        super().__init__(params, "desktop", prev_page, next_page)
+        super().__init__(self, params, "desktop", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
@@ -44,15 +44,11 @@ class DesktopAsk(GtkBaseBox):
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
-        self.ui.connect_signals(self)
-
         self.desktop_choice = 'gnome'
 
         self.enabled_desktops = self.settings.get("desktops")
 
         self.set_desktop_list()
-
-        self.add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
         """ Translates all ui elements """

@@ -26,7 +26,7 @@ import os
 
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
-    def __init__(self, params, name, prev_page, next_page):
+    def __init__(self, child, params, name, prev_page, next_page):
         self.alternate_package_list = params['alternate_package_list']
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
@@ -47,6 +47,11 @@ class GtkBaseBox(Gtk.Box):
 
         self.ui = Gtk.Builder()
         self.ui.add_from_file(os.path.join(self.ui_dir, "{}.ui".format(name)))
+
+        # Connect UI signals
+        self.ui.connect_signals(child)
+        
+        child.add(self.ui.get_object(name))
 
     def get_prev_page(self):
         return self.prev_page

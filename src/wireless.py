@@ -39,9 +39,7 @@ class Wireless(GtkBaseBox):
             self.page = None
             return
 
-        super().__init__(params, "wireless", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "wireless", prev_page, next_page)
 
         self.page = self.ui.get_object('wireless')
         self.nmwidget = self.ui.get_object('nmwidget')
@@ -59,8 +57,6 @@ class Wireless(GtkBaseBox):
         self.connect_text = None
         self.stop_text = None
         self.skip = False
-
-        self.add(self.ui.get_object("wireless"))
 
     def translate_ui(self):
         pass

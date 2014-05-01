@@ -41,9 +41,7 @@ except ImportError:
 
 class Welcome(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page="language"):
-        super().__init__(params, "welcome", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "welcome", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
@@ -69,10 +67,6 @@ class Welcome(GtkBaseBox):
 
         for key in self.image:
             self.image[key].set_from_file(self.filename[key])
-
-        self.translate_ui()
-
-        self.add(self.ui.get_object("welcome"))
 
     def translate_ui(self):
         """ Translates all ui elements """

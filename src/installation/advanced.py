@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_advanced.py
+#  advanced.py
 #
 #  Copyright 2013 Antergos
 #
@@ -51,7 +51,7 @@ class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         # Call base class
-        super().__init__(params, "advanced", prev_page, next_page)
+        super().__init__(self, params, "advanced", prev_page, next_page)
 
         self.blvm = False
 
@@ -71,9 +71,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         # hold deleted partitions that exist now
         self.to_be_deleted = []
-
-        # Connect UI signals
-        self.ui.connect_signals(self)
 
         # Load create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
@@ -135,8 +132,6 @@ class InstallationAdvanced(GtkBaseBox):
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
 
         self.show_changes_grid = None
-
-        self.add(self.ui.get_object("installation_advanced"))
 
         # Initialize some attributes
         self.process = None

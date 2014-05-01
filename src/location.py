@@ -33,9 +33,7 @@ from gtkbasebox import GtkBaseBox
 
 class Location(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="timezone"):
-        super().__init__(params, "location", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "location", prev_page, next_page)
 
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
@@ -49,8 +47,6 @@ class Location(GtkBaseBox):
         self.load_locales()
 
         self.selected_country = ""
-
-        self.add(self.ui.get_object("location"))
 
     def translate_ui(self):
         """ Translates all ui elements """

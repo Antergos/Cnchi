@@ -44,8 +44,7 @@ class Check(GtkBaseBox):
     """ Check class """
     def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
-        super().__init__(params, "check", prev_page, next_page)
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "check", prev_page, next_page)
 
         self.remove_timer = False
 
@@ -56,8 +55,6 @@ class Check(GtkBaseBox):
         self.prepare_enough_space = None
         self.timeout_id = None
         self.prepare_best_results = None
-
-        self.add(self.ui.get_object("check"))
 
     def translate_ui(self):
         """ Translates all ui elements """

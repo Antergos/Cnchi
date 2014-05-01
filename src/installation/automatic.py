@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_automatic.py
+#  automatic.py
 #
 #  Copyright 2013 Antergos
 #
@@ -45,9 +45,7 @@ from gtkbasebox import GtkBaseBox
 
 class InstallationAutomatic(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
-        super().__init__(params, "automatic", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "automatic", prev_page, next_page)
 
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
@@ -57,8 +55,6 @@ class InstallationAutomatic(GtkBaseBox):
         self.entry['luks_password_confirm']= self.ui.get_object('entry_luks_password_confirm')
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
-
-        self.add(self.ui.get_object("installation_automatic"))
 
         self.devices = dict()
         self.process = None

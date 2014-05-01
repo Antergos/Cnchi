@@ -42,12 +42,7 @@ from gtkbasebox import GtkBaseBox
 class Slides(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
-        self.callback_queue = params['callback_queue']
-        self.main_progressbar = params['main_progressbar']
-
-        super().__init__(params, "slides", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "slides", prev_page, next_page)
 
         self.progress_bar = self.ui.get_object("progressbar")
         self.progress_bar.set_show_text(True)
@@ -73,8 +68,6 @@ class Slides(GtkBaseBox):
             pass
 
         self.scrolled_window.add(self.webview)
-
-        self.add(self.ui.get_object("slides"))
 
         self.fatal_error = False
         self.should_pulse = False

@@ -39,16 +39,12 @@ import canonical.i18n as i18n
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
-        super().__init__(params, "language", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "language", prev_page, next_page)
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-
-        self.translate_ui()
 
         data_dir = self.settings.get('data')
 
@@ -61,8 +57,6 @@ class Language(GtkBaseBox):
 
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
-
-        self.add(self.ui.get_object("language"))
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """

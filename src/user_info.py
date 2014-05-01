@@ -32,7 +32,7 @@ from gtkbasebox import GtkBaseBox
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
     def __init__(self, params, prev_page=None, next_page="slides"):
-        super().__init__(params, "user_info", prev_page, next_page)
+        super().__init__(self, params, "user_info", prev_page, next_page)
 
         self.is_ok = dict()
         self.is_ok['fullname'] = self.ui.get_object('fullname_ok')
@@ -59,12 +59,8 @@ class UserInfo(GtkBaseBox):
         self.login['pass'] = self.ui.get_object('login_pass')
         self.login['encrypt'] = self.ui.get_object('login_encrypt')
 
-        self.ui.connect_signals(self)
-
         self.require_password = True
         self.encrypt_home = False
-
-        self.add(self.ui.get_object("user_info"))
 
     def translate_ui(self):
         """ Translates all ui elements """

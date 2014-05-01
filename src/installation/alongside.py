@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_alongside.py
+#  alongside.py
 #
 #  Copyright 2013 Antergos
 #
@@ -62,7 +62,7 @@ MIN_ROOT_SIZE = 6500
 
 class InstallationAlongside(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
-        super().__init__(params, "alongside", prev_page, next_page)
+        super().__init__(self, params, "alongside", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -75,8 +75,6 @@ class InstallationAlongside(GtkBaseBox):
 
         # Init dialog slider
         self.init_slider()
-
-        self.add(self.ui.get_object("installation_alongside"))
 
     def init_slider(self):
         dialog = self.ui.get_object("shrink-dialog")

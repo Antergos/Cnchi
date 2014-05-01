@@ -35,9 +35,7 @@ class Features(GtkBaseBox):
     """ Features screen class """
     def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
         """ Initializes features ui """
-        super().__init__(params, "features", prev_page, next_page)
-
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "features", prev_page, next_page)
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
@@ -73,8 +71,6 @@ class Features(GtkBaseBox):
 
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
-
-        self.add(self.ui.get_object("features"))
 
     def listbox_sort_by_name(self, row1, row2, user_data):
         """ Sort function for listbox
