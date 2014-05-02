@@ -1,16 +1,19 @@
-# Cnchi Catalan
-# Copyright (C) 2013 Antergos
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
 # tot3lmon <tot3lmon@gmail.com>, 2013
 # faidoc <alexfilgueira@antergos.com>, 2013
-# karasu <karasu@antergos.com>, 2013
+# karasu0 <karasu@antergos.com>, 2013-2014
+# karasu0 <karasu@antergos.com>, 2013
+# ArcNexus <marcmirallesbiosca@gmail.com>, 2014
+# tot3lmon <tot3lmon@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2013-11-04 09:03+PET\n"
-"PO-Revision-Date: 2013-11-05 09:49+0000\n"
-"Last-Translator: karasu0 <karasu@antergos.com>\n"
+"POT-Creation-Date: 2014-03-29 10:36+PET\n"
+"PO-Revision-Date: 2014-03-29 15:37+0000\n"
+"Last-Translator: faidoc <faidoc@gmail.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,117 +22,184 @@ msgstr ""
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cnchi.py:97
+#: cnchi.py:134
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
-msgstr "Aquest instal·lador ha de funcionar amb privilegis d'administrador i no pot continuar sense ells."
+msgstr "Aquest instal·lador necessita privilegis d'administrador per poder continuar."
 
-#: cnchi.py:105
+#: cnchi.py:143
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
 "If you are sure that the installer is not already running\n"
 "you can manually delete the file %s\n"
 "and run this installer again."
-msgstr "No pots executar dues instàncies d'aquest instal·lador\n\nSi estàs segur que l'instal·lador no està ja funcionant\npots esborrar manualment el fitxer %s\ni tornar a executar aquest instal·lador."
+msgstr "No pots executar dues instàncies d'aquest instal·lador.\n\nSi estàs segur que l'instal·lador no està ja funcionant\npots esborrar manualment el fitxer %s\ni tornar a executar aquest instal·lador."
 
-#: cnchi.py:175
+#: cnchi.py:151
+msgid "Cnchi installer version %s"
+msgstr "Instal·lador Cnchi versió %s"
+
+#: cnchi.py:197
+msgid "Antergos Installer"
+msgstr "Instal·lador d'Antergos"
+
+#: cnchi.py:233
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
 msgstr "S'usarà Aria2 per descarregar els paquets - EXPERIMENTAL"
 
-#: cnchi.py:195
+#: cnchi.py:251
 msgid "Using '%s' file as package list"
-msgstr "S'usarà el fitxer '%s' com a llista de paquets"
+msgstr ""
 
-#: cnchi.py:215
-msgid "Antergos Installer"
-msgstr "Instal·lador de Antergos"
+#: cnchi.py:278
+msgid "Cnchi - Antergos Installer"
+msgstr "Cnchi - Instal·lador d'Antergos"
 
-#: cnchi.py:288
+#: cnchi.py:331 src/welcome.py:120
 msgid "Quiting installer..."
 msgstr "Sortint de l'instal·lador..."
 
-#: src/bootinfo.py:35 src/bootinfo.py:55 src/bootinfo.py:60 src/bootinfo.py:81
-#: src/installation_alongside.py:212
+#: cnchi.py:453
+msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
+msgstr "Usa aria2 per descarregar els paquets d'Antergos (EXPERIMENTAL)"
+
+#: cnchi.py:454
+msgid ""
+"Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
+"version is found)"
+msgstr "Usar paquets xz pre-descarregats (Cnchi els descarregarà igualment si troba una versió més nova)"
+
+#: cnchi.py:455
+msgid ""
+"As --cache but before installing Cnchi copies all xz packages to destination"
+msgstr "Igual que --cache però abans d'instal·lar, Cnchi copiarà tots els paquets xz al destí"
+
+#: cnchi.py:456
+msgid "Sets Cnchi log level to 'debug'"
+msgstr "Posa el nivell de registre a 'debug'"
+
+#: cnchi.py:457
+msgid "Update Cnchi to the latest version (-uu will force the update)"
+msgstr "Actualitza Cnchi a la última versió (-uu en forçarà l'actualització)"
+
+#: cnchi.py:458
+msgid ""
+"Install the packages referenced by a local xml instead of the default ones"
+msgstr "Instal·la els paquets d'un fitxer xml local enlloc dels paquets per defecte"
+
+#: cnchi.py:459
+msgid "Do not perform any changes (useful for developers)"
+msgstr "No facis cap canvi (útil pels desenvolupadors)"
+
+#: cnchi.py:460
+msgid "Show logging messages to stdout"
+msgstr "Mostra els missatges de registra a stdout"
+
+#: cnchi.py:461
+msgid "Disables the tryit option (useful if Cnchi is not run from a liveCD)"
+msgstr "Desactiva la opció 'tryit' (útil si el Cnchi no es crida des de un liveCD)"
+
+#: cnchi.py:462
+msgid "Show options in development (DO NOT USE THIS!)"
+msgstr "Mostra opcions que encara estan en desenvolupament (NO USIS AIXÒ)"
+
+#: cnchi.py:498 cnchi.py:502
+msgid "Please install %s before running this installer"
+msgstr ""
+
+#: cnchi.py:529
+msgid "Program updated! Restarting..."
+msgstr ""
+
+#: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
+#: src/installation/alongside.py:215
 msgid "unknown"
 msgstr "desconegut"
 
-#: src/bootloader.py:50
-msgid "What type of boot system are you using?"
-msgstr "Quin tipus de carregador d'arrencada estàs usant?"
+#: src/canonical/misc.py:929
+msgid "Can't set locale %s"
+msgstr "No es pot establir la configuració local %s"
 
-#: src/bootloader.py:55
-msgid "BIOS (Most Common)"
-msgstr "BIOS (el més comú)"
+#: src/canonical/validation.py:132
+msgid "password is too short"
+msgstr "La contrasenya és massa curta"
 
-#: src/bootloader.py:59
-msgid "64-bit UEFI"
-msgstr "UEFI 64-bit"
+#: src/canonical/validation.py:135
+msgid "weak password"
+msgstr "La contrasenya és massa dèbil"
 
-#: src/bootloader.py:63
-msgid "32-bit UEFI (old Macs)"
-msgstr "UEFI 32-bit (Macs antics)"
+#: src/canonical/validation.py:138
+msgid "fair password"
+msgstr "contrasenya dèbil"
 
-#: src/bootloader.py:67
-msgid "Select 'cancel' if you don't want to install a boot loader."
-msgstr "Sel·lecciona 'cancel' si no vols instal·lar un carregador d'arrencada."
+#: src/canonical/validation.py:141
+msgid "good password"
+msgstr "contrasenya correcta"
 
-#: src/check.py:63
+#: src/canonical/validation.py:144
+msgid "strong password"
+msgstr "contrasenya forta"
+
+#: src/canonical/validation.py:159
+msgid "Passwords do not match"
+msgstr "Les contrasenyes no coincideixen"
+
+#: src/check.py:74
 msgid "System Check"
 msgstr "Comprovació del sistema"
 
-#: src/check.py:68
-msgid "has at least 3GB available storage space"
-msgstr "té, com a mínim, 3GB d'espai disponible"
+#: src/check.py:81
+msgid "has at least %dGB available storage space."
+msgstr "té, com a mínim, %dGB d'espai lliure"
 
-#: src/check.py:72
+#: src/check.py:86
+msgid ""
+"This highly depends on which desktop environment you choose, so you might "
+"need more space."
+msgstr "Aquesta quantitat depén de quin entorn d'escriptori s'instal·li."
+
+#: src/check.py:91
 msgid "is plugged in to a power source"
 msgstr "està connectat a una font de corrent"
 
-#: src/check.py:76
+#: src/check.py:95
 msgid "is connected to the Internet"
 msgstr "està connectat a Internet"
 
-#: src/check.py:80
+#: src/check.py:99
 msgid "For best results, please ensure that this computer:"
-msgstr "Per obtenir els millors resultats, assegura't que:"
+msgstr "Per obtenir els millors resultats, assegura't que el teu equip:"
 
-#: src/check.py:85
-msgid ""
-"Antergos uses third-party software to play Flash videos, MP3 and other "
-"media. Some of this software is proprietary. Use of this software is subject"
-" to license terms included with its documentation."
-msgstr "Antergos usa programari de tercers per mostrar vídeos Flash, MP3 i d'altres. Alguns d'aquests programes són propietaris. L'ús d'aquest programari està subjecte a llicències incloses a la seva documentació."
-
-#: src/check.py:93
-msgid "Install this third-party software"
-msgstr "Instal·la software de tercers"
-
-#: src/check.py:113
-msgid "Can't get network status"
-msgstr "No puc obtenir l'estat de la xarxa"
-
-#: src/check.py:189
+#: src/check.py:169
 msgid "We have Internet connection."
-msgstr "Tens una connexió a Internet"
+msgstr "Tens connexió a Internet"
 
-#: src/check.py:190
+#: src/check.py:170
 msgid "We're connected to a power source."
 msgstr "Estàs connectat a una font de corrent"
 
-#: src/check.py:191
+#: src/check.py:171
 msgid "We have enough disk space."
 msgstr "Tenim prou espai de disc lliure."
 
-#: src/desktop.py:76
+#: src/desktop.py:79
+msgid "Choose Your Desktop"
+msgstr "Escull el teu Escriptori"
+
+#: src/desktop.py:132
+msgid "Cnchi will install Antergos with the '%s' desktop"
+msgstr "Cnchi instal·larà l'Antergos amb l'escriptori '%s'"
+
+#: src/desktop_environments.py:65
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "GNOME 3 és una manera elegant i fàcil d'usar l'ordinador. Disposa de la vista d'activitats que és una manera fàcil d'accedir a totes les tasques bàsiques. GNOME 3  és l'escriptori per defecte a Antergos."
 
-#: src/desktop.py:83
+#: src/desktop_environments.py:70
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -137,7 +207,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon és una bifurcació de GNOME 3 desenvolupat per (i per a) Linux Mint. Proveeix als usuaris d'un escriptori més tradicional i alhora també de les tècniques de composició de GNOME 3. Cinnamon està pensat per a tot tipus d'usuaris."
 
-#: src/desktop.py:90
+#: src/desktop_environments.py:75
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -145,7 +215,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce és un entorn d'escriptori lleuger. El seu objectiu és ser ràpid i mantenir un ús baix dels recursos del sistema, i alhora ser agradable visualment i amigable a l'usuari. És una gran opció per a ordinadors antics o amb especificacions baixes de maquinari."
 
-#: src/desktop.py:97
+#: src/desktop_environments.py:80
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -153,941 +223,1670 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE és un entorn d'escriptori molt ràpid i estalviador d'energia. Usa menys CPU i RAM que d'altres entorns. LXDE està especialment designat per ordinadors que estan al núvol amb pocs recursos de maquinari com els netbooks, dispositius mòbils i ordinadors vells."
 
-#: src/desktop.py:104
+#: src/desktop_environments.py:85
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
-"extensive standards support. It's default theme, the *box visual style,is "
-"well known for its minimalistic appearance and flexibility. Your desktop "
-"becomes cleaner, faster, and is in your control with Openbox "
-msgstr "Openbox és un gestor de finestres extremadament configurable amb suport dels estàndards. El seu tema per defecte, l'estil *box, és conegut per la seva aparença minimalista i flexible. El teu escriptori esdevindrà més net i més ràpid, tot sota el teu control."
+"extensive standards support. It's default theme is well known for its "
+"minimalistic appearance and flexibility. Your desktop becomes cleaner, "
+"faster."
+msgstr "Openbox és un gestor de finestres de següent generació, altament configurable amb suport dels estàndards. El seu tema per defecte és conegut per la seva aparença minimalística i per la seva flexibilitat. El teu escriptori esdevindrà més net, més ràpid."
 
-#: src/desktop.py:111
+#: src/desktop_environments.py:90
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment no és només un gestor de finestres per Linux/X11 i altres, sinó també a tot un conjunt de biblioteques per ajudar a crear belles interfícies d'usuari amb molt menys treball"
+msgstr "Enlightenment no és només un gestor de finestres per Linux/X11 i altres sistemes, sinó també tot un conjunt de biblioteques per ajudar a crear fàcilment belles interfícies d'usuari"
 
-#: src/desktop.py:117
+#: src/desktop_environments.py:94
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
-"you can be productive right from the start. The look, feel, and behavior can"
-" be easily customized to the user's taste."
-msgstr "Si estàs buscant un entorn d'escriptori familiar, l'escriptori Plasma KDE ofereix totes les eines necessàries per obtenir una experiència moderna, d'aquesta manera podràs ser productiu des del principi. A més, el sistema és altament configurable segons el teu gust."
+"you can be productive right from the start."
+msgstr "Si estàs buscant un entorn de treball familiar, l'escriptori KDE ofereix totes les eines necessàries per gaudir d'una experiència moderna de manera que puguis ser productiu des de l'inici."
 
-#: src/desktop.py:124
+#: src/desktop_environments.py:98
 msgid ""
 "Razor-qt is an advanced, easy-to-use, and fast desktop environment based on "
 "Qt technologies. It has been tailored for users who value simplicity, speed,"
 " and an intuitive interface."
 msgstr "El Razor-qt és un entorn d'escriptori avançat, ràpid i de fàcil ús basat en la tecnologia Qt. Destinat a usuaris que valoren la simplicitat, velocitat i una interfície intuitiva."
 
-#: src/desktop.py:131
+#: src/desktop_environments.py:103
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "Aquesta opció instal·larà l'Antergos com un sistema de línia de comandes, sense cap tipus d'interfície gràfica. Després de la instal·lació podràs configurar l'Antergos instal·lant paquets amb el gestor de paquets pacman."
 
-#: src/desktop.py:143
-msgid "Choose Your Desktop"
-msgstr "Escull el teu Escriptori"
+#: src/desktop_environments.py:107
+msgid ""
+"MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
+"environment using traditional metaphors for Linux and other Unix-like "
+"operating systems."
+msgstr "MATE és una bifuració del Gnome 2. Proveeix un entorn d'escriptori intuitiu i atractiu usant formes de treball tradicionals per Linux."
 
-#: src/desktop.py:153
-msgid "Desktops"
-msgstr "Escriptoris"
+#: src/download.py:37
+msgid "pm2ml not found. Aria2 download won't work."
+msgstr ""
 
-#: src/desktop.py:186
-msgid "Cnchi will install Antergos with the '%s' desktop"
-msgstr "Cnchi instal·larà Antergos amb l'escriptori '%s'"
+#: src/download.py:80
+msgid "Can't connect with aria2, downloading will be performed by alpm."
+msgstr "No puc connectar amb l'aria2, les descàrregues les farà l'alpm."
 
-#: src/download.py:79
+#: src/download.py:90
 msgid "Error creating metalink for package %s"
-msgstr "Error creant el metaenllaç pel paquet %s"
+msgstr "No s'ha pogut crear el metaenllaç pel paquet %s"
 
-#: src/download.py:85
+#: src/download.py:96
 msgid "Error adding metalink for package %s"
-msgstr "Error afegint el metaenllaç pel paquet %s"
+msgstr "No s'ha pogut afegir el metaenllaç pel paquet %s"
 
-#: src/download.py:134
-msgid "Downloading package '%s'..."
-msgstr "Descarregant el paquet '%s'..."
+#: src/download.py:105
+msgid "Downloading package '%s' and its dependencies..."
+msgstr "Descarregant el paquet '%s' i les seves dependències..."
 
-#: src/download.py:158
-msgid "Can't connect to Aria2. Won't be able to speed up the download."
-msgstr "No puc connectar amb l'Aria2. No seré capaç d'accelerar les descàrregues."
+#: src/download.py:136 src/pacman/pac.py:334
+msgid "Downloading %s..."
+msgstr "Descarregant %s..."
 
-#: src/download.py:234
+#: src/download.py:168
+msgid "Can't connect to Aria2. Error Output: %s"
+msgstr "No puc connectar amb l'Aria2. Error: %s"
+
+#: src/download.py:246
 msgid "Unable to create download queue for package %s"
 msgstr "No puc crear la cua de descàrrega pel paquet %s"
 
-#: src/download.py:238
+#: src/download.py:250
 msgid "Can't find these packages: "
 msgstr "No puc trobar aquests paquets:"
 
-#: src/download.py:244
+#: src/download.py:256
 msgid "Warning! Can't resolve these dependencies: "
 msgstr "Avís! No puc resoldre les següents dependències:"
 
-#: src/features.py:99
+#: src/features.py:110
 msgid "Feature Selection"
-msgstr "Selecció de Característiques"
+msgstr "Selecció de característiques"
 
-#: src/features.py:104
+#: src/features.py:114
+msgid "Arch User Repository (AUR) Support"
+msgstr "Suport pel Repositori d'Usuari Arch (AUR)"
+
+#: src/features.py:117
+msgid "The AUR is a community-driven repository for Arch users."
+msgstr "AUR és un repositori pels usuaris d'Arch (i Antergos) creat per la comunitat d'usuaris."
+
+#: src/features.py:121
+msgid ""
+"Use yaourt to install AUR packages.\n"
+"The AUR was created to organize and share new packages\n"
+"from the community and to help expedite popular packages'\n"
+"inclusion into the [community] repository."
+msgstr "Usa el yaourt per instal·lar paquets de l'AUR.\nL'AUR es creà per organitzar i compartir nous paquets\nde la comunitat i per ajudar a accelerar la inclusió dels\npaquets populars al repositori [community]."
+
+#: src/features.py:130
 msgid "Bluetooth Support"
 msgstr "Bluetooth"
 
-#: src/features.py:107
+#: src/features.py:133
 msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "Permet fer connexions sense fils via Bluetooth al teu sistema "
 
-#: src/features.py:111
+#: src/features.py:137
+msgid ""
+"Bluetooth is a standard for the short-range wireless\n"
+"interconnection of cellular phones, computers, and\n"
+"other electronic devices. In Linux, the canonical\n"
+"implementation of the Bluetooth protocol stack is BlueZ"
+msgstr "El Bluetooth és un estàndard per les connexions sense\ncables a curta distància de mòbils, ordinadors i d'altres\nelements electrònics. A Linux, la implementació que fem\nservir de la pila de protocol de Bluetooth s'anomena BlueZ"
+
+#: src/features.py:146
+msgid "Extra Truetype Fonts"
+msgstr "Fonts Truetype extra"
+
+#: src/features.py:149
+msgid "Installation of extra TrueType fonts"
+msgstr "Instal·lació de fonts TrueType extra"
+
+#: src/features.py:153
+msgid ""
+"TrueType is an outline font standard developed by\n"
+"Apple and Microsoft in the late 1980s as a competitor\n"
+"to Adobe's Type 1 fonts used in PostScript. It has\n"
+"become the most common format for fonts on both the\n"
+"Mac OS and Microsoft Windows operating systems."
+msgstr "TrueType és un estàndard de font de contorn desenvolupat per\nApple i Microsoft a finals de 1980 com a competidor\nde les fonts d'Adobe Type 1 utilitzats en PostScript. S'ha\nconvertit en el format més comú per a les fonts en\nels sistemes operatius Mac OS i Microsoft Windows."
+
+#: src/features.py:163
+msgid "Gnome Extra"
+msgstr "Gnome Extra"
+
+#: src/features.py:166
+msgid "Installation of extra Gnome applications"
+msgstr "Instal·lació d'aplicacions de Gnome Extra"
+
+#: src/features.py:170
+msgid ""
+"Contains various optional tools such as a media\n"
+"player, a calculator, an editor and other non-critical\n"
+"applications that go well with the GNOME desktop.\n"
+msgstr "Conté diferents eines opcionals com un reproductor\nmultimèdia, una calculadora, un editor i d'altres\naplicacions no essencials que s'adapten bé a l'entorn\nd'escriptori GNOME.\n"
+
+#: src/features.py:178
 msgid "Printing Support"
 msgstr "Suport a l'impresió"
 
-#: src/features.py:114
+#: src/features.py:181
 msgid "Installation of printer drivers and management tools."
 msgstr "Instal·la els controladors d'impressora i les eines de gestió."
 
-#: src/features.py:118
+#: src/features.py:185
+msgid ""
+"CUPS is the standards-based, open source printing\n"
+"system developed by Apple Inc. for OS\\302\\256 X and other\n"
+"UNIX\\302\\256-like operating systems."
+msgstr "Apple Inc. desenvolupà CUPS, el sistema d'impressió\nestàndard en els sistemes operatius OS\\302\\256 X i d'altres\nderivats de UNIX\\302\\256."
+
+#: src/features.py:193
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: src/features.py:121
-msgid "Open source office suite that supports editing MS Office files."
-msgstr "Suite d'oficina de codi obert que permet editar fitxers de l'Office de MS "
+#: src/features.py:196
+msgid "Open source office suite. Supports editing MS Office files."
+msgstr "Paquet ofimàtic. Pot editar arxius MS Office."
 
-#: src/features.py:125
+#: src/features.py:200
+msgid ""
+"LibreOffice is the free power-packed Open Source\n"
+"personal productivity suite for Windows, Macintosh\n"
+"and Linux, that gives you six feature-rich applications\n"
+"for all your document production and data processing\n"
+"needs: Writer, Calc, Impress, Draw, Math and Base."
+msgstr "LibreOffice és el paquet Open Source de productivitat\npersonal d'ofimàtica per a Windows, Macintosh i Linux,\nque ofereix sis aplicacions riques en característiques\nper a tota la producció de documents i processament de dades:\nWriter, Calc, Impress, Draw, Math i Base."
+
+#: src/features.py:210
 msgid "Visual Effects"
 msgstr "Efectes visuals"
 
-#: src/features.py:128
-msgid ""
-"Enable 3D acceleration for transparency, shadows, and other desktop effects."
-msgstr "Activa l'acceleració 3D per les transparències, ombres i d'altres efectes d'escriptori."
+#: src/features.py:213
+msgid "Enable transparency, shadows, and other desktop effects."
+msgstr "Activa la transparència, ombres i d'altres efectes d'escriptori"
 
-#: src/features.py:132
+#: src/features.py:217
+msgid ""
+"Compton is a lightweight, standalone composite manager,\n"
+"suitable for use with window managers that do not natively\n"
+"provide compositing functionality. Compton itself is a fork\n"
+"of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+"See the compton github page for further information."
+msgstr "Compton és un gestor de composició o 'compositor' lleuger, autònom,\nadequat per al seu ús amb els gestors de finestres que no proporcionen\nla funcionalitat de composició. Compton és un programa derivat de\nxcompmgr-na, que al seu torn és un derivat de xcompmgr.\nVegeu la pàgina de GitHub del compton per a més informació."
+
+#: src/features.py:227
 msgid "Uncomplicated Firewall"
 msgstr "Tallafoc senzill"
 
-#: src/features.py:137
+#: src/features.py:230
 msgid "Control the incoming and outgoing network traffic."
 msgstr "Controla el trànsit de xarxa entrant i sortint."
 
-#: src/features.py:141
+#: src/features.py:234
+msgid ""
+"Ufw stands for Uncomplicated Firewall, and is a program for\n"
+"managing a netfilter firewall. It provides a command line\n"
+"interface and aims to be uncomplicated and easy to use."
+msgstr "Ufw vol dir Uncomplicated Firewall o Tallafocs Senzill, que\nés un programa per gestionar el tallafocs de línux. Fa que\nes pugui controlar el tallafocs mitjançant unes comandes molt simples."
+
+#: src/features.py:242
 msgid "Proprietary Software"
 msgstr "Programari Privatiu"
 
-#: src/features.py:144
-msgid "Third-party software to play Flash videos, MP3 audio, and other media."
-msgstr "Programari de tercers per mostrar vídeos Flash, MP3 i d'altres."
+#: src/features.py:245
+msgid "Software to play Flash videos, MP3 audio, and other media."
+msgstr "Programari per reproduir vídeos Flash, audio MP3 i d'altres suports."
 
-#: src/features.py:149
+#: src/features.py:273
+msgid "Detected bluetooth device. Enabling by default..."
+msgstr ""
+
+#: src/features.py:288
+msgid "Selected '%s' feature to install"
+msgstr ""
+
+#: src/features.py:306
+msgid "Arch User Repository - Disclaimer"
+msgstr "Repositori dels Usuaris d'Arch - Avís"
+
+#: src/features.py:307
+msgid ""
+"The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
+"that supplement software available from the official repositories.\n"
+"\n"
+"The AUR is community driven and NOT supported by Arch or Antergos.\n"
+msgstr "El repositori d'usuaris d'Arch és una col·lecció de PKGBUILDS que suplementen\nel programari disponible dels repositoris oficials.\n\nL'AUR és gestionat per la comunitat i NO per Arch o Antergos. \n"
+
+#: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
 msgstr "El tallafoc senzill s'instal·larà amb aquestes regles:"
 
-#: src/installation_advanced.py:194 src/installation_advanced.py:484
-#: src/installation_advanced.py:498
+#: src/features.py:314
+msgid ""
+"ufw default deny\n"
+"ufw allow from %s\n"
+"ufw allow Transmission\n"
+"ufw allow SSH"
+msgstr "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH"
+
+#: src/hardware/hardware.py:65 src/installation/process.py:843
+msgid "Error running command: %s"
+msgstr "Error al córrer la ordre: %s"
+
+#: src/installation/advanced.py:210 src/installation/advanced.py:505
+#: src/installation/advanced.py:519
 msgid "free space"
 msgstr "espai lliure"
 
-#: src/installation_advanced.py:262 src/installation_alongside.py:166
+#: src/installation/advanced.py:259
+msgid "It's not recommended to install grub in a partition"
+msgstr "No es recomana instal·lar el Grub dins d'una partició"
+
+#: src/installation/advanced.py:287 src/installation/alongside.py:169
 msgid "Device"
 msgstr "Dispositiu"
 
-#: src/installation_advanced.py:265
+#: src/installation/advanced.py:290
 msgid "Type"
 msgstr "Tipus"
 
-#: src/installation_advanced.py:268
+#: src/installation/advanced.py:293
 msgid "Mount point"
 msgstr "Punt de muntatge"
 
-#: src/installation_advanced.py:271
+#: src/installation/advanced.py:296
 msgid "Label"
 msgstr "Etiqueta"
 
-#: src/installation_advanced.py:277 src/installation_advanced.py:1421
+#: src/installation/advanced.py:302 src/installation/advanced.py:1635
 msgid "Format"
 msgstr "Format"
 
-#: src/installation_advanced.py:280
+#: src/installation/advanced.py:305
 msgid "Size"
 msgstr "Mida"
 
-#: src/installation_advanced.py:283
+#: src/installation/advanced.py:308
 msgid "Used"
 msgstr "Usat"
 
-#: src/installation_advanced.py:286
+#: src/installation/advanced.py:311
 msgid "Flags"
-msgstr "Banderes"
+msgstr "Indicadors"
 
-#: src/installation_advanced.py:292
+#: src/installation/advanced.py:317
 msgid "SSD"
 msgstr "SSD"
 
-#: src/installation_advanced.py:470
+#: src/installation/advanced.py:486
 msgid "none"
 msgstr "cap"
 
-#: src/installation_advanced.py:519 src/installation_advanced.py:921
-#: src/installation_advanced.py:1303 src/installation_advanced.py:1376
-#: src/installation_advanced.py:1544
-msgid "extended"
-msgstr "extès"
+#: src/installation/advanced.py:624
+msgid "Can't edit a partition with LVM filesystem type"
+msgstr "No es pot editar una partició de tipus LVM"
 
-#: src/installation_advanced.py:650
-msgid "Cannot use same mount twice."
-msgstr "No pots usar el mateix punt de muntatge dos cops."
+#: src/installation/advanced.py:672
+msgid "Cannot use the same mount point twice."
+msgstr "No es pot usar el mateix punt de muntatge dues vegades"
 
-#: src/installation_advanced.py:652
+#: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
 msgstr "S'ha de formatar la partició Root."
 
-#: src/installation_advanced.py:891
-msgid "Cannot use same mount twice..."
-msgstr "No pots usar el mateix punt de muntatge dues vegades..."
+#: src/installation/advanced.py:750
+msgid "You will delete the partition %s from disk %s"
+msgstr ""
 
-#: src/installation_advanced.py:912
-msgid "Creating primary partition"
-msgstr "Creant partició primària"
+#: src/installation/advanced.py:767
+msgid "Unmounting %s..."
+msgstr ""
 
-#: src/installation_advanced.py:923
-msgid "Creating extended partition"
-msgstr "Creant partició extesa"
+#: src/installation/advanced.py:927
+msgid "Cannot use the same mount point twice..."
+msgstr "No es pot usar el mateix punt de muntatge dues vegades..."
 
-#: src/installation_advanced.py:929
-msgid "Creating logical partition"
-msgstr "Creant partició lògica"
+#: src/installation/advanced.py:948
+msgid "Creating a primary partition"
+msgstr "Creant una partició primaria"
 
-#: src/installation_advanced.py:1058
+#: src/installation/advanced.py:959
+msgid "Creating an extended partition"
+msgstr "Creant una partició extesa"
+
+#: src/installation/advanced.py:965
+msgid "Creating a logical partition"
+msgstr "Creant una partició lògica"
+
+#: src/installation/advanced.py:1099
 msgid "Advanced Installation Mode"
 msgstr "Mode d'Instal·lació Avançat"
 
-#: src/installation_advanced.py:1062
+#: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
 msgstr "Usa el següent dispositiu per a instal·lar-hi el carregador d'arrencada:"
 
-#: src/installation_advanced.py:1072
+#: src/installation/advanced.py:1110
+msgid "Mount Checklist:"
+msgstr "Llista de punts de muntatge:"
+
+#: src/installation/advanced.py:1116
+msgid "Root ( / )"
+msgstr "Arrel (/)"
+
+#: src/installation/advanced.py:1120
+msgid "Boot ( /boot )"
+msgstr "Boot (/boot)"
+
+#: src/installation/advanced.py:1124
+msgid "EFI ( /boot )"
+msgstr "EFI (/boot)"
+
+#: src/installation/advanced.py:1128
+msgid "Swap"
+msgstr "Intercanvi"
+
+#: src/installation/advanced.py:1136
 msgid "New Partition Table"
 msgstr "Nova Taula de Particions"
 
-#: src/installation_advanced.py:1080
+#: src/installation/advanced.py:1144
 msgid "Change..."
 msgstr "Canviar..."
 
-#: src/installation_advanced.py:1085
+#: src/installation/advanced.py:1149
 msgid "Size:"
 msgstr "Mida:"
 
-#: src/installation_advanced.py:1089
+#: src/installation/advanced.py:1153
 msgid "Type:"
 msgstr "Tipus:"
 
-#: src/installation_advanced.py:1093
+#: src/installation/advanced.py:1157
 msgid "Primary"
 msgstr "Primari"
 
-#: src/installation_advanced.py:1097
+#: src/installation/advanced.py:1161
 msgid "Logical"
 msgstr "Lògic"
 
-#: src/installation_advanced.py:1101
+#: src/installation/advanced.py:1165
 msgid "Extended"
 msgstr "Extès"
 
-#: src/installation_advanced.py:1105
+#: src/installation/advanced.py:1169
 msgid "Beginning of this space"
 msgstr "Al principi d'aquest espai"
 
-#: src/installation_advanced.py:1109
+#: src/installation/advanced.py:1173
 msgid "End of this space"
 msgstr "A la fi d'aquest espai"
 
-#: src/installation_advanced.py:1113 src/installation_advanced.py:1130
+#: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
 msgstr "Usa Com:"
 
-#: src/installation_advanced.py:1117 src/installation_advanced.py:1134
+#: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
 msgstr "Punt de Muntatge:"
 
-#: src/installation_advanced.py:1121 src/installation_advanced.py:1138
+#: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
 msgstr "Etiqueta (opcional):"
 
-#: src/installation_advanced.py:1125
+#: src/installation/advanced.py:1189
 msgid "Encryption Options..."
 msgstr "Opcions d'encriptació..."
 
-#: src/installation_advanced.py:1142
+#: src/installation/advanced.py:1206
 msgid "Format:"
 msgstr "Format:"
 
-#: src/installation_advanced.py:1147
+#: src/installation/advanced.py:1211
 msgid "Partition Table Type:"
 msgstr "Tipus de Taula de Particions:"
 
-#: src/installation_advanced.py:1152
+#: src/installation/advanced.py:1216
 msgid "Create Partition Table"
 msgstr "Crea la Taula de Particions"
 
-#: src/installation_advanced.py:1155 src/installation_alongside.py:144
-#: src/installation_automatic.py:101
+#: src/installation/advanced.py:1219 src/installation/alongside.py:147
+#: src/installation/automatic.py:95
 msgid "Install Now!"
 msgstr "Instal·la Ara!"
 
-#: src/installation_advanced.py:1243
+#: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
 msgstr "Creant una taula de partició nova %s pel disc %s"
 
-#: src/installation_advanced.py:1339
+#: src/installation/advanced.py:1315
+msgid ""
+"GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk or bios_grub flag in GNU Parted) in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
+"\n"
+"For a BIOS-GPT configuration, create a 1007 KiB partition at the beginning of the disk with no filesystem. That will allow for the next partition on the disk to be correctly aligned at 1024 KiB. If needed, the partition can also be located somewhere else on the disk, but it should be within the first 2 TiB region. Set the partition type to ef02.\n"
+"\n"
+"The GPT partition also creates a protective MBR partition to stop unsupported tools from modifying it. You may need to set a bootable flag on this protective MBR partition if yoursystem doesnt boot successfully after installation.\n"
+"\n"
+"Cnchi will create the BIOS Boot Partition for you."
+msgstr "GRUB requereix una partició d'arrencada de la BIOS (2 MiB, cap sistema d'arxius, codi de tipus EF02 en gdisk o bandera bios_grub en GNU Parted) en els sistemes BIOS per incrustar seu arxiu core.img degut a la falta de separació post-MBR als discos GPT.\n \nPer a una configuració BIOS-GPT, s'ha de crear una partició de 1007 Kb en el principi del disc sense sistema de fitxers. Això permetrà a la següent partició de disc estar alineada correctament a 1024 Kb Si cal, la partició també pot estar ubicada en un altre lloc en el disc, però ha d'estar dins de la primera regió de 2 d'TiB. S'ha d'ajustar el tipus de partició a EF02\n\nLa partició GPT també crea una partició MBR de protecció per aturar les eines sense suport a GPT. Podria ser necessari establir un indicador d'arrencada d'aquesta partició MBR de protecció si el teu sistema ja no arrenca després de la instal · lació.\n\nCnchi crearà automàticament la partició d'arrencada de la BIOS per a tu."
+
+#: src/installation/advanced.py:1540
 msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "%s està muntat com espai d'intercanvi.\nPer continuar s'ha de desmuntar.\nEscull Sí per desmuntar o No per tornar\n"
 
-#: src/installation_advanced.py:1341
+#: src/installation/advanced.py:1544
 msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s està muntat a '%s'.\nPer continuar s'ha de desmuntar.\nClica a Sí per desmuntar-lo, o No per tornar\n"
+msgstr "%s està muntat a '%s'.\nPer poder continuar s'ha de desmuntar.\nClica a Sí per desmuntar-lo, o No per tornar\n"
 
-#: src/installation_advanced.py:1414
+#: src/installation/advanced.py:1551 src/installation/advanced.py:1565
+msgid "%s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1562
+msgid "Swap partition %s unmounted"
+msgstr ""
+
+#: src/installation/advanced.py:1567
+msgid "%s shows as mounted (busy) but it has no mount point"
+msgstr "%s consta com a muntat (ocupat) però no té punt de muntatge"
+
+#: src/installation/advanced.py:1628
 msgid "Partition %s will be deleted"
 msgstr "S'esborrarà la partició %s"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Mount"
 msgstr "Munta"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "New"
 msgstr "Nou"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Partition"
 msgstr "Partició"
 
-#: src/installation_advanced.py:1421
+#: src/installation/advanced.py:1635
 msgid "Relabel"
 msgstr "Torna a etiquetar"
 
-#: src/installation_advanced.py:1442
+#: src/installation/advanced.py:1656
 msgid "We will make changes to partitions on these disks:"
 msgstr "Farem canvis a les particions d'aquests discs:"
 
-#: src/installation_advanced.py:1467
+#: src/installation/advanced.py:1713
 msgid "Finished saving changes in %s"
 msgstr "S'han guardat els canvis fets a %s"
 
-#: src/installation_advanced.py:1481
-msgid "Creating %s filesystem in %s labeled %s"
+#: src/installation/advanced.py:1737
+msgid "Creating new %s filesystem in %s labeled %s"
 msgstr "Creant un sistema d'arxius %s a %s etiquetat com a %s"
 
-#: src/installation_advanced.py:1563
+#: src/installation/advanced.py:1739
+msgid "Creating new %s filesystem in %s"
+msgstr "Creant un nou sistema d'arxius %s a %s"
+
+#: src/installation/advanced.py:1774
+msgid "Couldn't format partition '%s' with label '%s' as '%s'"
+msgstr "No es pot formatar la partició '%s' amb etiqueta '%s' com a '%s'"
+
+#: src/installation/advanced.py:1812
+msgid "Cnchi will not install any boot loader"
+msgstr "El Cnchi no instal·larà cap gestor d'arrencada"
+
+#: src/installation/advanced.py:1821
 msgid "Antergos will install the bootloader of type %s in %s"
 msgstr "L'Antergos instal·larà el carregador d'arrencada de tipus %s a %s"
 
-#: src/installation_alongside.py:109
+#: src/installation/advanced.py:1835 src/installation/automatic.py:241
+msgid "Testing mode. Cnchi will not change anything!"
+msgstr "Mode de prova. El Cnchi no modificarà res!"
+
+#: src/installation/alongside.py:109
 msgid "Can't load %s css"
 msgstr "No puc carregar el css %s"
 
-#: src/installation_alongside.py:136
+#: src/installation/alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
 msgstr "Selecciona al costat de quin SO vols instal·lar l'Antergos."
 
-#: src/installation_alongside.py:140
+#: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
 msgstr "Instal·lació \"al costat de\""
 
-#: src/installation_alongside.py:169
+#: src/installation/alongside.py:172
 msgid "Detected OS"
 msgstr "SO Detectat"
 
-#: src/installation_alongside.py:172
+#: src/installation/alongside.py:175
 msgid "Filesystem"
 msgstr "Sistema de fitxers"
 
-#: src/installation_alongside.py:216
+#: src/installation/alongside.py:219
 msgid "Unable to create list of partitions for alongside installation."
 msgstr "Incapaç de crear a llista de particions per a la instal·lació \"al costat de\"."
 
-#: src/installation_alongside.py:256
+#: src/installation/alongside.py:259
 msgid "Can't shrink the partition (maybe it's nearly full)"
 msgstr "No puc empetitir la partició (potser està massa plena)"
 
-#: src/installation_ask.py:91
+#: src/installation/ask.py:101
 msgid "Installation Type"
 msgstr "Tipus d'Instal·lació"
 
-#: src/installation_ask.py:102
+#: src/installation/ask.py:117
 msgid "Erase disk and install Antergos"
 msgstr "Esborra el disc i instal·la l'Antergos"
 
-#: src/installation_ask.py:105
+#: src/installation/ask.py:120
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Avís: Això esborrarà TOTES les dades del teu disc."
 
-#: src/installation_ask.py:114 src/installation_ask.py:116
+#: src/installation/ask.py:126
+msgid "Encrypt this installation for increased security."
+msgstr "Encripta la instal·lació per obtenir més seguretat."
+
+#: src/installation/ask.py:130
+msgid "You will be asked to create an encryption password in the next step."
+msgstr "Se't preguntarà la contrasenya d'encriptació en el pas següent"
+
+#: src/installation/ask.py:139
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr "Això configurarà LVM i permetrà gestionar les particions i crear còpies de seguretat."
+
+#: src/installation/ask.py:144
+msgid "Set your Home in a different partition/volume"
+msgstr "Posa els directoris personals en una partició o volum diferent"
+
+#: src/installation/ask.py:148
+msgid ""
+"This will setup you /home directory in a different partition or volume."
+msgstr "Això configurarà el teu directori /home en una partició o volum diferent."
+
+#: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
 msgstr "Instal·la l'Antergos al costat de %s"
 
-#: src/installation_ask.py:123
+#: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
 msgstr "Escull on s'ha d'instal·lar l'Antergos. (avançat)"
 
-#: src/installation_ask.py:126
+#: src/installation/ask.py:168
 msgid "Edit partition table and choose mount points."
 msgstr "Edita la taula de particions i escull els punts de muntatge."
 
-#: src/installation_ask.py:146
+#: src/installation/ask.py:194
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "La instal·lació d'Antergos s'encriptarà mitjançant LUKS"
 
-#: src/installation_ask.py:149
+#: src/installation/ask.py:197
 msgid "Antergos will be installed using LVM volumes"
 msgstr "S'usaran volums LVM a la instal·lació d'Antergos"
 
-#: src/installation_automatic.py:76
-msgid "Automatic Installation Mode"
-msgstr "Mode d'Instal·lació Automàtic"
+#: src/installation/ask.py:199
+msgid "Antergos will be installed using a separate /home volume."
+msgstr "L'Antergos s'instal·larà usant un volum separat pel directory /home"
 
-#: src/installation_automatic.py:80
+#: src/installation/ask.py:201
+msgid "Antergos will be installed using a separate /home partition."
+msgstr "L'Antergos s'instal·larà usant una partició separada pel directori /home"
+
+#: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
+msgid "Unmounting %s"
+msgstr "Desmuntant %s"
+
+#: src/installation/auto_partition.py:77 src/installation/auto_partition.py:86
+msgid "Unmounting %s failed. Trying lazy arg."
+msgstr "No es pot desmuntar %s. Es provarà amb el paràmetre \"lazy\" (mandrós)."
+
+#: src/installation/auto_partition.py:106
+msgid "Can't delete existent LVM volumes (see below)"
+msgstr "No es poden esborrar els volums LVM existents"
+
+#: src/installation/auto_partition.py:116
+msgid "Can't close LUKS devices : %s"
+msgstr "No puc tancar els dispositius LUKS : %s"
+
+#: src/installation/auto_partition.py:168
+msgid "Unknown filesystem type %s"
+msgstr "Sistema d'arxius %s desconegut"
+
+#: src/installation/auto_partition.py:178
+msgid "Can't create file system %s"
+msgstr "No es pot crear un sistema d'arxius %s"
+
+#: src/installation/auto_partition.py:207
+msgid "Device details: %s UUID=%s LABEL=%s"
+msgstr ""
+
+#: src/installation/auto_partition.py:273
+msgid "%s will be mount as %s"
+msgstr ""
+
+#: src/installation/auto_partition.py:306
+msgid "Device %s will have a %s filesystem"
+msgstr ""
+
+#: src/installation/auto_partition.py:315
+msgid "Cnchi will setup LUKS on device %s"
+msgstr "Cnchi configurarà el LUKS al dispositiu %s"
+
+#: src/installation/auto_partition.py:369
+msgid "The device %s has a size of %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:373
+msgid ""
+"Setup cannot detect size of your device, please use advanced installation "
+"method for partitioning and mounting devices."
+msgstr "Impossible detectar la mida del teu dispositiu, usa el mètode d'instal·lació avançat per fer les particions i muntar els dispositius."
+
+#: src/installation/auto_partition.py:406
+msgid "Total disc size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:408
+msgid "GPT-BIOS partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:409
+msgid "UEFI partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:410
+msgid "Boot partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:413
+msgid "LVM physical volume size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:415
+msgid "Swap partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:416
+msgid "Root partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:419
+msgid "Home partition size: %dMB"
+msgstr ""
+
+#: src/installation/auto_partition.py:522
+msgid "Cnchi will setup LVM on device %s"
+msgstr ""
+
+#: src/installation/automatic.py:71
 msgid "Select drive:"
 msgstr "Selecciona la unitat:"
 
-#: src/installation_automatic.py:84
+#: src/installation/automatic.py:75
 msgid "WARNING! This will overwrite everything currently on your drive!"
 msgstr "AVÍS! Això sobreescriurà totes les dades del teu disc!"
 
-#: src/installation_automatic.py:89
+#: src/installation/automatic.py:80
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
 msgstr "Selecciona el dispositiu on vols instal·lar l'Antergos i clica a sota per començar el procés."
 
-#: src/installation_automatic.py:94
+#: src/installation/automatic.py:85
 msgid "Encryption Password:"
 msgstr "Contrasenya d'encriptació:"
 
-#: src/installation_automatic.py:98 src/user_info.py:111
+#: src/installation/automatic.py:89 src/user_info.py:112
 msgid "Confirm your password:"
 msgstr "Confirma la teva contrasenya:"
 
-#: src/installation_automatic.py:152
+#: src/installation/automatic.py:93 src/user_info.py:141
+msgid "show password"
+msgstr "Mostra la contrasenya"
+
+#: src/installation/automatic.py:99
+msgid "Automatic Installation Mode"
+msgstr "Mode d'Instal·lació Automàtic"
+
+#: src/installation/automatic.py:163
+msgid "A LUKS password has been set"
+msgstr "S'ha guardat una contrasenya LUKS"
+
+#: src/installation/automatic.py:165
 msgid "Automatic install on %s"
 msgstr "Instal·lació Automàtica a %s"
 
-#: src/installation_automatic.py:186
+#: src/installation/automatic.py:198
+msgid ""
+"Do you really want to proceed and delete all your content on your hard drive?\n"
+"\n"
+"%s"
+msgstr "Estàs segur que vols continuar i esborrar tots els continguts del teu disc dur?\n\n%s"
+
+#: src/installation/automatic.py:211
 msgid "Cnchi will install Antergos on %s"
 msgstr "El Cnchi instal·larà Antergos a %s"
 
-#: src/installation_automatic.py:195
+#: src/installation/automatic.py:222
 msgid "Antergos will install the %s bootloader on %s"
 msgstr "Antergos instal·larà el carregador d'arrencada %s a %s"
 
-#: src/installation_process.py:79
-msgid "Installing using the '%s' method"
-msgstr "Instal·lant usant el mètode '%s'"
+#: src/installation/process.py:91
+msgid "Installing using the '%s' method. Please wait..."
+msgstr "Instal·lant usant el mètode '%s'. Un moment..."
 
-#: src/installation_process.py:177
+#: src/installation/process.py:165
+msgid "Can't create %s directory, Cnchi can't continue"
+msgstr "No es pot crear el directori %s, la instal·lació no pot continuar"
+
+#: src/installation/process.py:185
+msgid "Creating partitions and their filesystems in %s"
+msgstr "Creant les particions i els respectius sistemes d'arxius a %s"
+
+#: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
 msgstr "Error creant les particions i els seus sistemes d'arxius"
 
-#: src/installation_process.py:216 src/installation_process.py:238
+#: src/installation/process.py:208 src/installation/process.py:288
+#: src/installation/process.py:356 src/installation/process.py:816
+msgid "Command %s has failed."
+msgstr "L'ordre %s ha fallat."
+
+#: src/installation/process.py:210 src/installation/process.py:264
+#: src/installation/process.py:290 src/installation/process.py:313
+#: src/installation/process.py:358 src/installation/process.py:818
+msgid "Output : %s"
+msgstr "Sortida : %s"
+
+#: src/installation/process.py:250 src/installation/process.py:281
 msgid "Mounting partition %s into %s directory"
 msgstr "Muntant la partició %s al directori %s"
 
-#: src/installation_process.py:222
+#: src/installation/process.py:256
 msgid "Mounting partition %s into %s/boot directory"
 msgstr "Muntant la partició %s al directori %s/boot"
 
-#: src/installation_process.py:226
+#: src/installation/process.py:260
 msgid "Couldn't mount root and boot partitions"
 msgstr "No puc muntar les particions de 'root' i 'boot'"
 
-#: src/installation_process.py:243
+#: src/installation/process.py:262 src/installation/process.py:311
+msgid "Command %s has failed"
+msgstr "L'ordre %s ha fallat"
+
+#: src/installation/process.py:286
 msgid "Can't mount %s in %s"
 msgstr "No es pot muntar %s a %s"
 
-#: src/installation_process.py:263
+#: src/installation/process.py:301
+msgid "%s deleted"
+msgstr "%s s'ha esborrat"
+
+#: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
 msgstr "No puc crear els directoris necessaris al sistema de destí"
 
-#: src/installation_process.py:408
+#: src/installation/process.py:329
+msgid "Selecting packages..."
+msgstr "Seleccionant paquets..."
+
+#: src/installation/process.py:331
+msgid "Packages selected"
+msgstr "Paquets seleccionats"
+
+#: src/installation/process.py:334
+msgid "Downloading packages using aria2..."
+msgstr "Descarregant paquets usant l'aria2..."
+
+#: src/installation/process.py:336
+msgid "Packages downloaded."
+msgstr "Els paquets s'han descarregat."
+
+#: src/installation/process.py:346 src/installation/process.py:729
+msgid "Installing packages..."
+msgstr "Instal·lant paquets..."
+
+#: src/installation/process.py:348
+msgid "Packages installed."
+msgstr "Els paquets s'han instal·lat."
+
+#: src/installation/process.py:350
+msgid "Configuring system..."
+msgstr "Configurant el sistema..."
+
+#: src/installation/process.py:352
+msgid "System configured."
+msgstr "El sistema s'ha configurat."
+
+#: src/installation/process.py:387
+msgid "Installation finished"
+msgstr "Instal·lació acabada"
+
+#: src/installation/process.py:398
+msgid "Can't copy Cnchi log to %s"
+msgstr "No es pot copiar el registre d'events a %s"
+
+#: src/installation/process.py:415
+msgid "Creating a temporary pacman.conf for %s architecture"
+msgstr "Creant un pacman.conf temporal per a l'arquitectura %s"
+
+#: src/installation/process.py:495
+msgid "Getting package list..."
+msgstr "S'obté la llista de paquets..."
+
+#: src/installation/process.py:504
 msgid "Can't retrieve remote package list, using a local file instead."
 msgstr "No puc descarregar la llista de paquets, usaré la còpia local."
 
-#: src/installation_process.py:415
+#: src/installation/process.py:512
 msgid "Adding all desktops common packages"
 msgstr "Afegint els paquets comuns a tots els entorns d'escriptori"
 
-#: src/installation_process.py:426
+#: src/installation/process.py:527
 msgid "Adding '%s' desktop packages"
 msgstr "Afegint els paquets de l'escriptori '%s'"
 
-#: src/installation_process.py:448
-msgid "Getting graphics card drivers"
-msgstr "Obtenint els controladors de la tarja gràfica"
+#: src/installation/process.py:554
+msgid "Selected kde language pack: %s"
+msgstr "S'ha sel·leccionat el paquet de llenguatge kde : %s"
 
-#: src/installation_process.py:494
+#: src/installation/process.py:579
+msgid "Hardware module added these packages : %s"
+msgstr "El mòdul de maquinar ha afegit aquests paquets : %s"
+
+#: src/installation/process.py:584 src/installation/process.py:1677
+msgid "Can't import hardware module."
+msgstr "No puc importar el mòdul de maquinari."
+
+#: src/installation/process.py:586 src/installation/process.py:1679
+msgid "Unknown error in hardware module. Output: %s"
+msgstr "Error desconegut en el mòdul de maquinari. Sortida: %s"
+
+#: src/installation/process.py:597
 msgid "Adding filesystem packages"
 msgstr "Afegint els paquets del sistema d'arxius"
 
-#: src/installation_process.py:541
+#: src/installation/process.py:618
 msgid "Check for user desired features and add them to our installation"
 msgstr "Comprova les característiques desitjades per l'usuari i les afegeix a la instal·lació"
 
-#: src/installation_process.py:553
+#: src/installation/process.py:620
+msgid "All features needed packages have been added"
+msgstr "S'han afegit tots els paquets per a les característiques escollides"
+
+#: src/installation/process.py:625
+msgid "Selecting chinese fonts."
+msgstr "Sel·leccionant les fonts xineses."
+
+#: src/installation/process.py:631
 msgid "Adding bootloader packages if needed"
 msgstr "Afegint els paquets del carregador d'arrencada"
 
-#: src/installation_process.py:607
+#: src/installation/process.py:658
+msgid "Adding packages for '%s' feature."
+msgstr ""
+
+#: src/installation/process.py:665
+msgid "Selecting package %s for feature %s"
+msgstr ""
+
+#: src/installation/process.py:675
+msgid "Add libreoffice language package"
+msgstr "Afegir paquet de llenguatge de lliureoffice"
+
+#: src/installation/process.py:726
+msgid "Downloading packages..."
+msgstr ""
+
+#: src/installation/process.py:738
+msgid ""
+"Can't download all necessary packages. Cnchi will continue and try again "
+"this download later."
+msgstr ""
+
+#: src/installation/process.py:741
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr ""
+
+#: src/installation/process.py:763
 msgid "Special dirs already mounted."
 msgstr "Els directoris especials ja estan muntats."
 
-#: src/installation_process.py:633
-msgid "Special dirs already not mounted."
-msgstr "Els directoris especials ja no estaven muntats."
+#: src/installation/process.py:798
+msgid "Special dirs are not mounted. Skipping."
+msgstr "Els directoris especials no estan muntats."
 
-#: src/installation_process.py:643
+#: src/installation/process.py:815 src/installation/process.py:821
 msgid "Unable to umount %s"
 msgstr "No puc muntar %s"
 
-#: src/installation_process.py:804
+#: src/installation/process.py:846
+msgid "Timeout running command: %s"
+msgstr ""
+
+#: src/installation/process.py:879
+msgid "Can't copy network configuration files"
+msgstr "No es poden copiar els fitxers de configuració"
+
+#: src/installation/process.py:908 src/installation/process.py:973
+msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
+msgstr "Afegit a fstab :UUID= %s %s %s %s 0 %s"
+
+#: src/installation/process.py:922
+msgid "Added to crypttab : %s"
+msgstr "S'ha afegit %s al fitxer crypttab"
+
+#: src/installation/process.py:926
+msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+msgstr "S'ha afegit al fitxer fstab: /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+
+#: src/installation/process.py:978
+msgid "Added to fstab : %s"
+msgstr ""
+
+#: src/installation/process.py:987
+msgid "fstab written."
+msgstr "S'ha escrit el fitxer fstab."
+
+#: src/installation/process.py:1075
+msgid "/etc/default/grub configuration completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1090
+msgid "Could not copy %s to grub.d"
+msgstr "No es pot copiar el fitxer %s al grub.d"
+
+#: src/installation/process.py:1097
 msgid "Installing GRUB(2) BIOS boot loader in %s"
 msgstr "Instal·lant el carregador d'arrencada GRUB(2) BIOS a %s"
 
-#: src/installation_process.py:830 src/installation_process.py:849
-msgid "ERROR installing GRUB(2) BIOS."
-msgstr "ERROR instal·lant el GRUB(2) BIOS."
+#: src/installation/process.py:1119 src/installation/process.py:1203
+msgid ""
+"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+" continue."
+msgstr ""
 
-#: src/installation_process.py:847
+#: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "S'ha instal·lat correctament el GRUB(2) BIOS."
 
-#: src/installation_process.py:860
-msgid "Installing GRUB(2) UEFI %s boot loader in %s"
-msgstr "Instal·lant el carregador d'arrencada GRUB(2) UEFI a %s"
+#: src/installation/process.py:1130
+msgid "ERROR installing GRUB(2) BIOS."
+msgstr "ERROR instal·lant el GRUB(2) BIOS."
 
-#: src/installation_process.py:888
-msgid "ERROR installing GRUB(2) configuration file."
-msgstr "ERROR instal·lant el fitxer de configuració del GRUB(2)"
+#: src/installation/process.py:1144
+msgid "Installing GRUB(2) UEFI %s boot loader"
+msgstr "Instal.lant el gestor d'arrencada GRUB(2) UEFI %s"
 
-#: src/installation_process.py:916
-msgid "ERROR installing GRUB(2) locale."
-msgstr "ERROR instal·lant la configuració local del GRUB(2)"
+#: src/installation/process.py:1170
+msgid "No OEM loader found in %s. Copying Grub(2) into dir."
+msgstr "No s'ha trobat cap gestor d'arrencada OEM a %s. S'hi copiarà el Grub(2)"
 
-#: src/installation_process.py:930
+#: src/installation/process.py:1175
+msgid "Copying Grub(2) into OEM dir failed. File Not Found."
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. Fitxer no trobat."
+
+#: src/installation/process.py:1177
+msgid "Copying Grub(2) into OEM dir failed. File Exists."
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. El fitxer ja existeix."
+
+#: src/installation/process.py:1179
+msgid "Copying Grub(2) into OEM dir failed. Unknown Error."
+msgstr "La còpia del Grub(2) al directori OEM ha fallat. Error desconegut."
+
+#: src/installation/process.py:1188
+msgid "UEFI Shell drop-in not found at %s"
+msgstr "L'UEFI Shell no s'ha trobat a %s"
+
+#: src/installation/process.py:1192
+msgid "UEFI Shell drop-in could not be copied."
+msgstr "No s'ha pogut copiar l'UEFI Shell."
+
+#: src/installation/process.py:1196
+msgid "Generating grub.cfg"
+msgstr "Generant el fitxer grub.cfg"
+
+#: src/installation/process.py:1216
+msgid "GRUB(2) UEFI install may not have completed successfully."
+msgstr "La instal·lació del GRUB(2) UEFI no s'ha completat."
+
+#: src/installation/process.py:1219
+msgid "GRUB(2) UEFI install completed successfully"
+msgstr "La instal·lació del GRUB(2) UEFI s'ha completat."
+
+#: src/installation/process.py:1223
+msgid "Copying GRUB(2) Theme Files"
+msgstr "Copiant els fitxers del tema del GRUB(2)"
+
+#: src/installation/process.py:1229
+msgid "Grub2 theme files not found"
+msgstr "No s'han trobat els fitxers del tema del Grub2"
+
+#: src/installation/process.py:1231
+msgid "Grub2 theme files already exist."
+msgstr "Els fitxers del tema del Grub2 ja existeixen."
+
+#: src/installation/process.py:1235
+msgid "Installing Grub2 locales."
+msgstr "Instal·lant els fitxers de localització del Grub2"
+
+#: src/installation/process.py:1246
+msgid "Can't install GRUB(2) locale."
+msgstr "No es pot instal·lar el GRUB(2) en local"
+
+#: src/installation/process.py:1280
+msgid "Can't freeze/unfreeze xfs system"
+msgstr "No es pot congelar/descongelar el sistema xfs"
+
+#: src/installation/process.py:1286
+msgid "Enabled %s service."
+msgstr "Activat"
+
+#: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
-msgstr "Error creant el 'hash' de la contrasenya per l'usuari %s"
+msgstr "Error creant el resum de la contrasenya per l'usuari %s"
 
-#: src/installation_process.py:936
+#: src/installation/process.py:1299
 msgid "Error changing password for user %s"
-msgstr "No puc canviar la contrasenya per l'usuari %s"
+msgstr "No puc canviar la contrasenya de l'usuari %s"
 
-#: src/installation_process.py:1110
+#: src/installation/process.py:1311
+msgid "Setting hooks and modules in mkinitcpio.conf"
+msgstr "Posant els ganxos i mòduls a mkinitcpio.conf"
+
+#: src/installation/process.py:1405
+msgid "Copying xz files from cache..."
+msgstr "Copiant els fitxers xz de la memòria cau..."
+
+#: src/installation/process.py:1432
+msgid "Configuring bluetooth..."
+msgstr "Configurant el bluetooth..."
+
+#: src/installation/process.py:1438
+msgid "Configuring CUPS..."
+msgstr "Configurant el CUPS..."
+
+#: src/installation/process.py:1450
+msgid "Configuring firewall..."
+msgstr "Configurant el tallafocs..."
+
+#: src/installation/process.py:1462
+msgid "Couldn't configure the firewall: %s"
+msgstr "No es pot configurar el tallafocs: %s"
+
+#: src/installation/process.py:1472
+msgid "%s: Configuring display manager."
+msgstr "%s: Es configura el gestor gràfic."
+
+#: src/installation/process.py:1498
+msgid "Completed %s display manager configuration."
+msgstr "S'ha completat la configuració del gestor %s"
+
+#: src/installation/process.py:1500
+msgid "Error while trying to configure '%s' display manager"
+msgstr "Error configurant el gestor %s"
+
+#: src/installation/process.py:1584
 msgid "Configuring your new system"
-msgstr "Configurant el sistema"
+msgstr "Configurant el nou sistema"
 
-#: src/installation_process.py:1204
+#: src/installation/process.py:1587
+msgid "fstab file generated."
+msgstr "fitxer fstab generat."
+
+#: src/installation/process.py:1604
+msgid "Cnchi will configure netctl using the %s profile"
+msgstr "Configurant el netctl usant el perfil %s"
+
+#: src/installation/process.py:1611
+msgid "Can't copy network configuration profiles"
+msgstr "No es poden copiar els perfils de configuració de xarxa"
+
+#: src/installation/process.py:1618
+msgid "Network configuration copied."
+msgstr "S'ha copiat la configuració de xarxa."
+
+#: src/installation/process.py:1624
+msgid "Mirror list copied."
+msgstr "Copiada la llista de servidors de rèplica."
+
+#: src/installation/process.py:1626
+msgid "Can't copy mirrorlist file"
+msgstr "No es pot copiar el fitxer de la llista de miralls"
+
+#: src/installation/process.py:1633
+msgid "Generated /etc/pacman.conf"
+msgstr "S'ha generat el fitxer /etc/pacman.conf"
+
+#: src/installation/process.py:1651
+msgid "Timezone set."
+msgstr "S'ha fixat la zona horària."
+
+#: src/installation/process.py:1668
+msgid "Sudo configuration for user %s done."
+msgstr "S'ha canviat la configuració Sudo per l'usuari %s"
+
+#: src/installation/process.py:1674
+msgid "Running post-install scripts from hardware module..."
+msgstr ""
+
+#: src/installation/process.py:1696
+msgid "User %s added."
+msgstr "S'ha afegit l'usuari %s"
+
+#: src/installation/process.py:1709
+msgid "Hostname set to %s."
+msgstr "El nom de l'ordinador serà %s"
+
+#: src/installation/process.py:1713
+msgid "Set the same password to root."
+msgstr "El root tindrà el mateix password."
+
+#: src/installation/process.py:1719
 msgid "Generating locales..."
 msgstr "Generant localitzacions..."
 
-#: src/installation_process.py:1219
+#: src/installation/process.py:1735
 msgid "Adjusting hardware clock..."
 msgstr "Ajustant el rellotge..."
 
-#: src/installation_process.py:1242
-msgid "%s: Enable automatic login for user %s."
-msgstr "%s: s'ha activat l'entrada automàtica per l'usuari %s."
+#: src/installation/process.py:1740
+msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
+msgstr "S'ha guardat la configuració del teclat a /etc/X11/xorg.conf.d/00-keyboard.conf"
 
-#: src/installation_process.py:1302
-msgid "Running mkinitcpio..."
-msgstr "Executant mkinitcpio..."
+#: src/installation/process.py:1752
+msgid "00-keyboard.conf written."
+msgstr "S'ha escrit el fitxer 00-keyboard.conf"
 
-#: src/keymap.py:62
+#: src/installation/process.py:1758
+msgid "Configuring System Startup..."
+msgstr "Configurant l'arrencada del sistema..."
+
+#: src/installation/process.py:1761
+msgid "Call Cnchi post-install script"
+msgstr "Crida al fitxer de post-instal·lació de Cnchi"
+
+#: src/installation/process.py:1767
+msgid "Post install script completed successfully."
+msgstr ""
+
+#: src/installation/process.py:1783
+msgid "Encrypting user home dir..."
+msgstr "Encriptant el directori personal de l'usuari..."
+
+#: src/installation/process.py:1785
+msgid "User home dir encrypted"
+msgstr "S'ha encriptat el directori personal de l'usuari"
+
+#: src/installation/process.py:1789
+msgid "Installing bootloader..."
+msgstr "Instal·lant el gestor d'arrencada..."
+
+#: src/installation/process.py:1793
+msgid "Copying install log to /var/log."
+msgstr ""
+
+#: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
 msgstr "Escull la teva disposició del teclat"
 
-#: src/keymap.py:70
+#: src/keymap.py:74
+msgid "Keyboard Layouts"
+msgstr "Disposicions de teclat"
+
+#: src/keymap.py:77
+msgid "Keyboard Variants"
+msgstr "Variants de teclat"
+
+#: src/keymap.py:81
 msgid "Layouts"
 msgstr "Distribucions"
 
-#: src/keymap.py:76
+#: src/keymap.py:87
 msgid "Variants"
 msgstr "Variants"
 
-#: src/keymap.py:98
+#: src/keymap.py:108
 msgid "keyboard_layout is %s"
-msgstr "Teclat %s"
+msgstr "La disposició del teclat és %s"
 
-#: src/language.py:80
-msgid "Please choose your language:"
-msgstr "Si us plau, escull el teu idioma:"
-
-#: src/language.py:85
+#: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
 msgstr "Avís: L'instal·lador Cnchi és programari beta."
 
-#: src/language.py:86
+#: src/language.py:89
 msgid ""
-"Cnchi is pre-release beta software that is under active development. \n"
-"It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible! \n"
+"Cnchi is pre-release beta software that is under active development.\n"
+"It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+"setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr "El Cnchi és programari beta que s'està desenvolupant activament.\nEncara no gestiona RAID, subvolums btrfs o d'altres configuracions avançades. Si us plau, procedeix amb precaució ja que pots perdre la informació del teu sistema!\n\nSi detectes algun error, pots informar-ne a <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
+msgstr "Cnchi és un programari en fase beta amb un desenvolupament molt actiu.\nEncara no pot gestionar RAID, subvolums btrfs o d'altres configuracions avançades.\nSi us plau, procedeix amb precaució ja que pots perdre les teves dades!\n\nSi trobes qualsevol errada, informa'n a <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
-#: src/language.py:93 src/welcome.py:99
+#: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
 msgstr "Benvingut a Antergos!"
 
-#: src/language.py:110
-msgid "Languages"
-msgstr "Idiomes"
-
-#: src/language.py:130
+#: src/language.py:131
 msgid "Can't find translation file for the %s language"
 msgstr "No puc trobar el fitxer de traduccions per l'idioma %s"
 
-#: src/location.py:64
-msgid "Select your location"
-msgstr "Seleccioneu la vostra ubicació"
-
-#: src/location.py:68
+#: src/location.py:67
 msgid ""
 "The location you select will be used to help determine the system locale.\n"
 "This should normally be the country in which you reside.\n"
 "Here is a shortlist of locations based on the language you selected."
 msgstr "La configuració que seleccionis s'usarà per determinar la configuració local del sistema.\nNormalment, només cal sel·leccionar el país on resideixes.\nAquí tens una llista basada en l'idioma que has seleccionat."
 
-#: src/location.py:73
+#: src/location.py:72
 msgid "Country, territory or area:"
 msgstr "País, territori o àrea:"
 
-#: src/location.py:197
+#: src/location.py:76
+msgid "Select your location"
+msgstr "Selecciona la teva ubicació"
+
+#: src/location.py:198
 msgid "locale changed to : %s"
-msgstr "Lloc canviat a: %s"
+msgstr "Configuració local canviada a: %s"
 
-#: src/location.py:199
+#: src/location.py:200
 msgid "Can't change to locale '%s'"
-msgstr "No es pot canviar a lloc '%s'"
+msgstr "No es pot canviar la configuració local a '%s'"
 
-#: src/pacman/pac.py:236
-msgid "Package %s not found in any repo!"
-msgstr "No puc trobar el paquet %s a cap repositori!"
+#: src/pacman/pac.py:35
+msgid "pyalpm not found! This installer won't work."
+msgstr ""
 
-#: src/pacman/pac.py:289
+#: src/pacman/pac.py:120
+msgid "Cnchi will install a list of packages like pacman -S"
+msgstr ""
+
+#: src/pacman/pac.py:127
+msgid "No targets found"
+msgstr ""
+
+#: src/pacman/pac.py:140
+msgid "Adding %s to transaction"
+msgstr ""
+
+#: src/pacman/pac.py:144
+msgid "Finalize transaction..."
+msgstr ""
+
+#: src/pacman/pac.py:177
+msgid "Can't find a package or group called '%s'"
+msgstr "No es pot trobar el paquet o grup anomenat '%s'"
+
+#: src/pacman/pac.py:255
 msgid "Checking dependencies..."
 msgstr "Comprovació de les dependències ..."
 
-#: src/pacman/pac.py:291
+#: src/pacman/pac.py:257
 msgid "Checking file conflicts..."
 msgstr "Comprovació de conflictes d'arxius ..."
 
-#: src/pacman/pac.py:293
+#: src/pacman/pac.py:259
 msgid "Resolving dependencies..."
-msgstr "Resolent dependències ..."
+msgstr "Resolució de les dependències ..."
 
-#: src/pacman/pac.py:295
+#: src/pacman/pac.py:261
 msgid "Checking inter conflicts..."
-msgstr "Comprovació dels conflictes interns ..."
+msgstr "Comprovació de conflictes..."
 
-#: src/pacman/pac.py:300
+#: src/pacman/pac.py:266
 msgid "Removing..."
-msgstr "Extracció de ..."
+msgstr "Esborrant..."
 
-#: src/pacman/pac.py:302
+#: src/pacman/pac.py:268
 msgid "Upgrading..."
-msgstr "Actualització de ..."
+msgstr "Actualitzant..."
 
-#: src/pacman/pac.py:304
+#: src/pacman/pac.py:270
 msgid "Checking integrity..."
-msgstr "Comprovació d'integritat ..."
+msgstr "Comprovació d'integritat..."
 
-#: src/pacman/pac.py:307
+#: src/pacman/pac.py:272
 msgid "Loading packages files..."
-msgstr "Càrrega d'arxius de paquets ..."
+msgstr "Càrrega dels arxius dels paquets..."
 
-#: src/pacman/pac.py:310
+#: src/pacman/pac.py:274
 msgid "Configuring..."
-msgstr "Configuració ..."
+msgstr "Configurant..."
 
-#: src/pacman/pac.py:311
-msgid "Configuring a package"
-msgstr "Configuració d'un paquet"
-
-#: src/pacman/pac.py:313
+#: src/pacman/pac.py:276
 msgid "Downloading a file"
-msgstr "Descarregar un arxiu"
+msgstr "Descarregant un arxiu"
 
-#: src/pacman/pac.py:389
-msgid "Downloading %s..."
-msgstr "Descarregant %s..."
-
-#: src/pacman/pac.py:398
-msgid "Refreshing %s..."
-msgstr "Refrescant %s..."
-
-#: src/pacman/pac.py:407
+#: src/pacman/pac.py:303
 msgid "Installing %s (%d/%d)"
 msgstr "Instal·lant %s (%d/%d)"
 
-#: src/pacman/pac.py:410
+#: src/pacman/pac.py:306
 msgid "Checking and loading packages..."
 msgstr "Comprovant i carregant paquets..."
 
-#: src/parted/fs_module.py:134 src/parted/fs_module.py:135
+#: src/pacman/pac.py:329
+msgid "Updating %s database"
+msgstr "Actualitzant la base de dades %s"
+
+#: src/parted3/fs_module.py:150
 msgid "Can't verify if %s is a Solid State Drive or not"
 msgstr "No puc verificar si %s és un dispositiu d'estat sòlid o no."
 
-#: src/parted/fs_module.py:159 src/parted/fs_module.py:160
+#: src/parted3/fs_module.py:175
 msgid "Sorry but filesystem %s can't be shrinked"
 msgstr "El sistema d'arxius %s no es pot empetitir."
 
-#: src/rank_mirrors.py:56
-msgid "In rankmirrors, can't get network status"
-msgstr "No puc obtenir l'estat de la xarxa a 'rankmirrors'"
+#: src/parted3/lvm.py:73
+msgid "Can't remove logical volume %s"
+msgstr "No es pot esborrar el volum lògic %s"
 
-#: src/rank_mirrors.py:66
-msgid "Can't find rank mirrors script"
-msgstr "No puc trobar l'script de classifiació dels llocs de rèplica"
+#: src/parted3/lvm.py:91
+msgid "Can't remove volume group %s"
+msgstr "No es pot esborrar el grup de volums %s"
 
-#: src/rank_mirrors.py:73
-msgid "Couldn't execute auto mirroring selection"
-msgstr "No puc seleccionar un 'mirror' de manera automàtica"
+#: src/parted3/lvm.py:103
+msgid "Can't remove physical volume %s"
+msgstr "No es pot esborrar el volum físic %s"
+
+#: src/parted3/partition_module.py:35
+msgid "Can't import parted module! This installer won't work."
+msgstr ""
+
+#: src/parted3/partition_module.py:106
+msgid "Unrecognised disk label in device %s."
+msgstr "No es reconeix l'etiqueta de disc del dispositiu %s."
+
+#: src/parted3/partition_module.py:111
+msgid ""
+"Exception: %s.\n"
+"For more information take a look at /tmp/cnchi.log"
+msgstr "Excepció: %s.\nMés informació al fitxer /tmp/cnchi.log"
+
+#: src/parted3/partition_module.py:178
+msgid "Can't delete partition %s"
+msgstr "No es pot esborrar la partició %s"
+
+#: src/parted3/partition_module.py:229
+msgid "Partition is too large!"
+msgstr "La partició és massa gran!"
+
+#: src/parted3/partition_module.py:288
+msgid "Can't detect used space from %s"
+msgstr "No es pot detectar l'espai usat a %s"
+
+#: src/parted3/used_space.py:39
+msgid "Can't detect used space of NTFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició NTFS %s"
+
+#: src/parted3/used_space.py:65
+msgid "Can't detect used space of EXTFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició EXTFS %s"
+
+#: src/parted3/used_space.py:94
+msgid "Can't detect used space of FAT partition %s"
+msgstr "No es pot detectar l'espai usat a la partició FAT %s"
+
+#: src/parted3/used_space.py:125
+msgid "Can't detect used space of JFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició JFS %s"
+
+#: src/parted3/used_space.py:149
+msgid "Can't detect used space of REISERFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició REISERFS %s"
+
+#: src/parted3/used_space.py:176
+msgid "Can't detect used space of BTRFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició BTRFS %s"
+
+#: src/parted3/used_space.py:213
+msgid "Can't detect used space of XFS partition %s"
+msgstr "No es pot detectar l'espai usat a la partició XFS %s"
+
+#: src/rank_mirrors.py:48
+msgid "Can't find reflector script"
+msgstr "No puc trobar el fitxer d'ordres reflector"
+
+#: src/rank_mirrors.py:55
+msgid "Couldn't execute auto mirror selection"
+msgstr "No es pot executar la selecció automàtica de servidors mirall"
 
 #: src/show_message.py:52
 msgid "Antergos Installer - Error"
-msgstr "Instal·lador Antergos - Error"
+msgstr "Instal·lador d'Antergos - Error"
 
-#: src/show_message.py:63
+#: src/show_message.py:64
 msgid "Antergos Installer - Warning"
-msgstr "Instal·lador Antergos - Avís"
+msgstr "Instal·lador d'Antergos - Avís"
 
-#: src/show_message.py:74
+#: src/show_message.py:76
 msgid "Antergos Installer - Information"
-msgstr "Instal·lador Antergos - Informació"
+msgstr "Instal·lador d'Antergos - Informació"
 
-#: src/show_message.py:84
+#: src/show_message.py:87
 msgid "Antergos Installer - Confirmation"
 msgstr "Instal·lador d'Antergos - Confirmació"
 
-#: src/slides.py:84 src/slides.py:99
+#: src/slides.py:91
+msgid "Please wait..."
+msgstr "Si us plau, espera..."
+
+#: src/slides.py:93
+msgid "Installing Antergos..."
+msgstr "Instal·lant Antergos..."
+
+#: src/slides.py:185
+msgid ""
+"IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+"installation which could prevent your system from booting properly. Before\n"
+"rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+"configured. The Arch Linux Wiki contains troubleshooting information:\n"
+"\thttps://wiki.archlinux.org/index.php/GRUB\n"
+"\n"
+"Would you like to view the wiki page now?"
+msgstr "IMPORTANT: Potser hi ha hagut un problema amb el gestor d'arrencada grub\nque pot fer que el seu sistema no arrenqui correctament. Abans de  reiniciar,\nés possible que vulgueu verificar si el GRUB(2) està instal · lat i configurat.\nLa wiki de Arch Linux conté informació per solucionar problemes:\n⇥https://wiki.archlinux.org/index.php/GRUB\n\nT'agradaria veure la pàgina wiki ara?"
+
+#: src/slides.py:197
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr "Instalació Completada!\nVols reiniciar el sistema?"
 
-#: src/slides.py:92
-msgid "Installing Antergos..."
-msgstr "Antergos Instal·lació..."
+#: src/slides.py:225
+msgid "Do you want to retry the installation using the same configuration?"
+msgstr "Vols tornar a intentar la instal·lació usant la mateixa configuració?"
 
-#: src/slides.py:97
-msgid "Please wait..."
-msgstr "Si us plau, espera..."
+#: src/slides.py:228
+msgid "Restarting installation process..."
+msgstr ""
 
-#: src/timezone.py:107
-msgid "Select Your Timezone"
-msgstr "Selecciona la teva Zona Horària"
-
-#: src/timezone.py:112
+#: src/timezone.py:108
 msgid "Zone:"
 msgstr "Zona:"
 
-#: src/timezone.py:116
+#: src/timezone.py:112
 msgid "Region:"
 msgstr "Regió:"
 
-#: src/timezone.py:120
+#: src/timezone.py:116
 msgid "Use Network Time Protocol for clock synchronization:"
 msgstr "Usa el protocol d'hora de xarxa o NTP:"
 
-#: src/timezone.py:131
-msgid "location changed to : %s"
-msgstr "La localització s'ha canviat a : %s"
+#: src/timezone.py:120
+msgid "Select Your Timezone"
+msgstr "Selecciona la teva Zona Horària"
 
-#: src/timezone.py:219
+#: src/timezone.py:134
+msgid "location changed to : %s"
+msgstr "La ubicació s'ha canviat a : %s"
+
+#: src/timezone.py:221
 msgid "Can't autodetect timezone coordinates"
 msgstr "No puc detectar la teva zona horària"
 
-#: src/timezone.py:277
+#: src/timezone.py:276
 msgid "Stoping timezone threads..."
-msgstr "Detenció de fils de zona horària ..."
+msgstr "Detenció del fil de zona horària..."
 
-#: src/timezone.py:310 src/timezone.py:361
+#: src/timezone.py:330
+msgid "Can't get network status. Will try again later."
+msgstr "No es pot obtenir l'estat de la xarxa. S'intentarà de nou més endavant."
+
+#: src/timezone.py:334
+msgid "We have connection. Let's get our timezone"
+msgstr "Tenim connexió. Esbrinem ara quina és la nostra zona horària."
+
+#: src/timezone.py:345
+msgid "Timezone detected."
+msgstr "Zona horària esbrinada."
+
+#: src/timezone.py:347
+msgid "Can't detect user timezone."
+msgstr "No puc esbrinar la zona horària."
+
+#: src/timezone.py:376
 msgid "In timezone, can't get network status"
-msgstr "No puc obtenir l'estat de la xarxa a la zona horària"
+msgstr "No puc obtenir l'estat de la xarxa a la pantalla de zona horària"
 
-#: src/timezone.py:385
+#: src/timezone.py:400
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr "No es pot obtenir el codi de país utilitzat per crear un mirall llista Pacman"
+msgstr "No es pot obtenir el codi de país que s'usa per crear una llista de rèpliques pel Pacman"
 
-#: src/timezone.py:406
+#: src/timezone.py:421
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr "Descarregat un mirall llista específic per Pacman basat en codi de país de %s"
+msgstr "S'ha descarregat una llista de rèpliques específica pel Pacman basada en el codi de país %s"
 
-#: src/timezone.py:408
+#: src/timezone.py:423
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr "No s'ha pogut generar mirall llista per Pacman basat en codi de país"
+msgstr "No s'ha pogut generar la llista de rèpliques pel Pacman basada en el codi de país"
 
-#: src/user_info.py:83
+#: src/updater.py:67
+msgid "Cnchi Internet version: %s"
+msgstr ""
+
+#: src/updater.py:96
+msgid "New version found. Updating installer..."
+msgstr ""
+
+#: src/updater.py:154
+msgid "Replacing version %s with version %s..."
+msgstr ""
+
+#: src/user_info.py:84
 msgid "Your name:"
 msgstr "El teu nom:"
 
-#: src/user_info.py:87
+#: src/user_info.py:88
 msgid "Your name"
 msgstr "El teu nom"
 
-#: src/user_info.py:91
+#: src/user_info.py:92
 msgid "Your computer's name:"
 msgstr "El nom del teu ordinador:"
 
-#: src/user_info.py:95
+#: src/user_info.py:96
 msgid "Pick a username:"
 msgstr "Escull un nom d'usuari:"
 
-#: src/user_info.py:99
+#: src/user_info.py:100
 msgid "Username"
 msgstr "Nom d'usuari"
 
-#: src/user_info.py:103
+#: src/user_info.py:104
 msgid "Choose a password:"
 msgstr "Escull una contrasenya:"
 
-#: src/user_info.py:107
+#: src/user_info.py:108
 msgid "Password"
 msgstr "Contrasenya"
 
-#: src/user_info.py:115
+#: src/user_info.py:116
 msgid "Confirm password"
 msgstr "Confirma la contrasenya"
 
-#: src/user_info.py:119
+#: src/user_info.py:120
 msgid "Identifies your system to other computers and devices."
 msgstr "Identifica el teu sistema a d'altres ordinadors i dispositius."
 
-#: src/user_info.py:123
+#: src/user_info.py:124
 msgid "You must enter a name"
 msgstr "Has d'entrar un nom"
 
-#: src/user_info.py:127
+#: src/user_info.py:128
 msgid "You must enter a username"
 msgstr "Has d'entrar un nom d'usuari"
 
-#: src/user_info.py:131
+#: src/user_info.py:132
 msgid "You must enter a password"
 msgstr "Has d'entrar una contrasenya"
 
-#: src/user_info.py:135
+#: src/user_info.py:136
 msgid "Log in automatically"
 msgstr "Entra al sistema automàticament"
 
-#: src/user_info.py:136
+#: src/user_info.py:137
 msgid "Require my password to log in"
 msgstr "Demana la contrasenya per poder entrar al sistema"
 
-#: src/user_info.py:137
+#: src/user_info.py:138
 msgid "Encrypt my home folder"
-msgstr "Codifica la teva carpeta d'usuari"
+msgstr "Encripta la teva carpeta d'usuari"
 
-#: src/user_info.py:139
+#: src/user_info.py:144
 msgid "Create Your User Account"
 msgstr "Crea el teu Compte d'Usuari"
 
-#: src/user_info.py:166
-msgid ""
-"Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n"
-"\n"
-msgstr "Angergos usarà eCryptfs per encriptar el teu directori d'usuari. Malauradament eCryptfs no gestiona els arxius dispersos gaire bé.\n\n \n"
+#: src/user_info.py:204
+msgid "Are you sure you want to encrypt your home directory?"
+msgstr ""
 
-#: src/user_info.py:167
-msgid ""
-"Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n"
-"\n"
-msgstr "No et preocupis, per la majoria d'escenaris aquesta deficiència no planteja cap problema.\n\n\n"
-
-#: src/user_info.py:168
-msgid ""
-"One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n"
-"\n"
-msgstr "Una aplicació popular però desaconsellable deeCryptfs és encriptar les descàrregues BitTorrent, ja que això requereix que el eCryptfs gestioni arxius dispersos de 10 GB o més, cosa que pot comportar alguns problemes de disc.\n\n\n"
-
-#: src/user_info.py:169
-msgid ""
-"A simple workaround is to place sparse files in an unencrypted Public directory.\n"
-"\n"
-msgstr "Una solució ben simple és posar els arxius dispersos en un directori a part sense cap encriptació.\n\n\n"
-
-#: src/user_info.py:170
-msgid ""
-"Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n"
-"\n"
-msgstr "Revisa https://wiki.archlinux.org/index.php/ECryptfs per obtenir més informació.\n\n"
-
-#: src/user_info.py:171
-msgid "Are you sure you want to encrypt your home directory?\n"
-msgstr "Estàs segur que vols encriptar el teu directori d'usuari?\n"
-
-#: src/user_info.py:229
+#: src/user_info.py:271
 msgid "Invalid characters entered"
 msgstr "Has entrat caràcters no vàlids"
 
-#: src/user_info.py:233
+#: src/user_info.py:275
 msgid "Username can't contain dots"
 msgstr "El nom d'usuari no pot contenir punts."
 
-#: src/user_info.py:237
+#: src/user_info.py:279
 msgid "Too many characters"
 msgstr "Massa caràcters"
 
-#: src/validation.py:132
-msgid "password is too short"
-msgstr "La contrasenya és massa curta"
-
-#: src/validation.py:135
-msgid "weak password"
-msgstr "La contrasenya és massa dèbil"
-
-#: src/validation.py:138
-msgid "fair password"
-msgstr "contrasenya massa dèbil"
-
-#: src/validation.py:141
-msgid "good password"
-msgstr "contrasenya correcta"
-
-#: src/validation.py:144
-msgid "strong password"
-msgstr "contrasenya forta"
-
-#: src/validation.py:159
-msgid "Passwords do not match"
-msgstr "Les contrasenyes no coincideixen"
-
-#: src/welcome.py:85
+#: src/welcome.py:87
 msgid ""
 "You can try Antergos without making any changes to your system by selecting 'Try It'.\n"
 "When you are ready to install Antergos simply choose which installer you prefer."
 msgstr "Pots provar l'Antergos sense fer cap canvi al teu sistema sel·leccionant 'Prova-ho'.\nQuan estiguis llest per instal·lar l'Antergos simplement escull quin instal·lador prefereixes."
 
-#: src/welcome.py:90
+#: src/welcome.py:92
 msgid "Try It"
 msgstr "Prova-ho"
 
-#: src/welcome.py:93
+#: src/welcome.py:95
 msgid "CLI Installer"
-msgstr "CLI l'instal·lador"
+msgstr "Instal·lador en mode text"
 
-#: src/welcome.py:96
+#: src/welcome.py:98
 msgid "Graphical Installer"
-msgstr "instal·lador gràfic"
+msgstr "Instal·lador gràfic"
 
-#: src/welcome.py:120
+#: src/welcome.py:135
 msgid "Can't load the CLI installer"
-msgstr "No es pot carregar l'instal·lador CLI"
+msgstr "No es pot carregar l'instal·lador de línia de comandes"

@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 #
 #  user_info.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -23,34 +23,22 @@
 from gi.repository import Gtk
 
 import os
-import validation
+import canonical.validation as validation
 import config
 import show_message as show
 
-_next_page = "slides"
-_prev_page = "keymap"
+from gtkbasebox import GtkBaseBox
 
-class UserInfo(Gtk.Box):
+class UserInfo(GtkBaseBox):
+    """ Asks for user information """
+    def __init__(self, params, prev_page=None, next_page="slides"):
+        super().__init__(self, params, "user_info", prev_page, next_page)
 
-    def __init__(self, params):
-
-        self.title = params['title']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-
-        super().__init__()
-
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "user_info.ui"))
-
-        self.ok = dict()
-        self.ok['fullname'] = self.ui.get_object('fullname_ok')
-        self.ok['hostname'] = self.ui.get_object('hostname_ok')
-        self.ok['username'] = self.ui.get_object('username_ok')
-        self.ok['password'] = self.ui.get_object('password_ok')
+        self.is_ok = dict()
+        self.is_ok['fullname'] = self.ui.get_object('fullname_ok')
+        self.is_ok['hostname'] = self.ui.get_object('hostname_ok')
+        self.is_ok['username'] = self.ui.get_object('username_ok')
+        self.is_ok['password'] = self.ui.get_object('password_ok')
 
         self.error_label = dict()
         self.error_label['hostname'] = self.ui.get_object('hostname_error_label')
@@ -71,14 +59,11 @@ class UserInfo(Gtk.Box):
         self.login['pass'] = self.ui.get_object('login_pass')
         self.login['encrypt'] = self.ui.get_object('login_encrypt')
 
-        self.ui.connect_signals(self)
-
         self.require_password = True
         self.encrypt_home = False
 
-        super().add(self.ui.get_object("user_info"))
-
     def translate_ui(self):
+        """ Translates all ui elements """
         label = self.ui.get_object('fullname_label')
         txt = _("Your name:")
         label.set_markup(txt)
@@ -136,67 +121,83 @@ class UserInfo(Gtk.Box):
         self.login['pass'].set_label(_("Require my password to log in"))
         self.login['encrypt'].set_label(_("Encrypt my home folder"))
 
-        txt = _("Create Your User Account")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.title.set_markup(txt)
+        btn = self.ui.get_object('checkbutton_show_password')
+        btn.set_label(_("show password"))
+
+        self.header.set_subtitle(_("Create Your User Account"))
+
+        # Restore forward button text (from install now! to next)
+        self.forward_button.set_label("gtk-go-forward")
 
     def hide_widgets(self):
-        ok_widgets = self.ok.values()
-        for ok in ok_widgets:
-            ok.hide()
+        """ Hide unused and message widgets """
+        ok_widgets = self.is_ok.values()
+        for ok_widget in ok_widgets:
+            ok_widget.hide()
 
         error_label_widgets = self.error_label.values()
         for error_label in error_label_widgets:
             error_label.hide()
 
         self.password_strength.hide()
-        
+
+        # Hide encryption if using LUKS encryption (user must use one or the other but not both)
+        if self.settings.get('use_luks'):
+            self.login['encrypt'].hide()
+
         # TODO: Fix home encryption and stop hidding its widget
-        self.login['encrypt'].hide()
+        if not self.settings.get('z_hidden'):
+            self.login['encrypt'].hide()
 
     def store_values(self):
-        self.settings.set('fullname', self.entry['fullname'].get_text())
-        self.settings.set('hostname', self.entry['hostname'].get_text())
-        self.settings.set('username', self.entry['username'].get_text())
-        self.settings.set('password', self.entry['password'].get_text())
-        self.settings.set('require_password', self.require_password)
-        
+        """ Store all user values in self.settings """
+        # For developer testing
+        if self.settings.get('z_hidden'):
+            self.settings.set('fullname', 'Antergos Testing')
+            self.settings.set('hostname', 'Testing Machine')
+            self.settings.set('username', 'antergos')
+            self.settings.set('password', 'testing')
+            self.settings.set('require_password', True)
+        else:
+            self.settings.set('fullname', self.entry['fullname'].get_text())
+            self.settings.set('hostname', self.entry['hostname'].get_text())
+            self.settings.set('username', self.entry['username'].get_text())
+            self.settings.set('password', self.entry['password'].get_text())
+            self.settings.set('require_password', self.require_password)
+
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
-            m = _("Antergos will use eCryptfs to encrypt your home directory. Unfortunately, eCryptfs does not handle sparse files very well.\n\n")
-            m += _("Don't worry though, for most intents and purposes this deficiency does not pose a problem.\n\n")
-            m += _("One popular but inadvisable application of eCryptfs is to encrypt a BitTorrent download location as this often requires eCryptfs to handle sparse files of 10 GB or more and can lead to intense disk starvation.\n\n")
-            m += _("A simple workaround is to place sparse files in an unencrypted Public directory.\n\n")
-            m += _("Review https://wiki.archlinux.org/index.php/ECryptfs for more detailed information.\n\n")
-            m += _("Are you sure you want to encrypt your home directory?\n")
-            res = show.question(m)
+            message = _("Are you sure you want to encrypt your home directory?")
+            res = show.question(message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
-        
-        # this way installer_process will know all info has been entered
+
+        # Let installer_process know that all info has been entered
         self.settings.set('user_info_done', True)
 
     def prepare(self, direction):
+        """ Prepare screen """
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
-        
+
         desktop = self.settings.get('desktop')
         if desktop != "nox" and self.login['auto']:
             self.login['auto'].set_sensitive(True)
         else:
             self.login['auto'].set_sensitive(False)
-        
-        self.forward_button.set_sensitive(False)
+        if not self.settings.get('z_hidden'):
+            self.forward_button.set_sensitive(False)
 
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
+    def on_checkbutton_show_password_toggled(self, widget):
+        """ show/hide user password """
+        btn = self.ui.get_object('checkbutton_show_password')
+        show = btn.get_active()
+        self.entry['password'].set_visibility(show)
+        self.entry['verified_password'].set_visibility(show)
 
     def on_authentication_toggled(self, widget):
-        # user has changed autologin or home encrypting
+        """ User has changed autologin or home encrypting """
 
         if widget == self.login['auto']:
             if self.login['auto'].get_active():
@@ -211,19 +212,20 @@ class UserInfo(Gtk.Box):
                 self.encrypt_home = False
 
     def validate(self, element, value):
+        """ Check that what the user is typing is ok """
         if len(value) == 0:
-            self.ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
-            self.ok[element].show()
+            self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+            self.is_ok[element].show()
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
             if len(result) == 0:
-                self.ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
-                self.ok[element].show()
+                self.is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
+                self.is_ok[element].show()
                 self.error_label[element].hide()
             else:
-                self.ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
-                self.ok[element].show()
+                self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+                self.is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
                     txt = _("Invalid characters entered")
@@ -242,14 +244,14 @@ class UserInfo(Gtk.Box):
 
 
     def info_loop(self, widget):
-        # user has introduced new information. Check it here.
+        """ User has introduced new information. Check it here. """
 
         if widget == self.entry['fullname']:
             fullname = self.entry['fullname'].get_text()
             if len(fullname) > 0:
-                self.ok['fullname'].show()
+                self.is_ok['fullname'].show()
             else:
-                self.ok['fullname'].hide()
+                self.is_ok['fullname'].hide()
 
         if widget == self.entry['hostname']:
             hostname = self.entry['hostname'].get_text()
@@ -263,17 +265,28 @@ class UserInfo(Gtk.Box):
                 widget == self.entry['verified_password']:
             validation.check_password(self.entry['password'], \
                     self.entry['verified_password'], \
-                    self.ok['password'], \
+                    self.is_ok['password'], \
                     self.error_label['password'], \
                     self.password_strength)
 
-        # check if all fields are filled and ok
+        # Check if all fields are filled and ok
         all_ok = True
-        ok_widgets = self.ok.values()
-        for ok in ok_widgets:
-            (icon_name, icon_size) = ok.get_stock()
-            visible = ok.get_visible()
-            if visible == False or icon_name != "gtk-yes":
-                all_ok = False
+        ok_widgets = self.is_ok.values()
+        if not self.settings.get('z_hidden'):
+            for ok_widget in ok_widgets:
+                (icon_name, icon_size) = ok_widget.get_stock()
+                visible = ok_widget.get_visible()
+                if visible == False or icon_name != "gtk-yes":
+                    all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('UserInfo')

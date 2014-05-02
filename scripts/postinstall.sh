@@ -102,20 +102,20 @@ cinnamon_settings(){
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
 
+	# Copy menu@cinnamon.org.json to set menu icon
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
+	cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
+
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
 	# Set skel directory
-	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-
-	# Set LXDM wallpaper
-	line_old='# bg=/usr/share/backgrounds/default.png'
- 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
- 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
 }
 
 xfce_settings(){
@@ -146,11 +146,7 @@ xfce_settings(){
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-
-	# Set LXDM wallpaper
-	line_old='# bg=/usr/share/backgrounds/default.png'
- 	line_new='bg=/usr/share/antergos/wallpapers/antergos-wallpaper.png'
- 	sed -i "s%$line_old%$line_new%g" ${DESTDIR}/etc/lxdm/lxdm.conf
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 openbox_settings(){
@@ -163,35 +159,37 @@ openbox_settings(){
 
 	# Set settings
     
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    mkdir -p ${DESTDIR}/tmp
-    wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
-    unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
-    # copy slim theme
-    mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    # copy home files
-    cp ${DESTDIR}/tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
-    cp ${DESTDIR}/tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+	# Get zip file from github, unzip it and copy all setup files in their right places.
+	mkdir -p ${DESTDIR}/tmp
+	wget -q -O ${DESTDIR}/tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
+	unzip -d ${DESTDIR}/tmp ${DESTDIR}/tmp/master.zip
+
+	## Copy slim theme
+	#mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
+	#cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
     
-    # copy .config files
-    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
-    cp -R ${DESTDIR}/tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
-    # copy /etc setup files
-    cp -R ${DESTDIR}/tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
-	
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+	# Copy home files
+	cp ${DESTDIR}/tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
+	cp ${DESTDIR}/tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+    
+	# Copy .config files
+	mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
+	cp -R ${DESTDIR}/tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
+
+    	# Copy /etc setup files
+    	cp -R ${DESTDIR}/tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
+    	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
 	chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
 	rm ${DESTDIR}/usr/bin/set-settings
     
-    # remove leftovers
-    rm -f ${DESTDIR}/tmp/master.zip
-    rm -rf ${DESTDIR}/tmp/openbox-setup-master
+    	# Remove leftovers
+    	rm -f ${DESTDIR}/tmp/master.zip
+    	rm -rf ${DESTDIR}/tmp/openbox-setup-master
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
@@ -202,6 +200,7 @@ openbox_settings(){
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 }
 
 razor_settings(){
@@ -230,13 +229,110 @@ razor_settings(){
 	# Set Razor in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 	
 	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+}
+
+kde_settings(){
+
+	# Set KDE in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	# Download Numix Icon Set
+    cd /tmp
+    wget http://github.com/numixproject/numix-icon-theme/archive/master.zip
+    unzip -o -qq numix-icon-theme-master.zip -d /tmp
+    cd /tmp/numix-icon-theme-master/Numix
+    sed -i 's|Inherits=gnome,hicolor|Inherits=KFaenza,hicolor|g' index.theme
+    cd ..
+    cp -R Numix ${DESTDIR}/usr/share/icons/
+    chroot ${DESTDIR} ln -sf /usr/share/icons/Numix /usr/share/icons/default.kde4
+	
+	# Get zip file from github, unzip it and copy all setup files in their right places.
+	cd /tmp
+    wget -q "http://github.com/Antergos/kde-setup/archive/master.zip"
+    unzip -o -qq /tmp/kde-setup-master.zip -d /tmp
+    mv /tmp/kde-setup-master/usr/share/icons/Numix-Square.zip /tmp
+    unzip -o -qq /tmp/Numix-Square.zip -d /tmp
+    cp -R /tmp/Numix-Square ${DESTDIR}/usr/share/icons/
+    cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
+    cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
+
+	# Set User & Root environments
+	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
+	
+	## Set defaults directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+
+}
+
+mate_settings() {
+
+	# Set MATE in .dmrc
+	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+	echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+	## Set default directories
+	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+    # Set gsettings input-source
+	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	else
+		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
+    fi
+	# Fix for Zukitwo Metacity Theme
+	cp ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
+	
+    # copy antergos menu icon
+	mkdir -p ${DESTDIR}/usr/share/antergos/
+	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+	chroot ${DESTDIR} unlink /usr/share/icons/Faenza/places/24/start-here.png
+	chroot ${DESTDIR} ln -s /usr/share/antergos/antergos-menu.png /usr/share/icons/Faenza/places/24/start-here.png
+
+    # Set gsettings
+	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+	mkdir -p ${DESTDIR}/var/run/dbus
+	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+	chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+	rm ${DESTDIR}/usr/bin/set-settings
+	
+	# Set MintMenu Favorites
+	cat << EOF > ${DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
+location:/usr/share/applications/chromium.desktop
+location:/usr/share/applications/pacmanxg.desktop
+separator
+location:/usr/share/applications/galculator.desktop
+location:/usr/share/applications/pluma.desktop
+location:/usr/share/applications/mate-terminal.desktop
+location:/usr/share/applications/mate-system-monitor.desktop
+separator
+location:/usr/share/applications/mate-mplayer.desktop
+location:/usr/share/applications/xnoise.desktop
+EOF
+
+	# Copy panel layout
+	cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
+
+
 }
 
 nox_settings(){
 	echo "Done"
 }
+
+enlightenment_settings(){
+    echo "TODO"
+}
+
 
 postinstall(){
 	USER_NAME=$1
@@ -248,9 +344,15 @@ postinstall(){
 
 	## Set desktop-specific settings
 	"${DESKTOP}_settings"
+	
+	## Ensure user permissions are set in /home
+	chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
+
+	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
+	chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	chroot ${DESTDIR} amixer -c 0 set Master playback 100% unmute>/dev/null 2>&1
+	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
 
 	# Fix transmission leftover
     if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ];
@@ -270,5 +372,5 @@ postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4 $5
+postinstall $1 $2 $3 $4 $5 > /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock

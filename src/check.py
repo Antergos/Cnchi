@@ -2,71 +2,74 @@
 # -*- coding: utf-8 -*-
 #
 #  check.py
-#  
+#
 #  Copyright 2013 Antergos
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GObject
+""" Check screen (detects if Antergos prerequisites are meet) """
 
+from gi.repository import Gtk, GLib
 import subprocess
 import os
-import gtkwidgets
 import logging
+import canonical.gtkwidgets as gtkwidgets
+import canonical.misc as misc
+
+from gtkbasebox import GtkBaseBox
 
 from rank_mirrors import AutoRankmirrorsThread
 
+# Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
-
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
+MIN_ROOT_SIZE = 4000000000
 
-_next_page = "desktop"
-_prev_page = "location"
-
-class Check(Gtk.Box):
-
-    def __init__(self, params):
-
-        self.title = params['title']
-        self.ui_dir = params['ui_dir']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-
-        super().__init__()
-
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "check.ui"))
-        self.ui.connect_signals(self)
+class Check(GtkBaseBox):
+    """ Check class """
+    def __init__(self, params, prev_page="language", next_page="location"):
+        """ Init class ui """
+        super().__init__(self, params, "check", prev_page, next_page)
 
         self.remove_timer = False
 
-        super().add(self.ui.get_object("check"))
+        self.thread = None
+
+        self.prepare_power_source = None
+        self.prepare_network_connection = None
+        self.prepare_enough_space = None
+        self.timeout_id = None
+        self.prepare_best_results = None
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("System Check")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
-        self.title.set_markup(txt)
+        self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least 3GB available storage space")
+        txt = _("has at least %dGB available storage space.") % int(MIN_ROOT_SIZE / 1000000000)
+        txt += " (*)"
         self.prepare_enough_space.props.label = txt
+
+        self.label_space = self.ui.get_object("label_space")
+        txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
+        txt = "(*) <i>%s</i>" % txt
+        self.label_space.set_markup(txt)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
@@ -81,46 +84,13 @@ class Check(Gtk.Box):
         txt = '<span weight="bold" size="large">%s</span>' % txt
         self.prepare_best_results.set_markup(txt)
 
-        self.third_party_info = self.ui.get_object("third_party_info")
-        txt = _("Antergos uses third-party software to play Flash videos, MP3 " \
-        "and other media." \
-        " Some of this software is proprietary. Use of this " \
-        "software is subject to license terms included with its " \
-        "documentation.")
-        self.third_party_info.set_label(txt)
-
-        self.third_party_checkbutton = self.ui.get_object("third_party_checkbutton")
-        txt = _("Install this third-party software")
-        self.third_party_checkbutton.set_label(txt)
-
-    def get_prop(self, obj, iface, prop):
-        try:
-            import dbus
-            return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-        except dbus.DBusException as e:
-            if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-                return None
-            else:
-                raise
-
-    def has_connection(self):
-        try:
-            import dbus
-            bus = dbus.SystemBus()
-            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-            state = self.get_prop(manager, NM, 'state')
-        except dbus.exceptions.DBusException:
-            logging.warning(_("Can't get network status"))
-            return False
-        return state == NM_STATE_CONNECTED_GLOBAL
-
     def check_all(self):
-        has_internet = self.has_connection()
-        self.prepare_network_connection.set_state(has_internet)       
+        has_internet = misc.has_connection()
+        self.prepare_network_connection.set_state(has_internet)
 
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)
-        
+
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
 
@@ -134,7 +104,7 @@ class Check(Gtk.Box):
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
-            return self.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            return misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
 
         return False
 
@@ -143,11 +113,11 @@ class Check(Gtk.Box):
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
             return False
-        for d in os.listdir(path):
-            p = os.path.join(path, d, 'type')
-            if os.path.exists(p):
-                with open(p) as fp:
-                    if fp.read().startswith('Battery'):
+        for folder in os.listdir(path):
+            type_path = os.path.join(path, folder, 'type')
+            if os.path.exists(type_path):
+                with open(type_path) as power_file:
+                    if power_file.read().startswith('Battery'):
                         return True
         return False
 
@@ -164,58 +134,50 @@ class Check(Gtk.Box):
                     size = int(col[3])
                     if size > max_size:
                         max_size = size
-        # we need 3GB
-        if max_size >= 3221225472:
+
+        if max_size >= MIN_ROOT_SIZE:
             return True
 
         return False
 
-    def on_third_party_checkbutton_toggled(self, button):
-        current_value = self.settings.get("third_party_software")
-        if current_value is False:
-            self.settings.set("third_party_software", True)
-        else:
-            self.settings.set("third_party_software", False)
-
-    def on_timer(self, time):
+    def on_timer(self):
         if not self.remove_timer:
             self.forward_button.set_sensitive(self.check_all())
         return not self.remove_timer
 
     def store_values(self):
-        # remove timer
+        # Remove timer
         self.remove_timer = True
 
         logging.info(_("We have Internet connection."))
         logging.info(_("We're connected to a power source."))
         logging.info(_("We have enough disk space."))
-          
+
         # Enable forward button
         self.forward_button.set_sensitive(True)
 
-        ## Launch rankmirrors script to determine the 5 fastest mirrors
-        self.thread = None
-        self.thread = AutoRankmirrorsThread()
-        self.thread.start()
-        
+        if not self.testing:
+            # Launch reflector script to determine the 10 fastest mirrors
+            self.thread = AutoRankmirrorsThread()
+            self.thread.start()
+
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
-        
-        # We now have a features screen, so we don't need this here
-        # Just hide it for now
-        self.third_party_info.hide()
-        self.third_party_checkbutton.hide()
-        
+
         self.forward_button.set_sensitive(self.check_all())
 
-        # set timer
-        self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
+        # Set timer
+        self.timeout_id = GLib.timeout_add(1000, self.on_timer)
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+if __name__ == '__main__':
+    from test_screen import _,run
+    run('Check')

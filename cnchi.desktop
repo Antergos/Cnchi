@@ -2,8 +2,8 @@
 Name=Install Antergos Linux
 GenericName=Live Installer
 Comment=Install the operating system to disk
-Exec=sudo /usr/bin/cnchi
-Icon=/usr/share/cnchi/data/antergos-icon.png
+Exec=sudo -E /usr/bin/cnchi
+Icon=/usr/share/cnchi/data/images/antergos/antergos-icon.png
 Terminal=False
 Type=Application
 Categories=System;
