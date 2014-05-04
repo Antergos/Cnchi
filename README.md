@@ -25,6 +25,16 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * upower
  * python-mock (only needed for unit tests)
 
+#### Fonts needed by the keyboard widget
+
+ * ttf-aboriginal-sans
+ * ttf-indic-otf
+ * ttf-khmer
+ * ttf-lohit-fonts
+ * ttf-myanmar3
+ * ttf-thaana-fonts
+ * ttf-tlwg
+
 ## Translations
 
 We manage our translations in transifex:
