@@ -6,24 +6,31 @@ Usage: sudo -E cnchi.py
 
 To create logs to help debug problems: sudo -E cnchi.py -dv
 
+## Translations
+
+We manage our translations in transifex:
+
+* https://www.transifex.com/projects/p/antergos/
+
 ## Dependencies
 
- * gtk 3
- * python 3
- * python-gobject 3
- * python-dbus
+ * gtk3
+ * python3
  * python-cairo
+ * python-dbus
+ * python-gobject
  * python-mako
+ * pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
+ * pyalpm (pacman)
  * libtimezonemap
- * webkitgtk
- * parted (dosfstools, mtools, ntfs-3g, ntfsprogs)
- * py3parted (pyparted on python3) -> https://github.com/antergos/antergos-packages/tree/master/py3parted
- * pacman
- * pyalpm
- * hwinfo
+ * webkitgtk 
  * hdparm
+ * hwinfo
  * upower
- * python-mock (only needed for unit tests)
+ 
+#### Unit tests
+
+ * python-mock 
 
 #### Fonts needed by the keyboard widget
 
@@ -35,8 +42,3 @@ To create logs to help debug problems: sudo -E cnchi.py -dv
  * ttf-thaana-fonts
  * ttf-tlwg
 
-## Translations
-
-We manage our translations in transifex:
-
-* https://www.transifex.com/projects/p/antergos/
