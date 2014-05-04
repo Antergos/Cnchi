@@ -96,6 +96,8 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
+        <!-- <pkgname>gnome-shell-extension-dash-to-dock</pkgname> -->
+        <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>

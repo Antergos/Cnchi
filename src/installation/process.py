@@ -1396,16 +1396,17 @@ class InstallationProcess(multiprocessing.Process):
         """ Copy files updating the slides' progress bar """
         percent = 0.0
         items = os.listdir(src)
-        step = 1.0 / len(items)
-        for item in items:
-            self.queue_event('percent', percent)
-            source = os.path.join(src, item)
-            destination = os.path.join(dst, item)
-            try:
-                shutil.copy2(source, destination)
-            except (FileExistsError, shutil.Error) as err:
-                logging.warning(err)
-            percent += step
+        if len(items) > 0:
+            step = 1.0 / len(items)
+            for item in items:
+                self.queue_event('percent', percent)
+                source = os.path.join(src, item)
+                destination = os.path.join(dst, item)
+                try:
+                    shutil.copy2(source, destination)
+                except (FileExistsError, shutil.Error) as err:
+                    logging.warning(err)
+                percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
