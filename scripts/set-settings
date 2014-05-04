@@ -24,6 +24,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 
 	# Set icon theme
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Faenza-Dark"
+	
+	# Enable lockscreen extension
+	dbus-launch gsettings set org.gnome.shell enabled-extensions "['lockscreen@dev.antergos.com']"
 
 fi
 

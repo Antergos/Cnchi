@@ -79,7 +79,29 @@ gnome_settings(){
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-	}
+	
+	
+	# xscreensaver config
+	cat << EOF > ${DESTDIR}/home/${USER_NAME}/.xscreensaver 
+newLoginCommand: dm-tool switch-to-greeter
+timeout:	0:10:00
+EOF
+
+	cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+
+	cat << EOF > ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+[Desktop Entry]
+Name=xscreensaver
+Exec=/usr/bin/xscreensaver -no-splash &
+Terminal=false
+Type=Application
+Icon=screensaver
+StartupNotify=false
+X-GNOME-Autostart-Delay=30
+Categories=System;Display;GTK;
+EOF
+
+}
 
 cinnamon_settings(){
 	# Set Adwaita cursor theme
