@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-18 19:15+0000\n"
+"Last-Translator: Hotaka Hitagi\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/antergos/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -243,7 +243,7 @@ msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
-msgstr "あなたが見慣れたデスクトップ環境を探しているのなら、 KDE のプラズマデスクトップがモダンなデスクトップ コンピューティング体験に必要なツールを提供します。だから、すぐに生産活動を始めることができます。"
+msgstr "あなたが見慣れたデスクトップ環境を探しているのなら、 KDE のプラズマデスクトップがモダンなデスクトップ コンピューティング体験に必要なツールを提供してくれます。そのため、すぐに生産活動を始めることができます。"
 
 #: src/desktop_environments.py:98
 msgid ""
@@ -324,7 +324,7 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr ""
+msgstr "AUR のパッケージをインストールするために yaourt を使用します。\nAUR は新しいパッケージを整理、共有するためにコミュニティに\nよって作られ、人気のパッケージを迅速に [community] リポジトリに\n追加するためのものです。"
 
 #: src/features.py:130
 msgid "Bluetooth Support"
@@ -489,7 +489,7 @@ msgstr "空き領域"
 
 #: src/installation/advanced.py:259
 msgid "It's not recommended to install grub in a partition"
-msgstr ""
+msgstr "GRUB をパーティション内にインストールすることはおすすめできません"
 
 #: src/installation/advanced.py:287 src/installation/alongside.py:169
 msgid "Device"
@@ -537,7 +537,7 @@ msgstr ""
 
 #: src/installation/advanced.py:672
 msgid "Cannot use the same mount point twice."
-msgstr ""
+msgstr "同じマウントポイントを2度使用することはできません。"
 
 #: src/installation/advanced.py:674
 msgid "Root partition must be formatted."
@@ -553,7 +553,7 @@ msgstr ""
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
-msgstr ""
+msgstr "同じマウントポイントを2度使用することはできません…"
 
 #: src/installation/advanced.py:948
 msgid "Creating a primary partition"
@@ -633,7 +633,7 @@ msgstr "この領域の終点"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
-msgstr "として使用"
+msgstr "ファイルシステム"
 
 #: src/installation/advanced.py:1181 src/installation/advanced.py:1198
 msgid "Mount Point:"
@@ -813,7 +813,7 @@ msgstr "LVM をセットアップして、簡単にパーティションを管�
 
 #: src/installation/ask.py:144
 msgid "Set your Home in a different partition/volume"
-msgstr "Home は異なるパーティションかボリュームに設定してください"
+msgstr "Home を異なるパーティションかボリュームに設定する"
 
 #: src/installation/ask.py:148
 msgid ""
@@ -1477,7 +1477,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr "Cnchiはプレリリース版のソフトウェアで、活発に開発しています。\nRAID、btrfs subvolumes、その他の高度なセットアップは、まだ適切に処理できません。\nデータの損失に可能な限り注意しながら進めてください。\n\nもし何かバグを見つけたら、 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> に報告してください。"
+msgstr "Cnchiはプレリリースなベータ版のソフトウェアで、開発が活発に行われています。\nRAID、btrfs subvolumes、その他の高度なセットアップは、まだ適切に処理できません。\nデータの損失に可能な限り注意しながら進めてください。\n\nもし何かバグを見つけたら、 <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a> に報告してください。"
 
 #: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
@@ -1711,7 +1711,7 @@ msgstr "インストールが完了しました!\n今すぐシステムを再起
 
 #: src/slides.py:225
 msgid "Do you want to retry the installation using the same configuration?"
-msgstr ""
+msgstr "同じ設定でインストールをやり直しますか？"
 
 #: src/slides.py:228
 msgid "Restarting installation process..."

@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-25 12:42+0000\n"
+"Last-Translator: i_sty <szollosi.istv4n@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/antergos/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -151,7 +151,7 @@ msgstr "Rendszer ellenőrzése"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
-msgstr "legkevesebb %dGB tárterület szükséges"
+msgstr "legkevesebb %dGB tárterülettel rendelkezik"
 
 #: src/check.py:86
 msgid ""
@@ -945,7 +945,7 @@ msgstr "Figyelem! Ez mindent felülfog írni, ami a lemezeden van!"
 msgid ""
 "Select the drive we should use to install Antergos and then click below to "
 "start the process."
-msgstr "Válaszd ki mely meghajtót használjuk az Antergos telepítéséhez, majd kattints alább a folyamat megkezdéséhez."
+msgstr "Válaszd ki mely meghajtót használjuk az Antergos telepítéséhez,\nmajd kattints a 'Telepítsd most!' gombra a folyamat megkezdéséhez."
 
 #: src/installation/automatic.py:85
 msgid "Encryption Password:"
@@ -1107,7 +1107,7 @@ msgstr ""
 
 #: src/installation/process.py:579
 msgid "Hardware module added these packages : %s"
-msgstr ""
+msgstr "Hardver modul hozzáadta ezeket a csomagokat: %s"
 
 #: src/installation/process.py:584 src/installation/process.py:1677
 msgid "Can't import hardware module."
@@ -1139,7 +1139,7 @@ msgstr "Rendszerindító csomagok hozzáadása ha szükségesek"
 
 #: src/installation/process.py:658
 msgid "Adding packages for '%s' feature."
-msgstr ""
+msgstr "Csomagok hozzáadása a '%s' szolgáltatáshoz."
 
 #: src/installation/process.py:665
 msgid "Selecting package %s for feature %s"
@@ -1157,11 +1157,11 @@ msgstr ""
 msgid ""
 "Can't download all necessary packages. Cnchi will continue and try again "
 "this download later."
-msgstr ""
+msgstr "Nem lehet letölteni az összes szükséges csomagot. A Cnchi tovább fog működni és megpróbálja letölteni ezt később."
 
 #: src/installation/process.py:741
 msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr ""
+msgstr "Nem lehet telepíteni a szükséges csomagokat. A Cnchi nem tudja folytatni a telepítést."
 
 #: src/installation/process.py:763
 msgid "Special dirs already mounted."
@@ -1189,15 +1189,15 @@ msgstr "Hozzáadva az fstab : UUID=%s %s %s %s 0 %s"
 
 #: src/installation/process.py:922
 msgid "Added to crypttab : %s"
-msgstr ""
+msgstr "A crypttab-hoz adva: %s"
 
 #: src/installation/process.py:926
 msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
-msgstr ""
+msgstr "Az fstab-hoz hozzáadva: /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:978
 msgid "Added to fstab : %s"
-msgstr ""
+msgstr "Hozzáadva az fstab-hoz: %s"
 
 #: src/installation/process.py:987
 msgid "fstab written."
@@ -1447,11 +1447,11 @@ msgstr "Válaszd ki a billentyűzet kiosztást."
 
 #: src/keymap.py:74
 msgid "Keyboard Layouts"
-msgstr ""
+msgstr "Billentyűzetkiosztás"
 
 #: src/keymap.py:77
 msgid "Keyboard Variants"
-msgstr ""
+msgstr "Billentyűzetvariációk"
 
 #: src/keymap.py:81
 msgid "Layouts"
@@ -1515,7 +1515,7 @@ msgstr ""
 
 #: src/pacman/pac.py:120
 msgid "Cnchi will install a list of packages like pacman -S"
-msgstr ""
+msgstr "Cnchi telepíteni fog egy csomó csomagot akárcsak a pacman -S"
 
 #: src/pacman/pac.py:127
 msgid "No targets found"
@@ -1523,7 +1523,7 @@ msgstr ""
 
 #: src/pacman/pac.py:140
 msgid "Adding %s to transaction"
-msgstr ""
+msgstr "%s hozzáadása a tranzakcióhoz"
 
 #: src/pacman/pac.py:144
 msgid "Finalize transaction..."
@@ -1595,15 +1595,15 @@ msgstr "Sajnálom, de a %s fájlrendszert nem lehet zsugorítani"
 
 #: src/parted3/lvm.py:73
 msgid "Can't remove logical volume %s"
-msgstr ""
+msgstr "Nem lehet eltávolítani ezt a logikai kötetet: %s"
 
 #: src/parted3/lvm.py:91
 msgid "Can't remove volume group %s"
-msgstr ""
+msgstr "Nem lehet eltávolítani ezt a kötetcsoportot: %s"
 
 #: src/parted3/lvm.py:103
 msgid "Can't remove physical volume %s"
-msgstr ""
+msgstr "Nem lehet eltávolítani ezt a fizika kötetet: %s"
 
 #: src/parted3/partition_module.py:35
 msgid "Can't import parted module! This installer won't work."
@@ -1778,7 +1778,7 @@ msgstr "Nem sikerült elkészíteni a tükörlistát a pacman-hoz, ehhez az orsz
 
 #: src/updater.py:67
 msgid "Cnchi Internet version: %s"
-msgstr ""
+msgstr "Cnchi Internet verzió: %s"
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."

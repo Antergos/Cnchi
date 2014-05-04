@@ -3,6 +3,7 @@
 # 
 # Translators:
 # adiq <adiq117@gmail.com>, 2013
+# Alphanumerix <konrad.mski@gmail.com>, 2014
 # kuboslawik <kuboslawik@gmail.com>, 2014
 # kuboslawik <kuboslawik@gmail.com>, 2014
 # rehemiau <michal.lepicki@gmail.com>, 2014
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-25 11:03+0000\n"
+"Last-Translator: Alphanumerix <konrad.mski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/antergos/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -349,7 +350,7 @@ msgstr ""
 
 #: src/features.py:149
 msgid "Installation of extra TrueType fonts"
-msgstr ""
+msgstr "Zainstaluj dodatkowe czcionki TrueType"
 
 #: src/features.py:153
 msgid ""
@@ -1521,7 +1522,7 @@ msgstr ""
 
 #: src/pacman/pac.py:127
 msgid "No targets found"
-msgstr ""
+msgstr "Nie znaleziono celu"
 
 #: src/pacman/pac.py:140
 msgid "Adding %s to transaction"
@@ -1716,7 +1717,7 @@ msgstr "Czy chcesz podjąć ponowną próbę instalacji używając tej samej kon
 
 #: src/slides.py:228
 msgid "Restarting installation process..."
-msgstr ""
+msgstr "Ponowne uruchamianie procesu instalacji..."
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1784,11 +1785,11 @@ msgstr ""
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."
-msgstr ""
+msgstr "Znaleziono nową wersję. Aktualizowanie instalatora..."
 
 #: src/updater.py:154
 msgid "Replacing version %s with version %s..."
-msgstr ""
+msgstr "Zamienianie wersji %s na wersję %s..."
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1856,7 +1857,7 @@ msgstr "Stwórz swoje konto użytkownika"
 
 #: src/user_info.py:204
 msgid "Are you sure you want to encrypt your home directory?"
-msgstr ""
+msgstr "Czy jesteś pewien, że chcesz zaszyfrować swój katalog domowy?"
 
 #: src/user_info.py:271
 msgid "Invalid characters entered"

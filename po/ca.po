@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-18 12:17+0000\n"
+"Last-Translator: karasu0 <karasu@antergos.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/antergos/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +51,7 @@ msgstr "S'usarà Aria2 per descarregar els paquets - EXPERIMENTAL"
 
 #: cnchi.py:251
 msgid "Using '%s' file as package list"
-msgstr ""
+msgstr "El fitxer '%s' s'usarà com a llista de paquets"
 
 #: cnchi.py:278
 msgid "Cnchi - Antergos Installer"
@@ -107,11 +107,11 @@ msgstr "Mostra opcions que encara estan en desenvolupament (NO USIS AIXÒ)"
 
 #: cnchi.py:498 cnchi.py:502
 msgid "Please install %s before running this installer"
-msgstr ""
+msgstr "Instal·la %s abans d'executar aquest instal·lador"
 
 #: cnchi.py:529
 msgid "Program updated! Restarting..."
-msgstr ""
+msgstr "Programa actualitzat! Reiniciant..."
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:215
@@ -162,7 +162,7 @@ msgstr "Aquesta quantitat depén de quin entorn d'escriptori s'instal·li."
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
-msgstr "està connectat a una font de corrent"
+msgstr "està connectat a una font d'energia"
 
 #: src/check.py:95
 msgid "is connected to the Internet"
@@ -178,7 +178,7 @@ msgstr "Tens connexió a Internet"
 
 #: src/check.py:170
 msgid "We're connected to a power source."
-msgstr "Estàs connectat a una font de corrent"
+msgstr "Estàs connectat a una font d'energia"
 
 #: src/check.py:171
 msgid "We have enough disk space."
@@ -268,7 +268,7 @@ msgstr "MATE és una bifuració del Gnome 2. Proveeix un entorn d'escriptori int
 
 #: src/download.py:37
 msgid "pm2ml not found. Aria2 download won't work."
-msgstr ""
+msgstr "No s'ha trobat el pm2ml. No es podrà usar l'Aria2 per a les descàrregues."
 
 #: src/download.py:80
 msgid "Can't connect with aria2, downloading will be performed by alpm."
@@ -448,11 +448,11 @@ msgstr "Programari per reproduir vídeos Flash, audio MP3 i d'altres suports."
 
 #: src/features.py:273
 msgid "Detected bluetooth device. Enabling by default..."
-msgstr ""
+msgstr "S'ha detectat el bluetooth. S'activarà per defecte..."
 
 #: src/features.py:288
 msgid "Selected '%s' feature to install"
-msgstr ""
+msgstr "S'ha seleccionat la característica '%s'"
 
 #: src/features.py:306
 msgid "Arch User Repository - Disclaimer"
@@ -545,11 +545,11 @@ msgstr "S'ha de formatar la partició Root."
 
 #: src/installation/advanced.py:750
 msgid "You will delete the partition %s from disk %s"
-msgstr ""
+msgstr "Esborraràs la partició %s del disc %s"
 
 #: src/installation/advanced.py:767
 msgid "Unmounting %s..."
-msgstr ""
+msgstr "Desmuntant %s..."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
@@ -621,7 +621,7 @@ msgstr "Lògic"
 
 #: src/installation/advanced.py:1165
 msgid "Extended"
-msgstr "Extès"
+msgstr "Estès"
 
 #: src/installation/advanced.py:1169
 msgid "Beginning of this space"
@@ -691,15 +691,15 @@ msgid ""
 "%s is mounted in '%s'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr "%s està muntat a '%s'.\nPer poder continuar s'ha de desmuntar.\nClica a Sí per desmuntar-lo, o No per tornar\n"
+msgstr "%s està muntat a '%s'.\nPer poder continuar s'ha de desmuntar.\nClica Sí per desmuntar-lo, o No per tornar\n"
 
 #: src/installation/advanced.py:1551 src/installation/advanced.py:1565
 msgid "%s unmounted"
-msgstr ""
+msgstr "s'ha desmuntat %s"
 
 #: src/installation/advanced.py:1562
 msgid "Swap partition %s unmounted"
-msgstr ""
+msgstr "S'ha desmuntat la partició d'intercanvi %s"
 
 #: src/installation/advanced.py:1567
 msgid "%s shows as mounted (busy) but it has no mount point"
@@ -874,15 +874,15 @@ msgstr "No es pot crear un sistema d'arxius %s"
 
 #: src/installation/auto_partition.py:207
 msgid "Device details: %s UUID=%s LABEL=%s"
-msgstr ""
+msgstr "Informació del dispositiu %s UUID=%s LABEL=%s"
 
 #: src/installation/auto_partition.py:273
 msgid "%s will be mount as %s"
-msgstr ""
+msgstr "%s es muntarà com a %s"
 
 #: src/installation/auto_partition.py:306
 msgid "Device %s will have a %s filesystem"
-msgstr ""
+msgstr "El dispositiu %s tindrà un sistema de fitxers %s"
 
 #: src/installation/auto_partition.py:315
 msgid "Cnchi will setup LUKS on device %s"
@@ -890,7 +890,7 @@ msgstr "Cnchi configurarà el LUKS al dispositiu %s"
 
 #: src/installation/auto_partition.py:369
 msgid "The device %s has a size of %dMB"
-msgstr ""
+msgstr "El dispositiu %s té una mida de %dMB"
 
 #: src/installation/auto_partition.py:373
 msgid ""
@@ -900,39 +900,39 @@ msgstr "Impossible detectar la mida del teu dispositiu, usa el mètode d'instal�
 
 #: src/installation/auto_partition.py:406
 msgid "Total disc size: %dMB"
-msgstr ""
+msgstr "Mida total del disc: %dMB"
 
 #: src/installation/auto_partition.py:408
 msgid "GPT-BIOS partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició GPT-BIOS: %dMB"
 
 #: src/installation/auto_partition.py:409
 msgid "UEFI partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició UEFI: %dMB"
 
 #: src/installation/auto_partition.py:410
 msgid "Boot partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició Boot: %dMB"
 
 #: src/installation/auto_partition.py:413
 msgid "LVM physical volume size: %dMB"
-msgstr ""
+msgstr "Mida del volum físic LVM: %dMB"
 
 #: src/installation/auto_partition.py:415
 msgid "Swap partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició d'intercanvi: %dMB"
 
 #: src/installation/auto_partition.py:416
 msgid "Root partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició arrel: %dMB"
 
 #: src/installation/auto_partition.py:419
 msgid "Home partition size: %dMB"
-msgstr ""
+msgstr "Mida de la partició /home: %dMB"
 
 #: src/installation/auto_partition.py:522
 msgid "Cnchi will setup LVM on device %s"
-msgstr ""
+msgstr "Cnchi configurarà LVM al dispositiu %s"
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -1140,11 +1140,11 @@ msgstr "Afegint els paquets del carregador d'arrencada"
 
 #: src/installation/process.py:658
 msgid "Adding packages for '%s' feature."
-msgstr ""
+msgstr "Afegint els paquets necessaris per instal·lar '%s'."
 
 #: src/installation/process.py:665
 msgid "Selecting package %s for feature %s"
-msgstr ""
+msgstr "Selecciono el paquet %s necessari per la instal·lació de  %s"
 
 #: src/installation/process.py:675
 msgid "Add libreoffice language package"
@@ -1152,17 +1152,17 @@ msgstr "Afegir paquet de llenguatge de lliureoffice"
 
 #: src/installation/process.py:726
 msgid "Downloading packages..."
-msgstr ""
+msgstr "Descarregant paquets..."
 
 #: src/installation/process.py:738
 msgid ""
 "Can't download all necessary packages. Cnchi will continue and try again "
 "this download later."
-msgstr ""
+msgstr "No puc descarregar tots els paquets. Es tornarà a intentar més endavant."
 
 #: src/installation/process.py:741
 msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr ""
+msgstr "No es poden instal·lar els paquets necessaris. La instal·lació no pot continuar."
 
 #: src/installation/process.py:763
 msgid "Special dirs already mounted."
@@ -1178,7 +1178,7 @@ msgstr "No puc muntar %s"
 
 #: src/installation/process.py:846
 msgid "Timeout running command: %s"
-msgstr ""
+msgstr "La comanda %s ha trigat massa en executar-se."
 
 #: src/installation/process.py:879
 msgid "Can't copy network configuration files"
@@ -1198,7 +1198,7 @@ msgstr "S'ha afegit al fitxer fstab: /dev/mapper/cryptAntergosHome %s %s %s 0 %s
 
 #: src/installation/process.py:978
 msgid "Added to fstab : %s"
-msgstr ""
+msgstr "S'ha afegit %s al fitxer fstab"
 
 #: src/installation/process.py:987
 msgid "fstab written."
@@ -1206,7 +1206,7 @@ msgstr "S'ha escrit el fitxer fstab."
 
 #: src/installation/process.py:1075
 msgid "/etc/default/grub configuration completed successfully."
-msgstr ""
+msgstr "S'ha configurat correctament el fitxer /etc/default/grub"
 
 #: src/installation/process.py:1090
 msgid "Could not copy %s to grub.d"
@@ -1220,7 +1220,7 @@ msgstr "Instal·lant el carregador d'arrencada GRUB(2) BIOS a %s"
 msgid ""
 "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
-msgstr ""
+msgstr "grub-mkconfig està penjat. Eliminant els processos grub-mount i os-prober per poder continuar."
 
 #: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
@@ -1296,7 +1296,7 @@ msgstr "No es pot congelar/descongelar el sistema xfs"
 
 #: src/installation/process.py:1286
 msgid "Enabled %s service."
-msgstr "Activat"
+msgstr "S'ha activat el servei %s."
 
 #: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
@@ -1384,7 +1384,7 @@ msgstr "S'ha canviat la configuració Sudo per l'usuari %s"
 
 #: src/installation/process.py:1674
 msgid "Running post-install scripts from hardware module..."
-msgstr ""
+msgstr "Executant els guions de post instal·lació del mòdul de hardware..."
 
 #: src/installation/process.py:1696
 msgid "User %s added."
@@ -1424,7 +1424,7 @@ msgstr "Crida al fitxer de post-instal·lació de Cnchi"
 
 #: src/installation/process.py:1767
 msgid "Post install script completed successfully."
-msgstr ""
+msgstr "El guió de post instal·lació s'ha completat correctament."
 
 #: src/installation/process.py:1783
 msgid "Encrypting user home dir..."
@@ -1440,7 +1440,7 @@ msgstr "Instal·lant el gestor d'arrencada..."
 
 #: src/installation/process.py:1793
 msgid "Copying install log to /var/log."
-msgstr ""
+msgstr "Copiant el registre d'instal·lació a /var/log"
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1460,7 +1460,7 @@ msgstr "Distribucions"
 
 #: src/keymap.py:87
 msgid "Variants"
-msgstr "Variants"
+msgstr "Variacions"
 
 #: src/keymap.py:108
 msgid "keyboard_layout is %s"
@@ -1512,23 +1512,23 @@ msgstr "No es pot canviar la configuració local a '%s'"
 
 #: src/pacman/pac.py:35
 msgid "pyalpm not found! This installer won't work."
-msgstr ""
+msgstr "No s'ha trobat el pyalpm. Aquest instal·lador no podrà funcionar."
 
 #: src/pacman/pac.py:120
 msgid "Cnchi will install a list of packages like pacman -S"
-msgstr ""
+msgstr "Cnchi instal·larà una llista de paquets de manera similar a la comanda pacman -S"
 
 #: src/pacman/pac.py:127
 msgid "No targets found"
-msgstr ""
+msgstr "No s'han trobat objectius d'instal·lació"
 
 #: src/pacman/pac.py:140
 msgid "Adding %s to transaction"
-msgstr ""
+msgstr "Afegint %s a la transacció"
 
 #: src/pacman/pac.py:144
 msgid "Finalize transaction..."
-msgstr ""
+msgstr "Finalitzant la transacció..."
 
 #: src/pacman/pac.py:177
 msgid "Can't find a package or group called '%s'"
@@ -1608,7 +1608,7 @@ msgstr "No es pot esborrar el volum físic %s"
 
 #: src/parted3/partition_module.py:35
 msgid "Can't import parted module! This installer won't work."
-msgstr ""
+msgstr "No puc importar el mòdul parted. Aquest instal·lador no podrà funcionar."
 
 #: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
@@ -1715,7 +1715,7 @@ msgstr "Vols tornar a intentar la instal·lació usant la mateixa configuració?
 
 #: src/slides.py:228
 msgid "Restarting installation process..."
-msgstr ""
+msgstr "Tornant a iniciar el procés d'instal·lació..."
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1779,15 +1779,15 @@ msgstr "No s'ha pogut generar la llista de rèpliques pel Pacman basada en el co
 
 #: src/updater.py:67
 msgid "Cnchi Internet version: %s"
-msgstr ""
+msgstr "Versió de Cnchi a Internet: %s"
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."
-msgstr ""
+msgstr "S'ha trobat una nova versió. Actualitzant l'instal·lador..."
 
 #: src/updater.py:154
 msgid "Replacing version %s with version %s..."
-msgstr ""
+msgstr "Substituint la versió %s amb la versió %s..."
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1847,7 +1847,7 @@ msgstr "Demana la contrasenya per poder entrar al sistema"
 
 #: src/user_info.py:138
 msgid "Encrypt my home folder"
-msgstr "Encripta la teva carpeta d'usuari"
+msgstr "Encripta la teva carpeta personal"
 
 #: src/user_info.py:144
 msgid "Create Your User Account"
@@ -1855,7 +1855,7 @@ msgstr "Crea el teu Compte d'Usuari"
 
 #: src/user_info.py:204
 msgid "Are you sure you want to encrypt your home directory?"
-msgstr ""
+msgstr "Estàs segur que vols encriptar el teu directori personal?"
 
 #: src/user_info.py:271
 msgid "Invalid characters entered"
