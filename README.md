@@ -3,12 +3,12 @@
 **Graphical Installer for Antergos Linux (FKA Cinnarch Linux)**
 
 Usage:
-lang=sh
-```sudo -E cnchi.py```
+```lang=sh
+sudo -E cnchi.py```
 
 To create logs to help debug problems:
-lang=sh
-```sudo -E cnchi.py -dv```
+```lang=sh
+sudo -E cnchi.py -dv```
 
 ==Translations
 
