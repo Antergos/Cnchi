@@ -28,6 +28,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	# Enable lockscreen extension
 	dbus-launch gsettings set org.gnome.shell enabled-extensions "['lockscreen@dev.antergos.com']"
 
+	# Disable Terminal Bell
+	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
 fi
 
 if [[ ${DESKTOP} == 'cinnamon' ]];then
@@ -70,6 +73,10 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	# Set icon theme
 	dbus-launch gsettings set org.cinnamon.desktop.interface icon-theme "Faenza-Dark"
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Faenza-Dark"
+
+	# Disable Terminal Bell
+	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences audible-bell false
+	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
 	
 fi
 
