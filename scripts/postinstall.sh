@@ -388,9 +388,11 @@ postinstall(){
 	fi
     
     # Configure fontconfig
-    FONTS_CONF="/usr/share/cnchi/scripts/fonts.conf"
-    if [ -f $FONTS_CONF ]; then
-	    cp $FONTS_CONF ${DESTDIR}/etc
+    FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
+    FONTCONFIG_DIR="${DESTDIR}/home/${USER_NAME}/.config/fontconfig"
+    if [ -f ${FONTCONFIG_FILE} ]; then
+        mkdir -p ${FONTCONFIG_DIR}
+	    cp ${FONTCONFIG_FILE} ${FONTCONFIG_DIR}
     fi
 
 	# Set Antergos name in filesystem files
