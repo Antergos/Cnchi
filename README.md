@@ -1,44 +1,48 @@
-# Cnchi
+= Cnchi =
 
-Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
+**Graphical Installer for Antergos Linux (FKA Cinnarch Linux)**
 
-Usage: sudo -E cnchi.py
+Usage:
+```lang=sh
+sudo -E cnchi.py```
 
-To create logs to help debug problems: sudo -E cnchi.py -dv
+To create logs to help debug problems:
+```lang=sh
+sudo -E cnchi.py -dv```
 
-## Translations
+==Translations
 
 We manage our translations in transifex:
 
-* https://www.transifex.com/projects/p/antergos/
+ - https://www.transifex.com/projects/p/antergos/
 
-## Dependencies
+==Dependencies
 
- * gtk3
- * python3
- * python-cairo
- * python-dbus
- * python-gobject
- * python-mako
- * pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
- * pyalpm (pacman)
- * libtimezonemap
- * webkitgtk 
- * hdparm
- * hwinfo
- * upower
+ - gtk3
+ - python3
+ - python-cairo
+ - python-dbus
+ - python-gobject
+ - python-mako
+ - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
+ - pyalpm (pacman)
+ - libtimezonemap
+ - webkitgtk 
+ - hdparm
+ - hwinfo
+ - upower
  
-#### Unit tests
+==Unit tests
 
- * python-mock 
+ - python-mock 
 
-#### Fonts needed by the keyboard widget
+==Fonts needed by the keyboard widget
 
- * ttf-aboriginal-sans
- * ttf-indic-otf
- * ttf-khmer
- * ttf-lohit-fonts
- * ttf-myanmar3
- * ttf-thaana-fonts
- * ttf-tlwg
+ - ttf-aboriginal-sans
+ - ttf-indic-otf
+ - ttf-khmer
+ - ttf-lohit-fonts
+ - ttf-myanmar3
+ - ttf-thaana-fonts
+ - ttf-tlwg
 

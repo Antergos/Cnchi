@@ -145,6 +145,7 @@
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-common</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
         <pkgname>gnome-screenshot</pkgname>
