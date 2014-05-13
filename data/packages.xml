@@ -46,7 +46,8 @@
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
-        <pkgname>pacmanxg4</pkgname>
+        <pkgname>numix-icon-theme</pkgname>
+	<pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>ttf-liberation</pkgname>
@@ -117,6 +118,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -170,6 +172,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -200,6 +203,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
@@ -270,10 +274,11 @@
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname>mozo</pkgname>
-        <pkgname>mplayer</pkgname> <!--mate-mplayer can't play media without this -->
+        <pkgname>mplayer</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -299,6 +304,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -338,6 +344,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>obconf</pkgname>
         <!-- <pkgname>obkey</pkgname> -->
         <pkgname>oblogout</pkgname>
@@ -402,6 +409,7 @@
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
+	<pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
