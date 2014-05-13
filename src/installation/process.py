@@ -940,19 +940,20 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 for i in self.ssd:
                     if i in self.mount_devices[path]:
-                        opts = 'defaults,relatime'
+                        opts = 'rw,defaults,noatime'
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                         # If using a TRIM supported SSD, discard is a valid mount option for swap
                         if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
                             opts += ',discard'
                         elif myfmt == 'btrfs':
-                            opts += ',rw,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+                            opts += ',compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
 
             no_check = ["btrfs", "f2fs"]
             if path == "/" and myfmt not in no_check:
                 chk = '1'
-
+            if path == "/":
+                self.settings.set('ruuid', uuid)
             all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
             logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
 
@@ -984,6 +985,22 @@ class InstallationProcess(multiprocessing.Process):
             self.install_bootloader_grub2_bios()
         else:
             self.install_bootloader_grub2_efi(bootloader)
+
+        # Check grub.cfg for correct root UUID
+        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+        ruuid = self.settings.get('ruuid')
+
+        if ruuid not in open(cfg).read():
+            with open(cfg) as grub_cfg:
+                lines = [x.strip() for x in grub_cfg.readlines()]
+            for i in range(len(lines)):
+                if lines[i].startswith("linux	/vmlinuz-linux root="):
+                    old_line = lines[i]
+                    p1 = old_line[68:]
+                    p2 = old_line[:26]
+                    lines[i] = p1 + ruuid + p2
+            with open(cfg, 'w') as grub_file:
+                grub_file.write("\n".join(lines))
 
     def modify_grub_default(self):
         """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition

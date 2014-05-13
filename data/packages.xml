@@ -96,7 +96,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
-        <!-- <pkgname>gnome-shell-extension-dash-to-dock</pkgname> -->
+	<pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -123,6 +123,7 @@
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
+        <pkgname>xscreensaver</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </gnome_desktop>
 
