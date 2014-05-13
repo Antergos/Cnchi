@@ -23,7 +23,7 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme "Zukitwo"
 
 	# Set icon theme
-	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Faenza-Dark"
+	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
 	
 	# Enable lockscreen extension
 	dbus-launch gsettings set org.gnome.shell enabled-extensions "['lockscreen@dev.antergos.com']"
@@ -71,8 +71,8 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.cinnamon.theme name "Nadia"
 
 	# Set icon theme
-	dbus-launch gsettings set org.cinnamon.desktop.interface icon-theme "Faenza-Dark"
-	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Faenza-Dark"
+	dbus-launch gsettings set org.cinnamon.desktop.interface icon-theme "Numix-Square"
+	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
 
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences audible-bell false
@@ -117,7 +117,7 @@ if [[ ${DESKTOP} == 'xfce' ]];then
         sleep 3
 		CMD=`grep theme ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	done
-	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Faenza-Dark"
+	dbus-launch xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Numix-Square"
 
 	# Set compositor
 	CMD=`grep IconThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
@@ -247,7 +247,6 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.thumbnailers disable-all false
 	dbus-launch gsettings set org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
 	dbus-launch gsettings set org.mate.search-tool quick-search-second-scan-excluded-paths ['/']
-	dbus-launch gsettings set org.mate.search-tool search-history {'gsearchtool-file-entry': ['netbeans']}
 	dbus-launch gsettings set org.mate.search-tool show-additional-options false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.recent height 385
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.recent hide-separator false
@@ -315,7 +314,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-seconds false
 	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme 'Zukitwo'
-	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Faenza-Dark'
+	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Numix-Square'
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-paths @as []
@@ -346,7 +345,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.interface font-name 'Sans 10'
 	dbus-launch gsettings set org.mate.interface gtk-color-scheme ''
 	dbus-launch gsettings set org.mate.interface gtk-theme 'Zukitwo'
-	dbus-launch gsettings set org.mate.interface icon-theme 'Faenza-Dark'
+	dbus-launch gsettings set org.mate.interface icon-theme 'Numix-Square'
 
 fi
 
