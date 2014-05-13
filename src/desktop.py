@@ -27,42 +27,28 @@ import os
 import logging
 import desktop_environments as desktops
 
-_next_page = "features"
-_prev_page = "keymap"
+from gtkbasebox import GtkBaseBox
 
-class DesktopAsk(Gtk.Box):
+class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "desktop.ui"))
+    def __init__(self, params, prev_page="keymap", next_page="features"):
+        super().__init__(self, params, "desktop", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
         self.desktop_info = self.ui.get_object("desktop_info")
-        #self.treeview_desktop = self.ui.get_object("treeview_desktop")
+
         # Set up list box
         self.listbox = self.ui.get_object("listbox_desktop")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-
-        self.ui.connect_signals(self)
 
         self.desktop_choice = 'gnome'
 
         self.enabled_desktops = self.settings.get("desktops")
 
         self.set_desktop_list()
-
-        self.add(self.ui.get_object("desktop"))
 
     def translate_ui(self, desktop):
         """ Translates all ui elements """
@@ -136,12 +122,6 @@ class DesktopAsk(Gtk.Box):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
         return False
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
 # When testing, no _() is available
 try:

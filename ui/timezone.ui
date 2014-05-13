@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.16.0 on Thu Oct 24 00:57:58 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkBox" id="location">
+  <object class="GtkBox" id="timezone">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>

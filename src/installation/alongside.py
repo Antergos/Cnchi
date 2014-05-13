@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_alongside.py
+#  alongside.py
 #
 #  Copyright 2013 Antergos
 #
@@ -55,27 +55,14 @@ import parted3.fs_module as fs
 
 from installation import process as installation_process
 
-#_next_page = "timezone"
-_next_page = "user_info"
-_prev_page = "installation_ask"
+from gtkbasebox import GtkBaseBox
 
-# leave at least 3.5GB for Antergos when shrinking
-_minimum_space_for_antergos = 3500
+# leave at least 6.5GB for Antergos when shrinking
+MIN_ROOT_SIZE = 6500
 
-class InstallationAlongside(Gtk.Box):
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.callback_queue = params['callback_queue']
-        self.settings = params['settings']
-        self.alternate_package_list = params['alternate_package_list']
-        self.testing = params['testing']
-
-        super().__init__()
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "alongside.ui"))
+class InstallationAlongside(GtkBaseBox):
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+        super().__init__(self, params, "alongside", prev_page, next_page)
 
         self.ui.connect_signals(self)
 
@@ -88,8 +75,6 @@ class InstallationAlongside(Gtk.Box):
 
         # Init dialog slider
         self.init_slider()
-
-        super().add(self.ui.get_object("installation_alongside"))
 
     def init_slider(self):
         dialog = self.ui.get_object("shrink-dialog")
@@ -145,12 +130,7 @@ class InstallationAlongside(Gtk.Box):
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Antergos Alongside Installation"))
-
-        #txt = _("Antergos Alongside Installation")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
@@ -164,14 +144,8 @@ class InstallationAlongside(Gtk.Box):
         self.start_installation()
         return True
 
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
-
     def prepare_treeview(self):
-        ## Create columns for our treeview
+        """ Create columns for our treeview """
         render_text = Gtk.CellRendererText()
 
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
@@ -202,31 +176,31 @@ class InstallationAlongside(Gtk.Box):
             device_list = []
 
         for dev in device_list:
-            ## avoid cdrom and any raid, lvm volumes or encryptfs
+            # Avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
                 try:
                     disk = parted.Disk(dev)
-                    # create list of partitions for this device (p.e. /dev/sda)
+                    # Create list of partitions for this device (p.e. /dev/sda)
                     partition_list = disk.partitions
 
                     for p in partition_list:
                         if p.type != pm.PARTITION_EXTENDED:
-                            ## Get file system
+                            ## Get filesystem
                             fs_type = ""
                             if p.fileSystem and p.fileSystem.type:
                                 fs_type = p.fileSystem.type
                             if "swap" not in fs_type:
                                 if p.path in oses:
-                                    row = [ p.path, oses[p.path], fs_type ]
+                                    row = [p.path, oses[p.path], fs_type]
                                 else:
-                                    row = [ p.path, _("unknown"), fs_type ]
+                                    row = [p.path, _("unknown"), fs_type]
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
                     logging.warning(_("Unable to create list of partitions for alongside installation."))
 
-        # assign our new model to our treeview
+        # Assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
         self.treeview.expand_all()
 
@@ -253,7 +227,7 @@ class InstallationAlongside(Gtk.Box):
         try:
             subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
             x = subprocess.check_output(['df', partition_path]).decode()
-            subprocess.call(["umount", "/mnt"], stderr=subprocess.DEVNULL)
+            subprocess.call(["umount", "-l", "/mnt"], stderr=subprocess.DEVNULL)
             x = x.split('\n')
             x = x[1].split()
             self.max_size = int(x[1]) / 1000
@@ -261,7 +235,7 @@ class InstallationAlongside(Gtk.Box):
         except subprocess.CalledProcessError as e:
             logging.exception("CalledProcessError.output = %s" % e.output)
 
-        if self.min_size + _minimum_space_for_antergos < self.max_size:
+        if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
             show.error(_("Can't shrink the partition (maybe it's nearly full)"))
@@ -271,7 +245,6 @@ class InstallationAlongside(Gtk.Box):
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
-
 
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")
@@ -286,7 +259,7 @@ class InstallationAlongside(Gtk.Box):
         slider = self.ui.get_object("scale")
 
         # leave space for Antergos
-        self.available_slider_range = [ self.min_size, self.max_size - _minimum_space_for_antergos ]
+        self.available_slider_range = [ self.min_size, self.max_size - MIN_ROOT_SIZE ]
 
         slider.set_fill_level(self.min_size)
         slider.set_show_fill_level(True)
@@ -349,6 +322,7 @@ class InstallationAlongside(Gtk.Box):
         logging.debug("extended partition: %s" % extended_path)
         logging.debug("primary partitions: %s" % primary_partitions)
 
+        # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
         if len(primary_partitions) >= 4:
             logging.error("There're too many primary partitions, can't create a new one")
             return False
@@ -358,8 +332,8 @@ class InstallationAlongside(Gtk.Box):
         return True
 
     def start_installation(self):
-        # Alongside method shrinks selected partition
-        # and creates root and swap partition in the available space
+        """ Alongside method shrinks selected partition
+        and creates root and swap partition in the available space """
 
         if self.is_room_available() == False:
             return
@@ -368,51 +342,144 @@ class InstallationAlongside(Gtk.Box):
         otherOS = self.row[1]
         fs_type = self.row[2]
 
-        # what if path is sda10 (two digits) ? this is wrong
+        # What if path is sda10 (two digits) ? this is wrong
         device_path = self.row[0][:-1]
 
         #re.search(r'\d+$', self.row[0])
 
         new_size = self.new_size
 
-        # first, shrink file system
+        # First, shrink filesystem
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
+            #logging.info("Filesystem on " + partition_path + " shrunk.\nWill recreate partition now on device " + device_path + " partition " + partition_path)
+            txt = _("Filesystem on %s shrunk.") % partition_path
+            txt += "\n"
+            txt += _("Will recreate partition now on device %s partition %s") % (device_path, partition_path)
+            logging.debug(txt)
             # destroy original partition and create a new resized one
-            pm.split_partition(device_path, partition_path, new_size)
+            res = pm.split_partition(device_path, partition_path, new_size)
         else:
-            logging.error("Can't shrink %s(%s) filesystem" % (otherOS, fs_type))
+            txt = _("Can't shrink %s(%s) filesystem") % (otherOS, fs_type)
+            logging.error(txt)
+            show.error(txt)
             return
 
-
-
-        '''
-        # Prepare info for installer_process
-        mount_devices = {}
-        mount_devices["/"] =
-        mount_devices["swap"] =
-
-        root = mount_devices["/"]
-        swap = mount_devices["swap"]
-
-        fs_devices = {}
-        fs_devices[root] = "ext4"
-        fs_devices[swap] = "swap"
-        fs_devices[partition_path] = self.row[2]
-
-
-        # TODO: Ask where to install the bootloader (if the user wants to install it)
-
-
-        if os.path.exists("/sys/firmware/efi/systab"):
-            self.settings.set('bootloader_type', "UEFI_x86_64")
+        # 'res' is either False or a parted.Geometry for the new free space
+        if res is not None:
+            txt = _("Partition %s shrink complete") % partition_path
+            logging.debug(txt)
         else:
-            self.settings.set('bootloader_type', "GRUB2")
+            txt = _("Can't shrink %s(%s) partition") % (otherOS, fs_type)
+            logging.error(txt)
+            show.error(txt)
+            txt = _("*** FILESYSTEM IN UNSAFE STATE ***")
+            txt += "\n"
+            txt += _("Filesystem shrink succeeded but partition shrink failed.")
+            logging.error(txt)
+            return
 
+        disc_dic = pm.get_devices()
+        disk = disc_dic[device_path][0]
+        mount_devices = {}
+        fs_devices = {}
+
+        mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
+        mem_total = int(mem_total.split()[1])
+        mem = mem_total / 1024
+
+        # If geometry gives us at least 7.5GB (MIN_ROOT_SIZE + 1GB) we'll create ROOT and SWAP
+        no_swap = False
+        if res.getLength('MB') < MIN_ROOT_SIZE + 1:
+            if mem < 2048:
+                # Less than 2GB RAM and no swap? No way.
+                txt = _("Cannot create new swap partition. Not enough free space")
+                logging.error(txt)
+                show.error(txt)
+                return
+            else:
+                no_swap = True
+
+        if no_swap:
+            npart = pm.create_partition(device_path, 0, res)
+            if npart is None:
+                txt = _("Cannot create new partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+            pm.finalize_changes(disk)
+            mount_devices["/"] = npart.path
+            fs_devices[npart.path] = "ext4"
+            fs.create_fs(npart.path, 'ext4', label='ROOT')
+        else:
+            # We know for a fact we have at least MIN_ROOT_SIZE + 1GB of space,
+            # and at least MIN_ROOT_SIZE of those must go to ROOT.
+
+            # Suggested sizes from Anaconda installer
+            if mem < 2048:
+                swap_part_size = 2 * mem
+            elif 2048 <= mem < 8192:
+                swap_part_size = mem
+            elif 8192 <= mem < 65536:
+                swap_part_size = mem / 2
+            else:
+                swap_part_size = 4096
+
+            # Max swap size is 10% of all available disk size
+            max_swap = res.getLength('MB') * 0.1
+            if swap_part_size > max_swap:
+                swap_part_size = max_swap
+
+            # Create swap partition
+            units = 1000000
+            sec_size = disk.device.sectorSize
+            new_length = int(swap_part_size * units / sec_size)
+            new_end_sector = res.start + new_length
+            my_geometry = pm.geom_builder(disk, res.start, new_end_sector, swap_part_size)
+            logging.debug("create_partition %s", my_geometry)
+            swappart = pm.create_partition(disk, 0, my_geometry)
+            if swappart is None:
+                txt = _("Cannot create new swap partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+
+            # Create new partition for /
+            new_size_in_mb = res.getLength('MB') - swap_part_size
+            start_sector = new_end_sector + 1
+            my_geometry = pm.geom_builder(disk, start_sector, res.end, new_size_in_mb)
+            logging.debug("create_partition %s", my_geometry)
+            npart = pm.create_partition(disk, 0, my_geometry)
+            if npart is None:
+                txt = _("Cannot create new partition.")
+                logging.error(txt)
+                show.error(txt)
+                return
+
+            pm.finalize_changes(disk)
+
+            # Mount points
+            mount_devices["swap"] = swappart.path
+            fs_devices[swappart.path] = "swap"
+            fs.create_fs(swappart.path, 'swap', 'SWAP')
+
+            mount_devices["/"] = npart.path
+            fs_devices[npart.path] = "ext4"
+            fs.create_fs(npart.path, 'ext4', 'ROOT')
+
+        self.settings.set('install_bootloader', True)
+        
         if self.settings.get('install_bootloader'):
-            self.settings.set('bootloader_device', mount_devices["/"])
-            logging.info(_("Antergos will install the bootloader of type %s in %s") % \
-                (self.settings.get('bootloader_type'), self.settings.get('bootloader_device'))
+            if self.settings.get('efi'):
+                self.settings.set('bootloader_type', "UEFI_x86_64")
+                self.settings.set('bootloader_location', '/boot')
+            else:
+                self.settings.set('bootloader_type', "GRUB2")
+                self.settings.set('bootloader_location', device_path)
+
+            logging.info(_("Thus will install the bootloader of type %s in %s") %
+                          (self.settings.get('bootloader_type'),
+                           self.settings.get('bootloader_location')))
         else:
             logging.warning("Cnchi will not install any boot loader")
 
@@ -426,7 +493,7 @@ class InstallationAlongside(Gtk.Box):
                             self.alternate_package_list)
 
             self.process.start()
-        '''
+
 
 # When testing, no _() is available
 try:

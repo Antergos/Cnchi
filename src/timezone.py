@@ -40,25 +40,14 @@ import subprocess
 import hashlib
 import canonical.misc as misc
 
-_next_page = "keymap"
-_prev_page = "location"
+from gtkbasebox import GtkBaseBox
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
-class Timezone(Gtk.Box):
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "timezone.ui"))
-        self.ui.connect_signals(self)
+class Timezone(GtkBaseBox):
+    def __init__(self, params, prev_page="location", next_page="keymap"):
+        super().__init__(self, params, "timezone", prev_page, next_page)
 
         self.map_window = self.ui.get_object('timezone_map_window')
 
@@ -71,10 +60,10 @@ class Timezone(Gtk.Box):
         self.tzdb = tz.Database()
         self.timezone = None
 
-        # this is for populate_cities
+        # This is for populate_cities
         self.old_zone = None
 
-        # setup window
+        # Setup window
         self.tzmap = TimezoneMap.TimezoneMap()
         self.tzmap.connect('location-changed', self.on_location_changed)
 
@@ -84,23 +73,22 @@ class Timezone(Gtk.Box):
         self.map_window.add(self.tzmap)
         self.tzmap.show()
 
-        # autotimezone thread will store detected coords in this queue
+        # Autotimezone thread will store detected coords in this queue
         self.auto_timezone_coords = multiprocessing.Queue()
 
-        # thread to try to determine timezone.
+        # Thread to try to determine timezone.
         self.auto_timezone_thread = None
         self.start_auto_timezone_thread()
 
-        # thread to generate a pacman mirrorlist based on country code
+        # Thread to generate a pacman mirrorlist based on country code
         # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
         self.mirrorlist_thread = None
         #self.start_mirrorlist_thread()
 
-        self.add(self.ui.get_object('location'))
-
         self.autodetected_coords = None
 
     def translate_ui(self):
+        """ Translates all ui elements """
         label = self.ui.get_object('label_zone')
         txt = _("Zone:")
         label.set_markup(txt)
@@ -113,15 +101,9 @@ class Timezone(Gtk.Box):
         txt = _("Use Network Time Protocol for clock synchronization:")
         label.set_markup(txt)
 
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Select Your Timezone"))
 
-        #txt = _("Select Your Timezone")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-
     def on_location_changed(self, unused_widget, city):
-        #("timezone.location_changed started!")
         self.timezone = city.get_property('zone')
         loc = self.tzdb.get_loc(self.timezone)
         if not loc:
@@ -198,7 +180,6 @@ class Timezone(Gtk.Box):
 
     def set_cursor(self, cursor_type):
         cursor = Gdk.Cursor(cursor_type)
-        #window = super().get_root_window()
         window = self.get_root_window()
         if window:
             window.set_cursor(cursor)
@@ -213,8 +194,6 @@ class Timezone(Gtk.Box):
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-                # Put the coords again in the queue (in case GenerateMirrorList still needs them)
-                #self.autodetected_coords.put_nowait(self.autodetected_coords)
             except queue.Empty:
                 logging.warning(_("Can't autodetect timezone coordinates"))
 
@@ -263,12 +242,6 @@ class Timezone(Gtk.Box):
         self.settings.set("timezone_done", True)
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def stop_threads(self):
         logging.debug(_("Stoping timezone threads..."))

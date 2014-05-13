@@ -27,6 +27,8 @@ import locale
 import os
 import logging
 
+from gtkbasebox import GtkBaseBox
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
@@ -35,31 +37,14 @@ LOCALE_DIR = "/usr/share/locale"
 import config
 import canonical.i18n as i18n
 
-_next_page = "check"
-_prev_page = "welcome"
-
-class Language(Gtk.Box):
-
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-        self.main_progressbar = params['main_progressbar']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "language.ui"))
-        self.ui.connect_signals(self)
+class Language(GtkBaseBox):
+    def __init__(self, params, prev_page="welcome", next_page="check"):
+        super().__init__(self, params, "language", prev_page, next_page)
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-
-        self.translate_ui()
 
         data_dir = self.settings.get('data')
 
@@ -73,8 +58,6 @@ class Language(Gtk.Box):
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
-        self.add(self.ui.get_object("language"))
-
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
@@ -86,6 +69,7 @@ class Language(Gtk.Box):
                     self.set_language(lang_code)
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
         txt = _("Cnchi is pre-release beta software that is under active development.\n"
         "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
@@ -155,17 +139,7 @@ class Language(Gtk.Box):
 
     def prepare(self, direction):
         self.translate_ui()
-        
-        # scroll language treeview to selected item
-        #self.scroll_to_selected_item(self.treeview_language)
-
         self.show_all()
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
 # When testing, no _() is available
 try:

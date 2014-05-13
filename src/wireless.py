@@ -24,23 +24,14 @@ import dbus
 from gi.repository import Gtk
 from canonical import misc, nm
 
-NAME = 'wireless'
+from gtkbasebox import GtkBaseBox
 
-_next_page = "desktop"
-_prev_page = "check"
+NAME = 'wireless'
 
 WEIGHT = 12
 
-class Wireless(Gtk.Box):
-    def __init__(self, params):
-        self.title = params['title']
-        self.ui_dir = params['ui_dir']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-
-        Gtk.Box.__init__(self)
-
+class Wireless(GtkBaseBox):
+    def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
         try:
             misc.has_connection()
@@ -48,10 +39,7 @@ class Wireless(Gtk.Box):
             self.page = None
             return
 
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "wireless.ui"))
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "wireless", prev_page, next_page)
 
         self.page = self.ui.get_object('wireless')
         self.nmwidget = self.ui.get_object('nmwidget')
@@ -69,9 +57,10 @@ class Wireless(Gtk.Box):
         self.connect_text = None
         self.stop_text = None
         self.skip = False
-        
-        self.add(self.ui.get_object("wireless"))
 
+    def translate_ui(self):
+        pass
+        
     def plugin_translate(self, lang):
         pass
         # get_s = self.controller.get_string
@@ -190,13 +179,8 @@ class Wireless(Gtk.Box):
         pass
         #self.controller.allow_go_forward(validated)
 
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
-
     def prepare(self, direction):
+        self.translate_ui()
         self.show_all()
 
     def store_values(self):

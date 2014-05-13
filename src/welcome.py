@@ -30,6 +30,8 @@ import sys
 
 from show_message import warning
 
+from gtkbasebox import GtkBaseBox
+
 # Import functions
 import config
 try:
@@ -37,23 +39,9 @@ try:
 except ImportError:
     import info
 
-_next_page = "language"
-_prev_page = None
-
-class Welcome(Gtk.Box):
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-        self.disable_tryit = params['disable_tryit']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "welcome.ui"))
-        self.ui.connect_signals(self)
+class Welcome(GtkBaseBox):
+    def __init__(self, params, prev_page=None, next_page="language"):
+        super().__init__(self, params, "welcome", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
@@ -80,17 +68,11 @@ class Welcome(Gtk.Box):
         for key in self.image:
             self.image[key].set_from_file(self.filename[key])
 
-        self.translate_ui()
-
-        self.set_name("welcome")
-
-        self.add(self.ui.get_object("welcome"))
-
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = ""
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")
-
         txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
@@ -148,15 +130,6 @@ class Welcome(Gtk.Box):
         self.forward_button.hide()
         if self.disable_tryit:
             self.button['tryit'].set_sensitive(False)
-        #if info.CNCHI_VERSION is not "0.4.3":
-        #    self.button['cli'].set_sensitive(False)
-
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def start_auto_timezone_thread(self):
         import timezone

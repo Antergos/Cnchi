@@ -386,6 +386,14 @@ postinstall(){
 	if [[ $DESKTOP != 'nox' ]];then
 		set_synaptics
 	fi
+    
+    # Configure fontconfig
+    FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
+    FONTCONFIG_DIR="${DESTDIR}/home/${USER_NAME}/.config/fontconfig"
+    if [ -f ${FONTCONFIG_FILE} ]; then
+        mkdir -p ${FONTCONFIG_DIR}
+	    cp ${FONTCONFIG_FILE} ${FONTCONFIG_DIR}
+    fi
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc

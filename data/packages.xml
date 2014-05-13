@@ -96,6 +96,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
+	<pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -145,6 +146,7 @@
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-common</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
         <pkgname>gnome-screenshot</pkgname>

@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.16.0 on Wed Dec  4 20:55:19 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkBox" id="installation_automatic">
+  <object class="GtkBox" id="automatic">
     <property name="can_focus">False</property>
     <property name="margin_left">10</property>
     <property name="margin_right">10</property>

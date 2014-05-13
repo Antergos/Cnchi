@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_automatic.py
+#  automatic.py
 #
 #  Copyright 2013 Antergos
 #
@@ -41,26 +41,11 @@ try:
 except:
     logging.error("Can't import parted module! This installer won't work.")
 
-_next_page = "user_info"
-_prev_page = "installation_ask"
+from gtkbasebox import GtkBaseBox
 
-class InstallationAutomatic(Gtk.Box):
-
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.callback_queue = params['callback_queue']
-        self.settings = params['settings']
-        self.alternate_package_list = params['alternate_package_list']
-        self.testing = params['testing']
-
-        super().__init__()
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(os.path.join(self.ui_dir, "automatic.ui"))
-
-        self.ui.connect_signals(self)
+class InstallationAutomatic(GtkBaseBox):
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+        super().__init__(self, params, "automatic", prev_page, next_page)
 
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
@@ -70,8 +55,6 @@ class InstallationAutomatic(Gtk.Box):
         self.entry['luks_password_confirm']= self.ui.get_object('entry_luks_password_confirm')
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
-
-        super().add(self.ui.get_object("installation_automatic"))
 
         self.devices = dict()
         self.process = None
@@ -174,12 +157,6 @@ class InstallationAutomatic(Gtk.Box):
         logging.info(_("Automatic install on %s") % self.auto_device)
         self.start_installation()
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def refresh(self):
         while Gtk.events_pending():

@@ -27,11 +27,11 @@ import show_message as show
 
 """ AutoPartition class """
 
-# Partition sizes are in MB
-MAX_ROOT_SIZE = 20000
+# Partition sizes are in MiB
+MAX_ROOT_SIZE = 30000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
-# KDE needs 4.5 GB for its files. Need to leave extra space also.
+# KDE needs 6.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
 
 def check_output(command):
@@ -56,7 +56,10 @@ def printk(enable):
 
 def unmount_all(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
-    subprocess.check_call(["swapoff", "-a"])
+    swaps = subprocess.check_output(["swapon", "--show=NAME", "--noheadings"]).decode().split("\n")
+    for name in filter(None, swaps):
+        if "/dev/zram" not in name:
+            subprocess.check_call(["swapoff", name])
 
     mount_result = subprocess.check_output("mount").decode().split("\n")
 
@@ -141,6 +144,7 @@ class AutoPartition(object):
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
+        logging.debug(_("Will format device %s as %s"), device, fs_type)
         if fs_type == "swap":
             try:
                 swap_devices = check_output("swapon -s")
@@ -175,14 +179,14 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = _("Can't create file system %s") % fs_type
+                txt = _("Can't create filesystem %s") % fs_type
                 logging.error(txt)
                 logging.error(err.cmd)
                 logging.error(err.output)
                 show.error(txt)
                 return
 
-            # Flush file system buffers
+            # Flush filesystem buffers
             subprocess.check_call(["sync"])
 
             # Create our mount directory
@@ -190,7 +194,15 @@ class AutoPartition(object):
             subprocess.check_call(["mkdir", "-p", path])
 
             # Mount our new filesystem
-            subprocess.check_call(["mount", "-t", fs_type, device, path])
+
+            mopts = "rw,relatime"
+            if fs_type == "ext4":
+                mopts = "rw,relatime,data=ordered"
+            elif fs_type == "btrfs":
+                mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
+            subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
+
+            logging.debug("AutoPartition done, filesystems mounted:\n" + subprocess.check_output(["mount"]).decode())
 
             # Change permission of base directories to avoid btrfs issues
             mode = "755"
@@ -315,8 +327,8 @@ class AutoPartition(object):
         logging.debug(_("Cnchi will setup LUKS on device %s"), luks_device)
 
         # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
-        # For 512 bit key length the header is 2MB
-        # If in doubt, just be generous and overwrite the first 10MB or so
+        # For 512 bit key length the header is 2MiB
+        # If in doubt, just be generous and overwrite the first 10MiB or so
         subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % luks_device, "bs=512", "count=20480", "status=noxfer"])
 
         if self.luks_key_pass == "":
@@ -340,21 +352,33 @@ class AutoPartition(object):
                 stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
 
-    def get_part_sizes(self, disc_size, start_part_sizes=0):
+    def get_part_sizes(self, disk_size, start_part_sizes=0):
         part_sizes = {}
         
-        part_sizes['disc'] = disc_size
+        part_sizes['disk'] = disk_size
         
         part_sizes['boot'] = 256
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
         mem_total = int(mem_total.split()[1])
+        mem = mem_total / 1024
 
-        part_sizes['swap'] = 1536
-        if mem_total <= 1572864:
-            part_sizes['swap'] = mem_total / 1024
+        # Suggested sizes from Anaconda installer
+        if mem < 2048:
+            part_sizes['swap'] = 2 * mem
+        elif 2048 <= mem < 8192:
+            part_sizes['swap'] = mem
+        elif 8192 <= mem < 65536:
+            part_sizes['swap'] = mem / 2
+        else:
+            part_sizes['swap'] = 4096
 
-        part_sizes['root'] = disc_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
+        # Max swap size is 10% of all available disk size
+        max_swap = disk_size * 0.1
+        if part_sizes['swap'] > max_swap:
+            part_sizes['swap'] = max_swap
+
+        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
         
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
@@ -373,21 +397,22 @@ class AutoPartition(object):
         return part_sizes
 
     def show_part_sizes(self, part_sizes):
-        logging.debug(_("Total disc size: %dMB"), part_sizes['disc'])
-        logging.debug(_("Boot partition size: %dMB"), part_sizes['boot'])
+        logging.debug(_("Total disk size: %dMiB"), part_sizes['disk'])
+        logging.debug(_("Boot partition size: %dMiB"), part_sizes['boot'])
 
         if self.lvm:
-            logging.debug(_("LVM physical volume size: %dMB"), part_sizes['lvm_pv'])
+            logging.debug(_("LVM physical volume size: %dMiB"), part_sizes['lvm_pv'])
 
-        logging.debug(_("Swap partition size: %dMB"), part_sizes['swap'])
-        logging.debug(_("Root partition size: %dMB"), part_sizes['root'])
+        logging.debug(_("Swap partition size: %dMiB"), part_sizes['swap'])
+        logging.debug(_("Root partition size: %dMiB"), part_sizes['root'])
 
         if self.home:
-            logging.debug(_("Home partition size: %dMB"), part_sizes['home'])
+            logging.debug(_("Home partition size: %dMiB"), part_sizes['home'])
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
+        # Partition sizes are expressed in MiB
         # TODO: Fix GPT
         # if self.uefi:
         #     gpt_bios_grub_part_size = 2
@@ -396,35 +421,30 @@ class AutoPartition(object):
         #else:
         gpt_bios_grub_part_size = 0
         uefisys_part_size = 0
-        empty_space_size = 0
+        # We start with a 1MiB offset before the first partition
+        empty_space_size = 1
 
-        # Get just the disk size in 1000*1000 MB
+        # Get just the disk size in MiB
         device = self.auto_device
         device_name = check_output("basename %s" % device)
         base_path = "/sys/block/%s" % device_name
-        disc_size = 0
+        disk_size = 0
         if os.path.exists("%s/size" % base_path):
             with open("%s/queue/logical_block_size" % base_path, 'r') as f:
                 logical_block_size = int(f.read())
             with open("%s/size" % base_path, 'r') as f:
                 size = int(f.read())
 
-            # Divide to get MB 1000*1000
-            disc_size = logical_block_size * size / 1000000
-            logging.debug(_("The device %s has a size of %dMB"), self.auto_device, disc_size)
-            # leave 1MB alone
-            disc_size -= 1
+            disk_size = ((logical_block_size * size) / 1024) / 1024
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
-                "installation method for partitioning and mounting devices.")
+                "installation routine for partitioning and mounting devices.")
             logging.error(txt)
             show.warning(txt)
             return
 
-        # Note: Partition sizes are expressed in MB
-
         start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
-        part_sizes = self.get_part_sizes(disc_size, start_part_sizes)
+        part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.show_part_sizes(part_sizes)
 
         # Disable swap and all mounted partitions, umount / last!
@@ -432,8 +452,9 @@ class AutoPartition(object):
 
         printk(False)
 
-        # We assume a /dev/hdX format (or /dev/sdX)
-        # We are not using GPT for UEFI at this time
+        #WARNING: Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
+        #         These are 'M' in sgdisk and 'MiB' in parted. If you use 'M' in parted you'll get MB instead of MiB,
+        #         and you're gonna have a bad time.
 
         # TODO: Fix GPT
         use_gpt = False
@@ -473,6 +494,7 @@ class AutoPartition(object):
 
             logging.debug(check_output("sgdisk --print %s" % device))
         else:
+            # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
             # Clean partitiontable to avoid issues!
             subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
@@ -488,6 +510,9 @@ class AutoPartition(object):
 
             if self.lvm:
                 start = part_sizes['boot']
+                if part_sizes['boot'] is 0:
+                    start = 1
+
                 end = start + part_sizes['lvm_pv']
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
@@ -577,12 +602,12 @@ class AutoPartition(object):
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
 
-        # Note: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
-        # Note: /etc/default/grub, /etc/fstab and /etc/crypttab will be modified in installation_process.py, too.
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
+        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in installation_process.py, too.
 
         if self.luks and self.luks_key_pass == "":
-            # Copy keyfile to boot partition and home keyfile to root partition.
-            # User will choose what to do with it
+            # Copy root keyfile to boot partition and home keyfile to root partition
+            # user will choose what to do with it
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
             # (boot partition is not)

@@ -29,25 +29,13 @@ import logging
 import desktop_environments as desktops
 import canonical.misc as misc
 
-_next_page = "installation_ask"
-_prev_page = "desktop"
+from gtkbasebox import GtkBaseBox
 
-class Features(Gtk.Box):
+class Features(GtkBaseBox):
     """ Features screen class """
-    def __init__(self, params):
+    def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
         """ Initializes features ui """
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "features.ui"))
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "features", prev_page, next_page)
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
@@ -84,8 +72,6 @@ class Features(Gtk.Box):
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
 
-        self.add(self.ui.get_object("features"))
-
     def listbox_sort_by_name(self, row1, row2, user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
@@ -104,7 +90,7 @@ class Features(Gtk.Box):
         return 1
 
     def translate_ui(self):
-        """ Translates features ui """
+        """ Translates all ui elements """
         desktop = self.settings.get('desktop')
 
         txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
@@ -246,11 +232,6 @@ class Features(Gtk.Box):
         txt = "<span size='small'>%s</span>" % txt
         self.labels["third_party"].set_markup(txt)
 
-        # txt = _("")
-        #self.titles["third_party"].set_tooltip_markup(txt)
-        #self.switches["third_party"].set_tooltip_markup(txt)
-        #self.labels["third_party"].set_tooltip_markup(txt)
-
         # Sort listbox items
         self.listbox.invalidate_sort()
 
@@ -316,21 +297,12 @@ class Features(Gtk.Box):
         txt1 = "<big>%s</big>" % txt1
         txt2 = "<i>%s</i>" % txt2
 
-        info = Gtk.MessageDialog(transient_for=None,
-                                 modal=True,
-                                 destroy_with_parent=True,
-                                 message_type=Gtk.MessageType.INFO,
-                                 buttons=Gtk.ButtonsType.CLOSE)
+        info = Gtk.MessageDialog(transient_for=None, modal=True, destroy_with_parent=True,
+                                 message_type=Gtk.MessageType.INFO, buttons=Gtk.ButtonsType.CLOSE)
         info.set_markup(txt1)                                        
         info.format_secondary_markup(txt2)
         info.run()
         info.destroy()
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
     def prepare(self, direction):
         """ Prepare features screen to get ready to show itself """

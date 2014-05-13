@@ -29,24 +29,11 @@ import logging
 import show_message as show
 import xml.etree.ElementTree as etree
 
-_next_page = "timezone"
-_prev_page = "check"
+from gtkbasebox import GtkBaseBox
 
-class Location(Gtk.Box):
-    def __init__(self, params):
-        self.header = params['header']
-        self.ui_dir = params['ui_dir']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.settings = params['settings']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-
-        self.ui.add_from_file(os.path.join(self.ui_dir, "location.ui"))
-
-        self.ui.connect_signals(self)
+class Location(GtkBaseBox):
+    def __init__(self, params, prev_page="check", next_page="timezone"):
+        super().__init__(self, params, "location", prev_page, next_page)
 
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
@@ -61,9 +48,8 @@ class Location(Gtk.Box):
 
         self.selected_country = ""
 
-        self.add(self.ui.get_object("location"))
-
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("The location you select will be used to help determine the system locale.\n" \
             "This should normally be the country in which you reside.\n" \
             "Here is a shortlist of locations based on the language you selected.")
@@ -154,9 +140,8 @@ class Location(Gtk.Box):
             if lang_code in locale_name:
                 areas.append(self.locales[locale_name])
 
-        # FIXME: What do we have to do when can't find any country?
-        # Right now we put them all!
-        # I've observed this with Esperanto and Asturianu at least.
+        # When we don't find any country we put all language codes.
+        # This happends with Esperanto and Asturianu at least.
         if len(areas) == 0:
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
@@ -176,7 +161,6 @@ class Location(Gtk.Box):
             label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
-            #self.select_default_row(current_language)
 
         self.selected_country = areas[0]
 
@@ -200,12 +184,6 @@ class Location(Gtk.Box):
                     logging.warning(_("Can't change to locale '%s'") % mylocale)
 
         return True
-
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
 
 # When testing, no _() is available
 try:

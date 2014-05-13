@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-24 15:48+0000\n"
+"Last-Translator: Nuno Santos <nunofilipesantos@gmail.com>\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/antergos/language/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -332,7 +332,7 @@ msgstr "Suporte Bluetooth"
 
 #: src/features.py:133
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr ""
+msgstr "Habilita o seu sistema de efetuar conexões sem fios via Bluetooth."
 
 #: src/features.py:137
 msgid ""
@@ -573,7 +573,7 @@ msgstr "Modo Avançado de instalação"
 
 #: src/installation/advanced.py:1105
 msgid "Use the device below for boot loader installation:"
-msgstr ""
+msgstr "Usar o dispositivo em baixo para a instalação do \"boot loader\":"
 
 #: src/installation/advanced.py:1110
 msgid "Mount Checklist:"
@@ -666,7 +666,7 @@ msgstr "Instalar agora!"
 
 #: src/installation/advanced.py:1305
 msgid "Creating a new %s partition table for disk %s"
-msgstr ""
+msgstr "A criar uma nova %s tabela de partição para o disco %s"
 
 #: src/installation/advanced.py:1315
 msgid ""
@@ -684,7 +684,7 @@ msgid ""
 "%s is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
-msgstr ""
+msgstr "%s está montado como swap.\nPara continuar tem que estar desmontado.\nClique Sim para desmontar, ou Não para regressar.\n"
 
 #: src/installation/advanced.py:1544
 msgid ""
@@ -727,7 +727,7 @@ msgstr "Renomear"
 
 #: src/installation/advanced.py:1656
 msgid "We will make changes to partitions on these disks:"
-msgstr ""
+msgstr "Faremos alterações nas partições destes discos."
 
 #: src/installation/advanced.py:1713
 msgid "Finished saving changes in %s"
@@ -739,7 +739,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1739
 msgid "Creating new %s filesystem in %s"
-msgstr ""
+msgstr "A criar novo %s sistema de ficheiros em %s"
 
 #: src/installation/advanced.py:1774
 msgid "Couldn't format partition '%s' with label '%s' as '%s'"
@@ -763,11 +763,11 @@ msgstr "Não foi possivel carregar %s css"
 
 #: src/installation/alongside.py:136
 msgid "Select the OS you would like Antergos installed next to."
-msgstr ""
+msgstr "Selecione em que SO que quer instalar o Antergosa lado-a-lado."
 
 #: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Instalação lado-a-lado do Antergos"
 
 #: src/installation/alongside.py:172
 msgid "Detected OS"
@@ -822,7 +822,7 @@ msgstr "Isto irá configurar a sua pasta /home numa partição ou volume diferen
 
 #: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "Instalar o Antergos lado-a-lado com %s"
 
 #: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
@@ -908,7 +908,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:409
 msgid "UEFI partition size: %dMB"
-msgstr ""
+msgstr "Tamanho da partição UEFI: %dMB"
 
 #: src/installation/auto_partition.py:410
 msgid "Boot partition size: %dMB"
@@ -1006,7 +1006,7 @@ msgstr ""
 #: src/installation/process.py:208 src/installation/process.py:288
 #: src/installation/process.py:356 src/installation/process.py:816
 msgid "Command %s has failed."
-msgstr ""
+msgstr "O comando %s falhou"
 
 #: src/installation/process.py:210 src/installation/process.py:264
 #: src/installation/process.py:290 src/installation/process.py:313
@@ -1524,11 +1524,11 @@ msgstr ""
 
 #: src/pacman/pac.py:140
 msgid "Adding %s to transaction"
-msgstr ""
+msgstr "A adicionar %s à transação"
 
 #: src/pacman/pac.py:144
 msgid "Finalize transaction..."
-msgstr ""
+msgstr "A finalizar transação..."
 
 #: src/pacman/pac.py:177
 msgid "Can't find a package or group called '%s'"
@@ -1608,7 +1608,7 @@ msgstr "Não é possível remover o volume físico %s"
 
 #: src/parted3/partition_module.py:35
 msgid "Can't import parted module! This installer won't work."
-msgstr ""
+msgstr "Não conseguimos importar o módulo parted. Este instalador não funcionará."
 
 #: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
@@ -1715,7 +1715,7 @@ msgstr ""
 
 #: src/slides.py:228
 msgid "Restarting installation process..."
-msgstr ""
+msgstr "A reiniciar o processo de instalação..."
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1779,15 +1779,15 @@ msgstr "Não foi possivel gerar a lista de servidores para o pacman usando o có
 
 #: src/updater.py:67
 msgid "Cnchi Internet version: %s"
-msgstr ""
+msgstr "Cnchi versão Internet: %s"
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."
-msgstr ""
+msgstr "Nova versão encontrada. A atualizar o instalador..."
 
 #: src/updater.py:154
 msgid "Replacing version %s with version %s..."
-msgstr ""
+msgstr "A substituir a versão %s com a versão %s..."
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1855,7 +1855,7 @@ msgstr "Crie a sua Conta de Utilizador"
 
 #: src/user_info.py:204
 msgid "Are you sure you want to encrypt your home directory?"
-msgstr ""
+msgstr "Tem a certeza que pretende encriptar o seu diretório casa?"
 
 #: src/user_info.py:271
 msgid "Invalid characters entered"

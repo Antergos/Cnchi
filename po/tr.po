@@ -3,13 +3,14 @@
 # 
 # Translators:
 # brk <burakgarci@gmail.com>, 2013
-# Taylan Tatlı <taylantatli@outlook.com>, 2014
+# Taylan Tatlı <taylantatli90@gmail.com>, 2014
+# Taylan Tatlı <taylantatli90@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-23 15:07+0000\n"
+"Last-Translator: Taylan Tatlı <taylantatli90@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/antergos/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,35 +60,35 @@ msgstr "Yükleyiciden çıkılıyor..."
 
 #: cnchi.py:453
 msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr ""
+msgstr "Antergos paketlerini indirmek için aria2 kullan (DENEYSEL)"
 
 #: cnchi.py:454
 msgid ""
 "Use pre-downloaded xz packages (Cnchi will download them anyway if a new "
 "version is found)"
-msgstr ""
+msgstr "Daha önce indirilmiş xz paketlerini kullan (Cnchi yeni bir sürüm bulduğu takdirde onları indirecek)"
 
 #: cnchi.py:455
 msgid ""
 "As --cache but before installing Cnchi copies all xz packages to destination"
-msgstr ""
+msgstr "--cache olarak fakat kurulumdan önce Cnchi tüm xz paketlerini hedef noktasına kopyalayacak"
 
 #: cnchi.py:456
 msgid "Sets Cnchi log level to 'debug'"
-msgstr ""
+msgstr "Cnchi log seviyesini 'debug' olarak ayarlar"
 
 #: cnchi.py:457
 msgid "Update Cnchi to the latest version (-uu will force the update)"
-msgstr ""
+msgstr "Cnchi'yi son sürüme günceller (-uu güncellemek için zorlar)"
 
 #: cnchi.py:458
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr ""
+msgstr "Varsayılanın yerine yerel xml dosyasını referans kullanarak paketleri yükle"
 
 #: cnchi.py:459
 msgid "Do not perform any changes (useful for developers)"
-msgstr ""
+msgstr "Herhangi bir değişiklik yapma (geliştiriciler için)"
 
 #: cnchi.py:460
 msgid "Show logging messages to stdout"
@@ -116,7 +117,7 @@ msgstr "bilinmeyen"
 
 #: src/canonical/misc.py:929
 msgid "Can't set locale %s"
-msgstr ""
+msgstr "Yerel ayarlanamadı %s"
 
 #: src/canonical/validation.py:132
 msgid "password is too short"
@@ -148,13 +149,13 @@ msgstr "Sistem Kontrolü"
 
 #: src/check.py:81
 msgid "has at least %dGB available storage space."
-msgstr ""
+msgstr "En az %dGB kullanılabilir depolama alanı."
 
 #: src/check.py:86
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr ""
+msgstr "Bu yüksek oranla hangi masaüstünü seçeceğinize bağlı, bundan dolayı daha fazla boş alana ihtiyacınız olabilir."
 
 #: src/check.py:91
 msgid "is plugged in to a power source"
@@ -225,21 +226,21 @@ msgid ""
 "extensive standards support. It's default theme is well known for its "
 "minimalistic appearance and flexibility. Your desktop becomes cleaner, "
 "faster."
-msgstr ""
+msgstr "Openbox, kapsamlı standartlar desteği ile son derece yapılandırılabilir, yeni nesil bir pencere yöneticisidir. Mevcut teması minimal görünümü ve esnekliği ile iyi tanınır. Masaüstünüz temiz ve hızlı olacaktır."
 
 #: src/desktop_environments.py:90
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr ""
+msgstr "Enlightenment, Linux/X11 veya diğerleri için sadece bir pencere yöneticisi değil, aynı zamanda daha az çalışmayla güzel kullanıcı arayüzleri oluşturmanızı sağlayan kütüphaneler topluluğudur"
 
 #: src/desktop_environments.py:94
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
-msgstr ""
+msgstr "Eğer tanıdık bir çalışma ortamı arıyorsanız, KDE'nin Plasma Masaüstü size modern bir bilgisayar deneyimi için gerekli tüm araçları sunar, böylelikle başlar başlamaz üretken olabilirsiniz."
 
 #: src/desktop_environments.py:98
 msgid ""
@@ -460,7 +461,7 @@ msgid ""
 "that supplement software available from the official repositories.\n"
 "\n"
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
-msgstr ""
+msgstr "Arch Kullanıcı Deposu kullanıcıların gönderdiği PKGBUILD'ler koleksiyonudur.\nResmi depolardaki mevcut yazılımlar'a ilave sağlar.\n\nAUR topluluk odaklıdır ve Arch veya Antergos tarafından DESKTEKLENMEZ.\n"
 
 #: src/features.py:312
 msgid "Uncomplicated Firewall will be installed with these rules:"
@@ -472,11 +473,11 @@ msgid ""
 "ufw allow from %s\n"
 "ufw allow Transmission\n"
 "ufw allow SSH"
-msgstr ""
+msgstr "ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH"
 
 #: src/hardware/hardware.py:65 src/installation/process.py:843
 msgid "Error running command: %s"
-msgstr ""
+msgstr "Komut hatalı çalışıyor: %s"
 
 #: src/installation/advanced.py:210 src/installation/advanced.py:505
 #: src/installation/advanced.py:519
@@ -517,7 +518,7 @@ msgstr "Kullanılan"
 
 #: src/installation/advanced.py:311
 msgid "Flags"
-msgstr ""
+msgstr "Bayraklar"
 
 #: src/installation/advanced.py:317
 msgid "SSD"
@@ -621,11 +622,11 @@ msgstr "Genişletilmiş"
 
 #: src/installation/advanced.py:1169
 msgid "Beginning of this space"
-msgstr ""
+msgstr "Bu boşluğun başlangıcı"
 
 #: src/installation/advanced.py:1173
 msgid "End of this space"
-msgstr ""
+msgstr "Bu boşluğun sonu"
 
 #: src/installation/advanced.py:1177 src/installation/advanced.py:1194
 msgid "Use As:"
@@ -637,7 +638,7 @@ msgstr "Bağlama Noktası:"
 
 #: src/installation/advanced.py:1185 src/installation/advanced.py:1202
 msgid "Label (optional):"
-msgstr ""
+msgstr "Etiket (isteğe bağlı):"
 
 #: src/installation/advanced.py:1189
 msgid "Encryption Options..."
@@ -699,7 +700,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1567
 msgid "%s shows as mounted (busy) but it has no mount point"
-msgstr ""
+msgstr "%s bağlandı görünüyor (meşgul) fakat hiçbir bağlama noktası yok"
 
 #: src/installation/advanced.py:1628
 msgid "Partition %s will be deleted"
@@ -743,7 +744,7 @@ msgstr ""
 
 #: src/installation/advanced.py:1812
 msgid "Cnchi will not install any boot loader"
-msgstr ""
+msgstr "Cnchi herhangi bir önyükleyici kurmayacak"
 
 #: src/installation/advanced.py:1821
 msgid "Antergos will install the bootloader of type %s in %s"
@@ -751,7 +752,7 @@ msgstr "Antergos önyükleyiciyi %s olarak %s içine kuracak"
 
 #: src/installation/advanced.py:1835 src/installation/automatic.py:241
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr ""
+msgstr "Test modu. Cnchi sisteminizde herhangi bir değişiklik yapmayacaktır!"
 
 #: src/installation/alongside.py:109
 msgid "Can't load %s css"
@@ -763,7 +764,7 @@ msgstr "Antergos'u yanına yüklemek istediğiniz işletim sistemini seçin."
 
 #: src/installation/alongside.py:141
 msgid "Antergos Alongside Installation"
-msgstr ""
+msgstr "Antergos Yanına Kurulum"
 
 #: src/installation/alongside.py:172
 msgid "Detected OS"
@@ -775,7 +776,7 @@ msgstr "Dosya sistemi"
 
 #: src/installation/alongside.py:219
 msgid "Unable to create list of partitions for alongside installation."
-msgstr ""
+msgstr "Kurulum için bölüm listesi oluşturulamadı."
 
 #: src/installation/alongside.py:259
 msgid "Can't shrink the partition (maybe it's nearly full)"
@@ -809,16 +810,16 @@ msgstr "Bu, LVM'yi kuracak ve kolayca bölümleri yönetmenizi ve anlık görün
 
 #: src/installation/ask.py:144
 msgid "Set your Home in a different partition/volume"
-msgstr ""
+msgstr "Ev Dizini için farklı bir disk bölümü ayarlayın"
 
 #: src/installation/ask.py:148
 msgid ""
 "This will setup you /home directory in a different partition or volume."
-msgstr ""
+msgstr "Bu /home dizinini farklı bir bölüme yükleyecektir."
 
 #: src/installation/ask.py:156 src/installation/ask.py:158
 msgid "Install Antergos alongside %s"
-msgstr ""
+msgstr "%s yanına Antergos yükleyin"
 
 #: src/installation/ask.py:165
 msgid "Choose exactly where Antergos should be installed. (advanced)"
@@ -838,11 +839,11 @@ msgstr "Antergos LVM birimleri kullanılarak yüklenecek"
 
 #: src/installation/ask.py:199
 msgid "Antergos will be installed using a separate /home volume."
-msgstr ""
+msgstr "Antergos ayrı bir kısımda /home yani Ev Dizini kullanarak kurulacaktır"
 
 #: src/installation/ask.py:201
 msgid "Antergos will be installed using a separate /home partition."
-msgstr ""
+msgstr "Antergos ayrı bir diskde /home yani Ev Dizini kullanarak kurulacaktır."
 
 #: src/installation/auto_partition.py:73 src/installation/auto_partition.py:82
 msgid "Unmounting %s"
@@ -854,7 +855,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:106
 msgid "Can't delete existent LVM volumes (see below)"
-msgstr ""
+msgstr "Varolan LVM bölümü silemezsiniz (aşağıya bakınız)"
 
 #: src/installation/auto_partition.py:116
 msgid "Can't close LUKS devices : %s"
@@ -882,7 +883,7 @@ msgstr ""
 
 #: src/installation/auto_partition.py:315
 msgid "Cnchi will setup LUKS on device %s"
-msgstr ""
+msgstr "Cnchi, %s aygıtına LUKS ile kuracak"
 
 #: src/installation/auto_partition.py:369
 msgid "The device %s has a size of %dMB"
@@ -916,15 +917,15 @@ msgstr ""
 
 #: src/installation/auto_partition.py:415
 msgid "Swap partition size: %dMB"
-msgstr ""
+msgstr "Takas alanı bölümü boyutu: %dMB"
 
 #: src/installation/auto_partition.py:416
 msgid "Root partition size: %dMB"
-msgstr ""
+msgstr "Kök bölümü boyutu: %dMB"
 
 #: src/installation/auto_partition.py:419
 msgid "Home partition size: %dMB"
-msgstr ""
+msgstr "Ev bölümü boyutu: %dMB"
 
 #: src/installation/auto_partition.py:522
 msgid "Cnchi will setup LVM on device %s"
@@ -954,7 +955,7 @@ msgstr "Parolanızı onaylayın:"
 
 #: src/installation/automatic.py:93 src/user_info.py:141
 msgid "show password"
-msgstr ""
+msgstr "şifreyi göster"
 
 #: src/installation/automatic.py:99
 msgid "Automatic Installation Mode"
@@ -962,7 +963,7 @@ msgstr "Otomatik Kurulum Modu"
 
 #: src/installation/automatic.py:163
 msgid "A LUKS password has been set"
-msgstr ""
+msgstr "Bir LUKS şifresi ayarlandı"
 
 #: src/installation/automatic.py:165
 msgid "Automatic install on %s"
@@ -993,7 +994,7 @@ msgstr ""
 
 #: src/installation/process.py:185
 msgid "Creating partitions and their filesystems in %s"
-msgstr ""
+msgstr "Bölümler ve dosya sistemleri oluşturuluyor %s"
 
 #: src/installation/process.py:206
 msgid "Error creating partitions and their filesystems"
@@ -1032,7 +1033,7 @@ msgstr "%s, %s yoluna bağlanamıyor"
 
 #: src/installation/process.py:301
 msgid "%s deleted"
-msgstr ""
+msgstr "%s silindi"
 
 #: src/installation/process.py:309
 msgid "Can't create necessary directories on destination system"
@@ -1040,11 +1041,11 @@ msgstr "Hedef sistemde gerekli dizinler oluşturulamıyor"
 
 #: src/installation/process.py:329
 msgid "Selecting packages..."
-msgstr ""
+msgstr "Paketler seçiliyor..."
 
 #: src/installation/process.py:331
 msgid "Packages selected"
-msgstr ""
+msgstr "Paketler seçildi"
 
 #: src/installation/process.py:334
 msgid "Downloading packages using aria2..."
@@ -1052,39 +1053,39 @@ msgstr ""
 
 #: src/installation/process.py:336
 msgid "Packages downloaded."
-msgstr ""
+msgstr "Paketler indirildi."
 
 #: src/installation/process.py:346 src/installation/process.py:729
 msgid "Installing packages..."
-msgstr ""
+msgstr "Paketler yükleniyor..."
 
 #: src/installation/process.py:348
 msgid "Packages installed."
-msgstr ""
+msgstr "Paketler yüklendi."
 
 #: src/installation/process.py:350
 msgid "Configuring system..."
-msgstr ""
+msgstr "Sistem ayarlanıyor..."
 
 #: src/installation/process.py:352
 msgid "System configured."
-msgstr ""
+msgstr "Sistem ayarlandı."
 
 #: src/installation/process.py:387
 msgid "Installation finished"
-msgstr ""
+msgstr "Kurulum tamamlandı"
 
 #: src/installation/process.py:398
 msgid "Can't copy Cnchi log to %s"
-msgstr ""
+msgstr "Cnchi logları %s üzerine kaydedilemedi"
 
 #: src/installation/process.py:415
 msgid "Creating a temporary pacman.conf for %s architecture"
-msgstr ""
+msgstr "%s mimarisi için geçici bir pacman.conf oluşturuluyor"
 
 #: src/installation/process.py:495
 msgid "Getting package list..."
-msgstr ""
+msgstr "Paket listesi alınıyor..."
 
 #: src/installation/process.py:504
 msgid "Can't retrieve remote package list, using a local file instead."
@@ -1124,11 +1125,11 @@ msgstr "Kullanıcının tercih ettiği özellikleri denetle ve kuruluma ekle"
 
 #: src/installation/process.py:620
 msgid "All features needed packages have been added"
-msgstr ""
+msgstr "Tüm özellikler için gerekli paketler eklendi"
 
 #: src/installation/process.py:625
 msgid "Selecting chinese fonts."
-msgstr ""
+msgstr "Çince yazı tipleri seçiliyor."
 
 #: src/installation/process.py:631
 msgid "Adding bootloader packages if needed"
@@ -1144,11 +1145,11 @@ msgstr ""
 
 #: src/installation/process.py:675
 msgid "Add libreoffice language package"
-msgstr ""
+msgstr "Libreoffice dil paketini ekle"
 
 #: src/installation/process.py:726
 msgid "Downloading packages..."
-msgstr ""
+msgstr "Paketler indiriliyor..."
 
 #: src/installation/process.py:738
 msgid ""
@@ -1158,7 +1159,7 @@ msgstr ""
 
 #: src/installation/process.py:741
 msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr ""
+msgstr "Gerekli paketler yüklenemiyor. Cnchi devam edemez."
 
 #: src/installation/process.py:763
 msgid "Special dirs already mounted."
@@ -1166,7 +1167,7 @@ msgstr "Özel dizinler zaten bağlandı."
 
 #: src/installation/process.py:798
 msgid "Special dirs are not mounted. Skipping."
-msgstr ""
+msgstr "Özel dizinler bağlanmadı. Atlanıyor."
 
 #: src/installation/process.py:815 src/installation/process.py:821
 msgid "Unable to umount %s"
@@ -1174,7 +1175,7 @@ msgstr "%s 'i ayırmak mümkün değil"
 
 #: src/installation/process.py:846
 msgid "Timeout running command: %s"
-msgstr ""
+msgstr "Komut çalıştırılırken zaman aşımı: %s"
 
 #: src/installation/process.py:879
 msgid "Can't copy network configuration files"
@@ -1182,7 +1183,7 @@ msgstr ""
 
 #: src/installation/process.py:908 src/installation/process.py:973
 msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
-msgstr ""
+msgstr "fstab içine eklendi : UUID=%s %s %s %s 0 %s"
 
 #: src/installation/process.py:922
 msgid "Added to crypttab : %s"
@@ -1194,7 +1195,7 @@ msgstr ""
 
 #: src/installation/process.py:978
 msgid "Added to fstab : %s"
-msgstr ""
+msgstr "fstab'a eklendi: %s"
 
 #: src/installation/process.py:987
 msgid "fstab written."
@@ -1202,7 +1203,7 @@ msgstr ""
 
 #: src/installation/process.py:1075
 msgid "/etc/default/grub configuration completed successfully."
-msgstr ""
+msgstr "/etc/default/grub yapılandırması başarılı bir şekilde tamamlandı."
 
 #: src/installation/process.py:1090
 msgid "Could not copy %s to grub.d"
@@ -1284,7 +1285,7 @@ msgstr ""
 
 #: src/installation/process.py:1246
 msgid "Can't install GRUB(2) locale."
-msgstr ""
+msgstr "GRUB(2) yerelleştirmesi yüklenemedi."
 
 #: src/installation/process.py:1280
 msgid "Can't freeze/unfreeze xfs system"
@@ -1292,11 +1293,11 @@ msgstr ""
 
 #: src/installation/process.py:1286
 msgid "Enabled %s service."
-msgstr ""
+msgstr "%s servisi etkinleştirildi."
 
 #: src/installation/process.py:1293
 msgid "Error creating password hash for user %s"
-msgstr ""
+msgstr "Kullanıcı %s için karma şifre oluşturma hatası"
 
 #: src/installation/process.py:1299
 msgid "Error changing password for user %s"
@@ -1304,23 +1305,23 @@ msgstr "%s için parola değiştirilirken hata oluştu."
 
 #: src/installation/process.py:1311
 msgid "Setting hooks and modules in mkinitcpio.conf"
-msgstr ""
+msgstr "mkinitcpio.conf içinde kancalar ve modüller ayarlanıyor"
 
 #: src/installation/process.py:1405
 msgid "Copying xz files from cache..."
-msgstr ""
+msgstr "Önbellekten xz dosyaları kopyalanıyor..."
 
 #: src/installation/process.py:1432
 msgid "Configuring bluetooth..."
-msgstr ""
+msgstr "Bluetooth yapılandırılıyor..."
 
 #: src/installation/process.py:1438
 msgid "Configuring CUPS..."
-msgstr ""
+msgstr "CUPS yapılandırılıyor..."
 
 #: src/installation/process.py:1450
 msgid "Configuring firewall..."
-msgstr ""
+msgstr "Güvenlik Duvarı yapılandırılıyor..."
 
 #: src/installation/process.py:1462
 msgid "Couldn't configure the firewall: %s"
@@ -1328,7 +1329,7 @@ msgstr ""
 
 #: src/installation/process.py:1472
 msgid "%s: Configuring display manager."
-msgstr ""
+msgstr "%s: Ekran yöneticisi yapılandırılıyor."
 
 #: src/installation/process.py:1498
 msgid "Completed %s display manager configuration."
@@ -1344,7 +1345,7 @@ msgstr "Yeni sisteminiz ayarlanıyor"
 
 #: src/installation/process.py:1587
 msgid "fstab file generated."
-msgstr ""
+msgstr "fstab dosyası oluşturuldu."
 
 #: src/installation/process.py:1604
 msgid "Cnchi will configure netctl using the %s profile"
@@ -1356,15 +1357,15 @@ msgstr ""
 
 #: src/installation/process.py:1618
 msgid "Network configuration copied."
-msgstr ""
+msgstr "Ağ yapılandırması kopyalandı."
 
 #: src/installation/process.py:1624
 msgid "Mirror list copied."
-msgstr ""
+msgstr "Yansı listesi kopyalandı."
 
 #: src/installation/process.py:1626
 msgid "Can't copy mirrorlist file"
-msgstr ""
+msgstr "Yansı listesi dosyası kopyalanamadı"
 
 #: src/installation/process.py:1633
 msgid "Generated /etc/pacman.conf"
@@ -1372,11 +1373,11 @@ msgstr ""
 
 #: src/installation/process.py:1651
 msgid "Timezone set."
-msgstr ""
+msgstr "Zaman dilimi ayarlandı."
 
 #: src/installation/process.py:1668
 msgid "Sudo configuration for user %s done."
-msgstr ""
+msgstr "Kullanıcı %s için sudo yapılandırması tamamlandı."
 
 #: src/installation/process.py:1674
 msgid "Running post-install scripts from hardware module..."
@@ -1384,15 +1385,15 @@ msgstr ""
 
 #: src/installation/process.py:1696
 msgid "User %s added."
-msgstr ""
+msgstr "Kullanıcı %s eklendi."
 
 #: src/installation/process.py:1709
 msgid "Hostname set to %s."
-msgstr ""
+msgstr "Makine adı %s olarak ayarlandı."
 
 #: src/installation/process.py:1713
 msgid "Set the same password to root."
-msgstr ""
+msgstr "Yönetici için aynı parolayı kullan."
 
 #: src/installation/process.py:1719
 msgid "Generating locales..."
@@ -1404,11 +1405,11 @@ msgstr "Donanım saati ayarlanıyor..."
 
 #: src/installation/process.py:1740
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
-msgstr ""
+msgstr "xkblayout için /etc/X11/xorg.conf.d/00-keyboard.conf ayarla."
 
 #: src/installation/process.py:1752
 msgid "00-keyboard.conf written."
-msgstr ""
+msgstr "00-keyboard.conf yazıldı."
 
 #: src/installation/process.py:1758
 msgid "Configuring System Startup..."
@@ -1416,7 +1417,7 @@ msgstr ""
 
 #: src/installation/process.py:1761
 msgid "Call Cnchi post-install script"
-msgstr ""
+msgstr "Cnchi kurulum sonrası betiğini çağır"
 
 #: src/installation/process.py:1767
 msgid "Post install script completed successfully."
@@ -1424,19 +1425,19 @@ msgstr ""
 
 #: src/installation/process.py:1783
 msgid "Encrypting user home dir..."
-msgstr ""
+msgstr "Kullanıcı ev dizini şifreleniyor..."
 
 #: src/installation/process.py:1785
 msgid "User home dir encrypted"
-msgstr ""
+msgstr "Kullanıcı ev dizini şifrelendi"
 
 #: src/installation/process.py:1789
 msgid "Installing bootloader..."
-msgstr ""
+msgstr "Ön yükleyici kuruluyor..."
 
 #: src/installation/process.py:1793
 msgid "Copying install log to /var/log."
-msgstr ""
+msgstr "Kurulum günlüğü /var/log dizinine kopyalanıyor."
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1456,11 +1457,11 @@ msgstr "Yerleşimler"
 
 #: src/keymap.py:87
 msgid "Variants"
-msgstr ""
+msgstr "Alt türevler"
 
 #: src/keymap.py:108
 msgid "keyboard_layout is %s"
-msgstr ""
+msgstr "Klavye düzeni %s"
 
 #: src/language.py:88
 msgid "Notice: The Cnchi Installer is beta software."
@@ -1473,7 +1474,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
-msgstr ""
+msgstr "Cnchi halen geliştirilmektedir ve beta önizleme sürümdedir.\nRAID, btrfs, subvolumes veya diğer gelişmiş kurulumlarla ilgili hatalarla\nkarşılaşma olasılığınız vardır. Veri kaybı yaşamamak için lütfen dikkatli olunuz!\n\nKurulum hataları için geri bildirim adresi: <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
 
 #: src/language.py:97 src/welcome.py:102
 msgid "Welcome to Antergos!"
@@ -1500,15 +1501,15 @@ msgstr "Konumunuzu seçin"
 
 #: src/location.py:198
 msgid "locale changed to : %s"
-msgstr ""
+msgstr "Yerel değiştirildi: %s"
 
 #: src/location.py:200
 msgid "Can't change to locale '%s'"
-msgstr ""
+msgstr "Yerel '%s' olarak değiştirilemedi"
 
 #: src/pacman/pac.py:35
 msgid "pyalpm not found! This installer won't work."
-msgstr ""
+msgstr "pyalpm bulunamadı! Kurulum aracı çalışmayacak."
 
 #: src/pacman/pac.py:120
 msgid "Cnchi will install a list of packages like pacman -S"
@@ -1544,7 +1545,7 @@ msgstr "Bağımlılıklar çözülüyor..."
 
 #: src/pacman/pac.py:261
 msgid "Checking inter conflicts..."
-msgstr ""
+msgstr "Çakışmalar denetleniyor..."
 
 #: src/pacman/pac.py:266
 msgid "Removing..."
@@ -1604,7 +1605,7 @@ msgstr ""
 
 #: src/parted3/partition_module.py:35
 msgid "Can't import parted module! This installer won't work."
-msgstr ""
+msgstr "parted modülü içeri aktarılamadı! Kurulum aracı çalışmayacak."
 
 #: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
@@ -1707,11 +1708,11 @@ msgstr "Kurulum Tamamlandı!\nSisteminizi yeniden başlatmak ister misiniz?"
 
 #: src/slides.py:225
 msgid "Do you want to retry the installation using the same configuration?"
-msgstr ""
+msgstr "Aynı yapılandırmayı kullanarak kurulumu tekrar denemek ister misiniz?"
 
 #: src/slides.py:228
 msgid "Restarting installation process..."
-msgstr ""
+msgstr "Kurulum süreci tekrar başlatılıyor..."
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1739,7 +1740,7 @@ msgstr "Zaman dilimi koordinatları algılanamadı"
 
 #: src/timezone.py:276
 msgid "Stoping timezone threads..."
-msgstr ""
+msgstr "Zaman dilimi parçacığı durduruluyor..."
 
 #: src/timezone.py:330
 msgid "Can't get network status. Will try again later."
@@ -1751,11 +1752,11 @@ msgstr ""
 
 #: src/timezone.py:345
 msgid "Timezone detected."
-msgstr ""
+msgstr "Zaman dilimi algılandı."
 
 #: src/timezone.py:347
 msgid "Can't detect user timezone."
-msgstr ""
+msgstr "Kullanıcının zaman dilimi algılanamadı."
 
 #: src/timezone.py:376
 msgid "In timezone, can't get network status"
@@ -1775,15 +1776,15 @@ msgstr "Ülke koduna göre pacman için mirrorlist oluşturulamadı"
 
 #: src/updater.py:67
 msgid "Cnchi Internet version: %s"
-msgstr ""
+msgstr "Cnchi İnternet sürümü: %s"
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."
-msgstr ""
+msgstr "Yeni sürüm bulundu. Kurulum aracı güncelleniyor..."
 
 #: src/updater.py:154
 msgid "Replacing version %s with version %s..."
-msgstr ""
+msgstr "Sürüm %s sürüm %s ile değişitiriliyor..."
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1851,7 +1852,7 @@ msgstr "Kullanıcı Hesabınızı Oluşturun"
 
 #: src/user_info.py:204
 msgid "Are you sure you want to encrypt your home directory?"
-msgstr ""
+msgstr "Ev dizininizi şifrelemek istediğinizden emin misiniz?"
 
 #: src/user_info.py:271
 msgid "Invalid characters entered"

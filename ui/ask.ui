@@ -23,7 +23,7 @@
     <property name="ypad">5</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkBox" id="installation_ask">
+  <object class="GtkBox" id="ask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="halign">center</property>

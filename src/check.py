@@ -29,6 +29,8 @@ import logging
 import canonical.gtkwidgets as gtkwidgets
 import canonical.misc as misc
 
+from gtkbasebox import GtkBaseBox
+
 from rank_mirrors import AutoRankmirrorsThread
 
 # Constants
@@ -38,25 +40,11 @@ UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 4000000000
 
-_next_page = "location"
-_prev_page = "language"
-
-class Check(Gtk.Box):
+class Check(GtkBaseBox):
     """ Check class """
-    def __init__(self, params):
+    def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
-        self.header = params['header']
-        self.settings = params['settings']
-        self.forward_button = params['forward_button']
-        self.backwards_button = params['backwards_button']
-        self.testing = params['testing']
-
-        Gtk.Box.__init__(self)
-
-        self.ui = Gtk.Builder()
-        self.ui_dir = self.settings.get('ui')
-        self.ui.add_from_file(os.path.join(self.ui_dir, "check.ui"))
-        self.ui.connect_signals(self)
+        super().__init__(self, params, "check", prev_page, next_page)
 
         self.remove_timer = False
 
@@ -68,13 +56,9 @@ class Check(Gtk.Box):
         self.timeout_id = None
         self.prepare_best_results = None
 
-        self.add(self.ui.get_object("check"))
-
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("System Check")
-        #txt = '<span weight="bold" size="large">%s</span>' % txt
-        #self.title.set_markup(txt)
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
@@ -150,8 +134,7 @@ class Check(Gtk.Box):
                     size = int(col[3])
                     if size > max_size:
                         max_size = size
-        # we need 4GB
-        #3221225472
+
         if max_size >= MIN_ROOT_SIZE:
             return True
 
@@ -163,7 +146,7 @@ class Check(Gtk.Box):
         return not self.remove_timer
 
     def store_values(self):
-        # remove timer
+        # Remove timer
         self.remove_timer = True
 
         logging.info(_("We have Internet connection."))
@@ -180,20 +163,13 @@ class Check(Gtk.Box):
 
         return True
 
-    def get_prev_page(self):
-        return _prev_page
-
-    def get_next_page(self):
-        return _next_page
-
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
 
         self.forward_button.set_sensitive(self.check_all())
 
-        # set timer
-        #self.timeout_id = GObject.timeout_add(1000, self.on_timer, None)
+        # Set timer
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
 
 # When testing, no _() is available

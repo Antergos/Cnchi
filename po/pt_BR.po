@@ -6,13 +6,15 @@
 # fagianijunior <fagianijunior@gmail.com>, 2013
 # DavyS <davysson0@gmail.com>, 2013
 # edsonx <eda.santos2@gmail.com>, 2014
+# ScarletValkyr <janaina.kaufmann@gmail.com>, 2014
 # tiagoalam <tiagoalam@gmail.com>, 2013
+# sergioaraujo <voyeg3r@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2014-03-29 10:36+PET\n"
-"PO-Revision-Date: 2014-03-29 15:37+0000\n"
-"Last-Translator: faidoc <faidoc@gmail.com>\n"
+"PO-Revision-Date: 2014-04-18 20:26+0000\n"
+"Last-Translator: sergioaraujo <voyeg3r@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/antergos/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +52,7 @@ msgstr "Usando Aria2 para baixar pacotes - EXPERIMENTAL"
 
 #: cnchi.py:251
 msgid "Using '%s' file as package list"
-msgstr ""
+msgstr "Usando arquivo '%s' como lista de pacotes"
 
 #: cnchi.py:278
 msgid "Cnchi - Antergos Installer"
@@ -106,11 +108,11 @@ msgstr "Mostrar opções em desenvolvimento (NÃO USE ISTO!)"
 
 #: cnchi.py:498 cnchi.py:502
 msgid "Please install %s before running this installer"
-msgstr ""
+msgstr "Por favor instale %s antes de rodar este instalador"
 
 #: cnchi.py:529
 msgid "Program updated! Restarting..."
-msgstr ""
+msgstr "Programa atualizado! Reiniciando..."
 
 #: src/bootinfo.py:53 src/bootinfo.py:65 src/bootinfo.py:71 src/bootinfo.py:85
 #: src/installation/alongside.py:215
@@ -267,7 +269,7 @@ msgstr "MATE é um fork do GNOME2. Ele fornece um ambiente de trabalho intuitivo
 
 #: src/download.py:37
 msgid "pm2ml not found. Aria2 download won't work."
-msgstr ""
+msgstr "pm2ml não encontrado. O download do Aria2 não vai funcionar."
 
 #: src/download.py:80
 msgid "Can't connect with aria2, downloading will be performed by alpm."
@@ -447,11 +449,11 @@ msgstr "Software para executar vídeos Flash, Áudio MP3, e outros tipos de míd
 
 #: src/features.py:273
 msgid "Detected bluetooth device. Enabling by default..."
-msgstr ""
+msgstr "Dispositivo bluetooth detectado. Habilitando por padrão..."
 
 #: src/features.py:288
 msgid "Selected '%s' feature to install"
-msgstr ""
+msgstr "Selecionado o recurso de '%s' para instalação"
 
 #: src/features.py:306
 msgid "Arch User Repository - Disclaimer"
@@ -544,11 +546,11 @@ msgstr "Partição raiz precisa ser formatada..."
 
 #: src/installation/advanced.py:750
 msgid "You will delete the partition %s from disk %s"
-msgstr ""
+msgstr "Você irá apagar a partição %s do disco %s"
 
 #: src/installation/advanced.py:767
 msgid "Unmounting %s..."
-msgstr ""
+msgstr "Desmontando %s..."
 
 #: src/installation/advanced.py:927
 msgid "Cannot use the same mount point twice..."
@@ -694,11 +696,11 @@ msgstr "%s está montada em '%s'.\nPara continuar, a partição deve ser desmont
 
 #: src/installation/advanced.py:1551 src/installation/advanced.py:1565
 msgid "%s unmounted"
-msgstr ""
+msgstr "%s desmontado"
 
 #: src/installation/advanced.py:1562
 msgid "Swap partition %s unmounted"
-msgstr ""
+msgstr "Partição Swap %s desmontada"
 
 #: src/installation/advanced.py:1567
 msgid "%s shows as mounted (busy) but it has no mount point"
@@ -873,15 +875,15 @@ msgstr "Não foi possível criar o sistema de arquivos %s"
 
 #: src/installation/auto_partition.py:207
 msgid "Device details: %s UUID=%s LABEL=%s"
-msgstr ""
+msgstr "Detalhes do dispositivo: %s UUID=%s LABEL=%s"
 
 #: src/installation/auto_partition.py:273
 msgid "%s will be mount as %s"
-msgstr ""
+msgstr "%s será montado como %s"
 
 #: src/installation/auto_partition.py:306
 msgid "Device %s will have a %s filesystem"
-msgstr ""
+msgstr "O dispositivo %s terá um sistema de arquivos %s"
 
 #: src/installation/auto_partition.py:315
 msgid "Cnchi will setup LUKS on device %s"
@@ -889,7 +891,7 @@ msgstr "Configurando LUKS no dispositivo %s"
 
 #: src/installation/auto_partition.py:369
 msgid "The device %s has a size of %dMB"
-msgstr ""
+msgstr "O dispositivo %s tem um tamanho de %dMB"
 
 #: src/installation/auto_partition.py:373
 msgid ""
@@ -899,39 +901,39 @@ msgstr "A instalação não pode detectar o tamanho do seu dispositivo, utilize 
 
 #: src/installation/auto_partition.py:406
 msgid "Total disc size: %dMB"
-msgstr ""
+msgstr "Tamanho total do disco: %dMB"
 
 #: src/installation/auto_partition.py:408
 msgid "GPT-BIOS partition size: %dMB"
-msgstr ""
+msgstr "tamanho da partição GPT-BIOS: %dMB "
 
 #: src/installation/auto_partition.py:409
 msgid "UEFI partition size: %dMB"
-msgstr ""
+msgstr "tamanho da partição UEFI: %dMB "
 
 #: src/installation/auto_partition.py:410
 msgid "Boot partition size: %dMB"
-msgstr ""
+msgstr "Tamanho da partição de inicialização: %dMB"
 
 #: src/installation/auto_partition.py:413
 msgid "LVM physical volume size: %dMB"
-msgstr ""
+msgstr "Tamanho do volume físico LVM: %dMB"
 
 #: src/installation/auto_partition.py:415
 msgid "Swap partition size: %dMB"
-msgstr ""
+msgstr "Tamanho da partição de Swap: %dMB"
 
 #: src/installation/auto_partition.py:416
 msgid "Root partition size: %dMB"
-msgstr ""
+msgstr "Tamanho da partição raíz: %dMB"
 
 #: src/installation/auto_partition.py:419
 msgid "Home partition size: %dMB"
-msgstr ""
+msgstr "Tamanho da partição Home: %dMB"
 
 #: src/installation/auto_partition.py:522
 msgid "Cnchi will setup LVM on device %s"
-msgstr ""
+msgstr "O Cnchi irá instalar o LVM no dispositivo %s"
 
 #: src/installation/automatic.py:71
 msgid "Select drive:"
@@ -1139,11 +1141,11 @@ msgstr "Adicionando pacotes do carregador de inicialização se necessário"
 
 #: src/installation/process.py:658
 msgid "Adding packages for '%s' feature."
-msgstr ""
+msgstr "Adicionando pacotes para o recurdo de '%s'."
 
 #: src/installation/process.py:665
 msgid "Selecting package %s for feature %s"
-msgstr ""
+msgstr "Selecionando pacote %s para o recurso de %s"
 
 #: src/installation/process.py:675
 msgid "Add libreoffice language package"
@@ -1151,17 +1153,17 @@ msgstr "Adicionando pacote de idiomas do libreoffice"
 
 #: src/installation/process.py:726
 msgid "Downloading packages..."
-msgstr ""
+msgstr "Baixando pacotes..."
 
 #: src/installation/process.py:738
 msgid ""
 "Can't download all necessary packages. Cnchi will continue and try again "
 "this download later."
-msgstr ""
+msgstr "Não é possível baixar todos os pacotes necessário. Chchi irá continuar e tentará este download mais tarde."
 
 #: src/installation/process.py:741
 msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr ""
+msgstr "Não foi possível instalar os pacotes necessários. Cnchi não pode continuar."
 
 #: src/installation/process.py:763
 msgid "Special dirs already mounted."
@@ -1177,7 +1179,7 @@ msgstr "Não foi possível desmontar %s"
 
 #: src/installation/process.py:846
 msgid "Timeout running command: %s"
-msgstr ""
+msgstr "Tempo esgotado ao executar o comando: %s"
 
 #: src/installation/process.py:879
 msgid "Can't copy network configuration files"
@@ -1197,7 +1199,7 @@ msgstr "Adicionado ao fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
 
 #: src/installation/process.py:978
 msgid "Added to fstab : %s"
-msgstr ""
+msgstr "Adicionado ao fstab: %s"
 
 #: src/installation/process.py:987
 msgid "fstab written."
@@ -1205,7 +1207,7 @@ msgstr "fstab escrito."
 
 #: src/installation/process.py:1075
 msgid "/etc/default/grub configuration completed successfully."
-msgstr ""
+msgstr "configuração do /etc/default/grub completada com sucesso. "
 
 #: src/installation/process.py:1090
 msgid "Could not copy %s to grub.d"
@@ -1219,7 +1221,7 @@ msgstr "Instalando boot loader GRUB(2) BIOS em %s"
 msgid ""
 "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
-msgstr ""
+msgstr "grub-mkconfig parece estar emperrada. Matando grub-mount e os-prober assim poderemos continuar."
 
 #: src/installation/process.py:1127
 msgid "GRUB(2) BIOS has been successfully installed."
@@ -1383,7 +1385,7 @@ msgstr "Configuração do sudo para o usuário %s feita."
 
 #: src/installation/process.py:1674
 msgid "Running post-install scripts from hardware module..."
-msgstr ""
+msgstr "Rodando os scripts de pós instalação do módulo de hardware..."
 
 #: src/installation/process.py:1696
 msgid "User %s added."
@@ -1423,7 +1425,7 @@ msgstr "Executar script pós-instalação "
 
 #: src/installation/process.py:1767
 msgid "Post install script completed successfully."
-msgstr ""
+msgstr "Script de pós instalação completado com sucesso."
 
 #: src/installation/process.py:1783
 msgid "Encrypting user home dir..."
@@ -1439,7 +1441,7 @@ msgstr "Instalando carregador de inicialização..."
 
 #: src/installation/process.py:1793
 msgid "Copying install log to /var/log."
-msgstr ""
+msgstr "Copiando o log de instalação para /var/log"
 
 #: src/keymap.py:71
 msgid "Select Your Keyboard Layout"
@@ -1511,19 +1513,19 @@ msgstr "Não foi possível mudar a localização para '%s\""
 
 #: src/pacman/pac.py:35
 msgid "pyalpm not found! This installer won't work."
-msgstr ""
+msgstr "pyalpm não encontrado! Esta instalação não irá funcionar."
 
 #: src/pacman/pac.py:120
 msgid "Cnchi will install a list of packages like pacman -S"
-msgstr ""
+msgstr "Cnchi irá instalar uma lista de pacotes como pacman -S"
 
 #: src/pacman/pac.py:127
 msgid "No targets found"
-msgstr ""
+msgstr "Alvos não encontrados"
 
 #: src/pacman/pac.py:140
 msgid "Adding %s to transaction"
-msgstr ""
+msgstr "Adicionando %s para a transação"
 
 #: src/pacman/pac.py:144
 msgid "Finalize transaction..."
@@ -1607,7 +1609,7 @@ msgstr "Não foi possível remover o volume físico %s"
 
 #: src/parted3/partition_module.py:35
 msgid "Can't import parted module! This installer won't work."
-msgstr ""
+msgstr "O módulo parted não pôde ser importado! Esta instalação não irá funcionar."
 
 #: src/parted3/partition_module.py:106
 msgid "Unrecognised disk label in device %s."
@@ -1714,7 +1716,7 @@ msgstr "Você gostaria de reinicializar a instalação utilizando a mesma config
 
 #: src/slides.py:228
 msgid "Restarting installation process..."
-msgstr ""
+msgstr "Reiniciando o processo de instalação..."
 
 #: src/timezone.py:108
 msgid "Zone:"
@@ -1778,15 +1780,15 @@ msgstr "Não foi possível gerar a lista de espelhos para o pacman com base no c
 
 #: src/updater.py:67
 msgid "Cnchi Internet version: %s"
-msgstr ""
+msgstr "Versão do Cnchi Internet: %s"
 
 #: src/updater.py:96
 msgid "New version found. Updating installer..."
-msgstr ""
+msgstr "Nova versão encontrada: Atualizando o instalador..."
 
 #: src/updater.py:154
 msgid "Replacing version %s with version %s..."
-msgstr ""
+msgstr "Substituindo a versão %s pela versão %s..."
 
 #: src/user_info.py:84
 msgid "Your name:"
@@ -1854,7 +1856,7 @@ msgstr "Crie sua conta de Usuário"
 
 #: src/user_info.py:204
 msgid "Are you sure you want to encrypt your home directory?"
-msgstr ""
+msgstr "Você tem certeza que deseja criptografar seu diretório home?"
 
 #: src/user_info.py:271
 msgid "Invalid characters entered"

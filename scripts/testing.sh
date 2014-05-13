@@ -3,11 +3,18 @@
 previous="/tmp/dev-setup"
 uefi="/sys/firmware/efi"
 vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
+notify="$1"
+notify_user () {
+    if [[ "${notify}" = "-n" ]]; then
+        notify-send -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
+    fi
+}
 
 # Check if this is the first time we are executed.
 if ! [ -f "${previous}" ]; then
 	touch ${previous};
 	# Find the best mirrors (fastest and latest)
+    notify_user "Selecting the best mirrors..."
 	echo "Selecting the best mirrors..."
 	echo "Testing Arch mirrors..."
 	reflector -p http -l 30 -f 5 --save /etc/pacman.d/mirrorlist;
@@ -18,6 +25,7 @@ if ! [ -f "${previous}" ]; then
 	cp /tmp/antergos-mirrorlist /etc/pacman.d/
 	echo "Done."
 	# Install any packages that haven't been added to the iso yet but are needed.
+	notify_user "Installing missing packages..."
 	echo "Installing missing packages..."
 	# Check if system is UEFI boot.
 	if [ -d "${uefi}" ]; then
@@ -38,6 +46,7 @@ if ! [ -f "${previous}" ]; then
 	echo "Removing existing Cnchi..."
 	rm -R /usr/share/cnchi;
 	cd /usr/share;
+	notify_user "Getting latest version of Cnchi from testing branch..."
 	echo "Getting latest version of Cnchi from testing branch..."
 	# Check commandline arguments to choose repo
 	if [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
@@ -48,18 +57,21 @@ if ! [ -f "${previous}" ]; then
 	cd /usr/share/cnchi
 	
 else
-	echo "Previous testing setup detected, skipping downloads"
+    notify_user "Previous testing setup detected, skipping downloads..."
+	echo "Previous testing setup detected, skipping downloads..."
 	echo "Verifying that nothing is mounted from a previous install attempt."
 	umount -lf /install/boot >/dev/null 2&>1
 	umount -lf /install >/dev/null 2&>1
 	# Check for changes on github since last time script was executed
 	# Update Cnchi with latest testing code
+	notify_user "Getting latest version of Cnchi from testing branch..."
 	echo "Getting latest version of Cnchi from testing branch..."
 	cd /usr/share/cnchi
 	git pull origin master;
 fi
 
 # Start Cnchi with appropriate options
+notify_user "Starting Cnchi..."
 echo "Starting Cnchi..."
 # Are we using an alternate PKG cache?
 # TODO Remove this nonsense and use proper command argument processing
