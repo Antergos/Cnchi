@@ -18,7 +18,7 @@ set -e
 
 # Disable 10_linux
 chmod -x /etc/grub.d/10_linux
-chmod -x /etc/grub.d/10_archlinux
+"chmod -x /etc/grub.d/10_archlinux" || true
 
 prefix="/usr"
 exec_prefix="/usr"
