@@ -573,7 +573,7 @@ class AutoPartition(object):
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
                     start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
-                    part_sizes = self.get_part_sizes(disc_size - diff_size, start_part_sizes)
+                    part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                     self.show_part_sizes(part_sizes)
             except Exception as err:
                 logging.exception(err)
