@@ -647,7 +647,7 @@ class InstallationAdvanced(GtkBaseBox):
             mymount = mount_combo_entry.get_text().strip()
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
-                show.warning(_('Can't use same mount point twice.'))
+                show.warning(_("Can't use same mount point twice."))
             elif mymount == "/" and not format_check.get_active():
                 show.warning(_('Root partition must be formatted.'))
             else:
