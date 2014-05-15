@@ -29,7 +29,7 @@ We manage our translations in transifex:
  - libtimezonemap
  - webkitgtk 
  - hdparm
- - hwinfo
+ - hwinfo (needed by Cnchi 0.6 and older versions)
  - upower
  
 ==Unit tests
