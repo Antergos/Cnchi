@@ -91,7 +91,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.method = self.settings.get('partition_mode')
 
-        self.queue_event('info', _("Installing using the '%s' method. Please wait...") % self.method)
+        self.queue_event('info', _("Installing using the '%s' method") % self.method)
 
         self.ssd = ssd
         self.mount_devices = mount_devices
@@ -119,12 +119,12 @@ class InstallationProcess(multiprocessing.Process):
         self.pac = None
         self.arch = ""
         self.initramfs = ""
-        self.kernel_pkg = ""
+        self.kernel = ""
         self.vmlinuz = ""
         self.dest_dir = ""
         self.bootloader_ok = self.settings.get('bootloader_ok')
         self.vbox = False
-        self.num_packages = {}
+        #self.num_packages = {}
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -174,9 +174,9 @@ class InstallationProcess(multiprocessing.Process):
             # We use unmount_all from auto_partition to do this.
             auto_partition.unmount_all(self.dest_dir)
 
-        self.kernel_pkg = "linux"
-        self.vmlinuz = "vmlinuz-%s" % self.kernel_pkg
-        self.initramfs = "initramfs-%s" % self.kernel_pkg
+        self.kernel = "linux"
+        self.vmlinuz = "vmlinuz-%s" % self.kernel
+        self.initramfs = "initramfs-%s" % self.kernel
 
         self.arch = os.uname()[-1]
 
@@ -210,7 +210,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(txt)
                 cmd = _("Command %s has failed.") % err.cmd
                 logging.error(cmd)
-                out = _("Output : %s") % err.output 
+                out = _("Output : %s") % err.output
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return
@@ -257,7 +257,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(txt)
                 cmd = _("Command %s has failed") % err.cmd
                 logging.error(cmd)
-                out = _("Output : %s") % err.output 
+                out = _("Output : %s") % err.output
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return False
@@ -283,7 +283,19 @@ class InstallationProcess(multiprocessing.Process):
                         logging.warning(txt)
                         cmd = _("Command %s has failed.") % err.cmd
                         logging.warning(cmd)
-                        out = _("Output : %s") % err.output 
+                        out = _("Output : %s") % err.output
+                        logging.warning(out)
+                elif mount_part == swap_partition:
+                    try:
+                        txt = _("Mounting swap %s") % mount_part
+                        logging.warning(txt)
+                        subprocess.check_call(['swapon', swap_partition])
+                    except subprocess.CalledProcessError as err:
+                        txt = _("Can't mount %s") % mount_part
+                        logging.warning(txt)
+                        cmd = _("Command %s has failed.") % err.cmd
+                        logging.warning(cmd)
+                        out = _("Output : %s") % err.output
                         logging.warning(out)
 
         # Nasty workaround:
@@ -306,7 +318,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(txt)
             cmd = _("Command %s has failed") % err.cmd
             logging.error(cmd)
-            out = _("Output : %s") % err.output 
+            out = _("Output : %s") % err.output
             logging.error(out)
             self.queue_fatal_event(txt)
             return False
@@ -833,7 +845,7 @@ class InstallationProcess(multiprocessing.Process):
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
             out = proc.communicate(timeout=timeout)[0]
-            txt = out.decode()
+            txt = out.decode().strip()
             if len(txt) > 0:
                 logging.debug(txt)
         except OSError as err:
@@ -926,6 +938,8 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
+            if "btrfs" in myfmt:
+                self.settings.set('btrfs', True)
 
             # Avoid adding a partition to fstab when
             # it has no mount point (swap has been checked before)
@@ -982,7 +996,7 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("fstab written."))
 
     def install_bootloader(self):
-        """ Installs bootloader """
+        """ Installs boot loader """
 
         self.modify_grub_default()
         self.prepare_grub_d()
@@ -1019,13 +1033,18 @@ class InstallationProcess(multiprocessing.Process):
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
+        plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
+        if os.path.exists(plymouth_bin):
+            use_splash = 'splash'
+        else:
+            use_splash = ''
         
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
             swap_uuid = fs.get_info(swap_partition)['UUID']
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=%s quiet"' % swap_uuid
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=%s quiet %s"' % (swap_uuid, use_splash)
         else:
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
+            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet %s"' % use_splash
 
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
@@ -1345,11 +1364,20 @@ class InstallationProcess(multiprocessing.Process):
         hooks = ["base", "udev", "autodetect", "modconf", "block", "keyboard", "keymap"]
         modules = []
 
+        # It is important that the plymouth hook comes before any encrypt hook
+
+        plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
+        if os.path.exists(plymouth_bin):
+            hooks.append("plymouth")
+
         # It is important that the encrypt hook comes before the filesystems hook
         # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
 
         if self.settings.get("use_luks"):
-            hooks.append("encrypt")
+            if os.path.exists(plymouth_bin):
+                hooks.append("plymouth-encrypt")
+            else:
+                hooks.append("encrypt")
             if self.arch == 'x86_64':
                 modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512"])
             else:
@@ -1367,9 +1395,9 @@ class InstallationProcess(multiprocessing.Process):
         hooks.append("filesystems")
 
         if self.settings.get('btrfs') and cpu is not 'genuineintel':
-            modules.append("crc32c")
+            modules.append('crc32c')
         elif self.settings.get('btrfs') and cpu is 'genuineintel':
-            modules.append("crc32c-intel")
+            modules.append('crc32c-intel')
         else:
             hooks.append("fsck")
 
@@ -1379,7 +1407,7 @@ class InstallationProcess(multiprocessing.Process):
         # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
         locale = self.settings.get('locale')
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p %s' % (locale, self.kernel_pkg)])
+        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p %s' % (locale, self.kernel)])
         self.chroot_umount_special_dirs()
 
     def generate_pacmanconf(self):
@@ -1739,6 +1767,10 @@ class InstallationProcess(multiprocessing.Process):
             #locale_conf.write('LC_COLLATE=C\n')
             locale_conf.write('LC_COLLATE=%s\n' % locale)
 
+        environment_path = os.path.join(self.dest_dir, "etc/environment")
+        with open(environment_path, "w") as environment:
+            environment.write('LANG=%s\n' % locale)
+
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(self.dest_dir, "etc/vconsole.conf")
         with open(vconsole_conf_path, "w") as vconsole_conf:
@@ -1762,6 +1794,83 @@ class InstallationProcess(multiprocessing.Process):
                     xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
                 xorg_conf_xkb.write('EndSection\n')
             logging.debug(_("00-keyboard.conf written."))
+
+        # Enter chroot system
+        self.chroot_mount_special_dirs()
+
+        # Install configs for root
+        self.chroot(['cp', '-av', '/etc/skel/.', '/root/'])
+
+        self.queue_event('info', _("Configuring hardware ..."))
+
+        # Copy generated xorg.conf to target
+        if os.path.exists("/etc/X11/xorg.conf"):
+            shutil.copy2('/etc/X11/xorg.conf', os.path.join(self.dest_dir, 'etc/X11/xorg.conf'))
+
+        # Configure ALSA
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Side 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Surround 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Center 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset LFE 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Headphone 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Speaker 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Line 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset External 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset FM 50% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Mono 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Digital 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Mix 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux2 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Center 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM LFE 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Side 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Surround 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Playback 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,0 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Synth 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset CD 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Wave 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Music 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset AC97 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,0 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,2 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,3 70% unmute'])
+
+        # set input levels
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Mic 70% mute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset IEC958 70% mute'])
+
+        # special stuff
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+
+        # special stuff
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+
+        # Set pulse
+        if os.path.exists("/usr/bin/pulseaudio-ctl"):
+            self.chroot(['pulseaudio-ctl', 'normal'])
+
+        # Save settings
+        self.chroot(['alsactl', '-f', '/etc/asound.state', 'store'])
+
+        # Exit chroot system
+        self.chroot_umount_special_dirs()
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # I think it should work out of the box most of the time.

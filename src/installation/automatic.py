@@ -52,7 +52,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.entry = {}
         self.entry['luks_password'] = self.ui.get_object('entry_luks_password')
-        self.entry['luks_password_confirm']= self.ui.get_object('entry_luks_password_confirm')
+        self.entry['luks_password_confirm'] = self.ui.get_object('entry_luks_password_confirm')
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
@@ -69,8 +69,7 @@ class InstallationAutomatic(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('text_automatic2')
-        txt = _("Select the drive we should use to install Antergos " \
-        "and then click below to start the process.")
+        txt = _("Select the drive we should use to install Antergos and then click below to start the process.")
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password')
@@ -82,7 +81,7 @@ class InstallationAutomatic(GtkBaseBox):
         label.set_markup(txt)
 
         btn = self.ui.get_object('checkbutton_show_password')
-        btn.set_label(_("show password"))
+        btn.set_label(_("Show password"))
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
@@ -128,7 +127,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def on_select_drive_changed(self, widget):
         line = self.device_store.get_active_text()
-        if line != None:
+        if line is not None:
             self.auto_device = self.devices[line]
         self.forward_button.set_sensitive(True)
 
@@ -148,7 +147,7 @@ class InstallationAutomatic(GtkBaseBox):
         response = self.show_warning()
         if response == Gtk.ResponseType.NO:
             return False
-        
+
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_key_pass', luks_password)
         if luks_password != "":
@@ -190,8 +189,6 @@ class InstallationAutomatic(GtkBaseBox):
         return response
 
     def start_installation(self):
-        #self.install_progress.set_sensitive(True)
-        self.settings.set('auto_device', self.auto_device)
         logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
         
         # In automatic installation we always install Grub
@@ -211,13 +208,15 @@ class InstallationAutomatic(GtkBaseBox):
         mount_devices = {}
         fs_devices = {}
 
+        self.settings.set('auto_device', self.auto_device)
+
         if not self.testing:
-            self.process = installation_process.InstallationProcess( \
-                            self.settings, \
-                            self.callback_queue, \
-                            mount_devices, \
-                            fs_devices, \
-                            None, \
+            self.process = installation_process.InstallationProcess(
+                            self.settings,
+                            self.callback_queue,
+                            mount_devices,
+                            fs_devices,
+                            None,
                             self.alternate_package_list)
 
             self.process.start()
