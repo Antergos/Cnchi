@@ -73,9 +73,9 @@ class InstallationAsk(GtkBaseBox):
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
-        names = [ "encrypt_checkbutton", "encrypt_label", \
-                    "lvm_checkbutton", "lvm_label", \
-                    "home_checkbutton", "home_label" ]
+        names = ["encrypt_checkbutton", "encrypt_label",
+                 "lvm_checkbutton", "lvm_label",
+                 "home_checkbutton", "home_label"]
         for name in names:
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
@@ -130,7 +130,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_markup(txt)
 
         button = self.ui.get_object("lvm_checkbutton")
-        txt = "Use LVM with this installation."
+        txt = _("Use LVM with this installation.")
         button.set_label(txt)
 
         label = self.ui.get_object("lvm_label")

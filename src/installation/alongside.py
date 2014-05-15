@@ -101,10 +101,10 @@ class InstallationAlongside(GtkBaseBox):
             except:
                 logging.exception(_("Can't load %s css") % path)
 
-
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)
 
         slider.connect("change-value", self.slider_change_value)
+
         '''
         slider.connect("value_changed",
                 self.main.on_volume_changed)
@@ -159,7 +159,7 @@ class InstallationAlongside(GtkBaseBox):
 
     @misc.raise_privileges
     def populate_treeview(self):
-        if self.treeview_store != None:
+        if self.treeview_store is not None:
             self.treeview_store.clear()
 
         self.treeview_store = Gtk.TreeStore(str, str, str)
@@ -172,7 +172,9 @@ class InstallationAlongside(GtkBaseBox):
         try:
             device_list = parted.getAllDevices()
         except:
-            logging.error(_("Can't import parted module! This installer won't work."))
+            txt = _("Can't import parted module! This installer won't work.")
+            logging.error(txt)
+            show.fatal_error(txt)
             device_list = []
 
         for dev in device_list:
@@ -198,7 +200,8 @@ class InstallationAlongside(GtkBaseBox):
                                 self.treeview_store.append(None, row)
                         self.partitions[p.path] = p
                 except Exception as e:
-                    logging.warning(_("Unable to create list of partitions for alongside installation."))
+                    txt = _("Unable to create list of partitions for alongside installation.")
+                    logging.warning(txt)
 
         # Assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
@@ -212,7 +215,7 @@ class InstallationAlongside(GtkBaseBox):
 
         model, tree_iter = selection.get_selected()
 
-        if tree_iter == None:
+        if tree_iter is None:
             return
 
         self.row = model[tree_iter]
@@ -233,12 +236,16 @@ class InstallationAlongside(GtkBaseBox):
             self.max_size = int(x[1]) / 1000
             self.min_size = int(x[2]) / 1000
         except subprocess.CalledProcessError as e:
-            logging.exception("CalledProcessError.output = %s" % e.output)
+            txt = "CalledProcessError.output = %s" % e.output
+            logging.exception(txt)
+            show.fatal_error(txt)
 
         if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
-            show.error(_("Can't shrink the partition (maybe it's nearly full)"))
+            txt = _("Can't shrink the partition (maybe it's nearly full?)")
+            logging.error(txt)
+            show.error(txt)
             return
 
         if self.new_size > 0 and self.is_room_available():
@@ -259,7 +266,7 @@ class InstallationAlongside(GtkBaseBox):
         slider = self.ui.get_object("scale")
 
         # leave space for Antergos
-        self.available_slider_range = [ self.min_size, self.max_size - MIN_ROOT_SIZE ]
+        self.available_slider_range = [self.min_size, self.max_size - MIN_ROOT_SIZE]
 
         slider.set_fill_level(self.min_size)
         slider.set_show_fill_level(True)
@@ -324,7 +331,9 @@ class InstallationAlongside(GtkBaseBox):
 
         # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
         if len(primary_partitions) >= 4:
-            logging.error("There're too many primary partitions, can't create a new one")
+            txt = _("There are too many primary partitions, can't create a new one")
+            logging.error(txt)
+            show.error(txt)
             return False
 
         self.extended_path = extended_path
@@ -335,7 +344,7 @@ class InstallationAlongside(GtkBaseBox):
         """ Alongside method shrinks selected partition
         and creates root and swap partition in the available space """
 
-        if self.is_room_available() == False:
+        if self.is_room_available() is False:
             return
 
         partition_path = self.row[0]
@@ -352,12 +361,11 @@ class InstallationAlongside(GtkBaseBox):
         # First, shrink filesystem
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
-            #logging.info("Filesystem on " + partition_path + " shrunk.\nWill recreate partition now on device " + device_path + " partition " + partition_path)
             txt = _("Filesystem on %s shrunk.") % partition_path
             txt += "\n"
             txt += _("Will recreate partition now on device %s partition %s") % (device_path, partition_path)
             logging.debug(txt)
-            # destroy original partition and create a new resized one
+            # Destroy original partition and create a new resized one
             res = pm.split_partition(device_path, partition_path, new_size)
         else:
             txt = _("Can't shrink %s(%s) filesystem") % (otherOS, fs_type)
@@ -365,7 +373,7 @@ class InstallationAlongside(GtkBaseBox):
             show.error(txt)
             return
 
-        # 'res' is either False or a parted.Geometry for the new free space
+        # res is either False or a parted.Geometry for the new free space
         if res is not None:
             txt = _("Partition %s shrink complete") % partition_path
             logging.debug(txt)
@@ -481,7 +489,7 @@ class InstallationAlongside(GtkBaseBox):
                           (self.settings.get('bootloader_type'),
                            self.settings.get('bootloader_location')))
         else:
-            logging.warning("Cnchi will not install any boot loader")
+            logging.warning(_("Cnchi will not install any boot loader"))
 
         if not self.testing:
             self.process = installation_process.InstallationProcess( \
