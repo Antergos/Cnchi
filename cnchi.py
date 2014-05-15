@@ -208,10 +208,8 @@ def setup_gettext():
     lang.install()
 
 def check_for_files():
-    # Check for hwinfo and hdparm
-    # (this check is just for developers, in our liveCD hwinfo will always be installed)
-    if not os.path.exists("/usr/bin/hwinfo"):
-        print(_("Please install %s before running this installer") % "hwinfo")
+    if not os.path.exists("/usr/share/cnchi") or not os.path.exists("/usr/share/cnchi/ui"):
+        print(_("Cnchi files not found. Please, install Cnchi using pacman"))
         return False
 
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
