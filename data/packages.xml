@@ -47,7 +47,7 @@
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>numix-icon-theme</pkgname>
-	    <pkgname>pacmanxg4</pkgname>
+	<pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>ttf-liberation</pkgname>
@@ -96,7 +96,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
-	    <pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
+	<pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -118,7 +118,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -171,7 +171,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -202,7 +202,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
@@ -276,7 +276,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -300,7 +300,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <!-- <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname> -->
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -339,7 +339,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	    <pkgname>numix-icon-theme-square</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>obconf</pkgname>
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
@@ -369,6 +369,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
+	<pkgname>gtk-theme-numix-frost</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
@@ -403,7 +404,7 @@
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-	    <pkgname>numix-icon-theme-square-kde</pkgname>
+	<pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
