@@ -8,10 +8,6 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	# Change keyboard layout
 	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
-	# Set gtk theme
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme Zukitwo
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme Zukitwo
-
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
 
@@ -19,8 +15,8 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
 	# Set GTK Theme
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme "Zukitwo"
-	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme "Zukitwo"
+	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme "Numix Frost Light"
+	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme "Numix Frost Light"
 
 	# Set icon theme
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
@@ -39,8 +35,8 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set gtk theme
-	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme Zukitwo
-	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences theme Zukitwo
+	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme "Numix Frost Light"
+	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences theme "Numix Frost Light"
 
 	# Set menu icon
 	dbus-launch gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos-menu.png"
@@ -102,14 +98,14 @@ if [[ ${DESKTOP} == 'xfce' ]];then
 	    sleep 3
 		CMD=`grep image-path ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
 	done
-	dbus-launch xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "Zukitwo"
+	dbus-launch xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "Numix Frost Light"
 
 	CMD=`grep ThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	while [ "${CMD}" == "" ]; do
         sleep 3
 		CMD=`grep ThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	done
-	dbus-launch xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Zukitwo"
+	dbus-launch xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Numix Frost Light"
 
 	# Set icon theme
 	CMD=`grep theme ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
@@ -162,7 +158,7 @@ fi
 if [[ ${DESKTOP} == 'mate' ]]; then
 
 
-	dbus-launch gsettings set org.mate.Marco.general theme 'Zukitwo'
+	dbus-launch gsettings set org.mate.Marco.general theme 'Numix Frost Light'
 	dbus-launch gsettings set org.mate.Marco.general visual-bell false
 	dbus-launch gsettings set org.mate.Marco.general num-workspaces 2
 	dbus-launch gsettings set org.mate.Marco.general compositing-manager true
@@ -313,7 +309,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.gnome.desktop.interface clock-format '12h'
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
 	dbus-launch gsettings set org.gnome.desktop.interface clock-show-seconds false
-	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme 'Zukitwo'
+	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme 'Numix Frost Light'
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme 'Numix-Square'
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
 	dbus-launch gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
@@ -344,7 +340,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	dbus-launch gsettings set org.mate.interface file-chooser-backend 'gtk+'
 	dbus-launch gsettings set org.mate.interface font-name 'Sans 10'
 	dbus-launch gsettings set org.mate.interface gtk-color-scheme ''
-	dbus-launch gsettings set org.mate.interface gtk-theme 'Zukitwo'
+	dbus-launch gsettings set org.mate.interface gtk-theme 'Numix Frost Light'
 	dbus-launch gsettings set org.mate.interface icon-theme 'Numix-Square'
 
 fi
