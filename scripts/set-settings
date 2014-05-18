@@ -22,9 +22,6 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	# Set icon theme
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
 	
-	# Enable lockscreen extension
-	dbus-launch gsettings set org.gnome.shell enabled-extensions "['lockscreen@dev.antergos.com']"
-
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
 
