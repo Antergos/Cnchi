@@ -110,7 +110,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gtk-theme-numix-frost</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -161,7 +161,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gtk-theme-numix-frost</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
@@ -195,7 +195,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gtk-theme-numix-frost</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
@@ -258,7 +258,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gtk-theme-numix-frost</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
@@ -325,7 +325,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gtk-theme-numix-frost</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -369,7 +369,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
-	<pkgname>gtk-theme-numix-frost</pkgname>
+	<pkgname>numix-frost-themes</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
