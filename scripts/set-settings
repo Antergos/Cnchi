@@ -10,13 +10,14 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
-
+	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'lockscreen@dev.antergos.com']"
 	# Change default wallpaper
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
 	# Set GTK Theme
 	dbus-launch gsettings set org.gnome.desktop.interface gtk-theme "Numix Frost Light"
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences theme "Numix Frost Light"
+	dbus-launch gsettings set org.gnome.shell.extensions.user-theme name "Numix Frost Light"
 
 	# Set icon theme
 	dbus-launch gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
