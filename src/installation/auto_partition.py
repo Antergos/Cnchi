@@ -24,6 +24,10 @@ import os
 import subprocess
 import logging
 import show_message as show
+#import parted3.partition_module as pm
+import parted3.fs_module as fs
+#import parted3.lvm as lvm
+#import parted3.used_space as used_space
 
 """ AutoPartition class """
 
@@ -31,20 +35,13 @@ import show_message as show
 MAX_ROOT_SIZE = 30000
 
 # TODO: This higly depends on the selected DE! Must be taken into account.
-# KDE needs 6.5 GB for its files. Need to leave extra space also.
+# KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
     return subprocess.check_output(command.split()).decode().strip("\n")
 
-def get_fs_uuid(device):
-    """ Gets device uuid """
-    return check_output("blkid -p -i -s UUID -o value %s" % device)
-
-def get_fs_label(device):
-    """ Gets device label """
-    return check_output("blkid -p -i -s LABEL -o value %s" % device)
 
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
@@ -89,17 +86,25 @@ def unmount_all(dest_dir):
             logging.warning(_("Unmounting %s failed. Trying lazy arg."), dest_dir)
             subprocess.call(["umount", "-l", dest_dir])
 
-    # Remove all previous Antergos LVM volumes
+    # Remove all previous LVM volumes
     # (it may have been left created due to a previous failed installation)
     try:
-        if os.path.exists("/dev/mapper/AntergosRoot"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosRoot"])
-        if os.path.exists("/dev/mapper/AntergosSwap"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosSwap"])
-        if os.path.exists("/dev/mapper/AntergosHome"):
-            subprocess.check_call(["lvremove", "-f", "/dev/mapper/AntergosHome"])
-        if os.path.exists("/dev/AntergosVG"):
-            subprocess.check_call(["vgremove", "-f", "AntergosVG"])
+        lvolumes = check_output("lvs -o lv_name,vg_name --noheading").split("\n")
+        if len(lvolumes[0]) > 0:
+            for lvolume in lvolumes:
+                if len(lvolume) > 0:
+                    (lvolume, vgroup) = lvolume.split()
+                    lvdev = "/dev/" + vgroup + "/" + lvolume
+                    subprocess.check_call(["wipefs", "-af", lvdev])
+                    subprocess.check_call(["lvremove", "-f", lvdev])
+
+        vgnames = check_output("vgs -o vg_name --noheading").split("\n")
+        if len(vgnames[0]) > 0:
+            for vgname in vgnames:
+                vgname = vgname.strip()
+                if len(vgname) > 0:
+                    subprocess.check_call(["vgremove", "-f", vgname])
+
         pvolumes = check_output("pvs -o pv_name --noheading").split("\n")
         if len(pvolumes[0]) > 0:
             for pvolume in pvolumes:
@@ -155,17 +160,17 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 logging.warning(err.output)
         else:
-            mkfs = {"xfs" : "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
-                    "jfs" : "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
-                    "reiserfs" : "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
-                    "ext2" : "mkfs.ext2 -q -L %s %s %s" % (fs_options, label_name, device),
-                    "ext3" : "mke2fs -q %s -L %s -t ext3 %s" % (fs_options, label_name, device),
-                    "ext4" : "mke2fs -q %s -L %s -t ext4 %s" % (fs_options, label_name, device),
-                    "btrfs" : "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
-                    "nilfs2" : "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
-                    "ntfs-3g" : "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
-                    "vfat" : "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
-                    "f2fs" : "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
+            mkfs = {"xfs": "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
+                    "jfs": "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
+                    "reiserfs": "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
+                    "ext2": "mkfs.ext2 -q -L %s %s %s" % (fs_options, label_name, device),
+                    "ext3": "mke2fs -q %s -L %s -t ext3 %s" % (fs_options, label_name, device),
+                    "ext4": "mke2fs -q %s -L %s -t ext4 %s" % (fs_options, label_name, device),
+                    "btrfs": "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
+                    "nilfs2": "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
+                    "ntfs-3g": "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
+                    "vfat": "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
+                    "f2fs": "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():
@@ -214,8 +219,8 @@ class AutoPartition(object):
 
             subprocess.check_call(["chmod", mode, path])
 
-        fs_uuid = get_fs_uuid(device)
-        fs_label = get_fs_label(device)
+        fs_uuid = fs.get_info(device)['UUID']
+        fs_label = fs.get_info(device)['LABEL']
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
     def get_devices(self):
@@ -503,8 +508,8 @@ class AutoPartition(object):
             # Create DOS MBR with parted
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
-            # Create boot partition (all sizes are in MB)
-            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", str(part_sizes['boot'])])
+            # Create boot partition (all sizes are in MiB)
+            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", "%dMiB" % part_sizes['boot']])
             # Set boot partition as bootable
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
 
@@ -515,29 +520,28 @@ class AutoPartition(object):
 
                 end = start + part_sizes['lvm_pv']
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
                 # Set lvm flag
                 subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
             else:
                 # Create swap partition
                 start = part_sizes['boot']
                 end = start + part_sizes['swap']
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap",
-                    str(start), str(end)])
+                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap", "%dMiB" % start, "%dMiB" % end])
 
                 if self.home:
                     # Create root partition
                     start = end
                     end = start + part_sizes['root']
-                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), str(end)])
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "%dMiB" % end])
 
                     # Create home partition
                     start = end
-                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
                 else:
                     # Create root partition
                     start = end
-                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", str(start), "100%"])
+                    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
 
         printk(True)
 
@@ -561,7 +565,7 @@ class AutoPartition(object):
 
             subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
             subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
-            
+
             # Fix issue 180
             try:
                 # Check space we have now for creating logical volumes
@@ -569,11 +573,11 @@ class AutoPartition(object):
                 # Get column number 12: Size of volume group in kilobytes
                 vg_size = int(vg_info.split(":")[11]) / 1024
                 if part_sizes['lvm_pv'] > vg_size:
-                    logging.debug("Real AntergosVG volume group size: %d MB", vg_size)
+                    logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
                     start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
-                    part_sizes = self.get_part_sizes(disc_size - diff_size, start_part_sizes)
+                    part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                     self.show_part_sizes(part_sizes)
             except Exception as err:
                 logging.exception(err)
@@ -585,7 +589,7 @@ class AutoPartition(object):
                 subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
             else:
                 subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(part_sizes['swap'])), "AntergosVG"])
-                # Use the remainig space for our home volume
+                # Use the remaining space for our home volume
                 subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
@@ -595,7 +599,7 @@ class AutoPartition(object):
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         if self.uefi:
             # Format /boot partition with vfat
-            self.mkfs(boot_device, "vfat", "/boot", "AntergosEFI", "-F 32")
+            self.mkfs(boot_device, "vfat", "/boot", "UEFI_SYSTEM", "-F 32")
         else:
             self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
 

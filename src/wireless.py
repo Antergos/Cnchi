@@ -42,10 +42,12 @@ class Wireless(GtkBaseBox):
         super().__init__(self, params, "wireless", prev_page, next_page)
 
         self.page = self.ui.get_object('wireless')
+        
         self.nmwidget = self.ui.get_object('nmwidget')
         self.nmwidget.connect('connection', self.state_changed)
         self.nmwidget.connect('selection_changed', self.selection_changed)
         self.nmwidget.connect('pw_validated', self.pw_validated)
+        
         self.no_wireless = self.ui.get_object('no_wireless')
         self.use_wireless = self.ui.get_object('use_wireless')
         self.use_wireless.connect('toggled', self.wireless_toggled)
@@ -59,68 +61,46 @@ class Wireless(GtkBaseBox):
         self.skip = False
 
     def translate_ui(self):
-        pass
+        lbl = self.ui.get_object('wireless_section_label')
+        lbl.set_markup(_("Connecting this computer to a wi-fi network helps with"))
         
-    def plugin_translate(self, lang):
-        pass
-        # get_s = self.controller.get_string
-        # label_text = get_s('ubiquity/text/wireless_password_label')
-        # display_text = get_s('ubiquity/text/wireless_display_password')
-        # self.nmwidget.translate(label_text, display_text)
-
-        # self.connect_text = get_s('ubiquity/text/connect', lang)
-        # self.stop_text = get_s('ubiquity/text/stop', lang)
-        # frontend = self.controller._wizard
-        # if not self.next_normal:
-        #     frontend.next.set_label(self.connect_text)
-        # if not self.back_normal:
-        #     frontend.back.set_label(self.stop_text)
+        btn = self.ui.get_object('no_wireless')
+        btn.set_label(_("I don't want to connect to a wi-fi network right now"))
+        
+        btn = self.ui.get_object('use_wireless')
+        btn.set_label(_("Connect to this network"))
+        
+        password_label_text = _("Password:")
+        display_password_text = _("Display password")
+        self.nmwidget.translate(password_label_text, display_password_text)
 
     def selection_changed(self, unused):
         self.have_selection = True
         self.use_wireless.set_active(True)
         assert self.state is not None
-        '''
-        frontend = self.controller._wizard
+        
         if self.state == nm.NM_STATE_CONNECTING:
-            frontend.translate_widget(frontend.next)
             self.next_normal = True
+            print("NM_SATE_CONNECTING")
         else:
-            if (not self.nmwidget.is_row_an_ap() or
-                    self.nmwidget.is_row_connected()):
-                frontend.translate_widget(frontend.next)
+            if (not self.nmwidget.is_row_an_ap() or self.nmwidget.is_row_connected()):
                 self.next_normal = True
+                print("is not an ap or is already connected")
             else:
-                frontend.next.set_label(self.connect_text)
                 self.next_normal = False
-        '''
+                print("not connected")
 
     def wireless_toggled(self, unused):
         print("wireless_toggled")
-        '''
-        frontend = self.controller._wizard
+        
         if self.use_wireless.get_active():
+            self.nmwidget.hbox.set_sensitive(True)
             if not self.have_selection:
                 self.nmwidget.select_usable_row()
             self.state_changed(None, self.state)
         else:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            frontend.translate_widget(frontend.next)
+            # TODO: hide and stop spinner
             self.nmwidget.hbox.set_sensitive(False)
-            self.next_normal = True
-            self.controller.allow_go_forward(True)
-        '''
-
-    def plugin_set_online_state(self, online):
-        self.skip = online
-
-    def plugin_skip_page(self):
-        if not nm.wireless_hardware_present():
-            return True
-        else:
-            return self.skip
 
     '''
     def plugin_on_back_clicked(self):
@@ -148,36 +128,22 @@ class Wireless(GtkBaseBox):
     '''
     def state_changed(self, unused, state):
         print("state_changed")
-        '''
         self.state = state
-        frontend = self.controller._wizard
         if not self.use_wireless.get_active():
             return
         if state != nm.NM_STATE_CONNECTING:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            self.controller.allow_go_forward(True)
-
-            frontend.translate_widget(frontend.back)
-            self.back_normal = True
-            frontend.back.set_sensitive(True)
+            # TODO: Hide and stop spinner
+            pass
         else:
-            frontend.connecting_spinner.show()
-            frontend.connecting_spinner.start()
-            frontend.connecting_label.show()
+            pass
+            # TODO: Show and start spinner
+            # self.spinner.show()
+            # self.spinner.start()
 
-            self.next_normal = True
-
-            frontend.back.set_label(self.stop_text)
-            self.back_normal = False
-            frontend.back.set_sensitive(True)
         self.selection_changed(None)
-        '''
 
     def pw_validated(self, unused, validated):
         pass
-        #self.controller.allow_go_forward(validated)
 
     def prepare(self, direction):
         self.translate_ui()

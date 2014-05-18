@@ -341,7 +341,7 @@ class InstallationAdvanced(GtkBaseBox):
                           str, int, bool, bool, bool, bool)
 
         # Be sure to call get_devices once
-        if self.disks == None:
+        if self.disks is None:
             self.disks = pm.get_devices()
         self.lv_partitions = []
         self.diskdic['mounts'] = []
@@ -647,7 +647,7 @@ class InstallationAdvanced(GtkBaseBox):
             mymount = mount_combo_entry.get_text().strip()
 
             if mymount in self.diskdic['mounts'] and mymount != mount_point:
-                show.warning(_('Cannot use the same mount point twice.'))
+                show.warning(_("Can't use same mount point twice."))
             elif mymount == "/" and not format_check.get_active():
                 show.warning(_('Root partition must be formatted.'))
             else:
@@ -902,7 +902,7 @@ class InstallationAdvanced(GtkBaseBox):
             mylabel = label_entry.get_text()
             mymount = mount_combo_entry.get_text().strip()
             if mymount in self.diskdic['mounts']:
-                show.warning(_('Cannot use the same mount point twice...'))
+                show.warning(_("Can't use same mount point twice..."))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
@@ -1091,16 +1091,16 @@ class InstallationAdvanced(GtkBaseBox):
         label.set_markup(txt)
 
         part = self.ui.get_object('root_part')
-        txt = _("Root ( / )")
-        part.props.label = txt
+        txt = _("Root")
+        part.props.label = txt + " ( / )"
 
         part = self.ui.get_object('boot_part')
-        txt = _("Boot ( /boot )")
-        part.props.label = txt
+        txt = _("Boot")
+        part.props.label = txt + " ( /boot )"
 
         part = self.ui.get_object('boot_efi_part')
-        txt = _("EFI ( /boot )")
-        part.props.label = txt
+        txt = _("EFI")
+        part.props.label = txt + " ( /boot/efi )"
 
         part = self.ui.get_object('swap_part')
         txt = _("Swap")
@@ -1329,7 +1329,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Get how many primary partitions are already created on disk
         if disk.primaryPartitionCount > 0:
             # BIOS GPT Boot partition must be the first one on the disk
-            logging.error("Can't create BIOS GPT Boot partition!")
+            txt = _("Can't create BIOS GPT Boot partition!")
+            logging.error(txt)
+            show.error(txt)
             return
 
         #max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
@@ -1354,7 +1356,10 @@ class InstallationAdvanced(GtkBaseBox):
         (res, err) = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
 
         if res:
+            txt = _("Couldn't create BIOS GPT Boot partition")
+            logging.error(txt)
             logging.error(err)
+            show.error(txt)
 
         # Store stage partition info in self.stage_opts
         old_parts = []
@@ -1376,9 +1381,11 @@ class InstallationAdvanced(GtkBaseBox):
         pass
 
     def check_mount_points(self):
-        """ Check that all necessary mount points are specified.
-            At least root (/) partition must be defined and
-            in UEFI systems the efi partition (/boot/efi) must be defined too """
+        """
+        Check that all necessary mount points are specified.
+        At least root (/) partition must be defined and in UEFI systems
+        a fat partition mounted in /boot or /boot/efi must be defined too
+        """
 
         # Initialize our mount point check widgets
 
@@ -1631,7 +1638,7 @@ class InstallationAdvanced(GtkBaseBox):
                 y += 1
 
         changelist_dialog = self.ui.get_object("changelist_dialog")
-        changelist_dialog.set_title(_('We will make changes to partitions on these disks:'))
+        changelist_dialog.set_title(_('These disks will have partition actions:'))
         changelist_dialog.show_all()
         response = changelist_dialog.run()
         changelist_dialog.hide()
@@ -1671,8 +1678,11 @@ class InstallationAdvanced(GtkBaseBox):
     def create_staged_partitions(self):
         """ Create staged partitions """
         # Sometimes a swap partition can still be active at this point
-        subp = subprocess.Popen(['sh', '-c', 'swapoff -a'], stdout=subprocess.PIPE)
-        
+        swaps = subprocess.check_output(["swapon", "--show=NAME", "--noheadings"]).decode().split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                subp = subprocess.Popen(['sh', '-c', 'swapoff %s' % name], stdout=subprocess.PIPE)
+
         partitions = {}
         if self.disks is not None:
             for disk_path in self.disks:
@@ -1728,6 +1738,7 @@ class InstallationAdvanced(GtkBaseBox):
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
 
+                        # the swap flag is for mac partitions
                         #if "swap" in fisy:
                         #    (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
                         #    pm.finalize_changes(partitions[partition_path].disk)

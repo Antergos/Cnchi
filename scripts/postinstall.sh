@@ -261,33 +261,20 @@ kde_settings(){
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
-
-	# Download Numix Icon Set
-    cd /tmp
-    wget http://github.com/numixproject/numix-icon-theme/archive/master.zip
-    unzip -o -qq numix-icon-theme-master.zip -d /tmp
-    cd /tmp/numix-icon-theme-master/Numix
-    sed -i 's|Inherits=gnome,hicolor|Inherits=KFaenza,hicolor|g' index.theme
-    cd ..
-    cp -R Numix ${DESTDIR}/usr/share/icons/
-    chroot ${DESTDIR} ln -sf /usr/share/icons/Numix /usr/share/icons/default.kde4
+	chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
 	cd /tmp
-    wget -q "http://github.com/Antergos/kde-setup/archive/master.zip"
-    unzip -o -qq /tmp/kde-setup-master.zip -d /tmp
-    mv /tmp/kde-setup-master/usr/share/icons/Numix-Square.zip /tmp
-    unzip -o -qq /tmp/Numix-Square.zip -d /tmp
-    cp -R /tmp/Numix-Square ${DESTDIR}/usr/share/icons/
-    cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
-    cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
+   	wget -q "http://github.com/Antergos/kde-setup/archive/master.zip"
+   	unzip -o -qq /tmp/master.zip -d /tmp
+    	cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
+    	cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
-	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
-    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
-    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
-    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
+	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
+   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
+   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
+   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
 	
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
@@ -305,22 +292,21 @@ mate_settings() {
 	## Set default directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
-    # Set gsettings input-source
+   	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
 		sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
 	else
 		sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
-    fi
+  	 fi
 	# Fix for Zukitwo Metacity Theme
 	cp ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
 	
-    # copy antergos menu icon
+    	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
 	cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
-	chroot ${DESTDIR} unlink /usr/share/icons/Faenza/places/24/start-here.png
-	chroot ${DESTDIR} ln -s /usr/share/antergos/antergos-menu.png /usr/share/icons/Faenza/places/24/start-here.png
+	chroot ${DESTDIR} ln -sf /usr/share/antergos/antergos-menu.png /usr/share/icons/Numix/24x24/places/start-here.png
 
-    # Set gsettings
+    	# Set gsettings
 	cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
 	mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
@@ -377,15 +363,23 @@ postinstall(){
 	chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
 
 	# Fix transmission leftover
-    if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ];
-    then
+    	if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ];
+    	then
 	    mv ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup
-    fi
+    	fi
 
 	# Configure touchpad. Skip with base installs
 	if [[ $DESKTOP != 'nox' ]];then
 		set_synaptics
 	fi
+    
+    	# Configure fontconfig
+    	FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
+    	FONTCONFIG_DIR="${DESTDIR}/home/${USER_NAME}/.config/fontconfig"
+    	if [ -f ${FONTCONFIG_FILE} ]; then
+        	mkdir -p ${FONTCONFIG_DIR}
+	    	cp ${FONTCONFIG_FILE} ${FONTCONFIG_DIR}
+   	fi
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc

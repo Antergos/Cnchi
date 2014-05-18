@@ -46,7 +46,8 @@
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
-        <pkgname>pacmanxg4</pkgname>
+        <pkgname>numix-icon-theme</pkgname>
+	<pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>ttf-liberation</pkgname>
@@ -86,7 +87,6 @@
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>eog</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
@@ -96,7 +96,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
-        <!-- <pkgname>gnome-shell-extension-dash-to-dock</pkgname> -->
+	<pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -110,6 +110,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -117,13 +118,14 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
+        <pkgname>xscreensaver</pkgname>
     </gnome_desktop>
 
     <cinnamon_desktop>
@@ -141,7 +143,6 @@
         <pkgname>empathy</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
@@ -160,6 +161,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
@@ -169,6 +171,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -181,7 +184,6 @@
     <xfce_desktop>
         <pkgname>cdrkit</pkgname>
         <pkgname>evince</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -193,12 +195,14 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
@@ -215,7 +219,6 @@
         <pkgname>xfce4-screenshooter</pkgname>
         <pkgname>xfce4-taskmanager</pkgname>
         <pkgname>xnoise</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
     </xfce_desktop>
 
     <razor_desktop>
@@ -245,7 +248,6 @@
         <pkgname>cdrkit</pkgname>
         <pkgname>engrampa</pkgname>
         <pkgname>eom</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>galculator-gtk2</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gst-libav</pkgname>
@@ -256,6 +258,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
@@ -269,21 +272,20 @@
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname>mozo</pkgname>
-        <pkgname>mplayer</pkgname> <!--mate-mplayer can't play media without this -->
+        <pkgname>mplayer</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
     </mate_desktop>
 
     <enlightenment_desktop>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>enlightenment</pkgname>        
@@ -297,7 +299,8 @@
         <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
+        <!-- <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname> -->
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -305,11 +308,9 @@
     </enlightenment_desktop>
 
     <openbox_desktop>
-        <pkgname>antergos-slim-theme</pkgname>
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
-        <pkgname>faenza-icon-theme</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
@@ -324,6 +325,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -337,8 +339,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+	<pkgname>numix-icon-theme-square</pkgname>
         <pkgname>obconf</pkgname>
-        <!-- <pkgname>obkey</pkgname> -->
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
         <pkgname>openbox</pkgname>
@@ -367,6 +369,7 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
+	<pkgname>numix-frost-themes</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
@@ -401,6 +404,7 @@
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
+	<pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
