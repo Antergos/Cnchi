@@ -109,10 +109,11 @@ class Welcome(GtkBaseBox):
 
     def on_cli_button_clicked(self, widget, data=None):
         try:
-            subprocess.Popen(["antergos-setup"])
+            subprocess.Popen(["antergos-wrap"])
             self.quit_cnchi()
-        except:
-            warning(_("Can't load the CLI installer"))
+        except Exception as err:
+            logging.error(_("Can't the CLI installer: %s" % err))
+            self.quit_cnchi()
 
     def on_graph_button_clicked(self, widget, data=None):
         # Tell timezone thread to start searching now
