@@ -62,7 +62,7 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
 	# Set theme
-	dbus-launch gsettings set org.cinnamon.theme name "Nadia"
+	dbus-launch gsettings set org.cinnamon.theme name "Numix Frost"
 
 	# Set icon theme
 	dbus-launch gsettings set org.cinnamon.desktop.interface icon-theme "Numix-Square"
