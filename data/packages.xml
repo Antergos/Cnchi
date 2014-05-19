@@ -232,7 +232,7 @@
         <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kovpn</pkgname>
         <pkgname>openbox</pkgname>
-        <pkgname>openbox-themes</pkgname>
+        <!--<pkgname>openbox-themes</pkgname>-->
         <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
         <pkgname>qtfm</pkgname>
         <pkgname>razor-qt</pkgname>
@@ -304,7 +304,7 @@
         <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
+        <!-- <pkgname>zukitwo-themes</pkgname> -->
     </enlightenment_desktop>
 
     <openbox_desktop>
@@ -359,8 +359,8 @@
         <pkgname>xnoise</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
-        <pkgname>zukitwo-theme-openbox</pkgname>
-        <pkgname>zukitwo-themes</pkgname>
+        <!--<pkgname>zukitwo-theme-openbox</pkgname>
+        <pkgname>zukitwo-themes</pkgname>-->
     </openbox_desktop>
 
     <kde_desktop>
