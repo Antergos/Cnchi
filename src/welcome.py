@@ -112,7 +112,7 @@ class Welcome(GtkBaseBox):
             subprocess.Popen(["antergos-wrap"])
             self.quit_cnchi()
         except Exception as err:
-            logging.error(_("Can't the CLI installer: %s" % err))
+            logging.error(_("Can't load the CLI installer: %s" % err))
             self.quit_cnchi()
 
     def on_graph_button_clicked(self, widget, data=None):
