@@ -103,13 +103,13 @@ class InstallationAsk(GtkBaseBox):
         #self.title.set_markup(txt)
 
         # In case we're coming from an installer screen, we change
-        # to go-next stock button and we activate it
+        # the "install now" text for an arrow and activate it
         image1 = Gtk.Image()
-        image1.set_from_icon_name("gtk-ok", Gtk.IconSize.BUTTON)
-        arrow = self.forward_button.get_child()
-        self.forward_button.remove(arrow)
+        image1.set_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         self.forward_button.set_label("")
         self.forward_button.set_image(image1)
+        self.forward_button.set_always_show_image(True)
+        
         self.forward_button.set_sensitive(True)
 
         # Automatic Install
