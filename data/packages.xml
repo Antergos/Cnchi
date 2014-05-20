@@ -130,6 +130,7 @@
 
     <cinnamon_desktop>
         <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>cbatticon</pkgname> <!--Until Cinnamon bug is fixed-->
         <pkgname>cdrkit</pkgname>
         <pkgname>cinnamon</pkgname>
         <pkgname>cinnamon-control-center</pkgname>
