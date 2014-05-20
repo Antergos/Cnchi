@@ -118,6 +118,7 @@ class Check(GtkBaseBox):
             if os.path.exists(type_path):
                 with open(type_path) as power_file:
                     if power_file.read().startswith('Battery'):
+                        self.settings.set('laptop', True)
                         return True
         return False
 
