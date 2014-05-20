@@ -133,6 +133,13 @@ cinnamon_settings(){
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
+	# Temporary alternative until upower bug is fixed.
+	if [[ $6 -eq "True" ]]; then 
+		echo "#!/bin/bash" > ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
+		echo "/usr/bin/cbatticon &" >> ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
+		chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
+	fi
+
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
 
@@ -388,5 +395,5 @@ postinstall(){
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4 $5 > /tmp/postinstall.log 2>&1
+postinstall $1 $2 $3 $4 $5 $6 > /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
