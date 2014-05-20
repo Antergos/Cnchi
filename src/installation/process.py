@@ -1861,10 +1861,12 @@ class InstallationProcess(multiprocessing.Process):
 
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
+        # Temporary alternative for Cinnamon upower bug.
+        laptop = self.settings.get('laptop')
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
-                                   keyboard_layout, keyboard_variant], timeout=300)
+                                   keyboard_layout, keyboard_variant, laptop], timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as err:
             logging.error(err.output)

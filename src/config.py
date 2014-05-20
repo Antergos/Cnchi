@@ -60,6 +60,7 @@ class Settings(object):
             'keyboard_variant' : '',
             'language_name' : '',
             'language_code' : '',
+            'laptop' : False,
             'locale' : '',
             'log_file' : '/tmp/cnchi.log',
             'luks_key_pass' : "",
