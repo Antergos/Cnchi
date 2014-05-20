@@ -1,5 +1,7 @@
 # -*- coding: utf-8; Mode: Python; indent-tabs-mode: nil; tab-width: 4 -*-
 #
+# wireless.py
+#
 # Copyright (C) 2010 Canonical Ltd.
 # Written by Evan Dandrea <evan.dandrea@canonical.com>
 #
@@ -62,7 +64,7 @@ class Wireless(GtkBaseBox):
 
     def translate_ui(self):
         lbl = self.ui.get_object('wireless_section_label')
-        lbl.set_markup(_("Connecting this computer to a wi-fi network helps with"))
+        lbl.set_markup(_("Connecting this computer to a wi-fi network"))
         
         btn = self.ui.get_object('no_wireless')
         btn.set_label(_("I don't want to connect to a wi-fi network right now"))
@@ -148,6 +150,10 @@ class Wireless(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        if not nm.wireless_hardware_present():
+            self.nmwidget.set_sensitive(False)
+            btn = self.ui.get_object('use_wireless')
+            btn.set_sensitive(False)
 
     def store_values(self):
         return True

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 #
+# nm.py
+#
 # Copyright (C) 2012 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
