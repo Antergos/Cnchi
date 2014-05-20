@@ -1,6 +1,7 @@
 #main {
-font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
+    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
 }
+
 #logo {
     background-color: transparent;
     background-position: top;
@@ -20,9 +21,9 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     background-size: 100% 100%;
     margin-top: 0px;
     color: #5082d4;
-    font: 17px;
+    font: 15px;
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
-    padding-top:7.5px;
+
 }
 
 #header {
@@ -30,27 +31,60 @@ font-family: 'Lato', 'Droid Sans', 'DejaVu Sans';
     background-image: url('/usr/share/cnchi/data/images/header.png');
     background-position: top;
     background-repeat: no-repeat;
-    background-size: cover;
     background-size: 100% 100%;
     margin-top: 0px;
     border-top: 0px;
     border-bottom: 0px;
-    /*
-    color: #5082d4;
-    font: 14px;
-    font-family: 'DejaVu Sans', Helvetica, sans-serif;
-    padding-top:7.5px;
-    */
+    font-family: Lato, 'DejaVu Sans', Helvetica, sans-serif;
+    padding-top: 9px;
 }
 
-#process_progressbar, #i_progressbar, #a_progressbar{
-    border-radius: 5px;  
+#process_progressbar, #i_progressbar, #a_progressbar {
+    border-radius: 1px;
 }
 
-#process_progressbar{
+#process_progressbar {
     -GtkProgressBar-min-horizontal-bar-height: 1;
 }
 
-#i_progressbar, #a_progressbar{
+#i_progressbar, #a_progressbar {
     -GtkProgressBar-min-horizontal-bar-height: 12;
+}
+
+#fwd_btn, #bk_btn {
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    color: #000;
+}
+
+#fwd_btn:hover, #bk_btn:hover {
+    color: #1a80b6;
+    border-color: rgba(195, 195, 195, 1);
+    background-color: rgba(220, 220, 220, 1);
+}
+
+#fwd_btn:active, #bk_btn:active {
+    color: #2d8cbc;
+    border-color: rgba(175, 175, 175, 1);
+
+}
+
+.header-bar .button:last-child {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.toolbar .separator, .separator,
+.header-bar GtkSeparatorToolItem,
+GtkSeparatorToolItem {
+    padding-left: 9px;
+}
+
+.list {
+
+    background-color: shade(@theme_bg_color, 1.2);
+
+    color: @theme_fg_color;
 }
