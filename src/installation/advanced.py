@@ -1196,6 +1196,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Change "Next" button text
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
+        self.forward_button.set_always_show_image(False)
 
         #self.ui.get_object('cancelbutton')
         #self.ui.get_object('partition_dialog_okbutton')
