@@ -148,7 +148,7 @@ class MainWindow(Gtk.ApplicationWindow):
         image1.set_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         self.forward_button.set_label("")
         self.forward_button.set_image(image1)
-        self.forward_button.set_name('fwd_btn')
+        #self.forward_button.set_name('fwd_btn')
         self.forward_button.set_always_show_image(True)
         #self.forward_button.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE))
         
@@ -156,7 +156,7 @@ class MainWindow(Gtk.ApplicationWindow):
         image2.set_from_icon_name("go-previous", Gtk.IconSize.LARGE_TOOLBAR)
         self.backwards_button.set_label("")
         self.backwards_button.set_image(image2)
-        self.backwards_button.set_name('bk_btn')
+        #self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
         #self.backwards_button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE)) 
         
