@@ -691,26 +691,6 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-%s" % lang_code
             self.packages.append(pkg)
-
-    '''
-    def get_graphics_card(self):
-        """ Get graphics card using hwinfo """
-        process1 = subprocess.Popen(["hwinfo", "--gfxcard"], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
-                                    stdin=process1.stdout, stdout=subprocess.PIPE)
-        process1.stdout.close()
-        out, err = process2.communicate()
-        return out.decode().lower()
-    
-    def get_cpu(self):
-        # Check if system is an intel system. Not sure if we want to move this to hardware module when its done.
-        process1 = subprocess.Popen(["hwinfo", "--cpu"], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Model:[[:space:]]"],
-                                    stdin=process1.stdout, stdout=subprocess.PIPE)
-        process1.stdout.close()
-        out, err = process2.communicate()
-        return out.decode().lower()
-    '''
     
     def get_cpu(self):
         cpu = ""

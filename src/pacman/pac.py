@@ -51,7 +51,11 @@ class Pac(object):
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
         self.last_dl_progress = 0
-        self.last_dl_total = 0
+        self.last_dl_total_size = 0
+
+        # Total packages to download
+        self.total_packages_to_download = 0
+        self.downloaded_packages = 0
 
         # Store package total download size
         self.total_download_size = 0
@@ -135,12 +139,15 @@ class Pac(object):
         pkg_names = []
         
         for pkg in targets:
-            # Avoid duplicates
+            # We use pkg_names in order to avoid duplicates
             if pkg.name not in pkg_names:
                 logging.debug(_("Adding %s to transaction"), pkg.name)
                 t.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
+        # If we use cached packages this is going to be WRONG
+        self.total_packages_to_download = len(pkg_names)
+        
         logging.debug(_("Finalize transaction..."))
         ok = self.finalize(t)
 
@@ -313,9 +320,9 @@ class Pac(object):
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """
         # Check if a new file is coming
-        if filename != self.last_dl_filename or self.last_dl_total != total:
+        if filename != self.last_dl_filename or self.last_dl_total_size != total:
             self.last_dl_filename = filename
-            self.last_dl_total = total
+            self.last_dl_total_size = total
             self.last_dl_progress = 0
 
             # If pacman is just updating databases total_download_size will be zero
@@ -328,14 +335,17 @@ class Pac(object):
                 ext = ".pkg.tar.xz"
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
-                text = _("Downloading %s...") % filename
+                self.downloaded_packages = self.downloaded_packages + 1
+                i =  self.downloaded_packages
+                n =  self.total_packages_to_download
+                text = _("Downloading %s... (%d/%d)") % (filename, i, n)
 
             self.queue_event('info', text)
             self.queue_event('percent', 0)
         else:
             # Compute a progress indicator
-            if self.last_dl_total > 0:
-                progress = tx / self.last_dl_total
+            if self.last_dl_total_size > 0:
+                progress = tx / self.last_dl_total_size
             else:
                 # If total is unknown, use log(kBytes)²/2
                 progress = (math.log(1 + tx / 1024) ** 2 / 2) / 100
