@@ -35,7 +35,7 @@ class AutoRankmirrorsThread(threading.Thread):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
-        self.reflector_script = "/usr/share/cnchi/scripts/reflector.sh"
+        self.script = "/usr/share/cnchi/scripts/update-mirrors.sh"
 
     def run(self):
         """ Run thread """
@@ -46,13 +46,13 @@ class AutoRankmirrorsThread(threading.Thread):
                 return
             time.sleep(1)  # Delay
 
-        if not os.path.exists(self.reflector_script):
-            logging.warning(_("Can't find reflector script"))
+        if not os.path.exists(self.script):
+            logging.warning(_("Can't find update mirrors script"))
             return
 
         # Run rankmirrors command
         try:
-            self.rankmirrors_pid = subprocess.Popen(["/usr/share/cnchi/scripts/reflector.sh"]).pid
+            self.rankmirrors_pid = subprocess.Popen([self.script]).pid
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(err)

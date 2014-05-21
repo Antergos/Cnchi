@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Reflector actually does perform speed tests when called and doesn't use speed results
 # from Arch's main server like we originally thought. If you monitor your network I/O
 # while running reflector command, you will see it is doing much more than
@@ -6,6 +7,9 @@
 # will output the speed test results to STDOUT.
 
 if [ -f /usr/bin/reflector ]; then
-    reflector -l 40 -p http -f 10 --save /etc/pacman.d/mirrorlist
+    reflector -l 30 -p http -f 5 --save /etc/pacman.d/mirrorlist
 fi
 
+if [ -f /usr/bin/rankmirrors ]; then
+    rankmirrors -n 0 -r antergos antergos-mirrorlist > /etc/pacman.d/antergos-mirrorlist
+fi
