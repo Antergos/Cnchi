@@ -57,21 +57,22 @@
     padding-top: 1px;
     padding-bottom: 1px;
     color: #000;
+    transition: 1s ease-in-out;
 }
 
 #fwd_btn:hover, #bk_btn:hover {
     color: #1a80b6;
     border-color: rgba(195, 195, 195, 1);
-    background-color: rgba(220, 220, 220, 1);
 }
 
 #fwd_btn:active, #bk_btn:active {
     color: #2d8cbc;
-    border-color: rgba(175, 175, 175, 1);
+    border-color: rgba(195, 195, 195, 1);
+    background-color: rgba(220, 220, 220, 1);
 
 }
 
-.header-bar .button:last-child {
+.header-bar .close_button {
     padding-left: 5px;
     padding-right: 5px;
 }
