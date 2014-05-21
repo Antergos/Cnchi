@@ -174,7 +174,7 @@ class InstallationAlongside(GtkBaseBox):
         except:
             txt = _("Can't import parted module! This installer won't work.")
             logging.error(txt)
-            show.fatal_error(txt)
+            #show.fatal_error(txt)
             device_list = []
 
         for dev in device_list:
