@@ -36,6 +36,7 @@ NM_SETTINGS = 'org.freedesktop.NetworkManager.Settings'
 NM_SETTINGS_CONN = 'org.freedesktop.NetworkManager.Settings.Connection'
 NM_SETTINGS_PATH = '/org/freedesktop/NetworkManager/Settings'
 NM_ERROR_NOSECRETS = 'org.freedesktop.NetworkManager.AgentManager.NoSecrets'
+DEVICE_TYPE_WIRED = 1
 DEVICE_TYPE_WIFI = 2
 NM_STATE_DISCONNECTED = 20
 NM_STATE_CONNECTING = 40

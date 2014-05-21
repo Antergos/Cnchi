@@ -85,6 +85,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         txt = _("Install Now!")
         self.forward_button.set_label(txt)
+        self.forward_button.set_always_show_image(False)
 
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Automatic Installation Mode"))

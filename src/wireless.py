@@ -28,10 +28,6 @@ from canonical import misc, nm
 
 from gtkbasebox import GtkBaseBox
 
-NAME = 'wireless'
-
-WEIGHT = 12
-
 class Wireless(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
