@@ -280,8 +280,6 @@ kde_settings(){
 	# Set User & Root environments
 	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
    	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
-   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
-   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
 	
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
