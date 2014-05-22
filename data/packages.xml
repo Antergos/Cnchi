@@ -47,7 +47,7 @@
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>numix-icon-theme</pkgname>
-	<pkgname>pacmanxg4</pkgname>
+        <pkgname>pacmanxg4</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>ttf-liberation</pkgname>
@@ -96,7 +96,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
-	<pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
+        <pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -110,7 +110,6 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -118,7 +117,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -162,7 +162,6 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
@@ -172,7 +171,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -196,14 +196,14 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
@@ -259,7 +259,6 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
@@ -277,7 +276,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -301,7 +301,8 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <!-- <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname> -->
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>terminology</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -326,7 +327,6 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>
         <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -340,7 +340,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-	<pkgname>numix-icon-theme-square</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>obconf</pkgname>
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
@@ -349,6 +350,7 @@
         <pkgname>parcellite</pkgname>
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
+        <pkgname>plank-theme-numix</pkgname>
         <pkgname>python2-xdg</pkgname>
         <pkgname>scrot</pkgname>
         <pkgname>tint2</pkgname>
@@ -370,7 +372,6 @@
         <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
-	<pkgname>numix-frost-themes</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
@@ -405,7 +406,8 @@
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-	<pkgname>numix-icon-theme-square-kde</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
@@ -484,6 +486,8 @@
 
     <filesystems>
         <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
+        <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
+        <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
         <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
         <pkgname>e2fsprogs</pkgname>        <!-- Ext2/3/4 filesystem utilities -->
         <pkgname>f2fs-tools</pkgname>       <!-- for Flash-Friendly File System -->
@@ -491,9 +495,7 @@
         <pkgname>nfs-utils</pkgname>        <!-- for Network File Systems (NFS)-->
         <pkgname>nilfs-utils</pkgname>      <!-- for nilfs2 support -->
         <pkgname>ntfs-3g</pkgname>          <!-- for NTFS support -->
-        <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
         <pkgname>reiserfsprogs</pkgname>    <!-- for reiser partitions -->
-        <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
         <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
     </filesystems>
 

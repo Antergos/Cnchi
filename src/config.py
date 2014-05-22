@@ -68,6 +68,7 @@ class Settings(object):
             'password' : '',
             'rankmirrors_done' : False,
             'require_password' : True,
+            'ruuid' : '',
             'stop_all_threads' : False,
             'third_party_software' : False,
             'timezone_human_zone' : '',
