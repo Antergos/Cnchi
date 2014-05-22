@@ -4,6 +4,10 @@
 # This script is a helper that the developers use to call Cnchi (testing purposes only)
 # Please, do not use if your intention is to do a "normal" installation
 
+sudo rm /usr/share/cnchi
+cnchi_dir=`pwd`
+sudo ln -s $cnchi_dir /usr/share/cnchi
+
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _CACHE="/pkg"
