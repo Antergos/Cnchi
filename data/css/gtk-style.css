@@ -55,6 +55,7 @@
     color: #fff /* change percentage color to white when progress bar fills over it */
 }
 
+/*
 #fwd_btn, #bk_btn {
     padding-left: 7px;
     padding-right: 7px;
@@ -75,6 +76,7 @@
     background-color: rgba(220, 220, 220, 1);
 
 }
+*/
 
 .header-bar .close_button {
     padding-left: 5px;

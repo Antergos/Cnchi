@@ -17,7 +17,15 @@ set -e
 # along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
 
 # Disable 10_linux
-chmod -x /etc/grub.d/10_linux
+
+if [ -f /etc/grub.d/10_linux ]; then
+    chmod -x /etc/grub.d/10_linux
+fi
+
+# Disable 10_archlinux
+if [ -f /etc/grub.d/10_archlinux ]; then
+    chmod -x /etc/grub.d/10_archlinux
+fi
 
 prefix="/usr"
 exec_prefix="/usr"
