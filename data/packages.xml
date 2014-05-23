@@ -401,7 +401,8 @@
         <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
-        <pkgname>kdeutils-kwallet</pkgname>
+        <!-- <pkgname>kdeutils-kwallet</pkgname> Does not exist in KDE 4.13 -->
+	<pkgname>kdeutils-kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
