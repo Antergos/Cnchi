@@ -289,6 +289,8 @@ kde_settings(){
 	# Set User & Root environments
 	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
    	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
+	chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
+	chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 	
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
