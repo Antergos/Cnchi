@@ -135,9 +135,18 @@ cinnamon_settings(){
 
 	# Temporary alternative until upower bug is fixed.
 	if [[ $6 -eq "True" ]]; then 
-		echo "#!/bin/bash" > ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
-		echo "/usr/bin/cbatticon &" >> ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
-		chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon
+		cat << EOF > ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
+[Desktop Entry]
+Name=cbatticon
+Comment=Lightweight system tray battery indicator.
+Icon=battery
+Type=Application
+Exec=/usr/bin/cbatticon -i symbolic -l 15 -c "systemctl poweroff"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+EOF
+		chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
 	fi
 
 	# Set skel directory
