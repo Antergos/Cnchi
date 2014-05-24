@@ -104,9 +104,9 @@ class InstallationAsk(GtkBaseBox):
 
         # In case we're coming from an installer screen, we change
         # to go-next stock button and we activate it
-        self.forward_button.set_label("")
-        image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
-        self.forward_button.set_image(image1)
+        #self.forward_button.set_label("")
+        #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
+        #self.forward_button.set_image(image1)
         self.forward_button.set_always_show_image(True)        
         self.forward_button.set_sensitive(True)
 

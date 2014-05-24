@@ -55,10 +55,10 @@
     color: #fff /* change percentage color to white when progress bar fills over it */
 }
 
-/*
+
 #fwd_btn, #bk_btn {
-    padding-left: 7px;
-    padding-right: 7px;
+    /*padding-left: 7px;
+    padding-right: 7px;*/
     padding-top: 1px;
     padding-bottom: 1px;
     color: #000;
@@ -76,12 +76,11 @@
     background-color: rgba(220, 220, 220, 1);
 
 }
-*/
 
-.header-bar .close_button {
+/*.header-bar .close_button {
     padding-left: 5px;
     padding-right: 5px;
-}
+}*/
 
 .toolbar .separator, .separator,
 .header-bar GtkSeparatorToolItem,

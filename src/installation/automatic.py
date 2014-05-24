@@ -83,9 +83,9 @@ class InstallationAutomatic(GtkBaseBox):
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
 
-        txt = _("Install Now!")
-        self.forward_button.set_label(txt)
-        self.forward_button.set_always_show_image(False)
+        #txt = _("Install Now!")
+        #self.forward_button.set_label(txt)
+        #self.forward_button.set_always_show_image(False)
 
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Automatic Installation Mode"))

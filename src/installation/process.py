@@ -1291,9 +1291,11 @@ class InstallationProcess(multiprocessing.Process):
 
     def enable_services(self, services):
         """ Enables all services that are in the list 'services' """
+        self.chroot_mount_special_dirs()
         for name in services:
             self.chroot(['systemctl', 'enable', name + ".service"])
             logging.debug(_("Enabled %s service."), name)
+        self.chroot_umount_special_dirs()
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
@@ -1448,6 +1450,8 @@ class InstallationProcess(multiprocessing.Process):
         #if self.settings.get("feature_aur"):
         #    logging.debug(_("Configuring AUR..."))
 
+        self.chroot_mount_special_dirs()
+        
         if self.settings.get("feature_bluetooth"):
             logging.debug(_("Configuring bluetooth..."))
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/bluetooth.service")
@@ -1486,7 +1490,9 @@ class InstallationProcess(multiprocessing.Process):
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])
-
+        
+        self.chroot_umount_special_dirs()
+        
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
@@ -1651,7 +1657,7 @@ class InstallationProcess(multiprocessing.Process):
         self.generate_pacmanconf()
 
         logging.debug(_("Generated /etc/pacman.conf"))
-
+        
         desktop = self.settings.get('desktop')
 
         # Enable services
@@ -1689,6 +1695,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure detected hardware
         try:
+            self.chroot_mount_special_dirs()
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
             logging.debug(_("Running post-install scripts from hardware module..."))
@@ -1697,6 +1704,8 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s") % err)
+        finally:
+            self.chroot_umount_special_dirs()
             
         # Setup user
 
