@@ -280,8 +280,12 @@ kde_settings(){
    	cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
-	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/home/${USER_NAME}
-   	cp -R ${DESTDIR}/etc/skel/.* ${DESTDIR}/root
+	cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
+	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+	cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+	cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
+	cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
+	cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/root
 	chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
 	chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 	
