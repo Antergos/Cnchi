@@ -1284,7 +1284,8 @@ class InstallationProcess(multiprocessing.Process):
         """ Enables all services that are in the list 'services' """
         self.chroot_mount_special_dirs()
         for name in services:
-            self.chroot(['systemctl', 'enable', name + ".service"])
+            #self.chroot(['systemctl', 'enable', name + ".service"])
+            self.chroot(['systemctl', '-f', 'enable', name])
             logging.debug(_("Enabled %s service."), name)
         self.chroot_umount_special_dirs()
 

@@ -48,7 +48,7 @@ class Virtualbox(Hardware):
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
         super().chroot(self, ["systemctl", "disable", "openntpd"], dest_dir)
-        super().chroot(self, ["systemctl", "enable", "vboxservice"], dest_dir)
+        super().chroot(self, ["systemctl", "-f", "enable", "vboxservice"], dest_dir)
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
