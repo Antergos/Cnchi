@@ -127,9 +127,9 @@ class UserInfo(GtkBaseBox):
         self.header.set_subtitle(_("Create Your User Account"))
 
         # Restore forward button text (from install now! to go-next)
-        self.forward_button.set_label("")
-        image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
-        self.forward_button.set_image(image1)
+        #self.forward_button.set_label("")
+        #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
+        #self.forward_button.set_image(image1)
         self.forward_button.set_always_show_image(True)
         
     def hide_widgets(self):
