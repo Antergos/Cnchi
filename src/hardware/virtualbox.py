@@ -49,6 +49,9 @@ class Virtualbox(Hardware):
             modules.write("vboxvideo\n")
         super().chroot(self, ["systemctl", "disable", "openntpd"], dest_dir)
         super().chroot(self, ["systemctl", "-f", "enable", "vboxservice"], dest_dir)
+        
+        # This fixes bug in virtualbox-guest-modules package
+        super().chroot(self, ["depmod", "-a"], dest_dir)
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
