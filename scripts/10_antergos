@@ -17,6 +17,7 @@ set -e
 # along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
 
 # Disable 10_linux
+
 if [ -f /etc/grub.d/10_linux ]; then
     chmod -x /etc/grub.d/10_linux
 fi
