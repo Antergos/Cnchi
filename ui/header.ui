@@ -33,7 +33,7 @@
                 <!--            <property name="image_position">right</property>-->
                 <!--            <property name="always_show_image">True</property>-->
                 <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
-                <!--
+                
                 <child>
                     <object class="GtkArrow" id="bk_arrow">
                         <property name="visible">True</property>
@@ -44,7 +44,7 @@
                         <property name="height_request">25</property>
                     </object>
                 </child>
-                -->
+               
             </object>
             <packing>
                 <property name="pack_type">end</property>
@@ -67,18 +67,18 @@
                 <!--            <property name="use_stock">True</property>-->
                 <!--            <property name="always_show_image">True</property>-->
                 <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
-                <!--
+                
                 <child>
                     <object class="GtkArrow" id="fwd_arrow">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="arrow_type">left</property>
-                        <property name="shadow_type">etched-in</property>
-                        <property name="width_request">50</property>
+                        <property name="shadow_type">in</property>
+                        <property name="width_request">25</property>
                         <property name="height_request">25</property>
                     </object>
                 </child>
-                -->
+               
             </object>
             <packing>
                 <property name="pack_type">end</property>
