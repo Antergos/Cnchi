@@ -51,7 +51,9 @@
     -GtkProgressBar-min-horizontal-bar-height: 12;
 }
 
-#progressbar row:selected:focused {
+#progressbar row:selected:focused,
+#i_progressbar row:selected:focused, 
+#a_progressbar row:selected:focused {
     color: #fff; /* change percentage color to white when progress bar fills over it */
 }
 

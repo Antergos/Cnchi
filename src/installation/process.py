@@ -1699,10 +1699,6 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
-            try:
-                self.chroot(['depmod', '-a'])
-            except Exception as err:
-                logging.debug("depmod failed with error: %s" % err)
 
         if self.settings.get('require_password') is False:
             self.chroot(['groupadd', 'autologin'])
