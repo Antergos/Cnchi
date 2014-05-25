@@ -25,6 +25,7 @@
 import os
 import subprocess
 import re
+import tempfile
 
 # When testing, no _() is available
 try:
