@@ -278,11 +278,14 @@ kde_settings(){
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
    	wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
-   	xz -d -qq /tmp/master.tar.xz
-   	cd ${DESTDIR}
-   	tar -xf /tmp/master.tar
-   	#cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
-   	#cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
+   	#xz -d -qq /tmp/master.tar.xz
+   	#cd ${DESTDIR}
+    cd /tmp
+   	tar xfJ /tmp/master.tar.xz
+    chown -R root:root /tmp/etc
+    chown -R root:root /tmp/usr
+   	cp -R /tmp/etc/* ${DESTDIR}/etc
+   	cp -R /tmp/usr/* ${DESTDIR}/usr
 
 	# Set User & Root environments
 	cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
