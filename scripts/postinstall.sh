@@ -272,12 +272,17 @@ kde_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+	# Force QtCurve to use our theme
+	rm -R ${DESTDIR}/usr/share/apps/QtCurve/
 	
 	# Get zip file from github, unzip it and copy all setup files in their right places.
-   	wget -q -O /tmp/master.zip "http://github.com/Antergos/kde-setup/archive/master.zip"
-   	unzip -o -qq /tmp/master.zip -d /tmp
-   	cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
-   	cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
+   	wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
+   	xz -d -qq /tmp/master.tar.xz
+   	cd ${DESTDIR}
+   	tar -xf /tmp/master.tar
+   	#cp -R /tmp/kde-setup-master/etc ${DESTDIR}/
+   	#cp -R /tmp/kde-setup-master/usr ${DESTDIR}/
 
 	# Set User & Root environments
 	cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}

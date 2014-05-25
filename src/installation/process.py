@@ -1123,8 +1123,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_umount_special_dirs()
 
-        core_path = os.path.join(self.dest_dir, "boot/grub/i386-pc/core.img")
-        if os.path.exists(core_path):
+        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+        if "Antergos" in open(cfg).read():
             self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
             self.settings.set('bootloader_ok', True)
         else:
@@ -1697,7 +1697,8 @@ class InstallationProcess(multiprocessing.Process):
         if self.vbox:
             # Why there is no vboxusers group?
             self.chroot(['groupadd', 'vboxusers'])
-            default_groups += ',vboxusers'
+            default_groups += ',vboxusers,vboxsf'
+            self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
             self.chroot(['groupadd', 'autologin'])

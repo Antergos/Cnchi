@@ -9,7 +9,7 @@
     <property name="spacing">12</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow">
-        <property name="width_request">797</property>
+        <!--<property name="width_request">797</property>-->
         <property name="height_request">282</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
