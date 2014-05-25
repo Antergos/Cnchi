@@ -107,6 +107,8 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
+    tmp_dir = tempfile.mkdtemp()
+
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -116,14 +118,13 @@ def get_os_dict():
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
                     try:
-                        subprocess.call(["mount", device, "/mnt"], stderr=subprocess.DEVNULL)
-                        oses[device] = get_os("/mnt")
-                        subprocess.call(["umount", "-l", "/mnt"], stderr=subprocess.DEVNULL)
+                        subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
+                        oses[device] = get_os(tmp_dir)
+                        subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
                     except AttributeError:
-                        subprocess.call(["mount", device, "/mnt"])
-                        oses[device] = get_os("/mnt")
-                        subprocess.call(["umount", "-l", "/mnt"])
-
+                        subprocess.call(["mount", device, tmp_dir])
+                        oses[device] = get_os(tmp_dir)
+                        subprocess.call(["umount", "-l", tmp_dir])
     return oses
 
 if __name__ == '__main__':
