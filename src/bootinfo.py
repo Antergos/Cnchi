@@ -126,7 +126,6 @@ def get_os_dict():
                         subprocess.call(["mount", device, tmp_dir])
                         oses[device] = get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir])
-
     return oses
 
 if __name__ == '__main__':
