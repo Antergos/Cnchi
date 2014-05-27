@@ -5,8 +5,8 @@ uefi="/sys/firmware/efi"
 vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
 notify="$1"
 notify_user () {
-    if [[ "${notify}" = "-n" ]]; then
-        notify-send -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
+    if [[ "${notify}" -eq "-n" ]]; then
+        notify-send -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
     fi
 }
 
@@ -29,15 +29,16 @@ if ! [ -f "${previous}" ]; then
 	echo "Installing missing packages..."
 	# Check if system is UEFI boot.
 	if [ -d "${uefi}" ]; then
-		pacman -Syy git grub os-prober efibootmgr f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
+		pacman -Syy git --noconfirm --needed;
 	else
-		pacman -Syy git grub os-prober f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
+		pacman -Syy git --noconfirm --needed;
 	fi
 	# Enable kernel modules and other services
-	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then
+	if [[ "${vbox_chk}" -eq "VirtualBox" ]] && [[ -d "${uefi}" ]]; then
+	    notify_user "VirtualBox detected. Checking kernel modules and starting services."
 		echo "VirtualBox detected. Checking kernel modules and starting services."
 		modprobe -a vboxsf f2fs efivarfs dm-mod && systemctl start vboxservice;
-	elif [[ "${vbox_chk}" == "VirtualBox" ]]; then
+	elif [[ "${vbox_chk}" -eq "VirtualBox" ]]; then
 		modprobe -a vboxsf f2fs dm-mod && systemctl start vboxservice;
 	else
 		modprobe -a f2fs dm-mod;
@@ -49,8 +50,14 @@ if ! [ -f "${previous}" ]; then
 	notify_user "Getting latest version of Cnchi from testing branch..."
 	echo "Getting latest version of Cnchi from testing branch..."
 	# Check commandline arguments to choose repo
-	if [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
-		git clone https://github.com/"$2"/Cnchi.git cnchi;
+	if [[ "$1" != "-n" ]]; then
+	    if [[ "$1" -eq "-d" ]] || [[ "$1" -eq "--dev-repo" ]]; then
+		    git clone https://github.com/"$2"/Cnchi.git cnchi;
+		fi
+	elif [[ "$1" -eq "-n" ]]; then
+	    if [[ "$2" -eq "-d" ]] || [[ "$2" -eq "--dev-repo" ]]; then
+		    git clone https://github.com/"$3"/Cnchi.git cnchi;
+		fi
 	else
 		git clone https://github.com/Antergos/Cnchi.git cnchi;
 	fi
@@ -59,6 +66,7 @@ if ! [ -f "${previous}" ]; then
 else
     notify_user "Previous testing setup detected, skipping downloads..."
 	echo "Previous testing setup detected, skipping downloads..."
+	notify_user "Verifying that nothing is mounted from a previous install attempt."
 	echo "Verifying that nothing is mounted from a previous install attempt."
 	umount -lf /install/boot >/dev/null 2&>1
 	umount -lf /install >/dev/null 2&>1
@@ -75,22 +83,21 @@ notify_user "Starting Cnchi..."
 echo "Starting Cnchi..."
 # Are we using an alternate PKG cache?
 # TODO Remove this nonsense and use proper command argument processing
-if [ "$1" != "-d" ] && [ "$1" != "--dev-repo" ] && [ "$1" != "" ]; then
-    if [ "$1" = "-c" ] || [ "$1" = "--cache" ]; then
-        if [ "$2" != "" ]; then
-            if [ "$3" = "-z" ]; then
-                cnchi -d -v -z -c "$2" -p /usr/share/cnchi/data/packages.xml & exit 0;
-            else
-                cnchi -d -v -c "$2" -p /usr/share/cnchi/data/packages.xml & exit 0;
-            fi
-        else
-            cnchi -d -v -c /media/sf_data/PKG-CACHE/pkg/ -p /usr/share/cnchi/data/packages.xml & exit 0;
-        fi
+if [[ "$1" != "-n" ]] && [[ "$1" != "" ]]; then
+    if [[ "$1" -eq "-d" ]] || [[ "$1" -eq "--dev-repo" ]] || [[ "$1" -eq "-z" ]]; then
+        cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml & exit 0;
+    else
+        cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit 0;
     fi
-elif [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
-    cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml & exit 0;
+elif [[ "$1" -eq "-n" ]]; then
+    if [[ "$2" -eq "-d" ]] || [[ "$2" -eq "--dev-repo" ]] || [[ "$2" -eq "-z" ]]; then
+        cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml & exit 0;
+    else
+        cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit 0;
+    fi
 else
-    cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit 0;
+     cnchi -d -v  -p /usr/share/cnchi/data/packages.xml & exit 0;
 fi
+
 
 exit 1;

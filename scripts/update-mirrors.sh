@@ -7,9 +7,9 @@
 # will output the speed test results to STDOUT.
 
 if [ -f /usr/bin/reflector ]; then
-    reflector -l 30 -p http -f 5 --save /etc/pacman.d/mirrorlist
+    reflector -l 30 -p http -f 10 --save /etc/pacman.d/mirrorlist
 fi
 
 if [ -f /usr/bin/rankmirrors ]; then
-    rankmirrors -n 0 -r antergos antergos-mirrorlist > /etc/pacman.d/antergos-mirrorlist
+    rankmirrors -n 0 -r antergos /etc/pacman.d/antergos-mirrorlist > /etc/pacman.d/antergos-mirrorlist
 fi

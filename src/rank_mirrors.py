@@ -36,6 +36,7 @@ class AutoRankmirrorsThread(threading.Thread):
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
         self.script = "/usr/share/cnchi/scripts/update-mirrors.sh"
+        self.mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
 
     def run(self):
         """ Run thread """
@@ -49,6 +50,17 @@ class AutoRankmirrorsThread(threading.Thread):
         if not os.path.exists(self.script):
             logging.warning(_("Can't find update mirrors script"))
             return
+
+        # Uncomment antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
+        with open(self.mirrorlist) as mirrors:
+            lines = [x.strip() for x in mirrors.readlines()]
+        for i in range(len(lines)):
+            if lines[i].startswith("#Server"):
+                    lines[i] = lines[i].lstrip("#")
+            if lines[i].startswith("Server"):
+                    lines[i] = "#" + lines[i]
+        with open(self.mirrorlist, 'w') as mirrors:
+            mirrors.write("\n".join(lines) + "\n")
 
         # Run rankmirrors command
         try:
