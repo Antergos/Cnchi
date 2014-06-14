@@ -53,8 +53,6 @@ EOF
 }
 
 gnome_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -103,8 +101,6 @@ EOF
 }
 
 cinnamon_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -156,8 +152,6 @@ EOF
 }
 
 xfce_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
@@ -187,8 +181,6 @@ xfce_settings(){
 }
 
 openbox_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
