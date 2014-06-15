@@ -1,22 +1,26 @@
-= Cnchi =
+# Cnchi
 
 **Graphical Installer for Antergos Linux (FKA Cinnarch Linux)**
 
 Usage:
-```lang=sh
-sudo -E cnchi.py```
+```
+lang=sh
+sudo -E cnchi.py
+```
 
 To create logs to help debug problems:
-```lang=sh
-sudo -E cnchi.py -dv```
+```
+lang=sh
+sudo -E cnchi.py -dv
+```
 
-==Translations
+## Translations
 
 We manage our translations in transifex:
 
  - https://www.transifex.com/projects/p/antergos/
 
-==Dependencies
+## Dependencies
 
  - gtk3
  - python3
@@ -32,12 +36,10 @@ We manage our translations in transifex:
  - hwinfo
  - upower
  
-==Unit tests
-
+## Unit tests
  - python-mock 
 
-==Fonts needed by the keyboard widget
-
+## Fonts needed by the keyboard widget
  - ttf-aboriginal-sans
  - ttf-indic-otf
  - ttf-khmer
