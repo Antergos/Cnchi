@@ -975,6 +975,18 @@ class InstallationProcess(multiprocessing.Process):
             
         logging.debug(_("fstab written."))
 
+    def set_scheduler(self):
+        rule_src = os.path.join(self.settings.get('cnchi'), 'scripts/60-schedulers.rules')
+        rule_dst = os.path.join(self.dest_dir, "etc/udev/rules.d/60-schedulers.rules")
+        try:
+            shutil.copy2(rule_src, rule_dst)
+            os.chmod(rule_dst, 755)
+        except FileNotFoundError:
+            logging.debug(_("Could not copy udev rule for SSDs"))
+        except FileExistsError:
+            pass
+
+
     def install_bootloader(self):
         """ Installs boot loader """
 
@@ -1613,6 +1625,11 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_fstab()
         logging.debug(_("fstab file generated."))
 
+        # If SSD was detected copy udev rule for deadline scheduler
+        if self.ssd:
+            self.set_scheduler()
+            logging.debug(_("SSD udev rule copied successfully"))
+
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
@@ -1872,12 +1889,10 @@ class InstallationProcess(multiprocessing.Process):
 
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
-        # Temporary alternative for Cinnamon upower bug.
-        laptop = self.settings.get('laptop')
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
-                                   keyboard_layout, keyboard_variant, laptop], timeout=300)
+                                   keyboard_layout, keyboard_variant], timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as err:
             logging.error(err.output)
