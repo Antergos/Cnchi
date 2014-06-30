@@ -24,8 +24,9 @@ import os
 import subprocess
 import logging
 import show_message as show
-#import parted3.partition_module as pm
 import parted3.fs_module as fs
+
+#import parted3.partition_module as pm
 #import parted3.lvm as lvm
 #import parted3.used_space as used_space
 
@@ -546,7 +547,7 @@ class AutoPartition(object):
         printk(True)
 
         # Wait until /dev initialized correct devices
-        subprocess.check_call(["udevadm", "settle", "--quiet"])
+        subprocess.check_call(["udevadm", "settle"])
 
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
