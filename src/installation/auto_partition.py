@@ -542,7 +542,7 @@ class AutoPartition(object):
         printk(True)
 
         # Wait until /dev initialized correct devices
-        subprocess.check_call(["udevadm", "settle", "--quiet"])
+        subprocess.check_call(["udevadm", "settle"])
 
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
