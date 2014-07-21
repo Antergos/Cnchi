@@ -53,8 +53,6 @@ EOF
 }
 
 gnome_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -103,8 +101,6 @@ EOF
 }
 
 cinnamon_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# Set gsettings input-source
 	if [[ "${KEYBOARD_VARIANT}" != '' ]];then
@@ -153,11 +149,12 @@ EOF
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	
+	# Populate our wallpapers in Cinnamon Settings
+	chroot ${DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${USER_NAME}/.cinnamon/backgrounds/antergos" ${USER_NAME}
 }
 
 xfce_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
@@ -187,8 +184,6 @@ xfce_settings(){
 }
 
 openbox_settings(){
-	# Set Adwaita cursor theme
-	chroot ${DESTDIR} ln -s /usr/share/icons/Adwaita /usr/share/icons/default
 
 	# copy antergos menu icon
 	mkdir -p ${DESTDIR}/usr/share/antergos/
