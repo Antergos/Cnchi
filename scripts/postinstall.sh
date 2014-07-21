@@ -149,6 +149,9 @@ EOF
 
 	## Set defaults directories
 	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+	
+	# Populate our wallpapers in Cinnamon Settings
+	chroot ${DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${USER_NAME}/.cinnamon/backgrounds/antergos" ${USER_NAME}
 }
 
 xfce_settings(){
