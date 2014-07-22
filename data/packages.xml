@@ -42,12 +42,23 @@
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>chromium</pkgname>
+        <pkgname>gst-libav</pkgname>
+        <pkgname>gst-plugins-bad</pkgname>
+        <pkgname>gst-plugins-base</pkgname>
+        <pkgname>gst-plugins-good</pkgname>
+        <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gst-vaapi</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
+        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
         <pkgname>numix-icon-theme</pkgname>
+        <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
         <pkgname>pacmanxg4</pkgname>
+        <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
         <pkgname>ttf-liberation</pkgname>
@@ -102,14 +113,6 @@
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
         <pkgname>gnome-tweak-tool</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -117,8 +120,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -130,7 +131,6 @@
 
     <cinnamon_desktop>
         <pkgname>antergos-gnome-defaults-list</pkgname>
-        <pkgname>cbatticon</pkgname> <!--Until Cinnamon bug is fixed-->
         <pkgname>cdrkit</pkgname>
         <pkgname>cinnamon</pkgname>
         <pkgname>cinnamon-control-center</pkgname>
@@ -154,14 +154,6 @@
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
@@ -171,8 +163,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -188,22 +178,12 @@
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>ristretto</pkgname>
@@ -222,24 +202,13 @@
         <pkgname>xnoise</pkgname>
     </xfce_desktop>
 
-    <razor_desktop>
+    <lxqt_desktop>
         <pkgname>clementine</pkgname>
-        <pkgname>kdeartwork-desktopthemes</pkgname>
-        <pkgname>kdebase-konsole</pkgname>
-        <pkgname>kdegraphics-gwenview</pkgname>
-        <pkgname>kdegraphics-ksnapshot</pkgname>
-        <pkgname>kdenetwork-kopete</pkgname>
-        <pkgname>kdesdk-kate</pkgname>
-        <pkgname>kdeutils-kcalc</pkgname>
-        <pkgname>kovpn</pkgname>
         <pkgname>openbox</pkgname>
-        <!--<pkgname>openbox-themes</pkgname>-->
-        <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname>
-        <pkgname>qtfm</pkgname>
-        <pkgname>razor-qt</pkgname>
+        <pkgname>pcmanfm-qt</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
-    </razor_desktop>
+    </lxqt_desktop>
 
     <mate_desktop>
         <pkgname>atril</pkgname>
@@ -251,14 +220,6 @@
         <pkgname>eom</pkgname>
         <pkgname>galculator-gtk2</pkgname>
         <pkgname>gksu</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>mate</pkgname> <!-- Group -->
@@ -276,8 +237,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -340,8 +299,6 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
         <pkgname>obconf</pkgname>
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
@@ -362,15 +319,14 @@
         <pkgname>xnoise</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
-        <!--<pkgname>zukitwo-theme-openbox</pkgname>
-        <pkgname>zukitwo-themes</pkgname>-->
     </openbox_desktop>
 
     <kde_desktop>
+        <pkgname>aspell-en</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
-        <pkgname>digikam</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
+        <pkgname>gimp</pkgname>
         <pkgname>grub2-editor</pkgname>
         <pkgname>k3b</pkgname>
         <pkgname>kde-gtk-config</pkgname>
@@ -401,13 +357,11 @@
         <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
-        <!-- <pkgname>kdeutils-kwallet</pkgname> Does not exist in KDE 4.13 -->
-	<pkgname>kdeutils-kwalletmanager</pkgname>
+        <pkgname>kdeutils-kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>numix-frost-themes</pkgname>
         <pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
@@ -416,7 +370,6 @@
         <pkgname>qtcurve-utils</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
-        <pkgname>webkitgtk</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
     </kde_desktop>
 
@@ -449,17 +402,17 @@
             <pkgname conflicts='xfburn'>gnome-extra</pkgname>
         </gnome_extra>
         <fonts>
-            <!-- <pkgname>ttf-droid</pkgname> -->
             <pkgname>ttf-freefont</pkgname>
             <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
         </fonts>
         <office>
             <pkgname>libreoffice-calc</pkgname>
-            <pkgname>libreoffice-common</pkgname>
+            <pkgname conflicts='libreoffice-installer'>libreoffice-common</pkgname>
             <pkgname lib='gtk'>libreoffice-gnome</pkgname>
             <pkgname>libreoffice-impress</pkgname>
             <pkgname lib='qt'>libreoffice-kde4</pkgname>
             <pkgname>libreoffice-writer</pkgname>
+            <pkgname>hunspell-en</pkgname>
         </office>
         <!-- visual effects for openbox -->
         <visual>
