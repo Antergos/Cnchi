@@ -708,7 +708,7 @@ class InstallationProcess(multiprocessing.Process):
             raise InstallError("Can't initialize pyalpm: %s" % err)
         return alpm       
 
-    def do_install(self, download_only=False):
+    def do_install(self, download_only=False, kde=False):
         pacman_options = {}
         if download_only:
             pacman_options["downloadonly"] = True
@@ -721,7 +721,13 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(txt)
         
         alpm = self.init_alpm()
-        result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
+
+        if kde:
+            pkglist = []
+            pkglist.append('base')
+            result = alpm.do_install(pkgs=pkglist, conflicts=self.conflicts, options=pacman_options)
+        else:
+            result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
         del alpm
 
         if result == 1:
@@ -740,7 +746,12 @@ class InstallationProcess(multiprocessing.Process):
         
         # Ok, now we can install all downloaded packages
         # (alpm will try to download again those that couldn't download before)
-        self.do_install()
+        if self.desktop == "kde" or self.desktop == "KDE":
+            logging.debug('KDE will be installed. Applying alpm work-around')
+            self.packages.remove('base')
+            self.do_install(kde=True)
+            logging.debug('Installed filesystem pkg and its deps. Now installing all pkgs.')
+            self.do_install()
 
         self.chroot_umount_special_dirs()
         
