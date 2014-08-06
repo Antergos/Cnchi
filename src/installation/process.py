@@ -1683,8 +1683,6 @@ class InstallationProcess(multiprocessing.Process):
         sudoers_path = os.path.join(self.dest_dir, "etc/sudoers.d/10-installer")
         with open(sudoers_path, "w") as sudoers:
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
-        while not os.path.exists(sudoers_path):
-            time.sleep(2)
         subprocess.check_call(["chmod", "440", sudoers_path])
         logging.debug(_("Sudo configuration for user %s done."), username)
 
