@@ -43,6 +43,7 @@ def fatal_error(message):
     sys.exit(1)
 
 def error(message):
+    message = str(message)
     logging.error(message)
     msg_dialog = Gtk.MessageDialog(transient_for=None,
                                    modal=True,
@@ -55,6 +56,7 @@ def error(message):
     msg_dialog.destroy()
 
 def warning(message):
+    message = str(message)
     logging.warning(message)
     msg_dialog = Gtk.MessageDialog(transient_for=None,
                                    modal=True,
@@ -67,6 +69,7 @@ def warning(message):
     msg_dialog.destroy()
 
 def message(message):
+    message = str(message)
     logging.info(message)
     msg_dialog = Gtk.MessageDialog(transient_for=None,
                                    modal=True,
@@ -78,6 +81,7 @@ def message(message):
     msg_dialog.run()
 
 def question(message):
+    message = str(message)
     logging.info(message)
     msg_dialog = Gtk.MessageDialog(transient_for=None,
                                    modal=True,

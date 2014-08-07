@@ -744,10 +744,9 @@ class InstallationProcess(multiprocessing.Process):
         # (alpm will try to download again those that couldn't download before)
         if self.desktop == "kde" or self.desktop == "KDE":
             logging.debug('KDE will be installed. Applying alpm work-around')
-            self.packages.remove('base')
             self.do_install(kde=True)
             logging.debug('Installed filesystem pkg and its deps. Now installing all pkgs.')
-            self.do_install()
+        self.do_install()
 
         self.chroot_umount_special_dirs()
         

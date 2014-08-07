@@ -29,16 +29,16 @@ if ! [ -f "${previous}" ]; then
 	echo "Installing missing packages..."
 	# Check if system is UEFI boot.
 	if [ -d "${uefi}" ]; then
-		pacman -Syy git grub os-prober efibootmgr f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
+		pacman -Syy git efibootmgr --noconfirm --needed;
 	else
-		pacman -Syy git grub os-prober f2fs-tools python-mako python-mock python-lxml --noconfirm --needed;
+		pacman -Syy git --noconfirm --needed;
 	fi
 	# Enable kernel modules and other services
 	if [[ "${vbox_chk}" == "VirtualBox" ]] && [ -d "${uefi}" ]; then
 		echo "VirtualBox detected. Checking kernel modules and starting services."
-		modprobe -a vboxsf f2fs efivarfs dm-mod && systemctl start vboxservice;
+		modprobe -a vboxsf f2fs efivarfs dm-mod && systemctl restart vboxservice;
 	elif [[ "${vbox_chk}" == "VirtualBox" ]]; then
-		modprobe -a vboxsf f2fs dm-mod && systemctl start vboxservice;
+		modprobe -a vboxsf f2fs dm-mod && systemctl restart vboxservice;
 	else
 		modprobe -a f2fs dm-mod;
 	fi
