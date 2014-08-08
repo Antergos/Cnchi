@@ -27,9 +27,11 @@
     <show-object-properties value="true" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
-    <group-history-entries value="false" />
     <method-browser />
-    <execution-inputs />
+    <execution-history>
+      <group-entries value="true" />
+      <execution-inputs />
+    </execution-history>
   </component>
   <component name="DBNavigator.Project.Settings">
     <general-settings>
@@ -123,6 +125,13 @@
         <prompt-schema-selection value="true" />
       </lookup-filters>
     </navigation-settings>
+    <dataset-grid-settings>
+      <tracking-columns>
+        <columnNames value="" />
+        <visible value="true" />
+        <editable value="false" />
+      </tracking-columns>
+    </dataset-grid-settings>
     <dataset-editor-settings>
       <text-editor-popup>
         <active value="false" />
