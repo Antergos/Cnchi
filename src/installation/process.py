@@ -715,8 +715,8 @@ class InstallationProcess(multiprocessing.Process):
             txt = _("Downloading packages...")
         else:
             pacman_options["needed"] = True
-             if self.settings.get("desktop") is "kde":
-                    pacman_options["force"]=True
+            if self.settings.get("desktop") is "kde":
+                pacman_options["force"]=True
             txt = _("Installing packages...")
         logging.debug(txt)
         
