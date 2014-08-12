@@ -10,6 +10,10 @@ if [ -f /usr/bin/reflector ]; then
     reflector -l 30 -p http -f 10 --save /etc/pacman.d/mirrorlist
 fi
 
+# Remember that running rankmirrors takes time. We use a .new file to avoid getting an empty antergos-mirrorlist
+# if the user exists before rankmirrors can finish
 if [ -f /usr/bin/rankmirrors ]; then
-    rankmirrors -n 0 -r antergos /etc/pacman.d/antergos-mirrorlist > /etc/pacman.d/antergos-mirrorlist
+    rankmirrors -n 0 -r antergos /etc/pacman.d/antergos-mirrorlist > /etc/pacman.d/antergos-mirrorlist.new
+    cp /etc/pacman.d/antergos-mirrorlist /etc/pacman.d/antergos-mirrorlist.old
+    cp /etc/pacman.d/antergos-mirrorlist.new /etc/pacman.d/antergos-mirrorlist
 fi

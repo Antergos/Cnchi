@@ -27,6 +27,7 @@ import subprocess
 import logging
 import time
 import os
+import shutil
 import canonical.misc as misc
 
 class AutoRankmirrorsThread(threading.Thread):
@@ -36,7 +37,7 @@ class AutoRankmirrorsThread(threading.Thread):
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
         self.script = "/usr/share/cnchi/scripts/update-mirrors.sh"
-        self.mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
+        self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
 
     def run(self):
         """ Run thread """
@@ -52,19 +53,28 @@ class AutoRankmirrorsThread(threading.Thread):
             return
 
         # Uncomment antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
-        with open(self.mirrorlist) as mirrors:
+        
+        with open(self.antergos_mirrorlist) as mirrors:
             lines = [x.strip() for x in mirrors.readlines()]
+        
+        autoselect = "http://mirrors.antergos.com/$repo/$arch"
         for i in range(len(lines)):
-            if lines[i].startswith("#Server"):
-                    lines[i] = lines[i].lstrip("#")
-            if lines[i].startswith("Server"):
-                    lines[i] = "#" + lines[i]
-        with open(self.mirrorlist, 'w') as mirrors:
-            mirrors.write("\n".join(lines) + "\n")
+            if lines[i].startswith("Server") and autoselect in lines[i]:
+                lines[i] = "#" + lines[i]
+            elif lines[i].startswith("#Server") and autoselect not in lines[i]:
+                lines[i] = lines[i].lstrip("#")
+                
+        with misc.raised_privileges():
+            # Backup original file
+            shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi")
+            # Write new one
+            with open(self.antergos_mirrorlist, 'w') as mirrors:
+                mirrors.write("\n".join(lines) + "\n")
 
         # Run rankmirrors command
         try:
-            self.rankmirrors_pid = subprocess.Popen([self.script]).pid
+            with misc.raised_privileges():
+                self.rankmirrors_pid = subprocess.Popen([self.script]).pid
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(err)
