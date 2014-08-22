@@ -209,7 +209,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def fill_grub_device_entry(self):
         """ Get all devices where we can put our Grub boot code
-            Not using partitions (but we'll have to) """
+            Not using partitions """
         self.grub_device_entry.remove_all()
         self.grub_devices.clear()
 
@@ -321,7 +321,8 @@ class InstallationAdvanced(GtkBaseBox):
             self.partition_list_store.clear()
 
         # Treeview columns:
-        # disc path or partition path or "free space",
+        # -----------------
+        # disc path or partition path or "free space"
         # fs_type
         # label
         # part_name
@@ -335,10 +336,10 @@ class InstallationAdvanced(GtkBaseBox):
         # ssd_active
         # ssd_visible
         # ssd_selectable (sensitive)
+        # encrypted
 
-        self.partition_list_store = \
-            Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str,
-                          str, int, bool, bool, bool, bool)
+        self.partition_list_store = Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str,
+            str, int, bool, bool, bool, bool, bool)
 
         # Be sure to call get_devices once
         if self.disks is None:
@@ -352,7 +353,7 @@ class InstallationAdvanced(GtkBaseBox):
                 lvs = lvm.get_logical_volumes(vg)
                 if not lvs:
                     continue
-                row = [vg, "", "", "", False, False, "", "", "", "", 0, False, False, False, False]
+                row = [vg, "", "", "", False, False, "", "", "", "", 0, False, False, False, False, False]
                 lvparent = self.partition_list_store.append(None, row)
                 for lv in lvs:
                     fmt_enable = True
@@ -392,7 +393,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                     row = [partition_path, fs_type, mount_point, label, fmt_active,
                            formatable, '', '', partition_path,
-                           "", 0, fmt_enable, False, False, False]
+                           "", 0, fmt_enable, False, False, False, False]
                     self.partition_list_store.append(lvparent, row)
                     if self.my_first_time:
                         self.orig_part_dic[partition_path] = self.gen_partition_uid(path=partition_path)
@@ -417,7 +418,7 @@ class InstallationAdvanced(GtkBaseBox):
             if disk is None:
                 # Maybe disk without a partition table?
                 row = [disk_path, "", "", "", False, False, "", "", "",
-                    "", 0, False, is_ssd, False, False]
+                    "", 0, False, is_ssd, False, False, False]
                 self.partition_list_store.append(None, row)
             else:
                 dev = disk.device
@@ -426,7 +427,7 @@ class InstallationAdvanced(GtkBaseBox):
                 size_txt = self.get_size(dev.length, dev.sectorSize)
 
                 row = [dev.path, "", "", "", False, False, size_txt, "",
-                    "", "", 0, False, is_ssd, True, True]
+                    "", "", 0, False, is_ssd, True, True, False]
                 if '/dev/mapper/' in disk_path:
                     continue
                 disk_parent = self.partition_list_store.append(None, row)
@@ -524,7 +525,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                     row = [path, fs_type, mount_point, label, fmt_active,
                            formatable, size_txt, used, partition_path,
-                           "", p.type, fmt_enable, False, False, False]
+                           "", p.type, fmt_enable, False, False, False, False]
 
                     if p.type in (pm.PARTITION_LOGICAL,
                                   pm.PARTITION_FREESPACE_EXTENDED):
@@ -961,29 +962,58 @@ class InstallationAdvanced(GtkBaseBox):
         self.create_partition_dialog.hide()
 
     def on_partition_encryption_settings_clicked(self, widget):
+        """ Show LUKS encryption options dialog """
         # TODO: Load previous user choices (if any)
         # show LUKS encryption options dialog
         # save user choices
-        """ Show LUKS encryption options dialog """
+
+        selection = self.partition_list.get_selection()
+
+        if not selection:
+            return
+
+        model, tree_iter = selection.get_selected()
+
+        if tree_iter is None:
+            return
+
+        # Get necessary row data
+        row = model[tree_iter]
+
+        fs = row[1]
+        mount_point = row[2]
+        label = row[3]
+        fmt = row[4]
+        partition_path = row[8]
+        fmtable = row[11]
+        use_luks = row[12]
+        enable_luks_widgets(use_luks)
+        
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
+            # TODO: Save new choices
             pass
 
     def on_switch_use_luks_activate(self, widget):
-        enable_luks_dialog_options(widget.get_activate())
-
-    def enable_luks_dialog_options(self, status):
+        enable_luks_widgets(widget.get_activate())
+    
+    def enable_luks_widgets(self, status):
         w_sensitive = ['label_luks_vol_name', 'label_luks_password',
                        'label_luks_password_confirm', 'entry_luks_vol_name',
                        'entry_luks_password', 'entry_luks_password_confirm']
         w_hide = ['image_luks_password_confirm', 'label_luks_password_status']
 
-        for w in w_sensitive:
+        for w_name in w_sensitive:
+            w = self.ui.get_object(w_name)
             w.set_sensitive(status)
 
         if status is False:
-            for w in w_hide:
+            for w_name in w_hide:
+                w = self.ui.get_object(w_name)
                 w.hide()
+        
+        w = self.ui.get_object('switch_use_luks')
+        w.set_active(status)
 
     def on_partition_create_type_extended_toggled(self, widget):
         partition = {}
