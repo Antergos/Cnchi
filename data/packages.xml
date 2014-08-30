@@ -125,7 +125,6 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-        <pkgname>xnoise</pkgname>
         <pkgname>xscreensaver</pkgname>
     </gnome_desktop>
 
@@ -168,7 +167,6 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-        <pkgname>xnoise</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </cinnamon_desktop>
 
@@ -199,7 +197,6 @@
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xfce4-screenshooter</pkgname>
         <pkgname>xfce4-taskmanager</pkgname>
-        <pkgname>xnoise</pkgname>
     </xfce_desktop>
 
     <lxqt_desktop>
@@ -242,7 +239,6 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-        <pkgname>xnoise</pkgname>
     </mate_desktop>
 
     <enlightenment_desktop>
@@ -317,7 +313,6 @@
         <pkgname>volumeicon</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xfce4-notifyd</pkgname>
-        <pkgname>xnoise</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
     </openbox_desktop>
