@@ -1623,6 +1623,91 @@ class InstallationProcess(multiprocessing.Process):
                     line = 'current_theme antergos-slim\n'
                 slim_conf.write(line)
 
+    def alsa_mixer_setup(self):
+        """ Sets ALSA mixer settings """
+
+        # This function must be called inside the chroot        
+        if not self.special_dirs_mounted:
+            self.chroot_mount_special_dirs()
+
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Side 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Surround 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Center 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset LFE 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Headphone 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Speaker 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Line 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset External 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset FM 50% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Mono 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Digital 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Mix 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux2 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Center 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM LFE 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Side 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Surround 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Playback 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,0 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Synth 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset CD 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Wave 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Music 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset AC97 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Front 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,0 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,1 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,2 70% unmute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,3 70% unmute'])
+
+        # set input levels
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Mic 70% mute'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset IEC958 70% mute'])
+
+        # special stuff
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+
+        # special stuff
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
+        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+        
+        # Save settings
+        self.chroot(['alsactl', '-f', '/etc/asound.state', 'store'])
+
+    def fluidsynth(self):
+        """ Sets fluidsynth configuration file """
+
+        # This function must be called inside the chroot        
+        if not self.special_dirs_mounted:
+            self.chroot_mount_special_dirs()
+
+        fluid_name = "/etc/conf.d/fluidsynth"
+
+        if not os.path.exists(fluid_name):
+            return
+        
+        audio_system = "alsa"
+        
+        if os.path.exists("/usr/bin/pulseaudio"):
+            audio_system = "pulse"
+            
+        with open(fluid_name, "w") as fluid_conf:
+            fluid_conf.write("# Created by Cnchi, Antergos installer\n")
+            fluid_conf.write('SYNTHOPTS="-is -a %s -m alsa_seq -r 48000"\n\n' % audio_system)
+
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1830,66 +1915,16 @@ class InstallationProcess(multiprocessing.Process):
             shutil.copy2('/etc/X11/xorg.conf', os.path.join(self.dest_dir, 'etc/X11/xorg.conf'))
 
         # Configure ALSA
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Side 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Surround 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Center 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset LFE 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Headphone 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Speaker 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Line 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset External 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset FM 50% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Mono 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Digital 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Mix 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux2 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Center 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM LFE 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Side 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Surround 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Playback 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,0 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Synth 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset CD 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Wave 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Music 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset AC97 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,0 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,2 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,3 70% unmute'])
-
-        # set input levels
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Mic 70% mute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset IEC958 70% mute'])
-
-        # special stuff
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
-
-        # special stuff
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+        self.alsa_mixer_setup()
+        logging.debug(_("Updated Alsa mixer settings"))
 
         # Set pulse
         if os.path.exists("/usr/bin/pulseaudio-ctl"):
             self.chroot(['pulseaudio-ctl', 'normal'])
-
-        # Save settings
-        self.chroot(['alsactl', '-f', '/etc/asound.state', 'store'])
+        
+        # Set fluidsynth audio system (in our case, pulseaudio)
+        self.fluidsynth('pulseaudio')
+        logging.debug(_("Updated fluidsynth configuration file"))
 
         # Exit chroot system
         self.chroot_umount_special_dirs()
