@@ -194,8 +194,9 @@ class InstallationAdvanced(GtkBaseBox):
                     for i in self.all_partitions:
                         if path in i and '/mapper' not in path and '/' in path:
                             diskobj = i[path].disk.device.path
-                    if diskobj and model[tree_iter][1] == 'extended' and \
-                     self.diskdic[diskobj]['has_logical']:
+                    if diskobj and model[tree_iter][1] == 'extended' and self.diskdic[diskobj]['has_logical']:
+                        # It's an extended partition and has logical ones in it,
+                        # so it can't be edited or deleted until the logical ones are deleted first.
                         button_delete.set_sensitive(False)
                         button_edit.set_sensitive(False)
                     else:
@@ -229,15 +230,6 @@ class InstallationAdvanced(GtkBaseBox):
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                     self.grub_device_entry.append_text(line)
                     self.grub_devices[line] = dev.path
-                    ## Add disk partitions
-                    #partitions = pm.get_partitions(disk)
-                    #partition_list = pm.order_partitions(partitions)
-                    #for partition_path in partition_list:
-                    #    if not "free" in partition_path:
-                    #        warning_txt = _("It's not recommended to install grub in a partition")
-                    #        line = '   {0} ({1})'.format(partition_path, warning_txt)
-                    #        self.grub_device_entry.append_text(line)
-                    #        self.grub_devices[line] = partition_path
 
         # Automatically select first entry
         self.select_first_combobox_item(self.grub_device_entry)
