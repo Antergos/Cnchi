@@ -47,12 +47,49 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
+# Treeview columns:
+# -----------------
+# disc path or partition path or "free space"
+# fs_type
+# label
+# part_name
+# formatable_active
+# formatable_visible
+# size
+# used
+# partition_path
+# flags
+# formatable_enabled (sensitive)
+# ssd_active
+# ssd_visible
+# ssd_enabled (sensitive)
+# encrypted
+
+COL_PATH = 0
+COL_FS = 1
+COL_MOUNT_POINT = 2
+COL_LABEL = 3
+COL_FORMAT_ACTIVE = 4
+COL_FORMAT_VISIBLE = 5
+COL_SIZE = 6
+COL_USED = 7
+COL_PARTITION_PATH = 8
+COL_FLAGS = 9
+COL_PARTITION_TYPE = 10
+COL_FORMAT_SENSITIVE = 11
+COL_SSD_ACTIVE = 12
+COL_SSD_VISIBLE = 13
+COL_SSD_SENSITIVE = 14
+COL_ENCRYPTED = 15
+
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         # Call base class
         super().__init__(self, params, "advanced", prev_page, next_page)
 
+        # Init class vars
+        
         self.blvm = False
 
         self.lv_partitions = []
@@ -69,31 +106,48 @@ class InstallationAdvanced(GtkBaseBox):
         self.stage_opts = {}
         self.used_dic = {}
 
-        # hold deleted partitions that exist now
+        # Holds deleted partitions that exist now
         self.to_be_deleted = []
 
-        # Load create and edit partition dialogs
+        # We will store our devices here
+        self.disks = None
+
+        # We will store if our device is SSD or not
+        self.ssd = {}
+
+        self.show_changes_grid = None
+
+        # Initialize some attributes
+        self.process = None
+        self.diskdic = {}
+        
+        # Store here ALL partitions from ALL devices
+        self.all_partitions = []
+
+        # Init GUI elements
+
+        # Loads create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
         # Initialize our create partition dialog filesystems' combo.
-        use_combo = self.ui.get_object('partition_use_combo')
-        use_combo.remove_all()
+        combo = self.ui.get_object('partition_use_combo')
+        combo.remove_all()
         for fs_name in sorted(fs.NAMES):
-            use_combo.append_text(fs_name)
-        use_combo.set_wrap_width(2)
+            combo.append_text(fs_name)
+        combo.set_wrap_width(2)
 
         # Initialize our edit partition dialog filesystems' combo.
-        use_combo = self.ui.get_object('partition_use_combo2')
-        use_combo.remove_all()
+        combo = self.ui.get_object('partition_use_combo2')
+        combo.remove_all()
         for fs_name in sorted(fs.NAMES):
-            use_combo.append_text(fs_name)
-        use_combo.set_wrap_width(2)
+            combo.append_text(fs_name)
+        combo.set_wrap_width(2)
 
         # Initialize partition_types_combo
         combo = self.ui.get_object('partition_types_combo')
         combo.remove_all()
-        combo.append_text("msdos (aka MBR)")
+        combo.append_text("msdos (MBR)")
         combo.append_text("GUID Partition Table (GPT)")
 
         # Automatically select first entry
@@ -106,14 +160,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         for combo in mount_combos:
             combo.remove_all()
-            for mp in fs.COMMON_MOUNT_POINTS:
-                combo.append_text(mp)
-
-        # We will store our devices here
-        self.disks = None
-
-        # We will store if our device is SSD or not
-        self.ssd = {}
+            for mount_point in fs.COMMON_MOUNT_POINTS:
+                combo.append_text(mount_point)
 
         self.grub_device_entry = self.ui.get_object('grub_device_entry')
         self.grub_devices = dict()
@@ -131,35 +179,37 @@ class InstallationAdvanced(GtkBaseBox):
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
 
-        self.show_changes_grid = None
-
-        # Initialize some attributes
-        self.process = None
-        self.diskdic = {}
-        self.all_partitions = []
-
-    def gen_partition_uid(self, p=None, path=None):
+    def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
-        if path and not p:
+        if path and not partition:
             if "free" in path:
                 return None
-            for zz in self.all_partitions:
-                if "/dev/mapper" not in zz:
-                    for yy in zz:
-                        if zz[yy].path == path:
-                            p = zz[yy]
+            for p in self.all_partitions:
+                if "/dev/mapper" not in p:
+                    for i in p:
+                        if p[i].path == path:
+                            partition = p[i]
         try:
-            dev = p.disk.device.path
+            dev = partition.disk.device.path
         except:
             dev = path
-        if p:
-            ends = p.geometry.end
-            starts = p.geometry.start
+        
+        if partition:
+            ends = partition.geometry.end
+            starts = partition.geometry.start
         else:
             ends = 'none'
             starts = 'none'
+        
         uid = dev + str(starts) + str(ends)
         return uid
+
+    def get_path(self, selection):
+        model, tree_iter = selection.get_selected()
+        path = None
+        if tree_iter is not None:
+            path = model[tree_iter][0]
+        return path
 
     def check_buttons(self, selection):
         """ Activates/deactivates our buttons depending on which is selected in the
@@ -181,16 +231,15 @@ class InstallationAdvanced(GtkBaseBox):
         button_new_label = self.ui.get_object('partition_button_new_label')
         button_new_label.set_sensitive(False)
 
-        model, tree_iter = selection.get_selected()
-        diskobj = None
-        if tree_iter is not None:
-            path = model[tree_iter][0]
+        path = self.get_path(selection)
+        if path is not None:
             if path == _("free space"):
                 button_new.set_sensitive(True)
             else:
                 disks = pm.get_devices()
                 if (path not in disks and 'dev/mapper' not in path) or ('dev/mapper' in path and '-' in path):
                     # A partition is selected
+                    diskobj = None
                     for i in self.all_partitions:
                         if path in i and '/mapper' not in path and '/' in path:
                             diskobj = i[path].disk.device.path
@@ -209,8 +258,8 @@ class InstallationAdvanced(GtkBaseBox):
                     button_new_label.set_sensitive(True)
 
     def fill_grub_device_entry(self):
-        """ Get all devices where we can put our Grub boot code
-            Not using partitions """
+        """ Get all devices where we can put our Grub boot code. Avoiding partitions """
+            
         self.grub_device_entry.remove_all()
         self.grub_devices.clear()
 
@@ -223,8 +272,7 @@ class InstallationAdvanced(GtkBaseBox):
             if disk is not None:
                 dev = disk.device
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
-                if not dev.path.startswith("/dev/sr") and \
-                   not dev.path.startswith("/dev/mapper"):
+                if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
                     # Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
                     size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
@@ -254,37 +302,43 @@ class InstallationAdvanced(GtkBaseBox):
         """ Create columns for our treeview """
         render_text = Gtk.CellRendererText()
 
-        col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
+        col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_PATH)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Type"), render_text, text=1)
+        col = Gtk.TreeViewColumn(_("Type"), render_text, text=COL_FS)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Mount point"), render_text, text=2)
+        col = Gtk.TreeViewColumn(_("Mount point"), render_text, text=COL_MOUNT_POINT)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Label"), render_text, text=3)
+        col = Gtk.TreeViewColumn(_("Label"), render_text, text=COL_LABEL)
         self.partition_list.append_column(col)
 
         format_toggle = Gtk.CellRendererToggle()
         format_toggle.connect("toggled", self.on_format_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("Format"), format_toggle, active=4, visible=5, sensitive=11)
+        col = Gtk.TreeViewColumn(_("Format"), format_toggle,
+            active=COL_FORMAT_ACTIVE,
+            visible=COL_FORMAT_VISIBLE,
+            sensitive=COL_FORMAT_SENSITIVE)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Size"), render_text, text=6)
+        col = Gtk.TreeViewColumn(_("Size"), render_text, text=COL_SIZE)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Used"), render_text, text=7)
+        col = Gtk.TreeViewColumn(_("Used"), render_text, text=COL_USED)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Flags"), render_text, text=9)
+        col = Gtk.TreeViewColumn(_("Flags"), render_text, text=COL_FLAGS)
         self.partition_list.append_column(col)
 
         ssd_toggle = Gtk.CellRendererToggle()
         ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle, active=12, visible=13, sensitive=14)
+        col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle,
+            active=COL_SSD_ACTIVE,
+            visible=COL_SSD_VISIBLE,
+            sensitive=COL_SSD_SENSITIVE)
         self.partition_list.append_column(col)
 
     def get_size(self, length, sector_size):
@@ -306,29 +360,10 @@ class InstallationAdvanced(GtkBaseBox):
 
     def fill_partition_list(self):
         """ Fill the partition list with all the data. """
-        self.diskdic = {}
-        self.all_partitions = []
+
         # We will store our data model in 'partition_list_store'
         if self.partition_list_store is not None:
             self.partition_list_store.clear()
-
-        # Treeview columns:
-        # -----------------
-        # disc path or partition path or "free space"
-        # fs_type
-        # label
-        # part_name
-        # formatable_active
-        # formatable_visible
-        # size
-        # used
-        # partition_path
-        # flags
-        # formatable_selectable (sensitive)
-        # ssd_active
-        # ssd_visible
-        # ssd_selectable (sensitive)
-        # encrypted
 
         self.partition_list_store = Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str,
             str, int, bool, bool, bool, bool, bool)
@@ -336,8 +371,13 @@ class InstallationAdvanced(GtkBaseBox):
         # Be sure to call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
+
+        self.diskdic = {}
+        self.all_partitions = []
         self.lv_partitions = []
         self.diskdic['mounts'] = []
+
+        # Put all volumes (lvm) info in our model
         vgs = lvm.get_volume_groups()
         if vgs:
             for vg in vgs:
@@ -383,17 +423,19 @@ class InstallationAdvanced(GtkBaseBox):
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
-                    row = [partition_path, fs_type, mount_point, label, fmt_active,
-                           formatable, '', '', partition_path,
-                           "", 0, fmt_enable, False, False, False, False]
+                    row = [partition_path, fs_type, mount_point, label, fmt_active, formatable, '', '',
+                        partition_path, "", 0, fmt_enable, False, False, False, False]
+
                     self.partition_list_store.append(lvparent, row)
+
                     if self.my_first_time:
                         self.orig_part_dic[partition_path] = self.gen_partition_uid(path=partition_path)
                         self.orig_label_dic[partition_path] = label
 
-        # Here we fill our model
+        # Fill our model with the rest of devices (non LVM)
         for disk_path in sorted(self.disks):
             if '/dev/mapper/arch_' in disk_path:
+                # Already added
                 continue
 
             self.diskdic[disk_path] = {}
@@ -408,20 +450,22 @@ class InstallationAdvanced(GtkBaseBox):
             (disk, result) = self.disks[disk_path]
 
             if disk is None:
-                # Maybe disk without a partition table?
+                # Disk without a partition table
                 row = [disk_path, "", "", "", False, False, "", "", "",
                     "", 0, False, is_ssd, False, False, False]
                 self.partition_list_store.append(None, row)
+            elif '/dev/mapper/' in disk_path:
+                # Already added
+                continue
             else:
                 dev = disk.device
 
                 # Get device size
                 size_txt = self.get_size(dev.length, dev.sectorSize)
 
+                # Append the device info to our model
                 row = [dev.path, "", "", "", False, False, size_txt, "",
                     "", "", 0, False, is_ssd, True, True, False]
-                if '/dev/mapper/' in disk_path:
-                    continue
                 disk_parent = self.partition_list_store.append(None, row)
                 parent = disk_parent
 
@@ -430,10 +474,11 @@ class InstallationAdvanced(GtkBaseBox):
                 self.all_partitions.append(partitions)
                 partition_list = pm.order_partitions(partitions)
 
+                # Append all partitions to our model
                 for partition_path in partition_list:
                     # Get partition size
-                    p = partitions[partition_path]
-                    size_txt = self.get_size(p.geometry.length, dev.sectorSize)
+                    partition = partitions[partition_path]
+                    size_txt = self.get_size(partition.geometry.length, dev.sectorSize)
                     fmt_enable = False
                     fmt_active = False
                     label = ""
@@ -443,15 +488,15 @@ class InstallationAdvanced(GtkBaseBox):
                     flags = ""
                     formatable = True
 
-                    path = p.path
+                    path = partition.path
 
                     # Skip lvm, LUKS, ...
                     if '/dev/mapper' in path:
                         continue
 
                     # Get filesystem
-                    if p.fileSystem and p.fileSystem.type:
-                        fs_type = p.fileSystem.type
+                    if partition.fileSystem and partition.fileSystem.type:
+                        fs_type = partition.fileSystem.type
                     # Check if its free space before trying to get the filesystem with blkid.
                     elif 'free' in partition_path:
                         fs_type = _("none")
@@ -463,23 +508,22 @@ class InstallationAdvanced(GtkBaseBox):
 
                     # Nothing should be mounted at this point
 
-                    if p.type == pm.PARTITION_EXTENDED:
+                    if partition.type == pm.PARTITION_EXTENDED:
                         formatable = False
                         self.diskdic[disk_path]['has_extended'] = True
-                    elif p.type == pm.PARTITION_LOGICAL:
+                    elif partition.type == pm.PARTITION_LOGICAL:
                         formatable = True
                         self.diskdic[disk_path]['has_logical'] = True
 
-                    if p.type in (pm.PARTITION_FREESPACE,
-                                  pm.PARTITION_FREESPACE_EXTENDED):
+                    if partition.type in (pm.PARTITION_FREESPACE, pm.PARTITION_FREESPACE_EXTENDED):
                         # Show 'free space' instead of /dev/sda-1
                         path = _("free space")
                         formatable = False
                     else:
                         # Get partition flags
-                        flags = pm.get_flags(p)
+                        flags = pm.get_flags(partition)
 
-                    uid = self.gen_partition_uid(p=p)
+                    uid = self.gen_partition_uid(partition=partition)
                     if uid in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
@@ -490,14 +534,14 @@ class InstallationAdvanced(GtkBaseBox):
                         if _("free space") not in path:
                             if self.my_first_time:
                                 if mount_point:
-                                    used = pm.get_used_space(p)
+                                    used = pm.get_used_space(partition)
                                 else:
-                                    used = used_space.get_used_space(partition_path, fs_type) * p.geometry.length
+                                    used = used_space.get_used_space(partition_path, fs_type) * partition.geometry.length
                                     used = self.get_size(used, dev.sectorSize)
-                                self.used_dic[(disk_path, p.geometry.start)] = used
+                                self.used_dic[(disk_path, partition.geometry.start)] = used
                             else:
-                                if (disk_path, p.geometry.start) in self.used_dic:
-                                    used = self.used_dic[(disk_path, p.geometry.start)]
+                                if (disk_path, partition.geometry.start) in self.used_dic:
+                                    used = self.used_dic[(disk_path, partition.geometry.start)]
                                 else:
                                     used = '0b'
                             info = fs.get_info(partition_path)
@@ -507,7 +551,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
 
-                    if p.type == pm.PARTITION_EXTENDED:
+                    if partition.type == pm.PARTITION_EXTENDED:
                         # Show 'extended' in file system type column
                         fs_type = 'extended'
 
@@ -517,10 +561,9 @@ class InstallationAdvanced(GtkBaseBox):
 
                     row = [path, fs_type, mount_point, label, fmt_active,
                            formatable, size_txt, used, partition_path,
-                           "", p.type, fmt_enable, False, False, False, False]
+                           "", partition.type, fmt_enable, False, False, False, False]
 
-                    if p.type in (pm.PARTITION_LOGICAL,
-                                  pm.PARTITION_FREESPACE_EXTENDED):
+                    if partition.type in (pm.PARTITION_LOGICAL, pm.PARTITION_FREESPACE_EXTENDED):
                         parent = myparent
                     else:
                         parent = disk_parent
@@ -530,12 +573,12 @@ class InstallationAdvanced(GtkBaseBox):
                     # If we're an extended partition, all the logical
                     # partitions that follow will be shown as children
                     # of this one
-                    if p.type == pm.PARTITION_EXTENDED:
+                    if partition.type == pm.PARTITION_EXTENDED:
                         myparent = tree_iter
 
                     if self.my_first_time:
-                        self.orig_part_dic[p.path] = self.gen_partition_uid(p)
-                        self.orig_label_dic[p.path] = label
+                        self.orig_part_dic[partition.path] = self.gen_partition_uid(partition=partition)
+                        self.orig_label_dic[partition.path] = label
 
         self.my_first_time = False
 
@@ -543,57 +586,61 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
 
-        # Check if correct mount points are already defined,
-        # so we can proceed with installation
+        # Check if correct mount points are already defined, so we can proceed with installation
         self.check_mount_points()
 
     def on_format_cell_toggled(self, widget, path):
         """ Mark a partition to be formatted """
-        # selected_path = Gtk.TreePath(path)
-        self.partition_list_store[path][4] = not self.partition_list_store[path][4]
-        amnew = False
-        partition_path = self.partition_list_store[path][0]
+        self.partition_list_store[path][COL_FORMAT_ACTIVE] = not self.partition_list_store[path][COL_FORMAT_ACTIVE]
+        
+        partition_path = self.partition_list_store[path][COL_PATH]
         uid = self.gen_partition_uid(path=partition_path)
-        self.stage_opts[uid] = \
-            (amnew,
-             self.partition_list_store[path][3],
-             self.partition_list_store[path][2],
-             self.partition_list_store[path][1],
-             self.partition_list_store[path][4])
+        # As it's not a new partition, we set it to False
+        self.stage_opts[uid] = (False,
+             self.partition_list_store[path][COL_LABEL],
+             self.partition_list_store[path][COL_MOUNT_POINT],
+             self.partition_list_store[path][COL_FS],
+             self.partition_list_store[path][COL_FORMAT_ACTIVE])
 
     def on_ssd_cell_toggled(self, widget, path):
         """ Mark disk as ssd """
-        # ssd cell
-        self.partition_list_store[path][12] = not self.partition_list_store[path][12]
-        disk_path = self.partition_list_store[path][0]
-        self.ssd[disk_path] = self.partition_list_store[path][12]
+        self.partition_list_store[path][COL_SSD_ACTIVE] = not self.partition_list_store[path][COL_SSD_ACTIVE]
+        disk_path = self.partition_list_store[path][COL_PATH]
+        self.ssd[disk_path] = self.partition_list_store[path][COL_SSD_ACTIVE]
 
     def on_partition_list_edit_activate(self, button):
         """ The user wants to edit a partition """
         selection = self.partition_list.get_selection()
-
         if not selection:
             return
 
         model, tree_iter = selection.get_selected()
-
         if tree_iter is None:
             return
 
         # Get necessary row data
         row = model[tree_iter]
 
-        fs = row[1]
-        mount_point = row[2]
-        label = row[3]
-        fmt = row[4]
-        partition_path = row[8]
-        fmtable = row[11]
+        fs = row[COL_FS]
+        mount_point = row[COL_MOUNT_POINT]
+        label = row[COL_LABEL]
+        fmt = row[COL_FORMAT_ACTIVE]
+        partition_path = row[COL_PARTITION_PATH]
+        fmtable = row[COL_FORMAT_SENSITIVE]
 
         # Can't edit an partition with LVM filesystem type
         if "lvm2" in fs.lower():
             logging.warning(_("Can't edit a partition with LVM filesystem type"))
             return
+
+
+
+
+
+        # I'M HERE #######################################################################################
+
+
+
 
         # Set fs in dialog combobox
         use_combo = self.ui.get_object('partition_use_combo2')
