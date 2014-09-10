@@ -58,6 +58,7 @@
         <pkgname>numix-icon-theme</pkgname>
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
         <pkgname>pacmanxg4</pkgname>
+        <pkgname>pavucontrol</pkgname>
         <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>

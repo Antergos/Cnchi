@@ -47,24 +47,6 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
-# Treeview columns:
-# -----------------
-# disc path or partition path or "free space"
-# fs_type
-# label
-# part_name
-# formatable_active
-# formatable_visible
-# size
-# used
-# partition_path
-# flags
-# formatable_enabled (sensitive)
-# ssd_active
-# ssd_visible
-# ssd_enabled (sensitive)
-# encrypted
-
 COL_PATH = 0
 COL_FS = 1
 COL_MOUNT_POINT = 2
@@ -100,13 +82,15 @@ class InstallationAdvanced(GtkBaseBox):
         self.orig_label_dic = {}
         self.orig_part_dic = {}
 
-        # stage_opts holds info about newly created partitions
-        # format is tuple (label, mountpoint, fs(text), Format)
+        # stage_opts holds info about newly created partitions (it's like a todo list)
+        # format is tuple (is_new, label, mount_point, fs, format)
         # see its usage in listing, creating, and deleting partitions
         self.stage_opts = {}
+        
+        # What's this?
         self.used_dic = {}
 
-        # Holds deleted partitions that exist now
+        # Holds partitions that exist now but are going to be deleted
         self.to_be_deleted = []
 
         # We will store our devices here
@@ -618,55 +602,40 @@ class InstallationAdvanced(GtkBaseBox):
         if tree_iter is None:
             return
 
-        # Get necessary row data
+        # Get selected row's data
         row = model[tree_iter]
 
-        fs = row[COL_FS]
-        mount_point = row[COL_MOUNT_POINT]
-        label = row[COL_LABEL]
-        fmt = row[COL_FORMAT_ACTIVE]
-        partition_path = row[COL_PARTITION_PATH]
-        fmtable = row[COL_FORMAT_SENSITIVE]
-
-        # Can't edit an partition with LVM filesystem type
-        if "lvm2" in fs.lower():
+        # Can't edit a partition that uses a LVM filesystem type
+        if "lvm2" in row[COL_FS].lower():
             logging.warning(_("Can't edit a partition with LVM filesystem type"))
             return
 
+        # Fill partition dialog with correct data
 
-
-
-
-        # I'M HERE #######################################################################################
-
-
-
-
-        # Set fs in dialog combobox
-        use_combo = self.ui.get_object('partition_use_combo2')
-        use_combo_model = use_combo.get_model()
-        use_combo_iter = use_combo_model.get_iter_first()
-
-        while use_combo_iter is not None:
-            use_combo_row = use_combo_model[use_combo_iter]
-            if use_combo_row[0] and use_combo_row[0] in fs:
-                use_combo.set_active_iter(use_combo_iter)
-                use_combo_iter = None
+        # Select the fs in dialog combobox
+        combo = self.ui.get_object('partition_use_combo2')
+        combo_model = combo.get_model()
+        combo_iter = combo_model.get_iter_first()
+        while combo_iter is not None:
+            combo_row = combo_model[combo_iter]
+            if combo_row[0] and combo_row[0] in row[COL_FS]:
+                combo.set_active_iter(combo_iter)
+                combo_iter = None
             else:
-                use_combo_iter = use_combo_model.iter_next(use_combo_iter)
+                combo_iter = combo_model.iter_next(use_combo_iter)
 
-        # Set mount point in dialog combobox
+        # Set the mount point in dialog combobox
         mount_combo_entry = self.ui.get_object('combobox-entry2')
-        mount_combo_entry.set_text(mount_point)
+        mount_combo_entry.set_text(row[COL_MOUNT_POINT])
 
         # Set label entry
         label_entry = self.ui.get_object('partition_label_entry2')
-        label_entry.set_text(label)
+        label_entry.set_text(row[COL_LABEL])
 
         # Must format?
         format_check = self.ui.get_object('partition_format_check')
-        format_check.set_active(fmt)
-        format_check.set_sensitive(fmtable)
+        format_check.set_active(row[COL_FORMAT_ACTIVE])
+        format_check.set_sensitive(row[COL_FORMAT_SENSITIVE])
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -683,32 +652,33 @@ class InstallationAdvanced(GtkBaseBox):
         response = self.edit_partition_dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            mylabel = label_entry.get_text()
-            mymount = mount_combo_entry.get_text().strip()
+            new_mount = mount_combo_entry.get_text().strip()
 
-            if mymount in self.diskdic['mounts'] and mymount != mount_point:
+            if new_mount in self.diskdic['mounts'] and new_mount != row[COL_MOUNT_POINT]:
                 show.warning(_("Can't use same mount point twice."))
-            elif mymount == "/" and not format_check.get_active():
+            elif new_mount == "/" and not format_check.get_active():
                 show.warning(_('Root partition must be formatted.'))
             else:
-                if mount_point:
-                    self.diskdic['mounts'].remove(mount_point)
+                if row[COL_MOUNT_POINT]:
+                    self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
 
-                myfmt = use_combo.get_active_text()
-                uid = self.gen_partition_uid(path=partition_path)
-                fmtop = format_check.get_active()
+                new_label = label_entry.get_text()
+                new_fs = combo.get_active_text()
+                new_format = format_check.get_active()
+
+                uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
 
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
-                    #fmtop = self.stage_opts[uid][4]
+                    #new_format = self.stage_opts[uid][4]
                 else:
                     is_new = False
-                    #fmtop = False
+                    #new_format = False
 
-                if myfmt == 'swap':
-                    mymount = 'swap'
+                if new_fs == 'swap':
+                    new_mount = 'swap'
 
-                self.stage_opts[uid] = (is_new, mylabel, mymount, myfmt, fmtop)
+                self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
 
         self.edit_partition_dialog.hide()
 
@@ -717,13 +687,13 @@ class InstallationAdvanced(GtkBaseBox):
         self.fill_grub_device_entry()
 
     def get_disk_path_from_selection(self, model, tree_iter):
-        """ This returns the disk path where the selected partition is in """
+        """ Helper function that returns the disk path where the selected partition is in """
         if tree_iter is not None and model is not None:
             row = model[tree_iter]
-            partition_path = row[8]
+            partition_path = row[COL_PARTITION_PATH]
 
             # Get partition type from the user selection
-            part_type = row[10]
+            part_type = row[COL_PARTITION_TYPE]
 
             # Get our parent drive
             parent_iter = model.iter_parent(tree_iter)
@@ -733,7 +703,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # but our grandpa (we have to skip the extended partition we're in)
                 parent_iter = model.iter_parent(parent_iter)
 
-            return model[parent_iter][0]
+            return model[parent_iter][COL_PATH]
         else:
             return None
 
@@ -747,21 +717,30 @@ class InstallationAdvanced(GtkBaseBox):
 
         if tree_iter is None:
             return
+
         am_new = False
+
         # Get row data
         row = model[tree_iter]
-        mount_point = row[2]
-        size_available = row[6]
-        partition_path = row[8]
+
+        mount_point = row[COL_MOUNT_POINT]
+        size_available = row[COL_SIZE]
+        partition_path = row[COL_PARTITION_PATH]
+
         if mount_point in self.diskdic['mounts']:
             self.diskdic['mounts'].remove(mount_point)
-        if self.gen_partition_uid(path=partition_path) in self.stage_opts:
-            am_new = self.stage_opts[self.gen_partition_uid(path=partition_path)][0]
-            del(self.stage_opts[self.gen_partition_uid(path=partition_path)])
+        
+        uid = self.gen_partition_uid(path=partition_path)
+        
+        if uid in self.stage_opts:
+            am_new = self.stage_opts[uid][0]
+            del(self.stage_opts[uid])
+        
         if not am_new:
-            for e in self.orig_part_dic:
-                if self.orig_part_dic[e] == self.gen_partition_uid(path=partition_path):
-                    self.to_be_deleted.append(e)
+            for orig_part in self.orig_part_dic:
+                if uid == self.orig_part_dic[orig_part]:
+                    self.to_be_deleted.append(orig_part)
+        
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
@@ -775,6 +754,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         partitions = pm.get_partitions(disk)
 
+        # used_dic ?
         part = partitions[partition_path]
         if (disk.device.path, part.geometry.start) in self.used_dic:
             del self.used_dic[(disk.device.path, part.geometry.start)]
@@ -795,17 +775,17 @@ class InstallationAdvanced(GtkBaseBox):
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
-        fsname = ''
-        fstype = ''
+        fs_name = ''
+        fs_type = ''
         writable = ''
         with open('/proc/mounts') as fp:
             for line in fp:
                 line = line.split()
                 if line[0] == partition_path:
-                    fsname = line[1]
-                    fstype = line[2]
+                    fs_name = line[1]
+                    fs_type = line[2]
                     writable = line[3].split(',')[0]
-        return fsname, fstype, writable
+        return fs_name, fs_type, writable
 
     def get_swap_partition(self, partition_path):
         """ Get active swap partition """
@@ -818,37 +798,57 @@ class InstallationAdvanced(GtkBaseBox):
                     partition = line[0]
         return partition
 
+'''
+COL_PATH = 0
+COL_FS = 1
+COL_MOUNT_POINT = 2
+COL_LABEL = 3
+COL_FORMAT_ACTIVE = 4
+COL_FORMAT_VISIBLE = 5
+COL_SIZE = 6
+COL_USED = 7
+COL_PARTITION_PATH = 8
+COL_FLAGS = 9
+COL_PARTITION_TYPE = 10
+COL_FORMAT_SENSITIVE = 11
+COL_SSD_ACTIVE = 12
+COL_SSD_VISIBLE = 13
+COL_SSD_SENSITIVE = 14
+COL_ENCRYPTED = 15
+'''
+
+    # I'm here #################################################################################################
+
     def on_partition_list_new_activate(self, button):
         """ Add a new partition """
         selection = self.partition_list.get_selection()
 
         if not selection:
             return
+        
+        model, tree_iter = selection.get_selected()
+        if tree_iter is None:
+            return
 
         # Assume it will be formatted, unless it's extended
         formatme = True
-        model, tree_iter = selection.get_selected()
-
-        if tree_iter is None:
-            return
 
         # Get necessary row data
         row = model[tree_iter]
 
         # Get partition type from the user selection
-        part_type = row[10]
+        part_type = row[COL_PARTITION_TYPE]
 
         # Check that the user has selected a free space row.
         if part_type not in (pm.PARTITION_FREESPACE, pm.PARTITION_FREESPACE_EXTENDED):
             return
 
-        size_available = row[6]
-        partition_path = row[8]
+        size_available = row[COL_SIZE]
+        partition_path = row[COL_PARTITION_PATH]
 
         # Get our parent drive
         parent_iter = model.iter_parent(tree_iter)
-
-        parent_part_type = model[parent_iter][10]
+        parent_part_type = model[parent_iter][COL_PARTITION_TYPE]
 
         if parent_part_type == pm.PARTITION_EXTENDED:
             # We're creating a partition inside an already created extended
@@ -859,7 +859,7 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             isbase = True
 
-        disk_path = model[parent_iter][0]
+        disk_path = model[parent_iter][COL_PATH]
         self.disks_changed.append(disk_path)
         # Be sure to just call get_devices once
         if self.disks is None:
