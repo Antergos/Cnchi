@@ -71,7 +71,7 @@ class InstallationAdvanced(GtkBaseBox):
         super().__init__(self, params, "advanced", prev_page, next_page)
 
         # Init class vars
-        
+
         self.blvm = False
 
         self.lv_partitions = []
@@ -86,7 +86,7 @@ class InstallationAdvanced(GtkBaseBox):
         # format is tuple (is_new, label, mount_point, fs, format)
         # see its usage in listing, creating, and deleting partitions
         self.stage_opts = {}
-        
+
         # What's this?
         self.used_dic = {}
 
@@ -104,7 +104,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Initialize some attributes
         self.process = None
         self.diskdic = {}
-        
+
         # Store here ALL partitions from ALL devices
         self.all_partitions = []
 
@@ -177,14 +177,14 @@ class InstallationAdvanced(GtkBaseBox):
             dev = partition.disk.device.path
         except:
             dev = path
-        
+
         if partition:
             ends = partition.geometry.end
             starts = partition.geometry.start
         else:
             ends = 'none'
             starts = 'none'
-        
+
         uid = dev + str(starts) + str(ends)
         return uid
 
@@ -243,7 +243,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def fill_grub_device_entry(self):
         """ Get all devices where we can put our Grub boot code. Avoiding partitions """
-            
+
         self.grub_device_entry.remove_all()
         self.grub_devices.clear()
 
@@ -301,10 +301,8 @@ class InstallationAdvanced(GtkBaseBox):
         format_toggle = Gtk.CellRendererToggle()
         format_toggle.connect("toggled", self.on_format_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("Format"), format_toggle,
-            active=COL_FORMAT_ACTIVE,
-            visible=COL_FORMAT_VISIBLE,
-            sensitive=COL_FORMAT_SENSITIVE)
+        col = Gtk.TreeViewColumn(
+            _("Format"), format_toggle, active=COL_FORMAT_ACTIVE, visible=COL_FORMAT_VISIBLE, sensitive=COL_FORMAT_SENSITIVE)
         self.partition_list.append_column(col)
 
         col = Gtk.TreeViewColumn(_("Size"), render_text, text=COL_SIZE)
@@ -319,10 +317,8 @@ class InstallationAdvanced(GtkBaseBox):
         ssd_toggle = Gtk.CellRendererToggle()
         ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
 
-        col = Gtk.TreeViewColumn(_("SSD"), ssd_toggle,
-            active=COL_SSD_ACTIVE,
-            visible=COL_SSD_VISIBLE,
-            sensitive=COL_SSD_SENSITIVE)
+        col = Gtk.TreeViewColumn(
+            _("SSD"), ssd_toggle, active=COL_SSD_ACTIVE, visible=COL_SSD_VISIBLE, sensitive=COL_SSD_SENSITIVE)
         self.partition_list.append_column(col)
 
     def get_size(self, length, sector_size):
@@ -349,8 +345,8 @@ class InstallationAdvanced(GtkBaseBox):
         if self.partition_list_store is not None:
             self.partition_list_store.clear()
 
-        self.partition_list_store = Gtk.TreeStore(str, str, str, str, bool, bool, str, str, str,
-            str, int, bool, bool, bool, bool, bool)
+        self.partition_list_store = Gtk.TreeStore(
+            str, str, str, str, bool, bool, str, str, str, str, int, bool, bool, bool, bool, bool)
 
         # Be sure to call get_devices once
         if self.disks is None:
@@ -407,7 +403,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
-                    row = [partition_path, fs_type, mount_point, label, fmt_active, formatable, '', '',
+                    row = [partition_path, fs_type, mount_point, label, fmt_active, formatable, '', '', \
                         partition_path, "", 0, fmt_enable, False, False, False, False]
 
                     self.partition_list_store.append(lvparent, row)
@@ -435,8 +431,7 @@ class InstallationAdvanced(GtkBaseBox):
 
             if disk is None:
                 # Disk without a partition table
-                row = [disk_path, "", "", "", False, False, "", "", "",
-                    "", 0, False, is_ssd, False, False, False]
+                row = [disk_path, "", "", "", False, False, "", "", "", "", 0, False, is_ssd, False, False, False]
                 self.partition_list_store.append(None, row)
             elif '/dev/mapper/' in disk_path:
                 # Already added
@@ -448,8 +443,7 @@ class InstallationAdvanced(GtkBaseBox):
                 size_txt = self.get_size(dev.length, dev.sectorSize)
 
                 # Append the device info to our model
-                row = [dev.path, "", "", "", False, False, size_txt, "",
-                    "", "", 0, False, is_ssd, True, True, False]
+                row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0, False, is_ssd, True, True, False]
                 disk_parent = self.partition_list_store.append(None, row)
                 parent = disk_parent
 
@@ -576,15 +570,16 @@ class InstallationAdvanced(GtkBaseBox):
     def on_format_cell_toggled(self, widget, path):
         """ Mark a partition to be formatted """
         self.partition_list_store[path][COL_FORMAT_ACTIVE] = not self.partition_list_store[path][COL_FORMAT_ACTIVE]
-        
+
         partition_path = self.partition_list_store[path][COL_PATH]
         uid = self.gen_partition_uid(path=partition_path)
         # As it's not a new partition, we set it to False
-        self.stage_opts[uid] = (False,
-             self.partition_list_store[path][COL_LABEL],
-             self.partition_list_store[path][COL_MOUNT_POINT],
-             self.partition_list_store[path][COL_FS],
-             self.partition_list_store[path][COL_FORMAT_ACTIVE])
+        self.stage_opts[uid] = (
+            False,
+            self.partition_list_store[path][COL_LABEL],
+            self.partition_list_store[path][COL_MOUNT_POINT],
+            self.partition_list_store[path][COL_FS],
+            self.partition_list_store[path][COL_FORMAT_ACTIVE])
 
     def on_ssd_cell_toggled(self, widget, path):
         """ Mark disk as ssd """
@@ -729,18 +724,18 @@ class InstallationAdvanced(GtkBaseBox):
 
         if mount_point in self.diskdic['mounts']:
             self.diskdic['mounts'].remove(mount_point)
-        
+
         uid = self.gen_partition_uid(path=partition_path)
-        
+
         if uid in self.stage_opts:
             am_new = self.stage_opts[uid][0]
-            del(self.stage_opts[uid])
-        
+            del self.stage_opts[uid]
+
         if not am_new:
             for orig_part in self.orig_part_dic:
                 if uid == self.orig_part_dic[orig_part]:
                     self.to_be_deleted.append(orig_part)
-        
+
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
@@ -798,39 +793,18 @@ class InstallationAdvanced(GtkBaseBox):
                     partition = line[0]
         return partition
 
-'''
-COL_PATH = 0
-COL_FS = 1
-COL_MOUNT_POINT = 2
-COL_LABEL = 3
-COL_FORMAT_ACTIVE = 4
-COL_FORMAT_VISIBLE = 5
-COL_SIZE = 6
-COL_USED = 7
-COL_PARTITION_PATH = 8
-COL_FLAGS = 9
-COL_PARTITION_TYPE = 10
-COL_FORMAT_SENSITIVE = 11
-COL_SSD_ACTIVE = 12
-COL_SSD_VISIBLE = 13
-COL_SSD_SENSITIVE = 14
-COL_ENCRYPTED = 15
-'''
-
-    # I'm here #################################################################################################
-
     def on_partition_list_new_activate(self, button):
         """ Add a new partition """
         selection = self.partition_list.get_selection()
 
         if not selection:
             return
-        
+
         model, tree_iter = selection.get_selected()
         if tree_iter is None:
             return
 
-        # Assume it will be formatted, unless it's extended
+        # Assume it will be formatted, unless it's extended (see below)
         formatme = True
 
         # Get necessary row data
@@ -861,60 +835,65 @@ COL_ENCRYPTED = 15
 
         disk_path = model[parent_iter][COL_PATH]
         self.disks_changed.append(disk_path)
+
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
 
         (disk, result) = self.disks[disk_path]
-        dev = disk.device
-
-        partitions = pm.get_partitions(disk)
-        p = partitions[partition_path]
 
         # Added extended, moving extended details up here
 
         # Get the objects from the dialog
-        extended = disk.getExtendedPartition()
+        radio = {}
+        radio["primary"] = self.ui.get_object('partition_create_type_primary')
+        radio["logical"] = self.ui.get_object('partition_create_type_logical')
+        radio["extended"] = self.ui.get_object('partition_create_type_extended')
+
+        radio["primary"].set_active(True)
+        radio["logical"].set_active(False)
+        radio["extended"].set_active(False)
+
+        radio["primary"].set_visible(True)
+        radio["logical"].set_visible(True)
+        radio["extended"].set_visible(True)
+
         supports_extended = disk.supportsFeature(pm.DISK_EXTENDED)
-        primary_radio = self.ui.get_object('partition_create_type_primary')
-        logical_radio = self.ui.get_object('partition_create_type_logical')
-        extended_radio = self.ui.get_object('partition_create_type_extended')
-
-        primary_radio.set_active(True)
-        logical_radio.set_active(False)
-        extended_radio.set_active(False)
-
-        logical_radio.set_visible(True)
-        primary_radio.set_visible(True)
-        extended_radio.set_visible(True)
 
         if not supports_extended:
-            extended_radio.set_visible(False)
+            radio["extended"].set_visible(False)
+
+        extended = disk.getExtendedPartition()
 
         if isbase and extended:
-            logical_radio.set_visible(False)
-            extended_radio.set_visible(False)
+            radio["logical"].set_visible(False)
+            radio["extended"].set_visible(False)
         elif isbase and not extended:
-            logical_radio.set_visible(False)
+            radio["logical"].set_visible(False)
         elif not isbase:
-            logical_radio.set_active(True)
-            primary_radio.set_visible(False)
-            extended_radio.set_visible(False)
+            radio["primary"].set_visible(False)
+            radio["logical"].set_active(True)
+            radio["extended"].set_visible(False)
 
         # Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
         if primary_count >= disk.maxPrimaryPartitionCount:
             # No room left for another primary partition
-            primary_radio.set_sensitive(False)
+            radio["primary"].set_sensitive(False)
 
-        beginning_radio = self.ui.get_object('partition_create_place_beginning')
-        end_radio = self.ui.get_object('partition_create_place_end')
-        beginning_radio.set_active(True)
-        end_radio.set_active(False)
+        radio["begin"] = self.ui.get_object('partition_create_place_beginning')
+        radio["end"] = self.ui.get_object('partition_create_place_end')
+        radio["begin"].set_active(True)
+        radio["end"].set_active(False)
 
         # Prepare size spin
+
+        dev = disk.device
+        partitions = pm.get_partitions(disk)
+        partition = partitions[partition_path]
+
         # +1 as not to leave unusably small space behind
-        max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
+        max_size_mb = int((partition.geometry.length * dev.sectorSize) / 1000000) + 1
 
         size_spin = self.ui.get_object('partition_size_spinbutton')
         size_spin.set_digits(0)
@@ -927,64 +906,67 @@ COL_ENCRYPTED = 15
         label_entry = self.ui.get_object('partition_label_entry')
         label_entry.set_text("")
 
-        # use
-        use_combo = self.ui.get_object('partition_use_combo')
-        use_combo.set_active(3)
+        # use as (fs)
+        fs_combo = self.ui.get_object('partition_use_combo')
+        fs_combo.set_active(3)
 
         # mount combo entry
-        mount_combo_entry = self.ui.get_object('combobox-entry')
-        mount_combo_entry.set_text("")
+        mount_combo = self.ui.get_object('combobox-entry')
+        mount_combo.set_text("")
 
         # Finally, show the create partition dialog
-
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text()
-            mymount = mount_combo_entry.get_text().strip()
+            mymount = mount_combo.get_text().strip()
             if mymount in self.diskdic['mounts']:
                 show.warning(_("Can't use same mount point twice..."))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
-                myfmt = use_combo.get_active_text()
-                if myfmt is None:
-                    myfmt = ""
-                if myfmt == 'swap':
+
+                myfs = fs_combo.get_active_text()
+
+                if myfs is None:
+                    myfs = ""
+
+                if myfs == 'swap':
                     mymount = 'swap'
+
                 # Get selected size
                 size = int(size_spin.get_value())
 
-                beg_var = beginning_radio.get_active()
+                beg_var = radio["begin"].get_active()
 
-                start_sector = p.geometry.start
-                end_sector = p.geometry.end
-                geometry = pm.geom_builder(disk, start_sector,
-                                           end_sector, size, beg_var)
+                start_sector = partition.geometry.start
+                end_sector = partition.geometry.end
+                geometry = pm.geom_builder(disk, start_sector, end_sector, size, beg_var)
 
                 # User wants to create an extended, logical or primary partition
-                if primary_radio.get_active():
+
+                if radio["primary"].get_active():
                     logging.debug(_("Creating a primary partition"))
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
-                elif extended_radio.get_active():
-                    # No mounting extended partitions.
+                elif radio["extended"].get_active():
+                    # Not mounting extended partitions.
                     if mymount:
                         self.diskdic['mounts'].remove(mymount)
                         mymount = ''
-                    # No labeling either..
+                    # And no labeling either
                     mylabel = ''
-                    myfmt = 'extended'
+                    myfs = 'extended'
                     formatme = False
                     logging.debug(_("Creating an extended partition"))
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
-                elif logical_radio.get_active():
+                elif radio["logical"].get_active():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
                         logging.debug(_("Creating a logical partition"))
-                        # Which geometry should we use here?
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
-                # Store stage partition info in self.stage_opts
+                # Store new stage partition info in self.stage_opts
+
                 old_parts = []
                 for y in self.all_partitions:
                     for z in y:
@@ -992,13 +974,17 @@ COL_ENCRYPTED = 15
                 partitions = pm.get_partitions(disk)
                 for e in partitions:
                     if e not in old_parts:
-                        uid = self.gen_partition_uid(p=partitions[e])
-                        self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
+                        uid = self.gen_partition_uid(partition=partitions[e])
+                        self.stage_opts[uid] = (True, mylabel, mymount, myfs, formatme)
+
                 # Update partition list treeview
                 self.fill_partition_list()
                 self.fill_grub_device_entry()
 
         self.create_partition_dialog.hide()
+
+
+# I'M HERE --------------------------------------------------------------------------------------------------------
 
     def on_partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
@@ -1027,7 +1013,7 @@ COL_ENCRYPTED = 15
         fmtable = row[11]
         use_luks = row[12]
         enable_luks_widgets(use_luks)
-        
+
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
             # TODO: Save new choices
@@ -1035,7 +1021,7 @@ COL_ENCRYPTED = 15
 
     def on_switch_use_luks_activate(self, widget):
         enable_luks_widgets(widget.get_activate())
-    
+
     def enable_luks_widgets(self, status):
         w_sensitive = ['label_luks_vol_name', 'label_luks_password',
                        'label_luks_password_confirm', 'entry_luks_vol_name',
@@ -1050,7 +1036,7 @@ COL_ENCRYPTED = 15
             for w_name in w_hide:
                 w = self.ui.get_object(w_name)
                 w.hide()
-        
+
         w = self.ui.get_object('switch_use_luks')
         w.set_active(status)
 
@@ -1360,7 +1346,8 @@ COL_ENCRYPTED = 15
 
                 if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
-                    show.warning(_('GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk '
+                    show.warning(_(
+                        'GRUB requires a BIOS Boot Partition (2 MiB, no filesystem, EF02 type code in gdisk '
                         'or bios_grub flag in GNU Parted) in BIOS systems to embed its core.img file due to lack of '
                         'post-MBR embed gap in GPT disks.\n\nFor '
                         'a BIOS-GPT configuration, create a 1007 KiB partition at the beginning of the disk with no '
@@ -1592,11 +1579,13 @@ COL_ENCRYPTED = 15
                                 #if "swap" in fs_type:
                                 swap_partition = self.get_swap_partition(partition_path)
                                 if swap_partition == partition_path:
-                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
+                                    msg = _(
+                                        "%s is mounted as swap.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % partition_path
                                     mounted = True
                                 elif len(mount_point) > 0:
-                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
+                                    msg = _(
+                                        "%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % (partition_path, mount_point)
                                     mounted = True
                                 if "install" in mount_point:
@@ -1612,8 +1601,8 @@ COL_ENCRYPTED = 15
                                     else:
                                         # unmount it!
                                         if swap_partition == partition_path:
-                                            subp = subprocess.Popen(['sh', '-c', 'swapoff %s'
-                                                                    % partition_path], stdout=subprocess.PIPE)
+                                            subp = subprocess.Popen(
+                                                ['sh', '-c', 'swapoff %s' % partition_path], stdout=subprocess.PIPE)
                                             logging.debug(_("Swap partition %s unmounted"), partition_path)
                                         else:
                                             subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
@@ -1873,13 +1862,13 @@ COL_ENCRYPTED = 15
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(
-                        self.settings,
-                        self.callback_queue,
-                        mount_devices,
-                        fs_devices,
-                        self.ssd,
-                        self.alternate_package_list,
-                        self.blvm)
+                self.settings,
+                self.callback_queue,
+                mount_devices,
+                fs_devices,
+                self.ssd,
+                self.alternate_package_list,
+                self.blvm)
 
             self.process.start()
         else:
@@ -1892,5 +1881,5 @@ except NameError as err:
     def _(message): return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('InstallationAdvanced')
