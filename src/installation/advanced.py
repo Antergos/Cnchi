@@ -76,6 +76,9 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.lv_partitions = []
         self.disks_changed = []
+        
+        # Store here all LUKS options for each partition (if any)
+        self.luks_options = {}
 
         self.my_first_time = True
 
@@ -539,9 +542,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if 'swap' in fs_type:
                         fs_type = 'swap'
 
-                    row = [path, fs_type, mount_point, label, fmt_active,
-                           formatable, size_txt, used, partition_path,
-                           "", partition.type, fmt_enable, False, False, False, False]
+                    row = [path, fs_type, mount_point, label, fmt_active, formatable, size_txt, used,
+                           partition_path, "", partition.type, fmt_enable, False, False, False, False]
 
                     if partition.type in (pm.PARTITION_LOGICAL, pm.PARTITION_FREESPACE_EXTENDED):
                         # Our parent (in the treeview) will be the extended partition we're in, not the disk
@@ -668,10 +670,8 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
-                    #new_format = self.stage_opts[uid][4]
                 else:
                     is_new = False
-                    #new_format = False
 
                 if new_fs == 'swap':
                     new_mount = 'swap'
@@ -986,9 +986,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.create_partition_dialog.hide()
 
-
 # I'M HERE --------------------------------------------------------------------------------------------------------
-
     def on_partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
         # TODO: Load previous user choices (if any)
@@ -1008,19 +1006,47 @@ class InstallationAdvanced(GtkBaseBox):
         # Get necessary row data
         row = model[tree_iter]
 
-        fs = row[1]
-        mount_point = row[2]
-        label = row[3]
-        fmt = row[4]
-        partition_path = row[8]
-        fmtable = row[11]
-        use_luks = row[12]
+        partition_path = row[COL_PARTITION_PATH]
+        uid = self.gen_partition_uid(path=partition_path)
+        
+        vol_name = ""
+        password = ""
+        
+        if uid in self.luks_options.keys():
+            (vol_name, password) = self.luks_options[uid]
+        else:
+            self.luks_options[uid] = ("", "")
+
+        entry = self.ui.get_object('entry_luks_vol_name')
+        entry_password = self.ui.get_object('entry_luks_password')
+        entry_password_confirm = self.ui.get_object('entry_luks_password_confirm')
+        
+        entry_vol_name.set_text(vol_name)
+        entry_password.set_text(password)
+        entry_password_confirm.set_text(password)
+
+        #fs_type = row[COL_FS]
+        #mount_point = row[COL_MOUNT_POINT]
+        #label = row[COL_LABEL]
+        #fmt = row[COL_FORMAT_ACTIVE]
+        #fmtable = row[COL_FORMAT_SENSITIVE]
+
+        use_luks = row[COL_ENCRYPTED]
+        
+        switch_use_luks = self.ui.get_object('switch_use_luks')
+        switch_use_luks.set_active(use_luks)
         self.enable_luks_widgets(use_luks)
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
-            # TODO: Save new choices
-            pass
+            # Save new choices
+            use_luks = switch_use_luks.get_active()
+            model[tree_iter][COL_ENCRYPTED] = use_luks
+            if use_luks:
+                vol_name = entry_vol_name.get_text()
+                password = entry_password.get_text()
+                password_confirm = entry_password_confirm.get_text()
+                self.luks_options[uid] = (vol_name, password)
 
     def on_switch_use_luks_activate(self, widget):
         self.enable_luks_widgets(widget.get_activate())
@@ -1032,38 +1058,41 @@ class InstallationAdvanced(GtkBaseBox):
         w_hide = ['image_luks_password_confirm', 'label_luks_password_status']
 
         for w_name in w_sensitive:
-            w = self.ui.get_object(w_name)
-            w.set_sensitive(status)
+            widget = self.ui.get_object(w_name)
+            widget.set_sensitive(status)
 
         if status is False:
             for w_name in w_hide:
-                w = self.ui.get_object(w_name)
-                w.hide()
+                widget = self.ui.get_object(w_name)
+                widget.hide()
 
-        w = self.ui.get_object('switch_use_luks')
-        w.set_active(status)
+        widget = self.ui.get_object('switch_use_luks')
+        widget.set_active(status)
 
     def on_partition_create_type_extended_toggled(self, widget):
-        partition = {}
-        partition['use_label'] = self.ui.get_object('partition_use_label')
-        partition['use_combo'] = self.ui.get_object('partition_use_combo')
-        partition['mount_label'] = self.ui.get_object('partition_mount_label')
-        partition['mount_combo'] = self.ui.get_object('partition_mount_combo')
-        partition['label_label'] = self.ui.get_object('partition_label_label')
-        partition['label_entry'] = self.ui.get_object('partition_label_entry')
+        wdgts = {}
+        wdgts['use_label'] = self.ui.get_object('partition_use_label')
+        wdgts['use_combo'] = self.ui.get_object('partition_use_combo')
+        wdgts['mount_label'] = self.ui.get_object('partition_mount_label')
+        wdgts['mount_combo'] = self.ui.get_object('partition_mount_combo')
+        wdgts['label_label'] = self.ui.get_object('partition_label_label')
+        wdgts['label_entry'] = self.ui.get_object('partition_label_entry')
 
         sensitive = True
 
         if widget.get_active():
             sensitive = False
 
-        for w in partition:
-            partition[w].set_sensitive(sensitive)
+        for i in wdgts:
+            wdgts[i].set_sensitive(sensitive)
 
     def on_partition_use_combo_changed(self, selection):
+        """ Swap can't be mounted the usual way """
         fs_selected = selection.get_active_text()
+        
         p_mount_combo = self.ui.get_object('partition_mount_combo')
         p_mount_label = self.ui.get_object('partition_mount_label')
+        
         if fs_selected == 'swap':
             p_mount_combo.hide()
             p_mount_label.hide()
@@ -1072,9 +1101,12 @@ class InstallationAdvanced(GtkBaseBox):
             p_mount_label.show()
 
     def on_partition_use_combo2_changed(self, selection):
+        """ Swap can't be mounted the usual way """
         fs_selected = selection.get_active_text()
+        
         p_mount_combo = self.ui.get_object('partition_mount_combo2')
         p_mount_label = self.ui.get_object('partition_mount_label2')
+        
         if fs_selected == 'swap':
             p_mount_combo.hide()
             p_mount_label.hide()
@@ -1099,18 +1131,18 @@ class InstallationAdvanced(GtkBaseBox):
         self.fill_grub_device_entry()
 
     def on_partition_list_treeview_selection_changed(self, selection):
-        """ Selection changed, call check_buttons to update them """
+        """ Selection in treeview changed, call check_buttons to update them """
         self.check_buttons(selection)
         return False
 
     def on_partition_list_treeview_button_press_event(self, widget, event):
-        """ Called when clicked on the partition list treeview
-            Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
+        """ Called when clicked on the partition list treeview.
+            Not doing anything here atm (just return false to not stop the chain of events) """
         return False
 
     def on_partition_list_treeview_key_press_event(self, widget, event):
-        """ Called when a key is pressed when the partition list treeview has focus
-            Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
+        """ Called when a key is pressed when the partition list treeview has focus.
+            Not doing anything here atm (just return false to not stop the chain of events) """
         return False
 
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
