@@ -629,11 +629,11 @@ class InstallationAdvanced(GtkBaseBox):
         mount_combo_entry.set_text(row[COL_MOUNT_POINT])
 
         # Set label entry
-        label_entry = self.ui.get_object('partition_label_entry2')
+        label_entry = self.ui.get_object('edit_partition_label_entry')
         label_entry.set_text(row[COL_LABEL])
 
         # Must format?
-        format_check = self.ui.get_object('partition_format_check')
+        format_check = self.ui.get_object('edit_partition_format_check')
         format_check.set_active(row[COL_FORMAT_ACTIVE])
         format_check.set_sensitive(row[COL_FORMAT_SENSITIVE])
 
@@ -849,9 +849,9 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Get the objects from the dialog
         radio = {}
-        radio["primary"] = self.ui.get_object('partition_create_type_primary')
-        radio["logical"] = self.ui.get_object('partition_create_type_logical')
-        radio["extended"] = self.ui.get_object('partition_create_type_extended')
+        radio["primary"] = self.ui.get_object('create_partition_create_type_primary')
+        radio["logical"] = self.ui.get_object('create_partition_create_type_logical')
+        radio["extended"] = self.ui.get_object('create_partition_create_type_extended')
 
         radio["primary"].set_active(True)
         radio["logical"].set_active(False)
@@ -898,7 +898,7 @@ class InstallationAdvanced(GtkBaseBox):
         # +1 as not to leave unusably small space behind
         max_size_mb = int((partition.geometry.length * dev.sectorSize) / 1000000) + 1
 
-        size_spin = self.ui.get_object('partition_size_spinbutton')
+        size_spin = self.ui.get_object('create_partition_size_spinbutton')
         size_spin.set_digits(0)
         # value, lower, upper, step_incr, page_incr, page_size
         adjustment = Gtk.Adjustment(max_size_mb, 1, max_size_mb, 1, 10, 0)
@@ -906,7 +906,7 @@ class InstallationAdvanced(GtkBaseBox):
         size_spin.set_value(max_size_mb)
 
         # label
-        label_entry = self.ui.get_object('partition_label_entry')
+        label_entry = self.ui.get_object('create_partition_label_entry')
         label_entry.set_text("")
 
         # use as (fs)
@@ -986,7 +986,13 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.create_partition_dialog.hide()
 
-    def on_partition_encryption_settings_clicked(self, widget):
+    def on_edit_partition_encryption_settings_clicked(self, widget):
+        self.partition_encryption_settings_clicked(widget)
+
+    def on_create_partition_encryption_settings_clicked(self, widget):
+        self.partition_encryption_settings_clicked(widget)
+
+    def partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
         # TODO: Load previous user choices (if any)
         # show LUKS encryption options dialog
