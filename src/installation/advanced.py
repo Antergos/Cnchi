@@ -986,7 +986,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.create_partition_dialog.hide()
 
-# I'M HERE --------------------------------------------------------------------------------------------------------
     def on_partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
         # TODO: Load previous user choices (if any)
@@ -1052,6 +1051,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.enable_luks_widgets(widget.get_activate())
 
     def enable_luks_widgets(self, status):
+        """ Enables or disables the LUKS encryption dialog widgets """
         w_sensitive = ['label_luks_vol_name', 'label_luks_password',
                        'label_luks_password_confirm', 'entry_luks_vol_name',
                        'entry_luks_password', 'entry_luks_password_confirm']
@@ -1070,6 +1070,7 @@ class InstallationAdvanced(GtkBaseBox):
         widget.set_active(status)
 
     def on_partition_create_type_extended_toggled(self, widget):
+        """ If user selects to create an extended partition, some widgets must be disabled """
         wdgts = {}
         wdgts['use_label'] = self.ui.get_object('partition_use_label')
         wdgts['use_combo'] = self.ui.get_object('partition_use_combo')
@@ -1087,7 +1088,7 @@ class InstallationAdvanced(GtkBaseBox):
             wdgts[i].set_sensitive(sensitive)
 
     def on_partition_use_combo_changed(self, selection):
-        """ Swap can't be mounted the usual way """
+        """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
         
         p_mount_combo = self.ui.get_object('partition_mount_combo')
@@ -1101,7 +1102,7 @@ class InstallationAdvanced(GtkBaseBox):
             p_mount_label.show()
 
     def on_partition_use_combo2_changed(self, selection):
-        """ Swap can't be mounted the usual way """
+        """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
         
         p_mount_combo = self.ui.get_object('partition_mount_combo2')
@@ -1146,6 +1147,7 @@ class InstallationAdvanced(GtkBaseBox):
         return False
 
     def on_partition_list_treeview_row_activated(self, path, column, user_data):
+        """ Simulate a click in new or edit if a partition or free space is double clicked """
         button_edit = self.ui.get_object('partition_button_edit')
         button_new = self.ui.get_object('partition_button_new')
 
@@ -1157,18 +1159,16 @@ class InstallationAdvanced(GtkBaseBox):
         return False
 
     def on_partition_list_treeview_popup_menu(self, widget):
-        """ Inherited from Ubiquity. Not doing anything here (return false to not stop the chain of events) """
+        """ Not doing anything here (return false to not stop the chain of events) """
         return False
+
+# I'M HERE --------------------------------------------------------------------------------------------------------
 
     def translate_ui(self):
         """ As the installer language can change anytime the user changes it, we have
             to 'retranslate' all our widgets calling this function """
 
         self.header.set_subtitle(_("Advanced Installation Mode"))
-
-        #txt = _("Advanced Installation Mode")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
 
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
