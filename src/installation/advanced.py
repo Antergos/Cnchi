@@ -113,19 +113,19 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
-        # Loads create and edit partition dialogs
+        # Load create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
         # Initialize our create partition dialog filesystems' combo.
-        combo = self.ui.get_object('partition_use_combo')
+        combo = self.ui.get_object('create_partition_use_combo')
         combo.remove_all()
         for fs_name in sorted(fs.NAMES):
             combo.append_text(fs_name)
         combo.set_wrap_width(2)
 
         # Initialize our edit partition dialog filesystems' combo.
-        combo = self.ui.get_object('partition_use_combo2')
+        combo = self.ui.get_object('edit_partition_use_combo')
         combo.remove_all()
         for fs_name in sorted(fs.NAMES):
             combo.append_text(fs_name)
@@ -142,8 +142,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Initialize our create and edit partition dialog mount points' combo.
         mount_combos = []
-        mount_combos.append(self.ui.get_object('partition_mount_combo'))
-        mount_combos.append(self.ui.get_object('partition_mount_combo2'))
+        mount_combos.append(self.ui.get_object('create_partition_mount_combo'))
+        mount_combos.append(self.ui.get_object('edit_partition_mount_combo'))
 
         for combo in mount_combos:
             combo.remove_all()
@@ -613,7 +613,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Fill partition dialog with correct data
 
         # Select the fs in dialog combobox
-        combo = self.ui.get_object('partition_use_combo2')
+        combo = self.ui.get_object('edit_partition_use_combo')
         combo_model = combo.get_model()
         combo_iter = combo_model.get_iter_first()
         while combo_iter is not None:
@@ -625,7 +625,7 @@ class InstallationAdvanced(GtkBaseBox):
                 combo_iter = combo_model.iter_next(combo_iter)
 
         # Set the mount point in dialog combobox
-        mount_combo_entry = self.ui.get_object('combobox-entry2')
+        mount_combo_entry = self.ui.get_object('edit_partition_mount_combo_entry')
         mount_combo_entry.set_text(row[COL_MOUNT_POINT])
 
         # Set label entry
@@ -910,11 +910,11 @@ class InstallationAdvanced(GtkBaseBox):
         label_entry.set_text("")
 
         # use as (fs)
-        fs_combo = self.ui.get_object('partition_use_combo')
+        fs_combo = self.ui.get_object('create_partition_use_combo')
         fs_combo.set_active(3)
 
         # mount combo entry
-        mount_combo = self.ui.get_object('combobox-entry')
+        mount_combo = self.ui.get_object('create_partition_mount_combo_entry')
         mount_combo.set_text("")
 
         # Finally, show the create partition dialog
@@ -1016,9 +1016,9 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             self.luks_options[uid] = ("", "")
 
-        entry = self.ui.get_object('entry_luks_vol_name')
-        entry_password = self.ui.get_object('entry_luks_password')
-        entry_password_confirm = self.ui.get_object('entry_luks_password_confirm')
+        entry_vol_name = self.ui.get_object('luks_vol_name_entry')
+        entry_password = self.ui.get_object('luks_password_entry')
+        entry_password_confirm = self.ui.get_object('luks_password_confirm_entry')
         
         entry_vol_name.set_text(vol_name)
         entry_password.set_text(password)
@@ -1032,7 +1032,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         use_luks = row[COL_ENCRYPTED]
         
-        switch_use_luks = self.ui.get_object('switch_use_luks')
+        switch_use_luks = self.ui.get_object('luks_use_luks_switch')
         switch_use_luks.set_active(use_luks)
         self.enable_luks_widgets(use_luks)
 
@@ -1047,15 +1047,15 @@ class InstallationAdvanced(GtkBaseBox):
                 password_confirm = entry_password_confirm.get_text()
                 self.luks_options[uid] = (vol_name, password)
 
-    def on_switch_use_luks_activate(self, widget):
+    def on_luks_use_luks_switch_activate(self, widget):
         self.enable_luks_widgets(widget.get_activate())
 
     def enable_luks_widgets(self, status):
         """ Enables or disables the LUKS encryption dialog widgets """
-        w_sensitive = ['label_luks_vol_name', 'label_luks_password',
-                       'label_luks_password_confirm', 'entry_luks_vol_name',
-                       'entry_luks_password', 'entry_luks_password_confirm']
-        w_hide = ['image_luks_password_confirm', 'label_luks_password_status']
+        w_sensitive = ['luks_vol_name_label', 'luks_password_label',
+                       'luks_password_confirm_label', 'luks_vol_name_entry',
+                       'luks_password_entry', 'luks_password_confirm_entry']
+        w_hide = ['luks_password_confirm_image', 'luks_password_status_label']
 
         for w_name in w_sensitive:
             widget = self.ui.get_object(w_name)
@@ -1066,18 +1066,18 @@ class InstallationAdvanced(GtkBaseBox):
                 widget = self.ui.get_object(w_name)
                 widget.hide()
 
-        widget = self.ui.get_object('switch_use_luks')
+        widget = self.ui.get_object('luks_use_luks_switch')
         widget.set_active(status)
 
-    def on_partition_create_type_extended_toggled(self, widget):
+    def on_create_partition_create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition, some widgets must be disabled """
         wdgts = {}
-        wdgts['use_label'] = self.ui.get_object('partition_use_label')
-        wdgts['use_combo'] = self.ui.get_object('partition_use_combo')
-        wdgts['mount_label'] = self.ui.get_object('partition_mount_label')
-        wdgts['mount_combo'] = self.ui.get_object('partition_mount_combo')
-        wdgts['label_label'] = self.ui.get_object('partition_label_label')
-        wdgts['label_entry'] = self.ui.get_object('partition_label_entry')
+        wdgts['use_label'] = self.ui.get_object('create_partition_use_label')
+        wdgts['use_combo'] = self.ui.get_object('create_partition_use_combo')
+        wdgts['mount_label'] = self.ui.get_object('create_partition_mount_label')
+        wdgts['mount_combo'] = self.ui.get_object('create_partition_mount_combo')
+        wdgts['label_label'] = self.ui.get_object('create_partition_label_label')
+        wdgts['label_entry'] = self.ui.get_object('create_partition_label_entry')
 
         sensitive = True
 
@@ -1087,12 +1087,12 @@ class InstallationAdvanced(GtkBaseBox):
         for i in wdgts:
             wdgts[i].set_sensitive(sensitive)
 
-    def on_partition_use_combo_changed(self, selection):
+    def on_create_partition_use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
         
-        p_mount_combo = self.ui.get_object('partition_mount_combo')
-        p_mount_label = self.ui.get_object('partition_mount_label')
+        p_mount_combo = self.ui.get_object('create_partition_mount_combo')
+        p_mount_label = self.ui.get_object('create_partition_mount_label')
         
         if fs_selected == 'swap':
             p_mount_combo.hide()
@@ -1101,12 +1101,12 @@ class InstallationAdvanced(GtkBaseBox):
             p_mount_combo.show()
             p_mount_label.show()
 
-    def on_partition_use_combo2_changed(self, selection):
+    def on_edit_partition_use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
         
-        p_mount_combo = self.ui.get_object('partition_mount_combo2')
-        p_mount_label = self.ui.get_object('partition_mount_label2')
+        p_mount_combo = self.ui.get_object('edit_partition_mount_combo')
+        p_mount_label = self.ui.get_object('edit_partition_mount_label')
         
         if fs_selected == 'swap':
             p_mount_combo.hide()
@@ -1162,8 +1162,6 @@ class InstallationAdvanced(GtkBaseBox):
         """ Not doing anything here (return false to not stop the chain of events) """
         return False
 
-# I'M HERE --------------------------------------------------------------------------------------------------------
-
     def translate_ui(self):
         """ As the installer language can change anytime the user changes it, we have
             to 'retranslate' all our widgets calling this function """
@@ -1215,65 +1213,69 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Translate dialog "Create partition"
         txt = _("Size:")
-        label = self.ui.get_object('partition_size_label')
+        label = self.ui.get_object('create_partition_size_label')
         label.set_markup(txt)
 
         txt = _("Type:")
-        label = self.ui.get_object('partition_create_type_label')
+        label = self.ui.get_object('create_partition_create_type_label')
         label.set_markup(txt)
 
         txt = _("Primary")
-        button = self.ui.get_object('partition_create_type_primary')
+        button = self.ui.get_object('create_partition_create_type_primary')
         button.set_label(txt)
 
         txt = _("Logical")
-        button = self.ui.get_object('partition_create_type_logical')
+        button = self.ui.get_object('create_partition_create_type_logical')
         button.set_label(txt)
 
         txt = _("Extended")
-        button = self.ui.get_object('partition_create_type_extended')
+        button = self.ui.get_object('create_partition_create_type_extended')
         button.set_label(txt)
 
         txt = _("Beginning of this space")
-        button = self.ui.get_object('partition_create_place_beginning')
+        button = self.ui.get_object('create_partition_create_place_beginning')
         button.set_label(txt)
 
         txt = _("End of this space")
-        button = self.ui.get_object('partition_create_place_end')
+        button = self.ui.get_object('create_partition_create_place_end')
         button.set_label(txt)
 
         txt = _("Use As:")
-        label = self.ui.get_object('partition_use_label')
+        label = self.ui.get_object('create_partition_use_label')
         label.set_markup(txt)
 
         txt = _("Mount Point:")
-        label = self.ui.get_object('partition_mount_label')
+        label = self.ui.get_object('create_partition_mount_label')
         label.set_markup(txt)
 
         txt = _("Label (optional):")
-        label = self.ui.get_object('partition_label_label')
+        label = self.ui.get_object('create_partition_label_label')
         label.set_markup(txt)
 
         txt = _("Encryption Options...")
-        button = self.ui.get_object('partition_encryption_settings')
+        button = self.ui.get_object('create_partition_encryption_settings')
         button.set_label(txt)
 
         # Translate dialog "Edit partition"
         txt = _("Use As:")
-        label = self.ui.get_object('partition_use_label2')
+        label = self.ui.get_object('edit_partition_use_label')
         label.set_markup(txt)
 
         txt = _("Mount Point:")
-        label = self.ui.get_object('partition_mount_label2')
+        label = self.ui.get_object('edit_partition_mount_label')
         label.set_markup(txt)
 
         txt = _("Label (optional):")
-        label = self.ui.get_object('partition_label_label2')
+        label = self.ui.get_object('edit_partition_label_label')
         label.set_markup(txt)
 
         txt = _("Format:")
-        label = self.ui.get_object('partition_format_label')
+        label = self.ui.get_object('edit_partition_format_label')
         label.set_markup(txt)
+
+        txt = _("Encryption Options...")
+        button = self.ui.get_object('edit_partition_encryption_settings')
+        button.set_label(txt)
 
         # Create disk partition table dialog
         txt = _("Partition Table Type:")
@@ -1283,13 +1285,24 @@ class InstallationAdvanced(GtkBaseBox):
         dialog = self.ui.get_object("create_table_dialog")
         dialog.set_title(_("Create Partition Table"))
 
-        # Change "Next" button text
-        #txt = _("Install Now!")
-        #self.forward_button.set_label(txt)
-        #self.forward_button.set_always_show_image(False)
+        # LUKS options dialog
+        txt = _("Use LUKS encryption:")
+        label = self.ui.get_object('luks_use_luks_label')
+        label.set_markup(txt)
 
-        #self.ui.get_object('cancelbutton')
-        #self.ui.get_object('partition_dialog_okbutton')
+        txt = _("LUKS volume name:")
+        label = self.ui.get_object('luks_vol_name_label')
+        label.set_markup(txt)
+
+        txt = _("Password:")
+        label = self.ui.get_object('luks_password_label')
+        label.set_markup(txt)
+
+        txt = _("Confirm password:")
+        label = self.ui.get_object('luks_password_confirm_label')
+        label.set_markup(txt)
+
+# I'M HERE --------------------------------------------------------------------------------------------------------
 
     def prepare(self, direction):
         """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
@@ -1299,13 +1312,12 @@ class InstallationAdvanced(GtkBaseBox):
         self.fill_partition_list()
         self.show_all()
 
-        # TODO: Enable this and finish LUKS encryption
-        button = self.ui.get_object('partition_encryption_settings')
-        button.set_sensitive(False)
-        button.hide()
-        button = self.ui.get_object('partition_encryption_settings2')
-        button.set_sensitive(False)
-        button.hide()
+        button = self.ui.get_object('create_partition_encryption_settings')
+        #button.set_sensitive(False)
+        #button.hide()
+        button = self.ui.get_object('edit_partition_encryption_settings')
+        #button.set_sensitive(False)
+        #button.hide()
 
         #label = self.ui.get_object('part_advanced_recalculating_label')
         #label.hide()
@@ -1314,12 +1326,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         button = self.ui.get_object('partition_button_lvm')
         button.hide()
-
-        #image = self.ui.get_object('part_advanced_warning_image')
-        #image.hide()
-
-        #label = self.ui.get_object('part_advanced_warning_message')
-        #label.hide()
 
         button = self.ui.get_object('partition_button_new')
         button.set_sensitive(False)
@@ -1745,7 +1751,7 @@ class InstallationAdvanced(GtkBaseBox):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
         if changelist == []:
-            # Something wrong has happened or nothing to change
+            # Something wrong has happened or there's nothing to change
             return False
 
         changelist.sort()
@@ -1758,7 +1764,10 @@ class InstallationAdvanced(GtkBaseBox):
         gdk_window = self.get_root_window()
         gdk_window.set_cursor(watch)
 
+        # Apply partition changes
         self.create_staged_partitions()
+        
+        # Start the installation process
         self.start_installation()
 
         arrow = Gdk.Cursor(Gdk.CursorType.ARROW)
@@ -1857,6 +1866,8 @@ class InstallationAdvanced(GtkBaseBox):
 
     def start_installation(self):
         """ Start installation process """
+        
+        # Fill fs_devices and mount_devices dicts that are going to be used by InstallationProcess
         fs_devices = {}
         mount_devices = {}
         for disk_path in self.disks:
