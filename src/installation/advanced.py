@@ -161,6 +161,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Get encryption (LUKS) options dialog
         self.luks_dialog = self.ui.get_object('luks_dialog')
+        switch = self.ui.get_object('luks_use_luks_switch')
+        switch.connect('notify::active', self.on_luks_use_luks_switch_activate)
 
         # Connect changing selection in the partition list treeview
         select = self.partition_list.get_selection()
@@ -650,6 +652,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
+
         if response == Gtk.ResponseType.OK:
             new_mount = mount_combo_entry.get_text().strip()
 
@@ -1062,8 +1065,8 @@ class InstallationAdvanced(GtkBaseBox):
         
         self.luks_dialog.hide()
 
-    def on_luks_use_luks_switch_activate(self, widget):
-        self.enable_luks_widgets(widget.get_activate())
+    def on_luks_use_luks_switch_activate(self, widget, data):
+        self.enable_luks_widgets(widget.get_active())
 
     def enable_luks_widgets(self, status):
         """ Enables or disables the LUKS encryption dialog widgets """
