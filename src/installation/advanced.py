@@ -78,7 +78,13 @@ class InstallationAdvanced(GtkBaseBox):
         self.disks_changed = []
         
         # Store here all LUKS options for each partition (if any)
+        # stores tuple (use_luks, vol_name, password)
         self.luks_options = {}
+        
+        # Store here LUKS options for current partition (create/edit dialog)
+        # (they will finally be stored in luks_options if user selects ok in create/edit partition dialog)
+        # stores tuple (use_luks, vol_name, password)
+        self.tmp_luks_options = (False, "", "")
 
         self.my_first_time = True
 
@@ -650,6 +656,14 @@ class InstallationAdvanced(GtkBaseBox):
         except:
             disk = None
 
+        # Get LUKS info for the encryption properties dialog
+        uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
+
+        if uid in self.luks_options.keys():
+            self.tmp_luks_options = self.luks_options[uid]
+        else:
+            self.tmp_luks_options = (False, "", "")
+
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
 
@@ -668,8 +682,7 @@ class InstallationAdvanced(GtkBaseBox):
                 new_fs = combo.get_active_text()
                 new_format = format_check.get_active()
 
-                uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
-
+                #uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
                 else:
@@ -679,6 +692,7 @@ class InstallationAdvanced(GtkBaseBox):
                     new_mount = 'swap'
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
+                self.luks_options[uid] = self.tmp_luks_options
 
         self.edit_partition_dialog.hide()
 
@@ -925,6 +939,9 @@ class InstallationAdvanced(GtkBaseBox):
         mount_combo = self.ui.get_object('create_partition_mount_combo_entry')
         mount_combo.set_text("")
 
+        # Empty tmp luks options (for encryption properties dialog)
+        self.tmp_luks_options = (False, "", "")
+
         # Finally, show the create partition dialog
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -987,6 +1004,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if e not in old_parts:
                         uid = self.gen_partition_uid(partition=partitions[e])
                         self.stage_opts[uid] = (True, mylabel, mymount, myfs, formatme)
+                        self.luks_options[uid] = self.tmp_luks_options
 
                 # Update partition list treeview
                 self.fill_partition_list()
@@ -996,58 +1014,24 @@ class InstallationAdvanced(GtkBaseBox):
 
     def on_edit_partition_encryption_settings_clicked(self, widget):
         self.partition_encryption_settings_clicked(widget)
-        return True
 
     def on_create_partition_encryption_settings_clicked(self, widget):
         self.partition_encryption_settings_clicked(widget)
-        return True
 
     def partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
-        # TODO: Load previous user choices (if any)
-        # show LUKS encryption options dialog
-        # save user choices
-
-        selection = self.partition_list.get_selection()
-
-        if not selection:
-            return
-
-        model, tree_iter = selection.get_selected()
-
-        if tree_iter is None:
-            return
-
-        # Get necessary row data
-        row = model[tree_iter]
-
-        partition_path = row[COL_PARTITION_PATH]
-        uid = self.gen_partition_uid(path=partition_path)
+        # TODO: Check Password confirmation (compare both entries)
         
-        vol_name = ""
-        password = ""
-        
-        if uid in self.luks_options.keys():
-            (vol_name, password) = self.luks_options[uid]
-        else:
-            self.luks_options[uid] = ("", "")
-
         entry_vol_name = self.ui.get_object('luks_vol_name_entry')
         entry_password = self.ui.get_object('luks_password_entry')
         entry_password_confirm = self.ui.get_object('luks_password_confirm_entry')
+        
+        (use_luks, vol_name, password) = self.tmp_luks_options
         
         entry_vol_name.set_text(vol_name)
         entry_password.set_text(password)
         entry_password_confirm.set_text(password)
 
-        #fs_type = row[COL_FS]
-        #mount_point = row[COL_MOUNT_POINT]
-        #label = row[COL_LABEL]
-        #fmt = row[COL_FORMAT_ACTIVE]
-        #fmtable = row[COL_FORMAT_SENSITIVE]
-
-        use_luks = row[COL_ENCRYPTED]
-        
         switch_use_luks = self.ui.get_object('luks_use_luks_switch')
         switch_use_luks.set_active(use_luks)
         self.enable_luks_widgets(use_luks)
@@ -1056,12 +1040,10 @@ class InstallationAdvanced(GtkBaseBox):
         if response == Gtk.ResponseType.OK:
             # Save new choices
             use_luks = switch_use_luks.get_active()
-            model[tree_iter][COL_ENCRYPTED] = use_luks
-            if use_luks:
-                vol_name = entry_vol_name.get_text()
-                password = entry_password.get_text()
-                password_confirm = entry_password_confirm.get_text()
-                self.luks_options[uid] = (vol_name, password)
+            vol_name = entry_vol_name.get_text()
+            password = entry_password.get_text()
+            password_confirm = entry_password_confirm.get_text()
+            self.tmp_luks_options = (use_luks, vol_name, password)
         
         self.luks_dialog.hide()
 
