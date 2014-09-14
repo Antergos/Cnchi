@@ -650,7 +650,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
-
         if response == Gtk.ResponseType.OK:
             new_mount = mount_combo_entry.get_text().strip()
 
@@ -884,8 +883,9 @@ class InstallationAdvanced(GtkBaseBox):
             # No room left for another primary partition
             radio["primary"].set_sensitive(False)
 
-        radio["begin"] = self.ui.get_object('partition_create_place_beginning')
-        radio["end"] = self.ui.get_object('partition_create_place_end')
+        radio["begin"] = self.ui.get_object('create_partition_create_place_beginning')
+        radio["end"] = self.ui.get_object('create_partition_create_place_end')
+
         radio["begin"].set_active(True)
         radio["end"].set_active(False)
 
@@ -900,8 +900,13 @@ class InstallationAdvanced(GtkBaseBox):
 
         size_spin = self.ui.get_object('create_partition_size_spinbutton')
         size_spin.set_digits(0)
-        # value, lower, upper, step_incr, page_incr, page_size
-        adjustment = Gtk.Adjustment(max_size_mb, 1, max_size_mb, 1, 10, 0)
+        adjustment = Gtk.Adjustment(
+            value=max_size_mb,
+            lower=1,
+            upper=max_size_mb,
+            step_increment=1,
+            page_increment=10,
+            page_size=0)
         size_spin.set_adjustment(adjustment)
         size_spin.set_value(max_size_mb)
 
@@ -988,9 +993,11 @@ class InstallationAdvanced(GtkBaseBox):
 
     def on_edit_partition_encryption_settings_clicked(self, widget):
         self.partition_encryption_settings_clicked(widget)
+        return True
 
     def on_create_partition_encryption_settings_clicked(self, widget):
         self.partition_encryption_settings_clicked(widget)
+        return True
 
     def partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
@@ -1052,6 +1059,8 @@ class InstallationAdvanced(GtkBaseBox):
                 password = entry_password.get_text()
                 password_confirm = entry_password_confirm.get_text()
                 self.luks_options[uid] = (vol_name, password)
+        
+        self.luks_dialog.hide()
 
     def on_luks_use_luks_switch_activate(self, widget):
         self.enable_luks_widgets(widget.get_activate())

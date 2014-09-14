@@ -64,8 +64,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">okbutton1</action-widget>
-      <action-widget response="-5">cancelbutton1</action-widget>
+      <action-widget response="-5">okbutton1</action-widget>
+      <action-widget response="-6">cancelbutton1</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="create_table_dialog">
@@ -373,7 +373,6 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">edit_partition_encryption_settings</action-widget>
       <action-widget response="-6">edit_partition_cancel</action-widget>
       <action-widget response="-5">edit_partition_ok</action-widget>
     </action-widgets>
@@ -784,7 +783,6 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">create_partition_encryption_settings</action-widget>
       <action-widget response="-6">create_partition_cancel</action-widget>
       <action-widget response="-5">create_partition_ok</action-widget>
     </action-widgets>
@@ -1291,8 +1289,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">luks_cancel_button</action-widget>
       <action-widget response="-5">luks_ok_button</action-widget>
+      <action-widget response="-6">luks_cancel_button</action-widget>
     </action-widgets>
   </object>
 </interface>
