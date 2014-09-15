@@ -1759,6 +1759,14 @@ class InstallationAdvanced(GtkBaseBox):
 
         return response
 
+    def set_cursor(self, cursor_type):
+        """ Sets mouse cursor in root window """
+        gdk_screen = Gdk.Screen.get_default()
+        if gdk_screen != None:
+            gdk_window = gdk_screen.get_root_window()
+            if gdk_window != None:
+                gdk_window.set_cursor(Gdk.Cursor(cursor_type))
+
     def store_values(self):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
@@ -1772,12 +1780,7 @@ class InstallationAdvanced(GtkBaseBox):
         if response == Gtk.ResponseType.CANCEL:
             return False
 
-        watch = Gdk.Cursor(Gdk.CursorType.WATCH)
-        
-        # get_root_window is deprecated
-        gdk_window = self.get_root_window()
-        
-        gdk_window.set_cursor(watch)
+        self.set_cursor(Gdk.CursorType.WATCH)
 
         # Apply partition changes
         self.create_staged_partitions()
@@ -1785,8 +1788,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Start the installation process
         self.start_installation()
 
-        arrow = Gdk.Cursor(Gdk.CursorType.ARROW)
-        gdk_window.set_cursor(arrow)
+        self.set_cursor(Gdk.CursorType.ARROW)
 
         # Restore "Next" button's text
         self.forward_button.set_label("gtk-go-forward")
