@@ -1788,7 +1788,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Start the installation process
         self.start_installation()
 
-        self.set_cursor(Gdk.CursorType.ARROW)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         # Restore "Next" button's text
         self.forward_button.set_label("gtk-go-forward")
