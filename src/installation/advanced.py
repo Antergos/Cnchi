@@ -1470,7 +1470,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def need_swap(self):
         """ Returns if having a swap partition is advisable """
-        mem_total = check_output("grep MemTotal /proc/meminfo")
+        mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
         
