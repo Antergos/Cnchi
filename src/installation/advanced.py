@@ -1510,7 +1510,7 @@ class InstallationAdvanced(GtkBaseBox):
             part["boot_efi"].show()
         elif self.lv_partitions and not is_uefi:
             part["boot"].show()
-        elif need_swap:
+        elif self.need_swap():
             part["swap"].show()
 
         # Be sure to just call get_devices once
