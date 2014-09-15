@@ -1744,7 +1744,7 @@ class InstallationAdvanced(GtkBaseBox):
             for ea in changelist:
                 x = 0
                 for txt in ea:
-                    lbl = Gtk.Label(txt, margin=margin)
+                    lbl = Gtk.Label(label=txt, margin=margin)
                     grid.attach(lbl, x, y, 1, 1)
                     x += 1
                 y += 1
@@ -1773,7 +1773,10 @@ class InstallationAdvanced(GtkBaseBox):
             return False
 
         watch = Gdk.Cursor(Gdk.CursorType.WATCH)
+        
+        # get_root_window is deprecated
         gdk_window = self.get_root_window()
+        
         gdk_window.set_cursor(watch)
 
         # Apply partition changes
@@ -1799,7 +1802,7 @@ class InstallationAdvanced(GtkBaseBox):
                 subp = subprocess.Popen(['sh', '-c', 'swapoff %s' % name], stdout=subprocess.PIPE)
 
         # We'll use auto_partition.setup_luks if necessary
-        import auto_partition as ap
+        from installation import auto_partition as ap
 
         partitions = {}
         if self.disks is not None:
