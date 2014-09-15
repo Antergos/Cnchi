@@ -1689,7 +1689,7 @@ class InstallationAdvanced(GtkBaseBox):
                         if uid in self.luks_options:
                             (use_luks, vol_name, password) = self.luks_options[uid]
                             if use_luks:
-                                encrypt = 'yes'
+                                encrypt = 'Yes'
                     else:
                         relabel = 'No'
                         fmt = 'No'
@@ -1698,8 +1698,8 @@ class InstallationAdvanced(GtkBaseBox):
 
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
                         changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                        msg = "In get_changes(), added to changelist: path[%s] createme[%s] relabel[%s] fmt[%s] mnt[%s]"
-                        logging.debug(msg, partition_path, createme, relabel, fmt, mnt)
+                        msg = "Added to changelist: path[%s] createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
+                        logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
             return changelist
 
