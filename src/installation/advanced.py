@@ -1749,7 +1749,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         # First, show partitions that will be deleted
         for ea in self.to_be_deleted:
-            lbl = Gtk.Label(_("Partition %s will be deleted") % ea, margin=margin)
+            lbl_text = _("Partition %s will be deleted") % ea
+            lbl = Gtk.Label(label=lbl_text, margin=margin)
             lbl.set_alignment(0, 0.5)
             grid.attach(lbl, 0, y, 4, 1)
             y += 1
@@ -1895,6 +1896,7 @@ class InstallationAdvanced(GtkBaseBox):
                                 logging.info(txt)
                                 if not self.testing:
                                     with misc.raised_privileges():
+                                        self.settings.set("use_luks", True)
                                         # Do real encryption here!
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
                                         (error, msg) = fs.create_fs("/dev/mapper/" + vol_name, fisy, lbl)
