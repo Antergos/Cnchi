@@ -36,6 +36,7 @@ if __name__ == '__main__':
     sys.path.insert(0, parent_dir)
 
 import canonical.gtkwidgets as gtkwidgets
+import canonical.misc as misc
 import canonical.validation as validation
 
 import parted3.partition_module as pm
@@ -1897,11 +1898,13 @@ class InstallationAdvanced(GtkBaseBox):
                                     fs.label_fs(fisy, partition_path, lbl)
                     if uid in self.luks_options:
                         (use_luks, vol_name, password) = self.luks_options[uid]
-                        txt = _("Encrypting %s and assigning volume name %s...") % (partition_path, vol_name)
-                        logging.info(txt)
-                        if not self.testing:
-                            # Do real encryption here!
-                            ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
+                        if use_luks and len(vol_name) > 0 and len(password) > 0:
+                            txt = _("Encrypting %s and assigning volume name %s...") % (partition_path, vol_name)
+                            logging.info(txt)
+                            if not self.testing:
+                                with misc.raised_privileges():
+                                    # Do real encryption here!
+                                    ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
 
     def start_installation(self):
         """ Start installation process """
@@ -1920,6 +1923,10 @@ class InstallationAdvanced(GtkBaseBox):
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
                     mount_devices[mount_point] = ppath
                     fs_devices[ppath] = fs_type
+                if uid in self.luks_options:
+                    (use_luks, vol_name, password) = self.luks_options[uid]
+                    if use_luks and len(vol_name) > 0:
+                        mount_devices[mount_point] = "/dev/mapper/" + vol_name
             for partition_path in partition_list:
                 uid = self.gen_partition_uid(partition=partitions[partition_path])
                 if uid in self.stage_opts:
@@ -1927,8 +1934,14 @@ class InstallationAdvanced(GtkBaseBox):
                     # Do not mount extended or bios-gpt-boot partitions
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         continue
+                        
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
+                
+                if uid in self.luks_options:
+                    (use_luks, vol_name, password) = self.luks_options[uid]
+                    if use_luks and len(vol_name) > 0:
+                        mount_devices[mount_point] = "/dev/mapper/" + vol_name
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() is False:
