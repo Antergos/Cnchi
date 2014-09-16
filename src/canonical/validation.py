@@ -129,19 +129,19 @@ def human_password_strength(password):
         hint = ''
         color = ''
     elif length < 6:
-        hint = _('password is too short')
+        hint = _('Password is too short')
         color = 'darkred'
     elif strength < 0.5:
-        hint = _('weak password')
+        hint = _('Weak password')
         color = 'darkred'
     elif strength < 0.75:
-        hint = _('fair password')
+        hint = _('Fair password')
         color = 'darkorange'
     elif strength < 0.9:
-        hint = _('good password')
+        hint = _('Good password')
         color = 'darkgreen'
     else:
-        hint = _('strong password')
+        hint = _('Strong password')
         color = 'darkgreen'
     return (hint, color)
 

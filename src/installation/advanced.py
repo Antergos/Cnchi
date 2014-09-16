@@ -36,6 +36,7 @@ if __name__ == '__main__':
     sys.path.insert(0, parent_dir)
 
 import canonical.gtkwidgets as gtkwidgets
+import canonical.validation as validation
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
@@ -601,6 +602,22 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list_store[path][COL_SSD_ACTIVE] = not self.partition_list_store[path][COL_SSD_ACTIVE]
         disk_path = self.partition_list_store[path][COL_PATH]
         self.ssd[disk_path] = self.partition_list_store[path][COL_SSD_ACTIVE]
+        
+    def on_luks_password_changed(self, widget):
+        """ User has introduced new information. Check it here. """
+        luks_password_entry = self.ui.get_object('luks_password_entry')
+        luks_password_confirm_entry = self.ui.get_object('luks_password_confirm_entry')
+        luks_password_confirm_image = self.ui.get_object('luks_password_confirm_image')
+        luks_password_status_label = self.ui.get_object('luks_password_status_label')
+        luks_password_strength = self.ui.get_object('luks_password_strength')
+        
+        if widget == luks_password_entry or widget == luks_password_confirm_entry:
+            validation.check_password(
+                luks_password_entry,
+                luks_password_confirm_entry,
+                luks_password_confirm_image,
+                luks_password_status_label,
+                luks_password_strength)
 
     def on_partition_list_edit_activate(self, button):
         """ The user wants to edit a partition """

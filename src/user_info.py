@@ -264,13 +264,13 @@ class UserInfo(GtkBaseBox):
             username = self.entry['username'].get_text()
             self.validate('username', username)
 
-        if widget == self.entry['password'] or \
-                widget == self.entry['verified_password']:
-            validation.check_password(self.entry['password'], \
-                    self.entry['verified_password'], \
-                    self.is_ok['password'], \
-                    self.error_label['password'], \
-                    self.password_strength)
+        if widget == self.entry['password'] or widget == self.entry['verified_password']:
+            validation.check_password(
+                self.entry['password'],
+                self.entry['verified_password'],
+                self.is_ok['password'],
+                self.error_label['password'],
+                self.password_strength)
 
         # Check if all fields are filled and ok
         all_ok = True
