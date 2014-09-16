@@ -1879,6 +1879,18 @@ class InstallationAdvanced(GtkBaseBox):
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
 
+                        if uid in self.luks_options:
+                            (use_luks, vol_name, password) = self.luks_options[uid]
+                            if use_luks and len(vol_name) > 0 and len(password) > 0:
+                                txt = _("Encrypting %s, assigning volume name %s and formatting it...") % (partition_path, vol_name)
+                                logging.info(txt)
+                                if not self.testing:
+                                    with misc.raised_privileges():
+                                        # Do real encryption here!
+                                        ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
+                                        (error, msg) = fs.create_fs("/dev/mapper" + vol_name, fisy, lbl)
+                                        fmt = False
+
                         # Only format if they want formatting
                         if fmt:
                             # All of fs module takes paths, not partition objs
@@ -1896,15 +1908,6 @@ class InstallationAdvanced(GtkBaseBox):
                             if self.orig_label_dic[partition_path] != lbl:
                                 if not self.testing:
                                     fs.label_fs(fisy, partition_path, lbl)
-                    if uid in self.luks_options:
-                        (use_luks, vol_name, password) = self.luks_options[uid]
-                        if use_luks and len(vol_name) > 0 and len(password) > 0:
-                            txt = _("Encrypting %s and assigning volume name %s...") % (partition_path, vol_name)
-                            logging.info(txt)
-                            if not self.testing:
-                                with misc.raised_privileges():
-                                    # Do real encryption here!
-                                    ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
 
     def start_installation(self):
         """ Start installation process """
