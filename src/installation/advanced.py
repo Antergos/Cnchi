@@ -712,6 +712,11 @@ class InstallationAdvanced(GtkBaseBox):
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
+                
+                if new_mount == "/":
+                    # Set if we'll be using LUKS in the root partition (for process.py to know)
+                    self.settings.set('use_luks_in_root', self.tmp_luks_options[0])
+                    self.settings.set('luks_root_volume', self.tmp_luks_options[1])
 
         self.edit_partition_dialog.hide()
 
@@ -1027,6 +1032,10 @@ class InstallationAdvanced(GtkBaseBox):
                         uid = self.gen_partition_uid(partition=partitions[e])
                         self.stage_opts[uid] = (True, mylabel, mymount, myfs, formatme)
                         self.luks_options[uid] = self.tmp_luks_options
+                        if mymount == "/":
+                            # Set if we'll be using LUKS in the root partition (for process.py to know)
+                            self.settings.set('use_luks_in_root', self.tmp_luks_options[0])
+                            self.settings.set('luks_root_volume', self.tmp_luks_options[1])
 
                 # Update partition list treeview
                 self.fill_partition_list()

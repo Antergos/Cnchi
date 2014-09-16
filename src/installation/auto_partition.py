@@ -631,8 +631,8 @@ class AutoPartition(object):
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
 
-        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in installation_process.py if necessary
-        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in installation_process.py, too.
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
+        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
 
         if self.luks and self.luks_key_pass == "":
             # Copy root keyfile to boot partition and home keyfile to root partition

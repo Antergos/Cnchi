@@ -182,10 +182,15 @@ class InstallationAsk(GtkBaseBox):
         if self.next_page == "installation_automatic":
             self.settings.set('use_lvm', use_lvm)
             self.settings.set('use_luks', use_luks)
+            self.settings.set('use_luks_in_root', True)
+            self.settings.set('luks_root_volume', "cryptAntergos")
             self.settings.set('use_home', use_home)
         else:
+            # Set defaults. We don't know these yet.
             self.settings.set('use_lvm', False)
             self.settings.set('use_luks', False)
+            self.settings.set('use_luks_in_root', False)
+            self.settings.set('luks_root_volume', "")
             self.settings.set('use_home', False)
 
         if self.settings.get('use_luks'):

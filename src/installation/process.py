@@ -909,7 +909,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
                 continue
 
-            # Fix for home + luks, no lvm
+            # Fix for home + luks, no lvm (from automatic)
             if "/home" in path and self.settings.get("use_luks") and not self.settings.get("use_lvm"):
                 # Modify the crypttab file
                 if self.settings.get("luks_key_pass") != "":
@@ -1053,18 +1053,22 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
 
-        if self.method == 'automatic' and self.settings.get('use_luks'):
+        if self.settings.get('use_luks') or self.settings.get('use_luks_in_root'):
             root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
             root_uuid = fs.get_info(root_device)['UUID']
             boot_uuid = fs.get_info(boot_device)['UUID']
 
             # Let GRUB automatically add the kernel parameters for root encryption
-            if self.settings.get("luks_key_pass") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
-                               'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
-            else:
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
+            if self.method == 'automatic': 
+                if self.settings.get("luks_key_pass") == "":
+                    default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
+                                   'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
+                else:
+                    default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
+            elif self.method == 'advanced' and self.settings.get('use_luks_in_root'):
+                vol_name = self.settings.get('luks_root_volume')
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, vol_name)
 
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
@@ -1687,7 +1691,7 @@ class InstallationProcess(multiprocessing.Process):
         # Save settings
         self.chroot(['alsactl', '-f', '/etc/asound.state', 'store'])
 
-    def fluidsynth(self):
+    def set_fluidsynth(self):
         """ Sets fluidsynth configuration file """
 
         # This function must be called inside the chroot        
@@ -1923,7 +1927,7 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(['pulseaudio-ctl', 'normal'])
         
         # Set fluidsynth audio system (in our case, pulseaudio)
-        self.fluidsynth('pulseaudio')
+        self.set_fluidsynth()
         logging.debug(_("Updated fluidsynth configuration file"))
 
         # Exit chroot system
