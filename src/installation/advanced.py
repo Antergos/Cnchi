@@ -1888,8 +1888,11 @@ class InstallationAdvanced(GtkBaseBox):
                                     with misc.raised_privileges():
                                         # Do real encryption here!
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
-                                        (error, msg) = fs.create_fs("/dev/mapper" + vol_name, fisy, lbl)
+                                        (error, msg) = fs.create_fs("/dev/mapper/" + vol_name, fisy, lbl)
+                                        # Do not format (already done)
                                         fmt = False
+                                        # Do not relabel (already done)
+                                        lbl = self.orig_label_dic[partition_path]
 
                         # Only format if they want formatting
                         if fmt:
