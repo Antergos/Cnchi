@@ -156,25 +156,25 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     else:
         # Set up luks with a password key
 
-        luks_key_pass_bytes = bytes(luks_pass, 'UTF-8')
+        luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
         proc = subprocess.Popen(
             ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", "--key-file=-", luks_device],
             stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
+        (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
         proc = subprocess.Popen(
             ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
             stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        (stdout_data, stderr_data) = proc.communicate(input=luks_key_pass_bytes)
+        (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
 class AutoPartition(object):
     """ Class used by the automatic installation method """
-    def __init__(self, dest_dir, auto_device, use_luks, use_lvm, luks_key_pass, use_home, callback_queue):
+    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, callback_queue):
         """ Class initialization """
         self.dest_dir = dest_dir
         self.auto_device = auto_device
-        self.luks_key_pass = luks_key_pass
+        self.luks_password = luks_password
         # Use LUKS encryption
         self.luks = use_luks
         # Use LVM
@@ -581,9 +581,9 @@ class AutoPartition(object):
             logging.debug("Boot: %s, Swap: %s, Root: %s", boot_device, swap_device, root_device)
 
         if self.luks:
-            setup_luks(luks_devices[0], "cryptAntergos", self.luks_key_pass, key_files[0])
+            setup_luks(luks_devices[0], "cryptAntergos", self.luks_password, key_files[0])
             if self.home and not self.lvm:
-                setup_luks(luks_devices[1], "cryptAntergosHome", self.luks_key_pass, key_files[1])
+                setup_luks(luks_devices[1], "cryptAntergosHome", self.luks_password, key_files[1])
 
         if self.lvm:
             logging.debug(_("Cnchi will setup LVM on device %s"), lvm_device)
@@ -634,7 +634,7 @@ class AutoPartition(object):
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
 
-        if self.luks and self.luks_key_pass == "":
+        if self.luks and self.luks_password == "":
             # Copy root keyfile to boot partition and home keyfile to root partition
             # user will choose what to do with it
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS

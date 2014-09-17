@@ -191,13 +191,13 @@ class InstallationProcess(multiprocessing.Process):
             # (see auto_partition.py)
 
             try:
-                auto = auto_partition.AutoPartition(self.dest_dir,
-                                                    self.auto_device,
-                                                    self.settings.get("use_luks"),
-                                                    self.settings.get("use_lvm"),
-                                                    self.settings.get("luks_key_pass"),
-                                                    self.settings.get("use_home"),
-                                                    self.callback_queue)
+                auto = auto_partition.AutoPartition(dest_dir=self.dest_dir,
+                                                    auto_device=self.auto_device,
+                                                    use_luks=self.settings.get("use_luks"),
+                                                    luks_password=self.settings.get("luks_password"),
+                                                    use_lvm=self.settings.get("use_lvm"),
+                                                    use_home=self.settings.get("use_home"),
+                                                    callback_queue=self.callback_queue)
                 auto.run()
 
                 # Get mount_devices and fs_devices
@@ -890,6 +890,9 @@ class InstallationProcess(multiprocessing.Process):
                      "# that works even if disks are added and removed. See fstab(5).", "#",
                      "# <file system> <mount point>   <type>  <options>       <dump>  <pass>", "#"]
 
+        use_luks = self.settings.get("use_luks")
+        use_lvm = self.settings.get("use_lvm")
+
         for path in self.mount_devices:
             opts = 'defaults'
             chk = '0'
@@ -910,9 +913,9 @@ class InstallationProcess(multiprocessing.Process):
                 continue
 
             # Fix for home + luks, no lvm (from automatic)
-            if "/home" in path and self.settings.get("use_luks") and not self.settings.get("use_lvm"):
+            if "/home" in path and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
-                if self.settings.get("luks_key_pass") != "":
+                if self.settings.get("luks_password") != "":
                     home_keyfile = "none"
                 else:
                     home_keyfile = "/etc/luks-keys/home"
@@ -1053,21 +1056,18 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
 
-        if self.settings.get('use_luks') or self.settings.get('use_luks_in_root'):
+        if self.settings.get('use_luks'):
             root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
             root_uuid = fs.get_info(root_device)['UUID']
             boot_uuid = fs.get_info(boot_device)['UUID']
 
             # Let GRUB automatically add the kernel parameters for root encryption
-            if self.method == 'automatic': 
-                if self.settings.get("luks_key_pass") == "":
-                    default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos ' \
-                                   'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, boot_uuid)
-                else:
-                    default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
-            elif self.method == 'advanced' and self.settings.get('use_luks_in_root'):
-                vol_name = self.settings.get('luks_root_volume')
+            vol_name = self.settings.get('luks_root_volume')
+            if self.method == "automatic" and self.settings.get("luks_password") == "":
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
+                               'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, vol_name, boot_uuid)
+            else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, vol_name)
 
             with open(default_grub) as grub_file:

@@ -150,7 +150,7 @@ class InstallationAutomatic(GtkBaseBox):
             return False
 
         luks_password = self.entry['luks_password'].get_text()
-        self.settings.set('luks_key_pass', luks_password)
+        self.settings.set('luks_password', luks_password)
         if luks_password != "":
             logging.debug(_("A LUKS password has been set"))
 

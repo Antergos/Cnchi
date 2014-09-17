@@ -63,7 +63,7 @@ class Settings(object):
             'laptop' : 'False',
             'locale' : '',
             'log_file' : '/tmp/cnchi.log',
-            'luks_key_pass' : "",
+            'luks_password' : "",
             'luks_root_volume': "",
             'partition_mode' : 'easy',
             'password' : '',

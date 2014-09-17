@@ -1818,9 +1818,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        # Restore "Next" button's text
-        self.forward_button.set_label("gtk-go-forward")
-        self.forward_button.set_use_stock(True)
         return True
 
     def create_staged_partitions(self):
@@ -1899,7 +1896,8 @@ class InstallationAdvanced(GtkBaseBox):
                                         self.settings.set("use_luks", True)
                                         # Do real encryption here!
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
-                                        (error, msg) = fs.create_fs("/dev/mapper/" + vol_name, fisy, lbl)
+                                        luks_device = "/dev/mapper/" + vol_name
+                                        (error, msg) = fs.create_fs(luks_device, fisy, lbl)
                                         # Do not format (already done)
                                         fmt = False
                                         # Do not relabel (already done)
@@ -1948,17 +1946,19 @@ class InstallationAdvanced(GtkBaseBox):
                 uid = self.gen_partition_uid(partition=partitions[partition_path])
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
-                    # Do not mount extended or bios-gpt-boot partitions
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
+                        # Do not mount extended or bios-gpt-boot partitions
                         continue
-                        
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
                 
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
                     if use_luks and len(vol_name) > 0:
-                        mount_devices[mount_point] = "/dev/mapper/" + vol_name
+                        luks_device = "/dev/mapper/" + vol_name
+                        mount_devices[mount_point] = luks_device
+                        del fs_devices[partition_path]
+                        fs_devices[luks_device] = fs_type
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() is False:
