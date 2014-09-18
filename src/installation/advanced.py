@@ -1957,8 +1957,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if use_luks and len(vol_name) > 0:
                         luks_device = "/dev/mapper/" + vol_name
                         mount_devices[mount_point] = luks_device
-                        del fs_devices[partition_path]
-                        fs_devices[luks_device] = fs_type
+                        #del fs_devices[partition_path]
+                        #fs_devices[luks_device] = fs_type
 
         checkbox = self.ui.get_object("grub_device_check")
         if checkbox.get_active() is False:

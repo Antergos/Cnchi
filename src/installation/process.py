@@ -1064,6 +1064,10 @@ class InstallationProcess(multiprocessing.Process):
 
             # Let GRUB automatically add the kernel parameters for root encryption
             vol_name = self.settings.get('luks_root_volume')
+
+            logging.debug("Root device: %s", root_device)
+            logging.debug("Luks Root Volume: %s", vol_name) 
+
             if self.method == "automatic" and self.settings.get("luks_password") == "":
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
                                'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, vol_name, boot_uuid)
@@ -1384,15 +1388,20 @@ class InstallationProcess(multiprocessing.Process):
         # It is important that the encrypt hook comes before the filesystems hook
         # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
 
-        if self.settings.get("use_luks") or self.settings.get('use_luks_in_root'):
+        if self.settings.get("use_luks"):
             if os.path.exists(plymouth_bin):
                 hooks.append("plymouth-encrypt")
             else:
                 hooks.append("encrypt")
+
+            modules.extend(["dm_mod", "dm_crypt", "ext4"])
+
             if self.arch == 'x86_64':
-                modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_x86_64", "sha256", "sha512"])
+                modules.extend(["aes_x86_64"])
             else:
-                modules.extend(["dm_mod", "dm_crypt", "ext4", "aes_i586", "sha256", "sha512"])
+                modules.extend(["aes_i586"])
+
+            modules.extend(["sha256", "sha512"])
 
         if self.settings.get("f2fs"):
             modules.append("f2fs")
