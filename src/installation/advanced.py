@@ -1892,16 +1892,19 @@ class InstallationAdvanced(GtkBaseBox):
                                 txt = _("Encrypting %s, assigning volume name %s and formatting it...") % (partition_path, vol_name)
                                 logging.info(txt)
                                 if not self.testing:
+									# Do real encryption here!
+									# TODO: Show a progress dialog here as setup_luks is slow
                                     with misc.raised_privileges():
-                                        self.settings.set("use_luks", True)
-                                        # Do real encryption here!
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
-                                        luks_device = "/dev/mapper/" + vol_name
-                                        (error, msg) = fs.create_fs(luks_device, fisy, lbl)
-                                        # Do not format (already done)
-                                        fmt = False
-                                        # Do not relabel (already done)
-                                        lbl = self.orig_label_dic[partition_path]
+									self.settings.set("use_luks", True)
+									luks_device = "/dev/mapper/" + vol_name
+									(error, msg) = fs.create_fs(luks_device, fisy, lbl)
+									# Do not format (already done)
+									fmt = False
+									# Do not relabel (already done)
+									lbl = self.orig_label_dic[partition_path]
+									if mnt == "/":
+										self.settings.set("luks_root_password", password)
 
                         # Only format if they want formatting
                         if fmt:

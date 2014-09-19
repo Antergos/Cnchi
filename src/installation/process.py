@@ -1068,11 +1068,11 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug("Root device: %s", root_device)
             logging.debug("Luks Root Volume: %s", vol_name) 
 
-            if self.method == "automatic" and self.settings.get("luks_password") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
-                               'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, vol_name, boot_uuid)
-            else:
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, vol_name)
+			if self.settings.get("luks_root_password") == "":
+				default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
+							'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, vol_name, boot_uuid)
+			else:
+				default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, vol_name)
 
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
