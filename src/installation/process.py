@@ -1034,8 +1034,7 @@ class InstallationProcess(multiprocessing.Process):
                 grub_file.write("\n".join(lines))
 
     def modify_grub_default(self):
-        """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
-            This scheme can be used in the automatic installation option only (at this time) """
+        """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
 
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
@@ -1056,58 +1055,49 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
 
+        with open(default_grub) as grub_file:
+            lines = [x.strip() for x in grub_file.readlines()]
+
         if self.settings.get('use_luks'):
-            root_device = self.mount_devices["/"]
             boot_device = self.mount_devices["/boot"]
-            root_uuid = fs.get_info(root_device)['UUID']
             boot_uuid = fs.get_info(boot_device)['UUID']
 
             # Let GRUB automatically add the kernel parameters for root encryption
-            vol_name = self.settings.get('luks_root_volume')
+            luks_root_volume = self.settings.get('luks_root_volume')
+
+            logging.debug("Luks Root Volume: %s", luks_root_volume)
+
+            if self.method == "advanced" and self.settings.get('use_luks_in_root'):
+                root_device = self.settings.get('luks_root_device')
+            elif self.method == "automatic":
+                root_device = self.mount_devices["/"]
 
             logging.debug("Root device: %s", root_device)
-            logging.debug("Luks Root Volume: %s", vol_name) 
 
-			if self.settings.get("luks_root_password") == "":
-				default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
-							'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, vol_name, boot_uuid)
-			else:
-				default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, vol_name)
+            root_uuid = fs.get_info(root_device)['UUID']
 
-            with open(default_grub) as grub_file:
-                lines = [x.strip() for x in grub_file.readlines()]
+            if self.settings.get("luks_root_password") == "":
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
+                            'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, luks_root_volume, boot_uuid)
+            else:
+                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, luks_root_volume)
 
             for i in range(len(lines)):
                 if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
                     if not lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
                         if not lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
                             lines[i] = default_line
-                elif lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
-                    lines[i] = theme
-                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or \
-                        lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                    lines[i] = kernel_cmd
-                elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
-                    lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
-            with open(default_grub, 'w') as grub_file:
-                grub_file.write("\n".join(lines) + "\n")
-        else:
-            with open(default_grub) as grub_file:
-                lines = [x.strip() for x in grub_file.readlines()]
+        for i in range(len(lines)):
+            if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                lines[i] = theme
+            elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                lines[i] = kernel_cmd
+            elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                lines[i] = "GRUB_DISTRIBUTOR=Antergos"
 
-            for i in range(len(lines)):
-                if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
-                    lines[i] = theme
-                elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
-                    lines[i] = kernel_cmd
-                elif lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                    lines[i] = kernel_cmd
-                elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
-                    lines[i] = "GRUB_DISTRIBUTOR=Antergos"
-
-            with open(default_grub, 'w') as grub_file:
-                grub_file.write("\n".join(lines) + "\n")
+        with open(default_grub, 'w') as grub_file:
+            grub_file.write("\n".join(lines) + "\n")
 
         # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
         #with open(default_grub, 'a') as grub_file:

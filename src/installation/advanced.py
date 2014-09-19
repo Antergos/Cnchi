@@ -1896,15 +1896,16 @@ class InstallationAdvanced(GtkBaseBox):
 									# TODO: Show a progress dialog here as setup_luks is slow
                                     with misc.raised_privileges():
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
-									self.settings.set("use_luks", True)
-									luks_device = "/dev/mapper/" + vol_name
-									(error, msg) = fs.create_fs(luks_device, fisy, lbl)
-									# Do not format (already done)
-									fmt = False
-									# Do not relabel (already done)
-									lbl = self.orig_label_dic[partition_path]
-									if mnt == "/":
-										self.settings.set("luks_root_password", password)
+                                    self.settings.set("use_luks", True)
+                                    luks_device = "/dev/mapper/" + vol_name
+                                    (error, msg) = fs.create_fs(luks_device, fisy, lbl)
+                                    # Do not format (already done)
+                                    fmt = False
+                                    # Do not relabel (already done)
+                                    lbl = self.orig_label_dic[partition_path]
+                                    if mnt == "/":
+                                        self.settings.set("luks_root_password", password)
+                                        self.settings.set("luks_root_device", partition_path)
 
                         # Only format if they want formatting
                         if fmt:
