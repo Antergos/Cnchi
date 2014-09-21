@@ -893,27 +893,27 @@ class InstallationProcess(multiprocessing.Process):
         use_luks = self.settings.get("use_luks")
         use_lvm = self.settings.get("use_lvm")
 
-        for path in self.mount_devices:
+        for mount_point in self.mount_devices:
             opts = 'defaults'
             chk = '0'
-            parti = self.mount_devices[path]
-            part_info = fs.get_info(parti)
+            partition_path = self.mount_devices[mount_point]
+            part_info = fs.get_info(partition_path)
             uuid = part_info['UUID']
 
-            if parti in self.fs_devices:
-                myfmt = self.fs_devices[parti]
+            if partition_path in self.fs_devices:
+                myfmt = self.fs_devices[partition_path]
             else:
-                # It hasn't any filesystem defined
+                # It hasn't any filesystem defined skip it.
                 continue
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
-                logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
+                all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, mount_point, myfmt, opts, chk))
+                logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, mount_point, myfmt, opts, chk)
                 continue
 
             # Fix for home + luks, no lvm (from automatic)
-            if "/home" in path and self.method == "automatic" and use_luks and not use_lvm:
+            if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
                 if self.settings.get("luks_password") != "":
                     home_keyfile = "none"
@@ -926,8 +926,22 @@ class InstallationProcess(multiprocessing.Process):
                     logging.debug(_("Added to crypttab : %s"), line)
                 subprocess.check_call(['chmod', '0600', '%s/etc/crypttab' % self.dest_dir])
 
-                all_lines.append("/dev/mapper/cryptAntergosHome %s %s %s 0 %s" % (path, myfmt, opts, chk))
-                logging.debug(_("Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"), path, myfmt, opts, chk)
+                all_lines.append("/dev/mapper/cryptAntergosHome %s %s %s 0 %s" % (mount_point, myfmt, opts, chk))
+                logging.debug(_("Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"), mount_point, myfmt, opts, chk)
+                continue
+
+            # Add all LUKS partitions from Advanced Install (except root). NOT TESTED YET!
+            if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
+                subprocess.check_call(['chmod', '0777', '%s/etc/crypttab' % self.dest_dir])
+                vol_name = partition_path[len("/dev/mapper/"):]
+                with open('%s/etc/crypttab' % self.dest_dir, 'a') as crypttab_file:
+                    line = "%s /dev/disk/by-uuid/%s none luks\n" % (vol_name, uuid)
+                    crypttab_file.write(line)
+                    logging.debug(_("Added to crypttab : %s"), line)
+                subprocess.check_call(['chmod', '0600', '%s/etc/crypttab' % self.dest_dir])
+
+                all_lines.append("%s %s %s %s 0 %s" % (partition_path, mount_point, myfmt, opts, chk))
+                logging.debug(_("Added to fstab : %s %s %s %s 0 %s"), partition_path, mount_point, myfmt, opts, chk)
                 continue
 
             # fstab uses vfat to mount fat16 and fat32 partitions
@@ -937,12 +951,12 @@ class InstallationProcess(multiprocessing.Process):
                 self.settings.set('btrfs', True)
 
             # Avoid adding a partition to fstab when
-            # it has no mount point (swap has been checked before)
-            if path == "":
+            # it has no mount point (swap has been checked above)
+            if mount_point == "":
                 continue
-            else:
-                full_path = os.path.join(self.dest_dir, path)
-                subprocess.check_call(["mkdir", "-p", full_path])
+            
+            full_path = os.path.join(self.dest_dir, mount_point)
+            subprocess.check_call(["mkdir", "-p", full_path])
 
             if not self.ssd:
                 if "btrfs" in myfmt:
@@ -955,10 +969,9 @@ class InstallationProcess(multiprocessing.Process):
                     opts += ',rw,relatime,data=ordered'
                 else:
                     opts += ",rw,relatime"
-
             else:
                 for i in self.ssd:
-                    if i in self.mount_devices[path]:
+                    if i in self.mount_devices[mount_point]:
                         opts = 'rw,defaults,noatime'
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
@@ -969,12 +982,15 @@ class InstallationProcess(multiprocessing.Process):
                             opts += ',compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
 
             no_check = ["btrfs", "f2fs"]
-            if path == "/" and myfmt not in no_check:
+            
+            if mount_point == "/" and myfmt not in no_check:
                 chk = '1'
-            if path == "/":
+            
+            if mount_point == "/":
                 self.settings.set('ruuid', uuid)
-            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, path, myfmt, opts, chk))
-            logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, path, myfmt, opts, chk)
+            
+            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, mount_point, myfmt, opts, chk))
+            logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, mount_point, myfmt, opts, chk)
 
         # Create tmpfs line in fstab
         tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
