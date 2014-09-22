@@ -126,6 +126,8 @@ class InstallationAdvanced(GtkBaseBox):
         # Load create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
+        
+        self.advanced_progressbar = self.ui.get_object('advanced_progressbar')
 
         # Initialize our create partition dialog filesystems' combo.
         combo = self.ui.get_object('create_partition_use_combo')
@@ -1809,7 +1811,12 @@ class InstallationAdvanced(GtkBaseBox):
             return False
 
         self.set_cursor(Gdk.CursorType.WATCH)
+        
+        self.disable_all_widgets()
 
+        self.stop_advanced_progressbar = False
+        self.advanced_progressbar_timeout_id = GObject.timeout_add(50, self.on_advanced_progressbar_timeout, None)
+        
         # Apply partition changes
         self.create_staged_partitions()
         
@@ -1817,9 +1824,33 @@ class InstallationAdvanced(GtkBaseBox):
         self.start_installation()
 
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        
+        self.stop_advanced_progressbar = True
+        
+        self.enable_all_widgets()
 
         return True
 
+    def disable_all_widgets(self):
+        self.enable_all_widgets(False)
+
+    def enable_all_widgets(self, enable=True):
+        widgets = ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]
+        
+        for i in widgets:
+            widget = self.ui.get_object(widgets[i])
+            widget.set_sensitive(enable)
+
+    def on_advanced_progressbar_timeout(self, user_data):
+        """ Update value on the progress bar """
+        if self.stop_advanced_progressbar:
+            return False
+        else:
+            self.progressbar.pulse()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+            return True
+    
     def create_staged_partitions(self):
         """ Create staged partitions """
         # Sometimes a swap partition can still be active at this point
@@ -1830,6 +1861,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap
+        import progressdialog
 
         partitions = {}
         if self.disks is not None:
