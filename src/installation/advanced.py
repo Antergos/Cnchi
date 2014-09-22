@@ -1811,9 +1811,7 @@ class InstallationAdvanced(GtkBaseBox):
             return False
 
         self.set_cursor(Gdk.CursorType.WATCH)
-        
         self.disable_all_widgets()
-
         self.stop_advanced_progressbar = False
         self.advanced_progressbar_timeout_id = GObject.timeout_add(50, self.on_advanced_progressbar_timeout, None)
         
@@ -1824,22 +1822,22 @@ class InstallationAdvanced(GtkBaseBox):
         self.start_installation()
 
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-        
         self.stop_advanced_progressbar = True
-        
         self.enable_all_widgets()
 
         return True
 
     def disable_all_widgets(self):
         self.enable_all_widgets(False)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def enable_all_widgets(self, enable=True):
-        widgets = ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]
-        
-        for name in widgets:
+        for name in ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]:
             widget = self.ui.get_object(name)
             widget.set_sensitive(enable)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def on_advanced_progressbar_timeout(self, user_data):
         """ Update value on the progress bar """
