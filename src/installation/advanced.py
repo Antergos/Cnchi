@@ -22,7 +22,7 @@
 
 """ Installation advanced module. Custom partition screen """
 
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk, GLib
 import subprocess
 import os
 import sys
@@ -1806,14 +1806,16 @@ class InstallationAdvanced(GtkBaseBox):
 
         changelist.sort()
 
+        self.disable_all_widgets()
+
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
+            self.enable_all_widgets()
             return False
 
         self.set_cursor(Gdk.CursorType.WATCH)
-        self.disable_all_widgets()
         self.stop_advanced_progressbar = False
-        self.advanced_progressbar_timeout_id = GObject.timeout_add(50, self.on_advanced_progressbar_timeout, None)
+        self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
         
         # Apply partition changes
         self.create_staged_partitions()
@@ -1828,18 +1830,16 @@ class InstallationAdvanced(GtkBaseBox):
         return True
 
     def disable_all_widgets(self):
-        self.enable_all_widgets(False)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        self.enable_all_widgets(status=False)
 
-    def enable_all_widgets(self, enable=True):
+    def enable_all_widgets(self, status=True):
         for name in ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]:
             widget = self.ui.get_object(name)
-            widget.set_sensitive(enable)
+            widget.set_sensitive(status)
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-    def on_advanced_progressbar_timeout(self, user_data):
+    def on_advanced_progressbar_timeout(self):
         """ Update value on the progress bar """
         if self.stop_advanced_progressbar:
             return False
