@@ -95,7 +95,7 @@ def setup_logging():
     logger.setLevel(log_level)
     
     # Log format
-    formatter = logging.Formatter('[%(asctime)s] [%(filename)s] %(levelname)s: %(message)s', "%Y-%m-%d %H:%M:%S")
+    formatter = logging.Formatter('[%(asctime)s] [%(module)s] %(levelname)s: %(message)s', "%Y-%m-%d %H:%M:%S")
     
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
