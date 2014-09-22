@@ -1902,7 +1902,8 @@ class InstallationAdvanced(GtkBaseBox):
                                     # Do not format (already done)
                                     fmt = False
                                     # Do not relabel (already done)
-                                    lbl = self.orig_label_dic[partition_path]
+                                    if partition_path in self.orig_label_dic:
+                                        lbl = self.orig_label_dic[partition_path]
                                     if mnt == "/":
                                         self.settings.set("luks_root_password", password)
                                         self.settings.set("luks_root_device", partition_path)
