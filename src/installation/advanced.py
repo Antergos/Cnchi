@@ -22,7 +22,7 @@
 
 """ Installation advanced module. Custom partition screen """
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 import subprocess
 import os
 import sys
@@ -1837,8 +1837,8 @@ class InstallationAdvanced(GtkBaseBox):
     def enable_all_widgets(self, enable=True):
         widgets = ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]
         
-        for i in widgets:
-            widget = self.ui.get_object(widgets[i])
+        for name in widgets:
+            widget = self.ui.get_object(name)
             widget.set_sensitive(enable)
 
     def on_advanced_progressbar_timeout(self, user_data):
@@ -1846,7 +1846,7 @@ class InstallationAdvanced(GtkBaseBox):
         if self.stop_advanced_progressbar:
             return False
         else:
-            self.progressbar.pulse()
+            self.advanced_progressbar.pulse()
             while Gtk.events_pending():
                 Gtk.main_iteration()
             return True
@@ -1861,7 +1861,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap
-        import progressdialog
 
         partitions = {}
         if self.disks is not None:
