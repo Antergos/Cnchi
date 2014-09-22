@@ -126,8 +126,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Load create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
-        
-        self.advanced_progressbar = self.ui.get_object('advanced_progressbar')
+
+        # setup_luks freezes our UI completely. It's no use to try to use a progressbar
+        #self.advanced_progressbar = self.ui.get_object('advanced_progressbar')
 
         # Initialize our create partition dialog filesystems' combo.
         combo = self.ui.get_object('create_partition_use_combo')
@@ -1814,8 +1815,8 @@ class InstallationAdvanced(GtkBaseBox):
             return False
 
         self.set_cursor(Gdk.CursorType.WATCH)
-        self.stop_advanced_progressbar = False
-        self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
+        #self.stop_advanced_progressbar = False
+        #self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
         
         # Apply partition changes
         self.create_staged_partitions()
@@ -1824,7 +1825,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.start_installation()
 
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-        self.stop_advanced_progressbar = True
+        #self.stop_advanced_progressbar = True
         self.enable_all_widgets()
 
         return True
@@ -1839,6 +1840,7 @@ class InstallationAdvanced(GtkBaseBox):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
+    '''
     def on_advanced_progressbar_timeout(self):
         """ Update value on the progress bar """
         if self.stop_advanced_progressbar:
@@ -1848,7 +1850,8 @@ class InstallationAdvanced(GtkBaseBox):
             while Gtk.events_pending():
                 Gtk.main_iteration()
             return True
-    
+    '''
+
     def create_staged_partitions(self):
         """ Create staged partitions """
         # Sometimes a swap partition can still be active at this point

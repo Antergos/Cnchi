@@ -1073,6 +1073,7 @@
             <property name="position">3</property>
           </packing>
         </child>
+        <!--
         <child>
           <object class="GtkProgressBar" id="advanced_progressbar">
             <property name="visible">True</property>
@@ -1084,6 +1085,7 @@
             <property name="position">4</property>
           </packing>
         </child>
+        -->
       </object>
     </child>
   </object>
