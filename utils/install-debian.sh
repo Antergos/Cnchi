@@ -1,8 +1,9 @@
 #!/bin/bash
-sudo apt-get install git glade geany
-sudo apt-get install python3 python-cairo-dev python-gobject-dev
-sudo apt-get install python-dbus python3-mako hdparm upower
-sudo apt-get install parted dosfstools mtools ntfs-3g
+sudo apt-get -y install git glade geany
+sudo apt-get -y install python3 python-cairo-dev python-gobject-dev
+sudo apt-get -y install python-dbus python3-mako hdparm upower
+sudo apt-get -y install parted dosfstools mtools ntfs-3g
+sudo apt-get -y install libtimezonemap1-dev
 
 # Not in Debian:
 # python3-parted (pyparted)
