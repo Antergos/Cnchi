@@ -56,22 +56,24 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Uncomment antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
         
-        with open(self.antergos_mirrorlist) as mirrors:
-            lines = [x.strip() for x in mirrors.readlines()]
-        
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
-        for i in range(len(lines)):
-            if lines[i].startswith("Server") and autoselect in lines[i]:
-                lines[i] = "#" + lines[i]
-            elif lines[i].startswith("#Server") and autoselect not in lines[i]:
-                lines[i] = lines[i].lstrip("#")
-                
-        with misc.raised_privileges():
-            # Backup original file
-            shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi")
-            # Write new one
-            with open(self.antergos_mirrorlist, 'w') as mirrors:
-                mirrors.write("\n".join(lines) + "\n")
+
+        if os.path.exists(self.antergos_mirrorlist):
+            with open(self.antergos_mirrorlist) as mirrors:
+                lines = [x.strip() for x in mirrors.readlines()]
+        
+            for i in range(len(lines)):
+                if lines[i].startswith("Server") and autoselect in lines[i]:
+                    lines[i] = "#" + lines[i]
+                elif lines[i].startswith("#Server") and autoselect not in lines[i]:
+                    lines[i] = lines[i].lstrip("#")
+                    
+            with misc.raised_privileges():
+                # Backup original file
+                shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi")
+                # Write new one
+                with open(self.antergos_mirrorlist, 'w') as mirrors:
+                    mirrors.write("\n".join(lines) + "\n")
 
         # Run rankmirrors command
         try:
@@ -81,4 +83,3 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(err)
         logging.debug(_("Auto mirror selection has been run successfully"))
-
