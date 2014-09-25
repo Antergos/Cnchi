@@ -29,7 +29,8 @@ import subprocess
 import os
 import sys
 import logging
-import blivet
+
+#import blivet
 
 if __name__ == '__main__':
     # Insert the parent directory at the front of the path.
