@@ -98,6 +98,9 @@ X-GNOME-Autostart-Delay=30
 Categories=System;Display;GTK;
 EOF
 
+    #self.chroot(['glib-compile-schemas', '/usr/share/glib-2.0/schemas'])
+    #self.chroot(['gtk-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor'])
+    #self.chroot(['dconf', 'update'])
 }
 
 cinnamon_settings(){
@@ -181,6 +184,8 @@ xfce_settings(){
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+
+    echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment    
 }
 
 openbox_settings(){
@@ -398,7 +403,11 @@ postinstall(){
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
 	cp -f /etc/os-release ${DESTDIR}/etc/os-release
-	
+    
+    # Set BROWSER var
+    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/environment
+    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/skel/.bashrc
+    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/profile
 }
 
 touch /tmp/.postinstall.lock
