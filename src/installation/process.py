@@ -1800,7 +1800,11 @@ class InstallationProcess(multiprocessing.Process):
         if desktop != "nox":
             self.enable_services([self.desktop_manager, "ModemManager"])
 
-        self.enable_services([self.network_manager])
+        self.enable_services([self.network_manager, 'remote-fs.target'])
+
+        cups_service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
+        if os.path.exists(cups_service):
+            self.enable_services(['cups'])
 
         # Enable ntp service
         if self.settings.get("use_ntp"):
