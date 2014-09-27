@@ -243,9 +243,10 @@
     </mate_desktop>
 
     <enlightenment_desktop>
+        <pkgname>enlightenment</pkgname>
         <pkgname>gksu</pkgname>
+        <!-- <pkgname>gtk-theme-e17gtk</pkgname> -->
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>enlightenment</pkgname>        
         <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
