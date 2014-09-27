@@ -246,23 +246,10 @@
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>enlightenment</pkgname>        
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>
-        <pkgname>gstreamer0.10-vaapi</pkgname>
-        <pkgname>gvfs-mtp</pkgname>
-        <pkgname>gvfs-smb</pkgname>
-        <!-- <pkgname nm='true' name='connman' conflicts='netctl'>qconnman-ui</pkgname> -->
-        <pkgname>numix-frost-themes</pkgname>
-        <pkgname>numix-icon-theme-square</pkgname>
-        <pkgname>terminology</pkgname>
-        <pkgname>xdg-user-dirs</pkgname>
+        <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
+        <pkgname>lxpolkit</pkgname>
+        <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <!-- <pkgname>zukitwo-themes</pkgname> -->
     </enlightenment_desktop>
 
     <openbox_desktop>
@@ -463,7 +450,6 @@
         <pkgname>grub</pkgname>
         <pkgname>os-prober</pkgname>
         <pkgname uefi="true">efibootmgr</pkgname>
-        <pkgname uefi="true">dosfstools</pkgname>
     </grub>
 
 </packages>
