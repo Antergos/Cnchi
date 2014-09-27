@@ -105,6 +105,7 @@
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
+        <!-- <pkgname>gnome-music</pkgname> -->
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
@@ -163,6 +164,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <!-- <pkgname>pragha</pkgname> -->
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -185,6 +187,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
+        <!-- <pkgname>pragha</pkgname> -->
         <pkgname>ristretto</pkgname>
         <pkgname>thunar-archive-plugin</pkgname>
         <pkgname>thunar-volman</pkgname>
@@ -237,6 +240,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
+        <!-- <pkgname>pragha</pkgname> -->
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -286,6 +290,7 @@
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>plank-theme-numix</pkgname>
+        <!-- <pkgname>pragha</pkgname> -->
         <pkgname>python2-xdg</pkgname>
         <pkgname>scrot</pkgname>
         <pkgname>tint2</pkgname>
