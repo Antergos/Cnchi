@@ -264,14 +264,6 @@
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-mplayer</pkgname>
         <pkgname>gpicview</pkgname>
-        <pkgname>gst-libav</pkgname>
-        <pkgname>gst-plugins-bad</pkgname>
-        <pkgname>gst-plugins-base</pkgname>
-        <pkgname>gst-plugins-good</pkgname>
-        <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
-        <pkgname>gstreamer0.10-plugins</pkgname>
-        <pkgname>gstreamer0.10-vaapi</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname>lxappearance-obconf</pkgname>

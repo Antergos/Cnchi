@@ -1038,8 +1038,13 @@ class InstallationProcess(multiprocessing.Process):
         # Check grub.cfg for correct root UUID
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
+        ruuid_ok = False
 
-        if ruuid not in open(cfg).read():
+        with open(cfg) as grub_cfg:
+            if ruuid in grub_cfg.read():
+                ruuid_ok = True
+        
+        if not ruuid_ok:
             with open(cfg) as grub_cfg:
                 lines = [x.strip() for x in grub_cfg.readlines()]
             for i in range(len(lines)):
@@ -1048,8 +1053,8 @@ class InstallationProcess(multiprocessing.Process):
                     p1 = old_line[68:]
                     p2 = old_line[:26]
                     lines[i] = p1 + ruuid + p2
-            with open(cfg, 'w') as grub_file:
-                grub_file.write("\n".join(lines))
+            with open(cfg, 'w') as grub_cfg:
+                grub_cfg.write("\n".join(lines))
 
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
@@ -1173,12 +1178,13 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_umount_special_dirs()
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        if "Antergos" in open(cfg).read():
-            self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-            self.settings.set('bootloader_ok', True)
-        else:
-            logging.warning(_("ERROR installing GRUB(2) BIOS."))
-            self.settings.set('bootloader_ok', False)
+        with open(cfg) as grub_cfg:
+            if "Antergos" in grub_cfg.read():
+                self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
+                self.settings.set('bootloader_ok', True)
+            else:
+                logging.warning(_("ERROR installing GRUB(2) BIOS."))
+                self.settings.set('bootloader_ok', False)
 
     def install_bootloader_grub2_efi(self, arch):
         """ Install bootloader in a UEFI system """
