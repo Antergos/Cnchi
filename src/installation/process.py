@@ -196,7 +196,7 @@ class InstallationProcess(multiprocessing.Process):
                 auto = auto_partition.AutoPartition(dest_dir=self.dest_dir,
                                                     auto_device=self.auto_device,
                                                     use_luks=self.settings.get("use_luks"),
-                                                    luks_password=self.settings.get("luks_password"),
+                                                    luks_password=self.settings.get("luks_root_password"),
                                                     use_lvm=self.settings.get("use_lvm"),
                                                     use_home=self.settings.get("use_home"),
                                                     callback_queue=self.callback_queue)
