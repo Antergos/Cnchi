@@ -100,6 +100,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">30</property>
                 <child>
                   <object class="GtkLabel" id="label_space">
                     <property name="visible">True</property>
