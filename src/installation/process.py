@@ -1140,7 +1140,7 @@ class InstallationProcess(multiprocessing.Process):
 
         try:
             shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
-            os.chmod(os.path.join(grub_d_dir, script), 755)
+            os.chmod(os.path.join(grub_d_dir, script), 0755)
         except FileNotFoundError:
             logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:

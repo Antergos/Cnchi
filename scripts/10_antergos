@@ -1,5 +1,6 @@
 #! /bin/sh
 set -e
+
 # grub-mkconfig helper script.
 # Copyright (C) 2006,2007,2008,2009,2010  Free Software Foundation, Inc.
 #
@@ -247,8 +248,8 @@ while [ "x$list" != "x" ] ; do
 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \
 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${alt_version}"; do
     if test -e "${dirname}/${i}" ; then
-           initrd="$i"
-           break
+      initrd="$i"
+      break
     fi
   done
 
