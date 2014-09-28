@@ -59,6 +59,7 @@
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
         <pkgname>pacmanxg4</pkgname>
         <pkgname>pavucontrol</pkgname>
+        <pkgname>python-simplejson</pkgname> <!-- Needed by Antergos Welcome screen -->
         <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
