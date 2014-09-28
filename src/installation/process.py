@@ -1013,7 +1013,7 @@ class InstallationProcess(multiprocessing.Process):
         rule_dst = os.path.join(self.dest_dir, "etc/udev/rules.d/60-schedulers.rules")
         try:
             shutil.copy2(rule_src, rule_dst)
-            os.chmod(rule_dst, 755)
+            os.chmod(rule_dst, 0o755)
         except FileNotFoundError:
             logging.debug(_("Could not copy udev rule for SSDs"))
         except FileExistsError:
@@ -1140,7 +1140,7 @@ class InstallationProcess(multiprocessing.Process):
 
         try:
             shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
-            os.chmod(os.path.join(grub_d_dir, script), 0755)
+            os.chmod(os.path.join(grub_d_dir, script), 0o755)
         except FileNotFoundError:
             logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:
