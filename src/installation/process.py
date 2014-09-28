@@ -774,18 +774,18 @@ class InstallationProcess(multiprocessing.Process):
 
         mydir = os.path.join(self.dest_dir, "sys")
         subprocess.check_call(["mount", "-t", "sysfs", "/sys", mydir])
-        subprocess.check_call(["chmod", "555", mydir])
+        os.chmod(mydir, 0o555)
 
         mydir = os.path.join(self.dest_dir, "proc")
         subprocess.check_call(["mount", "-t", "proc", "/proc", mydir])
-        subprocess.check_call(["chmod", "555", mydir])
+        os.chmod(mydir, 0o555)
 
         mydir = os.path.join(self.dest_dir, "dev")
         subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
 
         mydir = os.path.join(self.dest_dir, "dev/pts")
         subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
-        subprocess.check_call(["chmod", "555", mydir])
+        os.chmod(mydir, 0o555)
 
         efi = "/sys/firmware/efi"
         if os.path.exists(efi):
@@ -914,6 +914,8 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, mount_point, myfmt, opts, chk)
                 continue
 
+            crypttab_path = os.path.join(self.dest_dir, 'etc/crypttab')
+
             # Fix for home + luks, no lvm (from automatic)
             if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
@@ -921,12 +923,12 @@ class InstallationProcess(multiprocessing.Process):
                     home_keyfile = "none"
                 else:
                     home_keyfile = "/etc/luks-keys/home"
-                subprocess.check_call(['chmod', '0777', '%s/etc/crypttab' % self.dest_dir])
-                with open('%s/etc/crypttab' % self.dest_dir, 'a') as crypttab_file:
+                os.chmod(crypttab_path, 0o666)
+                with open(crypttab_path, 'a') as crypttab_file:
                     line = "cryptAntergosHome /dev/disk/by-uuid/%s %s luks\n" % (uuid, home_keyfile)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
-                subprocess.check_call(['chmod', '0600', '%s/etc/crypttab' % self.dest_dir])
+                os.chmod(crypttab_path, 0o600)
 
                 all_lines.append("/dev/mapper/cryptAntergosHome %s %s %s 0 %s" % (mount_point, myfmt, opts, chk))
                 logging.debug(_("Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"), mount_point, myfmt, opts, chk)
@@ -934,13 +936,13 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add all LUKS partitions from Advanced Install (except root). NOT TESTED YET!
             if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
-                subprocess.check_call(['chmod', '0777', '%s/etc/crypttab' % self.dest_dir])
+                os.chmod(crypttab_path, 0o666)
                 vol_name = partition_path[len("/dev/mapper/"):]
-                with open('%s/etc/crypttab' % self.dest_dir, 'a') as crypttab_file:
+                with open(crypttab_path, 'a') as crypttab_file:
                     line = "%s /dev/disk/by-uuid/%s none luks\n" % (vol_name, uuid)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
-                subprocess.check_call(['chmod', '0600', '%s/etc/crypttab' % self.dest_dir])
+                os.chmod(crypttab_path, 0o600)
 
                 all_lines.append("%s %s %s %s 0 %s" % (partition_path, mount_point, myfmt, opts, chk))
                 logging.debug(_("Added to fstab : %s %s %s %s 0 %s"), partition_path, mount_point, myfmt, opts, chk)
@@ -1834,7 +1836,8 @@ class InstallationProcess(multiprocessing.Process):
             sudoers.write('%s ALL=(ALL) ALL\n' % username)
         while not os.path.exists(sudoers_path):
             time.sleep(2)
-        subprocess.check_call(["chmod", "440", sudoers_path])
+        os.chmod(sudoers_path, 0o440)
+
         logging.debug(_("Sudo configuration for user %s done."), username)
 
         # Configure detected hardware
