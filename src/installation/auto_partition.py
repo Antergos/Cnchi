@@ -45,7 +45,6 @@ def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
     return subprocess.check_output(command.split()).decode().strip("\n")
 
-
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
     with open("/proc/sys/kernel/printk", "w") as fpk:
@@ -170,6 +169,28 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
         (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
+'''
+def sgdisk(type_code, attributes, change_name, part_size, device):
+def sgdisk(device, name, size, type_code, attributes=None, alignment=2048):
+    cmd = []
+    cmd.append('sgdisk')
+    cmd.append('--set-alignment="%d"' % alignment)
+    cmd.append('--new=3:0:+%dM' % size)
+    cmd.append('
+        '--typecode=%s' % type_code,
+        '--attributes=3:set:2',
+        '--change-name=3:ANTERGOS_BOOT',
+        device])
+
+    subprocess.check_call([
+        'sgdisk',
+        '--set-alignment="2048"',
+        '--new=3:0:+%dM' % part_size,
+        '--typecode=%s' % type_code,
+        '--attributes=3:set:2',
+        '--change-name=3:ANTERGOS_BOOT',
+        device])
+'''
 class AutoPartition(object):
     """ Class used by the automatic installation method """
     def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, callback_queue):
@@ -491,9 +512,15 @@ class AutoPartition(object):
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
             # Create actual partitions
+            
+            # BIOS Boot Partition
             subprocess.check_call(
                 ['sgdisk --set-alignment="2048" --new=1:1M:+%dM --typecode=1:EF02 --change-name=1:BIOS_GRUB %s'
                 % (gpt_bios_grub_part_size, device)], shell=True)
+            
+            # EFI System Partition
+            # GPT: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+            # MBR: 0xEF
             subprocess.check_call(
                 ['sgdisk --set-alignment="2048" --new=2:0:+%dM --typecode=2:EF00 --change-name=2:UEFI_SYSTEM %s'
                 % (uefisys_part_size, device)], shell=True)
