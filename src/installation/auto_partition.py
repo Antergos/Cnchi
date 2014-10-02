@@ -97,7 +97,7 @@ def unmount_all(dest_dir):
                 if len(lvolume) > 0:
                     (lvolume, vgroup) = lvolume.split()
                     lvdev = "/dev/" + vgroup + "/" + lvolume
-                    subprocess.check_call(["wipefs", "-af", lvdev])
+                    subprocess.check_call(["wipefs", "-a", lvdev])
                     subprocess.check_call(["lvremove", "-f", lvdev])
 
         vgnames = check_output("vgs -o vg_name --noheading").split("\n")
@@ -143,11 +143,12 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
     # For 512 bit key length the header is 2MiB
     # If in doubt, just be generous and overwrite the first 10MiB or so
-    subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % luks_device, "bs=512", "count=20480", "status=noxfer"])
+    dd("/dev/zero", luks_device, bs=512, count=20480)
+
 
     if luks_pass == None or luks_pass == "":
         # No key password given, let's create a random keyfile
-        subprocess.check_call(["dd", "if=/dev/urandom", "of=%s" % luks_key, "bs=1024", "count=4", "status=noxfer"])
+        dd("/dev/urandom", luks_key, bs=1024, count=4)
 
         # Set up luks with a keyfile
         subprocess.check_call(
@@ -169,10 +170,23 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
         (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
+def wipefs(device):
+    subprocess.check_call(["wipefs", "-a", device])
 
+def dd(input_device, output_device, bs=512, count=2048):
+    """ Helper function to call dd """
+    cmd = ['dd']
+    cmd.append('if=%s' % input_device)
+    cmd.append('of=%s' % output_device)
+    cmd.append('bs=%d' % bs)
+    cmd.append('count=%d' % count)
+    cmd.append('status=noxfer')
+    subprocess.check_call(cmd)
+    
+    
 def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
-    cmd = []
-    cmd.append('sgdisk')
+    """ Helper function to call sgdisk (GPT) """
+    cmd = ['sgdisk']
     cmd.append('--set-alignment="%d"' % alignment)
     cmd.append('--new=%s:+%dM' % (new, size))
     cmd.append('--typecode=%s' % type_code)
@@ -203,11 +217,13 @@ class AutoPartition(object):
         self.callback_queue = callback_queue
 
         self.uefi = False
+        self.gpt = False
 
         if os.path.exists("/sys/firmware/efi"):
+            self.uefi = True
             # TODO: Let user choose between GPT and MBR.
             # As it is now, Grub has some GPT issues.  For now always use MBR.
-            self.uefi = True
+            self.gpt = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -272,14 +288,12 @@ class AutoPartition(object):
             logging.debug("AutoPartition done, filesystems mounted:\n" + subprocess.check_output(["mount"]).decode())
 
             # Change permission of base directories to avoid btrfs issues
-            mode = "755"
-
+            mode = 0o755
             if mount_point == "/tmp":
-                mode = "1777"
+                mode = 0o1777
             elif mount_point == "/root":
-                mode = "750"
-
-            subprocess.check_call(["chmod", mode, path])
+                mode = 0o750
+            os.chmod(path, mode)
 
         fs_uuid = fs.get_info(device)['UUID']
         fs_label = fs.get_info(device)['LABEL']
@@ -490,17 +504,14 @@ class AutoPartition(object):
         #         These are 'M' in sgdisk and 'MiB' in parted. If you use 'M' in parted you'll get MB instead of MiB,
         #         and you're gonna have a bad time.
 
-        # TODO: Fix GPT
-        use_gpt = False
-
-        if self.uefi and use_gpt:
+        if self.uefi and self.gpt:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
             # clean partition table to avoid issues!
             subprocess.check_call(["sgdisk", "--zap", device])
 
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
-            subprocess.check_call(["wipefs", "-a", device])
+            dd("/dev/zero", device, bs=512, count=2048)
+            wipefs(device)
             # Create fresh GPT
             subprocess.check_call(["sgdisk", "--clear", device])
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
@@ -542,8 +553,8 @@ class AutoPartition(object):
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
             # Clean partitiontable to avoid issues!
-            subprocess.check_call(["dd", "if=/dev/zero", "of=%s" % device, "bs=512", "count=2048", "status=noxfer"])
-            subprocess.check_call(["wipefs", "-a", device])
+            dd("/dev/zero", device, bs=512, count=2048)
+            wipefs(device)
 
             # Create DOS MBR with parted
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
@@ -661,9 +672,11 @@ class AutoPartition(object):
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
             # (boot partition is not)
-            subprocess.check_call(['chmod', '0400', key_files[0]])
+            os.chmod(key_files[0], 0o400)
+
             subprocess.check_call(['mv', key_files[0], '%s/boot' % self.dest_dir])
             if self.home and not self.lvm:
-                subprocess.check_call(['chmod', '0400', key_files[1]])
-                subprocess.check_call(["mkdir", "-p", '%s/etc/luks-keys' % self.dest_dir])
-                subprocess.check_call(['mv', key_files[1], '%s/etc/luks-keys' % self.dest_dir])
+                os.chmod(key_files[1], 0o400)
+                luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
+                os.makedirs(luks_dir, mode=0o755, exist_ok=True)
+                subprocess.check_call(['mv', key_files[1], luks_dir])
