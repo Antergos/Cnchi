@@ -37,7 +37,6 @@ import parted3.fs_module as fs
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
 
-# TODO: This higly depends on the selected DE! Must be taken into account.
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
 
@@ -350,20 +349,19 @@ class AutoPartition(object):
         """ Mount_devices will be used when configuring GRUB
         in modify_grub_default() in installation_process.py """
 
-        # TODO: get_devices has changed
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        devices = self.get_devices()
 
         mount_devices = {}
-        mount_devices["/boot"] = boot_device
-        mount_devices["/"] = root_device
-        mount_devices["/home"] = home_device
+        mount_devices['/boot'] = devices['boot']
+        mount_devices['/'] = devices['root']
+        mount_devices['/home'] = devices['home']
 
         if self.luks:
-            mount_devices["/"] = luks_devices[0]
+            mount_devices['/'] = devices['luks'][0]
             if self.home and not self.lvm:
-                mount_devices["/home"] = luks_devices[1]
+                mount_devices['/home'] = devices['luks'][1]
 
-        mount_devices["swap"] = swap_device
+        mount_devices['swap'] = devices['swap']
 
         for md in mount_devices:
             logging.debug(_("%s will be mount as %s"), mount_devices[md], md)
@@ -373,31 +371,30 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ fs_devices will be used when configuring the fstab file in installation_process.py """
 
-        # TODO: get_devices has changed
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        devices = self.get_devices()
 
         fs_devices = {}
 
         if self.gpt:
-            fs_devices[boot_device] = "vfat"
+            fs_devices[devices['boot']] = "vfat"
         else:
-            fs_devices[boot_device] = "ext2"
+            fs_devices[devices['boot']] = "ext2"
 
-        fs_devices[swap_device] = "swap"
+        fs_devices[devices['swap']] = "swap"
 
         if self.luks:
-            fs_devices[luks_devices[0]] = "ext4"
+            fs_devices[devices['luks'][0]] = "ext4"
             if self.home:
                 if self.lvm:
                     # luks, lvm, home
-                    fs_devices[home_device] = "ext4"
+                    fs_devices[devices['home']] = "ext4"
                 else:
                     # luks, home
-                    fs_devices[luks_devices[1]] = "ext4"
+                    fs_devices[devices['luks'][1]] = "ext4"
         else:
-            fs_devices[root_device] = "ext4"
+            fs_devices[devices['root']] = "ext4"
             if self.home:
-                fs_devices[home_device] = "ext4"
+                fs_devices[devices['home']] = "ext4"
 
         for f in fs_devices:
             logging.debug(_("Device %s will have a %s filesystem"), f, fs_devices[f])
