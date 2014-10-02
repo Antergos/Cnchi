@@ -183,7 +183,6 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
     
-    
 def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
@@ -198,6 +197,8 @@ def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     cmd.append(device)
 
     subprocess.check_call(cmd)
+
+''' AutoPartition Class '''
 
 class AutoPartition(object):
     """ Class used by the automatic installation method """
@@ -216,13 +217,13 @@ class AutoPartition(object):
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
 
-        self.uefi = False
-        self.gpt = False
-
         if os.path.exists("/sys/firmware/efi"):
             self.uefi = True
             # TODO: Let user choose between GPT and MBR.
             # As it is now, Grub has some GPT issues.  For now always use MBR.
+            self.gpt = False
+        else:
+            self.uefi = False
             self.gpt = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
@@ -301,59 +302,61 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
-        efi = ""
-        boot = ""
-        swap = ""
-        root = ""
-        home = ""
-
-        luks = []
-        lvm = ""
+        # TODO: GPT efi_device
+        devices = {
+            'boot' : "",
+            'efi' : "",
+            'home' : "",
+            'lvm' : "",
+            'luks' : [],
+            'root' : "",
+            'swap' : ""}
 
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
-        boot = self.auto_device + "1"
-        swap = self.auto_device + "2"
-        root = self.auto_device + "3"
+        devices['boot'] = self.auto_device + "1"
+        devices['swap'] = self.auto_device + "2"
+        devices['root'] = self.auto_device + "3"
         if self.home:
-            home = self.auto_device + "4"
+            devices['home'] = self.auto_device + "4"
 
         if self.luks:
             if self.lvm:
                 # LUKS and LVM
-                luks = [swap]
-                lvm = "/dev/mapper/cryptAntergos"
+                devices['luks'] = [devices['swap']]
+                devices['lvm'] = "/dev/mapper/cryptAntergos"
             else:
                 # LUKS and no LVM
-                luks = [root]
-                root = "/dev/mapper/cryptAntergos"
+                devices['luks'] = [devices['root']]
+                devices['root'] = "/dev/mapper/cryptAntergos"
                 if self.home:
                     # In this case we'll have two LUKS devices, one for root
                     # and the other one for /home
-                    luks.append(home)
-                    home = "/dev/mapper/cryptAntergosHome"
+                    devices['luks'].append(home)
+                    devices['home'] = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
-            lvm = swap
+            devices['lvm'] = devices['swap']
 
         if self.lvm:
-            swap = "/dev/AntergosVG/AntergosSwap"
-            root = "/dev/AntergosVG/AntergosRoot"
+            devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+            devices['root'] = "/dev/AntergosVG/AntergosRoot"
             if self.home:
-                home = "/dev/AntergosVG/AntergosHome"
+                devices['home'] = "/dev/AntergosVG/AntergosHome"
 
-        return (boot, swap, root, luks, lvm, home)
+        return devices
 
     def get_mount_devices(self):
-        """ Mount_devices will be used when configuring GRUB in modify_grub_default() in installation_process.py """
+        """ Mount_devices will be used when configuring GRUB
+        in modify_grub_default() in installation_process.py """
 
+        # TODO: get_devices has changed
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         mount_devices = {}
         mount_devices["/boot"] = boot_device
         mount_devices["/"] = root_device
         mount_devices["/home"] = home_device
-
 
         if self.luks:
             mount_devices["/"] = luks_devices[0]
@@ -370,11 +373,12 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ fs_devices will be used when configuring the fstab file in installation_process.py """
 
+        # TODO: get_devices has changed
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         fs_devices = {}
 
-        if self.uefi:
+        if self.gpt:
             fs_devices[boot_device] = "vfat"
         else:
             fs_devices[boot_device] = "ext2"
@@ -404,7 +408,6 @@ class AutoPartition(object):
         part_sizes = {}
 
         part_sizes['disk'] = disk_size
-
         part_sizes['boot'] = 256
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
@@ -461,16 +464,16 @@ class AutoPartition(object):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
-        # TODO: Fix GPT
-        # if self.uefi:
-        #     gpt_bios_grub_part_size = 2
-        #     uefisys_part_size = 512
-        #     empty_space_size = 2
-        #else:
-        gpt_bios_grub_part_size = 0
-        uefisys_part_size = 0
-        # We start with a 1MiB offset before the first partition
-        empty_space_size = 1
+        if self.gpt:
+            # TODO: Fix GPT
+            gpt_bios_grub_part_size = 1
+            efisys_part_size = 512
+            empty_space_size = 2
+        else:
+            gpt_bios_grub_part_size = 0
+            efisys_part_size = 0
+            # We start with a 1MiB offset before the first partition
+            empty_space_size = 1
 
         # Get just the disk size in MiB
         device = self.auto_device
@@ -491,7 +494,7 @@ class AutoPartition(object):
             show.warning(txt)
             return
 
-        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.show_part_sizes(part_sizes)
 
@@ -500,53 +503,51 @@ class AutoPartition(object):
 
         printk(False)
 
-        #WARNING: Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
-        #         These are 'M' in sgdisk and 'MiB' in parted. If you use 'M' in parted you'll get MB instead of MiB,
-        #         and you're gonna have a bad time.
+        # WARNING:
+        # Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
+        # These are 'M' in sgdisk and 'MiB' in parted.
+        # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
-        if self.uefi and self.gpt:
+        if self.gpt:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
-            # clean partition table to avoid issues!
+
+            # Clean partition table to avoid issues!
             subprocess.check_call(["sgdisk", "--zap", device])
 
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
             dd("/dev/zero", device, bs=512, count=2048)
             wipefs(device)
+
             # Create fresh GPT
             subprocess.check_call(["sgdisk", "--clear", device])
+
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
-            # Create actual partitions
-            
-            # BIOS Boot Partition
-
-            #def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
+                       
+            # Create BIOS Boot Partition
+            # GPT: 21686148-6449-6E6F-744E-656564454649
+            # This partition is not required if the system is UEFI based, as there is no such embedding
+            # of the second-stage code in that case
             sgdisk(device, "1:BIOS_GRUB", "1:1M", gpt_bios_grub_part_size, "1:EF02")
             
-            # EFI System Partition
+            # Create EFI System Partition
             # GPT: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
             # MBR: 0xEF
-            sgdisk(device, "2:UEFI_SYSTEM", "2:0", uefisys_part_size, "2:EF00")
+            sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
             
-            # Boot
+            # Create Boot partition
             sgdisk(device, "3:ANTERGOS_BOOT", "3:0", part_sizes['boot'], "3:8300")
 
+            #def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
+
             if self.lvm:
-                subprocess.check_call(
-                    ['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8E00 --change-name=4:ANTERGOS_LVM %s'
-                    % (part_sizes['lvm_pv'], device)], shell=True)
+                sgdisk(device, "4:ANTERGOS_LVM", "4:0", part_sizes['lvm_pv'], "4:8E00")
             else:
-                subprocess.check_call(
-                    ['sgdisk --set-alignment="2048" --new=4:0:+%dM --typecode=4:8200 --change-name=4:ANTERGOS_SWAP %s'
-                    % (part_sizes['swap'], device)], shell=True)
-                subprocess.check_call(
-                    ['sgdisk --set-alignment="2048" --new=5:0:+%dM --typecode=5:8300 --change-name=5:ANTERGOS_ROOT %s'
-                    % (part_sizes['root'], device)], shell=True)
+                sgdisk(device, "4:ANTERGOS_SWAP", "4:0", part_sizes['swap'], "4:8200")
+                sgdisk(device, "5:ANTERGOS_ROOT", "5:0", part_sizes['root'], "5:8300")
 
                 if self.home:
-                    subprocess.check_call(
-                        ['sgdisk --set-alignment="2048" --new=6:0:+%dM --typecode=6:8300 --change-name=5:ANTERGOS_HOME %s'
-                        % (part_sizes['home'], device)], shell=True)
+                    sgdisk(device, "6:ANTERGOS_HOME", "6:0", part_sizes['home'], "6:8300")
 
             logging.debug(check_output("sgdisk --print %s" % device))
         else:
@@ -605,6 +606,7 @@ class AutoPartition(object):
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
 
+        # TODO: get_devices has changed
         (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
 
         if self.home:
@@ -633,7 +635,7 @@ class AutoPartition(object):
                     logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
-                    start_part_sizes = empty_space_size + gpt_bios_grub_part_size + uefisys_part_size
+                    start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
                     part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                     self.show_part_sizes(part_sizes)
             except Exception as err:
@@ -654,11 +656,15 @@ class AutoPartition(object):
         # Note: Make sure the "root" partition is defined first!
         self.mkfs(root_device, "ext4", "/", "AntergosRoot")
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
-        if self.uefi:
-            # Format /boot partition with vfat
-            self.mkfs(boot_device, "vfat", "/boot", "UEFI_SYSTEM", "-F 32")
-        else:
-            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+
+        if self.gpt:
+            # TODO: efi_device in get_devices
+            # Format EFI System Partition with vfat
+            # We use /boot/efi here as we'll have another partition as /boot
+            #self.mkfs(efi_device, "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
+            pass
+
+        self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
 
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
