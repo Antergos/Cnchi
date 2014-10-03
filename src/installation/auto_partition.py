@@ -289,7 +289,10 @@ class AutoPartition(object):
 
             # Create our mount directory
             path = self.dest_dir + mount_point
-            os.makedirs(path, mode=0o755)
+            try:
+                os.makedirs(path, mode=0o755)
+            except FileExistsError:
+                pass
 
             # Mount our new filesystem
 
@@ -329,15 +332,16 @@ class AutoPartition(object):
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
         devices['boot'] = self.auto_device + "1"
-        devices['swap'] = self.auto_device + "2"
-        devices['root'] = self.auto_device + "3"
+        devices['root'] = self.auto_device + "2"
         if self.home:
-            devices['home'] = self.auto_device + "4"
+            devices['home'] = self.auto_device + "3"
+
+        devices['swap'] = self.auto_device + "5"
 
         if self.luks:
             if self.lvm:
                 # LUKS and LVM
-                devices['luks'] = [devices['swap']]
+                devices['luks'] = [devices['root']]
                 devices['lvm'] = "/dev/mapper/cryptAntergos"
             else:
                 # LUKS and no LVM
@@ -346,15 +350,15 @@ class AutoPartition(object):
                 if self.home:
                     # In this case we'll have two LUKS devices, one for root
                     # and the other one for /home
-                    devices['luks'].append(home)
+                    devices['luks'].append(devices['home'])
                     devices['home'] = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
-            devices['lvm'] = devices['swap']
+            devices['lvm'] = devices['root']
 
         if self.lvm:
-            devices['swap'] = "/dev/AntergosVG/AntergosSwap"
             devices['root'] = "/dev/AntergosVG/AntergosRoot"
+            devices['swap'] = "/dev/AntergosVG/AntergosSwap"
             if self.home:
                 devices['home'] = "/dev/AntergosVG/AntergosHome"
 
@@ -602,9 +606,9 @@ class AutoPartition(object):
                 # Create an extended partition where we will put our swap partition
                 start = end
                 end = start + part_sizes['swap']
-                start += 1
                 parted_mkpart(device, "extended", start, end)
                 # Now create a logical swap partition
+                start += 1
                 parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
@@ -614,12 +618,12 @@ class AutoPartition(object):
 
         devices = self.get_devices()
 
-        logging.debug("Boot: ", devices['boot'])
-        logging.debug("Swap: ", devices['swap'])
-        logging.debug("Root: ", devices['root'])
+        logging.debug("Boot: %s" % devices['boot'])
+        logging.debug("Swap: %s" % devices['swap'])
+        logging.debug("Root: %s" % devices['root'])
 
         if self.home:
-            logging.debug("Home: ", devices['home'])
+            logging.debug("Home: %s" % devices['home'])
 
         if self.luks:
             setup_luks(devices['luks'][0], "cryptAntergos", self.luks_password, key_files[0])
