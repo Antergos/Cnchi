@@ -197,7 +197,15 @@ def parted_set(device, number, flag, state):
     subprocess.check_call(cmd)
     
 def parted_mkpart(device, ptype, start, end, fs=""):
-    cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start, end]
+    # If start is "" we assume we want to mkpart at the start of the disk
+    if len(start) > 0:
+        start_str = "%dMiB" % start
+    else:
+        start_str = "1"
+        
+    end_str = "%dMiB" % end
+
+    cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start_str, end_str]
     subprocess.check_call(cmd)
 
 def parted_mktable(device, table_type="msdos"):
@@ -542,8 +550,6 @@ class AutoPartition(object):
             # Create Boot partition
             sgdisk(device, "3:ANTERGOS_BOOT", "3:0", part_sizes['boot'], "3:8300")
 
-            #def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
-
             if self.lvm:
                 sgdisk(device, "4:ANTERGOS_LVM", "4:0", part_sizes['lvm_pv'], "4:8E00")
             else:
@@ -565,70 +571,65 @@ class AutoPartition(object):
             parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
-            start = "1"
-            end = "%dMiB" % part_sizes['boot']
+            # if start is "" parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            start = ""
+            end = part_sizes['boot']
             parted_mkpart(device, "primary", start, end)
                 
             # Set boot partition as bootable         
             parted_set(device, "1", "boot", "on")
 
             if self.lvm:
-                #if part_sizes['boot'] is 0:
-                #    start = "1"
-                #    end = "%dMiB" % (1 + part_sizes['lvm_pv'])
-                #else:
-                start = part_sizes['boot']
-                end =  "%dMiB" % (part_sizes['boot'] + part_sizes['lvm_pv'])
-                
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
+                start = end
+                end = start + part_sizes['lvm_pv']
                 parted_mkpart(device, "primary", start, end)
 
                 # Set lvm flag
                 parted_set(device, "2", "lvm", "on")
             else:
-                # Create swap partition
-                start = part_sizes['boot']
-                end = start + part_sizes['swap']
-                parted_mkpart(device, "primary", "%dMiB" % start, "%dMiB" % end, "linux-swap")
+                # Create root partition
+                start = end
+                end = start + part_sizes['root']
+                parted_mkpart(device, "primary", start, end)
 
                 if self.home:
-                    # Create root partition
-                    start = end
-                    end = start + part_sizes['root']
-                    parted_mkpart(device, "primary", "%dMiB" % start, "%dMiB" % end)
-
                     # Create home partition
                     start = end
-                    parted_mkpart(device, "primary", "%dMiB" % start, "100%")
-                else:
-                    # Create root partition
-                    start = end
-                    subprocess.check_call(
-                        ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
+                    end = start + part_sizes['home']
+                    parted_mkpart(device, "primary", start, end)
+
+                # Create an extended partition where we will put our swap partition
+                start = end
+                end = start + part_sizes['swap']
+                parted_mkpart(device, "extended", start, end)
+                # Now create a logical swap partition
+                parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
 
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
 
-        # TODO: get_devices has changed
-        (boot_device, swap_device, root_device, luks_devices, lvm_device, home_device) = self.get_devices()
+        devices = self.get_devices()
+
+        logging.debug("Boot: ", devices['boot'])
+        logging.debug("Swap: ", devices['swap'])
+        logging.debug("Root: ", devices['root'])
 
         if self.home:
-            logging.debug("Boot: %s, Swap: %s, Root: %s, Home: %s", boot_device, swap_device, root_device, home_device)
-        else:
-            logging.debug("Boot: %s, Swap: %s, Root: %s", boot_device, swap_device, root_device)
+            logging.debug("Home: ", devices['home'])
 
         if self.luks:
-            setup_luks(luks_devices[0], "cryptAntergos", self.luks_password, key_files[0])
+            setup_luks(devices['luks'][0], "cryptAntergos", self.luks_password, key_files[0])
             if self.home and not self.lvm:
-                setup_luks(luks_devices[1], "cryptAntergosHome", self.luks_password, key_files[1])
+                setup_luks(devices['luks'][1], "cryptAntergosHome", self.luks_password, key_files[1])
 
         if self.lvm:
-            logging.debug(_("Cnchi will setup LVM on device %s"), lvm_device)
+            logging.debug(_("Cnchi will setup LVM on device %s"), devices['lvm'])
 
-            subprocess.check_call(["pvcreate", "-f", "-y", lvm_device])
-            subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", lvm_device])
+            subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
+            subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
 
             # Fix issue 180
             try:
@@ -659,20 +660,20 @@ class AutoPartition(object):
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
         # Note: Make sure the "root" partition is defined first!
-        self.mkfs(root_device, "ext4", "/", "AntergosRoot")
-        self.mkfs(swap_device, "swap", "", "AntergosSwap")
+        self.mkfs(devices['root'], "ext4", "/", "AntergosRoot")
+        self.mkfs(devices['swap'], "swap", "", "AntergosSwap")
 
         if self.gpt:
             # TODO: efi_device in get_devices
             # Format EFI System Partition with vfat
             # We use /boot/efi here as we'll have another partition as /boot
-            #self.mkfs(efi_device, "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
+            #self.mkfs(devices['efi'], "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
             pass
 
-        self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+        self.mkfs(devices['boot'], "ext2", "/boot", "AntergosBoot")
 
         if self.home:
-            self.mkfs(home_device, "ext4", "/home", "AntergosHome")
+            self.mkfs(devices['home'], "ext4", "/home", "AntergosHome")
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
