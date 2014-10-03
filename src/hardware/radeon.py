@@ -37,9 +37,9 @@ class Radeon(Hardware):
         pass
 
     def get_packages(self):
-        pkgs = ["ati-dri", "xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
+        pkgs = ["xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-ati-dri", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-mesa-dri", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):

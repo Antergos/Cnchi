@@ -54,6 +54,8 @@
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
+        <pkgname>mesa-dri</pkgname>
+        <pkgname>mesa-vdpau</pkgname>
         <pkgname>numix-frost-themes</pkgname>
         <pkgname>numix-icon-theme</pkgname>
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
