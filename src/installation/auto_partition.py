@@ -193,7 +193,7 @@ def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     subprocess.check_call(cmd)
 
 def parted_set(device, number, flag, state):
-    cmd = ['parted', '-a', 'optimal', '-s', device, 'set', number, flag, state]
+    cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
     subprocess.check_call(cmd)
     
 def parted_mkpart(device, ptype, start, end, fs=""):
@@ -205,11 +205,11 @@ def parted_mkpart(device, ptype, start, end, fs=""):
         
     end_str = "%dMiB" % end
 
-    cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start_str, end_str]
+    cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, fs, start_str, end_str]
     subprocess.check_call(cmd)
 
 def parted_mktable(device, table_type="msdos"):
-    cmd = ["parted", "-a", "optimal", "-s", device, "mktable", table_type]
+    cmd = ["parted", "--align", "optimal", "--script", device, "mktable", table_type]
     subprocess.check_call(cmd)
 
 ''' AutoPartition Class '''
@@ -602,6 +602,7 @@ class AutoPartition(object):
                 # Create an extended partition where we will put our swap partition
                 start = end
                 end = start + part_sizes['swap']
+                start += 1
                 parted_mkpart(device, "extended", start, end)
                 # Now create a logical swap partition
                 parted_mkpart(device, "logical", start, end, "linux-swap")
