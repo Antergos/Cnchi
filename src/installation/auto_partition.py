@@ -197,11 +197,11 @@ def parted_set(device, number, flag, state):
     subprocess.check_call(cmd)
     
 def parted_mkpart(device, ptype, start, end, fs=""):
-    # If start is "" we assume we want to mkpart at the start of the disk
-    if len(start) > 0:
-        start_str = "%dMiB" % start
-    else:
+    # If start is < 0 we assume we want to mkpart at the start of the disk
+    if start < 0:
         start_str = "1"
+    else:
+        start_str = "%dMiB" % start
         
     end_str = "%dMiB" % end
 
@@ -571,8 +571,8 @@ class AutoPartition(object):
             parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
-            # if start is "" parted_mkpart assumes that our partition starts at 1 (first partition in disk)
-            start = ""
+            # if start is -1 parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            start = -1
             end = part_sizes['boot']
             parted_mkpart(device, "primary", start, end)
                 
