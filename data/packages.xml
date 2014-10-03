@@ -41,6 +41,7 @@
     <graphic>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
+        <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
