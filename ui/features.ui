@@ -99,6 +99,7 @@
                 </child>
               </object>
             </child>
+            <!--
             <child>
               <object class="GtkListBoxRow" id="gnome_extra-row">
                 <child>
@@ -179,6 +180,7 @@
                 </child>
               </object>
             </child>
+            -->
             <child>
               <object class="GtkListBoxRow" id="bluetooth-row">
                 <child>

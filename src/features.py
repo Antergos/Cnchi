@@ -147,20 +147,19 @@ class Features(GtkBaseBox):
         self.switches["fonts"].set_tooltip_markup(txt)
         self.labels["fonts"].set_tooltip_markup(txt)
 
-        # Gnome Extra
-        txt = _("Gnome Extra")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["gnome_extra"].set_markup(txt)
-        txt = _("Installation of extra Gnome applications")
-        txt = "<span size='small'>%s</span>" % txt
-        self.labels["gnome_extra"].set_markup(txt)
-
-        txt = _("Contains various optional tools such as a media\n"
-                "player, a calculator, an editor and other non-critical\n"
-                "applications that go well with the GNOME desktop.\n")
-        self.titles["gnome_extra"].set_tooltip_markup(txt)
-        self.switches["gnome_extra"].set_tooltip_markup(txt)
-        self.labels["gnome_extra"].set_tooltip_markup(txt)
+        ## Gnome Extra
+        #txt = _("Gnome Extra")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.titles["gnome_extra"].set_markup(txt)
+        #txt = _("Installation of extra Gnome applications")
+        #txt = "<span size='small'>%s</span>" % txt
+        #self.labels["gnome_extra"].set_markup(txt)
+        #txt = _("Contains various optional tools such as a media\n"
+        #        "player, a calculator, an editor and other non-critical\n"
+        #        "applications that go well with the GNOME desktop.\n")
+        #self.titles["gnome_extra"].set_tooltip_markup(txt)
+        #self.switches["gnome_extra"].set_tooltip_markup(txt)
+        #self.labels["gnome_extra"].set_tooltip_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")

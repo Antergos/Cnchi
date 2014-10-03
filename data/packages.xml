@@ -96,6 +96,7 @@
 
     <gnome_desktop>
         <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
@@ -106,12 +107,14 @@
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
-        <!-- <pkgname>gnome-music</pkgname> -->
+        <pkgname>gnome-music</pkgname> 
+        <pkgname>gnome-photo</pkgname>
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
         <pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
+        <pkgname>gnome-software</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
@@ -127,12 +130,12 @@
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
         <pkgname>xscreensaver</pkgname>
     </gnome_desktop>
 
     <cinnamon_desktop>
         <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>cinnamon</pkgname>
         <pkgname>cinnamon-control-center</pkgname>
@@ -152,7 +155,10 @@
         <pkgname>gnome-common</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
+        <pkgname>gnome-music</pkgname> 
+        <pkgname>gnome-photo</pkgname>
         <pkgname>gnome-screenshot</pkgname>
+        <pkgname>gnome-software</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
@@ -165,12 +171,10 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <!-- <pkgname>pragha</pkgname> -->
         <pkgname>telepathy</pkgname> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
         <pkgname>zukitwo-themes</pkgname>
     </cinnamon_desktop>
 
@@ -188,7 +192,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
-        <!-- <pkgname>pragha</pkgname> -->
+        <pkgname>pragha</pkgname>
         <pkgname>ristretto</pkgname>
         <pkgname>thunar-archive-plugin</pkgname>
         <pkgname>thunar-volman</pkgname>
@@ -241,7 +245,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
-        <!-- <pkgname>pragha</pkgname> -->
+        <pkgname>pragha</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -250,12 +254,13 @@
     <enlightenment_desktop>
         <pkgname>enlightenment</pkgname>
         <pkgname>gksu</pkgname>
-        <!-- <pkgname>gtk-theme-e17gtk</pkgname> -->
+        <pkgname>gtk-theme-e17gtk</pkgname>
         <pkgname>gvfs-smb</pkgname>
         <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
         <pkgname>lxpolkit</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xfburn</pkgname>
     </enlightenment_desktop>
 
     <openbox_desktop>
@@ -291,7 +296,7 @@
         <pkgname>pcmanfm</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>plank-theme-numix</pkgname>
-        <!-- <pkgname>pragha</pkgname> -->
+        <pkgname>pragha</pkgname>
         <pkgname>python2-xdg</pkgname>
         <pkgname>scrot</pkgname>
         <pkgname>tint2</pkgname>
@@ -379,10 +384,11 @@
             <pkgname lib='gtk'>system-config-printer</pkgname>
             <pkgname>splix</pkgname>
         </cups>
+        <!--
         <gnome_extra>
-            <!-- Gnome extra installs brasero, so why install xfburn too? -->
             <pkgname conflicts='xfburn'>gnome-extra</pkgname>
         </gnome_extra>
+        -->
         <fonts>
             <pkgname>ttf-freefont</pkgname>
             <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
