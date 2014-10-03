@@ -52,6 +52,14 @@ def printk(enable):
         else:
             fpk.write("0")
 
+def unmount(directory):
+    logging.warning(_("Unmounting %s"), directory)
+    try:
+        subprocess.call(["umount", directory])
+    except Exception:
+        logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
+        subprocess.call(["umount", "-l", directory])
+
 def unmount_all(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
     swaps = subprocess.check_output(["swapon", "--show=NAME", "--noheadings"]).decode().split("\n")
@@ -71,21 +79,11 @@ def unmount_all(dest_dir):
                 dirs.append(directory)
 
     for directory in dirs:
-        logging.warning(_("Unmounting %s"), directory)
-        try:
-            subprocess.call(["umount", directory])
-        except Exception:
-            logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
-            subprocess.call(["umount", "-l", directory])
+        unmount(directory)
 
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
     if dest_dir in mount_result:
-        logging.warning(_("Unmounting %s"), dest_dir)
-        try:
-            subprocess.call(["umount", dest_dir])
-        except Exception:
-            logging.warning(_("Unmounting %s failed. Trying lazy arg."), dest_dir)
-            subprocess.call(["umount", "-l", dest_dir])
+        unmount(dest_dir)
 
     # Remove all previous LVM volumes
     # (it may have been left created due to a previous failed installation)
@@ -125,7 +123,6 @@ def unmount_all(dest_dir):
         txt = _("Can't close LUKS devices : %s") % err.output
         logging.warning(txt)
 
-
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
@@ -143,7 +140,6 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # For 512 bit key length the header is 2MiB
     # If in doubt, just be generous and overwrite the first 10MiB or so
     dd("/dev/zero", luks_device, bs=512, count=20480)
-
 
     if luks_pass == None or luks_pass == "":
         # No key password given, let's create a random keyfile
@@ -194,7 +190,6 @@ def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     
     cmd.append('--change-name=%s' % name)
     cmd.append(device)
-
     subprocess.check_call(cmd)
 
 ''' AutoPartition Class '''
@@ -274,7 +269,7 @@ class AutoPartition(object):
 
             # Create our mount directory
             path = self.dest_dir + mount_point
-            subprocess.check_call(["mkdir", "-p", path])
+            os.makedirs(path, mode=0o755)
 
             # Mount our new filesystem
 
