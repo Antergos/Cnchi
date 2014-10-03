@@ -26,7 +26,7 @@
 
 # Enabled desktops
 
-DESKTOPS_DEV = [ "cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "razor", "xfce" ]
+DESKTOPS_DEV = [ "cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "lxqt", "xfce" ]
 DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "xfce" ]
 
 # Descriptive names
@@ -39,25 +39,25 @@ NAMES = {
     'openbox' : "Openbox",
     'enlightenment' : "Enlightenment",
     'kde' : "KDE",
-    'razor' : "Razor-qt",
+    'lxqt' : "LXQt",
     'mate' : "MATE"}
 
 LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
-    'qt' : ["norazor", "kde"]}
+    'qt' : ["lxqt", "kde"]}
 
-ALL_FEATURES = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
+ALL_FEATURES = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ]
 
 # Each desktop has its own available features
 FEATURES = {
     'cinnamon' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
-    'gnome' : [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ],
+    'gnome' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'kde' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'mate' : [ "aur", "cups", "fonts", "office", "firewall", "third_party" ],
     'enlightenment' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'nox' : [ "aur", "bluetooth", "cups", "fonts", "firewall" ],
     'openbox' : [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ],
-    'razor' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
+    'lxqt' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
     'xfce' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]}
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
@@ -97,10 +97,9 @@ DESCRIPTIONS = {
               "Plasma Desktop offers all the tools required for a modern desktop "
               "computing experience so you can be productive right from the start."),
 
-    'razor' : _("Razor-qt is an advanced, easy-to-use, and fast desktop "
-                "environment based on Qt technologies. It has been "
-                "tailored for users who value simplicity, speed, and "
-                "an intuitive interface."),
+    'lxqt' : _("LXQt is an advanced, easy-to-use, and fast desktop environment "
+               "based on Qt technologies. It has been tailored for users who "
+               "value simplicity, speed, and an intuitive interface."),
 
     'nox' : _("This option will install Antergos as command-line only system, "
               "without any type of graphical interface. After the installation you can "
