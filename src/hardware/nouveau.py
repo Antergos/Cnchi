@@ -3,7 +3,7 @@
 #
 #  nouveau.py
 #
-#  Copyright 2013 Antergos
+#  Copyright 2014 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class Nouveau(Hardware):
         pass
 
     def get_packages(self):
-        pkgs = ["nouveau-dri", "xf86-video-nouveau", "libva-vdpau-driver", "libtxc_dxtn"]
+        pkgs = ["xf86-video-nouveau", "libva-vdpau-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nouveau-dri", "lib32-mesa-libgl"])
         return pkgs

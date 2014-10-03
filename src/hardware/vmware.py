@@ -35,7 +35,7 @@ class Vmware(Hardware):
         pass
 
     def get_packages(self):
-        return ["xf86-video-vmware", "svga-dri", "xf86-input-vmmouse", "open-vm-tools"]
+        return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]
 
     def post_install(self, dest_dir):
         pass
