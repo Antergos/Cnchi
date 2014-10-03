@@ -3,7 +3,7 @@
 #
 #  radeon.py
 #
-#  Copyright 2013 Antergos
+#  Copyright 2014 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class Radeon(Hardware):
         pass
 
     def get_packages(self):
-        pkgs = ["ati-dri", "xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
+        pkgs = ["xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-ati-dri", "lib32-mesa-libgl"])
         return pkgs
