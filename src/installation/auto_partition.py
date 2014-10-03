@@ -196,12 +196,13 @@ def parted_set(device, number, flag, state):
     cmd = ['parted', '-a', 'optimal', '-s', device, 'set', number, flag, state]
     subprocess.check_call(cmd)
     
-def parted_mkpart(device, ptype, fs, start, end):
+def parted_mkpart(device, ptype, start, end, fs=""):
     cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start, end]
     subprocess.check_call(cmd)
 
-#def parted_mktable(device, type):
-#    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
+def parted_mktable(device, table_type="msdos"):
+    cmd = ["parted", "-a", "optimal", "-s", device, "mktable", table_type]
+    subprocess.check_call(cmd)
 
 ''' AutoPartition Class '''
 
@@ -561,46 +562,44 @@ class AutoPartition(object):
             wipefs(device)
 
             # Create DOS MBR with parted
-            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
+            parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
-            #subprocess.check_call(
-            #    ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", "%dMiB" % part_sizes['boot']])
-            parted_mkpart(device, "primary", "ext4", "1", "%dMiB" % part_sizes['boot'])
+            start = "1"
+            end = "%dMiB" % part_sizes['boot']
+            parted_mkpart(device, "primary", start, end)
                 
             # Set boot partition as bootable         
-            #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
             parted_set(device, "1", "boot", "on")
 
             if self.lvm:
+                #if part_sizes['boot'] is 0:
+                #    start = "1"
+                #    end = "%dMiB" % (1 + part_sizes['lvm_pv'])
+                #else:
                 start = part_sizes['boot']
-                if part_sizes['boot'] is 0:
-                    start = 1
-                end = start + part_sizes['lvm_pv']
+                end =  "%dMiB" % (part_sizes['boot'] + part_sizes['lvm_pv'])
+                
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
-                subprocess.check_call(
-                    ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
+                parted_mkpart(device, "primary", start, end)
+
                 # Set lvm flag
-                #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
                 parted_set(device, "2", "lvm", "on")
             else:
                 # Create swap partition
                 start = part_sizes['boot']
                 end = start + part_sizes['swap']
-                subprocess.check_call(
-                    ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "linux-swap", "%dMiB" % start, "%dMiB" % end])
+                parted_mkpart(device, "primary", "%dMiB" % start, "%dMiB" % end, "linux-swap")
 
                 if self.home:
                     # Create root partition
                     start = end
                     end = start + part_sizes['root']
-                    subprocess.check_call(
-                        ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "%dMiB" % end])
+                    parted_mkpart(device, "primary", "%dMiB" % start, "%dMiB" % end)
 
                     # Create home partition
                     start = end
-                    subprocess.check_call(
-                        ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
+                    parted_mkpart(device, "primary", "%dMiB" % start, "100%")
                 else:
                     # Create root partition
                     start = end
