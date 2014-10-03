@@ -192,9 +192,16 @@ def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     cmd.append(device)
     subprocess.check_call(cmd)
 
-def mkpart(device, ptype, fs, start, end):
+def parted_set(device, number, flag, state):
+    cmd = ['parted', '-a', 'optimal', '-s', device, 'set', number, flag, state]
+    subprocess.check_call(cmd)
+    
+def parted_mkpart(device, ptype, fs, start, end):
     cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start, end]
     subprocess.check_call(cmd)
+
+#def parted_mktable(device, type):
+#    subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
 ''' AutoPartition Class '''
 
@@ -559,24 +566,23 @@ class AutoPartition(object):
             # Create boot partition (all sizes are in MiB)
             #subprocess.check_call(
             #    ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", "%dMiB" % part_sizes['boot']])
-            mkpart(device, "primary", "ext4", "1", "%dMiB" % part_sizes['boot'])
+            parted_mkpart(device, "primary", "ext4", "1", "%dMiB" % part_sizes['boot'])
                 
-            #def mkpart(device, ptype, fs, start, end):
-        
-            # Set boot partition as bootable
-            subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
+            # Set boot partition as bootable         
+            #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
+            parted_set(device, "1", "boot", "on")
 
             if self.lvm:
                 start = part_sizes['boot']
                 if part_sizes['boot'] is 0:
                     start = 1
-
                 end = start + part_sizes['lvm_pv']
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 subprocess.check_call(
                     ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "%dMiB" % start, "100%"])
                 # Set lvm flag
-                subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
+                #subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "2", "lvm", "on"])
+                parted_set(device, "2", "lvm", "on")
             else:
                 # Create swap partition
                 start = part_sizes['boot']
