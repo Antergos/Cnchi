@@ -192,6 +192,10 @@ def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     cmd.append(device)
     subprocess.check_call(cmd)
 
+def mkpart(device, ptype, fs, start, end):
+    cmd = ['parted', '-a', 'optimal', '-s', device, 'mkpart', ptype, fs, start, end]
+    subprocess.check_call(cmd)
+
 ''' AutoPartition Class '''
 
 class AutoPartition(object):
@@ -553,8 +557,12 @@ class AutoPartition(object):
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "mktable", "msdos"])
 
             # Create boot partition (all sizes are in MiB)
-            subprocess.check_call(
-                ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", "%dMiB" % part_sizes['boot']])
+            #subprocess.check_call(
+            #    ["parted", "-a", "optimal", "-s", device, "mkpart", "primary", "1", "%dMiB" % part_sizes['boot']])
+            mkpart(device, "primary", "ext4", "1", "%dMiB" % part_sizes['boot'])
+                
+            #def mkpart(device, ptype, fs, start, end):
+        
             # Set boot partition as bootable
             subprocess.check_call(["parted", "-a", "optimal", "-s", device, "set", "1", "boot", "on"])
 
