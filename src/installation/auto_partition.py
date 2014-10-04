@@ -303,8 +303,6 @@ class AutoPartition(object):
                 mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
             subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
 
-            logging.debug("AutoPartition done, filesystems mounted:\n" + subprocess.check_output(["mount"]).decode())
-
             # Change permission of base directories to avoid btrfs issues
             mode = 0o755
             if mount_point == "/tmp":
@@ -373,7 +371,9 @@ class AutoPartition(object):
         mount_devices = {}
         mount_devices['/boot'] = devices['boot']
         mount_devices['/'] = devices['root']
-        mount_devices['/home'] = devices['home']
+        
+        if self.home:
+            mount_devices['/home'] = devices['home']
 
         if self.luks:
             mount_devices['/'] = devices['luks'][0]
