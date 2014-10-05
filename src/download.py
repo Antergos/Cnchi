@@ -28,23 +28,29 @@ import logging
 import xmlrpc.client
 import queue
 import logging
+import urllib
+import xml.etree.ElementTree as etree
 
 #from pprint import pprint
 
-""" Module to download packages using Aria2 """
+""" Module to download packages using Aria2 or urllib """
 class DownloadPackages(object):
-    """ Class to download packages using Aria2
+    """ Class to download packages using Aria2 or urllib
         This class tries to previously download all necessary packages for
-        Antergos installation using aria2.
-        It's known to use too much memory so it's not advised to use it """
-    def __init__(self, package_names, conf_file=None, cache_dir=None, callback_queue=None):
-        """ Initialize DownloadPackages class. Gets default configuration """
+        Antergos installation using aria2 or urllib
+        Aria2 is known to use too much memory (not Aria2's fault but ours)
+        so it's not advised to use it """
 
-        try:
-            import pm2ml
-        except:
-            logging.warning(_("pm2ml not found. Aria2 download won't work."))
-            return
+    def __init__(self, package_names, use_aria2=False, conf_file=None, cache_dir=None, callback_queue=None):
+        """ Initialize DownloadPackages class. Gets default configuration """
+        self.use_aria2 = use_aria2
+        
+        if use_aria2:
+            try:
+                import pm2ml
+            except:
+                logging.warning(_("pm2ml not found. Aria2 download won't work."))
+                use_aria2 = False
 
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
@@ -73,17 +79,74 @@ class DownloadPackages(object):
         
         self.aria2_options = []
 
-        self.set_aria2_options(self.cache_dir)
+        if use_aria2:
+            self.set_aria2_options(self.cache_dir)
+            self.run_aria2_as_daemon()
+            self.connection = self.aria2_connect()
+            if self.connection == None:
+                logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
+                return
+            self.aria2_download(package_names)
+        else:
+            self.download(package_names)
 
-        self.run_aria2_as_daemon()
+    def download(self, package_names):
+        """ Main method. Downloads all packages in package_names list and its dependencies using urllib """
+        download_urls = []
+        for package_name in package_names:
+            metalink = self.create_metalink(package_name)
+            if metalink == None:
+                logging.error(_("Error creating metalink for package %s"), package_name)
+                continue
+            # TODO: explore metalink and download necessary files using urllib
+            
+            tree = etree.parse(metalink)
+            root = tree.getroot()
+            for child in root.iter('url'):
+                
+            
+            '''
+            g = urllib.request.urlopen('http://media-mcw.cursecdn.com/3/3f/Beta.png')
+            with open('test.png', 'b+w') as f:
+                f.write(g.read())
+            '''
 
-        self.connection = self.aria2_connect()
+    def create_metalink(self, package_name):
+        """ Creates a metalink to download package_name and its dependencies """
+        args = str("-c %s" % self.conf_file).split()
 
-        if self.connection == None:
-            logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
-            return
+        if package_name == "databases":
+            args += ["-y"]
+        else:
+            args += [package_name]
 
-        self.aria2_download(package_names)
+        args += ["--noconfirm"]
+        args += "-r -p http -l 50".split()
+
+        try:
+            pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
+        except:
+            logging.error(_("Unable to create download queue for package %s"), package_name)
+            return None
+
+        if not_found:
+            msg = _("Can't find these packages: ")
+            for not_found in sorted(not_found):
+                msg = msg + not_found + " "
+            logging.warning(msg)
+
+        if missing_deps:
+            msg = _("Warning! Can't resolve these dependencies: ")
+            for missing in sorted(missing_deps):
+                msg = msg + missing + " "
+            logging.warning(msg)
+
+        metalink = pm2ml.download_queue_to_metalink(
+            download_queue,
+            output_dir=pargs.output_dir,
+            set_preference=pargs.preference
+        )
+        return metalink
 
     def aria2_download(self, package_names):
         """ Main method. Downloads all packages in package_names list and its dependencies using aria2 """
@@ -170,19 +233,10 @@ class DownloadPackages(object):
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
             logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
 
-        '''
-        try:
-            result = connection.aria2.getVersion()
-            logging.debug(_("Using aria2 (version %s) to download xz packages") % result['version'])
-        except xmlrpc.client.Fault as e:
-            logging.exception(e)
-        '''
-
         return connection
 
     def set_aria2_options(self, cache_dir):
         """ Set aria2 options """
-
         user = self.rpc["user"]
         passwd = self.rpc["passwd"]
         port = self.rpc["port"]
@@ -231,45 +285,8 @@ class DownloadPackages(object):
         self.aria2_process = subprocess.Popen(aria2_cmd)
         self.aria2_process.wait()
 
-    def create_metalink(self, package_name):
-        """ Creates a metalink to download package_name and its dependencies """
-        args = str("-c %s" % self.conf_file).split()
-
-        if package_name == "databases":
-            args += ["-y"]
-        else:
-            args += [package_name]
-
-        args += ["--noconfirm"]
-        args += "-r -p http -l 50".split()
-
-        try:
-            pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-        except:
-            logging.error(_("Unable to create download queue for package %s"), package_name)
-            return None
-
-        if not_found:
-            msg = _("Can't find these packages: ")
-            for not_found in sorted(not_found):
-                msg = msg + not_found + " "
-            logging.warning(msg)
-
-        if missing_deps:
-            msg = _("Warning! Can't resolve these dependencies: ")
-            for missing in sorted(missing_deps):
-                msg = msg + missing + " "
-            logging.warning(msg)
-
-        metalink = pm2ml.download_queue_to_metalink(
-            download_queue,
-            output_dir=pargs.output_dir,
-            set_preference=pargs.preference
-        )
-        return metalink
-
     def add_metalink(self, metalink):
-        """ Adds a metalink to the download queue """
+        """ Adds a metalink to aria2 download queue """
         gids = []
         if metalink != None:
             try:

@@ -285,10 +285,8 @@ class AutoPartition(object):
 
             # Create our mount directory
             path = self.dest_dir + mount_point
-            try:
+            if not os.path.exists(path):
                 os.makedirs(path, mode=0o755)
-            except FileExistsError:
-                pass
 
             # Mount our new filesystem
 

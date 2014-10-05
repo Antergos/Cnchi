@@ -340,8 +340,8 @@ class InstallationProcess(multiprocessing.Process):
             self.select_packages()
             logging.debug(_("Packages selected"))
 
-            if self.settings.get("use_aria2"):
-                logging.debug(_("Downloading packages using aria2..."))
+            if self.settings.get('z_hidden'):
+                logging.debug(_("Downloading packages..."))
                 self.download_packages()
                 logging.debug(_("Packages downloaded."))
 
@@ -421,9 +421,19 @@ class InstallationProcess(multiprocessing.Process):
         if len(self.settings.get('cache')) > 0:
             cache_dir = self.settings.get('cache')
         else:
-            cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
+            cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
 
-        download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
+        if self.settings.get("use_aria2"):
+            use_aria2 = True
+        else:
+            use_aria2 = False
+
+        download.DownloadPackages(
+            self.packages,
+            use_aria2,
+            conf_file,
+            cache_dir,
+            self.callback_queue)
 
     def write_file(self, filecontents, filename):
         """ writes a string of data to disk """
