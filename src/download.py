@@ -31,6 +31,12 @@ import logging
 import urllib
 import xml.etree.ElementTree as etree
 
+_PM2ML = True
+try:
+    import pm2ml
+except ImportError:
+    _PM2ML = False
+
 #from pprint import pprint
 
 """ Module to download packages using Aria2 or urllib """
@@ -43,14 +49,12 @@ class DownloadPackages(object):
 
     def __init__(self, package_names, use_aria2=False, conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
+
+        if not _PM2ML:
+            logging.warning(_("pm2ml not found. Download won't work, will use alpm instead."))
+            return
+
         self.use_aria2 = use_aria2
-        
-        if use_aria2:
-            try:
-                import pm2ml
-            except:
-                logging.warning(_("pm2ml not found. Aria2 download won't work."))
-                use_aria2 = False
 
         if conf_file == None:
             self.conf_file = "/etc/pacman.conf"
@@ -92,19 +96,49 @@ class DownloadPackages(object):
 
     def download(self, package_names):
         """ Main method. Downloads all packages in package_names list and its dependencies using urllib """
-        download_urls = []
+        downloads = {}
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
+                print("Error creating metalink for package %s" % package_name)
                 logging.error(_("Error creating metalink for package %s"), package_name)
                 continue
-            # TODO: explore metalink and download necessary files using urllib
+
+            print(metalink)
             
-            tree = etree.parse(metalink)
-            root = tree.getroot()
-            for child in root.iter('url'):
+            root = etree.fromstring(str(metalink))
+
+            tag = "{urn:ietf:params:xml:ns:metalink}"
+
+            el = {}
+            
+            for child in root.iter(tag + "file"):
+                el['filename'] = child.attrib['name']
+
+                for child1 in child.iter(tag + "identity"):
+                    el['identity'] = child1.text
                 
-            
+                for child1 in child.iter(tag + "size"):
+                    el['size'] = child1.text
+                
+                for child1 in child.iter(tag + "version"):
+                    el['version'] = child1.text
+                
+                for child in child.iter(tag + "description"):
+                    el['description'] = child1.text
+                
+                for child1 in child.iter(tag + "hash"):
+                    el[child1.attrib['type']] = child1.text 
+
+                el['urls'] = []
+                for child1 in root.iter(tag + "url"):
+                    el['urls'].append(child1.text)
+        
+                downloads[el['identity']] = el
+
+            for d in downloads:
+                print(downloads[d])
+                print("---------------------------------------------------------------------------------------")
             '''
             g = urllib.request.urlopen('http://media-mcw.cursecdn.com/3/3f/Beta.png')
             with open('test.png', 'b+w') as f:
@@ -113,19 +147,28 @@ class DownloadPackages(object):
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
-        args = str("-c %s" % self.conf_file).split()
+        args = ["-c"]
+        args.append(self.conf_file)
 
-        if package_name == "databases":
-            args += ["-y"]
-        else:
+        #args += ["--noconfirm", "--all-deps", "--needed"]
+        args += ["--noconfirm", "--all-deps"]
+
+        if package_name is "databases":
+            args += ["--refresh"]
+        
+        if self.use_aria2:
+            args += "-r -p http -l 50".split()
+
+        if package_name is not "databases":
             args += [package_name]
 
-        args += ["--noconfirm"]
-        args += "-r -p http -l 50".split()
-
+        print(args)
+        
         try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-        except:
+        except Exception as e:
+            print(e)
+            print("Unable to create download queue for package %s" % package_name)
             logging.error(_("Unable to create download queue for package %s"), package_name)
             return None
 
@@ -322,5 +365,6 @@ if __name__ == '__main__':
 
     logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
-    DownloadPackages(package_names=["glib", "linux"], cache_dir="/aria2")
-    #DownloadPackages(package_names=["base", "base-devel"], cache_dir="/aria2")
+    #DownloadPackages(package_names=["gnome-software"], cache_dir="/tmp/aria2", use_aria2=False)
+    DownloadPackages(package_names=["gnome-sudoku"], cache_dir="/tmp/aria2", use_aria2=False)
+    #DownloadPackages(package_names=["base", "base-devel"], cache_dir="/tmp/aria2", use_aria2=False)
