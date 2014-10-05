@@ -28,10 +28,6 @@ import logging
 import show_message as show
 import parted3.fs_module as fs
 
-#import parted3.partition_module as pm
-#import parted3.lvm as lvm
-#import parted3.used_space as used_space
-
 """ AutoPartition class """
 
 # Partition sizes are in MiB
