@@ -37,7 +37,7 @@ class i915(Hardware):
     def get_packages(self):
         pkgs = ["xf86-video-intel", "libva-intel-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-intel-dri", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-mesa-dri", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
