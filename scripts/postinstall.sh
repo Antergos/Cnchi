@@ -397,7 +397,7 @@ postinstall(){
 
 	# Set Antergos name in filesystem files
 	cp /etc/arch-release ${DESTDIR}/etc
-	cp -f /etc/os-release ${DESTDIR}/etc/os-release
+	cp -f /etc/os-release ${DESTDIR}/usr/lib/os-release
 	
 }
 
