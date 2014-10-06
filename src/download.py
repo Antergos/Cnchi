@@ -154,7 +154,7 @@ class DownloadPackages(object):
             chunk_size = 8192
             percent = 0
             self.queue_event('percent', percent)
-            for url in el['urls']
+            for url in el['urls']:
                 url_open = urllib.request.urlopen(url)
                 with open(filename, 'b+w') as xzfile:
                     data = url_open.read(chunk_size)
