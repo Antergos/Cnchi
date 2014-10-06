@@ -136,14 +136,26 @@ class DownloadPackages(object):
         
                 downloads[el['identity']] = el
 
-            for d in downloads:
-                print(downloads[d])
-                print("---------------------------------------------------------------------------------------")
-            '''
-            g = urllib.request.urlopen('http://media-mcw.cursecdn.com/3/3f/Beta.png')
-            with open('test.png', 'b+w') as f:
-                f.write(g.read())
-            '''
+            for key in downloads:
+                el = downloads[key]
+                self.queue_event('info', _("Downloading %s...") % el['identity'])
+                filename = os.path.join(self.cache_dir, el['filename'])
+                completed_length = 0
+                total_length = el['size']
+                chunk_size = 8192
+                percent = 0
+                self.queue_event('percent', percent)
+                for url in el['urls']
+                    url_open = urllib.request.urlopen(url)
+                    with open(filename, 'b+w') as xzfile:
+                        data = url_open.read(chunk_size)
+                        while len(data) > 0:
+                            xzfile.write(data)
+                            completed_length += len(data)
+                            percent = round(float(completed_length / total_length), 2)
+                            self.queue_event('percent', percent)
+                            data = url_open.read(chunk_size)
+                        
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
