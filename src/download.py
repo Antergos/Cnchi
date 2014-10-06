@@ -29,7 +29,8 @@ import subprocess
 import logging
 import xmlrpc.client
 import queue
-import urllib
+import urllib.request
+import urllib.error
 import xml.etree.ElementTree as ET
 
 _PM2ML = True
@@ -37,8 +38,6 @@ try:
     import pm2ml
 except ImportError:
     _PM2ML = False
-
-#from pprint import pprint
 
 def url_open_read(url_open, chunk_size=8192):
     download_error = True
@@ -56,6 +55,24 @@ def url_open_read(url_open, chunk_size=8192):
         import traceback
         logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
     return (data, download_error)
+
+def url_open(url):
+    try:
+        urlp = urllib.request.urlopen(url)    
+    except urllib.error.HTTPError as e:
+        urlp = None
+        logging.exception('Error downloading %s. HTTPError = %s' % (err.reason))
+    except urllib.error.URLError as err:
+        urlp = None
+        logging.exception('URLError = %s' % err.reason)
+    except httplib.HTTPException as err:
+        urlp = None
+        logging.exception('Unable to get latest version info - HTTPException')
+    except Exception as err:
+        urlp = None
+        import traceback
+        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+    return urlp
 
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
@@ -157,7 +174,6 @@ class DownloadPackages(object):
             metalink = self.create_metalink(package_name)
             if metalink == None:
                 msg = "Error creating metalink for package %s"
-                print(msg % package_name)
                 logging.error(msg, package_name)
                 continue
 
@@ -165,36 +181,58 @@ class DownloadPackages(object):
             # from the processed metalink
             downloads.update(self.get_metalink_info(metalink))
 
+        downloaded = 1
+        total_downloads = len(downloads)
         for key in downloads:
             element = downloads[key]
-            txt = _("Downloading %s %s...") % (element['identity'], element['version'])
+            txt = _("Downloading %s %s (%d/%d)...")
+            txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
+            print(txt)
             filename = os.path.join(self.cache_dir, element['filename'])
             completed_length = 0
-            # TODO: Check element['size'] units
-            total_length = element['size']
+            total_length = int(element['size'])
             percent = 0
             self.queue_event('percent', percent)
+            
+            if os.path.exists(filename):
+                # File exists, do not download
+                # Note: In theory this won't ever happen (metalink assures us this)
+                self.queue_event('percent', 1.0)
+                downloaded += 1
+                continue
+
             for url in element['urls']:
                 download_error = False
-                url_open = urllib.request.urlopen(url)
+                urlp = url_open(url)
+                if urlp is None:
+                    continue
                 with open(filename, 'b+w') as xzfile:
-                    (data, download_error) = url_open_read(url_open)
+                    (data, download_error) = url_open_read(urlp)
 
-                if not download_error:
+                    if download_error:
+                        continue
+
                     while len(data) > 0 and download_error == False:
                         xzfile.write(data)
                         completed_length += len(data)
+                        old_percent = percent
                         percent = round(float(completed_length / total_length), 2)
-                        self.queue_event('percent', percent)
-                        (data, download_error) = url_open_read(url_open)
-                    
+                        if old_percent != percent:
+                            self.queue_event('percent', percent)
+                        (data, download_error) = url_open_read(urlp)
+                        
                     if not download_error:
                         # There're some downloads, that are so quick,
                         # that percent does not reach 100.
                         # We simulate it here
                         self.queue_event('percent', 1.0)
+                        downloaded += 1
                         break
+            if download_error:
+                # This is not a total disaster, maybe alpm will be able
+                # to download it for us later in pac.py
+                logging.warning(_("Can't download %s"), element['filename'])
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
@@ -213,13 +251,9 @@ class DownloadPackages(object):
         if package_name is not "databases":
             args += [package_name]
 
-        print(args)
-
         try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
         except Exception as err:
-            print(err)
-            print("Unable to create download queue for package %s" % package_name)
             logging.error(_("Unable to create download queue for package %s"), package_name)
             return None
 
@@ -269,8 +303,6 @@ class DownloadPackages(object):
                 try:
                     keys = ["gid", "status", "totalLength", "completedLength", "files"]
                     result = self.connection.aria2.tellActive(keys)
-                    #pprint(result)
-                    #logging.debug(result)
                 except xmlrpc.client.Fault as err:
                     logging.exception(err)
 
@@ -305,8 +337,6 @@ class DownloadPackages(object):
 
                 # Get global statistics
                 global_stat = self.connection.aria2.getGlobalStat()
-                #pprint(global_stat)
-                #logging.debug(global_stat)
 
                 num_active = int(global_stat["numActive"])
 

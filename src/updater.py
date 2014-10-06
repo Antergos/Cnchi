@@ -49,9 +49,9 @@ class Updater():
             update_info_url = _url_prefix + "update.info"
             request = urlopen(update_info_url)
             response = request.read().decode('utf-8')
-        except urllib.HTTPError as err:
+        except urllib.error.HTTPError as err:
             logging.exception('Unable to get latest version info - HTTPError = %s' % err.reason)
-        except urllib.URLError as err:
+        except urllib.error.URLError as err:
             logging.exception('Unable to get latest version info - URLError = %s' % err.reason)
         except httplib.HTTPException as err:
             logging.exception('Unable to get latest version info - HTTPException')

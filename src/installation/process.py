@@ -340,11 +340,6 @@ class InstallationProcess(multiprocessing.Process):
             self.select_packages()
             logging.debug(_("Packages selected"))
 
-            if self.settings.get('z_hidden'):
-                logging.debug(_("Downloading packages..."))
-                self.download_packages()
-                logging.debug(_("Packages downloaded."))
-
             # In newer testing isos, cached packages are provided. Try to copy them.
             self.copy_cached_packages("/var/cache/pacman/pkg")
 
@@ -355,6 +350,10 @@ class InstallationProcess(multiprocessing.Process):
                 # if we don't wait, logs get mixed up
                 # (when copying cache files waiting more makes no sense as it is already a slow process)
                 self.wait_for_empty_queue(timeout=10)
+
+            logging.debug(_("Downloading packages..."))
+            self.download_packages()
+            logging.debug(_("Packages downloaded."))
 
             logging.debug(_("Installing packages..."))
             self.install_packages()
