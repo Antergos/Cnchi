@@ -40,6 +40,23 @@ except ImportError:
 
 #from pprint import pprint
 
+def url_open_read(url_open, chunk_size=8192):
+    download_error = True
+    data = None
+    try:
+        data = url_open.read(chunk_size)
+        download_error = False
+    except urllib.HTTPError as e:
+        logging.exception('Error downloading %s. HTTPError = %s' % (err.reason))
+    except urllib.URLError as err:
+        logging.exception('URLError = %s' % err.reason)
+    except httplib.HTTPException as err:
+        logging.exception('Unable to get latest version info - HTTPException')
+    except Exception as err:
+        import traceback
+        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+    return (data, download_error)
+
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
         This class tries to previously download all necessary packages for
@@ -156,23 +173,28 @@ class DownloadPackages(object):
             completed_length = 0
             # TODO: Check element['size'] units
             total_length = element['size']
-            chunk_size = 8192
             percent = 0
             self.queue_event('percent', percent)
             for url in element['urls']:
+                download_error = False
                 url_open = urllib.request.urlopen(url)
                 with open(filename, 'b+w') as xzfile:
-                    data = url_open.read(chunk_size)
-                    while len(data) > 0:
+                    (data, download_error) = url_open_read(url_open)
+
+                if not download_error:
+                    while len(data) > 0 and download_error == False:
                         xzfile.write(data)
                         completed_length += len(data)
                         percent = round(float(completed_length / total_length), 2)
                         self.queue_event('percent', percent)
-                        data = url_open.read(chunk_size)
-                # There're some downloads, that are so quick,
-                # that percent does not reach 100.
-                # We simulate it here
-                self.queue_event('percent', 1.0)
+                        (data, download_error) = url_open_read(url_open)
+                    
+                    if not download_error:
+                        # There're some downloads, that are so quick,
+                        # that percent does not reach 100.
+                        # We simulate it here
+                        self.queue_event('percent', 1.0)
+                        break
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
