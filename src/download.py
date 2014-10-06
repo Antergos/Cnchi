@@ -94,9 +94,45 @@ class DownloadPackages(object):
         else:
             self.download(package_names)
 
+    def get_metalink_info(self, metalink):
+        """ Reads metalink xml and stores it in a dict """
+
+        metalink_info = {}
+        TAG = "{urn:ietf:params:xml:ns:metalink}"
+        root = etree.fromstring(str(metalink))
+
+        for child1 in root.iter(TAG + "file"):
+            el = {}
+
+            el['filename'] = child1.attrib['name']
+
+            for child2 in child1.iter(TAG + "identity"):
+                el['identity'] = child2.text
+            
+            for child2 in child1.iter(TAG + "size"):
+                el['size'] = child2.text
+            
+            for child2 in child1.iter(TAG + "version"):
+                el['version'] = child2.text
+            
+            for child2 in child1.iter(TAG + "description"):
+                el['description'] = child2.text
+            
+            for child2 in child1.iter(TAG + "hash"):
+                el[child2.attrib['type']] = child2.text 
+
+            el['urls'] = []
+            for child2 in child1.iter(TAG + "url"):
+                el['urls'].append(child2.text)
+    
+            metalink_info[el['identity']] = el
+
+        return metalink_info
+        
     def download(self, package_names):
-        """ Main method. Downloads all packages in package_names list and its dependencies using urllib """
+        """ Downloads needed packages in package_names list and its dependencies using urllib """
         downloads = {}
+        
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
@@ -104,58 +140,33 @@ class DownloadPackages(object):
                 logging.error(_("Error creating metalink for package %s"), package_name)
                 continue
 
-            print(metalink)
+            # Update our downloads dict with the new info from the processed metalink
+            downloads.update(self.get_metalink_info(metalink))
             
-            root = etree.fromstring(str(metalink))
-
-            tag = "{urn:ietf:params:xml:ns:metalink}"
-
-            el = {}
-            
-            for child in root.iter(tag + "file"):
-                el['filename'] = child.attrib['name']
-
-                for child1 in child.iter(tag + "identity"):
-                    el['identity'] = child1.text
-                
-                for child1 in child.iter(tag + "size"):
-                    el['size'] = child1.text
-                
-                for child1 in child.iter(tag + "version"):
-                    el['version'] = child1.text
-                
-                for child in child.iter(tag + "description"):
-                    el['description'] = child1.text
-                
-                for child1 in child.iter(tag + "hash"):
-                    el[child1.attrib['type']] = child1.text 
-
-                el['urls'] = []
-                for child1 in root.iter(tag + "url"):
-                    el['urls'].append(child1.text)
-        
-                downloads[el['identity']] = el
-
-            for key in downloads:
-                el = downloads[key]
-                self.queue_event('info', _("Downloading %s...") % el['identity'])
-                filename = os.path.join(self.cache_dir, el['filename'])
-                completed_length = 0
-                total_length = el['size']
-                chunk_size = 8192
-                percent = 0
-                self.queue_event('percent', percent)
-                for url in el['urls']
-                    url_open = urllib.request.urlopen(url)
-                    with open(filename, 'b+w') as xzfile:
+        for key in downloads:
+            el = downloads[key]
+            txt = _("Downloading %s %s...") % (el['identity'], el['version'])
+            self.queue_event('info', txt)
+            filename = os.path.join(self.cache_dir, el['filename'])
+            completed_length = 0
+            # TODO: Check el['size'] units
+            total_length = el['size']
+            chunk_size = 8192
+            percent = 0
+            self.queue_event('percent', percent)
+            for url in el['urls']
+                url_open = urllib.request.urlopen(url)
+                with open(filename, 'b+w') as xzfile:
+                    data = url_open.read(chunk_size)
+                    while len(data) > 0:
+                        xzfile.write(data)
+                        completed_length += len(data)
+                        percent = round(float(completed_length / total_length), 2)
+                        self.queue_event('percent', percent)
                         data = url_open.read(chunk_size)
-                        while len(data) > 0:
-                            xzfile.write(data)
-                            completed_length += len(data)
-                            percent = round(float(completed_length / total_length), 2)
-                            self.queue_event('percent', percent)
-                            data = url_open.read(chunk_size)
-                        
+                # There're some downloads, that are so quick, that percent does not reach 100.
+                # We simulate it here
+                self.queue_event('percent', 1.0)
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
@@ -204,7 +215,7 @@ class DownloadPackages(object):
         return metalink
 
     def aria2_download(self, package_names):
-        """ Main method. Downloads all packages in package_names list and its dependencies using aria2 """
+        """ Downloads needed packages in package_names list and its dependencies using aria2 """
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
