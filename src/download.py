@@ -22,14 +22,15 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Module to download packages using Aria2 or urllib """
+
 import os
 import subprocess
 import logging
 import xmlrpc.client
 import queue
-import logging
 import urllib
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as ET
 
 _PM2ML = True
 try:
@@ -39,7 +40,6 @@ except ImportError:
 
 #from pprint import pprint
 
-""" Module to download packages using Aria2 or urllib """
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
         This class tries to previously download all necessary packages for
@@ -47,11 +47,13 @@ class DownloadPackages(object):
         Aria2 is known to use too much memory (not Aria2's fault but ours)
         so it's not advised to use it """
 
-    def __init__(self, package_names, use_aria2=False, conf_file=None, cache_dir=None, callback_queue=None):
+    def __init__(self, package_names, use_aria2=False,
+        conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if not _PM2ML:
-            logging.warning(_("pm2ml not found. Download won't work, will use alpm instead."))
+            wrn = _("pm2ml not found. Download won't work, will use alpm instead.")
+            logging.warning(wrn)
             return
 
         self.use_aria2 = use_aria2
@@ -80,7 +82,7 @@ class DownloadPackages(object):
         self.rpc["user"] = "antergos"
         self.rpc["passwd"] = "antergos"
         self.rpc["port"] = "6800"
-        
+
         self.aria2_options = []
 
         if use_aria2:
@@ -88,7 +90,8 @@ class DownloadPackages(object):
             self.run_aria2_as_daemon()
             self.connection = self.aria2_connect()
             if self.connection == None:
-                logging.warning(_("Can't connect with aria2, downloading will be performed by alpm."))
+                wrn = _("Can't connect with aria2, downloading will be performed by alpm.")
+                logging.warning(wrn)
                 return
             self.aria2_download(package_names)
         else:
@@ -99,62 +102,64 @@ class DownloadPackages(object):
 
         metalink_info = {}
         TAG = "{urn:ietf:params:xml:ns:metalink}"
-        root = etree.fromstring(str(metalink))
+        root = ET.fromstring(str(metalink))
 
         for child1 in root.iter(TAG + "file"):
-            el = {}
+            element = {}
 
-            el['filename'] = child1.attrib['name']
+            element['filename'] = child1.attrib['name']
 
             for child2 in child1.iter(TAG + "identity"):
-                el['identity'] = child2.text
-            
-            for child2 in child1.iter(TAG + "size"):
-                el['size'] = child2.text
-            
-            for child2 in child1.iter(TAG + "version"):
-                el['version'] = child2.text
-            
-            for child2 in child1.iter(TAG + "description"):
-                el['description'] = child2.text
-            
-            for child2 in child1.iter(TAG + "hash"):
-                el[child2.attrib['type']] = child2.text 
+                element['identity'] = child2.text
 
-            el['urls'] = []
+            for child2 in child1.iter(TAG + "size"):
+                element['size'] = child2.text
+
+            for child2 in child1.iter(TAG + "version"):
+                element['version'] = child2.text
+
+            for child2 in child1.iter(TAG + "description"):
+                element['description'] = child2.text
+
+            for child2 in child1.iter(TAG + "hash"):
+                element[child2.attrib['type']] = child2.text
+
+            element['urls'] = []
             for child2 in child1.iter(TAG + "url"):
-                el['urls'].append(child2.text)
-    
-            metalink_info[el['identity']] = el
+                element['urls'].append(child2.text)
+
+            metalink_info[element['identity']] = element
 
         return metalink_info
-        
+
     def download(self, package_names):
         """ Downloads needed packages in package_names list and its dependencies using urllib """
         downloads = {}
-        
+
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
-                print("Error creating metalink for package %s" % package_name)
-                logging.error(_("Error creating metalink for package %s"), package_name)
+                msg = "Error creating metalink for package %s"
+                print(msg % package_name)
+                logging.error(msg, package_name)
                 continue
 
-            # Update our downloads dict with the new info from the processed metalink
+            # Update downloads dict with the new info
+            # from the processed metalink
             downloads.update(self.get_metalink_info(metalink))
-            
+
         for key in downloads:
-            el = downloads[key]
-            txt = _("Downloading %s %s...") % (el['identity'], el['version'])
+            element = downloads[key]
+            txt = _("Downloading %s %s...") % (element['identity'], element['version'])
             self.queue_event('info', txt)
-            filename = os.path.join(self.cache_dir, el['filename'])
+            filename = os.path.join(self.cache_dir, element['filename'])
             completed_length = 0
-            # TODO: Check el['size'] units
-            total_length = el['size']
+            # TODO: Check element['size'] units
+            total_length = element['size']
             chunk_size = 8192
             percent = 0
             self.queue_event('percent', percent)
-            for url in el['urls']:
+            for url in element['urls']:
                 url_open = urllib.request.urlopen(url)
                 with open(filename, 'b+w') as xzfile:
                     data = url_open.read(chunk_size)
@@ -164,7 +169,8 @@ class DownloadPackages(object):
                         percent = round(float(completed_length / total_length), 2)
                         self.queue_event('percent', percent)
                         data = url_open.read(chunk_size)
-                # There're some downloads, that are so quick, that percent does not reach 100.
+                # There're some downloads, that are so quick,
+                # that percent does not reach 100.
                 # We simulate it here
                 self.queue_event('percent', 1.0)
 
@@ -178,7 +184,7 @@ class DownloadPackages(object):
 
         if package_name is "databases":
             args += ["--refresh"]
-        
+
         if self.use_aria2:
             args += "-r -p http -l 50".split()
 
@@ -186,11 +192,11 @@ class DownloadPackages(object):
             args += [package_name]
 
         print(args)
-        
+
         try:
             pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
-        except Exception as e:
-            print(e)
+        except Exception as err:
+            print(err)
             print("Unable to create download queue for package %s" % package_name)
             logging.error(_("Unable to create download queue for package %s"), package_name)
             return None
@@ -230,10 +236,10 @@ class DownloadPackages(object):
 
             global_stat = self.connection.aria2.getGlobalStat()
             num_active = int(global_stat["numActive"])
-            
+
             old_percent = -1
             old_path = ""
-                        
+
             action = _("Downloading package '%s' and its dependencies...") % package_name
             self.queue_event('info', action)
 
@@ -243,31 +249,34 @@ class DownloadPackages(object):
                     result = self.connection.aria2.tellActive(keys)
                     #pprint(result)
                     #logging.debug(result)
-                except xmlrpc.client.Fault as e:
-                    logging.exception(e)
+                except xmlrpc.client.Fault as err:
+                    logging.exception(err)
 
                 total_length = 0
                 completed_length = 0
 
-                for x in range(0, num_active):
-                    total_length += int(result[x]['totalLength'])
-                    completed_length += int(result[x]['completedLength'])
-                
+                for i in range(0, num_active):
+                    total_length += int(result[i]['totalLength'])
+                    completed_length += int(result[i]['completedLength'])
+
                 # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
-                path = result[x]['files'][0]['path']
+
+                # TODO: Check this
+                path = result[0]['files'][0]['path']
+
                 ext = ".pkg.tar.xz"
                 if path.endswith(ext):
                     path = path[:-len(ext)]
-                                
+
                 percent = round(float(completed_length / total_length), 2)
-                
+
                 if path != old_path and percent == 0:
                     # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
                     self.queue_event('percent', 1.0)
                     # Update download file name
                     self.queue_event('info', _("Downloading %s...") % path)
                     old_path = path
-                
+
                 if percent != old_percent:
                     self.queue_event('percent', percent)
                     old_percent = percent
@@ -276,14 +285,14 @@ class DownloadPackages(object):
                 global_stat = self.connection.aria2.getGlobalStat()
                 #pprint(global_stat)
                 #logging.debug(global_stat)
-                
+
                 num_active = int(global_stat["numActive"])
 
             # This method purges completed/error/removed downloads to free memory
             self.connection.aria2.purgeDownloadResult()
-            
+
         self.connection.aria2.shutdown()
-    
+
     def aria2_connect(self):
         """ Connect to aria2 daemon """
         connection = None
@@ -291,18 +300,19 @@ class DownloadPackages(object):
         user = self.rpc["user"]
         passwd = self.rpc["passwd"]
         port = self.rpc["port"]
-        
+
         aria2_url = 'http://%s:%s@localhost:%s/rpc' % (user, passwd, port)
 
         try:
             connection = xmlrpc.client.ServerProxy(aria2_url)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-            logging.debug(_("Can't connect to Aria2. Error Output: %s") % err)
+            logging.debug(_("Can't connect to Aria2. Error Output: %s"), err)
 
         return connection
 
     def set_aria2_options(self, cache_dir):
         """ Set aria2 options """
+
         user = self.rpc["user"]
         passwd = self.rpc["passwd"]
         port = self.rpc["port"]
@@ -329,13 +339,13 @@ class DownloadPackages(object):
             "--quiet=true",                 # Make aria2 quiet (no console output).
             "--remote-time=false",          # Retrieve timestamp of the remote file from the remote HTTP/FTP server
                                             # and if it is available, apply it to the local file.
-            "--remove-control-file=true",   # Remove control file before download. 
+            "--remove-control-file=true",   # Remove control file before download.
             "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
             "--rpc-user=%s" % user,
             "--rpc-passwd=%s" % passwd,
             "--rpc-listen-port=%s" % port,
             "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
-                                                # specified by --dir option. 
+                                                # specified by --dir option.
             "--rpc-max-request-size=16M",   # Set max size of XML-RPC request. If aria2 detects the request is more
                                             # than SIZE bytes, it drops connection (default 2M)
             "--show-console-readout=false", # Show console readout (default true)
@@ -359,7 +369,7 @@ class DownloadPackages(object):
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
                 gids = self.connection.aria2.addMetalink(binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
-                logging.exception("Can't communicate with Aria2. Error Output: %s" % err)
+                logging.exception("Can't communicate with Aria2. Error Output: %s", err)
 
         return gids
 
