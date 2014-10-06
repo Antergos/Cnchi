@@ -173,38 +173,41 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('count=%d' % count)
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
-    
+
 def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
     cmd.append('--set-alignment="%d"' % alignment)
     cmd.append('--new=%s:+%dM' % (new, size))
     cmd.append('--typecode=%s' % type_code)
-    
+
     if attributes is not None:
         cmd.append('--attributes=%s' % attributes)
-    
+
     cmd.append('--change-name=%s' % name)
     cmd.append(device)
     subprocess.check_call(cmd)
 
 def parted_set(device, number, flag, state):
+    """ Helper function to call set parted command """
     cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
     subprocess.check_call(cmd)
-    
-def parted_mkpart(device, ptype, start, end, fs=""):
+
+def parted_mkpart(device, ptype, start, end, filesystem=""):
+    """ Helper function to call mkpart parted command """
     # If start is < 0 we assume we want to mkpart at the start of the disk
     if start < 0:
         start_str = "1"
     else:
         start_str = "%dMiB" % start
-        
+
     end_str = "%dMiB" % end
 
-    cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, fs, start_str, end_str]
+    cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, filesystem, start_str, end_str]
     subprocess.check_call(cmd)
 
 def parted_mktable(device, table_type="msdos"):
+    """ Helper function to call mktable parted command """
     cmd = ["parted", "--align", "optimal", "--script", device, "mktable", table_type]
     subprocess.check_call(cmd)
 
@@ -365,7 +368,7 @@ class AutoPartition(object):
         mount_devices = {}
         mount_devices['/boot'] = devices['boot']
         mount_devices['/'] = devices['root']
-        
+
         if self.home:
             mount_devices['/home'] = devices['home']
 
@@ -376,8 +379,11 @@ class AutoPartition(object):
 
         mount_devices['swap'] = devices['swap']
 
-        for md in mount_devices:
-            logging.debug(_("%s will be mount as %s"), mount_devices[md], md)
+        for mount_device in mount_devices:
+            logging.debug(
+                _("%s will be mount as %s"),
+                mount_devices[mount_device],
+                mount_device)
 
         return mount_devices
 
@@ -533,18 +539,18 @@ class AutoPartition(object):
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
-                       
+
             # Create BIOS Boot Partition
             # GPT: 21686148-6449-6E6F-744E-656564454649
             # This partition is not required if the system is UEFI based, as there is no such embedding
             # of the second-stage code in that case
             sgdisk(device, "1:BIOS_GRUB", "1:1M", gpt_bios_grub_part_size, "1:EF02")
-            
+
             # Create EFI System Partition
             # GPT: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
             # MBR: 0xEF
             sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
-            
+
             # Create Boot partition
             sgdisk(device, "3:ANTERGOS_BOOT", "3:0", part_sizes['boot'], "3:8300")
 
@@ -573,8 +579,8 @@ class AutoPartition(object):
             start = -1
             end = part_sizes['boot']
             parted_mkpart(device, "primary", start, end)
-                
-            # Set boot partition as bootable         
+
+            # Set boot partition as bootable
             parted_set(device, "1", "boot", "on")
 
             if self.lvm:
@@ -646,15 +652,21 @@ class AutoPartition(object):
             except Exception as err:
                 logging.exception(err)
 
-            subprocess.check_call(["lvcreate", "--name", "AntergosRoot", "--size", str(int(part_sizes['root'])), "AntergosVG"])
+            size = str(int(part_sizes['root']))
+            subprocess.check_call(
+                ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"])
 
             if not self.home:
                 # Use the remainig space for our swap volume
-                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
+                subprocess.check_call(
+                    ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
             else:
-                subprocess.check_call(["lvcreate", "--name", "AntergosSwap", "--size", str(int(part_sizes['swap'])), "AntergosVG"])
+                size = str(int(part_sizes['swap']))
+                subprocess.check_call(
+                    ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"])
                 # Use the remaining space for our home volume
-                subprocess.check_call(["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
+                subprocess.check_call(
+                    ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
