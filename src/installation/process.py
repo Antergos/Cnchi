@@ -345,12 +345,14 @@ class InstallationProcess(multiprocessing.Process):
 
             if self.settings.get('copy_cache'):
                 self.copy_cached_packages(self.settings.get('cache'))
+            '''
             else:
                 # Wait for all logs (logging and showing message to user is slower than just logging)
                 # if we don't wait, logs get mixed up
                 # (when copying cache files waiting more makes no sense as it is already a slow process)
                 self.wait_for_empty_queue(timeout=10)
-
+            '''
+            
             logging.debug(_("Downloading packages..."))
             self.download_packages()
             logging.debug(_("Packages downloaded."))
@@ -414,13 +416,13 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
     def download_packages(self):
-        """ Downloads necessary packages using Aria2 """
+        """ Downloads necessary packages using urllib or Aria2 """
         conf_file = "/tmp/pacman.conf"
 
-        if len(self.settings.get('cache')) > 0:
-            cache_dir = self.settings.get('cache')
-        else:
-            cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+        #if len(self.settings.get('cache')) > 0:
+        #    cache_dir = self.settings.get('cache')
+        #else:
+        cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
 
         if self.settings.get("use_aria2"):
             use_aria2 = True
