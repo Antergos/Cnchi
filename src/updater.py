@@ -42,14 +42,14 @@ def urlopen(url):
     try:
         request = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
-        logging.exception('Unable to get latest version info - HTTPError = %s' % err.reason)
+        logging.exception('Unable to get %s - HTTPError = %s', url, err.reason)
     except urllib.error.URLError as err:
-        logging.exception('Unable to get latest version info - URLError = %s' % err.reason)
+        logging.exception('Unable to get %s - URLError = %s', url, err.reason)
     except httplib.HTTPException as err:
-        logging.exception('Unable to get latest version info - HTTPException')
+        logging.exception('Unable to get %s - HTTPException', url)
     except Exception as err:
         import traceback
-        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+        logging.exception('Unable to get %s - Exception = %s', url, traceback.format_exc())
     finally:
         return request
 
@@ -123,7 +123,12 @@ class Updater():
 
     def download(self, name, md5):
         """ Download a file """
-        url = _url_prefix + name
+        prefix = "/usr/share/cnchi/"
+        if name.startswith(prefix):
+            url = _url_prefix + name[len(prefix):]
+        else:
+            url = _url_prefix + name
+
         request = urlopen(url)
 
         if request is not None:
