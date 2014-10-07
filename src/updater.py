@@ -62,7 +62,7 @@ class Updater():
         update_info_url = _url_prefix + "update.info"
         request = urlopen(update_info_url)
         
-        if request:
+        if request is not None:
             response = request.read().decode('utf-8')
             if len(response) > 0:
                 updateInfo = json.loads(response)
@@ -126,7 +126,7 @@ class Updater():
         url = _url_prefix + name
         request = urlopen(url)
 
-        if request:
+        if request is not None:
             txt = request.read()
             
             if self.get_md5(txt) != md5:

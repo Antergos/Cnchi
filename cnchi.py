@@ -142,10 +142,10 @@ def check_gtk_version():
     if wrong_gtk_version:
         text = "Detected GTK version %d.%d.%d but version %s is needed."
         text = text % (major, minor, micro, _gtk_version_needed)
-        print(text)
+        logging.info(text)
         return False
     else:
-        print("Using GTK v%d.%d.%d" % (major, minor, micro))
+        logging.info("Using GTK v%d.%d.%d", major, minor, micro)
 
     return True
 
@@ -277,16 +277,20 @@ def init_cnchi():
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
 
+    # Command line options
+    global cmd_line
+    cmd_line = parse_options()
+
+    # Setup our logging framework
+    setup_logging()
+
+    # Check Cnchi is correctly installed
     if not check_for_files():
         sys.exit(1)
 
     # Check installed GTK version
     if not check_gtk_version():
         sys.exit(1)
-
-    # Command line options
-    global cmd_line
-    cmd_line = parse_options()
 
     # Always try to update cnchi when run
     update_cnchi()
@@ -297,8 +301,6 @@ def init_cnchi():
     # Init PyObject Threads
     threads_init()
 
-    # Setup our logging framework
-    setup_logging()
 
 
 if __name__ == '__main__':
