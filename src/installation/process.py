@@ -126,7 +126,6 @@ class InstallationProcess(multiprocessing.Process):
         self.dest_dir = ""
         self.bootloader_ok = self.settings.get('bootloader_ok')
         self.vbox = False
-        #self.num_packages = {}
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -419,9 +418,6 @@ class InstallationProcess(multiprocessing.Process):
         """ Downloads necessary packages using urllib or Aria2 """
         conf_file = "/tmp/pacman.conf"
 
-        #if len(self.settings.get('cache')) > 0:
-        #    cache_dir = self.settings.get('cache')
-        #else:
         cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
 
         if self.settings.get("use_aria2"):
