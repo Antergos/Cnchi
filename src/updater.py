@@ -24,7 +24,6 @@
 
 import urllib.request
 import urllib.error
-from urllib.request import urlopen
 
 import json
 import hashlib
@@ -33,47 +32,48 @@ import info
 
 import logging
 
-#_url_prefix = "https://raw.github.com/Antergos/Cnchi/stable/"
 _url_prefix = "https://raw.github.com/Antergos/Cnchi/master/"
 
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
+
+def urlopen(url):
+    request = None
+    try:
+        request = urllib.request.urlopen(url)
+    except urllib.error.HTTPError as err:
+        logging.exception('Unable to get latest version info - HTTPError = %s' % err.reason)
+    except urllib.error.URLError as err:
+        logging.exception('Unable to get latest version info - URLError = %s' % err.reason)
+    except httplib.HTTPException as err:
+        logging.exception('Unable to get latest version info - HTTPException')
+    except Exception as err:
+        import traceback
+        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+    finally:
+        return request
 
 class Updater():
     def __init__(self, force_update):
         self.web_version = ""
         self.web_files = []
 
-        response = ""
-        try:
-            update_info_url = _url_prefix + "update.info"
-            request = urlopen(update_info_url)
+        request = urlopen(update_info_url)
+        
+        if request:
             response = request.read().decode('utf-8')
-        except urllib.error.HTTPError as err:
-            logging.exception('Unable to get latest version info - HTTPError = %s' % err.reason)
-        except urllib.error.URLError as err:
-            logging.exception('Unable to get latest version info - URLError = %s' % err.reason)
-        except httplib.HTTPException as err:
-            logging.exception('Unable to get latest version info - HTTPException')
-        except Exception as err:
-            import traceback
-            logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
-
-        if len(response) > 0:
-            updateInfo = json.loads(response)
-
-            self.web_version = updateInfo['version']
-            self.web_files = updateInfo['files']
-
-            logging.info(_("Cnchi Internet version: %s"), self.web_version)
-
-            self.force = force_update
+            if len(response) > 0:
+                updateInfo = json.loads(response)
+                self.web_version = updateInfo['version']
+                self.web_files = updateInfo['files']
+                logging.info(_("Cnchi Internet version: %s"), self.web_version)
+                self.force = force_update
 
     def is_web_version_newer(self):
         if self.force:
              return True
 
-        #version is always: x.y.z
+        # Version is always: x.y.z
         cur_ver = info.CNCHI_VERSION.split(".")
         web_ver = self.web_version.split(".")
 
@@ -91,21 +91,22 @@ class Updater():
 
         return False
 
-    # This will update all files only if necessary (or forced)
     def update(self):
+        ''' Check if a new version is available and
+            update all files only if necessary (or forced) '''
         if self.is_web_version_newer():
             logging.info(_("New version found. Updating installer..."))
             num_files = len(self.web_files)
             i = 1
-            for f in self.web_files:
-                name = f['name']
-                md5 = f['md5']
+            for fil in self.web_files:
+                name = fil['name']
+                md5 = fil['md5']
                 print("Downloading %s (%d/%d)" % (name, i, num_files))
                 if self.download(name, md5) is False:
                     # download has failed
-                    logging.error("Download of %s has failed" % name)
+                    logging.error(_("Download of %s has failed, update will stop"), name)
                     return False
-                i = i + 1
+                i += 1
             # replace old files with the new ones
             self.replace_old_with_new_versions()
             return True
@@ -113,45 +114,34 @@ class Updater():
             return False
 
     def get_md5(self, text):
+        """ Gets md5 hash from str """
         md5 = hashlib.md5()
         md5.update(text)
         return md5.hexdigest()
 
     def download(self, name, md5):
+        """ Download a file """
         url = _url_prefix + name
-        response = ""
-        try:
-            request = urlopen(url)
+        request = urlopen(url)
+
+        if request:
             txt = request.read()
-            #.decode('utf-8')
-        except urllib.error.HTTPError as e:
-            logging.exception('Unable to get %s - HTTPError = %s' % (name, e.reason))
-            return False
-        except urllib.error.URLError as e:
-            logging.exception('Unable to get %s - URLError = %s' % (name, e.reason))
-            return False
-        except httplib.error.HTTPException as e:
-            logging.exception('Unable to get %s - HTTPException' % name)
-            return False
-        except Exception as e:
-            import traceback
-            logging.exception('Unable to get %s - Exception = %s' % (name, traceback.format_exc()))
-            return False
-
-        web_md5 = self.get_md5(txt)
-
-        if web_md5 != md5:
-            logging.error("Checksum error in %s. Download aborted" % name)
-            return False
-
-        new_name = os.path.join(_base_dir, name + "." + self.web_version.replace(".", "_"))
-
-        with open(new_name, "wb") as f:
-            f.write(txt)
-
-        return True
+            
+            if self.get_md5(txt) != md5:
+                logging.error(_("Checksum error in %s. Download aborted"), name)
+                return False
+            
+            new_name = os.path.join(
+                _base_dir,
+                name + "." + self.web_version.replace(".", "_"))
+            
+            with open(new_name, "wb") as f:
+                f.write(txt)
+            return True
+        return False
 
     def replace_old_with_new_versions(self):
+        """ Deletes old files and renames the new ones """
         logging.info(_("Replacing version %s with version %s..."), info.CNCHI_VERSION, self.web_version)
         for f in self.web_files:
             name = f['name']
@@ -160,7 +150,9 @@ class Updater():
             cur_name = os.path.join(_base_dir, name)
 
             if os.path.exists(name):
-                os.rename(name, old_name)
+                # Remove old file
+                os.remove(name)
 
             if os.path.exists(new_name):
+                # Rename new download file (removes trailing version in filename)
                 os.rename(new_name, cur_name)
