@@ -174,9 +174,9 @@ def parse_options():
         help=_("Sets Cnchi log level to 'debug'"),
         action="store_true")
     parser.add_argument(
-        "-u", "--update",
-        help=_("Update Cnchi to the latest version (-uu will force the update)"),
-        action="count")
+        "-i", "--disable-tryit",
+        help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"),
+        action="store_true")
     parser.add_argument(
         "-p", "--packagelist",
         help=_("Install the packages referenced by a local xml instead of the default ones"),
@@ -186,12 +186,12 @@ def parse_options():
         help=_("Do not perform any changes (useful for developers)"),
         action="store_true")
     parser.add_argument(
+        "-uu", "--update",
+        help=_("Update Cnchi to the latest web version (will force the update without checking versions)"),
+        action="count")
+    parser.add_argument(
         "-v", "--verbose",
         help=_("Show logging messages to stdout"),
-        action="store_true")
-    parser.add_argument(
-        "--disable-tryit",
-        help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"),
         action="store_true")
     parser.add_argument(
         "-z", "--z_hidden",
@@ -227,21 +227,26 @@ def threads_init():
     #Gdk.threads_init()
 
 def update_cnchi():
+    """ Runs updater function to update cnchi to the latest version if necessary """
     force = False
-    if cmd_line.update == 2:
+    if cmd_line.update:
         force = True
+
     upd = updater.Updater(force)
+
     if upd.update():
         remove_temp_files()
         if force:
-            # Remove -uu option
+            # Remove -uu and --update options from new call
             new_argv = []
             for argv in sys.argv:
-                if argv != "-uu":
+                if argv != "-uu" and argv != "--update":
                     new_argv.append(argv)
         else:
             new_argv = sys.argv
+
         print(_("Program updated! Restarting..."))
+
         # Run another instance of Cnchi (which will be the new version)
         os.execl(sys.executable, *([sys.executable] + new_argv))
         sys.exit(0)
@@ -283,8 +288,8 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
-    if cmd_line.update is not None:
-        update_cnchi()
+    # Always try to update cnchi when run
+    update_cnchi()
 
     # Drop root privileges
     misc.drop_privileges()

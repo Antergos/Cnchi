@@ -58,6 +58,8 @@ class Updater():
         self.web_version = ""
         self.web_files = []
 
+        # Download update.info (contains info of all Cnchi's files)
+        update_info_url = _url_prefix + "update.info"
         request = urlopen(update_info_url)
         
         if request:
