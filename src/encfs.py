@@ -24,7 +24,6 @@
 
 """ Configures Antergos to encrypt user's home with encFS """
 
-#import logging
 import os
 import shutil
 import subprocess
@@ -82,11 +81,12 @@ def setup(username, dest_dir):
     # Move user home dir out of the way
     mounted_dir = os.path.join(self.dest_dir, "home/", username)
     backup_dir = os.path.join(self.dest_dir, "var/tmp/", username)
-    subprocess.check_call(['mv', src_dir, backup_dir])
+    shutil.move(src_dir, backup_dir)
 
     # Create necessary dirs, encrypted and mounted(unecrypted)
     encrypted_dir = os.path.join(self.dest_dir, "home/.encfs/", username)
-    subprocess.check_call(['mkdir', '-p', encrypted_dir, mounted_dir])
+    os.makedirs(encrypted_dir)
+    os.makedirs(mounted_dir)
 
     # Set owner
     subprocess.check_call(['chown', '%s:users' % username, encrypted_dir, mounted_dir])
@@ -96,9 +96,9 @@ def setup(username, dest_dir):
 
     # Restore user home files
     src = os.path.join(backup_dir, "*")
-    subprocess.check_call(['mv', src, mounted_dir])
+    shutil.move(src, mounted_dir)
     src = os.path.join(backup_dir, ".[A-Za-z0-9]*")
-    subprocess.check_call(['mv', src, mounted_dir])
+    shutil.move(src, mounted_dir)
 
     # Delete home backup
-    subprocess.check_call(['rmdir', backup_dir])
+    os.rmdir(backup_dir)
