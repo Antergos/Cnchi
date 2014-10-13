@@ -89,7 +89,8 @@ def setup(username, dest_dir):
     os.makedirs(mounted_dir)
 
     # Set owner
-    subprocess.check_call(['chown', '%s:users' % username, encrypted_dir, mounted_dir])
+    os.chown(encrypted_dir, username, "users")
+    os.chown(mounted_dir, username, "users")
 
     # Create encrypted directory
     subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir])
