@@ -239,8 +239,8 @@ class DownloadPackages(object):
         args = ["-c"]
         args.append(self.conf_file)
 
-        #args += ["--noconfirm", "--all-deps", "--needed"]
-        args += ["--noconfirm", "--all-deps"]
+        args += ["--noconfirm", "--all-deps", "--needed"]
+        #args += ["--noconfirm", "--all-deps"]
 
         if package_name is "databases":
             args += ["--refresh"]
