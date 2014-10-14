@@ -92,33 +92,33 @@ class Pac(object):
     def init_transaction(self, options={}):
         """ Transaction initialization """
         try:
-            t = self.handle.init_transaction(
-                    cascade = options.get('cascade', False),
-                    nodeps = options.get('nodeps', False),
-                    force = options.get('force', False),
-                    dbonly = options.get('dbonly', False),
-                    downloadonly = options.get('downloadonly', False),
-                    needed = options.get('needed', False),
-                    nosave = options.get('nosave', False),
-                    recurse = (options.get('recursive', 0) > 0),
-                    recurseall = (options.get('recursive', 0) > 1),
-                    unneeded = options.get('unneeded', False),
-                    alldeps = (options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
-                    allexplicit = (options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
+            trans = self.handle.init_transaction(
+                cascade=options.get('cascade', False),
+                nodeps=options.get('nodeps', False),
+                force=options.get('force', False),
+                dbonly=options.get('dbonly', False),
+                downloadonly=options.get('downloadonly', False),
+                needed=options.get('needed', False),
+                nosave=options.get('nosave', False),
+                recurse=(options.get('recursive', 0) > 0),
+                recurseall=(options.get('recursive', 0) > 1),
+                unneeded=options.get('unneeded', False),
+                alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
+                allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         except pyalpm.error:
             line = traceback.format_exc()
             logging.error(line)
-            t = None
+            trans = None
         finally:
-            return t
+            return trans
 
     def do_refresh(self):
         """ Sync databases like pacman -Sy """
         force = True
         for db in self.handle.get_syncdbs():
-            t = self.init_transaction()
+            trans = self.init_transaction()
             db.update(force)
-            t.release()
+            trans.release()
         return 0
 
     def do_install(self, pkgs, conflicts=[], options={}):
@@ -133,9 +133,9 @@ class Pac(object):
             logging.error(_("No targets found"))
             return 1
         
-        t = self.init_transaction(options)
+        trans = self.init_transaction(options)
 
-        if t is None:
+        if trans is None:
             return 1
 
         pkg_names = []
@@ -144,16 +144,16 @@ class Pac(object):
             # We use pkg_names in order to avoid duplicates
             if pkg.name not in pkg_names:
                 logging.debug(_("Adding %s to transaction"), pkg.name)
-                t.add_pkg(pkg)
+                trans.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
         # If we use cached packages this is going to be WRONG
         self.total_packages_to_download = len(pkg_names)
         
         logging.debug(_("Finalize transaction..."))
-        ok = self.finalize(t)
+        ok = self.finalize(trans)
 
-        return (0 if ok else 1)
+        return 0 if ok else 1
 
     def get_targets(self, pkgs, conflicts=[]):
         """ Get the list of packages needed to install package list 'pkgs' """
@@ -219,9 +219,9 @@ class Pac(object):
             # Format message to show file, function, and line where the error was issued
             import inspect
             # Get the previous frame in the stack, otherwise it would be this function
-            f = inspect.currentframe().f_back.f_code
+            func = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
-            event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
+            event_text = "%s: %s in %s:%i" % (event_text, func.co_name, func.co_filename, func.co_firstlineno)
         
         if self.callback_queue is None:
             print(event_type, event_text)
@@ -291,10 +291,10 @@ class Pac(object):
 
     def cb_log(self, level, line):
         """ Log pyalpm warning and error messages """
-        _logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
+        logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
 
         # Only manage error and warning messages
-        if not (level & _logmask):
+        if not (level & logmask):
             return
 
         if level & pyalpm.LOG_ERROR:
@@ -314,7 +314,7 @@ class Pac(object):
         else:
             msg = _("Checking and loading packages... (%d targets)") % n
             percent = percent / 100
-        
+
         self.queue_event('info', msg)
         self.queue_event('percent', percent)
 
@@ -338,8 +338,8 @@ class Pac(object):
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
                 self.downloaded_packages = self.downloaded_packages + 1
-                i =  self.downloaded_packages
-                n =  self.total_packages_to_download
+                i = self.downloaded_packages
+                n = self.total_packages_to_download
                 text = _("Downloading %s... (%d/%d)") % (filename, i, n)
 
             self.queue_event('info', text)
@@ -367,7 +367,7 @@ if __name__ == "__main__":
         alpm = Pac("/etc/pacman.conf")
     except Exception as err:
         logging.error(err)
-        raise InstallError("Can't initialize pyalpm: %s" % err)        
+        raise InstallError("Can't initialize pyalpm: %s" % err)
 
     #alpm.do_refresh()
     pacman_options = {}
