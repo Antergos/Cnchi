@@ -1221,7 +1221,7 @@ class InstallationProcess(multiprocessing.Process):
             #                       '--bootloader-id=antergos_grub --boot-directory=/install/boot '
             #                       '--recheck' % uefi_arch], shell=True, timeout=45)
             subprocess.check_call([
-                'grub-install', '--target=%s-efi' % uefi_arch. '--efi-directory=/install/boot',
+                'grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/install/boot',
                 '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck'],
                  shell=True, timeout=45)                                   
         except subprocess.CalledProcessError as err:
