@@ -409,7 +409,7 @@ class GenerateMirrorListThread(threading.Thread):
         else:
             try:
                 script = os.path.join(self.scripts_dir, "generate-mirrorlist.sh")
-                subprocess.check_call(['/usr/bin/bash', script])
+                subprocess.Popen([script])
                 logging.info(_("Downloaded a specific mirrorlist for pacman based on %s country code") % timezone)
             except subprocess.CalledProcessError as e:
                 logging.warning(_("Couldn't generate mirrorlist for pacman based on country code"))
