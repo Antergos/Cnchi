@@ -606,7 +606,8 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Adding filesystem packages"))
 
         try:
-            fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+            cmd = ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]
+            fs_types = subprocess.check_output(cmd).decode()
         except subprocess.CalledProcessError as err:
             txt = _("Error calling blkid")
             logging.error(txt)
@@ -1354,11 +1355,11 @@ class InstallationProcess(multiprocessing.Process):
                         xfs_root = True
             if xfs_boot:
                 boot_mount_point = boot_mount_point.rstrip()
-                subprocess.check_call(["/usr/bin/xfs_freeze", "-f", boot_mount_point])
-                subprocess.check_call(["/usr/bin/xfs_freeze", "-u", boot_mount_point])
+                subprocess.check_call(["xfs_freeze", "-f", boot_mount_point])
+                subprocess.check_call(["xfs_freeze", "-u", boot_mount_point])
             if xfs_root:
-                subprocess.check_call(["/usr/bin/xfs_freeze", "-f", self.dest_dir])
-                subprocess.check_call(["/usr/bin/xfs_freeze", "-u", self.dest_dir])
+                subprocess.check_call(["xfs_freeze", "-f", self.dest_dir])
+                subprocess.check_call(["xfs_freeze", "-u", self.dest_dir])
         except subprocess.CalledProcessError as err:
             logging.warning(_("Can't freeze/unfreeze xfs system"))
 
@@ -1995,8 +1996,10 @@ class InstallationProcess(multiprocessing.Process):
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
-            subprocess.check_call(["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
-                                   keyboard_layout, keyboard_variant], timeout=300)
+            subprocess.check_call(
+                ["/usr/bin/bash", script_path_postinstall, username, self.dest_dir, self.desktop,
+                    keyboard_layout, keyboard_variant],
+                timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as err:
             logging.error(err.output)
