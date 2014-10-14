@@ -44,8 +44,8 @@ import bootinfo
 
 try:
     import parted
-except:
-    pass
+except ImportError as err:
+    logging.error(_("Can't import parted module: %s") % str(err))
 
 # Insert the src/parted directory at the front of the path.
 base_dir = os.path.dirname(__file__) or '.'
@@ -173,10 +173,8 @@ class InstallationAlongside(GtkBaseBox):
 
         try:
             device_list = parted.getAllDevices()
-        except:
-            txt = _("Can't import parted module! This installer won't work.")
-            logging.error(txt)
-            #show.fatal_error(txt)
+        except (ImportError, NameError) as err:
+            logging.error(_("Can't import parted module: %s") % str(err))
             device_list = []
 
         for dev in device_list:

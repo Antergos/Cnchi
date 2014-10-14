@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Interacts with pyparted3 """
+""" Interacts with pyparted """
 
 import subprocess
 import shlex
@@ -33,8 +33,8 @@ import show_message as show
 
 try:
     import parted
-except ImportError:
-    logging.error(_("Can't import parted module! This installer won't work."))
+except ImportError as err:
+    logging.error(_("Can't import parted module: %s") % str(err))
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1

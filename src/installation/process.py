@@ -126,7 +126,6 @@ class InstallationProcess(multiprocessing.Process):
         self.dest_dir = ""
         self.bootloader_ok = self.settings.get('bootloader_ok')
         self.vbox = False
-        #self.num_packages = {}
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -340,21 +339,22 @@ class InstallationProcess(multiprocessing.Process):
             self.select_packages()
             logging.debug(_("Packages selected"))
 
-            if self.settings.get("use_aria2"):
-                logging.debug(_("Downloading packages using aria2..."))
-                self.download_packages()
-                logging.debug(_("Packages downloaded."))
-
             # In newer testing isos, cached packages are provided. Try to copy them.
             self.copy_cached_packages("/var/cache/pacman/pkg")
 
             if self.settings.get('copy_cache'):
                 self.copy_cached_packages(self.settings.get('cache'))
+            '''
             else:
                 # Wait for all logs (logging and showing message to user is slower than just logging)
                 # if we don't wait, logs get mixed up
                 # (when copying cache files waiting more makes no sense as it is already a slow process)
                 self.wait_for_empty_queue(timeout=10)
+            '''
+            
+            logging.debug(_("Downloading packages..."))
+            self.download_packages()
+            logging.debug(_("Packages downloaded."))
 
             logging.debug(_("Installing packages..."))
             self.install_packages()
@@ -415,15 +415,22 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
     def download_packages(self):
-        """ Downloads necessary packages using Aria2 """
+        """ Downloads necessary packages using urllib or Aria2 """
         conf_file = "/tmp/pacman.conf"
 
-        if len(self.settings.get('cache')) > 0:
-            cache_dir = self.settings.get('cache')
-        else:
-            cache_dir = "%s/var/cache/pacman/pkg" % self.dest_dir
+        cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
 
-        download.DownloadPackages(self.packages, conf_file, cache_dir, self.callback_queue)
+        if self.settings.get("use_aria2"):
+            use_aria2 = True
+        else:
+            use_aria2 = False
+
+        download.DownloadPackages(
+            self.packages,
+            use_aria2,
+            conf_file,
+            cache_dir,
+            self.callback_queue)
 
     def write_file(self, filecontents, filename):
         """ writes a string of data to disk """

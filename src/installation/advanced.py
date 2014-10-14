@@ -1582,9 +1582,9 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             check_ok = has_part["root"]
 
-        # If less than 4GB available a swap partition is advisable.
-        if self.need_swap():
-            check_ok = check_ok and has_part["swap"]
+        ## If less than 4GB available a swap partition is advisable.
+        #if self.need_swap():
+        #    check_ok = check_ok and has_part["swap"]
 
         self.forward_button.set_sensitive(check_ok)
 

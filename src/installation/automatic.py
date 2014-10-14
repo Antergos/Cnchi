@@ -40,8 +40,8 @@ from installation import process as installation_process
 # To be able to test this installer in other systems that do not have pyparted3 installed
 try:
     import parted
-except:
-    logging.error("Can't import parted module! This installer won't work.")
+except ImportError as err:
+    logging.error(_("Can't import parted module: %s") % str(err))
 
 from gtkbasebox import GtkBaseBox
 

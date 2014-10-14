@@ -24,7 +24,7 @@
 
 import os
 import hashlib
-import src.info as info
+import info
 
 def get_md5(file_name):
     """ Gets md5 hash from a file """
@@ -41,7 +41,7 @@ def get_files(path):
         file_path = os.path.join(path, filename)
         # Do not parse hidden files
         if filename[0] != ".":
-            if os.path.isfile(file_path):
+            if os.path.isfile(file_path) and not file_path.endswith(".pyc"):
                 print(file_path)
                 all_files.append(file_path)
             elif os.path.isdir(file_path) and filename != "." and filename != "..":
@@ -63,7 +63,7 @@ def create_update_info():
     txt = txt[:-3]
     txt += '}]}\n'
 
-    with open("update.info", "w") as update_info:
+    with open("/usr/share/cnchi/update.info", "w") as update_info:
         update_info.write(txt)
 
 if __name__ == '__main__':

@@ -51,9 +51,11 @@ cmd_line = None
 GTK_VERSION_NEEDED = "3.9.6"
 
 class CnchiApp(Gtk.Application):
+    """ Main Cnchi App class """
     def __init__(self):
+        """ Constructor. Call base class """
         Gtk.Application.__init__(self)
-        
+
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
         try:
@@ -62,20 +64,20 @@ class CnchiApp(Gtk.Application):
             logging.exception(err)
             logging.error(_("Can't create Cnchi's main window. Exiting..."))
             sys.exit(1)
-            
+
         window = mainwindow.MainWindow(self, cmd_line)
-        
+
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without
         #self.add_window(window)
-        
+
         # This is unnecessary as show_all is called in MainWindow
         #window.show_all()
-    
+
     def do_startup(self):
         """ Override the 'startup' signal of GLib.Application. """
         Gtk.Application.do_startup(self)
-        
+
         # Application main menu (we don't need one atm)
         # Leaving this here for future reference
         #menu = Gio.Menu()
@@ -86,19 +88,21 @@ class CnchiApp(Gtk.Application):
 def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
-    
+
     logger.handlers = []
-   
+
     if cmd_line.debug:
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
-    
+
     logger.setLevel(log_level)
-    
+
     # Log format
-    formatter = logging.Formatter('[%(asctime)s] [%(module)s] %(levelname)s: %(message)s', "%Y-%m-%d %H:%M:%S")
-    
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
     file_handler.setLevel(log_level)
@@ -124,15 +128,24 @@ def check_gtk_version():
     minor = Gtk.get_minor_version()
     micro = Gtk.get_micro_version()
 
-    # Cnchi will be called from our liveCD that already has the latest GTK version
-    # This is here just to help testing Cnchi in our environment.
-    if major_needed > major or (major_needed == major and minor_needed > minor) or \
-      (major_needed == major and minor_needed == minor and micro_needed > micro):
-        print("Detected GTK %d.%d.%d but %s is needed. Can't run this installer." \
-            % (major, minor, micro, _gtk_version_needed))
+    # Cnchi will be called from our liveCD that already
+    # has the latest GTK version. This is here just to
+    # help testing Cnchi in our environment.
+    wrong_gtk_version = False
+    if major_needed > major:
+        wrong_gtk_version = True
+    if major_needed == major and minor_needed > minor:
+        wrong_gtk_version = True
+    if major_needed == major and minor_needed == minor and micro_needed > micro:
+        wrong_gtk_version = True
+
+    if wrong_gtk_version:
+        text = "Detected GTK version %d.%d.%d but version %s is needed."
+        text = text % (major, minor, micro, _gtk_version_needed)
+        logging.info(text)
         return False
     else:
-        print("Using GTK v%d.%d.%d" % (major, minor, micro))
+        logging.info("Using GTK v%d.%d.%d", major, minor, micro)
 
     return True
 
@@ -140,17 +153,50 @@ def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
 
     import argparse
-    parser = argparse.ArgumentParser(description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
-    parser.add_argument("-a", "--aria2", help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"), action="store_true")
-    parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs='?')
-    parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs='?')
-    parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
-    parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version (-uu will force the update)"), action="count")
-    parser.add_argument("-p", "--packagelist", help=_("Install the packages referenced by a local xml instead of the default ones"), nargs='?')
-    parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
-    parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
-    parser.add_argument("--disable-tryit", help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"), action="store_true")
-    parser.add_argument("-z", "--z_hidden", help=_("Show options in development (DO NOT USE THIS!)"), action="store_true")
+
+    parser = argparse.ArgumentParser(
+        description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
+
+    parser.add_argument(
+        "-a", "--aria2",
+        help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"),
+        action="store_true")
+    parser.add_argument(
+        "-c", "--cache",
+        help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"),
+        nargs='?')
+    parser.add_argument(
+        "-cc", "--copycache",
+        help=_("As --cache but before installing Cnchi copies all xz packages to destination"),
+        nargs='?')
+    parser.add_argument(
+        "-d", "--debug",
+        help=_("Sets Cnchi log level to 'debug'"),
+        action="store_true")
+    parser.add_argument(
+        "-i", "--disable-tryit",
+        help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"),
+        action="store_true")
+    parser.add_argument(
+        "-p", "--packagelist",
+        help=_("Install the packages referenced by a local xml instead of the default ones"),
+        nargs='?')
+    parser.add_argument(
+        "-t", "--testing",
+        help=_("Do not perform any changes (useful for developers)"),
+        action="store_true")
+    parser.add_argument(
+        "-uu", "--update",
+        help=_("Update Cnchi to the latest web version (will force the update without checking versions)"),
+        action="count")
+    parser.add_argument(
+        "-v", "--verbose",
+        help=_("Show logging messages to stdout"),
+        action="store_true")
+    parser.add_argument(
+        "-z", "--z_hidden",
+        help=_("Show options in development (for developers only, do not use this!)"),
+        action="store_true")
 
     return parser.parse_args()
 
@@ -165,11 +211,11 @@ def threads_init():
     """
     minor = Gtk.get_minor_version()
     micro = Gtk.get_micro_version()
-    
+
     if minor == 10 and micro < 2:
-        # Unfortunately these versions of PyGObject suffer a bug which require a workaround to get
-        # threading working properly. Workaround:
-        # Force GIL creation
+        # Unfortunately these versions of PyGObject suffer a bug
+        # which require a workaround to get threading working properly.
+        # Workaround: Force GIL creation
         import threading
         threading.Thread(target=lambda: None).start()
 
@@ -177,28 +223,33 @@ def threads_init():
     # See: https://wiki.gnome.org/PyGObject/Threading
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
-    
+
     #Gdk.threads_init()
 
 def update_cnchi():
+    """ Runs updater function to update cnchi to the latest version if necessary """
     force = False
-    if cmd_line.update == 2:
+    if cmd_line.update:
         force = True
+
     upd = updater.Updater(force)
+
     if upd.update():
         remove_temp_files()
         if force:
-            # Remove -uu option
+            # Remove -uu and --update options from new call
             new_argv = []
             for argv in sys.argv:
-                if argv != "-uu":
+                if argv != "-uu" and argv != "--update":
                     new_argv.append(argv)
         else:
             new_argv = sys.argv
+
         print(_("Program updated! Restarting..."))
+
         # Run another instance of Cnchi (which will be the new version)
         os.execl(sys.executable, *([sys.executable] + new_argv))
-        sys.exit(0)   
+        sys.exit(0)
 
 def setup_gettext():
     # This allows to translate all py texts (not the glade ones)
@@ -217,7 +268,7 @@ def check_for_files():
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
         print(_("Please install %s before running this installer") % "hdparm")
         return False
-    
+
     return True
 
 def init_cnchi():
@@ -225,35 +276,37 @@ def init_cnchi():
 
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
-    
-    if not check_for_files():
-        sys.exit(1)
-        
-    # Check installed GTK version
-    if not check_gtk_version():
-        sys.exit(1)
 
     # Command line options
     global cmd_line
     cmd_line = parse_options()
 
-    if cmd_line.update is not None:
-        update_cnchi()
-    
+    # Setup our logging framework
+    setup_logging()
+
+    # Check Cnchi is correctly installed
+    if not check_for_files():
+        sys.exit(1)
+
+    # Check installed GTK version
+    if not check_gtk_version():
+        sys.exit(1)
+
+    # Always try to update cnchi when run
+    update_cnchi()
+
     # Drop root privileges
     misc.drop_privileges()
-    
+
     # Init PyObject Threads
     threads_init()
 
-    # Setup our logging framework
-    setup_logging()
-    
+
 
 if __name__ == '__main__':
     init_cnchi()
 
-    # Create Gtk Application    
+    # Create Gtk Application
     myapp = CnchiApp()
     exit_status = myapp.run(None)
     sys.exit(exit_status)
