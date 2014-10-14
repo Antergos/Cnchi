@@ -35,7 +35,7 @@ CLASS_ID = "0x0300"
 
 DEVICES = []
 
-class VesaFB(Hardware):
+class ModeSetting(Hardware):
     def __init__(self):
         pass
 
@@ -48,6 +48,7 @@ class VesaFB(Hardware):
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
         if class_id == CLASS_ID:
+            # Should return true only for KMS able devices (all open drivers)
             return True
         else:
             return False

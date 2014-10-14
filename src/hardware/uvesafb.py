@@ -45,8 +45,8 @@ class VesaFB(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        # All modern cards support Vesa. This will be used as a fallback.
         if class_id == CLASS_ID:
-            return True
+            # Now we use modesetting and never VESA
+            return False
         else:
             return False
