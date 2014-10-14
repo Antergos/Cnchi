@@ -188,7 +188,7 @@ class DownloadPackages(object):
             txt = _("Downloading %s %s (%d/%d)...")
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
-            print(txt)
+            #print(txt)
             filename = os.path.join(self.cache_dir, element['filename'])
             completed_length = 0
             total_length = int(element['size'])
