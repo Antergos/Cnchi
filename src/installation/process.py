@@ -248,7 +248,8 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(txt)
                 subprocess.check_call(['mount', root_partition, self.dest_dir])
                 # We also mount the boot partition if it's needed
-                subprocess.check_call(['mkdir', '-p', '%s/boot' % self.dest_dir])
+                if not os.path.exists('%s/boot' % self.dest_dir):
+                    os.makedirs('%s/boot' % self.dest_dir)
                 if "/boot" in self.mount_devices:
                     txt = _("Mounting partition %s into %s/boot directory") % (boot_partition, self.dest_dir)
                     logging.debug(txt)
@@ -310,24 +311,22 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("%s deleted"), db_lock)
 
         # Create some needed folders
-        try:
-            subprocess.check_call(['mkdir', '-p', '%s/var/lib/pacman' % self.dest_dir])
-            subprocess.check_call(['mkdir', '-p', '%s/etc/pacman.d/gnupg/' % self.dest_dir])
-            subprocess.check_call(['mkdir', '-p', '%s/var/log/' % self.dest_dir])
-        except subprocess.CalledProcessError as err:
-            txt = _("Can't create necessary directories on destination system")
-            logging.error(txt)
-            cmd = _("Command %s has failed") % err.cmd
-            logging.error(cmd)
-            out = _("Output : %s") % err.output
-            logging.error(out)
-            self.queue_fatal_event(txt)
-            return False
+        folders = [
+            '%s/var/lib/pacman' % self.dest_dir,
+            '%s/etc/pacman.d/gnupg/' % self.dest_dir,
+            '%s/var/log/' % self.dest_dir]
+
+        for folder in folders:
+            if not os.path.exists(folder):
+                os.makedirs(folder)
 
         # If kernel images exists in /boot they are most likely from a failed install attempt and need
         # to be removed otherwise pyalpm will raise a fatal exception later on.
-        kernel_imgs = ("/install/boot/vmlinuz-linux", "/install/boot/initramfs-linux.img",
-                       "/install/boot/initramfs-linux-fallback.img")
+        kernel_imgs = (
+            "/install/boot/vmlinuz-linux",
+            "/install/boot/initramfs-linux.img",
+            "/install/boot/initramfs-linux-fallback.img")
+
         for img in kernel_imgs:
             if os.path.exists(img):
                 os.remove(img)
@@ -593,21 +592,29 @@ class InstallationProcess(multiprocessing.Process):
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s"), err)
             
-        # By default, hardware module adds vesa driver but in a NoX install we don't want it
+        # By default, hardware module adds modesetting driver but in a NoX install we don't want it
         if self.desktop == "nox":
-            if "v86d" in self.packages:
-                self.packages.remove("v86d")
-            if "xf86-video-vesa" in self.packages:
-                self.packages.remove("xf86-video-vesa")
+            #if "v86d" in self.packages:
+            #    self.packages.remove("v86d")
+            #if "xf86-video-vesa" in self.packages:
+            #    self.packages.remove("xf86-video-vesa")
+            if "xf86-video-modesetting" in self.packages:
+                self.packages.remove("xf86-video-modesetting")
 
         # Add filesystem packages
 
         logging.debug(_("Adding filesystem packages"))
 
-        fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+        try:
+            fs_types = subprocess.check_output(["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]).decode()
+        except subprocess.CalledProcessError as err:
+            txt = _("Error calling blkid")
+            logging.error(txt)
+            logging.error(err.output)
 
-        fs_lib = ('btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs',
-                  'reiserfs', 'vfat', 'xfs')
+        fs_lib = (
+            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs',
+            'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'vfat', 'xfs')
 
         for iii in self.fs_devices:
             fs_types += self.fs_devices[iii]
@@ -967,7 +974,8 @@ class InstallationProcess(multiprocessing.Process):
                 continue
             
             full_path = os.path.join(self.dest_dir, mount_point)
-            subprocess.check_call(["mkdir", "-p", full_path])
+            if not os.path.exists(full_path):
+                os.makedirs(full_path)
 
             if not self.ssd:
                 if "btrfs" in myfmt:
@@ -1181,8 +1189,8 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
-            os.system("killall grub-mount")
-            os.system("killall os-prober")
+            subprocess.check_call(['killall', 'grub-mount'])
+            subprocess.check_call(['killall', 'os-prober'])
 
         self.chroot_umount_special_dirs()
 
@@ -1209,9 +1217,13 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+            #subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
+            #                       '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+            #                       '--recheck' % uefi_arch], shell=True, timeout=45)
+            subprocess.check_call([
+                'grub-install', '--target=%s-efi' % uefi_arch. '--efi-directory=/install/boot',
+                '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck'],
+                 shell=True, timeout=45)                                   
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
         except subprocess.TimeoutExpired:
@@ -1266,17 +1278,23 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
-            os.system("killall grub-mount")
-            os.system("killall os-prober")
+            #os.system("killall grub-mount")
+            #os.system("killall os-prober")
+            subprocess.check_call(['killall', 'grub-mount'])
+            subprocess.check_call(['killall', 'os-prober'])
 
         self.chroot_umount_special_dirs()
 
-        path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
-               ("boot/EFI/antergos_grub/" + grub_efi_old))))
+        path = (
+            (os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")),
+            (os.path.join(self.dest_dir, ("boot/EFI/antergos_grub/" + grub_efi_old))))
+        
         exists = []
+        
         for p in path:
             if os.path.exists(p):
                 exists.append(p)
+        
         if len(exists) == 0:
             logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
             self.settings.set('bootloader_ok', False)
