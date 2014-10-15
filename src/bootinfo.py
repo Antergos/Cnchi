@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Detects installed OSes """
+""" Detects installed OSes (needs root privileges)"""
 
 import os
 import subprocess
@@ -50,21 +50,27 @@ DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
 
+# Possible locations for os-release. Do not put a trailing /
+OS_RELEASE_PATHS = ["etc/os-release", "usr/lib/os-release"]
+
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-def get_os(mountname):
+def _get_os(mountname):
     """ Detect installed OSes """
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
 
     detected_os = _("unknown")
+    
+    print("Checking %s" % mountname)
 
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
             for name in WINLOAD_NAMES:
                 path = os.path.join(mountname, windows, system, name)
+                #print("windows vista/7: ", path)
                 if os.path.exists(path):
                     with open(path, "rb") as system_file:
                         if VISTA_MARK in system_file:
@@ -74,11 +80,13 @@ def get_os(mountname):
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
                     path = os.path.join(mountname, windows, system, "config", name)
+                    #print("windows XP: ", path)
                     if os.path.exists(path):
                         detected_os = "Windows XP"
 
     if detected_os == _("unknown"):
         path = os.path.join(mountname, "ReactOS/system32/config/SecEvent.Evt")
+        #print("reactos: ", path)
         if os.path.exists(path):
             detected_os = "ReactOS"
 
@@ -91,6 +99,28 @@ def get_os(mountname):
                         detected_os = mark
     # Linuxes
 
+    if detected_os == _("unknown"):
+        for os_release in OS_RELEASE_PATHS:
+            path = os.path.join(mountname, os_release)
+            if os.path.exists(path):
+                with open(path, 'r') as os_release_file:
+                    lines = os_release_file.readlines()
+                for line in lines:
+                    # Let's use the "PRETTY_NAME"
+                    if line.startswith("PRETTY_NAME"):
+                        detected_os = line[len("PRETTY_NAME="):]
+                if detected_os == _("unknown"):
+                    # Didn't find PRETTY_NAME, we will use ID
+                    if line.startswith("ID"):
+                        os_id = line[len("ID="):]
+                    if line.startswith("VERSION"):
+                        os_version = line[len("VERSION="):]
+                    detected_os = os_id
+                    if len(os_version) > 0:
+                        detected_os += " " + os_version
+        detected_os = detected_os.replace('"', '').strip('\n')
+
+    # If os_release was not found, try old issue file
     if detected_os == _("unknown"):
         for name in LINUX_NAMES:
             path = os.path.join(mountname, "etc", name)
@@ -110,8 +140,6 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
-    tmp_dir = tempfile.mkdtemp()
-
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -120,13 +148,14 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
+                    tmp_dir = tempfile.mkdtemp()
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
-                        oses[device] = get_os(tmp_dir)
+                        oses[device] = _get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
                     except AttributeError:
                         subprocess.call(["mount", device, tmp_dir])
-                        oses[device] = get_os(tmp_dir)
+                        oses[device] = _get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir])
     return oses
 

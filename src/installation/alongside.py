@@ -22,14 +22,14 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import xml.etree.ElementTree as etree
-
 from gi.repository import Gtk, Gdk
 
 import sys
 import os
 import logging
 import subprocess
+
+import xml.etree.ElementTree as etree
 
 if __name__ == '__main__':
     # Insert the parent directory at the front of the path.
