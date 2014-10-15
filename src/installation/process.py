@@ -518,19 +518,25 @@ class InstallationProcess(multiprocessing.Process):
         # Add common packages
         logging.debug(_("Adding all desktops common packages"))
 
+        # desktops.LIBS will tell us if the chosen desktop uses Gtk or Qt libraries
+        lib = desktops.LIBS
+
         for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-        # Add specific desktop packages
         if self.desktop != "nox":
+            # Add common graphical packages
             for child in root.iter('graphic'):
                 for pkg in child.iter('pkgname'):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
-                    self.packages.append(pkg.text)
+                    plib = pkg.attrib.get('lib')
+                    if plib is None or (plib is not None and desktop in lib[plib]):
+                        self.packages.append(pkg.text)
 
+            # Add specific desktop packages
             logging.debug(_("Adding '%s' desktop packages"), self.desktop)
 
             for child in root.iter(self.desktop + '_desktop'):
@@ -693,20 +699,20 @@ class InstallationProcess(multiprocessing.Process):
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
                 # There're some English variants available but not all of them.
-                lang_packs = ['en-GB', 'en-US', 'en-ZA']
+                lang_packs = ['en-GB', 'en-ZA']
                 locale = self.settings.get('locale').split('.')[0]
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
-                    pkg = "libreoffice-%s" % locale
-                else:
-                    # Install American English if there is not an specific
-                    # language package available.
-                    pkg = "libreoffice-en-US"
+                    pkg = "libreoffice-fresh-%s" % locale
+                #else:
+                #    # Install American English if there is not an specific
+                #    # language package available.
+                #    pkg = "libreoffice-en-US"
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
-                pkg = "libreoffice-%s" % lang_code
+                pkg = "libreoffice-fresh-%s" % lang_code
             self.packages.append(pkg)
     
     def get_cpu(self):
