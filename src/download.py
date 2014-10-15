@@ -59,19 +59,19 @@ def url_open_read(url_open, chunk_size=8192):
 def url_open(url):
     try:
         urlp = urllib.request.urlopen(url)    
-    except urllib.error.HTTPError as e:
+    except urllib.error.HTTPError as err:
         urlp = None
-        logging.exception('Error downloading %s. HTTPError = %s' % (err.reason))
+        logging.exception('Error downloading %s. HTTPError = %s' % (url, err.reason))
     except urllib.error.URLError as err:
         urlp = None
-        logging.exception('URLError = %s' % err.reason)
+        logging.exception('Error downloading %s. URLError = %s' % (url, err.reason))
     except httplib.HTTPException as err:
         urlp = None
-        logging.exception('Unable to get latest version info - HTTPException')
+        logging.exception('Error downloading %s. Unable to get latest version info - HTTPException' % url)
     except Exception as err:
         urlp = None
         import traceback
-        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+        logging.exception('Error downloading %s. Unable to get latest version info - Exception = %s' % (url, traceback.format_exc()))
     return urlp
 
 class DownloadPackages(object):
