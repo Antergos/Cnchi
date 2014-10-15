@@ -45,7 +45,7 @@ DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
 VISTA_MARK = "W.i.n.d.o.w.s. .V.i.s.t.a"
-SEVEN_MARK = "W.i.n.d.o.w.s. .7"
+SEVEN_MARKS = ["W.i.n.d.o.w.s. .7", "W.i.n.7"]
 DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
@@ -64,39 +64,43 @@ def _get_os(mountname):
 
     detected_os = _("unknown")
     
-    print("Checking %s" % mountname)
-
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
             for name in WINLOAD_NAMES:
                 path = os.path.join(mountname, windows, system, name)
-                #print("windows vista/7: ", path)
                 if os.path.exists(path):
+                    print("windows vista/7: ", path)
                     with open(path, "rb") as system_file:
                         if VISTA_MARK in system_file:
+                            print("windows vista: ", path)
                             detected_os = "Windows Vista"
-                        elif SEVEN_MARK in system_file:
-                            detected_os = "Windows 7"
+                        else:
+                            for seven_mark in SEVEN_MARKS:
+                                if seven_mark in system_file:
+                                    print("windows 7: ", path)
+                                    detected_os = "Windows 7"
+            # Not a Windows vista/7, try Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
                     path = os.path.join(mountname, windows, system, "config", name)
-                    #print("windows XP: ", path)
                     if os.path.exists(path):
+                        print("windows XP: ", path)
                         detected_os = "Windows XP"
 
     if detected_os == _("unknown"):
         path = os.path.join(mountname, "ReactOS/system32/config/SecEvent.Evt")
-        #print("reactos: ", path)
         if os.path.exists(path):
+            print("reactos: ", path)
             detected_os = "ReactOS"
 
-    for name in DOS_NAMES:
-        path = os.path.join(mountname, name)
-        if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                for mark in DOS_MARKS:
-                    if mark in system_file:
-                        detected_os = mark
+    if detected_os == _("unknown"):
+        for name in DOS_NAMES:
+            path = os.path.join(mountname, name)
+            if os.path.exists(path):
+                with open(path, "rb") as system_file:
+                    for mark in DOS_MARKS:
+                        if mark in system_file:
+                            detected_os = mark
     # Linuxes
 
     if detected_os == _("unknown"):
