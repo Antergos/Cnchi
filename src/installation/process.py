@@ -513,7 +513,7 @@ class InstallationProcess(multiprocessing.Process):
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
                     plib = pkg.attrib.get('lib')
-                    if plib is None or (plib is not None and desktop in lib[plib]):
+                    if plib is None or (plib is not None and self.desktop in lib[plib]):
                         self.packages.append(pkg.text)
 
             # Add specific desktop packages
