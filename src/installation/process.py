@@ -498,19 +498,25 @@ class InstallationProcess(multiprocessing.Process):
         # Add common packages
         logging.debug(_("Adding all desktops common packages"))
 
+        # desktops.LIBS will tell us if the chosen desktop uses Gtk or Qt libraries
+        lib = desktops.LIBS
+
         for child in root.iter('common'):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-        # Add specific desktop packages
         if self.desktop != "nox":
+            # Add common graphical packages
             for child in root.iter('graphic'):
                 for pkg in child.iter('pkgname'):
                     # If package is Desktop Manager, save the name to activate the correct service later
                     if pkg.attrib.get('dm'):
                         self.desktop_manager = pkg.attrib.get('name')
-                    self.packages.append(pkg.text)
+                    plib = pkg.attrib.get('lib')
+                    if plib is None or (plib is not None and desktop in lib[plib]):
+                        self.packages.append(pkg.text)
 
+            # Add specific desktop packages
             logging.debug(_("Adding '%s' desktop packages"), self.desktop)
 
             for child in root.iter(self.desktop + '_desktop'):
