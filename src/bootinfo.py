@@ -44,8 +44,8 @@ SECEVENT_NAMES = ["SecEvent.Evt", "secevent.evt"]
 DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
-VISTA_MARK = "W.i.n.d.o.w.s. .V.i.s.t.a"
-SEVEN_MARKS = ["W.i.n.d.o.w.s. .7", "W.i.n.7"]
+VISTA_MARK = b"Windows Vista"
+SEVEN_MARKS = [b"Windows 7", b"Win7"]
 DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
@@ -66,20 +66,28 @@ def _get_os(mountname):
     
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
+            # Search for Windows Vista and 7
             for name in WINLOAD_NAMES:
                 path = os.path.join(mountname, windows, system, name)
                 if os.path.exists(path):
-                    print("windows vista/7: ", path)
+                    print(path)
                     with open(path, "rb") as system_file:
-                        if VISTA_MARK in system_file:
-                            print("windows vista: ", path)
-                            detected_os = "Windows Vista"
-                        else:
-                            for seven_mark in SEVEN_MARKS:
-                                if seven_mark in system_file:
-                                    print("windows 7: ", path)
-                                    detected_os = "Windows 7"
-            # Not a Windows vista/7, try Windows XP
+                        for line in system_file:
+                            if b"Win" in line:
+                                try:
+                                    print(line.decode('utf-8'))
+                                except UnicodeDecodeError as err:
+                                    pass
+                                print("------------------------------------------------------------_")
+                            if VISTA_MARK in line:
+                                print("windows vista: ", path)
+                                detected_os = "Windows Vista"
+                            else:
+                                for seven_mark in SEVEN_MARKS:
+                                    if seven_mark in line:
+                                        print("windows 7: ", path)
+                                        detected_os = "Windows 7"
+            # Search for Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
                     path = os.path.join(mountname, windows, system, "config", name)

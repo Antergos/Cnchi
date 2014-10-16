@@ -40,38 +40,56 @@ except ImportError:
     _PM2ML = False
 
 def url_open_read(url_open, chunk_size=8192):
+    """ Downloads and reads a fragment of a remote file """
+    
     download_error = True
     data = None
+    msg = _('Error downloading %s:') % url_open
+    
     try:
         data = url_open.read(chunk_size)
         download_error = False
     except urllib.HTTPError as e:
-        logging.exception('Error downloading %s. HTTPError = %s' % (err.reason))
+        msg += ' HTTPError : %s' % err.reason
+        logging.exception(msg)
     except urllib.URLError as err:
-        logging.exception('URLError = %s' % err.reason)
+        msg += ' URLError : %s' % err.reason
+        logging.exception(msg)
     except httplib.HTTPException as err:
-        logging.exception('Unable to get latest version info - HTTPException')
+        msg += ' HTTPException : %s' % err.reason
+        logging.exception(msg)
     except Exception as err:
         import traceback
-        logging.exception('Unable to get latest version info - Exception = %s' % traceback.format_exc())
+        msg = ' Exception : %s' % traceback.format_exc()
+        logging.exception(msg)
+    
     return (data, download_error)
 
 def url_open(url):
+    """ Open a remote file """
+    
+    msg = _('Error opening %s:') % url
+    
     try:
         urlp = urllib.request.urlopen(url)    
     except urllib.error.HTTPError as err:
         urlp = None
-        logging.exception('Error downloading %s. HTTPError = %s' % (url, err.reason))
+        msg += ' HTTPError : %s' % err.reason
+        logging.exception()
     except urllib.error.URLError as err:
         urlp = None
-        logging.exception('Error downloading %s. URLError = %s' % (url, err.reason))
+        msg += ' URLError : %s' % err.reason
+        logging.exception()
     except httplib.HTTPException as err:
         urlp = None
-        logging.exception('Error downloading %s. Unable to get latest version info - HTTPException' % url)
+        msg += ' HTTPException : %s' % err.reason
+        logging.exception(msg)
     except Exception as err:
         urlp = None
         import traceback
-        logging.exception('Error downloading %s. Unable to get latest version info - Exception = %s' % (url, traceback.format_exc()))
+        msg += ' Exception : %s' % traceback.format_exc()
+        logging.exception(msg)
+    
     return urlp
 
 class DownloadPackages(object):
@@ -79,14 +97,16 @@ class DownloadPackages(object):
         This class tries to previously download all necessary packages for
         Antergos installation using aria2 or urllib
         Aria2 is known to use too much memory (not Aria2's fault but ours)
-        so it's not advised to use it """
+        so until it's fixed it it's not advised to use it """
 
     def __init__(self, package_names, use_aria2=False,
         conf_file=None, cache_dir=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if not _PM2ML:
-            wrn = _("pm2ml not found. Download won't work, will use alpm instead.")
+            wrn = _("pm2ml not found.")
+            wrn += " "
+            wrn += _("Cnchi will use alpm instead.")
             logging.warning(wrn)
             return
 
@@ -124,7 +144,9 @@ class DownloadPackages(object):
             self.run_aria2_as_daemon()
             self.connection = self.aria2_connect()
             if self.connection == None:
-                wrn = _("Can't connect with aria2, downloading will be performed by alpm.")
+                wrn = _("Can't connect with aria2.")
+                wrn += " "
+                wrn += _("Cnchi will use alpm instead.")
                 logging.warning(wrn)
                 return
             self.aria2_download(package_names)
@@ -170,6 +192,10 @@ class DownloadPackages(object):
         """ Downloads needed packages in package_names list and its dependencies using urllib """
         downloads = {}
 
+        self.queue_event('info', _('Creating list of packages to download...'))
+        percent = 0
+        processed_packages = 0
+        total_packages = len(package_names)
         for package_name in package_names:
             metalink = self.create_metalink(package_name)
             if metalink == None:
@@ -180,6 +206,11 @@ class DownloadPackages(object):
             # Update downloads dict with the new info
             # from the processed metalink
             downloads.update(self.get_metalink_info(metalink))
+            
+            # Show progress to the user
+            processed_packages = processed_packages + 1
+            percent = round(float(processed_packages / total_packages), 2)
+            self.queue_event('percent', percent)
 
         downloaded = 1
         total_downloads = len(downloads)
