@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkImage" id="advanced_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="xpad">1</property>
-    <property name="ypad">5</property>
-    <property name="stock">gtk-missing-image</property>
+    <property name="margin_start">1</property>
+    <property name="margin_top">5</property>
   </object>
   <object class="GtkImage" id="alongside_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="xpad">1</property>
-    <property name="ypad">5</property>
-    <property name="stock">gtk-missing-image</property>
+    <property name="margin_start">1</property>
+    <property name="margin_top">5</property>
   </object>
   <object class="GtkImage" id="automatic_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="xpad">1</property>
-    <property name="ypad">5</property>
-    <property name="stock">gtk-missing-image</property>
+    <property name="margin_start">1</property>
+    <property name="margin_top">5</property>
   </object>
   <object class="GtkBox" id="ask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="halign">center</property>
-    <property name="margin_left">20</property>
-    <property name="margin_right">20</property>
+    <property name="margin_start">20</property>
+    <property name="margin_end">20</property>
     <property name="margin_top">14</property>
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
@@ -39,7 +35,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="image">automatic_image</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="always_show_image">True</property>
         <property name="active">True</property>
         <property name="draw_indicator">True</property>
@@ -55,9 +51,9 @@
       <object class="GtkLabel" id="automatic_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">55</property>
-        <property name="xalign">0</property>
-        <property name="yalign">0</property>
+        <property name="margin_start">55</property>
+        <!--<property name="xalign">0</property>-->
+        <!--<property name="yalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Warning: This will erase ALL data on your disk.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
@@ -74,9 +70,9 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_left">48</property>
+        <property name="margin_start">48</property>
         <property name="margin_top">4</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="draw_indicator">True</property>
       </object>
       <packing>
@@ -89,8 +85,8 @@
       <object class="GtkLabel" id="encrypt_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">75</property>
-        <property name="xalign">0</property>
+        <property name="margin_start">75</property>
+        <!--<property name="xalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;You will be asked to create an encryption password in the next step.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
       </object>
@@ -106,9 +102,9 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_left">48</property>
+        <property name="margin_start">48</property>
         <property name="margin_top">4</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="draw_indicator">True</property>
       </object>
       <packing>
@@ -121,8 +117,8 @@
       <object class="GtkLabel" id="lvm_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">75</property>
-        <property name="xalign">0</property>
+        <property name="margin_start">75</property>
+        <!--<property name="xalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;This will setup LVM and allow you to easily manage partitions and create snapshots.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
       </object>
@@ -138,9 +134,9 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_left">48</property>
+        <property name="margin_start">48</property>
         <property name="margin_top">4</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="draw_indicator">True</property>
       </object>
       <packing>
@@ -153,8 +149,8 @@
       <object class="GtkLabel" id="home_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">75</property>
-        <property name="xalign">0</property>
+        <property name="margin_start">75</property>
+        <!--<property name="xalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;This will setup you /home directory in a different partition or volume.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
       </object>
@@ -172,7 +168,7 @@
         <property name="receives_default">False</property>
         <property name="margin_top">15</property>
         <property name="image">alongside_image</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="always_show_image">True</property>
         <property name="active">True</property>
         <property name="draw_indicator">True</property>
@@ -189,9 +185,9 @@
       <object class="GtkLabel" id="alongside_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">55</property>
-        <property name="xalign">0</property>
-        <property name="yalign">0</property>
+        <property name="margin_start">55</property>
+        <!--<property name="xalign">0</property>-->
+        <!--<property name="yalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Install Antergos without changing existing operating systems.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
@@ -210,7 +206,7 @@
         <property name="receives_default">False</property>
         <property name="margin_top">15</property>
         <property name="image">advanced_image</property>
-        <property name="xalign">0</property>
+        <!--<property name="xalign">0</property>-->
         <property name="always_show_image">True</property>
         <property name="active">True</property>
         <property name="draw_indicator">True</property>
@@ -227,9 +223,9 @@
       <object class="GtkLabel" id="advanced_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">55</property>
-        <property name="xalign">0</property>
-        <property name="yalign">0</property>
+        <property name="margin_start">55</property>
+        <!--<property name="xalign">0</property>-->
+        <!--<property name="yalign">0</property>-->
         <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Edit partition table and choose mount points.&lt;/span&gt;</property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>

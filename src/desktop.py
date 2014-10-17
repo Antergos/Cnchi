@@ -84,7 +84,8 @@ class DesktopAsk(GtkBaseBox):
             box = Gtk.VBox()
             label = Gtk.Label()
             label.set_markup(desktop_name)
-            label.set_alignment(0, 0.5)
+            #FIXME: set_alignment is deprecated
+            #label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
             if desktop_name == desktops.NAMES["gnome"]:

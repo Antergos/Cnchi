@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkDialog" id="bootloader">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -11,8 +11,8 @@
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
         <property name="orientation">vertical</property>
@@ -79,7 +79,7 @@
               <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">30</property>
+                <property name="margin_start">30</property>
                 <property name="margin_top">30</property>
                 <property name="margin_bottom">20</property>
                 <property name="orientation">vertical</property>

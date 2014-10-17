@@ -25,6 +25,7 @@
 from gi.repository import Gtk, GObject
 
 import os
+import logging
 
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
@@ -48,6 +49,7 @@ class GtkBaseBox(Gtk.Box):
         self.set_name(name)
 
         self.ui = Gtk.Builder()
+        logging.debug("Loading '{}' user interface".format(name))
         self.ui.add_from_file(os.path.join(self.ui_dir, "{}.ui".format(name)))
 
         # Connect UI signals

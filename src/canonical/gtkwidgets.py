@@ -347,13 +347,15 @@ class StateBox(StylizedFrame):
     def __init__(self, text=''):
         StylizedFrame.__init__(self)
         alignment = Gtk.Alignment()
-        alignment.set_padding(7, 7, 15, 15)
+        #FIXME: set_padding is deprecated
+        #alignment.set_padding(7, 7, 15, 15)
         hbox = Gtk.Box()
         hbox.set_spacing(10)
         self.image = Gtk.Image()
         self.image.set_from_icon_name("yes", Gtk.IconSize.LARGE_TOOLBAR)
         self.label = Gtk.Label(label=text)
-        self.label.set_alignment(0, 0.5)
+        #FIXME: set_alignment is deprecated
+        #self.label.set_alignment(0, 0.5)
         hbox.pack_start(self.image, False, True, 0)
         hbox.pack_start(self.label, True, True, 0)
         alignment.add(hbox)

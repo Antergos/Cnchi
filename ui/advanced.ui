@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
-  <requires lib="gtk+" version="3.0"/>
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkDialog" id="changelist_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -11,8 +10,8 @@
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox6">
         <property name="can_focus">False</property>
-        <property name="margin_left">5</property>
-        <property name="margin_right">5</property>
+        <property name="margin_start">5</property>
+        <property name="margin_end">5</property>
         <property name="margin_top">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">50</property>
@@ -27,7 +26,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -42,7 +41,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -100,7 +99,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -115,7 +114,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -157,7 +156,7 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="has_resize_grip">False</property>
+    <!--<property name="has_resize_grip">False</property>-->
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox7">
         <property name="visible">True</property>
@@ -289,8 +288,8 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="halign">start</property>
-                <property name="use_stock">True</property>
-                <property name="xalign">0</property>
+                <!--<property name="use_stock">True</property>-->
+                <!--<property name="xalign">0</property>-->
                 <property name="draw_indicator">True</property>
               </object>
               <packing>
@@ -336,7 +335,7 @@
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -354,7 +353,7 @@
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -384,7 +383,7 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="has_resize_grip">False</property>
+    <!--<property name="has_resize_grip">False</property>-->
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox3">
         <property name="visible">True</property>
@@ -746,7 +745,7 @@
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -764,7 +763,7 @@
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -787,166 +786,67 @@
       <action-widget response="-5">create_partition_ok</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkAlignment" id="advanced">
+  <object class="GtkBox" id="advanced">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
-    <property name="top_padding">20</property>
-    <property name="bottom_padding">10</property>
-    <property name="left_padding">20</property>
-    <property name="right_padding">20</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">6</property>
+    <property name="margin_top">20</property>
+    <property name="margin_bottom">10</property>
+    <property name="margin_start">20</property>
+    <property name="margin_end">20</property>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
+        <property name="can_focus">True</property>
+        <property name="shadow_type">in</property>
         <child>
-          <object class="GtkScrolledWindow" id="scrolledwindow1">
+          <object class="GtkTreeView" id="partition_list_treeview">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkTreeView" id="partition_list_treeview">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <signal name="row-activated" handler="on_partition_list_treeview_row_activated" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treeview-selection"/>
-                </child>
-              </object>
+            <signal name="row-activated" handler="on_partition_list_treeview_row_activated" swapped="no"/>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection" id="treeview-selection"/>
             </child>
           </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box2">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkButton" id="partition_button_new">
+            <property name="label">gtk-add</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <!--<property name="use_stock">True</property>-->
+            <signal name="clicked" handler="on_partition_list_new_activate" swapped="no"/>
+          </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkButton" id="partition_button_delete">
+            <property name="label">gtk-remove</property>
+            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="spacing">5</property>
-            <child>
-              <object class="GtkButton" id="partition_button_new">
-                <property name="label">gtk-add</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_partition_list_new_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="partition_button_delete">
-                <property name="label">gtk-remove</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_partition_list_delete_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="partition_button_edit">
-                <property name="label">gtk-edit</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_partition_list_edit_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="partition_button_new_label">
-                <property name="label" translatable="yes">New partition table</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_partition_list_new_label_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="partition_button_lvm">
-                <property name="label" translatable="yes">LVM...</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_partition_list_lvm_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="partition_button_undo">
-                <property name="label">gtk-undo</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_partition_list_undo_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinner" id="partition_recalculating_spinner">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">7</property>
-              </packing>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <!--<property name="use_stock">True</property>-->
+            <signal name="clicked" handler="on_partition_list_delete_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -955,69 +855,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box4">
+          <object class="GtkButton" id="partition_button_edit">
+            <property name="label">gtk-edit</property>
+            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel" id="mnt_chklist">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_right">15</property>
-                <property name="label" translatable="yes">label</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="StateBox" id="root_part">
-                    <property name="visible">True</property>
-                    <property name="label">Root ( / )</property>
-                </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="StateBox" id="boot_part">
-                <property name="visible">True</property>
-                <property name="label">Boot ( /boot )</property>
-                <property name="no_show_all">True</property>
-                </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="StateBox" id="boot_efi_part">
-                <property name="visible">True</property>
-                <property name="label">EFI ( /boot )</property>
-                <property name="no_show_all">True</property>
-                </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="StateBox" id="swap_part">
-                <property name="visible">True</property>
-                <property name="label">Swap</property>
-                <property name="no_show_all">True</property>
-                </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">6</property>
-              </packing>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <!--<property name="use_stock">True</property>-->
+            <signal name="clicked" handler="on_partition_list_edit_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1026,58 +871,27 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box3">
+          <object class="GtkEventBox" id="eventbox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkCheckButton" id="grub_device_check">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="xalign">0</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="on_grub_device_check_toggled" swapped="no"/>
-                <child>
-                  <object class="GtkLabel" id="grub_device_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Use this device for boot loader installation:</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBoxText" id="grub_device_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="changed" handler="on_grub_device_entry_changed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
-        <!--
         <child>
-          <object class="GtkProgressBar" id="advanced_progressbar">
+          <object class="GtkButton" id="partition_button_new_label">
+            <property name="label" translatable="yes">New partition table</property>
+            <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_partition_list_new_label_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1085,8 +899,173 @@
             <property name="position">4</property>
           </packing>
         </child>
-        -->
+        <child>
+          <object class="GtkButton" id="partition_button_lvm">
+            <property name="label" translatable="yes">LVM...</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_partition_list_lvm_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="partition_button_undo">
+            <property name="label">gtk-undo</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <!--<property name="use_stock">True</property>-->
+            <signal name="clicked" handler="on_partition_list_undo_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="partition_recalculating_spinner">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box4">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="mnt_chklist">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_end">15</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="StateBox" id="root_part">
+                <property name="visible">True</property>
+                <property name="label">Root ( / )</property>
+            </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="StateBox" id="boot_part">
+            <property name="visible">True</property>
+            <property name="label">Boot ( /boot )</property>
+            <property name="no_show_all">True</property>
+            </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="StateBox" id="boot_efi_part">
+            <property name="visible">True</property>
+            <property name="label">EFI ( /boot )</property>
+            <property name="no_show_all">True</property>
+            </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="StateBox" id="swap_part">
+            <property name="visible">True</property>
+            <property name="label">Swap</property>
+            <property name="no_show_all">True</property>
+            </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box3">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCheckButton" id="grub_device_check">
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="on_grub_device_check_toggled" swapped="no"/>
+            <child>
+              <object class="GtkLabel" id="grub_device_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Use this device for boot loader installation:</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="grub_device_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="changed" handler="on_grub_device_entry_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
     </child>
   </object>
   <object class="GtkDialog" id="luks_dialog">
@@ -1110,7 +1089,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1125,7 +1104,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1145,8 +1124,8 @@
           <object class="GtkGrid" id="luks_options_grid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">10</property>
-            <property name="margin_right">10</property>
+            <property name="margin_start">10</property>
+            <property name="margin_end">10</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
             <property name="row_spacing">10</property>
@@ -1259,7 +1238,7 @@
               <object class="GtkImage" id="luks_password_confirm_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-yes</property>
+                <!--<property name="stock">gtk-yes</property>-->
               </object>
               <packing>
                 <property name="left_attach">2</property>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkBox" id="welcome">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -19,13 +18,13 @@
           <object class="GtkBox" id="box_tryit">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">20</property>
+            <property name="margin_start">20</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="tryit_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -63,7 +62,7 @@
               <object class="GtkImage" id="cli_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -96,13 +95,13 @@
           <object class="GtkBox" id="box_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_right">20</property>
+            <property name="margin_end">20</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="graph_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -100,7 +100,6 @@ class Language(GtkBaseBox):
             box = Gtk.VBox()
             label = Gtk.Label()
             label.set_markup(lang)
-            label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
             if current_language == lang:

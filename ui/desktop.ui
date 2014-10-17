@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Wed Dec  4 19:31:05 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkBox" id="desktop">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -11,18 +10,18 @@
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">63</property>
-        <property name="margin_right">20</property>
+        <property name="margin_start">63</property>
+        <property name="margin_end">20</property>
         <property name="margin_top">10</property>
-<property name="margin_bottom">0</property>        
-<property name="spacing">40</property>
+        <property name="margin_bottom">0</property>        
+        <property name="spacing">40</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="width_request">170</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_right">10</property>
+            <property name="margin_end">10</property>
             <property name="shadow_type">in</property>
             <child>
               <object class="GtkListBox" id="listbox_desktop">
@@ -42,8 +41,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>
-            <property name="margin_left">20</property>
-            <property name="stock">gtk-missing-image</property>
+            <property name="margin_start">20</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -62,10 +60,10 @@
       <object class="GtkLabel" id="desktop_info">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">64</property>
-        <property name="margin_right">20</property>
-<property name="margin_top">0</property>        
-<property name="xalign">0</property>
+        <property name="margin_start">64</property>
+        <property name="margin_end">20</property>
+        <property name="margin_top">0</property>        
+        <property name="xalign">0</property>
         <property name="label" translatable="yes">label</property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
