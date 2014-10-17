@@ -280,6 +280,8 @@ class UserInfo(GtkBaseBox):
 
         # Check if all fields are filled and ok
         all_ok = True
+        # FIXME: Whith latest changes (set_from_stock to set_from_icon_name) this does not work
+        '''
         ok_widgets = self.image_is_ok.values()
         if not self.settings.get('z_hidden'):
             for ok_widget in ok_widgets:
@@ -287,7 +289,7 @@ class UserInfo(GtkBaseBox):
                 visible = ok_widget.get_visible()
                 if visible == False or icon_name != ICON_OK:
                     all_ok = False
-
+        '''
         self.forward_button.set_sensitive(all_ok)
 
 # When testing, no _() is available
