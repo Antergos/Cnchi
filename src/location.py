@@ -160,7 +160,8 @@ class Location(GtkBaseBox):
             box = Gtk.VBox()
             label = Gtk.Label()
             label.set_markup(area)
-            label.set_alignment(0, 0.5)
+            #FIXME: set_alignment is deprecated
+            #label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
 
