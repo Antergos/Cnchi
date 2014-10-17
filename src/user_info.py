@@ -228,14 +228,10 @@ class UserInfo(GtkBaseBox):
         else:
             result = validation.check(element, value)
             if len(result) == 0:
-                # FIXME: set_from_stock is deprecated (use set_from_icon_name)
-                #self.image_is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
                 self.image_is_ok[element].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
                 self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
-                # FIXME: set_from_stock is deprecated
-                #self.image_is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
                 self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
                 self.image_is_ok[element].show()
 
@@ -262,11 +258,9 @@ class UserInfo(GtkBaseBox):
             if len(fullname) > 0:
                 self.image_is_ok['fullname'].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
                 self.image_is_ok['fullname'].show()
-                #self.error_label['fullname'].hide()
             else:
                 self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
                 self.image_is_ok['fullname'].show()
-                #self.image_is_ok['fullname'].hide()
 
         if widget == self.entry['hostname']:
             hostname = self.entry['hostname'].get_text()
@@ -286,11 +280,9 @@ class UserInfo(GtkBaseBox):
 
         # Check if all fields are filled and ok
         all_ok = True
-        ok_widgets = self.is_image_ok.values()
+        ok_widgets = self.image_is_ok.values()
         if not self.settings.get('z_hidden'):
             for ok_widget in ok_widgets:
-                # FIXME: get_stock is deprecated
-                #(icon_name, icon_size) = ok_widget.get_stock()
                 (icon_name, icon_size) = ok_widget.get_icon_name()
                 visible = ok_widget.get_visible()
                 if visible == False or icon_name != ICON_OK:
