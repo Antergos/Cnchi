@@ -175,6 +175,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list = self.ui.get_object('partition_list_treeview')
         self.partition_list_store = None
         self.prepare_partition_list()
+        
+        self.partition_list.set_hexpand(True)
 
         # Get encryption (LUKS) options dialog
         self.luks_dialog = self.ui.get_object('luks_dialog')

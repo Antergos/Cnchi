@@ -47,7 +47,7 @@ def gtk_to_cairo_color(c):
     return r, g, b
 
 
-class StylizedFrame(Gtk.Alignment):
+class StylizedFrame(Gtk.Box):
     __gtype_name__ = 'StylizedFrame'
     __gproperties__ = {
         'radius': (
@@ -59,7 +59,7 @@ class StylizedFrame(Gtk.Alignment):
     }
 
     def __init__(self):
-        Gtk.Alignment.__init__(self)
+        Gtk.Box.__init__(self)
         self.radius = 10
         self.width = 1
 
@@ -67,14 +67,14 @@ class StylizedFrame(Gtk.Alignment):
         if prop.name in ('radius', 'width'):
             return getattr(self, prop.name)
         else:
-            return Gtk.Alignment.do_get_property(self, prop)
+            return Gtk.Box.do_get_property(self, prop)
 
     def do_set_property(self, prop, value):
         if prop.name in ('radius', 'width'):
             setattr(self, prop.name, value)
             self.queue_draw()
         else:
-            Gtk.Alignment.do_set_property(self, prop, value)
+            Gtk.Box.do_set_property(self, prop, value)
 
     def paint_background(self, c):
         c.set_source_rgb(*gtk_to_cairo_color('#fbfbfb'))
@@ -92,10 +92,10 @@ class StylizedFrame(Gtk.Alignment):
         c.set_source_rgb(*gtk_to_cairo_color('#c7c7c6'))
         c.set_line_width(self.width)
         c.stroke()
-        if self.get_child():
-            top, bottom, left, right = self.get_padding()
-            c.translate(left, top)
-            self.get_child().draw(c)
+        #if self.get_child():
+        #    top, bottom, left, right = self.get_padding()
+        #    c.translate(left, top)
+        #    self.get_child().draw(c)
 
 GObject.type_register(StylizedFrame)
 
@@ -346,20 +346,22 @@ class StateBox(StylizedFrame):
 
     def __init__(self, text=''):
         StylizedFrame.__init__(self)
-        alignment = Gtk.Alignment()
-        #FIXME: set_padding is deprecated
-        #alignment.set_padding(7, 7, 15, 15)
+        #alignment = Gtk.Alignment()
         hbox = Gtk.Box()
         hbox.set_spacing(10)
+        hbox.set_margin_start(7)
+        hbox.set_margin_end(7)
+        hbox.set_margin_top(10)
+        hbox.set_margin_bottom(10)
         self.image = Gtk.Image()
         self.image.set_from_icon_name("yes", Gtk.IconSize.LARGE_TOOLBAR)
         self.label = Gtk.Label(label=text)
         #FIXME: set_alignment is deprecated
         #self.label.set_alignment(0, 0.5)
+        self.label.set_valign(Gtk.Align.FILL)
         hbox.pack_start(self.image, False, True, 0)
         hbox.pack_start(self.label, True, True, 0)
-        alignment.add(hbox)
-        self.add(alignment)
+        self.add(hbox)
         self.show_all()
 
         self.status = True

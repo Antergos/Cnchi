@@ -31,7 +31,7 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
-ICON_OK = "emblem-default"
+ICON_OK = "yes"
 ICON_WARNING = "dialog-warning"
 
 class UserInfo(GtkBaseBox):
@@ -222,17 +222,17 @@ class UserInfo(GtkBaseBox):
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
         if len(value) == 0:
-            self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+            self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok[element].show()
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
             if len(result) == 0:
-                self.image_is_ok[element].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].set_from_icon_name(ICON_OK, Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
-                self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
@@ -256,10 +256,10 @@ class UserInfo(GtkBaseBox):
         if widget == self.entry['fullname']:
             fullname = self.entry['fullname'].get_text()
             if len(fullname) > 0:
-                self.image_is_ok['fullname'].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
+                self.image_is_ok['fullname'].set_from_icon_name(ICON_OK, Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok['fullname'].show()
             else:
-                self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+                self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok['fullname'].show()
 
         if widget == self.entry['hostname']:
