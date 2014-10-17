@@ -44,7 +44,7 @@ SECEVENT_NAMES = ["SecEvent.Evt", "secevent.evt"]
 DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
-VISTA_MARK = b"Windows Vista"
+VISTA_MARKS = [b"Windows Vista"]
 SEVEN_MARKS = [b"Windows 7", b"Win7"]
 DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
@@ -70,19 +70,15 @@ def _get_os(mountname):
             for name in WINLOAD_NAMES:
                 path = os.path.join(mountname, windows, system, name)
                 if os.path.exists(path):
-                    print(path)
                     with open(path, "rb") as system_file:
-                        for line in system_file:
-                            if b"Win" in line:
-                                try:
-                                    print(line.decode('utf-8'))
-                                except UnicodeDecodeError as err:
-                                    pass
-                                print("------------------------------------------------------------_")
-                            if VISTA_MARK in line:
-                                print("windows vista: ", path)
-                                detected_os = "Windows Vista"
-                            else:
+                        lines = system_file.readlines()
+                        for line in lines:
+                            for vista_mark in VISTA_MARKS:
+                                if vista_mark in line:
+                                    print("windows vista: ", path)
+                                    detected_os = "Windows Vista"
+                        if detected_os == _("unknown"):
+                            for line in lines:
                                 for seven_mark in SEVEN_MARKS:
                                     if seven_mark in line:
                                         print("windows 7: ", path)
