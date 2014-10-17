@@ -24,6 +24,8 @@
 
 """ Detects installed OSes (needs root privileges)"""
 
+# TODO: Fix this. Doesn't detect windows systems
+
 import os
 import subprocess
 import re
@@ -36,29 +38,32 @@ except NameError as err:
     def _(message): return message
 
 # constants
-WIN_DIRS = ["Windows", "windows", "WINDOWS"]
-SYSTEM_DIRS = ["System32", "system32"]
+WIN_DIRS = ["windows", "WINDOWS", "Windows"]
+SYSTEM_DIRS = ["system32", "System32"]
 
-WINLOAD_NAMES = ["winload.exe", "Winload.exe"]
+WINLOAD_NAMES = ["Winload.exe", "winload.exe"]
 SECEVENT_NAMES = ["SecEvent.Evt", "secevent.evt"]
 DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
-VISTA_MARKS = ["Windows Vista", "Windows"]
-SEVEN_MARKS = ["Windows 7", "Win7"]
+VISTA_MARKS = ["Windows Vista"]
+SEVEN_MARKS = ["Win7", "Windows 7"]
 
 DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
 
 # Possible locations for os-release. Do not put a trailing /
-OS_RELEASE_PATHS = ["etc/os-release", "usr/lib/os-release"]
+OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
 
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
 def _check_windows(mount_name):
+    """ Checks for a Microsoft Windows installed """
+    # TODO: Fix this. Doesn't detect anything
+    
     detected_os = _("unknown")
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
@@ -92,6 +97,7 @@ def _check_windows(mount_name):
     return detected_os
 
 def _check_reactos(mount_name):
+    """ Checks for ReactOS """
     detected_os = _("unknown")
     path = os.path.join(mount_name, "ReactOS/system32/config/SecEvent.Evt")
     if os.path.exists(path):
@@ -100,6 +106,7 @@ def _check_reactos(mount_name):
     return detected_os
 
 def _check_dos(mount_name):
+    """ Checks for DOS and W9x """
     detected_os = _("unknown")
     for name in DOS_NAMES:
         path = os.path.join(mount_name, name)
@@ -111,6 +118,7 @@ def _check_dos(mount_name):
     return detected_os  
 
 def _check_linux(mount_name):
+    """ Checks for linux """
     detected_os = _("unknown")
 
     for os_release in OS_RELEASE_PATHS:
@@ -148,29 +156,37 @@ def _check_linux(mount_name):
                 detected_os = text
     return detected_os
 
-def _get_os(mount_name, device):
+def _get_os(mount_name, device, show_msgs=False):
     """ Detect installed OSes """
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
 
-    print("Checking windows on %s..." % device)
+    if show_msgs:
+        print("Checking windows on %s..." % device)
     detected_os = _check_windows(mount_name)    
-    print(detected_os)
+    if show_msgs:
+        print(detected_os)
 
     if detected_os == _("unknown"):
-        print("Checking Linux on %s..." % device)
+        if show_msgs:
+            print("Checking Linux on %s..." % device)
         detected_os = _check_linux(mount_name)
-        print(detected_os)
+        if show_msgs:
+            print(detected_os)
 
     if detected_os == _("unknown"):
-        print("Checking reactos on %s..." % device)
+        if show_msgs:
+            print("Checking reactos on %s..." % device)
         detected_os = _check_reactos(mount_name)
-        print(detected_os)
+        if show_msgs:
+            print(detected_os)
 
     if detected_os == _("unknown"):
-        print("Checking dos and w9x on %s..." % device)
+        if show_msgs:
+            print("Checking dos and w9x on %s..." % device)
         detected_os = _check_dos(mount_name)
-        print(detected_os)
+        if show_msgs:
+            print(detected_os)
 
     return detected_os
 
@@ -178,15 +194,13 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
-
-    device = "/dev/sda2"
-    tmp_dir = tempfile.mkdtemp()
-    subprocess.call(["mount", device, tmp_dir])
-    oses[device] = _get_os(tmp_dir, device)
-    subprocess.call(["umount", "-l", tmp_dir])
-    
-    '''
-        
+    #if __name__ == '__main__':
+    #    device = "/dev/sda2"
+    #    tmp_dir = tempfile.mkdtemp()
+    #    subprocess.call(["mount", device, tmp_dir])
+    #    oses[device] = _get_os(tmp_dir, device, True)
+    #    subprocess.call(["umount", "-l", tmp_dir])
+    #else:
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -204,8 +218,6 @@ def get_os_dict():
                         subprocess.call(["mount", device, tmp_dir])
                         oses[device] = _get_os(tmp_dir, device)
                         subprocess.call(["umount", "-l", tmp_dir])
-    '''
-
     return oses
 
 if __name__ == '__main__':

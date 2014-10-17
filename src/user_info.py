@@ -225,11 +225,15 @@ class UserInfo(GtkBaseBox):
         else:
             result = validation.check(element, value)
             if len(result) == 0:
-                self.is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
+                # FIXME: set_from_stock is deprecated (use set_from_icon_name)
+                #self.is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
+                self.is_ok[element].set_from_icon_name("emblem-default", Gtk.IconSize.BUTTON)
                 self.is_ok[element].show()
                 self.error_label[element].hide()
             else:
-                self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+                # FIXME: set_from_stock is deprecated
+                #self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+                self.is_ok[element].set_from_icon_name("dialog-warning", Gtk.IconSize.BUTTON)
                 self.is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
@@ -279,7 +283,9 @@ class UserInfo(GtkBaseBox):
         ok_widgets = self.is_ok.values()
         if not self.settings.get('z_hidden'):
             for ok_widget in ok_widgets:
-                (icon_name, icon_size) = ok_widget.get_stock()
+                # FIXME: get_stock is deprecated
+                #(icon_name, icon_size) = ok_widget.get_stock()
+                (icon_name, icon_size) = ok_widget.get_icon_name()
                 visible = ok_widget.get_visible()
                 if visible == False or icon_name != "gtk-yes":
                     all_ok = False
