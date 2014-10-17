@@ -31,16 +31,19 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
+ICON_OK = "emblem-default"
+ICON_WARNING = "dialog-warning"
+
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
 
-        self.is_ok = dict()
-        self.is_ok['fullname'] = self.ui.get_object('fullname_ok')
-        self.is_ok['hostname'] = self.ui.get_object('hostname_ok')
-        self.is_ok['username'] = self.ui.get_object('username_ok')
-        self.is_ok['password'] = self.ui.get_object('password_ok')
+        self.image_is_ok = dict()
+        self.image_is_ok['fullname'] = self.ui.get_object('fullname_ok')
+        self.image_is_ok['hostname'] = self.ui.get_object('hostname_ok')
+        self.image_is_ok['username'] = self.ui.get_object('username_ok')
+        self.image_is_ok['password'] = self.ui.get_object('password_ok')
 
         self.error_label = dict()
         self.error_label['hostname'] = self.ui.get_object('hostname_error_label')
@@ -136,7 +139,7 @@ class UserInfo(GtkBaseBox):
         
     def hide_widgets(self):
         """ Hide unused and message widgets """
-        ok_widgets = self.is_ok.values()
+        ok_widgets = self.image_is_ok.values()
         for ok_widget in ok_widgets:
             ok_widget.hide()
 
@@ -219,22 +222,22 @@ class UserInfo(GtkBaseBox):
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
         if len(value) == 0:
-            self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
-            self.is_ok[element].show()
+            self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+            self.image_is_ok[element].show()
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
             if len(result) == 0:
                 # FIXME: set_from_stock is deprecated (use set_from_icon_name)
-                #self.is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
-                self.is_ok[element].set_from_icon_name("emblem-default", Gtk.IconSize.BUTTON)
-                self.is_ok[element].show()
+                #self.image_is_ok[element].set_from_stock("gtk-yes", Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
                 # FIXME: set_from_stock is deprecated
-                #self.is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
-                self.is_ok[element].set_from_icon_name("dialog-warning", Gtk.IconSize.BUTTON)
-                self.is_ok[element].show()
+                #self.image_is_ok[element].set_from_stock("gtk-no", Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+                self.image_is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
                     txt = _("Invalid characters entered")
@@ -251,16 +254,19 @@ class UserInfo(GtkBaseBox):
 
                 self.error_label[element].show()
 
-
     def info_loop(self, widget):
         """ User has introduced new information. Check it here. """
 
         if widget == self.entry['fullname']:
             fullname = self.entry['fullname'].get_text()
             if len(fullname) > 0:
-                self.is_ok['fullname'].show()
+                self.image_is_ok['fullname'].set_from_icon_name(ICON_OK, Gtk.IconSize.BUTTON)
+                self.image_is_ok['fullname'].show()
+                #self.error_label['fullname'].hide()
             else:
-                self.is_ok['fullname'].hide()
+                self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.BUTTON)
+                self.image_is_ok['fullname'].show()
+                #self.image_is_ok['fullname'].hide()
 
         if widget == self.entry['hostname']:
             hostname = self.entry['hostname'].get_text()
@@ -274,20 +280,20 @@ class UserInfo(GtkBaseBox):
             validation.check_password(
                 self.entry['password'],
                 self.entry['verified_password'],
-                self.is_ok['password'],
+                self.image_is_ok['password'],
                 self.error_label['password'],
                 self.password_strength)
 
         # Check if all fields are filled and ok
         all_ok = True
-        ok_widgets = self.is_ok.values()
+        ok_widgets = self.is_image_ok.values()
         if not self.settings.get('z_hidden'):
             for ok_widget in ok_widgets:
                 # FIXME: get_stock is deprecated
                 #(icon_name, icon_size) = ok_widget.get_stock()
                 (icon_name, icon_size) = ok_widget.get_icon_name()
                 visible = ok_widget.get_visible()
-                if visible == False or icon_name != "gtk-yes":
+                if visible == False or icon_name != ICON_OK:
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
