@@ -36,16 +36,17 @@ except NameError as err:
     def _(message): return message
 
 # constants
-WIN_DIRS = ["windows", "Windows", "WINDOWS"]
+WIN_DIRS = ["Windows", "windows", "WINDOWS"]
 SYSTEM_DIRS = ["System32", "system32"]
 
-WINLOAD_NAMES = ["Winload.exe", "winload.exe"]
+WINLOAD_NAMES = ["winload.exe", "Winload.exe"]
 SECEVENT_NAMES = ["SecEvent.Evt", "secevent.evt"]
 DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
-VISTA_MARKS = [b"Windows Vista"]
-SEVEN_MARKS = [b"Windows 7", b"Win7"]
+VISTA_MARKS = ["Windows Vista", "Windows"]
+SEVEN_MARKS = ["Windows 7", "Win7"]
+
 DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
              "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
              "Windows 95"]
@@ -65,17 +66,20 @@ def _check_windows(mount_name):
             for name in WINLOAD_NAMES:
                 path = os.path.join(mount_name, windows, system, name)
                 if os.path.exists(path):
+                    print("found: ", path)
                     with open(path, "rb") as system_file:
                         lines = system_file.readlines()
                         for line in lines:
                             for vista_mark in VISTA_MARKS:
-                                if vista_mark in line:
+                                if vista_mark.encode('utf-8') in line:
+                                    print(vista_mark.encode('utf-8'), line)
                                     print("windows vista: ", path)
                                     detected_os = "Windows Vista"
                         if detected_os == _("unknown"):
                             for line in lines:
                                 for seven_mark in SEVEN_MARKS:
-                                    if seven_mark in line:
+                                    if seven_mark.encode('utf-8') in line:
+                                        print(seven_mark.encode('utf-8'), line)
                                         print("windows 7: ", path)
                                         detected_os = "Windows 7"
             # Search for Windows XP
@@ -174,6 +178,15 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
+
+    device = "/dev/sda2"
+    tmp_dir = tempfile.mkdtemp()
+    subprocess.call(["mount", device, tmp_dir])
+    oses[device] = _get_os(tmp_dir, device)
+    subprocess.call(["umount", "-l", tmp_dir])
+    
+    '''
+        
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -191,6 +204,8 @@ def get_os_dict():
                         subprocess.call(["mount", device, tmp_dir])
                         oses[device] = _get_os(tmp_dir, device)
                         subprocess.call(["umount", "-l", tmp_dir])
+    '''
+
     return oses
 
 if __name__ == '__main__':
