@@ -57,18 +57,13 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-def _get_os(mountname):
-    """ Detect installed OSes """
-    #  If partition is mounted, try to identify the Operating System
-    # (OS) by looking for files specific to the OS.
-
+def _check_windows(mount_name):
     detected_os = _("unknown")
-    
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
             # Search for Windows Vista and 7
             for name in WINLOAD_NAMES:
-                path = os.path.join(mountname, windows, system, name)
+                path = os.path.join(mount_name, windows, system, name)
                 if os.path.exists(path):
                     with open(path, "rb") as system_file:
                         lines = system_file.readlines()
@@ -86,52 +81,58 @@ def _get_os(mountname):
             # Search for Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
-                    path = os.path.join(mountname, windows, system, "config", name)
+                    path = os.path.join(mount_name, windows, system, "config", name)
                     if os.path.exists(path):
                         print("windows XP: ", path)
                         detected_os = "Windows XP"
+    return detected_os
 
-    if detected_os == _("unknown"):
-        path = os.path.join(mountname, "ReactOS/system32/config/SecEvent.Evt")
+def _check_reactos(mount_name):
+    detected_os = _("unknown")
+    path = os.path.join(mount_name, "ReactOS/system32/config/SecEvent.Evt")
+    if os.path.exists(path):
+        print("reactos: ", path)
+        detected_os = "ReactOS"
+    return detected_os
+
+def _check_dos(mount_name):
+    detected_os = _("unknown")
+    for name in DOS_NAMES:
+        path = os.path.join(mount_name, name)
         if os.path.exists(path):
-            print("reactos: ", path)
-            detected_os = "ReactOS"
+            with open(path, "rb") as system_file:
+                for mark in DOS_MARKS:
+                    if mark in system_file:
+                        detected_os = mark
+    return detected_os  
 
-    if detected_os == _("unknown"):
-        for name in DOS_NAMES:
-            path = os.path.join(mountname, name)
-            if os.path.exists(path):
-                with open(path, "rb") as system_file:
-                    for mark in DOS_MARKS:
-                        if mark in system_file:
-                            detected_os = mark
-    # Linuxes
+def _check_linux(mount_name):
+    detected_os = _("unknown")
 
-    if detected_os == _("unknown"):
-        for os_release in OS_RELEASE_PATHS:
-            path = os.path.join(mountname, os_release)
-            if os.path.exists(path):
-                with open(path, 'r') as os_release_file:
-                    lines = os_release_file.readlines()
-                for line in lines:
-                    # Let's use the "PRETTY_NAME"
-                    if line.startswith("PRETTY_NAME"):
-                        detected_os = line[len("PRETTY_NAME="):]
-                if detected_os == _("unknown"):
-                    # Didn't find PRETTY_NAME, we will use ID
-                    if line.startswith("ID"):
-                        os_id = line[len("ID="):]
-                    if line.startswith("VERSION"):
-                        os_version = line[len("VERSION="):]
-                    detected_os = os_id
-                    if len(os_version) > 0:
-                        detected_os += " " + os_version
-        detected_os = detected_os.replace('"', '').strip('\n')
+    for os_release in OS_RELEASE_PATHS:
+        path = os.path.join(mount_name, os_release)
+        if os.path.exists(path):
+            with open(path, 'r') as os_release_file:
+                lines = os_release_file.readlines()
+            for line in lines:
+                # Let's use the "PRETTY_NAME"
+                if line.startswith("PRETTY_NAME"):
+                    detected_os = line[len("PRETTY_NAME="):]
+            if detected_os == _("unknown"):
+                # Didn't find PRETTY_NAME, we will use ID
+                if line.startswith("ID"):
+                    os_id = line[len("ID="):]
+                if line.startswith("VERSION"):
+                    os_version = line[len("VERSION="):]
+                detected_os = os_id
+                if len(os_version) > 0:
+                    detected_os += " " + os_version
+    detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
     if detected_os == _("unknown"):
         for name in LINUX_NAMES:
-            path = os.path.join(mountname, "etc", name)
+            path = os.path.join(mount_name, "etc", name)
             if os.path.exists(path):
                 with open(path, 'r') as system_file:
                     line = system_file.readline()
@@ -141,6 +142,31 @@ def _get_os(mountname):
                     if not "\\" in element:
                         text = text + element
                 detected_os = text
+    return detected_os
+
+def _get_os(mount_name, device):
+    """ Detect installed OSes """
+    #  If partition is mounted, try to identify the Operating System
+    # (OS) by looking for files specific to the OS.
+
+    print("Checking windows on %s..." % device)
+    detected_os = _check_windows(mount_name)    
+    print(detected_os)
+
+    if detected_os == _("unknown"):
+        print("Checking Linux on %s..." % device)
+        detected_os = _check_linux(mount_name)
+        print(detected_os)
+
+    if detected_os == _("unknown"):
+        print("Checking reactos on %s..." % device)
+        detected_os = _check_reactos(mount_name)
+        print(detected_os)
+
+    if detected_os == _("unknown"):
+        print("Checking dos and w9x on %s..." % device)
+        detected_os = _check_dos(mount_name)
+        print(detected_os)
 
     return detected_os
 
@@ -159,11 +185,11 @@ def get_os_dict():
                     tmp_dir = tempfile.mkdtemp()
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
-                        oses[device] = _get_os(tmp_dir)
+                        oses[device] = _get_os(tmp_dir, device)
                         subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
                     except AttributeError:
                         subprocess.call(["mount", device, tmp_dir])
-                        oses[device] = _get_os(tmp_dir)
+                        oses[device] = _get_os(tmp_dir, device)
                         subprocess.call(["umount", "-l", tmp_dir])
     return oses
 
