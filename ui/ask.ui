@@ -34,6 +34,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="margin_top">8</property>
             <!--<property name="image">automatic_image</property>-->
             <property name="halign">start</property>
             <property name="always_show_image">True</property>
@@ -191,7 +192,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <property name="margin_top">15</property>
+            <property name="margin_top">8</property>
             <!--<property name="image">alongside_image</property>-->
             <property name="halign">start</property>
             <property name="always_show_image">True</property>
@@ -254,7 +255,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <property name="margin_top">15</property>
+            <property name="margin_top">8</property>
             <!--<property name="image">advanced_image</property>-->
             <property name="halign">start</property>
             <property name="always_show_image">True</property>
