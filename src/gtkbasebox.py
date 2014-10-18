@@ -48,9 +48,11 @@ class GtkBaseBox(Gtk.Box):
         
         self.set_name(name)
 
+        logging.debug("Loading '{}' screen".format(name))
+
         self.ui = Gtk.Builder()
-        logging.debug("Loading '{}' user interface".format(name))
-        self.ui.add_from_file(os.path.join(self.ui_dir, "{}.ui".format(name)))
+        self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
+        self.ui.add_from_file(self.ui_file)
 
         # Connect UI signals
         self.ui.connect_signals(child)

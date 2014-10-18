@@ -84,6 +84,7 @@ class InstallationAsk(GtkBaseBox):
 
     def prepare(self, direction):
         """ Prepare screen """
+
         self.translate_ui()
         self.show_all()
 
@@ -152,9 +153,9 @@ class InstallationAsk(GtkBaseBox):
         # Alongside Install (still experimental. Needs a lot of testing)
         if "windows" in self.other_os.lower():
             radio = self.ui.get_object("alongside_radiobutton")
-            label = self.ui.get_object("alongside_description")
             radio.set_label(_("Install Antergos alongside %s") % self.other_os)
 
+            label = self.ui.get_object("alongside_description")
             txt = _("Install Antergos alongside %s") % self.other_os
             txt = '<span weight="light" size="small">%s</span>' % txt
             label.set_markup(txt)
