@@ -11,11 +11,11 @@
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
-        <object class="GtkBox" id="ask1">
+        <object class="GtkBox" id="automatic_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
         <child>
-          <object class="GtkImage" id="advanced_image">
+          <object class="GtkImage" id="automatic_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">1</property>
@@ -168,7 +168,7 @@
       </packing>
     </child>
     <child>
-        <object class="GtkBox" id="ask2">
+        <object class="GtkBox" id="alongside_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
         <child>
@@ -231,11 +231,11 @@
       </packing>
     </child>
     <child>
-        <object class="GtkBox" id="ask3">
+        <object class="GtkBox" id="advanced_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
         <child>
-          <object class="GtkImage" id="automatic_image">
+          <object class="GtkImage" id="advanced_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">1</property>

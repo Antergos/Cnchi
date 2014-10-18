@@ -95,6 +95,8 @@ class InstallationAsk(GtkBaseBox):
             radio.hide()
             label = self.ui.get_object("alongside_description")
             label.hide()
+            image = self.ui.get_object("alongside_image")
+            image.hide()
 
     def translate_ui(self):
         """ Translate screen before showing it """
