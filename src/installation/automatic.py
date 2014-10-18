@@ -102,6 +102,7 @@ class InstallationAutomatic(GtkBaseBox):
         show = btn.get_active()
         self.entry['luks_password'].set_visibility(show)
         self.entry['luks_password_confirm'].set_visibility(show)
+        self.entry['label_luks_password_warning'].set_visibility(show)
 
     @misc.raise_privileges
     def populate_devices(self):
