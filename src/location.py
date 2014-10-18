@@ -173,18 +173,34 @@ class Location(GtkBaseBox):
             label = vbox.get_children()[0]
             self.selected_country = label.get_text()
 
+    def set_locale(self, mylocale):
+        self.settings.set("locale", mylocale)
+        try:
+            import locale
+            locale.setlocale(locale.LC_ALL, mylocale)
+            logging.info(_("locale changed to : %s") % mylocale)
+        except ImportError as err:
+            logging.error(_("Can't import locale module"))
+        except locale.Error as err:
+            logging.warning(_("Can't change to locale '%s'") % mylocale)
+            if mylocale.endswith(".UTF-8"):
+                # Try without the .UTF-8 trailing
+                mylocale = mylocale[:-len(".UTF-8")]
+                try:
+                    locale.setlocale(locale.LC_ALL, mylocale)
+                    logging.info(_("locale changed to : %s") % mylocale)
+                    self.settings.set("locale", mylocale)
+                except locale.Error as err:
+                    logging.warning(_("Can't change to locale '%s'") % mylocale)
+            else:
+                logging.warning(_("Can't change to locale '%s'") % mylocale)
+
     def store_values(self):
         country = self.selected_country
         lang_code = self.settings.get("language_code")
         for mylocale in self.locales:
             if self.locales[mylocale] == country:
-                self.settings.set("locale", mylocale)
-                try:
-                    import locale
-                    locale.setlocale(locale.LC_ALL, mylocale)
-                    logging.info(_("locale changed to : %s") % mylocale)
-                except (ImportError, locale.Error):
-                    logging.warning(_("Can't change to locale '%s'") % mylocale)
+                self.set_locale(mylocale)
 
         return True
 

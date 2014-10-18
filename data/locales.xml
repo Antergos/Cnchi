@@ -479,6 +479,10 @@
 		<language_name>Russian (UA)</language_name>
 		<locale_name>ru_UA.UTF-8</locale_name>
 	</language>
+    <language>
+        <language_name>Serbian (SR)</language_name>
+        <locale_name>sr_RS.UTF-8</locale_name>
+    </language>
 	<language>
 		<language_name>Slovak (SK)</language_name>
 		<locale_name>sk_SK.UTF-8</locale_name>

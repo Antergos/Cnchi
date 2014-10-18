@@ -58,10 +58,12 @@ class Check(GtkBaseBox):
         self.timeout_id = None
         self.prepare_best_results = None
 
+        '''
         data_dir = self.settings.get('data')
         image1 = self.ui.get_object('image1')
         image1_path = os.path.join(data_dir, "images/antergos/antergos-for-everyone-white1.png")
         image1.set_from_file(image1_path)
+        '''
 
     def translate_ui(self):
         """ Translates all ui elements """

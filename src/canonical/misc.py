@@ -923,11 +923,28 @@ def sort_list(mylist, mylocale=""):
     import functools
 
     if mylocale != "":
-        try:
-            locale.setlocale(locale.LC_ALL, mylocale)
-        except:
-            logging.warning(_("Can't set locale %s") % mylocale)
+        set_locale(mylocale)
 
-    sorted_list = sorted(mylist,  key=functools.cmp_to_key(locale.strcoll))
+    sorted_list = sorted(mylist, key=functools.cmp_to_key(locale.strcoll))
 
     return sorted_list
+
+def set_locale(mylocale):
+    try:
+        import locale
+        locale.setlocale(locale.LC_ALL, mylocale)
+        logging.info(_("locale changed to : %s") % mylocale)
+    except ImportError as err:
+        logging.error(_("Can't import locale module"))
+    except locale.Error as err:
+        logging.warning(_("Can't change to locale '%s'") % mylocale)
+        if mylocale.endswith(".UTF-8"):
+            # Try without the .UTF-8 trailing
+            mylocale = mylocale[:-len(".UTF-8")]
+            try:
+                locale.setlocale(locale.LC_ALL, mylocale)
+                logging.info(_("locale changed to : %s") % mylocale)
+            except locale.Error as err:
+                logging.warning(_("Can't change to locale '%s'") % mylocale)
+        else:
+            logging.warning(_("Can't change to locale '%s'") % mylocale)
