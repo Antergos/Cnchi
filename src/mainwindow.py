@@ -318,7 +318,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 if self.current_page != None:
                     self.current_page.prepare('forwards')
                     self.main_box.add(self.current_page)
-
                     if self.current_page.get_prev_page() != None:
                         # There is a previous page, show button
                         self.backwards_button.show()
