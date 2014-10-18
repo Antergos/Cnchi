@@ -57,8 +57,8 @@ class Language(GtkBaseBox):
         image1 = self.ui.get_object("image1")
         image1.set_from_file(os.path.join(data_dir, "images/languages.png"))
 
-        #label = self.ui.get_object("welcome_label")
-        #label.set_name("WelcomeMessage")
+        label = self.ui.get_object("welcome_label")
+        label.set_name("WelcomeMessage")
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
@@ -73,17 +73,14 @@ class Language(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
+        # FIXME: Can't use an a html tag in the label. Causes an accessible GTK Assertion
         txt = _("Cnchi is pre-release beta software that is under active development.\n"
         "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
         "setups. Please proceed with caution as data loss is possible!\n\n"
-        "If you find any bugs, please report them at <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>")
-        txt = "<span weight='bold'>%s</span>\n\n%s" % (txt_bold, txt)
+        "If you find any bugs, please report them at http://bugs.antergos.com")
+        txt_markup = "<span weight='bold'>%s</span>\n\n%s" % (txt_bold, txt)
         label = self.ui.get_object("welcome_label")
-        
-        # FIXME: set_markup here causes a CRITICAL when called for a second time. I have no idea of what's happening
-        # CRITICAL **: atk_object_ref_state_set: assertion 'ATK_IS_OBJECT (accessible)' failed
-        # Gtk-CRITICAL **: gtk_accessible_get_widget: assertion 'GTK_IS_ACCESSIBLE (accessible)' failed
-        label.set_markup(txt)
+        label.set_markup(txt_markup)
 
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
