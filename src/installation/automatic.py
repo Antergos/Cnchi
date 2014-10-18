@@ -81,9 +81,14 @@ class InstallationAutomatic(GtkBaseBox):
         label = self.ui.get_object('label_luks_password_confirm')
         txt = _("Confirm your password:")
         label.set_markup(txt)
+        
+        label = self.ui.get_object('label_luks_password_warning')
+        txt = _("Do not use special chars or chars with accents!")
+        label.set_markup(txt)
 
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
+
 
         #txt = _("Install Now!")
         #self.forward_button.set_label(txt)
@@ -102,7 +107,8 @@ class InstallationAutomatic(GtkBaseBox):
         show = btn.get_active()
         self.entry['luks_password'].set_visibility(show)
         self.entry['luks_password_confirm'].set_visibility(show)
-        self.entry['label_luks_password_warning'].set_visibility(show)
+        lbl = self.ui.get_object('label_luks_password_warning')
+        lbl.set_visibility(show)
 
     @misc.raise_privileges
     def populate_devices(self):
