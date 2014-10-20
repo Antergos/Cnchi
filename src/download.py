@@ -264,7 +264,7 @@ class DownloadPackages(object):
                 urlp = url_open(url)
                 if urlp is None:
                     continue
-                print("Downloading %s..." % filename)
+                #print("Downloading %s..." % filename)
                 with open(filename, 'b+w') as xzfile:
                     (data, download_error) = url_open_read(urlp)
 
