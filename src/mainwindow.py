@@ -327,14 +327,14 @@ class MainWindow(Gtk.ApplicationWindow):
         next_page = self.current_page.get_next_page()
 
         if next_page != None:
+            if next_page not in self.pages.keys():
+                # Load all pages
+                self.load_pages()
+                self.progressbar_step = 1.0 / (len(self.pages) - 2)
+
             stored = self.current_page.store_values()
 
             if stored != False:
-                if next_page not in self.pages.keys():
-                    # Load all pages
-                    self.load_pages()
-                    self.progressbar_step = 1.0 / (len(self.pages) - 2)
-
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.current_page)
 
