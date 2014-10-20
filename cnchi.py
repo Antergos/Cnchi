@@ -59,13 +59,13 @@ class CnchiApp(Gtk.Application):
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
         try:
-            import mainwindow
+            import main_window
         except Exception as err:
             logging.exception(err)
             logging.error(_("Can't create Cnchi's main window. Exiting..."))
             sys.exit(1)
 
-        window = mainwindow.MainWindow(self, cmd_line)
+        window = main_window.MainWindow(self, cmd_line)
 
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without

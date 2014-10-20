@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  mainwindow.py
+#  main_window.py
 #
 #  Copyright © 2013,2014 Antergos
 #
