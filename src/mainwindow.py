@@ -108,9 +108,9 @@ class MainWindow(Gtk.ApplicationWindow):
         if cmd_line.cache:
             self.settings.set('cache', cmd_line.cache)
 
-        if cmd_line.copycache:
-            self.settings.set('cache', cmd_line.copycache)
-            self.settings.set('copy_cache', True)
+        #if cmd_line.copycache:
+        #    self.settings.set('cache', cmd_line.copycache)
+        #    self.settings.set('copy_cache', True)
 
         # For things we are not ready for users to test
         self.settings.set('z_hidden', cmd_line.z_hidden)
