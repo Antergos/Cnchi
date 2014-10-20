@@ -110,7 +110,7 @@ class DownloadPackages(object):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if not _PM2ML:
-            logging.warning("%s %s", _("pm2ml not found."), _("Cnchi will use alpm instead.")
+            logging.warning("%s %s", _("pm2ml not found."), _("Cnchi will use alpm instead."))
             return
 
         self.use_aria2 = use_aria2
@@ -243,6 +243,8 @@ class DownloadPackages(object):
             if len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
                 full_path = os.path.join(self.cache_dir, filename)
                 if os.path.exists(full_path):
+                    # We're lucky, the package is already downloaded
+                    # let's copy it to our destination
                     dst = os.path.join(self.pacman_cache_dir, filename)
                     try:
                         shutil.copy(full_path, dst)
@@ -263,6 +265,7 @@ class DownloadPackages(object):
                     (data, download_error) = url_open_read(urlp)
 
                     if download_error:
+                        # Everything is not lost, maybe alpm can download it later
                         continue
 
                     while len(data) > 0 and download_error == False:
@@ -281,6 +284,7 @@ class DownloadPackages(object):
                         self.queue_event('percent', 1.0)
                         downloaded += 1
                         break
+
             if download_error:
                 # This is not a total disaster, maybe alpm will be able
                 # to download it for us later in pac.py
@@ -288,11 +292,8 @@ class DownloadPackages(object):
 
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
-        args = ["-c"]
-        args.append(self.pacman_conf_file)
-
+        args = ["-c", self.pacman_conf_file]
         args += ["--noconfirm", "--all-deps", "--needed"]
-        #args += ["--noconfirm", "--all-deps"]
 
         if package_name is "databases":
             args += ["--refresh"]
