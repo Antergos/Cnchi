@@ -24,8 +24,6 @@
 
 """ Detects installed OSes (needs root privileges)"""
 
-# TODO: Fix this. Doesn't detect windows systems
-
 import os
 import subprocess
 import re
@@ -62,7 +60,7 @@ if __name__ == '__main__':
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
-    # TODO: Fix this. Doesn't detect anything
+    # FIXME: Windows Vista/7 detection does not work
     
     detected_os = _("unknown")
     for windows in WIN_DIRS:
@@ -77,22 +75,22 @@ def _check_windows(mount_name):
                         for line in lines:
                             for vista_mark in VISTA_MARKS:
                                 if vista_mark.encode('utf-8') in line:
-                                    print(vista_mark.encode('utf-8'), line)
-                                    print("windows vista: ", path)
+                                    #print(vista_mark.encode('utf-8'), line)
+                                    #print("windows vista: ", path)
                                     detected_os = "Windows Vista"
                         if detected_os == _("unknown"):
                             for line in lines:
                                 for seven_mark in SEVEN_MARKS:
                                     if seven_mark.encode('utf-8') in line:
-                                        print(seven_mark.encode('utf-8'), line)
-                                        print("windows 7: ", path)
+                                        #print(seven_mark.encode('utf-8'), line)
+                                        #print("windows 7: ", path)
                                         detected_os = "Windows 7"
             # Search for Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
                     path = os.path.join(mount_name, windows, system, "config", name)
                     if os.path.exists(path):
-                        print("windows XP: ", path)
+                        #print("windows XP: ", path)
                         detected_os = "Windows XP"
     return detected_os
 
@@ -101,7 +99,7 @@ def _check_reactos(mount_name):
     detected_os = _("unknown")
     path = os.path.join(mount_name, "ReactOS/system32/config/SecEvent.Evt")
     if os.path.exists(path):
-        print("reactos: ", path)
+        #print("reactos: ", path)
         detected_os = "ReactOS"
     return detected_os
 

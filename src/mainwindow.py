@@ -174,39 +174,28 @@ class MainWindow(Gtk.ApplicationWindow):
         # Load all pages
         # (each one is a screen, a step in the install process)
 
-        params = dict()
-        params['header'] = self.header
-        params['ui_dir'] = self.ui_dir
-        params['forward_button'] = self.forward_button
-        params['backwards_button'] = self.backwards_button
-        params['callback_queue'] = self.callback_queue
-        params['settings'] = self.settings
-        params['main_progressbar'] = self.progressbar
+        self.params = dict()
+        self.params['header'] = self.header
+        self.params['ui_dir'] = self.ui_dir
+        self.params['forward_button'] = self.forward_button
+        self.params['backwards_button'] = self.backwards_button
+        self.params['callback_queue'] = self.callback_queue
+        self.params['settings'] = self.settings
+        self.params['main_progressbar'] = self.progressbar
         
         if cmd_line.packagelist:
-            params['alternate_package_list'] = cmd_line.packagelist
-            logging.info(_("Using '%s' file as package list"), params['alternate_package_list'])
+            self.params['alternate_package_list'] = cmd_line.packagelist
+            logging.info(_("Using '%s' file as package list"), self.params['alternate_package_list'])
         else:
-            params['alternate_package_list'] = ""
+            self.params['alternate_package_list'] = ""
         
-        params['disable_tryit'] = cmd_line.disable_tryit
-        params['testing'] = cmd_line.testing
-        
+        self.params['disable_tryit'] = cmd_line.disable_tryit
+        self.params['testing'] = cmd_line.testing
+
+        # Just load the first two screens (the other ones will be loaded later)
+        # We do this so the user has not to wait for all the screens to be loaded        
         self.pages = dict()
-        self.pages["welcome"] = welcome.Welcome(params)
-        self.pages["language"] = language.Language(params)
-        self.pages["location"] = location.Location(params)
-        self.pages["check"] = check.Check(params)
-        self.pages["desktop"] = desktop.DesktopAsk(params)
-        self.pages["features"] = features.Features(params)
-        self.pages["keymap"] = keymap.Keymap(params)
-        self.pages["timezone"] = timezone.Timezone(params)
-        self.pages["installation_ask"] = installation_ask.InstallationAsk(params)
-        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(params)
-        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(params)
-        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(params)
-        self.pages["user_info"] = user_info.UserInfo(params)
-        self.pages["slides"] = slides.Slides(params)
+        self.pages["welcome"] = welcome.Welcome(self.params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
         
@@ -261,10 +250,44 @@ class MainWindow(Gtk.ApplicationWindow):
         # Hide progress bar as it's value is zero
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
-        self.progressbar_step = 1.0 / (len(self.pages) - 2)
+        self.progressbar_step = 0
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
+
+        self.refresh()
+
+    def refresh(self):
+        # Force Gtk to show the main screen
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        
+    def set_cursor(self, cursor_type):
+        cursor = Gdk.Cursor(cursor_type)
+        window = self.get_root_window()
+        if window:
+            window.set_cursor(cursor)
+            self.refresh()
+
+    def load_pages(self):
+        self.set_cursor(Gdk.CursorType.WATCH)
+        self.pages["language"] = language.Language(self.params)
+        self.pages["location"] = location.Location(self.params)
+        self.pages["check"] = check.Check(self.params)
+        self.pages["desktop"] = desktop.DesktopAsk(self.params)
+        self.pages["features"] = features.Features(self.params)
+        self.pages["keymap"] = keymap.Keymap(self.params)
+        self.pages["timezone"] = timezone.Timezone(self.params)
+        self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
+        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
+        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
+        self.pages["user_info"] = user_info.UserInfo(self.params)
+        self.pages["slides"] = slides.Slides(self.params)       
+        self.set_cursor(Gdk.CursorType.ARROW)
+        
+        if (len(self.pages) - 2) > 0:
+            self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -310,6 +333,11 @@ class MainWindow(Gtk.ApplicationWindow):
             stored = self.current_page.store_values()
 
             if stored != False:
+                if next_page not in self.pages.keys():
+                    # Load all pages
+                    self.load_pages()
+                    self.progressbar_step = 1.0 / (len(self.pages) - 2)
+
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.current_page)
 
