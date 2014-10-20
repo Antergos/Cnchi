@@ -106,11 +106,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.ui_dir = self.settings.get('ui')
 
         if cmd_line.cache:
+            logging.debug("Cnchi will use '%s' as a source directory for cached xz packages", cmd_line.cache)
             self.settings.set('cache', cmd_line.cache)
-
-        #if cmd_line.copycache:
-        #    self.settings.set('cache', cmd_line.copycache)
-        #    self.settings.set('copy_cache', True)
 
         # For things we are not ready for users to test
         self.settings.set('z_hidden', cmd_line.z_hidden)

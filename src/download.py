@@ -235,6 +235,7 @@ class DownloadPackages(object):
             if os.path.exists(filename):
                 # File exists, do not download
                 # Note: In theory this won't ever happen (metalink assures us this)
+                # print("File %s already exists, I won't download it" % filename)
                 self.queue_event('percent', 1.0)
                 downloaded += 1
                 continue
@@ -246,6 +247,7 @@ class DownloadPackages(object):
                     # We're lucky, the package is already downloaded
                     # let's copy it to our destination
                     dst = os.path.join(self.pacman_cache_dir, filename)
+                    #print("File %s is in cache. I will copy it to %s" % (filename, dst))
                     try:
                         shutil.copy(full_path, dst)
                         self.queue_event('percent', 1.0)
@@ -254,6 +256,7 @@ class DownloadPackages(object):
                     except FileNotFoundError:
                         pass
                     except FileExistsError:
+                        # print("File %s already exists, I won't copy it" % filename)
                         pass
 
             for url in element['urls']:
@@ -261,6 +264,7 @@ class DownloadPackages(object):
                 urlp = url_open(url)
                 if urlp is None:
                     continue
+                print("Downloading %s..." % filename)
                 with open(filename, 'b+w') as xzfile:
                     (data, download_error) = url_open_read(urlp)
 
@@ -422,14 +426,14 @@ class DownloadPackages(object):
         passwd = self.rpc["passwd"]
         port = self.rpc["port"]
         pid = os.getpid()
-        cache = self.pacman_cache_dir
+        pacman_cache = self.pacman_cache_dir
         
         self.aria2_options = [
             "--allow-overwrite=false",      # If file is already downloaded overwrite it
             "--always-resume=true",         # Always resume download.
             "--auto-file-renaming=false",   # Rename file name if the same file already exists.
             "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
-            "--dir=%s" % cache,             # The directory to store the downloaded file(s).
+            "--dir=%s" % pacman_cache,      # The directory to store the downloaded file(s).
             "--enable-rpc",                 # Enable XML-RPC server. It is strongly recommended to set username and
                                             # password using --rpc-user and --rpc-passwd option. See also
                                             # --rpc-listen-port option (default false)
@@ -505,5 +509,5 @@ if __name__ == '__main__':
     logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
     #DownloadPackages(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
-    DownloadPackages(package_names=["gnome-sudoku"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
+    DownloadPackages(package_names=["gnome-sudoku"], cache_dir="/var/cache/pacman/pkg", pacman_cache_dir="/tmp/aria2", use_aria2=False)
     #DownloadPackages(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2", use_aria2=False)

@@ -10,7 +10,7 @@ sudo ln -s $cnchi_dir /usr/share/cnchi
 
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
-_CACHE="/pkg"
+_CACHE="/var/cache/pacman/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-dv"
 
