@@ -31,7 +31,7 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
-ICON_OK = "yes"
+ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
 class UserInfo(GtkBaseBox):
