@@ -824,7 +824,7 @@
         <property name="spacing">5</property>
         <child>
           <object class="GtkButton" id="partition_button_new">
-            <property name="label">gtk-add</property>
+            <property name="label">list-add</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -840,7 +840,7 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_delete">
-            <property name="label">gtk-remove</property>
+            <property name="label">list-remove</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -916,7 +916,7 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_undo">
-            <property name="label">gtk-undo</property>
+            <property name="label">edit-undo</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -930,6 +930,7 @@
             <property name="position">6</property>
           </packing>
         </child>
+        <!--
         <child>
           <object class="GtkSpinner" id="partition_recalculating_spinner">
             <property name="visible">True</property>
@@ -941,6 +942,7 @@
             <property name="position">7</property>
           </packing>
         </child>
+        -->
       </object>
       <packing>
         <property name="expand">False</property>

@@ -186,6 +186,20 @@ class InstallationAdvanced(GtkBaseBox):
         # Connect changing selection in the partition list treeview
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
+        
+        # Assign images to buttons
+        btns = [
+            ("partition_button_undo", "edit-undo"),
+            ("partition_button_new", "list-add"),
+            ("partition_button_delete", "list-remove")]
+        
+        for grp in btns:
+            (btn_id, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
+            btn = self.ui.get_object(btn_id)
+            btn.set_label("")
+            btn.set_always_show_image(True)
+            btn.set_image(image)
 
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -1351,13 +1365,13 @@ class InstallationAdvanced(GtkBaseBox):
         self.fill_grub_device_entry()
         self.show_all()
 
-        button = self.ui.get_object('create_partition_encryption_settings')
-        button = self.ui.get_object('edit_partition_encryption_settings')
+        #button = self.ui.get_object('create_partition_encryption_settings')
+        #button = self.ui.get_object('edit_partition_encryption_settings')
 
         #label = self.ui.get_object('part_advanced_recalculating_label')
         #label.hide()
-        spinner = self.ui.get_object('partition_recalculating_spinner')
-        spinner.hide()
+        #spinner = self.ui.get_object('partition_recalculating_spinner')
+        #spinner.hide()
 
         button = self.ui.get_object('partition_button_lvm')
         button.hide()
