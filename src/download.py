@@ -118,7 +118,7 @@ class DownloadPackages(object):
         if pacman_conf_file == None:
             self.pacman_conf_file = "/etc/pacman.conf"
         else:
-            self.pacman_conf_file = conf_file
+            self.pacman_conf_file = pacman_conf_file
 
         if pacman_cache_dir == None:
             self.pacman_cache_dir = "/var/cache/pacman/pkg"
