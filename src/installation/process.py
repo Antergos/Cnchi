@@ -339,17 +339,14 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Packages selected"))
 
             # In newer testing isos, cached packages are provided. Try to copy them.
-            self.copy_cached_packages("/var/cache/pacman/pkg")
+            #self.copy_cached_packages("/var/cache/pacman/pkg")
+            #if self.settings.get('copy_cache'):
+            #    self.copy_cached_packages(self.settings.get('cache'))
 
-            if self.settings.get('copy_cache'):
-                self.copy_cached_packages(self.settings.get('cache'))
-            '''
-            else:
-                # Wait for all logs (logging and showing message to user is slower than just logging)
-                # if we don't wait, logs get mixed up
-                # (when copying cache files waiting more makes no sense as it is already a slow process)
-                self.wait_for_empty_queue(timeout=10)
-            '''
+            # Wait for all logs (logging and showing message to user is slower than just logging)
+            # if we don't wait, logs get mixed up
+            # (when copying cache files waiting more makes no sense as it is already a slow process)
+            self.wait_for_empty_queue(timeout=10)
             
             logging.debug(_("Downloading packages..."))
             self.download_packages()
@@ -415,9 +412,11 @@ class InstallationProcess(multiprocessing.Process):
 
     def download_packages(self):
         """ Downloads necessary packages using urllib or Aria2 """
-        conf_file = "/tmp/pacman.conf"
-
-        cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+        pacman_conf_file = "/tmp/pacman.conf"
+        pacman_cache_dir = os.path.join(self.dest_dir, "var/cache/pacman/pkg")
+        
+        if self.settings.get("cache"):
+            cache_dir = self.settings.get("cache")
 
         if self.settings.get("use_aria2"):
             use_aria2 = True
@@ -427,7 +426,8 @@ class InstallationProcess(multiprocessing.Process):
         download.DownloadPackages(
             self.packages,
             use_aria2,
-            conf_file,
+            pacman_conf_file,
+            pacman_cache_dir,
             cache_dir,
             self.callback_queue)
 

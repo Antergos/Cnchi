@@ -40,7 +40,7 @@ except ImportError:
     _PM2ML = False
 
 def url_open_read(url_open, chunk_size=8192):
-    """ Downloads and reads a fragment of a remote file """
+    """ Helper function to download and read a fragment of a remote file """
     
     download_error = True
     data = None
@@ -66,7 +66,7 @@ def url_open_read(url_open, chunk_size=8192):
     return (data, download_error)
 
 def url_open(url):
-    """ Open a remote file """
+    """ Helper function to open a remote file """
     
     msg = _('Error opening %s:') % url
     
@@ -99,31 +99,40 @@ class DownloadPackages(object):
         Aria2 is known to use too much memory (not Aria2's fault but ours)
         so until it's fixed it it's not advised to use it """
 
-    def __init__(self, package_names, use_aria2=False,
-        conf_file=None, cache_dir=None, callback_queue=None):
+    def __init__(
+        self,
+        package_names,
+        use_aria2=False,
+        pacman_conf_file=None,
+        pacman_cache_dir=None,
+        cache_dir=None,
+        callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if not _PM2ML:
-            wrn = _("pm2ml not found.")
-            wrn += " "
-            wrn += _("Cnchi will use alpm instead.")
-            logging.warning(wrn)
+            logging.warning("%s %s", _("pm2ml not found."), _("Cnchi will use alpm instead.")
             return
 
         self.use_aria2 = use_aria2
 
-        if conf_file == None:
-            self.conf_file = "/etc/pacman.conf"
+        if pacman_conf_file == None:
+            self.pacman_conf_file = "/etc/pacman.conf"
         else:
-            self.conf_file = conf_file
+            self.pacman_conf_file = conf_file
 
+        if pacman_cache_dir == None:
+            self.pacman_cache_dir = "/var/cache/pacman/pkg"
+        else:
+            self.pacman_cache_dir = pacman_cache_dir
+        
         if cache_dir == None:
-            self.cache_dir = "/var/cache/pacman/pkg"
+            self.cache_dir = ""
         else:
             self.cache_dir = cache_dir
 
-        if not os.path.exists(self.cache_dir):
-            os.makedirs(self.cache_dir)
+        # Create pacman cache dir if it doesn't exist yet
+        if not os.path.exists(pacman_cache_dir):
+            os.makedirs(pacman_cache_dir)
 
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
@@ -133,21 +142,18 @@ class DownloadPackages(object):
         self.callback_queue = callback_queue
 
         self.rpc = {}
-        self.rpc["user"] = "antergos"
-        self.rpc["passwd"] = "antergos"
-        self.rpc["port"] = "6800"
 
         self.aria2_options = []
 
         if use_aria2:
-            self.set_aria2_options(self.cache_dir)
+            self.rpc["user"] = "antergos"
+            self.rpc["passwd"] = "antergos"
+            self.rpc["port"] = "6800"
+            self.set_aria2_options()
             self.run_aria2_as_daemon()
             self.connection = self.aria2_connect()
             if self.connection == None:
-                wrn = _("Can't connect with aria2.")
-                wrn += " "
-                wrn += _("Cnchi will use alpm instead.")
-                logging.warning(wrn)
+                logging.warning("%s %s", _("Can't connect with aria2."), _("Cnchi will use alpm instead."))
                 return
             self.aria2_download(package_names)
         else:
@@ -220,7 +226,7 @@ class DownloadPackages(object):
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
             #print(txt)
-            filename = os.path.join(self.cache_dir, element['filename'])
+            filename = os.path.join(self.pacman_cache_dir, element['filename'])
             completed_length = 0
             total_length = int(element['size'])
             percent = 0
@@ -232,6 +238,21 @@ class DownloadPackages(object):
                 self.queue_event('percent', 1.0)
                 downloaded += 1
                 continue
+            
+            # Check if user has given us a cache of xz packages
+            if len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
+                full_path = os.path.join(self.cache_dir, filename)
+                if os.path.exists(full_path):
+                    dst = os.path.join(self.pacman_cache_dir, filename)
+                    try:
+                        shutil.copy(full_path, dst)
+                        self.queue_event('percent', 1.0)
+                        downloaded += 1
+                        continue
+                    except FileNotFoundError:
+                        pass
+                    except FileExistsError:
+                        pass
 
             for url in element['urls']:
                 download_error = False
@@ -268,7 +289,7 @@ class DownloadPackages(object):
     def create_metalink(self, package_name):
         """ Creates a metalink to download package_name and its dependencies """
         args = ["-c"]
-        args.append(self.conf_file)
+        args.append(self.pacman_conf_file)
 
         args += ["--noconfirm", "--all-deps", "--needed"]
         #args += ["--noconfirm", "--all-deps"]
@@ -393,20 +414,21 @@ class DownloadPackages(object):
 
         return connection
 
-    def set_aria2_options(self, cache_dir):
+    def set_aria2_options(self):
         """ Set aria2 options """
 
         user = self.rpc["user"]
         passwd = self.rpc["passwd"]
         port = self.rpc["port"]
         pid = os.getpid()
-
+        cache = self.pacman_cache_dir
+        
         self.aria2_options = [
             "--allow-overwrite=false",      # If file is already downloaded overwrite it
             "--always-resume=true",         # Always resume download.
             "--auto-file-renaming=false",   # Rename file name if the same file already exists.
             "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
-            "--dir=%s" % cache_dir,         # The directory to store the downloaded file(s).
+            "--dir=%s" % cache,             # The directory to store the downloaded file(s).
             "--enable-rpc",                 # Enable XML-RPC server. It is strongly recommended to set username and
                                             # password using --rpc-user and --rpc-passwd option. See also
                                             # --rpc-listen-port option (default false)
@@ -481,6 +503,6 @@ if __name__ == '__main__':
 
     logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
 
-    #DownloadPackages(package_names=["gnome-software"], cache_dir="/tmp/aria2", use_aria2=False)
-    DownloadPackages(package_names=["gnome-sudoku"], cache_dir="/tmp/aria2", use_aria2=False)
-    #DownloadPackages(package_names=["base", "base-devel"], cache_dir="/tmp/aria2", use_aria2=False)
+    #DownloadPackages(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
+    DownloadPackages(package_names=["gnome-sudoku"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
+    #DownloadPackages(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2", use_aria2=False)

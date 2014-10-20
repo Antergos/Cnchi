@@ -165,10 +165,10 @@ def parse_options():
         "-c", "--cache",
         help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"),
         nargs='?')
-    parser.add_argument(
-        "-cc", "--copycache",
-        help=_("As --cache but before installing Cnchi copies all xz packages to destination"),
-        nargs='?')
+#    parser.add_argument(
+#        "-cc", "--copycache",
+#        help=_("As --cache but before installing Cnchi copies all xz packages to destination"),
+#        nargs='?')
     parser.add_argument(
         "-d", "--debug",
         help=_("Sets Cnchi log level to 'debug'"),
