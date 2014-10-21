@@ -69,7 +69,7 @@ def _check_windows(mount_name):
             for name in WINLOAD_NAMES:
                 path = os.path.join(mount_name, windows, system, name)
                 if os.path.exists(path):
-                    print("found: ", path)
+                    #print("found: ", path)
                     with open(path, "rb") as system_file:
                         lines = system_file.readlines()
                         for line in lines:
@@ -93,6 +93,42 @@ def _check_windows(mount_name):
                         #print("windows XP: ", path)
                         detected_os = "Windows XP"
     return detected_os
+
+def _hexdump8081(partition):
+    try:
+        return subprocess.check_output(
+            ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition])
+    except subprocess.CalledProcessError as err:
+        print(err)
+        return ""
+
+def _get_partition_info(partition):
+    # Get bytes 0x80-0x81 of VBR to identify Boot sectors.
+    bytes80_to_81 = _hexdump8081(partition).decode()
+
+    bst = {
+	'7405':'Windows 7: FAT32',
+	'0734':'Dos_1.0',
+	'0745':'Windows Vista: FAT32',
+	'089e':'MSDOS5.0: FAT16',
+	'08cd':'Windows XP: NTFS',
+	'0bd0':'MSWIN4.1: FAT32',
+	'2a00':'ReactOS',
+	'2d5e':'Dos 1.1',
+	'3a5e':'Recovery: FAT32',
+    '55aa':'Windows Vista/7: NTFS',
+	'638b':'Freedos: FAT32',
+	'7cc6':'MSWIN4.1: FAT32',
+	'8ec0':'Windows XP: NTFS',
+	'b6d1':'Windows XP: FAT32',
+	'e2f7':'FAT32, Non Bootable',
+	'e9d8':'Windows Vista/7: NTFS',
+	'fa33':'Windows XP: NTFS'}
+    
+    if bytes80_to_81 in bst.keys():
+        return bst[bytes80_to_81]
+    else:
+        return _("unknown")
 
 def _check_reactos(mount_name):
     """ Checks for ReactOS """
@@ -161,6 +197,11 @@ def _get_os(mount_name, device, show_msgs=False):
 
     if show_msgs:
         print("Checking windows on %s..." % device)
+    
+    
+    mytype = _get_partition_info(device)
+    print(mytype)
+    
     detected_os = _check_windows(mount_name)    
     if show_msgs:
         print(detected_os)
@@ -185,6 +226,11 @@ def _get_os(mount_name, device, show_msgs=False):
         detected_os = _check_dos(mount_name)
         if show_msgs:
             print(detected_os)
+            
+    if detected_os == _("unknown"):
+        # Can't get OS reading files in partition
+        # Get partition info with hexdump
+        detected_os = _get_partition_info(partition)
 
     return detected_os
 
