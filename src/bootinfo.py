@@ -69,28 +69,22 @@ def _check_windows(mount_name):
             for name in WINLOAD_NAMES:
                 path = os.path.join(mount_name, windows, system, name)
                 if os.path.exists(path):
-                    #print("found: ", path)
                     with open(path, "rb") as system_file:
                         lines = system_file.readlines()
                         for line in lines:
                             for vista_mark in VISTA_MARKS:
                                 if vista_mark.encode('utf-8') in line:
-                                    #print(vista_mark.encode('utf-8'), line)
-                                    #print("windows vista: ", path)
                                     detected_os = "Windows Vista"
                         if detected_os == _("unknown"):
                             for line in lines:
                                 for seven_mark in SEVEN_MARKS:
                                     if seven_mark.encode('utf-8') in line:
-                                        #print(seven_mark.encode('utf-8'), line)
-                                        #print("windows 7: ", path)
                                         detected_os = "Windows 7"
             # Search for Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
                     path = os.path.join(mount_name, windows, system, "config", name)
                     if os.path.exists(path):
-                        #print("windows XP: ", path)
                         detected_os = "Windows XP"
     return detected_os
 
@@ -99,7 +93,7 @@ def _hexdump8081(partition):
         return subprocess.check_output(
             ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition])
     except subprocess.CalledProcessError as err:
-        print(err)
+        logging.warning(err)
         return ""
 
 def _get_partition_info(partition):
@@ -107,23 +101,23 @@ def _get_partition_info(partition):
     bytes80_to_81 = _hexdump8081(partition).decode()
 
     bst = {
-	'7405':'Windows 7: FAT32',
-	'0734':'Dos_1.0',
-	'0745':'Windows Vista: FAT32',
-	'089e':'MSDOS5.0: FAT16',
-	'08cd':'Windows XP: NTFS',
-	'0bd0':'MSWIN4.1: FAT32',
-	'2a00':'ReactOS',
-	'2d5e':'Dos 1.1',
-	'3a5e':'Recovery: FAT32',
-    '55aa':'Windows Vista/7: NTFS',
-	'638b':'Freedos: FAT32',
-	'7cc6':'MSWIN4.1: FAT32',
-	'8ec0':'Windows XP: NTFS',
-	'b6d1':'Windows XP: FAT32',
-	'e2f7':'FAT32, Non Bootable',
-	'e9d8':'Windows Vista/7: NTFS',
-	'fa33':'Windows XP: NTFS'}
+        '7405':'Windows 7: FAT32',
+        '0734':'Dos_1.0',
+        '0745':'Windows Vista: FAT32',
+        '089e':'MSDOS5.0: FAT16',
+        '08cd':'Windows XP: NTFS',
+        '0bd0':'MSWIN4.1: FAT32',
+        '2a00':'ReactOS',
+        '2d5e':'Dos 1.1',
+        '3a5e':'Recovery: FAT32',
+        '55aa':'Windows Vista/7: NTFS',
+        '638b':'Freedos: FAT32',
+        '7cc6':'MSWIN4.1: FAT32',
+        '8ec0':'Windows XP: NTFS',
+        'b6d1':'Windows XP: FAT32',
+        'e2f7':'FAT32, Non Bootable',
+        'e9d8':'Windows Vista/7: NTFS',
+        'fa33':'Windows XP: NTFS'}
     
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
@@ -190,47 +184,21 @@ def _check_linux(mount_name):
                 detected_os = text
     return detected_os
 
-def _get_os(mount_name, device, show_msgs=False):
+def _get_os(mount_name, device):
     """ Detect installed OSes """
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
-
-    if show_msgs:
-        print("Checking windows on %s..." % device)
-    
-    
-    mytype = _get_partition_info(device)
-    print(mytype)
     
     detected_os = _check_windows(mount_name)    
-    if show_msgs:
-        print(detected_os)
 
     if detected_os == _("unknown"):
-        if show_msgs:
-            print("Checking Linux on %s..." % device)
         detected_os = _check_linux(mount_name)
-        if show_msgs:
-            print(detected_os)
 
     if detected_os == _("unknown"):
-        if show_msgs:
-            print("Checking reactos on %s..." % device)
         detected_os = _check_reactos(mount_name)
-        if show_msgs:
-            print(detected_os)
 
     if detected_os == _("unknown"):
-        if show_msgs:
-            print("Checking dos and w9x on %s..." % device)
         detected_os = _check_dos(mount_name)
-        if show_msgs:
-            print(detected_os)
-            
-    if detected_os == _("unknown"):
-        # Can't get OS reading files in partition
-        # Get partition info with hexdump
-        detected_os = _get_partition_info(partition)
 
     return detected_os
 
@@ -238,13 +206,6 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
-    #if __name__ == '__main__':
-    #    device = "/dev/sda2"
-    #    tmp_dir = tempfile.mkdtemp()
-    #    subprocess.call(["mount", device, tmp_dir])
-    #    oses[device] = _get_os(tmp_dir, device, True)
-    #    subprocess.call(["umount", "-l", tmp_dir])
-    #else:
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -254,6 +215,7 @@ def get_os_dict():
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
                     tmp_dir = tempfile.mkdtemp()
+                    
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
                         oses[device] = _get_os(tmp_dir, device)
@@ -262,6 +224,11 @@ def get_os_dict():
                         subprocess.call(["mount", device, tmp_dir])
                         oses[device] = _get_os(tmp_dir, device)
                         subprocess.call(["umount", "-l", tmp_dir])
+                    
+                    if oses[device] == _("unknown"):
+                        # As a last resort, try reading partition info with hexdump
+                        detected_os = _get_partition_info(device)
+                        
     return oses
 
 if __name__ == '__main__':
