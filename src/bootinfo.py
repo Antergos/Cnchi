@@ -28,6 +28,7 @@ import os
 import subprocess
 import re
 import tempfile
+import logging
 
 # When testing, no _() is available
 try:
@@ -98,7 +99,7 @@ def _hexdump8081(partition):
 
 def _get_partition_info(partition):
     # Get bytes 0x80-0x81 of VBR to identify Boot sectors.
-    bytes80_to_81 = _hexdump8081(partition).decode()
+    bytes80_to_81 = _hexdump8081(partition)
 
     bst = {
         '7405':'Windows 7: FAT32',

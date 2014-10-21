@@ -43,6 +43,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="shadow_type">in</property>
+            <property name="hexpand">true</property>
             <child>
               <object class="GtkTreeView" id="treeview1">
                 <property name="visible">True</property>
@@ -104,7 +105,7 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -118,7 +119,7 @@
             </child>
             <child>
               <object class="GtkButton" id="button_ok">
-                <property name="label">gtk-ok</property>
+                <property name="label">_Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

@@ -54,6 +54,8 @@ sys.path.insert(0, parted_dir)
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
+import parted3.used_space as used_space
+
 
 from installation import process as installation_process
 
@@ -107,15 +109,21 @@ class InstallationAlongside(GtkBaseBox):
 
         slider.connect("change-value", self.slider_change_value)
 
+        btn = self.ui.get_object("button_ok")
+        btn.set_label("_Apply")
+        btn.set_use_underline(True)
+        btn.set_always_show_image(True)
+
+        btn = self.ui.get_object("button_cancel")
+        btn.set_label("_Cancel")
+        btn.set_use_underline(True)
+        btn.set_always_show_image(True)
+        
         '''
-        slider.connect("value_changed",
-                self.main.on_volume_changed)
-        slider.connect("button_press_event",
-                self.on_scale_button_press_event)
-        slider.connect("button_release_event",
-                self.on_scale_button_release_event)
-        slider.connect("scroll_event",
-                self.on_scale_scroll_event)
+        slider.connect("value_changed", self.main.on_volume_changed)
+        slider.connect("button_press_event", self.on_scale_button_press_event)
+        slider.connect("button_release_event", self.on_scale_button_release_event)
+        slider.connect("scroll_event", self.on_scale_scroll_event)
         '''
 
     def slider_change_value(self, slider, scroll, value):
@@ -159,12 +167,18 @@ class InstallationAlongside(GtkBaseBox):
         col = Gtk.TreeViewColumn(_("Filesystem"), render_text, text=2)
         self.treeview.append_column(col)
 
+        col = Gtk.TreeViewColumn(_("Used"), render_text, text=3)
+        self.treeview.append_column(col)
+        
+        col = Gtk.TreeViewColumn(_("Total"), render_text, text=4)
+        self.treeview.append_column(col)
+
     @misc.raise_privileges
     def populate_treeview(self):
         if self.treeview_store is not None:
             self.treeview_store.clear()
 
-        self.treeview_store = Gtk.TreeStore(str, str, str)
+        self.treeview_store = Gtk.TreeStore(str, str, str, str, str)
 
         oses = {}
         oses = bootinfo.get_os_dict()
@@ -174,7 +188,7 @@ class InstallationAlongside(GtkBaseBox):
         try:
             device_list = parted.getAllDevices()
         except (ImportError, NameError) as err:
-            logging.error(_("Can't import parted module: %s") % str(err))
+            logging.error(_("Can't import parted module: %s"), str(err))
             device_list = []
 
         for dev in device_list:
@@ -186,19 +200,19 @@ class InstallationAlongside(GtkBaseBox):
                     # Create list of partitions for this device (p.e. /dev/sda)
                     partition_list = disk.partitions
 
-                    for p in partition_list:
-                        if p.type != pm.PARTITION_EXTENDED:
+                    for partition in partition_list:
+                        if partition.type != pm.PARTITION_EXTENDED:
                             ## Get filesystem
                             fs_type = ""
-                            if p.fileSystem and p.fileSystem.type:
-                                fs_type = p.fileSystem.type
+                            if partition.fileSystem and partition.fileSystem.type:
+                                fs_type = partition.fileSystem.type
                             if "swap" not in fs_type:
-                                if p.path in oses:
-                                    row = [p.path, oses[p.path], fs_type]
+                                if partition.path in oses:
+                                    row = [partition.path, oses[partition.path], fs_type, "", ""]
                                 else:
-                                    row = [p.path, _("unknown"), fs_type]
+                                    row = [partition.path, _("unknown"), fs_type, "", ""]
                                 self.treeview_store.append(None, row)
-                        self.partitions[p.path] = p
+                        self.partitions[partition.path] = partition
                 except Exception as e:
                     txt = _("Unable to create list of partitions for alongside installation.")
                     logging.warning(txt)
@@ -235,17 +249,17 @@ class InstallationAlongside(GtkBaseBox):
             x = x[1].split()
             self.max_size = int(x[1]) / 1000
             self.min_size = int(x[2]) / 1000
-        except subprocess.CalledProcessError as e:
-            txt = "CalledProcessError.output = %s" % e.output
+        except subprocess.CalledProcessError as err:
+            txt = "CalledProcessError.output = %s" % err.output
             logging.exception(txt)
             show.fatal_error(txt)
 
         if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
-            txt = _("Can't shrink the partition (maybe it's nearly full?)")
-            logging.error(txt)
-            show.error(txt)
+            txt = _("Can't shrink partition %s (maybe it's nearly full?)") % partition_path
+            logging.warning(txt)
+            #show.error(txt)
             return
 
         if self.new_size > 0 and self.is_room_available():
@@ -501,7 +515,6 @@ class InstallationAlongside(GtkBaseBox):
                             self.alternate_package_list)
 
             self.process.start()
-
 
 # When testing, no _() is available
 try:
