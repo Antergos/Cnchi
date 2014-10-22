@@ -30,6 +30,8 @@ import re
 import tempfile
 import logging
 
+import canonical.misc as misc
+
 # When testing, no _() is available
 try:
     _("")
@@ -89,6 +91,7 @@ def _check_windows(mount_name):
                         detected_os = "Windows XP"
     return detected_os
 
+@misc.raise_privileges
 def _hexdump8081(partition):
     try:
         return subprocess.check_output(
