@@ -22,12 +22,15 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Alongside installation module """
+
 from gi.repository import Gtk, Gdk
 
 import sys
 import os
 import logging
 import subprocess
+import tempfile
 
 import xml.etree.ElementTree as etree
 
@@ -56,7 +59,6 @@ import parted3.partition_module as pm
 import parted3.fs_module as fs
 import parted3.used_space as used_space
 
-
 from installation import process as installation_process
 
 from gtkbasebox import GtkBaseBox
@@ -64,7 +66,36 @@ from gtkbasebox import GtkBaseBox
 # leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
 
+COL_DEVICE = 0
+COL_DETECTED_OS = 1
+COL_FILESYSTEM = 2
+COL_USED = 3
+COL_TOTAL = 4
+
+def get_partition_size_info(partition_path):
+    """ Gets partition used and available space """
+    
+    tmp_dir = tempfile.mkdtemp()
+    min_size = 0
+    max_size = 0
+    
+    try:
+        subprocess.call(["mount", partition_path, tmp_dir])
+        df_out = subprocess.check_output(['df', partition_path]).decode()
+        subprocess.call(["umount", "-l", tmp_dir])
+    except subprocess.CalledProcessError as err:
+        txt = "CalledProcessError.output = %s" % err.output
+        logging.exception(txt)
+        df_out = df_out.split('\n')
+        df_out = df_out[1].split()
+        max_size = int(df_out[1]) / 1000
+        min_size = int(df_out[2]) / 1000
+
+    return (min_size, max_size)
+
+
 class InstallationAlongside(GtkBaseBox):
+    """ Performs an automatic installation next to a previous installed OS """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
@@ -72,7 +103,7 @@ class InstallationAlongside(GtkBaseBox):
 
         self.label = self.ui.get_object('label_info')
 
-        self.treeview = self.ui.get_object("treeview1")
+        self.treeview = self.ui.get_object("treeview")
         self.treeview_store = None
         self.prepare_treeview()
         self.populate_treeview()
@@ -127,8 +158,10 @@ class InstallationAlongside(GtkBaseBox):
         '''
 
     def slider_change_value(self, slider, scroll, value):
-        if value <= self.available_slider_range[0] or \
-           value >= self.available_slider_range[1]:
+        """ Check that the value is inside our range and if it is, change it """
+        min_range = self.available_slider_range[0]
+        max_range = self.available_slider_range[1]
+        if value <= min_range or value >= max_range:
             return True
         else:
             slider.set_fill_level(value)
@@ -136,6 +169,7 @@ class InstallationAlongside(GtkBaseBox):
             return False
 
     def translate_ui(self):
+        """ Translates all ui elements """
         txt = _("Select the OS you would like Antergos installed next to.")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
@@ -157,21 +191,17 @@ class InstallationAlongside(GtkBaseBox):
     def prepare_treeview(self):
         """ Create columns for our treeview """
         render_text = Gtk.CellRendererText()
-
-        col = Gtk.TreeViewColumn(_("Device"), render_text, text=0)
-        self.treeview.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Detected OS"), render_text, text=1)
-        self.treeview.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Filesystem"), render_text, text=2)
-        self.treeview.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Used"), render_text, text=3)
-        self.treeview.append_column(col)
         
-        col = Gtk.TreeViewColumn(_("Total"), render_text, text=4)
-        self.treeview.append_column(col)
+        headers = [
+            (COL_DEVICE, _("Device")),
+            (COL_DETECTED_OS, _("Detected OS")),
+            (COL_FILESYSTEM, _("Filesystem")),
+            (COL_USED, _("Used")),
+            (COL_TOTAL, _("Total"))]
+        
+        for (header_id, header_text) in headers:
+            col = Gtk.TreeViewColumn(header_text, render_text, text=header_id)
+            self.treeview.append_column(col)
 
     @misc.raise_privileges
     def populate_treeview(self):
@@ -182,6 +212,8 @@ class InstallationAlongside(GtkBaseBox):
 
         oses = {}
         oses = bootinfo.get_os_dict()
+        
+        print(oses)
 
         self.partitions = {}
 
@@ -193,8 +225,7 @@ class InstallationAlongside(GtkBaseBox):
 
         for dev in device_list:
             # Avoid cdrom and any raid, lvm volumes or encryptfs
-            if not dev.path.startswith("/dev/sr") and \
-               not dev.path.startswith("/dev/mapper"):
+            if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
                 try:
                     disk = parted.Disk(dev)
                     # Create list of partitions for this device (p.e. /dev/sda)
@@ -202,57 +233,53 @@ class InstallationAlongside(GtkBaseBox):
 
                     for partition in partition_list:
                         if partition.type != pm.PARTITION_EXTENDED:
-                            ## Get filesystem
+                            # Get filesystem
                             fs_type = ""
                             if partition.fileSystem and partition.fileSystem.type:
                                 fs_type = partition.fileSystem.type
                             if "swap" not in fs_type:
+                                (min_size, max_size) = get_partition_size_info(partition.path)
                                 if partition.path in oses:
-                                    row = [partition.path, oses[partition.path], fs_type, "", ""]
+                                    row = [partition.path, oses[partition.path], fs_type, str(min_size), str(max_size)]
                                 else:
-                                    row = [partition.path, _("unknown"), fs_type, "", ""]
+                                    row = [partition.path, _("unknown"), fs_type, str(min_size), str(max_size)]
                                 self.treeview_store.append(None, row)
                         self.partitions[partition.path] = partition
-                except Exception as e:
-                    txt = _("Unable to create list of partitions for alongside installation.")
+                except Exception as err:
+                    txt = _("Unable to create list of partitions for alongside installation: %s") % err
                     logging.warning(txt)
 
         # Assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
         self.treeview.expand_all()
 
-    def on_treeview_cursor_changed(self, widget):
+    def get_selected_row(self):
         selection = self.treeview.get_selection()
 
         if not selection:
-            return
+            return None
 
         model, tree_iter = selection.get_selected()
 
         if tree_iter is None:
+            return None
+
+        return model[tree_iter]
+
+    def on_treeview_cursor_changed(self, widget):
+        row = self.get_selected_row()
+        
+        if row is None:
             return
 
-        self.row = model[tree_iter]
-
-        partition_path = self.row[0]
-        other_os_name = self.row[1]
+        partition_path = row[COL_DEVICE]
+        other_os_name = row[COL_DETECTED_OS]
 
         self.min_size = 0
         self.max_size = 0
         self.new_size = 0
 
-        try:
-            subprocess.call(["mount", partition_path, "/mnt"], stderr=subprocess.DEVNULL)
-            x = subprocess.check_output(['df', partition_path]).decode()
-            subprocess.call(["umount", "-l", "/mnt"], stderr=subprocess.DEVNULL)
-            x = x.split('\n')
-            x = x[1].split()
-            self.max_size = int(x[1]) / 1000
-            self.min_size = int(x[2]) / 1000
-        except subprocess.CalledProcessError as err:
-            txt = "CalledProcessError.output = %s" % err.output
-            logging.exception(txt)
-            show.fatal_error(txt)
+        (self.min_size, self.max_size) = get_partition_size_info(partition_path)
 
         if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
@@ -262,7 +289,7 @@ class InstallationAlongside(GtkBaseBox):
             #show.error(txt)
             return
 
-        if self.new_size > 0 and self.is_room_available():
+        if self.new_size > 0 and self.is_room_available(row):
             self.forward_button.set_sensitive(True)
         else:
             self.forward_button.set_sensitive(False)
@@ -310,13 +337,12 @@ class InstallationAlongside(GtkBaseBox):
 
         return value
 
-    def is_room_available(self):
-        partition_path = self.row[0]
-        otherOS = self.row[1]
-        fs_type = self.row[2]
+    def is_room_available(self, row):
+        partition_path = row[COL_DEVICE]
+        otherOS = row[COL_DETECTED_OS]
+        fs_type = row[COL_FILESYSTEM]
 
-        # what if path is sda10 (two digits) ? this is wrong
-        device_path = self.row[0][:-1]
+        device_path = row[COL_DEVICE][:len("/dev/sdX")]
 
         new_size = self.new_size
 
@@ -343,7 +369,6 @@ class InstallationAlongside(GtkBaseBox):
         logging.debug("extended partition: %s" % extended_path)
         logging.debug("primary partitions: %s" % primary_partitions)
 
-        # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
         if len(primary_partitions) >= 4:
             txt = _("There are too many primary partitions, can't create a new one")
             logging.error(txt)
@@ -352,23 +377,28 @@ class InstallationAlongside(GtkBaseBox):
 
         self.extended_path = extended_path
 
+        # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
+
+
         return True
 
     def start_installation(self):
         """ Alongside method shrinks selected partition
         and creates root and swap partition in the available space """
-
-        if self.is_room_available() is False:
+        
+        row = self.get_selected_row()
+        
+        if row is None:
             return
 
-        partition_path = self.row[0]
-        otherOS = self.row[1]
-        fs_type = self.row[2]
+        if self.is_room_available(row) is False:
+            return
 
-        # What if path is sda10 (two digits) ? this is wrong
-        device_path = self.row[0][:-1]
+        partition_path = row[COL_DEVICE]
+        otherOS = row[COL_DETECTED_OS]
+        fs_type = row[COL_FILESYSTEM]
 
-        #re.search(r'\d+$', self.row[0])
+        device_path = row[COL_DEVICE][:len("/dev/sdX")]
 
         new_size = self.new_size
 
@@ -388,10 +418,7 @@ class InstallationAlongside(GtkBaseBox):
             return
 
         # res is either False or a parted.Geometry for the new free space
-        if res is not None:
-            txt = _("Partition %s shrink complete") % partition_path
-            logging.debug(txt)
-        else:
+        if res is None:
             txt = _("Can't shrink %s(%s) partition") % (otherOS, fs_type)
             logging.error(txt)
             show.error(txt)
@@ -400,9 +427,12 @@ class InstallationAlongside(GtkBaseBox):
             txt += _("Filesystem shrink succeeded but partition shrink failed.")
             logging.error(txt)
             return
+            
+        txt = _("Partition %s shrink complete") % partition_path
+        logging.debug(txt)
 
-        disc_dic = pm.get_devices()
-        disk = disc_dic[device_path][0]
+        devices = pm.get_devices()
+        disk = devices[device_path][0]
         mount_devices = {}
         fs_devices = {}
 

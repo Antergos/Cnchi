@@ -185,7 +185,7 @@ def _check_linux(mount_name):
                 detected_os = text
     return detected_os
 
-def _get_os(mount_name, device):
+def _get_os(mount_name):
     """ Detect installed OSes """
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
@@ -219,17 +219,16 @@ def get_os_dict():
                     
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
-                        oses[device] = _get_os(tmp_dir, device)
+                        oses[device] = _get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
                     except AttributeError:
                         subprocess.call(["mount", device, tmp_dir])
-                        oses[device] = _get_os(tmp_dir, device)
+                        oses[device] = _get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir])
-                    
+
                     if oses[device] == _("unknown"):
                         # As a last resort, try reading partition info with hexdump
-                        detected_os = _get_partition_info(device)
-                        
+                        oses[device] = _get_partition_info(device)
     return oses
 
 if __name__ == '__main__':
