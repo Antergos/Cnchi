@@ -30,7 +30,7 @@ import canonical.misc as misc
 import logging
 import sys
 
-from show_message import warning
+import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
@@ -116,10 +116,11 @@ class Welcome(GtkBaseBox):
     def on_cli_button_clicked(self, widget, data=None):
         try:
             subprocess.Popen(["antergos-wrap"])
-        except Exception as err:
-            logging.error(_("Can't load the CLI installer: %s" % err))
-        finally:
             self.quit_cnchi()
+        except Exception as err:
+            msg = str(err)
+            logging.error(msg)
+            show.error(msg)
 
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()
