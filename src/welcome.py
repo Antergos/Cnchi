@@ -41,6 +41,10 @@ try:
 except ImportError:
     import info
 
+def refresh():
+    while Gtk.events_pending():
+        Gtk.main_iteration()
+
 class Welcome(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page="language"):
         super().__init__(self, params, "welcome", prev_page, next_page)
@@ -51,6 +55,7 @@ class Welcome(GtkBaseBox):
         self.label = {}
         self.label['welcome'] = self.ui.get_object("welcome_label")
         self.label['info'] = self.ui.get_object("infowelcome_label")
+        self.label['loading'] = self.ui.get_object("loading_label")
 
         self.button = {}
         self.button['tryit'] = self.ui.get_object("tryit_button")
@@ -74,7 +79,7 @@ class Welcome(GtkBaseBox):
         """ Translates all ui elements """
         txt = ""
         if not self.disable_tryit:
-            txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.\n")
+            txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.") + "\n"
         txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
         txt = '<span weight="bold">%s</span>' % txt
         self.label['info'].set_markup(txt)
@@ -101,7 +106,6 @@ class Welcome(GtkBaseBox):
 
     def quit_cnchi(self):
         self.remove_temp_files()
-        logging.info(_("Quiting installer..."))
         self.settings.set('stop_all_threads', True)
         logging.shutdown()
         sys.exit(0)
@@ -118,10 +122,17 @@ class Welcome(GtkBaseBox):
             self.quit_cnchi()
 
     def on_graph_button_clicked(self, widget, data=None):
+        self.show_loading_message()
         # Tell timezone thread to start searching now
         self.settings.set('timezone_start', True)
         # Simulate a forward button click
         self.forward_button.emit("clicked")
+
+    def show_loading_message(self):
+        txt = _("Loading, please wait...")
+        self.label['loading'].set_markup(txt)
+        self.label['loading'].queue_draw()
+        refresh()
 
     def store_values(self):
         self.forward_button.show()

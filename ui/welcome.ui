@@ -12,13 +12,16 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="hexpand">true</property>
         <property name="spacing">40</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkBox" id="box_tryit">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_start">20</property>
+            <!--<property name="margin_start">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="tryit_image">
@@ -95,7 +98,7 @@
           <object class="GtkBox" id="box_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_end">20</property>
+            <!--<property name="margin_end">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="graph_image">
@@ -132,9 +135,9 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">1</property>
+        <property name="position">0</property>
       </packing>
     </child>
     <child>
@@ -146,6 +149,22 @@ If you want to install the system to your PC, use one of the two installer optio
         <property name="justify">center</property>
         <attributes>
           <attribute name="font-desc" value="Sans Bold 8"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="loading_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes"></property>
+        <property name="justify">center</property>
+        <attributes>
+          <attribute name="font-desc" value="Sans Bold 6"/>
         </attributes>
       </object>
       <packing>
