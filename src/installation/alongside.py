@@ -72,24 +72,34 @@ COL_FILESYSTEM = 2
 COL_USED = 3
 COL_TOTAL = 4
 
-def get_partition_size_info(partition_path):
+def get_partition_size_info(partition_path, human):
     """ Gets partition used and available space """
     
     tmp_dir = tempfile.mkdtemp()
-    min_size = 0
-    max_size = 0
+    min_size = "0"
+    max_size = "0"
     
     try:
         subprocess.call(["mount", partition_path, tmp_dir])
-        df_out = subprocess.check_output(['df', partition_path]).decode()
+        if human:
+            cmd = ['df', '-h', partition_path]
+        else:
+            cmd = ['df', partition_path]
+        df_out = subprocess.check_output(cmd).decode()
         subprocess.call(["umount", "-l", tmp_dir])
     except subprocess.CalledProcessError as err:
         txt = "CalledProcessError.output = %s" % err.output
         logging.exception(txt)
+
+    if len(df_out) > 0:
         df_out = df_out.split('\n')
         df_out = df_out[1].split()
-        max_size = int(df_out[1]) / 1000
-        min_size = int(df_out[2]) / 1000
+        if human:
+            max_size = df_out[1]
+            min_size = df_out[2]
+        else:
+            max_size = int(df_out[1]) / 1000
+            min_size = int(df_out[2]) / 1000
 
     return (min_size, max_size)
 
@@ -237,11 +247,11 @@ class InstallationAlongside(GtkBaseBox):
                             if partition.fileSystem and partition.fileSystem.type:
                                 fs_type = partition.fileSystem.type
                             if "swap" not in fs_type:
-                                (min_size, max_size) = get_partition_size_info(partition.path)
+                                (min_size, max_size) = get_partition_size_info(partition.path, human=True)
                                 if partition.path in oses:
-                                    row = [partition.path, oses[partition.path], fs_type, str(min_size), str(max_size)]
+                                    row = [partition.path, oses[partition.path], fs_type, min_size, max_size]
                                 else:
-                                    row = [partition.path, _("unknown"), fs_type, str(min_size), str(max_size)]
+                                    row = [partition.path, _("unknown"), fs_type, min_size, max_size]
                                 self.treeview_store.append(None, row)
                         self.partitions[partition.path] = partition
                 except Exception as err:
@@ -278,7 +288,7 @@ class InstallationAlongside(GtkBaseBox):
         self.max_size = 0
         self.new_size = 0
 
-        (self.min_size, self.max_size) = get_partition_size_info(partition_path)
+        (self.min_size, self.max_size) = get_partition_size_info(partition_path, human=False)
 
         if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
