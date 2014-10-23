@@ -95,15 +95,15 @@ def _check_windows(mount_name):
 def _hexdump8081(partition):
     try:
         return subprocess.check_output(
-            ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition])
+            ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]).decode()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         return ""
 
 def _get_partition_info(partition):
-    # Get bytes 0x80-0x81 of VBR to identify Boot sectors.
+    """ Get bytes 0x80-0x81 of VBR to identify Boot sectors. """
     bytes80_to_81 = _hexdump8081(partition)
-
+    
     bst = {
         '7405':'Windows 7: FAT32',
         '0734':'Dos_1.0',
@@ -122,7 +122,7 @@ def _get_partition_info(partition):
         'e2f7':'FAT32, Non Bootable',
         'e9d8':'Windows Vista/7: NTFS',
         'fa33':'Windows XP: NTFS'}
-    
+
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
     else:
