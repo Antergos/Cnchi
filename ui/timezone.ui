@@ -94,6 +94,7 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="spacing">10</property>
         <child>
           <object class="GtkLabel" id="label_ntp">
             <property name="visible">True</property>

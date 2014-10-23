@@ -100,7 +100,7 @@ class Timezone(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('label_ntp')
-        txt = _("Use Network Time Protocol for clock synchronization:")
+        txt = _("Use Network Time Protocol (NTP) for clock synchronization")
         label.set_markup(txt)
 
         self.header.set_subtitle(_("Select Your Timezone"))
