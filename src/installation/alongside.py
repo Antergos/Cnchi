@@ -41,31 +41,31 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-import canonical.misc as misc
-import show_message as show
-import bootinfo
+# Insert the src/parted directory at the front of the path.
+base_dir = os.path.dirname(__file__) or '.'
+parted_dir = os.path.join(base_dir, 'parted3')
+sys.path.insert(0, parted_dir)
 
 try:
     import parted
 except ImportError as err:
     logging.error(_("Can't import parted module: %s") % str(err))
 
-# Insert the src/parted directory at the front of the path.
-base_dir = os.path.dirname(__file__) or '.'
-parted_dir = os.path.join(base_dir, 'parted3')
-sys.path.insert(0, parted_dir)
+import canonical.misc as misc
+import show_message as show
+import bootinfo
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
 import parted3.used_space as used_space
 
 from installation import process as installation_process
-
 from gtkbasebox import GtkBaseBox
 
 # leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
 
+# Our treeview columns
 COL_DEVICE = 0
 COL_DETECTED_OS = 1
 COL_FILESYSTEM = 2
@@ -92,7 +92,6 @@ def get_partition_size_info(partition_path):
         min_size = int(df_out[2]) / 1000
 
     return (min_size, max_size)
-
 
 class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
