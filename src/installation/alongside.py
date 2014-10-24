@@ -199,8 +199,12 @@ class InstallationAlongside(GtkBaseBox):
 
     def prepare_treeview(self):
         """ Create columns for our treeview """
+        #render_pixbuf = Gtk.CellRendererPixbuf()
+        #col = Gtk.TreeViewColumn("", render_pixbuf, text="")
+        #self.treeview.append_column(col)
+
         render_text = Gtk.CellRendererText()
-        
+
         headers = [
             (COL_DEVICE, _("Device")),
             (COL_DETECTED_OS, _("Detected OS")),
@@ -252,6 +256,7 @@ class InstallationAlongside(GtkBaseBox):
                                     row = [partition.path, oses[partition.path], fs_type, min_size, max_size]
                                 else:
                                     row = [partition.path, _("unknown"), fs_type, min_size, max_size]
+                                # parent is None so we append the row to the upper level
                                 self.treeview_store.append(None, row)
                         self.partitions[partition.path] = partition
                 except Exception as err:
