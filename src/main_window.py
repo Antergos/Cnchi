@@ -82,10 +82,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # Check if we're already running
         tmp_running = "/tmp/.setup-running"
         if os.path.exists(tmp_running):
-            show.error(_('You cannot run two instances of this installer.\n\n'
-                          'If you are sure that the installer is not already running\n'
-                          'you can manually delete the file %s\n'
-                          'and run this installer again.') % tmp_running)
+            msg = _('You cannot run two instances of this installer.\n\n'
+                'If you are sure that the installer is not already running\n'
+                'you can manually delete the file %s\n'
+                'and run this installer again.') % tmp_running
+            show.error(msg, parent=self)
             sys.exit(1)
 
         logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
@@ -261,6 +262,7 @@ class MainWindow(Gtk.ApplicationWindow):
         
     def set_cursor(self, cursor_type):
         cursor = Gdk.Cursor(cursor_type)
+        # FIXME: get_root_window is deprecated
         window = self.get_root_window()
         if window:
             window.set_cursor(cursor)

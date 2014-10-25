@@ -81,20 +81,29 @@ class DesktopAsk(GtkBaseBox):
         desktop_names.sort()
 
         for desktop_name in desktop_names:
-            box = Gtk.VBox()
+            box = Gtk.HBox()
+
+            filename = desktop_name.lower() + ".png"
+            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, filename)
+            if os.path.exists(icon_path):
+                image = Gtk.Image.new_from_file(icon_path)
+            else:
+                image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
+            box.pack_start(image, False, False, 2)
+
             label = Gtk.Label()
             label.set_markup(desktop_name)
-            #FIXME: set_alignment is deprecated
-            #label.set_alignment(0, 0.5)
-            box.add(label)
+            box.pack_start(label, False, False, 2)
+
             self.listbox.add(box)
+            # Set Gnome as default
             if desktop_name == desktops.NAMES["gnome"]:
                 self.select_default_row(desktop_name)
 
     def select_default_row(self, desktop_name):
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
-                label = vbox.get_children()[0]
+                label = vbox.get_children()[1]
                 if desktop_name == label.get_text():
                     self.listbox.select_row(listbox_row)
                     return
@@ -111,9 +120,10 @@ class DesktopAsk(GtkBaseBox):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
             for vbox in listbox_row:
-                for label in vbox.get_children():
-                    desktop = label.get_text()
-                    self.set_desktop(desktop)
+                #for label in vbox.get_children()[1]:
+                label = vbox.get_children()[1]
+                desktop = label.get_text()
+                self.set_desktop(desktop)
     
     def store_values(self):
         """ Store desktop """

@@ -226,7 +226,7 @@ class InstallationAlongside(GtkBaseBox):
         oses = {}
         oses = bootinfo.get_os_dict()
         
-        print(oses)
+        #print(oses)
 
         self.partitions = {}
 

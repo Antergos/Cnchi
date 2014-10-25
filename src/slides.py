@@ -142,6 +142,9 @@ class Slides(GtkBaseBox):
         
         if self.fatal_error:
             return False
+        
+        if self.callback_queue is None:
+            return True
 
         while self.callback_queue.empty() == False:
             try:

@@ -29,6 +29,8 @@
 DESKTOPS_DEV = [ "cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "lxqt", "xfce" ]
 DESKTOPS = [ "cinnamon", "gnome", "kde", "mate", "nox", "openbox", "xfce" ]
 
+DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons/24x24"
+
 # Descriptive names
 NAMES = {
     'nox' : "Base",

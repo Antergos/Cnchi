@@ -33,7 +33,7 @@ import multiprocessing
 
 _show_event_queue_messages = True
 
-def fatal_error(message):
+def fatal_error(message, parent=None):
     # Remove /tmp/.setup-running
     p = "/tmp/.setup-running"
     if os.path.exists(p):
@@ -41,13 +41,13 @@ def fatal_error(message):
 
     multiprocessing.active_children()
 
-    error(message)
+    error(message, parent)
     sys.exit(1)
 
-def error(message):
+def error(message, parent=None):
     message = str(message)
     logging.error(message)
-    msg_dialog = Gtk.MessageDialog(transient_for=None,
+    msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.ERROR,
@@ -57,10 +57,10 @@ def error(message):
     msg_dialog.run()
     msg_dialog.destroy()
 
-def warning(message):
+def warning(message, parent=None):
     message = str(message)
     logging.warning(message)
-    msg_dialog = Gtk.MessageDialog(transient_for=None,
+    msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.WARNING,
@@ -70,10 +70,10 @@ def warning(message):
     msg_dialog.run()
     msg_dialog.destroy()
 
-def message(message):
+def message(message, parent=None):
     message = str(message)
     logging.info(message)
-    msg_dialog = Gtk.MessageDialog(transient_for=None,
+    msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.INFO,
@@ -82,10 +82,10 @@ def message(message):
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
 
-def question(message):
+def question(message, parent=None):
     message = str(message)
     logging.info(message)
-    msg_dialog = Gtk.MessageDialog(transient_for=None,
+    msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.QUESTION,
