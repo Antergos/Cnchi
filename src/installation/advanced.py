@@ -186,6 +186,32 @@ class InstallationAdvanced(GtkBaseBox):
         # Connect changing selection in the partition list treeview
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
+
+        # Assign images to buttons
+        btns = [
+            ("partition_button_undo", "edit-undo"),
+            ("partition_button_new", "list-add"),
+            ("partition_button_delete", "list-remove"),
+            ("partition_button_edit", "system-run"),
+            ("partition_button_new_label", "edit-clear-all"),
+            ("changelist_cancelbutton", "dialog-cancel"),
+            ("changelist_okbutton", "dialog-apply"),
+            ("create_table_dialog_cancel", "dialog-cancel"),
+            ("create_table_dialog_ok", "dialog-apply"),
+            ("edit_partition_cancel", "dialog-cancel"),
+            ("edit_partition_ok", "dialog-apply"),
+            ("create_partition_cancel", "dialog-cancel"),
+            ("create_partition_ok", "dialog-apply"),
+            ("luks_cancel_button", "dialog-cancel"),
+            ("luks_ok_button", "dialog-apply")]
+        
+        for grp in btns:
+            (btn_id, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
+            btn = self.ui.get_object(btn_id)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
+
         
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -1240,31 +1266,44 @@ class InstallationAdvanced(GtkBaseBox):
         #label = self.ui.get_object('part_advanced_warning_message')
         #label.set_markup(txt)
 
-        # Assign labels and images to buttons
+        # Assign labels to buttons
+        btn = self.ui.get_object("partition_button_undo")
+        btn.set_label(_("Undo"))
+
+        btn = self.ui.get_object("partition_button_new")
+        btn.set_label(_("New"))
+
+        btn = self.ui.get_object("partition_button_delete")
+        btn.set_label(_("Delete"))
+
+        btn = self.ui.get_object("partition_button_edit")
+        btn.set_label(_("Edit..."))
+
+        btn = self.ui.get_object("partition_button_new_label")
+        btn.set_label(_("New partition table"))
+
+
         btns = [
-            ("partition_button_undo", _("Undo"), "edit-undo"),
-            ("partition_button_new", _("New"), "list-add"),
-            ("partition_button_delete", _("Delete"), "list-remove"),
-            ("partition_button_edit", _("Edit..."), "system-run"),
-            ("partition_button_new_label", _("New partition table"), "edit-clear-all"),
-            ("changelist_cancelbutton", _("_Cancel"), "dialog-cancel"),
-            ("changelist_okbutton", _("_Apply"), "dialog-apply"),
-            ("create_table_dialog_cancel", _("_Cancel"), "dialog-cancel"),
-            ("create_table_dialog_ok", _("_Apply"), "dialog-apply"),
-            ("edit_partition_cancel", _("_Cancel"), "dialog-cancel"),
-            ("edit_partition_ok", _("_Apply"), "dialog-apply"),
-            ("create_partition_cancel", _("_Cancel"), "dialog-cancel"),
-            ("create_partition_ok", _("_Apply"), "dialog-apply"),
-            ("luks_cancel_button", _("_Cancel"), "dialog-cancel"),
-            ("luks_ok_button", _("_Apply"), "dialog-apply")]
-        
-        for grp in btns:
-            (btn_id, label, icon) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
+            "changelist_cancelbutton",
+            "create_table_dialog_cancel",
+            "edit_partition_cancel",
+            "create_partition_cancel",
+            "luks_cancel_button"]
+
+        for btn_id in btns:
             btn = self.ui.get_object(btn_id)
-            btn.set_label(label)
-            btn.set_always_show_image(True)
-            btn.set_image(image)
+            btn.set_label(_("_Cancel"))
+
+        btns = [
+            "changelist_okbutton",
+            "create_table_dialog_ok",
+            "edit_partition_ok",
+            "create_partition_ok",
+            "luks_ok_button"]
+
+        for btn_id in btns:
+            btn = self.ui.get_object(btn_id)
+            btn.set_label(_("_Apply"))
 
         # Translate dialog "Create partition"
         txt = _("Size:")
