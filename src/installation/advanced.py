@@ -187,20 +187,6 @@ class InstallationAdvanced(GtkBaseBox):
         select = self.partition_list.get_selection()
         select.connect("changed", self.on_partition_list_treeview_selection_changed)
         
-        # Assign images to buttons
-        btns = [
-            ("partition_button_undo", "edit-undo"),
-            ("partition_button_new", "list-add"),
-            ("partition_button_delete", "list-remove")]
-        
-        for grp in btns:
-            (btn_id, icon) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
-            btn = self.ui.get_object(btn_id)
-            btn.set_label("")
-            btn.set_always_show_image(True)
-            btn.set_image(image)
-
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
         if path and not partition:
@@ -1254,17 +1240,31 @@ class InstallationAdvanced(GtkBaseBox):
         #label = self.ui.get_object('part_advanced_warning_message')
         #label.set_markup(txt)
 
-        txt = _("New Partition Table")
-        button = self.ui.get_object('partition_button_new_label')
-        button.set_label(txt)
-
-        #txt = _("Revert")
-        #button = self.ui.get_object('partition_button_undo')
-        #button.set_label(txt)
-
-        txt = _("Change...")
-        button = self.ui.get_object('partition_button_edit')
-        button.set_label(txt)
+        # Assign labels and images to buttons
+        btns = [
+            ("partition_button_undo", _("Undo"), "edit-undo"),
+            ("partition_button_new", _("New"), "list-add"),
+            ("partition_button_delete", _("Delete"), "list-remove"),
+            ("partition_button_edit", _("Edit..."), "system-run"),
+            ("partition_button_new_label", _("New partition table"), "edit-clear-all"),
+            ("changelist_cancelbutton", _("_Cancel"), "dialog-cancel"),
+            ("changelist_okbutton", _("_Apply"), "dialog-apply"),
+            ("create_table_dialog_cancel", _("_Cancel"), "dialog-cancel"),
+            ("create_table_dialog_ok", _("_Apply"), "dialog-apply"),
+            ("edit_partition_cancel", _("_Cancel"), "dialog-cancel"),
+            ("edit_partition_ok", _("_Apply"), "dialog-apply"),
+            ("create_partition_cancel", _("_Cancel"), "dialog-cancel"),
+            ("create_partition_ok", _("_Apply"), "dialog-apply"),
+            ("luks_cancel_button", _("_Cancel"), "dialog-cancel"),
+            ("luks_ok_button", _("_Apply"), "dialog-apply")]
+        
+        for grp in btns:
+            (btn_id, label, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
+            btn = self.ui.get_object(btn_id)
+            btn.set_label(label)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
 
         # Translate dialog "Create partition"
         txt = _("Size:")
@@ -1854,7 +1854,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.enable_all_widgets(status=False)
 
     def enable_all_widgets(self, status=True):
-        for name in ["scrolledwindow1", "partition_list_treeview", "box2", "box3", "box4"]:
+        for name in ["partition_list_scrolledwindow", "partition_list_treeview", "box2", "box3", "box4"]:
             widget = self.ui.get_object(name)
             widget.set_sensitive(status)
         while Gtk.events_pending():

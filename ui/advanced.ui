@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.10"/>
   <object class="GtkDialog" id="changelist_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -20,12 +19,14 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="cancelbutton1">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="changelist_cancelbutton">
+                <property name="label">_Cancel</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -35,12 +36,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="okbutton1">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="changelist_okbutton">
+                <property name="label">_Apply</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -63,8 +66,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-5">okbutton1</action-widget>
-      <action-widget response="-6">cancelbutton1</action-widget>
+      <action-widget response="-5">changelist_okbutton</action-widget>
+      <action-widget response="-6">changelist_cancelbutton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="create_table_dialog">
@@ -93,12 +96,14 @@
             <property name="can_focus">False</property>
             <property name="layout_style">center</property>
             <child>
-              <object class="GtkButton" id="cancel3">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="create_table_dialog_cancel">
+                <property name="label">_Cancel</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -108,12 +113,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="ok3">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="create_table_dialog_ok">
+                <property name="label">_Apply</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -145,8 +152,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">cancel3</action-widget>
-      <action-widget response="-5">ok3</action-widget>
+      <action-widget response="-6">create_table_dialog_cancel</action-widget>
+      <action-widget response="-5">create_table_dialog_ok</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="edit_partition_dialog">
@@ -328,13 +335,14 @@
             </child>
             <child>
               <object class="GtkButton" id="edit_partition_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">_Cancel</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -345,7 +353,7 @@
             </child>
             <child>
               <object class="GtkButton" id="edit_partition_ok">
-                <property name="label">gtk-ok</property>
+                <property name="label">_Apply</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -353,6 +361,7 @@
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -738,13 +747,14 @@
             </child>
             <child>
               <object class="GtkButton" id="create_partition_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">_Cancel</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -755,7 +765,7 @@
             </child>
             <child>
               <object class="GtkButton" id="create_partition_ok">
-                <property name="label">gtk-ok</property>
+                <property name="label">_Apply</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -763,6 +773,7 @@
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -796,7 +807,7 @@
     <property name="margin_start">20</property>
     <property name="margin_end">20</property>
     <child>
-      <object class="GtkScrolledWindow" id="scrolledwindow1">
+      <object class="GtkScrolledWindow" id="partition_list_scrolledwindow">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="shadow_type">in</property>
@@ -856,7 +867,7 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_edit">
-            <property name="label">gtk-edit</property>
+            <property name="label">system-run</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -886,7 +897,8 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_new_label">
-            <property name="label" translatable="yes">New partition table</property>
+            <!-- <property name="label">New partition table</property> -->
+            <property name="label">edit-clear-all</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -901,7 +913,7 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_lvm">
-            <property name="label" translatable="yes">LVM...</property>
+            <property name="label">LVM...</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -1086,11 +1098,13 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="luks_cancel_button">
-                <property name="label">gtk-cancel</property>
+                <property name="label">_Cancel</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
@@ -1101,11 +1115,13 @@
             </child>
             <child>
               <object class="GtkButton" id="luks_ok_button">
-                <property name="label">gtk-ok</property>
+                <property name="label">_Apply</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
                 <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
