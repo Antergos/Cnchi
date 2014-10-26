@@ -82,7 +82,8 @@ class Features(GtkBaseBox):
         label2 = row2.get_children()[0].get_children()[1].get_children()[0]
 
         text = [label1.get_text(), label2.get_text()]
-        sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        #sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        sorted_text = misc.sort_list(text)
 
         # If strings are already well sorted return < 0
         if text[0] == sorted_text[0]:

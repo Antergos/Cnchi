@@ -101,6 +101,8 @@ class DesktopAsk(GtkBaseBox):
                 self.select_default_row(desktop_name)
 
     def select_default_row(self, desktop_name):
+        """ Selects default row
+            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[1]
@@ -117,10 +119,10 @@ class DesktopAsk(GtkBaseBox):
                 return
 
     def on_listbox_row_selected(self, listbox, listbox_row):
-        """ Someone selected a different row of the listbox """
+        """ Someone selected a different row of the listbox
+            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         if listbox_row is not None:
             for vbox in listbox_row:
-                #for label in vbox.get_children()[1]:
                 label = vbox.get_children()[1]
                 desktop = label.get_text()
                 self.set_desktop(desktop)

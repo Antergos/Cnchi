@@ -50,7 +50,7 @@ class Keymap(GtkBaseBox):
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
-        self.create_toolviews()
+        self.create_treeviews()
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -62,15 +62,15 @@ class Keymap(GtkBaseBox):
         lbl = self.ui.get_object("label_variants")
         lbl.set_markup(_("Keyboard Variants"))
 
-    def create_toolviews(self):
+    def create_treeviews(self):
         render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(_("Layouts"),render,text=0)
+        col = Gtk.TreeViewColumn(_("Layouts"), render, text=0)
         liststore = Gtk.ListStore(str)
         self.layout_treeview.append_column(col)
         self.layout_treeview.set_model(liststore)
 
         render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(_("Variants"),render,text=0)
+        col = Gtk.TreeViewColumn(_("Variants"), render, text=0)
         liststore = Gtk.ListStore(str)
         self.variant_treeview.append_column(col)
         self.variant_treeview.set_model(liststore)
@@ -88,8 +88,13 @@ class Keymap(GtkBaseBox):
             found = self.select_value_in_treeview(self.layout_treeview, selected_country)
 
             if found == False:
+                # Country was not found, let's choose USA as default
                 selected_country = "USA"
                 self.select_value_in_treeview(self.layout_treeview, selected_country)
+            else:
+                # Country was found, here we should put specific variant cases
+                if selected_country == "Spain" and self.settings.get("language_name") == "Catalan":
+                    self.select_value_in_treeview(self.variant_treeview, "Spain - Catalan variant with middle-dot L")
 
             logging.info(_("keyboard_layout is %s") % selected_country)
         
@@ -142,22 +147,22 @@ class Keymap(GtkBaseBox):
 
     def select_value_in_treeview(self, treeview, value):
         model = treeview.get_model()
-        treeiter = model.get_iter(0)
+        tree_iter = model.get_iter(0)
 
         index = 0
 
         found = False
 
-        while treeiter != None:
-            if model[treeiter][0] == value:
+        while tree_iter != None:
+            if model[tree_iter][0] == value:
                 treeview.set_cursor(index)
-                path = model.get_path(treeiter)
+                path = model.get_path(tree_iter)
                 GLib.idle_add(self.scroll_to_cell, treeview, path)
-                treeiter = None
+                tree_iter = None
                 found = True
             else:
                 index = index + 1
-                treeiter = model.iter_next(treeiter)
+                tree_iter = model.iter_next(tree_iter)
 
         return found
 
@@ -171,7 +176,6 @@ class Keymap(GtkBaseBox):
         if selected:
             (ls, iter) = selected.get_selected()
             if iter:
-
                 keyboard_layout = ls.get_value(iter, 0)
 
                 # Store layout selected
