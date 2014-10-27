@@ -103,12 +103,11 @@ class Updater():
 
         return False
 
-    def should_update_remote_file(self, remote_name, remote_md5):
+    def should_update_local_file(self, remote_name, remote_md5):
         """ Checks if remote file is different from the local one (just compares md5)"""
         for local_file in self.local_files:
-            if local_file['name'] == remote_name:
-                if local_file['md5'] != remote_md5:
-                    return True
+            if local_file['name'] == remote_name and local_file['md5'] != remote_md5:
+                return True
         return False
 
     def update(self):
@@ -155,7 +154,7 @@ class Updater():
         if request is not None:
             txt = request.read()
             
-            if self.get_md5(txt) != md5:
+            if self.get_md5(txt) != md5 and name != "update.info":
                 logging.error(_("Checksum error in %s. Download aborted"), name)
                 return False
             
