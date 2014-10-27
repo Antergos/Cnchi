@@ -68,9 +68,9 @@ class Location(GtkBaseBox):
         self.listbox.select_row(listbox_row)
 
     def hide_all(self):
-        names = [ "location_box", "label_help", "label_choose_country", \
-                     "box1", "eventbox1", "eventbox2", "scrolledwindow1", \
-                     "listbox_countries" ]
+        names = [
+            "location_box", "label_help", "label_choose_country", "box1",
+            "eventbox1", "eventbox2", "scrolledwindow1", "listbox_countries"]
 
         for name in names:
             control = self.ui.get_object(name)

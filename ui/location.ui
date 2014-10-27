@@ -7,8 +7,8 @@
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <property name="spacing">20</property>
-    <property name="margin_start">140</property>
-    <property name="margin_end">140</property>
+    <property name="margin_start">20</property>
+    <property name="margin_end">20</property>
     <property name="margin_bottom">10</property>
     <child>
       <object class="GtkLabel" id="label_help">
@@ -21,7 +21,7 @@ This is a shortlist of locations based on the language you selected.</property>
       </object>
       <packing>
         <property name="expand">False</property>
-        <property name="fill">True</property>
+        <property name="fill">False</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -41,6 +41,9 @@ This is a shortlist of locations based on the language you selected.</property>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">True</property>
+        <property name="homogeneous">True</property>
         <child>
           <object class="GtkEventBox" id="eventbox1">
             <property name="visible">True</property>
@@ -51,7 +54,7 @@ This is a shortlist of locations based on the language you selected.</property>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
@@ -70,7 +73,7 @@ This is a shortlist of locations based on the language you selected.</property>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>

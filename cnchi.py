@@ -289,7 +289,7 @@ def init_cnchi():
         sys.exit(1)
 
     # Always try to update cnchi when run
-    update_cnchi()
+    #update_cnchi()
 
     # Drop root privileges
     misc.drop_privileges()
