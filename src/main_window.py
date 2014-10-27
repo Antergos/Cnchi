@@ -261,10 +261,10 @@ class MainWindow(Gtk.ApplicationWindow):
             Gtk.main_iteration()
         
     def set_cursor(self, cursor_type):
-        cursor = Gdk.Cursor(cursor_type)
-        # FIXME: get_root_window is deprecated
-        window = self.get_root_window()
+        screen = Gdk.Screen.get_default()
+        window = Gdk.Screen.get_root_window(screen)
         if window:
+            cursor = Gdk.Cursor(cursor_type)
             window.set_cursor(cursor)
             self.refresh()
 
