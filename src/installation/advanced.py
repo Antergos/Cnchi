@@ -207,7 +207,7 @@ class InstallationAdvanced(GtkBaseBox):
         
         for grp in btns:
             (btn_id, icon) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)

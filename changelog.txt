@@ -39,6 +39,7 @@ Changelog
 - Added fluidsynth patch to change ALSA for PULSEAUDIO if necessary (backported to 0.6.x series)
 - Added ffmpegthumbnailer to Openbox WM
 - Avoid finishing with an empty antergos-mirrorslist
+- Added desktop icons in "choose desktop" screen
 
 Not fully finished, but improved:
 - Alongside installation
