@@ -154,7 +154,7 @@ class Updater():
         if request is not None:
             txt = request.read()
             
-            if self.get_md5(txt) != md5 and name != "update.info":
+            if self.get_md5(txt) != md5 and "update.info" not in name:
                 logging.error(_("Checksum error in %s. Download aborted"), name)
                 return False
             
