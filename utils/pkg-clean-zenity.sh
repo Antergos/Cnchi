@@ -8,7 +8,7 @@
 #clean2="pacman -Syy --noconfirm"
 
 #install_cinnamon="pacman -S antergos-gnome-defaults-list cdrkit cinnamon cinnamon-session cinnamon-control-center cinnamon-desktop cinnamon-settings-daemon cinnamon-menus cinnamon-screensaver cinnamon-theme-nadia cjs empathy eog evince faenza-icon-theme file-roller gedit gnome-calculator gnome-disk-utility gnome-keyring gnome-screenshot gnome-system-monitor gnome-terminal gnome-themes-standard gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly gst-vaapi gstreamer0.10-plugins gstreamer0.10-vaapi gvfs-mtp gvfs-smb hicolor-icon-theme libgnomeui muffin nemo network-manager-applet networkmanager-openvpn networkmanager-pptp telepathy totem transmission-gtk xdg-user-dirs-gtk xfburn xnoise zukitwo-themes lightdm lightdm-webkit-greeter lightdm-webkit-theme-antergos --noconfirm"
-#install_kde="pacman -S kde-meta-kdebase kde-meta-kdenetwork kdeplasma-applets-plasma-nm apper cdrdao digikam dvd+rw-tools emovix grub2-editor k3b kde-gtk-config kde-meta-kdeartwork kde-telepathy-meta kdeadmin-kuser kdegraphics-gwenview kdegraphics-ksnapshot kdegraphics-okular kdegraphics-thumbnailers kdemultimedia-ffmpegthumbs kdemultimedia-kmix kdepim-kmail kdepim-kontact kdeplasma-addons-applets-lancelot kdeplasma-addons-applets-notes kdesdk-dolphin-plugins kdesdk-kate kdeutils-ark kdeutils-kgpg kdeutils-kwallet kdeutils-sweeper kipi-plugins kwebkitpart kfaenza-icon-theme oxygen-gtk2 oxygen-gtk3 qt5-webkit transmission-qt ttf-bitstream-vera ttf-dejavu vlc webkitgtk xdg-user-dirs"
+#install_kde="pacman -S kde-meta-kdebase kde-meta-kdenetwork kdeplasma-applets-plasma-nm apper cdrdao digikam dvd+rw-tools emovix grub2-editor k3b kde-gtk-config kde-meta-kdeartwork kde-telepathy-meta kdeadmin-kuser kdegraphics-gwenview kdegraphics-ksnapshot kdegraphics-okular kdegraphics-thumbnailers kdemultimedia-ffmpegthumbs kdemultimedia-kmix kdepim-kmail kdepim-kontact kdeplasma-addons-applets-lancelot kdeplasma-addons-applets-notes kdesdk-dolphin-plugins kdesdk-kate kdeutils-ark kdeutils-kgpg kdeutils-kwalletmanager kdeutils-sweeper kipi-plugins kwebkitpart kfaenza-icon-theme oxygen-gtk2 oxygen-gtk3 qt5-webkit transmission-qt ttf-bitstream-vera ttf-dejavu vlc webkitgtk xdg-user-dirs"
 
 #echo "Remove GNOME/Cinnamon, Clear PKG Cache, Install KDE..."
 
@@ -66,7 +66,7 @@ do_install() {
 ZENITY=`which zenity`
 
 if [ "$ZENITY" == "" ]; then
-    pacman -S zenity
+    pacman -S zenity --noconfirm
 fi
 
 ZENITY=`which zenity`
