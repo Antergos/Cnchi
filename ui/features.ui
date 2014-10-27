@@ -5,10 +5,14 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">5</property>
+    <property name="margin_start">10</property>
+    <property name="margin_end">10</property>
+    <property name="margin_top">10</property>
+    <property name="margin_bottom">0</property>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow1">
-        <property name="height_request">300</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
@@ -27,7 +31,6 @@
                       <object class="GtkImage" id="image_aur">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">system-software-install</property>
                       </object>
@@ -84,8 +87,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -107,7 +108,6 @@
                       <object class="GtkImage" id="image_bluetooth">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">bluetooth</property>
                       </object>
@@ -164,8 +164,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -187,7 +185,6 @@
                       <object class="GtkImage" id="image_cups">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">printer</property>
                       </object>
@@ -244,8 +241,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -267,7 +262,6 @@
                       <object class="GtkImage" id="image_firewall">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">network-server</property>
                       </object>
@@ -328,8 +322,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -351,7 +343,6 @@
                       <object class="GtkImage" id="image_fonts">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">preferences-desktop-font</property>
                       </object>
@@ -412,8 +403,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -435,7 +424,6 @@
                       <object class="GtkImage" id="image_office">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">accessories-text-editor</property>
                       </object>
@@ -496,8 +484,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -519,7 +505,6 @@
                       <object class="GtkImage" id="image_third_party">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">system-software-update</property>
                       </object>
@@ -580,8 +565,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -603,7 +586,6 @@
                       <object class="GtkImage" id="image_visual">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">40</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">video-display</property>
                       </object>
@@ -664,8 +646,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
-                        <property name="margin_start">75</property>
-                        <property name="margin_end">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
