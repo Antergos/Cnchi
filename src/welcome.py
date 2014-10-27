@@ -129,8 +129,11 @@ class Welcome(GtkBaseBox):
         # Simulate a forward button click
         self.forward_button.emit("clicked")
 
-    def show_loading_message(self):
-        txt = _("Loading, please wait...")
+    def show_loading_message(self, show=True):
+        if show:
+            txt = _("Loading, please wait...")
+        else:
+            txt = ""
         self.label['loading'].set_markup(txt)
         self.label['loading'].queue_draw()
         refresh()
@@ -145,6 +148,8 @@ class Welcome(GtkBaseBox):
         self.forward_button.hide()
         if self.disable_tryit:
             self.button['tryit'].set_sensitive(False)
+        if direction == "backwards":
+            self.show_loading_message(show=False)
 
     def start_auto_timezone_thread(self):
         import timezone
