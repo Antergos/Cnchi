@@ -1477,7 +1477,7 @@ class InstallationAdvanced(GtkBaseBox):
                     msg = _(
                         'GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of '
                         'post-MBR embed gap in GPT disks.\n\n'
-                        'Cnchi will create this BIOS Boot Partition for you.'))
+                        'Cnchi will create this BIOS Boot Partition for you.')
                     show.warning(None, msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
