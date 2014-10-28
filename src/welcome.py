@@ -150,9 +150,6 @@ class Welcome(GtkBaseBox):
             self.button['tryit'].set_sensitive(False)
         if direction == "backwards":
             self.show_loading_message(show=False)
-        
-        #self.parent = self.get_parent_window()
-        #show.message(self.parent, "THIS IS A TEST!")
 
     def start_auto_timezone_thread(self):
         import timezone

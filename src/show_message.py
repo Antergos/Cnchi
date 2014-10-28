@@ -81,6 +81,7 @@ def message(parent, message):
                                    text=_("Antergos Installer - Information"))
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
+    msg_dialog.destroy()
 
 def question(parent, message):
     message = str(message)
