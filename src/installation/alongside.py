@@ -300,7 +300,7 @@ class InstallationAlongside(GtkBaseBox):
         else:
             txt = _("Can't shrink partition %s (maybe it's nearly full?)") % partition_path
             logging.warning(txt)
-            #show.error(None, txt)
+            #show.error(self.get_toplevel(), txt)
             return
 
         if self.new_size > 0 and self.is_room_available(row):
@@ -386,7 +386,7 @@ class InstallationAlongside(GtkBaseBox):
         if len(primary_partitions) >= 4:
             txt = _("There are too many primary partitions, can't create a new one")
             logging.error(txt)
-            show.error(None, txt)
+            show.error(self.get_toplevel(), txt)
             return False
 
         self.extended_path = extended_path
@@ -428,14 +428,14 @@ class InstallationAlongside(GtkBaseBox):
         else:
             txt = _("Can't shrink %s(%s) filesystem") % (otherOS, fs_type)
             logging.error(txt)
-            show.error(None, txt)
+            show.error(self.get_toplevel(), txt)
             return
 
         # res is either False or a parted.Geometry for the new free space
         if res is None:
             txt = _("Can't shrink %s(%s) partition") % (otherOS, fs_type)
             logging.error(txt)
-            show.error(None, txt)
+            show.error(self.get_toplevel(), txt)
             txt = _("*** FILESYSTEM IN UNSAFE STATE ***")
             txt += "\n"
             txt += _("Filesystem shrink succeeded but partition shrink failed.")
@@ -461,7 +461,7 @@ class InstallationAlongside(GtkBaseBox):
                 # Less than 2GB RAM and no swap? No way.
                 txt = _("Cannot create new swap partition. Not enough free space")
                 logging.error(txt)
-                show.error(None, txt)
+                show.error(self.get_toplevel(), txt)
                 return
             else:
                 no_swap = True
@@ -471,7 +471,7 @@ class InstallationAlongside(GtkBaseBox):
             if npart is None:
                 txt = _("Cannot create new partition.")
                 logging.error(txt)
-                show.error(None, txt)
+                show.error(self.get_toplevel(), txt)
                 return
             pm.finalize_changes(disk)
             mount_devices["/"] = npart.path
@@ -507,7 +507,7 @@ class InstallationAlongside(GtkBaseBox):
             if swappart is None:
                 txt = _("Cannot create new swap partition.")
                 logging.error(txt)
-                show.error(None, txt)
+                show.error(self.get_toplevel(), txt)
                 return
 
             # Create new partition for /
@@ -519,7 +519,7 @@ class InstallationAlongside(GtkBaseBox):
             if npart is None:
                 txt = _("Cannot create new partition.")
                 logging.error(txt)
-                show.error(None, txt)
+                show.error(self.get_toplevel(), txt)
                 return
 
             pm.finalize_changes(disk)

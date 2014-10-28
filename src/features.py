@@ -299,8 +299,12 @@ class Features(GtkBaseBox):
         txt1 = "<big>%s</big>" % txt1
         txt2 = "<i>%s</i>" % txt2
 
-        info = Gtk.MessageDialog(transient_for=None, modal=True, destroy_with_parent=True,
-                                 message_type=Gtk.MessageType.INFO, buttons=Gtk.ButtonsType.CLOSE)
+        info = Gtk.MessageDialog(
+            transient_for=self.get_toplevel(),
+            modal=True,
+            destroy_with_parent=True,
+            message_type=Gtk.MessageType.INFO,
+            buttons=Gtk.ButtonsType.CLOSE)
         info.set_markup(txt1)                                        
         info.format_secondary_markup(txt2)
         info.run()

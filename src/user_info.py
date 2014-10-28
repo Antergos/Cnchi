@@ -176,7 +176,7 @@ class UserInfo(GtkBaseBox):
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
             message = _("Are you sure you want to encrypt your home directory?")
-            res = show.question(None, message)
+            res = show.question(self.get_toplevel(), message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
 
