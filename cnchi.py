@@ -104,10 +104,13 @@ def setup_logging():
         "%Y-%m-%d %H:%M:%S")
 
     # Create file handler
-    file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
-    file_handler.setLevel(log_level)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    try:
+        file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
+        file_handler.setLevel(log_level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    except PermissionError as err:
+        print("Can't open /tmp/cnchi.log")
 
     if cmd_line.verbose:
         # Show log messages to stdout

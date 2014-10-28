@@ -33,7 +33,7 @@ import multiprocessing
 
 _show_event_queue_messages = True
 
-def fatal_error(message, parent=None):
+def fatal_error(parent, message):
     # Remove /tmp/.setup-running
     p = "/tmp/.setup-running"
     if os.path.exists(p):
@@ -41,10 +41,10 @@ def fatal_error(message, parent=None):
 
     multiprocessing.active_children()
 
-    error(message, parent)
+    error(parent, message)
     sys.exit(1)
 
-def error(message, parent=None):
+def error(parent, message):
     message = str(message)
     logging.error(message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
@@ -57,7 +57,7 @@ def error(message, parent=None):
     msg_dialog.run()
     msg_dialog.destroy()
 
-def warning(message, parent=None):
+def warning(parent, message):
     message = str(message)
     logging.warning(message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
@@ -70,7 +70,7 @@ def warning(message, parent=None):
     msg_dialog.run()
     msg_dialog.destroy()
 
-def message(message, parent=None):
+def message(parent, message):
     message = str(message)
     logging.info(message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
@@ -82,7 +82,7 @@ def message(message, parent=None):
     msg_dialog.format_secondary_text(message)
     msg_dialog.run()
 
-def question(message, parent=None):
+def question(parent, message):
     message = str(message)
     logging.info(message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,

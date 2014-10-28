@@ -28,7 +28,6 @@ import subprocess
 import shlex
 import canonical.misc as misc
 import logging
-import show_message as show
 
 @misc.raise_privileges
 def get_used_ntfs(part):

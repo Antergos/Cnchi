@@ -29,7 +29,6 @@ import config
 import os
 import canonical.keyboard_names as keyboard_names
 import logging
-import show_message as show
 import canonical.misc as misc
 import subprocess
 import keyboard_widget

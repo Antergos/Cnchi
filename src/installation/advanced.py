@@ -726,9 +726,9 @@ class InstallationAdvanced(GtkBaseBox):
             new_mount = mount_combo_entry.get_text().strip()
 
             if new_mount in self.diskdic['mounts'] and new_mount != row[COL_MOUNT_POINT]:
-                show.warning(_("Can't use same mount point twice."))
+                show.warning(None, _("Can't use same mount point twice."))
             elif new_mount == "/" and not format_check.get_active():
-                show.warning(_('Root partition must be formatted.'))
+                show.warning(None, _('Root partition must be formatted.'))
             else:
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
@@ -1010,7 +1010,7 @@ class InstallationAdvanced(GtkBaseBox):
             mylabel = label_entry.get_text()
             mymount = mount_combo.get_text().strip()
             if mymount in self.diskdic['mounts']:
-                show.warning(_("Can't use same mount point twice..."))
+                show.warning(None, _("Can't use same mount point twice..."))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
@@ -1474,10 +1474,11 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
-                    show.warning(_(
+                    msg = _(
                         'GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of '
                         'post-MBR embed gap in GPT disks.\n\n'
                         'Cnchi will create this BIOS Boot Partition for you.'))
+                    show.warning(None, msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
         dialog.hide()
@@ -1508,7 +1509,7 @@ class InstallationAdvanced(GtkBaseBox):
             # BIOS GPT Boot partition must be the first one on the disk
             txt = _("Can't create BIOS GPT Boot partition!")
             logging.error(txt)
-            show.error(txt)
+            show.error(None, txt)
             return
 
         #max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
@@ -1536,7 +1537,7 @@ class InstallationAdvanced(GtkBaseBox):
             txt = _("Couldn't create BIOS GPT Boot partition")
             logging.error(txt)
             logging.error(err)
-            show.error(txt)
+            show.error(None, txt)
 
         # Store stage partition info in self.stage_opts
         old_parts = []
@@ -1731,7 +1732,7 @@ class InstallationAdvanced(GtkBaseBox):
                                     subp = subprocess.Popen(['umount', '-l', partition_path], stdout=subprocess.PIPE)
                                     logging.debug(_("%s unmounted"), mount_point)
                                 elif mounted:
-                                    response = show.question(msg)
+                                    response = show.question(None, msg)
                                     if response != Gtk.ResponseType.YES:
                                         # User doesn't want to unmount, we can't go on.
                                         return []
@@ -2011,7 +2012,7 @@ class InstallationAdvanced(GtkBaseBox):
                                     txt = _("Couldn't format partition '%s' with label '%s' as '%s'") % (partition_path, lbl, fisy)
                                     logging.error(txt)
                                     logging.error(msg)
-                                    show.error(txt)
+                                    show.error(None, txt)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
                                 if not self.testing:

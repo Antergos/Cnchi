@@ -179,14 +179,14 @@ class Slides(GtkBaseBox):
                                   "configured. The Arch Linux Wiki contains troubleshooting information:\n"
                                   "\thttps://wiki.archlinux.org/index.php/GRUB\n"
                                   "\nWould you like to view the wiki page now?")
-                    response = show.question(boot_warn)
+                    response = show.question(None, boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
                         misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
                 install_ok = _("Installation Complete!\nDo you want to restart your system now?")
-                response = show.question(install_ok)
+                response = show.question(None, install_ok)
                 self.remove_temp_files()
                 self.settings.set('stop_all_threads', True)
                 logging.shutdown()
@@ -201,10 +201,11 @@ class Slides(GtkBaseBox):
                 self.empty_queue()
 
                 # Show the error
-                show.fatal_error(event[1])
+                show.fatal_error(None, event[1])
 
                 # Ask if user wants to retry
-                res = show.question(_("Do you want to retry the installation using the same configuration?"))
+                msg = _("Do you want to retry the installation using the same configuration?")
+                res = show.question(None, msg)
                 if res == GTK_RESPONSE_YES:
                     # Restart installation process
                     logging.debug(_("Restarting installation process..."))

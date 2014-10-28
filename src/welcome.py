@@ -120,7 +120,7 @@ class Welcome(GtkBaseBox):
         except Exception as err:
             msg = str(err)
             logging.error(msg)
-            show.error(msg)
+            show.error(None, msg)
 
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()

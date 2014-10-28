@@ -75,8 +75,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Check if we have administrative privileges
         if os.getuid() != 0:
-            show.error(_('This installer must be run with administrative'
-                         ' privileges, and cannot continue without them.'))
+            msg = _('This installer must be run with administrative privileges, '
+                'and cannot continue without them.')
+            show.error(self, msg)
             sys.exit(1)
 
         # Check if we're already running
@@ -86,7 +87,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 'If you are sure that the installer is not already running\n'
                 'you can manually delete the file %s\n'
                 'and run this installer again.') % tmp_running
-            show.error(msg, parent=self)
+            show.error(self, msg)
             sys.exit(1)
 
         logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)

@@ -28,7 +28,6 @@ from gi.repository import Gtk, GLib
 import config
 import os
 import logging
-import show_message as show
 import xml.etree.ElementTree as etree
 
 from gtkbasebox import GtkBaseBox

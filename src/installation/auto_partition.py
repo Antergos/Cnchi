@@ -268,7 +268,7 @@ class AutoPartition(object):
             if fs_type not in mkfs.keys():
                 txt = _("Unknown filesystem type %s") % fs_type
                 logging.error(txt)
-                show.error(txt)
+                show.error(None, txt)
                 return
 
             command = mkfs[fs_type]
@@ -280,7 +280,7 @@ class AutoPartition(object):
                 logging.error(txt)
                 logging.error(err.cmd)
                 logging.error(err.output)
-                show.error(txt)
+                show.error(None, txt)
                 return
 
             # Flush filesystem buffers
@@ -507,7 +507,7 @@ class AutoPartition(object):
             txt = _("Setup cannot detect size of your device, please use advanced "
                 "installation routine for partitioning and mounting devices.")
             logging.error(txt)
-            show.warning(txt)
+            show.warning(None, txt)
             return
 
         start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size

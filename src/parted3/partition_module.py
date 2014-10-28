@@ -110,7 +110,8 @@ def get_devices():
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as err:
                 logging.error(err)
-                show.error(_("Exception: %s.\nFor more information take a look at /tmp/cnchi.log") % err)
+                msg = _("Exception: %s.\nFor more information take a look at /tmp/cnchi.log") % err
+                show.error(None, msg)
                 diskob = None
                 result = UNKNOWN_ERROR
             finally:
@@ -180,8 +181,8 @@ def delete_partition(diskob, part):
         txt = _("Can't delete partition %s") % part
         logging.error(txt)
         logging.error(e)
-        debugtxt = ("%s\n%s" % (txt, err)) 
-        show.error(debugtxt)        
+        debug_txt = "%s\n%s" % (txt, err)
+        show.error(None, debug_txt)
 
 def get_partition_size(diskob, part):
     dev = diskob.device
@@ -230,7 +231,7 @@ def create_partition(diskob, part_type, geom):
     if diskob.maxPartitionLength < maxgeom.length:
         txt = _('Partition is too large!')
         logging.error(txt)
-        show.error(txt)
+        show.error(None, txt)
         return None
     else:
         npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
@@ -290,8 +291,8 @@ def get_used_space_from_path(path):
         txt = _("Can't detect used space from %s") % path
         logging.error(txt)
         logging.error(err)
-        debugtxt = ("%s\n%s" % (txt, err)) 
-        show.error(debugtxt)
+        debug_txt = "%s\n%s" % (txt, err)
+        show.error(debug_txt)
 
     return used_space
 
