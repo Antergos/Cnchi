@@ -295,8 +295,7 @@ class MainWindow(Gtk.ApplicationWindow):
         pages = [
             "welcome", "language", "location", "check", "desktop",
             "features", "keymap", "timezone", "installation_ask",
-            "installation_automatic", "installation_alongside",
-            "installation_advanced", "user_info"]
+            "installation_automatic", "installation_alongside", "installation_advanced"]
         
         for name in pages:
             page = self.pages.pop(name, None)
