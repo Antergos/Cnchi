@@ -190,8 +190,13 @@ class InstallationAutomatic(GtkBaseBox):
     def show_warning(self):
         txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s")
         txt = txt % self.device_store.get_active_text()
-        message = Gtk.MessageDialog(transient_for=None, modal=True, destroy_with_parent=True,
-                          message_type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO, text=txt)
+        message = Gtk.MessageDialog(
+            transient_for=self.get_toplevel(),
+            modal=True,
+            destroy_with_parent=True,
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            text=txt)
         response = message.run()
         message.destroy()
         return response
