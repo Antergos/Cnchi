@@ -43,6 +43,7 @@
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
+        <!--<pkgname>chromium-pepper-flash</pkgname> Uncomment once Alex updates repo -->
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -51,6 +52,7 @@
         <pkgname>gst-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
         <pkgname>gstreamer0.10-vaapi</pkgname>
+        <pkgname>libdvdcss</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
@@ -426,10 +428,10 @@
             <pkgname>ufw</pkgname>
         </firewall>
         <!-- Third party software. Some of it is proprietary -->
-        <third_party>
+        <!--<third_party>
             <pkgname>flashplugin</pkgname>
             <pkgname>libdvdcss</pkgname>
-        </third_party>
+        </third_party>-->
     </user_features>
 
     <net>

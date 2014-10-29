@@ -227,12 +227,12 @@ class Features(GtkBaseBox):
         self.labels["firewall"].set_tooltip_markup(txt)
 
         # Proprietary packages (third_party)
-        txt = _("Proprietary Software")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["third_party"].set_markup(txt)
-        txt = _("Software to play Flash videos, MP3 audio, and other media.")
-        txt = "<span size='small'>%s</span>" % txt
-        self.labels["third_party"].set_markup(txt)
+        # txt = _("Proprietary Software")
+        # txt = "<span weight='bold' size='large'>%s</span>" % txt
+        # self.titles["third_party"].set_markup(txt)
+        # txt = _("Software to play Flash videos, MP3 audio, and other media.")
+        # txt = "<span size='small'>%s</span>" % txt
+        # self.labels["third_party"].set_markup(txt)
 
         # Sort listbox items
         self.listbox.invalidate_sort()
