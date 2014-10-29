@@ -31,6 +31,8 @@ import time
 import os
 import shutil
 import canonical.misc as misc
+import requests
+
 
 class AutoRankmirrorsThread(threading.Thread):
     """ Thread class that downloads and sorts the mirrorlist """
@@ -40,6 +42,19 @@ class AutoRankmirrorsThread(threading.Thread):
         self.rankmirrors_pid = None
         self.script = "/usr/share/cnchi/scripts/update-mirrors.sh"
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
+        self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
+        self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
+
+    def check_status(self, mirrors=None, url=None ):
+        if mirrors is None or url is None:
+            return False
+        for mirror in mirrors:
+            if url == mirror['url'] and mirror['completion_pct'] == 1:
+                return True
+            else:
+                continue
+
+        return False
 
     def run(self):
         """ Run thread """
@@ -79,7 +94,29 @@ class AutoRankmirrorsThread(threading.Thread):
         try:
             with misc.raised_privileges():
                 self.rankmirrors_pid = subprocess.Popen([self.script]).pid
+
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
-            logging.error(err)
+
+        # Check arch mirrorlist against mirror status data, remove any bad mirrors.
+        if os.path.exists(self.arch_mirrorlist):
+            status = requests.get(self.arch_mirror_status).json()
+            mirrors = status['urls']
+            with open(self.arch_mirrorlist) as arch_mirrors:
+                lines = [x.strip() for x in arch_mirrors.readlines()]
+
+            for i in range(len(lines)):
+                if lines[i].startswith("Server"):
+                    url = lines[i].split('=')[1]
+                    check = self.check_status(mirrors, url)
+                    if not check:
+                        lines[i] = "#" + lines[i]
+
+            with misc.raised_privileges():
+                # Backup original file
+                shutil.copy(self.arch_mirrorlist, self.arch_mirrorlist + ".cnchi")
+                # Write new one
+                with open(self.arch_mirrorlist, 'w') as arch_mirrors:
+                    arch_mirrors.write("\n".join(lines) + "\n")
+
         logging.debug(_("Auto mirror selection has been run successfully"))

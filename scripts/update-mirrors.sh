@@ -7,7 +7,7 @@
 # will output the speed test results to STDOUT.
 
 if [ -f /usr/bin/reflector ]; then
-    reflector -l 30 -p http -f 10 --save /etc/pacman.d/mirrorlist
+    reflector -l 30 -p http -f 20 --save /etc/pacman.d/mirrorlist
 fi
 
 # Remember that running rankmirrors takes time. We use a .new file to avoid getting an empty antergos-mirrorlist
