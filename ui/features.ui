@@ -495,6 +495,7 @@
                 </child>
               </object>
             </child>
+            <!--
             <child>
               <object class="GtkListBoxRow" id="third_party-row">
                 <child>
@@ -576,6 +577,7 @@
                 </child>
               </object>
             </child>
+            -->
             <child>
               <object class="GtkListBoxRow" id="visual-row">
                 <child>
