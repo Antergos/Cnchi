@@ -44,14 +44,13 @@ class AutoRankmirrorsThread(threading.Thread):
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
 
-    def check_status(self, mirrors=None, url=None ):
+    def check_status(self, mirrors=None, url=None):
         if mirrors is None or url is None:
             return False
+
         for mirror in mirrors:
             if url == mirror['url'] and mirror['completion_pct'] == 1:
                 return True
-            else:
-                continue
 
         return False
 
@@ -99,8 +98,12 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Check arch mirrorlist against mirror status data, remove any bad mirrors.
         if os.path.exists(self.arch_mirrorlist):
-            status = requests.get(self.arch_mirror_status).json()
-            mirrors = status['urls']
+            # Use session to avoid silly warning
+            # See https://github.com/kennethreitz/requests/issues/1882
+            with requests.Session() as session:
+                status = session.get(self.arch_mirror_status).json()
+                mirrors = status['urls']
+            
             with open(self.arch_mirrorlist) as arch_mirrors:
                 lines = [x.strip() for x in arch_mirrors.readlines()]
 

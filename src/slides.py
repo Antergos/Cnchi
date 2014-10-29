@@ -53,26 +53,9 @@ class Slides(GtkBaseBox):
         self.info_label = self.ui.get_object("info_label")
         self.scrolled_window = self.ui.get_object("scrolledwindow")
 
-        # Add a webkit view to show the slides
-        self.webview = WebKit.WebView()
-
-        if self.settings is None:
-            html_file = '/usr/share/cnchi/data/slides.html'
-        else:
-            html_file = os.path.join(self.settings.get('data'), 'slides.html')
-
-        try:
-            with open(html_file) as html_stream:
-                html = html_stream.read(None)
-                data = os.path.join(os.getcwd(), "data")
-                self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
-        except IOError:
-            pass
-
-        self.scrolled_window.add(self.webview)
-
         self.fatal_error = False
         self.should_pulse = False
+        self.webview = None
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -82,6 +65,23 @@ class Slides(GtkBaseBox):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def prepare(self, direction):
+        # We don't load webkit until we reach this screen
+        if self.webview == None:
+            # Add a webkit view to show the slides
+            self.webview = WebKit.WebView()
+            if self.settings is None:
+                html_file = '/usr/share/cnchi/data/slides.html'
+            else:
+                html_file = os.path.join(self.settings.get('data'), 'slides.html')
+            try:
+                with open(html_file) as html_stream:
+                    html = html_stream.read(None)
+                    data = os.path.join(os.getcwd(), "data")
+                    self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
+            except IOError:
+                pass
+            self.scrolled_window.add(self.webview)
+
         self.translate_ui()
         self.show_all()
 
@@ -130,7 +130,9 @@ class Slides(GtkBaseBox):
 
     @misc.raise_privileges
     def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+        tmp_files = [
+            ".setup-running", ".km-running", "setup-pacman-running",
+            "setup-mkinitcpio-running", ".tz-running", ".setup"]
         for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
@@ -206,7 +208,7 @@ class Slides(GtkBaseBox):
                 # Ask if user wants to retry
                 msg = _("Do you want to retry the installation using the same configuration?")
                 res = show.question(self.get_toplevel(), msg)
-                if res == GTK_RESPONSE_YES:
+                if res == Gtk.ResponseType.YES:
                     # Restart installation process
                     logging.debug(_("Restarting installation process..."))
                     p = self.settings.get('installer_thread_call')

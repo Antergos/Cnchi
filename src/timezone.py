@@ -63,16 +63,6 @@ class Timezone(GtkBaseBox):
         # This is for populate_cities
         self.old_zone = None
 
-        # Setup window
-        self.tzmap = TimezoneMap.TimezoneMap()
-        self.tzmap.connect('location-changed', self.on_location_changed)
-
-        # Strip .UTF-8 from locale, icu doesn't parse it
-        self.locale = os.environ['LANG'].rsplit('.', 1)[0]
-
-        self.map_window.add(self.tzmap)
-        self.tzmap.show()
-
         # Autotimezone thread will store detected coords in this queue
         self.auto_timezone_coords = multiprocessing.Queue()
 
@@ -86,6 +76,15 @@ class Timezone(GtkBaseBox):
         #self.start_mirrorlist_thread()
 
         self.autodetected_coords = None
+
+        # Setup window
+        self.tzmap = TimezoneMap.TimezoneMap()
+        self.tzmap.connect('location-changed', self.on_location_changed)
+
+        # Strip .UTF-8 from locale, icu doesn't parse it
+        self.locale = os.environ['LANG'].rsplit('.', 1)[0]
+        self.map_window.add(self.tzmap)
+        self.tzmap.show()
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -241,7 +240,6 @@ class Timezone(GtkBaseBox):
 
         # This way installer_process will know all info has been entered
         self.settings.set("timezone_done", True)
-
         return True
 
     def stop_threads(self):

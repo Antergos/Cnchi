@@ -72,7 +72,6 @@ def remove_temp_files():
 
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
-    @profile
     def __init__(self, app, cmd_line):
         Gtk.Window.__init__(self, title="Cnchi", application=app)
 
@@ -290,6 +289,22 @@ class MainWindow(Gtk.ApplicationWindow):
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
+    @profile
+    def del_pages(self):
+        """ Delete used pages that we can't go back to """
+        self.pages.pop("welcome", None)
+        self.pages.pop("language", None)
+        self.pages.pop("location", None)
+        self.pages.pop("check", None)
+        self.pages.pop("desktop", None)
+        self.pages.pop("features", None)
+        self.pages.pop("keymap", None)
+        self.pages.pop("timezone", None)
+        self.pages.pop("installation_ask", None)
+        self.pages.pop("installation_automatic", None)
+        self.pages.pop("installation_alongside", None)
+        self.pages.pop("installation_advanced", None)
+
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
@@ -353,8 +368,11 @@ class MainWindow(Gtk.ApplicationWindow):
                         self.backwards_button.show()
                         self.backwards_button.set_sensitive(True)
                     else:
+                        # We can't go back, hide back button
                         self.backwards_button.hide()
-
+                        # Delete previous screens to free some memory
+                        self.del_pages()
+    @profile
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
         prev_page = self.current_page.get_prev_page()
