@@ -417,6 +417,8 @@ class InstallationProcess(multiprocessing.Process):
         
         if self.settings.get("cache"):
             cache_dir = self.settings.get("cache")
+        else:
+            cache_dir = None
 
         if self.settings.get("use_aria2"):
             use_aria2 = True
