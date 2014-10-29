@@ -328,7 +328,7 @@ class AutoTimezoneThread(threading.Thread):
         if coords != 'error':
             coords = coords.split()
             self.coords_queue.put(coords)
-            logging.info(_("Timezone detected."))
+            #logging.info(_("Timezone detected."))
         #else:
         #    logging.info(_("Can't detect user timezone."))
 

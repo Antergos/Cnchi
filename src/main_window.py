@@ -292,18 +292,16 @@ class MainWindow(Gtk.ApplicationWindow):
     @profile
     def del_pages(self):
         """ Delete used pages that we can't go back to """
-        self.pages.pop("welcome", None)
-        self.pages.pop("language", None)
-        self.pages.pop("location", None)
-        self.pages.pop("check", None)
-        self.pages.pop("desktop", None)
-        self.pages.pop("features", None)
-        self.pages.pop("keymap", None)
-        self.pages.pop("timezone", None)
-        self.pages.pop("installation_ask", None)
-        self.pages.pop("installation_automatic", None)
-        self.pages.pop("installation_alongside", None)
-        self.pages.pop("installation_advanced", None)
+        pages = [
+            "welcome", "language", "location", "check", "desktop",
+            "features", "keymap", "timezone", "installation_ask",
+            "installation_automatic", "installation_alongside",
+            "installation_advanced", "user_info"]
+        
+        for name in pages:
+            page = self.pages.pop(name, None)
+            if page != None:
+                del page
 
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
