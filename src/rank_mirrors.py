@@ -44,14 +44,10 @@ class AutoRankmirrorsThread(threading.Thread):
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
 
-    def check_status(self, mirrors=None, url=None):
-        if mirrors is None or url is None:
-            return False
-
+    def check_mirror_status(self, mirrors, url):
         for mirror in mirrors:
-            if url == mirror['url'] and mirror['completion_pct'] == 1:
+            if mirror['url'] in url and mirror['completion_pct'] == 1:
                 return True
-
         return False
 
     def run(self):
@@ -67,7 +63,7 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.warning(_("Can't find update mirrors script"))
             return
 
-        # Uncomment antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
+        # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
         
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
@@ -77,13 +73,15 @@ class AutoRankmirrorsThread(threading.Thread):
         
             for i in range(len(lines)):
                 if lines[i].startswith("Server") and autoselect in lines[i]:
+                    # Comment out auto selection
                     lines[i] = "#" + lines[i]
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
+                    # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
                     
             with misc.raised_privileges():
                 # Backup original file
-                shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi")
+                shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi_backup")
                 # Write new one
                 with open(self.antergos_mirrorlist, 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
@@ -108,15 +106,21 @@ class AutoRankmirrorsThread(threading.Thread):
                 lines = [x.strip() for x in arch_mirrors.readlines()]
 
             for i in range(len(lines)):
-                if lines[i].startswith("Server"):
-                    url = lines[i].split('=')[1]
-                    check = self.check_status(mirrors, url)
-                    if not check:
+                server_uncommented = lines[i].startswith("Server")
+                server_commented = lines[i].startswith("#Server")
+                if server_commented or server_uncommented:
+                    url = lines[i].split('=')[1].strip()
+                    check = self.check_mirror_status(mirrors, url)
+                    if not check and server_uncommented:
+                        # Bad mirror, comment it
                         lines[i] = "#" + lines[i]
+                    if check and server_commented:
+                        # It's a good mirror, uncomment it
+                        lines[i] = lines[i].lstrip("#")
 
             with misc.raised_privileges():
                 # Backup original file
-                shutil.copy(self.arch_mirrorlist, self.arch_mirrorlist + ".cnchi")
+                shutil.copy(self.arch_mirrorlist, self.arch_mirrorlist + ".cnchi_backup")
                 # Write new one
                 with open(self.arch_mirrorlist, 'w') as arch_mirrors:
                     arch_mirrors.write("\n".join(lines) + "\n")
