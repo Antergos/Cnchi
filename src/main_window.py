@@ -301,6 +301,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for name in pages:
             page = self.pages.pop(name, None)
             if page != None:
+                page.destroy()
                 del page
 
     def set_geometry(self):
