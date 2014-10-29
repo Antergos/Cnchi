@@ -52,8 +52,6 @@ from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
-from memory_profiler import profile
-
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
@@ -289,22 +287,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-    @profile
-    def del_pages(self):
-        """ Delete used pages that we can't go back to """
-        page_names = [
-            "welcome", "language", "location", "check", "desktop",
-            "features", "keymap", "timezone", "installation_ask",
-            "installation_automatic", "installation_alongside", "installation_advanced"]
-        
-        for name in page_names:
-            #page = self.pages.pop(name, None)
-            #if page != None:
-                #page.destroy()
-                #del page
-            self.pages[name].destroy()
-            del self.pages[name]
-
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
@@ -341,7 +323,6 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.progressbar.hide()
 
-    @profile
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.current_page.get_next_page()
@@ -370,9 +351,6 @@ class MainWindow(Gtk.ApplicationWindow):
                     else:
                         # We can't go back, hide back button
                         self.backwards_button.hide()
-                        # When we reach user_info, delete previous screens to free some memory
-                        if next_page == "user_info":
-                            self.del_pages()
 
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
