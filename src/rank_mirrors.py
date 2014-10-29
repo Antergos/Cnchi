@@ -33,7 +33,6 @@ import shutil
 import canonical.misc as misc
 import requests
 
-
 class AutoRankmirrorsThread(threading.Thread):
     """ Thread class that downloads and sorts the mirrorlist """
     def __init__(self):

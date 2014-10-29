@@ -52,6 +52,8 @@ from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
+#from memory_profiler import profile
+
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
@@ -269,6 +271,7 @@ class MainWindow(Gtk.ApplicationWindow):
             window.set_cursor(cursor)
             self.refresh()
 
+    #   @profile
     def load_pages(self):
         self.set_cursor(Gdk.CursorType.WATCH)
         self.pages["language"] = language.Language(self.params)

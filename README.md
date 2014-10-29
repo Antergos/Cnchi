@@ -28,6 +28,7 @@ We manage our translations in transifex:
  - python-dbus
  - python-gobject
  - python-mako
+ - python-requests
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (pacman)
  - libtimezonemap
