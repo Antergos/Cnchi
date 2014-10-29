@@ -292,16 +292,18 @@ class MainWindow(Gtk.ApplicationWindow):
     @profile
     def del_pages(self):
         """ Delete used pages that we can't go back to """
-        pages = [
+        page_names = [
             "welcome", "language", "location", "check", "desktop",
             "features", "keymap", "timezone", "installation_ask",
             "installation_automatic", "installation_alongside", "installation_advanced"]
         
-        for name in pages:
-            page = self.pages.pop(name, None)
-            if page != None:
-                page.destroy()
-                del page
+        for name in page_names:
+            #page = self.pages.pop(name, None)
+            #if page != None:
+                #page.destroy()
+                #del page
+            self.pages[name].destroy()
+            del self.pages[name]
 
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -368,9 +370,10 @@ class MainWindow(Gtk.ApplicationWindow):
                     else:
                         # We can't go back, hide back button
                         self.backwards_button.hide()
-                        # Delete previous screens to free some memory
-                        self.del_pages()
-    @profile
+                        # When we reach user_info, delete previous screens to free some memory
+                        if next_page == "user_info":
+                            self.del_pages()
+
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
         prev_page = self.current_page.get_prev_page()
