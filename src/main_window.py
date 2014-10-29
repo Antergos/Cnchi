@@ -52,7 +52,7 @@ from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
-#from memory_profiler import profile
+from memory_profiler import profile
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
@@ -72,6 +72,7 @@ def remove_temp_files():
 
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
+    @profile
     def __init__(self, app, cmd_line):
         Gtk.Window.__init__(self, title="Cnchi", application=app)
 
@@ -172,9 +173,7 @@ class MainWindow(Gtk.ApplicationWindow):
             
         self.set_titlebar(self.header)
 
-        # Load all pages
-        # (each one is a screen, a step in the install process)
-
+        # Prepare params dict to pass common parameters to all screens
         self.params = dict()
         self.params['header'] = self.header
         self.params['ui_dir'] = self.ui_dir
@@ -271,7 +270,6 @@ class MainWindow(Gtk.ApplicationWindow):
             window.set_cursor(cursor)
             self.refresh()
 
-    #   @profile
     def load_pages(self):
         self.set_cursor(Gdk.CursorType.WATCH)
         self.pages["language"] = language.Language(self.params)
@@ -328,6 +326,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.progressbar.hide()
 
+    @profile
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.current_page.get_next_page()
