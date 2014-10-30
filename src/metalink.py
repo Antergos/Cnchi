@@ -25,10 +25,17 @@
 import logging
 import xml.etree.ElementTree as ET
 
+_PM2ML = True
+try:
+    import pm2ml
+except ImportError:
+    _PM2ML = False
+
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
     metalink_info = {}
+    
     TAG = "{urn:ietf:params:xml:ns:metalink}"
     root = ET.fromstring(str(metalink))
 
@@ -61,6 +68,10 @@ def get_info(metalink):
 
 def create(package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
+
+    if _PM2ML is False:
+        return None
+
     args = ["-c", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
 
     if package_name is "databases":
