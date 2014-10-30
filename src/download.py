@@ -50,7 +50,7 @@ def url_open_read(url_open, chunk_size=8192):
     try:
         data = url_open.read(chunk_size)
         download_error = False
-    except urllib.HTTPError as e:
+    except urllib.HTTPError as err:
         msg += ' HTTPError : %s' % err.reason
         logging.exception(msg)
     except urllib.URLError as err:
@@ -156,11 +156,12 @@ class DownloadPackages(object):
         percent = 0
         processed_packages = 0
         total_packages = len(package_names)
+
         for package_name in package_names:
             metalink = ml.create(package_name, self.pacman_conf_file)
             if metalink == None:
-                msg = "Error creating metalink for package %s"
-                logging.error(msg, package_name)
+                msg = _("Error creating metalink for package %s") % package_name
+                logging.error(msg)
                 continue
 
             # Update downloads dict with the new info
@@ -168,7 +169,7 @@ class DownloadPackages(object):
             downloads.update(ml.get_info(metalink))
             
             # Show progress to the user
-            processed_packages = processed_packages + 1
+            processed_packages += 1
             percent = round(float(processed_packages / total_packages), 2)
             self.queue_event('percent', percent)
 
@@ -179,7 +180,6 @@ class DownloadPackages(object):
             txt = _("Downloading %s %s (%d/%d)...")
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
-            #print(txt)
             filename = os.path.join(self.pacman_cache_dir, element['filename'])
             completed_length = 0
             total_length = int(element['size'])
@@ -249,6 +249,7 @@ class DownloadPackages(object):
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
+
         if self.callback_queue is None:
             logging.debug(event_text)
             return
@@ -272,7 +273,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(filename="/tmp/cnchi-download-test.log", level=logging.DEBUG)
 
-    DownloadPackages(package_names=["gnome"], cache_dir="", pacman_cache_dir="/tmp/pkg")
+    DownloadPackages(package_names=["kde"], cache_dir="", pacman_cache_dir="/tmp/pkg")
 
     #DownloadPackages(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
     #DownloadPackages(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
