@@ -147,7 +147,7 @@ class Pac(object):
                 trans.add_pkg(pkg)
                 pkg_names.append(pkg.name)
 
-        # If we use cached packages this is going to be WRONG
+        # FIXME: If we use cached packages or group packages this is going to be WRONG
         self.total_packages_to_download = len(pkg_names)
         
         logging.debug(_("Finalize transaction..."))
@@ -167,11 +167,10 @@ class Pac(object):
             ok, pkg = self.find_sync_package(name, repos)
             if ok:
                 # Check that added package is not in our conflicts list
-                # Ex: gnome-extra adds brasero, then we don't want xfburn (which is a default) to be installed
                 if pkg.name not in conflicts:
                     targets.append(pkg)
             else:
-                # Can't find this one, check if it's a group
+                # Couldn't find the package, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
                 if group_pkgs != None:
                     # It's a group

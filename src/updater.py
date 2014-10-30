@@ -55,16 +55,14 @@ def urlopen(url):
 
 class Updater():
     def __init__(self, force_update):
-        self.web_version = ""
-        self.web_files = []
-        self.local_version = info.CNCHI_VERSION
+        self.remote_version = ""
+        self.remote_files = []
         
         # Get local info (local update.info)
         with open("/usr/share/cnchi/update.info", "r") as local_update_info:
             response = local_update_info.read()
             if len(response) > 0:
                 updateInfo = json.loads(response)
-                #self.local_version = updateInfo['version']
                 self.local_files = updateInfo['files']
 
         # Download update.info (contains info of all Cnchi's files)
@@ -75,30 +73,30 @@ class Updater():
             response = request.read().decode('utf-8')
             if len(response) > 0:
                 updateInfo = json.loads(response)
-                self.web_version = updateInfo['version']
-                self.web_files = updateInfo['files']
-                logging.info(_("Cnchi Internet version: %s"), self.web_version)
+                self.remote_version = updateInfo['version']
+                self.remote_files = updateInfo['files']
+                logging.info(_("Cnchi Internet version: %s"), self.remote_version)
                 self.force = force_update
 
-    def is_web_version_newer(self):
+    def is_remote_version_newer(self):
         """ Returns true if the Internet version of Cnchi is newer than the local one """
         if self.force:
              return True
 
         # Version is always: x.y.z
-        cur_ver = self.local_version.split(".")
-        web_ver = self.web_version.split(".")
+        local_ver = info.CNCHI_VERSION.split(".")
+        remote_ver = self.remote_version.split(".")
 
-        cur = [int(cur_ver[0]),int(cur_ver[1]),int(cur_ver[2])]
-        web = [int(web_ver[0]),int(web_ver[1]),int(web_ver[2])]
+        local = [int(local_ver[0]), int(local_ver[1]), int(local_ver[2])]
+        remote = [int(remote_ver[0]), int(remote_ver[1]), int(remote_ver[2])]
 
-        if web[0] > cur[0]:
+        if remote[0] > local[0]:
             return True
 
-        if web[0] == cur[0] and web[1] > cur[1]:
+        if remote[0] == local[0] and remote[1] > local[1]:
             return True
 
-        if web[0] == cur[0] and web[1] == cur[1] and web[2] > cur[2]:
+        if remote[0] == local[0] and remote[1] == local[1] and remote[2] > local[2]:
             return True
 
         return False
@@ -113,13 +111,13 @@ class Updater():
     def update(self):
         ''' Check if a new version is available and
             update all files only if necessary (or forced) '''
-        if self.is_web_version_newer():
+        if self.is_remote_version_newer():
             logging.info(_("New version found. Updating installer..."))
-            num_files = len(self.web_files)
+            num_files = len(self.remote_files)
             i = 1
-            for web_file in self.web_files:
-                name = web_file['name']
-                md5 = web_file['md5']
+            for remote_file in self.remote_files:
+                name = remote_file['name']
+                md5 = remote_file['md5']
                 if self.should_update_local_file(name, md5):
                     print("Downloading %s (%d/%d)" % (name, i, num_files))
                     if self.download(name, md5) is False:
@@ -154,13 +152,13 @@ class Updater():
         if request is not None:
             txt = request.read()
             
-            if self.get_md5(txt) != md5 and "update.info" not in name:
+            if "update.info" not in name and self.get_md5(txt) != md5:
                 logging.error(_("Checksum error in %s. Download aborted"), name)
                 return False
             
             new_name = os.path.join(
                 _base_dir,
-                name + "." + self.web_version.replace(".", "_"))
+                name + "." + self.remote_version.replace(".", "_"))
             
             with open(new_name, "wb") as f:
                 f.write(txt)
@@ -169,16 +167,16 @@ class Updater():
 
     def replace_old_with_new_versions(self):
         """ Deletes old files and renames the new ones """
-        logging.info(_("Replacing version %s with version %s..."), info.CNCHI_VERSION, self.web_version)
-        for f in self.web_files:
+        logging.info(_("Replacing version %s with version %s..."), info.CNCHI_VERSION, self.remote_version)
+        for f in self.remote_files:
             name = f['name']
             old_name = os.path.join(_base_dir, name + "." + info.CNCHI_VERSION.replace(".", "_"))
-            new_name = os.path.join(_base_dir, name + "." + self.web_version.replace(".", "_"))
-            cur_name = os.path.join(_base_dir, name)
+            new_name = os.path.join(_base_dir, name + "." + self.remote_version.replace(".", "_"))
+            local_name = os.path.join(_base_dir, name)
 
             # Check that there is a new remote file before deleting the local one
             if os.path.exists(new_name) and os.path.exists(name):
                 # Remove old file
                 os.remove(name)
                 # Rename new download file (removes trailing version in filename)
-                os.rename(new_name, cur_name)
+                os.rename(new_name, local_name)

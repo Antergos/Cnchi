@@ -247,7 +247,6 @@ class DownloadPackages(object):
                     # We're lucky, the package is already downloaded
                     # let's copy it to our destination
                     dst = os.path.join(self.pacman_cache_dir, filename)
-                    #print("File %s is in cache. I will copy it to %s" % (filename, dst))
                     try:
                         shutil.copy(full_path, dst)
                         self.queue_event('percent', 1.0)
@@ -506,8 +505,9 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/cnchi-aria2-test.log", level=logging.DEBUG)
+    logging.basicConfig(filename="/tmp/cnchi-download-test.log", level=logging.DEBUG)
+
+    DownloadPackages(package_names=["gnome"], cache_dir="", pacman_cache_dir="/tmp/pkg")
 
     #DownloadPackages(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
-    DownloadPackages(package_names=["gnome-sudoku"], cache_dir="/var/cache/pacman/pkg", pacman_cache_dir="/tmp/aria2", use_aria2=False)
     #DownloadPackages(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
