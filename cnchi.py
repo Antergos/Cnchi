@@ -280,6 +280,9 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
+    # Drop root privileges
+    misc.drop_privileges()
+
     # Setup our logging framework
     setup_logging()
 
@@ -292,15 +295,11 @@ def init_cnchi():
         sys.exit(1)
 
     # Always try to update cnchi when run
+    #with misc.raised_privileges():
     #update_cnchi()
-
-    # Drop root privileges
-    misc.drop_privileges()
 
     # Init PyObject Threads
     threads_init()
-
-
 
 if __name__ == '__main__':
     init_cnchi()
