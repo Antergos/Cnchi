@@ -167,6 +167,8 @@ class InstallationAdvanced(GtkBaseBox):
             for mount_point in fs.COMMON_MOUNT_POINTS:
                 combo.append_text(mount_point)
 
+        self.bootloader = "GRUB2"
+        self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = dict()
         self.bootloader_device = {}
@@ -314,8 +316,19 @@ class InstallationAdvanced(GtkBaseBox):
         # Automatically select first entry
         self.select_first_combobox_item(self.bootloader_device_entry)
 
+    def fill_bootloader_entry(self):
+        """ Put the bootloaders for the user to choose """
+        self.bootloader_entry.remove_all()
+        
+        self.bootloader_entry.append_text("Grub2")
+        
+        if os.path.exists('/sys/firmware/efi'):
+            self.bootloader_entry.append_text("Gummiboot")
+
     def on_bootloader_device_check_toggled(self, checkbox):
         combo = self.ui.get_object("bootloader_device_entry")
+        combo.set_sensitive(checkbox.get_active())
+        combo = self.ui.get_object("bootloader_entry")
         combo.set_sensitive(checkbox.get_active())
 
     def select_first_combobox_item(self, combobox):
@@ -329,6 +342,12 @@ class InstallationAdvanced(GtkBaseBox):
         line = self.bootloader_device_entry.get_active_text()
         if line is not None:
             self.bootloader_device = self.bootloader_devices[line]
+
+    def on_bootloader_entry_changed(self, widget):
+        """ Get new selected bootloader """
+        line = self.bootloader_entry.get_active_text()
+        if line is not None:
+            self.bootloader = line
 
     def prepare_partition_list(self):
         """ Create columns for our treeview """
@@ -758,6 +777,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Update the partition list treeview
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
+        self.fill_bootloader_entry()
 
     def get_disk_path_from_selection(self, model, tree_iter):
         """ Helper function that returns the disk path where the selected partition is in """
@@ -848,6 +868,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Update the partition list treeview
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
+        self.fill_bootloader_entry()
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
@@ -1075,6 +1096,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # Update partition list treeview
                 self.fill_partition_list()
                 self.fill_bootloader_device_entry()
+                self.fill_bootloader_entry()
 
         self.create_partition_dialog.hide()
 
@@ -1197,6 +1219,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Refresh our partition treeview
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
+        self.fill_bootloader_entry()
 
     def on_partition_list_treeview_selection_changed(self, selection):
         """ Selection in treeview changed, call check_buttons to update them """
@@ -1402,6 +1425,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.translate_ui()
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
+        self.fill_bootloader_entry()
         self.show_all()
 
         #button = self.ui.get_object('create_partition_encryption_settings')
@@ -1471,6 +1495,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 self.fill_partition_list()
                 self.fill_bootloader_device_entry()
+                self.fill_bootloader_entry()
 
                 if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
@@ -1554,6 +1579,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Update partition list treeview
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
+        self.fill_bootloader_entry()
 
     def on_partition_list_lvm_activate(self, button):
         pass
@@ -2059,18 +2085,15 @@ class InstallationAdvanced(GtkBaseBox):
 
         checkbox = self.ui.get_object("bootloader_device_check")
         if checkbox.get_active() is False:
-            self.settings.set('install_bootloader', False)
-            logging.warning(_("Cnchi will not install any boot loader"))
+            self.settings.set('bootloader_install', False)
+            logging.warning(_("Cnchi will not install any bootloader"))
         else:
-            self.settings.set('install_bootloader', True)
+            self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
-            if os.path.exists("/sys/firmware/efi/systab"):
-                bootloader_type = "UEFI_x86_64"
-            else:
-                bootloader_type = "GRUB2"
-            self.settings.set('bootloader_type', bootloader_type)
-            msg = _("Antergos will install the bootloader of type %s in %s")
-            msg = msg % (bootloader_type, self.bootloader_device)
+            
+            self.settings.set('bootloader', self.bootloader)
+            msg = _("Antergos will install the bootloader %s in %s")
+            msg = msg % (self.bootloader, self.bootloader_device)
             logging.info(msg)
 
         if not self.testing:

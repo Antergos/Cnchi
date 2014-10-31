@@ -204,16 +204,18 @@ class InstallationAutomatic(GtkBaseBox):
     def start_installation(self):
         logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
         
-        # In automatic installation we always install Grub
-        self.settings.set('install_bootloader', True)
+        # In automatic installation we always install a bootloader
+        self.settings.set('bootloader_install', True)
 
         if os.path.exists("/sys/firmware/efi/systab"):
-            bootloader_type = "UEFI_x86_64"
+            bootloader = "Gummiboot"
         else:
-            bootloader_type = "GRUB2"
-        self.settings.set('bootloader_type', bootloader_type)
+            bootloader = "Grub2"
+        self.settings.set('bootloader', bootloader)
         self.settings.set('bootloader_device', self.auto_device)
-        logging.info(_("Antergos will install the %s bootloader on %s"), bootloader_type, self.auto_device)
+        msg = _("Antergos will install the %s bootloader on %s")
+        msg = msg % (bootloader, self.auto_device)
+        logging.info(msg)
 
         # We don't need to pass which devices will be mounted nor which filesystems
         # the devices will be formatted with, as auto_partition.py takes care of everything
@@ -225,12 +227,12 @@ class InstallationAutomatic(GtkBaseBox):
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(
-                            self.settings,
-                            self.callback_queue,
-                            mount_devices,
-                            fs_devices,
-                            None,
-                            self.alternate_package_list)
+                self.settings,
+                self.callback_queue,
+                mount_devices,
+                fs_devices,
+                None,
+                self.alternate_package_list)
 
             self.process.start()
         else:

@@ -36,9 +36,10 @@ class Settings(object):
 
         self.settings.put({
             'auto_device' : '/dev/sda',
+            'bootloader' : 'Grub2',
             'bootloader_device' : '/dev/sda',
-            'bootloader_type' : 'GRUB2',
-            'bootloader_ok' : False,
+            'bootloader_install' : True,
+            'bootloader_installation_successful' : False,
             'btrfs' : False,
             'cache' : '',
             'cnchi' : '/usr/share/cnchi/',
@@ -56,7 +57,6 @@ class Settings(object):
             'feature_third_party' : False,
             'fullname' : '',
             'hostname' : 'antergos',
-            'install_bootloader' : True,
             'keyboard_layout' : '',
             'keyboard_variant' : '',
             'language_name' : '',

@@ -533,30 +533,31 @@ class InstallationAlongside(GtkBaseBox):
             fs_devices[npart.path] = "ext4"
             fs.create_fs(npart.path, 'ext4', 'ROOT')
 
-        self.settings.set('install_bootloader', True)
+        # TODO: User should be able to choose if installing a bootloader or not (and which one)
+        self.settings.set('bootloader_install', True)
         
-        if self.settings.get('install_bootloader'):
+        if self.settings.get('bootloader_install'):
             if self.settings.get('efi'):
-                self.settings.set('bootloader_type', "UEFI_x86_64")
-                self.settings.set('bootloader_location', '/boot')
+                self.settings.set('bootloader', "Gummiboot")
             else:
-                self.settings.set('bootloader_type', "GRUB2")
-                self.settings.set('bootloader_location', device_path)
+                self.settings.set('bootloader', "Grub2")
+            
+            self.settings.set('bootloader_device', device_path)
 
-            logging.info(_("Thus will install the bootloader of type %s in %s") %
-                          (self.settings.get('bootloader_type'),
-                           self.settings.get('bootloader_location')))
+            msg = _("Cnchi will install the bootloader of type %s in %s")
+            msg = msg % (self.settings.get('bootloader'), self.settings.get('bootloader_device'))
+            logging.info(msg)
         else:
-            logging.warning(_("Cnchi will not install any boot loader"))
+            logging.info(_("Cnchi will not install any boot loader"))
 
         if not self.testing:
-            self.process = installation_process.InstallationProcess( \
-                            self.settings, \
-                            self.callback_queue, \
-                            mount_devices, \
-                            fs_devices, \
-                            None, \
-                            self.alternate_package_list)
+            self.process = installation_process.InstallationProcess(
+                self.settings,
+                self.callback_queue,
+                mount_devices,
+                fs_devices,
+                None,
+                self.alternate_package_list)
 
             self.process.start()
 

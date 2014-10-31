@@ -124,7 +124,6 @@ class InstallationProcess(multiprocessing.Process):
         self.kernel = ""
         self.vmlinuz = ""
         self.dest_dir = ""
-        self.bootloader_ok = self.settings.get('bootloader_ok')
         self.vbox = False
 
     def queue_fatal_event(self, txt):
@@ -652,23 +651,18 @@ class InstallationProcess(multiprocessing.Process):
                     self.packages.append(pkg.text)
 
         # Add bootloader packages if needed
-        logging.debug(_("Adding bootloader packages if needed"))
-        if self.settings.get('install_bootloader'):
-            btype = self.settings.get('bootloader_type')
-            if btype == "GRUB2":
+        if self.settings.get('bootloader_install'):
+            bootloader = self.settings.get('bootloader')
+            if bootloader == "Grub2":
+                logging.debug(_("Adding Grub2 bootloader packages"))
                 for child in root.iter('grub'):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
                             self.packages.append(pkg.text)
-            elif btype == "UEFI_x86_64":
-                for child in root.iter('grub'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-            elif btype == "UEFI_i386":
-                for child in root.iter('grub'):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+            elif bootloader == "Gummiboot":
+                logging.debug(_("Adding Gummiboot bootloader package"))
+                self.packages.append("gummiboot")
 
     def add_features_packages(self, root):
         """ Selects packages based on user selected features """
@@ -1045,42 +1039,43 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-
     def install_bootloader(self):
-        """ Installs boot loader """
+        """ Installs the bootloader """
 
-        self.modify_grub_default()
-        self.prepare_grub_d()
-        
-        # Freeze and unfreeze xfs filesystems to enable grub(2) installation on xfs filesystems
+        # Freeze and unfreeze xfs filesystems to enable bootloader installation on xfs filesystems
         self.freeze_xfs()
-        
-        bootloader = self.settings.get('bootloader_type')
-        if bootloader == "GRUB2":
-            self.install_bootloader_grub2_bios()
-        else:
-            self.install_bootloader_grub2_efi(bootloader)
 
-        # Check grub.cfg for correct root UUID
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        ruuid = self.settings.get('ruuid')
-        ruuid_ok = False
+        bootloader = self.settings.get('bootloader')
+        if bootloader == "Grub2":
+            self.modify_grub_default()
+            self.prepare_grub_d()
+            
+            if os.path.exists('/sys/firmware/efi'):
+                self.install_bootloader_grub2_efi()
+            else:
+                self.install_bootloader_grub2_bios()
+            # Check grub.cfg for correct root UUID
+            cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+            ruuid = self.settings.get('ruuid')
+            ruuid_ok = False
 
-        with open(cfg) as grub_cfg:
-            if ruuid in grub_cfg.read():
-                ruuid_ok = True
-        
-        if not ruuid_ok:
             with open(cfg) as grub_cfg:
-                lines = [x.strip() for x in grub_cfg.readlines()]
-            for i in range(len(lines)):
-                if lines[i].startswith("linux	/vmlinuz-linux root="):
-                    old_line = lines[i]
-                    p1 = old_line[68:]
-                    p2 = old_line[:26]
-                    lines[i] = p1 + ruuid + p2
-            with open(cfg, 'w') as grub_cfg:
-                grub_cfg.write("\n".join(lines))
+                if ruuid in grub_cfg.read():
+                    ruuid_ok = True
+            
+            if not ruuid_ok:
+                with open(cfg) as grub_cfg:
+                    lines = [x.strip() for x in grub_cfg.readlines()]
+                for i in range(len(lines)):
+                    if lines[i].startswith("linux	/vmlinuz-linux root="):
+                        old_line = lines[i]
+                        p1 = old_line[68:]
+                        p2 = old_line[:26]
+                        lines[i] = p1 + ruuid + p2
+                with open(cfg, 'w') as grub_cfg:
+                    grub_cfg.write("\n".join(lines))
+        elif bootloader == "Gummiboot":
+            self.install_bootloader_gummiboot()
 
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
@@ -1148,15 +1143,10 @@ class InstallationProcess(multiprocessing.Process):
         with open(default_grub, 'w') as grub_file:
             grub_file.write("\n".join(lines) + "\n")
 
-        # Add GRUB_DISABLE_SUBMENU=y to avoid bug https://bugs.archlinux.org/task/37904
-        #with open(default_grub, 'a') as grub_file:
-        #    grub_file.write("\n# See bug https://bugs.archlinux.org/task/37904\n")
-        #    grub_file.write("GRUB_DISABLE_SUBMENU=y\n\n")
-
         logging.debug(_("/etc/default/grub configuration completed successfully."))
 
     def prepare_grub_d(self):
-        # Copy 01_antergos script into /etc/grub.d.
+        """ Copies 01_antergos script into /etc/grub.d. """
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
         script = "10_antergos"
@@ -1173,7 +1163,7 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
     def install_bootloader_grub2_bios(self):
-        """ Install bootloader in a BIOS system """
+        """ Install Grub2 bootloader in a BIOS system """
         grub_location = self.settings.get('bootloader_device')
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_location)
 
@@ -1207,28 +1197,20 @@ class InstallationProcess(multiprocessing.Process):
         with open(cfg) as grub_cfg:
             if "Antergos" in grub_cfg.read():
                 self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-                self.settings.set('bootloader_ok', True)
+                self.settings.set('bootloader_installation_successful', True)
             else:
                 logging.warning(_("ERROR installing GRUB(2) BIOS."))
-                self.settings.set('bootloader_ok', False)
+                self.settings.set('bootloader_installation_successful', False)
 
-    def install_bootloader_grub2_efi(self, arch):
-        """ Install bootloader in a UEFI system """
+    def install_bootloader_grub2_efi(self):
+        """ Install Grub2 bootloader in a UEFI system """
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
 
-        if arch == "UEFI_i386":
-            uefi_arch = "i386"
-            spec_uefi_arch = "ia32"
-            spec_uefi_arch_caps = "IA32"
-
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            #subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-            #                       '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-            #                       '--recheck' % uefi_arch], shell=True, timeout=45)
             subprocess.check_call([
                 'grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/install/boot',
                 '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck'],
@@ -1244,7 +1226,7 @@ class InstallationProcess(multiprocessing.Process):
         
         self.copy_bootloader_theme_files()
 
-        # Copy grub into dirs known to be used as default by some OEMs if they are empty.
+        # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
         defaults = [(os.path.join(self.dest_dir, "boot/EFI/BOOT/"), 'BOOT' + spec_uefi_arch_caps + '.efi'),
                     (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi')]
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
@@ -1253,17 +1235,21 @@ class InstallationProcess(multiprocessing.Process):
         for default in defaults:
             path, grub_efi_new = default
             if not os.path.exists(path):
-                self.queue_event('info', _("No OEM loader found in %s. Copying Grub(2) into dir.") % path)
+                msg = _("No OEM loader found in %s. Copying Grub(2) into dir.") % path
+                self.queue_event('info', msg)
                 os.makedirs(path)
+                msg_failed = _("Copying Grub(2) into OEM dir failed: ")
                 try:
                     shutil.copy(grub_dir_src + grub_efi_old, path + grub_efi_new)
                 except FileNotFoundError:
-                    logging.warning(_("Copying Grub(2) into OEM dir failed. File Not Found."))
+                    msg_failed = msg_failed + _("File Not Found.")
+                    logging.warning(msg_failed)
                 except FileExistsError:
-                    logging.warning(_("Copying Grub(2) into OEM dir failed. File Exists."))
+                    msg_failed = msg_failed + _("File already exists.")
+                    logging.warning(msg_failed)
                 except Exception as err:
-                    logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
-                    logging.warning(err)
+                    msg_failed = msg_failed + _("Unknown error.")
+                    logging.warning(msg_failed)
         
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
@@ -1283,12 +1269,11 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_mount_special_dirs()
 
         locale = self.settings.get("locale")
+
         try:
             self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
-            #os.system("killall grub-mount")
-            #os.system("killall os-prober")
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
@@ -1306,10 +1291,49 @@ class InstallationProcess(multiprocessing.Process):
         
         if len(exists) == 0:
             logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
-            self.settings.set('bootloader_ok', False)
+            self.settings.set('bootloader_installation_successful', False)
         else:
             self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
-            self.settings.set('bootloader_ok', True)
+            self.settings.set('bootloader_installation_successful', True)
+
+    def install_bootloader_gummiboot(self):
+        """ Install Gummiboot bootloader to the EFI System Partition """
+        # TODO: Finnish this!
+        
+        # Setup bootloader menu
+        menu_dir = os.path.join(self.dest_dir, "boot/loader")
+        os.makedirs(menu_dir)
+        menu_path = os.path.join(menu_dir, "loader.conf")
+        with open(menu_path, "w") as menu_file:
+            menu_file.write("default antergos")
+        
+        # Setup boot entries
+        entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
+        os.makedirs(entries_dir)
+        entry_path = os.path.join(entries_dir, "antergos.conf")
+        with open(entry_path, "w") as entry_file:
+            # TODO: FIX root_partuuid!!!
+            root_partuuid = ""
+            entry_file.write("title\tAntergos\n")
+            entry_file.write("linux\t/vmlinuz-linux\n")
+            entry_file.write("initrd\t/initramfs-linux.img\n")
+            entry_file.write("options\troot=PARTUUID=%s rw\n" % root_partuuid)
+            '''
+            entry_file.write("title\tAntergos (Encrypted)\n")
+            entry_file.write("linux\t/boot/vmlinuz-linux\n")
+            entry_file.write("options\tinitrd=/boot/initramfs-linux.img cryptdevice=UUID=<UUID>:luks-<UUID> root=UUID=<luks-UUID> rw\n" % root_partuuid)
+            '''
+        
+        # Install bootloader
+        
+        try:
+            efi_system_partition = os.path.join(self.dest_dir, "boot")
+            subprocess.check_call(['gummiboot', '--path=%s' % efi_system_partition, 'install'])             
+            self.queue_event('info', _("Gummiboot install completed successfully"))
+            self.settings.set('bootloader_installation_successful', True)
+        except subprocess.CalledProcessError as err:
+            logging.warning(_("Gummiboot install may not have completed successfully."))
+            self.settings.set('bootloader_installation_successful', False)
 
     def copy_bootloader_theme_files(self):
         self.queue_event('info', _("Copying GRUB(2) Theme Files"))

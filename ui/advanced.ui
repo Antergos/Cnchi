@@ -1064,7 +1064,26 @@
             <property name="position">0</property>
           </packing>
         </child>
-            <!--
+
+
+        <child>
+          <object class="GtkBox" id="box33">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">horizontal</property>
+            <child>
+              <object class="GtkComboBoxText" id="bootloader_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
             <child>
               <object class="GtkComboBoxText" id="bootloader_device_entry">
                 <property name="visible">True</property>
@@ -1077,19 +1096,15 @@
                 <property name="position">1</property>
               </packing>
             </child>
-            -->
-            <child>
-              <object class="GtkComboBoxText" id="bootloader_device_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+          </object>
+      
+      
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -1098,6 +1113,12 @@
       </packing>
     </child>
   </object>
+  
+  
+  
+  
+  
+  
   <object class="GtkDialog" id="luks_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
