@@ -29,8 +29,7 @@ import subprocess
 import logging
 import queue
 
-import urllib.request
-import urllib.error
+import urllib
 import aria2
 import metalink as ml
 
@@ -40,57 +39,40 @@ try:
 except ImportError:
     _PM2ML = False
 
-def url_open_read(url_open, chunk_size=8192):
+def url_open_read(urlp, chunk_size=8192):
     """ Helper function to download and read a fragment of a remote file """
-    
+
     download_error = True
     data = None
-    msg = _('Error downloading %s:') % url_open
-    
+
     try:
-        data = url_open.read(chunk_size)
+        data = urlp.read(chunk_size)
         download_error = False
-    except urllib.HTTPError as err:
-        msg += ' HTTPError : %s' % err.reason
+    except urllib.error.HTTPError as err:
+        msg = ' HTTPError : %s' % err.reason
         logging.exception(msg)
-    except urllib.URLError as err:
-        msg += ' URLError : %s' % err.reason
+    except urllib.error.URLError as err:
+        msg = ' URLError : %s' % err.reason
         logging.exception(msg)
-    except httplib.HTTPException as err:
-        msg += ' HTTPException : %s' % err.reason
-        logging.exception(msg)
-    except Exception as err:
-        import traceback
-        msg = ' Exception : %s' % traceback.format_exc()
-        logging.exception(msg)
-    
+
     return (data, download_error)
 
 def url_open(url):
     """ Helper function to open a remote file """
-    
+
     msg = _('Error opening %s:') % url
-    
+
     try:
-        urlp = urllib.request.urlopen(url)    
+        urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
         urlp = None
         msg += ' HTTPError : %s' % err.reason
-        logging.exception()
+        logging.exception(msg)
     except urllib.error.URLError as err:
         urlp = None
         msg += ' URLError : %s' % err.reason
-        logging.exception()
-    except httplib.HTTPException as err:
-        urlp = None
-        msg += ' HTTPException : %s' % err.reason
         logging.exception(msg)
-    except Exception as err:
-        urlp = None
-        import traceback
-        msg += ' Exception : %s' % traceback.format_exc()
-        logging.exception(msg)
-    
+
     return urlp
 
 class DownloadPackages(object):
@@ -111,7 +93,7 @@ class DownloadPackages(object):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if not _PM2ML:
-            logging.warning("%s %s", _("pm2ml not found."), _("Cnchi will use alpm instead."))
+            logging.warning(_("pm2ml not found."))
             return
 
         if pacman_conf_file == None:
@@ -123,7 +105,7 @@ class DownloadPackages(object):
             self.pacman_cache_dir = "/var/cache/pacman/pkg"
         else:
             self.pacman_cache_dir = pacman_cache_dir
-        
+
         if cache_dir == None:
             self.cache_dir = ""
         else:
@@ -149,7 +131,8 @@ class DownloadPackages(object):
             self.download(package_names)
 
     def download(self, package_names):
-        """ Downloads needed packages in package_names list and its dependencies using urllib """
+        """ Downloads needed packages in package_names list
+            and its dependencies using urllib """
         downloads = {}
 
         self.queue_event('info', _('Creating list of packages to download...'))
@@ -167,7 +150,7 @@ class DownloadPackages(object):
             # Update downloads dict with the new info
             # from the processed metalink
             downloads.update(ml.get_info(metalink))
-            
+
             # Show progress to the user
             processed_packages += 1
             percent = round(float(processed_packages / total_packages), 2)
@@ -185,15 +168,16 @@ class DownloadPackages(object):
             total_length = int(element['size'])
             percent = 0
             self.queue_event('percent', percent)
-            
+
             if os.path.exists(filename):
                 # File exists, do not download
-                # Note: In theory this won't ever happen (metalink assures us this)
-                # print("File %s already exists, I won't download it" % filename)
+                # Note: In theory this won't ever happen
+                # (metalink assures us this)
+                # print("File %s already exists" % filename)
                 self.queue_event('percent', 1.0)
                 downloaded += 1
                 continue
-            
+
             # Check if user has given us a cache of xz packages
             if len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
                 full_path = os.path.join(self.cache_dir, filename)
@@ -209,7 +193,7 @@ class DownloadPackages(object):
                     except FileNotFoundError:
                         pass
                     except FileExistsError:
-                        # print("File %s already exists, I won't copy it" % filename)
+                        # print("File %s already exists" % filename)
                         pass
 
             for url in element['urls']:
@@ -218,11 +202,11 @@ class DownloadPackages(object):
                 if urlp is None:
                     continue
                 #print("Downloading %s..." % filename)
-                with open(filename, 'b+w') as xzfile:
+                with open(filename, 'w+b') as xzfile:
                     (data, download_error) = url_open_read(urlp)
 
                     if download_error:
-                        # Everything is not lost, maybe alpm can download it later
+                        # alpm will retry later
                         continue
 
                     while len(data) > 0 and download_error == False:
@@ -233,7 +217,7 @@ class DownloadPackages(object):
                         if old_percent != percent:
                             self.queue_event('percent', percent)
                         (data, download_error) = url_open_read(urlp)
-                        
+
                     if not download_error:
                         # There're some downloads, that are so quick,
                         # that percent does not reach 100.
@@ -271,9 +255,11 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/cnchi-download-test.log", level=logging.DEBUG)
+    logging.basicConfig(
+        filename="/tmp/cnchi-download-test.log",
+        level=logging.DEBUG)
 
-    DownloadPackages(package_names=["kde"], cache_dir="", pacman_cache_dir="/tmp/pkg")
-
-    #DownloadPackages(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
-    #DownloadPackages(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2", use_aria2=False)
+    DownloadPackages(
+        package_names=["kde"],
+        cache_dir="",
+        pacman_cache_dir="/tmp/pkg")

@@ -22,6 +22,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Operations with metalinks """
+
 import logging
 import xml.etree.ElementTree as ET
 
@@ -35,31 +37,31 @@ def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
     metalink_info = {}
-    
-    TAG = "{urn:ietf:params:xml:ns:metalink}"
+
+    tag = "{urn:ietf:params:xml:ns:metalink}"
     root = ET.fromstring(str(metalink))
 
-    for child1 in root.iter(TAG + "file"):
+    for child1 in root.iter(tag + "file"):
         element = {}
         element['filename'] = child1.attrib['name']
 
-        for child2 in child1.iter(TAG + "identity"):
+        for child2 in child1.iter(tag + "identity"):
             element['identity'] = child2.text
 
-        for child2 in child1.iter(TAG + "size"):
+        for child2 in child1.iter(tag + "size"):
             element['size'] = child2.text
 
-        for child2 in child1.iter(TAG + "version"):
+        for child2 in child1.iter(tag + "version"):
             element['version'] = child2.text
 
-        for child2 in child1.iter(TAG + "description"):
+        for child2 in child1.iter(tag + "description"):
             element['description'] = child2.text
 
-        for child2 in child1.iter(TAG + "hash"):
+        for child2 in child1.iter(tag + "hash"):
             element[child2.attrib['type']] = child2.text
 
         element['urls'] = []
-        for child2 in child1.iter(TAG + "url"):
+        for child2 in child1.iter(tag + "url"):
             element['urls'].append(child2.text)
 
         metalink_info[element['identity']] = element
@@ -86,7 +88,9 @@ def create(package_name, pacman_conf_file):
     try:
         pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args)
     except Exception as err:
-        logging.error(_("Unable to create download queue for package %s"), package_name)
+        msg = _("Unable to create download queue for package %s") % package_name
+        logging.error(msg)
+        logging.exception(err)
         return None
 
     if not_found:
