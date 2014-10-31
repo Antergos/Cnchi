@@ -1041,7 +1041,7 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkCheckButton" id="grub_device_check">
+          <object class="GtkCheckButton" id="bootloader_device_check">
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -1049,9 +1049,9 @@
             <!--<property name="xalign">0</property>-->
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
-            <signal name="toggled" handler="on_grub_device_check_toggled" swapped="no"/>
+            <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
             <child>
-              <object class="GtkLabel" id="grub_device_label">
+              <object class="GtkLabel" id="bootloader_device_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Use this device for boot loader installation:</property>
@@ -1064,18 +1064,32 @@
             <property name="position">0</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkComboBoxText" id="grub_device_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <signal name="changed" handler="on_grub_device_entry_changed" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+            <!--
+            <child>
+              <object class="GtkComboBoxText" id="bootloader_device_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            -->
+            <child>
+              <object class="GtkComboBoxText" id="bootloader_device_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
       </object>
       <packing>
         <property name="expand">False</property>

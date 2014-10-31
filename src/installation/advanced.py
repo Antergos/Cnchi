@@ -167,9 +167,9 @@ class InstallationAdvanced(GtkBaseBox):
             for mount_point in fs.COMMON_MOUNT_POINTS:
                 combo.append_text(mount_point)
 
-        self.grub_device_entry = self.ui.get_object('grub_device_entry')
-        self.grub_devices = dict()
-        self.grub_device = {}
+        self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
+        self.bootloader_devices = dict()
+        self.bootloader_device = {}
 
         # Initialise our partition list treeview
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -289,11 +289,11 @@ class InstallationAdvanced(GtkBaseBox):
                     # A drive (disk) is selected
                     button["new_label"].set_sensitive(True)
 
-    def fill_grub_device_entry(self):
-        """ Get all devices where we can put our Grub boot code. Avoiding partitions """
+    def fill_bootloader_device_entry(self):
+        """ Get all devices where we can put our bootloader. Avoiding partitions """
 
-        self.grub_device_entry.remove_all()
-        self.grub_devices.clear()
+        self.bootloader_device_entry.remove_all()
+        self.bootloader_devices.clear()
 
         # Just call get_devices once
         if self.disks is None:
@@ -308,14 +308,14 @@ class InstallationAdvanced(GtkBaseBox):
                     # Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
                     size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
                     line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
-                    self.grub_device_entry.append_text(line)
-                    self.grub_devices[line] = dev.path
+                    self.bootloader_device_entry.append_text(line)
+                    self.bootloader_devices[line] = dev.path
 
         # Automatically select first entry
-        self.select_first_combobox_item(self.grub_device_entry)
+        self.select_first_combobox_item(self.bootloader_device_entry)
 
-    def on_grub_device_check_toggled(self, checkbox):
-        combo = self.ui.get_object("grub_device_entry")
+    def on_bootloader_device_check_toggled(self, checkbox):
+        combo = self.ui.get_object("bootloader_device_entry")
         combo.set_sensitive(checkbox.get_active())
 
     def select_first_combobox_item(self, combobox):
@@ -324,11 +324,11 @@ class InstallationAdvanced(GtkBaseBox):
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
 
-    def on_grub_device_entry_changed(self, widget):
-        """ Get new selected GRUB device """
-        line = self.grub_device_entry.get_active_text()
+    def on_bootloader_device_entry_changed(self, widget):
+        """ Get new selected bootloader device """
+        line = self.bootloader_device_entry.get_active_text()
         if line is not None:
-            self.grub_device = self.grub_devices[line]
+            self.bootloader_device = self.bootloader_devices[line]
 
     def prepare_partition_list(self):
         """ Create columns for our treeview """
@@ -757,7 +757,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Update the partition list treeview
         self.fill_partition_list()
-        self.fill_grub_device_entry()
+        self.fill_bootloader_device_entry()
 
     def get_disk_path_from_selection(self, model, tree_iter):
         """ Helper function that returns the disk path where the selected partition is in """
@@ -847,7 +847,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Update the partition list treeview
         self.fill_partition_list()
-        self.fill_grub_device_entry()
+        self.fill_bootloader_device_entry()
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
@@ -1074,7 +1074,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 # Update partition list treeview
                 self.fill_partition_list()
-                self.fill_grub_device_entry()
+                self.fill_bootloader_device_entry()
 
         self.create_partition_dialog.hide()
 
@@ -1196,7 +1196,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Refresh our partition treeview
         self.fill_partition_list()
-        self.fill_grub_device_entry()
+        self.fill_bootloader_device_entry()
 
     def on_partition_list_treeview_selection_changed(self, selection):
         """ Selection in treeview changed, call check_buttons to update them """
@@ -1237,7 +1237,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
-        label = self.ui.get_object('grub_device_label')
+        label = self.ui.get_object('bootloader_device_label')
         label.set_markup(txt)
 
         txt = _("Mount Checklist:")
@@ -1401,7 +1401,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.translate_ui()
         self.fill_partition_list()
-        self.fill_grub_device_entry()
+        self.fill_bootloader_device_entry()
         self.show_all()
 
         #button = self.ui.get_object('create_partition_encryption_settings')
@@ -1470,7 +1470,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.disks[disk_path] = (new_disk, pm.OK)
 
                 self.fill_partition_list()
-                self.fill_grub_device_entry()
+                self.fill_bootloader_device_entry()
 
                 if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
@@ -1553,7 +1553,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Update partition list treeview
         self.fill_partition_list()
-        self.fill_grub_device_entry()
+        self.fill_bootloader_device_entry()
 
     def on_partition_list_lvm_activate(self, button):
         pass
@@ -1960,7 +1960,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                         if ((mnt == '/' and noboot) or (mnt == '/boot')) and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                if self.grub_device or self.grub_device is not None:
+                                if self.bootloader_device or self.bootloader_device is not None:
                                     (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                             if not self.testing:
                                 pm.finalize_changes(partitions[partition_path].disk)
@@ -1973,7 +1973,7 @@ class InstallationAdvanced(GtkBaseBox):
                                 for ee in pvs[vgname]:
                                     #print(partitions)
                                     if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
-                                        if self.grub_device or self.grub_device is not None:
+                                        if self.bootloader_device or self.bootloader_device is not None:
                                             x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                 if not self.testing:
                                     pm.finalize_changes(partitions[ee].disk)
@@ -2057,19 +2057,21 @@ class InstallationAdvanced(GtkBaseBox):
                         del fs_devices[partition_path]
                         fs_devices[luks_device] = fs_type
 
-        checkbox = self.ui.get_object("grub_device_check")
+        checkbox = self.ui.get_object("bootloader_device_check")
         if checkbox.get_active() is False:
             self.settings.set('install_bootloader', False)
             logging.warning(_("Cnchi will not install any boot loader"))
         else:
             self.settings.set('install_bootloader', True)
-            self.settings.set('bootloader_device', self.grub_device)
+            self.settings.set('bootloader_device', self.bootloader_device)
             if os.path.exists("/sys/firmware/efi/systab"):
                 bootloader_type = "UEFI_x86_64"
             else:
                 bootloader_type = "GRUB2"
             self.settings.set('bootloader_type', bootloader_type)
-            logging.info(_("Antergos will install the bootloader of type %s in %s"), bootloader_type, self.grub_device)
+            msg = _("Antergos will install the bootloader of type %s in %s")
+            msg = msg % (bootloader_type, self.bootloader_device)
+            logging.info(msg)
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(
