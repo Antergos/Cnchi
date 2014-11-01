@@ -320,16 +320,28 @@ class InstallationAdvanced(GtkBaseBox):
         """ Put the bootloaders for the user to choose """
         self.bootloader_entry.remove_all()
         
-        self.bootloader_entry.append_text("Grub2")
-        
         if os.path.exists('/sys/firmware/efi'):
+            self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Gummiboot")
+            self.bootloader_entry.set_active(0)
+            self.bootloader_entry.show()
+        else:
+            self.bootloader_entry.hide()
+            widget_ids = ["bootloader_label", "bootloader_device_label"]
+            for widget_id in widget_ids:
+                widget = self.ui.get_object(widget_id)
+                widget.hide()
 
-    def on_bootloader_device_check_toggled(self, checkbox):
-        combo = self.ui.get_object("bootloader_device_entry")
-        combo.set_sensitive(checkbox.get_active())
-        combo = self.ui.get_object("bootloader_entry")
-        combo.set_sensitive(checkbox.get_active())
+    def on_bootloader_device_check_toggled(self, checkbox):       
+        status = checkbox.get_active()
+
+        widget_ids = [
+            "bootloader_device_entry", "bootloader_entry",
+            "bootloader_label", "bootloader_device_label"]
+
+        for widget_id in widget_ids:
+            widget = self.ui.get_object(widget_id)
+            widget.set_sensitive(status)
 
     def select_first_combobox_item(self, combobox):
         """ Automatically select first entry """
@@ -775,6 +787,10 @@ class InstallationAdvanced(GtkBaseBox):
         self.edit_partition_dialog.hide()
 
         # Update the partition list treeview
+        self.update_view()
+    
+    def update_view(self):
+        """ Reloads widgets contents """
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
         self.fill_bootloader_entry()
@@ -866,9 +882,7 @@ class InstallationAdvanced(GtkBaseBox):
         pm.delete_partition(disk, part)
 
         # Update the partition list treeview
-        self.fill_partition_list()
-        self.fill_bootloader_device_entry()
-        self.fill_bootloader_entry()
+        self.update_view()
 
     def get_mount_point(self, partition_path):
         """ Get device mount point """
@@ -1094,9 +1108,7 @@ class InstallationAdvanced(GtkBaseBox):
                             self.settings.set('luks_root_volume', self.tmp_luks_options[1])
 
                 # Update partition list treeview
-                self.fill_partition_list()
-                self.fill_bootloader_device_entry()
-                self.fill_bootloader_entry()
+                self.update_view()
 
         self.create_partition_dialog.hide()
 
@@ -1217,9 +1229,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.to_be_deleted = []
 
         # Refresh our partition treeview
-        self.fill_partition_list()
-        self.fill_bootloader_device_entry()
-        self.fill_bootloader_entry()
+        self.update_view()
 
     def on_partition_list_treeview_selection_changed(self, selection):
         """ Selection in treeview changed, call check_buttons to update them """
@@ -1260,6 +1270,14 @@ class InstallationAdvanced(GtkBaseBox):
 
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>%s</span>" % txt
+        label = self.ui.get_object('bootloader_device_info_label')
+        label.set_markup(txt)
+        
+        txt = _("Bootloader:")
+        label = self.ui.get_object('bootloader_label')
+        label.set_markup(txt)
+
+        txt = _("Device:")
         label = self.ui.get_object('bootloader_device_label')
         label.set_markup(txt)
 
@@ -1423,10 +1441,10 @@ class InstallationAdvanced(GtkBaseBox):
         """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
 
         self.translate_ui()
-        self.fill_partition_list()
-        self.fill_bootloader_device_entry()
-        self.fill_bootloader_entry()
+        self.update_view()
         self.show_all()
+        
+        self.fill_bootloader_entry()
 
         #button = self.ui.get_object('create_partition_encryption_settings')
         #button = self.ui.get_object('edit_partition_encryption_settings')
@@ -1439,20 +1457,12 @@ class InstallationAdvanced(GtkBaseBox):
         button = self.ui.get_object('partition_button_lvm')
         button.hide()
 
-        button = self.ui.get_object('partition_button_new')
-        button.set_sensitive(False)
-
-        button = self.ui.get_object('partition_button_delete')
-        button.set_sensitive(False)
-
-        button = self.ui.get_object('partition_button_edit')
-        button.set_sensitive(False)
-
-        button = self.ui.get_object('partition_button_new_label')
-        button.set_sensitive(False)
-
-        button = self.ui.get_object('partition_button_undo')
-        button.set_sensitive(False)
+        widget_ids = [
+            'partition_button_new', 'partition_button_delete', 'partition_button_edit',
+            'partition_button_new_label', 'partition_button_undo']
+        for widget_id in widget_ids:
+            button = self.ui.get_object(widget_id)
+            button.set_sensitive(False)
 
     def on_partition_list_new_label_activate(self, button):
         """ Create a new partition table """
@@ -1493,9 +1503,7 @@ class InstallationAdvanced(GtkBaseBox):
                 new_disk = pm.make_new_disk(disk_path, ptype)
                 self.disks[disk_path] = (new_disk, pm.OK)
 
-                self.fill_partition_list()
-                self.fill_bootloader_device_entry()
-                self.fill_bootloader_entry()
+                self.update_view()
 
                 if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
                     # Show warning (see https://github.com/Antergos/Cnchi/issues/63)
@@ -1577,9 +1585,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
 
         # Update partition list treeview
-        self.fill_partition_list()
-        self.fill_bootloader_device_entry()
-        self.fill_bootloader_entry()
+        self.update_view()
 
     def on_partition_list_lvm_activate(self, button):
         pass

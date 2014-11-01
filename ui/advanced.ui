@@ -1051,7 +1051,7 @@
             <property name="draw_indicator">True</property>
             <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
             <child>
-              <object class="GtkLabel" id="bootloader_device_label">
+              <object class="GtkLabel" id="bootloader_device_info_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Use this device for boot loader installation:</property>
@@ -1064,18 +1064,18 @@
             <property name="position">0</property>
           </packing>
         </child>
-
-
         <child>
-          <object class="GtkBox" id="box33">
+          <object class="GtkBox" id="box_bootloader">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">horizontal</property>
+
+
             <child>
-              <object class="GtkComboBoxText" id="bootloader_entry">
+              <object class="GtkLabel" id="bootloader_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
+                <property name="label" translatable="yes">Bootloader:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1085,10 +1085,11 @@
             </child>
 
             <child>
-              <object class="GtkComboBoxText" id="bootloader_device_entry">
+              <object class="GtkComboBoxText" id="bootloader_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+                <property name="margin_start">5</property>
+                <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1096,9 +1097,39 @@
                 <property name="position">1</property>
               </packing>
             </child>
+
+
+
+            <child>
+              <object class="GtkLabel" id="bootloader_device_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">20</property>
+                <property name="label" translatable="yes">Device:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+
+
+
+            <child>
+              <object class="GtkComboBoxText" id="bootloader_device_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">5</property>
+                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
-      
-      
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
