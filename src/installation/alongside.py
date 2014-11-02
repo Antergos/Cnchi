@@ -537,18 +537,12 @@ class InstallationAlongside(GtkBaseBox):
         self.settings.set('bootloader_install', True)
         
         if self.settings.get('bootloader_install'):
-            if self.settings.get('efi'):
-                self.settings.set('bootloader', "Gummiboot")
-            else:
-                self.settings.set('bootloader', "Grub2")
-            
+            self.settings.set('bootloader', "Grub2")
             self.settings.set('bootloader_device', device_path)
-
-            msg = _("Cnchi will install the bootloader of type %s in %s")
-            msg = msg % (self.settings.get('bootloader'), self.settings.get('bootloader_device'))
+            msg = _("Cnchi will install the %s bootloader") % self.settings.get('bootloader')
             logging.info(msg)
         else:
-            logging.info(_("Cnchi will not install any boot loader"))
+            logging.info(_("Cnchi will not install any bootloader"))
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(
@@ -560,6 +554,8 @@ class InstallationAlongside(GtkBaseBox):
                 self.alternate_package_list)
 
             self.process.start()
+        else:
+            logging.warning(_("Testing mode. Cnchi will not change anything!"))
 
 # When testing, no _() is available
 try:

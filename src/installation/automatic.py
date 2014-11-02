@@ -206,13 +206,9 @@ class InstallationAutomatic(GtkBaseBox):
         
         # In automatic installation we always install a bootloader
         self.settings.set('bootloader_install', True)
-
-        if os.path.exists("/sys/firmware/efi/systab"):
-            bootloader = "Gummiboot"
-        else:
-            bootloader = "Grub2"
-        self.settings.set('bootloader', bootloader)
+        self.settings.set('bootloader', "Grub2")
         self.settings.set('bootloader_device', self.auto_device)
+
         msg = _("Antergos will install the %s bootloader on %s")
         msg = msg % (bootloader, self.auto_device)
         logging.info(msg)

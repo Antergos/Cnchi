@@ -931,7 +931,7 @@ class InstallationProcess(multiprocessing.Process):
 
             crypttab_path = os.path.join(self.dest_dir, 'etc/crypttab')
 
-            # Fix for home + luks, no lvm (from automatic)
+            # Fix for home + luks, no lvm (from Automatic Install)
             if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
                 if self.settings.get("luks_password") != "":
@@ -949,7 +949,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"), mount_point, myfmt, opts, chk)
                 continue
 
-            # Add all LUKS partitions from Advanced Install (except root). NOT TESTED YET!
+            # Add all LUKS partitions from Advanced Install (except root).
             if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
                 os.chmod(crypttab_path, 0o666)
                 vol_name = partition_path[len("/dev/mapper/"):]
@@ -973,11 +973,13 @@ class InstallationProcess(multiprocessing.Process):
             # it has no mount point (swap has been checked above)
             if mount_point == "":
                 continue
-            
+
+            # Create mount point on destination system if it yet doesn't exist
             full_path = os.path.join(self.dest_dir, mount_point)
             if not os.path.exists(full_path):
                 os.makedirs(full_path)
 
+            # Add mount options parameters
             if not self.ssd:
                 if "btrfs" in myfmt:
                     opts += ',rw,relatime,space_cache,autodefrag,inode_cache'
@@ -1043,8 +1045,8 @@ class InstallationProcess(multiprocessing.Process):
         # Freeze and unfreeze xfs filesystems to enable bootloader installation on xfs filesystems
         self.freeze_xfs()
 
-        bootloader = self.settings.get('bootloader')
-        if bootloader == "Grub2":
+        bootloader = self.settings.get('bootloader').lower()
+        if bootloader == "grub2":
             self.modify_grub_default()
             self.prepare_grub_d()
             
@@ -1052,7 +1054,8 @@ class InstallationProcess(multiprocessing.Process):
                 self.install_bootloader_grub2_efi()
             else:
                 self.install_bootloader_grub2_bios()
-            # Check grub.cfg for correct root UUID
+
+            # Check grub.cfg for correct root UUID (just in case)
             cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
             ruuid = self.settings.get('ruuid')
             ruuid_ok = False
@@ -1072,7 +1075,7 @@ class InstallationProcess(multiprocessing.Process):
                         lines[i] = p1 + ruuid + p2
                 with open(cfg, 'w') as grub_cfg:
                     grub_cfg.write("\n".join(lines))
-        elif bootloader == "Gummiboot":
+        elif bootloader == "gummiboot":
             self.install_bootloader_gummiboot()
 
     def modify_grub_default(self):
