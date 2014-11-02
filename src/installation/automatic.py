@@ -209,8 +209,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.settings.set('bootloader', "Grub2")
         self.settings.set('bootloader_device', self.auto_device)
 
-        msg = _("Antergos will install the %s bootloader on %s")
-        msg = msg % (bootloader, self.auto_device)
+        msg = _("Antergos will install the Grub2 bootloader in %s") % self.auto_device
         logging.info(msg)
 
         # We don't need to pass which devices will be mounted nor which filesystems
