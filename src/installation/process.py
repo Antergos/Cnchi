@@ -37,7 +37,7 @@ import sys
 import time
 import urllib.request
 import urllib.error
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as ET
 import encfs
 from mako.template import Template
 from mako.lookup import TemplateLookup
@@ -513,73 +513,61 @@ class InstallationProcess(multiprocessing.Process):
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
 
-        tree = etree.parse(packages_xml)
-        root = tree.getroot()
-        
-        # Add common packages
-        logging.debug(_("Adding all desktops common packages"))
+        xml_tree = ET.parse(packages_xml)
+        xml_root = xml_tree.getroot()
 
-        # desktops.LIBS will tell us if the chosen desktop uses Gtk or Qt libraries
-        lib = desktops.LIBS
+        for editions in xml_root.iter('editions'):
+            for edition in editions.iter('edition'):
 
-        for child in root.iter('common'):
-            for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
-
-        if self.desktop != "nox":
-            # Add common graphical packages
-            for child in root.iter('graphic'):
-                for pkg in child.iter('pkgname'):
-                    # If package is Desktop Manager, save the name to activate the correct service later
-                    if pkg.attrib.get('dm'):
-                        self.desktop_manager = pkg.attrib.get('name')
-                    plib = pkg.attrib.get('lib')
-                    if plib is None or (plib is not None and self.desktop in lib[plib]):
+                # Add common packages to all desktops (including noX)
+                if edition.attrib.get("name").lower() == "common":
+                    for pkg in edition.iter('pkgname'):
+                        self.packages.append(pkg.text)
+                
+                # Add common graphical packages
+                if self.desktop != "nox":
+                    if edition.attrib.get("name").lower() == "graphic":
+                        for pkg in edition.iter('pkgname'):
+                            # If package is Desktop Manager, save the name to activate the correct service later
+                            if pkg.attrib.get('dm'):
+                                self.desktop_manager = pkg.attrib.get('name')
+                            plib = pkg.attrib.get('lib')
+                            if plib is None or (plib is not None and self.desktop in lib[plib]):
+                                self.packages.append(pkg.text)
+                
+                # Add specific desktop packages
+                if edition.attrib.get("name").lower() == self.desktop.lower():
+                    logging.debug(_("Adding '%s' desktop packages"), self.desktop)
+                    for pkg in edition.iter('pkgname'):
+                        # If package is Network Manager, save the name to activate the correct service later
+                        if pkg.attrib.get('nm'):
+                            self.network_manager = pkg.attrib.get('name')
+                        if pkg.attrib.get('conflicts'):
+                            self.conflicts.append(pkg.attrib.get('conflicts'))
                         self.packages.append(pkg.text)
 
-            # Add specific desktop packages
-            logging.debug(_("Adding '%s' desktop packages"), self.desktop)
-
-            for child in root.iter(self.desktop + '_desktop'):
-                for pkg in child.iter('pkgname'):
-                    # If package is Network Manager, save the name to activate the correct service later
-                    if pkg.attrib.get('nm'):
-                        self.network_manager = pkg.attrib.get('name')
-                    if pkg.attrib.get('conflicts'):
-                        self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
-
-            # Set KDE language pack
-            if self.desktop == 'kde':
-                pkg = ""
-                base_name = 'kde-l10n-'
-                lang_name = self.settings.get("language_name").lower()
-                if lang_name == "english":
-                    # There're some English variants available but not all of them.
-                    lang_packs = ['en_gb']
-                    locale = self.settings.get('locale').split('.')[0]
-                    if locale in lang_packs:
-                        pkg = base_name + locale
-                else:
-                    # All the other language packs use their language code
-                    lang_code = self.settings.get('language_code')
-                    pkg = base_name + lang_code
-                if len(pkg) > 0:
-                    logging.debug(_("Selected kde language pack: %s"), pkg)
-                    self.packages.append(pkg)
-        else:
-            # Add specific NoX/Base packages
-            for child in root.iter('nox'):
-                for pkg in child.iter('pkgname'):
-                    if pkg.attrib.get('nm'):
-                        self.network_manager = pkg.attrib.get('name')
-                    if pkg.attrib.get('conflicts'):
-                        self.conflicts.append(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
+        # Set KDE language pack
+        if self.desktop == 'kde':
+            pkg = ""
+            base_name = 'kde-l10n-'
+            lang_name = self.settings.get("language_name").lower()
+            if lang_name == "english":
+                # There're some English variants available but not all of them.
+                lang_packs = ['en_gb']
+                locale = self.settings.get('locale').split('.')[0]
+                if locale in lang_packs:
+                    pkg = base_name + locale
+            else:
+                # All the other language packs use their language code
+                lang_code = self.settings.get('language_code')
+                pkg = base_name + lang_code
+            if len(pkg) > 0:
+                logging.debug(_("Selected kde language pack: %s"), pkg)
+                self.packages.append(pkg)
 
         # Add ntp package if user selected it in timezone screen
         if self.settings.get('use_ntp'):
-            for child in root.iter('ntp'):
+            for child in xml_root.iter('ntp'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
@@ -600,13 +588,8 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Unknown error in hardware module. Output: %s"), err)
             
         # By default, hardware module adds modesetting driver but in a NoX install we don't want it
-        if self.desktop == "nox":
-            #if "v86d" in self.packages:
-            #    self.packages.remove("v86d")
-            #if "xf86-video-vesa" in self.packages:
-            #    self.packages.remove("xf86-video-vesa")
-            if "xf86-video-modesetting" in self.packages:
-                self.packages.remove("xf86-video-modesetting")
+        if self.desktop == "nox" and "xf86-video-modesetting" in self.packages:
+            self.packages.remove("xf86-video-modesetting")
 
         # Add filesystem packages
 
@@ -633,20 +616,20 @@ class InstallationProcess(multiprocessing.Process):
                     fsys = 'ext'
                 if fsys == 'fat16' or fsys == 'fat32':
                     fsys ='vfat'
-                for child in root.iter(fsys):
+                for child in xml_root.iter(fsys):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
         logging.debug(_("Check for user desired features and add them to our installation"))
-        self.add_features_packages(root)
+        self.add_features_packages(xml_root)
         logging.debug(_("All features needed packages have been added"))
 
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
             logging.debug(_("Selecting chinese fonts."))
-            for child in root.iter('chinese'):
+            for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
 
@@ -655,7 +638,7 @@ class InstallationProcess(multiprocessing.Process):
             bootloader = self.settings.get('bootloader')
             if bootloader == "Grub2":
                 logging.debug(_("Adding Grub2 bootloader packages"))
-                for child in root.iter('grub'):
+                for child in xml_root.iter('grub'):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
@@ -664,25 +647,25 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Adding Gummiboot bootloader package"))
                 self.packages.append("gummiboot")
 
-    def add_features_packages(self, root):
+    def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
         lib = desktops.LIBS
         features = desktops.FEATURES
-        
-        for feature in features[desktop]:
-            # Add necessary packages for user desired features to our install list
-            if self.settings.get("feature_" + feature):
-                logging.debug(_("Adding packages for '%s' feature."), feature)
-                for child in root.iter(feature):
-                    for pkg in child.iter('pkgname'):
+
+        # Add necessary packages for user desired features to our install list
+        for xml_features in xml_root.iter('features'):
+            for xml_feature in xml_features.iter('feature'):
+                feature = xml_feature.attrib.get("name")
+                if self.settings.get("feature_" + feature):
+                    logging.debug(_("Adding packages for '%s' feature."), feature)
+                    for pkg in xml_feature.iter('pkgname'):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and desktop in lib[plib]):
                             logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
                             self.packages.append(pkg.text)
-                        
                         if pkg.attrib.get('conflicts'):
                             self.conflicts.append(pkg.attrib.get('conflicts'))
 
@@ -698,10 +681,6 @@ class InstallationProcess(multiprocessing.Process):
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
                     pkg = "libreoffice-fresh-%s" % locale
-                #else:
-                #    # Install American English if there is not an specific
-                #    # language package available.
-                #    pkg = "libreoffice-en-US"
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')

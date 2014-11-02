@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
-<packages>
-    <!-- common to all desktops and to noX/Base (always installed) -->
-    <common>
+<cnchi>
+  <editions>
+    <edition name="common" description="Packages common to all DE and NoX">
+      <packages>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
         <pkgname>antergos-mirrorlist</pkgname>
@@ -34,11 +35,11 @@
         <pkgname>wireless_tools</pkgname>
         <pkgname>wpa_actiond</pkgname>
         <pkgname>zd1211-firmware</pkgname>
-    </common>
+      </packages>
+    </edition>
 
-    <!-- Common to all graphic desktops -->
-    <!-- It's best to put here apps that are qt/gtk agnostic -->
-    <graphic>
+    <edition name="graphic" description="Common to all graphic desktops">
+      <packages>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>antergos-welcome</pkgname>
@@ -77,10 +78,11 @@
         <pkgname>xorg-fonts</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
-    </graphic>
+      </packages>
+    </edition>
 
-    <!-- Specific to noX/Base installation -->
-    <nox>
+    <edition name="nox" description="NoX">
+      <packages>
         <pkgname nm='true' name='netctl'>netctl</pkgname>
         <!-- archivers -->
         <pkgname>arj</pkgname>
@@ -97,9 +99,11 @@
         <pkgname>unrar</pkgname>
         <pkgname>xz</pkgname>
         <pkgname>zip</pkgname>
-    </nox>
+      </packages>
+    </edition>
 
-    <gnome_desktop>
+    <edition name="Gnome" description="Gnome Desktop">
+      <packages>
         <pkgname>antergos-gnome-defaults-list</pkgname>
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
@@ -136,9 +140,11 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xscreensaver</pkgname>
-    </gnome_desktop>
+      </packages>
+    </edition>
 
-    <cinnamon_desktop>
+    <edition name="Cinnamon" description="Cinnamon desktop">
+      <packages>
         <pkgname>antergos-gnome-defaults-list</pkgname>
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
@@ -181,9 +187,11 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>zukitwo-themes</pkgname>
-    </cinnamon_desktop>
+      </packages>
+    </edition>
 
-    <xfce_desktop>
+    <edition name="XFCE" description="XFCE Desktop">
+      <packages>
         <pkgname>cdrkit</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>gamin</pkgname>
@@ -211,17 +219,21 @@
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xfce4-screenshooter</pkgname>
         <pkgname>xfce4-taskmanager</pkgname>
-    </xfce_desktop>
+      </packages>
+    </edition>
 
-    <lxqt_desktop>
+    <edition name="lxqt" description="LXQT Desktop">
+      <packages>
         <pkgname>clementine</pkgname>
         <pkgname>openbox</pkgname>
         <pkgname>pcmanfm-qt</pkgname>
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
-    </lxqt_desktop>
+      </packages>
+    </edition>
 
-    <mate_desktop>
+    <edition name="Mate" description="MATE Desktop">
+      <packages>
         <pkgname>atril</pkgname>
         <pkgname>caja</pkgname>
         <pkgname>caja-gksu</pkgname>
@@ -254,9 +266,11 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-    </mate_desktop>
+      </packages>
+    </edition>
 
-    <enlightenment_desktop>
+    <edition name="Enlightenment" description="Enlightenment Desktop">
+      <packages>
         <pkgname>enlightenment</pkgname>
         <pkgname>gksu</pkgname>
         <pkgname>gtk-theme-e17gtk</pkgname>
@@ -266,9 +280,11 @@
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-    </enlightenment_desktop>
+      </packages>
+    </edition>
 
-    <openbox_desktop>
+    <edition name="openbox" description="Openbox Window Manager">
+      <packages>
         <pkgname>arandr</pkgname>
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
@@ -312,9 +328,11 @@
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xorg-xinit</pkgname>
         <pkgname>xorg-xkill</pkgname>
-    </openbox_desktop>
+      </packages>
+    </edition>
 
-    <kde_desktop>
+    <edition name="KDE" description="KDE Desktop">
+      <packages>
         <pkgname>aspell-en</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
@@ -363,112 +381,94 @@
         <pkgname>transmission-qt</pkgname>
         <pkgname>vlc</pkgname>
         <pkgname>xdg-user-dirs</pkgname>
-    </kde_desktop>
+      </packages>
+    </edition>
+  </editions>
 
-    <!-- User desired features -->
-    <user_features>
-        <aur>
-            <pkgname>yaourt</pkgname>
-            <pkgname>cmake</pkgname>
-            <pkgname>git</pkgname>
-            <pkgname>bzr</pkgname>
-        </aur>
-        <bluetooth>
-            <pkgname lib='qt'>bluedevil</pkgname>
-            <pkgname>bluez-utils</pkgname>
-            <pkgname lib='gtk'>gnome-bluetooth</pkgname>
-        </bluetooth>
-        <cups>
-            <pkgname>cups</pkgname>
-            <pkgname>cups-pk-helper</pkgname>
-            <pkgname>foomatic-db-nonfree</pkgname>
-            <pkgname>gsfonts</pkgname>
-            <pkgname>gutenprint</pkgname>
-            <pkgname>hplip</pkgname>
-            <pkgname lib='qt'>kdeutils-print-manager</pkgname>
-            <pkgname lib='gtk'>system-config-printer</pkgname>
-            <pkgname>splix</pkgname>
-        </cups>
-        <!--
-        <gnome_extra>
-            <pkgname conflicts='xfburn'>gnome-extra</pkgname>
-        </gnome_extra>
-        -->
-        <fonts>
-            <pkgname>ttf-freefont</pkgname>
-            <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
-        </fonts>
-        <office>
-            <!--
-            There're now two libreoffice branches, fresh and still
-            Fresh is a LibreOffice branch which contains new features and program enhancements
-            while still is more stable and only gets bug fixes
-            -->
-            <!--
-            <pkgname>libreoffice-calc</pkgname>
-            <pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
-            <pkgname lib='gtk'>libreoffice-gnome</pkgname>
-            <pkgname>libreoffice-impress</pkgname>
-            <pkgname lib='qt'>libreoffice-kde4</pkgname>
-            <pkgname>libreoffice-writer</pkgname>
-            <pkgname>hunspell-en</pkgname>
-            -->
-            <pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
-            <pkgname>hunspell-en</pkgname>
-        </office>
-        <!-- visual effects for openbox -->
-        <visual>
-            <pkgname>compton</pkgname>
-            <pkgname>paranoid</pkgname>
-        </visual>
-        <!-- Uncomplicated firewall -->
-        <firewall>
-            <pkgname lib='gtk'>gufw</pkgname>
-            <pkgname lib='qt'>kcm-ufw</pkgname>
-            <pkgname>ufw</pkgname>
-        </firewall>
-        <!-- Third party software. Some of it is proprietary -->
-        <!--<third_party>
-            <pkgname>flashplugin</pkgname>
-            <pkgname>libdvdcss</pkgname>
-        </third_party>-->
-    </user_features>
+  <!-- User desired features -->
+  <features>
+    <feature name="aur">
+      <pkgname>yaourt</pkgname>
+      <pkgname>cmake</pkgname>
+      <pkgname>git</pkgname>
+      <pkgname>bzr</pkgname>
+    </feature>
+    <feature name="bluetooth">
+      <pkgname lib='qt'>bluedevil</pkgname>
+      <pkgname>bluez-utils</pkgname>
+      <pkgname lib='gtk'>gnome-bluetooth</pkgname>
+    </feature>
+    <feature name="cups">
+      <pkgname>cups</pkgname>
+      <pkgname>cups-pk-helper</pkgname>
+      <pkgname>foomatic-db-nonfree</pkgname>
+      <pkgname>gsfonts</pkgname>
+      <pkgname>gutenprint</pkgname>
+      <pkgname>hplip</pkgname>
+      <pkgname lib='qt'>kdeutils-print-manager</pkgname>
+      <pkgname lib='gtk'>system-config-printer</pkgname>
+      <pkgname>splix</pkgname>
+    </feature>
+    <feature name="fonts">
+      <pkgname>ttf-freefont</pkgname>
+      <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
+    </feature>
+    <feature name="office">
+      <!--
+      There're now two libreoffice branches, fresh and still
+      Fresh is a LibreOffice branch which contains new features and program enhancements
+      while still is more stable and only gets bug fixes.
+      We'll install the fresh one
+      -->
+      <pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
+      <pkgname>hunspell-en</pkgname>
+    </feature>
+    <!-- visual effects for openbox -->
+    <feature name="visual">
+      <pkgname>compton</pkgname>
+      <pkgname>paranoid</pkgname>
+    </feature>
+    <!-- Uncomplicated firewall -->
+    <feature name="firewall">
+      <pkgname lib='gtk'>gufw</pkgname>
+      <pkgname lib='qt'>kcm-ufw</pkgname>
+      <pkgname>ufw</pkgname>
+    </feature>
+  </features>
 
-    <net>
-        <broadcom>
-            <pkgname>broadcom-wl</pkgname>
-        </broadcom>
-    </net>
+  <net>
+    <broadcom>
+      <pkgname>broadcom-wl</pkgname>
+    </broadcom>
+  </net>
 
-    <filesystems>
-        <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
-        <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
-        <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
-        <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
-        <pkgname>e2fsprogs</pkgname>        <!-- Ext2/3/4 filesystem utilities -->
-        <pkgname>f2fs-tools</pkgname>       <!-- for Flash-Friendly File System -->
-        <pkgname>jfsutils</pkgname>         <!-- for jfs partitions -->
-        <pkgname>nfs-utils</pkgname>        <!-- for Network File Systems (NFS)-->
-        <pkgname>nilfs-utils</pkgname>      <!-- for nilfs2 support -->
-        <pkgname>ntfs-3g</pkgname>          <!-- for NTFS support -->
-        <pkgname>reiserfsprogs</pkgname>    <!-- for reiser partitions -->
-        <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
-    </filesystems>
+  <filesystems>
+    <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
+    <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
+    <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
+    <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
+    <pkgname>e2fsprogs</pkgname>        <!-- Ext2/3/4 filesystem utilities -->
+    <pkgname>f2fs-tools</pkgname>       <!-- for Flash-Friendly File System -->
+    <pkgname>jfsutils</pkgname>         <!-- for jfs partitions -->
+    <pkgname>nfs-utils</pkgname>        <!-- for Network File Systems (NFS)-->
+    <pkgname>nilfs-utils</pkgname>      <!-- for nilfs2 support -->
+    <pkgname>ntfs-3g</pkgname>          <!-- for NTFS support -->
+    <pkgname>reiserfsprogs</pkgname>    <!-- for reiser partitions -->
+    <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
+  </filesystems>
 
-    <special_fonts>
-        <chinese>
-            <pkgname>opendesktop-fonts</pkgname>
-        </chinese>
-    </special_fonts>
+  <locale_fonts>
+    <chinese>
+      <pkgname>opendesktop-fonts</pkgname>
+    </chinese>
+  </locale_fonts>
 
-    <ntp>
-        <pkgname>ntp</pkgname>
-    </ntp>
+  <ntp>
+    <pkgname>ntp</pkgname>
+  </ntp>
 
-    <grub>
-        <pkgname>grub</pkgname>
-        <pkgname>os-prober</pkgname>
-        <pkgname uefi="true">efibootmgr</pkgname>
-    </grub>
-
-</packages>
+  <grub>
+    <pkgname>grub</pkgname>
+    <pkgname>os-prober</pkgname>
+  </grub>
+</cnchi>
