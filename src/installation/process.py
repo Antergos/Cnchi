@@ -516,6 +516,8 @@ class InstallationProcess(multiprocessing.Process):
         xml_tree = ET.parse(packages_xml)
         xml_root = xml_tree.getroot()
 
+        lib = desktops.LIBS
+
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
 
