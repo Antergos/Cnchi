@@ -182,6 +182,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Get encryption (LUKS) options dialog
         self.luks_dialog = self.ui.get_object('luks_dialog')
+        
         switch = self.ui.get_object('luks_use_luks_switch')
         switch.connect('notify::active', self.on_luks_use_luks_switch_activate)
 
@@ -213,7 +214,6 @@ class InstallationAdvanced(GtkBaseBox):
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
-
         
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -750,6 +750,9 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             self.tmp_luks_options = (False, "", "")
 
+        # Dialog windows should be set transient for the main application window they were spawned from.
+        self.edit_partition_dialog.set_transient_for(self.get_toplevel())
+
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
 
@@ -1039,6 +1042,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Empty tmp luks options (for encryption properties dialog)
         self.tmp_luks_options = (False, "", "")
 
+        # Dialog windows should be set transient for the main application window they were spawned from.
+        self.create_partition_dialog.set_transient_for(self.get_toplevel())
+
         # Finally, show the create partition dialog
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -1135,6 +1141,9 @@ class InstallationAdvanced(GtkBaseBox):
         switch_use_luks = self.ui.get_object('luks_use_luks_switch')
         switch_use_luks.set_active(use_luks)
         self.enable_luks_widgets(use_luks)
+
+        # Dialog windows should be set transient for the main application window they were spawned from.
+        self.luks_dialog.set_transient_for(self.get_toplevel())
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -1487,6 +1496,10 @@ class InstallationAdvanced(GtkBaseBox):
         (disk_sel, result) = self.disks[disk_path]
 
         dialog = self.ui.get_object("create_table_dialog")
+
+        # Dialog windows should be set transient for the main application window they were spawned from.
+        dialog.set_transient_for(self.get_toplevel())
+
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             combo = self.ui.get_object('partition_types_combo')
@@ -1875,6 +1888,10 @@ class InstallationAdvanced(GtkBaseBox):
         changelist_dialog = self.ui.get_object("changelist_dialog")
         changelist_dialog.set_title(_('These disks will have partition actions:'))
         changelist_dialog.show_all()
+        
+        # Dialog windows should be set transient for the main application window they were spawned from.
+        changelist_dialog.set_transient_for(self.get_toplevel())
+
         response = changelist_dialog.run()
         changelist_dialog.hide()
         while Gtk.events_pending():
