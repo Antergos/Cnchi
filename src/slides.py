@@ -46,9 +46,13 @@ class Slides(GtkBaseBox):
         """ Initialize class and its vars """
         super().__init__(self, params, "slides", prev_page, next_page)
 
-        self.progress_bar = self.ui.get_object("progressbar")
+        self.progress_bar = self.ui.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
+        
+        self.downloads_progress_bar = self.ui.get_object("downloads_progress_bar")
+        self.downloads_progress_bar.set_show_text(True)
+        self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
         self.scrolled_window = self.ui.get_object("scrolledwindow")
@@ -87,6 +91,9 @@ class Slides(GtkBaseBox):
 
         # Last screen reached, hide main progress bar (the one at the top).
         self.main_progressbar.hide()
+        
+        # Also hide total downloads progress bar
+        self.downloads_progress_bar.hide()
 
         # Hide backwards and forwards button
         self.backwards_button.hide()
@@ -156,6 +163,8 @@ class Slides(GtkBaseBox):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(event[1])
+            elif event[0] == 'downloads_percent':
+                self.downloads_progress_bar.set_fraction(event[1])
             elif event[0] == 'text':
                 if event[1] == 'hide':
                     self.progress_bar.set_show_text(False)
@@ -171,6 +180,11 @@ class Slides(GtkBaseBox):
             elif event[0] == 'progress_bar':
                 if event[1] == 'hide':
                     self.progress_bar.hide()
+            elif event[0] == 'downloads_progress_bar':
+                if event[1] == 'hide':
+                    self.downloads_progress_bar.hide()
+                if event[1] == 'show':
+                    self.downloads_progress_bar.show()
             elif event[0] == 'finished':
                 logging.info(event[1])
                 if not self.settings.get('bootloader_ok'):
@@ -205,22 +219,30 @@ class Slides(GtkBaseBox):
                 # Show the error
                 show.fatal_error(self.get_toplevel(), event[1])
 
+                '''
                 # Ask if user wants to retry
                 msg = _("Do you want to retry the installation using the same configuration?")
                 res = show.question(self.get_toplevel(), msg)
                 if res == Gtk.ResponseType.YES:
                     # Restart installation process
                     logging.debug(_("Restarting installation process..."))
-                    p = self.settings.get('installer_thread_call')
+                    params = self.settings.get('installer_thread_call')
 
-                    self.process = installation_process.InstallationProcess(self.settings, self.callback_queue,
-                        p['mount_devices'], p['fs_devices'], p['ssd'], p['alternate_package_list'], p['blvm'])
+                    self.process = installation_process.InstallationProcess(
+                        self.settings,
+                        self.callback_queue,
+                        params['mount_devices'],
+                        params['fs_devices'],
+                        params['ssd'],
+                        params['alternate_package_list'],
+                        params['blvm'])
 
                     self.process.start()
                     return True
                 else:
                     self.fatal_error = True
                     return False
+                '''
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:

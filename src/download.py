@@ -158,6 +158,10 @@ class DownloadPackages(object):
 
         downloaded = 1
         total_downloads = len(downloads)
+        
+        self.queue_event('downloads_percent', 0)
+        self.queue_event('downloads_progress_bar', 'show')
+        
         for key in downloads:
             element = downloads[key]
             txt = _("Downloading %s %s (%d/%d)...")
@@ -168,6 +172,9 @@ class DownloadPackages(object):
             total_length = int(element['size'])
             percent = 0
             self.queue_event('percent', percent)
+            
+            downloads_percent = round(float(downloads / total_downloads), 2)
+            self.queue_event('downloads_percent', downloads_percent)
 
             if os.path.exists(filename):
                 # File exists, do not download
@@ -230,6 +237,8 @@ class DownloadPackages(object):
                 # This is not a total disaster, maybe alpm will be able
                 # to download it for us later in pac.py
                 logging.warning(_("Can't download %s"), element['filename'])
+        
+        self.queue_event('downloads_progress_bar', 'hide')
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
