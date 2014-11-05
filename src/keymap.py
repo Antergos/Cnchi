@@ -94,6 +94,8 @@ class Keymap(GtkBaseBox):
                 # Country was found, here we should put specific variant cases
                 if selected_country == "Spain" and self.settings.get("language_name") == "Catalan":
                     self.select_value_in_treeview(self.variant_treeview, "Spain - Catalan variant with middle-dot L")
+                if selected_country == "Canada" and self.settings.get("language_name") == "English":
+                    self.select_value_in_treeview(self.variant_treeview, "Canada - English")
 
             logging.info(_("keyboard_layout is %s") % selected_country)
         
