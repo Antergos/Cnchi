@@ -173,7 +173,7 @@ class DownloadPackages(object):
             percent = 0
             self.queue_event('percent', percent)
             
-            downloads_percent = round(float(downloads / total_downloads), 2)
+            downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', downloads_percent)
 
             if os.path.exists(filename):
