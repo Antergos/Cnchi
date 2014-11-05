@@ -46,7 +46,7 @@ class AutoRankmirrorsThread(threading.Thread):
 
     def check_mirror_status(self, mirrors, url):
         for mirror in mirrors:
-            if mirror['url'] in url and mirror['completion_pct'] == 1:
+            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] < 10:
                 return True
         return False
 
