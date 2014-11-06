@@ -47,6 +47,7 @@ class GtkBaseBox(Gtk.Box):
         Gtk.Box.__init__(self)
         
         self.set_name(name)
+        self.name = name
 
         logging.debug("Loading '{}' screen".format(name))
 
@@ -58,6 +59,8 @@ class GtkBaseBox(Gtk.Box):
         self.ui.connect_signals(child)
         
         child.add(self.ui.get_object(name))
+    def __del__(self):
+        logging.debug("Deleting object %s", self.name)
 
     def get_prev_page(self):
         return self.prev_page
