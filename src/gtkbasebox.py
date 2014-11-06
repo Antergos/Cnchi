@@ -59,6 +59,7 @@ class GtkBaseBox(Gtk.Box):
         self.ui.connect_signals(child)
         
         child.add(self.ui.get_object(name))
+
     def __del__(self):
         logging.debug("Deleting object %s", self.name)
 
