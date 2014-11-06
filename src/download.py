@@ -207,13 +207,15 @@ class DownloadPackages(object):
                 download_error = False
                 urlp = url_open(url)
                 if urlp is None:
+                    # try next mirror url
+                    logging.warning("Can't open %s", url)
                     continue
-                #print("Downloading %s..." % filename)
                 with open(filename, 'w+b') as xzfile:
                     (data, download_error) = url_open_read(urlp)
 
                     if download_error:
-                        # alpm will retry later
+                        # try next mirror url
+                        logging.warning("Can't download %s", url)
                         continue
 
                     while len(data) > 0 and download_error == False:
@@ -226,14 +228,11 @@ class DownloadPackages(object):
                         (data, download_error) = url_open_read(urlp)
 
                     if not download_error:
-                        # There're some downloads, that are so quick,
-                        # that percent does not reach 100.
-                        # We simulate it here
-                        self.queue_event('percent', 1.0)
                         downloaded += 1
                         break
 
             if download_error:
+                # None of the mirror urls works.
                 # This is not a total disaster, maybe alpm will be able
                 # to download it for us later in pac.py
                 logging.warning(_("Can't download %s"), element['filename'])
