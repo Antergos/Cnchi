@@ -37,10 +37,14 @@ import sys
 import time
 import urllib.request
 import urllib.error
-import xml.etree.ElementTree as ET
 import encfs
 from mako.template import Template
 from mako.lookup import TemplateLookup
+
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 from installation import auto_partition
 import desktop_environments as desktops

@@ -25,7 +25,12 @@
 """ Operations with metalinks """
 
 import logging
-import xml.etree.ElementTree as ET
+import tempfile
+
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 _PM2ML = True
 try:
@@ -33,12 +38,26 @@ try:
 except ImportError:
     _PM2ML = False
 
+import memory_profiler as profiler
+
+#@profiler.profile
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
     metalink_info = {}
 
     tag = "{urn:ietf:params:xml:ns:metalink}"
+
+    temp_file = tempfile.NamedTemporaryFile(delete=False)
+    temp_file.write(str(metalink).encode('UTF-8'))
+    temp_file.close()
+    
+    #print(temp_file.name)
+    
+    for event, elem in ET.iterparse(temp_file.name, events=('start', 'end', 'start-ns', 'end-ns')):
+        print (event, elem)
+    
+    '''
     root = ET.fromstring(str(metalink))
 
     for child1 in root.iter(tag + "file"):
@@ -65,9 +84,11 @@ def get_info(metalink):
             element['urls'].append(child2.text)
 
         metalink_info[element['identity']] = element
+    '''
 
     return metalink_info
 
+#@profiler.profile
 def create(package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
@@ -110,4 +131,5 @@ def create(package_name, pacman_conf_file):
         output_dir=pargs.output_dir,
         set_preference=pargs.preference
     )
+    
     return metalink

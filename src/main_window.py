@@ -53,7 +53,8 @@ from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
 import weakref
-import memory_profiler as profiler
+
+#import memory_profiler as profiler
 import objgraph
 
 # Constants (must be uppercase)
@@ -293,7 +294,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-    @profiler.profile
     def del_pages(self):
         """ When we get to user_info page we can't go back
         therefore we can delete all previous pages for good """
@@ -310,7 +310,6 @@ class MainWindow(Gtk.ApplicationWindow):
             del self.pages["installation_automatic"]
             del self.pages["installation_alongside"]
             del self.pages["installation_advanced"]
-            
 
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -351,7 +350,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.get_current_page().get_next_page()
-
+        
         if next_page != None:
             if next_page not in self.pages.keys():
                 # Load all pages
@@ -360,9 +359,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
             stored = self.get_current_page().store_values()
 
+            objgraph.show_most_common_types()
+
             if stored != False:
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.get_current_page())
+
+                objgraph.show_backrefs(self.pages[next_page], filename="/tmp/" + next_page + ".png")
 
                 self.get_current_page = weakref.ref(self.pages[next_page])
                 #self.current_page = self.pages[next_page]
@@ -380,7 +383,7 @@ class MainWindow(Gtk.ApplicationWindow):
                         # We can't go back, hide back button
                         self.backwards_button.hide()
 
-    @profiler.profile
+    #@profiler.profile
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
         prev_page = self.get_current_page().get_prev_page()

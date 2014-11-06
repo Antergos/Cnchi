@@ -181,6 +181,7 @@ class DownloadPackages(object):
                 # Note: In theory this won't ever happen
                 # (metalink assures us this)
                 # print("File %s already exists" % filename)
+                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), filename)
                 self.queue_event('percent', 1.0)
                 downloaded += 1
                 continue
@@ -243,7 +244,8 @@ class DownloadPackages(object):
         """ Adds an event to Cnchi event queue """
 
         if self.callback_queue is None:
-            logging.debug(event_text)
+            if event_type is not "percent":
+                logging.debug(event_text)
             return
 
         if event_type in self.last_event:
@@ -268,6 +270,12 @@ if __name__ == '__main__':
         level=logging.DEBUG)
 
     DownloadPackages(
+        package_names=["gnome-sudoku"],
+        cache_dir="",
+        pacman_cache_dir="/tmp/pkg")
+    '''
+    DownloadPackages(
         package_names=["kde"],
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
+    '''
