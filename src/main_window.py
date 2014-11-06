@@ -55,7 +55,7 @@ from installation import advanced as installation_advanced
 import weakref
 
 #import memory_profiler as profiler
-import objgraph
+#import objgraph
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
@@ -359,13 +359,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
             stored = self.get_current_page().store_values()
 
-            objgraph.show_most_common_types()
+            #objgraph.show_most_common_types()
 
             if stored != False:
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.get_current_page())
 
-                objgraph.show_backrefs(self.pages[next_page], filename="/tmp/" + next_page + ".png")
+                #objgraph.show_backrefs(self.pages[next_page], filename="/tmp/" + next_page + ".png")
 
                 self.get_current_page = weakref.ref(self.pages[next_page])
                 #self.current_page = self.pages[next_page]
