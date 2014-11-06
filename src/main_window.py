@@ -52,6 +52,10 @@ from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
+import weakref
+import memory_profiler as profiler
+import objgraph
+
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
@@ -212,9 +216,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_icon_from_file(icon_path)
 
         # Set the first page to show
-        self.current_page = self.pages["welcome"]
 
-        self.main_box.add(self.current_page)
+        self.get_current_page = weakref.ref(self.pages["welcome"])
+
+        self.main_box.add(self.get_current_page())
 
         # Header style testing
 
@@ -235,7 +240,8 @@ class MainWindow(Gtk.ApplicationWindow):
         # Show main window
         self.show_all()
 
-        self.current_page.prepare('forwards')
+        self.get_current_page().prepare('forwards')
+        #self.current_page.prepare('forwards')
 
         # Hide backwards button
         self.backwards_button.hide()
@@ -287,6 +293,25 @@ class MainWindow(Gtk.ApplicationWindow):
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
+    @profiler.profile
+    def del_pages(self):
+        """ When we get to user_info page we can't go back
+        therefore we can delete all previous pages for good """
+        if self.get_current_page == self.pages["user_info"]:
+            del self.pages["welcome"]
+            del self.pages["language"]
+            del self.pages["location"]
+            del self.pages["check"]
+            del self.pages["desktop"]
+            del self.pages["features"]
+            del self.pages["keymap"]
+            del self.pages["timezone"]
+            del self.pages["installation_ask"]
+            del self.pages["installation_automatic"]
+            del self.pages["installation_alongside"]
+            del self.pages["installation_advanced"]
+            
+
     def set_geometry(self):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
@@ -325,7 +350,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
-        next_page = self.current_page.get_next_page()
+        next_page = self.get_current_page().get_next_page()
 
         if next_page != None:
             if next_page not in self.pages.keys():
@@ -333,18 +358,21 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.load_pages()
                 self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-            stored = self.current_page.store_values()
+            stored = self.get_current_page().store_values()
 
             if stored != False:
                 self.set_progressbar_step(self.progressbar_step)
-                self.main_box.remove(self.current_page)
+                self.main_box.remove(self.get_current_page())
 
-                self.current_page = self.pages[next_page]
+                self.get_current_page = weakref.ref(self.pages[next_page])
+                #self.current_page = self.pages[next_page]
 
-                if self.current_page != None:
-                    self.current_page.prepare('forwards')
-                    self.main_box.add(self.current_page)
-                    if self.current_page.get_prev_page() != None:
+                if self.get_current_page() != None:
+                    if next_page == "user_info":
+                        self.del_pages()
+                    self.get_current_page().prepare('forwards')
+                    self.main_box.add(self.get_current_page())
+                    if self.get_current_page().get_prev_page() != None:
                         # There is a previous page, show button
                         self.backwards_button.show()
                         self.backwards_button.set_sensitive(True)
@@ -352,23 +380,25 @@ class MainWindow(Gtk.ApplicationWindow):
                         # We can't go back, hide back button
                         self.backwards_button.hide()
 
+    @profiler.profile
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
-        prev_page = self.current_page.get_prev_page()
+        prev_page = self.get_current_page().get_prev_page()
 
         if prev_page != None:
             self.set_progressbar_step(-self.progressbar_step)
 
             # If we go backwards, don't store user changes
-            # self.current_page.store_values()
+            # self.get_current_page().store_values()
 
-            self.main_box.remove(self.current_page)
-            self.current_page = self.pages[prev_page]
+            self.main_box.remove(self.get_current_page())
+             
+            self.get_current_page = weakref.ref(self.pages[prev_page])
 
-            if self.current_page != None:
-                self.current_page.prepare('backwards')
-                self.main_box.add(self.current_page)
+            if self.get_current_page() != None:
+                self.get_current_page().prepare('backwards')
+                self.main_box.add(self.get_current_page())
 
-                if self.current_page.get_prev_page() == None:
+                if self.get_current_page().get_prev_page() == None:
                     # We're at the first page
                     self.backwards_button.hide()
