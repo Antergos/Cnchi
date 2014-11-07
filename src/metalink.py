@@ -38,7 +38,7 @@ try:
 except ImportError:
     _PM2ML = False
 
-import memory_profiler as profiler
+#import memory_profiler as profiler
 
 #@profiler.profile
 def get_info(metalink):
@@ -55,7 +55,12 @@ def get_info(metalink):
     #print(temp_file.name)
     
     for event, elem in ET.iterparse(temp_file.name, events=('start', 'end', 'start-ns', 'end-ns')):
-        print (event, elem)
+        if event == "start":
+            print(elem.tag)
+            if elem.tag.endswith("file"):
+                print (elem.attrib['name'])
+        #if event == "end":
+        #    print("end:",elem)
     
     '''
     root = ET.fromstring(str(metalink))
@@ -133,3 +138,29 @@ def create(package_name, pacman_conf_file):
     )
     
     return metalink
+
+''' Test case '''
+if __name__ == '__main__':
+    import gettext
+    _ = gettext.gettext
+
+    meta4 = '<?xml version="1.0" encoding="utf-8"?>' \
+        '<metalink xmlns="urn:ietf:params:xml:ns:metalink">' \
+        '<file name="ubuntu-9.04-alternate-amd64.iso">' \
+        '<size>732282880</size>' \
+        '<publisher name="Ubuntu" url="http://www.ubuntu.com"/>' \
+        '<license name="GPL" url="http://www.gnu.org/licenses/gpl.html"/>' \
+        '<version>9.04</version>' \
+        '<description>Ubuntu CD Image</description>' \
+        '<logo>http://www.ubuntu.com/themes/ubuntu07/images/ubuntulogo.png</logo>' \
+        '<os>Linux-x64</os>' \
+        '<hash type="md5">3b5e9861910463374bb0d4ba9025bbb1</hash>' \
+        '<metaurl type="torrent" priority="1">http://releases.ubuntu.com/9.04/ubuntu-9.04-alternate-amd64.iso.torrent</metaurl>' \
+        '<url location="jp" priority="1">http://ftp.yz.yamagata-u.ac.jp/pub/linux/ubuntu/releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
+        '<url location="de" priority="2">ftp://ftp.rrzn.uni-hannover.de/pub/mirror/linux/ubuntu-releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
+        '<url location="gb" priority="2">http://ftp.ticklers.org/releases.ubuntu.org/releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
+        '<url location="us" priority="3">http://ubuntu.media.mit.edu/ubuntu-releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
+        '</file>' \
+        '</metalink>'
+
+    get_info(meta4)
