@@ -54,11 +54,29 @@ def get_info(metalink):
     
     #print(temp_file.name)
     
+    element = {}
+    
+    # TODO: Add clear nodes
     for event, elem in ET.iterparse(temp_file.name, events=('start', 'end', 'start-ns', 'end-ns')):
         if event == "start":
-            print(elem.tag)
             if elem.tag.endswith("file"):
-                print (elem.attrib['name'])
+                element['filename'] = elem.attrib['name']
+            elif elem.tag.endswith("identity"):
+                element['identity'] = elem.text
+            elif elem.tag.endswith("size"):
+                element['size'] = elem.text
+            elif elem.tag.endswith("version"):
+                element['version'] = elem.text
+            elif elem.tag.endswith("description"):
+                element['description'] = elem.text
+            elif elem.tag.endswith("hash"):
+                element['hash'] = elem.text
+            elif elem.tag.endswith("url"):
+                element['urls'].append(elem.text)
+        if event == "end":
+            if elem.tag.endswith("file"):
+                metalink_info[element['identity']] = element                
+                element.clear()
         #if event == "end":
         #    print("end:",elem)
     
