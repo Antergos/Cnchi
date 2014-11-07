@@ -127,7 +127,7 @@ class Welcome(GtkBaseBox):
         # Tell timezone thread to start searching now
         self.settings.set('timezone_start', True)
         # Simulate a forward button click
-        self.forward_button.emit("clicked")
+        self.forward_button.clicked()
 
     def show_loading_message(self, show=True):
         if show:

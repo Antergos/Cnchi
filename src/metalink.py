@@ -26,6 +26,7 @@
 
 import logging
 import tempfile
+import os
 
 try:
     import xml.etree.cElementTree as ET
@@ -38,9 +39,9 @@ try:
 except ImportError:
     _PM2ML = False
 
-#import memory_profiler as profiler
+import memory_profiler as profiler
 
-#@profiler.profile
+@profiler.profile
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
@@ -55,9 +56,9 @@ def get_info(metalink):
     #print(temp_file.name)
     
     element = {}
-    
-    # TODO: Add clear nodes
-    for event, elem in ET.iterparse(temp_file.name, events=('start', 'end', 'start-ns', 'end-ns')):
+    element['urls'] = []
+
+    for event, elem in ET.iterparse(temp_file.name, events=('start', 'end')):
         if event == "start":
             if elem.tag.endswith("file"):
                 element['filename'] = elem.attrib['name']
@@ -75,39 +76,13 @@ def get_info(metalink):
                 element['urls'].append(elem.text)
         if event == "end":
             if elem.tag.endswith("file"):
-                metalink_info[element['identity']] = element                
+                print(element)
+                metalink_info[element['identity']] = element
                 element.clear()
-        #if event == "end":
-        #    print("end:",elem)
-    
-    '''
-    root = ET.fromstring(str(metalink))
+                elem.clear()
 
-    for child1 in root.iter(tag + "file"):
-        element = {}
-        element['filename'] = child1.attrib['name']
-
-        for child2 in child1.iter(tag + "identity"):
-            element['identity'] = child2.text
-
-        for child2 in child1.iter(tag + "size"):
-            element['size'] = child2.text
-
-        for child2 in child1.iter(tag + "version"):
-            element['version'] = child2.text
-
-        for child2 in child1.iter(tag + "description"):
-            element['description'] = child2.text
-
-        for child2 in child1.iter(tag + "hash"):
-            element[child2.attrib['type']] = child2.text
-
-        element['urls'] = []
-        for child2 in child1.iter(tag + "url"):
-            element['urls'].append(child2.text)
-
-        metalink_info[element['identity']] = element
-    '''
+    if os.path.exists(temp_file.name):
+        os.remove(temp_file.name)
 
     return metalink_info
 
@@ -165,6 +140,7 @@ if __name__ == '__main__':
     meta4 = '<?xml version="1.0" encoding="utf-8"?>' \
         '<metalink xmlns="urn:ietf:params:xml:ns:metalink">' \
         '<file name="ubuntu-9.04-alternate-amd64.iso">' \
+        '<identity>ubuntu-9.04-alternate-amd64.iso</identity>' \
         '<size>732282880</size>' \
         '<publisher name="Ubuntu" url="http://www.ubuntu.com"/>' \
         '<license name="GPL" url="http://www.gnu.org/licenses/gpl.html"/>' \

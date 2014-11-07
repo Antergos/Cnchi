@@ -242,16 +242,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.show_all()
 
         self.get_current_page().prepare('forwards')
-        #self.current_page.prepare('forwards')
 
         # Hide backwards button
         self.backwards_button.hide()
-        
-        # Hide titlebar but show border decoration
-        #self.get_window().set_accept_focus(True)
-        #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
 
-        # Hide progress bar as it's value is zero
+        # Hide progress bar
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
         self.progressbar_step = 0
@@ -347,6 +342,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.progressbar.hide()
 
+    #@profiler.profile
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.get_current_page().get_next_page()
@@ -368,7 +364,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 #objgraph.show_backrefs(self.pages[next_page], filename="/tmp/" + next_page + ".png")
 
                 self.get_current_page = weakref.ref(self.pages[next_page])
-                #self.current_page = self.pages[next_page]
 
                 if self.get_current_page() != None:
                     if next_page == "user_info":
