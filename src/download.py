@@ -50,10 +50,10 @@ def url_open_read(urlp, chunk_size=8192):
         download_error = False
     except urllib.error.HTTPError as err:
         msg = ' HTTPError : %s' % err.reason
-        logging.exception(msg)
+        logging.warning(msg)
     except urllib.error.URLError as err:
         msg = ' URLError : %s' % err.reason
-        logging.exception(msg)
+        logging.warning(msg)
 
     return (data, download_error)
 
@@ -67,11 +67,15 @@ def url_open(url):
     except urllib.error.HTTPError as err:
         urlp = None
         msg += ' HTTPError : %s' % err.reason
-        logging.exception(msg)
+        logging.warning(msg)
     except urllib.error.URLError as err:
         urlp = None
         msg += ' URLError : %s' % err.reason
-        logging.exception(msg)
+        logging.warning(msg)
+    except AttributeError as err:
+        urlp = None
+        msg += ' AttributeError : %s' % err
+        logging.warning(msg)
 
     return urlp
 
@@ -205,32 +209,30 @@ class DownloadPackages(object):
                         pass
 
             for url in element['urls']:
+                logging.debug("Downloading url %s", url)
                 download_error = False
                 urlp = url_open(url)
-                if urlp is None:
-                    # try next mirror url
-                    logging.warning("Can't open %s", url)
-                    continue
-                with open(filename, 'w+b') as xzfile:
-                    (data, download_error) = url_open_read(urlp)
-
-                    if download_error:
-                        # try next mirror url
-                        logging.warning("Can't download %s", url)
-                        continue
-
-                    while len(data) > 0 and download_error == False:
-                        xzfile.write(data)
-                        completed_length += len(data)
-                        old_percent = percent
-                        percent = round(float(completed_length / total_length), 2)
-                        if old_percent != percent:
-                            self.queue_event('percent', percent)
+                if urlp != None:
+                    with open(filename, 'wb') as xzfile:
                         (data, download_error) = url_open_read(urlp)
 
-                    if not download_error:
-                        downloaded += 1
-                        break
+                        while len(data) > 0 and download_error == False:
+                            xzfile.write(data)
+                            completed_length += len(data)
+                            old_percent = percent
+                            percent = round(float(completed_length / total_length), 2)
+                            if old_percent != percent:
+                                self.queue_event('percent', percent)
+                            (data, download_error) = url_open_read(urlp)
+
+                        if not download_error:
+                            downloaded += 1
+                        else:
+                            # try next mirror url
+                            logging.warning("Can't download %s", url)
+                else:
+                    # try next mirror url
+                    logging.warning("Can't open %s", url)
 
             if download_error:
                 # None of the mirror urls works.
