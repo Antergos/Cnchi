@@ -53,10 +53,7 @@ def get_info(metalink):
     temp_file.write(str(metalink).encode('UTF-8'))
     temp_file.close()
     
-    #print(temp_file.name)
-    
     element = {}
-    element['urls'] = []
 
     for event, elem in ET.iterparse(temp_file.name, events=('start', 'end')):
         if event == "start":
@@ -73,11 +70,15 @@ def get_info(metalink):
             elif elem.tag.endswith("hash"):
                 element['hash'] = elem.text
             elif elem.tag.endswith("url"):
-                element['urls'].append(elem.text)
+                try:
+                    element['urls'].append(elem.text)
+                except KeyError as err:
+                    element['urls'] = [elem.text]
         if event == "end":
             if elem.tag.endswith("file"):
-                print(element)
-                metalink_info[element['identity']] = element
+                # Crop to 5 urls max for file
+                element['urls'] = element['urls'][:5]
+                metalink_info[element['identity']] = element.copy()
                 element.clear()
                 elem.clear()
 
@@ -137,24 +138,5 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    meta4 = '<?xml version="1.0" encoding="utf-8"?>' \
-        '<metalink xmlns="urn:ietf:params:xml:ns:metalink">' \
-        '<file name="ubuntu-9.04-alternate-amd64.iso">' \
-        '<identity>ubuntu-9.04-alternate-amd64.iso</identity>' \
-        '<size>732282880</size>' \
-        '<publisher name="Ubuntu" url="http://www.ubuntu.com"/>' \
-        '<license name="GPL" url="http://www.gnu.org/licenses/gpl.html"/>' \
-        '<version>9.04</version>' \
-        '<description>Ubuntu CD Image</description>' \
-        '<logo>http://www.ubuntu.com/themes/ubuntu07/images/ubuntulogo.png</logo>' \
-        '<os>Linux-x64</os>' \
-        '<hash type="md5">3b5e9861910463374bb0d4ba9025bbb1</hash>' \
-        '<metaurl type="torrent" priority="1">http://releases.ubuntu.com/9.04/ubuntu-9.04-alternate-amd64.iso.torrent</metaurl>' \
-        '<url location="jp" priority="1">http://ftp.yz.yamagata-u.ac.jp/pub/linux/ubuntu/releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
-        '<url location="de" priority="2">ftp://ftp.rrzn.uni-hannover.de/pub/mirror/linux/ubuntu-releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
-        '<url location="gb" priority="2">http://ftp.ticklers.org/releases.ubuntu.org/releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
-        '<url location="us" priority="3">http://ubuntu.media.mit.edu/ubuntu-releases/9.04/ubuntu-9.04-alternate-amd64.iso</url>' \
-        '</file>' \
-        '</metalink>'
-
-    get_info(meta4)
+    with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:
+        print(get_info(meta4.read()))
