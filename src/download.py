@@ -139,6 +139,7 @@ class DownloadPackages(object):
             and its dependencies using urllib """
         downloads = {}
 
+        self.queue_event('percent', 0)
         self.queue_event('info', _('Creating list of packages to download...'))
         percent = 0
         processed_packages = 0
@@ -160,26 +161,24 @@ class DownloadPackages(object):
             percent = round(float(processed_packages / total_packages), 2)
             self.queue_event('percent', percent)
 
-        downloaded = 1
+        downloaded = 0
         total_downloads = len(downloads)
         
-        self.queue_event('downloads_percent', 0)
         self.queue_event('downloads_progress_bar', 'show')
+        self.queue_event('downloads_percent', 0)
         
         for key in downloads:
             element = downloads[key]
+
+            self.queue_event('percent', 0)
+
             txt = _("Downloading %s %s (%d/%d)...")
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
-            filename = os.path.join(self.pacman_cache_dir, element['filename'])
-            completed_length = 0
-            total_length = int(element['size'])
-            percent = 0
-            self.queue_event('percent', percent)
-            
-            downloads_percent = round(float(downloaded / total_downloads), 2)
-            self.queue_event('downloads_percent', downloads_percent)
 
+            filename = os.path.join(self.pacman_cache_dir, element['filename'])
+            total_length = int(element['size'])
+            
             if os.path.exists(filename):
                 # File exists, do not download
                 # Note: In theory this won't ever happen
@@ -188,10 +187,8 @@ class DownloadPackages(object):
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), filename)
                 self.queue_event('percent', 1.0)
                 downloaded += 1
-                continue
-
             # Check if user has given us a cache of xz packages
-            if len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
+            elif len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
                 full_path = os.path.join(self.cache_dir, filename)
                 if os.path.exists(full_path):
                     # We're lucky, the package is already downloaded
@@ -207,38 +204,49 @@ class DownloadPackages(object):
                     except FileExistsError:
                         # print("File %s already exists" % filename)
                         pass
-
-            for url in element['urls']:
-                logging.debug("Downloading url %s", url)
-                download_error = False
-                urlp = url_open(url)
-                if urlp != None:
-                    with open(filename, 'wb') as xzfile:
-                        (data, download_error) = url_open_read(urlp)
-
-                        while len(data) > 0 and download_error == False:
-                            xzfile.write(data)
-                            completed_length += len(data)
-                            old_percent = percent
-                            percent = round(float(completed_length / total_length), 2)
-                            if old_percent != percent:
-                                self.queue_event('percent', percent)
+            else:
+                for url in element['urls']:
+                    msg = _("Downloading file from url %s") % url
+                    logging.debug(msg)
+                    download_error = False
+                    percent = 0
+                    completed_length = 0
+                    urlp = url_open(url)
+                    if urlp != None:
+                        with open(filename, 'wb') as xzfile:
                             (data, download_error) = url_open_read(urlp)
 
-                        if not download_error:
-                            downloaded += 1
-                        else:
-                            # try next mirror url
-                            logging.warning("Can't download %s", url)
-                else:
-                    # try next mirror url
-                    logging.warning("Can't open %s", url)
+                            while len(data) > 0 and download_error == False:
+                                xzfile.write(data)
+                                completed_length += len(data)
+                                old_percent = percent
+                                percent = round(float(completed_length / total_length), 2)
+                                if old_percent != percent:
+                                    self.queue_event('percent', percent)
+                                (data, download_error) = url_open_read(urlp)
 
-            if download_error:
-                # None of the mirror urls works.
-                # This is not a total disaster, maybe alpm will be able
-                # to download it for us later in pac.py
-                logging.warning(_("Can't download %s"), element['filename'])
+                            if not download_error:
+                                downloaded += 1
+                                break
+                            else:
+                                # try next mirror url
+                                completed_length = 0
+                                msg = _("Can't download %s, will try another mirror if available") % url
+                                logging.warning(msg)
+                    else:
+                        # try next mirror url
+                        msg = _("Can't open %s, will try another mirror if avaliable") % url
+                        logging.warning(msg)
+
+                if download_error:
+                    # None of the mirror urls works.
+                    # This is not a total disaster, maybe alpm will be able
+                    # to download it for us later in pac.py
+                    msg = _("Can't download %s, even after trying all available mirrors") % element['filename']
+                    logging.warning(msg)
+            
+            downloads_percent = round(float(downloaded / total_downloads), 2)
+            self.queue_event('downloads_percent', downloads_percent)
         
         self.queue_event('downloads_progress_bar', 'hide')
 
@@ -246,8 +254,7 @@ class DownloadPackages(object):
         """ Adds an event to Cnchi event queue """
 
         if self.callback_queue is None:
-            if event_type is not "percent":
-                logging.debug(event_text)
+            logging.debug(event_type + " : " + str(event_text))
             return
 
         if event_type in self.last_event:
