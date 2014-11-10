@@ -39,9 +39,9 @@ try:
 except ImportError:
     _PM2ML = False
 
-import memory_profiler as profiler
+#import memory_profiler as profiler
 
-@profiler.profile
+#@profiler.profile
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
