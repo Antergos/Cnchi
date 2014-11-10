@@ -28,7 +28,7 @@ import os
 import subprocess
 import logging
 import queue
-
+import shutil
 import urllib
 import aria2
 import metalink as ml
