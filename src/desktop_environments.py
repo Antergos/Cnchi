@@ -26,14 +26,23 @@
 
 # Enabled desktops
 
-DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde", "mate", "nox", "openbox", "lxqt", "xfce"]
-DESKTOPS = ["cinnamon", "gnome", "kde", "mate", "nox", "openbox", "xfce"]
+DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde", "mate", "base", "openbox", "lxqt", "xfce"]
+DESKTOPS = ["cinnamon", "gnome", "kde", "mate", "base", "openbox", "xfce"]
 
-DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons/24x24"
+DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
+
+'''
+MENU - Size appropriate for menus (16px).
+SMALL_TOOLBAR - Size appropriate for small toolbars (16px).
+LARGE_TOOLBAR - Size appropriate for large toolbars (24px)
+BUTTON - Size appropriate for buttons (16px )
+DND - Size appropriate for drag and drop (32px )
+DIALOG - Size appropriate for dialogs (48px )
+'''
 
 # Descriptive names
 NAMES = {
-    'nox' : "Base",
+    'base' : "Base",
     'gnome' : "Gnome",
     'cinnamon' : "Cinnamon",
     'xfce' : "Xfce",
@@ -57,7 +66,7 @@ FEATURES = {
     'kde' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'mate' : ["aur", "cups", "fonts", "office", "firewall"],
     'enlightenment' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'nox' : ["aur", "bluetooth", "cups", "fonts", "firewall"],
+    'base' : ["aur", "bluetooth", "cups", "fonts", "firewall"],
     'openbox' : ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall"],
     'lxqt' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'xfce' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"]}
@@ -103,7 +112,7 @@ DESCRIPTIONS = {
                "based on Qt technologies. It has been tailored for users who "
                "value simplicity, speed, and an intuitive interface."),
 
-    'nox' : _("This option will install Antergos as command-line only system, "
+    'base' : _("This option will install Antergos as command-line only system, "
               "without any type of graphical interface. After the installation you can "
               "customize Antergos by installing packages with the command-line package manager."),
 

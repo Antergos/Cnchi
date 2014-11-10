@@ -37,7 +37,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image_desktop">
+          <object class="GtkOverlay" id="image_overlay">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">start</property>

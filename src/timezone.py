@@ -317,7 +317,7 @@ class AutoTimezoneThread(threading.Thread):
 
         # OK, now get our timezone
         
-        #logging.info(_("We have connection. Let's get our timezone"))
+        logging.info(_("We have connection. Let's get our timezone"))
         try:
             url = urllib.request.Request(url="http://geo.antergos.com", data=logo_digest, headers={"User-Agent": "Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
@@ -328,9 +328,9 @@ class AutoTimezoneThread(threading.Thread):
         if coords != 'error':
             coords = coords.split()
             self.coords_queue.put(coords)
-            #logging.info(_("Timezone detected."))
-        #else:
-        #    logging.info(_("Can't detect user timezone."))
+            logging.info(_("Timezone detected."))
+        else:
+            logging.info(_("Can't detect user timezone."))
 
 class GenerateMirrorListThread(threading.Thread):
     """ Creates a mirror list for pacman based on country code """

@@ -40,6 +40,9 @@ class DesktopAsk(GtkBaseBox):
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
         self.desktop_info = self.ui.get_object("desktop_info")
+        
+        self.desktop_image = None
+        self.icon_desktop_image = None
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox_desktop")
@@ -60,10 +63,36 @@ class DesktopAsk(GtkBaseBox):
         txt += _(description)
         label.set_markup(txt)
 
-        image = self.ui.get_object("image_desktop")
+        # This sets the desktop's image
         path = os.path.join(self.desktops_dir, desktop + ".png")
-        image.set_from_file(path)
+        if self.desktop_image is None:
+            self.desktop_image = Gtk.Image.new_from_file(path)
+            overlay = self.ui.get_object("image_overlay")
+            overlay.add(self.desktop_image)
+        else:
+            self.desktop_image.set_from_file(path)
+            
+        # and this sets the icon
+        filename = desktop.lower() + ".png"
+        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
+        
+        icon_exists = os.path.exists(icon_path)
+        
+        if self.icon_desktop_image is None:
+            if icon_exists:
+                self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
+            else:
+                self.icon_desktop_image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
+            overlay = self.ui.get_object("image_overlay")
+            overlay.add_overlay(self.icon_desktop_image)
+        else:
+            if icon_exists:
+                self.icon_desktop_image.set_from_file(icon_path)
+            else:
+                self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
+
+        # set header text
         txt = _("Choose Your Desktop")
         self.header.set_subtitle(txt)
 
@@ -84,7 +113,7 @@ class DesktopAsk(GtkBaseBox):
             box = Gtk.HBox()
 
             filename = desktop_name.lower() + ".png"
-            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, filename)
+            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
             if os.path.exists(icon_path):
                 image = Gtk.Image.new_from_file(icon_path)
             else:

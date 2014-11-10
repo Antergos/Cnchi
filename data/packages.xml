@@ -3,7 +3,7 @@
 <!-- Please add new packages alphabetically -->
 <cnchi>
   <editions>
-    <edition name="common" description="Packages common to all DE and NoX">
+    <edition name="common" description="Packages common to all DE and base">
       <packages>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
@@ -81,7 +81,7 @@
       </packages>
     </edition>
 
-    <edition name="nox" description="NoX">
+    <edition name="base" description="Without X">
       <packages>
         <pkgname nm='true' name='netctl'>netctl</pkgname>
         <!-- archivers -->
