@@ -58,6 +58,9 @@ class Check(GtkBaseBox):
         self.timeout_id = None
         self.prepare_best_results = None
 
+        # Boolean variable to check if reflector has been run once or not
+        self.reflector_launched = False
+
         '''
         data_dir = self.settings.get('data')
         image1 = self.ui.get_object('image1')
@@ -166,10 +169,11 @@ class Check(GtkBaseBox):
         # Enable forward button
         self.forward_button.set_sensitive(True)
 
-        if not self.testing:
+        if not self.testing and not self.reflector_launched:
             # Launch reflector script to determine the 10 fastest mirrors
             self.thread = AutoRankmirrorsThread()
             self.thread.start()
+            self.reflector_launched = True
 
         return True
 
