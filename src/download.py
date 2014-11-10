@@ -176,35 +176,31 @@ class DownloadPackages(object):
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
 
-            filename = os.path.join(self.pacman_cache_dir, element['filename'])
             total_length = int(element['size'])
             
-            if os.path.exists(filename):
-                # File exists, do not download
-                # Note: In theory this won't ever happen
-                # (metalink assures us this)
-                # print("File %s already exists" % filename)
-                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), filename)
+            dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+            dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
+            
+            if os.path.exists(dst_path):
+                # File already exists (previous install?) do not download
+                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
                 self.queue_event('percent', 1.0)
                 downloaded += 1
-            # Check if user has given us a cache of xz packages
-            elif len(self.cache_dir) > 0 and os.path.exists(self.cache_dir):
-                full_path = os.path.join(self.cache_dir, filename)
-                if os.path.exists(full_path):
-                    # We're lucky, the package is already downloaded
-                    # let's copy it to our destination
-                    dst = os.path.join(self.pacman_cache_dir, filename)
-                    try:
-                        shutil.copy(full_path, dst)
-                        self.queue_event('percent', 1.0)
-                        downloaded += 1
-                        continue
-                    except FileNotFoundError:
-                        pass
-                    except FileExistsError:
-                        # print("File %s already exists" % filename)
-                        pass
+            elif os.path.exists(dst_cache_path):
+                # We're lucky, the package is already downloaded in the cache the user has given us
+                # let's copy it to our destination
+                try:
+                    shutil.copy(dst_cache_path, dst_path)
+                    self.queue_event('percent', 1.0)
+                    downloaded += 1
+                    continue
+                except FileNotFoundError:
+                    pass
+                except FileExistsError:
+                    # print("File %s already exists" % element['filename'])
+                    pass
             else:
+                # Let's download our filename using url
                 for url in element['urls']:
                     msg = _("Downloading file from url %s") % url
                     logging.debug(msg)
@@ -213,7 +209,7 @@ class DownloadPackages(object):
                     completed_length = 0
                     urlp = url_open(url)
                     if urlp != None:
-                        with open(filename, 'wb') as xzfile:
+                        with open(dst_path, 'wb') as xzfile:
                             (data, download_error) = url_open_read(urlp)
 
                             while len(data) > 0 and download_error == False:
