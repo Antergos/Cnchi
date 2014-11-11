@@ -46,6 +46,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 DEFAULT_TZ = "Europe/London"
+DEFAULT_TZ_COORDS = "+513030 -0000731"
 
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
@@ -302,7 +303,7 @@ class AutoTimezoneThread(threading.Thread):
         logo_hasher = hashlib.sha1()
         logo_hasher.update(logo_bytes)
         logo_digest = logo_hasher.digest()
-        
+
         # Wait until there is an Internet connection available
         while not self.has_connection():
             if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
@@ -318,7 +319,7 @@ class AutoTimezoneThread(threading.Thread):
             time.sleep(1)
 
         # OK, now get our timezone
-        
+
         logging.info(_("We have connection. Let's get our timezone"))
         try:
             url = urllib.request.Request(
@@ -327,21 +328,25 @@ class AutoTimezoneThread(threading.Thread):
                 headers={"User-Agent":"Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
+            if coords == "0 0":
+                coords = 'error'
         except:
             coords = 'error'
 
         if coords != 'error':
-            coords = coords.split()
-            self.coords_queue.put(coords)
             logging.info(_("Timezone detected."))
         else:
-            logging.info(_("Can't detect user timezone."))
-            #self.set_timezone("{0}/{1}".format(new_zone, new_region))
+            msg = _("Can't detect user timezone. Cnchi will use %s as default")
+            msg = msg % DEFAULT_TZ
+            logging.info(msg)
+            coords = DEFAULT_TZ_COORDS
 
+        coords = coords.split()
+        self.coords_queue.put(coords)
 
 class GenerateMirrorListThread(threading.Thread):
     """ Creates a mirror list for pacman based on country code """
-    
+
     def __init__(self, coords_queue, scripts_dir):
         super(GenerateMirrorListThread, self).__init__()
         self.coords_queue = coords_queue
