@@ -34,10 +34,10 @@ import time
 import datetime
 import config
 import logging
-import canonical.tz as tz
 import dbus
 import subprocess
 import hashlib
+import canonical.tz as tz
 import canonical.misc as misc
 
 from gtkbasebox import GtkBaseBox
