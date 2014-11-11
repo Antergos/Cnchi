@@ -45,6 +45,8 @@ from gtkbasebox import GtkBaseBox
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
+DEFAULT_TZ = "Europe/London"
+
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
         super().__init__(self, params, "timezone", prev_page, next_page)
@@ -319,7 +321,10 @@ class AutoTimezoneThread(threading.Thread):
         
         logging.info(_("We have connection. Let's get our timezone"))
         try:
-            url = urllib.request.Request(url="http://geo.antergos.com", data=logo_digest, headers={"User-Agent": "Antergos Installer", "Connection":"close"})
+            url = urllib.request.Request(
+                url="http://geo.antergos.com",
+                data=logo_digest,
+                headers={"User-Agent":"Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
         except:
@@ -331,6 +336,8 @@ class AutoTimezoneThread(threading.Thread):
             logging.info(_("Timezone detected."))
         else:
             logging.info(_("Can't detect user timezone."))
+            #self.set_timezone("{0}/{1}".format(new_zone, new_region))
+
 
 class GenerateMirrorListThread(threading.Thread):
     """ Creates a mirror list for pacman based on country code """
