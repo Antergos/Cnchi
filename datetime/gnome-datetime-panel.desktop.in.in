@@ -1,0 +1,13 @@
+[Desktop Entry]
+_Name=Date & Time
+_Comment=Change the date and time, including time zone
+Exec=gnome-control-center datetime
+Icon=preferences-system-time
+Terminal=false
+Type=Application
+NoDisplay=true
+StartupNotify=true
+Categories=GNOME;GTK;Settings;X-GNOME-SystemSettings;X-GNOME-Settings-Panel;
+OnlyShowIn=GNOME;
+# Translators: those are keywords for the date and time control-center panel
+_Keywords=Clock;Timezone;Location;
