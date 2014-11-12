@@ -22,7 +22,11 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, Gdk, TimezoneMap
+from gi.repository import Gtk, Gdk
+from gi.repository import TimezoneMap
+
+# EXPERIMENTAL
+#import timezonemap as TimezoneMap
 
 import os
 import threading

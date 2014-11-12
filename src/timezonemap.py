@@ -5,7 +5,7 @@
 #
 #  Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
 #  Written in C by Evan Dandrea <evand@ubuntu.com>
-#  Python code Copyright © 2013,2014 Antergos
+#  Python port Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -40,6 +40,9 @@ LOCATION_CHANGED = 0
 G_PI_4 = 0.78539816339744830961566084581987572104929234984378
 
 TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
+
+MAX_OFFSET = 13.0
+MIN_OFFSET = -11.0
 
 # color_codes is (offset, red, green, blue, alpha)
 color_codes = [
@@ -114,8 +117,8 @@ def clamp(x, min_value, max_value):
 # TODO: add set_timezone function
 # TODO: add get_timezone_at_coords function
 
-class Timezonemap(Gtk.Widget):
-    __gtype_name__ = 'Timezonemap'
+class TimezoneMap(Gtk.Widget):
+    __gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = { 'location-changed' : (GObject.SignalFlags.RUN_LAST, None, (object,)) }
     
@@ -129,7 +132,7 @@ class Timezonemap(Gtk.Widget):
         self._color_map = None
         self._visible_map_pixels = None
         self._visible_map_rowstride = None
-        self._selected_offset = 0
+        self._selected_offset = 100
 
         self._tz_location = None
 
@@ -291,50 +294,55 @@ class Timezonemap(Gtk.Widget):
             cr.paint()
 
         # Paint hilight
-        if self.is_sensitive():
-            filename = "timezone_%g.png" % self._selected_offset
-        else:
-            filename = "timezone_%g_dim.png" % self._selected_offset
-        
-        print(filename)
+        offset = self._selected_offset
 
-        try:
-            path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
-            orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
-        except Exception as err:
-            print("Can't load %s image file" % path)
-            return
+        if offset >= MIN_OFFSET and offset <= MAX_OFFSET:
+            if self.is_sensitive():
+                filename = "timezone_%g.png" % offset
+            else:
+                filename = "timezone_%g_dim.png" % offset
+            
+            print(filename)
 
-        hilight = orig_hilight.scale_simple(
-            alloc.width,
-            alloc.height,
-            GdkPixbuf.InterpType.BILINEAR)
+            try:
+                path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
+                orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
+            except Exception as err:
+                print("Can't load %s image file" % path)
+                return
 
-        Gdk.cairo_set_source_pixbuf(cr, hilight, 0, 0)
-        cr.paint()
+            hilight = orig_hilight.scale_simple(
+                alloc.width,
+                alloc.height,
+                GdkPixbuf.InterpType.BILINEAR)
 
-        del hilight
-        del orig_hilight
+            Gdk.cairo_set_source_pixbuf(cr, hilight, 0, 0)
+            cr.paint()
 
-        if self._tz_location:
-            longitude = self._tz_location.get_longitude()
-            latitude = self._tz_location.get_latitude()
+            del hilight
+            del orig_hilight
 
-            pointx = convert_longitude_to_x(longitude, alloc.width)
-            pointy = convert_latitude_to_y(latitude, alloc.height)
+            if self._tz_location:
+                #longitude = self._tz_location.get_longitude()
+                #latitude = self._tz_location.get_latitude()
+                longitude = self._tz_location.get_property('longitude')
+                latitude = self._tz_location.get_property('latitude')
 
-            pointx = clamp(math.floor(pointx), 0, alloc.width)
-            pointy = clamp(math.floor(pointy), 0, alloc.height)
+                pointx = convert_longitude_to_x(longitude, alloc.width)
+                pointy = convert_latitude_to_y(latitude, alloc.height)
 
-            self.draw_text_bubble(cr, pointx, pointy)
+                pointx = clamp(math.floor(pointx), 0, alloc.width)
+                pointy = clamp(math.floor(pointy), 0, alloc.height)
 
-            if self._pin is not None:
-                Gdk.cairo_set_source_pixbuf(
-                    cr,
-                    self._pin,
-                    pointx - PIN_HOT_POINT_X,
-                    pointy - PIN_HOT_POINT_Y)
-                cr.paint()
+                self.draw_text_bubble(cr, pointx, pointy)
+
+                if self._pin is not None:
+                    Gdk.cairo_set_source_pixbuf(
+                        cr,
+                        self._pin,
+                        pointx - PIN_HOT_POINT_X,
+                        pointy - PIN_HOT_POINT_Y)
+                    cr.paint()
 
     def set_location(self, tz_location):
         if tz_location is not None:
@@ -350,6 +358,9 @@ class Timezonemap(Gtk.Widget):
             self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight
 
             self.emit("location-changed", self._tz_location)
+
+    def get_timezone_at_coords(self, latitude, longitude):
+        print("NOT IMPLEMENTED!")
 
     def do_button_press_event(self, event):
         """ The button press event virtual method """
@@ -382,8 +393,10 @@ class Timezonemap(Gtk.Widget):
             small_dist = 100
 
             for tz_location in self._tzdb.get_locations():
-                longitude = tz_location.get_longitude()
-                latitude = tz_location.get_latitude()
+                #longitude = tz_location.get_longitude()
+                #latitude = tz_location.get_latitude()
+                longitude = tz_location.get_property('longitude')
+                latitude = tz_location.get_property('latitude')
 
                 pointx = convert_longitude_to_x(longitude, allocation.width)
                 pointy = convert_latitude_to_y(latitude, allocation.height)
@@ -431,7 +444,7 @@ class Timezonemap(Gtk.Widget):
 
 if __name__ == '__main__':
     win = Gtk.Window()
-    win.add(Timezonemap())
+    win.add(TimezoneMap())
     win.show_all()
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)

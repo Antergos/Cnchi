@@ -1,5 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  tz.py
+#
 # Copyright (C) 2006, 2007 Canonical Ltd.
 # Written by Colin Watson <cjwatson@ubuntu.com>.
+# New modifications Copyright © 2013,2014 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +29,8 @@ import time
 import xml.dom.minidom
 import hashlib
 import sys
+
+from gi.repository import GObject
 
 TZ_DATA_FILE = '/usr/share/zoneinfo/zone.tab'
 ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
@@ -154,6 +162,18 @@ def _parse_position(position, wholedigits):
         return whole - fraction / pow(10.0, len(fractionstr))
 
 class Location(object):
+    __gtype_name__ = "Location"
+    __gproperties__ = {
+        'zone' : (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.PARAM_READWRITE),
+        'latitude' : (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
+        'longitude' : (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE)}
+    
+    def get_info(self):
+        return self.info
+    
+    def get_utc_offset(self):
+        return self.utc_offset
+        
     def __init__(self, zonetab_line, iso3166):
         bits = zonetab_line.rstrip().split('\t', 3)
         latlong = bits[1]
@@ -178,6 +198,7 @@ class Location(object):
             self.comment = bits[3]
         else:
             self.comment = None
+
         self.latitude = _parse_position(latitude, 2)
         self.longitude = _parse_position(longitude, 3)
 
@@ -197,26 +218,17 @@ class Location(object):
             # time is set to the epoch will at least let us avoid crashing,
             # although the UTC offset and zone letters may be wrong.
             today = datetime.datetime.fromtimestamp(0)
+        
         self.info = SystemTzInfo(self.zone)
         self.utc_offset = self.info.utcoffset(today)
         self.raw_utc_offset = self.info.rawutcoffset(today)
         self.zone_letters = self.info.tzname_letters(today)
-    
-    def get_zone(self):
-        return self.zone
 
-    def get_latitude(self):
-        return self.latitude
-    
-    def get_longitude(self):
-        return self.longitude
-    
-    def get_info(self):
-        return self.info
-    
-    def get_utc_offset(self):
-        return self.utc_offset
+    def get_property(self, prop):
+        return getattr(self, prop)
 
+    def set_property(self, prop, value):
+        setattr(self, prop, value)
 
 class _Database(object):
     def __init__(self):
