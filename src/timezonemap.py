@@ -128,22 +128,22 @@ class Timezonemap(Gtk.Widget):
         self._visible_map_pixels = None
         self._visible_map_rowstride = None
         self._selected_offset = 0
-        
+
         # (longitude, latitude)
         self._location = (0, 0)
-        
+
         self._bubble_text = "This is a test!"
 
-        try:  
+        try:
             self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png"))
-            
+
             self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png"))
-            
+
             self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
-            
+
             self._pin = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
         except Exception as err:
@@ -162,7 +162,7 @@ class Timezonemap(Gtk.Widget):
         """ Retrieves a widget’s initial minimum and natural width. """
         width = self._orig_background.get_width()
         return (width, width)
-    
+
     def do_get_preferred_height(self):
         """ Retrieves a widget’s initial minimum and natural height. """
         height = self._orig_background.get_height()
@@ -176,7 +176,7 @@ class Timezonemap(Gtk.Widget):
         if self._background is not None:
             del self._background
             self._background = None
-        
+
         if self.is_sensitive():
             self._background = self._orig_background.scale_simple(
                 allocation.width,
@@ -187,16 +187,16 @@ class Timezonemap(Gtk.Widget):
                 allocation.width,
                 allocation.height,
                 GdkPixbuf.InterpType.BILINEAR)
-        
+
         if self._color_map is not None:
             del self._color_map
             self._color_map = None
-        
+
         self._color_map = self._orig_color_map.scale_simple(
             allocation.width,
             allocation.height,
             GdkPixbuf.InterpType.BILINEAR)
-        
+
         self._visible_map_pixels = self._color_map.get_pixels()
         self._visible_map_rowstride = self._color_map.get_rowstride()
 
@@ -237,14 +237,14 @@ class Timezonemap(Gtk.Widget):
         margin_bottom = 12.0
         margin_left = 24.0
         margin_right = 24.0
-        
+
         if len(self._bubble_text) <= 0:
             return
-        
+
         alloc = self.get_allocation()
-        
+
         layout = PangoCairo.create_layout(cr)
-        
+
         layout.set_alignment(Pango.Alignment.CENTER)
         layout.set_spacing(3)
         layout.set_markup(self._bubble_text)
@@ -253,7 +253,7 @@ class Timezonemap(Gtk.Widget):
         # Calculate the bubble size based on the text layout size
         width = logical_rect.width + margin_left + margin_right
         height = logical_rect.height + margin_top + margin_bottom
-        
+
         if pointx < alloc.width / 2:
             x = pointx + 25
         else:
@@ -264,17 +264,17 @@ class Timezonemap(Gtk.Widget):
         # Make sure it fits in the visible area
         x = clamp(x, 0, alloc.width - width)
         y = clamp(y, 0, alloc.height - height)
-        
+
         cr.save()
         cr.translate(x, y)
-        
+
         # Draw the bubble
         cr.new_sub_path()
         cr.arc(width - corner_radius, corner_radius, corner_radius, radians(-90), radians(0))
         cr.arc(width - corner_radius, height - corner_radius, corner_radius, radians(0), radians(90))
         cr.arc(corner_radius, height - corner_radius, corner_radius, radians(90), radians(180))
         cr.arc(corner_radius, corner_radius, corner_radius, radians(180), radians(270))
-  
+
         cr.close_path()
 
         cr.set_source_rgba(0.2, 0.2, 0.2, 0.7)
@@ -299,10 +299,10 @@ class Timezonemap(Gtk.Widget):
     #    cr.move_to(0, 0)   # top left of the widget
     #    cr.line_to(allocation.width, allocation.height)
     #    cr.stroke()
-    
+
     def do_draw(self, cr):
         alloc = self.get_allocation()
-        
+
         # Paint background
         if self._background is not None:
             Gdk.cairo_set_source_pixbuf(cr, self._background, 0, 0)
@@ -313,7 +313,7 @@ class Timezonemap(Gtk.Widget):
             filename = "timezone_%s.png" % str(self._selected_offset)
         else:
             filename = "timezone_%s_dim.png" % str(self._selected_offset)
-  
+
         try:
             path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
             orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
@@ -328,90 +328,63 @@ class Timezonemap(Gtk.Widget):
 
         Gdk.cairo_set_source_pixbuf(cr, hilight, 0, 0)
         cr.paint()
-        
+
         del hilight
         del orig_hilight
 
         (longitude, latitude) = self._location
         pointx = convert_longitude_to_x(longitude, alloc.width)
         pointy = convert_latitude_to_y(latitude, alloc.height)
-        
+
         pointx = clamp(math.floor(pointx), 0, alloc.width)
         pointy = clamp(math.floor(pointy), 0, alloc.height)
-        
+
         self.draw_text_bubble(cr, pointx, pointy)
-        
+
         if self._pin is not None:
             Gdk.cairo_set_source_pixbuf(
                 cr,
-                self._pin, 
+                self._pin,
                 pointx - PIN_HOT_POINT_X,
                 pointy - PIN_HOT_POINT_Y)
             cr.paint()
-            
 
-    '''
-    static void
-    set_location (CcTimezoneMap *map,
-                  TzLocation    *location)
-    {
-      CcTimezoneMapPrivate *priv = map->priv;
-      TzInfo *info;
+    def set_location(self, location):
+        self.location = location
+        info = tz.info_from_location(location)
 
-      priv->location = location;
+        if info.daylight:
+            daylight = -1.0
+        else:
+            daylight = 0.0
 
-      info = tz_info_from_location (priv->location);
+        self.selected_offset = tz.location_get_utc_offset(location) / (60.0 * 60.0) + daylight
 
-      priv->selected_offset = tz_location_get_utc_offset (priv->location)
-        / (60.0*60.0) + ((info->daylight) ? -1.0 : 0.0);
+        self.emit("location-changed", self.location)
 
-      g_signal_emit (map, signals[LOCATION_CHANGED], 0, priv->location);
-
-      tz_info_free (info);
-    }
-    '''
-
-
+        del info
     '''
     def do_button_press_event(self, event):
-        """The button press event virtual method"""
+        """ The button press event virtual method """
 
         # make sure it was the first button
         if event.button == 1:
-            pass
-        return True        
-    '''
+            x = event.x
+            y = event.y
+            rowstride = self.visible_map_rowstride
+            pixels = self.visible_map_pixels
+            r = pixels[(rowstride * y + x * 4)]
+            g = pixels[(rowstride * y + x * 4) + 1]
+            b = pixels[(rowstride * y + x * 4) + 2]
+            a = pixels[(rowstride * y + x * 4) + 3]
+
+
+        return True
 
     '''
-static gboolean
-button_press_event (GtkWidget      *widget,
-                    GdkEventButton *event)
-{
-  CcTimezoneMapPrivate *priv = CC_TIMEZONE_MAP (widget)->priv;
-  gint x, y;
-  guchar r, g, b, a;
-  guchar *pixels;
-  gint rowstride;
-  gint i;
-
-  const GPtrArray *array;
-  gint width, height;
-  GList *distances = NULL;
-  GtkAllocation alloc;
-
-  x = event->x;
-  y = event->y;
 
 
-  rowstride = priv->visible_map_rowstride;
-  pixels = priv->visible_map_pixels;
-
-  r = pixels[(rowstride * y + x * 4)];
-  g = pixels[(rowstride * y + x * 4) + 1];
-  b = pixels[(rowstride * y + x * 4) + 2];
-  a = pixels[(rowstride * y + x * 4) + 3];
-
-
+    '''
   for (i = 0; color_codes[i].offset != -100; i++)
     {
        if (color_codes[i].red == r && color_codes[i].green == g
@@ -509,7 +482,7 @@ cc_timezone_map_get_location (CcTimezoneMap *map)
 }
     '''
 
-    
+
 if __name__ == '__main__':
     win = Gtk.Window()
     win.add(Timezonemap())
