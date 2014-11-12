@@ -31,6 +31,7 @@ import canonical.tz as tz
 
 import os
 import math
+import sys
 
 # location-changed
 # set_timezone
@@ -46,6 +47,31 @@ TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
 
 def radians(degrees):
     return (degrees / 360.0) * math.pi * 2
+
+def convert_longitude_to_x(longitude, map_width):
+    xdeg_offset = -6
+    return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
+
+def convert_latitude_to_y(latitude, map_height):
+    bottom_lat = -59;
+    top_lat = 81;
+
+    top_per = top_lat / 180.0;
+    y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
+    full_range = 4.6068250867599998
+    top_offset = full_range * top_per
+    map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(bottom_lat))) - top_offset)
+    y = math.fabs(y - top_offset)
+    y = y / map_range
+    y = y * map_height
+    return y
+
+def clamp(x, min_value, max_value):
+    if x < min_value:
+        x = min_value
+    elif x > max_value:
+        x = max_value
+    return x
 
 class Timezonemap(Gtk.Widget):
     __gtype_name__ = 'Timezonemap'
@@ -66,18 +92,22 @@ class Timezonemap(Gtk.Widget):
         self._location = (0, 0)
         
         self._bubble_text = ""
-  
-        self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
-            os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png"))
-        
-        self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(
-            os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png"))
-        
-        self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
-            os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
-        
-        self._pin = GdkPixbuf.Pixbuf.new_from_file(
-            os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
+
+        try:  
+            self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
+                os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png"))
+            
+            self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(
+                os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png"))
+            
+            self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
+                os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
+            
+            self._pin = GdkPixbuf.Pixbuf.new_from_file(
+                os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
+        except Exception as err:
+            print(err)
+            sys.exit(1)
 
         self._tzdb = tz.Database()
 
@@ -169,30 +199,14 @@ class Timezonemap(Gtk.Widget):
         self.set_window(window)
         #self.register_window(window)
         #self.window.set_background_pattern(None)
+
     '''
     #def do_unrealize(self):
     #    # The do_unrealized method is responsible for freeing the GDK resources
     #    # De-associate the window we created in do_realize with ourselves
     #    self.window.destroy()
-
-    def convert_longitude_to_x(self, longitude, map_width):
-        xdeg_offset = -6
-        return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
+    '''
     
-    def convert_latitude_to_y(self, latitude, map_height):
-        bottom_lat = -59;
-        top_lat = 81;
-
-        top_per = top_lat / 180.0;
-        y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
-        full_range = 4.6068250867599998
-        top_offset = full_range * top_per
-        map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(bottom_lat))) - top_offset)
-        y = fabs (y - top_offset)
-        y = y / map_range
-        y = y * map_height
-        return y
-
     # http://lotsofexpression.blogspot.com.es/2012/04/python-gtk-3-pango-cairo-example.html
     def draw_text_bubble(self, cr, pointx, pointy):
         corner_radius = 9.0
@@ -225,8 +239,8 @@ class Timezonemap(Gtk.Widget):
         y = pointy - height / 2
 
         # Make sure it fits in the visible area
-        x = CLAMP (x, 0, alloc.width - width)
-        y = CLAMP (y, 0, alloc.height - height)
+        x = clamp(x, 0, alloc.width - width)
+        y = clamp(y, 0, alloc.height - height)
         
         cr.save()
         cr.translate(x, y)
@@ -262,7 +276,7 @@ class Timezonemap(Gtk.Widget):
     #    cr.move_to(0, 0)   # top left of the widget
     #    cr.line_to(allocation.width, allocation.height)
     #    cr.stroke()
-    '''
+    
     def do_draw(self, cr):
         alloc = self.get_allocation()
         
@@ -290,30 +304,29 @@ class Timezonemap(Gtk.Widget):
             alloc.height,
             GdkPixbuf.InterpType.BILINEAR)
 
-        cr.set_source_pixbuf(hilight, 0, 0)
+        Gdk.cairo_set_source_pixbuf(cr, hilight, 0, 0)
         cr.paint()
         
         del hilight
         del orig_hilight
 
         (longitude, latitude) = self._location
-        pointx = self.convert_longitude_to_x(
-            longitude, alloc.width)
-        pointy = self.convert_latitude_to_y(
-            latitude, alloc.height)
+        pointx = convert_longitude_to_x(longitude, alloc.width)
+        pointy = convert_latitude_to_y(latitude, alloc.height)
         
-        pointx = CLAMP(math.floor(pointx), 0, alloc.width)
-        pointy = CLAMP(math.floor(pointy), 0, alloc.height)
+        pointx = clamp(math.floor(pointx), 0, alloc.width)
+        pointy = clamp(math.floor(pointy), 0, alloc.height)
         
-        self.draw_text_bubble(cr, widget, pointx, pointy)
+        self.draw_text_bubble(cr, pointx, pointy)
         
         #http://stackoverflow.com/questions/10270080/how-to-draw-a-gdkpixbuf-using-gtk3-and-pygobject
         if self._pin:
-            cr.set_source_pixbuf(
+            Gdk.cairo_set_source_pixbuf(
+                cr,
                 self._pin, 
                 pointx - PIN_HOT_POINT_X,
                 pointy - PIN_HOT_POINT_Y)
-            cr.cairo_paint()
+            cr.paint()
             
     '''
     def do_button_press_event(self, event):
