@@ -27,7 +27,6 @@
 """ Custom widget to show world time zones """
 
 from gi.repository import Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
-
 import canonical.tz as tz
 
 import os
@@ -51,8 +50,10 @@ def radians(degrees):
 class Timezonemap(Gtk.Widget):
     __gtype_name__ = 'Timezonemap'
 
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self):
+        #super().__init__(self)
+        Gtk.Widget.__init__(self)
+
         self.set_size_request(40, 40)
 
         self._background = None
@@ -60,28 +61,42 @@ class Timezonemap(Gtk.Widget):
         self._visible_map_pixels = None
         self._visible_map_rowstride = None
         self._selected_offset = 0
-        self._location = None
+        
+        # (longitude, latitude)
+        self._location = (0, 0)
+        
         self._bubble_text = ""
   
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png")
-        self._orig_background = GdkPixbuf.Pixbuf.new_from_file(path)
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png")
-        self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(path)
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png")
-        self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(path)
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png")
-        self._pin = GdkPixbuf.Pixbuf.new_from_file(path)
+        self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
+            os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png"))
+        
+        self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(
+            os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png"))
+        
+        self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
+            os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
+        
+        self._pin = GdkPixbuf.Pixbuf.new_from_file(
+            os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
 
         self._tzdb = tz.Database()
 
-        self.connect("button-press-event", self.button_press_event)
+        #self.connect("button-press-event", self.do_button_press_event)
+        #self.connect('delete-event', self.on_delete)
+
+    #def on_delete(self):
+    #    Gtk.Widget.destroy()
 
     def do_get_preferred_width(self):
-        return self.orig_background.get_width()
+        """ Retrieves a widget’s initial minimum and natural width. """
+        width = self._orig_background.get_width()
+        return (width, width)
     
     def do_get_preferred_height(self):
-        return self.orig_background.get_height()
-    
+        """ Retrieves a widget’s initial minimum and natural height. """
+        height = self._orig_background.get_height()
+        return (height, height)
+    '''
     def do_size_allocate(self, allocation):
         if self._background:
             del self._background
@@ -95,7 +110,7 @@ class Timezonemap(Gtk.Widget):
         self._background = pixbuf.scale_simple(
             allocation.width,
             allocation.height,
-            Gdk.INTERP_BILINEAR)
+            GdkPixbuf.InterpType.BILINEAR)
         
         if self._color_map:
             del self._color_map
@@ -104,53 +119,61 @@ class Timezonemap(Gtk.Widget):
         self._color_map = self._orig_color_map.scale_simple(
             allocation.width,
             allocation.height,
-            Gdk.INTERP_BILINEAR)
+            GdkPixbuf.InterpType.BILINEAR)
         
         self._visible_map_pixels = self._color_map.get_pixels()
         self._visible_map_rowstride = self._color_map.get_rowstride()
 
         super().size_allocate(allocation)
 
-    '''
-    def do_realize(self):
-        allocation = self.get_allocation()
-        attr = Gdk.WindowAttr()
-        attr.window_type = Gdk.WindowType.CHILD
-        attr.x = allocation.x
-        attr.y = allocation.y
-        attr.width = allocation.width
-        attr.height = allocation.height
-        attr.visual = self.get_visual()
-        attr.event_mask = self.get_events() | Gdk.EventMask.EXPOSURE_MASK
-        WAT = Gdk.WindowAttributesType
-        mask = WAT.X | WAT.Y | WAT.VISUAL
-        window = Gdk.Window(self.get_parent_window(), attr, mask);
-        self.set_window(window)
-        self.register_window(window)
-        self.set_realized(True)
-        window.set_background_pattern(None)
-    '''
 
+    #def do_realize(self):
+    #    allocation = self.get_allocation()
+    #    attr = Gdk.WindowAttr()
+    #    attr.window_type = Gdk.WindowType.CHILD
+    #    attr.x = allocation.x
+    #    attr.y = allocation.y
+    #    attr.width = allocation.width
+    #    attr.height = allocation.height
+    #    attr.visual = self.get_visual()
+    #    attr.event_mask = self.get_events() | Gdk.EventMask.EXPOSURE_MASK
+    #    WAT = Gdk.WindowAttributesType
+    #    mask = WAT.X | WAT.Y | WAT.VISUAL
+    #    window = Gdk.Window(self.get_parent_window(), attr, mask);
+    #    self.set_window(window)
+    #    self.register_window(window)
+    #    self.set_realized(True)
+    #    window.set_background_pattern(None)
+    '''
     def do_realize(self):
-        allocation = self.get_allocation()
+        """ Called when the widget should create all of its
+        windowing resources.  We will create our window here """
         self.set_realized(True)
+        allocation = self.get_allocation()
         attr = Gdk.WindowAttr()
         attr.window_type = Gdk.WindowType.CHILD
         # GDK_INPUT_OUTPUT
-        attr.wclass = Gdk.InputType.OUTPUT
+        attr.wclass = Gdk.WindowWindowClass.INPUT_OUTPUT
         attr.width = allocation.width
         attr.height = allocation.height
         attr.x = allocation.x
         attr.y = allocation.y
-        #attr.visual = self.get_visual()
+        attr.visual = self.get_visual()
         attr.event_mask = self.get_events() | Gdk.EventMask.EXPOSURE_MASK | Gdk.EventMask.BUTTON_PRESS_MASK
         wat = Gdk.WindowAttributesType
         mask = wat.X | wat.Y | wat.VISUAL
-        window = Gdk.Window(self.get_parent_window(), attr, mask);
-        #window.set_user_data(self)
+        window = Gdk.Window(self.get_parent_window(), attr, mask)
+        # Associate the gdk.Window with ourselves,
+        # Gtk+ needs a reference between the widget and the gdk window
+        window.set_user_data(self)
         self.set_window(window)
         #self.register_window(window)
-        #window.set_background_pattern(None)
+        #self.window.set_background_pattern(None)
+    '''
+    #def do_unrealize(self):
+    #    # The do_unrealized method is responsible for freeing the GDK resources
+    #    # De-associate the window we created in do_realize with ourselves
+    #    self.window.destroy()
 
     def convert_longitude_to_x(self, longitude, map_width):
         xdeg_offset = -6
@@ -196,7 +219,7 @@ class Timezonemap(Gtk.Widget):
         
         if pointx < alloc.width / 2:
             x = pointx + 25
-        else
+        else:
             x = pointx - width - 25
 
         y = pointy - height / 2
@@ -226,28 +249,27 @@ class Timezonemap(Gtk.Widget):
         PangoCairo.show_layout (cr, layout);
         cr.restore()
 
+    #def do_draw(self, cr):
+    #    # paint background
+    #    bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
+    #    cr.set_source_rgba(*list(bg_color))
+    #    cr.paint()
+    #    # draw a diagonal line
+    #    allocation = self.get_allocation()
+    #    fg_color = self.get_style_context().get_color(Gtk.StateFlags.NORMAL)
+    #    cr.set_source_rgba(*list(fg_color));
+    #    cr.set_line_width(2)
+    #    cr.move_to(0, 0)   # top left of the widget
+    #    cr.line_to(allocation.width, allocation.height)
+    #    cr.stroke()
     '''
-    def do_draw(self, cr):
-        # paint background
-        bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
-        cr.set_source_rgba(*list(bg_color))
-        cr.paint()
-        # draw a diagonal line
-        allocation = self.get_allocation()
-        fg_color = self.get_style_context().get_color(Gtk.StateFlags.NORMAL)
-        cr.set_source_rgba(*list(fg_color));
-        cr.set_line_width(2)
-        cr.move_to(0, 0)   # top left of the widget
-        cr.line_to(allocation.width, allocation.height)
-        cr.stroke()
-    '''
-
     def do_draw(self, cr):
         alloc = self.get_allocation()
+        
         # Paint background
-        bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
-        cr.set_source_rgba(*list(bg_color))
-        cr.paint()
+        #bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
+        #cr.set_source_rgba(*list(bg_color))
+        #cr.paint()
 
         # Paint hilight
         if self.is_sensitive():
@@ -266,7 +288,7 @@ class Timezonemap(Gtk.Widget):
         hilight = orig_hilight.scale_simple(
             alloc.width,
             alloc.height,
-            Gdk.INTERP_BILINEAR)
+            GdkPixbuf.InterpType.BILINEAR)
 
         cr.set_source_pixbuf(hilight, 0, 0)
         cr.paint()
@@ -274,31 +296,34 @@ class Timezonemap(Gtk.Widget):
         del hilight
         del orig_hilight
 
-        '''
-        if self._location:
-  if (priv->location)
-    {
-      pointx = convert_longitude_to_x (priv->location->longitude, alloc.width);
-      pointy = convert_latitude_to_y (priv->location->latitude, alloc.height);
-
-      pointx = CLAMP (floor (pointx), 0, alloc.width);
-      pointy = CLAMP (floor (pointy), 0, alloc.height);
-
-      draw_text_bubble (cr, widget, pointx, pointy);
-
-      if (priv->pin)
-        {
-          gdk_cairo_set_source_pixbuf (cr, priv->pin,
-                                       pointx - PIN_HOT_POINT_X,
-                                       pointy - PIN_HOT_POINT_Y);
-          cairo_paint (cr);
-        }
-    }
-        '''
-  
-  
+        (longitude, latitude) = self._location
+        pointx = self.convert_longitude_to_x(
+            longitude, alloc.width)
+        pointy = self.convert_latitude_to_y(
+            latitude, alloc.height)
         
+        pointx = CLAMP(math.floor(pointx), 0, alloc.width)
+        pointy = CLAMP(math.floor(pointy), 0, alloc.height)
+        
+        self.draw_text_bubble(cr, widget, pointx, pointy)
+        
+        #http://stackoverflow.com/questions/10270080/how-to-draw-a-gdkpixbuf-using-gtk3-and-pygobject
+        if self._pin:
+            cr.set_source_pixbuf(
+                self._pin, 
+                pointx - PIN_HOT_POINT_X,
+                pointy - PIN_HOT_POINT_Y)
+            cr.cairo_paint()
+            
+    '''
+    def do_button_press_event(self, event):
+        """The button press event virtual method"""
 
+        # make sure it was the first button
+        if event.button == 1:
+            pass
+        return True        
+    '''
 if __name__ == '__main__':
     win = Gtk.Window()
     win.add(Timezonemap())
