@@ -91,7 +91,7 @@ class Timezonemap(Gtk.Widget):
         # (longitude, latitude)
         self._location = (0, 0)
         
-        self._bubble_text = ""
+        self._bubble_text = "This is a test!"
 
         try:  
             self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
@@ -131,6 +131,7 @@ class Timezonemap(Gtk.Widget):
         """ The do_size_allocate is called by when the actual
         size is known and the widget is told how much space
         could actually be allocated """
+        self.set_allocation(allocation)
 
         if self._background is not None:
             del self._background
@@ -229,16 +230,16 @@ class Timezonemap(Gtk.Widget):
         
         alloc = self.get_allocation()
         
-        layout = self.create_pango_layout()
+        layout = PangoCairo.create_layout(cr)
         
-        layout.set_alignment(PANGO_ALIGN_CENTER)
+        layout.set_alignment(Pango.Alignment.CENTER)
         layout.set_spacing(3)
         layout.set_markup(self._bubble_text)
-        text_rect = layout.get_pixel_extents()
+        (ink_rect, logical_rect) = layout.get_pixel_extents()
 
         # Calculate the bubble size based on the text layout size
-        width = text_rect.width + margin_left + margin_right
-        height = text_rect.height + margin_top + margin_bottom
+        width = logical_rect.width + margin_left + margin_right
+        height = logical_rect.height + margin_top + margin_bottom
         
         if pointx < alloc.width / 2:
             x = pointx + 25
@@ -269,7 +270,7 @@ class Timezonemap(Gtk.Widget):
         # And finally draw the text
         cr.set_source_rgb(1, 1, 1)
         cr.move_to(margin_left, margin_top)
-        PangoCairo.show_layout (cr, layout);
+        PangoCairo.show_layout(cr, layout)
         cr.restore()
 
     #def do_draw(self, cr):
@@ -290,18 +291,18 @@ class Timezonemap(Gtk.Widget):
         alloc = self.get_allocation()
         
         # Paint background
-        #Gdk.cairo_set_source_pixbuf(cr, self._background, 0, 0)
-        #cr.paint()
+        if self._background is not None:
+            Gdk.cairo_set_source_pixbuf(cr, self._background, 0, 0)
+            cr.paint()
 
         # Paint hilight
         if self.is_sensitive():
             filename = "timezone_%s.png" % str(self._selected_offset)
         else:
             filename = "timezone_%s_dim.png" % str(self._selected_offset)
-        
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
   
         try:
+            path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
             orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
         except Exception as err:
             print("Can't load %s image file" % path)
@@ -327,7 +328,6 @@ class Timezonemap(Gtk.Widget):
         
         self.draw_text_bubble(cr, pointx, pointy)
         
-        #http://stackoverflow.com/questions/10270080/how-to-draw-a-gdkpixbuf-using-gtk3-and-pygobject
         if self._pin is not None:
             Gdk.cairo_set_source_pixbuf(
                 cr,
