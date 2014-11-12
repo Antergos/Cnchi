@@ -33,10 +33,6 @@ import os
 import math
 import sys
 
-# location-changed
-# set_timezone
-# get_timezone_at_coords
-
 PIN_HOT_POINT_X = 8
 PIN_HOT_POINT_Y = 15
 LOCATION_CHANGED = 0
@@ -44,6 +40,47 @@ LOCATION_CHANGED = 0
 G_PI_4 = 0.78539816339744830961566084581987572104929234984378
 
 TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
+
+color_codes = [
+    (-11.0, 43, 0, 0, 255),
+    (-10.0, 85, 0, 0, 255),
+    (-9.5, 102, 255, 0, 255),
+    (-9.0, 128, 0, 0, 255),
+    (-8.0, 170, 0, 0, 255),
+    (-7.0, 212, 0, 0, 255),
+    (-6.0, 255, 0, 1, 255), # north
+    (-6.0, 255, 0, 0, 255), # south
+    (-5.0, 255, 42, 42, 255),
+    (-4.5, 192, 255, 0, 255),
+    (-4.0, 255, 85, 85, 255),
+    (-3.5, 0, 255, 0, 255),
+    (-3.0, 255, 128, 128, 255),
+    (-2.0, 255, 170, 170, 255),
+    (-1.0, 255, 213, 213, 255),
+    (0.0, 43, 17, 0, 255),
+    (1.0, 85, 34, 0, 255),
+    (2.0, 128, 51, 0, 255),
+    (3.0, 170, 68, 0, 255),
+    (3.5, 0, 255, 102, 255),
+    (4.0, 212, 85, 0, 255),
+    (4.5, 0, 204, 255, 255),
+    (5.0, 255, 102, 0, 255),
+    (5.5, 0, 102, 255, 255),
+    (5.75, 0, 238, 207, 247),
+    (6.0, 255, 127, 42, 255),
+    (6.5, 204, 0, 254, 254),
+    (7.0, 255, 153, 85, 255),
+    (8.0, 255, 179, 128, 255),
+    (9.0, 255, 204, 170, 255),
+    (9.5, 170, 0, 68, 250),
+    (10.0, 255, 230, 213, 255),
+    (10.5, 212, 124, 21, 250),
+    (11.0, 212, 170, 0, 255),
+    (11.5, 249, 25, 87, 253),
+    (12.0, 255, 204, 0, 255),
+    (12.75, 254, 74, 100, 248),
+    (13.0, 255, 85, 153, 250),
+    (-100, 0, 0, 0, 0)]
 
 def radians(degrees):
     return (degrees / 360.0) * math.pi * 2
@@ -72,6 +109,10 @@ def clamp(x, min_value, max_value):
     elif x > max_value:
         x = max_value
     return x
+
+# TODO: Add signal location-changed
+# TODO: add set_timezone function
+# TODO: add get_timezone_at_coords function
 
 class Timezonemap(Gtk.Widget):
     __gtype_name__ = 'Timezonemap'
@@ -128,9 +169,8 @@ class Timezonemap(Gtk.Widget):
         return (height, height)
 
     def do_size_allocate(self, allocation):
-        """ The do_size_allocate is called by when the actual
-        size is known and the widget is told how much space
-        could actually be allocated """
+        """ The do_size_allocate is called by when the actual size is known
+         and the widget is told how much space could actually be allocated """
         self.set_allocation(allocation)
 
         if self._background is not None:
@@ -167,24 +207,6 @@ class Timezonemap(Gtk.Widget):
             allocation.width,
             allocation.height)
 
-    #def do_realize(self):
-    #    allocation = self.get_allocation()
-    #    attr = Gdk.WindowAttr()
-    #    attr.window_type = Gdk.WindowType.CHILD
-    #    attr.x = allocation.x
-    #    attr.y = allocation.y
-    #    attr.width = allocation.width
-    #    attr.height = allocation.height
-    #    attr.visual = self.get_visual()
-    #    attr.event_mask = self.get_events() | Gdk.EventMask.EXPOSURE_MASK
-    #    WAT = Gdk.WindowAttributesType
-    #    mask = WAT.X | WAT.Y | WAT.VISUAL
-    #    window = Gdk.Window(self.get_parent_window(), attr, mask);
-    #    self.set_window(window)
-    #    self.register_window(window)
-    #    self.set_realized(True)
-    #    window.set_background_pattern(None)
-
     def do_realize(self):
         """ Called when the widget should create all of its
         windowing resources.  We will create our window here """
@@ -207,16 +229,7 @@ class Timezonemap(Gtk.Widget):
         # Gtk+ needs a reference between the widget and the gdk window
         window.set_user_data(self)
         self.set_window(window)
-        #self.register_window(window)
-        #self.window.set_background_pattern(None)
 
-    '''
-    #def do_unrealize(self):
-    #    # The do_unrealized method is responsible for freeing the GDK resources
-    #    # De-associate the window we created in do_realize with ourselves
-    #    self.window.destroy()
-    '''
-    
     # http://lotsofexpression.blogspot.com.es/2012/04/python-gtk-3-pango-cairo-example.html
     def draw_text_bubble(self, cr, pointx, pointy):
         corner_radius = 9.0
@@ -336,6 +349,29 @@ class Timezonemap(Gtk.Widget):
                 pointy - PIN_HOT_POINT_Y)
             cr.paint()
             
+
+    '''
+    static void
+    set_location (CcTimezoneMap *map,
+                  TzLocation    *location)
+    {
+      CcTimezoneMapPrivate *priv = map->priv;
+      TzInfo *info;
+
+      priv->location = location;
+
+      info = tz_info_from_location (priv->location);
+
+      priv->selected_offset = tz_location_get_utc_offset (priv->location)
+        / (60.0*60.0) + ((info->daylight) ? -1.0 : 0.0);
+
+      g_signal_emit (map, signals[LOCATION_CHANGED], 0, priv->location);
+
+      tz_info_free (info);
+    }
+    '''
+
+
     '''
     def do_button_press_event(self, event):
         """The button press event virtual method"""
@@ -345,11 +381,139 @@ class Timezonemap(Gtk.Widget):
             pass
         return True        
     '''
+
+    '''
+static gboolean
+button_press_event (GtkWidget      *widget,
+                    GdkEventButton *event)
+{
+  CcTimezoneMapPrivate *priv = CC_TIMEZONE_MAP (widget)->priv;
+  gint x, y;
+  guchar r, g, b, a;
+  guchar *pixels;
+  gint rowstride;
+  gint i;
+
+  const GPtrArray *array;
+  gint width, height;
+  GList *distances = NULL;
+  GtkAllocation alloc;
+
+  x = event->x;
+  y = event->y;
+
+
+  rowstride = priv->visible_map_rowstride;
+  pixels = priv->visible_map_pixels;
+
+  r = pixels[(rowstride * y + x * 4)];
+  g = pixels[(rowstride * y + x * 4) + 1];
+  b = pixels[(rowstride * y + x * 4) + 2];
+  a = pixels[(rowstride * y + x * 4) + 3];
+
+
+  for (i = 0; color_codes[i].offset != -100; i++)
+    {
+       if (color_codes[i].red == r && color_codes[i].green == g
+           && color_codes[i].blue == b && color_codes[i].alpha == a)
+         {
+           priv->selected_offset = color_codes[i].offset;
+         }
+    }
+
+  gtk_widget_queue_draw (widget);
+
+  /* work out the co-ordinates */
+
+  array = tz_get_locations (priv->tzdb);
+
+  gtk_widget_get_allocation (widget, &alloc);
+  width = alloc.width;
+  height = alloc.height;
+
+  for (i = 0; i < array->len; i++)
+    {
+      gdouble pointx, pointy, dx, dy;
+      TzLocation *loc = array->pdata[i];
+
+      pointx = convert_longitude_to_x (loc->longitude, width);
+      pointy = convert_latitude_to_y (loc->latitude, height);
+
+      dx = pointx - x;
+      dy = pointy - y;
+
+      loc->dist = dx * dx + dy * dy;
+      distances = g_list_prepend (distances, loc);
+
+    }
+  distances = g_list_sort (distances, (GCompareFunc) sort_locations);
+
+
+  set_location (CC_TIMEZONE_MAP (widget), (TzLocation*) distances->data);
+
+  g_list_free (distances);
+
+  return TRUE;
+}
+
+gboolean
+cc_timezone_map_set_timezone (CcTimezoneMap *map,
+                              const gchar   *timezone)
+{
+  GPtrArray *locations;
+  guint i;
+  char *real_tz;
+  gboolean ret;
+
+  real_tz = tz_info_get_clean_name (map->priv->tzdb, timezone);
+
+  locations = tz_get_locations (map->priv->tzdb);
+  ret = FALSE;
+
+  for (i = 0; i < locations->len; i++)
+    {
+      TzLocation *loc = locations->pdata[i];
+
+      if (!g_strcmp0 (loc->zone, real_tz ? real_tz : timezone))
+        {
+          set_location (map, loc);
+          ret = TRUE;
+          break;
+        }
+    }
+
+  if (ret)
+    gtk_widget_queue_draw (GTK_WIDGET (map));
+
+  g_free (real_tz);
+
+  return ret;
+}
+
+void
+cc_timezone_map_set_bubble_text (CcTimezoneMap *map,
+                                 const gchar   *text)
+{
+  CcTimezoneMapPrivate *priv = TIMEZONE_MAP_PRIVATE (map);
+
+  g_free (priv->bubble_text);
+  priv->bubble_text = g_strdup (text);
+
+  gtk_widget_queue_draw (GTK_WIDGET (map));
+}
+
+TzLocation *
+cc_timezone_map_get_location (CcTimezoneMap *map)
+{
+  return map->priv->location;
+}
+    '''
+
+    
 if __name__ == '__main__':
     win = Gtk.Window()
     win.add(Timezonemap())
     win.show_all()
-    win.present()
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
