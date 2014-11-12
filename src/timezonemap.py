@@ -126,23 +126,28 @@ class Timezonemap(Gtk.Widget):
         """ Retrieves a widget’s initial minimum and natural height. """
         height = self._orig_background.get_height()
         return (height, height)
-    '''
+
     def do_size_allocate(self, allocation):
-        if self._background:
+        """ The do_size_allocate is called by when the actual
+        size is known and the widget is told how much space
+        could actually be allocated """
+
+        if self._background is not None:
             del self._background
             self._background = None
         
         if self.is_sensitive():
-            pixbuf = self._orig_background
+            self._background = self._orig_background.scale_simple(
+                allocation.width,
+                allocation.height,
+                GdkPixbuf.InterpType.BILINEAR)
         else:
-            pixbuf = self._orig_background_dim
+            self._background = self._orig_background_dim.scale_simple(
+                allocation.width,
+                allocation.height,
+                GdkPixbuf.InterpType.BILINEAR)
         
-        self._background = pixbuf.scale_simple(
-            allocation.width,
-            allocation.height,
-            GdkPixbuf.InterpType.BILINEAR)
-        
-        if self._color_map:
+        if self._color_map is not None:
             del self._color_map
             self._color_map = None
         
@@ -154,8 +159,12 @@ class Timezonemap(Gtk.Widget):
         self._visible_map_pixels = self._color_map.get_pixels()
         self._visible_map_rowstride = self._color_map.get_rowstride()
 
-        super().size_allocate(allocation)
-
+        if self.get_realized():
+            self.get_window().move_resize(
+            allocation.x,
+            allocation.y,
+            allocation.width,
+            allocation.height)
 
     #def do_realize(self):
     #    allocation = self.get_allocation()
@@ -174,7 +183,7 @@ class Timezonemap(Gtk.Widget):
     #    self.register_window(window)
     #    self.set_realized(True)
     #    window.set_background_pattern(None)
-    '''
+
     def do_realize(self):
         """ Called when the widget should create all of its
         windowing resources.  We will create our window here """
@@ -281,8 +290,7 @@ class Timezonemap(Gtk.Widget):
         alloc = self.get_allocation()
         
         # Paint background
-        #bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
-        #cr.set_source_rgba(*list(bg_color))
+        #Gdk.cairo_set_source_pixbuf(cr, self._background, 0, 0)
         #cr.paint()
 
         # Paint hilight
@@ -320,7 +328,7 @@ class Timezonemap(Gtk.Widget):
         self.draw_text_bubble(cr, pointx, pointy)
         
         #http://stackoverflow.com/questions/10270080/how-to-draw-a-gdkpixbuf-using-gtk3-and-pygobject
-        if self._pin:
+        if self._pin is not None:
             Gdk.cairo_set_source_pixbuf(
                 cr,
                 self._pin, 
