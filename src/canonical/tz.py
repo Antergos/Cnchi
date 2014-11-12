@@ -69,6 +69,12 @@ class SystemTzInfo(datetime.tzinfo):
             return datetime.timedelta(minutes=int(dstminutes))
         finally:
             self._restore_tz(tzbackup)
+    
+    def get_daylight(self):
+        tzbackup = self._select_tz()
+        daylight = time.daylight
+        self._restore_tz(tzbackup)
+        return daylight
 
     def rawutcoffset(self, unused_dt):
         tzbackup = self._select_tz()
@@ -147,7 +153,6 @@ def _parse_position(position, wholedigits):
     else:
         return whole - fraction / pow(10.0, len(fractionstr))
 
-
 class Location(object):
     def __init__(self, zonetab_line, iso3166):
         bits = zonetab_line.rstrip().split('\t', 3)
@@ -196,6 +201,21 @@ class Location(object):
         self.utc_offset = self.info.utcoffset(today)
         self.raw_utc_offset = self.info.rawutcoffset(today)
         self.zone_letters = self.info.tzname_letters(today)
+    
+    def get_zone(self):
+        return self.zone
+
+    def get_latitude(self):
+        return self.latitude
+    
+    def get_longitude(self):
+        return self.longitude
+    
+    def get_info(self):
+        return self.info
+    
+    def get_utc_offset(self):
+        return self.utc_offset
 
 
 class _Database(object):
@@ -219,13 +239,13 @@ class _Database(object):
                 self.cc_to_locs[loc.country] = [loc]
 
     def get_loc(self, tz):
-        # Sometimes we'll encounter timezones that aren't really
-        # city-zones, like "US/Eastern" or "Mexico/General".  So first,
-        # we check if the timezone is known.  If it isn't, we search for
-        # one with the same md5sum and make a reference to it
         try:
             return self.tz_to_loc[tz]
         except:
+            # Sometimes we'll encounter timezones that aren't really
+            # city-zones, like "US/Eastern" or "Mexico/General".  So first,
+            # we check if the timezone is known.  If it isn't, we search for
+            # one with the same md5sum and make a reference to it
             try:
                 zone_path = os.path.join('/usr/share/zoneinfo', tz)
                 with open(zone_path, 'rb') as tz_file:
@@ -242,6 +262,9 @@ class _Database(object):
             print('Could not understand timezone', tz, file=sys.stderr)
             self.tz_to_loc[tz] = None  # save it for the future
             return None
+
+    def get_locations(self):
+        return self.locations
 
 
 _database = None

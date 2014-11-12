@@ -26,7 +26,7 @@
 
 """ Custom widget to show world time zones """
 
-from gi.repository import Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
 import canonical.tz as tz
 
 import os
@@ -41,6 +41,7 @@ G_PI_4 = 0.78539816339744830961566084581987572104929234984378
 
 TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
 
+# color_codes is (offset, red, green, blue, alpha)
 color_codes = [
     (-11.0, 43, 0, 0, 255),
     (-10.0, 85, 0, 0, 255),
@@ -79,8 +80,7 @@ color_codes = [
     (11.5, 249, 25, 87, 253),
     (12.0, 255, 204, 0, 255),
     (12.75, 254, 74, 100, 248),
-    (13.0, 255, 85, 153, 250),
-    (-100, 0, 0, 0, 0)]
+    (13.0, 255, 85, 153, 250)]
 
 def radians(degrees):
     return (degrees / 360.0) * math.pi * 2
@@ -117,6 +117,8 @@ def clamp(x, min_value, max_value):
 class Timezonemap(Gtk.Widget):
     __gtype_name__ = 'Timezonemap'
 
+    __gsignals__ = { 'location-changed' : (GObject.SignalFlags.RUN_LAST, None, (object,)) }
+    
     def __init__(self):
         #super().__init__(self)
         Gtk.Widget.__init__(self)
@@ -129,8 +131,7 @@ class Timezonemap(Gtk.Widget):
         self._visible_map_rowstride = None
         self._selected_offset = 0
 
-        # (longitude, latitude)
-        self._location = (0, 0)
+        self._tz_location = None
 
         self._bubble_text = "This is a test!"
 
@@ -151,12 +152,7 @@ class Timezonemap(Gtk.Widget):
             sys.exit(1)
 
         self._tzdb = tz.Database()
-
-        #self.connect("button-press-event", self.do_button_press_event)
-        #self.connect('delete-event', self.on_delete)
-
-    #def on_delete(self):
-    #    Gtk.Widget.destroy()
+        
 
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
@@ -286,20 +282,6 @@ class Timezonemap(Gtk.Widget):
         PangoCairo.show_layout(cr, layout)
         cr.restore()
 
-    #def do_draw(self, cr):
-    #    # paint background
-    #    bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
-    #    cr.set_source_rgba(*list(bg_color))
-    #    cr.paint()
-    #    # draw a diagonal line
-    #    allocation = self.get_allocation()
-    #    fg_color = self.get_style_context().get_color(Gtk.StateFlags.NORMAL)
-    #    cr.set_source_rgba(*list(fg_color));
-    #    cr.set_line_width(2)
-    #    cr.move_to(0, 0)   # top left of the widget
-    #    cr.line_to(allocation.width, allocation.height)
-    #    cr.stroke()
-
     def do_draw(self, cr):
         alloc = self.get_allocation()
 
@@ -310,9 +292,11 @@ class Timezonemap(Gtk.Widget):
 
         # Paint hilight
         if self.is_sensitive():
-            filename = "timezone_%s.png" % str(self._selected_offset)
+            filename = "timezone_%g.png" % self._selected_offset
         else:
-            filename = "timezone_%s_dim.png" % str(self._selected_offset)
+            filename = "timezone_%g_dim.png" % self._selected_offset
+        
+        print(filename)
 
         try:
             path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
@@ -332,156 +316,118 @@ class Timezonemap(Gtk.Widget):
         del hilight
         del orig_hilight
 
-        (longitude, latitude) = self._location
-        pointx = convert_longitude_to_x(longitude, alloc.width)
-        pointy = convert_latitude_to_y(latitude, alloc.height)
+        if self._tz_location:
+            longitude = self._tz_location.get_longitude()
+            latitude = self._tz_location.get_latitude()
 
-        pointx = clamp(math.floor(pointx), 0, alloc.width)
-        pointy = clamp(math.floor(pointy), 0, alloc.height)
+            pointx = convert_longitude_to_x(longitude, alloc.width)
+            pointy = convert_latitude_to_y(latitude, alloc.height)
 
-        self.draw_text_bubble(cr, pointx, pointy)
+            pointx = clamp(math.floor(pointx), 0, alloc.width)
+            pointy = clamp(math.floor(pointy), 0, alloc.height)
 
-        if self._pin is not None:
-            Gdk.cairo_set_source_pixbuf(
-                cr,
-                self._pin,
-                pointx - PIN_HOT_POINT_X,
-                pointy - PIN_HOT_POINT_Y)
-            cr.paint()
+            self.draw_text_bubble(cr, pointx, pointy)
 
-    def set_location(self, location):
-        self.location = location
-        info = tz.info_from_location(location)
+            if self._pin is not None:
+                Gdk.cairo_set_source_pixbuf(
+                    cr,
+                    self._pin,
+                    pointx - PIN_HOT_POINT_X,
+                    pointy - PIN_HOT_POINT_Y)
+                cr.paint()
 
-        if info.daylight:
-            daylight = -1.0
-        else:
-            daylight = 0.0
+    def set_location(self, tz_location):
+        if tz_location is not None:
+            self._tz_location = tz_location
+            
+            info = self._tz_location.get_info()
 
-        self.selected_offset = tz.location_get_utc_offset(location) / (60.0 * 60.0) + daylight
+            if info.get_daylight():
+                daylight = -1.0
+            else:
+                daylight = 0.0
 
-        self.emit("location-changed", self.location)
+            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight
 
-        del info
-    '''
+            self.emit("location-changed", self._tz_location)
+
     def do_button_press_event(self, event):
         """ The button press event virtual method """
 
-        # make sure it was the first button
+        # Make sure it was the first button
         if event.button == 1:
             x = event.x
             y = event.y
-            rowstride = self.visible_map_rowstride
-            pixels = self.visible_map_pixels
-            r = pixels[(rowstride * y + x * 4)]
-            g = pixels[(rowstride * y + x * 4) + 1]
-            b = pixels[(rowstride * y + x * 4) + 2]
-            a = pixels[(rowstride * y + x * 4) + 3]
+            rowstride = self._visible_map_rowstride
+            pixels = self._visible_map_pixels
+            my_red = pixels[int(rowstride * y + x * 4)]
+            my_green = pixels[int(rowstride * y + x * 4) + 1]
+            my_blue = pixels[int(rowstride * y + x * 4) + 2]
+            my_alpha = pixels[int(rowstride * y + x * 4) + 3]
 
+            for color_code in color_codes:
+                (offset, red, green, blue, alpha) = color_code
+                if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
+                    self._selected_offset = offset
+                    break
+            
+            self.queue_draw()
+            
+            # work out the co-ordinates
+            allocation = self.get_allocation()
+            
+            distances = []
+            
+            nearest_tz_location = None
+            small_dist = 100
+
+            for tz_location in self._tzdb.get_locations():
+                longitude = tz_location.get_longitude()
+                latitude = tz_location.get_latitude()
+
+                pointx = convert_longitude_to_x(longitude, allocation.width)
+                pointy = convert_latitude_to_y(latitude, allocation.height)
+
+                dx = pointx - x;
+                dy = pointy - y;
+                
+                dist = dx * dx + dy * dy
+                
+                if dist < small_dist:
+                    nearest_tz_location = tz_location
+                    small_dist = dist
+            
+            self.set_location(nearest_tz_location)
 
         return True
 
-    '''
+    def set_timezone(self, timezone):
+        real_tz = self._tzdb.get_loc(timezone)
+        
+        if len(real_tz) > 0:
+            tz_to_compare = real_tz
+        else:
+            tz_to_compare = timezone
 
+        ret = False
 
-    '''
-  for (i = 0; color_codes[i].offset != -100; i++)
-    {
-       if (color_codes[i].red == r && color_codes[i].green == g
-           && color_codes[i].blue == b && color_codes[i].alpha == a)
-         {
-           priv->selected_offset = color_codes[i].offset;
-         }
-    }
+        for tz_location in self._tzdb.get_locations():
+            if tz_location.get_zone() == tz_to_compare:
+                self.set_location(tz_location)
+                ret = True
+                break
+        
+        if ret is True:
+            self.queue_draw()
+        
+        return ret
 
-  gtk_widget_queue_draw (widget);
-
-  /* work out the co-ordinates */
-
-  array = tz_get_locations (priv->tzdb);
-
-  gtk_widget_get_allocation (widget, &alloc);
-  width = alloc.width;
-  height = alloc.height;
-
-  for (i = 0; i < array->len; i++)
-    {
-      gdouble pointx, pointy, dx, dy;
-      TzLocation *loc = array->pdata[i];
-
-      pointx = convert_longitude_to_x (loc->longitude, width);
-      pointy = convert_latitude_to_y (loc->latitude, height);
-
-      dx = pointx - x;
-      dy = pointy - y;
-
-      loc->dist = dx * dx + dy * dy;
-      distances = g_list_prepend (distances, loc);
-
-    }
-  distances = g_list_sort (distances, (GCompareFunc) sort_locations);
-
-
-  set_location (CC_TIMEZONE_MAP (widget), (TzLocation*) distances->data);
-
-  g_list_free (distances);
-
-  return TRUE;
-}
-
-gboolean
-cc_timezone_map_set_timezone (CcTimezoneMap *map,
-                              const gchar   *timezone)
-{
-  GPtrArray *locations;
-  guint i;
-  char *real_tz;
-  gboolean ret;
-
-  real_tz = tz_info_get_clean_name (map->priv->tzdb, timezone);
-
-  locations = tz_get_locations (map->priv->tzdb);
-  ret = FALSE;
-
-  for (i = 0; i < locations->len; i++)
-    {
-      TzLocation *loc = locations->pdata[i];
-
-      if (!g_strcmp0 (loc->zone, real_tz ? real_tz : timezone))
-        {
-          set_location (map, loc);
-          ret = TRUE;
-          break;
-        }
-    }
-
-  if (ret)
-    gtk_widget_queue_draw (GTK_WIDGET (map));
-
-  g_free (real_tz);
-
-  return ret;
-}
-
-void
-cc_timezone_map_set_bubble_text (CcTimezoneMap *map,
-                                 const gchar   *text)
-{
-  CcTimezoneMapPrivate *priv = TIMEZONE_MAP_PRIVATE (map);
-
-  g_free (priv->bubble_text);
-  priv->bubble_text = g_strdup (text);
-
-  gtk_widget_queue_draw (GTK_WIDGET (map));
-}
-
-TzLocation *
-cc_timezone_map_get_location (CcTimezoneMap *map)
-{
-  return map->priv->location;
-}
-    '''
-
+    def set_bubble_text(self, text):
+        self.bubble_text = text
+        Gtk.Widget.queue_draw(self)
+    
+    def get_location(self):
+        return self._tz_location
 
 if __name__ == '__main__':
     win = Gtk.Window()
