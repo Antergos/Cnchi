@@ -508,6 +508,7 @@ class TimezoneMap(Gtk.Widget):
 
         self._background = None
         self._color_map = None
+        self._olsen_map = None
         
         self._selected_offset = 0.0
         self._show_offset = False
@@ -525,6 +526,9 @@ class TimezoneMap(Gtk.Widget):
 
             self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
+
+            self._olsen_map = GdkPixbuf.Pixbuf.new_from_file(
+                os.path.join(TIMEZONEMAP_IMAGES_PATH, "olsen_map.png"))
 
             self._pin = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
@@ -829,7 +833,7 @@ class TimezoneMap(Gtk.Widget):
     def set_timezone(self, timezone):
         real_tz = self._tzdb.get_loc(timezone)
         
-        if len(real_tz) > 0:
+        if real_tz is not None:
             tz_to_compare = real_tz
         else:
             tz_to_compare = timezone
@@ -837,7 +841,7 @@ class TimezoneMap(Gtk.Widget):
         ret = False
 
         for tz_location in self._tzdb.get_locations():
-            if tz_location.get_zone() == tz_to_compare:
+            if tz_location.get_property('zone') == tz_to_compare:
                 self.set_location(tz_location)
                 ret = True
                 break
@@ -854,40 +858,31 @@ class TimezoneMap(Gtk.Widget):
     def get_location(self):
         return self._tz_location
 
-    # TODO: add get_timezone_at_coords function
     def get_timezone_at_coords(self, longitude, latitude):
-        raise NotImplementedError
-    '''
-const gchar *
-cc_timezone_map_get_timezone_at_coords (CcTimezoneMap *map, gdouble lon, gdouble lat)
-{
-  gint x = (int)(2048.0 / 360.0 * (180.0 + lon));
-  gint y = (int)(1024.0 / 180.0 * (90.0 - lat));
-  gint offset = map->priv->olsen_map_rowstride * y + x * map->priv->olsen_map_channels;
-  guchar color0 = map->priv->olsen_map_pixels[offset];
-  guchar color1 = map->priv->olsen_map_pixels[offset + 1];
-  gint zone = ((color0 & 248) << 1) + ((color1 >>4) & 15);
+        x = int(2048.0 / 360.0 * (180.0 + longitude))
+        y = int(1024.0 / 180.0 * (90.0 - latitude))
 
-  const gchar * city = NULL;
-  if (zone < G_N_ELEMENTS(olsen_map_timezones))
-    city = olsen_map_timezones[zone];
+        olsen_map_channels =self._olsen_map.get_n_channels()
+        olsen_map_pixels = self._olsen_map.get_pixels()
+        olsen_map_rowstride = self._olsen_map.get_rowstride()
 
-  if (city != NULL)
-    {
-      return city;
-    } else {
-      GtkAllocation alloc;
-      GValue val_zone = {0};
-      g_value_init (&val_zone, G_TYPE_STRING);
-      gtk_widget_get_allocation (GTK_WIDGET (map), &alloc);
-      x = convert_longtitude_to_x(lon, alloc.width);
-      y = convert_latitude_to_y(lat, alloc.height);
-      CcTimezoneLocation * loc = get_loc_for_xy(GTK_WIDGET (map), x, y);
-      g_value_unset (&val_zone);
-      return g_value_get_string(&val_zone);
-    }
-}
-    '''
+        offset = olsen_map_rowstride * y + x * olsen_map_channels
+        color0 = olsen_map_pixels[offset]
+        color1 = olsen_map_pixels[offset + 1]
+        zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
+
+        if zone < len(olsen_map_timezones):
+            city = olsen_map_timezones[zone]
+            return city
+        else:
+            alloc = self.get_allocation()
+            x = convert_longitude_to_x(longitude, alloc.width)
+            y = convert_latitude_to_y(latitude, alloc.height)
+            location = get_loc_for_xy(x, y)
+            zone = location.get_property('zone')
+            print(zone)
+            return zone
+
 if __name__ == '__main__':
     win = Gtk.Window()
     win.add(TimezoneMap())

@@ -23,10 +23,10 @@
 #  MA 02110-1301, USA.
 
 from gi.repository import Gtk, Gdk
-from gi.repository import TimezoneMap
 
+#from gi.repository import TimezoneMap
 # EXPERIMENTAL
-#import timezonemap as TimezoneMap
+import timezonemap as TimezoneMap
 
 import os
 import threading
@@ -206,7 +206,9 @@ class Timezone(GtkBaseBox):
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
-            timezone = self.tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+            timezone = self.tzmap.get_timezone_at_coords(
+                longitude=float(coords[0]),
+                latitude=float(coords[1]))
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
