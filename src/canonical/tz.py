@@ -224,7 +224,7 @@ class Location(object):
             # time is set to the epoch will at least let us avoid crashing,
             # although the UTC offset and zone letters may be wrong.
             today = datetime.datetime.fromtimestamp(0)
-        
+
         self.info = SystemTzInfo(self.zone)
         self.utc_offset = self.info.utcoffset(today)
         self.raw_utc_offset = self.info.rawutcoffset(today)

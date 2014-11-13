@@ -3,6 +3,8 @@
 #
 #  timezonemap.py
 #
+#  Author: Thomas Wood <thomas.wood@intel.com>
+#
 #  Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
 #  Written in C by Evan Dandrea <evand@ubuntu.com>
 #  Python port Copyright © 2013,2014 Antergos
@@ -607,7 +609,6 @@ class TimezoneMap(Gtk.Widget):
         
         self.set_window(window)
 
-    # http://lotsofexpression.blogspot.com.es/2012/04/python-gtk-3-pango-cairo-example.html
     def draw_text_bubble(self, cr, pointx, pointy):
         corner_radius = 9.0
         margin_top = 12.0
@@ -680,7 +681,7 @@ class TimezoneMap(Gtk.Widget):
         # Paint hilight
         offset = self._selected_offset
 
-        print("do_draw offset: ", offset)
+        print("do_draw offset: %g" % offset)
         
         if self.is_sensitive():
             filename = "timezone_%g.png" % offset
@@ -736,19 +737,18 @@ class TimezoneMap(Gtk.Widget):
         if tz_location is not None:
             info = self._tz_location.get_info()
 
-            #print("set_location daylight: ", info.get_daylight())
-            if info.get_daylight() != 0:
+            print("set_location daylight: ", info.get_daylight())
+            if info.get_daylight() > 0:
                 daylight_offset = -1.0
             else:
                 daylight_offset = 0.0
 
             print("set_location offset (before): ", self._selected_offset)
-            #self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
-            self._selected_offset = tz_location.get_raw_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
+            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
             
-            print("set_location Total seconds: ", tz_location.get_utc_offset().total_seconds())
+            print("set_location utc_offset in seconds: ", tz_location.get_utc_offset().total_seconds())
             print("set_location Daylight offset: ", daylight_offset)
-            print("set_location Offset: ", self._selected_offset)
+            print("set_location Offset: %g" % self._selected_offset)
 
             self.emit("location-changed", self._tz_location)
             
