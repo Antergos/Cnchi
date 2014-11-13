@@ -62,7 +62,7 @@ color_codes = [
     (-2.0, 255, 170, 170, 255),
     (-1.0, 255, 213, 213, 255),
     (0.0, 43, 17, 0, 255),
-    (1.0, 85, 34, 0, 255),
+    (1.0, 85, 34, 0, 255), # eastern Europe
     (2.0, 128, 51, 0, 255),
     (3.0, 170, 68, 0, 255),
     (3.5, 0, 255, 102, 255),
@@ -125,7 +125,9 @@ class TimezoneMap(Gtk.Widget):
 
         self._background = None
         self._color_map = None
-        self._selected_offset = 100
+        
+        # Set an absurd offset
+        self._selected_offset = MAX_OFFSET + 100.0
 
         self._tz_location = None
 
@@ -205,7 +207,6 @@ class TimezoneMap(Gtk.Widget):
         allocation = self.get_allocation()
         attr = Gdk.WindowAttr()
         attr.window_type = Gdk.WindowType.CHILD
-        # GDK_INPUT_OUTPUT
         attr.wclass = Gdk.WindowWindowClass.INPUT_OUTPUT
         attr.width = allocation.width
         attr.height = allocation.height
@@ -289,12 +290,12 @@ class TimezoneMap(Gtk.Widget):
         offset = self._selected_offset
 
         if offset >= MIN_OFFSET and offset <= MAX_OFFSET:
+            print("do_draw offset: ", offset)
+            
             if self.is_sensitive():
                 filename = "timezone_%g.png" % offset
             else:
                 filename = "timezone_%g_dim.png" % offset
-            
-            #print(filename)
 
             try:
                 path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
@@ -315,8 +316,6 @@ class TimezoneMap(Gtk.Widget):
             del orig_hilight
 
             if self._tz_location:
-                #longitude = self._tz_location.get_longitude()
-                #latitude = self._tz_location.get_latitude()
                 longitude = self._tz_location.get_property('longitude')
                 latitude = self._tz_location.get_property('latitude')
 
@@ -342,28 +341,31 @@ class TimezoneMap(Gtk.Widget):
             
             info = self._tz_location.get_info()
 
-            if info.get_daylight():
-                daylight = -1.0
+            print("set_location daylight: ", info.get_daylight())
+            if info.get_daylight() >= 1:
+                daylight_offset = -1.0
             else:
-                daylight = 0.0
+                daylight_offset = 0.0
 
-            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight
+            print("set_location offset (before): ", self._selected_offset)
+            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
+            
+            print("set_location Total seconds: ", tz_location.get_utc_offset().total_seconds())
+            print("set_location Daylight offset: ", daylight_offset)
+            print("set_location Offset: ", self._selected_offset)
 
             self.emit("location-changed", self._tz_location)
-
-    def get_timezone_at_coords(self, latitude, longitude):
-        print("NOT IMPLEMENTED!")
 
     def do_button_press_event(self, event):
         """ The button press event virtual method """
 
         # Make sure it was the first button
         if event.button == 1:
-            x = event.x
-            y = event.y
-            
-            pixels = self._color_map.get_pixels()
+            x = int(event.x)
+            y = int(event.y)
+
             rowstride = self._color_map.get_rowstride()
+            pixels = self._color_map.get_pixels()
             
             my_red = pixels[int(rowstride * y + x * 4)]
             my_green = pixels[int(rowstride * y + x * 4) + 1]
@@ -373,37 +375,41 @@ class TimezoneMap(Gtk.Widget):
             for color_code in color_codes:
                 (offset, red, green, blue, alpha) = color_code
                 if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
-                    print(offset)
+                    print("do_button_press_event offset: ", offset)
                     self._selected_offset = offset
                     break
             
             self.queue_draw()
             
-            # work out the co-ordinates
+            # Work out the co-ordinates
             allocation = self.get_allocation()
-            
-            distances = []
+            width = allocation.width
+            height = allocation.height
             
             nearest_tz_location = None
-            small_dist = 100
+            small_dist =  -1
 
             for tz_location in self._tzdb.get_locations():
                 longitude = tz_location.get_property('longitude')
                 latitude = tz_location.get_property('latitude')
 
-                pointx = convert_longitude_to_x(longitude, allocation.width)
-                pointy = convert_latitude_to_y(latitude, allocation.height)
+                pointx = convert_longitude_to_x(longitude, width)
+                pointy = convert_latitude_to_y(latitude, height)
 
                 dx = pointx - x;
                 dy = pointy - y;
                 
                 dist = dx * dx + dy * dy
-                
-                if dist < small_dist:
+
+                if small_dist == -1 or dist < small_dist:
                     nearest_tz_location = tz_location
                     small_dist = dist
-            
-            self.set_location(nearest_tz_location)
+
+            if nearest_tz_location is not None:
+                self.set_bubble_text(nearest_tz_location.get_info().tzname(""))
+                self.set_location(nearest_tz_location)
+            else:
+                print("nearest_tz_location is None!")
 
         return True
 
@@ -429,7 +435,7 @@ class TimezoneMap(Gtk.Widget):
         return ret
 
     def set_bubble_text(self, text):
-        self.bubble_text = text
+        self._bubble_text = text
         Gtk.Widget.queue_draw(self)
     
     def get_location(self):
