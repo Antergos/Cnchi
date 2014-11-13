@@ -113,30 +113,23 @@ def clamp(x, min_value, max_value):
         x = max_value
     return x
 
-# TODO: Add signal location-changed
-# TODO: add set_timezone function
-# TODO: add get_timezone_at_coords function
-
 class TimezoneMap(Gtk.Widget):
     __gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = { 'location-changed' : (GObject.SignalFlags.RUN_LAST, None, (object,)) }
     
     def __init__(self):
-        #super().__init__(self)
         Gtk.Widget.__init__(self)
 
         self.set_size_request(40, 40)
 
         self._background = None
         self._color_map = None
-        self._visible_map_pixels = None
-        self._visible_map_rowstride = None
         self._selected_offset = 100
 
         self._tz_location = None
 
-        self._bubble_text = "This is a test!"
+        self._bubble_text = ""
 
         try:
             self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
@@ -155,7 +148,6 @@ class TimezoneMap(Gtk.Widget):
             sys.exit(1)
 
         self._tzdb = tz.Database()
-        
 
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
@@ -196,8 +188,8 @@ class TimezoneMap(Gtk.Widget):
             allocation.height,
             GdkPixbuf.InterpType.BILINEAR)
 
-        self._visible_map_pixels = self._color_map.get_pixels()
-        self._visible_map_rowstride = self._color_map.get_rowstride()
+        #self._visible_map_pixels = self._color_map.get_pixels()
+        #self._visible_map_rowstride = self._color_map.get_rowstride()
 
         if self.get_realized():
             self.get_window().move_resize(
@@ -302,7 +294,7 @@ class TimezoneMap(Gtk.Widget):
             else:
                 filename = "timezone_%g_dim.png" % offset
             
-            print(filename)
+            #print(filename)
 
             try:
                 path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
@@ -369,8 +361,10 @@ class TimezoneMap(Gtk.Widget):
         if event.button == 1:
             x = event.x
             y = event.y
-            rowstride = self._visible_map_rowstride
-            pixels = self._visible_map_pixels
+            
+            pixels = self._color_map.get_pixels()
+            rowstride = self._color_map.get_rowstride()
+            
             my_red = pixels[int(rowstride * y + x * 4)]
             my_green = pixels[int(rowstride * y + x * 4) + 1]
             my_blue = pixels[int(rowstride * y + x * 4) + 2]
@@ -379,6 +373,7 @@ class TimezoneMap(Gtk.Widget):
             for color_code in color_codes:
                 (offset, red, green, blue, alpha) = color_code
                 if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
+                    print(offset)
                     self._selected_offset = offset
                     break
             
@@ -393,8 +388,6 @@ class TimezoneMap(Gtk.Widget):
             small_dist = 100
 
             for tz_location in self._tzdb.get_locations():
-                #longitude = tz_location.get_longitude()
-                #latitude = tz_location.get_latitude()
                 longitude = tz_location.get_property('longitude')
                 latitude = tz_location.get_property('latitude')
 
@@ -441,6 +434,10 @@ class TimezoneMap(Gtk.Widget):
     
     def get_location(self):
         return self._tz_location
+
+    # TODO: add get_timezone_at_coords function
+    def get_timezone_at_coords(self, latitude, longitude):
+        raise NotImplementedError
 
 if __name__ == '__main__':
     win = Gtk.Window()
