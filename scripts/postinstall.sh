@@ -22,9 +22,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-set_synaptics()
+set_xorg()
 {
     cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
+    cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
 }
 
 gnome_settings(){
@@ -321,7 +322,7 @@ postinstall(){
 
     # Configure touchpad. Skip with base installs
     if [[ $DESKTOP != 'nox' ]]; then
-        set_synaptics
+        set_xorg
     fi
 
     # Configure fontconfig
