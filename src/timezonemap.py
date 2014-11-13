@@ -127,7 +127,7 @@ class TimezoneMap(Gtk.Widget):
         self._color_map = None
         
         # Set an absurd offset
-        self._selected_offset = MAX_OFFSET + 100.0
+        self._selected_offset = MAX_OFFSET + 1000.0
 
         self._tz_location = None
 
@@ -379,7 +379,7 @@ class TimezoneMap(Gtk.Widget):
                     self._selected_offset = offset
                     break
             
-            self.queue_draw()
+            #self.queue_draw()
             
             # Work out the co-ordinates
             allocation = self.get_allocation()
@@ -408,6 +408,7 @@ class TimezoneMap(Gtk.Widget):
             if nearest_tz_location is not None:
                 self.set_bubble_text(nearest_tz_location.get_info().tzname(""))
                 self.set_location(nearest_tz_location)
+                self.queue_draw()
             else:
                 print("nearest_tz_location is None!")
 
