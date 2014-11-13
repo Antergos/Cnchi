@@ -541,12 +541,12 @@ class TimezoneMap(Gtk.Widget):
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
         width = self._orig_background.get_width()
-        return (width, width)
+        return (width / 2, width)
 
     def do_get_preferred_height(self):
         """ Retrieves a widget’s initial minimum and natural height. """
         height = self._orig_background.get_height()
-        return (height, height)
+        return (height / 2, height)
 
     def do_size_allocate(self, allocation):
         """ The do_size_allocate is called by when the actual size is known
@@ -640,9 +640,9 @@ class TimezoneMap(Gtk.Widget):
         height = logical_rect.height + margin_top + margin_bottom
 
         if pointx < alloc.width / 2:
-            x = pointx + 25
+            x = pointx + 20
         else:
-            x = pointx - width - 25
+            x = pointx - width - 20
 
         y = pointy - height / 2
 
@@ -750,7 +750,7 @@ class TimezoneMap(Gtk.Widget):
             print("set_location offset (before): ", self._selected_offset)
             self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
             
-            print("set_location utc_offset in seconds: ", tz_location.get_utc_offset().total_seconds())
+            print("set_location utc_offset in seconds: %g" % tz_location.get_utc_offset().total_seconds())
             print("set_location Daylight offset: ", daylight_offset)
             print("set_location Offset: %g" % self._selected_offset)
 
@@ -819,10 +819,7 @@ class TimezoneMap(Gtk.Widget):
             nearest_tz_location = self.get_loc_for_xy(x, y)
 
             if nearest_tz_location is not None:
-                city_name = nearest_tz_location.get_info().tzname("").split("/")[1]
-                city_name = city_name.replace("_", " ")
-                country_name = nearest_tz_location.get_property('human_country')
-                self.set_bubble_text("%s, %s" % (city_name, country_name))
+                self.set_bubble_text(nearest_tz_location)
                 self.set_location(nearest_tz_location)
                 self.queue_draw()
             else:
@@ -831,6 +828,8 @@ class TimezoneMap(Gtk.Widget):
         return True
 
     def set_timezone(self, timezone):
+        print("timezone: ", timezone)
+        
         real_tz = self._tzdb.get_loc(timezone)
         
         if real_tz is not None:
@@ -841,7 +840,8 @@ class TimezoneMap(Gtk.Widget):
         ret = False
 
         for tz_location in self._tzdb.get_locations():
-            if tz_location.get_property('zone') == tz_to_compare:
+            if tz_location.get_property('zone') == tz_to_compare.get_property('zone'):
+                self.set_bubble_text(tz_location)
                 self.set_location(tz_location)
                 ret = True
                 break
@@ -851,9 +851,12 @@ class TimezoneMap(Gtk.Widget):
         
         return ret
 
-    def set_bubble_text(self, text):
-        self._bubble_text = text
-        Gtk.Widget.queue_draw(self)
+    def set_bubble_text(self, location):
+        city_name = location.get_info().tzname("").split("/")[1]
+        city_name = city_name.replace("_", " ")
+        country_name = location.get_property('human_country')
+        self._bubble_text = "%s, %s" % (city_name, country_name)
+        self.queue_draw()
     
     def get_location(self):
         return self._tz_location
@@ -885,8 +888,10 @@ class TimezoneMap(Gtk.Widget):
 
 if __name__ == '__main__':
     win = Gtk.Window()
-    win.add(TimezoneMap())
+    tzmap = TimezoneMap()
+    win.add(tzmap)
     win.show_all()
+    tzmap.set_timezone("Europe/Madrid")
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
