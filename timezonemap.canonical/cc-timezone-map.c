@@ -969,6 +969,7 @@ get_loc_for_xy (GtkWidget * widget, gint x, gint y)
     x = priv->previous_x;
     y = priv->previous_y;
   }
+  
   for (i = 0; color_codes[i].offset != -100; i++)
     {
        if (color_codes[i].red == r && color_codes[i].green == g

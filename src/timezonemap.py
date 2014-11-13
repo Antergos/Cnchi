@@ -41,6 +41,8 @@ G_PI_4 = 0.78539816339744830961566084581987572104929234984378
 
 TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
 
+BUBBLE_TEXT_FONT = "Sans 9"
+
 # color_codes is (offset, red, green, blue, alpha)
 color_codes = [
     (-11.0, 43, 0, 0, 255),
@@ -82,18 +84,400 @@ color_codes = [
     (12.75, 254, 74, 100, 248),
     (13.0, 255, 85, 153, 250)]
 
+olsen_map_timezones = [
+    "Africa/Abidjan",
+    "Africa/Accra",
+    "Africa/Addis_Ababa",
+    "Africa/Algiers",
+    "Africa/Asmara",
+    "Africa/Bamako",
+    "Africa/Bangui",
+    "Africa/Banjul",
+    "Africa/Bissau",
+    "Africa/Blantyre",
+    "Africa/Brazzaville",
+    "Africa/Bujumbura",
+    "Africa/Cairo",
+    "Africa/Casablanca",
+    "Africa/Conakry",
+    "Africa/Dakar",
+    "Africa/Dar_es_Salaam",
+    "Africa/Djibouti",
+    "Africa/Douala",
+    "Africa/El_Aaiun",
+    "Africa/Freetown",
+    "Africa/Gaborone",
+    "Africa/Harare",
+    "Africa/Johannesburg",
+    "Africa/Kampala",
+    "Africa/Khartoum",
+    "Africa/Kigali",
+    "Africa/Kinshasa",
+    "Africa/Lagos",
+    "Africa/Libreville",
+    "Africa/Lome",
+    "Africa/Luanda",
+    "Africa/Lubumbashi",
+    "Africa/Lusaka",
+    "Africa/Malabo",
+    "Africa/Maputo",
+    "Africa/Maseru",
+    "Africa/Mbabane",
+    "Africa/Mogadishu",
+    "Africa/Monrovia",
+    "Africa/Nairobi",
+    "Africa/Ndjamena",
+    "Africa/Niamey",
+    "Africa/Nouakchott",
+    "Africa/Ouagadougou",
+    "Africa/Porto-Novo",
+    "Africa/Sao_Tome",
+    "Africa/Tripoli",
+    "Africa/Tunis",
+    "Africa/Windhoek",
+    "America/Adak",
+    "America/Anguilla",
+    "America/Antigua",
+    "America/Araguaina",
+    "America/Argentina/Buenos_Aires",
+    "America/Argentina/Catamarca",
+    "America/Argentina/Cordoba",
+    "America/Argentina/Jujuy",
+    "America/Argentina/La_Rioja",
+    "America/Argentina/Mendoza",
+    "America/Argentina/Rio_Gallegos",
+    "America/Argentina/San_Juan",
+    "America/Argentina/San_Luis",
+    "America/Argentina/Tucuman",
+    "America/Argentina/Ushuaia",
+    "America/Aruba",
+    "America/Asuncion",
+    "America/Atikokan",
+    "America/Bahia",
+    "America/Barbados",
+    "America/Belem",
+    "America/Belize",
+    "America/Blanc-Sablon",
+    "America/Boa_Vista",
+    "America/Bogota",
+    "America/Boise",
+    "America/Cambridge_Bay",
+    "America/Campo_Grande",
+    "America/Cancun",
+    "America/Caracas",
+    "America/Cayenne",
+    "America/Cayman",
+    "America/Chicago",
+    "America/Chihuahua",
+    "America/Coral_Harbour",
+    "America/Costa_Rica",
+    "America/Cuiaba",
+    "America/Curacao",
+    "America/Dawson",
+    "America/Dawson_Creek",
+    "America/Denver",
+    "America/Dominica",
+    "America/Edmonton",
+    "America/Eirunepe",
+    "America/El_Salvador",
+    "America/Fortaleza",
+    "America/Glace_Bay",
+    "America/Goose_Bay",
+    "America/Grand_Turk",
+    "America/Grenada",
+    "America/Guadeloupe",
+    "America/Guatemala",
+    "America/Guayaquil",
+    "America/Guyana",
+    "America/Halifax",
+    "America/Havana",
+    "America/Hermosillo",
+    "America/Indiana/Indianapolis",
+    "America/Indiana/Knox",
+    "America/Indiana/Marengo",
+    "America/Indiana/Petersburg",
+    "America/Indiana/Vevay",
+    "America/Indiana/Vincennes",
+    "America/Indiana/Winamac",
+    "America/Inuvik",
+    "America/Iqaluit",
+    "America/Jamaica",
+    "America/Juneau",
+    "America/Kentucky/Louisville",
+    "America/Kentucky/Monticello",
+    "America/La_Paz",
+    "America/Lima",
+    "America/Los_Angeles",
+    "America/Maceio",
+    "America/Managua",
+    "America/Manaus",
+    "America/Marigot",
+    "America/Martinique",
+    "America/Mazatlan",
+    "America/Menominee",
+    "America/Merida",
+    "America/Mexico_City",
+    "America/Miquelon",
+    "America/Moncton",
+    "America/Monterrey",
+    "America/Montevideo",
+    "America/Montreal",
+    "America/Montserrat",
+    "America/Nassau",
+    "America/New_York",
+    "America/Nipigon",
+    "America/Noronha",
+    "America/North_Dakota/Center",
+    "America/North_Dakota/Salem",
+    "America/Panama",
+    "America/Pangnirtung",
+    "America/Paramaribo",
+    "America/Phoenix",
+    "America/Port-au-Prince",
+    "America/Port_of_Spain",
+    "America/Porto_Velho",
+    "America/Puerto_Rico",
+    "America/Rainy_River",
+    "America/Rankin_Inlet",
+    "America/Recife",
+    "America/Regina",
+    "America/Resolute",
+    "America/Rio_Branco",
+    "America/Santarem",
+    "America/Santiago",
+    "America/Santo_Domingo",
+    "America/Sao_Paulo",
+    "America/St_Barthelemy",
+    "America/St_Johns",
+    "America/St_Kitts",
+    "America/St_Lucia",
+    "America/St_Thomas",
+    "America/St_Vincent",
+    "America/Tegucigalpa",
+    "America/Thunder_Bay",
+    "America/Tijuana",
+    "America/Toronto",
+    "America/Tortola",
+    "America/Vancouver",
+    "America/Whitehorse",
+    "America/Winnipeg",
+    "America/Yellowknife",
+    "Ameriica/Swift_Current",
+    "Arctic/Longyearbyen",
+    "Asia/Aden",
+    "Asia/Almaty",
+    "Asia/Amman",
+    "Asia/Anadyr",
+    "Asia/Aqtau",
+    "Asia/Aqtobe",
+    "Asia/Ashgabat",
+    "Asia/Baghdad",
+    "Asia/Bahrain",
+    "Asia/Baku",
+    "Asia/Bangkok",
+    "Asia/Beirut",
+    "Asia/Bishkek",
+    "Asia/Brunei",
+    "Asia/Choibalsan",
+    "Asia/Chongqing",
+    "Asia/Colombo",
+    "Asia/Damascus",
+    "Asia/Dhaka",
+    "Asia/Dili",
+    "Asia/Dubai",
+    "Asia/Dushanbe",
+    "Asia/Gaza",
+    "Asia/Harbin",
+    "Asia/Ho_Chi_Minh",
+    "Asia/Hong_Kong",
+    "Asia/Hovd",
+    "Asia/Irkutsk",
+    "Asia/Jakarta",
+    "Asia/Jayapura",
+    "Asia/Jerusalem",
+    "Asia/Kabul",
+    "Asia/Kamchatka",
+    "Asia/Karachi",
+    "Asia/Kashgar",
+    "Asia/Katmandu",
+    "Asia/Kolkata",
+    "Asia/Krasnoyarsk",
+    "Asia/Kuala_Lumpur",
+    "Asia/Kuching",
+    "Asia/Kuwait",
+    "Asia/Macau",
+    "Asia/Magadan",
+    "Asia/Makassar",
+    "Asia/Manila",
+    "Asia/Muscat",
+    "Asia/Nicosia",
+    "Asia/Novosibirsk",
+    "Asia/Omsk",
+    "Asia/Oral",
+    "Asia/Phnom_Penh",
+    "Asia/Pontianak",
+    "Asia/Pyongyang",
+    "Asia/Qatar",
+    "Asia/Qyzylorda",
+    "Asia/Rangoon",
+    "Asia/Riyadh",
+    "Asia/Sakhalin",
+    "Asia/Samarkand",
+    "Asia/Seoul",
+    "Asia/Shanghai",
+    "Asia/Singapore",
+    "Asia/Taipei",
+    "Asia/Tashkent",
+    "Asia/Tbilisi",
+    "Asia/Tehran",
+    "Asia/Thimphu",
+    "Asia/Tokyo",
+    "Asia/Ulaanbaatar",
+    "Asia/Urumqi",
+    "Asia/Vientiane",
+    "Asia/Vladivostok",
+    "Asia/Yakutsk",
+    "Asia/Yekaterinburg",
+    "Asia/Yerevan",
+    "Atlantic/Azores",
+    "Atlantic/Bermuda",
+    "Atlantic/Canary",
+    "Atlantic/Cape_Verde",
+    "Atlantic/Faroe",
+    "Atlantic/Madeira",
+    "Atlantic/Reykjavik",
+    "Atlantic/South_Georgia",
+    "Atlantic/St_Helena",
+    "Atlantic/Stanley",
+    "Australia/Adelaide",
+    "Australia/Brisbane",
+    "Australia/Broken_Hill",
+    "Australia/Currie",
+    "Australia/Darwin",
+    "Australia/Eucla",
+    "Australia/Hobart",
+    "Australia/Lindeman",
+    "Australia/Lord_Howe",
+    "Australia/Melbourne",
+    "Australia/Perth",
+    "Australia/Sydney",
+    "Europe/Amsterdam",
+    "Europe/Andorra",
+    "Europe/Athens",
+    "Europe/Belgrade",
+    "Europe/Berlin",
+    "Europe/Bratislava",
+    "Europe/Brussels",
+    "Europe/Bucharest",
+    "Europe/Budapest",
+    "Europe/Chisinau",
+    "Europe/Copenhagen",
+    "Europe/Dublin",
+    "Europe/Gibraltar",
+    "Europe/Guernsey",
+    "Europe/Helsinki",
+    "Europe/Isle_of_Man",
+    "Europe/Istanbul",
+    "Europe/Jersey",
+    "Europe/Kaliningrad",
+    "Europe/Kiev",
+    "Europe/Lisbon",
+    "Europe/Ljubljana",
+    "Europe/London",
+    "Europe/Luxembourg",
+    "Europe/Madrid",
+    "Europe/Malta",
+    "Europe/Marienhamn",
+    "Europe/Minsk",
+    "Europe/Monaco",
+    "Europe/Moscow",
+    "Europe/Oslo",
+    "Europe/Paris",
+    "Europe/Podgorica",
+    "Europe/Prague",
+    "Europe/Riga",
+    "Europe/Rome",
+    "Europe/Samara",
+    "Europe/San_Marino",
+    "Europe/Sarajevo",
+    "Europe/Simferopol",
+    "Europe/Skopje",
+    "Europe/Sofia",
+    "Europe/Stockholm",
+    "Europe/Tallinn",
+    "Europe/Tirane",
+    "Europe/Uzhgorod",
+    "Europe/Vaduz",
+    "Europe/Vatican",
+    "Europe/Vienna",
+    "Europe/Vilnius",
+    "Europe/Volgograd",
+    "Europe/Warsaw",
+    "Europe/Zagreb",
+    "Europe/Zaporozhye",
+    "Europe/Zurich",
+    "Indian/Antananarivo",
+    "Indian/Chagos",
+    "Indian/Christmas",
+    "Indian/Cocos",
+    "Indian/Comoro",
+    "Indian/Kerguelen",
+    "Indian/Mahe",
+    "Indian/Maldives",
+    "Indian/Mauritius",
+    "Indian/Mayotte",
+    "Indian/Reunion",
+    "Pacific/Apia",
+    "Pacific/Auckland",
+    "Pacific/Chatham",
+    "Pacific/Easter",
+    "Pacific/Efate",
+    "Pacific/Enderbury",
+    "Pacific/Fakaofo",
+    "Pacific/Fiji",
+    "Pacific/Funafuti",
+    "Pacific/Galapagos",
+    "Pacific/Gambier",
+    "Pacific/Guadalcanal",
+    "Pacific/Guam",
+    "Pacific/Honolulu",
+    "Pacific/Johnston",
+    "Pacific/Kiritimati",
+    "Pacific/Kosrae",
+    "Pacific/Kwajalein",
+    "Pacific/Majuro",
+    "Pacific/Marquesas",
+    "Pacific/Midway",
+    "Pacific/Nauru",
+    "Pacific/Niue",
+    "Pacific/Norfolk",
+    "Pacific/Noumea",
+    "Pacific/Pago_Pago",
+    "Pacific/Palau",
+    "Pacific/Pitcairn",
+    "Pacific/Ponape",
+    "Pacific/Port_Moresby",
+    "Pacific/Rarotonga",
+    "Pacific/Saipan",
+    "Pacific/Tahiti",
+    "Pacific/Tarawa",
+    "Pacific/Tongatapu",
+    "Pacific/Truk",
+    "Pacific/Wake",
+    "Pacific/Wallis"]
+
 def radians(degrees):
     return (degrees / 360.0) * math.pi * 2
 
 def convert_longitude_to_x(longitude, map_width):
-    xdeg_offset = -6
+    xdeg_offset = -6.0
     return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
 
 def convert_latitude_to_y(latitude, map_height):
-    bottom_lat = -59;
-    top_lat = 81;
+    bottom_lat = -59.0
+    top_lat = 81.0
 
-    top_per = top_lat / 180.0;
+    top_per = top_lat / 180.0
     y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
     full_range = 4.6068250867599998
     top_offset = full_range * top_per
@@ -217,6 +601,10 @@ class TimezoneMap(Gtk.Widget):
         # Associate the gdk.Window with ourselves,
         # Gtk+ needs a reference between the widget and the gdk window
         window.set_user_data(self)
+
+        cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
+        window.set_cursor(cursor)
+        
         self.set_window(window)
 
     # http://lotsofexpression.blogspot.com.es/2012/04/python-gtk-3-pango-cairo-example.html
@@ -232,11 +620,10 @@ class TimezoneMap(Gtk.Widget):
 
         alloc = self.get_allocation()
 
-        # TODO: Fix this!
-        #cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-        #cairo_set_font_size(cr, 12.0);
-
         layout = PangoCairo.create_layout(cr)
+        
+        font_description = Pango.font_description_from_string(BUBBLE_TEXT_FONT)
+        layout.set_font_description(font_description)
 
         layout.set_alignment(Pango.Alignment.CENTER)
         layout.set_spacing(3)
@@ -325,11 +712,16 @@ class TimezoneMap(Gtk.Widget):
             pointx = convert_longitude_to_x(longitude, alloc.width)
             pointy = convert_latitude_to_y(latitude, alloc.height)
 
-            pointx = clamp(math.floor(pointx), 0, alloc.width)
-            pointy = clamp(math.floor(pointy), 0, alloc.height)
+            #pointx = clamp(math.floor(pointx), 0, alloc.width)
+            #pointy = clamp(math.floor(pointy), 0, alloc.height)
+            
+            if pointy > alloc.height:
+                pointy = alloc.height
 
+            # Draw text bubble
             self.draw_text_bubble(cr, pointx, pointy)
 
+            # Draw pin
             if self._pin is not None:
                 Gdk.cairo_set_source_pixbuf(
                     cr,
@@ -339,19 +731,20 @@ class TimezoneMap(Gtk.Widget):
                 cr.paint()
 
     def set_location(self, tz_location):
-        if tz_location is not None:
-            self._tz_location = tz_location
+        self._tz_location = tz_location
             
+        if tz_location is not None:
             info = self._tz_location.get_info()
 
-            print("set_location daylight: ", info.get_daylight())
-            if info.get_daylight() >= 1:
+            #print("set_location daylight: ", info.get_daylight())
+            if info.get_daylight() != 0:
                 daylight_offset = -1.0
             else:
                 daylight_offset = 0.0
 
             print("set_location offset (before): ", self._selected_offset)
-            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
+            #self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
+            self._selected_offset = tz_location.get_raw_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
             
             print("set_location Total seconds: ", tz_location.get_utc_offset().total_seconds())
             print("set_location Daylight offset: ", daylight_offset)
@@ -362,7 +755,55 @@ class TimezoneMap(Gtk.Widget):
             self._show_offset = True
         else:
             self._show_offset = False
+            self._selected_offset = 0.0
 
+    def get_loc_for_xy(self, x, y):
+        rowstride = self._color_map.get_rowstride()
+        pixels = self._color_map.get_pixels()
+        
+        my_red = pixels[int(rowstride * y + x * 4)]
+        my_green = pixels[int(rowstride * y + x * 4) + 1]
+        my_blue = pixels[int(rowstride * y + x * 4) + 2]
+        my_alpha = pixels[int(rowstride * y + x * 4) + 3]
+
+        for color_code in color_codes:
+            (offset, red, green, blue, alpha) = color_code
+            if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
+                print("do_button_press_event offset: ", offset)
+                self._selected_offset = offset
+                break
+        
+        self.queue_draw()
+        
+        # Work out the co-ordinates
+        allocation = self.get_allocation()
+        width = allocation.width
+        height = allocation.height
+        
+        nearest_tz_location = None
+                
+        # Impossible distance
+        small_dist =  -1
+
+        for tz_location in self._tzdb.get_locations():
+            longitude = tz_location.get_property('longitude')
+            latitude = tz_location.get_property('latitude')
+
+            pointx = convert_longitude_to_x(longitude, width)
+            pointy = convert_latitude_to_y(latitude, height)
+
+            dx = pointx - x;
+            dy = pointy - y;
+            
+            dist = dx * dx + dy * dy
+
+            if small_dist == -1 or dist < small_dist:
+                nearest_tz_location = tz_location
+                small_dist = dist
+        
+        return nearest_tz_location
+        
+        
     def do_button_press_event(self, event):
         """ The button press event virtual method """
 
@@ -371,53 +812,13 @@ class TimezoneMap(Gtk.Widget):
             x = int(event.x)
             y = int(event.y)
 
-            rowstride = self._color_map.get_rowstride()
-            pixels = self._color_map.get_pixels()
-            
-            my_red = pixels[int(rowstride * y + x * 4)]
-            my_green = pixels[int(rowstride * y + x * 4) + 1]
-            my_blue = pixels[int(rowstride * y + x * 4) + 2]
-            my_alpha = pixels[int(rowstride * y + x * 4) + 3]
-
-            for color_code in color_codes:
-                (offset, red, green, blue, alpha) = color_code
-                if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
-                    print("do_button_press_event offset: ", offset)
-                    self._selected_offset = offset
-                    break
-            
-            #self.queue_draw()
-            
-            # Work out the co-ordinates
-            allocation = self.get_allocation()
-            width = allocation.width
-            height = allocation.height
-            
-            nearest_tz_location = None
-            
-            # Impossible distance
-            small_dist =  -1
-
-            for tz_location in self._tzdb.get_locations():
-                longitude = tz_location.get_property('longitude')
-                latitude = tz_location.get_property('latitude')
-
-                pointx = convert_longitude_to_x(longitude, width)
-                pointy = convert_latitude_to_y(latitude, height)
-
-                dx = pointx - x;
-                dy = pointy - y;
-                
-                dist = dx * dx + dy * dy
-
-                if small_dist == -1 or dist < small_dist:
-                    nearest_tz_location = tz_location
-                    small_dist = dist
+            nearest_tz_location = self.get_loc_for_xy(x, y)
 
             if nearest_tz_location is not None:
                 city_name = nearest_tz_location.get_info().tzname("").split("/")[1]
                 city_name = city_name.replace("_", " ")
-                self.set_bubble_text(city)
+                country_name = nearest_tz_location.get_property('human_country')
+                self.set_bubble_text("%s, %s" % (city_name, country_name))
                 self.set_location(nearest_tz_location)
                 self.queue_draw()
             else:

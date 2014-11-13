@@ -166,20 +166,26 @@ class Location(object):
     __gproperties__ = {
         'zone' : (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.PARAM_READWRITE),
         'latitude' : (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
-        'longitude' : (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE)}
-    
+        'longitude' : (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
+        'human_country' : (GObject.TYPE_STRING, 'human_country', None, 'human_country', GObject.PARAM_READWRITE)}
+
     def get_info(self):
         return self.info
     
     def get_utc_offset(self):
         return self.utc_offset
+    
+    def get_raw_utc_offset(self):
+        return self.raw_utc_offset
         
     def __init__(self, zonetab_line, iso3166):
         bits = zonetab_line.rstrip().split('\t', 3)
         latlong = bits[1]
         latlongsplit = latlong.find('-', 1)
+        
         if latlongsplit == -1:
             latlongsplit = latlong.find('+', 1)
+        
         if latlongsplit != -1:
             latitude = latlong[:latlongsplit]
             longitude = latlong[latlongsplit:]
