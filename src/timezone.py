@@ -379,7 +379,7 @@ class GenerateMirrorListThread(threading.Thread):
             coords = self.coords_queue.get(True)
             self.coords_queue.put_nowait(coords)
             tzmap = TimezoneMap.TimezoneMap()
-            timezone = tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+            timezone = tzmap.get_timezone_at_coords(float(coords[1]), float(coords[0]))
             loc = self.tzdb.get_loc(timezone)
             country_code = ''
             if loc:
