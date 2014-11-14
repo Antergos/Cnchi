@@ -481,7 +481,18 @@ def convert_latitude_to_y(latitude, map_height):
     top_lat = 81.0
 
     top_per = top_lat / 180.0
-    y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
+
+    print("LATITUDE: ", latitude)
+    
+    print("RADIANTS: ", radians(latitude))
+
+    y = G_PI_4 + 0.4 * radians(latitude)
+    tan = math.tan(y)
+    print(tan)
+    y = math.log(tan)
+    y = 1.25 * y
+    #y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
+
     full_range = 4.6068250867599998
     top_offset = full_range * top_per
     map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(bottom_lat))) - top_offset)
@@ -863,12 +874,13 @@ class TimezoneMap(Gtk.Widget):
         y = int(1024.0 / 180.0 * (90.0 - latitude))
 
         olsen_map_channels = self._olsen_map.get_n_channels()
-        olsen_map_pixels = self._olsen_map.get_pixels()
         olsen_map_rowstride = self._olsen_map.get_rowstride()
+        olsen_map_pixels = self._olsen_map.get_pixels()
 
         zone = -1
         offset = olsen_map_rowstride * y + x * olsen_map_channels
         print("olsen offset: ", offset)
+        
         if offset < len(olsen_map_pixels):
             color0 = olsen_map_pixels[offset]
             color1 = olsen_map_pixels[offset + 1]
@@ -876,7 +888,7 @@ class TimezoneMap(Gtk.Widget):
 
         print("zone: ", zone)
 
-        if zone < len(olsen_map_timezones):
+        if zone >= 0 and zone < len(olsen_map_timezones):
             city = olsen_map_timezones[zone]
             return city
         else:
@@ -889,12 +901,26 @@ class TimezoneMap(Gtk.Widget):
             print(zone)
             return zone
 
+'''
+      GtkAllocation alloc;
+      GValue val_zone = {0};
+      g_value_init (&val_zone, G_TYPE_STRING);
+      gtk_widget_get_allocation (GTK_WIDGET (map), &alloc);
+      x = convert_longtitude_to_x(lon, alloc.width);
+      y = convert_latitude_to_y(lat, alloc.height);
+      CcTimezoneLocation * loc = get_loc_for_xy(GTK_WIDGET (map), x, y);
+      g_value_unset (&val_zone);
+      return g_value_get_string(&val_zone);
+'''
+
+
 if __name__ == '__main__':
     win = Gtk.Window()
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
     # "Europe/London"
+    # +513030-0000731
     timezone = tzmap.get_timezone_at_coords(longitude=513030.0, latitude=-731.0)
     tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit
