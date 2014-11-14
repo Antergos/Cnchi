@@ -864,15 +864,18 @@ class TimezoneMap(Gtk.Widget):
         olsen_map_pixels = self._olsen_map.get_pixels()
         olsen_map_rowstride = self._olsen_map.get_rowstride()
 
+        zone = -1
         offset = olsen_map_rowstride * y + x * olsen_map_channels
-        color0 = olsen_map_pixels[offset]
-        color1 = olsen_map_pixels[offset + 1]
-        zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
+        if offset < len(olsen_map_pixels):
+            color0 = olsen_map_pixels[offset]
+            color1 = olsen_map_pixels[offset + 1]
+            zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
 
         if zone < len(olsen_map_timezones):
             city = olsen_map_timezones[zone]
             return city
         else:
+            # TODO: Fix this! It does not work
             alloc = self.get_allocation()
             x = convert_longitude_to_x(longitude, alloc.width)
             y = convert_latitude_to_y(latitude, alloc.height)
