@@ -84,6 +84,13 @@ class SystemTzInfo(datetime.tzinfo):
         self._restore_tz(tzbackup)
         return daylight
 
+    def is_dst(self, dt):
+        tzbackup = self._select_tz()
+        localtime = time.localtime(_seconds_since_epoch(dt))
+        isdst = localtime.tm_isdst
+        self._restore_tz(tzbackup)
+        return isdst
+
     def rawutcoffset(self, unused_dt):
         tzbackup = self._select_tz()
         try:
@@ -172,6 +179,9 @@ class Location(object):
     def get_info(self):
         return self.info
     
+    def is_dst(self):
+        return self.isdst
+    
     def get_utc_offset(self):
         return self.utc_offset
     
@@ -229,6 +239,7 @@ class Location(object):
         self.utc_offset = self.info.utcoffset(today)
         self.raw_utc_offset = self.info.rawutcoffset(today)
         self.zone_letters = self.info.tzname_letters(today)
+        self.isdst = self.info.is_dst(today)
 
     def get_property(self, prop):
         return getattr(self, prop)

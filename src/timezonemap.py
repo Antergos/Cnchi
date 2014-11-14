@@ -741,19 +741,14 @@ class TimezoneMap(Gtk.Widget):
         if tz_location is not None:
             info = self._tz_location.get_info()
 
-            print("set_location daylight: ", info.get_daylight())
-            if info.get_daylight() > 0:
-                daylight_offset = -1.0
-            else:
-                daylight_offset = 0.0
+            daylight_offset = 0
 
-            print("set_location offset (before): ", self._selected_offset)
+            if self._tz_location.is_dst():
+                if info.get_daylight() == 1:
+                    daylight_offset = -1.0
+
             self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
             
-            print("set_location utc_offset in seconds: %g" % tz_location.get_utc_offset().total_seconds())
-            print("set_location Daylight offset: ", daylight_offset)
-            print("set_location Offset: %g" % self._selected_offset)
-
             self.emit("location-changed", self._tz_location)
             
             self._show_offset = True
