@@ -86,6 +86,7 @@ color_codes = [
     (12.75, 254, 74, 100, 248),
     (13.0, 255, 85, 153, 250)]
 
+# This info is duplicated in timezones.xml
 olsen_map_timezones = [
     "Africa/Abidjan",
     "Africa/Accra",
@@ -857,19 +858,23 @@ class TimezoneMap(Gtk.Widget):
         return self._tz_location
 
     def get_timezone_at_coords(self, longitude, latitude):
+        print("longitude: ", longitude, "latitude: ", latitude)
         x = int(2048.0 / 360.0 * (180.0 + longitude))
         y = int(1024.0 / 180.0 * (90.0 - latitude))
 
-        olsen_map_channels =self._olsen_map.get_n_channels()
+        olsen_map_channels = self._olsen_map.get_n_channels()
         olsen_map_pixels = self._olsen_map.get_pixels()
         olsen_map_rowstride = self._olsen_map.get_rowstride()
 
         zone = -1
         offset = olsen_map_rowstride * y + x * olsen_map_channels
+        print("olsen offset: ", offset)
         if offset < len(olsen_map_pixels):
             color0 = olsen_map_pixels[offset]
             color1 = olsen_map_pixels[offset + 1]
             zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
+
+        print("zone: ", zone)
 
         if zone < len(olsen_map_timezones):
             city = olsen_map_timezones[zone]
@@ -889,7 +894,9 @@ if __name__ == '__main__':
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
-    tzmap.set_timezone("Europe/Madrid")
+    # "Europe/London"
+    timezone = tzmap.get_timezone_at_coords(longitude=513030.0, latitude=-731.0)
+    tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
