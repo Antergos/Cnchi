@@ -93,12 +93,12 @@ class Slides(GtkBaseBox):
         #        pass
         #    self.scrolled_window.add(self.webview)
         
-        # load first image
+        # load first slide show image
         self.slide_show_index = 1
-        path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
+        path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
         if os.path.exists(path):
             self.slide_show_image.set_from_file(path)
-            GLib.timeout_add(60000, self.fade_slide_show_images)
+            GLib.timeout_add(60000*10, self.change_slideshow_image)
 
         self.translate_ui()
         self.show_all()
@@ -115,38 +115,20 @@ class Slides(GtkBaseBox):
 
         self.header.set_show_close_button(False)
         
-        GLib.timeout_add(100, self.manage_events_from_cb_queue)
+        GLib.timeout_add(500, self.manage_events_from_cb_queue)
 
-    def fade_slide_show_images(self):
+    def change_slideshow_image(self):
         self.slide_show_index += 1
-        path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
-
-        self.fade_out()
-        
+        path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
         if not os.path.exists(path):
-            # last image reached, reset to the first image
+            # We've reached the last image, start again
             self.slide_show_index = 1
-            path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
+            path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
         
         if os.path.exists(path):
             self.slide_show_image.set_from_file(path)
         
         return True
-
-    def fade_out(self):
-        pixbuf = self.slide_show_image.get_pixbuf()
-        pixels = pixbuf.get_pixels()
-        n_channels = pixbuf.get_n_channels()
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
-        rowstride = pixbuf.get_rowstride()
-        
-        for y in range(0, height):
-            for x in range(0, width):
-                offset = y * rowstride + x * n_channels
-                #pixels[offset] = pixels[offset].
-                if pixels[offset] > 0:
-                    pixels[offset] -= 1
 
     def store_values(self):
         """ Nothing to be done here """
