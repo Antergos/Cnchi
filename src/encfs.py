@@ -103,3 +103,6 @@ def setup(username, dest_dir):
 
     # Delete home backup
     os.rmdir(backup_dir)
+
+if __name__ == '__main__':
+    setup("karasu", "/")

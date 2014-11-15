@@ -894,10 +894,7 @@ if __name__ == '__main__':
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
-    # "Europe/London"
-    # +513030-0000731
-    
-
+    # "Europe/London" +513030-0000731
     timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
     tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit
