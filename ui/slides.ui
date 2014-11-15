@@ -8,12 +8,13 @@
     <property name="orientation">vertical</property>
     <property name="spacing">12</property>
     <child>
-      <object class="GtkScrolledWindow" id="scrolledwindow">
+      <!--<object class="GtkScrolledWindow" id="scrolledwindow">-->
+      <object class="GtkImage" id="slideshow_image">
         <!--<property name="width_request">797</property>-->
         <property name="height_request">282</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="shadow_type">in</property>
+        <!--<property name="shadow_type">in</property>-->
         <child>
           <placeholder/>
         </child>

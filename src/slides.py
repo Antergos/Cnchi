@@ -24,7 +24,7 @@
 
 """ Shows slides while installing. Also manages installing messages and progress bars """
 
-from gi.repository import Gtk, WebKit, GLib
+from gi.repository import Gtk, GLib
 import config
 import os
 import sys
@@ -38,6 +38,9 @@ import subprocess
 import canonical.misc as misc
 
 from gtkbasebox import GtkBaseBox
+
+# TODO: Make this relative
+SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -55,11 +58,14 @@ class Slides(GtkBaseBox):
         self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
-        self.scrolled_window = self.ui.get_object("scrolledwindow")
+        #self.scrolled_window = self.ui.get_object("scrolledwindow")
+        #self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
 
         self.fatal_error = False
         self.should_pulse = False
         self.webview = None
+        
+        self.slide_show_image = self.ui.get_object("slideshow_image")
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -69,22 +75,30 @@ class Slides(GtkBaseBox):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def prepare(self, direction):
-        # We don't load webkit until we reach this screen
-        if self.webview == None:
-            # Add a webkit view to show the slides
-            self.webview = WebKit.WebView()
-            if self.settings is None:
-                html_file = '/usr/share/cnchi/data/slides.html'
-            else:
-                html_file = os.path.join(self.settings.get('data'), 'slides.html')
-            try:
-                with open(html_file) as html_stream:
-                    html = html_stream.read(None)
-                    data = os.path.join(os.getcwd(), "data")
-                    self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
-            except IOError:
-                pass
-            self.scrolled_window.add(self.webview)
+        #
+        ## We don't load webkit until we reach this screen
+        #if self.webview == None:
+        #    # Add a webkit view to show the slides
+        #    self.webview = WebKit.WebView()
+        #    if self.settings is None:
+        #        html_file = '/usr/share/cnchi/data/slides.html'
+        #    else:
+        #        html_file = os.path.join(self.settings.get('data'), 'slides.html')
+        #    try:
+        #        with open(html_file) as html_stream:
+        #            html = html_stream.read(None)
+        #           data = os.path.join(os.getcwd(), "data")
+        #            self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
+        #    except IOError:
+        #        pass
+        #    self.scrolled_window.add(self.webview)
+        
+        # load first image
+        self.slide_show_index = 1
+        path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
+        if os.path.exists(path):
+            self.slide_show_image.set_from_file(path)
+            GLib.timeout_add(60000, self.fade_slide_show_images)
 
         self.translate_ui()
         self.show_all()
@@ -102,6 +116,37 @@ class Slides(GtkBaseBox):
         self.header.set_show_close_button(False)
         
         GLib.timeout_add(100, self.manage_events_from_cb_queue)
+
+    def fade_slide_show_images(self):
+        self.slide_show_index += 1
+        path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
+
+        self.fade_out()
+        
+        if not os.path.exists(path):
+            # last image reached, reset to the first image
+            self.slide_show_index = 1
+            path = os.path.join(SLIDES_PATH, "%d.png" % self.slide_show_index)
+        
+        if os.path.exists(path):
+            self.slide_show_image.set_from_file(path)
+        
+        return True
+
+    def fade_out(self):
+        pixbuf = self.slide_show_image.get_pixbuf()
+        pixels = pixbuf.get_pixels()
+        n_channels = pixbuf.get_n_channels()
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        rowstride = pixbuf.get_rowstride()
+        
+        for y in range(0, height):
+            for x in range(0, width):
+                offset = y * rowstride + x * n_channels
+                #pixels[offset] = pixels[offset].
+                if pixels[offset] > 0:
+                    pixels[offset] -= 1
 
     def store_values(self):
         """ Nothing to be done here """
