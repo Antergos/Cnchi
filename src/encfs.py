@@ -41,15 +41,19 @@ def setup(username, dest_dir):
     with open(name, "r") as pam_encfs:
         lines = pam_encfs.readlines()
 
+    # Comment last line (it's only an example, shouldn't be left uncommented imho)
     i = len(lines) - 1
     lines[i] = "# " + lines[i]
 
     with open(name, "w") as pam_encfs:
         pam_encfs.write(lines)
-        pam_encfs.write("# Added by Cnchi - Antergos Installer\n")
+        pam_encfs.write("\n# Added by Cnchi - Antergos Installer\n")
+        # line in pam_encfs.conf is
+        # USERNAME SOURCE TARGET_PATH ENCFS_Options FUSE_Options
         pam_encfs.write("-\t/home/.encfs\t-\t-v\t-\n")
 
     name = os.path.join(dest_dir, "etc/security/pam_env.conf")
+    # backup file
     shutil.copy(name, name + ".cnchi")
     with open(name, "a") as pam_env:
         pam_env.write("# Added by Cnchi - Antergos Installer\n")

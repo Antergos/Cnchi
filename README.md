@@ -36,6 +36,7 @@ We manage our translations in transifex:
  - hdparm
  - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
+ - encfs, pam_encfs
  
 ## Unit tests
  - python-mock 
