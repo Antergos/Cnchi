@@ -27,7 +27,9 @@
 import os
 import shutil
 import subprocess
+import misc
 
+@misc.raise_privileges
 def setup(username, dest_dir):
     """ Encrypt user's home folder """
     # encfs pam_mount packages are needed
