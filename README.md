@@ -30,11 +30,11 @@ We manage our translations in transifex:
  - python-mako
  - python-requests
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
- - pyalpm (pacman)
- - libtimezonemap
+ - pyalpm (alpm)
+ - libtimezonemap (needed by Cnchi 0.6.x and older versions)
  - webkitgtk 
  - hdparm
- - hwinfo (needed by Cnchi 0.6 and older versions)
+ - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
  
 ## Unit tests

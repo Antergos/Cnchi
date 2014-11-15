@@ -24,8 +24,6 @@
 
 from gi.repository import Gtk, Gdk
 
-#from gi.repository import TimezoneMap
-# EXPERIMENTAL
 import timezonemap as TimezoneMap
 
 import os
