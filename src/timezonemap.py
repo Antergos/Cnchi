@@ -469,9 +469,6 @@ olsen_map_timezones = [
     "Pacific/Wake",
     "Pacific/Wallis"]
 
-def radians(degrees):
-    return (degrees / 360.0) * math.pi * 2
-
 def convert_longitude_to_x(longitude, map_width):
     xdeg_offset = -6.0
     return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
@@ -482,20 +479,11 @@ def convert_latitude_to_y(latitude, map_height):
 
     top_per = top_lat / 180.0
 
-    print("LATITUDE: ", latitude)
-    
-    print("RADIANTS: ", radians(latitude))
-
-    y = G_PI_4 + 0.4 * radians(latitude)
-    tan = math.tan(y)
-    print(tan)
-    y = math.log(tan)
-    y = 1.25 * y
-    #y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(latitude)))
+    y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(latitude)))
 
     full_range = 4.6068250867599998
     top_offset = full_range * top_per
-    map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * radians(bottom_lat))) - top_offset)
+    map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))) - top_offset)
     y = math.fabs(y - top_offset)
     y = y / map_range
     y = y * map_height
@@ -667,10 +655,10 @@ class TimezoneMap(Gtk.Widget):
 
         # Draw the bubble
         cr.new_sub_path()
-        cr.arc(width - corner_radius, corner_radius, corner_radius, radians(-90), radians(0))
-        cr.arc(width - corner_radius, height - corner_radius, corner_radius, radians(0), radians(90))
-        cr.arc(corner_radius, height - corner_radius, corner_radius, radians(90), radians(180))
-        cr.arc(corner_radius, corner_radius, corner_radius, radians(180), radians(270))
+        cr.arc(width - corner_radius, corner_radius, corner_radius, math.radians(-90), math.radians(0))
+        cr.arc(width - corner_radius, height - corner_radius, corner_radius, math.radians(0), math.radians(90))
+        cr.arc(corner_radius, height - corner_radius, corner_radius, math.radians(90), math.radians(180))
+        cr.arc(corner_radius, corner_radius, corner_radius, math.radians(180), math.radians(270))
 
         cr.close_path()
 
@@ -697,8 +685,6 @@ class TimezoneMap(Gtk.Widget):
         # Paint hilight
         offset = self._selected_offset
 
-        print("do_draw offset: %g" % offset)
-        
         if self.is_sensitive():
             filename = "timezone_%g.png" % offset
         else:
@@ -780,7 +766,6 @@ class TimezoneMap(Gtk.Widget):
         for color_code in color_codes:
             (offset, red, green, blue, alpha) = color_code
             if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
-                print("do_button_press_event offset: ", offset)
                 self._selected_offset = offset
                 break
         
@@ -829,14 +814,10 @@ class TimezoneMap(Gtk.Widget):
                 self.set_bubble_text(nearest_tz_location)
                 self.set_location(nearest_tz_location)
                 self.queue_draw()
-            else:
-                print("nearest_tz_location is None!")
 
         return True
 
     def set_timezone(self, timezone):
-        print("timezone: ", timezone)
-        
         real_tz = self._tzdb.get_loc(timezone)
         
         if real_tz is not None:
@@ -869,7 +850,6 @@ class TimezoneMap(Gtk.Widget):
         return self._tz_location
 
     def get_timezone_at_coords(self, longitude, latitude):
-        print("longitude: ", longitude, "latitude: ", latitude)
         x = int(2048.0 / 360.0 * (180.0 + longitude))
         y = int(1024.0 / 180.0 * (90.0 - latitude))
 
@@ -879,26 +859,21 @@ class TimezoneMap(Gtk.Widget):
 
         zone = -1
         offset = olsen_map_rowstride * y + x * olsen_map_channels
-        print("olsen offset: ", offset)
         
         if offset < len(olsen_map_pixels):
             color0 = olsen_map_pixels[offset]
             color1 = olsen_map_pixels[offset + 1]
             zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
 
-        print("zone: ", zone)
-
         if zone >= 0 and zone < len(olsen_map_timezones):
             city = olsen_map_timezones[zone]
             return city
         else:
-            # TODO: Fix this! It does not work
             alloc = self.get_allocation()
             x = convert_longitude_to_x(longitude, alloc.width)
             y = convert_latitude_to_y(latitude, alloc.height)
             location = get_loc_for_xy(x, y)
             zone = location.get_property('zone')
-            print(zone)
             return zone
 
 '''
@@ -921,7 +896,9 @@ if __name__ == '__main__':
     win.show_all()
     # "Europe/London"
     # +513030-0000731
-    timezone = tzmap.get_timezone_at_coords(longitude=513030.0, latitude=-731.0)
+    
+
+    timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
     tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
