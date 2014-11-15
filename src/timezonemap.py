@@ -541,12 +541,24 @@ class TimezoneMap(Gtk.Widget):
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
         width = self._orig_background.get_width()
-        return (width / 2, width)
+        
+        # Images are bigger but we need this widget to stay small as Cnchi's window
+        # is small (so it works with low res systems)
+        if width > 400:
+            width = 400
+
+        return (width, width)
 
     def do_get_preferred_height(self):
         """ Retrieves a widget’s initial minimum and natural height. """
         height = self._orig_background.get_height()
-        return (height / 2, height)
+
+        # Images are bigger but we need this widget to stay small as Cnchi's window
+        # is small (so it works with low res systems)
+        if height > 200:
+            height = 200
+
+        return (height, height)
 
     def do_size_allocate(self, allocation):
         """ The do_size_allocate is called by when the actual size is known
@@ -894,7 +906,10 @@ if __name__ == '__main__':
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
-    # "Europe/London" +513030-0000731
+    # "Europe/London"
+    # +513030-0000731
+    
+
     timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
     tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit
