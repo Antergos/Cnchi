@@ -634,8 +634,6 @@ class AutoPartition(object):
 
         devices = self.get_devices()
         
-        print(devices)
-
         logging.debug("Boot: %s" % devices['boot'])
         logging.debug("Swap: %s" % devices['swap'])
         logging.debug("Root: %s" % devices['root'])
