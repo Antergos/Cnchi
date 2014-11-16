@@ -25,8 +25,10 @@
 import os
 import subprocess
 import logging
-import show_message as show
-import parted3.fs_module as fs
+try:
+    import show_message as show
+except ImportError:
+    pass
 
 """ AutoPartition class """
 
@@ -35,6 +37,20 @@ MAX_ROOT_SIZE = 30000
 
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
+
+def get_info(part):
+    """ Get partition info using blkid """
+    try:
+        ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
+        ret = ''
+    partdic = {}
+    for info in ret.split():
+        if '=' in info:
+            info = info.split('=')
+            partdic[info[0]] = info[1].strip('"')
+    return(partdic)
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
@@ -308,8 +324,8 @@ class AutoPartition(object):
                 mode = 0o750
             os.chmod(path, mode)
 
-        fs_uuid = fs.get_info(device)['UUID']
-        fs_label = fs.get_info(device)['LABEL']
+        fs_uuid = get_info(device)['UUID']
+        fs_label = get_info(device)['LABEL']
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
     def get_devices(self):
@@ -707,6 +723,9 @@ class AutoPartition(object):
                 subprocess.check_call(['mv', key_files[1], luks_dir])
 
 if __name__ == '__main__':
+    import gettext
+    _ = gettext.gettext
+
     logging.basicConfig(
         filename="/tmp/autopartition.log",
         level=logging.DEBUG)
