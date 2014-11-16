@@ -617,6 +617,8 @@ class AutoPartition(object):
         subprocess.check_call(["udevadm", "settle"])
 
         devices = self.get_devices()
+        
+        print(devices)
 
         logging.debug("Boot: %s" % devices['boot'])
         logging.debug("Swap: %s" % devices['swap'])
@@ -703,3 +705,18 @@ class AutoPartition(object):
                 luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
                 os.makedirs(luks_dir, mode=0o755, exist_ok=True)
                 subprocess.check_call(['mv', key_files[1], luks_dir])
+
+if __name__ == '__main__':
+    logging.basicConfig(
+        filename="/tmp/autopartition.log",
+        level=logging.DEBUG)
+
+    auto = AutoPartition(
+        dest_dir="/install",
+        auto_device="/dev/sdb",
+        use_luks=True,
+        luks_password="luks",
+        use_lvm=True,
+        use_home=True,
+        callback_queue=None)
+    auto.run()
