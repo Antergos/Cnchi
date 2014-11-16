@@ -94,7 +94,8 @@ def create(package_name, pacman_conf_file):
     if _PM2ML is False:
         return None
 
-    args = ["-c", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
+    args = ["-c", pacman_conf_file, "--noconfirm", "--all-deps"]
+    #, "--needed"]
 
     if package_name is "databases":
         args += ["--refresh"]

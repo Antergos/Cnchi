@@ -341,14 +341,8 @@ class InstallationProcess(multiprocessing.Process):
             self.select_packages()
             logging.debug(_("Packages selected"))
 
-            # In newer testing isos, cached packages are provided. Try to copy them.
-            #self.copy_cached_packages("/var/cache/pacman/pkg")
-            #if self.settings.get('copy_cache'):
-            #    self.copy_cached_packages(self.settings.get('cache'))
-
             # Wait for all logs (logging and showing message to user is slower than just logging)
             # if we don't wait, logs get mixed up
-            # (when copying cache files waiting more makes no sense as it is already a slow process)
             self.wait_for_empty_queue(timeout=10)
             
             logging.debug(_("Downloading packages..."))
@@ -710,51 +704,23 @@ class InstallationProcess(multiprocessing.Process):
             raise InstallError("Can't initialize pyalpm: %s" % err)
         return alpm       
 
-    def do_install(self, download_only=False, kde=False):
-        pacman_options = {}
-        if download_only:
-            pacman_options["downloadonly"] = True
-            txt = _("Downloading packages...")
-        else:
-            pacman_options["needed"] = True
-            if self.settings.get("desktop") is "kde":
-                pacman_options["force"] = True
-            txt = _("Installing packages...")
-        logging.debug(txt)
-        
-        alpm = self.init_alpm()
-
-        if kde:
-            pkglist = []
-            pkglist.append('base')
-            result = alpm.do_install(pkgs=pkglist, conflicts=self.conflicts, options=pacman_options)
-        else:
-            result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
-        del alpm
-
-        if result == 1:
-            if download_only:
-                txt = _("Can't download all necessary packages. Cnchi will continue and try again this download later.")
-                logging.error(txt)
-            else:
-                raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
-
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
 
-        # First try to download all necessary packages (download only)
-        self.do_install(download_only=True)
+        txt = _("Installing packages...")
+        logging.debug(txt)
         
-        # Ok, now we can install all downloaded packages
-        # (alpm will try to download again those that couldn't download before)
-        if self.desktop.lower() == "kde":
-            logging.debug('KDE will be installed. Applying alpm work-around')
-            self.do_install(kde=True)
-            logging.debug('Installed filesystem pkg and its deps. Now installing all pkgs.')
-        self.do_install()
+        pacman_options = []
+        
+        alpm = self.init_alpm()
+        result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
+        del alpm
 
         self.chroot_umount_special_dirs()
+
+        if result == 1:
+            raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
         
         # All downloading and installing has been done, so we hide progress bar
         self.queue_event('progress_bar', 'hide')
