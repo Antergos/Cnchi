@@ -25,6 +25,8 @@
 import os
 import subprocess
 import logging
+import shlex
+
 try:
     import show_message as show
 except ImportError:
