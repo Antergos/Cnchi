@@ -340,7 +340,8 @@ class AutoTimezoneThread(threading.Thread):
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = 'error'
-        except:
+        except Exception as err:
+            logging.error(err)
             coords = 'error'
 
         if coords != 'error':
