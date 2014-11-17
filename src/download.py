@@ -176,7 +176,11 @@ class DownloadPackages(object):
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
 
-            total_length = int(element['size'])
+            try:
+                total_length = int(element['size'])
+            except TypeError as err:
+                logging.warning(_("Metalink for package %s has no size info"), element['identity'])
+                total_length = 0
             
             dst_cache_path = os.path.join(self.cache_dir, element['filename'])
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
@@ -216,7 +220,10 @@ class DownloadPackages(object):
                                 xzfile.write(data)
                                 completed_length += len(data)
                                 old_percent = percent
-                                percent = round(float(completed_length / total_length), 2)
+                                if total_length > 0:
+                                    percent = round(float(completed_length / total_length), 2)
+                                else:
+                                    percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
                                 (data, download_error) = url_open_read(urlp)
