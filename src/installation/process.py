@@ -25,8 +25,6 @@
 """ Installation thread module. Where the real installation happens """
 
 import crypt
-import download
-import info
 import logging
 import multiprocessing
 import os
@@ -37,7 +35,6 @@ import sys
 import time
 import urllib.request
 import urllib.error
-import encfs
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
@@ -51,6 +48,9 @@ import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
+import download
+import info
+import encfs
 
 try:
     import pyalpm
@@ -90,20 +90,19 @@ class InstallationProcess(multiprocessing.Process):
                       'alternate_package_list': alternate_package_list,
                       'blvm': blvm}
         self.settings.set('installer_thread_call', parameters)
+        
+        self.method = self.settings.get('partition_mode')
+        self.queue_event('info', _("Installing using the '%s' method") % self.method)
+
+        # Check desktop selected to load packages needed
+        self.desktop = self.settings.get('desktop')
 
         # This flag tells us if there is a lvm partition (from advanced install)
         # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
         self.blvm = blvm
 
-        self.method = self.settings.get('partition_mode')
-
-        self.queue_event('info', _("Installing using the '%s' method") % self.method)
-
         self.ssd = ssd
         self.mount_devices = mount_devices
-
-        # Check desktop selected to load packages needed
-        self.desktop = self.settings.get('desktop')
 
         # Set defaults
         self.desktop_manager = 'lightdm'
@@ -119,7 +118,8 @@ class InstallationProcess(multiprocessing.Process):
 
         self.special_dirs_mounted = False
 
-        # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
+        # Initialize some vars that are correctly initialized elsewhere
+        # (pylint complains if we don't do it here)
         self.auto_device = ""
         self.packages = []
         self.pacman = None
@@ -127,7 +127,7 @@ class InstallationProcess(multiprocessing.Process):
         self.initramfs = ""
         self.kernel = ""
         self.vmlinuz = ""
-        self.dest_dir = ""
+        self.dest_dir = "/install"
         self.vbox = False
 
     def queue_fatal_event(self, txt):
@@ -140,18 +140,22 @@ class InstallationProcess(multiprocessing.Process):
         os._exit(0)
 
     def queue_event(self, event_type, event_text=""):
-        try:
-            self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
-            pass
+        if self.callback_queue is not None:
+            try:
+                self.callback_queue.put_nowait((event_type, event_text))
+            except queue.Full:
+                pass
+        else:
+            print(event_type + ": " + event_text)
 
     def wait_for_empty_queue(self, timeout):
-        tries = 0
-        if timeout < 1:
-            timeout = 1
-        while tries < timeout and not self.callback_queue.empty():
-            time.sleep(1)
-            tries += 1
+        if self.callback_queue is not None:
+            tries = 0
+            if timeout < 1:
+                timeout = 1
+            while tries < timeout and not self.callback_queue.empty():
+                time.sleep(1)
+                tries += 1
 
     @misc.raise_privileges
     def run(self):
@@ -2009,4 +2013,3 @@ class InstallationProcess(multiprocessing.Process):
         self.copy_log()
 
         self.queue_event('pulse', 'stop')
-

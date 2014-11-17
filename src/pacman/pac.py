@@ -30,6 +30,7 @@ import traceback
 import sys
 import math
 import logging
+import os
 
 if __name__ == "__main__":
     import gettext
