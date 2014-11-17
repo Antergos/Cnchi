@@ -338,6 +338,7 @@ class AutoTimezoneThread(threading.Thread):
                 coords = coords[1] + " " + coords[0]
                 
             if coords == "0 0":
+                # Sometimes server returns 0 0, we treat it as an error
                 coords = 'error'
         except:
             coords = 'error'
