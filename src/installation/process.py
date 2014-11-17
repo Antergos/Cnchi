@@ -482,7 +482,7 @@ class InstallationProcess(multiprocessing.Process):
         self.prepare_pacman_keychain()
 
         alpm = self.init_alpm()        
-        alpm.do_refresh()      
+        alpm.do_refresh()
         del alpm
 
     def select_packages(self):

@@ -49,6 +49,8 @@ class Pac(object):
         self.callback_queue = callback_queue
 
         self.conflict_to_remove = None
+        
+        self.handle = None
 
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
@@ -75,6 +77,12 @@ class Pac(object):
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_conv
             self.handle.progresscb = self.cb_progress
+
+    def get_handle(self):
+        return self.handle
+    
+    #def release(self):
+    #    pyalpm.Release(self.handle)
 
     def finalize(self, t):
         """ Commit a transaction """
