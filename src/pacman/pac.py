@@ -156,9 +156,39 @@ class Pac(object):
 
         logging.debug(_("Cnchi will install a list of packages like pacman -S"))
 
+        if len(pkgs) == 0:
+            return []
+
+        # Discard duplicates
+        pkgs = list(set(pkgs))
+
         repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
-        targets = self.get_targets(pkgs, conflicts)
+        targets = []
+        for name in pkgs:
+            ok, pkg = self.find_sync_package(name, repos)
+            if ok:
+                # Check that added package is not in our conflicts list
+                if pkg.name not in conflicts:
+                    targets.append(pkg.name)
+            else:
+                # Couldn't find the package, check if it's a group
+                group_pkgs = self.get_group_pkgs(name)
+                if group_pkgs != None:
+                    # It's a group
+                    for group_pkg in group_pkgs:
+                        # Check that added package is not in our conflicts list
+                        # Ex: connman conflicts with netctl(openresolv),
+                        # which is installed by default with base group
+                        if group_pkg.name not in conflicts:
+                            targets.append(group_pkg.name)
+                else:
+                    # No, it wasn't neither a package nor a group. As we don't know if
+                    # this error is fatal or not, we'll register it and we'll allow to continue.
+                    logging.error(_("Can't find a package or group called '%s'"), name)
+
+        # Discard duplicates
+        targets = list(set(targets))
 
         if len(targets) == 0:
             logging.error(_("No targets found"))
@@ -169,53 +199,15 @@ class Pac(object):
         if trans is None:
             return False
 
-        pkg_names = []
-        
-        for pkg in targets:
-            # We use pkg_names in order to avoid duplicates
-            if pkg.name not in pkg_names:
-                logging.debug(_("Adding %s to transaction"), pkg.name)
-                trans.add_pkg(pkg)
-                pkg_names.append(pkg.name)
-
-        # FIXME: If we use cached packages or group packages this is going to be WRONG
-        self.total_packages_to_download = len(pkg_names)
-        
-        logging.debug(_("Finalize transaction..."))
-        return self.finalize_transaction(trans) 
-
-    def get_targets(self, pkgs, conflicts=[]):
-        """ Get the list of packages needed to install package list 'pkgs' """
-        if len(pkgs) == 0:
-            return []
-
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
-
-        targets = []
-        for name in pkgs:
+        for name in targets:
             ok, pkg = self.find_sync_package(name, repos)
-            if ok:
-                # Check that added package is not in our conflicts list
-                if pkg.name not in conflicts:
-                    targets.append(pkg)
-            else:
-                # Couldn't find the package, check if it's a group
-                group_pkgs = self.get_group_pkgs(name)
-                if group_pkgs != None:
-                    # It's a group
-                    for pkg in group_pkgs:
-                        # Check that added package is not in our conflicts list
-                        # and it's not already added
-                        # Ex: connman conflicts with netctl(openresolv),
-                        # which is installed by default with base group
-                        if pkg.name not in conflicts and pkg.name not in pkgs:
-                            targets.append(pkg)
-                else:
-                    # No, it wasn't neither a package nor a group. As we don't know if
-                    # this error is fatal or not, we'll register it and we'll allow to continue.
-                    logging.error(_("Can't find a package or group called '%s'"), name)
+            logging.debug(_("Adding package '%s' to transaction"), pkg.name)
+            trans.add_pkg(pkg)
 
-        return targets      
+        self.total_packages_to_download = len(targets)
+        
+        logging.debug(_("Run and finalize transaction..."))
+        return self.finalize_transaction(trans) 
 
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
