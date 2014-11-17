@@ -122,7 +122,7 @@ class InstallationProcess(multiprocessing.Process):
         # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
         self.auto_device = ""
         self.packages = []
-        self.pac = None
+        self.pacman = None
         self.arch = ""
         self.initramfs = ""
         self.kernel = ""
@@ -337,6 +337,10 @@ class InstallationProcess(multiprocessing.Process):
         all_ok = False
 
         try:
+            logging.debug(_("Prepare pacman..."))
+            self.prepare_pacman()
+            logging.debug(_("Pacman ready"))
+
             logging.debug(_("Selecting packages..."))
             self.select_packages()
             logging.debug(_("Packages selected"))
@@ -364,23 +368,8 @@ class InstallationProcess(multiprocessing.Process):
             out = _("Output : %s") % err.output 
             logging.error(out)
             self.queue_fatal_event(cmd)
-        except InstallError as err:
-            logging.error(err.value)
-            self.queue_fatal_event(err.value)
-        except pyalpm.error as err:
+        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
             logging.error(err)
-            self.queue_fatal_event(err)
-        except KeyboardInterrupt as err:
-            logging.error(err)
-            self.queue_fatal_event(err)
-        except TypeError as err:
-            logging.exception('TypeError: %s. Unable to continue.' % err)
-            self.queue_fatal_event(err)
-        except AttributeError as err:
-            logging.exception('AttributeError: %s. Unable to continue.' % err)
-        except Exception as err:
-            # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
-            logging.exception('Error: %s. Unable to continue.' % err)
             self.queue_fatal_event(err)
 
         self.running = False
@@ -444,34 +433,19 @@ class InstallationProcess(multiprocessing.Process):
         return True
 
     def create_pacman_conf_file(self):
-        """ Needs Mako (see http://www.makotemplates.org/) """
+        """ Creates a temporary pacman.conf """
         self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
 
-        # Add template functionality ;-)
+        # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
         self.write_file(file_template.render(destDir=self.dest_dir, arch=self.arch), os.path.join("/tmp", "pacman.conf"))
 
-    def create_pacman_conf(self):
-        self.create_pacman_conf_file()
-
-        ## Init pyalpm
-        try:
-            self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except:
-            raise InstallError("Can't initialize pyalpm.")
-
-    def prepare_pacman_keychain(self):
-        """ Add gnupg pacman files to installed system """
-        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
-        try:
-            misc.copytree('/etc/pacman.d/gnupg', dest_path)
-        except (FileExistsError, shutil.Error) as err:
-            # log error but continue anyway
-            logging.exception(err)
-
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
+        
+        self.create_pacman_conf_file()
+
         dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
 
         for pacman_dir in dirs:
@@ -481,15 +455,30 @@ class InstallationProcess(multiprocessing.Process):
 
         self.prepare_pacman_keychain()
 
-        alpm = self.init_alpm()        
-        alpm.do_refresh()
-        del alpm
+        # Init pyalpm
+        try:
+            self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except:
+            self.pacman = None
+            raise InstallError("Can't initialize pyalpm.")
+
+        # Refresh pacman databases
+        result = self.pacman.do_refresh()
+
+        if not result:
+            logging.error(_("Can't refresh pacman databases."))
+
+    def prepare_pacman_keychain(self):
+        """ Add gnupg pacman files to installed system """
+        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
+        try:
+            misc.copytree('/etc/pacman.d/gnupg', dest_path)
+        except (FileExistsError, shutil.Error) as err:
+            # log error but continue anyway
+            logging.error(err)
 
     def select_packages(self):
-        """ Prepare pacman and get package list from Internet """
-        self.create_pacman_conf()
-        self.prepare_pacman()
-        
+        """ Get package list from the Internet """
         self.packages = []
         
         if len(self.alternate_package_list) > 0:
@@ -696,14 +685,6 @@ class InstallationProcess(multiprocessing.Process):
                     return line.split(":")[1].replace(" ", "").lower()
         return ""
 
-    def init_alpm(self):
-        try:
-            alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception as err:
-            logging.error(err)
-            raise InstallError("Can't initialize pyalpm: %s" % err)
-        return alpm       
-
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
@@ -712,14 +693,15 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(txt)
         
         pacman_options = {}
-        
-        alpm = self.init_alpm()
-        result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
-        del alpm
+
+        result = self.pacman.do_install(
+            pkgs=self.packages,
+            conflicts=self.conflicts,
+            options=pacman_options)
 
         self.chroot_umount_special_dirs()
 
-        if result == 1:
+        if not result:
             raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
         
         # All downloading and installing has been done, so we hide progress bar
