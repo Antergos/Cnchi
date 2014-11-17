@@ -711,7 +711,7 @@ class InstallationProcess(multiprocessing.Process):
         txt = _("Installing packages...")
         logging.debug(txt)
         
-        pacman_options = []
+        pacman_options = {}
         
         alpm = self.init_alpm()
         result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
