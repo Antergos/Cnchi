@@ -48,7 +48,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 DEFAULT_TZ = "Europe/London"
-DEFAULT_TZ_COORDS = "+513030 -0000731"
+DEFAULT_TZ_COORDS = "51.3030 -0.00731"
 
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
@@ -205,8 +205,8 @@ class Timezone(GtkBaseBox):
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
             timezone = self.tzmap.get_timezone_at_coords(
-                longitude=float(coords[0]),
-                latitude=float(coords[1]))
+                latitude=float(coords[0]),
+                longitude=float(coords[1]))
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
@@ -324,7 +324,7 @@ class AutoTimezoneThread(threading.Thread):
 
         # OK, now get our timezone
 
-        logging.info(_("We have connection. Let's get our timezone"))
+        logging.debug(_("We have connection. Let's get our timezone"))
         try:
             url = urllib.request.Request(
                 url="http://geo.antergos.com",
@@ -332,17 +332,22 @@ class AutoTimezoneThread(threading.Thread):
                 headers={"User-Agent":"Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
+                # geo.antergos.com provides coords swaped (correct is latitude,longitude)
+                # TODO: remove this when the new server is online
+                coords = coords.split()
+                coords = coords[1] + " " + coords[0]
+                
             if coords == "0 0":
                 coords = 'error'
         except:
             coords = 'error'
 
         if coords != 'error':
-            logging.info(_("Timezone detected."))
+            logging.debug(_("Timezone (%s) detected.") % coords)
         else:
             msg = _("Can't detect user timezone. Cnchi will use %s as default")
             msg = msg % DEFAULT_TZ
-            logging.info(msg)
+            logging.debug(msg)
             coords = DEFAULT_TZ_COORDS
 
         coords = coords.split()
