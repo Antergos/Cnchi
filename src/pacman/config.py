@@ -2,8 +2,7 @@
 #
 #  config.py
 #
-#  Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
-#
+#  Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 #  Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
@@ -23,12 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-"""
-pycman configuration handling
-
-This module handles pacman.conf files as well as pycman options that
-are common to all action modes.
-"""
+""" This module handles pacman.conf files """
 
 import os
 import glob
@@ -53,39 +47,39 @@ class InvalidSyntax(Warning):
 
 # Options that may occur several times in a section. Their values should be accumulated in a list.
 LIST_OPTIONS = (
-        'CacheDir',
-        'HoldPkg',
-        'SyncFirst',
-        'IgnoreGroup',
-        'IgnorePkg',
-        'NoExtract',
-        'NoUpgrade',
-        'Server'
+    'CacheDir',
+    'HoldPkg',
+    'SyncFirst',
+    'IgnoreGroup',
+    'IgnorePkg',
+    'NoExtract',
+    'NoUpgrade',
+    'Server'
 )
 
 SINGLE_OPTIONS = (
-        'RootDir',
-        'DBPath',
-        'GPGDir',
-        'LogFile',
-        'Architecture',
-        'XferCommand',
-        'CleanMethod',
-        'SigLevel',
-        'LocalFileSigLevel',
-        'RemoteFileSigLevel',
-        'UseDelta',
+    'RootDir',
+    'DBPath',
+    'GPGDir',
+    'LogFile',
+    'Architecture',
+    'XferCommand',
+    'CleanMethod',
+    'SigLevel',
+    'LocalFileSigLevel',
+    'RemoteFileSigLevel',
+    'UseDelta',
 )
 
 BOOLEAN_OPTIONS = (
-        'UseSyslog',
-        'ShowSize',
-        'UseDelta',
-        'TotalDownload',
-        'CheckSpace',
-        'VerbosePkgLists',
-        'ILoveCandy',
-        'Color'
+    'UseSyslog',
+    'ShowSize',
+    'UseDelta',
+    'TotalDownload',
+    'CheckSpace',
+    'VerbosePkgLists',
+    'ILoveCandy',
+    'Color'
 )
 
 def pacman_conf_enumerator(path):
@@ -141,9 +135,11 @@ def pacman_conf_enumerator(path):
             else:
                 warnings.warn(InvalidSyntax(f.name, 'unrecognized option', key))
 
-class PacmanConfig(object):
+class PacmanConfig(collections.OrderedDict):
     def __init__(self, conf = None, options = None):
-        self.options = {}
+        super(PacmanConfig, self).__init__()
+        self['options'] = collections.OrderedDict()
+        self.options = self['options']
         self.repos = collections.OrderedDict()
         self.options["RootDir"] = "/"
         self.options["DBPath"]  = "/var/lib/pacman"
@@ -223,54 +219,16 @@ class PacmanConfig(object):
         return h
 
     def __str__(self):
-        return("PacmanConfig(options=%s, repos=%s)" % (str(self.options), str(self.repos)))
-
-def make_parser(*args, **kwargs):
-    parser = argparse.ArgumentParser(*args, **kwargs)
-    common = parser.add_argument_group('Common options')
-    common.add_argument('-b', '--dbpath', metavar = '<path>',
-                    action = 'store', dest = 'dbpath', type = str,
-                    help = 'set an alternate database location')
-    common.add_argument('-r', '--root', metavar = '<path>',
-                    action = 'store', dest = 'root', type = str,
-                    help = 'set an alternate installation root')
-    common.add_argument('-v', '--verbose',
-                    action = 'store_true', dest = 'verbose', default = False,
-                    help = 'be verbose')
-    common.add_argument('--arch', metavar = '<arch>',
-                    action = 'store', dest = 'arch', type = str,
-                    help = 'set an alternate architecture')
-    common.add_argument('--config', metavar = '<file>',
-                    action = 'store', dest = 'config', type = str,
-                    help = 'set an alternate configuration file')
-    common.add_argument('--debug',
-                    action='store_true', dest='debug',
-                    help='display debug messages')
-    common.add_argument('--logfile', metavar = '<file>',
-                    action = 'store', dest = 'logfile', type = str,
-                    help = 'set an alternate log file')
-    common.add_argument('--gpgdir', metavar = '<dir>',
-                    action = 'store', dest = 'gpgdir', type = str,
-                    help = 'set an alternate log file')
-    common.add_argument('--cachedir', metavar = '<dir>',
-                    action = 'store', dest = 'cachedir', type = str,
-                    help = 'set an alternate cche location')
-    return parser
-
-def init_with_config(configpath):
-    "Reads configuration from given path and apply it to libalpm"
-    config = PacmanConfig(conf = configpath)
-    return config.initialize_alpm()
-
-def init_with_config_and_options(options):
-    "Reads configuration from file and commandline options, and apply it to libalpm"
-    # read config file
-    if options.config is not None:
-        config_file = options.config
-    else:
-        config_file = "/etc/pacman.conf"
-
-    conf = PacmanConfig(conf = config_file, options = options)
-    return conf.initialize_alpm()
-
-# vim: set ts=4 sw=4 tw=0 noet:
+        conf = ''
+        for section, options in self.items():
+            conf += '[%s]\n' % section
+            for key, value in options.items():
+                if key in LIST_OPTIONS:
+                    for v in value:
+                        conf += '%s = %s\n' % (key, v)
+                elif key in BOOLEAN_OPTIONS:
+                    conf += key + '\n'
+                else:
+                    conf += '%s = %s\n' % (key, value)
+            conf += '\n'
+        return conf

@@ -28,23 +28,19 @@
 import logging
 import tempfile
 import os
-import xml
+import xml.dom.minidom as minidom
 import hashlib
 import re
+import argparse
 
 from collections import deque
+
+import pacman.pac as pac
 
 try:
     import pyalpm
 except ImportError:
     pass
-
-'''
-from pycman import config
-
-import errno
-import sys
-'''
 
 try:
     import xml.etree.cElementTree as ET
@@ -108,16 +104,15 @@ def get_info(metalink):
 def create(package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    args = ["-c", pacman_conf_file, "--noconfirm", "--all-deps"]
+    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
 
     if package_name is "databases":
-        args += ["--refresh"]
-
-    if package_name is not "databases":
-        args += [package_name]
+        options.append("--refresh")
+    else:
+        options.append(package_name)
 
     try:
-        download_queue, not_found, missing_deps = build_download_queue(args=options)
+        download_queue, not_found, missing_deps = build_download_queue(options)
     except Exception as err:
         msg = _("Unable to create download queue for package %s") % package_name
         logging.error(msg)
@@ -142,10 +137,10 @@ def create(package_name, pacman_conf_file):
 
 # From here comes modified code from pm2ml
 # pm2ml is Copyright (C) 2012-2013 Xyne
-# http://xyne.archlinux.ca/projects/pm2ml
+# More info: http://xyne.archlinux.ca/projects/pm2ml
 
 def download_queue_to_metalink(download_queue):
-    impl = xml.dom.minidom.getDOMImplementation()
+    impl = minidom.getDOMImplementation()
     metalink = Metalink(impl)
 
     for db, sigs in download_queue.dbs:
@@ -153,9 +148,6 @@ def download_queue_to_metalink(download_queue):
 
     for pkg, urls, sigs in download_queue.sync_pkgs:
         metalink.add_sync_pkg(pkg, urls, sigs)
-
-    for pkg in download_queue.aur_pkgs:
-        metalink.append_aur_pkg(pkg)
 
     return metalink
 
@@ -235,16 +227,6 @@ class PkgSet(object):
     def add(self, pkg):
         self.pkgs[pkg.name] = pkg
 
-    def ignore(self, pkgs, groups):
-        for name, pkg in tuple(self.pkgs.items()):
-            if name in pkgs:
-                del self.pkgs[name]
-            else:
-                for grp in pkg.groups:
-                    if grp in groups:
-                        del self.pkgs[name]
-                        break
-
     def __and__(self, other):
         new = PkgSet(set(self.pkgs.values()) & set(other.pkgs.values()))
         return new
@@ -289,16 +271,39 @@ class DownloadQueue():
     def add_sync_pkg(self, pkg, urls, sigs=False):
         self.sync_pkgs.append((pkg, urls, sigs))
 
+
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('pkgs', nargs='*', default=[], metavar='<pkgname>',
+        help='Packages or groups to download.')
+    parser.add_argument('--all-deps', action='store_true', dest='alldeps',
+        help='Include all dependencies even if they are already installed.')
+    parser.add_argument('-c', '--conf', metavar='<path>', default='/etc/pacman.conf', dest='conf',
+        help='Use a different pacman.conf file.')
+    parser.add_argument('--noconfirm', action='store_true', dest='noconfirm',
+        help='Suppress user prompts.')
+    parser.add_argument('-d', '--nodeps', action='store_true', dest='nodeps',
+        help='Skip dependencies.')
+    parser.add_argument('--needed', action='store_true', dest='needed',
+        help='Skip packages if they already exist in the cache.')
+    parser.add_argument('-s', '--sigs', action='count', default=0, dest='sigs',
+        help='Include signature files for repos with optional and required SigLevels. Pass this flag twice to attempt to download signature for all databases and packages.')
+    parser.add_argument('-y', '--databases', '--refresh', action='store_true', dest='db',
+        help='Download databases.')
+
+    return parser.parse_args(args)
+
 def build_download_queue(args=None):
     """ Function to build a download queue.
         Needs a pkgname in args """
 
     pargs = parse_args(args)
-    
+
     conf_file = pargs.conf
-    
+
     try:
-        pacman = Pac(conf_file)
+        pacman = pac.Pac(conf_path=conf_file, callback_queue=None)
     except Exception as err:
         logging.error(err)
         logging.error("Can't initialize pyalpm: %s" % err)
@@ -308,8 +313,6 @@ def build_download_queue(args=None):
     conf = pacman.get_config()
 
     requested = set(pargs.pkgs)
-    ignored = set(pargs.ignore)
-    ignoredgroups = set(pargs.ignoregroup)
     official = PkgSet()
     other = PkgSet()
     foreign_names = set()
@@ -339,13 +342,8 @@ def build_download_queue(args=None):
                     else:
                         other_grp |= PkgSet(syncgrp[1])
         else:
-            if pargs.ask and not pargs.noconfirm:
-                selected = select_grp(pkg, official_grp | other_grp, ignored)
-                official |= (official_grp & selected)
-                other |= (other_grp & selected)
-            else:
-                official |= official_grp
-                other |= other_grp
+            official |= official_grp
+            other |= other_grp
 
     foreign_names = requested - set(x.name for x in (official | other))
 
@@ -365,11 +363,6 @@ def build_download_queue(args=None):
   else:
     aur = []
     '''
-
-    # Ignore packages before parsing deps.
-    official.ignore(ignored, ignoredgroups)
-    other.ignore(ignored, ignoredgroups)
-
 
     # Resolve dependencies.
     if (official or other) and not pargs.nodeps:
@@ -394,9 +387,6 @@ def build_download_queue(args=None):
                             break
                     else:
                         missing_deps.append(dep)
-        # Ignore packages after parsing deps.
-        official.ignore(ignored, ignoredgroups)
-        other.ignore(ignored, ignoredgroups)
 
     found |= set(official.pkgs) | set(other.pkgs)
     not_found = requested - found
@@ -455,7 +445,7 @@ def build_download_queue(args=None):
         urls = set(os.path.join(url, pkg.filename) for url in pkg.db.servers)
         download_queue.add_sync_pkg(pkg, urls, download_sig)
 
-  return download_queue, not_found, missing_deps
+    return download_queue, not_found, missing_deps
 
 def get_checksum(path, typ):
     """ Returns checksum of a file """
@@ -507,6 +497,10 @@ def needs_sig(siglevel, insistence, prefix):
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
+
+    for i in range(1,10000):
+        meta4 = create(package_name="gnome", pacman_conf_file="/etc/pacman.conf")
+        print(get_info(meta4))
 
     '''
     with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:

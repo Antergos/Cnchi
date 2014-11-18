@@ -33,12 +33,6 @@ import urllib
 import aria2
 import metalink as ml
 
-_PM2ML = True
-try:
-    import pm2ml
-except ImportError:
-    _PM2ML = False
-
 def url_open_read(urlp, chunk_size=8192):
     """ Helper function to download and read a fragment of a remote file """
 
@@ -95,10 +89,6 @@ class DownloadPackages(object):
         cache_dir=None,
         callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
-
-        if not _PM2ML:
-            logging.warning(_("pm2ml not found."))
-            return
 
         if pacman_conf_file == None:
             self.pacman_conf_file = "/etc/pacman.conf"

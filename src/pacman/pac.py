@@ -46,6 +46,11 @@ try:
 except ImportError:
     import config
 
+try:
+    import pyalpm
+except ImportError:
+    pass
+
 import queue
 
 class Pac(object):
@@ -96,8 +101,10 @@ class Pac(object):
     
     def release(self):
         if self.handle is not None:
-            pyalpm.Release(self.handle)
-            self.handle = None
+            pyalpm.release()
+            #pyalpm.release(self.handle)
+            #self.handle.release(self.handle)
+            #self.handle = None
 
     def __del__(self):
         self.release()
@@ -249,7 +256,7 @@ class Pac(object):
             event_text = "%s: %s in %s:%i" % (event_text, func.co_name, func.co_filename, func.co_firstlineno)
         
         if self.callback_queue is None:
-            print(event_type, event_text)
+            #print(event_type, event_text)
             if event_type == "error":
                 sys.exit(1)
             else:
