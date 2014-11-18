@@ -28,17 +28,37 @@
 import logging
 import tempfile
 import os
+import xml
+import hashlib
+import re
+
+from collections import deque
+
+try:
+    import pyalpm
+except ImportError:
+    pass
+
+'''
+from pycman import config
+
+import errno
+import sys
+'''
 
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
 
-_PM2ML = True
+# Make reflector support optional.
 try:
-    import pm2ml
+  from Reflector import MirrorStatus as MS
+  REPOSITORIES = MS.REPOSITORIES
+  MIRROR_URL_FORMAT = MS.MIRROR_URL_FORMAT
 except ImportError:
-    _PM2ML = False
+  REPOSITORIES = set()
+  MIRROR_URL_FORMAT = None
 
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
@@ -88,23 +108,16 @@ def get_info(metalink):
 def create(package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    if _PM2ML is False:
-        return None
-
     args = ["-c", pacman_conf_file, "--noconfirm", "--all-deps"]
-    #, "--needed"]
 
     if package_name is "databases":
         args += ["--refresh"]
-
-    #if self.use_aria2:
-    #    args += "-r -p http -l 50".split()
 
     if package_name is not "databases":
         args += [package_name]
 
     try:
-        pargs, conf, download_queue, not_found, missing_deps = pm2ml.build_download_queue(args=options, conf=pacman_conf_file)
+        download_queue, not_found, missing_deps = build_download_queue(args=options)
     except Exception as err:
         msg = _("Unable to create download queue for package %s") % package_name
         logging.error(msg)
@@ -123,148 +136,220 @@ def create(package_name, pacman_conf_file):
             msg = msg + missing + " "
         logging.warning(msg)
 
-    metalink = pm2ml.download_queue_to_metalink(
-        download_queue,
-        output_dir=pargs.output_dir,
-        set_preference=pargs.preference
-    )
+    metalink = download_queue_to_metalink(download_queue)
     
     return metalink
 
-'''
+# From here comes modified code from pm2ml
+# pm2ml is Copyright (C) 2012-2013 Xyne
+# http://xyne.archlinux.ca/projects/pm2ml
+
+def download_queue_to_metalink(download_queue):
+    impl = xml.dom.minidom.getDOMImplementation()
+    metalink = Metalink(impl)
+
+    for db, sigs in download_queue.dbs:
+        metalink.add_db(db, sigs)
+
+    for pkg, urls, sigs in download_queue.sync_pkgs:
+        metalink.add_sync_pkg(pkg, urls, sigs)
+
+    for pkg in download_queue.aur_pkgs:
+        metalink.append_aur_pkg(pkg)
+
+    return metalink
+
+class Metalink():
+    def __init__(self, impl):
+        self.doc = impl.createDocument(None, "metalink", None)
+        self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
+        self.files = self.doc.documentElement
+
+    def __str__(self):
+        return re.sub(
+          r'(?<=>)\n\s*([^\s<].*?)\s*\n\s*',
+          r'\1',
+          self.doc.toprettyxml(indent=' ')
+        )
+
+    def add_urls(self, element, urls):
+        """Add URL elements to the given element."""
+        for url in urls:
+          url_tag = self.doc.createElement('url')
+          element.appendChild(url_tag)
+          url_val = self.doc.createTextNode(url)
+          url_tag.appendChild(url_val)
+
+    def add_sync_pkg(self, pkg, urls, sigs=False):
+        """Add a sync db package."""
+        file_ = self.doc.createElement("file")
+        file_.setAttribute("name", pkg.filename)
+        self.files.appendChild(file_)
+        for tag, db_attr, attrs in (
+            ('identity', 'name', ()),
+            ('size', 'size', ()),
+            ('version', 'version', ()),
+            ('description', 'desc', ()),
+            ('hash', 'sha256sum', (('type','sha256'),)),
+            ('hash', 'md5sum', (('type','md5'),))):
+            tag = self.doc.createElement(tag)
+            file_.appendChild(tag)
+            val = self.doc.createTextNode(str(getattr(pkg, db_attr)))
+            tag.appendChild(val)
+            for key, val in attrs:
+                tag.setAttribute(key, val)
+        urls = list(urls)
+        self.add_urls(file_, urls)
+        if sigs:
+            self.add_file(pkg.filename + '.sig', (u + '.sig' for u in urls))
+
+    def add_file(self, name, urls):
+        """Add a signature file."""
+        file_ = self.doc.createElement("file")
+        file_.setAttribute("name", name)
+        self.files.appendChild(file_)
+        self.add_urls(file_, urls)
+
+    def add_db(self, db, sigs=False):
+        """Add a sync db."""
+        file_ = self.doc.createElement("file")
+        name = db.name + '.db'
+        file_.setAttribute("name", name)
+        self.files.appendChild(file_)
+        urls = list(os.path.join(url, db.name + '.db') for url in db.servers)
+        self.add_urls(file_, urls)
+        if sigs:
+            self.add_file(name + '.sig', (u + '.sig' for u in urls))
 
 class PkgSet(object):
-  def __init__(self, pkgs=[]):
-    self.pkgs = dict()
-    for pkg in pkgs:
-      self.pkgs[pkg.name] = pkg
+    """ Represents a set of packages """
+    def __init__(self, pkgs=[]):
+        """ Init our internal self.pkgs dict with all given packages in pkgs """
+        self.pkgs = dict()
+        for pkg in pkgs:
+            self.pkgs[pkg.name] = pkg
 
-  def __repr__(self):
-    return 'PkgSet(%s)' % repr(self.pkgs)
+    def __repr__(self):
+        return 'PkgSet(%s)' % repr(self.pkgs)
 
-  def add(self, pkg):
-    self.pkgs[pkg.name] = pkg
+    def add(self, pkg):
+        self.pkgs[pkg.name] = pkg
 
-#   def remove(self, pkg):
-#     if isinstance(pkg, str):
-#       name = pkg
-#     else:
-#       name = pkg.name
-#     del self.pkgs[name]
+    def ignore(self, pkgs, groups):
+        for name, pkg in tuple(self.pkgs.items()):
+            if name in pkgs:
+                del self.pkgs[name]
+            else:
+                for grp in pkg.groups:
+                    if grp in groups:
+                        del self.pkgs[name]
+                        break
 
-  def ignore(self, pkgs, groups):
-    for name, pkg in tuple(self.pkgs.items()):
-      if name in pkgs:
-        del self.pkgs[name]
-      else:
-        for grp in pkg.groups:
-          if grp in groups:
-            del self.pkgs[name]
-            break
+    def __and__(self, other):
+        new = PkgSet(set(self.pkgs.values()) & set(other.pkgs.values()))
+        return new
 
-  def __and__(self, other):
-    new = PkgSet(set(self.pkgs.values()) & set(other.pkgs.values()))
-    return new
+    def __iand__(self, other):
+        self.pkgs = self.__and__(other).pkgs
+        return self
 
-  def __iand__(self, other):
-    self.pkgs = self.__and__(other).pkgs
-    return self
+    def __or__(self, other):
+        copy = PkgSet(self.pkgs.values())
+        return copy.__ior__(other)
 
-  def __or__(self, other):
-    copy = PkgSet(self.pkgs.values())
-    return copy.__ior__(other)
+    def __ior__(self, other):
+        self.pkgs.update(other.pkgs)
+        return self
 
-  def __ior__(self, other):
-    self.pkgs.update(other.pkgs)
-    return self
+    def __contains__(self, pkg):
+        return pkg.name in self.pkgs
 
-  def __contains__(self, pkg):
-    return pkg.name in self.pkgs
+    def __iter__(self):
+        for v in self.pkgs.values():
+            yield v
 
-  def __iter__(self):
-    for v in self.pkgs.values():
-      yield v
-
-  def __len__(self):
-    return len(self.pkgs)
-
+    def __len__(self):
+        return len(self.pkgs)
 
 class DownloadQueue():
-  def __init__(self):
-    self.dbs = list()
-    self.sync_pkgs = list()
-    self.aur_pkgs = list()
+    """ Represents a download queue """
+    def __init__(self):
+        self.dbs = list()
+        self.sync_pkgs = list()
 
-  def __bool__(self):
-    return bool(self.dbs or self.sync_pkgs or self.aur_pkgs)
+    def __bool__(self):
+        return bool(self.dbs or self.sync_pkgs)
 
-  def __nonzero__(self):
-    return self.dbs or self.sync_pkgs or self.aur_pkgs
+    def __nonzero__(self):
+        return self.dbs or self.sync_pkgs
 
-  def add_db(self, db, sigs=False):
-    self.dbs.append((db, sigs))
+    def add_db(self, db, sigs=False):
+        self.dbs.append((db, sigs))
 
-  def add_sync_pkg(self, pkg, urls, sigs=False):
-    self.sync_pkgs.append((pkg, urls, sigs))
+    def add_sync_pkg(self, pkg, urls, sigs=False):
+        self.sync_pkgs.append((pkg, urls, sigs))
 
-  def add_aur_pkg(self, pkg):
-    self.aur_pkgs.append(pkg)
+def build_download_queue(args=None):
+    """ Function to build a download queue.
+        Needs a pkgname in args """
 
+    pargs = parse_args(args)
+    
+    conf_file = pargs.conf
+    
+    try:
+        pacman = Pac(conf_file)
+    except Exception as err:
+        logging.error(err)
+        logging.error("Can't initialize pyalpm: %s" % err)
+        return None, None, None
+    
+    handle = pacman.get_handle()
+    conf = pacman.get_config()
 
+    requested = set(pargs.pkgs)
+    ignored = set(pargs.ignore)
+    ignoredgroups = set(pargs.ignoregroup)
+    official = PkgSet()
+    other = PkgSet()
+    foreign_names = set()
+    missing_deps = list()
+    found = set()
+    not_found = set()
 
-def build_download_queue(args=None, conf=None):
-  pargs = parse_args(args)
-  if not conf:
-    conf = PacmanConfig(conf=pargs.conf)
-  handle = conf.initialize_alpm()
+    global REPOSITORIES
 
-
-  requested = set(pargs.pkgs)
-  ignored = set(pargs.ignore)
-  ignoredgroups = set(pargs.ignoregroup)
-  official = PkgSet()
-  other = PkgSet()
-  foreign_names = set()
-  missing_deps = list()
-  found = set()
-  not_found = set()
-
-  global REPOSITORIES
-
-  if pargs.aur_only:
-    pargs.aur = True
-  else:
     for pkg in requested:
-      official_grp = PkgSet()
-      other_grp = PkgSet()
-      for db in handle.get_syncdbs():
-        syncpkg = db.get_pkg(pkg)
-        if syncpkg:
-          if db.name in REPOSITORIES:
-            official.add(syncpkg)
-          else:
-            other.add(syncpkg)
-          break
-        else:
-          syncgrp = db.read_grp(pkg)
-          if syncgrp:
-            found.add(pkg)
-            if db.name in REPOSITORIES:
-              official_grp |= PkgSet(syncgrp[1])
+        official_grp = PkgSet()
+        other_grp = PkgSet()
+        for db in handle.get_syncdbs():
+            syncpkg = db.get_pkg(pkg)
+            if syncpkg:
+                if db.name in REPOSITORIES:
+                    official.add(syncpkg)
+                else:
+                    other.add(syncpkg)
+                break
             else:
-              other_grp |= PkgSet(syncgrp[1])
-      else:
-        if pargs.ask and not pargs.noconfirm:
-          selected = select_grp(pkg, official_grp | other_grp, ignored)
-          official |= (official_grp & selected)
-          other |= (other_grp & selected)
+                syncgrp = db.read_grp(pkg)
+                if syncgrp:
+                    found.add(pkg)
+                    if db.name in REPOSITORIES:
+                        official_grp |= PkgSet(syncgrp[1])
+                    else:
+                        other_grp |= PkgSet(syncgrp[1])
         else:
-          official |= official_grp
-          other |= other_grp
+            if pargs.ask and not pargs.noconfirm:
+                selected = select_grp(pkg, official_grp | other_grp, ignored)
+                official |= (official_grp & selected)
+                other |= (other_grp & selected)
+            else:
+                official |= official_grp
+                other |= other_grp
 
-  foreign_names = requested - set(x.name for x in (official | other))
+    foreign_names = requested - set(x.name for x in (official | other))
 
-
+    '''
   if pargs.upgrade:
     a, b, c = determine_upgradable(
       handle,
@@ -279,171 +364,143 @@ def build_download_queue(args=None, conf=None):
     aur = list(search_aur(foreign_names))
   else:
     aur = []
+    '''
 
-  # Ignore packages before parsing deps.
-  official.ignore(ignored, ignoredgroups)
-  other.ignore(ignored, ignoredgroups)
-
-  aur = [pkg for pkg in aur if pkg['Name'] not in ignored]
-
-  # Resolve dependencies.
-  if (official or other) and not pargs.nodeps:
-    queue = deque(official | other)
-    local_cache = handle.get_localdb().pkgcache
-    syncdbs = handle.get_syncdbs()
-    seen = set(queue)
-    while queue:
-      pkg = queue.popleft()
-      for dep in pkg.depends:
-        if pyalpm.find_satisfier(local_cache, dep) is None \
-        or pargs.alldeps:
-          for db in syncdbs:
-            prov = pyalpm.find_satisfier(db.pkgcache, dep)
-            if prov is not None:
-              if db.name in REPOSITORIES:
-                official.add(prov)
-              else:
-                other.add(prov)
-              if prov.name not in seen:
-                seen.add(prov.name)
-                queue.append(prov)
-              break
-          else:
-            missing_deps.append(dep)
-    # Ignore packages after parsing deps.
+    # Ignore packages before parsing deps.
     official.ignore(ignored, ignoredgroups)
     other.ignore(ignored, ignoredgroups)
 
 
-  found |= set(official.pkgs) | set(other.pkgs) | set(p['Name'] for p in aur)
-  not_found = requested - found
-  if pargs.needed:
-    official = PkgSet(check_cache(conf, official))
-    other = PkgSet(check_cache(conf, other))
+    # Resolve dependencies.
+    if (official or other) and not pargs.nodeps:
+        queue = deque(official | other)
+        local_cache = handle.get_localdb().pkgcache
+        syncdbs = handle.get_syncdbs()
+        seen = set(queue)
+        while queue:
+            pkg = queue.popleft()
+            for dep in pkg.depends:
+                if pyalpm.find_satisfier(local_cache, dep) is None or pargs.alldeps:
+                    for db in syncdbs:
+                        prov = pyalpm.find_satisfier(db.pkgcache, dep)
+                        if prov is not None:
+                            if db.name in REPOSITORIES:
+                                official.add(prov)
+                            else:
+                                other.add(prov)
+                            if prov.name not in seen:
+                                seen.add(prov.name)
+                                queue.append(prov)
+                            break
+                    else:
+                        missing_deps.append(dep)
+        # Ignore packages after parsing deps.
+        official.ignore(ignored, ignoredgroups)
+        other.ignore(ignored, ignoredgroups)
 
-  download_queue = DownloadQueue()
+    found |= set(official.pkgs) | set(other.pkgs)
+    not_found = requested - found
+    if pargs.needed:
+        official = PkgSet(check_cache(conf, official))
+        other = PkgSet(check_cache(conf, other))
 
-  if pargs.db:
-    for db in handle.get_syncdbs():
-      try:
-        siglevel = conf[db.name]['SigLevel'].split()[0]
-      except KeyError:
-        siglevel = None
-      download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
-      download_queue.add_db(db, download_sig)
+    download_queue = DownloadQueue()
 
-  if official:
-    if pargs.reflector:
-      from Reflector import parse_args as parse_reflector_args, process_options, MirrorStatusError
-      reflector_options = parse_reflector_args(pargs.reflector)
-      try:
-        mirrorstatus, mirrors = process_options(reflector_options)
-        mirrors = list(m['url'] for m in mirrors)
-      except MirrorStatusError as e:
-        sys.stderr.write(str(e))
-        mirrors = []
-    else:
-      mirrors = []
-    for pkg in official:
-      # This preserves the order of the user's mirrorlist files and prevents
-      # duplicates from being added by Reflector.
-      urls = list(join(url,pkg.filename) for url in pkg.db.servers)
-      urls.extend(
-        set(
-          join(MIRROR_URL_FORMAT.format(
-            m, pkg.db.name, pkg.arch), pkg.filename
-          ) for m in mirrors
-        ) - set(urls)
-      )
+    if pargs.db:
+        for db in handle.get_syncdbs():
+            try:
+                siglevel = conf[db.name]['SigLevel'].split()[0]
+            except KeyError:
+                siglevel = None
+            download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
+            download_queue.add_db(db, download_sig)
 
-      try:
-        siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
-      except KeyError:
-        siglevel = None
-      download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
-      download_queue.add_sync_pkg(pkg, urls, download_sig)
+    if official:
+        if pargs.reflector:
+            from Reflector import parse_args as parse_reflector_args, process_options, MirrorStatusError
+            reflector_options = parse_reflector_args(pargs.reflector)
+            try:
+                mirrorstatus, mirrors = process_options(reflector_options)
+                mirrors = list(m['url'] for m in mirrors)
+            except MirrorStatusError as e:
+                sys.stderr.write(str(e))
+                mirrors = []
+        else:
+            mirrors = []
+        for pkg in official:
+            # This preserves the order of the user's mirrorlist files and prevents
+            # duplicates from being added by Reflector.
+            urls = list(os.path.join(url,pkg.filename) for url in pkg.db.servers)
+            urls.extend(
+                set(
+                    os.path.join(MIRROR_URL_FORMAT.format(
+                        m, pkg.db.name, pkg.arch), pkg.filename
+                    ) for m in mirrors
+                ) - set(urls)
+            )
 
-  for pkg in other:
-    try:
-      siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
-    except KeyError:
-      siglevel = None
-    download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
-    urls = set(join(url, pkg.filename) for url in pkg.db.servers)
-    download_queue.add_sync_pkg(pkg, urls, download_sig)
+            try:
+                siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
+            except KeyError:
+                siglevel = None
+            download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
+            download_queue.add_sync_pkg(pkg, urls, download_sig)
 
+    for pkg in other:
+        try:
+            siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
+        except KeyError:
+            siglevel = None
+        download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
+        urls = set(os.path.join(url, pkg.filename) for url in pkg.db.servers)
+        download_queue.add_sync_pkg(pkg, urls, download_sig)
 
-  for pkg in aur:
-    download_queue.add_aur_pkg(pkg)
-
-  return pargs, conf, download_queue, not_found, missing_deps
-
+  return download_queue, not_found, missing_deps
 
 def get_checksum(path, typ):
-  h = hashlib.new(typ)
-  b = h.block_size
-  try:
-    with open(path, 'rb') as f:
-      buf = f.read(b)
-      while buf:
-        h.update(buf)
-        buf = f.read(b)
-    return h.hexdigest()
-  except IOError as e:
-    if e.errno != errno.ENOENT:
-      raise e
-
-
+    """ Returns checksum of a file """
+    h = hashlib.new(typ)
+    b = h.block_size
+    try:
+        with open(path, 'rb') as f:
+          buf = f.read(b)
+          while buf:
+            h.update(buf)
+            buf = f.read(b)
+        return h.hexdigest()
+    except IOError as err:
+        if err.errno != errno.ENOENT:
+            raise err
 
 def check_cache(conf, pkgs):
-  for pkg in pkgs:
-    for cache in conf.options['CacheDir']:
-      fpath = join(cache, pkg.filename)
-      for checksum in ('sha256', 'md5'):
-        a = get_checksum(fpath, checksum)
-        b = getattr(pkg, checksum + 'sum')
-        if a is None or a != b:
-          yield pkg
-          break
-      else:
-        continue
-      break
-
+    """ Checks package checksum in cache """
+    for pkg in pkgs:
+        for cache in conf.options['CacheDir']:
+            fpath = os.path.join(cache, pkg.filename)
+            for checksum in ('sha256', 'md5'):
+                a = get_checksum(fpath, checksum)
+                b = getattr(pkg, checksum + 'sum')
+                if a is None or a != b:
+                    yield pkg
+                    break
+            else:
+                continue
+            break
 
 def needs_sig(siglevel, insistence, prefix):
-  """
-  Determine if a signature should be downloaded. The siglevel is the pacman.conf
-  SigLevel for the given repo. The insistence is an integer. Anything below 1
-  will return false, anything above 1 will return true, and 1 will check if the
-  siglevel is required or optional. The prefix is either "Database" or
-  "Package".
-  """
-  if insistence > 1:
-    return True
-  elif insistence == 1 and siglevel:
-    for sl in ('Required', 'Optional'):
-      if siglevel == sl or siglevel == prefix + sl:
+    """ Determines if a signature should be downloaded.
+        The siglevel is the pacman.conf SigLevel for the given repo.
+        The insistence is an integer. Anything below 1 will return false,
+            anything above 1 will return true, and 1 will check if the
+            siglevel is required or optional.
+        The prefix is either "Database" or "Package". """
+    if insistence > 1:
         return True
-  return False
-
-
-
-# The intermediate DownloadQueue object is used to allow scripts to hook into
-# the code.
-def download_queue_to_metalink(download_queue, output_dir=None, set_preference=False):
-  impl = getDOMImplementation()
-  metalink = Metalink(impl, output_dir=output_dir, set_preference=set_preference)
-
-  for db, sigs in download_queue.dbs:
-    metalink.add_db(db, sigs)
-
-  for pkg, urls, sigs in download_queue.sync_pkgs:
-    metalink.add_sync_pkg(pkg, urls, sigs)
-
-  for pkg in download_queue.aur_pkgs:
-    metalink.append_aur_pkg(pkg)
-
-  return metalink'''
+    elif insistence == 1 and siglevel:
+        for sl in ('Required', 'Optional'):
+            if siglevel == sl or siglevel == prefix + sl:
+                return True
+    return False
 
 
 ''' Test case '''
@@ -451,5 +508,7 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
+    '''
     with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:
         print(get_info(meta4.read()))
+    '''

@@ -79,6 +79,9 @@ class Pac(object):
 
     def get_handle(self):
         return self.handle
+    
+    def get_config(self):
+        return self.config
 
     def initialize(self):
         if self.handle is None:
