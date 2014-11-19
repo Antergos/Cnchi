@@ -38,12 +38,12 @@ if __name__ == "__main__":
 
 try:
     import pyalpm
-except ImportError:
-    logging.error(_("pyalpm not found! This installer won't work."))
+except ImportError as err:
+    logging.error(_("Can't load pyalpm: %s"), err)
 
 try:
     import pacman.config as config
-except ImportError:
+except ImportError as err:
     import config
 
 import queue
@@ -96,27 +96,25 @@ class Pac(object):
     
     def release(self):
         if self.handle is not None:
-            print([method for method in dir(pyalpm) if callable(getattr(pyalpm, method))])
-            print([method for method in dir(self.handle) if callable(getattr(self.handle, method))])
-            pyalpm.release(self.handle)
-            #self.handle.release(self.handle)
-            #self.handle = None
+            del self.handle
+            self.handle = None
 
     def __del__(self):
         self.release()
 
     def finalize_transaction(self, transaction):
         """ Commit a transaction """
+        all_ok = True
         try:
             transaction.prepare()
             transaction.commit()
-        except pyalpm.error:
-            line = traceback.format_exc()
-            logging.error(line)
+        except pyalpm.error as err:
+            msg = _("Can't finalize alpm transaction: %s") % err
+            logging.error(msg)
+            all_ok = False
+        finally:
             transaction.release()
-            return False
-        transaction.release()
-        return True
+            return all_ok
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
@@ -134,9 +132,9 @@ class Pac(object):
                 unneeded=options.get('unneeded', False),
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
-        except pyalpm.error:
-            line = traceback.format_exc()
-            logging.error(line)
+        except pyalpm.error as err:
+            msg = _("Can't init alpm transaction: %s") % err
+            logging.error(msg)
             transaction = None
         finally:
             return transaction
@@ -269,12 +267,6 @@ class Pac(object):
             self.callback_queue.join()
             sys.exit(1)
 
-    def get_version(self):
-        return "Cnchi running on pyalpm v%s - libalpm v%s" % (pyalpm.version(), pyalpm.alpmversion())
-
-    def get_versions(self):
-        return (pyalpm.version(), pyalpm.alpmversion())
-
     # Callback functions
 
     def cb_question(self, *args):
@@ -395,10 +387,15 @@ if __name__ == "__main__":
     try:
         pacman = Pac("/etc/pacman.conf")
     except Exception as err:
-        logging.error(err)
-        raise InstallError("Can't initialize pyalpm: %s" % err)
+        print("Can't initialize pyalpm: %s" % err)
+        sys.exit(1)
 
-    #alpm.do_refresh()
+    try:
+        pacman.do_refresh()
+    except pyalpm.error as err:
+        print("Can't update databases: %s" % err)
+        sys.exit(1)
+
     pacman_options = {}
     pacman_options["downloadonly"] = True
     #pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
