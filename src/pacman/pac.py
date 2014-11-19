@@ -46,11 +46,6 @@ try:
 except ImportError:
     import config
 
-try:
-    import pyalpm
-except ImportError:
-    pass
-
 import queue
 
 class Pac(object):
