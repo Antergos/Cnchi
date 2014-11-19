@@ -33,6 +33,8 @@ import urllib
 import aria2
 import metalink as ml
 
+import pacman.pac as pac
+
 def url_open_read(urlp, chunk_size=8192):
     """ Helper function to download and read a fragment of a remote file """
 
@@ -135,21 +137,28 @@ class DownloadPackages(object):
         processed_packages = 0
         total_packages = len(package_names)
 
-        for package_name in package_names:
-            metalink = ml.create(package_name, self.pacman_conf_file)
-            if metalink == None:
-                msg = _("Error creating metalink for package %s") % package_name
-                logging.error(msg)
-                continue
+        try:
+            pacman = pac.Pac(
+                conf_path=self.pacman_conf_file,
+                callback_queue=self.callback_queue)
 
-            # Update downloads dict with the new info
-            # from the processed metalink
-            downloads.update(ml.get_info(metalink))
+            for package_name in package_names:
+                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
+                if metalink == None:
+                    msg = _("Error creating metalink for package %s") % package_name
+                    logging.error(msg)
+                    continue
 
-            # Show progress to the user
-            processed_packages += 1
-            percent = round(float(processed_packages / total_packages), 2)
-            self.queue_event('percent', percent)
+                # Update downloads dict with the new info
+                # from the processed metalink
+                downloads.update(ml.get_info(metalink))
+
+                # Show progress to the user
+                processed_packages += 1
+                percent = round(float(processed_packages / total_packages), 2)
+                self.queue_event('percent', percent)
+        except Exception as err:
+            logging.error("Can't initialize pyalpm: %s" % err)
 
         downloaded = 0
         total_downloads = len(downloads)

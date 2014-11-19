@@ -35,8 +35,6 @@ import argparse
 
 from collections import deque
 
-import pacman.pac as pac
-
 try:
     import pyalpm
 except ImportError:
@@ -46,15 +44,6 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
-
-# Make reflector support optional.
-try:
-  from Reflector import MirrorStatus as MS
-  REPOSITORIES = MS.REPOSITORIES
-  MIRROR_URL_FORMAT = MS.MIRROR_URL_FORMAT
-except ImportError:
-  REPOSITORIES = set()
-  MIRROR_URL_FORMAT = None
 
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
@@ -101,7 +90,7 @@ def get_info(metalink):
 
     return metalink_info
 
-def create(package_name, pacman_conf_file):
+def create(pacman, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
     options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
@@ -112,7 +101,7 @@ def create(package_name, pacman_conf_file):
         options.append(package_name)
 
     try:
-        download_queue, not_found, missing_deps = build_download_queue(options)
+        download_queue, not_found, missing_deps = build_download_queue(pacman=pacman, args=options)
     except Exception as err:
         msg = _("Unable to create download queue for package %s") % package_name
         logging.error(msg)
@@ -121,8 +110,8 @@ def create(package_name, pacman_conf_file):
 
     if not_found:
         msg = _("Can't find these packages: ")
-        for not_found in sorted(not_found):
-            msg = msg + not_found + " "
+        for pkg_not_found in sorted(not_found):
+            msg = msg + pkg_not_found + " "
         logging.warning(msg)
 
     if missing_deps:
@@ -131,7 +120,16 @@ def create(package_name, pacman_conf_file):
             msg = msg + missing + " "
         logging.warning(msg)
 
+    for r in gc.get_referrers(download_queue):
+        pprint.pprint(r)
+
     metalink = download_queue_to_metalink(download_queue)
+    
+    for r in gc.get_referrers(download_queue):
+        pprint.pprint(r)
+
+    #for r in gc.get_referents(download_queue):
+    #    pprint.pprint(r)
     
     return metalink
 
@@ -140,8 +138,7 @@ def create(package_name, pacman_conf_file):
 # More info: http://xyne.archlinux.ca/projects/pm2ml
 
 def download_queue_to_metalink(download_queue):
-    impl = minidom.getDOMImplementation()
-    metalink = Metalink(impl)
+    metalink = Metalink()
 
     for db, sigs in download_queue.dbs:
         metalink.add_db(db, sigs)
@@ -151,11 +148,14 @@ def download_queue_to_metalink(download_queue):
 
     return metalink
 
-class Metalink():
-    def __init__(self, impl):
-        self.doc = impl.createDocument(None, "metalink", None)
+class Metalink(object):
+    def __init__(self):
+        self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
         self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
         self.files = self.doc.documentElement
+
+    #def __del__(self):
+    #    self.doc.unlink()
 
     def __str__(self):
         return re.sub(
@@ -253,7 +253,7 @@ class PkgSet(object):
     def __len__(self):
         return len(self.pkgs)
 
-class DownloadQueue():
+class DownloadQueue(object):
     """ Represents a download queue """
     def __init__(self):
         self.dbs = list()
@@ -294,79 +294,50 @@ def parse_args(args):
 
     return parser.parse_args(args)
 
-def build_download_queue(args=None):
+def build_download_queue(pacman, args=None):
     """ Function to build a download queue.
         Needs a pkgname in args """
 
     pargs = parse_args(args)
-
     conf_file = pargs.conf
 
+    '''
     try:
         pacman = pac.Pac(conf_path=conf_file, callback_queue=None)
     except Exception as err:
-        logging.error(err)
         logging.error("Can't initialize pyalpm: %s" % err)
         return None, None, None
-    
+    '''
+
     handle = pacman.get_handle()
     conf = pacman.get_config()
 
     requested = set(pargs.pkgs)
-    official = PkgSet()
     other = PkgSet()
     foreign_names = set()
     missing_deps = list()
     found = set()
     not_found = set()
 
-    global REPOSITORIES
-
     for pkg in requested:
-        official_grp = PkgSet()
         other_grp = PkgSet()
         for db in handle.get_syncdbs():
             syncpkg = db.get_pkg(pkg)
             if syncpkg:
-                if db.name in REPOSITORIES:
-                    official.add(syncpkg)
-                else:
-                    other.add(syncpkg)
-                break
+                other.add(syncpkg)
             else:
                 syncgrp = db.read_grp(pkg)
                 if syncgrp:
                     found.add(pkg)
-                    if db.name in REPOSITORIES:
-                        official_grp |= PkgSet(syncgrp[1])
-                    else:
-                        other_grp |= PkgSet(syncgrp[1])
+                    other_grp |= PkgSet(syncgrp[1])
         else:
-            official |= official_grp
             other |= other_grp
 
-    foreign_names = requested - set(x.name for x in (official | other))
-
-    '''
-  if pargs.upgrade:
-    a, b, c = determine_upgradable(
-      handle,
-      check_aur=pargs.aur,
-      aur_only=pargs.aur_only,
-      aur_names=foreign_names
-    )
-    official |= a
-    other |= b
-    aur = c
-  elif pargs.aur:
-    aur = list(search_aur(foreign_names))
-  else:
-    aur = []
-    '''
+    foreign_names = requested - set(x.name for x in other)
 
     # Resolve dependencies.
-    if (official or other) and not pargs.nodeps:
-        queue = deque(official | other)
+    if other and not pargs.nodeps:
+        queue = deque(other)
         local_cache = handle.get_localdb().pkgcache
         syncdbs = handle.get_syncdbs()
         seen = set(queue)
@@ -377,10 +348,7 @@ def build_download_queue(args=None):
                     for db in syncdbs:
                         prov = pyalpm.find_satisfier(db.pkgcache, dep)
                         if prov is not None:
-                            if db.name in REPOSITORIES:
-                                official.add(prov)
-                            else:
-                                other.add(prov)
+                            other.add(prov)
                             if prov.name not in seen:
                                 seen.add(prov.name)
                                 queue.append(prov)
@@ -388,10 +356,9 @@ def build_download_queue(args=None):
                     else:
                         missing_deps.append(dep)
 
-    found |= set(official.pkgs) | set(other.pkgs)
+    found |= set(other.pkgs)
     not_found = requested - found
     if pargs.needed:
-        official = PkgSet(check_cache(conf, official))
         other = PkgSet(check_cache(conf, other))
 
     download_queue = DownloadQueue()
@@ -404,37 +371,6 @@ def build_download_queue(args=None):
                 siglevel = None
             download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
             download_queue.add_db(db, download_sig)
-
-    if official:
-        if pargs.reflector:
-            from Reflector import parse_args as parse_reflector_args, process_options, MirrorStatusError
-            reflector_options = parse_reflector_args(pargs.reflector)
-            try:
-                mirrorstatus, mirrors = process_options(reflector_options)
-                mirrors = list(m['url'] for m in mirrors)
-            except MirrorStatusError as e:
-                sys.stderr.write(str(e))
-                mirrors = []
-        else:
-            mirrors = []
-        for pkg in official:
-            # This preserves the order of the user's mirrorlist files and prevents
-            # duplicates from being added by Reflector.
-            urls = list(os.path.join(url,pkg.filename) for url in pkg.db.servers)
-            urls.extend(
-                set(
-                    os.path.join(MIRROR_URL_FORMAT.format(
-                        m, pkg.db.name, pkg.arch), pkg.filename
-                    ) for m in mirrors
-                ) - set(urls)
-            )
-
-            try:
-                siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
-            except KeyError:
-                siglevel = None
-            download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
-            download_queue.add_sync_pkg(pkg, urls, download_sig)
 
     for pkg in other:
         try:
@@ -449,17 +385,18 @@ def build_download_queue(args=None):
 
 def get_checksum(path, typ):
     """ Returns checksum of a file """
-    h = hashlib.new(typ)
-    b = h.block_size
+    new_hash = hashlib.new(typ)
+    block_size = new_hash.block_size
     try:
         with open(path, 'rb') as f:
-          buf = f.read(b)
+          buf = f.read(block_size)
           while buf:
-            h.update(buf)
-            buf = f.read(b)
-        return h.hexdigest()
+            new_hash.update(buf)
+            buf = f.read(block_size)
+        return new_hash.hexdigest()
     except IOError as err:
         if err.errno != errno.ENOENT:
+            logging.error(err)
             raise err
 
 def check_cache(conf, pkgs):
@@ -468,9 +405,9 @@ def check_cache(conf, pkgs):
         for cache in conf.options['CacheDir']:
             fpath = os.path.join(cache, pkg.filename)
             for checksum in ('sha256', 'md5'):
-                a = get_checksum(fpath, checksum)
-                b = getattr(pkg, checksum + 'sum')
-                if a is None or a != b:
+                real_checksum = get_checksum(fpath, checksum)
+                correct_checksum = getattr(pkg, checksum + 'sum')
+                if real_checksum is None or real_checksum != correct_checksum:
                     yield pkg
                     break
             else:
@@ -497,10 +434,26 @@ def needs_sig(siglevel, insistence, prefix):
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
+    
+    import sys
+    import gc
+    import pprint
+    import pacman.pac as pac
 
-    for i in range(1,10000):
-        meta4 = create(package_name="gnome", pacman_conf_file="/etc/pacman.conf")
-        print(get_info(meta4))
+    try:
+        pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)
+
+        for i in range(1,10000):
+            print("Creating metalink...")
+            meta4 = create(pacman=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
+            
+            meta4 = None
+            n = gc.collect()
+            print("Unreachable objects: ", n)
+            print("Remaining garbage: ", pprint.pprint(gc.garbage))
+    except Exception as err:
+        logging.error("Can't initialize pyalpm: %s" % err)
+        
 
     '''
     with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:
