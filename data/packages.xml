@@ -44,7 +44,7 @@
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
-        <!--<pkgname>chromium-pepper-flash</pkgname> Uncomment once Alex updates repo -->
+        <pkgname>chromium-pepper-flash</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
