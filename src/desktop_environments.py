@@ -26,7 +26,7 @@
 
 # Enabled desktops
 
-DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde", "mate", "base", "openbox", "lxqt", "xfce"]
+DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde", "plasma5" "mate", "base", "openbox", "lxqt", "xfce"]
 DESKTOPS = ["cinnamon", "gnome", "kde", "mate", "base", "openbox", "xfce"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
@@ -50,12 +50,13 @@ NAMES = {
     'openbox' : "Openbox",
     'enlightenment' : "Enlightenment",
     'kde' : "KDE",
+    'plasma5': "KDE Plasma 5",
     'lxqt' : "LXQt",
     'mate' : "MATE"}
 
 LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
-    'qt' : ["lxqt", "kde"]}
+    'qt' : ["lxqt", "kde", "plasma5"]}
 
 ALL_FEATURES = ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall"]
 
@@ -64,6 +65,7 @@ FEATURES = {
     'cinnamon' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'gnome' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'kde' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
+    'plasma5': ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'mate' : ["aur", "cups", "fonts", "office", "firewall"],
     'enlightenment' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
     'base' : ["aur", "bluetooth", "cups", "fonts", "firewall"],
@@ -107,6 +109,10 @@ DESCRIPTIONS = {
     'kde' : _("If you are looking for a familiar working environment, KDE's "
               "Plasma Desktop offers all the tools required for a modern desktop "
               "computing experience so you can be productive right from the start."),
+
+    'plasma5': _("Plasma 5.0 introduces a new major version of KDE's workspace offering. "
+                 "It provides a visually updated core desktop experience that is easy to use "
+                 "and familiar to the user. "),
 
     'lxqt' : _("LXQt is an advanced, easy-to-use, and fast desktop environment "
                "based on Qt technologies. It has been tailored for users who "

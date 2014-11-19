@@ -383,7 +383,24 @@
         <pkgname>xdg-user-dirs</pkgname>
       </packages>
     </edition>
+
+    <edition name="KDE Plasma 5" description="KDE Desktop - Plasma 5">
+        <packages>
+          <pkgname>breeze-kde4</pkgname>
+          <pkgname>kdeplasma-addons-frameworks</pkgname>
+          <pkgname>kf5</pkgname>
+          <pkgname>kf5-aids</pkgname>
+          <pkgname>kinfocenter</pkgname>
+          <pkgname>kwrited</pkgname>
+          <pkgname>oxygen</pkgname>
+          <pkgname>plasma-next</pkgname>
+          <pkgname>plasma-nm</pkgname>
+          <pkgname>plasma-workspace-wallpapers</pkgname>
+        </packages>
+      </edition>
+
   </editions>
+
 
   <!-- User desired features -->
   <features>
