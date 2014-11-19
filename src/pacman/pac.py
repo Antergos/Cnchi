@@ -91,13 +91,14 @@ class Pac(object):
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
             self.handle.eventcb = self.cb_event
-            self.handle.questioncb = self.cb_conv
+            self.handle.questioncb = self.cb_question
             self.handle.progresscb = self.cb_progress
     
     def release(self):
         if self.handle is not None:
-            pyalpm.release()
-            #pyalpm.release(self.handle)
+            print([method for method in dir(pyalpm) if callable(getattr(pyalpm, method))])
+            print([method for method in dir(self.handle) if callable(getattr(self.handle, method))])
+            pyalpm.release(self.handle)
             #self.handle.release(self.handle)
             #self.handle = None
 
@@ -276,7 +277,8 @@ class Pac(object):
 
     # Callback functions
 
-    def cb_conv(self, *args):
+    def cb_question(self, *args):
+        """ Called to get user input """
         pass
 
     def cb_totaldl(self, total_size):
@@ -399,4 +401,5 @@ if __name__ == "__main__":
     #alpm.do_refresh()
     pacman_options = {}
     pacman_options["downloadonly"] = True
-    pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
+    #pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
+    pacman.release()
