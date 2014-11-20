@@ -73,7 +73,7 @@ class Pac(object):
 
         if conf_path != None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
-            self.initialize()
+            self.initialize_alpm()
         else:
             raise pyalpm.error
 
@@ -83,9 +83,12 @@ class Pac(object):
     def get_config(self):
         return self.config
 
-    def initialize(self):
-        if self.handle is None:
-            self.handle = self.config.initialize_alpm()
+    def initialize_alpm(self):
+        self.handle = pyalpm.Handle(self.options["RootDir"], self.options["DBPath"])
+        if self.handle is not None:
+            if self.config is not None:
+                self.config.apply(self.handle)
+            self.handle = self.initialize_alpm()
             # Set callback functions
             self.handle.logcb = self.cb_log
             self.handle.dlcb = self.cb_dl
@@ -93,14 +96,14 @@ class Pac(object):
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_question
             self.handle.progresscb = self.cb_progress
-    
+   
     def release(self):
         if self.handle is not None:
             del self.handle
             self.handle = None
 
-    def __del__(self):
-        self.release()
+    #def __del__(self):
+    #    self.release()
 
     def finalize_transaction(self, transaction):
         """ Commit a transaction """

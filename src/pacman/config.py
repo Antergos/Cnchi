@@ -213,10 +213,6 @@ class PacmanConfig(collections.OrderedDict):
                 db_servers.append(url)
             db.servers = db_servers
 
-    def initialize_alpm(self):
-        h = pyalpm.Handle(self.options["RootDir"], self.options["DBPath"])
-        self.apply(h)
-        return h
 
     def __str__(self):
         conf = ''

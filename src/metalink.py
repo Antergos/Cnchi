@@ -125,8 +125,8 @@ def create(pacman, package_name, pacman_conf_file):
 
     metalink = download_queue_to_metalink(download_queue)
     
-    for r in gc.get_referrers(download_queue):
-        pprint.pprint(r)
+    #for r in gc.get_referrers(download_queue):
+    #    pprint.pprint(r)
 
     #for r in gc.get_referents(download_queue):
     #    pprint.pprint(r)
@@ -451,6 +451,8 @@ if __name__ == '__main__':
             n = gc.collect()
             print("Unreachable objects: ", n)
             print("Remaining garbage: ", pprint.pprint(gc.garbage))
+        pacman.release()
+        del pacman
     except Exception as err:
         logging.error("Can't initialize pyalpm: %s" % err)
         

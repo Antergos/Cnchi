@@ -157,6 +157,9 @@ class DownloadPackages(object):
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', percent)
+            
+            pacman.release()
+            del pacman
         except Exception as err:
             logging.error("Can't initialize pyalpm: %s" % err)
 
