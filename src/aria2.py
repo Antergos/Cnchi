@@ -34,11 +34,7 @@ import urllib.error
 
 import metalink as ml
 
-_PM2ML = True
-try:
-    import pm2ml
-except ImportError:
-    _PM2ML = False
+import pacman.pac as pac
 
 class DownloadAria2(object):
     """ Class to download packages using Aria2
@@ -55,10 +51,6 @@ class DownloadAria2(object):
         cache_dir=None,
         callback_queue=None):
         """ Initialize DownloadAria2 class. Gets default configuration """
-
-        if not _PM2ML:
-            logging.warning("%s %s", _("pm2ml not found."), _("Cnchi will use alpm instead."))
-            return
 
         if pacman_conf_file == None:
             self.pacman_conf_file = "/etc/pacman.conf"
@@ -97,77 +89,87 @@ class DownloadAria2(object):
         self.run_as_daemon()
         self.connection = self.connect()
         if self.connection == None:
-            logging.warning("%s %s", _("Can't connect with aria2."), _("Cnchi will use alpm instead."))
+            logging.warning(
+                "%s %s",
+                _("Can't connect with aria2."),
+                _("Cnchi will use alpm instead."))
             return
 
         self.download(package_names)
 
     def download(self, package_names):
         """ Downloads needed packages in package_names list and its dependencies using aria2 """
-        for package_name in package_names:
-            metalink = ml.create(package_name, self.pacman_conf_file)
-            if metalink == None:
-                logging.error(_("Error creating metalink for package %s"), package_name)
-                continue
+        try:
+            pacman = pac.Pac(
+                conf_path=self.pacman_conf_file,
+                callback_queue=self.callback_queue)
 
-            gids = self.add_metalink(metalink)
+            for package_name in package_names:
+                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
+                if metalink == None:
+                    logging.error(_("Error creating metalink for package %s"), package_name)
+                    continue
 
-            if len(gids) <= 0:
-                logging.error(_("Error adding metalink for package %s"), package_name)
-                continue
+                gids = self.add_metalink(metalink)
 
-            global_stat = self.connection.aria2.getGlobalStat()
-            num_active = int(global_stat["numActive"])
+                if len(gids) <= 0:
+                    logging.error(_("Error adding metalink for package %s"), package_name)
+                    continue
 
-            old_percent = -1
-            old_path = ""
-
-            action = _("Downloading package '%s' and its dependencies...") % package_name
-            self.queue_event('info', action)
-
-            while num_active > 0:
-                try:
-                    keys = ["gid", "status", "totalLength", "completedLength", "files"]
-                    result = self.connection.aria2.tellActive(keys)
-                except xmlrpc.client.Fault as err:
-                    logging.exception(err)
-
-                total_length = 0
-                completed_length = 0
-
-                for i in range(0, num_active):
-                    total_length += int(result[i]['totalLength'])
-                    completed_length += int(result[i]['completedLength'])
-
-                # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
-
-                # TODO: Check this
-                path = result[0]['files'][0]['path']
-
-                ext = ".pkg.tar.xz"
-                if path.endswith(ext):
-                    path = path[:-len(ext)]
-
-                percent = round(float(completed_length / total_length), 2)
-
-                if path != old_path and percent == 0:
-                    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
-                    self.queue_event('percent', 1.0)
-                    # Update download file name
-                    self.queue_event('info', _("Downloading %s...") % path)
-                    old_path = path
-
-                if percent != old_percent:
-                    self.queue_event('percent', percent)
-                    old_percent = percent
-
-                # Get global statistics
                 global_stat = self.connection.aria2.getGlobalStat()
-
                 num_active = int(global_stat["numActive"])
 
-            # This method purges completed/error/removed downloads to free memory
-            self.connection.aria2.purgeDownloadResult()
+                old_percent = -1
+                old_path = ""
+
+                action = _("Downloading package '%s' and its dependencies...") % package_name
+                self.queue_event('info', action)
+
+                while num_active > 0:
+                    try:
+                        keys = ["gid", "status", "totalLength", "completedLength", "files"]
+                        result = self.connection.aria2.tellActive(keys)
+                    except xmlrpc.client.Fault as err:
+                        logging.exception(err)
+
+                    total_length = 0
+                    completed_length = 0
+
+                    for i in range(0, num_active):
+                        total_length += int(result[i]['totalLength'])
+                        completed_length += int(result[i]['completedLength'])
+
+                    # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
+
+                    # TODO: Check this
+                    path = result[0]['files'][0]['path']
+
+                    ext = ".pkg.tar.xz"
+                    if path.endswith(ext):
+                        path = path[:-len(ext)]
+
+                    percent = round(float(completed_length / total_length), 2)
+
+                    if path != old_path and percent == 0:
+                        # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
+                        self.queue_event('percent', 1.0)
+                        # Update download file name
+                        self.queue_event('info', _("Downloading %s...") % path)
+                        old_path = path
+
+                    if percent != old_percent:
+                        self.queue_event('percent', percent)
+                        old_percent = percent
+
+                    # Get global statistics
+                    global_stat = self.connection.aria2.getGlobalStat()
+
+                    num_active = int(global_stat["numActive"])
+
+                # This method purges completed/error/removed downloads to free memory
+                self.connection.aria2.purgeDownloadResult()
+        except Exception as err:
+            logging.error("Can't initialize pyalpm: %s" % err)
 
         self.connection.aria2.shutdown()
 
