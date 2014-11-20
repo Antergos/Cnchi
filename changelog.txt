@@ -4,12 +4,14 @@ Changelog
 * 0.7.x development series
 
 - Updated timezone and welcome screens appearance
+- Ported timezone widget to Python
 - Added new Gnome packages to Gnome installation DE
 - Load screens after showing first screen (so it loads quickly for people that just want to try it or do a cli install)
 - A lot of updates to port to Gtk 3.14 (and avoid deprecation warnings)
 - Droped copycache parameter
 - Use provided cache to install Antergos (only needed packages are copied to the new installation)
-- Use urlib to download packages first, then try with alpm if it's necessary (our aria2 interface code is still unstable)
+- Use urlib to download packages first, then try with alpm if it's necessary
+- Updated aria2 code, it should not eat so much memory anymore (needs testing)
 - Added a keyboard warning message when entering LUKS password
 - Added serbian options. Cnchi still doesn't select the correct serbian keyboard (anyway it's easy for the user to do it)
 - Removed a link from a label that was causing a CRITICAL gtk warning
