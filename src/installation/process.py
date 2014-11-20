@@ -1002,6 +1002,7 @@ class InstallationProcess(multiprocessing.Process):
                     ruuid_ok = True
             
             if not ruuid_ok:
+                # Wrong uuid in grub.cfg, let's fix it!
                 with open(cfg) as grub_cfg:
                     lines = [x.strip() for x in grub_cfg.readlines()]
                 for i in range(len(lines)):
@@ -2004,7 +2005,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("User home dir encrypted"))
 
         # Install boot loader (always after running mkinitcpio)
-        if self.settings.get('install_bootloader'):
+        if self.settings.get('bootloader_install'):
             logging.debug(_("Installing bootloader..."))
             self.install_bootloader()
 
