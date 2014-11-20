@@ -84,11 +84,17 @@ class Pac(object):
         return self.config
 
     def initialize_alpm(self):
-        self.handle = pyalpm.Handle(self.options["RootDir"], self.options["DBPath"])
+        root_dir = "/"
+        db_path = "/var/lib/pacman"
+        if self.config is not None:
+            root_dir = self.config.options["RootDir"]
+            db_path = self.config.options["DBPath"]
+
+        self.handle = pyalpm.Handle(root_dir, db_path)
+
         if self.handle is not None:
             if self.config is not None:
                 self.config.apply(self.handle)
-            self.handle = self.initialize_alpm()
             # Set callback functions
             self.handle.logcb = self.cb_log
             self.handle.dlcb = self.cb_dl

@@ -184,31 +184,31 @@ class PacmanConfig(collections.OrderedDict):
         if options.debug:
             _logmask = 0xffff
 
-    def apply(self, h):
+    def apply(self, handle):
         # File paths
-        h.logfile = self.options["LogFile"]
-        h.gpgdir = self.options["GPGDir"]
+        handle.logfile = self.options["LogFile"]
+        handle.gpgdir = self.options["GPGDir"]
         # Strings
-        h.arch = self.options["Architecture"]
+        handle.arch = self.options["Architecture"]
         # Lists
-        h.cachedirs = self.options["CacheDir"]
+        handle.cachedirs = self.options["CacheDir"]
         if "NoUpgrade" in self.options:
-            h.noupgrades = self.options["NoUpgrade"]
+            handle.noupgrades = self.options["NoUpgrade"]
         if "NoExtract" in self.options:
-            h.noextracts = self.options["NoExtract"]
+            handle.noextracts = self.options["NoExtract"]
         if "IgnorePkg" in self.options:
-            h.ignorepkgs = self.options["IgnorePkg"]
+            handle.ignorepkgs = self.options["IgnorePkg"]
         if "IgnoreGroup" in self.options:
-            h.ignoregrps = self.options["IgnoreGroup"]
+            handle.ignoregrps = self.options["IgnoreGroup"]
 
         #h.logcb = cb_log
 
         # set sync databases
         for repo, servers in self.repos.items():
-            db = h.register_syncdb(repo, 0)
+            db = handle.register_syncdb(repo, 0)
             db_servers = []
-            for rawurl in servers:
-                url = rawurl.replace("$repo", repo)
+            for raw_url in servers:
+                url = raw_url.replace("$repo", repo)
                 url = url.replace("$arch", self.options["Architecture"])
                 db_servers.append(url)
             db.servers = db_servers
