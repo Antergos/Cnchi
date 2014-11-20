@@ -39,9 +39,7 @@ import pacman.pac as pac
 class DownloadAria2(object):
     """ Class to download packages using Aria2
         This class tries to previously download all necessary packages for
-        Antergos installation using aria2
-        Aria2 is known to use too much memory (not Aria2's fault but ours)
-        so until it's fixed it it's not advised to use it """
+        Antergos installation using aria2 """
 
     def __init__(
         self,
@@ -130,7 +128,7 @@ class DownloadAria2(object):
                         keys = ["gid", "status", "totalLength", "completedLength", "files"]
                         result = self.connection.aria2.tellActive(keys)
                     except xmlrpc.client.Fault as err:
-                        logging.exception(err)
+                        logging.error(_("Can't get active downloads from aria2:"), err)
 
                     total_length = 0
                     completed_length = 0
@@ -144,6 +142,7 @@ class DownloadAria2(object):
                     # TODO: Check this
                     path = result[0]['files'][0]['path']
 
+                    # Do not show the package's extension to the user
                     ext = ".pkg.tar.xz"
                     if path.endswith(ext):
                         path = path[:-len(ext)]
@@ -151,8 +150,8 @@ class DownloadAria2(object):
                     percent = round(float(completed_length / total_length), 2)
 
                     if path != old_path and percent == 0:
-                        # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
-                        self.queue_event('percent', 1.0)
+                    #    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
+                    #    self.queue_event('percent', 1.0)
                         # Update download file name
                         self.queue_event('info', _("Downloading %s...") % path)
                         old_path = path
@@ -164,9 +163,10 @@ class DownloadAria2(object):
                     # Get global statistics
                     global_stat = self.connection.aria2.getGlobalStat()
 
+                    # Get num of active downloads
                     num_active = int(global_stat["numActive"])
 
-                # This method purges completed/error/removed downloads to free memory
+                # This method purges completed/error/removed downloads, in order to free memory
                 self.connection.aria2.purgeDownloadResult()
         except Exception as err:
             logging.error("Can't initialize pyalpm: %s" % err)
@@ -277,9 +277,17 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/cnchi-download-aria2-test.log", level=logging.DEBUG)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
-    DownloadAria2(package_names=["gnome"], cache_dir="", pacman_cache_dir="/tmp/pkg")
+    DownloadAria2(package_names=["gnome"], cache_dir="", pacman_cache_dir="/tmp/aria2")
 
     #DownloadAria2(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2")
     #DownloadAria2(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2")
