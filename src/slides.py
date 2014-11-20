@@ -214,7 +214,7 @@ class Slides(GtkBaseBox):
                     self.downloads_progress_bar.show()
             elif event[0] == 'finished':
                 logging.info(event[1])
-                if not self.settings.get('bootloader_ok'):
+                if not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
                     boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
                                   "installation which could prevent your system from booting properly. Before\n"
