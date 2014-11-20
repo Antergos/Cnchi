@@ -33,11 +33,7 @@ import urllib
 import aria2
 import metalink as ml
 
-_PM2ML = True
-try:
-    import pm2ml
-except ImportError:
-    _PM2ML = False
+import pacman.pac as pac
 
 def url_open_read(urlp, chunk_size=8192):
     """ Helper function to download and read a fragment of a remote file """
@@ -96,10 +92,6 @@ class DownloadPackages(object):
         callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
-        if not _PM2ML:
-            logging.warning(_("pm2ml not found."))
-            return
-
         if pacman_conf_file == None:
             self.pacman_conf_file = "/etc/pacman.conf"
         else:
@@ -145,21 +137,31 @@ class DownloadPackages(object):
         processed_packages = 0
         total_packages = len(package_names)
 
-        for package_name in package_names:
-            metalink = ml.create(package_name, self.pacman_conf_file)
-            if metalink == None:
-                msg = _("Error creating metalink for package %s") % package_name
-                logging.error(msg)
-                continue
+        try:
+            pacman = pac.Pac(
+                conf_path=self.pacman_conf_file,
+                callback_queue=self.callback_queue)
 
-            # Update downloads dict with the new info
-            # from the processed metalink
-            downloads.update(ml.get_info(metalink))
+            for package_name in package_names:
+                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
+                if metalink == None:
+                    msg = _("Error creating metalink for package %s") % package_name
+                    logging.error(msg)
+                    continue
 
-            # Show progress to the user
-            processed_packages += 1
-            percent = round(float(processed_packages / total_packages), 2)
-            self.queue_event('percent', percent)
+                # Update downloads dict with the new info
+                # from the processed metalink
+                downloads.update(ml.get_info(metalink))
+
+                # Show progress to the user
+                processed_packages += 1
+                percent = round(float(processed_packages / total_packages), 2)
+                self.queue_event('percent', percent)
+            
+            pacman.release()
+            del pacman
+        except Exception as err:
+            logging.error("Can't initialize pyalpm: %s" % err)
 
         downloaded = 0
         total_downloads = len(downloads)
@@ -176,7 +178,11 @@ class DownloadPackages(object):
             txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
             self.queue_event('info', txt)
 
-            total_length = int(element['size'])
+            try:
+                total_length = int(element['size'])
+            except TypeError as err:
+                logging.warning(_("Metalink for package %s has no size info"), element['identity'])
+                total_length = 0
             
             dst_cache_path = os.path.join(self.cache_dir, element['filename'])
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
@@ -216,7 +222,10 @@ class DownloadPackages(object):
                                 xzfile.write(data)
                                 completed_length += len(data)
                                 old_percent = percent
-                                percent = round(float(completed_length / total_length), 2)
+                                if total_length > 0:
+                                    percent = round(float(completed_length / total_length), 2)
+                                else:
+                                    percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
                                 (data, download_error) = url_open_read(urlp)
@@ -250,7 +259,8 @@ class DownloadPackages(object):
         """ Adds an event to Cnchi event queue """
 
         if self.callback_queue is None:
-            logging.debug(event_type + " : " + str(event_text))
+            if event_type != "percent":
+                logging.debug(event_type + " : " + str(event_text))
             return
 
         if event_type in self.last_event:
@@ -261,6 +271,7 @@ class DownloadPackages(object):
         self.last_event[event_type] = event_text
 
         try:
+            # Add the event
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
@@ -270,9 +281,15 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(
-        filename="/tmp/cnchi-download-test.log",
-        level=logging.DEBUG)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
     DownloadPackages(
         package_names=["gnome-sudoku"],

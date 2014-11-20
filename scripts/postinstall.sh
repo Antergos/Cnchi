@@ -250,6 +250,40 @@ kde_settings(){
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
+plasma5_settings(){
+    # Set KDE in .dmrc
+    echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+    echo "Session=plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+    # Force QtCurve to use our theme
+    #rm -R ${DESTDIR}/usr/share/apps/QtCurve/
+
+    # Get zip file from github, unzip it and copy all setup files in their right places.
+    wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
+    #xz -d -qq /tmp/master.tar.xz
+    #cd ${DESTDIR}
+    cd /tmp
+    tar xfJ /tmp/master.tar.xz
+    chown -R root:root /tmp/etc
+    chown -R root:root /tmp/usr
+    cp -R /tmp/etc/* ${DESTDIR}/etc
+    cp -R /tmp/usr/* ${DESTDIR}/usr
+
+    # Set User & Root environments
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
+    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
+    cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/root
+    chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
+    chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
+
+    ## Set defaults directories
+    chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+}
+
 mate_settings() {
     # Set MATE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc

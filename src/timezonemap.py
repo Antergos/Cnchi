@@ -888,28 +888,11 @@ class TimezoneMap(Gtk.Widget):
             zone = location.get_property('zone')
             return zone
 
-'''
-      GtkAllocation alloc;
-      GValue val_zone = {0};
-      g_value_init (&val_zone, G_TYPE_STRING);
-      gtk_widget_get_allocation (GTK_WIDGET (map), &alloc);
-      x = convert_longtitude_to_x(lon, alloc.width);
-      y = convert_latitude_to_y(lat, alloc.height);
-      CcTimezoneLocation * loc = get_loc_for_xy(GTK_WIDGET (map), x, y);
-      g_value_unset (&val_zone);
-      return g_value_get_string(&val_zone);
-'''
-
-
 if __name__ == '__main__':
     win = Gtk.Window()
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
-    # "Europe/London"
-    # +513030-0000731
-    
-
     timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
     tzmap.set_timezone(timezone)
     import signal    # enable Ctrl-C since there is no menu to quit

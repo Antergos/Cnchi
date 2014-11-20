@@ -30,15 +30,20 @@ import traceback
 import sys
 import math
 import logging
+import os
+
+if __name__ == "__main__":
+    import gettext
+    _ = gettext.gettext
 
 try:
     import pyalpm
-except ImportError:
-    logging.error(_("pyalpm not found! This installer won't work."))
+except ImportError as err:
+    logging.error(_("Can't load pyalpm: %s"), err)
 
 try:
     import pacman.config as config
-except ImportError:
+except ImportError as err:
     import config
 
 import queue
@@ -66,41 +71,64 @@ class Pac(object):
 
         self.last_event = {}
 
-        if conf_path != None:
+        if conf_path != None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
-            self.handle = self.config.initialize_alpm()
+            self.initialize_alpm()
+        else:
+            raise pyalpm.error
 
+    def get_handle(self):
+        return self.handle
+    
+    def get_config(self):
+        return self.config
+
+    def initialize_alpm(self):
+        root_dir = "/"
+        db_path = "/var/lib/pacman"
+        if self.config is not None:
+            root_dir = self.config.options["RootDir"]
+            db_path = self.config.options["DBPath"]
+
+        self.handle = pyalpm.Handle(root_dir, db_path)
+
+        if self.handle is not None:
+            if self.config is not None:
+                self.config.apply(self.handle)
             # Set callback functions
             self.handle.logcb = self.cb_log
             self.handle.dlcb = self.cb_dl
             self.handle.totaldlcb = self.cb_totaldl
             self.handle.eventcb = self.cb_event
-            self.handle.questioncb = self.cb_conv
+            self.handle.questioncb = self.cb_question
             self.handle.progresscb = self.cb_progress
+   
+    def release(self):
+        if self.handle is not None:
+            del self.handle
+            self.handle = None
 
-    def get_handle(self):
-        return self.handle
-    
-    #def release(self):
-    #    pyalpm.Release(self.handle)
+    #def __del__(self):
+    #    self.release()
 
-    def finalize(self, t):
+    def finalize_transaction(self, transaction):
         """ Commit a transaction """
+        all_ok = True
         try:
-            t.prepare()
-            t.commit()
-        except pyalpm.error:
-            line = traceback.format_exc()
-            logging.error(line)
-            t.release()
-            return False
-        t.release()
-        return True
+            transaction.prepare()
+            transaction.commit()
+        except pyalpm.error as err:
+            msg = _("Can't finalize alpm transaction: %s") % err
+            logging.error(msg)
+            all_ok = False
+        finally:
+            transaction.release()
+            return all_ok
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
         try:
-            trans = self.handle.init_transaction(
+            transaction = self.handle.init_transaction(
                 cascade=options.get('cascade', False),
                 nodeps=options.get('nodeps', False),
                 force=options.get('force', False),
@@ -113,60 +141,39 @@ class Pac(object):
                 unneeded=options.get('unneeded', False),
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
-        except pyalpm.error:
-            line = traceback.format_exc()
-            logging.error(line)
-            trans = None
+        except pyalpm.error as err:
+            msg = _("Can't init alpm transaction: %s") % err
+            logging.error(msg)
+            transaction = None
         finally:
-            return trans
+            return transaction
 
     def do_refresh(self):
         """ Sync databases like pacman -Sy """
+        if self.handle is None:
+            logging.error("alpm is not initialised")
+            raise pyalpm.error
+
         force = True
         for db in self.handle.get_syncdbs():
-            trans = self.init_transaction()
+            transaction = self.init_transaction()
             db.update(force)
-            trans.release()
-        return 0
+            transaction.release()
+        return True
 
     def do_install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
+        if self.handle is None:
+            logging.error("alpm is not initialised")
+            raise pyalpm.error
+
         logging.debug(_("Cnchi will install a list of packages like pacman -S"))
 
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
-
-        targets = self.get_targets(pkgs, conflicts)
-
-        if len(targets) == 0:
-            logging.error(_("No targets found"))
-            return 1
-        
-        trans = self.init_transaction(options)
-
-        if trans is None:
-            return 1
-
-        pkg_names = []
-        
-        for pkg in targets:
-            # We use pkg_names in order to avoid duplicates
-            if pkg.name not in pkg_names:
-                logging.debug(_("Adding %s to transaction"), pkg.name)
-                trans.add_pkg(pkg)
-                pkg_names.append(pkg.name)
-
-        # FIXME: If we use cached packages or group packages this is going to be WRONG
-        self.total_packages_to_download = len(pkg_names)
-        
-        logging.debug(_("Finalize transaction..."))
-        ok = self.finalize(trans)
-
-        return 0 if ok else 1
-
-    def get_targets(self, pkgs, conflicts=[]):
-        """ Get the list of packages needed to install package list 'pkgs' """
         if len(pkgs) == 0:
             return []
+
+        # Discard duplicates
+        pkgs = list(set(pkgs))
 
         repos = dict((db.name, db) for db in self.handle.get_syncdbs())
 
@@ -176,23 +183,44 @@ class Pac(object):
             if ok:
                 # Check that added package is not in our conflicts list
                 if pkg.name not in conflicts:
-                    targets.append(pkg)
+                    targets.append(pkg.name)
             else:
                 # Couldn't find the package, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
                 if group_pkgs != None:
                     # It's a group
-                    for pkg in group_pkgs:
+                    for group_pkg in group_pkgs:
                         # Check that added package is not in our conflicts list
                         # Ex: connman conflicts with netctl(openresolv),
                         # which is installed by default with base group
-                        if pkg.name not in conflicts and pkg.name not in pkgs:
-                            targets.append(pkg)
+                        if group_pkg.name not in conflicts:
+                            targets.append(group_pkg.name)
                 else:
-                    # No, it wasn't neither a package nor a group. Show error message and continue.
+                    # No, it wasn't neither a package nor a group. As we don't know if
+                    # this error is fatal or not, we'll register it and we'll allow to continue.
                     logging.error(_("Can't find a package or group called '%s'"), name)
 
-        return targets      
+        # Discard duplicates
+        targets = list(set(targets))
+
+        if len(targets) == 0:
+            logging.error(_("No targets found"))
+            return False
+
+        trans = self.init_transaction(options)
+
+        if trans is None:
+            return False
+
+        for name in targets:
+            ok, pkg = self.find_sync_package(name, repos)
+            logging.debug(_("Adding package '%s' to transaction"), pkg.name)
+            trans.add_pkg(pkg)
+
+        self.total_packages_to_download = len(targets)
+        
+        logging.debug(_("Run and finalize transaction..."))
+        return self.finalize_transaction(trans) 
 
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
@@ -231,7 +259,7 @@ class Pac(object):
             event_text = "%s: %s in %s:%i" % (event_text, func.co_name, func.co_filename, func.co_firstlineno)
         
         if self.callback_queue is None:
-            print(event_type, event_text)
+            #print(event_type, event_text)
             if event_type == "error":
                 sys.exit(1)
             else:
@@ -248,15 +276,10 @@ class Pac(object):
             self.callback_queue.join()
             sys.exit(1)
 
-    def get_version(self):
-        return "Cnchi running on pyalpm v%s - libalpm v%s" % (pyalpm.version(), pyalpm.alpmversion())
-
-    def get_versions(self):
-        return (pyalpm.version(), pyalpm.alpmversion())
-
     # Callback functions
 
-    def cb_conv(self, *args):
+    def cb_question(self, *args):
+        """ Called to get user input """
         pass
 
     def cb_totaldl(self, total_size):
@@ -370,13 +393,29 @@ if __name__ == "__main__":
     import gettext
     _ = gettext.gettext
 
-    try:
-        alpm = Pac("/etc/pacman.conf")
-    except Exception as err:
-        logging.error(err)
-        raise InstallError("Can't initialize pyalpm: %s" % err)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
-    #alpm.do_refresh()
+    try:
+        pacman = Pac("/etc/pacman.conf")
+    except Exception as err:
+        print("Can't initialize pyalpm: %s" % err)
+        sys.exit(1)
+
+    try:
+        pacman.do_refresh()
+    except pyalpm.error as err:
+        print("Can't update databases: %s" % err)
+        sys.exit(1)
+
     pacman_options = {}
     pacman_options["downloadonly"] = True
-    alpm.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
+    #pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
+    pacman.release()

@@ -44,7 +44,7 @@
         <pkgname>antergos-wallpapers</pkgname>
         <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
-        <!--<pkgname>chromium-pepper-flash</pkgname> Uncomment once Alex updates repo -->
+        <pkgname>chromium-pepper-flash</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -334,6 +334,7 @@
     <edition name="KDE" description="KDE Desktop">
       <packages>
         <pkgname>aspell-en</pkgname>
+        <pkgname>breeze-kde4</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
@@ -383,7 +384,55 @@
         <pkgname>xdg-user-dirs</pkgname>
       </packages>
     </edition>
+
+    <edition name="KDE Plasma 5" description="KDE Desktop - Plasma 5">
+        <packages>
+          <pkgname>aspell-en</pkgname>
+          <pkgname>breeze-kde4</pkgname>
+          <pkgname>cdrdao</pkgname>
+          <pkgname>clementine</pkgname>
+          <pkgname>dvd+rw-tools</pkgname>
+          <pkgname>grub2-editor</pkgname>
+          <pkgname>k3b</pkgname>
+          <pkgname>kde-gtk-config</pkgname>
+          <pkgname>kdeadmin-kuser</pkgname>
+          <pkgname>kdeartwork-desktopthemes</pkgname>
+          <pkgname>kdeartwork-iconthemes</pkgname>
+          <pkgname>kdeartwork-kscreensaver</pkgname>
+          <pkgname>kdeartwork-styles</pkgname>
+          <pkgname>kdegraphics-gwenview</pkgname>
+          <pkgname>kdegraphics-ksnapshot</pkgname>
+          <pkgname>kdegraphics-okular</pkgname>
+          <pkgname>kdegraphics-thumbnailers</pkgname>
+          <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
+          <pkgname>kdemultimedia-kmix</pkgname>
+          <pkgname>kdenetwork-filesharing</pkgname>
+          <pkgname>kdenetwork-kopete</pkgname>
+          <pkgname>kdeplasma-addons-frameworks</pkgname>
+          <pkgname>kdesdk-kate</pkgname>
+          <pkgname>kdesudo</pkgname>
+          <pkgname>kdeutils-ark</pkgname>
+          <pkgname>kdeutils-kcalc</pkgname>
+          <pkgname>kdeutils-kwalletmanager</pkgname>
+          <pkgname>kdeutils-sweeper</pkgname>
+          <pkgname>kf5</pkgname>
+          <pkgname>kf5-aids</pkgname>
+          <pkgname>kfaenza-icon-theme</pkgname>
+          <pkgname>kinfocenter</pkgname>
+          <pkgname>kwrited</pkgname>
+          <pkgname>numix-icon-theme-square-kde</pkgname>
+          <pkgname>oxygen</pkgname>
+          <pkgname>plasma-next</pkgname>
+          <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
+          <pkgname>plasma-workspace-wallpapers</pkgname>
+          <pkgname>transmission-qt</pkgname>
+          <pkgname>vlc</pkgname>
+          <pkgname>xdg-user-dirs</pkgname>
+        </packages>
+      </edition>
+
   </editions>
+
 
   <!-- User desired features -->
   <features>

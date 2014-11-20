@@ -25,8 +25,6 @@
 """ Installation thread module. Where the real installation happens """
 
 import crypt
-import download
-import info
 import logging
 import multiprocessing
 import os
@@ -37,7 +35,6 @@ import sys
 import time
 import urllib.request
 import urllib.error
-import encfs
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
@@ -51,6 +48,9 @@ import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
+import download
+import info
+import encfs
 
 try:
     import pyalpm
@@ -90,20 +90,19 @@ class InstallationProcess(multiprocessing.Process):
                       'alternate_package_list': alternate_package_list,
                       'blvm': blvm}
         self.settings.set('installer_thread_call', parameters)
+        
+        self.method = self.settings.get('partition_mode')
+        self.queue_event('info', _("Installing using the '%s' method") % self.method)
+
+        # Check desktop selected to load packages needed
+        self.desktop = self.settings.get('desktop')
 
         # This flag tells us if there is a lvm partition (from advanced install)
         # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
         self.blvm = blvm
 
-        self.method = self.settings.get('partition_mode')
-
-        self.queue_event('info', _("Installing using the '%s' method") % self.method)
-
         self.ssd = ssd
         self.mount_devices = mount_devices
-
-        # Check desktop selected to load packages needed
-        self.desktop = self.settings.get('desktop')
 
         # Set defaults
         self.desktop_manager = 'lightdm'
@@ -119,15 +118,16 @@ class InstallationProcess(multiprocessing.Process):
 
         self.special_dirs_mounted = False
 
-        # Initialize some vars that are correctly initialized elsewhere (pylint complains about it)
+        # Initialize some vars that are correctly initialized elsewhere
+        # (pylint complains if we don't do it here)
         self.auto_device = ""
         self.packages = []
-        self.pac = None
+        self.pacman = None
         self.arch = ""
         self.initramfs = ""
         self.kernel = ""
         self.vmlinuz = ""
-        self.dest_dir = ""
+        self.dest_dir = "/install"
         self.vbox = False
 
     def queue_fatal_event(self, txt):
@@ -140,18 +140,22 @@ class InstallationProcess(multiprocessing.Process):
         os._exit(0)
 
     def queue_event(self, event_type, event_text=""):
-        try:
-            self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
-            pass
+        if self.callback_queue is not None:
+            try:
+                self.callback_queue.put_nowait((event_type, event_text))
+            except queue.Full:
+                pass
+        else:
+            print(event_type + ": " + event_text)
 
     def wait_for_empty_queue(self, timeout):
-        tries = 0
-        if timeout < 1:
-            timeout = 1
-        while tries < timeout and not self.callback_queue.empty():
-            time.sleep(1)
-            tries += 1
+        if self.callback_queue is not None:
+            tries = 0
+            if timeout < 1:
+                timeout = 1
+            while tries < timeout and not self.callback_queue.empty():
+                time.sleep(1)
+                tries += 1
 
     @misc.raise_privileges
     def run(self):
@@ -337,6 +341,10 @@ class InstallationProcess(multiprocessing.Process):
         all_ok = False
 
         try:
+            logging.debug(_("Prepare pacman..."))
+            self.prepare_pacman()
+            logging.debug(_("Pacman ready"))
+
             logging.debug(_("Selecting packages..."))
             self.select_packages()
             logging.debug(_("Packages selected"))
@@ -364,23 +372,8 @@ class InstallationProcess(multiprocessing.Process):
             out = _("Output : %s") % err.output 
             logging.error(out)
             self.queue_fatal_event(cmd)
-        except InstallError as err:
-            logging.error(err.value)
-            self.queue_fatal_event(err.value)
-        except pyalpm.error as err:
+        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
             logging.error(err)
-            self.queue_fatal_event(err)
-        except KeyboardInterrupt as err:
-            logging.error(err)
-            self.queue_fatal_event(err)
-        except TypeError as err:
-            logging.exception('TypeError: %s. Unable to continue.' % err)
-            self.queue_fatal_event(err)
-        except AttributeError as err:
-            logging.exception('AttributeError: %s. Unable to continue.' % err)
-        except Exception as err:
-            # TODO: This is too broad and we may catch non-fatal errors and treat them as fatal
-            logging.exception('Error: %s. Unable to continue.' % err)
             self.queue_fatal_event(err)
 
         self.running = False
@@ -444,34 +437,19 @@ class InstallationProcess(multiprocessing.Process):
         return True
 
     def create_pacman_conf_file(self):
-        """ Needs Mako (see http://www.makotemplates.org/) """
+        """ Creates a temporary pacman.conf """
         self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
 
-        # Add template functionality ;-)
+        # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
         self.write_file(file_template.render(destDir=self.dest_dir, arch=self.arch), os.path.join("/tmp", "pacman.conf"))
 
-    def create_pacman_conf(self):
-        self.create_pacman_conf_file()
-
-        ## Init pyalpm
-        try:
-            self.pac = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except:
-            raise InstallError("Can't initialize pyalpm.")
-
-    def prepare_pacman_keychain(self):
-        """ Add gnupg pacman files to installed system """
-        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
-        try:
-            misc.copytree('/etc/pacman.d/gnupg', dest_path)
-        except (FileExistsError, shutil.Error) as err:
-            # log error but continue anyway
-            logging.exception(err)
-
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
+        
+        self.create_pacman_conf_file()
+
         dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
 
         for pacman_dir in dirs:
@@ -481,15 +459,30 @@ class InstallationProcess(multiprocessing.Process):
 
         self.prepare_pacman_keychain()
 
-        alpm = self.init_alpm()        
-        alpm.do_refresh()
-        del alpm
+        # Init pyalpm
+        try:
+            self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+        except:
+            self.pacman = None
+            raise InstallError("Can't initialize pyalpm.")
+
+        # Refresh pacman databases
+        result = self.pacman.do_refresh()
+
+        if not result:
+            logging.error(_("Can't refresh pacman databases."))
+
+    def prepare_pacman_keychain(self):
+        """ Add gnupg pacman files to installed system """
+        dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
+        try:
+            misc.copytree('/etc/pacman.d/gnupg', dest_path)
+        except (FileExistsError, shutil.Error) as err:
+            # log error but continue anyway
+            logging.error(err)
 
     def select_packages(self):
-        """ Prepare pacman and get package list from Internet """
-        self.create_pacman_conf()
-        self.prepare_pacman()
-        
+        """ Get package list from the Internet """
         self.packages = []
         
         if len(self.alternate_package_list) > 0:
@@ -696,14 +689,6 @@ class InstallationProcess(multiprocessing.Process):
                     return line.split(":")[1].replace(" ", "").lower()
         return ""
 
-    def init_alpm(self):
-        try:
-            alpm = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception as err:
-            logging.error(err)
-            raise InstallError("Can't initialize pyalpm: %s" % err)
-        return alpm       
-
     def install_packages(self):
         """ Start pacman installation of packages """
         self.chroot_mount_special_dirs()
@@ -712,14 +697,15 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(txt)
         
         pacman_options = {}
-        
-        alpm = self.init_alpm()
-        result = alpm.do_install(pkgs=self.packages, conflicts=self.conflicts, options=pacman_options)
-        del alpm
+
+        result = self.pacman.do_install(
+            pkgs=self.packages,
+            conflicts=self.conflicts,
+            options=pacman_options)
 
         self.chroot_umount_special_dirs()
 
-        if result == 1:
+        if not result:
             raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
         
         # All downloading and installing has been done, so we hide progress bar
@@ -2027,4 +2013,3 @@ class InstallationProcess(multiprocessing.Process):
         self.copy_log()
 
         self.queue_event('pulse', 'stop')
-

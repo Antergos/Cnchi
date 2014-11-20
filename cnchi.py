@@ -44,6 +44,11 @@ import canonical.misc as misc
 import info
 import updater
 
+try:
+    import pyalpm
+except ImportError:
+    logging.error(_("pyalpm not found! This installer won't work."))
+
 # Command line options
 cmd_line = None
 
@@ -61,8 +66,8 @@ class CnchiApp(Gtk.Application):
         try:
             import main_window
         except Exception as err:
-            logging.exception(err)
-            logging.error(_("Can't create Cnchi's main window. Exiting..."))
+            msg = _("Can't create Cnchi main window: %s") % err
+            logging.error(msg)
             sys.exit(1)
 
         window = main_window.MainWindow(self, cmd_line)
@@ -150,6 +155,10 @@ def check_gtk_version():
     else:
         logging.info("Using GTK v%d.%d.%d", major, minor, micro)
 
+    return True
+
+def check_pyalpm_version():
+    logging.info("Using pyalpm v%s - libalpm v%s", pyalpm.version(), pyalpm.alpmversion())
     return True
 
 def parse_options():
@@ -292,6 +301,10 @@ def init_cnchi():
 
     # Check installed GTK version
     if not check_gtk_version():
+        sys.exit(1)
+
+    # Check installed pyalpm and libalpm versions
+    if not check_pyalpm_version():
         sys.exit(1)
 
     # Always try to update cnchi when run
