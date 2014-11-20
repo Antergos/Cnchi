@@ -259,7 +259,8 @@ class DownloadPackages(object):
         """ Adds an event to Cnchi event queue """
 
         if self.callback_queue is None:
-            logging.debug(event_type + " : " + str(event_text))
+            if event_type != "percent":
+                logging.debug(event_type + " : " + str(event_text))
             return
 
         if event_type in self.last_event:
@@ -270,6 +271,7 @@ class DownloadPackages(object):
         self.last_event[event_type] = event_text
 
         try:
+            # Add the event
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
@@ -279,9 +281,15 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(
-        filename="/tmp/cnchi-download-test.log",
-        level=logging.DEBUG)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
     DownloadPackages(
         package_names=["gnome-sudoku"],

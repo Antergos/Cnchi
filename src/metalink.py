@@ -37,8 +37,8 @@ from collections import deque
 
 try:
     import pyalpm
-except ImportError:
-    pass
+except ImportError as err:
+    print(err)
 
 try:
     import xml.etree.cElementTree as ET
@@ -93,7 +93,7 @@ def get_info(metalink):
 def create(pacman, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
+    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed" ]
 
     if package_name is "databases":
         options.append("--refresh")
@@ -120,8 +120,8 @@ def create(pacman, package_name, pacman_conf_file):
             msg = msg + missing + " "
         logging.warning(msg)
 
-    for r in gc.get_referrers(download_queue):
-        pprint.pprint(r)
+    #for r in gc.get_referrers(download_queue):
+    #    pprint.pprint(r)
 
     metalink = download_queue_to_metalink(download_queue)
     
@@ -394,10 +394,10 @@ def get_checksum(path, typ):
             new_hash.update(buf)
             buf = f.read(block_size)
         return new_hash.hexdigest()
-    except IOError as err:
-        if err.errno != errno.ENOENT:
-            logging.error(err)
-            raise err
+    except (FileNotFoundError) as err:
+        return -1
+    except (IOError) as err:
+        logging.error(err)
 
 def check_cache(conf, pkgs):
     """ Checks package checksum in cache """
@@ -434,6 +434,16 @@ def needs_sig(siglevel, insistence, prefix):
 if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
+
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
     
     import sys
     import gc
@@ -446,13 +456,15 @@ if __name__ == '__main__':
         for i in range(1,10000):
             print("Creating metalink...")
             meta4 = create(pacman=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
-            
+            print(get_info(meta4))
             meta4 = None
             n = gc.collect()
             print("Unreachable objects: ", n)
             print("Remaining garbage: ", pprint.pprint(gc.garbage))
+
         pacman.release()
         del pacman
+
     except Exception as err:
         logging.error("Can't initialize pyalpm: %s" % err)
         

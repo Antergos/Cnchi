@@ -393,6 +393,16 @@ if __name__ == "__main__":
     import gettext
     _ = gettext.gettext
 
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
     try:
         pacman = Pac("/etc/pacman.conf")
     except Exception as err:

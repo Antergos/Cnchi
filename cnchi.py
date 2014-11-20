@@ -66,8 +66,8 @@ class CnchiApp(Gtk.Application):
         try:
             import main_window
         except Exception as err:
-            logging.exception(err)
-            logging.error(_("Can't create Cnchi's main window. Exiting..."))
+            msg = _("Can't create Cnchi main window: %s") % err
+            logging.error(msg)
             sys.exit(1)
 
         window = main_window.MainWindow(self, cmd_line)
