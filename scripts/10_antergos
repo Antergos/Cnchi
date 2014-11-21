@@ -112,7 +112,7 @@ linux_entry ()
                   entry="0"
             fi
             check=$(( $entry % 2 ))
-            if [ "$entry" != "0" ] && [ "$check" -eq "0" ] || [ "$entry" == "0" ]; then
+            if ([ "$entry" != "0" ] && [ "$check" -eq "0" ]) || [ "$entry" == "0" ]; then
                   if [ "$version" == "linux" ]; then
 	                title="$(gettext_printf "%s" "${os}")"
 	          elif [ "$version" == "linux-lts" ]; then
