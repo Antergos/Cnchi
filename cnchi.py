@@ -240,15 +240,11 @@ def threads_init():
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
-    force = False
-    if cmd_line.update:
-        force = True
-
-    upd = updater.Updater(force)
+    upd = updater.Updater(force_update=cmd_line.update)
 
     if upd.update():
         remove_temp_files()
-        if force:
+        if cmd_line.update:
             # Remove -uu and --update options from new call
             new_argv = []
             for argv in sys.argv:
@@ -260,7 +256,8 @@ def update_cnchi():
         print(_("Program updated! Restarting..."))
 
         # Run another instance of Cnchi (which will be the new version)
-        os.execl(sys.executable, *([sys.executable] + new_argv))
+        with misc.raised_privileges():
+            os.execl(sys.executable, *([sys.executable] + new_argv))
         sys.exit(0)
 
 def setup_gettext():
@@ -312,8 +309,7 @@ def init_cnchi():
         sys.exit(1)
 
     # Always try to update cnchi when run
-    #with misc.raised_privileges():
-    #update_cnchi()
+    update_cnchi()
 
     # Init PyObject Threads
     threads_init()
