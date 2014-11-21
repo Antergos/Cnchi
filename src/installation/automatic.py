@@ -178,11 +178,12 @@ class InstallationAutomatic(GtkBaseBox):
             self.forward_button.set_sensitive(True)
         else:
             if luks_password == luks_password_confirm:
-                icon = "gtk-yes"
+                icon = "emblem-default"
             else:
-                icon = "gtk-no"
+                icon = "dialog-warning"
                 install_ok = False
-            self.image_password_ok.set_from_stock(icon, Gtk.IconSize.BUTTON)
+            
+            self.image_password_ok.set_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
             self.image_password_ok.set_opacity(1)
 
         self.forward_button.set_sensitive(install_ok)
