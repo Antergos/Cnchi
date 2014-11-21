@@ -38,7 +38,7 @@ from collections import deque
 try:
     import pyalpm
 except ImportError as err:
-    print(err)
+    logging.error(err)
 
 try:
     import xml.etree.cElementTree as ET

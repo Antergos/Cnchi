@@ -39,11 +39,12 @@ if __name__ == "__main__":
 try:
     import pyalpm
 except ImportError as err:
-    logging.error(_("Can't load pyalpm: %s"), err)
+    pass
 
 try:
     import pacman.config as config
 except ImportError as err:
+    # When testing pac.py
     import config
 
 import queue

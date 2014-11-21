@@ -40,7 +40,8 @@ from mako.lookup import TemplateLookup
 
 try:
     import xml.etree.cElementTree as ET
-except ImportError:
+except ImportError as err:
+    logging.warning("Can't find cElementTree, Cnchi will use ElementTree")
     import xml.etree.ElementTree as ET
 
 from installation import auto_partition
@@ -54,8 +55,8 @@ import encfs
 
 try:
     import pyalpm
-except ImportError:
-    pass
+except ImportError as err:
+    logging.error(err)
     
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 

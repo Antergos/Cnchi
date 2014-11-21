@@ -44,11 +44,6 @@ import canonical.misc as misc
 import info
 import updater
 
-try:
-    import pyalpm
-except ImportError as err:
-    logging.error(err)
-
 # Command line options
 cmd_line = None
 
@@ -159,9 +154,15 @@ def check_gtk_version():
 
 def check_pyalpm_version():
     try:
-        logging.info("Using pyalpm v%s - libalpm v%s", pyalpm.version(), pyalpm.alpmversion())
-    except NameError as err:
+        import pyalpm
+        logging.info(
+            _("Using pyalpm v%s as interface to libalpm v%s"),
+            pyalpm.version(),
+            pyalpm.alpmversion())
+    except (NameError, ImportError) as err:
         logging.error(err)
+        # We don't return false as we want to be able to run Cnchi
+        # in non Antergos systems for testing purposes
     return True
 
 def parse_options():

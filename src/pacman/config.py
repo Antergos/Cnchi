@@ -32,7 +32,7 @@ import warnings
 
 try:
     import pyalpm
-except ImportError:
+except ImportError as err:
     pass
 
 class InvalidSyntax(Warning):
