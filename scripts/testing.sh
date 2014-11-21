@@ -5,9 +5,8 @@ uefi="/sys/firmware/efi"
 vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
 notify="$1"
 notify_user () {
-    if [[ "${notify}" = "-n" ]]; then
-        notify-send -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
-    fi
+
+        notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
 }
 
 # Check if this is the first time we are executed.
@@ -49,11 +48,16 @@ if ! [ -f "${previous}" ]; then
 	notify_user "Getting latest version of Cnchi from testing branch..."
 	echo "Getting latest version of Cnchi from testing branch..."
 	# Check commandline arguments to choose repo
-	if [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
-		git clone https://github.com/"$2"/Cnchi.git cnchi;
-	else
-		git clone https://github.com/Antergos/Cnchi.git cnchi;
-	fi
+	#if [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
+	#	git clone https://github.com/"$2"/Cnchi.git cnchi;
+	#else
+	#	git clone https://github.com/Antergos/Cnchi.git cnchi;
+	#fi
+	cd /tmp
+	wget http://antergos.org/cnchi.tar
+	tar -xvf cnchi.tar
+	cp -R cnchi/tmp/cnchi /usr/share
+	rm cnchi.tar && rm -Rf cnchi
 	cd /usr/share/cnchi
 	
 else
@@ -66,8 +70,13 @@ else
 	# Update Cnchi with latest testing code
 	notify_user "Getting latest version of Cnchi from testing branch..."
 	echo "Getting latest version of Cnchi from testing branch..."
+	#cd /usr/share/cnchi
+	#git pull origin master;
+	cd /tmp
+	wget http://antergos.org/cnchi.tar
+	tar -xvf cnchi.tar
+	cp -R cnchi/tmp/cnchi /usr/share
 	cd /usr/share/cnchi
-	git pull origin master;
 fi
 
 # Start Cnchi with appropriate options
@@ -90,7 +99,8 @@ if [ "$1" != "-d" ] && [ "$1" != "--dev-repo" ] && [ "$1" != "" ]; then
 elif [ "$1" = "-d" ] || [ "$1" = "--dev-repo" ]; then
     cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml & exit 0;
 else
-    cnchi -d -v -p /usr/share/cnchi/data/packages.xml & exit 0;
+    cnchi -d -v &
+    exit 0;
 fi
 
 exit 1;
