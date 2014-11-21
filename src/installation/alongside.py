@@ -32,8 +32,6 @@ import logging
 import subprocess
 import tempfile
 
-import xml.etree.ElementTree as etree
-
 if __name__ == '__main__':
     # Insert the parent directory at the front of the path.
     # This is used only when we want to test this screen
