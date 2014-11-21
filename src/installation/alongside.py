@@ -132,16 +132,14 @@ class InstallationAlongside(GtkBaseBox):
         if os.path.exists(path):
             with open(path, "rb") as css:
                 css_data = css.read()
-
-            provider = Gtk.CssProvider()
-
             try:
+                provider = Gtk.CssProvider()
                 provider.load_from_data(css_data)
 
                 Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(), provider,
-                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-                )
+                    Gdk.Screen.get_default(),
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             except:
                 logging.exception(_("Can't load %s css") % path)
 
