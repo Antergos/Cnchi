@@ -200,6 +200,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["welcome"] = welcome.Welcome(self.params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
+        self.connect('key-release-event', self.check_escape)
         
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
@@ -323,6 +324,27 @@ class MainWindow(Gtk.ApplicationWindow):
         hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE
         self.set_geometry_hints(None, geom, hints)
 
+    #GtkWidget *widget, GdkEventKey *event, gpointer data
+    def check_escape(self, widget, event, data=None):
+        if event.keyval == 65307:
+            response = self.confirm_quitting()
+            if response == Gtk.ResponseType.YES:
+                self.on_exit_button_clicked(self)
+                self.destroy()
+
+    def confirm_quitting(self):
+        txt = _("Do you really want to quit the installer?")
+        message = Gtk.MessageDialog(
+            transient_for=self,
+            modal=True,
+            destroy_with_parent=True,
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            text=txt)
+        response = message.run()
+        message.destroy()
+        return response
+        
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """
         remove_temp_files()
