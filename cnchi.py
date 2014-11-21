@@ -46,8 +46,8 @@ import updater
 
 try:
     import pyalpm
-except ImportError:
-    logging.error(_("pyalpm not found! This installer won't work."))
+except ImportError as err:
+    logging.error(err)
 
 # Command line options
 cmd_line = None
@@ -158,7 +158,10 @@ def check_gtk_version():
     return True
 
 def check_pyalpm_version():
-    logging.info("Using pyalpm v%s - libalpm v%s", pyalpm.version(), pyalpm.alpmversion())
+    try:
+        logging.info("Using pyalpm v%s - libalpm v%s", pyalpm.version(), pyalpm.alpmversion())
+    except NameError as err:
+        logging.error(err)
     return True
 
 def parse_options():
