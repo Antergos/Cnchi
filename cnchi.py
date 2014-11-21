@@ -28,12 +28,17 @@
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-from gi.repository import Gtk, Gdk, GObject, Gio
 import os
 import sys
 import logging
 import gettext
 import locale
+
+try:
+    from gi.repository import Gtk, Gdk, GObject, Gio
+except:
+    print("This program needs GTK3")
+    sys.exit(1)
 
 # Insert the src directory at the front of the path
 BASE_DIR = os.path.dirname(__file__) or '.'
