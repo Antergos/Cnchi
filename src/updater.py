@@ -43,14 +43,14 @@ def urlopen(url):
     try:
         request = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
-        logging.exception('Unable to get %s - HTTPError = %s', url, err.reason)
+        logging.error('Unable to get %s - HTTPError = %s', url, err.reason)
     except urllib.error.URLError as err:
-        logging.exception('Unable to get %s - URLError = %s', url, err.reason)
+        logging.error('Unable to get %s - URLError = %s', url, err.reason)
     except http.client.HTTPException as err:
-        logging.exception('Unable to get %s - HTTPException', url)
+        logging.error('Unable to get %s - HTTPException', url)
     except Exception as err:
         import traceback
-        logging.exception('Unable to get %s - Exception = %s', url, traceback.format_exc())
+        logging.error('Unable to get %s - Exception = %s', url, traceback.format_exc())
     finally:
         return request
 
