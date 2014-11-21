@@ -105,7 +105,7 @@ class Updater():
     def should_update_local_file(self, remote_name, remote_md5):
         """ Checks if remote file is different from the local one (just compares md5)"""
         for local_file in self.local_files:
-            if local_file['name'] == remote_name and local_file['md5'] != remote_md5:
+            if local_file['name'] == remote_name and local_file['md5'] != remote_md5 and '__' not in local_file['name']:
                 return True
         return False
 
