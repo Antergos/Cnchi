@@ -124,7 +124,7 @@ class Updater():
             update_cnchi = True
 
             if update_cnchi:
-                res = self.download_master_zip():
+                res = self.download_master_zip()
                 if not res:
                     logging.error(_("Can't download new Cnchi version."))
                     return False
