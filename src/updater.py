@@ -22,6 +22,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Module to update Cnchi """
+
 import urllib.request
 import urllib.error
 
@@ -42,14 +44,13 @@ def urlopen(url):
     try:
         request = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
-        logging.exception('Unable to get %s - HTTPError = %s', url, err.reason)
+        logging.error('Unable to get %s - HTTPError : %s', url, err.reason)
     except urllib.error.URLError as err:
-        logging.exception('Unable to get %s - URLError = %s', url, err.reason)
+        logging.error('Unable to get %s - URLError : %s', url, err.reason)
     except httplib.HTTPException as err:
-        logging.exception('Unable to get %s - HTTPException', url)
+        logging.error('Unable to get %s - HTTPException', url)
     except Exception as err:
-        import traceback
-        logging.exception('Unable to get %s - Exception = %s', url, traceback.format_exc())
+        logging.error('Unable to get %s - Exception : %s', url, err)
     finally:
         return request
 
