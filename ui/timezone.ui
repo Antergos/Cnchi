@@ -11,6 +11,8 @@
       <object class="GtkEventBox" id="timezone_map_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <child>
           <placeholder/>
         </child>
