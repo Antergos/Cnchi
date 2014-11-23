@@ -101,7 +101,7 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.error(_("Couldn't execute auto mirror selection"))
 
         # Check arch mirrorlist against mirror status data, remove any bad mirrors.
-        if use_requests and os.path.exists(self.arch_mirrorlist):
+        if _use_requests and os.path.exists(self.arch_mirrorlist):
             # Use session to avoid silly warning
             # See https://github.com/kennethreitz/requests/issues/1882
             with requests.Session() as session:
