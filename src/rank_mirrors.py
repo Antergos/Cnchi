@@ -31,7 +31,13 @@ import time
 import os
 import shutil
 import canonical.misc as misc
-import requests
+
+try:
+    import requests
+    _use_requests = True
+except ImportError as err:
+    logging.warning("Can't find requests module.")
+    _use_requests = False
 
 class AutoRankmirrorsThread(threading.Thread):
     """ Thread class that downloads and sorts the mirrorlist """
@@ -39,7 +45,7 @@ class AutoRankmirrorsThread(threading.Thread):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
-        self.script = "/usr/share/cnchi/scripts/update-mirrors.sh"
+        self.reflector_script = "/usr/share/cnchi/scripts/update_mirrors.sh"
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
@@ -59,18 +65,18 @@ class AutoRankmirrorsThread(threading.Thread):
                 return
             time.sleep(1)  # Delay
 
-        if not os.path.exists(self.script):
+        if not os.path.exists(self.reflector_script):
             logging.warning(_("Can't find update mirrors script"))
             return
 
         # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
-        
+
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:
                 lines = [x.strip() for x in mirrors.readlines()]
-        
+
             for i in range(len(lines)):
                 if lines[i].startswith("Server") and autoselect in lines[i]:
                     # Comment out auto selection
@@ -78,7 +84,7 @@ class AutoRankmirrorsThread(threading.Thread):
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
-                    
+
             with misc.raised_privileges():
                 # Backup original file
                 shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi_backup")
@@ -89,19 +95,19 @@ class AutoRankmirrorsThread(threading.Thread):
         # Run rankmirrors command
         try:
             with misc.raised_privileges():
-                self.rankmirrors_pid = subprocess.Popen([self.script]).pid
+                self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
 
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
 
         # Check arch mirrorlist against mirror status data, remove any bad mirrors.
-        if os.path.exists(self.arch_mirrorlist):
+        if use_requests and os.path.exists(self.arch_mirrorlist):
             # Use session to avoid silly warning
             # See https://github.com/kennethreitz/requests/issues/1882
             with requests.Session() as session:
                 status = session.get(self.arch_mirror_status).json()
                 mirrors = status['urls']
-            
+
             with open(self.arch_mirrorlist) as arch_mirrors:
                 lines = [x.strip() for x in arch_mirrors.readlines()]
 
