@@ -45,7 +45,7 @@ class AutoRankmirrorsThread(threading.Thread):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
-        self.reflector_script = "/usr/share/cnchi/scripts/update_mirrors.sh"
+        self.reflector_script = "/usr/share/cnchi/scripts/update-mirrors.sh"
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
