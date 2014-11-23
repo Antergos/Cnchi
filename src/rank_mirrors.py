@@ -31,7 +31,13 @@ import time
 import os
 import shutil
 import canonical.misc as misc
-import requests
+
+try:
+    import requests
+    _use_requests = True
+except ImportError as err:
+    logging.warning("Can't find requests module.")
+    _use_requests = False
 
 class AutoRankmirrorsThread(threading.Thread):
     """ Thread class that downloads and sorts the mirrorlist """
@@ -95,7 +101,7 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.error(_("Couldn't execute auto mirror selection"))
 
         # Check arch mirrorlist against mirror status data, remove any bad mirrors.
-        if os.path.exists(self.arch_mirrorlist):
+        if use_requests and os.path.exists(self.arch_mirrorlist):
             # Use session to avoid silly warning
             # See https://github.com/kennethreitz/requests/issues/1882
             with requests.Session() as session:
