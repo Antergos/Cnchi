@@ -65,7 +65,7 @@ class AutoRankmirrorsThread(threading.Thread):
                 return
             time.sleep(1)  # Delay
 
-        if not os.path.exists(self.script):
+        if not os.path.exists(self.reflector_script):
             logging.warning(_("Can't find update mirrors script"))
             return
 
@@ -95,7 +95,7 @@ class AutoRankmirrorsThread(threading.Thread):
         # Run rankmirrors command
         try:
             with misc.raised_privileges():
-                self.rankmirrors_pid = subprocess.Popen([self.script]).pid
+                self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
 
         except subprocess.CalledProcessError as err:
             logging.error(_("Couldn't execute auto mirror selection"))
