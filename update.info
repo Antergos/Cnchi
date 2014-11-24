@@ -1,7 +1,7 @@
-{"version":"0.6.21","files":[
-{"name":"/usr/share/cnchi/src/canonical/__pycache__/__init__.cpython-34.pyc","md5":"2da5dd41fcef51613d08d61fe22767ab"},
-{"name":"/usr/share/cnchi/src/canonical/__pycache__/misc.cpython-34.pyc","md5":"27821680b4773965497452a4e16022a1"},
-{"name":"/usr/share/cnchi/src/canonical/__pycache__/osextras.cpython-34.pyc","md5":"385d0104ed66eff757dfa3aaf8003658"},
+{"version":"0.6.22","files":[
+{"name":"/usr/share/cnchi/src/canonical/__pycache__/__init__.cpython-34.pyc","md5":"cb7d59e1005f81d9b37f12a2fbdfbaa7"},
+{"name":"/usr/share/cnchi/src/canonical/__pycache__/misc.cpython-34.pyc","md5":"0ecdc8de93ffd2f8d0186bf1b97a770f"},
+{"name":"/usr/share/cnchi/src/canonical/__pycache__/osextras.cpython-34.pyc","md5":"fec69f55e0201b88ccc864e52dd78b4d"},
 {"name":"/usr/share/cnchi/src/canonical/tz.py.0_6_19","md5":"a58c4a828aa0027348e8e17e8c7ad707"},
 {"name":"/usr/share/cnchi/src/canonical/gtkwidgets.py.0_6_19","md5":"8427053a032edc5df202c95aee5b8f02"},
 {"name":"/usr/share/cnchi/src/canonical/nm.py.0_6_19","md5":"d3068c7c0931e62c187fa39e83522761"},
@@ -16,8 +16,8 @@
 {"name":"/usr/share/cnchi/src/canonical/misc.py","md5":"d8655b9b2c27788b0cb231a8f44120be"},
 {"name":"/usr/share/cnchi/src/canonical/osextras.py","md5":"3a64e6e897479aa304b3ea000f3af60e"},
 {"name":"/usr/share/cnchi/src/canonical/validation.py","md5":"101ca42768fc20c68e0e9e6912ee6363"},
-{"name":"/usr/share/cnchi/src/__pycache__/info.cpython-34.pyc","md5":"de19ddefda2582d3777fadca042ce778"},
-{"name":"/usr/share/cnchi/src/__pycache__/updater.cpython-34.pyc","md5":"026ef407e259b4ae381f3405623af3e3"},
+{"name":"/usr/share/cnchi/src/__pycache__/info.cpython-34.pyc","md5":"17a1ad79f75365e2038743a3e59644ad"},
+{"name":"/usr/share/cnchi/src/__pycache__/updater.cpython-34.pyc","md5":"a47d905ec3484d980c06763cd0b80508"},
 {"name":"/usr/share/cnchi/src/pacman/config.py.0_6_19","md5":"35476e39a343cd8cda8410f2f249fdc0"},
 {"name":"/usr/share/cnchi/src/pacman/pac.py.0_6_19","md5":"4c01c20ddfe214dc01561af02415ad48"},
 {"name":"/usr/share/cnchi/src/pacman/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
