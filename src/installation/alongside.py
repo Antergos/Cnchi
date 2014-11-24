@@ -39,10 +39,10 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-# Insert the src/parted directory at the front of the path.
-base_dir = os.path.dirname(__file__) or '.'
-parted_dir = os.path.join(base_dir, 'parted3')
-sys.path.insert(0, parted_dir)
+## Insert the src/parted directory at the front of the path.
+#base_dir = os.path.dirname(__file__) or '.'
+#parted_dir = os.path.join(base_dir, 'parted3')
+#sys.path.insert(0, parted_dir)
 
 try:
     import parted
@@ -181,8 +181,8 @@ class InstallationAlongside(GtkBaseBox):
 
         self.header.set_subtitle(_("Antergos Alongside Installation"))
 
-        txt = _("Install Now!")
-        self.forward_button.set_label(txt)
+        #txt = _("Install Now!")
+        #self.forward_button.set_label(txt)
 
     def prepare(self, direction):
         self.translate_ui()
