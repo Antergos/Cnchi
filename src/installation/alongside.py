@@ -86,8 +86,9 @@ def get_partition_size_info(partition_path, human):
         df_out = subprocess.check_output(cmd).decode()
         subprocess.call(["umount", "-l", tmp_dir])
     except subprocess.CalledProcessError as err:
-        txt = "CalledProcessError.output = %s" % err.output
-        logging.exception(txt)
+        logging.error(err)
+    finally:
+        os.rmdir(tmp_dir)
 
     if len(df_out) > 0:
         df_out = df_out.split('\n')
@@ -139,7 +140,7 @@ class InstallationAlongside(GtkBaseBox):
                     provider,
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             except:
-                logging.exception(_("Can't load %s css") % path)
+                logging.error(_("Can't load %s css file") % path)
 
         #slider.add_events(Gdk.EventMask.SCROLL_MASK)
 
@@ -294,9 +295,8 @@ class InstallationAlongside(GtkBaseBox):
         if self.min_size + MIN_ROOT_SIZE < self.max_size:
             self.new_size = self.ask_shrink_size(other_os_name)
         else:
-            txt = _("Can't shrink partition %s (maybe it's nearly full?)") % partition_path
-            logging.warning(txt)
-            #show.error(self.get_toplevel(), txt)
+            #txt = _("Can't shrink partition %s (maybe it's nearly full?)") % partition_path
+            #logging.warning(txt)
             return
 
         if self.new_size > 0 and self.is_room_available(row):

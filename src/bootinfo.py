@@ -94,10 +94,11 @@ def _check_windows(mount_name):
 @misc.raise_privileges
 def _hexdump8081(partition):
     try:
-        return subprocess.check_output(
+        hexdump = subprocess.check_output(
             ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]).decode()
+        return hexdump
     except subprocess.CalledProcessError as err:
-        logging.warning(err)
+        logging.warning(_("Error calling hexdump command"))
         return ""
 
 def _get_partition_info(partition):
@@ -105,35 +106,37 @@ def _get_partition_info(partition):
     bytes80_to_81 = _hexdump8081(partition)
     
     bst = {
-        '7405':'Windows 7: FAT32',
+        '0000':'Linux Swap',
+        '7405':'Windows 7',     # W7 Fat32
         '0734':'Dos_1.0',
-        '0745':'Windows Vista: FAT32',
-        '089e':'MSDOS5.0: FAT16',
-        '08cd':'Windows XP: NTFS',
-        '0bd0':'MSWIN4.1: FAT32',
+        '0745':'Windows Vista', # WVista Fat32
+        '089e':'MSDOS5.0',      # Dos Fat16
+        '08cd':'Windows XP',    # WinXP Ntfs
+        '0bd0':'MSWIN4.1',      # Fat32
         '2a00':'ReactOS',
         '2d5e':'Dos 1.1',
-        '3a5e':'Recovery: FAT32',
-        '55aa':'Windows Vista/7: NTFS',
-        '638b':'Freedos: FAT32',
-        '7cc6':'MSWIN4.1: FAT32',
-        '8ec0':'Windows XP: NTFS',
-        'b6d1':'Windows XP: FAT32',
+        '3a5e':'Recovery',      # Recovery Fat32
+        '5c17':'Extended (do not use)',    # Extended partition
+        '55aa':'Windows Vista/7', # Vista/7 Ntfs
+        '638b':'Freedos',       # FreeDos Fat32
+        '7cc6':'MSWIN4.1',      # Fat32
+        '8ec0':'Windows XP',    # WinXP Ntfs
+        'b6d1':'Windows XP',    # WinXP Fat32
         'e2f7':'FAT32, Non Bootable',
-        'e9d8':'Windows Vista/7: NTFS',
-        'fa33':'Windows XP: NTFS'}
+        'e9d8':'Windows Vista/7', # Vista/7 Ntfs
+        'fa33':'Windows XP'}    # WinXP Ntfs
 
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
-    else:
-        return _("unknown")
+    elif len(bytes80_to_81) > 0:
+        logging.debug("Unknown partition id %s", bytes80_to_81)
+    return _("unknown")
 
 def _check_reactos(mount_name):
     """ Checks for ReactOS """
     detected_os = _("unknown")
     path = os.path.join(mount_name, "ReactOS/system32/config/SecEvent.Evt")
     if os.path.exists(path):
-        #print("reactos: ", path)
         detected_os = "ReactOS"
     return detected_os
 
@@ -210,6 +213,8 @@ def get_os_dict():
     """ Returns all detected OSes in a dict """
     oses = {}
 
+    tmp_dir = tempfile.mkdtemp()
+    
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -218,7 +223,6 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-                    tmp_dir = tempfile.mkdtemp()
                     
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
@@ -231,7 +235,14 @@ def get_os_dict():
 
                     if oses[device] == _("unknown"):
                         # As a last resort, try reading partition info with hexdump
+                        print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
+                    
+    try:
+        os.rmdir(tmp_dir)
+    except OSError as err:
+        print(err)
+
     return oses
 
 if __name__ == '__main__':
