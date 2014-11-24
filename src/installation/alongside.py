@@ -120,6 +120,8 @@ class InstallationAlongside(GtkBaseBox):
         self.init_slider()
 
     def init_slider(self):
+        # https://developer.gnome.org/gtk3/stable/GtkScale.html
+
         dialog = self.ui.get_object("shrink-dialog")
         slider = self.ui.get_object("scale")
 
