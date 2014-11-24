@@ -235,7 +235,7 @@ def get_os_dict():
 
                     if oses[device] == _("unknown"):
                         # As a last resort, try reading partition info with hexdump
-                        print(device, _get_partition_info(device))
+                        #print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
                     
     try:
