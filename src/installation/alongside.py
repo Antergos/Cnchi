@@ -97,8 +97,8 @@ def get_partition_size_info(partition_path, human):
             max_size = df_out[1]
             min_size = df_out[2]
         else:
-            max_size = int(df_out[1]) / 1000
-            min_size = int(df_out[2]) / 1000
+            max_size = float(df_out[1]) / 1000.0
+            min_size = float(df_out[2]) / 1000.0
 
     return (min_size, max_size)
 
@@ -119,35 +119,6 @@ class InstallationAlongside(GtkBaseBox):
         # Init dialog slider
         self.init_slider()
 
-    def init_slider(self):
-        # https://developer.gnome.org/gtk3/stable/GtkScale.html
-
-        dialog = self.ui.get_object("shrink-dialog")
-        slider = self.ui.get_object("scale")
-
-        slider.set_name("myslider")
-        path = os.path.join(self.settings.get("data"), "css", "scale.css")
-
-        self.available_slider_range = [0, 0]
-
-        if os.path.exists(path):
-            with open(path, "rb") as css:
-                css_data = css.read()
-            try:
-                provider = Gtk.CssProvider()
-                provider.load_from_data(css_data)
-
-                Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(),
-                    provider,
-                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            except:
-                logging.error(_("Can't load %s css file") % path)
-
-        #slider.add_events(Gdk.EventMask.SCROLL_MASK)
-
-        slider.connect("change-value", self.slider_change_value)
-
         btn = self.ui.get_object("button_ok")
         btn.set_label("_Apply")
         btn.set_use_underline(True)
@@ -157,28 +128,10 @@ class InstallationAlongside(GtkBaseBox):
         btn.set_label("_Cancel")
         btn.set_use_underline(True)
         btn.set_always_show_image(True)
-        
-        '''
-        slider.connect("value_changed", self.main.on_volume_changed)
-        slider.connect("button_press_event", self.on_scale_button_press_event)
-        slider.connect("button_release_event", self.on_scale_button_release_event)
-        slider.connect("scroll_event", self.on_scale_scroll_event)
-        '''
-
-    def slider_change_value(self, slider, scroll, value):
-        """ Check that the value is inside our range and if it is, change it """
-        min_range = self.available_slider_range[0]
-        max_range = self.available_slider_range[1]
-        if value <= min_range or value >= max_range:
-            return True
-        else:
-            slider.set_fill_level(value)
-            self.update_ask_shrink_size_labels(value)
-            return False
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("Select the OS you would like Antergos installed next to.")
+        txt = _("Select the OS (or partition) you would like Antergos installed next to.")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
@@ -289,16 +242,18 @@ class InstallationAlongside(GtkBaseBox):
         other_os_name = row[COL_DETECTED_OS]
 
         self.min_size = 0
-        self.max_size = 0
+        self.partition_size = 0
         self.new_size = 0
 
-        (self.min_size, self.max_size) = get_partition_size_info(partition_path, human=False)
-
-        if self.min_size + MIN_ROOT_SIZE < self.max_size:
-            self.new_size = self.ask_shrink_size(other_os_name)
+        (self.min_size, self.partition_size) = get_partition_size_info(partition_path, human=False)
+        
+        if self.min_size + MIN_ROOT_SIZE < self.partition_size:
+            self.new_size = int(self.min_size + self.ask_shrink_size(other_os_name))
+            txt = _("Will resize partition %s to %f MB") % (partition_path, self.new_size)
+            logging.debug(txt)
         else:
-            #txt = _("Can't shrink partition %s (maybe it's nearly full?)") % partition_path
-            #logging.warning(txt)
+            txt = _("New Antergos partition doesn't fit in partition %s") % partition_path
+            logging.debug(txt)
             return
 
         if self.new_size > 0 and self.is_room_available(row):
@@ -306,26 +261,66 @@ class InstallationAlongside(GtkBaseBox):
         else:
             self.forward_button.set_sensitive(False)
 
+    def init_slider(self):
+        # https://developer.gnome.org/gtk3/stable/GtkScale.html
+
+        slider = self.ui.get_object("scale")
+        
+        self.max_range = None
+
+        slider.set_name("myslider")
+        path = os.path.join(self.settings.get("data"), "css", "scale.css")
+
+
+        '''
+        if os.path.exists(path):
+            with open(path, "rb") as css:
+                css_data = css.read()
+            try:
+                provider = Gtk.CssProvider()
+                provider.load_from_data(css_data)
+
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            except:
+                logging.error(_("Can't load %s css file") % path)
+        '''
+
+        slider.connect("value-changed", self.slider_value_changed)
+        
+        '''
+        slider.connect("value_changed", self.main.on_volume_changed)
+        slider.connect("button_press_event", self.on_scale_button_press_event)
+        slider.connect("button_release_event", self.on_scale_button_release_event)
+        slider.connect("scroll_event", self.on_scale_scroll_event)
+        '''
+
+    def slider_value_changed(self, widget):
+        """ Check that the value is inside our range and if it is, change it """
+        self.update_ask_shrink_size_labels(widget.get_value())
+
     def update_ask_shrink_size_labels(self, new_value):
         label_other_os_size = self.ui.get_object("label_other_os_size")
-        label_other_os_size.set_markup(str(int(new_value)) + " MB")
+        label_other_os_size.set_markup("%d MB" % int(self.min_size + new_value))
 
         label_antergos_size = self.ui.get_object("label_antergos_size")
-        label_antergos_size.set_markup(str(int(self.max_size - new_value)) + " MB")
-
+        label_antergos_size.set_markup("%d MB" % int(self.partition_size - new_value))
+        
     def ask_shrink_size(self, other_os_name):
         dialog = self.ui.get_object("shrink-dialog")
 
         slider = self.ui.get_object("scale")
 
-        # leave space for Antergos
-        self.available_slider_range = [self.min_size, self.max_size - MIN_ROOT_SIZE]
-
-        slider.set_fill_level(self.min_size)
-        slider.set_show_fill_level(True)
-        slider.set_restrict_to_fill_level(False)
-        slider.set_range(0, self.max_size)
-        slider.set_value(self.min_size)
+        # Reserve space for Antergos
+        self.max_range = self.partition_size - MIN_ROOT_SIZE
+        
+        # adj = Gtk.Adjustment.new(value, lower, upper, step_increment, page_increment, page_size)
+        adj = Gtk.Adjustment.new(0, 0, int(self.max_range), 1, -10, 0)
+        slider.set_adjustment(adj)
+        slider.set_vexpand(True)
+        slider.set_hexpand(True)
         slider.set_draw_value(False)
 
         label_other_os = self.ui.get_object("label_other_os")
@@ -333,10 +328,13 @@ class InstallationAlongside(GtkBaseBox):
         label_other_os.set_markup(txt)
 
         label_antergos = self.ui.get_object("label_antergos")
-        txt = "<span weight='bold' size='large'>Antergos</span>"
+        txt = _("New Antergos Install")
+        txt = "<span weight='bold' size='large'>%s</span>" % txt
         label_antergos.set_markup(txt)
 
-        self.update_ask_shrink_size_labels(self.min_size)
+        self.update_ask_shrink_size_labels(0)
+
+        dialog.set_transient_for(self.get_toplevel())
 
         response = dialog.run()
 
