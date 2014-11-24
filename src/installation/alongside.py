@@ -338,6 +338,8 @@ class InstallationAlongside(GtkBaseBox):
         return value
 
     def is_room_available(self, row):
+        """ Checks that we really can shrink the partition and create a new one
+        with the current hard disk layout """
         partition_path = row[COL_DEVICE]
         otherOS = row[COL_DETECTED_OS]
         fs_type = row[COL_FILESYSTEM]
@@ -369,16 +371,17 @@ class InstallationAlongside(GtkBaseBox):
         logging.debug("extended partition: %s" % extended_path)
         logging.debug("primary partitions: %s" % primary_partitions)
 
-        if len(primary_partitions) >= 4:
+        if len(extended_path) > 0:
+            # TODO: Allow shrink a logical partition and create inside two additional partitions (root and swap)
+            print("Extended present")
+
+        if len(primary_partitions) > 2:
+            # We only allow installing if only 2 partitions are already occupied,
+            # otherwise there will be no room for root and swap partitions
             txt = _("There are too many primary partitions, can't create a new one")
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
             return False
-
-        self.extended_path = extended_path
-
-        # We only allow installing if only 2 partitions are already occupied, otherwise there's no room for root + swap
-
 
         return True
 
