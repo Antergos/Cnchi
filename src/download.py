@@ -3,33 +3,81 @@
 #
 #  download.py
 #
-#  Copyright 2013 Antergos
+#  Copyright © 2013,2014 Antergos
 #
-#  This program is free software; you can redistribute it and/or modify
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
+#  Cnchi is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
+#  along with Cnchi; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
+
+""" Module to download packages using Aria2 or urllib """
 
 import os
 import subprocess
 import logging
 import xmlrpc.client
 import queue
-import logging
+import shutil
+import urllib
+import urllib.error
+import urllib.request
+#import aria2
+#import metalink as ml
 
 #from pprint import pprint
 
-""" Module to download packages using Aria2 """
+def url_open_read(urlp, chunk_size=8192):
+    """ Helper function to download and read a fragment of a remote file """
+
+    download_error = True
+    data = None
+
+    try:
+        data = urlp.read(chunk_size)
+        download_error = False
+    except urllib.error.HTTPError as err:
+        msg = ' HTTPError : %s' % err.reason
+        logging.warning(msg)
+    except urllib.error.URLError as err:
+        msg = ' URLError : %s' % err.reason
+        logging.warning(msg)
+
+    return (data, download_error)
+
+def url_open(url):
+    """ Helper function to open a remote file """
+
+    msg = _('Error opening %s:') % url
+
+    try:
+        urlp = urllib.request.urlopen(url)
+    except urllib.error.HTTPError as err:
+        urlp = None
+        msg += ' HTTPError : %s' % err.reason
+        logging.warning(msg)
+    except urllib.error.URLError as err:
+        urlp = None
+        msg += ' URLError : %s' % err.reason
+        logging.warning(msg)
+    except AttributeError as err:
+        urlp = None
+        msg += ' AttributeError : %s' % err
+        logging.warning(msg)
+
+    return urlp
+
 class DownloadPackages(object):
     """ Class to download packages using Aria2
         This class tries to previously download all necessary packages for
