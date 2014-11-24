@@ -271,8 +271,6 @@ class InstallationAlongside(GtkBaseBox):
         slider.set_name("myslider")
         path = os.path.join(self.settings.get("data"), "css", "scale.css")
 
-
-        '''
         if os.path.exists(path):
             with open(path, "rb") as css:
                 css_data = css.read()
@@ -286,16 +284,8 @@ class InstallationAlongside(GtkBaseBox):
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             except:
                 logging.error(_("Can't load %s css file") % path)
-        '''
 
         slider.connect("value-changed", self.slider_value_changed)
-        
-        '''
-        slider.connect("value_changed", self.main.on_volume_changed)
-        slider.connect("button_press_event", self.on_scale_button_press_event)
-        slider.connect("button_release_event", self.on_scale_button_release_event)
-        slider.connect("scroll_event", self.on_scale_scroll_event)
-        '''
 
     def slider_value_changed(self, widget):
         """ Check that the value is inside our range and if it is, change it """
