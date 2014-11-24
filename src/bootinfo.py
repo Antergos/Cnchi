@@ -241,7 +241,7 @@ def get_os_dict():
     try:
         os.rmdir(tmp_dir)
     except OSError as err:
-        print(err)
+        pass
 
     return oses
 
