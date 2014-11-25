@@ -192,7 +192,8 @@ openbox_settings()
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 }
 
-lxqt_settings(){
+lxqt_settings()
+{
     # Set theme
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
     echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
@@ -223,7 +224,8 @@ lxqt_settings(){
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
-kde_settings(){
+kde_settings()
+{
     # Set KDE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -257,7 +259,8 @@ kde_settings(){
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-plasma5_settings(){
+plasma5_settings()
+{
     # Set KDE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -291,7 +294,8 @@ plasma5_settings(){
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-mate_settings() {
+mate_settings()
+{
     # Set MATE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -328,15 +332,19 @@ mate_settings() {
     cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
 }
 
-nox_settings(){
+nox_settings()
+{
     echo "Done"
 }
 
-enlightenment_settings(){
+enlightenment_settings()
+{
+    # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
     echo "TODO"
 }
 
-postinstall(){
+postinstall()
+{
     USER_NAME=$1
     DESTDIR=$2
     DESKTOP=$3
