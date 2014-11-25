@@ -28,8 +28,8 @@ set_xorg()
     cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
 }
 
-gnome_settings(){
-
+gnome_settings()
+{
     # Set gsettings input-source
     if [[ "${KEYBOARD_VARIANT}" != '' ]];then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
@@ -66,7 +66,8 @@ gnome_settings(){
     #self.chroot(['dconf', 'update'])
 }
 
-cinnamon_settings(){
+cinnamon_settings()
+{
     # Set gsettings input-source
     if [[ "${KEYBOARD_VARIANT}" != '' ]];then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
@@ -109,7 +110,8 @@ cinnamon_settings(){
     chroot ${DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${USER_NAME}/.cinnamon/backgrounds/antergos" ${USER_NAME}
 }
 
-xfce_settings(){
+xfce_settings()
+{
     # copy antergos menu icon
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -139,7 +141,8 @@ xfce_settings(){
     echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment    
 }
 
-openbox_settings(){
+openbox_settings()
+{
     # copy antergos menu icon
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -165,6 +168,10 @@ openbox_settings(){
     # Copy /etc setup files
     cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+    
+    # Copy oblogout icons
+    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
+    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
 
     # Set settings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
@@ -185,7 +192,8 @@ openbox_settings(){
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 }
 
-lxqt_settings(){
+lxqt_settings()
+{
     # Set theme
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
     echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
@@ -216,7 +224,8 @@ lxqt_settings(){
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
-kde_settings(){
+kde_settings()
+{
     # Set KDE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=kde-plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -250,7 +259,8 @@ kde_settings(){
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-plasma5_settings(){
+plasma5_settings()
+{
     # Set KDE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=plasma" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -284,7 +294,8 @@ plasma5_settings(){
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
-mate_settings() {
+mate_settings()
+{
     # Set MATE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -321,15 +332,19 @@ mate_settings() {
     cp /usr/share/cnchi/scripts/antergos.layout ${DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
 }
 
-nox_settings(){
+nox_settings()
+{
     echo "Done"
 }
 
-enlightenment_settings(){
+enlightenment_settings()
+{
+    # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
     echo "TODO"
 }
 
-postinstall(){
+postinstall()
+{
     USER_NAME=$1
     DESTDIR=$2
     DESKTOP=$3

@@ -186,6 +186,10 @@ class Check(GtkBaseBox):
         # Set timer
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
 
+    def get_next_page(self):
+        # TODO: Decide if we need to show location page or not
+        return self.next_page
+
 # When testing, no _() is available
 try:
     _("")

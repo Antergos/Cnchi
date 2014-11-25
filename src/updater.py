@@ -25,7 +25,6 @@
 """ Module to update Cnchi """
 
 import urllib
-
 import json
 import hashlib
 import os
@@ -123,11 +122,11 @@ class Updater():
             logging.info(_("New version found. Updating installer..."))
             update_cnchi = True
 
-            if update_cnchi:
-                res = self.download_master_zip()
-                if not res:
-                    logging.error(_("Can't download new Cnchi version."))
-                    return False
+        if update_cnchi:
+            res = self.download_master_zip()
+            if not res:
+                logging.error(_("Can't download new Cnchi version."))
+                return False
 
         return update_cnchi
 

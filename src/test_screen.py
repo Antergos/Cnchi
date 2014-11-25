@@ -84,6 +84,17 @@ def run(screen_name):
     window.set_border_width(12)
     window.set_title("Cnchi - Test of %s screen" % screen_name)
 
+    import logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
+        "%Y-%m-%d %H:%M:%S")
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    
     import config
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
