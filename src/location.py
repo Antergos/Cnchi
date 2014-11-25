@@ -57,6 +57,10 @@ class Location(GtkBaseBox):
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>%s</span>" % txt
         self.label_choose_country.set_markup(txt)
+        
+        check = self.ui.get_object('show_all_locations_checkbutton')
+        txt = _("Show all locations")
+        check.set_label(txt)
 
         self.header.set_subtitle(_("Select your location"))
 
