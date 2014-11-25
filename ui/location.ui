@@ -14,9 +14,7 @@
       <object class="GtkLabel" id="label_help">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">The selected location will be used to help select the system locale.
-Normally this should be the country where you live.
-This is a shortlist of locations based on the language you selected.</property>
+        <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
       </object>
       <packing>
@@ -29,7 +27,7 @@ This is a shortlist of locations based on the language you selected.</property>
       <object class="GtkLabel" id="label_choose_country">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">label</property>
+        <property name="label" translatable="yes"></property>
       </object>
       <packing>
         <property name="expand">False</property>
