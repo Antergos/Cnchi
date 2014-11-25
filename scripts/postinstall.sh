@@ -211,6 +211,10 @@ openbox_settings(){
     cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 	
+    # Copy oblogout icons
+    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
+    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
+
     # Set settings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
 	mkdir -p ${DESTDIR}/var/run/dbus
