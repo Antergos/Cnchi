@@ -1,3 +1,0 @@
-#!/bin/sh
-watch -n 1 'ps ax -o rss,user,command | sort -nr | head -n 10'
-
