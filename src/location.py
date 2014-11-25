@@ -43,8 +43,6 @@ class Location(GtkBaseBox):
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
 
-        self.listbox_items = 0
-
         self.load_locales()
 
         self.selected_country = ""
@@ -80,6 +78,7 @@ class Location(GtkBaseBox):
         self.hide_all()
         self.fill_listbox()
 
+        '''
         if self.listbox_items == 1:
             # If we have only one option, don't bother our beloved user
             self.store_values()
@@ -91,9 +90,10 @@ class Location(GtkBaseBox):
             while Gtk.events_pending():
                 Gtk.main_iteration()
         else:
-            self.select_first_listbox_item()
-            self.translate_ui()
-            self.show_all()
+        '''
+        self.select_first_listbox_item()
+        self.translate_ui()
+        self.show_all()
 
         # Enable forward button
         # If timezone does not work, forward button is disabled.
@@ -135,7 +135,7 @@ class Location(GtkBaseBox):
                 if country_code in language_name:
                     self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
 
-    def fill_listbox(self):
+    def get_areas(self):
         lang_code = self.settings.get("language_code")
         areas = []
         for locale_name in self.locales:
@@ -143,15 +143,18 @@ class Location(GtkBaseBox):
                 areas.append(self.locales[locale_name])
 
         # When we don't find any country we put all language codes.
-        # This happends with Esperanto and Asturianu at least.
+        # This happens with Esperanto and Asturianu at least.
         if len(areas) == 0:
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
 
-        self.listbox_items = len(areas)
-
         areas.sort()
 
+        return areas
+
+    def fill_listbox(self):
+        areas = self.get_areas()
+        
         # Delete listbox previous contents (if any)
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
@@ -160,8 +163,6 @@ class Location(GtkBaseBox):
             box = Gtk.VBox()
             label = Gtk.Label()
             label.set_markup(area)
-            #FIXME: set_alignment is deprecated
-            #label.set_alignment(0, 0.5)
             box.add(label)
             self.listbox.add(box)
 
