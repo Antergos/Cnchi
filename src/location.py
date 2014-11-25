@@ -46,6 +46,17 @@ class Location(GtkBaseBox):
         self.load_locales()
 
         self.selected_country = ""
+        
+        self.show_all_locations = False
+            
+        button = self.ui.get_object("show_all_locations_checkbutton")
+        button.connect("toggled", self.on_show_all_locations_checkbox_toggled, "")
+        
+        self.scrolledwindow = self.ui.get_object("scrolledwindow1")
+
+    def on_show_all_locations_checkbox_toggled(self, button, name):
+        self.show_all_locations = button.get_active()
+        self.fill_listbox()
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -99,11 +110,6 @@ class Location(GtkBaseBox):
         self.translate_ui()
         self.show_all()
 
-        # Enable forward button
-        # If timezone does not work, forward button is disabled.
-        # If user doesn't choose timezone and goes back to this screen,
-        # forward button will still be disabled,
-        # thus we have to always activate it here
         self.forward_button.set_sensitive(True)
 
     def load_locales(self):
@@ -140,15 +146,20 @@ class Location(GtkBaseBox):
                     self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
 
     def get_areas(self):
-        lang_code = self.settings.get("language_code")
         areas = []
-        for locale_name in self.locales:
-            if lang_code in locale_name:
-                areas.append(self.locales[locale_name])
 
-        # When we don't find any country we put all language codes.
-        # This happens with Esperanto and Asturianu at least.
-        if len(areas) == 0:
+        if not self.show_all_locations:
+            lang_code = self.settings.get("language_code")
+            for locale_name in self.locales:
+                if lang_code in locale_name:
+                    areas.append(self.locales[locale_name])
+            if len(areas) == 0:
+                # When we don't find any country we put all language codes.
+                # This happens with Esperanto and Asturianu at least.
+                for locale_name in self.locales:
+                    areas.append(self.locales[locale_name])
+        else:
+            # Put all language codes (forced by the checkbox)
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
 
@@ -160,23 +171,30 @@ class Location(GtkBaseBox):
         areas = self.get_areas()
         
         # Delete listbox previous contents (if any)
+        #for listbox_row in self.listbox.get_children():
+        #    listbox_row.destroy()
+        #    listbox_row.delete()
+        
+        #row = self.listbox.get_row_at_index(0)
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
 
         for area in areas:
-            box = Gtk.VBox()
-            label = Gtk.Label()
+            label = Gtk.Label.new()
             label.set_markup(area)
-            box.add(label)
-            self.listbox.add(box)
+            label.show_all()
+            self.listbox.add(label)
+        
+
 
         self.selected_country = areas[0]
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         if listbox_row is not None:
-            vbox = listbox_row.get_children()[0]
-            label = vbox.get_children()[0]
-            self.selected_country = label.get_text()
+            label = listbox_row.get_children()[0]
+            if label is not None:
+                print(label.get_text())
+                self.selected_country = label.get_text()
 
     def set_locale(self, mylocale):
         self.settings.set("locale", mylocale)
