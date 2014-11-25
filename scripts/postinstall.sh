@@ -28,8 +28,8 @@ set_xorg()
     cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
 }
 
-gnome_settings(){
-
+gnome_settings()
+{
     # Set gsettings input-source
     if [[ "${KEYBOARD_VARIANT}" != '' ]];then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
@@ -66,7 +66,8 @@ gnome_settings(){
     #self.chroot(['dconf', 'update'])
 }
 
-cinnamon_settings(){
+cinnamon_settings()
+{
     # Set gsettings input-source
     if [[ "${KEYBOARD_VARIANT}" != '' ]];then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
@@ -109,7 +110,8 @@ cinnamon_settings(){
     chroot ${DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${USER_NAME}/.cinnamon/backgrounds/antergos" ${USER_NAME}
 }
 
-xfce_settings(){
+xfce_settings()
+{
     # copy antergos menu icon
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -139,7 +141,8 @@ xfce_settings(){
     echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment    
 }
 
-openbox_settings(){
+openbox_settings()
+{
     # copy antergos menu icon
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
@@ -165,6 +168,10 @@ openbox_settings(){
     # Copy /etc setup files
     cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+    
+    # Copy oblogout icons
+    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
+    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
 
     # Set settings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
