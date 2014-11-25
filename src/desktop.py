@@ -24,7 +24,7 @@
 
 """ Desktop screen """
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, GdkPixbuf
 import os
 import logging
 import desktop_environments as desktops
@@ -73,24 +73,39 @@ class DesktopAsk(GtkBaseBox):
             self.desktop_image.set_from_file(path)
             
         # and this sets the icon
-        filename = desktop.lower() + ".png"
-        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
-        
+        filename = "desktop-environment-" + desktop.lower() + ".svg"
+        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)       
         icon_exists = os.path.exists(icon_path)
         
         if self.icon_desktop_image is None:
             if icon_exists:
-                self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
+                #self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
+                self.icon_desktop_image = Gtk.Image.new_from_pixbuf(pixbuf)
             else:
-                self.icon_desktop_image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
+                filename = desktop.lower() + ".png"
+                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_exists = os.path.exists(icon_path)
+                if icon_exists:
+                    self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
+                else:
+                    self.icon_desktop_image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
             overlay = self.ui.get_object("image_overlay")
             overlay.add_overlay(self.icon_desktop_image)
         else:
             if icon_exists:
-                self.icon_desktop_image.set_from_file(icon_path)
+                #self.icon_desktop_image.set_from_file(icon_path)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
+                self.icon_desktop_image.set_from_pixbuf(pixbuf)                
             else:
-                self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
+                filename = desktop.lower() + ".png"
+                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_exists = os.path.exists(icon_path)
+                if icon_exists:
+                    self.icon_desktop_image.set_from_file(icon_path)
+                else:
+                    self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
         # set header text
         txt = _("Choose Your Desktop")
@@ -112,12 +127,19 @@ class DesktopAsk(GtkBaseBox):
         for desktop_name in desktop_names:
             box = Gtk.HBox()
 
-            filename = desktop_name.lower() + ".png"
-            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
+            filename = "desktop-environment-" + desktop_name.lower() + ".svg"
+            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
             if os.path.exists(icon_path):
-                image = Gtk.Image.new_from_file(icon_path)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 24, 24)
+                image = Gtk.Image.new_from_pixbuf(pixbuf)
+                #image = Gtk.Image.new_from_file(icon_path)
             else:
-                image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
+                filename = desktop_name.lower() + ".png"
+                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
+                if os.path.exists(icon_path):
+                    image = Gtk.Image.new_from_file(icon_path)
+                else:
+                    image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
             box.pack_start(image, False, False, 2)
 
             label = Gtk.Label()
