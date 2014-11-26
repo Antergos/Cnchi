@@ -478,7 +478,7 @@ class InstallationProcess(multiprocessing.Process):
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
-        except (FileExistsError, shutil.Error) as err:
+        except (FileExistsError, shutil.Error, OSError) as err:
             # log error but continue anyway
             logging.error(err)
 

@@ -248,7 +248,7 @@ def update_cnchi():
     upd = updater.Updater(force_update=cmd_line.update)
 
     if upd.update():
-        remove_temp_files()
+        main_window.remove_temp_files()
         if cmd_line.update:
             # Remove -uu and --update options from new call
             new_argv = []
