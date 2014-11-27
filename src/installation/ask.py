@@ -91,12 +91,23 @@ class InstallationAsk(GtkBaseBox):
         # Always hide alongside option. It is not ready yet
         # if "windows" not in self.other_os.lower():
         if not self.settings.get('z_hidden'):
-            radio = self.ui.get_object("alongside_radiobutton")
-            radio.hide()
-            label = self.ui.get_object("alongside_description")
-            label.hide()
-            image = self.ui.get_object("alongside_image")
-            image.hide()
+            self.hide_alongside_option()
+
+    def hide_alongside_option(self):
+        pass
+        '''
+        widgets = [
+            "alongside_radiobutton",
+            "alongside_description",
+            "alongside_image"]
+        
+        radio = self.ui.get_object()
+        radio.hide()
+        label = self.ui.get_object()
+        label.hide()
+        image = self.ui.get_object()
+        image.hide()
+        '''
 
     def translate_ui(self):
         """ Translate screen before showing it """

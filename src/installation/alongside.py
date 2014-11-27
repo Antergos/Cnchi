@@ -107,6 +107,8 @@ class InstallationAlongside(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
+        self.enabled = True
+
         self.ui.connect_signals(self)
 
         self.label = self.ui.get_object('label_info')
@@ -128,6 +130,9 @@ class InstallationAlongside(GtkBaseBox):
         btn.set_label("_Cancel")
         btn.set_use_underline(True)
         btn.set_always_show_image(True)
+
+    def enabled(self):
+        return self.enabled
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -187,6 +192,7 @@ class InstallationAlongside(GtkBaseBox):
         except (ImportError, NameError) as err:
             logging.error(_("Can't import parted module: %s"), str(err))
             device_list = []
+            self.enabled = False
 
         for dev in device_list:
             # Avoid cdrom and any raid, lvm volumes or encryptfs
@@ -213,7 +219,8 @@ class InstallationAlongside(GtkBaseBox):
                         self.partitions[partition.path] = partition
                 except Exception as err:
                     txt = _("Unable to create list of partitions for alongside installation: %s") % err
-                    logging.warning(txt)
+                    logging.error(txt)
+                    self.enabled = False
 
         # Assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
