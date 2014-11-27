@@ -33,6 +33,12 @@ import multiprocessing
 
 _show_event_queue_messages = True
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 def fatal_error(parent, message):
     # Remove /tmp/.setup-running
     p = "/tmp/.setup-running"

@@ -47,7 +47,7 @@ if __name__ == '__main__':
 try:
     import parted
 except ImportError as err:
-    logging.error(_("Can't import parted module: %s") % str(err))
+    logging.error(_("Can't import parted module: %s"), str(err))
 
 import canonical.misc as misc
 import show_message as show
@@ -60,7 +60,7 @@ import parted3.used_space as used_space
 from installation import process as installation_process
 from gtkbasebox import GtkBaseBox
 
-# leave at least 6.5GB for Antergos when shrinking
+# Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
 
 # Our treeview columns
@@ -107,8 +107,6 @@ class InstallationAlongside(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
-        self.enabled = True
-
         self.ui.connect_signals(self)
 
         self.label = self.ui.get_object('label_info')
@@ -131,9 +129,6 @@ class InstallationAlongside(GtkBaseBox):
         btn.set_use_underline(True)
         btn.set_always_show_image(True)
 
-    def enabled(self):
-        return self.enabled
-
     def translate_ui(self):
         """ Translates all ui elements """
         txt = _("Select the OS (or partition) you would like Antergos installed next to.")
@@ -141,9 +136,6 @@ class InstallationAlongside(GtkBaseBox):
         self.label.set_markup(txt)
 
         self.header.set_subtitle(_("Antergos Alongside Installation"))
-
-        #txt = _("Install Now!")
-        #self.forward_button.set_label(txt)
 
     def prepare(self, direction):
         self.translate_ui()
@@ -192,7 +184,6 @@ class InstallationAlongside(GtkBaseBox):
         except (ImportError, NameError) as err:
             logging.error(_("Can't import parted module: %s"), str(err))
             device_list = []
-            self.enabled = False
 
         for dev in device_list:
             # Avoid cdrom and any raid, lvm volumes or encryptfs
@@ -220,7 +211,6 @@ class InstallationAlongside(GtkBaseBox):
                 except Exception as err:
                     txt = _("Unable to create list of partitions for alongside installation: %s") % err
                     logging.error(txt)
-                    self.enabled = False
 
         # Assign our new model to our treeview
         self.treeview.set_model(self.treeview_store)
@@ -239,7 +229,7 @@ class InstallationAlongside(GtkBaseBox):
 
         return model[tree_iter]
 
-    def on_treeview_cursor_changed(self, widget):
+    def on_treeview_row_activated(self, tree_view, path, column):
         row = self.get_selected_row()
         
         if row is None:
@@ -259,8 +249,8 @@ class InstallationAlongside(GtkBaseBox):
             txt = _("Will resize partition %s to %f MB") % (partition_path, self.new_size)
             logging.debug(txt)
         else:
-            txt = _("New Antergos partition doesn't fit in partition %s") % partition_path
-            logging.debug(txt)
+            txt = _("New Antergos installation does not fit in partition %s") % partition_path
+            show.warning(self.get_toplevel(), txt)
             return
 
         if self.new_size > 0 and self.is_room_available(row):
@@ -552,6 +542,7 @@ class InstallationAlongside(GtkBaseBox):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
+
 
 # When testing, no _() is available
 try:

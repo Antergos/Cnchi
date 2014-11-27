@@ -94,20 +94,15 @@ class InstallationAsk(GtkBaseBox):
             self.hide_alongside_option()
 
     def hide_alongside_option(self):
-        pass
-        '''
         widgets = [
             "alongside_radiobutton",
             "alongside_description",
             "alongside_image"]
-        
-        radio = self.ui.get_object()
-        radio.hide()
-        label = self.ui.get_object()
-        label.hide()
-        image = self.ui.get_object()
-        image.hide()
-        '''
+
+        for name in widgets:
+            widget = self.ui.get_object(name)
+            if widget is not None:
+                widget.hide()
 
     def translate_ui(self):
         """ Translate screen before showing it """
@@ -163,7 +158,7 @@ class InstallationAsk(GtkBaseBox):
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
 
-        # Alongside Install (still experimental. Needs a lot of testing)
+        # Alongside Install (not finished, DO NOT USE!)
         if "windows" in self.other_os.lower():
             radio = self.ui.get_object("alongside_radiobutton")
             radio.set_label(_("Install Antergos alongside %s") % self.other_os)
