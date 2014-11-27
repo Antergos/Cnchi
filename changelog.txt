@@ -4,7 +4,7 @@ Changelog
 * 0.7.x development series
 
 - Updated timezone and welcome screens appearance
-- Ported timezone widget to Python
+- Ported timezonemap widget to Python
 - Added new Gnome packages to Gnome installation DE
 - Load screens after showing first screen (so it loads quickly for people that just want to try it or do a cli install)
 - A lot of updates to port to Gtk 3.14 (and avoid deprecation warnings)
@@ -26,7 +26,7 @@ Changelog
 - Removed gnome-extra feature. It installs too specific packages (like Anjuta)
 - Renamed razor to lxqt
 - In some DE's replaced xfburn with brasero
-- Added antergos-welcome package <-- Desktops need update their init config scripts to run this
+- Added antergos-welcome package
 - Added simplejson as it's an antergos-welcome dependency
 - Updated hardware module for the packaging changes for mesa (backported to 0.6.x series)
 - Fixed some wrong chmod calls (Octal in pyton3 is preceded by 0o (backported to 0.6.x series)
@@ -42,9 +42,10 @@ Changelog
 - Added ffmpegthumbnailer to Openbox WM
 - Avoid finishing with an empty antergos-mirrorslist
 - Added desktop icons in "choose desktop" screen
+- Updater (to allow cnchi to update itself)
+- Added an option in location.py to be able to show all locations (if the user wants it)
 
 Not fully finished, but improved:
 - Alongside installation
-- Updater (to allow cnchi to update itself)
 - Autopartition GPT code.
 
