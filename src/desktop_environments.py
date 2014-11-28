@@ -44,19 +44,19 @@ LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
     'qt' : ["norazor", "kde"]}
 
-ALL_FEATURES = [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "visual", "firewall", "third_party" ]
+ALL_FEATURES = [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall" ]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
-    'gnome' : [ "aur", "bluetooth", "cups", "fonts", "gnome_extra", "office", "firewall", "third_party" ],
-    'kde' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
-    'mate' : [ "aur", "cups", "fonts", "office", "firewall", "third_party" ],
-    'enlightenment' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
+    'cinnamon' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ],
+    'gnome' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ],
+    'kde' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ],
+    'mate' : [ "aur", "cups", "fonts", "office", "firewall" ],
+    'enlightenment' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ],
     'nox' : [ "aur", "bluetooth", "cups", "fonts", "firewall" ],
-    'openbox' : [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "third_party" ],
-    'razor' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ],
-    'xfce' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall", "third_party" ]}
+    'openbox' : [ "aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall" ],
+    'razor' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ],
+    'xfce' : [ "aur", "bluetooth", "cups", "fonts", "office", "firewall" ]}
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message): return message

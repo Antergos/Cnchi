@@ -100,7 +100,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkListBoxRow" id="gnome_extra-row">
+              <!--<object class="GtkListBoxRow" id="gnome_extra-row">
                 <child>
                   <object class="GtkBox" id="box_gnome_extra">
                     <property name="visible">True</property>
@@ -178,7 +178,7 @@
                   </object>
                 </child>
               </object>
-            </child>
+            </child>-->
             <child>
               <object class="GtkListBoxRow" id="bluetooth-row">
                 <child>
@@ -591,7 +591,7 @@
                 </child>
               </object>
             </child>
-            <child>
+            <!--<child>
               <object class="GtkListBoxRow" id="third_party-row">
                 <child>
                   <object class="GtkBox" id="box_third_party">
@@ -674,7 +674,7 @@
                   </object>
                 </child>
               </object>
-            </child>
+            </child>-->
             <child>
               <object class="GtkListBoxRow" id="visual-row">
                 <child>
