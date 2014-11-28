@@ -203,7 +203,7 @@ def parse_options():
         help=_("Do not perform any changes (useful for developers)"),
         action="store_true")
     parser.add_argument(
-        "-uu", "--update",
+        "-u", "--update",
         help=_("Update Cnchi to the latest web version (will force the update without checking versions)"),
         action="count")
     parser.add_argument(
@@ -250,10 +250,10 @@ def update_cnchi():
     if upd.update():
         main_window.remove_temp_files()
         if cmd_line.update:
-            # Remove -uu and --update options from new call
+            # Remove -u and --update options from new call
             new_argv = []
             for argv in sys.argv:
-                if argv != "-uu" and argv != "--update":
+                if argv != "-u" and argv != "--update":
                     new_argv.append(argv)
         else:
             new_argv = sys.argv

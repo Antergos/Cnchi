@@ -37,6 +37,7 @@ import download
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
+_update_info = "/usr/share/cnchi/update.info"
 
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
@@ -60,7 +61,7 @@ class Updater():
         self.md5s = {}
         
         # Get local info (local update.info)
-        with open("/usr/share/cnchi/update.info", "r") as local_update_info:
+        with open(_update_info, "r") as local_update_info:
             response = local_update_info.read()
             if len(response) > 0:
                 updateInfo = json.loads(response)
@@ -82,9 +83,6 @@ class Updater():
 
     def is_remote_version_newer(self):
         """ Returns true if the Internet version of Cnchi is newer than the local one """
-        if self.force:
-             return True
-
         # Version is always: x.y.z
         local_ver = info.CNCHI_VERSION.split(".")
         remote_ver = self.remote_version.split(".")
@@ -115,33 +113,40 @@ class Updater():
             update all files only if necessary (or forced) '''
         update_cnchi = False
         
-        if self.force:
-            logging.info(_("Updating installer with the Internet version..."))
-            update_cnchi = True
-        elif self.is_remote_version_newer():
+        if self.is_remote_version_newer():
             logging.info(_("New version found. Updating installer..."))
+            update_cnchi = True
+        elif self.force:
+            logging.info(_("No new version found. Updating anyways..."))
             update_cnchi = True
 
         if update_cnchi:
-            res = self.download_master_zip()
+            logging.debug(_("Downloading new version of Cnchi..."))
+            zip_path = "/tmp/cnchi-%s.zip" % self.remote_version
+            res = self.download_master_zip(zip_path)
             if not res:
                 logging.error(_("Can't download new Cnchi version."))
                 return False
 
+            # master.zip file is downloaded, we must unzip it
+            logging.debug(_("Uncompressing new version..."))
+            try:
+                self.unzip_and_copy(zip_path)
+            except Exception as err:
+                logging.error(err)
+                return False
+
         return update_cnchi
 
-    def download_master_zip(self):
+    def download_master_zip(self, zip_path):
         """ Download new Cnchi version from github """
         request = download.url_open(_master_zip_url)
         
         if request is None:
             return False
 
-        dst_path = "/tmp/cnchi-%s.zip" % self.remote_version
-
-        logging.debug(_("Downloading new version of Cnchi..."))
-        if not os.path.exists(dst_path):
-            with open(dst_path, 'wb') as zip_file:
+        if not os.path.exists(zip_path):
+            with open(zip_path, 'wb') as zip_file:
                 (data, error) = download.url_open_read(request)
 
                 while len(data) > 0 and error == False:
@@ -150,33 +155,25 @@ class Updater():
                 
                 if error:
                      return False
-        
-        # master.zip file is downloaded, we must unzip it
-        logging.debug(_("Uncompressing new version..."))
-        try:
-            self.unzip_and_copy(dst_path, "/tmp")
-        except Exception as err:
-            logging.error(err)
-            return False
-        
         return True
 
-    def unzip_and_copy(self, zip_path, dst_dir):
+    def unzip_and_copy(self, zip_path):
         """ Unzip (decompress) a zip file using zipfile standard module """       
         import zipfile
+
+        dst_dir = "/tmp"
 
         with zipfile.ZipFile(zip_path) as zip_file:
             for member in zip_file.infolist():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
                 dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
-                if os.path.isfile(dst_full_path):
-                    if dst_full_path in self.md5s:
-                        md5 = get_md5_from_file(full_path)
-                        if self.md5s[dst_full_path] == md5:
-                            #print(full_path, dst_full_path, md5)
-                            try:
-                                with misc.raised_privileges():
-                                    shutil.copyfile(full_path, dst_full_path)
-                            except FileNotFoundError:
-                                logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                if os.path.isfile(dst_full_path) and dst_full_path in self.md5s:
+                    if self.md5s[dst_full_path] == get_md5_from_file(full_path):
+                        try:
+                            with misc.raised_privileges():
+                                shutil.copyfile(full_path, dst_full_path)
+                        except FileNotFoundError as err:
+                            logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                    else:
+                        logging.warning(_("Wrong md5. Bad download or wrong file, won't update this one"))
