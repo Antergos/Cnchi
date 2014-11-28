@@ -51,9 +51,9 @@
     -GtkProgressBar-min-horizontal-bar-height: 12;
 }
 
-GtkProgressBar.progressbar {
+/*GtkProgressBar.progressbar {
     color: #fff;
-}
+}*/
 
 
 #fwd_btn, #bk_btn {

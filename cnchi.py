@@ -242,7 +242,8 @@ def init_cnchi():
     cmd_line = parse_options()
 
     # Always try to update cnchi when run
-    update_cnchi()
+    # Disable this so we can do more testing. For now, we will use pacman to update cnchi during ISO boot.
+    #update_cnchi()
 
     # Init PyObject Threads
     threads_init()

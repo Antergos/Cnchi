@@ -3,20 +3,22 @@
 #
 #  features.py
 #
-#  Copyright 2013 Antergos
+#  Copyright © 2013,2014 Antergos
 #
-#  This program is free software; you can redistribute it and/or modify
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
+#  Cnchi is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
+#  along with Cnchi; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
@@ -80,7 +82,8 @@ class Features(GtkBaseBox):
         label2 = row2.get_children()[0].get_children()[1].get_children()[0]
 
         text = [label1.get_text(), label2.get_text()]
-        sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        #sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        sorted_text = misc.sort_list(text)
 
         # If strings are already well sorted return < 0
         if text[0] == sorted_text[0]:
@@ -145,20 +148,19 @@ class Features(GtkBaseBox):
         self.switches["fonts"].set_tooltip_markup(txt)
         self.labels["fonts"].set_tooltip_markup(txt)
 
-        # Gnome Extra
-        txt = _("Gnome Extra")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["gnome_extra"].set_markup(txt)
-        txt = _("Installation of extra Gnome applications")
-        txt = "<span size='small'>%s</span>" % txt
-        self.labels["gnome_extra"].set_markup(txt)
-
-        txt = _("Contains various optional tools such as a media\n"
-                "player, a calculator, an editor and other non-critical\n"
-                "applications that go well with the GNOME desktop.\n")
-        self.titles["gnome_extra"].set_tooltip_markup(txt)
-        self.switches["gnome_extra"].set_tooltip_markup(txt)
-        self.labels["gnome_extra"].set_tooltip_markup(txt)
+        ## Gnome Extra
+        #txt = _("Gnome Extra")
+        #txt = "<span weight='bold' size='large'>%s</span>" % txt
+        #self.titles["gnome_extra"].set_markup(txt)
+        #txt = _("Installation of extra Gnome applications")
+        #txt = "<span size='small'>%s</span>" % txt
+        #self.labels["gnome_extra"].set_markup(txt)
+        #txt = _("Contains various optional tools such as a media\n"
+        #        "player, a calculator, an editor and other non-critical\n"
+        #        "applications that go well with the GNOME desktop.\n")
+        #self.titles["gnome_extra"].set_tooltip_markup(txt)
+        #self.switches["gnome_extra"].set_tooltip_markup(txt)
+        #self.labels["gnome_extra"].set_tooltip_markup(txt)
 
         # Printing support (cups)
         txt = _("Printing Support")
@@ -225,12 +227,12 @@ class Features(GtkBaseBox):
         self.labels["firewall"].set_tooltip_markup(txt)
 
         # Proprietary packages (third_party)
-        txt = _("Proprietary Software")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        self.titles["third_party"].set_markup(txt)
-        txt = _("Software to play Flash videos, MP3 audio, and other media.")
-        txt = "<span size='small'>%s</span>" % txt
-        self.labels["third_party"].set_markup(txt)
+        # txt = _("Proprietary Software")
+        # txt = "<span weight='bold' size='large'>%s</span>" % txt
+        # self.titles["third_party"].set_markup(txt)
+        # txt = _("Software to play Flash videos, MP3 audio, and other media.")
+        # txt = "<span size='small'>%s</span>" % txt
+        # self.labels["third_party"].set_markup(txt)
 
         # Sort listbox items
         self.listbox.invalidate_sort()

@@ -128,21 +128,6 @@ cinnamon_settings(){
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
 	chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
 
-	# Temporary alternative until upower bug is fixed.
-	if [[ $6 -eq "True" ]]; then 
-		cat << EOF > ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
-[Desktop Entry]
-Name=cbatticon
-Comment=Lightweight system tray battery indicator.
-Icon=battery
-Type=Application
-Exec=/usr/bin/cbatticon -i symbolic -l 15 -c "systemctl poweroff"
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-EOF
-		chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
-	fi
 
 	# Set skel directory
 	cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
