@@ -135,12 +135,12 @@ class Features(GtkBaseBox):
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
             WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         box1 = row1.get_child()
-        txt_box1 = box1.get_children()[0]
-        label1 = txt_box1.get_children()[1]
+        txt_box1 = box1.get_children()[1]
+        label1 = txt_box1.get_children()[0]
 
         box2 = row2.get_child()
-        txt_box2 = box2.get_children()[0]
-        label2 = txt_box2.get_children()[1]
+        txt_box2 = box2.get_children()[1]
+        label2 = txt_box2.get_children()[0]
 
         text = [label1.get_text(), label2.get_text()]
         #sorted_text = misc.sort_list(text, self.settings.get("locale"))
