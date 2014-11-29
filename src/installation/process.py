@@ -1007,7 +1007,7 @@ class InstallationProcess(multiprocessing.Process):
                 with open(cfg) as grub_cfg:
                     lines = [x.strip() for x in grub_cfg.readlines()]
                 for i in range(len(lines)):
-                    if lines[i].startswith("linux   /vmlinuz-linux root="):
+                    if lines[i].startswith("linux") and "/vmlinuz-linux root=" in lines[i]:
                         old_line = lines[i]
                         p1 = old_line[68:]
                         p2 = old_line[:26]
