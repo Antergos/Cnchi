@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  nouveau.py
+#  nvidia.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -22,24 +22,28 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Nouveau (Nvidia) driver installation """
+""" Nvidia (propietary) driver installation """
 
 from hardware.hardware import Hardware
 import os
 
-CLASS_NAME = "Nouveau"
+CLASS_NAME = "Nvidia"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 DEVICES = []
 
-class Nouveau(Hardware):
+# See https://wiki.archlinux.org/index.php/NVIDIA#Installing
+# nvidia, nvidia-340xx, nvidia-304xx
+# lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
+
+class Nvidia(Hardware):
     def __init__(self):
         pass
 
     def get_packages(self):
-        pkgs = ["xf86-video-nouveau"]
+        pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau", "libcl"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-mesa-dri", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
         return pkgs
 
     def post_install(self, dest_dir):
@@ -49,6 +53,7 @@ class Nouveau(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-            return True
+        # DISABLED
+        #if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+        #    return True
         return False

@@ -46,12 +46,12 @@ class Location(GtkBaseBox):
         self.load_locales()
 
         self.selected_country = ""
-        
+
         self.show_all_locations = False
-            
+
         button = self.ui.get_object("show_all_locations_checkbutton")
         button.connect("toggled", self.on_show_all_locations_checkbox_toggled, "")
-        
+
         self.scrolledwindow = self.ui.get_object("scrolledwindow1")
 
     def on_show_all_locations_checkbox_toggled(self, button, name):
@@ -68,7 +68,7 @@ class Location(GtkBaseBox):
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>%s</span>" % txt
         self.label_choose_country.set_markup(txt)
-        
+
         check = self.ui.get_object('show_all_locations_checkbutton')
         txt = _("Show all locations")
         check.set_label(txt)
@@ -169,13 +169,7 @@ class Location(GtkBaseBox):
 
     def fill_listbox(self):
         areas = self.get_areas()
-        
-        # Delete listbox previous contents (if any)
-        #for listbox_row in self.listbox.get_children():
-        #    listbox_row.destroy()
-        #    listbox_row.delete()
-        
-        #row = self.listbox.get_row_at_index(0)
+
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
 
@@ -184,8 +178,6 @@ class Location(GtkBaseBox):
             label.set_markup(area)
             label.show_all()
             self.listbox.add(label)
-        
-
 
         self.selected_country = areas[0]
 
