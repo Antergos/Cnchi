@@ -77,6 +77,10 @@ if ! [ -f "${previous}" ]; then
 #	rankmirrors -n 0 -r antergos antergos-mirrorlist > /tmp/antergos-mirrorlist
 #	cp /tmp/antergos-mirrorlist /etc/pacman.d/
 #	echo "Done."
+
+	pacman-key --init
+	pacman-key --populate archlinux antergos
+
 	# Install any packages that haven't been added to the iso yet but are needed.
 	notify_user "Installing missing packages..."
 	echo "Installing missing packages..."
