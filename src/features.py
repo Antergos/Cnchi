@@ -38,13 +38,15 @@ _features_icon_names = {
     'bluetooth' : 'bluetooth',
     'cups' : 'printer',
     'firewall' : 'network-server',
+    'firefox' : 'firefox',
     'fonts' : 'preferences-desktop-font',
     'office' : 'accessories-text-editor',
-    'visual' : 'video-display'}
+    'visual' : 'video-display',
+    'smb' : 'gnome-mime-x-directory-smb-share'}
 
 COL_IMAGE = 0
 COL_TITLE = 1
-COL_LABEL = 2
+COL_DESCRIPTION = 2
 COL_SWITCH = 3
 
 class Features(GtkBaseBox):
@@ -81,7 +83,7 @@ class Features(GtkBaseBox):
             listbox_row.destroy()
 
         for feature in self.all_features:
-            box = Gtk.Box(spacing=25)
+            box = Gtk.Box(spacing=20)
             box.set_name(feature + "-row")
 
             self.listbox_rows[feature] = []
@@ -89,6 +91,7 @@ class Features(GtkBaseBox):
             if feature in _features_icon_names:
                 icon_name = _features_icon_names[feature]
             else:
+                print(feature)
                 icon_name = "missing"
 
             object_name= "image_" + feature
@@ -153,118 +156,122 @@ class Features(GtkBaseBox):
         # Strings must be swaped, return > 0
         return 1
 
+    def set_row_text(self, feature, title, desc, tooltip):
+        row = self.listbox_rows[feature]
+        row[COL_TITLE].set_markup(title)
+        row[COL_DESCRIPTION].set_markup(desc)
+        for widget in row:
+            widget.set_tooltip_markup(tooltip)
+
     def translate_ui(self):
         """ Translates all ui elements """
-        desktop = self.settings.get('desktop')
 
+        desktop = self.settings.get('desktop')
         txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
         self.header.set_subtitle(txt)
 
         # AUR
-        row = self.listbox_rows['aur']
-        txt = _("Arch User Repository (AUR) Support")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("The AUR is a community-driven repository for Arch users.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("Use yaourt to install AUR packages.\n"
+        title = _("Arch User Repository (AUR) Support")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("The AUR is a community-driven repository for Arch users.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("Use yaourt to install AUR packages.\n"
                 "The AUR was created to organize and share new packages\n"
                 "from the community and to help expedite popular packages'\n"
                 "inclusion into the [community] repository.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('aur', title, desc, tooltip)
 
         # Bluetooth
-        row = self.listbox_rows['bluetooth']
-        txt = _("Bluetooth Support")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Enables your system to make wireless connections via Bluetooth.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("Bluetooth is a standard for the short-range wireless\n"
+        title = _("Bluetooth Support")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Enables your system to make wireless connections via Bluetooth.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("Bluetooth is a standard for the short-range wireless\n"
                 "interconnection of cellular phones, computers, and\n"
                 "other electronic devices. In Linux, the canonical\n"
                 "implementation of the Bluetooth protocol stack is BlueZ")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('bluetooth', title, desc, tooltip)
 
         # Extra TTF Fonts
-        row = self.listbox_rows['fonts']
-        txt = _("Extra Truetype Fonts")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Installation of extra TrueType fonts")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("TrueType is an outline font standard developed by\n"
+        title = _("Extra Truetype Fonts")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Installation of extra TrueType fonts")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("TrueType is an outline font standard developed by\n"
                 "Apple and Microsoft in the late 1980s as a competitor\n"
                 "to Adobe's Type 1 fonts used in PostScript. It has\n"
                 "become the most common format for fonts on both the\n"
                 "Mac OS and Microsoft Windows operating systems.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('fonts', title, desc, tooltip)
 
         # Printing support (cups)
-        row = self.listbox_rows['cups']
-        txt = _("Printing Support")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Installation of printer drivers and management tools.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("CUPS is the standards-based, open source printing\n"
+        title = _("Printing Support")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Installation of printer drivers and management tools.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("CUPS is the standards-based, open source printing\n"
                 "system developed by Apple Inc. for OS® X and other\n"
                 "UNIX®-like operating systems.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('cups', title, desc, tooltip)
 
         # LibreOffice
-        row = self.listbox_rows['office']
-        txt = _("LibreOffice")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Open source office suite. Supports editing MS Office files.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("LibreOffice is the free power-packed Open Source\n"
+        title = _("LibreOffice")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Open source office suite. Supports editing MS Office files.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("LibreOffice is the free power-packed Open Source\n"
                 "personal productivity suite for Windows, Macintosh\n"
                 "and Linux, that gives you six feature-rich applications\n"
                 "for all your document production and data processing\n"
                 "needs: Writer, Calc, Impress, Draw, Math and Base.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('office', title, desc, tooltip)
 
         # Visual effects
-        row = self.listbox_rows['visual']
-        txt = _("Visual Effects")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Enable transparency, shadows, and other desktop effects.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("Compton is a lightweight, standalone composite manager,\n"
+        title = _("Visual Effects")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Enable transparency, shadows, and other desktop effects.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
                 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
                 "See the compton github page for further information.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('visual', title, desc, tooltip)
 
         # Firewall
-        row = self.listbox_rows['firewall']
-        txt = _("Uncomplicated Firewall")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        row[COL_TITLE].set_markup(txt)
-        txt = _("Control the incoming and outgoing network traffic.")
-        txt = "<span size='small'>%s</span>" % txt
-        row[COL_LABEL].set_markup(txt)
-        txt = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
+        title = _("Uncomplicated Firewall")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Control the incoming and outgoing network traffic.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                 "managing a netfilter firewall. It provides a command line\n"
                 "interface and aims to be uncomplicated and easy to use.")
-        for widget in row:
-            widget.set_tooltip_markup(txt)
+        self.set_row_text('firewall', title, desc, tooltip)
+
+        # Firefox
+        title = _("Firefox Web Browser")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("A popular open-source graphical web browser from Mozilla")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("Mozilla Firefox (known simply as Firefox) is a free and\n"
+            "open-source web browser developed for Windows, OS X, and Linux,\n"
+            "with a mobile version for Android, by the Mozilla Foundation and\n"
+            "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
+            "layout engine to render web pages, which implements current and\n"
+            "anticipated web standards.")
+        self.set_row_text('firefox', title, desc, tooltip)
+
+        # SMB
+        title = _("Windows sharing SMB")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("SMB provides shared access to files and printers")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("In computer networking, Server Message Block (SMB)\n"
+            "operates as an application-layer network protocol mainly used\n"
+            "for providing shared access to files, printers, serial ports,\n"
+            "and miscellaneous communications between nodes on a network.\n"
+            "Most usage of SMB involves computers running Microsoft Windows.")
+        self.set_row_text('smb', title, desc, tooltip)
 
         # Sort listbox items
         self.listbox.invalidate_sort()

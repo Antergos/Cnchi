@@ -58,20 +58,20 @@ LIBS = {
     'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
     'qt' : ["lxqt", "kde", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall"]
+ALL_FEATURES = ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'gnome' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'kde' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'plasma5': ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'mate' : ["aur", "cups", "fonts", "office", "firewall"],
-    'enlightenment' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
+    'cinnamon' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
+    'gnome' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
+    'kde' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
+    'plasma5': ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
+    'mate' : ["aur", "firefox", "cups", "fonts", "office", "firewall", "smb"],
+    'enlightenment' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
     'base' : ["aur", "bluetooth", "cups", "fonts", "firewall"],
-    'openbox' : ["aur", "bluetooth", "cups", "fonts", "office", "visual", "firewall"],
-    'lxqt' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"],
-    'xfce' : ["aur", "bluetooth", "cups", "fonts", "office", "firewall"]}
+    'openbox' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "smb"],
+    'lxqt' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
+    'xfce' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"]}
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message): return message
