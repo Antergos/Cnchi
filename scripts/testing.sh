@@ -8,7 +8,7 @@ check_keys="$(pacman-key -l | grep Antergos)"
 
 notify_user () {
 
-        notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
+        notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
 }
 
 do_update () {
