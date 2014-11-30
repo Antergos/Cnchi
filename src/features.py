@@ -66,6 +66,9 @@ class Features(GtkBaseBox):
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
 
+        # Only load defaults the first time this screen is shown
+        self.load_defaults = True
+
     def fill_listbox(self):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
@@ -351,7 +354,21 @@ class Features(GtkBaseBox):
         self.fill_listbox()
         self.translate_ui()
         self.show_all()
-        self.switch_defaults_on()
+        if self.load_defaults:
+            self.switch_defaults_on()
+            # Only load defaults once
+            self.load_defaults = False
+        else:
+            # Load values user has chosen when this screen is shown again
+            self.load_values()
+
+    def load_values(self):
+        """ Get previous selected switches values """
+        for feature in self.features:
+            row = self.listbox_rows[feature]
+            is_active = self.settings.get("feature_" + feature)
+            if row[COL_SWITCH] is not None and is_active is not None:
+                row[COL_SWITCH].set_active(is_active)
 
 # When testing, no _() is available
 try:

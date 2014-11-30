@@ -49,12 +49,15 @@ class Settings(object):
             'desktops' : [],
             'encrypt_home' : False,
             'f2fs' : False,
+            'feature_aur' : False,
             'feature_bluetooth' : False,
             'feature_cups' : False,
-            'feature_office' : False,
-            'feature_visual' : False,
+            'feature_firefox' : False,
             'feature_firewall' : False,
-            'feature_third_party' : False,
+            'feature_fonts' : False,
+            'feature_office' : False,
+            'feature_smb' : False,
+            'feature_visual' : False,
             'fullname' : '',
             'hostname' : 'antergos',
             'keyboard_layout' : '',
@@ -113,7 +116,7 @@ class Settings(object):
     def get(self, key):
         """ Get one setting value """
         settings = self._get_settings()
-        return settings[key]
+        return settings.get(key, None)
 
     def set(self, key, value):
         """ Set one setting's value """
