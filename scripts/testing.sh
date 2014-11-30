@@ -4,6 +4,8 @@ previous="/tmp/dev-setup"
 uefi="/sys/firmware/efi"
 vbox_chk="$(hwinfo --gfxcard | grep -o -m 1 "VirtualBox")"
 arg="$1"
+check_keys="$(pacman-key -l | grep Antergos)"
+
 notify_user () {
 
         notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/antergos-icon.png "$1"
@@ -77,9 +79,10 @@ if ! [ -f "${previous}" ]; then
 #	rankmirrors -n 0 -r antergos antergos-mirrorlist > /tmp/antergos-mirrorlist
 #	cp /tmp/antergos-mirrorlist /etc/pacman.d/
 #	echo "Done."
-
+	if [[ ${check_keys} = '' ]]; then
 	pacman-key --init
 	pacman-key --populate archlinux antergos
+	fi
 
 	# Install any packages that haven't been added to the iso yet but are needed.
 	notify_user "Installing missing packages..."
