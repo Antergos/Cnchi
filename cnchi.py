@@ -53,7 +53,7 @@ GTK_VERSION_NEEDED = "3.9.6"
 class CnchiApp(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self)
-        
+
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
         try:
@@ -62,20 +62,20 @@ class CnchiApp(Gtk.Application):
             logging.exception(err)
             logging.error(_("Can't create Cnchi's main window. Exiting..."))
             sys.exit(1)
-            
+
         window = mainwindow.MainWindow(self, cmd_line)
-        
+
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without
         #self.add_window(window)
-        
+
         # This is unnecessary as show_all is called in MainWindow
         #window.show_all()
-    
+
     def do_startup(self):
         """ Override the 'startup' signal of GLib.Application. """
         Gtk.Application.do_startup(self)
-        
+
         # Application main menu (we don't need one atm)
         # Leaving this here for future reference
         #menu = Gio.Menu()
@@ -86,19 +86,19 @@ class CnchiApp(Gtk.Application):
 def setup_logging():
     """ Configure our logger """
     logger = logging.getLogger()
-    
+
     logger.handlers = []
-   
+
     if cmd_line.debug:
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
-    
+
     logger.setLevel(log_level)
-    
+
     # Log format
     formatter = logging.Formatter('[%(asctime)s] [%(filename)s] %(levelname)s: %(message)s', "%Y-%m-%d %H:%M:%S")
-    
+
     # Create file handler
     file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
     file_handler.setLevel(log_level)
@@ -145,7 +145,8 @@ def parse_options():
     parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs='?')
     parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs='?')
     parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
-    parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version (-uu will force the update)"), action="count")
+    parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version"), action="store_true")
+    parser.add_argument("--disable-update", help=_("Do not check for updates"), action="store_true")
     parser.add_argument("-p", "--packagelist", help=_("Install the packages referenced by a local xml instead of the default ones"), nargs='?')
     parser.add_argument("-t", "--testing", help=_("Do not perform any changes (useful for developers)"), action="store_true")
     parser.add_argument("-v", "--verbose", help=_("Show logging messages to stdout"), action="store_true")
@@ -165,7 +166,7 @@ def threads_init():
     """
     minor = Gtk.get_minor_version()
     micro = Gtk.get_micro_version()
-    
+
     if minor == 10 and micro < 2:
         # Unfortunately these versions of PyGObject suffer a bug which require a workaround to get
         # threading working properly. Workaround:
@@ -177,7 +178,7 @@ def threads_init():
     # See: https://wiki.gnome.org/PyGObject/Threading
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
-    
+
     #Gdk.threads_init()
 
 def update_cnchi():
@@ -187,15 +188,18 @@ def update_cnchi():
     if upd.update():
         #remove_temp_files()
         if cmd_line.update:
-            # Remove -uu and --update options from new call
+            # Remove -u and --update options from new call
             new_argv = []
             for argv in sys.argv:
-                if argv != "-uu" and argv != "--update":
+                if argv != "-u" and argv != "--update":
                     new_argv.append(argv)
         else:
             new_argv = sys.argv
 
         print(_("Program updated! Restarting..."))
+
+        # Avoid update loop
+        new_argv.append("--disable-update")
 
         # Run another instance of Cnchi (which will be the new version)
         with misc.raised_privileges():
@@ -221,7 +225,7 @@ def check_for_files():
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
         print(_("Please install %s before running this installer") % "hdparm")
         return False
-    
+
     return True
 
 def init_cnchi():
@@ -229,10 +233,10 @@ def init_cnchi():
 
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
-    
+
     if not check_for_files():
         sys.exit(1)
-        
+
     # Check installed GTK version
     if not check_gtk_version():
         sys.exit(1)
@@ -241,21 +245,22 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
-    # Always try to update cnchi when run
     # Disable this so we can do more testing. For now, we will use pacman to update cnchi during ISO boot.
-    #update_cnchi()
+    #if not cmd_line.disable_update:
+    #    update_cnchi()
+
 
     # Init PyObject Threads
     threads_init()
 
     # Setup our logging framework
     setup_logging()
-    
+
 
 if __name__ == '__main__':
     init_cnchi()
 
-    # Create Gtk Application    
+    # Create Gtk Application
     myapp = CnchiApp()
     exit_status = myapp.run(None)
     sys.exit(exit_status)
