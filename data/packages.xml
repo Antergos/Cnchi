@@ -126,9 +126,38 @@
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
+        <pkgname>brasero</pkgname>
         <pkgname>xnoise</pkgname>
         <pkgname>xscreensaver</pkgname>
+        <pkgname>vinagre</pkgname>
+        <pkgname>gnome-boxes</pkgname>
+        <pkgname>gnome-maps</pkgname>
+        <pkgname>gnome-weather</pkgname>
+        <pkgname>aislerot</pkgname>
+        <pkgname>bijiben</pkgname>
+        <pkgname>four-in-a-row</pkgname>
+        <pkgname>gnome-contacts</pkgname>
+        <pkgname>gnome-documents</pkgname>
+        <pkgname>gnome-klotski</pkgname>
+        <pkgname>gnome-logs</pkgname>
+        <pkgname>gnome-music</pkgname>
+        <pkgname>gnome-photos</pkgname>
+        <pkgname>gnome-robots</pkgname>
+        <pkgname>gnome-sound-recorder</pkgname>
+        <pkgname>gnome-sudoku</pkgname>
+        <pkgname>orca</pkgname>
+        <pkgname>five-or-more</pkgname>
+        <pkgname>gnome-backgrounds</pkgname>
+        <pkgname>gnome-chess</pkgname>
+        <pkgname>gnome-clocks</pkgname>
+        <pkgname>gnome-mahjongg</pkgname>
+        <pkgname>gnome-mines</pkgname>
+        <pkgname>gnome-nibbles</pkgname>
+        <pkgname>hitori</pkgname>
+        <pkgname>rygel</pkgname>
+        <pkgname>gnome-font-viewer</pkgname>
+        <pkgname>evolution</pkgname>
+        <pkgname>baobab</pkgname>
     </gnome_desktop>
 
     <cinnamon_desktop>
