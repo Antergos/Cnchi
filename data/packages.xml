@@ -105,6 +105,8 @@
     <edition name="Gnome" description="Gnome Desktop">
       <packages>
         <pkgname>antergos-gnome-defaults-list</pkgname>
+        <!--<pkgname>baobab</pkgname>-->  <!-- Disk usage, pretty cool but necessary? -->
+        <!--<pkgname>bijiben</pkgname>--> <!-- notes app, necessary? -->
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>empathy</pkgname>
@@ -112,10 +114,15 @@
         <pkgname>eog</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
+        <pkgname>gnome-backgrounds</pkgname>
         <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-contacts</pkgname>
         <pkgname>gnome-control-center</pkgname>
+        <pkgname>gnome-documents</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gnome-keyring</pkgname>
+        <pkgname>gnome-logs</pkgname>
+        <pkgname>gnome-maps</pkgname>
         <pkgname>gnome-music</pkgname>
         <pkgname>gnome-photos</pkgname>
         <pkgname>gnome-screenshot</pkgname>
@@ -124,10 +131,12 @@
         <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-software</pkgname>
+        <pkgname>gnome-sound-recorder</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
         <pkgname>gnome-tweak-tool</pkgname>
+        <pkgname>gnome-weather</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
@@ -135,6 +144,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>orca</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -181,7 +191,8 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>telepathy</pkgname> <!-- Group -->
+        <pkgname>pidgin</pkgname>
+        <!--<pkgname>telepathy</pkgname> -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -311,6 +322,7 @@
         <pkgname>openbox-menu</pkgname>
         <pkgname>parcellite</pkgname>
         <pkgname>pcmanfm</pkgname>
+        <pkgname>pidgin</pkgname>
         <pkgname>plank</pkgname>
         <pkgname>plank-theme-numix</pkgname>
         <pkgname>pragha</pkgname>
@@ -427,9 +439,7 @@
           <pkgname>xdg-user-dirs</pkgname>
         </packages>
       </edition>
-
   </editions>
-
 
   <!-- User desired features -->
   <features>
