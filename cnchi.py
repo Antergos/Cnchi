@@ -184,7 +184,7 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "-c", "--cache",
-        help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"),
+        help=_("Use pre-downloaded xz packages when possible"),
         nargs='?')
     parser.add_argument(
         "-d", "--debug",
@@ -192,7 +192,7 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "-i", "--disable-tryit",
-        help=_("Disables the tryit option (useful if Cnchi is not run from a liveCD)"),
+        help=_("Disables first screen's 'try it' option"),
         action="store_true")
     parser.add_argument(
         "-p", "--packagelist",
@@ -205,7 +205,11 @@ def parse_options():
     parser.add_argument(
         "-u", "--update",
         help=_("Update Cnchi to the latest web version (will force the update without checking versions)"),
-        action="count")
+        action="store_true")
+    parser.add_argument(
+        "--disable-update",
+        help=_("Do not search for new Cnchi versions online"),
+        action="store_true")
     parser.add_argument(
         "-v", "--verbose",
         help=_("Show logging messages to stdout"),
@@ -248,6 +252,7 @@ def update_cnchi():
     upd = updater.Updater(force_update=cmd_line.update)
 
     if upd.update():
+        logging.info(_("Program updated! Restarting..."))
         main_window.remove_temp_files()
         if cmd_line.update:
             # Remove -u and --update options from new call
@@ -258,7 +263,8 @@ def update_cnchi():
         else:
             new_argv = sys.argv
 
-        print(_("Program updated! Restarting..."))
+        # Do not try to update again now
+        new_argv.append("--disable-update")
 
         # Run another instance of Cnchi (which will be the new version)
         with misc.raised_privileges():
@@ -313,8 +319,8 @@ def init_cnchi():
     if not check_pyalpm_version():
         sys.exit(1)
 
-    # Always try to update cnchi when run
-    update_cnchi()
+    if not cmd_line.disable_update:
+        update_cnchi()
 
     # Init PyObject Threads
     threads_init()
