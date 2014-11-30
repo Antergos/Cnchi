@@ -60,20 +60,8 @@ class Features(GtkBaseBox):
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
 
-        # Available features (for reference)
-        # if you add a feature, remember to add it's setup in installation_process.py
-        self.all_features = desktops.ALL_FEATURES
-
-        # Each desktop has its own features
-        self.features_by_desktop = desktops.FEATURES
-
         # This is initialized each time this screen is shown in prepare()
         self.features = None
-
-        self.listbox_rows = {}
-
-        # The first time we load this screen, we try to guess some defaults
-        self.defaults = True
 
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = { "ufw":False, "aur":False }
@@ -82,7 +70,9 @@ class Features(GtkBaseBox):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
 
-        for feature in self.all_features:
+        self.listbox_rows = {}
+
+        for feature in self.features:
             box = Gtk.Box(spacing=20)
             box.set_name(feature + "-row")
 
@@ -157,11 +147,13 @@ class Features(GtkBaseBox):
         return 1
 
     def set_row_text(self, feature, title, desc, tooltip):
-        row = self.listbox_rows[feature]
-        row[COL_TITLE].set_markup(title)
-        row[COL_DESCRIPTION].set_markup(desc)
-        for widget in row:
-            widget.set_tooltip_markup(tooltip)
+        """ Set translated text to our listbox feature row """
+        if feature in self.listbox_rows:
+            row = self.listbox_rows[feature]
+            row[COL_TITLE].set_markup(title)
+            row[COL_DESCRIPTION].set_markup(desc)
+            for widget in row:
+                widget.set_tooltip_markup(tooltip)
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -276,7 +268,7 @@ class Features(GtkBaseBox):
         # Sort listbox items
         self.listbox.invalidate_sort()
 
-    def enable_defaults(self):
+    def switch_defaults_on(self):
         """ Enable some features by default """
         if 'bluetooth' in self.features:
             process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
@@ -284,7 +276,6 @@ class Features(GtkBaseBox):
             process1.stdout.close()
             out, err = process2.communicate()
             if out.decode() is not '':
-                logging.debug(_("Detected bluetooth device, so Cnchi will enable the 'bluetooth' feature."))
                 row = self.listbox_rows['bluetooth']
                 row[COL_SWITCH].set_active(True)
 
@@ -297,24 +288,30 @@ class Features(GtkBaseBox):
             row = self.listbox_rows['cups']
             row[COL_SWITCH].set_active(True)
 
+        if 'visual' in self.features:
+            row = self.listbox_rows['visual']
+            row[COL_SWITCH].set_active(True)
+
     def store_values(self):
         """ Get switches values and store them """
         for feature in self.features:
             row = self.listbox_rows[feature]
-            isactive = row[COL_SWITCH].get_active()
-            self.settings.set("feature_" + feature, isactive)
-            if isactive:
+            is_active = row[COL_SWITCH].get_active()
+            self.settings.set("feature_" + feature, is_active)
+            if is_active:
                 logging.debug(_("Selected '%s' feature to install"), feature)
 
-        # Show ufw info message if ufw is selected (only once)
+        # Show ufw info message if ufw is selected (show it only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
             info = self.show_info_dialog("ufw")
             self.info_already_shown["ufw"] = True
 
-        # Show AUR disclaimer if AUR is selected (only once)
+        # Show AUR disclaimer if AUR is selected (show it only once)
         if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
             info = self.show_info_dialog("aur")
             self.info_already_shown["aur"] = True
+
+        self.listbox_rows = {}
 
         return True
 
@@ -348,14 +345,13 @@ class Features(GtkBaseBox):
 
     def prepare(self, direction):
         """ Prepare features screen to get ready to show itself """
+        # Each desktop has its own features
         desktop = self.settings.get('desktop')
-        self.features = self.features_by_desktop[desktop]
+        self.features = desktops.FEATURES[desktop]
         self.fill_listbox()
         self.translate_ui()
         self.show_all()
-        if self.defaults:
-            self.enable_defaults()
-            self.defaults = False
+        self.switch_defaults_on()
 
 # When testing, no _() is available
 try:
