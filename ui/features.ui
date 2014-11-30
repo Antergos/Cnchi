@@ -99,8 +99,8 @@
                 </child>
               </object>
             </child>
-            <child>
-              <!--<object class="GtkListBoxRow" id="gnome_extra-row">
+            <!--<child>
+              <object class="GtkListBoxRow" id="gnome_extra-row">
                 <child>
                   <object class="GtkBox" id="box_gnome_extra">
                     <property name="visible">True</property>
