@@ -24,7 +24,12 @@
 
 """ VESA driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import os
 
 CLASS_NAME = "VesaFB"
@@ -50,3 +55,6 @@ class VesaFB(Hardware):
             return False
         else:
             return False
+
+    def get_name(self):
+        return CLASS_NAME

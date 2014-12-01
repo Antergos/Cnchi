@@ -24,7 +24,12 @@
 
 """ Nvidia (propietary) driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import os
 
 CLASS_NAME = "Nvidia"
@@ -50,10 +55,15 @@ class Nvidia(Hardware):
         path = "%s/etc/modprobe.d/nouveau.conf" % dest_dir
         with open(path, 'w') as modprobe:
             modprobe.write("options nouveau modeset=1\n")
+    
+    def is_proprietary(self):
+        return True
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        # DISABLED
-        #if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-        #    return True
+        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
+            return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME

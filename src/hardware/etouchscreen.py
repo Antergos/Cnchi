@@ -28,7 +28,12 @@
 # - http://www.x.org/archive/X11R7.5/doc/man/man4/evdev.4.html
 # - https://bbs.archlinux.org/viewtopic.php?id=126208
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import subprocess
 
 CLASS_NAME = "ETouchScreen"
@@ -68,3 +73,6 @@ class ETouchScreen(Hardware):
                 if product_id == product:
                     return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME

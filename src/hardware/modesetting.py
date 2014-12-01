@@ -24,10 +24,15 @@
 
 """ Modesetting driver installation """
 
-""" hardware-agnostic DDX driver that (theoretically) works with
+""" Hardware-agnostic DDX driver that (theoretically) works with
     any hardware having a DRM/KMS graphics driver """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import os
 
 CLASS_NAME = "ModeSetting"
@@ -52,3 +57,6 @@ class ModeSetting(Hardware):
             return True
         else:
             return False
+
+    def get_name(self):
+        return CLASS_NAME

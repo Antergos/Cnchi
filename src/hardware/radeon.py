@@ -24,7 +24,12 @@
 
 """ AMD/ATI driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import os
 
 CLASS_NAME = "Radeon"
@@ -52,3 +57,6 @@ class Radeon(Hardware):
         if class_id == CLASS_ID and vendor_id == VENDOR_ID:
             return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME

@@ -24,7 +24,12 @@
 
 """ Virtualbox driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
+
 import os
 
 CLASS_NAME = "Virtualbox"
@@ -62,3 +67,6 @@ class Virtualbox(Hardware):
                 if product_id == product:
                     return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME

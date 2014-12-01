@@ -39,15 +39,25 @@ class Hardware(object):
         
     def get_packages(self):
         """ Returns all necessary packages to install """
-        raise NotImplementedError("get_packages is not implemented!")
+        raise NotImplementedError("get_packages is not implemented")
 
     def post_install(self, dest_dir):
         """ Runs post install commands """
-        raise NotImplementedError("postinstall is not implemented!")
+        raise NotImplementedError("postinstall is not implemented")
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
         raise NotImplementedError("check_device is not implemented")
+    
+    def is_proprietary(self):
+        """ Proprietary drivers are drivers for your hardware devices
+            that are not freely-available or open source, and must be
+            obtained from the hardware manufacturer. """
+        return False
+    
+    def get_name(self):
+        raise NotImplementedError("get_name is not implemented")
+        
 
     def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
@@ -86,7 +96,10 @@ class HardwareInstall(object):
             if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
                 filename = filename[:-len(".py")]
                 try:
-                    package = "hardware." + filename
+                    if __name__ == "__main__":
+                        package = filename
+                    else:
+                        package = "hardware." + filename
                     name = filename.capitalize()
                     # This instruction is the same as "from package import name"
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
@@ -119,7 +132,12 @@ class HardwareInstall(object):
         for obj in self.all_objects:
             for device in devices:
                 (class_id, vendor_id, product_id) = device
-                if obj.check_device(self=obj, class_id=class_id, vendor_id=vendor_id, product_id=product_id):
+                check = obj.check_device(
+                    self=obj,
+                    class_id=class_id,
+                    vendor_id=vendor_id,
+                    product_id=product_id)
+                if check:
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
@@ -131,7 +149,10 @@ class HardwareInstall(object):
             if len(objects) > 1:
                 # We have more than one driver for this device!
                 for obj in objects:
-                    self.objects_used.append(obj)
+                    # As we have more than one driver, only add
+                    # non proprietary ones
+                    if not obj.is_proprietary(obj):
+                        self.objects_used.append(obj)
             else:
                 self.objects_used.append(objects[0])
 
@@ -142,14 +163,25 @@ class HardwareInstall(object):
             packages.extend(obj.get_packages(obj))
 
         # Remove duplicates (not necessary but it's cleaner)
-        pkgs = []
-        for pkg in packages:
-            if not pkg in pkgs:
-                pkgs.append(pkg)
-
-        return pkgs
+        packages = list(set(packages))
+        return packages
+    
+    def get_found_driver_names(self):
+        driver_names = []
+        for obj in self.objects_used:
+            driver_names.append(obj.get_name(obj))
+        return driver_names
 
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
         for obj in self.objects_used:
             obj.post_install(obj, dest_dir)
+
+''' Test case '''
+if __name__ == "__main__":
+    hardware_install = HardwareInstall()
+    hardware_pkgs = hardware_install.get_packages()
+    print(hardware_install.get_found_driver_names())
+    if len(hardware_pkgs) > 0:
+        txt = " ".join(hardware_pkgs)
+        print("Hardware module added these packages : %s" % txt)

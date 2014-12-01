@@ -26,7 +26,11 @@
 
 # Support for consumer fingerprint reader devices.
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
 
 CLASS_NAME = "FingerPrint"
 CLASS_ID = ""
@@ -64,3 +68,6 @@ class FingerPrint(Hardware):
             if (vendor_id, product_id) == (vendor, product):
                 return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME

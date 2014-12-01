@@ -569,21 +569,24 @@ class InstallationProcess(multiprocessing.Process):
         try:
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
+            driver_names = hardware_install.get_found_driver_names()
+            if len(driver_names) > 0:
+                logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
                 logging.debug(_("Hardware module added these packages : %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
+                # By default, hardware module adds modesetting driver
+                # but in a NoX install we don't want it
+                if self.desktop == "nox" and "xf86-video-modesetting" in hardware_pkgs:
+                    hardware_pkgs.remove("xf86-video-modesetting")
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s"), err)
-
-        # By default, hardware module adds modesetting driver but in a NoX install we don't want it
-        if self.desktop == "nox" and "xf86-video-modesetting" in self.packages:
-            self.packages.remove("xf86-video-modesetting")
 
         # Add filesystem packages
 
@@ -1870,7 +1873,7 @@ class InstallationProcess(multiprocessing.Process):
         default_groups = 'lp,video,network,storage,wheel,audio'
 
         if self.vbox:
-            # Why there is no vboxusers group?
+            # Why there is no vboxusers group? Add it ourselves.
             self.chroot(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])

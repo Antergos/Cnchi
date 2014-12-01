@@ -26,7 +26,11 @@
 # Broadcom's driver for:
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-, BCM43227- and BCM43228-based hardware. 
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    # This is used when testing hardware module
+    from hardware import Hardware
 
 CLASS_NAME = "Broadcom_wl"
 CLASS_ID = "0x0200"
@@ -58,3 +62,6 @@ class Broadcom_wl(Hardware):
                 if product_id == product:
                     return True
         return False
+
+    def get_name(self):
+        return CLASS_NAME
