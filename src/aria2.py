@@ -173,20 +173,18 @@ class DownloadAria2(object):
 
                     # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
 
-                    # TODO: Check this
+                    # path will store full file name (destination)
                     path = result[0]['files'][0]['path']
-
-                    # Do not show the package's extension to the user
-                    ext = ".pkg.tar.xz"
-                    if path.endswith(ext):
-                        path = path[:-len(ext)]
 
                     percent = round(float(completed_length / total_length), 2)
 
                     if path != old_path and percent == 0:
-                    #    # There're some downloads, that are so quick, that percent does not reach 100. We simulate it here
-                    #    self.queue_event('percent', 1.0)
                         # Update download file name
+                        path = os.path.basename(path)
+                        # Do not show the package's extension to the user
+                        ext = ".pkg.tar.xz"
+                        if path.endswith(ext):
+                            path = path[:-len(ext)]
                         self.queue_event('info', _("Downloading %s...") % path)
                         old_path = path
 
