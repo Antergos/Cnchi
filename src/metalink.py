@@ -45,6 +45,8 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 
+MAX_URLS = 5
+
 def get_info(metalink):
     """ Reads metalink xml and stores it in a dict """
 
@@ -55,7 +57,7 @@ def get_info(metalink):
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     temp_file.write(str(metalink).encode('UTF-8'))
     temp_file.close()
-    
+
     element = {}
 
     for event, elem in ET.iterparse(temp_file.name, events=('start', 'end')):
@@ -79,8 +81,9 @@ def get_info(metalink):
                     element['urls'] = [elem.text]
         if event == "end":
             if elem.tag.endswith("file"):
-                # Crop to 5 urls max for file
-                element['urls'] = element['urls'][:5]
+                # Limit to MAX_URLS for file
+                if len(element['urls']) > MAX_URLS:
+                    element['urls'] = element['urls'][:MAX_URLS]
                 metalink_info[element['identity']] = element.copy()
                 element.clear()
                 elem.clear()
@@ -120,17 +123,8 @@ def create(pacman, package_name, pacman_conf_file):
             msg = msg + missing + " "
         logging.warning(msg)
 
-    #for r in gc.get_referrers(download_queue):
-    #    pprint.pprint(r)
-
     metalink = download_queue_to_metalink(download_queue)
-    
-    #for r in gc.get_referrers(download_queue):
-    #    pprint.pprint(r)
 
-    #for r in gc.get_referents(download_queue):
-    #    pprint.pprint(r)
-    
     return metalink
 
 # From here comes modified code from pm2ml
@@ -379,6 +373,9 @@ def build_download_queue(pacman, args=None):
             siglevel = None
         download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
         urls = set(os.path.join(url, pkg.filename) for url in pkg.db.servers)
+        # Limit to MAX_URLS url
+        while len(urls) > MAX_URLS:
+            urls.pop()
         download_queue.add_sync_pkg(pkg, urls, download_sig)
 
     return download_queue, not_found, missing_deps
@@ -444,7 +441,7 @@ if __name__ == '__main__':
     stream_handler.setLevel(logging.DEBUG)
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
-    
+
     import sys
     import gc
     import pprint
@@ -467,7 +464,7 @@ if __name__ == '__main__':
 
     except Exception as err:
         logging.error("Can't initialize pyalpm: %s" % err)
-        
+
 
     '''
     with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:

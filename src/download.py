@@ -157,7 +157,7 @@ class DownloadPackages(object):
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', percent)
-            
+
             pacman.release()
             del pacman
         except Exception as err:
@@ -165,10 +165,10 @@ class DownloadPackages(object):
 
         downloaded = 0
         total_downloads = len(downloads)
-        
+
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', 0)
-        
+
         for key in downloads:
             element = downloads[key]
 
@@ -183,10 +183,10 @@ class DownloadPackages(object):
             except TypeError as err:
                 logging.warning(_("Metalink for package %s has no size info"), element['identity'])
                 total_length = 0
-            
+
             dst_cache_path = os.path.join(self.cache_dir, element['filename'])
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
-            
+
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
@@ -249,10 +249,10 @@ class DownloadPackages(object):
                     # to download it for us later in pac.py
                     msg = _("Can't download %s, even after trying all available mirrors") % element['filename']
                     logging.warning(msg)
-            
+
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', downloads_percent)
-        
+
         self.queue_event('downloads_progress_bar', 'hide')
 
     def queue_event(self, event_type, event_text=""):
