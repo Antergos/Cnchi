@@ -117,6 +117,7 @@ class DownloadPackages(object):
         self.callback_queue = callback_queue
 
         if use_aria2:
+            logging.debug(_("Using aria2 to download packages"))
             aria2.DownloadAria2(
                 package_names,
                 pacman_conf_file,
@@ -124,6 +125,7 @@ class DownloadPackages(object):
                 cache_dir,
                 callback_queue)
         else:
+            logging.debug(_("Using urlib to download packages"))
             self.download(package_names)
 
     def download(self, package_names):
