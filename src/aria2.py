@@ -83,7 +83,7 @@ class DownloadAria2(object):
 
         self.download(package_names)
 
-    def getGlobalStat(self):
+    def get_global_stat(self):
         """ This method returns global statistics such as
             the overall download and upload speeds. """
         try:
@@ -94,7 +94,7 @@ class DownloadAria2(object):
             logging.debug(_("Can't call Aria2. Error Output: %s"), err)
             return None
 
-    def tellActive(self, keys):
+    def tell_active(self, keys):
         """ This method returns  a  list  of  active  downloads. """
         try:
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
@@ -104,7 +104,7 @@ class DownloadAria2(object):
             logging.debug(_("Can't call Aria2. Error Output: %s"), err)
             return None
 
-    def addMetalink(self, metalink):
+    def add_metalink(self, metalink):
         """ This method adds a Metalink download by uploading a ".metalink" file. """
         gids = []
         if metalink != None:
@@ -117,7 +117,7 @@ class DownloadAria2(object):
 
         return gids
 
-    def purgeDownloadResult(self):
+    def purge_download_result(self):
         """ This method purges completed/error/removed downloads to free memory. """
         try:
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
@@ -146,13 +146,13 @@ class DownloadAria2(object):
                     logging.error(_("Error creating metalink for package %s"), package_name)
                     continue
 
-                gids = self.addMetalink(metalink)
+                gids = self.add_metalink(metalink)
 
                 if len(gids) <= 0:
                     logging.error(_("Error adding metalink for package %s"), package_name)
                     continue
 
-                global_stat = self.getGlobalStat()
+                global_stat = self.get_global_stat()
                 num_active = int(global_stat["numActive"])
 
                 old_percent = -1
@@ -163,7 +163,7 @@ class DownloadAria2(object):
 
                 while num_active > 0:
                     keys = ["gid", "status", "totalLength", "completedLength", "files"]
-                    result = self.tellActive(keys)
+                    result = self.tell_active(keys)
 
                     total_length = 0
                     completed_length = 0
@@ -194,13 +194,13 @@ class DownloadAria2(object):
                         old_percent = percent
 
                     # Get global statistics
-                    global_stat = self.getGlobalStat()
+                    global_stat = self.get_global_stat()
 
                     # Get num of active downloads
                     num_active = int(global_stat["numActive"])
 
                 # This method purges completed/error/removed downloads, in order to free memory
-                self.purgeDownloadResult()
+                self.purge_download_result()
 
             # Finished, close aria2
             self.shutdown()
@@ -281,8 +281,8 @@ class DownloadAria2(object):
         except queue.Full:
             pass
 
-''' Test case '''
 if __name__ == '__main__':
+    ''' Test case '''
     import gettext
     _ = gettext.gettext
 
