@@ -97,6 +97,7 @@ class Check(GtkBaseBox):
         self.prepare_best_results.set_markup(txt)
 
     def check_all(self):
+        """ Check that all requirements are meet """
         has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
 
@@ -112,6 +113,7 @@ class Check(GtkBaseBox):
         return False
 
     def on_battery(self):
+        """ Checks if we are on battery power """
         import dbus
         if self.has_battery():
             bus = dbus.SystemBus()
@@ -135,6 +137,7 @@ class Check(GtkBaseBox):
         return False
 
     def has_enough_space(self):
+        """ Check that we have a disk or partition with enough space """
         lsblk = subprocess.Popen(["lsblk", "-lnb"], stdout=subprocess.PIPE)
         output = lsblk.communicate()[0].decode("utf-8").split("\n")
 
@@ -154,11 +157,13 @@ class Check(GtkBaseBox):
         return False
 
     def on_timer(self):
+        """ If all requirements are meet, enable forward button """
         if not self.remove_timer:
             self.forward_button.set_sensitive(self.check_all())
         return not self.remove_timer
 
     def store_values(self):
+        """ Continue """
         # Remove timer
         self.remove_timer = True
 
@@ -178,6 +183,7 @@ class Check(GtkBaseBox):
         return True
 
     def prepare(self, direction):
+        """ Load screen """
         self.translate_ui()
         self.show_all()
 
@@ -186,10 +192,6 @@ class Check(GtkBaseBox):
         # Set timer
         self.timeout_id = GLib.timeout_add(1000, self.on_timer)
 
-    def get_next_page(self):
-        # TODO: Decide if we need to show location page or not
-        return self.next_page
-
 # When testing, no _() is available
 try:
     _("")
@@ -197,5 +199,5 @@ except NameError as err:
     def _(message): return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('Check')
