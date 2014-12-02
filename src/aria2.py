@@ -180,14 +180,17 @@ class DownloadAria2(object):
                     percent = round(float(completed_length / total_length), 2)
 
                     if path != old_path and percent == 0:
+                        old_path = path
                         # Update download file name
                         path = os.path.basename(path)
                         # Do not show the package's extension to the user
                         ext = ".pkg.tar.xz"
                         if path.endswith(ext):
                             path = path[:-len(ext)]
+                        arch = "-x86_64"
+                        if path.endswith(arch):
+                            path = path[:-len(arch)]
                         self.queue_event('info', _("Downloading %s...") % path)
-                        old_path = path
 
                     if percent != old_percent:
                         self.queue_event('percent', percent)
@@ -296,8 +299,8 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    DownloadAria2(package_names=["gnome-sudoku"], cache_dir="", pacman_cache_dir="/tmp/aria2")
-    #DownloadAria2(package_names=["gnome"], cache_dir="", pacman_cache_dir="/tmp/aria2")
+    #DownloadAria2(package_names=["gnome-sudoku"], cache_dir="", pacman_cache_dir="/tmp/aria2")
+    DownloadAria2(package_names=["base"], cache_dir="", pacman_cache_dir="/tmp/aria2")
 
     #DownloadAria2(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2")
     #DownloadAria2(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2")

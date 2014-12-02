@@ -96,7 +96,8 @@ def get_info(metalink):
 def create(pacman, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed" ]
+    #options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed" ]
+    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps" ]
 
     if package_name is "databases":
         options.append("--refresh")
