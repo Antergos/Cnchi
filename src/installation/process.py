@@ -356,15 +356,12 @@ class InstallationProcess(multiprocessing.Process):
 
             logging.debug(_("Downloading packages..."))
             self.download_packages()
-            logging.debug(_("Packages downloaded."))
 
             logging.debug(_("Installing packages..."))
             self.install_packages()
-            logging.debug(_("Packages installed."))
 
             logging.debug(_("Configuring system..."))
             self.configure_system()
-            logging.debug(_("System configured."))
 
             all_ok = True
         except subprocess.CalledProcessError as err:
