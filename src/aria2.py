@@ -84,7 +84,8 @@ class DownloadAria2(object):
         self.download(package_names)
 
     def getGlobalStat(self):
-        """ This method returns global statistics such as the overall download and upload speeds. """
+        """ This method returns global statistics such as
+            the overall download and upload speeds. """
         try:
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
             stat = s.aria2.getGlobalStat(self.rpc_uid)
