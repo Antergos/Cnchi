@@ -35,8 +35,9 @@ import gettext
 import locale
 
 try:
-    from gi.repository import Gtk, Gdk, GObject, Gio
-except:
+    from gi.repository import Gtk, GObject
+except ImportError as err:
+    print(err)
     print("This program needs GTK3")
     sys.exit(1)
 
@@ -50,7 +51,7 @@ import info
 import updater
 
 # Command line options
-cmd_line = None
+_cmd_line = None
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.9.6"
@@ -65,12 +66,13 @@ class CnchiApp(Gtk.Application):
         """ Override the 'activate' signal of GLib.Application. """
         try:
             import main_window
-        except Exception as err:
+        except ImportError as err:
             msg = _("Can't create Cnchi main window: %s") % err
             logging.error(msg)
             sys.exit(1)
 
-        window = main_window.MainWindow(self, cmd_line)
+        #window = main_window.MainWindow(self, _cmd_line)
+        main_window.MainWindow(self, _cmd_line)
 
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without
@@ -79,9 +81,9 @@ class CnchiApp(Gtk.Application):
         # This is unnecessary as show_all is called in MainWindow
         #window.show_all()
 
-    def do_startup(self):
-        """ Override the 'startup' signal of GLib.Application. """
-        Gtk.Application.do_startup(self)
+    #def do_startup(self):
+        #""" Override the 'startup' signal of GLib.Application. """
+        #Gtk.Application.do_startup(self)
 
         # Application main menu (we don't need one atm)
         # Leaving this here for future reference
@@ -96,7 +98,7 @@ def setup_logging():
 
     logger.handlers = []
 
-    if cmd_line.debug:
+    if _cmd_line.debug:
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
@@ -115,9 +117,9 @@ def setup_logging():
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     except PermissionError as err:
-        print("Can't open /tmp/cnchi.log")
+        print("Can't open /tmp/cnchi.log : ", err)
 
-    if cmd_line.verbose:
+    if _cmd_line.verbose:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(log_level)
@@ -149,7 +151,7 @@ def check_gtk_version():
 
     if wrong_gtk_version:
         text = "Detected GTK version %d.%d.%d but version %s is needed."
-        text = text % (major, minor, micro, _gtk_version_needed)
+        text = text % (major, minor, micro, GTK_VERSION_NEEDED)
         logging.info(text)
         return False
     else:
@@ -158,6 +160,7 @@ def check_gtk_version():
     return True
 
 def check_pyalpm_version():
+    """ Checks python alpm binding and alpm library versions """
     try:
         import pyalpm
         logging.info(
@@ -204,7 +207,7 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "-u", "--update",
-        help=_("Update Cnchi to the latest web version (will force the update without checking versions)"),
+        help=_("Upgrade/downgrade Cnchi to the web version"),
         action="store_true")
     parser.add_argument(
         "--disable-update",
@@ -249,12 +252,12 @@ def threads_init():
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(force_update=cmd_line.update)
+    upd = updater.Updater(force_update=_cmd_line.update)
 
     if upd.update():
         logging.info(_("Program updated! Restarting..."))
         main_window.remove_temp_files()
-        if cmd_line.update:
+        if _cmd_line.update:
             # Remove -u and --update options from new call
             new_argv = []
             for argv in sys.argv:
@@ -272,7 +275,8 @@ def update_cnchi():
         sys.exit(0)
 
 def setup_gettext():
-    # This allows to translate all py texts (not the glade ones)
+    """ This allows to translate all py texts (not the glade ones) """
+
     gettext.textdomain(APP_NAME)
     gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 
@@ -281,6 +285,7 @@ def setup_gettext():
     lang.install()
 
 def check_for_files():
+    """ Check for some necessary files. Cnchi can't run without them """
     if not os.path.exists("/usr/share/cnchi") or not os.path.exists("/usr/share/cnchi/ui"):
         print(_("Cnchi files not found. Please, install Cnchi using pacman"))
         return False
@@ -298,8 +303,8 @@ def init_cnchi():
     setup_gettext()
 
     # Command line options
-    global cmd_line
-    cmd_line = parse_options()
+    global _cmd_line
+    _cmd_line = parse_options()
 
     # Drop root privileges
     misc.drop_privileges()
@@ -319,7 +324,7 @@ def init_cnchi():
     if not check_pyalpm_version():
         sys.exit(1)
 
-    if not cmd_line.disable_update:
+    if not _cmd_line.disable_update:
         update_cnchi()
 
     # Init PyObject Threads
