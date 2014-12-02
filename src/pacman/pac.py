@@ -109,9 +109,6 @@ class Pac(object):
             del self.handle
             self.handle = None
 
-    #def __del__(self):
-    #    self.release()
-
     def finalize_transaction(self, transaction):
         """ Commit a transaction """
         all_ok = True
@@ -321,21 +318,15 @@ class Pac(object):
             self.queue_event('info', action)
 
     def cb_log(self, level, line):
-        """ Log pyalpm warning and error messages """
-        logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
+        """ Log pyalpm warning and error messages.
+            Possible message types:
+            LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
 
         # Only manage error and warning messages
-        if not (level & logmask):
-            return
-
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
-        #elif level & pyalpm.LOG_DEBUG:
-        #    logging.debug(line)
-        #elif level & pyalpm.LOG_FUNCTION:
-        #    pass
 
     def cb_progress(self, target, percent, n, i):
         """ Shows install progress """
