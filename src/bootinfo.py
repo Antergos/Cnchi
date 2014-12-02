@@ -32,12 +32,6 @@ import logging
 
 import canonical.misc as misc
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message): return message
-
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
 SYSTEM_DIRS = ["system32", "System32"]
@@ -165,15 +159,15 @@ def _check_linux(mount_name):
                 # Let's use the "PRETTY_NAME"
                 if line.startswith("PRETTY_NAME"):
                     detected_os = line[len("PRETTY_NAME="):]
-            if detected_os == _("unknown"):
-                # Didn't find PRETTY_NAME, we will use ID
-                if line.startswith("ID"):
-                    os_id = line[len("ID="):]
-                if line.startswith("VERSION"):
-                    os_version = line[len("VERSION="):]
-                detected_os = os_id
-                if len(os_version) > 0:
-                    detected_os += " " + os_version
+                if detected_os == _("unknown"):
+                    # Didn't find PRETTY_NAME, we will use ID
+                    if line.startswith("ID"):
+                        os_id = line[len("ID="):]
+                    if line.startswith("VERSION"):
+                        os_version = line[len("VERSION="):]
+                    detected_os = os_id
+                    if len(os_version) > 0:
+                        detected_os += " " + os_version
     detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
