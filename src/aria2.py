@@ -86,23 +86,25 @@ class DownloadAria2(object):
     def get_global_stat(self):
         """ This method returns global statistics such as
             the overall download and upload speeds. """
+        stat = None
         try:
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
             stat = s.aria2.getGlobalStat(self.rpc_uid)
-            return stat
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
             logging.debug(_("Can't call Aria2. Error Output: %s"), err)
-            return None
+        finally:
+            return stat
 
     def tell_active(self, keys):
         """ This method returns  a  list  of  active  downloads. """
+        active = None
         try:
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
             active = s.aria2.tellActive(self.rpc_uid, keys)
-            return active
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError) as err:
             logging.debug(_("Can't call Aria2. Error Output: %s"), err)
-            return None
+        finally:
+            return active
 
     def add_metalink(self, metalink):
         """ This method adds a Metalink download by uploading a ".metalink" file. """
@@ -114,6 +116,8 @@ class DownloadAria2(object):
                 gids = s.aria2.addMetalink(self.rpc_uid, binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError, OverflowError) as err:
                 logging.error("Can't add metalink to Aria2. Error Output: %s", err)
+            finally:
+                return gids
 
         return gids
 
@@ -140,6 +144,8 @@ class DownloadAria2(object):
                 conf_path=self.pacman_conf_file,
                 callback_queue=self.callback_queue)
 
+            keys = ["gid", "status", "totalLength", "completedLength", "files"]
+
             for package_name in package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink == None:
@@ -152,7 +158,10 @@ class DownloadAria2(object):
                     logging.error(_("Error adding metalink for package %s"), package_name)
                     continue
 
+                # Get global statistics
                 global_stat = self.get_global_stat()
+
+                # Get num of active downloads
                 num_active = int(global_stat["numActive"])
 
                 old_percent = -1
@@ -162,39 +171,41 @@ class DownloadAria2(object):
                 self.queue_event('info', action)
 
                 while num_active > 0:
-                    keys = ["gid", "status", "totalLength", "completedLength", "files"]
                     result = self.tell_active(keys)
 
                     total_length = 0
                     completed_length = 0
 
-                    for i in range(0, num_active):
-                        total_length += int(result[i]['totalLength'])
-                        completed_length += int(result[i]['completedLength'])
+                    try:
+                        for i in range(0, num_active):
+                            total_length += int(result[i]['totalLength'])
+                            completed_length += int(result[i]['completedLength'])
 
-                    # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
+                        # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
 
-                    # path will store full file name (destination)
-                    path = result[0]['files'][0]['path']
+                        # path will store full file name (destination)
+                        path = result[0]['files'][0]['path']
 
-                    percent = round(float(completed_length / total_length), 2)
+                        percent = round(float(completed_length / total_length), 2)
 
-                    if path != old_path and percent == 0:
-                        old_path = path
-                        # Update download file name
-                        path = os.path.basename(path)
-                        # Do not show the package's extension to the user
-                        ext = ".pkg.tar.xz"
-                        if path.endswith(ext):
-                            path = path[:-len(ext)]
-                        arch = "-x86_64"
-                        if path.endswith(arch):
-                            path = path[:-len(arch)]
-                        self.queue_event('info', _("Downloading %s...") % path)
+                        if path != old_path and percent == 0:
+                            old_path = path
+                            # Update download file name
+                            path = os.path.basename(path)
+                            # Do not show the package's extension to the user
+                            ext = ".pkg.tar.xz"
+                            if path.endswith(ext):
+                                path = path[:-len(ext)]
+                            arch = "-x86_64"
+                            if path.endswith(arch):
+                                path = path[:-len(arch)]
+                            self.queue_event('info', _("Downloading %s...") % path)
 
-                    if percent != old_percent:
-                        self.queue_event('percent', percent)
-                        old_percent = percent
+                        if percent != old_percent:
+                            self.queue_event('percent', percent)
+                            old_percent = percent
+                    except Exception as err:
+                        logging.error(err)
 
                     # Get global statistics
                     global_stat = self.get_global_stat()
@@ -300,7 +311,8 @@ if __name__ == '__main__':
     logger.addHandler(stream_handler)
 
     #DownloadAria2(package_names=["gnome-sudoku"], cache_dir="", pacman_cache_dir="/tmp/aria2")
-    DownloadAria2(package_names=["base"], cache_dir="", pacman_cache_dir="/tmp/aria2")
+    DownloadAria2(package_names=["alsa-utils"], cache_dir="", pacman_cache_dir="/tmp/aria2")
+    #DownloadAria2(package_names=["base"], cache_dir="", pacman_cache_dir="/tmp/aria2")
 
     #DownloadAria2(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2")
     #DownloadAria2(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2")
