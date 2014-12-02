@@ -58,7 +58,7 @@ if __name__ == '__main__':
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
     # FIXME: Windows Vista/7 detection does not work
-    
+
     detected_os = _("unknown")
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
@@ -98,7 +98,7 @@ def _hexdump8081(partition):
 def _get_partition_info(partition):
     """ Get bytes 0x80-0x81 of VBR to identify Boot sectors. """
     bytes80_to_81 = _hexdump8081(partition)
-    
+
     bst = {
         '0000':'None', # Data or swap partition
         '7405':'Windows 7',     # W7 Fat32
@@ -144,7 +144,7 @@ def _check_dos(mount_name):
                 for mark in DOS_MARKS:
                     if mark in system_file:
                         detected_os = mark
-    return detected_os  
+    return detected_os
 
 def _check_linux(mount_name):
     """ Checks for linux """
@@ -156,18 +156,20 @@ def _check_linux(mount_name):
             with open(path, 'r') as os_release_file:
                 lines = os_release_file.readlines()
             for line in lines:
-                # Let's use the "PRETTY_NAME"
                 if line.startswith("PRETTY_NAME"):
-                    detected_os = line[len("PRETTY_NAME="):]
-                if detected_os == _("unknown"):
-                    # Didn't find PRETTY_NAME, we will use ID
-                    if line.startswith("ID"):
-                        os_id = line[len("ID="):]
-                    if line.startswith("VERSION"):
-                        os_version = line[len("VERSION="):]
-                    detected_os = os_id
-                    if len(os_version) > 0:
-                        detected_os += " " + os_version
+                    os_pretty_name = line[len("PRETTY_NAME="):]
+                elif line.startswith("ID"):
+                    os_id = line[len("ID="):]
+                elif line.startswith("VERSION"):
+                    os_version = line[len("VERSION="):]
+
+            if len(os_pretty_name) > 0:
+                detected_os = os_pretty_name
+            elif len(os_id) > 0:
+                detected_os = os_id
+                if len(os_version) > 0:
+                    detected_os += " " + os_version
+
     detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
@@ -189,8 +191,8 @@ def _get_os(mount_name):
     """ Detect installed OSes """
     #  If partition is mounted, try to identify the Operating System
     # (OS) by looking for files specific to the OS.
-    
-    detected_os = _check_windows(mount_name)    
+
+    detected_os = _check_windows(mount_name)
 
     if detected_os == _("unknown"):
         detected_os = _check_linux(mount_name)
@@ -208,7 +210,7 @@ def get_os_dict():
     oses = {}
 
     tmp_dir = tempfile.mkdtemp()
-    
+
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
@@ -217,7 +219,7 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-                    
+
                     try:
                         subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
                         oses[device] = _get_os(tmp_dir)
@@ -231,7 +233,7 @@ def get_os_dict():
                         # As a last resort, try reading partition info with hexdump
                         #print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
-                    
+
     try:
         os.rmdir(tmp_dir)
     except OSError as err:
