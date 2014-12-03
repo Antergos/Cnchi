@@ -78,14 +78,18 @@ a{
     animation: imageAnimation 36s linear infinite 0s;
 }
 
-
+.cb-slideshow li {
+    height: 334px;
+    max-height: 334px;
+    min-height: 334px;
+    background-size: contain;
+}
 .cb-slideshow li:nth-child(1) span {
     background-image: url(../images/slides/1.png)
-    background-size: cover;
+
 }
 .cb-slideshow li:nth-child(2) span {
     background-image: url(../images/slides/2.png);
-    background-size: cover;
     -webkit-animation-delay: 12s;
     -moz-animation-delay: 12s;
     -o-animation-delay: 12s;
@@ -94,7 +98,6 @@ a{
 }
 .cb-slideshow li:nth-child(3) span {
     background-image: url(../images/slides/3.png);
-    background-size: cover;
     -webkit-animation-delay: 24s;
     -moz-animation-delay: 24s;
     -o-animation-delay: 24s;
