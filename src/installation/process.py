@@ -612,7 +612,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Check for user desired features and add them to our installation
         logging.debug(_("Check for user desired features and add them to our installation"))
-        add_features_packages(xml_root)
+        self.add_features_packages(xml_root)
         logging.debug(_("All features needed packages have been added"))
 
         # Add chinese fonts
