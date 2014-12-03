@@ -125,9 +125,6 @@ class InstallationProcess(multiprocessing.Process):
         self.packages = []
         self.pacman = None
         self.arch = ""
-        self.initramfs = ""
-        self.kernel = ""
-        self.vmlinuz = ""
         self.dest_dir = "/install"
         self.vbox = False
 
@@ -182,10 +179,6 @@ class InstallationProcess(multiprocessing.Process):
             # some mounted directories. Try to unmount them first.
             # We use unmount_all from auto_partition to do this.
             auto_partition.unmount_all(self.dest_dir)
-
-        self.kernel = "linux"
-        self.vmlinuz = "vmlinuz-%s" % self.kernel
-        self.initramfs = "initramfs-%s" % self.kernel
 
         self.arch = os.uname()[-1]
 
@@ -332,8 +325,11 @@ class InstallationProcess(multiprocessing.Process):
         # to be removed otherwise pyalpm will raise a fatal exception later on.
         kernel_imgs = (
             "/install/boot/vmlinuz-linux",
+            "/install/boot/vmlinuz-linux-lts",
             "/install/boot/initramfs-linux.img",
-            "/install/boot/initramfs-linux-fallback.img")
+            "/install/boot/initramfs-linux-fallback.img",
+            "/install/boot/initramfs-linux-lts.img",
+            "/install/boot/initramfs-linux-lts-fallback.img")
 
         for img in kernel_imgs:
             if os.path.exists(img):
@@ -1255,6 +1251,22 @@ class InstallationProcess(multiprocessing.Process):
                 entry_file.write("linux\t/vmlinuz-linux\n")
                 entry_file.write("initrd\t/initramfs-linux.img\n")
                 entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
+
+                entry_file.write("title\tAntergos (fallback)\n")
+                entry_file.write("linux\t/vmlinuz-linux\n")
+                entry_file.write("initrd\t/initramfs-linux-fallback.img\n")
+                entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
+
+                if self.settings.get('feature_lts'):
+                    entry_file.write("title\tAntergos LTS\n")
+                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
+                    entry_file.write("initrd\t/initramfs-linux-lts.img\n")
+                    entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
+
+                    entry_file.write("title\tAntergos LTS (fallback)\n")
+                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
+                    entry_file.write("initrd\t/initramfs-linux-lts-fallback.img\n")
+                    entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
             else:
                 boot_device = self.mount_devices["/boot"]
                 boot_uuid = fs.get_info(boot_device)['UUID']
@@ -1269,9 +1281,23 @@ class InstallationProcess(multiprocessing.Process):
                     key = "cryptkey=UUID=%s:ext2:/.keyfile-root" % boot_uuid
 
                 line = "cryptdevice=UUID=%s:%s %s root=UUID=%s rw" % (root_uuid, luks_root_volume, key, root_uuid)
-                entry_file.write("title\tAntergos (Encrypted)\n")
+
+                entry_file.write("title\tAntergos\n")
                 entry_file.write("linux\t/boot/vmlinuz-linux\n")
                 entry_file.write("options\tinitrd=/boot/initramfs-linux.img " + line)
+
+                entry_file.write("title\tAntergos (fallback)\n")
+                entry_file.write("linux\t/boot/vmlinuz-linux\n")
+                entry_file.write("options\tinitrd=/boot/initramfs-linux-fallback.img " + line)
+
+                if self.settings.get('feature_lts'):
+                    entry_file.write("title\tAntergos LTS\n")
+                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
+                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts.img " + line)
+
+                    entry_file.write("title\tAntergos LTS (fallback)\n")
+                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
+                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts-fallback.img " + line)
 
         # Install bootloader
 
@@ -1450,7 +1476,9 @@ class InstallationProcess(multiprocessing.Process):
         # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
         locale = self.settings.get('locale')
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p %s' % (locale, self.kernel)])
+        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux' % locale)])
+        if self.settings.get('feature_lts'):
+            self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale)])
         self.chroot_umount_special_dirs()
 
     def generate_pacmanconf(self):

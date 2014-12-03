@@ -55,6 +55,7 @@ class Settings(object):
             'feature_firefox' : False,
             'feature_firewall' : False,
             'feature_fonts' : False,
+            'feature_lts' : False,
             'feature_office' : False,
             'feature_smb' : False,
             'feature_visual' : False,
