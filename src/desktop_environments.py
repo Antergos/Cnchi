@@ -55,23 +55,23 @@ NAMES = {
     'mate' : "MATE"}
 
 LIBS = {
-    'gtk' : ["gnome", "cinnamon", "xfce", "openbox", "mate", "enlightenment"],
-    'qt' : ["lxqt", "kde", "plasma5"]}
+    'gtk' : ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
+    'qt' : ["kde", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'gnome' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'kde' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'plasma5': ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'mate' : ["aur", "firefox", "cups", "fonts", "office", "firewall", "smb"],
-    'enlightenment' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'base' : ["aur", "bluetooth", "cups", "fonts", "firewall"],
-    'openbox' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "visual", "firewall", "smb"],
-    'lxqt' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"],
-    'xfce' : ["aur", "firefox", "bluetooth", "cups", "fonts", "office", "firewall", "smb"]}
+    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'kde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'base' : ["aur", "cups", "fonts", "lts"],
+    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb", "visual"],
+    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"]}
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message): return message

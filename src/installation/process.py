@@ -509,12 +509,10 @@ class InstallationProcess(multiprocessing.Process):
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
-
                 # Add common packages to all desktops (including noX)
                 if edition.attrib.get("name").lower() == "common":
                     for pkg in edition.iter('pkgname'):
                         self.packages.append(pkg.text)
-
                 # Add common graphical packages
                 if self.desktop != "nox":
                     if edition.attrib.get("name").lower() == "graphic":
@@ -525,7 +523,6 @@ class InstallationProcess(multiprocessing.Process):
                             plib = pkg.attrib.get('lib')
                             if plib is None or (plib is not None and self.desktop in lib[plib]):
                                 self.packages.append(pkg.text)
-
                 # Add specific desktop packages
                 if edition.attrib.get("name").lower() == self.desktop.lower():
                     logging.debug(_("Adding '%s' desktop packages"), self.desktop)
@@ -586,7 +583,6 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Unknown error in hardware module. Output: %s"), err)
 
         # Add filesystem packages
-
         logging.debug(_("Adding filesystem packages"))
 
         try:
@@ -601,8 +597,8 @@ class InstallationProcess(multiprocessing.Process):
             'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs',
             'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'vfat', 'xfs')
 
-        for iii in self.fs_devices:
-            fs_types += self.fs_devices[iii]
+        for fs_index in self.fs_devices:
+            fs_types += self.fs_devices[fs_index]
 
         for fsys in fs_lib:
             if fsys in fs_types:
@@ -616,7 +612,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Check for user desired features and add them to our installation
         logging.debug(_("Check for user desired features and add them to our installation"))
-        self.add_features_packages(xml_root)
+        add_features_packages(xml_root)
         logging.debug(_("All features needed packages have been added"))
 
         # Add chinese fonts

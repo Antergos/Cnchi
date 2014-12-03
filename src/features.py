@@ -37,12 +37,13 @@ _features_icon_names = {
     'aur' : 'system-software-install',
     'bluetooth' : 'bluetooth',
     'cups' : 'printer',
-    'firewall' : 'network-server',
     'firefox' : 'firefox',
+    'firewall' : 'network-server',
     'fonts' : 'preferences-desktop-font',
+    'lts' : 'applications-accessories',
     'office' : 'accessories-text-editor',
-    'visual' : 'video-display',
-    'smb' : 'gnome-mime-x-directory-smb-share'}
+    'smb' : 'gnome-mime-x-directory-smb-share',
+    'visual' : 'video-display'}
 
 COL_IMAGE = 0
 COL_TITLE = 1
@@ -171,9 +172,9 @@ class Features(GtkBaseBox):
         desc = _("The AUR is a community-driven repository for Arch users.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Use yaourt to install AUR packages.\n"
-                "The AUR was created to organize and share new packages\n"
-                "from the community and to help expedite popular packages'\n"
-                "inclusion into the [community] repository.")
+            "The AUR was created to organize and share new packages\n"
+            "from the community and to help expedite popular packages'\n"
+            "inclusion into the [community] repository.")
         self.set_row_text('aur', title, desc, tooltip)
 
         # Bluetooth
@@ -182,9 +183,9 @@ class Features(GtkBaseBox):
         desc = _("Enables your system to make wireless connections via Bluetooth.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Bluetooth is a standard for the short-range wireless\n"
-                "interconnection of cellular phones, computers, and\n"
-                "other electronic devices. In Linux, the canonical\n"
-                "implementation of the Bluetooth protocol stack is BlueZ")
+            "interconnection of cellular phones, computers, and\n"
+            "other electronic devices. In Linux, the canonical\n"
+            "implementation of the Bluetooth protocol stack is BlueZ")
         self.set_row_text('bluetooth', title, desc, tooltip)
 
         # Extra TTF Fonts
@@ -193,10 +194,10 @@ class Features(GtkBaseBox):
         desc = _("Installation of extra TrueType fonts")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("TrueType is an outline font standard developed by\n"
-                "Apple and Microsoft in the late 1980s as a competitor\n"
-                "to Adobe's Type 1 fonts used in PostScript. It has\n"
-                "become the most common format for fonts on both the\n"
-                "Mac OS and Microsoft Windows operating systems.")
+            "Apple and Microsoft in the late 1980s as a competitor\n"
+            "to Adobe's Type 1 fonts used in PostScript. It has\n"
+            "become the most common format for fonts on both the\n"
+            "Mac OS and Microsoft Windows operating systems.")
         self.set_row_text('fonts', title, desc, tooltip)
 
         # Printing support (cups)
@@ -205,8 +206,8 @@ class Features(GtkBaseBox):
         desc = _("Installation of printer drivers and management tools.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("CUPS is the standards-based, open source printing\n"
-                "system developed by Apple Inc. for OS® X and other\n"
-                "UNIX®-like operating systems.")
+            "system developed by Apple Inc. for OS® X and other\n"
+            "UNIX®-like operating systems.")
         self.set_row_text('cups', title, desc, tooltip)
 
         # LibreOffice
@@ -215,10 +216,10 @@ class Features(GtkBaseBox):
         desc = _("Open source office suite. Supports editing MS Office files.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("LibreOffice is the free power-packed Open Source\n"
-                "personal productivity suite for Windows, Macintosh\n"
-                "and Linux, that gives you six feature-rich applications\n"
-                "for all your document production and data processing\n"
-                "needs: Writer, Calc, Impress, Draw, Math and Base.")
+            "personal productivity suite for Windows, Macintosh\n"
+            "and Linux, that gives you six feature-rich applications\n"
+            "for all your document production and data processing\n"
+            "needs: Writer, Calc, Impress, Draw, Math and Base.")
         self.set_row_text('office', title, desc, tooltip)
 
         # Visual effects
@@ -227,10 +228,10 @@ class Features(GtkBaseBox):
         desc = _("Enable transparency, shadows, and other desktop effects.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Compton is a lightweight, standalone composite manager,\n"
-                "suitable for use with window managers that do not natively\n"
-                "provide compositing functionality. Compton itself is a fork\n"
-                "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
-                "See the compton github page for further information.")
+            "suitable for use with window managers that do not natively\n"
+            "provide compositing functionality. Compton itself is a fork\n"
+            "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+            "See the compton github page for further information.")
         self.set_row_text('visual', title, desc, tooltip)
 
         # Firewall
@@ -239,9 +240,23 @@ class Features(GtkBaseBox):
         desc = _("Control the incoming and outgoing network traffic.")
         desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
-                "managing a netfilter firewall. It provides a command line\n"
-                "interface and aims to be uncomplicated and easy to use.")
+            "managing a netfilter firewall. It provides a command line\n"
+            "interface and aims to be uncomplicated and easy to use.")
         self.set_row_text('firewall', title, desc, tooltip)
+
+        # Kernel LTS
+        title = _("Kernel LTS")
+        title = "<span weight='bold' size='large'>%s</span>" % title
+        desc = _("Long term support (LTS) Linux kernel and modules.")
+        desc = "<span size='small'>%s</span>" % desc
+        tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
+            "based upon Linux kernel 3.14 and is available in the core repository.\n"
+            "This particular kernel version enjoys long-term support from upstream,\n"
+            "including security fixes and some feature backports. Additionally, this\n"
+            "package includes ext4 support. For Antergos users seeking a long-term\n"
+            "support kernel, or who want a fallback kernel in case the latest kernel\n"
+            "version causes problems, this option is the answer.")
+        self.set_row_text('lts', title, desc, tooltip)
 
         # Firefox
         title = _("Firefox Web Browser")

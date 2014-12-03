@@ -466,9 +466,20 @@
       <pkgname lib='gtk'>system-config-printer</pkgname>
       <pkgname>splix</pkgname>
     </feature>
+    <feature name="firefox">
+        <pkgname conflicts="chromium">firefox</pkgname>
+    </feature>
+    <feature name="firewall">
+      <pkgname lib='gtk'>gufw</pkgname>
+      <pkgname lib='qt'>kcm-ufw</pkgname>
+      <pkgname>ufw</pkgname>
+    </feature>
     <feature name="fonts">
       <pkgname>ttf-freefont</pkgname>
       <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
+    </feature>
+    <feature name="lts">
+        <pkgname>linux-lts</pkgname>
     </feature>
     <feature name="office">
       <!-- There're now two libreoffice branches, fresh and still
@@ -480,14 +491,6 @@
     <feature name="visual">
       <pkgname>compton</pkgname>
       <pkgname>paranoid</pkgname>
-    </feature>
-    <feature name="firewall">
-      <pkgname lib='gtk'>gufw</pkgname>
-      <pkgname lib='qt'>kcm-ufw</pkgname>
-      <pkgname>ufw</pkgname>
-    </feature>
-    <feature name="firefox">
-        <pkgname conflicts="chromium">firefox</pkgname>
     </feature>
     <feature name="smb">
         <pkgname lib='gtk'>gvfs-smb</pkgname>
