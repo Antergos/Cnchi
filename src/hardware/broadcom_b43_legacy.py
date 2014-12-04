@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  b43.py
+#  Broadcom_b43_legacy.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Broadcom b43 driver installation """
+""" Broadcom b43legacy driver installation """
 
 try:
     from hardware.hardware import Hardware
@@ -30,47 +30,28 @@ except ImportError:
     # This is used when testing hardware module
     from hardware import Hardware
 
-CLASS_NAME = "B43"
+CLASS_NAME = "Broadcom_b43_legacy"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-('0x0576', "BCM43224"), # not tested 
-('0x4307', "BCM4306/3"),
-('0x4311', "BCM4311"),
-('0x4312', "BCM4311"),
-('0x4315', "BCM4312"), # LP-PHY https://github.com/dbb/scripts/blob/master/b43-lp-installer
-('0x4318', "BCM4318"), 
-('0x4319', "BCM4318"), 
-('0x4320', "BCM4306/3"),
-('0x4322', "BCM4322"), # not tested 
-('0x4324', "BCM4306/3"),
-('0x432a', "BCM4321"),  # not tested
-('0x432c', "BCM4322"), 
-('0x432d', "BCM4322"), # not tested
-('0x4331', "BCM4331"),
-('0x4350', "BCM43222"),
-('0x4353', "BCM43224"),
-('0x4357', "BCM43225"), 
-('0x4358', "BCM43227"), 
-('0x4359', "BCM43228"), 
-('0x43a9', "BCM43217"), 
-('0x43aa', "BCM43131"), 
-('0xa8d6', "BCM43222"), # not tested
-('0xa8d8', "BCM43224"),
-('0xa8db', "BCM43217"), # not tested
-('0xa99d', "BCM43421")] # not tested
+('0x4301', "BCM4301"),
+('0x4306', "BCM4306/2"),
+('0x4320', "BCM4306/2"),
+('0x4324', "BCM4306"),
+('0x4325', "BCM4306/2")]
 
-class B43(Hardware):
+class Broadcom_b43_legacy(Hardware):
     def __init__(self):
         pass
 
     def get_packages(self):
-        return ["b43-firmware"]
+        return ["b43-firmware-legacy"]
 
     def post_install(self, dest_dir):
         with open("/etc/modprobe.d/blacklist", "a") as blacklist:
-            blacklist.write("blacklist b43_legacy\n")
+            blacklist.write("blacklist b43\n")
+
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """

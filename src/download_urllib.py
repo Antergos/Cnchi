@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download.py
+#  download_urllib.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -30,18 +30,55 @@ import logging
 import queue
 import shutil
 import urllib
-
+import aria2
 import metalink as ml
-import download_aria2
-import download_urllib
+
 import pacman.pac as pac
 
-class DownloadPackages(object):
-    """ Class to download packages using Aria2 or urllib
+def url_open_read(urlp, chunk_size=8192):
+    """ Helper function to download and read a fragment of a remote file """
+
+    download_error = True
+    data = None
+
+    try:
+        data = urlp.read(chunk_size)
+        download_error = False
+    except urllib.error.HTTPError as err:
+        msg = ' HTTPError : %s' % err.reason
+        logging.warning(msg)
+    except urllib.error.URLError as err:
+        msg = ' URLError : %s' % err.reason
+        logging.warning(msg)
+
+    return (data, download_error)
+
+def url_open(url):
+    """ Helper function to open a remote file """
+
+    msg = _('Error opening %s:') % url
+
+    try:
+        urlp = urllib.request.urlopen(url)
+    except urllib.error.HTTPError as err:
+        urlp = None
+        msg += ' HTTPError : %s' % err.reason
+        logging.warning(msg)
+    except urllib.error.URLError as err:
+        urlp = None
+        msg += ' URLError : %s' % err.reason
+        logging.warning(msg)
+    except AttributeError as err:
+        urlp = None
+        msg += ' AttributeError : %s' % err
+        logging.warning(msg)
+
+    return urlp
+
+class Download(object):
+    """ Class to download packages using urllib
         This class tries to previously download all necessary packages for
-        Antergos installation using aria2 or urllib
-        Aria2 is known to use too much memory (not Aria2's fault but ours)
-        so until it's fixed it it's not advised to use it """
+        Antergos installation using urllib """
 
     def __init__(
         self,
@@ -72,64 +109,28 @@ class DownloadPackages(object):
         if not os.path.exists(pacman_cache_dir):
             os.makedirs(pacman_cache_dir)
 
-        # Stores last issued event for each event type
-        # (to prevent repeating events)
+        # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
         self.callback_queue = callback_queue
 
-        downloads = self.get_downloads_list(package_names)
-
         if use_aria2:
             logging.debug(_("Using aria2 to download packages"))
-            download = download_aria2.Download(
+            aria2.DownloadAria2(
+                package_names,
+                pacman_conf_file,
                 pacman_cache_dir,
+                cache_dir,
                 callback_queue)
         else:
             logging.debug(_("Using urlib to download packages"))
-            download = download_urllib.Download(
-                pacman_cache_dir,
-                callback_queue)
-        
-        download.start()
+            download_urllib.DownloadUrllib(
+                package_names,
+                pacman_conf
+            downloads = self.get_downloads_list(package_names)
+            self.download(downloads)
 
-    def get_downloads_list(self, package_names):
-        self.queue_event('percent', 0)
-        self.queue_event('info', _('Creating list of packages to download...'))
-        percent = 0
-        processed_packages = 0
-        total_packages = len(package_names)
-
-        downloads = []
-
-        try:
-            pacman = pac.Pac(
-                conf_path=self.pacman_conf_file,
-                callback_queue=self.callback_queue)
-
-            for package_name in package_names:
-                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
-                if metalink == None:
-                    logging.error(_("Error creating metalink for package %s"), package_name)
-                    continue
-
-                # Update downloads list with the new info
-                # from the processed metalink
-                downloads.append(ml.get_info(metalink))
-
-                # Show progress to the user
-                processed_packages += 1
-                percent = round(float(processed_packages / total_packages), 2)
-                self.queue_event('percent', percent)
-
-            pacman.release()
-            del pacman
-        except Exception as err:
-            logging.error("Can't initialize pyalpm: %s" % err)
-
-        return downloads        
-
-    def download(self, package_names):
+    def start(self, package_names):
         """ Downloads needed packages in package_names list
             and its dependencies using urllib """
 
