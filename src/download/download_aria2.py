@@ -30,7 +30,7 @@ import logging
 import queue
 
 try:
-    import download.aria2
+    import download.aria2 as aria2
 except ImportError as err:
     # when testing download.py
     import aria2
