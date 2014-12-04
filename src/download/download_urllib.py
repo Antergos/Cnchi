@@ -37,7 +37,7 @@ import metalink as ml
 import pacman.pac as pac
 
 try:
-    test = _("TEST")
+    _("")
 except NameError as err:
     def _(message): return message
 

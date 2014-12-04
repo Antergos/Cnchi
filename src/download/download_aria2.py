@@ -33,7 +33,12 @@ import queue
 import aria2
 import pacman.pac as pac
 
-MAX_CONCURRENT_DOWNLOADS = 1
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
+MAX_CONCURRENT_DOWNLOADS = 4
 
 class Download(object):
     """ Class to download packages using Aria2
@@ -49,140 +54,62 @@ class Download(object):
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
-        self.rpc_uid = aria2.run_as_daemon()
-
-    '''
-    def start(self, downloads):
-        """ Downloads using aria2 """
-
-        # FIXME: As it is now, this does not differ from downloading with urllib one file at a time
-        # For that, this method only works if MAX_CONCURRENT_DOWNLOADS value is 1
-
-        if MAX_CONCURRENT_DOWNLOADS is not 1:
-            logging.error("Our Aria2 code still does not support concurrent downloads")
-            return
-
-        try:
-            keys = ["gid", "status", "totalLength", "completedLength", "files"]
-
-            for package_name in package_names:
-                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
-                if metalink == None:
-                    logging.error(_("Error creating metalink for package %s"), package_name)
-                    continue
-
-                gids = self.add_metalink(metalink)
-
-                if len(gids) <= 0:
-                    logging.error(_("Error adding metalink for package %s"), package_name)
-                    continue
-
-                # Get global statistics
-                global_stat = self.get_global_stat()
-
-                # Get num of active downloads
-                num_active = int(global_stat["numActive"])
-
-                old_percent = -1
-                old_path = ""
-
-                action = _("Downloading package '%s' and its dependencies...") % package_name
-                self.queue_event('info', action)
-
-                while num_active > 0:
-                    result = self.tell_active(keys)
-
-                    total_length = 0
-                    completed_length = 0
-
-                    try:
-                        for i in range(0, num_active - 1):
-                            total_length += int(result[i]['totalLength'])
-                            completed_length += int(result[i]['completedLength'])
-
-                        # As MAX_CONCURRENT_DOWNLOADS value is 1 we can be sure that only
-                        # one file is downloaded at a time
-
-                        # path will store full file name (destination)
-                        path = result[0]['files'][0]['path']
-                    except Exception as err:
-                        logging.error(err)
-
-                    percent = round(float(completed_length / total_length), 2)
-
-                    if path != old_path and percent == 0:
-                        old_path = path
-                        # Update download file name
-                        path = os.path.basename(path)
-                        # Do not show the package's extension to the user
-                        ext = ".pkg.tar.xz"
-                        if path.endswith(ext):
-                            path = path[:-len(ext)]
-
-                        self.queue_event('info', _("Downloading %s...") % path)
-
-                    if percent != old_percent:
-                        self.queue_event('percent', percent)
-                        old_percent = percent
-
-                    # Get global statistics
-                    global_stat = self.get_global_stat()
-
-                    # Get num of active downloads
-                    num_active = int(global_stat["numActive"])
-
-                # This method purges completed/error/removed downloads, in order to free memory
-                self.purge_download_result()
-
-            # Finished, close aria2
-            self.shutdown()
-        except Exception as err:
-            logging.error(err)
-    '''
+        self.aria2 = aria2.Aria2(pacman_cache_dir, MAX_CONCURRENT_DOWNLOADS)
 
     def start(self, downloads):
         """ Downloads using aria2 """
 
         downloaded = 0
         total_downloads = len(downloads)
+        downloads_percent = 0
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', 0)
 
-        keys = ["gid", "status", "totalLength", "completedLength", "files"]
+        #keys = ["gid", "status", "totalLength", "completedLength", "files"]
+
+        # start Aria2
+        self.aria2.run()
 
         while len(downloads) > 0:
-            max_num = MAX_CONCURRENT_DOWNLOADS
-            if len(downloads) < max_num:
-                max_num = len(downloads)
-
             # Get num of active downloads
+            global_stat = self.aria2.get_global_stat()
             num_active = int(global_stat["numActive"])
 
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
                 identity, element = downloads.popitem()
-                gid = self.add_uris(element['urls'])
-                global_stat = self.get_global_stat()
+
+                #dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+                #dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
+
+                gid = self.aria2.add_uris(element['urls'])
+                global_stat = self.aria2.get_global_stat()
                 num_active = int(global_stat["numActive"])
+
+            old_num_active = num_active
 
             old_downloads_percent = downloads_percent
             while num_active > 0:
-                global_stat = self.get_global_stat()
-                print(global_stat)
-                print("-----------------------------")
+                global_stat = self.aria2.get_global_stat()
                 num_active = int(global_stat["numActive"])
-                active_info = self.tell_active(keys)
+
+                #active_info = self.aria2.tell_active(keys)
+
+                if old_num_active > num_active:
+                    downloaded += old_num_active - num_active
+                    old_num_active = num_active
 
                 downloads_percent = round(float(downloaded / total_downloads), 2)
                 if downloads_percent != old_downloads_percent:
+                    print(downloaded, total_downloads)
                     self.queue_event('downloads_percent', downloads_percent)
                     old_downloads_percent = downloads_percent
 
             # This method purges completed/error/removed downloads, in order to free memory
-            self.purge_download_result()
+            self.aria2.purge_download_result()
 
         # Finished, close aria2
-        self.shutdown()
+        self.aria2.shutdown()
         self.queue_event('downloads_progress_bar', 'hide')
 
 
@@ -203,25 +130,3 @@ class Download(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
-
-if __name__ == '__main__':
-    ''' Test case '''
-    import gettext
-    _ = gettext.gettext
-
-    formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
-
-    #DownloadAria2(package_names=["gnome-sudoku"], cache_dir="", pacman_cache_dir="/tmp/aria2")
-    DownloadAria2(package_names=["alsa-utils"], cache_dir="", pacman_cache_dir="/tmp/aria2")
-    #DownloadAria2(package_names=["base"], cache_dir="", pacman_cache_dir="/tmp/aria2")
-
-    #DownloadAria2(package_names=["gnome-software"], pacman_cache_dir="/tmp/aria2")
-    #DownloadAria2(package_names=["base", "base-devel"], pacman_cache_dir="/tmp/aria2")

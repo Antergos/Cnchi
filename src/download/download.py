@@ -197,9 +197,11 @@ if __name__ == '__main__':
 
     DownloadPackages(
         package_names=["gnome-sudoku"],
-        use_aria2=False,
+        #use_aria2=False,
+        use_aria2=True,
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
+
     '''
     DownloadPackages(
         package_names=["kde"],
