@@ -83,7 +83,7 @@ class Aria2(object):
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
             gid = s.aria2.addUri(self.rpc_uid, uris)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError, OverflowError) as err:
-            logging.error("Can't add metalink to Aria2. Error Output: %s", err)
+            logging.error("Can't add uris to Aria2. Error Output: %s", err)
         finally:
             return gid
 
@@ -153,6 +153,6 @@ class Aria2(object):
             aria2_process.wait()
             self.rpc_uid = "token:" + uid
         except FileNotFoundError as err:
-            # aria2 is not installed ¿?
+            # aria2 is not installed
             logging.warning(_("Can't run aria2: %s"), err)
             self.rpc_uid = None

@@ -72,7 +72,6 @@ class Download(object):
 
     def start(self, downloads):
         """ Downloads using aria2 """
-
         downloaded = 0
         total_downloads = len(downloads)
         downloads_percent = 0
@@ -82,8 +81,12 @@ class Download(object):
 
         #keys = ["gid", "status", "totalLength", "completedLength", "files"]
 
-        # start Aria2
+        # Start Aria2
         self.aria2.run()
+
+        if self.aria2.rpc_uid == None:
+            logging.warning(_("Aria2 is not running."))
+            return
 
         while len(downloads) > 0:
             num_active = self.get_num_active()
