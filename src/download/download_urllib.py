@@ -29,7 +29,8 @@ import subprocess
 import logging
 import queue
 import shutil
-import urllib
+import urllib.request
+import urllib.error
 import aria2
 
 import metalink as ml
@@ -104,10 +105,7 @@ class Download(object):
         self.queue_event('downloads_percent', 0)
 
         while len(downloads) > 0:
-            print("EEEOOO")
-            element = downloads.pop()
-
-            print(element)
+            identity, element = downloads.popitem()
 
             self.queue_event('percent', 0)
 

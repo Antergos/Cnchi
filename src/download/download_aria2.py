@@ -151,11 +151,6 @@ class Download(object):
 
         keys = ["gid", "status", "totalLength", "completedLength", "files"]
 
-        total_size = 0
-
-        for element in downloads:
-            total_size += int(element['size'])
-
         while len(downloads) > 0:
             max_num = MAX_CONCURRENT_DOWNLOADS
             if len(downloads) < max_num:
@@ -164,65 +159,31 @@ class Download(object):
             # Get num of active downloads
             num_active = int(global_stat["numActive"])
 
-            if num_active < 1:
-                # Let's queue more downloads
-                for i in range(0, max_num - 1):
-                    element = downloads.pop()
-                    gid = self.add_uris(element['urls'])
-
-                # Get global statistics
+            while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
+                identity, element = downloads.popitem()
+                gid = self.add_uris(element['urls'])
                 global_stat = self.get_global_stat()
+                num_active = int(global_stat["numActive"])
 
-            # Get num of active downloads
-            num_active = int(global_stat["numActive"])
+            old_downloads_percent = downloads_percent
+            while num_active > 0:
+                global_stat = self.get_global_stat()
+                print(global_stat)
+                print("-----------------------------")
+                num_active = int(global_stat["numActive"])
+                active_info = self.tell_active(keys)
 
-            if num_active > 0:
-                result = self.tell_active(keys)
+                downloads_percent = round(float(downloaded / total_downloads), 2)
+                if downloads_percent != old_downloads_percent:
+                    self.queue_event('downloads_percent', downloads_percent)
+                    old_downloads_percent = downloads_percent
 
-                total_length = 0
-                completed_length = 0
+            # This method purges completed/error/removed downloads, in order to free memory
+            self.purge_download_result()
 
-                    try:
-                        for i in range(0, num_active - 1):
-                            total_length += int(result[i]['totalLength'])
-                            completed_length += int(result[i]['completedLength'])
-
-                        # As --max-concurrent-downloads=1 we can be sure only one file is downloaded at a time
-                        # path will store full file name (destination)
-                        path = result[0]['files'][0]['path']
-                    except Exception as err:
-                        logging.error(err)
-
-                    percent = round(float(completed_length / total_length), 2)
-
-                    if path != old_path and percent == 0:
-                        old_path = path
-                        # Update download file name
-                        path = os.path.basename(path)
-                        # Do not show the package's extension to the user
-                        ext = ".pkg.tar.xz"
-                        if path.endswith(ext):
-                            path = path[:-len(ext)]
-
-                        self.queue_event('info', _("Downloading %s...") % path)
-
-                    if percent != old_percent:
-                        self.queue_event('percent', percent)
-                        old_percent = percent
-
-                    # Get global statistics
-                    global_stat = self.get_global_stat()
-
-                    # Get num of active downloads
-                    num_active = int(global_stat["numActive"])
-
-                # This method purges completed/error/removed downloads, in order to free memory
-                self.purge_download_result()
-
-            # Finished, close aria2
-            self.shutdown()
-        except Exception as err:
-            logging.error(err)
+        # Finished, close aria2
+        self.shutdown()
+        self.queue_event('downloads_progress_bar', 'hide')
 
 
     def queue_event(self, event_type, event_text=""):

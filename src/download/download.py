@@ -86,23 +86,25 @@ class DownloadPackages(object):
         # Create downloads list from package list
         downloads = self.get_downloads_list(package_names)
 
-        if downloads is not None:
-            if use_aria2:
-                import download_aria2
-                logging.debug(_("Using aria2 to download packages"))
-                download = download_aria2.Download(
-                    pacman_cache_dir,
-                    cache_dir,
-                    callback_queue)
-            else:
-                import download_urllib
-                logging.debug(_("Using urlib to download packages"))
-                download = download_urllib.Download(
-                    pacman_cache_dir,
-                    cache_dir,
-                    callback_queue)
+        if downloads is None:
+            return
 
-            download.start(downloads)
+        if use_aria2:
+            import download_aria2
+            logging.debug(_("Using aria2 to download packages"))
+            download = download_aria2.Download(
+                pacman_cache_dir,
+                cache_dir,
+                callback_queue)
+        else:
+            import download_urllib
+            logging.debug(_("Using urlib to download packages"))
+            download = download_urllib.Download(
+                pacman_cache_dir,
+                cache_dir,
+                callback_queue)
+
+        download.start(downloads)
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
@@ -112,7 +114,7 @@ class DownloadPackages(object):
         processed_packages = 0
         total_packages = len(package_names)
 
-        downloads = set()
+        downloads = {}
 
         pacman = None
 
@@ -133,10 +135,13 @@ class DownloadPackages(object):
                     logging.error(_("Error creating metalink for package %s"), package_name)
                     continue
 
-                # Update downloads list with the new info
-                # from the processed metalink
-                print(ml.get_info(metalink))
-                downloads = downloads.union(ml.get_info(metalink))
+                # Get metalink info
+                metalink_info = ml.get_info(metalink)
+
+                # Update downloads list with the new info from the processed metalink
+                for key in metalink_info:
+                    if key not in downloads:
+                        downloads[key] = metalink_info[key]
 
                 # Show progress to the user
                 processed_packages += 1
