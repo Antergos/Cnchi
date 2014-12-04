@@ -27,11 +27,9 @@
 import os
 import subprocess
 import logging
-import xmlrpc.client
 import queue
 
 import aria2
-import pacman.pac as pac
 
 try:
     _("")
@@ -56,6 +54,18 @@ class Download(object):
 
         self.aria2 = aria2.Aria2(pacman_cache_dir, MAX_CONCURRENT_DOWNLOADS)
 
+    def get_num_active(self):
+        """ Get num of active downloads """
+        num_active = 0
+        try:
+            global_stat = self.aria2.get_global_stat()
+            if "numActive" in global_stat:
+                num_active = int(global_stat["numActive"])
+        except TypeError as err:
+            logging.error(err)
+        finally:
+            return num_active
+
     def start(self, downloads):
         """ Downloads using aria2 """
 
@@ -72,9 +82,7 @@ class Download(object):
         self.aria2.run()
 
         while len(downloads) > 0:
-            # Get num of active downloads
-            global_stat = self.aria2.get_global_stat()
-            num_active = int(global_stat["numActive"])
+            num_active = self.get_num_active()
 
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
                 identity, element = downloads.popitem()
@@ -83,15 +91,13 @@ class Download(object):
                 #dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
                 gid = self.aria2.add_uris(element['urls'])
-                global_stat = self.aria2.get_global_stat()
-                num_active = int(global_stat["numActive"])
+                num_active = self.get_num_active()
 
             old_num_active = num_active
 
             old_downloads_percent = downloads_percent
             while num_active > 0:
-                global_stat = self.aria2.get_global_stat()
-                num_active = int(global_stat["numActive"])
+                num_active = self.get_num_active()
 
                 #active_info = self.aria2.tell_active(keys)
 

@@ -25,25 +25,28 @@
 """ Module to download packages using Aria2 or urllib """
 
 import os
-import subprocess
 import logging
 import queue
-import shutil
-import sys
 
 if __name__ == '__main__':
+    import sys
     # Insert the parent directory at the front of the path.
     # This is used only when we want to test
     base_dir = os.path.dirname(__file__) or '.'
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-try:
-    import metalink as ml
-except ImportError as err:
-    import download.metalink as ml
-
 import pacman.pac as pac
+
+try:
+    import download.metalink as ml
+    import download.download_urllib as download_urllib
+    import download.download_aria2 as download_aria2
+except ImportError as err:
+    # when testing
+    import metalink as ml
+    import download_urllib
+    import download_aria2
 
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
@@ -94,14 +97,16 @@ class DownloadPackages(object):
             return
 
         if use_aria2:
-            import download_aria2
+            try:
+                import download.download_aria2 as download_aria2
+            except ImportError as err:
+                import download_aria2
             logging.debug(_("Using aria2 to download packages"))
             download = download_aria2.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
         else:
-            import download_urllib
             logging.debug(_("Using urlib to download packages"))
             download = download_urllib.Download(
                 pacman_cache_dir,

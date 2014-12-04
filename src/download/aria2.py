@@ -28,10 +28,7 @@ import os
 import subprocess
 import logging
 import xmlrpc.client
-import queue
 import logging
-
-import pacman.pac as pac
 
 ARIA2_URL = 'http://localhost:6800/rpc'
 

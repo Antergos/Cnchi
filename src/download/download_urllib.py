@@ -25,19 +25,11 @@
 """ Module to download packages using Aria2 or urllib """
 
 import os
-import subprocess
 import logging
 import queue
 import shutil
 import urllib.request
 import urllib.error
-
-try:
-    import metalink as ml
-except ImportError as err:
-    import download.metalink as ml
-
-import pacman.pac as pac
 
 try:
     _("")
