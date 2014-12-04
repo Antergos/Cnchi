@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom-wl.py
+#  b43_legacy.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -22,9 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Broadcom-wl driver installation """
-# Broadcom's driver for:
-# BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-, BCM43227- and BCM43228-based hardware. 
+""" Broadcom b43legacy driver installation """
 
 try:
     from hardware.hardware import Hardware
@@ -32,27 +30,28 @@ except ImportError:
     # This is used when testing hardware module
     from hardware import Hardware
 
-CLASS_NAME = "Broadcom_wl"
+CLASS_NAME = "B43_legacy"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-('0x4311', "BCM4311"),
-('0x04B5', "BCM4312"),
-('0x4727', "BCM4313"),
-('0x1361', "BCM4313"),
-('0x4328', "BCM4321KFBG"),
-('0x432B', "BCM4322")]
+('0x4301', "BCM4301"),
+('0x4306', "BCM4306/2"),
+('0x4320', "BCM4306/2"),
+('0x4324', "BCM4306"),
+('0x4325', "BCM4306/2")]
 
-class Broadcom_wl(Hardware):
+class B43_legacy(Hardware):
     def __init__(self):
         pass
 
     def get_packages(self):
-        return ["broadcom-wl"]
+        return ["b43-firmware-legacy"]
 
     def post_install(self, dest_dir):
-        pass
+        with open("/etc/modprobe.d/blacklist", "a") as blacklist:
+            blacklist.write("blacklist b43\n")
+
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
