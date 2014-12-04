@@ -243,10 +243,10 @@ msgstr "This option will install Antergos as command-line only system, without a
 
 #: src/desktop_environments.py:106
 msgid ""
-"MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop "
-"environment using traditional metaphors for Linux and other Unix-like "
-"operating systems."
-msgstr "MATE is a fork of GNOME 2. It provides an intuitive and attractive desktop environment using traditional metaphors for Linux and other Unix-like operating systems."
+"MATE is a lightweight desktop environment, fork of GNOME 2. It provides an intuitive and attractive desktop "
+"environment using traditional metaphors for Linux. MATE is one of the best options for use on older computers or those with low hardware "
+"specifications due to its lightweight yet very customizable set of features. "
+msgstr "MATE is a lightweight desktop environment, fork of GNOME 2. It provides an intuitive and attractive desktop environment using traditional metaphors for Linux. MATE is one of the best options for use on older computers or those with low hardware specifications due to its lightweight yet very customizable set of features."
 
 #: src/download.py:79
 msgid "Can't connect with aria2, downloading will be performed by alpm."
