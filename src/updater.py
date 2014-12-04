@@ -33,7 +33,7 @@ import logging
 import shutil
 import canonical.misc as misc
 
-import download
+import download.download_urllib as download
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
@@ -47,19 +47,19 @@ def get_md5_from_file(filename):
         buf = myfile.read()
         md5 = get_md5_from_text(buf)
     return md5
-        
+
 def get_md5_from_text(text):
     """ Gets md5 hash from str """
     md5 = hashlib.md5()
     md5.update(text)
     return md5.hexdigest()
- 
+
 class Updater():
     def __init__(self, force_update):
         self.remote_version = ""
-        
+
         self.md5s = {}
-        
+
         # Get local info (local update.info)
         with open(_update_info, "r") as local_update_info:
             response = local_update_info.read()
@@ -69,7 +69,7 @@ class Updater():
 
         # Download update.info (contains info of all Cnchi's files)
         request = download.url_open(_update_info_url)
-        
+
         if request is not None:
             response = request.read().decode('utf-8')
             if len(response) > 0:
@@ -77,7 +77,7 @@ class Updater():
                 self.remote_version = updateInfo['version']
                 for remote_file in updateInfo['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
-                
+
                 logging.info(_("Cnchi Internet version: %s"), self.remote_version)
                 self.force = force_update
 
@@ -112,7 +112,7 @@ class Updater():
         ''' Check if a new version is available and
             update all files only if necessary (or forced) '''
         update_cnchi = False
-        
+
         if self.is_remote_version_newer():
             logging.info(_("New version found. Updating installer..."))
             update_cnchi = True
@@ -141,7 +141,7 @@ class Updater():
     def download_master_zip(self, zip_path):
         """ Download new Cnchi version from github """
         request = download.url_open(_master_zip_url)
-        
+
         if request is None:
             return False
 
@@ -152,13 +152,13 @@ class Updater():
                 while len(data) > 0 and error == False:
                     zip_file.write(data)
                     (data, error) = download.url_open_read(request)
-                
+
                 if error:
                      return False
         return True
 
     def unzip_and_copy(self, zip_path):
-        """ Unzip (decompress) a zip file using zipfile standard module """       
+        """ Unzip (decompress) a zip file using zipfile standard module """
         import zipfile
 
         dst_dir = "/tmp"

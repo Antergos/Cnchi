@@ -1477,9 +1477,9 @@ class InstallationProcess(multiprocessing.Process):
         # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
         locale = self.settings.get('locale')
         self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux' % locale)])
+        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux' % locale])
         if self.settings.get('feature_lts'):
-            self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale)])
+            self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale])
         self.chroot_umount_special_dirs()
 
     def generate_pacmanconf(self):

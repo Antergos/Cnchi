@@ -38,7 +38,11 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-import metalink as ml
+try:
+    import metalink as ml
+except ImportError as err:
+    import download.metalink as ml
+
 import pacman.pac as pac
 
 class DownloadPackages(object):

@@ -31,9 +31,12 @@ import queue
 import shutil
 import urllib.request
 import urllib.error
-import aria2
 
-import metalink as ml
+try:
+    import metalink as ml
+except ImportError as err:
+    import download.metalink as ml
+
 import pacman.pac as pac
 
 try:
