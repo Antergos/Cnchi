@@ -49,7 +49,8 @@ import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
-import download
+#import download
+from download import download
 import info
 import encfs
 
