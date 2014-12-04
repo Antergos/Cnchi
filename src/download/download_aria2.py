@@ -29,7 +29,11 @@ import subprocess
 import logging
 import queue
 
-import aria2
+try:
+    import download.aria2
+except ImportError as err:
+    # when testing download.py
+    import aria2
 
 try:
     _("")

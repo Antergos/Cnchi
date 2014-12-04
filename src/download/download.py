@@ -43,7 +43,7 @@ try:
     import download.download_urllib as download_urllib
     import download.download_aria2 as download_aria2
 except ImportError as err:
-    # when testing
+    # when testing download.py
     import metalink as ml
     import download_urllib
     import download_aria2
