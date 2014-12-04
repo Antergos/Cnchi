@@ -31,9 +31,14 @@ import queue
 import shutil
 import urllib
 import aria2
-import metalink as ml
 
+import metalink as ml
 import pacman.pac as pac
+
+try:
+    test = _("TEST")
+except NameError as err:
+    def _(message): return message
 
 def url_open_read(urlp, chunk_size=8192):
     """ Helper function to download and read a fragment of a remote file """
@@ -80,93 +85,17 @@ class Download(object):
         This class tries to previously download all necessary packages for
         Antergos installation using urllib """
 
-    def __init__(
-        self,
-        package_names,
-        use_aria2=False,
-        pacman_conf_file=None,
-        pacman_cache_dir=None,
-        cache_dir=None,
-        callback_queue=None):
-        """ Initialize DownloadPackages class. Gets default configuration """
-
-        if pacman_conf_file == None:
-            self.pacman_conf_file = "/etc/pacman.conf"
-        else:
-            self.pacman_conf_file = pacman_conf_file
-
-        if pacman_cache_dir == None:
-            self.pacman_cache_dir = "/var/cache/pacman/pkg"
-        else:
-            self.pacman_cache_dir = pacman_cache_dir
-
-        if cache_dir == None:
-            self.cache_dir = ""
-        else:
-            self.cache_dir = cache_dir
-
-        # Create pacman cache dir if it doesn't exist yet
-        if not os.path.exists(pacman_cache_dir):
-            os.makedirs(pacman_cache_dir)
+    def __init__(self, pacman_cache_dir, cache_dir, callback_queue):
+        """ Initialize Download class. Gets default configuration """
+        self.pacman_cache_dir = pacman_cache_dir
+        self.cache_dir = cache_dir
+        self.callback_queue = callback_queue
 
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
-        self.callback_queue = callback_queue
-
-        if use_aria2:
-            logging.debug(_("Using aria2 to download packages"))
-            aria2.DownloadAria2(
-                package_names,
-                pacman_conf_file,
-                pacman_cache_dir,
-                cache_dir,
-                callback_queue)
-        else:
-            logging.debug(_("Using urlib to download packages"))
-            download_urllib.DownloadUrllib(
-                package_names,
-                pacman_conf
-            downloads = self.get_downloads_list(package_names)
-            self.download(downloads)
-
-    def start(self, package_names):
-        """ Downloads needed packages in package_names list
-            and its dependencies using urllib """
-
-        self.queue_event('percent', 0)
-        self.queue_event('info', _('Creating list of packages to download...'))
-        percent = 0
-        processed_packages = 0
-        total_packages = len(package_names)
-
-        downloads = []
-
-        try:
-            pacman = pac.Pac(
-                conf_path=self.pacman_conf_file,
-                callback_queue=self.callback_queue)
-
-            for package_name in package_names:
-                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
-                if metalink == None:
-                    msg = _("Error creating metalink for package %s") % package_name
-                    logging.error(msg)
-                    continue
-
-                # Update downloads list with the new info
-                # from the processed metalink
-                downloads.append(ml.get_info(metalink))
-
-                # Show progress to the user
-                processed_packages += 1
-                percent = round(float(processed_packages / total_packages), 2)
-                self.queue_event('percent', percent)
-
-            pacman.release()
-            del pacman
-        except Exception as err:
-            logging.error("Can't initialize pyalpm: %s" % err)
+    def start(self, downloads):
+        """ Downloads using urllib """
 
         downloaded = 0
         total_downloads = len(downloads)
@@ -174,8 +103,11 @@ class Download(object):
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', 0)
 
-        for i in range(0, total_downloads - 1):
+        while len(downloads) > 0:
+            print("EEEOOO")
             element = downloads.pop()
+
+            print(element)
 
             self.queue_event('percent', 0)
 
@@ -280,29 +212,3 @@ class Download(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
-
-''' Test case '''
-if __name__ == '__main__':
-    import gettext
-    _ = gettext.gettext
-
-    formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
-
-    DownloadPackages(
-        package_names=["gnome-sudoku"],
-        cache_dir="",
-        pacman_cache_dir="/tmp/pkg")
-    '''
-    DownloadPackages(
-        package_names=["kde"],
-        cache_dir="",
-        pacman_cache_dir="/tmp/pkg")
-    '''

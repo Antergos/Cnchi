@@ -40,45 +40,29 @@ class Download(object):
         This class tries to previously download all necessary packages for
         Antergos installation using aria2 """
 
-    def __init__(
-        self,
-        pacman_cache_dir=None,
-        callback_queue=None):
+    def __init__(self, pacman_cache_dir, cache_dir, callback_queue):
         """ Initialize DownloadAria2 class. Gets default configuration """
-
-        if pacman_cache_dir == None:
-            self.pacman_cache_dir = "/var/cache/pacman/pkg"
-        else:
-            self.pacman_cache_dir = pacman_cache_dir
-
-        # Create pacman cache dir if it doesn't exist yet
-        if not os.path.exists(pacman_cache_dir):
-            os.makedirs(pacman_cache_dir)
+        self.pacman_cache_dir = pacman_cache_dir
+        self.cache_dir = cache_dir
+        self.callback_queue = callback_queue
 
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
-        self.aria2_process = None
-        self.callback_queue = callback_queue
-        self.rpc_uid = None
+        self.rpc_uid = aria2.run_as_daemon()
 
-        self.rpc_uid = aria2.run_as_daemon():
+    '''
+    def start(self, downloads):
+        """ Downloads using aria2 """
 
-    def download(self, package_names):
-        """ Downloads needed packages in package_names list and its dependencies using aria2 """
-        
         # FIXME: As it is now, this does not differ from downloading with urllib one file at a time
         # For that, this method only works if MAX_CONCURRENT_DOWNLOADS value is 1
-        
+
         if MAX_CONCURRENT_DOWNLOADS is not 1:
             logging.error("Our Aria2 code still does not support concurrent downloads")
             return
-        
-        try:
-            pacman = pac.Pac(
-                conf_path=self.pacman_conf_file,
-                callback_queue=self.callback_queue)
 
+        try:
             keys = ["gid", "status", "totalLength", "completedLength", "files"]
 
             for package_name in package_names:
@@ -154,42 +138,10 @@ class Download(object):
             self.shutdown()
         except Exception as err:
             logging.error(err)
+    '''
 
-    def download2(self, package_names):
-        """ Downloads needed packages in package_names list and its dependencies using aria2 """
-
-        self.queue_event('percent', 0)
-        self.queue_event('info', _('Creating list of packages to download...'))
-        percent = 0
-        processed_packages = 0
-        total_packages = len(package_names)
-        
-        downloads = []
-
-        try:
-            pacman = pac.Pac(
-                conf_path=self.pacman_conf_file,
-                callback_queue=self.callback_queue)
-
-            for package_name in package_names:
-                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
-                if metalink == None:
-                    logging.error(_("Error creating metalink for package %s"), package_name)
-                    continue
-
-                # Update downloads list with the new info
-                # from the processed metalink
-                downloads.append(ml.get_info(metalink))
-
-                # Show progress to the user
-                processed_packages += 1
-                percent = round(float(processed_packages / total_packages), 2)
-                self.queue_event('percent', percent)
-
-            pacman.release()
-            del pacman
-        except Exception as err:
-            logging.error("Can't initialize pyalpm: %s" % err)
+    def start(self, downloads):
+        """ Downloads using aria2 """
 
         downloaded = 0
         total_downloads = len(downloads)
@@ -198,12 +150,12 @@ class Download(object):
         self.queue_event('downloads_percent', 0)
 
         keys = ["gid", "status", "totalLength", "completedLength", "files"]
-        
+
         total_size = 0
-        
+
         for element in downloads:
             total_size += int(element['size'])
-        
+
         while len(downloads) > 0:
             max_num = MAX_CONCURRENT_DOWNLOADS
             if len(downloads) < max_num:
@@ -272,62 +224,6 @@ class Download(object):
         except Exception as err:
             logging.error(err)
 
-
-    def run_as_daemon(self):
-        """ Start aria2 as a daemon """
-
-        pid = os.getpid()
-        pacman_cache = self.pacman_cache_dir
-
-        import uuid
-        uid = uuid.uuid4().hex[:16]
-
-        aria2_options = [
-            "--allow-overwrite=false",      # If file is already downloaded overwrite it
-            "--always-resume=true",         # Always resume download.
-            "--auto-file-renaming=false",   # Rename file name if the same file already exists.
-            "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
-            "--dir=%s" % pacman_cache,      # The directory to store the downloaded file(s).
-            "--enable-rpc=true",            # Enable XML-RPC server.
-            "--file-allocation=prealloc",   # Specify file allocation method (default 'prealloc')
-            "--log=/tmp/cnchi-aria2.log",   # The file name of the log file
-            "--log-level=warn",             # Set log level to output to console. LEVEL is either debug, info, notice,
-                                            # warn or error (default notice)
-            "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
-            "--max-concurrent-downloads=%d" % MAX_CONCURRENT_DOWNLOADS, # Set maximum number of parallel downloads for each metalink (default 5)
-            "--max-connection-per-server=1",# The maximum number of connections to one server for each download
-            "--max-tries=5",                # Set number of tries (default 5)
-            "--no-conf=true",               # Disable loading aria2.conf file.
-            "--quiet=true",                 # Make aria2 quiet (no console output).
-            "--remote-time=false",          # Retrieve timestamp of the remote file from the remote HTTP/FTP server
-                                            # and if it is available, apply it to the local file.
-            "--remove-control-file=true",   # Remove control file before download.
-            "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
-            "--rpc-secret=%s" % uid,        # Set RPC secret authorization token
-            "--rpc-secure=false",           # RPC transport will be encrypted by SSL/TLS
-            "--rpc-listen-port=6800",
-            "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
-                                                # specified by --dir option.
-            "--rpc-max-request-size=16M",   # Set max size of XML-RPC request. If aria2 detects the request is more
-                                            # than SIZE bytes, it drops connection (default 2M)
-            "--show-console-readout=false", # Show console readout (default true)
-            "--split=5",                    # Download a file using N connections (default 5)
-            "--stop-with-process=%d" % pid, # Stop aria2 if Cnchi ends unexpectedly
-            "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
-                                            # suppresses the output (default 60)
-            "--timeout=60"]                 # Set timeout in seconds (default 60)
-
-        self.rpc_uid = "token:" + uid
-
-        try:
-            aria2_cmd = ['/usr/bin/aria2c'] + aria2_options + ['--daemon=true']
-            self.aria2_process = subprocess.Popen(aria2_cmd)
-            self.aria2_process.wait()
-        except FileNotFoundError as err:
-            # aria2 is not installed ¿?
-            logging.warning(_("Can't run aria2: %s"), err)
-            return False
-        return True
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """

@@ -48,9 +48,9 @@ except ImportError:
 MAX_URLS = 5
 
 def get_info(metalink):
-    """ Reads metalink xml and stores it in a dict """
+    """ Reads metalink xml and stores it in a set """
 
-    metalink_info = {}
+    metalink_info = set()
 
     tag = "{urn:ietf:params:xml:ns:metalink}"
 
@@ -84,7 +84,7 @@ def get_info(metalink):
                 # Limit to MAX_URLS for file
                 if len(element['urls']) > MAX_URLS:
                     element['urls'] = element['urls'][:MAX_URLS]
-                metalink_info[element['identity']] = element.copy()
+                metalink_info.add(element)
                 element.clear()
                 elem.clear()
 
