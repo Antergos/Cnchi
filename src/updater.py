@@ -83,6 +83,10 @@ class Updater():
 
     def is_remote_version_newer(self):
         """ Returns true if the Internet version of Cnchi is newer than the local one """
+
+        if len(self.remote_version) < 1:
+            return False
+
         # Version is always: x.y.z
         local_ver = info.CNCHI_VERSION.split(".")
         remote_ver = self.remote_version.split(".")
