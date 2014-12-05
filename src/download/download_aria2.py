@@ -28,6 +28,7 @@ import os
 import subprocess
 import logging
 import queue
+import shutil
 
 try:
     import download.aria2 as aria2
@@ -63,7 +64,7 @@ class Download(object):
         num_active = 0
         try:
             global_stat = self.aria2.get_global_stat()
-            if "numActive" in global_stat:
+            if global_stat is not None and "numActive" in global_stat:
                 num_active = int(global_stat["numActive"])
         except TypeError as err:
             logging.error(err)
