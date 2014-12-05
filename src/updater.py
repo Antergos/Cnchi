@@ -59,6 +59,8 @@ class Updater():
         self.remote_version = ""
 
         self.md5s = {}
+        
+        self.force = force_update
 
         # Get local info (local update.info)
         with open(_update_info, "r") as local_update_info:
