@@ -78,7 +78,7 @@ def get_screen(screen_name, params):
 def run(screen_name):
     window = Gtk.Window()
     window.connect('destroy', Gtk.main_quit)
-    #window.set_size_request(600, 500)
+    window.set_size_request(800, 500)
     window.set_border_width(12)
     window.set_title("Cnchi - Test of %s screen" % screen_name)
 
