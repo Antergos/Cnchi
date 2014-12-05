@@ -79,6 +79,8 @@
         <pkgname>xorg-fonts</pkgname>
         <pkgname>xorg-server</pkgname>
         <pkgname>xorg-server-utils</pkgname>
+        <pkgname>xorg-xinit</pkgname>
+        <pkgname>xorg-xkill</pkgname>
       </packages>
     </edition>
 
@@ -329,15 +331,12 @@
         <pkgname>pragha</pkgname>
         <pkgname>python2-xdg</pkgname>
         <pkgname>scrot</pkgname>
-        <pkgname>slingscold</pkgname>
         <pkgname>tint2</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>udiskie</pkgname>
         <pkgname>volumeicon</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xfce4-notifyd</pkgname>
-        <pkgname>xorg-xinit</pkgname>
-        <pkgname>xorg-xkill</pkgname>
       </packages>
     </edition>
 

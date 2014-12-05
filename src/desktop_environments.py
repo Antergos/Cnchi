@@ -100,7 +100,7 @@ DESCRIPTIONS = {
     'openbox' : _("Openbox is a highly configurable, next generation window "
                   "manager with extensive standards support. It's default theme "
                   "is well known for its minimalistic appearance and flexibility. "
-                  "Your desktop becomes cleaner, faster."),
+                  "Your desktop becomes cleaner, faster. Perfect for low hardware specifications, too."),
 
     'enlightenment' : _("Enlightenment is not just a window manager for Linux/X11 "
                         "and others, but also a whole suite of libraries to help "
@@ -122,9 +122,9 @@ DESCRIPTIONS = {
               "without any type of graphical interface. After the installation you can "
               "customize Antergos by installing packages with the command-line package manager."),
 
-    'mate': _("MATE is a fork of GNOME 2. It provides an intuitive and attractive "
-              "desktop environment using traditional metaphors for Linux and other Unix-like "
-              "operating systems.")}
+    'mate':_("An intuitive, attractive and lightweight desktop environment, fork of GNOME 2. "
+             "MATE is one of the best options for use on older computers or those with low hardware "
+             "specifications due to its lightweight yet very customizable set of features.")}
 
 # Delete previous _() dummy declaration
 del _
