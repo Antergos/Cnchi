@@ -109,7 +109,7 @@
         <pkgname>gnome-screenshot</pkgname>
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
-        <pkgname>gnome-shell-extension-dash-to-dock</pkgname> 
+        <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -122,6 +122,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>orca</pkgname>
         <pkgname>telepathy</pkgname>  <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
@@ -250,7 +251,7 @@
     <enlightenment_desktop>
         <pkgname>gksu</pkgname>
         <pkgname>gvfs-smb</pkgname>
-        <pkgname>enlightenment</pkgname>        
+        <pkgname>enlightenment</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
