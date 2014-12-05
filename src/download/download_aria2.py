@@ -72,14 +72,6 @@ class Download(object):
 
     def start(self, downloads):
         """ Downloads using aria2 """
-        downloaded = 0
-        total_downloads = len(downloads)
-        downloads_percent = 0
-
-        self.queue_event('downloads_progress_bar', 'show')
-        self.queue_event('downloads_percent', 0)
-
-        #keys = ["gid", "status", "totalLength", "completedLength", "files"]
 
         # Start Aria2
         self.aria2.run()
@@ -88,42 +80,64 @@ class Download(object):
             logging.warning(_("Aria2 is not running."))
             return
 
+        downloaded = 0
+        total_downloads = len(downloads)
+        percent = 0
+
         while len(downloads) > 0:
+            txt = _("Downloading packages... (%d/%d)...")
+            txt = txt % (downloaded, total_downloads)
+            self.queue_event('info', txt)
+
             num_active = self.get_num_active()
 
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
                 identity, element = downloads.popitem()
 
-                #dst_cache_path = os.path.join(self.cache_dir, element['filename'])
-                #dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
+                dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+                dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
-                gid = self.aria2.add_uris(element['urls'])
-                num_active = self.get_num_active()
+                if os.path.exists(dst_path):
+                    # File already exists (previous install?) do not download
+                    logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
+                    downloaded += 1
+                elif os.path.exists(dst_cache_path):
+                    # We're lucky, the package is already downloaded in the cache the user has given us
+                    # let's copy it to our destination
+                    try:
+                        shutil.copy(dst_cache_path, dst_path)
+                        downloaded += 1
+                        continue
+                    except FileNotFoundError:
+                        pass
+                    except FileExistsError:
+                        pass
+                else:
+                    # Add file to aria2 downloads queue
+                    gid = self.aria2.add_uris(element['urls'])
+                    num_active = self.get_num_active()
 
+                percent = round(float(downloaded / total_downloads), 2)
+                self.queue_event('percent', percent)
+
+            num_active = self.get_num_active()
             old_num_active = num_active
 
-            old_downloads_percent = downloads_percent
             while num_active > 0:
                 num_active = self.get_num_active()
-
-                #active_info = self.aria2.tell_active(keys)
 
                 if old_num_active > num_active:
                     downloaded += old_num_active - num_active
                     old_num_active = num_active
 
-                downloads_percent = round(float(downloaded / total_downloads), 2)
-                if downloads_percent != old_downloads_percent:
-                    print(downloaded, total_downloads)
-                    self.queue_event('downloads_percent', downloads_percent)
-                    old_downloads_percent = downloads_percent
+                percent = round(float(downloaded / total_downloads), 2)
+                self.queue_event('percent', percent)
 
             # This method purges completed/error/removed downloads, in order to free memory
             self.aria2.purge_download_result()
 
         # Finished, close aria2
         self.aria2.shutdown()
-        self.queue_event('downloads_progress_bar', 'hide')
 
 
     def queue_event(self, event_type, event_text=""):
