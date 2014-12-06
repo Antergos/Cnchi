@@ -108,7 +108,6 @@ class Download(object):
                     try:
                         shutil.copy(dst_cache_path, dst_path)
                         downloaded += 1
-                        continue
                     except FileNotFoundError:
                         pass
                     except FileExistsError:
