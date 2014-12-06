@@ -1482,7 +1482,7 @@ class InstallationProcess(multiprocessing.Process):
             self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale])
         self.chroot_umount_special_dirs()
 
-    def generate_pacmanconf(self):
+    def update_pacman_conf(self):
         with open("%s/etc/pacman.conf" % self.dest_dir, "a") as pacmanconf:
             pacmanconf.write("\n\n")
             pacmanconf.write("[antergos]\n")
@@ -1580,6 +1580,10 @@ class InstallationProcess(multiprocessing.Process):
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])
+
+        if self.settings.get("feature_lts"):
+            # FIXME: Antergos doesn't boot if this option is used.
+            pass
 
         self.chroot_umount_special_dirs()
 
@@ -1802,9 +1806,9 @@ class InstallationProcess(multiprocessing.Process):
             # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
             # edited by himself. Maybe we could ease this process?
             profile = 'ethernet-dhcp'
-            if misc.is_wireless_enabled():
-                # TODO: We should port wifi-menu from netctl package here.
-                profile = 'wireless-wpa'
+            #if misc.is_wireless_enabled():
+            #    # TODO: We should port wifi-menu from netctl package here.
+            #    profile = 'wireless-wpa'
 
             # TODO: Just copying the default profile is NOT an elegant solution
             logging.debug(_("Cnchi will configure netctl using the %s profile"), profile)
@@ -1833,8 +1837,8 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-        # Generate /etc/pacman.conf
-        self.generate_pacmanconf()
+        # Add Antergos repo to /etc/pacman.conf
+        self.update_pacman_conf()
 
         logging.debug(_("Generated /etc/pacman.conf"))
 
@@ -1996,7 +2000,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_umount_special_dirs()
 
         # Let's start without using hwdetect for mkinitcpio.conf.
-        # I think it should work out of the box most of the time.
+        # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
         self.queue_event('info', _("Configuring System Startup..."))
@@ -2020,7 +2024,7 @@ class InstallationProcess(multiprocessing.Process):
             # Set lightdm config including autologin if selected
             self.set_display_manager()
 
-        # Configure user features (third party software, libreoffice language pack, ...)
+        # Configure user features (firewall, libreoffice language pack, ...)
         self.setup_features()
 
         # Encrypt user's home directory if requested
