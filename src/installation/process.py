@@ -506,12 +506,12 @@ class InstallationProcess(multiprocessing.Process):
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
-                # Add common packages to all desktops (including noX)
+                # Add common packages to all desktops (including base)
                 if edition.attrib.get("name").lower() == "common":
                     for pkg in edition.iter('pkgname'):
                         self.packages.append(pkg.text)
                 # Add common graphical packages
-                if self.desktop != "nox":
+                if self.desktop != "base":
                     if edition.attrib.get("name").lower() == "graphic":
                         for pkg in edition.iter('pkgname'):
                             # If package is Desktop Manager, save the name to activate the correct service later
@@ -570,8 +570,8 @@ class InstallationProcess(multiprocessing.Process):
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = True
                 # By default, hardware module adds modesetting driver
-                # but in a NoX install we don't want it
-                if self.desktop == "nox" and "xf86-video-modesetting" in hardware_pkgs:
+                # but in a 'base' install we don't want it
+                if self.desktop == "base" and "xf86-video-modesetting" in hardware_pkgs:
                     hardware_pkgs.remove("xf86-video-modesetting")
                 self.packages.extend(hardware_pkgs)
         except ImportError:
@@ -1797,7 +1797,7 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
 
         # Copy network profile when using netctl (and not networkmanager)
-        # netctl is used in the noX desktop option
+        # netctl is used in the 'base' desktop option
         elif self.network_manager == 'netctl':
             # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
             # edited by himself. Maybe we could ease this process?
@@ -1841,7 +1841,7 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get('desktop')
 
         # Enable services
-        if desktop != "nox":
+        if desktop != "base":
             self.enable_services([self.desktop_manager, "ModemManager"])
 
         self.enable_services([self.network_manager, 'remote-fs.target'])
@@ -1952,7 +1952,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
-        if desktop != "nox":
+        if desktop != "base":
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_xkb_path = os.path.join(self.dest_dir, "etc/X11/xorg.conf.d/00-keyboard.conf")
@@ -2016,7 +2016,7 @@ class InstallationProcess(multiprocessing.Process):
         except subprocess.TimeoutExpired as err:
             logging.error(err)
 
-        if desktop != "nox":
+        if desktop != "base":
             # Set lightdm config including autologin if selected
             self.set_display_manager()
 

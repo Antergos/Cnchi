@@ -93,7 +93,7 @@
         <pkgname>bzip2</pkgname>
         <pkgname>fastjar</pkgname>
         <pkgname>lz4</pkgname>
-        <pkgname>lzo2</pkgname>
+        <pkgname>lzo</pkgname>
         <pkgname>lzop</pkgname>
         <pkgname>rpmextract</pkgname>
         <pkgname>sharutils</pkgname>
