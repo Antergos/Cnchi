@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Module to download packages using Aria2 """
+""" Module to comunicate with Aria2 """
 
 import os
 import subprocess

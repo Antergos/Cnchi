@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Module to download packages using Aria2 or urllib """
+""" Module to download packages using urllib """
 
 import os
 import logging
