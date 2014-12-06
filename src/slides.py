@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  slides.py
+# slides.py
 #
 #  Copyright 2013 Antergos
 #
@@ -50,7 +50,6 @@ class Slides(GtkBaseBox):
 
         self.info_label = self.ui.get_object("info_label")
         self.scrolled_window = self.ui.get_object("scrolledwindow")
-
         # Add a webkit view to show the slides
         self.webview = WebKit.WebView()
 
@@ -60,14 +59,16 @@ class Slides(GtkBaseBox):
             html_file = os.path.join(self.settings.get('data'), 'slides.html')
 
         try:
-            with open(html_file) as html_stream:
-                html = html_stream.read(None)
-                data = os.path.join(os.getcwd(), "data")
-                self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
+            # with open(html_file) as html_stream:
+            #     html = html_stream.read(None)
+            #     data = os.path.join(os.getcwd(), "data")
+            #     self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
+            self.webview.load_uri('file:///usr/share/cnchi/data/slides.html')
         except IOError:
             pass
 
         self.scrolled_window.add(self.webview)
+        self.scrolled_window.set_policy(2, 2)
 
         self.fatal_error = False
         self.should_pulse = False
@@ -91,7 +92,7 @@ class Slides(GtkBaseBox):
         self.forward_button.hide()
 
         self.header.set_show_close_button(False)
-        
+
         GLib.timeout_add(100, self.manage_events_from_cb_queue)
 
     def store_values(self):
@@ -110,12 +111,13 @@ class Slides(GtkBaseBox):
 
     def start_pulse(self):
         """ Start pulsing progressbar """
+
         def pbar_pulse():
             """ Pulse progressbar """
             if self.should_pulse:
                 self.progress_bar.pulse()
             return self.should_pulse
-        
+
         if not self.should_pulse:
             # Hide any text that might be in info area
             self.info_label.set_markup("")
@@ -128,7 +130,8 @@ class Slides(GtkBaseBox):
 
     @misc.raise_privileges
     def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
+        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running",
+                     ".setup"]
         for t in tmp_files:
             p = os.path.join("/tmp", t)
             if os.path.exists(p):
@@ -137,7 +140,7 @@ class Slides(GtkBaseBox):
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
-        
+
         if self.fatal_error:
             return False
 
@@ -177,6 +180,7 @@ class Slides(GtkBaseBox):
                     response = show.question(boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
+
                         misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
@@ -206,7 +210,9 @@ class Slides(GtkBaseBox):
                     p = self.settings.get('installer_thread_call')
 
                     self.process = installation_process.InstallationProcess(self.settings, self.callback_queue,
-                        p['mount_devices'], p['fs_devices'], p['ssd'], p['alternate_package_list'], p['blvm'])
+                                                                            p['mount_devices'], p['fs_devices'],
+                                                                            p['ssd'], p['alternate_package_list'],
+                                                                            p['blvm'])
 
                     self.process.start()
                     return True
@@ -243,8 +249,10 @@ class Slides(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Slides')
