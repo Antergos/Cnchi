@@ -84,12 +84,12 @@ class Download(object):
         downloaded = 0
         total_downloads = len(downloads)
         percent = 0
+        self.queue_event('percent', percent)
+        txt = _("Downloading packages... (%d/%d)...")
+        txt = txt % (downloaded, total_downloads)
+        self.queue_event('info', txt)
 
         while len(downloads) > 0:
-            txt = _("Downloading packages... (%d/%d)...")
-            txt = txt % (downloaded, total_downloads)
-            self.queue_event('info', txt)
-
             num_active = self.get_num_active()
 
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
@@ -119,6 +119,9 @@ class Download(object):
 
                 percent = round(float(downloaded / total_downloads), 2)
                 self.queue_event('percent', percent)
+                txt = _("Downloading packages... (%d/%d)...")
+                txt = txt % (downloaded, total_downloads)
+                self.queue_event('info', txt)
 
             num_active = self.get_num_active()
             old_num_active = num_active
@@ -132,6 +135,9 @@ class Download(object):
 
                 percent = round(float(downloaded / total_downloads), 2)
                 self.queue_event('percent', percent)
+                txt = _("Downloading packages... (%d/%d)...")
+                txt = txt % (downloaded, total_downloads)
+                self.queue_event('info', txt)
 
             # This method purges completed/error/removed downloads, in order to free memory
             self.aria2.purge_download_result()
