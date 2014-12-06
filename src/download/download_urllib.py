@@ -59,6 +59,10 @@ def url_open(url):
 
     msg = _('Error opening %s:') % url
 
+    if url is None:
+        logging.warning(msg)
+        return None
+
     try:
         urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
@@ -140,7 +144,7 @@ class Download(object):
                 for url in element['urls']:
                     msg = _("Downloading file from url %s") % url
                     logging.debug(msg)
-                    download_error = False
+                    download_error = True
                     percent = 0
                     completed_length = 0
                     urlp = url_open(url)
