@@ -3,6 +3,7 @@ body {
     background: transparent;
     width: 800px;
     height: 334px;
+    margin: 0px;
 }
 
 .slider {
@@ -10,19 +11,25 @@ body {
     overflow: auto;
     width: 100%;
     height: 100%;
+    margin: 0px;
 }
 
-.slider li {
+.slider ul {
     list-style: none;
+    margin: 0px;
+    padding: 0px;
 }
 
 .slider ul li {
     float: left;
+    max-height: 334px;
+
 }
 
 .slider li img {
     max-width: 100%;
     max-height: 100%;
+    margin: 0px;
 }
 
 
