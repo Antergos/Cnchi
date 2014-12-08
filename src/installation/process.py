@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_process.py
+#  process.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -53,6 +53,9 @@ import pacman.pac as pac
 from download import download
 import info
 import encfs
+
+import chroot
+import mkinitcpio
 
 try:
     import pyalpm
@@ -118,14 +121,11 @@ class InstallationProcess(multiprocessing.Process):
         self.running = True
         self.error = False
 
-        self.special_dirs_mounted = False
-
         # Initialize some vars that are correctly initialized elsewhere
         # (pylint complains if we don't do it here)
         self.auto_device = ""
         self.packages = []
         self.pacman = None
-        self.arch = ""
         self.dest_dir = "/install"
         self.vbox = False
 
@@ -180,8 +180,6 @@ class InstallationProcess(multiprocessing.Process):
             # some mounted directories. Try to unmount them first.
             # We use unmount_all from auto_partition to do this.
             auto_partition.unmount_all(self.dest_dir)
-
-        self.arch = os.uname()[-1]
 
         # Create and format partitions
 
@@ -433,12 +431,14 @@ class InstallationProcess(multiprocessing.Process):
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
-        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % self.arch)
+        myarch = os.uname()[-1]
+
+        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % myarch)
 
         # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
-        self.write_file(file_template.render(destDir=self.dest_dir, arch=self.arch), os.path.join("/tmp", "pacman.conf"))
+        self.write_file(file_template.render(destDir=self.dest_dir, arch=myarch), os.path.join("/tmp", "pacman.conf"))
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
@@ -675,17 +675,9 @@ class InstallationProcess(multiprocessing.Process):
                 pkg = "libreoffice-fresh-%s" % lang_code
             self.packages.append(pkg)
 
-    def get_cpu(self):
-        cpu = ""
-        with open("/proc/cpuinfo", "rt") as proc_file:
-            for line in proc_file.readlines():
-                if "vendor_id" in line:
-                    return line.split(":")[1].replace(" ", "").lower()
-        return ""
-
     def install_packages(self):
         """ Start pacman installation of packages """
-        self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
         txt = _("Installing packages...")
         logging.debug(txt)
@@ -697,103 +689,13 @@ class InstallationProcess(multiprocessing.Process):
             conflicts=self.conflicts,
             options=pacman_options)
 
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs(self.dest_dir)
 
         if not result:
             raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
 
         # All downloading and installing has been done, so we hide progress bar
         self.queue_event('progress_bar', 'hide')
-
-    def chroot_mount_special_dirs(self):
-        """ Mount special directories for our chroot """
-        # Don't try to remount them
-        if self.special_dirs_mounted:
-            logging.debug(_("Special dirs already mounted."))
-            return
-
-        special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi"]
-        for s_dir in special_dirs:
-            mydir = os.path.join(self.dest_dir, s_dir)
-            if not os.path.exists(mydir):
-                os.makedirs(mydir)
-
-        mydir = os.path.join(self.dest_dir, "sys")
-        subprocess.check_call(["mount", "-t", "sysfs", "/sys", mydir])
-        os.chmod(mydir, 0o555)
-
-        mydir = os.path.join(self.dest_dir, "proc")
-        subprocess.check_call(["mount", "-t", "proc", "/proc", mydir])
-        os.chmod(mydir, 0o555)
-
-        mydir = os.path.join(self.dest_dir, "dev")
-        subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
-
-        mydir = os.path.join(self.dest_dir, "dev/pts")
-        subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
-        os.chmod(mydir, 0o555)
-
-        efi = "/sys/firmware/efi"
-        if os.path.exists(efi):
-            mydir = os.path.join(self.dest_dir, efi[1:])
-            subprocess.check_call(["mount", "-o", "bind", efi, mydir])
-
-        self.special_dirs_mounted = True
-
-    def chroot_umount_special_dirs(self):
-        """ Umount special directories for our chroot """
-        # Do not umount if they're not mounted
-        if not self.special_dirs_mounted:
-            logging.debug(_("Special dirs are not mounted. Skipping."))
-            return
-        efi = "/sys/firmware/efi"
-        if os.path.exists(efi):
-            special_dirs = ["dev/pts", "sys/firmware/efi", "sys", "proc", "dev"]
-        else:
-            special_dirs = ["dev/pts", "sys", "proc", "dev"]
-
-        for s_dir in special_dirs:
-            mydir = os.path.join(self.dest_dir, s_dir)
-            try:
-                subprocess.check_call(["umount", mydir])
-            except subprocess.CalledProcessError as err:
-                # Can't unmount. Try -l to force it.
-                try:
-                    subprocess.check_call(["umount", "-l", mydir])
-                except subprocess.CalledProcessError as err:
-                    logging.warning(_("Unable to umount %s") % mydir)
-                    cmd = _("Command %s has failed.") % err.cmd
-                    logging.warning(cmd)
-                    out = _("Output : %s") % err.output
-                    logging.warning(out)
-            except Exception as err:
-                logging.warning(_("Unable to umount %s") % mydir)
-                logging.error(err)
-
-        self.special_dirs_mounted = False
-
-    def chroot(self, cmd, timeout=None, stdin=None):
-        """ Runs command inside the chroot """
-        run = ['chroot', self.dest_dir]
-
-        for element in cmd:
-            run.append(element)
-
-        try:
-            proc = subprocess.Popen(run,
-                                    stdin=stdin,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT)
-            out = proc.communicate(timeout=timeout)[0]
-            txt = out.decode().strip()
-            if len(txt) > 0:
-                logging.debug(txt)
-        except OSError as err:
-            logging.exception(_("Error running command: %s"), err.strerror)
-            raise
-        except subprocess.TimeoutExpired as err:
-            logging.exception(_("Timeout running command: %s"), run)
-            raise
 
     def is_running(self):
         """ Checks if thread is running """
@@ -970,415 +872,13 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-    def install_bootloader(self):
-        """ Installs the bootloader """
-
-        # Freeze and unfreeze xfs filesystems to enable bootloader installation on xfs filesystems
-        self.freeze_xfs()
-
-        bootloader = self.settings.get('bootloader').lower()
-        if bootloader == "grub2":
-            self.modify_grub_default()
-            self.prepare_grub_d()
-
-            if os.path.exists('/sys/firmware/efi'):
-                self.install_bootloader_grub2_efi()
-            else:
-                self.install_bootloader_grub2_bios()
-
-            # Check grub.cfg for correct root UUID (just in case)
-            cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-            ruuid = self.settings.get('ruuid')
-            ruuid_ok = False
-
-            with open(cfg) as grub_cfg:
-                if ruuid in grub_cfg.read():
-                    ruuid_ok = True
-
-            if not ruuid_ok:
-                # Wrong uuid in grub.cfg, let's fix it!
-                with open(cfg) as grub_cfg:
-                    lines = [x.strip() for x in grub_cfg.readlines()]
-                for i in range(len(lines)):
-                    if lines[i].startswith("linux") and "/vmlinuz-linux root=" in lines[i]:
-                        old_line = lines[i]
-                        p1 = old_line[68:]
-                        p2 = old_line[:26]
-                        lines[i] = p1 + ruuid + p2
-                with open(cfg, 'w') as grub_cfg:
-                    grub_cfg.write("\n".join(lines))
-        elif bootloader == "gummiboot":
-            self.install_bootloader_gummiboot()
-
-    def modify_grub_default(self):
-        """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
-
-        default_dir = os.path.join(self.dest_dir, "etc/default")
-        default_grub = os.path.join(default_dir, "grub")
-        theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
-        plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
-        if os.path.exists(plymouth_bin):
-            use_splash = 'splash'
-        else:
-            use_splash = ''
-
-        if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            swap_uuid = fs.get_info(swap_partition)['UUID']
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=%s quiet %s"' % (swap_uuid, use_splash)
-        else:
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet %s"' % use_splash
-
-        if not os.path.exists(default_dir):
-            os.mkdir(default_dir)
-
-        with open(default_grub) as grub_file:
-            lines = [x.strip() for x in grub_file.readlines()]
-
-        if self.settings.get('use_luks'):
-            boot_device = self.mount_devices["/boot"]
-            boot_uuid = fs.get_info(boot_device)['UUID']
-
-            # Let GRUB automatically add the kernel parameters for root encryption
-            luks_root_volume = self.settings.get('luks_root_volume')
-
-            logging.debug("Luks Root Volume: %s", luks_root_volume)
-
-            if self.method == "advanced" and self.settings.get('use_luks_in_root'):
-                root_device = self.settings.get('luks_root_device')
-            elif self.method == "automatic":
-                root_device = self.mount_devices["/"]
-
-            logging.debug("Root device: %s", root_device)
-
-            root_uuid = fs.get_info(root_device)['UUID']
-
-            if self.settings.get("luks_root_password") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s ' \
-                            'cryptkey=/dev/disk/by-uuid/%s:ext2:/.keyfile-root"' % (root_uuid, luks_root_volume, boot_uuid)
-            else:
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:%s"' % (root_uuid, luks_root_volume)
-
-            for i in range(len(lines)):
-                if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
-                    if not lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
-                        if not lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                            lines[i] = default_line
-
-        for i in range(len(lines)):
-            if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
-                lines[i] = theme
-            elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
-                lines[i] = kernel_cmd
-            elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
-                lines[i] = "GRUB_DISTRIBUTOR=Antergos"
-
-        with open(default_grub, 'w') as grub_file:
-            grub_file.write("\n".join(lines) + "\n")
-
-        logging.debug(_("/etc/default/grub configuration completed successfully."))
-
-    def prepare_grub_d(self):
-        """ Copies 01_antergos script into /etc/grub.d. """
-        grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
-        script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
-        script = "10_antergos"
-
-        if not os.path.exists(grub_d_dir):
-            os.makedirs(grub_d_dir)
-
-        try:
-            shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
-            os.chmod(os.path.join(grub_d_dir, script), 0o755)
-        except FileNotFoundError:
-            logging.debug(_("Could not copy %s to grub.d"), script)
-        except FileExistsError:
-            pass
-
-    def install_bootloader_grub2_bios(self):
-        """ Install Grub2 bootloader in a BIOS system """
-        grub_location = self.settings.get('bootloader_device')
-        txt = _("Installing GRUB(2) BIOS boot loader in %s") % grub_location
-        self.queue_event('info', txt)
-
-        self.chroot_mount_special_dirs()
-
-        grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
-                        '--boot-directory=/boot', '--recheck']
-
-        if len(grub_location) > 8:  # ex: /dev/sdXY > 8
-            grub_install.append("--force")
-
-        grub_install.append(grub_location)
-
-        self.chroot(grub_install)
-
-        self.install_bootloader_grub2_locales()
-
-        self.copy_bootloader_grub2_theme_files()
-
-        # Run grub-mkconfig last
-        locale = self.settings.get("locale")
-        try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
-        except subprocess.TimeoutExpired:
-            logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
-            subprocess.check_call(['killall', 'grub-mount'])
-            subprocess.check_call(['killall', 'os-prober'])
-
-        self.chroot_umount_special_dirs()
-
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        with open(cfg) as grub_cfg:
-            if "Antergos" in grub_cfg.read():
-                self.queue_event('info', _("GRUB(2) BIOS has been successfully installed."))
-                self.settings.set('bootloader_installation_successful', True)
-            else:
-                logging.warning(_("ERROR installing GRUB(2) BIOS."))
-                self.settings.set('bootloader_installation_successful', False)
-
-    def install_bootloader_grub2_efi(self):
-        """ Install Grub2 bootloader in a UEFI system """
-        uefi_arch = "x86_64"
-        spec_uefi_arch = "x64"
-        spec_uefi_arch_caps = "X64"
-
-        txt = _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch
-        self.queue_event('info', txt)
-
-        grub_install = ['grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/install/boot',
-            '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck']
-        try:
-            subprocess.check_call(grub_install, shell=True, timeout=45)
-        except subprocess.CalledProcessError as err:
-            logging.error('Command grub-install failed. Error output: %s' % err.output)
-        except subprocess.TimeoutExpired:
-            logging.error('Command grub-install timed out.')
-        except Exception as err:
-            logging.error('Command grub-install failed. Unknown Error: %s' % err)
-
-        self.install_bootloader_grub2_locales()
-
-        self.copy_bootloader_grub2_theme_files()
-
-        # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
-        defaults = [(os.path.join(self.dest_dir, "boot/EFI/BOOT/"), 'BOOT' + spec_uefi_arch_caps + '.efi'),
-                    (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi')]
-        grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
-        grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
-
-        for default in defaults:
-            path, grub_efi_new = default
-            if not os.path.exists(path):
-                msg = _("No OEM loader found in %s. Copying Grub(2) into dir.") % path
-                self.queue_event('info', msg)
-                os.makedirs(path)
-                msg_failed = _("Copying Grub(2) into OEM dir failed: ")
-                try:
-                    shutil.copy(grub_dir_src + grub_efi_old, path + grub_efi_new)
-                except FileNotFoundError:
-                    msg_failed = msg_failed + _("File Not Found.")
-                    logging.warning(msg_failed)
-                except FileExistsError:
-                    msg_failed = msg_failed + _("File already exists.")
-                    logging.warning(msg_failed)
-                except Exception as err:
-                    msg_failed = msg_failed + _("Unknown error.")
-                    logging.warning(msg_failed)
-
-        # Copy uefi shell if none exists in /boot/EFI
-        shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/EFI/")
-        try:
-            shutil.copy2(shell_src, shell_dst)
-        except FileNotFoundError:
-            logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
-        except FileExistsError:
-            pass
-        except Exception as err:
-            logging.warning(_("UEFI Shell drop-in could not be copied."))
-            logging.warning(err)
-
-        # Run grub-mkconfig last
-        self.queue_event('info', _("Generating grub.cfg"))
-        self.chroot_mount_special_dirs()
-
-        locale = self.settings.get("locale")
-
-        try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
-        except subprocess.TimeoutExpired:
-            logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
-            subprocess.check_call(['killall', 'grub-mount'])
-            subprocess.check_call(['killall', 'os-prober'])
-
-        self.chroot_umount_special_dirs()
-
-        path = (
-            (os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")),
-            (os.path.join(self.dest_dir, ("boot/EFI/antergos_grub/" + grub_efi_old))))
-
-        exists = []
-
-        for p in path:
-            if os.path.exists(p):
-                exists.append(p)
-
-        if len(exists) == 0:
-            logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
-            self.settings.set('bootloader_installation_successful', False)
-        else:
-            self.queue_event('info', _("GRUB(2) UEFI install completed successfully"))
-            self.settings.set('bootloader_installation_successful', True)
-
-    def install_bootloader_gummiboot(self):
-        """ Install Gummiboot bootloader to the EFI System Partition """
-        # Setup bootloader menu
-        menu_dir = os.path.join(self.dest_dir, "boot/loader")
-        os.makedirs(menu_dir)
-        menu_path = os.path.join(menu_dir, "loader.conf")
-        with open(menu_path, "w") as menu_file:
-            menu_file.write("default antergos")
-
-        # Setup boot entries
-        entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
-        os.makedirs(entries_dir)
-        entry_path = os.path.join(entries_dir, "antergos.conf")
-        with open(entry_path, "w") as entry_file:
-            if not self.settings.get('use_luks'):
-                root_device = self.mount_devices["/"]
-                root_uuid = fs.get_info(root_device)['UUID']
-                entry_file.write("title\tAntergos\n")
-                entry_file.write("linux\t/vmlinuz-linux\n")
-                entry_file.write("initrd\t/initramfs-linux.img\n")
-                entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
-
-                entry_file.write("title\tAntergos (fallback)\n")
-                entry_file.write("linux\t/vmlinuz-linux\n")
-                entry_file.write("initrd\t/initramfs-linux-fallback.img\n")
-                entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
-
-                if self.settings.get('feature_lts'):
-                    entry_file.write("title\tAntergos LTS\n")
-                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
-                    entry_file.write("initrd\t/initramfs-linux-lts.img\n")
-                    entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
-
-                    entry_file.write("title\tAntergos LTS (fallback)\n")
-                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
-                    entry_file.write("initrd\t/initramfs-linux-lts-fallback.img\n")
-                    entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
-            else:
-                boot_device = self.mount_devices["/boot"]
-                boot_uuid = fs.get_info(boot_device)['UUID']
-                luks_root_volume = self.settings.get('luks_root_volume')
-                if self.method == "advanced" and self.settings.get('use_luks_in_root'):
-                    root_device = self.settings.get('luks_root_device')
-                elif self.method == "automatic":
-                    root_device = self.mount_devices["/"]
-                root_uuid = fs.get_info(root_device)['UUID']
-                key = ""
-                if self.settings.get("luks_root_password") == "":
-                    key = "cryptkey=UUID=%s:ext2:/.keyfile-root" % boot_uuid
-
-                line = "cryptdevice=UUID=%s:%s %s root=UUID=%s rw" % (root_uuid, luks_root_volume, key, root_uuid)
-
-                entry_file.write("title\tAntergos\n")
-                entry_file.write("linux\t/boot/vmlinuz-linux\n")
-                entry_file.write("options\tinitrd=/boot/initramfs-linux.img " + line)
-
-                entry_file.write("title\tAntergos (fallback)\n")
-                entry_file.write("linux\t/boot/vmlinuz-linux\n")
-                entry_file.write("options\tinitrd=/boot/initramfs-linux-fallback.img " + line)
-
-                if self.settings.get('feature_lts'):
-                    entry_file.write("title\tAntergos LTS\n")
-                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
-                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts.img " + line)
-
-                    entry_file.write("title\tAntergos LTS (fallback)\n")
-                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
-                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts-fallback.img " + line)
-
-        # Install bootloader
-
-        try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot")
-            subprocess.check_call(['gummiboot', '--path=%s' % efi_system_partition, 'install'])
-            self.queue_event('info', _("Gummiboot install completed successfully"))
-            self.settings.set('bootloader_installation_successful', True)
-        except subprocess.CalledProcessError as err:
-            logging.warning(_("Gummiboot install may not have completed successfully."))
-            self.settings.set('bootloader_installation_successful', False)
-
-    def copy_bootloader_grub2_theme_files(self):
-        self.queue_event('info', _("Copying GRUB(2) Theme Files"))
-        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
-        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
-        try:
-            shutil.copytree(theme_dir_src, theme_dir_dst)
-        except FileNotFoundError:
-            logging.warning(_("Grub2 theme files not found"))
-        except FileExistsError:
-            logging.warning(_("Grub2 theme files already exist."))
-
-    def install_bootloader_grub2_locales(self):
-        """ Install Grub2 locales """
-        self.queue_event('info', _("Installing Grub2 locales."))
-        dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
-
-        if not os.path.exists(dest_locale_dir):
-            os.makedirs(dest_locale_dir)
-
-        grub_mo = os.path.join(self.dest_dir, "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
-
-        try:
-            shutil.copy2(grub_mo, os.path.join(dest_locale_dir, "en.mo"))
-        except FileNotFoundError:
-            logging.warning(_("Can't install GRUB(2) locale."))
-        except FileExistsError:
-            # Ignore if already exists
-            pass
-
-    def freeze_xfs(self):
-        """ Freeze and unfreeze xfs, as hack for grub(2) installing """
-        if not os.path.exists("/usr/bin/xfs_freeze"):
-            return
-
-        xfs_boot = False
-        xfs_root = False
-
-        try:
-            subprocess.check_call(["sync"])
-            with open("/proc/mounts", "r") as mounts_file:
-                mounts = mounts_file.readlines()
-            # We leave a blank space in the end as we want to search exactly for this mount points
-            boot_mount_point = self.dest_dir + "/boot "
-            root_mount_point = self.dest_dir + " "
-            for line in mounts:
-                if " xfs " in line:
-                    if boot_mount_point in line:
-                        xfs_boot = True
-                    elif root_mount_point in line:
-                        xfs_root = True
-            if xfs_boot:
-                boot_mount_point = boot_mount_point.rstrip()
-                subprocess.check_call(["xfs_freeze", "-f", boot_mount_point])
-                subprocess.check_call(["xfs_freeze", "-u", boot_mount_point])
-            if xfs_root:
-                subprocess.check_call(["xfs_freeze", "-f", self.dest_dir])
-                subprocess.check_call(["xfs_freeze", "-u", self.dest_dir])
-        except subprocess.CalledProcessError as err:
-            logging.warning(_("Can't freeze/unfreeze xfs system"))
-
     def enable_services(self, services):
         """ Enables all services that are in the list 'services' """
-        self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
         for name in services:
-            #self.chroot(['systemctl', 'enable', name + ".service"])
-            self.chroot(['systemctl', '-f', 'enable', name])
+            chroot.run(['systemctl', '-f', 'enable', name], self.dest_dir)
             logging.debug(_("Enabled %s service."), name)
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs(self.dest_dir)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
@@ -1389,7 +889,7 @@ class InstallationProcess(multiprocessing.Process):
             return False
 
         try:
-            self.chroot(['usermod', '-p', shadow_password, user])
+            chroot.run(['usermod', '-p', shadow_password, user], self.dest_dir)
         except:
             logging.warning(_("Error changing password for user %s"), user)
             return False
@@ -1401,87 +901,6 @@ class InstallationProcess(multiprocessing.Process):
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy2("/etc/adjtime", "%s/etc/" % self.dest_dir)
 
-    def set_mkinitcpio_hooks_and_modules(self, hooks, modules):
-        """ Set up mkinitcpio.conf """
-        logging.debug(_("Setting hooks and modules in mkinitcpio.conf"))
-        logging.debug('HOOKS="%s"', ' '.join(hooks))
-        logging.debug('MODULES="%s"', ' '.join(modules))
-
-        with open("/etc/mkinitcpio.conf") as mkinitcpio_file:
-            mklins = [x.strip() for x in mkinitcpio_file.readlines()]
-
-        for i in range(len(mklins)):
-            if mklins[i].startswith("HOOKS"):
-                mklins[i] = 'HOOKS="%s"' % ' '.join(hooks)
-            elif mklins[i].startswith("MODULES"):
-                mklins[i] = 'MODULES="%s"' % ' '.join(modules)
-
-        path = os.path.join(self.dest_dir, "etc/mkinitcpio.conf")
-        with open(path, "w") as mkinitcpio_file:
-            mkinitcpio_file.write("\n".join(mklins) + "\n")
-
-    def run_mkinitcpio(self):
-        """ Runs mkinitcpio """
-        # Add lvm and encrypt hooks if necessary
-
-        cpu = self.get_cpu()
-
-        hooks = ["base", "udev", "autodetect", "modconf", "block", "keyboard", "keymap"]
-        modules = []
-
-        # It is important that the plymouth hook comes before any encrypt hook
-
-        plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
-        if os.path.exists(plymouth_bin):
-            hooks.append("plymouth")
-
-        # It is important that the encrypt hook comes before the filesystems hook
-        # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
-
-        if self.settings.get("use_luks"):
-            if os.path.exists(plymouth_bin):
-                hooks.append("plymouth-encrypt")
-            else:
-                hooks.append("encrypt")
-
-            modules.extend(["dm_mod", "dm_crypt", "ext4"])
-
-            if self.arch == 'x86_64':
-                modules.extend(["aes_x86_64"])
-            else:
-                modules.extend(["aes_i586"])
-
-            modules.extend(["sha256", "sha512"])
-
-        if self.settings.get("f2fs"):
-            modules.append("f2fs")
-
-        if self.blvm or self.settings.get("use_lvm"):
-            hooks.append("lvm2")
-
-        if "swap" in self.mount_devices:
-            hooks.append("resume")
-
-        hooks.append("filesystems")
-
-        if self.settings.get('btrfs') and cpu is not 'genuineintel':
-            modules.append('crc32c')
-        elif self.settings.get('btrfs') and cpu is 'genuineintel':
-            modules.append('crc32c-intel')
-        else:
-            hooks.append("fsck")
-
-        self.set_mkinitcpio_hooks_and_modules(hooks, modules)
-
-        # Run mkinitcpio on the target system
-        # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
-        locale = self.settings.get('locale')
-        self.chroot_mount_special_dirs()
-        self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux' % locale])
-        if self.settings.get('feature_lts'):
-            self.chroot(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale])
-        self.chroot_umount_special_dirs()
-
     def update_pacman_conf(self):
         with open("%s/etc/pacman.conf" % self.dest_dir, "a") as pacmanconf:
             pacmanconf.write("\n\n")
@@ -1491,7 +910,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def uncomment_locale_gen(self, locale):
         """ Uncomment selected locale in /etc/locale.gen """
-        #self.chroot(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"])
+        #chroot.run(['sed', '-i', '-r', '"s/#(.*%s)/\1/g"' % locale, "/etc/locale.gen"], self.dest_dir)
 
         text = []
         with open("%s/etc/locale.gen" % self.dest_dir) as gen:
@@ -1540,7 +959,7 @@ class InstallationProcess(multiprocessing.Process):
         #if self.settings.get("feature_aur"):
         #    logging.debug(_("Configuring AUR..."))
 
-        self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
         if self.settings.get("feature_bluetooth"):
             logging.debug(_("Configuring bluetooth..."))
@@ -1562,20 +981,17 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_firewall"):
             logging.debug(_("Configuring firewall..."))
-            self.chroot_mount_special_dirs()
             # This won't work if we're installing a new linux kernel
             try:
-                self.chroot(["ufw", "default", "deny"])
+                chroot.run(["ufw", "default", "deny"], self.dest_dir)
                 toallow = misc.get_network()
                 if toallow:
-                    self.chroot(["ufw", "allow", "from", toallow])
-                self.chroot(["ufw", "allow", "Transmission"])
-                self.chroot(["ufw", "allow", "SSH"])
-                self.chroot(["ufw", "enable"])
+                    chroot.run(["ufw", "allow", "from", toallow], self.dest_dir)
+                chroot.run(["ufw", "allow", "Transmission"], self.dest_dir)
+                chroot.run(["ufw", "allow", "SSH"], self.dest_dir)
+                chroot.run(["ufw", "enable"], self.dest_dir)
             except OSError as err:
                 logging.warning(_("Couldn't configure the firewall: %s") % err)
-            finally:
-                self.chroot_umount_special_dirs()
 
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
@@ -1583,9 +999,12 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_lts"):
             # FIXME: Antergos doesn't boot if this option is used.
+            #sudo chmod a-x /etc/grub.d/10_antergos
+            #sudo chmod a+x /etc/grub.d/10_linux
+            #sudo grub-mkconfig -o /boot/grub/grub.cfg
             pass
 
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs(self.dest_dir)
 
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """
@@ -1696,72 +1115,64 @@ class InstallationProcess(multiprocessing.Process):
         """ Sets ALSA mixer settings """
 
         # This function must be called inside the chroot
-        if not self.special_dirs_mounted:
-            self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Side 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Surround 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Center 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset LFE 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Headphone 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Speaker 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Line 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset External 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset FM 50% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Mono 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Digital 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Mix 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Aux2 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Center 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM LFE 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Side 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM Surround 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Playback 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset PCM,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,0 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset DAC,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Synth 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset CD 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Wave 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Music 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset AC97 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Analog Front 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,0 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,1 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,2 70% unmute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset VIA DXS,3 70% unmute'])
+        cmds = [
+            "Master 70% unmute",
+            "Front 70% unmute"
+            "Side 70% unmute"
+            "Surround 70% unmute",
+            "Center 70% unmute",
+            "LFE 70% unmute",
+            "Headphone 70% unmute",
+            "Speaker 70% unmute",
+            "PCM 70% unmute",
+            "Line 70% unmute",
+            "External 70% unmute",
+            "FM 50% unmute",
+            "Master Mono 70% unmute",
+            "Master Digital 70% unmute",
+            "Analog Mix 70% unmute",
+            "Aux 70% unmute",
+            "Aux2 70% unmute",
+            "PCM Center 70% unmute",
+            "PCM Front 70% unmute",
+            "PCM LFE 70% unmute",
+            "PCM Side 70% unmute",
+            "PCM Surround 70% unmute",
+            "Playback 70% unmute",
+            "PCM,1 70% unmute",
+            "DAC 70% unmute",
+            "DAC,0 70% unmute",
+            "DAC,1 70% unmute",
+            "Synth 70% unmute",
+            "CD 70% unmute",
+            "Wave 70% unmute",
+            "Music 70% unmute",
+            "AC97 70% unmute",
+            "Analog Front 70% unmute",
+            "VIA DXS,0 70% unmute",
+            "VIA DXS,1 70% unmute",
+            "VIA DXS,2 70% unmute",
+            "VIA DXS,3 70% unmute",
+            "Mic 70% mute",
+            "IEC958 70% mute",
+            "Master Playback Switch on",
+            "Master Surround on",
+            "SB Live Analog/Digital Output Jack off",
+            "Audigy Analog/Digital Output Jack off"]
 
-        # set input levels
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Mic 70% mute'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset IEC958 70% mute'])
-
-        # special stuff
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
-
-        # special stuff
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Playback Switch on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Master Surround on'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset SB Live Analog/Digital Output Jack off'])
-        self.chroot(['sh', '-c', 'amixer -c 0 sset Audigy Analog/Digital Output Jack off'])
+        for cmd in cmds:
+            chroot.run(['sh', '-c', 'amixer -c 0 sset %s' % cmd], self.dest_dir)
 
         # Save settings
-        self.chroot(['alsactl', '-f', '/etc/asound.state', 'store'])
+        chroot.run(['alsactl', '-f', '/etc/asound.state', 'store'], self.dest_dir)
 
     def set_fluidsynth(self):
         """ Sets fluidsynth configuration file """
 
         # This function must be called inside the chroot
-        if not self.special_dirs_mounted:
-            self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
         fluid_name = "/etc/conf.d/fluidsynth"
 
@@ -1822,7 +1233,7 @@ class InstallationProcess(multiprocessing.Process):
             except FileExistsError:
                 pass
             # Enable our profile
-            self.chroot(['netctl', 'enable', profile])
+            chroot.run(['netctl', 'enable', profile], self.dest_dir)
             #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
 
         logging.debug(_("Network configuration copied."))
@@ -1856,7 +1267,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
-        self.chroot(['ln', '-s', zoneinfo_path, "/etc/localtime"])
+        chroot.run(['ln', '-s', zoneinfo_path, "/etc/localtime"], self.dest_dir)
 
         logging.debug(_("Timezone set."))
 
@@ -1882,7 +1293,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure detected hardware
         try:
-            self.chroot_mount_special_dirs()
+            chroot.mount_special_dirs(self.dest_dir)
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
             logging.debug(_("Running post-install scripts from hardware module..."))
@@ -1892,7 +1303,7 @@ class InstallationProcess(multiprocessing.Process):
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s") % err)
         finally:
-            self.chroot_umount_special_dirs()
+            chroot.umount_special_dirs(self.dest_dir)
 
         # Setup user
 
@@ -1900,23 +1311,26 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
-            self.chroot(['groupadd', 'vboxusers'])
+            chroot.run(['groupadd', 'vboxusers'], self.dest_dir)
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
-            self.chroot(['groupadd', 'autologin'])
+            chroot.run(['groupadd', 'autologin'], self.dest_dir)
             default_groups += ',autologin'
 
-        self.chroot(['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username])
+        cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
+        chroot.run(cmd, self.dest_dir)
 
         logging.debug(_("User %s added."), username)
 
         self.change_user_password(username, password)
 
-        self.chroot(['chfn', '-f', fullname, username])
+        cmd = ['chfn', '-f', fullname, username]
+        chroot.run(cmd, self.dest_dir)
 
-        self.chroot(['chown', '-R', '%s:users' % username, "/home/%s" % username])
+        cmd = ['chown', '-R', '%s:users' % username, "/home/%s" % username]
+        chroot.run(cmd, self.dest_dir)
 
         hostname_path = os.path.join(self.dest_dir, "etc/hostname")
         if not os.path.exists(hostname_path):
@@ -1937,7 +1351,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.uncomment_locale_gen(locale)
 
-        self.chroot(['locale-gen'])
+        chroot.run(['locale-gen'], self.dest_dir)
         locale_conf_path = os.path.join(self.dest_dir, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
             locale_conf.write('LANG=%s\n' % locale)
@@ -1972,11 +1386,11 @@ class InstallationProcess(multiprocessing.Process):
                 xorg_conf_xkb.write('EndSection\n')
             logging.debug(_("00-keyboard.conf written."))
 
-        # Enter chroot system
-        self.chroot_mount_special_dirs()
+        # Mount dev directories in dest system
+        chroot.mount_special_dirs(self.dest_dir)
 
         # Install configs for root
-        self.chroot(['cp', '-av', '/etc/skel/.', '/root/'])
+        chroot.run(['cp', '-av', '/etc/skel/.', '/root/'], self.dest_dir)
 
         self.queue_event('info', _("Configuring hardware ..."))
 
@@ -1990,21 +1404,21 @@ class InstallationProcess(multiprocessing.Process):
 
         # Set pulse
         if os.path.exists("/usr/bin/pulseaudio-ctl"):
-            self.chroot(['pulseaudio-ctl', 'normal'])
+            chroot.run(['pulseaudio-ctl', 'normal'], self.dest_dir)
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
         logging.debug(_("Updated fluidsynth configuration file"))
 
         # Exit chroot system
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs(self.dest_dir)
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
         self.queue_event('info', _("Configuring System Startup..."))
-        self.run_mkinitcpio()
+        mkinitcpio.run(self.dest_dir, self.settings, self.mount_devices)
 
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
@@ -2037,7 +1451,9 @@ class InstallationProcess(multiprocessing.Process):
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             logging.debug(_("Installing bootloader..."))
-            self.install_bootloader()
+            import bootloader
+            boot_loader = bootloader.Bootloader(self.dest_dir, self.settings, self.mount_devices)
+            boot_loader.install()
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug(_("Copying install log to /var/log."))
