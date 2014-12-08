@@ -26,7 +26,7 @@ import os
 
 from installation import chroot
 
-def run(self, dest_dir, settings, mount_devices):
+def run(dest_dir, settings, mount_devices, blvm):
     """ Runs mkinitcpio """
 
     cpu = get_cpu()
@@ -63,7 +63,7 @@ def run(self, dest_dir, settings, mount_devices):
     if settings.get("f2fs"):
         modules.append("f2fs")
 
-    if self.blvm or self.settings.get("use_lvm"):
+    if blvm or settings.get("use_lvm"):
         hooks.append("lvm2")
 
     if "swap" in mount_devices:
@@ -108,7 +108,7 @@ def set_hooks_and_modules(hooks, modules):
     with open(path, "w") as mkinitcpio_file:
         mkinitcpio_file.write("\n".join(mklins) + "\n")
 
-def get_cpu(self):
+def get_cpu():
     with open("/proc/cpuinfo", "rt") as proc_file:
         lines = proc_file.readlines()
 

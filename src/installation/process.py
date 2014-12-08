@@ -1418,7 +1418,11 @@ class InstallationProcess(multiprocessing.Process):
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
         self.queue_event('info', _("Configuring System Startup..."))
-        mkinitcpio.run(self.dest_dir, self.settings, self.mount_devices)
+        mkinitcpio.run(
+            self.dest_dir,
+            self.settings,
+            self.mount_devices,
+            self.blvm)
 
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
