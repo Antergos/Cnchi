@@ -1454,10 +1454,13 @@ class InstallationProcess(multiprocessing.Process):
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
-            logging.debug(_("Installing bootloader..."))
-            from installation import bootloader
-            boot_loader = bootloader.Bootloader(self.dest_dir, self.settings, self.mount_devices)
-            boot_loader.install()
+            try:
+                logging.debug(_("Installing bootloader..."))
+                from installation import bootloader
+                boot_loader = bootloader.Bootloader(self.dest_dir, self.settings, self.mount_devices)
+                boot_loader.install()
+            except Exception as err:
+                logging.warning(_("Couldn't install boot loader: %s"), err)
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug(_("Copying install log to /var/log."))

@@ -28,7 +28,7 @@ import shutil
 import parted3.fs_module as fs
 
 class Bootloader(object):
-    def __init__(self, dest_dir, settings, mount_devices)
+    def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
         self.settings = settings
         self.mount_devices = mount_devices
