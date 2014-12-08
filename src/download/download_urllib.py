@@ -143,7 +143,7 @@ class Download(object):
                 # Let's download our filename using url
                 for url in element['urls']:
                     msg = _("Downloading file from url %s") % url
-                    logging.debug(msg)
+                    #logging.debug(msg)
                     download_error = True
                     percent = 0
                     completed_length = 0
