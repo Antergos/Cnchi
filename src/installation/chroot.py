@@ -26,12 +26,15 @@ import logging
 import os
 import subprocess
 
-chroot_special_dirs_mounted = False
+_special_dirs_mounted = False
 
 def mount_special_dirs(dest_dir):
     """ Mount special directories for our chroot """
+
+    global _special_dirs_mounted
+
     # Don't try to remount them
-    if chroot_special_dirs_mounted:
+    if _special_dirs_mounted:
         logging.debug(_("Special dirs already mounted."))
         return
 
@@ -61,12 +64,15 @@ def mount_special_dirs(dest_dir):
         mydir = os.path.join(dest_dir, efi[1:])
         subprocess.check_call(["mount", "-o", "bind", efi, mydir])
 
-    chroot_special_dirs_mounted = True
+    _special_dirs_mounted = True
 
 def umount_special_dirs(dest_dir):
     """ Umount special directories for our chroot """
+
+    global _special_dirs_mounted
+
     # Do not umount if they're not mounted
-    if not chroot_special_dirs_mounted:
+    if not _special_dirs_mounted:
         logging.debug(_("Special dirs are not mounted. Skipping."))
         return
 
@@ -94,7 +100,7 @@ def umount_special_dirs(dest_dir):
             logging.warning(_("Unable to umount %s") % mydir)
             logging.error(err)
 
-    chroot_special_dirs_mounted = False
+    _special_dirs_mounted = False
 
 def run(self, cmd, dest_dir, timeout=None, stdin=None):
     """ Runs command inside the chroot """

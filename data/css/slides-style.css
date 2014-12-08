@@ -1,128 +1,41 @@
-/* CSS reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
-    margin:0;
-    padding:0;
-}
-html,body {
-    margin:0;
-    padding:0;
-}
-
-fieldset,img {
-    border:0;
+html, body {
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    max-height: 334px;
+    overflow : hidden;
+    padding: 0px;
 }
 
-ol,ul {
-    list-style:none;
-}
-caption,th {
-    text-align:left;
-}
-h1,h2,h3,h4,h5,h6 {
-    font-size:100%;
-    font-weight:normal;
-}
-q:before,q:after {
-    content:'';
-}
-abbr,acronym { border:0;
-}
-/* General Demo Style */
-body{
-    background-image: url(../images/background.png);
-    font-weight: 400;
-    font-size: 15px;
-    color: #aa3e03;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-a{
-    color: #333;
-    text-decoration: none;
-}
-
-
-#page{
+.slider {
+    position: relative;
     overflow: hidden;
-}
-
-.cb-slideshow,
-.cb-slideshow:after {
-    position: fixed;
     width: 100%;
     height: 100%;
-    min-height: 334px;
-    top: 0px;
-    left: 0px;
-    z-index: 0;
+    margin: 0px;
+    max-height: 334px;
+    padding: 0px;
 }
 
-.cb-slideshow li span {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    color: transparent;
-    background-size: cover;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    opacity: 0;
-    z-index: 0;
-    -webkit-backface-visibility: hidden;
-    -webkit-animation: imageAnimation 36s linear infinite 0s;
-    -moz-animation: imageAnimation 36s linear infinite 0s;
-    -o-animation: imageAnimation 36s linear infinite 0s;
-    -ms-animation: imageAnimation 36s linear infinite 0s;
-    animation: imageAnimation 36s linear infinite 0s;
+.slider ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    height: 334px;
 }
 
-
-.cb-slideshow li:nth-child(1) span {
-    background-image: url(../images/slides/1.png)
-    background-size: cover;
-}
-.cb-slideshow li:nth-child(2) span {
-    background-image: url(../images/slides/2.png);
-    background-size: cover;
-    -webkit-animation-delay: 12s;
-    -moz-animation-delay: 12s;
-    -o-animation-delay: 12s;
-    -ms-animation-delay: 12s;
-    animation-delay: 12s;
-}
-.cb-slideshow li:nth-child(3) span {
-    background-image: url(../images/slides/3.png);
-    background-size: cover;
-    -webkit-animation-delay: 24s;
-    -moz-animation-delay: 24s;
-    -o-animation-delay: 24s;
-    -ms-animation-delay: 24s;
-    animation-delay: 24s;
+.slider ul li {
+    float: left;
+    max-height: 334px;
+    height: 334px;
+    margin: 0px;
+    padding: 0px;
 }
 
-/* Animation for the slideshow images */
-@-webkit-keyframes imageAnimation {
-    0% { opacity: 0;
-    -webkit-animation-timing-function: ease-in; }
-    2% { opacity: 1;
-         -webkit-animation-timing-function: ease-out; }
-    30% { opacity: 1 }
-    34% { opacity: 0 }
-    100% { opacity: 0 }
+.slider li img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0px;
+    height: 334px;
 }
-
-@keyframes imageAnimation {
-    0% { opacity: 0;
-    animation-timing-function: ease-in; }
-    2% { opacity: 1;
-         animation-timing-function: ease-out; }
-    30% { opacity: 1 }
-    34% { opacity: 0 }
-    100% { opacity: 0 }
-}
-
-
-
-
