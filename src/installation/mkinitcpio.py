@@ -79,7 +79,7 @@ def run(dest_dir, settings, mount_devices, blvm):
     else:
         hooks.append("fsck")
 
-    set_hooks_and_modules(hooks, modules)
+    set_hooks_and_modules(dest_dir, hooks, modules)
 
     # Run mkinitcpio on the target system
     # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
@@ -90,7 +90,7 @@ def run(dest_dir, settings, mount_devices, blvm):
         chroot.run(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale], dest_dir)
     chroot.umount_special_dirs(dest_dir)
 
-def set_hooks_and_modules(hooks, modules):
+def set_hooks_and_modules(dest_dir, hooks, modules):
     """ Set up mkinitcpio.conf """
     logging.debug(_("Setting hooks and modules in mkinitcpio.conf"))
     logging.debug('HOOKS="%s"', ' '.join(hooks))
