@@ -54,8 +54,8 @@ from download import download
 import info
 import encfs
 
-import chroot
-import mkinitcpio
+from installation import chroot
+from installation import mkinitcpio
 
 try:
     import pyalpm

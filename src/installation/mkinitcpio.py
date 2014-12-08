@@ -24,7 +24,7 @@
 
 import os
 
-import chroot
+from installation import chroot
 
 def run(self, dest_dir, settings, mount_devices):
     """ Runs mkinitcpio """
