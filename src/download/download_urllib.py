@@ -133,7 +133,6 @@ class Download(object):
                     shutil.copy(dst_cache_path, dst_path)
                     self.queue_event('percent', 1.0)
                     downloaded += 1
-                    continue
                 except FileNotFoundError:
                     pass
                 except FileExistsError:
