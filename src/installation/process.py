@@ -1455,7 +1455,7 @@ class InstallationProcess(multiprocessing.Process):
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             logging.debug(_("Installing bootloader..."))
-            import bootloader
+            from installation import bootloader
             boot_loader = bootloader.Bootloader(self.dest_dir, self.settings, self.mount_devices)
             boot_loader.install()
 
