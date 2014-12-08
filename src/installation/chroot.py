@@ -102,15 +102,15 @@ def umount_special_dirs(dest_dir):
 
     _special_dirs_mounted = False
 
-def run(self, cmd, dest_dir, timeout=None, stdin=None):
+def run(cmd, dest_dir, timeout=None, stdin=None):
     """ Runs command inside the chroot """
-    run = ['chroot', dest_dir]
+    full_cmd = ['chroot', dest_dir]
 
     for element in cmd:
-        run.append(element)
+        full_cmd.append(element)
 
     try:
-        proc = subprocess.Popen(run,
+        proc = subprocess.Popen(full_cmd,
                                 stdin=stdin,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
@@ -122,5 +122,5 @@ def run(self, cmd, dest_dir, timeout=None, stdin=None):
         logging.exception(_("Error running command: %s"), err.strerror)
         raise
     except subprocess.TimeoutExpired as err:
-        logging.exception(_("Timeout running command: %s"), run)
+        logging.exception(_("Timeout running command: %s"), full_cmd)
         raise
