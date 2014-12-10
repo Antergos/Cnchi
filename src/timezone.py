@@ -199,7 +199,7 @@ class Timezone(GtkBaseBox):
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
-            timezone = self.tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+            timezone = self.tzmap.get_timezone_at_coords(float(coords[1]), float(coords[0]))
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
