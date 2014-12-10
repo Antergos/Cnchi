@@ -55,6 +55,9 @@ GtkProgressBar.progressbar {
     color: #fff;
 }
 
+#welcome_btn {
+}
+
 
 #fwd_btn, #bk_btn {
     /*padding-left: 7px;
@@ -89,8 +92,6 @@ GtkSeparatorToolItem {
 }
 
 .list {
-
     background-color: shade(@theme_bg_color, 1.2);
-
     color: @theme_fg_color;
 }
