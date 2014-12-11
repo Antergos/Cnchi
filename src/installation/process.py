@@ -480,17 +480,24 @@ class InstallationProcess(multiprocessing.Process):
             # control the pkgname in case of any modification
 
             self.queue_event('info', _("Getting package list..."))
+            data_dir = self.settings.get("data")
+            local_pkg_xml = os.path.join(data_dir, 'packages.xml')
+            local_last_mod = os.path.getmtime(local_pkg_xml)
 
             try:
                 url = 'http://install.antergos.com/packages-%s.xml' % info.CNCHI_VERSION[:3]
                 packages_xml = urllib.request.urlopen(url, timeout=5)
+                remote_last_mod = packages_xml.getheader('Last-Modified')
+                remote_last_mod = time.strptime(remote_last_mod, '%a, %d %b %Y %H:%M:%S %Z')
+                if remote_last_mod < local_last_mod:
+                    packages_xml = local_pkg_xml
             except urllib.error.URLError as err:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
                 logging.warning(err)
                 logging.debug(_("Can't retrieve remote package list, using a local file instead."))
-                data_dir = self.settings.get("data")
-                packages_xml = os.path.join(data_dir, 'packages.xml')
+                packages_xml = local_pkg_xml
+
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
