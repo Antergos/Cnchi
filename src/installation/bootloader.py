@@ -27,8 +27,10 @@ import os
 import shutil
 import parted3.fs_module as fs
 
+from installation import chroot
+
 class Bootloader(object):
-    def __init__(self, dest_dir, settings, mount_devices)
+    def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
         self.settings = settings
         self.mount_devices = mount_devices
@@ -37,7 +39,7 @@ class Bootloader(object):
         """ Installs the bootloader """
 
         # Freeze and unfreeze xfs filesystems to enable bootloader installation on xfs filesystems
-        freeze_unfreeze_xfs()
+        self.freeze_unfreeze_xfs()
 
         bootloader = self.settings.get('bootloader').lower()
         if bootloader == "grub2":
@@ -145,7 +147,7 @@ class Bootloader(object):
         logging.debug(_("/etc/default/grub configuration completed successfully."))
 
     def prepare_grub_d(self):
-        """ Copies 01_antergos script into /etc/grub.d. """
+        """ Copies 10_antergos script into /etc/grub.d/ """
         grub_d_dir = os.path.join(self.dest_dir, "etc/grub.d")
         script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
         script = "10_antergos"
@@ -153,13 +155,17 @@ class Bootloader(object):
         if not os.path.exists(grub_d_dir):
             os.makedirs(grub_d_dir)
 
-        try:
-            shutil.copy2(os.path.join(script_dir, script), grub_d_dir)
-            os.chmod(os.path.join(grub_d_dir, script), 0o755)
-        except FileNotFoundError:
-            logging.debug(_("Could not copy %s to grub.d"), script)
-        except FileExistsError:
-            pass
+        script_path = os.path.join(script_dir, script)
+        if os.path.exists(script_path):
+            try:
+                shutil.copy2(script_path, grub_d_dir)
+                os.chmod(os.path.join(grub_d_dir, script), 0o755)
+            except FileNotFoundError:
+                logging.debug(_("Could not copy %s to grub.d"), script)
+            except FileExistsError:
+                pass
+        else:
+            logging.warning("Can't find script %s", script_path)
 
     def install_grub2_bios(self):
         """ Install Grub2 bootloader in a BIOS system """
@@ -167,7 +173,7 @@ class Bootloader(object):
         txt = _("Installing GRUB(2) BIOS boot loader in %s") % grub_location
         self.queue_event('info', txt)
 
-        self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
         grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
                         '--boot-directory=/boot', '--recheck']
@@ -177,7 +183,7 @@ class Bootloader(object):
 
         grub_install.append(grub_location)
 
-        self.chroot(grub_install)
+        chroot.run(grub_install, self.dest_dir)
 
         self.install_grub2_locales()
 
@@ -186,13 +192,14 @@ class Bootloader(object):
         # Run grub-mkconfig last
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
+            chroot.run(cmd, self.dest_dir, 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs(self.dest_dir)
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_cfg:
@@ -267,18 +274,19 @@ class Bootloader(object):
 
         # Run grub-mkconfig last
         self.queue_event('info', _("Generating grub.cfg"))
-        self.chroot_mount_special_dirs()
+        chroot.mount_special_dirs(self.dest_dir)
 
         locale = self.settings.get("locale")
 
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
+            chroot.run(cmd, self.dest_dir, 45)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
-        self.chroot_umount_special_dirs()
+        chroot.umount_special_dirs()
 
         path = (
             (os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")),

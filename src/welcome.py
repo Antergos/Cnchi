@@ -52,46 +52,50 @@ class Welcome(GtkBaseBox):
         data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
 
-        self.label = {}
-        self.label['welcome'] = self.ui.get_object("welcome_label")
-        self.label['info'] = self.ui.get_object("infowelcome_label")
-        self.label['loading'] = self.ui.get_object("loading_label")
+        self.labels = {}
+        self.labels['welcome'] = self.ui.get_object("welcome_label")
+        self.labels['info'] = self.ui.get_object("infowelcome_label")
+        self.labels['loading'] = self.ui.get_object("loading_label")
 
-        self.button = {}
-        self.button['tryit'] = self.ui.get_object("tryit_button")
-        self.button['cli'] = self.ui.get_object("cli_button")
-        self.button['graph'] = self.ui.get_object("graph_button")
+        self.buttons = {}
+        self.buttons['tryit'] = self.ui.get_object("tryit_button")
+        self.buttons['cli'] = self.ui.get_object("cli_button")
+        self.buttons['graph'] = self.ui.get_object("graph_button")
 
-        self.image = {}
-        self.image['tryit'] = self.ui.get_object("tryit_image")
-        self.image['cli'] = self.ui.get_object("cli_image")
-        self.image['graph'] = self.ui.get_object("graph_image")
+        for key in self.buttons:
+            btn = self.buttons[key]
+            btn.set_name("welcome_btn")
 
-        self.filename = {}
-        self.filename['tryit'] = os.path.join(welcome_dir, "tryit-icon.png")
-        self.filename['cli'] = os.path.join(welcome_dir, "cliinstaller-icon.png")
-        self.filename['graph'] = os.path.join(welcome_dir, "installer-icon.png")
+        self.images = {}
+        self.images['tryit'] = self.ui.get_object("tryit_image")
+        self.images['cli'] = self.ui.get_object("cli_image")
+        self.images['graph'] = self.ui.get_object("graph_image")
 
-        for key in self.image:
-            self.image[key].set_from_file(self.filename[key])
+        self.filenames = {}
+        self.filenames['tryit'] = os.path.join(welcome_dir, "tryit-icon.png")
+        self.filenames['cli'] = os.path.join(welcome_dir, "cliinstaller-icon.png")
+        self.filenames['graph'] = os.path.join(welcome_dir, "installer-icon.png")
+
+        for key in self.images:
+            self.images[key].set_from_file(self.filenames[key])
 
     def translate_ui(self):
         """ Translates all ui elements """
         txt = ""
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.") + "\n"
-        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")            
+        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">%s</span>' % txt
-        self.label['info'].set_markup(txt)
+        self.labels['info'].set_markup(txt)
 
         txt = _("Try It")
-        self.button['tryit'].set_label(txt)
+        self.buttons['tryit'].set_label(txt)
 
         txt = _("CLI Installer")
-        self.button['cli'].set_label(txt)
+        self.buttons['cli'].set_label(txt)
 
         txt = _("Graphical Installer")
-        self.button['graph'].set_label(txt)
+        self.buttons['graph'].set_label(txt)
 
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
@@ -109,7 +113,7 @@ class Welcome(GtkBaseBox):
         self.settings.set('stop_all_threads', True)
         logging.shutdown()
         sys.exit(0)
-        
+
     def on_tryit_button_clicked(self, widget, data=None):
         self.quit_cnchi()
 
@@ -134,8 +138,8 @@ class Welcome(GtkBaseBox):
             txt = _("Loading, please wait...")
         else:
             txt = ""
-        self.label['loading'].set_markup(txt)
-        self.label['loading'].queue_draw()
+        self.labels['loading'].set_markup(txt)
+        self.labels['loading'].queue_draw()
         refresh()
 
     def store_values(self):
@@ -147,7 +151,7 @@ class Welcome(GtkBaseBox):
         self.show_all()
         self.forward_button.hide()
         if self.disable_tryit:
-            self.button['tryit'].set_sensitive(False)
+            self.buttons['tryit'].set_sensitive(False)
         if direction == "backwards":
             self.show_loading_message(show=False)
 
