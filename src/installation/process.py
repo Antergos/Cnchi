@@ -56,6 +56,7 @@ import encfs
 
 from installation import chroot
 from installation import mkinitcpio
+from installation import firewall
 
 try:
     import pyalpm
@@ -919,7 +920,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Uncomment selected locale in /etc/locale.gen """
         text = []
         path = os.path.join(DEST_DIR, "etc/locale.gen")
-        
+
         with open(path) as gen:
             text = gen.readlines()
 
@@ -985,13 +986,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get("feature_firewall"):
             logging.debug(_("Configuring firewall..."))
             # Set firewall rules
-            self.ufw(["default", "deny"])
+            firewall.run(["default", "deny"])
             toallow = misc.get_network()
             if toallow:
-                self.ufw(["allow", "from", toallow])
-            self.ufw(["allow", "Transmission"])
-            self.ufw(["allow", "SSH"])
-            self.ufw(["enable"])
+                firewall.run(["allow", "from", toallow])
+            firewall.run(["allow", "Transmission"])
+            firewall.run(["allow", "SSH"])
+            firewall.run(["enable"])
             # Enable firewall service
             self.enable_services(['ufw'])
 
@@ -1006,56 +1007,6 @@ class InstallationProcess(multiprocessing.Process):
             chroot.run(["chmod", "a+x", "/etc/grub.d/10_antergos"], DEST_DIR)
 
         chroot.umount_special_dirs(DEST_DIR)
-
-    def ufw(self, params):
-        cmd = ["ufw"]
-        cmd.extend(params)
-        
-        try:
-            import ufw
-        except ImportError as err:
-            # Call ufw command directly
-            chroot.run(cmd, DEST_DIR)
-            return
-
-        app_action = False
-        pr = None
-        
-        # Remember, will have to take --force into account if we use it with 'app'
-        idx = 1
-        if len(cmd) > 1 and cmd[1].lower() == "--dry-run":
-            idx += 1
-
-        if len(cmd) > idx and cmd[idx].lower() == "app":
-            app_action = True
-
-        try:
-            pr = ufw.frontend.parse_command(sys.argv)
-            ui = ufw.frontend.UFWFrontend(pr.dryrun)
-            if app_action and 'type' in pr.data and pr.data['type'] == 'app':
-                res = ui.do_application_action(pr.action, pr.data['name'])
-            else:
-                bailout = False
-                if pr.action == "enable" and not pr.force and \
-                   not ui.continue_under_ssh():
-                    res = _("Aborted")
-                    bailout = True
-
-                if not bailout:
-                    if 'rule' in pr.data:
-                        res = ui.do_action(
-                            pr.action,
-                            pr.data['rule'],
-                            pr.data['iptype'],
-                            pr.force)
-                    else:
-                        res = ui.do_action(
-                            pr.action,
-                            "",
-                            "",
-                            pr.force)
-        except (ValueError, UFWError) as err:
-            logging.warning(err)
 
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """

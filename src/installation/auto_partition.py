@@ -32,7 +32,7 @@ try:
 except ImportError:
     pass
 
-""" AutoPartition class """
+""" AutoPartition module """
 
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
@@ -546,7 +546,7 @@ class AutoPartition(object):
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
 
             # Clean partition table to avoid issues!
-            subprocess.check_call(["sgdisk", "--zap", device])
+            subprocess.check_call(["sgdisk", "--zap-all", device])
 
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
             dd("/dev/zero", device, bs=512, count=2048)
@@ -635,7 +635,7 @@ class AutoPartition(object):
         subprocess.check_call(["udevadm", "settle"])
 
         devices = self.get_devices()
-        
+
         logging.debug("Boot: %s" % devices['boot'])
         logging.debug("Swap: %s" % devices['swap'])
         logging.debug("Root: %s" % devices['root'])
