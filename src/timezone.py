@@ -332,11 +332,9 @@ class AutoTimezoneThread(threading.Thread):
                 headers={"User-Agent":"Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
-                # geo.antergos.com provides coords swaped (correct is latitude,longitude)
-                # TODO: remove this when the new server is online
                 coords = coords.split()
-                coords = coords[1] + " " + coords[0]
-                
+                coords = coords[0] + " " + coords[1]
+
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = 'error'
