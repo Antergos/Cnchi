@@ -32,7 +32,7 @@ import math
 import logging
 import os
 
-import alpm
+import pacman.alpm as alpm
 
 if __name__ == "__main__":
     import gettext
