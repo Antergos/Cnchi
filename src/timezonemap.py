@@ -3,8 +3,7 @@
 #
 #  timezonemap.py
 #
-#  Author: Thomas Wood <thomas.wood@intel.com>
-#
+#  Original author: Thomas Wood <thomas.wood@intel.com>
 #  Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
 #  Written in C by Evan Dandrea <evand@ubuntu.com>
 #  Python port Copyright © 2013,2014 Antergos
@@ -31,6 +30,7 @@
 from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
 import canonical.tz as tz
 
+from datetime import datetime
 import os
 import math
 import sys
@@ -500,7 +500,7 @@ class TimezoneMap(Gtk.Widget):
     __gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = { 'location-changed' : (GObject.SignalFlags.RUN_LAST, None, (object,)) }
-    
+
     def __init__(self):
         Gtk.Widget.__init__(self)
 
@@ -509,7 +509,7 @@ class TimezoneMap(Gtk.Widget):
         self._background = None
         self._color_map = None
         self._olsen_map = None
-        
+
         self._selected_offset = 0.0
         self._show_offset = False
 
@@ -541,7 +541,7 @@ class TimezoneMap(Gtk.Widget):
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
         width = self._orig_background.get_width()
-        
+
         # Images are bigger but we need this widget to stay small as Cnchi's window
         # is small (so it works with low res systems)
         if width > 400:
@@ -622,7 +622,7 @@ class TimezoneMap(Gtk.Widget):
 
         cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
         window.set_cursor(cursor)
-        
+
         self.set_window(window)
 
     def draw_text_bubble(self, cr, pointx, pointy):
@@ -638,7 +638,7 @@ class TimezoneMap(Gtk.Widget):
         alloc = self.get_allocation()
 
         layout = PangoCairo.create_layout(cr)
-        
+
         font_description = Pango.font_description_from_string(BUBBLE_TEXT_FONT)
         layout.set_font_description(font_description)
 
@@ -693,7 +693,7 @@ class TimezoneMap(Gtk.Widget):
 
         if not self._show_offset:
             return
-            
+
         # Paint hilight
         offset = self._selected_offset
 
@@ -729,7 +729,7 @@ class TimezoneMap(Gtk.Widget):
 
             #pointx = clamp(math.floor(pointx), 0, alloc.width)
             #pointy = clamp(math.floor(pointy), 0, alloc.height)
-            
+
             if pointy > alloc.height:
                 pointy = alloc.height
 
@@ -747,7 +747,7 @@ class TimezoneMap(Gtk.Widget):
 
     def set_location(self, tz_location):
         self._tz_location = tz_location
-            
+
         if tz_location is not None:
             info = self._tz_location.get_info()
 
@@ -758,9 +758,9 @@ class TimezoneMap(Gtk.Widget):
                     daylight_offset = -1.0
 
             self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
-            
+
             self.emit("location-changed", self._tz_location)
-            
+
             self._show_offset = True
         else:
             self._show_offset = False
@@ -769,7 +769,7 @@ class TimezoneMap(Gtk.Widget):
     def get_loc_for_xy(self, x, y):
         rowstride = self._color_map.get_rowstride()
         pixels = self._color_map.get_pixels()
-        
+
         my_red = pixels[int(rowstride * y + x * 4)]
         my_green = pixels[int(rowstride * y + x * 4) + 1]
         my_blue = pixels[int(rowstride * y + x * 4) + 2]
@@ -780,16 +780,16 @@ class TimezoneMap(Gtk.Widget):
             if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
                 self._selected_offset = offset
                 break
-        
+
         self.queue_draw()
-        
+
         # Work out the co-ordinates
         allocation = self.get_allocation()
         width = allocation.width
         height = allocation.height
-        
+
         nearest_tz_location = None
-                
+
         # Impossible distance
         small_dist =  -1
 
@@ -802,16 +802,16 @@ class TimezoneMap(Gtk.Widget):
 
             dx = pointx - x;
             dy = pointy - y;
-            
+
             dist = dx * dx + dy * dy
 
             if small_dist == -1 or dist < small_dist:
                 nearest_tz_location = tz_location
                 small_dist = dist
-        
+
         return nearest_tz_location
-        
-        
+
+
     def do_button_press_event(self, event):
         """ The button press event virtual method """
 
@@ -831,7 +831,7 @@ class TimezoneMap(Gtk.Widget):
 
     def set_timezone(self, timezone):
         real_tz = self._tzdb.get_loc(timezone)
-        
+
         if real_tz is not None:
             tz_to_compare = real_tz
         else:
@@ -845,19 +845,22 @@ class TimezoneMap(Gtk.Widget):
                 self.set_location(tz_location)
                 ret = True
                 break
-        
+
         if ret is True:
             self.queue_draw()
-        
+
         return ret
 
     def set_bubble_text(self, location):
+        tzinfo = location.get_info()
+        dt_now = datetime.now(tzinfo)
+        current_time = "%d:%d" % (dt_now.hour, dt_now.minute)
         city_name = location.get_info().tzname("").split("/")[1]
         city_name = city_name.replace("_", " ")
         country_name = location.get_property('human_country')
-        self._bubble_text = "%s, %s" % (city_name, country_name)
+        self._bubble_text = "%s, %s\n%s" % (city_name, country_name, current_time)
         self.queue_draw()
-    
+
     def get_location(self):
         return self._tz_location
 
@@ -871,7 +874,7 @@ class TimezoneMap(Gtk.Widget):
 
         zone = -1
         offset = olsen_map_rowstride * y + x * olsen_map_channels
-        
+
         if offset < len(olsen_map_pixels):
             color0 = olsen_map_pixels[offset]
             color1 = olsen_map_pixels[offset + 1]
