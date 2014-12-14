@@ -59,8 +59,12 @@ class Updater():
         self.remote_version = ""
 
         self.md5s = {}
-        
+
         self.force = force_update
+
+        if not os.path.exists(_update_info):
+            logging.warning(_("Could not find 'update.info' file. Cnchi will not be able to update itself."))
+            return
 
         # Get local info (local update.info)
         with open(_update_info, "r") as local_update_info:
