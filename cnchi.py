@@ -51,7 +51,7 @@ import info
 import updater
 
 # Command line options
-_cmd_line = None
+cmd_line = None
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.9.6"
@@ -71,8 +71,8 @@ class CnchiApp(Gtk.Application):
             logging.error(msg)
             sys.exit(1)
 
-        #window = main_window.MainWindow(self, _cmd_line)
-        main_window.MainWindow(self, _cmd_line)
+        #window = main_window.MainWindow(self, cmd_line)
+        main_window.MainWindow(self, cmd_line)
 
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without
@@ -98,7 +98,7 @@ def setup_logging():
 
     logger.handlers = []
 
-    if _cmd_line.debug:
+    if cmd_line.debug:
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
@@ -119,7 +119,7 @@ def setup_logging():
     except PermissionError as err:
         print("Can't open /tmp/cnchi.log : ", err)
 
-    if _cmd_line.verbose:
+    if cmd_line.verbose:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(log_level)
@@ -252,12 +252,12 @@ def threads_init():
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(force_update=_cmd_line.update)
+    upd = updater.Updater(force_update=cmd_line.update)
 
     if upd.update():
         logging.info(_("Program updated! Restarting..."))
         main_window.remove_temp_files()
-        if _cmd_line.update:
+        if cmd_line.update:
             # Remove -u and --update options from new call
             new_argv = []
             for argv in sys.argv:
@@ -303,8 +303,8 @@ def init_cnchi():
     setup_gettext()
 
     # Command line options
-    global _cmd_line
-    _cmd_line = parse_options()
+    global cmd_line
+    cmd_line = parse_options()
 
     # Drop root privileges
     misc.drop_privileges()
@@ -324,7 +324,7 @@ def init_cnchi():
     if not check_pyalpm_version():
         sys.exit(1)
 
-    if not _cmd_line.disable_update:
+    if not cmd_line.disable_update:
         update_cnchi()
 
     # Init PyObject Threads
@@ -334,6 +334,6 @@ if __name__ == '__main__':
     init_cnchi()
 
     # Create Gtk Application
-    myapp = CnchiApp()
-    exit_status = myapp.run(None)
+    app = CnchiApp()
+    exit_status = app.run(None)
     sys.exit(exit_status)

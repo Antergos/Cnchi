@@ -332,8 +332,6 @@ class AutoTimezoneThread(threading.Thread):
                 headers={"User-Agent":"Antergos Installer", "Connection":"close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
-                coords = coords.split()
-                coords = coords[0] + " " + coords[1]
 
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
