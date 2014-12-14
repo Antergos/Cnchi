@@ -361,64 +361,72 @@ class Bootloader(object):
             menu_file.write("default antergos")
 
         # Setup boot entries
+
+        if not self.settings.get('use_luks'):
+            root_device = self.mount_devices["/"]
+            root_uuid = fs.get_info(root_device)['UUID']
+
+            conf = []
+            conf.append("title\tAntergos\n")
+            conf.append("linux\t/vmlinuz-linux\n")
+            conf.append("initrd\t/initramfs-linux.img\n")
+            conf.append("options\troot=UUID=%s rw\n\n" % root_uuid)
+            conf.append("title\tAntergos (fallback)\n")
+            conf.append("linux\t/vmlinuz-linux\n")
+            conf.append("initrd\t/initramfs-linux-fallback.img\n")
+            conf.append("options\troot=UUID=%s rw\n\n" % root_uuid)
+
+            if self.settings.get('feature_lts'):
+                conf.append("title\tAntergos LTS\n")
+                conf.append("linux\t/vmlinuz-linux-lts\n")
+                conf.append("initrd\t/initramfs-linux-lts.img\n")
+                conf.append("options\troot=UUID=%s rw\n\n" % root_uuid)
+                conf.append("title\tAntergos LTS (fallback)\n\n")
+                conf.append("linux\t/vmlinuz-linux-lts\n")
+                conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
+                conf.append("options\troot=UUID=%s rw\n\n" % root_uuid)
+        else:
+            boot_device = self.mount_devices["/boot"]
+            boot_uuid = fs.get_info(boot_device)['UUID']
+            luks_root_volume = self.settings.get('luks_root_volume')
+
+            if self.method == "advanced" and self.settings.get('use_luks_in_root'):
+                root_device = self.settings.get('luks_root_device')
+            elif self.method == "automatic":
+                root_device = self.mount_devices["/"]
+
+            root_uuid = fs.get_info(root_device)['UUID']
+
+            key = ""
+            if self.settings.get("luks_root_password") == "":
+                key = "cryptkey=UUID=%s:ext2:/.keyfile-root" % boot_uuid
+
+            root_uuid_line = "cryptdevice=UUID=%s:%s %s root=UUID=%s rw"
+            root_uuid_line = root_uuid_line % (root_uuid, luks_root_volume, key, root_uuid)
+
+            conf = []
+            conf.append("title\tAntergos\n")
+            conf.append("linux\t/boot/vmlinuz-linux\n")
+            conf.append("options\tinitrd=/boot/initramfs-linux.img %s\n\n" % root_uuid_line)
+            conf.append("title\tAntergos (fallback)\n")
+            conf.append("linux\t/boot/vmlinuz-linux\n")
+            conf.append("options\tinitrd=/boot/initramfs-linux-fallback.img %s\n\n" % root_uuid_line)
+
+            if self.settings.get('feature_lts'):
+                conf.append("title\tAntergos LTS\n")
+                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf.append("options\tinitrd=/boot/initramfs-linux-lts.img %s\n\n" % root_uuid_line)
+                conf.append("title\tAntergos LTS (fallback)\n")
+                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf.append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img %s\n\n" % root_uuid_line)
+
+        # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
         os.makedirs(entries_dir)
         entry_path = os.path.join(entries_dir, "antergos.conf")
         with open(entry_path, "w") as entry_file:
-            if not self.settings.get('use_luks'):
-                root_device = self.mount_devices["/"]
-                root_uuid = fs.get_info(root_device)['UUID']
-                entry_file.write("title\tAntergos\n")
-                entry_file.write("linux\t/vmlinuz-linux\n")
-                entry_file.write("initrd\t/initramfs-linux.img\n")
-                entry_file.write("options\troot=UUID=%s rw\n\n" % root_uuid)
-
-                entry_file.write("title\tAntergos (fallback)\n")
-                entry_file.write("linux\t/vmlinuz-linux\n")
-                entry_file.write("initrd\t/initramfs-linux-fallback.img\n")
-                entry_file.write("options\troot=UUID=%s rw\n\n" % root_uuid)
-
-                if self.settings.get('feature_lts'):
-                    entry_file.write("title\tAntergos LTS\n")
-                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
-                    entry_file.write("initrd\t/initramfs-linux-lts.img\n")
-                    entry_file.write("options\troot=UUID=%s rw\n\n" % root_uuid)
-
-                    entry_file.write("title\tAntergos LTS (fallback)\n\n")
-                    entry_file.write("linux\t/vmlinuz-linux-lts\n")
-                    entry_file.write("initrd\t/initramfs-linux-lts-fallback.img\n")
-                    entry_file.write("options\troot=UUID=%s rw\n" % root_uuid)
-            else:
-                boot_device = self.mount_devices["/boot"]
-                boot_uuid = fs.get_info(boot_device)['UUID']
-                luks_root_volume = self.settings.get('luks_root_volume')
-                if self.method == "advanced" and self.settings.get('use_luks_in_root'):
-                    root_device = self.settings.get('luks_root_device')
-                elif self.method == "automatic":
-                    root_device = self.mount_devices["/"]
-                root_uuid = fs.get_info(root_device)['UUID']
-                key = ""
-                if self.settings.get("luks_root_password") == "":
-                    key = "cryptkey=UUID=%s:ext2:/.keyfile-root" % boot_uuid
-
-                line = "cryptdevice=UUID=%s:%s %s root=UUID=%s rw" % (root_uuid, luks_root_volume, key, root_uuid)
-
-                entry_file.write("title\tAntergos\n")
-                entry_file.write("linux\t/boot/vmlinuz-linux\n")
-                entry_file.write("options\tinitrd=/boot/initramfs-linux.img %s\n\n" % line)
-
-                entry_file.write("title\tAntergos (fallback)\n")
-                entry_file.write("linux\t/boot/vmlinuz-linux\n")
-                entry_file.write("options\tinitrd=/boot/initramfs-linux-fallback.img %s\n\n" % line)
-
-                if self.settings.get('feature_lts'):
-                    entry_file.write("title\tAntergos LTS\n")
-                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
-                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts.img %s\n\n" % line)
-
-                    entry_file.write("title\tAntergos LTS (fallback)\n")
-                    entry_file.write("linux\t/boot/vmlinuz-linux-lts\n")
-                    entry_file.write("options\tinitrd=/boot/initramfs-linux-lts-fallback.img %s\n\n" % line)
+            for line in conf:
+                entry_file.write(line)
 
         # Install bootloader
 
