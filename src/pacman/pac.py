@@ -55,7 +55,7 @@ class Pac(object):
         self.callback_queue = callback_queue
 
         self.conflict_to_remove = None
-        
+
         self.handle = None
 
         # Some download indicators (used in cb_dl callback)
@@ -80,7 +80,7 @@ class Pac(object):
 
     def get_handle(self):
         return self.handle
-    
+
     def get_config(self):
         return self.config
 
@@ -103,7 +103,7 @@ class Pac(object):
             self.handle.eventcb = self.cb_event
             self.handle.questioncb = self.cb_question
             self.handle.progresscb = self.cb_progress
-   
+
     def release(self):
         if self.handle is not None:
             del self.handle
@@ -216,9 +216,9 @@ class Pac(object):
             trans.add_pkg(pkg)
 
         self.total_packages_to_download = len(targets)
-        
+
         logging.debug(_("Run and finalize transaction..."))
-        return self.finalize_transaction(trans) 
+        return self.finalize_transaction(trans)
 
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
@@ -255,7 +255,7 @@ class Pac(object):
             func = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, func.co_name, func.co_filename, func.co_firstlineno)
-        
+
         if self.callback_queue is None:
             #print(event_type, event_text)
             if event_type == "error":
@@ -362,7 +362,8 @@ class Pac(object):
                 self.downloaded_packages = self.downloaded_packages + 1
                 i = self.downloaded_packages
                 n = self.total_packages_to_download
-                text = _("Downloading %s... (%d/%d)") % (filename, i, n)
+                #text = _("Downloading %s... (%d/%d)") % (filename, i, n)
+                text = _("Downloading %s...") % filename
 
             self.queue_event('info', text)
             self.queue_event('percent', 0)
