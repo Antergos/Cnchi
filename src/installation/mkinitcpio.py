@@ -112,7 +112,8 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
         mkinitcpio_file.write("\n".join(mklins) + "\n")
 
 def get_cpu():
-    with open("/proc/cpuinfo", "rt") as proc_file:
+    """ Gets CPU string definition """
+    with open("/proc/cpuinfo") as proc_file:
         lines = proc_file.readlines()
 
     for line in lines:
