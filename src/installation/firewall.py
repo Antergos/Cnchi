@@ -34,17 +34,17 @@ try:
 except ImportError as err:
     _UFW = False
 
-def run(params):
+def run(params, dest_dir="/install"):
     cmd = ["ufw"]
     cmd.extend(params)
 
     if not _UFW:
         # Call ufw command directly
-        chroot.run(cmd, DEST_DIR)
+        chroot.run(cmd, dest_dir)
         return
 
     app_action = False
-    pr = None
+    cmd_line = None
 
     # Remember, will have to take --force into account if we use it with 'app'
     idx = 1
@@ -55,31 +55,33 @@ def run(params):
         app_action = True
 
     try:
-        pr = ufw.frontend.parse_command(sys.argv)
-        ui = ufw.frontend.UFWFrontend(pr.dryrun)
-        if app_action and 'type' in pr.data and pr.data['type'] == 'app':
-            res = ui.do_application_action(pr.action, pr.data['name'])
+        cmd_line = ufw.frontend.parse_command(cmd)
+        ui = ufw.frontend.UFWFrontend(cmd_line.dryrun)
+        if app_action and 'type' in cmd_line.data and cmd_line.data['type'] == 'app':
+            res = ui.do_application_action(cmd_line.action, cmd_line.data['name'])
         else:
             bailout = False
-            if pr.action == "enable" and not pr.force and \
+            if cmd_line.action == "enable" and not cmd_line.force and \
                not ui.continue_under_ssh():
                 res = _("Aborted")
                 bailout = True
 
             if not bailout:
-                if 'rule' in pr.data:
+                if 'rule' in cmd_line.data:
                     res = ui.do_action(
-                        pr.action,
-                        pr.data['rule'],
-                        pr.data['iptype'],
-                        pr.force)
+                        cmd_line.action,
+                        cmd_line.data['rule'],
+                        cmd_line.data['iptype'],
+                        cmd_line.force)
                 else:
                     res = ui.do_action(
-                        pr.action,
+                        cmd_line.action,
                         "",
                         "",
-                        pr.force)
-    except (ValueError, UFWError) as err:
+                        cmd_line.force)
+    except (ValueError, ufw.UFWError) as err:
         logging.warning(err)
         # Call ufw command directly
-        chroot.run(cmd, DEST_DIR)
+        chroot.run(cmd, dest_dir)
+
+    logging.debug(res)
