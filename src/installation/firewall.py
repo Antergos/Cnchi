@@ -39,9 +39,14 @@ def run(params, dest_dir="/install"):
     cmd.extend(params)
 
     if not _UFW:
-        # Call ufw command directly
-        chroot.run(cmd, dest_dir)
-        return
+        # Could not import ufw module (missing?)
+        # Will call ufw command directly
+        try:
+            chroot.run(cmd, dest_dir)
+        except OSError as err:
+            logging.warning(err)
+        finally:
+            return
 
     app_action = False
     cmd_line = None
@@ -80,8 +85,14 @@ def run(params, dest_dir="/install"):
                         "",
                         cmd_line.force)
     except (ValueError, ufw.UFWError) as err:
-        logging.warning(err)
-        # Call ufw command directly
-        chroot.run(cmd, dest_dir)
+        logging.error(err)
+        # Error using ufw module
+        # Will call ufw command directly
+        try:
+            chroot.run(cmd, dest_dir)
+        except OSError as err:
+            logging.warning(err)
+        finally:
+            return
 
     logging.debug(res)
