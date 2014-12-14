@@ -204,8 +204,8 @@ class Bootloader(object):
         try:
             cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
             chroot.run(cmd, self.dest_dir, 45)
-        except subprocess.TimeoutExpired:
-            logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
+        except subprocess.TimeoutExpired as err:
+            logging.error(_("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue."))
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 

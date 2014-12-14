@@ -100,13 +100,13 @@ def umount_special_dirs(dest_dir):
             try:
                 subprocess.check_call(["umount", "-l", mydir])
             except subprocess.CalledProcessError as err:
-                logging.warning(_("Unable to umount %s") % mydir)
+                logging.warning(_("Unable to umount %s"), mydir)
                 cmd = _("Command %s has failed.") % err.cmd
                 logging.warning(cmd)
                 out = _("Output : %s") % err.output
                 logging.warning(out)
         except Exception as err:
-            logging.warning(_("Unable to umount %s") % mydir)
+            logging.warning(_("Unable to umount %s"), mydir)
             logging.error(err)
 
     _special_dirs_mounted = False
@@ -123,13 +123,15 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
                                 stdin=stdin,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
-        out = proc.communicate(timeout=timeout)[0]
-        txt = out.decode().strip()
+        outs, errs = proc.communicate(timeout=timeout)
+        txt = outs.decode().strip()
         if len(txt) > 0:
             logging.debug(txt)
-    except OSError as err:
-        logging.exception(_("Error running command: %s"), err.strerror)
-        raise
     except subprocess.TimeoutExpired as err:
-        logging.exception(_("Timeout running command: %s"), full_cmd)
+        proc.kill()
+        outs, errs = proc.communicate()
+        logging.error(_("Timeout running the command %s"), err.cmd)
+        raise
+    except OSError as err:
+        logging.error(_("Error running command: %s"), err.strerror)
         raise
