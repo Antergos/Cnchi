@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Installation thread module. Where the real installation happens """
+""" Installation thread module. """
 
 import crypt
 import logging
@@ -35,8 +35,23 @@ import sys
 import time
 import urllib.request
 import urllib.error
+
 from mako.template import Template
 from mako.lookup import TemplateLookup
+
+import desktop_environments as desktops
+import parted3.fs_module as fs
+import canonical.misc as misc
+import pacman.pac as pac
+import info
+import encfs
+
+from download import download
+
+from installation import auto_partition
+from installation import chroot
+from installation import mkinitcpio
+from installation import firewall
 
 try:
     import xml.etree.cElementTree as ET
@@ -44,27 +59,12 @@ except ImportError as err:
     logging.warning("Can't find cElementTree, Cnchi will use ElementTree")
     import xml.etree.ElementTree as ET
 
-from installation import auto_partition
-import desktop_environments as desktops
-import parted3.fs_module as fs
-import canonical.misc as misc
-import pacman.pac as pac
-#import download
-from download import download
-import info
-import encfs
-
-from installation import chroot
-from installation import mkinitcpio
-from installation import firewall
-
 try:
     import pyalpm
 except ImportError as err:
     logging.error(err)
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
-
 DEST_DIR = "/install"
 
 class InstallError(Exception):
@@ -622,15 +622,15 @@ class InstallationProcess(multiprocessing.Process):
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
-            bootloader = self.settings.get('bootloader')
-            if bootloader == "Grub2":
+            boot_loader = self.settings.get('bootloader')
+            if boot_loader == "Grub2":
                 logging.debug(_("Adding Grub2 bootloader packages"))
                 for child in xml_root.iter('grub'):
                     for pkg in child.iter('pkgname'):
                         uefi = pkg.attrib.get('uefi')
                         if not uefi:
                             self.packages.append(pkg.text)
-            elif bootloader == "Gummiboot":
+            elif boot_loader == "Gummiboot":
                 logging.debug(_("Adding Gummiboot bootloader package"))
                 self.packages.append("gummiboot")
 

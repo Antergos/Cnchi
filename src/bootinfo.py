@@ -30,6 +30,13 @@ import re
 import tempfile
 import logging
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 import canonical.misc as misc
 
 # constants
@@ -50,10 +57,6 @@ DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
 
 # Possible locations for os-release. Do not put a trailing /
 OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
-
-if __name__ == '__main__':
-    import gettext
-    _ = gettext.gettext
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """

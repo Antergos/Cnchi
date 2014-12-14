@@ -22,6 +22,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Module to setup and run mkinitcpio """
+
 import logging
 import os
 

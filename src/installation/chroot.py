@@ -22,9 +22,18 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Chroot related functions. Used in the installation process """
+
 import logging
 import os
 import subprocess
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 _special_dirs_mounted = False
 

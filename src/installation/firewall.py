@@ -23,6 +23,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Manage ufw setup """
+
 import logging
 from installation import chroot
 

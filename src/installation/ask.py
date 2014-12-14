@@ -22,23 +22,27 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Asks user which type of installation wants to perform """
-
-from gi.repository import Gtk
+""" Asks which type of installation the user wants to perform """
 
 import os
 import sys
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 if __name__ == '__main__':
     # Insert the parent directory at the front of the path.
     # This is used only when we want to test this screen
-    base_dir = os.path.dirname(__file__) or '.'
-    parent_dir = os.path.join(base_dir, '..')
-    sys.path.insert(0, parent_dir)
+    BASE_DIR = os.path.dirname(__file__) or '.'
+    PARENT_DIR = os.path.join(BASE_DIR, '..')
+    sys.path.insert(0, PARENT_DIR)
 
 import bootinfo
 import logging
-import os
 
 from gtkbasebox import GtkBaseBox
 
@@ -83,7 +87,7 @@ class InstallationAsk(GtkBaseBox):
             obj.set_sensitive(status)
 
     def prepare(self, direction):
-        """ Prepare screen """
+        """ Prepares screen """
 
         self.translate_ui()
         self.show_all()
@@ -94,6 +98,7 @@ class InstallationAsk(GtkBaseBox):
             self.hide_alongside_option()
 
     def hide_alongside_option(self):
+        """ Hides alongisde widgets """
         widgets = [
             "alongside_radiobutton",
             "alongside_description",
@@ -105,7 +110,7 @@ class InstallationAsk(GtkBaseBox):
                 widget.hide()
 
     def translate_ui(self):
-        """ Translate screen before showing it """
+        """ Translates screen before showing it """
         #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Installation Type"))
 
@@ -118,7 +123,7 @@ class InstallationAsk(GtkBaseBox):
         #self.forward_button.set_label("")
         #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         #self.forward_button.set_image(image1)
-        self.forward_button.set_always_show_image(True)        
+        self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
         # Automatic Install
@@ -244,12 +249,6 @@ class InstallationAsk(GtkBaseBox):
             self.next_page = "installation_advanced"
             self.enable_automatic_options(False)
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message): return message
-
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('InstallationAsk')

@@ -22,6 +22,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+""" Automatic installation screen """
+
 from gi.repository import Gtk
 import os
 import sys
@@ -81,7 +83,7 @@ class InstallationAutomatic(GtkBaseBox):
         label = self.ui.get_object('label_luks_password_confirm')
         txt = _("Confirm your password:")
         label.set_markup(txt)
-        
+
         label = self.ui.get_object('label_luks_password_warning')
         txt = _("Do not use special chars or chars with accents!")
         label.set_markup(txt)
@@ -182,7 +184,7 @@ class InstallationAutomatic(GtkBaseBox):
             else:
                 icon = "dialog-warning"
                 install_ok = False
-            
+
             self.image_password_ok.set_from_icon_name(icon, Gtk.IconSize.LARGE_TOOLBAR)
             self.image_password_ok.set_opacity(1)
 
@@ -204,7 +206,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def start_installation(self):
         logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
-        
+
         # In automatic installation we always install a bootloader
         self.settings.set('bootloader_install', True)
         self.settings.set('bootloader', "Grub2")
