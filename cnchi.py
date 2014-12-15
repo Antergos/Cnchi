@@ -144,6 +144,7 @@ def parse_options():
     parser.add_argument("-a", "--aria2", help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"), action="store_true")
     parser.add_argument("-c", "--cache", help=_("Use pre-downloaded xz packages (Cnchi will download them anyway if a new version is found)"), nargs='?')
     parser.add_argument("-cc", "--copycache", help=_("As --cache but before installing Cnchi copies all xz packages to destination"), nargs='?')
+    parser.add_argument("-f", "--force", help=_("Runs cnchi even if it detects that another instance is running"), action="store_true")
     parser.add_argument("-d", "--debug", help=_("Sets Cnchi log level to 'debug'"), action="store_true")
     parser.add_argument("-u", "--update", help=_("Update Cnchi to the latest version"), action="store_true")
     parser.add_argument("--disable-update", help=_("Do not check for updates"), action="store_true")
@@ -249,6 +250,8 @@ def init_cnchi():
     #if not cmd_line.disable_update:
     #    update_cnchi()
 
+    if cmd_line.force:
+        remove_temp_files()
 
     # Init PyObject Threads
     threads_init()
@@ -256,6 +259,18 @@ def init_cnchi():
     # Setup our logging framework
     setup_logging()
 
+def remove_temp_files():
+    tmp_files = [
+        ".setup-running",
+        ".km-running",
+        "setup-pacman-running",
+        "setup-mkinitcpio-running",
+        ".tz-running",
+        ".setup" ]
+    for tmp_file in tmp_files:
+        path = os.path.join("/tmp", tmp_file)
+        if os.path.exists(path):
+            os.remove(path)
 
 if __name__ == '__main__':
     init_cnchi()
