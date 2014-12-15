@@ -94,7 +94,6 @@ class Slides(GtkBaseBox):
 
             self.scrolled_window.add(self.webview)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-            #self.scrolled_window.set_policy(2, 2)
 
         if not USE_WEBKIT:
             # load first slide show image
