@@ -60,9 +60,6 @@ class GtkBaseBox(Gtk.Box):
         
         child.add(self.ui.get_object(name))
 
-    def __del__(self):
-        logging.debug("Deleting object %s", self.name)
-
     def get_prev_page(self):
         return self.prev_page
 

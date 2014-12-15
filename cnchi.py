@@ -195,6 +195,10 @@ def parse_options():
         help=_("Sets Cnchi log level to 'debug'"),
         action="store_true")
     parser.add_argument(
+        "-f", "--force",
+        help=_("Runs cnchi even if it detects that another instance is running"),
+        action="store_true")
+    parser.add_argument(
         "-i", "--disable-tryit",
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
@@ -302,13 +306,16 @@ def init_cnchi():
 
     # Sets SIGTERM handler, so Cnchi can clean up before exiting
     signal.signal(signal.SIGTERM, sigterm_handler)
-
+    
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
 
     # Command line options
     global cmd_line
     cmd_line = parse_options()
+    
+    if cmd_line.force:
+        remove_temp_files()
 
     # Drop root privileges
     misc.drop_privileges()
@@ -334,9 +341,7 @@ def init_cnchi():
     # Init PyObject Threads
     threads_init()
 
-def sigterm_handler(_signo, _stack_frame):
-    print(_signo)
-    print(_stack_frame)
+def remove_temp_files():
     tmp_files = [
         ".setup-running",
         ".km-running",
@@ -348,6 +353,11 @@ def sigterm_handler(_signo, _stack_frame):
         path = os.path.join("/tmp", tmp_file)
         if os.path.exists(path):
             os.remove(path)
+    
+def sigterm_handler(_signo, _stack_frame):
+    print(_signo)
+    print(_stack_frame)
+    remove_temp_files()
     logging.shutdown()
     sys.exit(0)
 
