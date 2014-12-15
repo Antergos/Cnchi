@@ -5,18 +5,16 @@
     <title>Antergos Slides</title>
     <link rel="stylesheet" type="text/css" href="/usr/share/cnchi/data/css/slides-style.css"/>
     <link rel="stylesheet" type="text/css" href="/usr/share/cnchi/data/css/lightSlider.css"/>
+    <script src="/usr/share/cnchi/data/js/jquery.min.js"></script>
+    <script src="/usr/share/cnchi/data/js/jquery.lightSlider.min.js"></script>
 </head>
 <body>
-<div class="slider">
-    <ul id="slider">
-        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/1.png" alt=""/></li>
-        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/2.png" alt=""/></li>
-        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/3.png" alt=""/></li>
-    </ul>
-</div>
-<script src="/usr/share/cnchi/data/js/jquery.min.js"></script>
-<script src="/usr/share/cnchi/data/js/jquery.lightSlider.min.js"></script>
-<script>
+<ul id="slider">
+    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/1.png" alt=""/></li>
+    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/2.png" alt=""/></li>
+    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/3.png" alt=""/></li>
+</ul>
+<script type="text/javascript">
     $(document).ready(function() {
         $("#slider").lightSlider({
             item: 1,

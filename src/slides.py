@@ -39,11 +39,10 @@ import canonical.misc as misc
 
 from gtkbasebox import GtkBaseBox
 
-# TODO: Make this relative
 SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
-USE_WEBKIT = False
+USE_WEBKIT = True
 
 if USE_WEBKIT:
     try:
