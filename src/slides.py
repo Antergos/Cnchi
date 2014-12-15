@@ -41,6 +41,15 @@ from gtkbasebox import GtkBaseBox
 
 # TODO: Make this relative
 SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
+SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
+
+USE_WEBKIT = True
+
+if USE_WEBKIT:
+    try:
+        from gi.repository import WebKit
+    except ImportError:
+        USE_WEBKIT = False
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -58,8 +67,9 @@ class Slides(GtkBaseBox):
         self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
-        #self.scrolled_window = self.ui.get_object("scrolledwindow")
-        #self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+        
+        self.scrolled_window = self.ui.get_object("scrolledwindow")
+        self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
 
         self.fatal_error = False
         self.should_pulse = False
@@ -75,30 +85,25 @@ class Slides(GtkBaseBox):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def prepare(self, direction):
-        #
         ## We don't load webkit until we reach this screen
-        #if self.webview == None:
-        #    # Add a webkit view to show the slides
-        #    self.webview = WebKit.WebView()
-        #    if self.settings is None:
-        #        html_file = '/usr/share/cnchi/data/slides.html'
-        #    else:
-        #        html_file = os.path.join(self.settings.get('data'), 'slides.html')
-        #    try:
-        #        with open(html_file) as html_stream:
-        #            html = html_stream.read(None)
-        #           data = os.path.join(os.getcwd(), "data")
-        #            self.webview.load_string(html, "text/html", "utf-8", "file://" + data)
-        #    except IOError:
-        #        pass
-        #    self.scrolled_window.add(self.webview)
-        
-        # load first slide show image
-        self.slide_show_index = 1
-        path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
-        if os.path.exists(path):
-            self.slide_show_image.set_from_file(path)
-            GLib.timeout_add(60000*10, self.change_slideshow_image)
+        if USE_WEBKIT and self.webview == None:
+            # Add a webkit view and load our html file to show the slides
+            try:
+                self.webview = WebKit.WebView()
+                self.webview.load_uri(SLIDES_URI)
+            except IOError as err:
+                logging.warning(err)
+            
+            self.scrolled_window.add(self.webview)
+            self.scrolled_window.set_policy(2, 2)
+
+        if not USE_WEBKIT:        
+            # load first slide show image
+            self.slide_show_index = 1
+            path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
+            if os.path.exists(path):
+                self.slide_show_image.set_from_file(path)
+                GLib.timeout_add(60000*10, self.change_slideshow_image)
 
         self.translate_ui()
         self.show_all()
@@ -113,11 +118,20 @@ class Slides(GtkBaseBox):
         self.backwards_button.hide()
         self.forward_button.hide()
 
+        # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
+
+        if USE_WEBKIT:
+            self.slide_show_image.hide()
+        else:
+            self.scrolled_window.hide()
         
         GLib.timeout_add(500, self.manage_events_from_cb_queue)
 
     def change_slideshow_image(self):
+        if USE_WEBKIT:
+            return False
+
         self.slide_show_index += 1
         path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
         if not os.path.exists(path):
@@ -165,12 +179,16 @@ class Slides(GtkBaseBox):
     @misc.raise_privileges
     def remove_temp_files(self):
         tmp_files = [
-            ".setup-running", ".km-running", "setup-pacman-running",
-            "setup-mkinitcpio-running", ".tz-running", ".setup"]
-        for t in tmp_files:
-            p = os.path.join("/tmp", t)
-            if os.path.exists(p):
-                os.remove(p)
+            ".setup-running",
+            ".km-running",
+            "setup-pacman-running",
+            "setup-mkinitcpio-running",
+            ".tz-running",
+            ".setup"]
+        for tmp_file in tmp_files:
+            path = os.path.join("/tmp", tmp_file)
+            if os.path.exists(path):
+                os.remove(path)
 
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
@@ -216,9 +234,9 @@ class Slides(GtkBaseBox):
                 logging.info(event[1])
                 if not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
-                    boot_warn = _("IMPORTANT: There may have been a problem with the Grub(2) bootloader\n"
+                    boot_warn = _("IMPORTANT: There may have been a problem with the bootloader\n"
                                   "installation which could prevent your system from booting properly. Before\n"
-                                  "rebooting, you may want to verify whether or not GRUB(2) is installed and\n"
+                                  "rebooting, you may want to verify whether or not the bootloader is installed and\n"
                                   "configured. The Arch Linux Wiki contains troubleshooting information:\n"
                                   "\thttps://wiki.archlinux.org/index.php/GRUB\n"
                                   "\nWould you like to view the wiki page now?")

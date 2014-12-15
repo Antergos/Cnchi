@@ -1,5 +1,7 @@
 
 
+
+
  - try except for firewall module. I didn't realise ufw module is python2
  - Do not crash if update.info file is not present
  - Do not show wrong index when downloading with pac.py
