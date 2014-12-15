@@ -347,10 +347,13 @@ class MainWindow(Gtk.ApplicationWindow):
         
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """
-        remove_temp_files()
-        logging.info(_("Quiting installer..."))
-        self.settings.set('stop_all_threads', True)
-        logging.shutdown()
+        try:
+            remove_temp_files()
+            logging.info(_("Quiting installer..."))
+            self.settings.set('stop_all_threads', True)
+            logging.shutdown()
+        except KeyboardInterrupt as err:
+            pass
 
     def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value

@@ -30,6 +30,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 import os
 import sys
+import signal
 import logging
 import gettext
 import locale
@@ -299,6 +300,9 @@ def check_for_files():
 def init_cnchi():
     """ This function initialises Cnchi """
 
+    # Sets SIGTERM handler, so Cnchi can clean up before exiting
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
 
@@ -329,6 +333,23 @@ def init_cnchi():
 
     # Init PyObject Threads
     threads_init()
+
+def sigterm_handler(_signo, _stack_frame):
+    print(_signo)
+    print(_stack_frame)
+    tmp_files = [
+        ".setup-running",
+        ".km-running",
+        "setup-pacman-running",
+        "setup-mkinitcpio-running",
+        ".tz-running",
+        ".setup" ]
+    for tmp_file in tmp_files:
+        path = os.path.join("/tmp", tmp_file)
+        if os.path.exists(path):
+            os.remove(path)
+    logging.shutdown()
+    sys.exit(0)
 
 if __name__ == '__main__':
     init_cnchi()

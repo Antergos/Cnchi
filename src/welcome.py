@@ -102,11 +102,17 @@ class Welcome(GtkBaseBox):
 
     @misc.raise_privileges
     def remove_temp_files(self):
-        tmp_files = [".setup-running", ".km-running", "setup-pacman-running", "setup-mkinitcpio-running", ".tz-running", ".setup" ]
-        for t in tmp_files:
-            p = os.path.join("/tmp", t)
-            if os.path.exists(p):
-                os.remove(p)
+        tmp_files = [
+            ".setup-running",
+            ".km-running",
+            "setup-pacman-running",
+            "setup-mkinitcpio-running",
+            ".tz-running",
+            ".setup" ]
+        for tmp_file in tmp_files:
+            path = os.path.join("/tmp", tmp_file)
+            if os.path.exists(path):
+                os.remove(path)
 
     def quit_cnchi(self):
         self.remove_temp_files()
