@@ -9,25 +9,31 @@
     <script src="/usr/share/cnchi/data/js/jquery.lightSlider.min.js"></script>
 </head>
 <body>
-<ul id="slider">
-    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/1.png" alt=""/></li>
-    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/2.png" alt=""/></li>
-    <li><img class='slide' src="/usr/share/cnchi/data/images/slides/3.png" alt=""/></li>
-</ul>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#slider").lightSlider({
-            item: 1,
-            speed: 2600, //ms'
-            auto: true,
-            loop: true,
-            pause: 9000,
-            mode: 'fade',
-            keyPress: false,
-            controls: false,
-            pager: false
+    <div class="slider1">
+    <ul id="slider">
+        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/1.png" alt=""/></li>
+        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/2.png" alt=""/></li>
+        <li><img class='slide' src="/usr/share/cnchi/data/images/slides/3.png" alt=""/></li>
+    </ul>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#slider").lightSlider({
+                item: 1,
+                speed: 2600, //ms'
+                adaptiveHeight: true,
+                thumbMargin: 0,
+                gallery: false,
+                galleryMargin: 0,
+                auto: true,
+                loop: true,
+                pause: 9000,
+                mode: 'fade',
+                keyPress: false,
+                controls: false,
+                pager: false
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
