@@ -42,10 +42,10 @@ class GtkBaseBox(Gtk.Box):
         self.ui_dir = params['ui_dir']
 
         self.prev_page = prev_page
-        self.next_page = next_page        
+        self.next_page = next_page
 
         Gtk.Box.__init__(self)
-        
+
         self.set_name(name)
         self.name = name
 
@@ -57,7 +57,7 @@ class GtkBaseBox(Gtk.Box):
 
         # Connect UI signals
         self.ui.connect_signals(child)
-        
+
         child.add(self.ui.get_object(name))
 
     def get_prev_page(self):
@@ -71,6 +71,6 @@ class GtkBaseBox(Gtk.Box):
 
     def prepare(self, direction):
         raise NotImplementedError
-    
+
     def store_values(self):
         raise NotImplementedError

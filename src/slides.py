@@ -43,7 +43,7 @@ from gtkbasebox import GtkBaseBox
 SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
-USE_WEBKIT = True
+USE_WEBKIT = False
 
 if USE_WEBKIT:
     try:
@@ -61,21 +61,20 @@ class Slides(GtkBaseBox):
         self.progress_bar = self.ui.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
-        
+
         self.downloads_progress_bar = self.ui.get_object("downloads_progress_bar")
         self.downloads_progress_bar.set_show_text(True)
         self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
-        
-        self.scrolled_window = self.ui.get_object("scrolledwindow")
-        self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
 
         self.fatal_error = False
         self.should_pulse = False
+
         self.webview = None
-        
-        self.slide_show_image = self.ui.get_object("slideshow_image")
+
+        self.scrolled_window = self.ui.get_object("scrolledwindow")
+        self.slideshow_image = self.ui.get_object("slideshow_image")
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -93,16 +92,17 @@ class Slides(GtkBaseBox):
                 self.webview.load_uri(SLIDES_URI)
             except IOError as err:
                 logging.warning(err)
-            
-            self.scrolled_window.add(self.webview)
-            self.scrolled_window.set_policy(2, 2)
 
-        if not USE_WEBKIT:        
+            self.scrolled_window.add(self.webview)
+            self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+            #self.scrolled_window.set_policy(2, 2)
+
+        if not USE_WEBKIT:
             # load first slide show image
-            self.slide_show_index = 1
-            path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
+            self.slideshow_index = 1
+            path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
             if os.path.exists(path):
-                self.slide_show_image.set_from_file(path)
+                self.slideshow_image.set_from_file(path)
                 GLib.timeout_add(60000*10, self.change_slideshow_image)
 
         self.translate_ui()
@@ -110,7 +110,7 @@ class Slides(GtkBaseBox):
 
         # Last screen reached, hide main progress bar (the one at the top).
         self.main_progressbar.hide()
-        
+
         # Also hide total downloads progress bar
         self.downloads_progress_bar.hide()
 
@@ -122,26 +122,30 @@ class Slides(GtkBaseBox):
         self.header.set_show_close_button(False)
 
         if USE_WEBKIT:
-            self.slide_show_image.hide()
+            if self.slideshow_image is not None:
+                self.slideshow_image.destroy()
+                self.slideshow_image = None
         else:
-            self.scrolled_window.hide()
-        
+            if self.scrolled_window is not None:
+                self.scrolled_window.destroy()
+                self.scrolled_window = None
+
         GLib.timeout_add(500, self.manage_events_from_cb_queue)
 
     def change_slideshow_image(self):
         if USE_WEBKIT:
             return False
 
-        self.slide_show_index += 1
-        path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
+        self.slideshow_index += 1
+        path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
         if not os.path.exists(path):
             # We've reached the last image, start again
-            self.slide_show_index = 1
-            path = os.path.join(SLIDES_PATH, "%s.png" % self.slide_show_index)
-        
+            self.slideshow_index = 1
+            path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
+
         if os.path.exists(path):
-            self.slide_show_image.set_from_file(path)
-        
+            self.slideshow_image.set_from_file(path)
+
         return True
 
     def store_values(self):
@@ -165,7 +169,7 @@ class Slides(GtkBaseBox):
             if self.should_pulse:
                 self.progress_bar.pulse()
             return self.should_pulse
-        
+
         if not self.should_pulse:
             # Hide any text that might be in info area
             self.info_label.set_markup("")
@@ -193,10 +197,10 @@ class Slides(GtkBaseBox):
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
-        
+
         if self.fatal_error:
             return False
-        
+
         if self.callback_queue is None:
             return True
 
@@ -263,31 +267,6 @@ class Slides(GtkBaseBox):
 
                 # Show the error
                 show.fatal_error(self.get_toplevel(), event[1])
-
-                '''
-                # Ask if user wants to retry
-                msg = _("Do you want to retry the installation using the same configuration?")
-                res = show.question(self.get_toplevel(), msg)
-                if res == Gtk.ResponseType.YES:
-                    # Restart installation process
-                    logging.debug(_("Restarting installation process..."))
-                    params = self.settings.get('installer_thread_call')
-
-                    self.process = installation_process.InstallationProcess(
-                        self.settings,
-                        self.callback_queue,
-                        params['mount_devices'],
-                        params['fs_devices'],
-                        params['ssd'],
-                        params['alternate_package_list'],
-                        params['blvm'])
-
-                    self.process.start()
-                    return True
-                else:
-                    self.fatal_error = True
-                    return False
-                '''
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:
@@ -321,5 +300,5 @@ except NameError as err:
     def _(message): return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('Slides')

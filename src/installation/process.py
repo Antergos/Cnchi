@@ -89,16 +89,6 @@ class InstallationProcess(multiprocessing.Process):
 
         self.callback_queue = callback_queue
         self.settings = settings
-
-        # Save how we have been called
-        # We need this in case we have to retry the installation
-        parameters = {'mount_devices': mount_devices,
-                      'fs_devices': fs_devices,
-                      'ssd': ssd,
-                      'alternate_package_list': alternate_package_list,
-                      'blvm': blvm}
-        self.settings.set('installer_thread_call', parameters)
-
         self.method = self.settings.get('partition_mode')
         self.queue_event('info', _("Installing using the '%s' method") % self.method)
 

@@ -94,14 +94,15 @@ def run(screen_name):
         "%Y-%m-%d %H:%M:%S")
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
-    
+
     import config
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
+
     from desktop_environments import DESKTOPS
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
-    
+
     params = {}
     params['title'] = "Cnchi"
     params['ui_dir'] = "/usr/share/cnchi/ui"
@@ -114,7 +115,9 @@ def run(screen_name):
     params['testing'] = True
     params['callback_queue'] = None
     params['alternate_package_list'] = ""
+
     screen = get_screen(screen_name, params)
+
     if screen != None:
         screen.prepare('forward')
         window.add(screen)
