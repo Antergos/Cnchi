@@ -305,7 +305,7 @@ def init_cnchi():
     """ This function initialises Cnchi """
 
     # Sets SIGTERM handler, so Cnchi can clean up before exiting
-    signal.signal(signal.SIGTERM, sigterm_handler)
+    #signal.signal(signal.SIGTERM, sigterm_handler)
     
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
@@ -353,13 +353,15 @@ def remove_temp_files():
         path = os.path.join("/tmp", tmp_file)
         if os.path.exists(path):
             os.remove(path)
-    
+
+'''    
 def sigterm_handler(_signo, _stack_frame):
     print(_signo)
     print(_stack_frame)
     remove_temp_files()
     logging.shutdown()
     sys.exit(0)
+'''
 
 if __name__ == '__main__':
     init_cnchi()
