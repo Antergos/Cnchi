@@ -56,7 +56,6 @@ from installation import firewall
 try:
     import xml.etree.cElementTree as ET
 except ImportError as err:
-    logging.warning("Can't find cElementTree, Cnchi will use ElementTree")
     import xml.etree.ElementTree as ET
 
 try:

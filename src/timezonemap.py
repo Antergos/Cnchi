@@ -35,6 +35,11 @@ import os
 import math
 import sys
 
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
+
 PIN_HOT_POINT_X = 8
 PIN_HOT_POINT_Y = 15
 LOCATION_CHANGED = 0
@@ -42,6 +47,7 @@ LOCATION_CHANGED = 0
 G_PI_4 = 0.78539816339744830961566084581987572104929234984378
 
 TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
+OLSEN_MAP_TIMEZONES_PATH = "/usr/share/cnchi/data/locale/timezones.xml"
 
 BUBBLE_TEXT_FONT = "Sans 9"
 
@@ -537,6 +543,20 @@ class TimezoneMap(Gtk.Widget):
             sys.exit(1)
 
         self._tzdb = tz.Database()
+
+    def load_olsen_map_timezones(self):
+        try:
+            tree = ET.parse(OLSEN_MAP_TIMEZONES_PATH)
+        except FileNotFoundError as err:
+            logging.error(err)
+            print(err)
+        
+        self.olsen_map_timezones = []
+
+        root = tree.getroot()
+        for child in root.iter("timezones"):
+            for item in child:
+                self.olsen_map_timezones.append(item.text)
 
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """

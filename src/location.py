@@ -28,7 +28,12 @@ from gi.repository import Gtk, GLib
 import config
 import os
 import logging
-import xml.etree.ElementTree as etree
+import sys
+
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 from gtkbasebox import GtkBaseBox
 
@@ -114,11 +119,17 @@ class Location(GtkBaseBox):
 
     def load_locales(self):
         data_dir = self.settings.get('data')
-        xml_path = os.path.join(data_dir, "locales.xml")
+        xml_path = os.path.join(data_dir, "locale", "locales.xml")
 
         self.locales = {}
 
-        tree = etree.parse(xml_path)
+        try:
+            tree = ET.parse(xml_path)
+        except FileNotFoundError as err:
+            logging.error(err)
+            print(err)
+            sys.exit(1)
+
         root = tree.getroot()
         for child in root.iter("language"):
             for item in child:
@@ -128,11 +139,17 @@ class Location(GtkBaseBox):
                     locale_name = item.text
             self.locales[locale_name] = language_name
 
-        xml_path = os.path.join(data_dir, "iso3366-1.xml")
+        xml_path = os.path.join(data_dir, "locale", "iso3366-1.xml")
 
         countries = {}
 
-        tree = etree.parse(xml_path)
+        try:
+            tree = ET.parse(xml_path)
+        except FileNotFoundError as err:
+            logging.error(err)
+            print(err)
+            sys.exit(1)
+
         root = tree.getroot()
         for child in root:
             code = child.attrib['value']

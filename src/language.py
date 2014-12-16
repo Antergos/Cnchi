@@ -28,6 +28,7 @@ import gettext
 import locale
 import os
 import logging
+import sys
 
 from gtkbasebox import GtkBaseBox
 
@@ -51,7 +52,7 @@ class Language(GtkBaseBox):
         data_dir = self.settings.get('data')
 
         self.current_locale = locale.getdefaultlocale()[0]
-        self.language_list =  os.path.join(data_dir, "languagelist.data.gz")
+        self.language_list =  os.path.join(data_dir, "locale", "languagelist.txt.gz")
         self.set_languages_list()
 
         image1 = self.ui.get_object("image1")
@@ -95,7 +96,14 @@ class Language(GtkBaseBox):
                 return lang
 
     def set_languages_list(self):
-        current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
+        """ Load languages list """
+        try:
+            current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
+        except FileNotFoundError as err:
+            logging.error(err)
+            print(err)
+            sys.exit(1)
+        
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             box = Gtk.VBox()

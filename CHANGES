@@ -1,5 +1,9 @@
 
 
+
+
+
+
  - Finally the ugly white border is gone. It needs to be fully tested, though.
  - Remove unused items from slides.ui
  - It sort of works now (at least does not segfault)
