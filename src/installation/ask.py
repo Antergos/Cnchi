@@ -70,9 +70,9 @@ class InstallationAsk(GtkBaseBox):
         oses = bootinfo.get_os_dict()
 
         self.other_os = ""
-        for k in oses:
-            if "sda" in k and oses[k] != "unknown":
-                self.other_os = oses[k]
+        for key in oses:
+            if "sda" in key and oses[key] != "unknown":
+                self.other_os = oses[key]
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
@@ -111,24 +111,19 @@ class InstallationAsk(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates screen before showing it """
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Installation Type"))
 
-        #txt = _("Installation Type")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
-
-        # In case we're coming from an installer screen, we change
-        # to go-next stock button and we activate it
-        #self.forward_button.set_label("")
-        #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
-        #self.forward_button.set_image(image1)
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
-        radio.set_label(_("Erase disk and install Antergos"))
+        
+        if len(self.other_os) > 0:
+            txt = _("Replace %s with Antergos") % self.other_os
+        else:
+            txt = _("Erase disk and install Antergos")
+        radio.set_label(txt)
 
         label = self.ui.get_object("automatic_description")
         txt = _("Warning: This will erase ALL data on your disk.")

@@ -39,11 +39,6 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-## Insert the src/parted directory at the front of the path.
-#base_dir = os.path.dirname(__file__) or '.'
-#parted_dir = os.path.join(base_dir, 'parted3')
-#sys.path.insert(0, parted_dir)
-
 try:
     import parted
 except ImportError as err:
@@ -62,13 +57,6 @@ from gtkbasebox import GtkBaseBox
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
-
-# Our treeview columns
-COL_DEVICE = 0
-COL_DETECTED_OS = 1
-COL_FILESYSTEM = 2
-COL_USED = 3
-COL_TOTAL = 4
 
 def get_partition_size_info(partition_path, human):
     """ Gets partition used and available space """
@@ -111,27 +99,15 @@ class InstallationAlongside(GtkBaseBox):
 
         self.label = self.ui.get_object('label_info')
 
-        self.treeview = self.ui.get_object("treeview")
-        self.treeview_store = None
-        self.prepare_treeview()
-        self.populate_treeview()
-
-        # Init dialog slider
-        self.init_slider()
-
-        btn = self.ui.get_object("button_ok")
-        btn.set_label("_Apply")
-        btn.set_use_underline(True)
-        btn.set_always_show_image(True)
-
-        btn = self.ui.get_object("button_cancel")
-        btn.set_label("_Cancel")
-        btn.set_use_underline(True)
-        btn.set_always_show_image(True)
+        oses = {}
+        oses = bootinfo.get_os_dict()
+        for key in oses:
+            if "sda" in key and oses[key] != "unknown":
+                self.other_os = oses[key]
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("Select the OS (or partition) you would like Antergos installed next to.")
+        txt = _("")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
@@ -145,194 +121,6 @@ class InstallationAlongside(GtkBaseBox):
     def store_values(self):
         self.start_installation()
         return True
-
-    def prepare_treeview(self):
-        """ Create columns for our treeview """
-        #render_pixbuf = Gtk.CellRendererPixbuf()
-        #col = Gtk.TreeViewColumn("", render_pixbuf, text="")
-        #self.treeview.append_column(col)
-
-        render_text = Gtk.CellRendererText()
-
-        headers = [
-            (COL_DEVICE, _("Device")),
-            (COL_DETECTED_OS, _("Detected OS")),
-            (COL_FILESYSTEM, _("Filesystem")),
-            (COL_USED, _("Used")),
-            (COL_TOTAL, _("Total"))]
-        
-        for (header_id, header_text) in headers:
-            col = Gtk.TreeViewColumn(header_text, render_text, text=header_id)
-            self.treeview.append_column(col)
-
-    @misc.raise_privileges
-    def populate_treeview(self):
-        if self.treeview_store is not None:
-            self.treeview_store.clear()
-
-        self.treeview_store = Gtk.TreeStore(str, str, str, str, str)
-
-        oses = {}
-        oses = bootinfo.get_os_dict()
-        
-        #print(oses)
-
-        self.partitions = {}
-
-        try:
-            device_list = parted.getAllDevices()
-        except (ImportError, NameError) as err:
-            logging.error(_("Can't import parted module: %s"), str(err))
-            device_list = []
-
-        for dev in device_list:
-            # Avoid cdrom and any raid, lvm volumes or encryptfs
-            if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
-                try:
-                    disk = parted.Disk(dev)
-                    # Create list of partitions for this device (p.e. /dev/sda)
-                    partition_list = disk.partitions
-
-                    for partition in partition_list:
-                        if partition.type != pm.PARTITION_EXTENDED:
-                            # Get filesystem
-                            fs_type = ""
-                            if partition.fileSystem and partition.fileSystem.type:
-                                fs_type = partition.fileSystem.type
-                            if "swap" not in fs_type:
-                                (min_size, max_size) = get_partition_size_info(partition.path, human=True)
-                                if partition.path in oses:
-                                    row = [partition.path, oses[partition.path], fs_type, min_size, max_size]
-                                else:
-                                    row = [partition.path, _("unknown"), fs_type, min_size, max_size]
-                                # parent is None so we append the row to the upper level
-                                self.treeview_store.append(None, row)
-                        self.partitions[partition.path] = partition
-                except Exception as err:
-                    txt = _("Unable to create list of partitions for alongside installation: %s") % err
-                    logging.error(txt)
-
-        # Assign our new model to our treeview
-        self.treeview.set_model(self.treeview_store)
-        self.treeview.expand_all()
-
-    def get_selected_row(self):
-        selection = self.treeview.get_selection()
-
-        if not selection:
-            return None
-
-        model, tree_iter = selection.get_selected()
-
-        if tree_iter is None:
-            return None
-
-        return model[tree_iter]
-
-    def on_treeview_row_activated(self, tree_view, path, column):
-        row = self.get_selected_row()
-        
-        if row is None:
-            return
-
-        partition_path = row[COL_DEVICE]
-        other_os_name = row[COL_DETECTED_OS]
-
-        self.min_size = 0
-        self.partition_size = 0
-        self.new_size = 0
-
-        (self.min_size, self.partition_size) = get_partition_size_info(partition_path, human=False)
-        
-        if self.min_size + MIN_ROOT_SIZE < self.partition_size:
-            self.new_size = int(self.min_size + self.ask_shrink_size(other_os_name))
-            txt = _("Will resize partition %s to %f MB") % (partition_path, self.new_size)
-            logging.debug(txt)
-        else:
-            txt = _("New Antergos installation does not fit in partition %s") % partition_path
-            show.warning(self.get_toplevel(), txt)
-            return
-
-        if self.new_size > 0 and self.is_room_available(row):
-            self.forward_button.set_sensitive(True)
-        else:
-            self.forward_button.set_sensitive(False)
-
-    def init_slider(self):
-        # https://developer.gnome.org/gtk3/stable/GtkScale.html
-
-        slider = self.ui.get_object("scale")
-        
-        self.max_range = None
-
-        slider.set_name("myslider")
-        path = os.path.join(self.settings.get("data"), "css", "scale.css")
-
-        if os.path.exists(path):
-            with open(path, "rb") as css:
-                css_data = css.read()
-            try:
-                provider = Gtk.CssProvider()
-                provider.load_from_data(css_data)
-
-                Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(),
-                    provider,
-                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            except:
-                logging.error(_("Can't load %s css file") % path)
-
-        slider.connect("value-changed", self.slider_value_changed)
-
-    def slider_value_changed(self, widget):
-        """ Check that the value is inside our range and if it is, change it """
-        self.update_ask_shrink_size_labels(widget.get_value())
-
-    def update_ask_shrink_size_labels(self, new_value):
-        label_other_os_size = self.ui.get_object("label_other_os_size")
-        label_other_os_size.set_markup("%d MB" % int(self.min_size + new_value))
-
-        label_antergos_size = self.ui.get_object("label_antergos_size")
-        label_antergos_size.set_markup("%d MB" % int(self.partition_size - new_value))
-        
-    def ask_shrink_size(self, other_os_name):
-        dialog = self.ui.get_object("shrink-dialog")
-
-        slider = self.ui.get_object("scale")
-
-        # Reserve space for Antergos
-        self.max_range = self.partition_size - MIN_ROOT_SIZE
-        
-        # adj = Gtk.Adjustment.new(value, lower, upper, step_increment, page_increment, page_size)
-        adj = Gtk.Adjustment.new(0, 0, int(self.max_range), 1, -10, 0)
-        slider.set_adjustment(adj)
-        slider.set_vexpand(True)
-        slider.set_hexpand(True)
-        slider.set_draw_value(False)
-
-        label_other_os = self.ui.get_object("label_other_os")
-        txt = "<span weight='bold' size='large'>%s</span>" % other_os_name
-        label_other_os.set_markup(txt)
-
-        label_antergos = self.ui.get_object("label_antergos")
-        txt = _("New Antergos Install")
-        txt = "<span weight='bold' size='large'>%s</span>" % txt
-        label_antergos.set_markup(txt)
-
-        self.update_ask_shrink_size_labels(0)
-
-        dialog.set_transient_for(self.get_toplevel())
-
-        response = dialog.run()
-
-        value = 0
-
-        if response == Gtk.ResponseType.OK:
-            value = int(slider.get_value()) + 1
-
-        dialog.hide()
-
-        return value
 
     def is_room_available(self, row):
         """ Checks that we really can shrink the partition and create a new one
