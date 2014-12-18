@@ -444,7 +444,7 @@ class InstallationProcess(multiprocessing.Process):
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
-        self.prepare_pacman_keychain()
+        self.prepare_pacman_keyring()
 
         # Init pyalpm
         try:
@@ -459,14 +459,33 @@ class InstallationProcess(multiprocessing.Process):
         if not result:
             logging.error(_("Can't refresh pacman databases."))
 
-    def prepare_pacman_keychain(self):
+    def prepare_pacman_keyring(self):
         """ Add gnupg pacman files to installed system """
+
+        # Be sure that haveged is running (liveCD)
+        # haveged is a daemon that generates system entropy; this speeds up
+        # critical operations in cryptographic programs such as gnupg
+        # (including the generation of new keyrings)
+        cmd = ["systemctl", "start", "haveged"]
+        subprocess.check_call(cmd)
+
         dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
+        cmd = ["rm", "-rf", dest_path]
+        subprocess.check_call(cmd)
+
+        cmd = ["pacman-key", "--init"]
+        chroot_run(cmd)
+
+        cmd = ["pacman-key", "--populate", "archlinux", "antergos"]
+        chroot_run(cmd)
+
+        '''
         try:
             misc.copytree('/etc/pacman.d/gnupg', dest_path)
         except (FileExistsError, shutil.Error, OSError) as err:
             # log error but continue anyway
             logging.error(err)
+        '''
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -1237,10 +1256,12 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get('desktop')
 
         # Enable services
-        if desktop != "base":
-            self.enable_services([self.desktop_manager, "ModemManager"])
+        services = []
+        if desktop is not "base":
+            services.expand([self.desktop_manager, "ModemManager"])
 
-        self.enable_services([self.network_manager, 'remote-fs.target'])
+        services.expand([self.network_manager, "remote-fs.target", "haveged"])
+        self.enable_services(services)
 
         # Enable ntp service
         if self.settings.get("use_ntp"):
