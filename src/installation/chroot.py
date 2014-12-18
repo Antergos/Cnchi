@@ -44,34 +44,50 @@ def mount_special_dirs(dest_dir):
 
     # Don't try to remount them
     if _special_dirs_mounted:
-        logging.debug(_("Special dirs already mounted."))
+        msg = _("Special dirs are already mounted. Skipping.")
+        logging.debug(msg)
         return
 
-    special_dirs = ["sys", "proc", "dev", "dev/pts", "sys/firmware/efi"]
+    special_dirs = ["sys", "proc", "dev", "dev/pts"]
     for s_dir in special_dirs:
         mydir = os.path.join(dest_dir, s_dir)
         if not os.path.exists(mydir):
             os.makedirs(mydir)
-
-    mydir = os.path.join(dest_dir, "sys")
-    subprocess.check_call(["mount", "-t", "sysfs", "/sys", mydir])
-    os.chmod(mydir, 0o555)
-
-    mydir = os.path.join(dest_dir, "proc")
-    subprocess.check_call(["mount", "-t", "proc", "/proc", mydir])
-    os.chmod(mydir, 0o555)
-
-    mydir = os.path.join(dest_dir, "dev")
-    subprocess.check_call(["mount", "-o", "bind", "/dev", mydir])
-
-    mydir = os.path.join(dest_dir, "dev/pts")
-    subprocess.check_call(["mount", "-t", "devpts", "/dev/pts", mydir])
-    os.chmod(mydir, 0o555)
-
+    
     efi = "/sys/firmware/efi"
     if os.path.exists(efi):
         mydir = os.path.join(dest_dir, efi[1:])
-        subprocess.check_call(["mount", "-o", "bind", efi, mydir])
+        if not os.path.exists(mydir):
+            os.makedirs(mydir)
+
+    try:
+        mydir = os.path.join(dest_dir, "sys")
+        cmd = ["mount", "-t", "sysfs", "/sys", mydir]
+        subprocess.check_call(cmd)
+        os.chmod(mydir, 0o555)
+
+        mydir = os.path.join(dest_dir, "proc")
+        cmd = ["mount", "-t", "proc", "/proc", mydir]
+        subprocess.check_call(cmd)
+        os.chmod(mydir, 0o555)
+
+        mydir = os.path.join(dest_dir, "dev")
+        cmd = ["mount", "-o", "bind", "/dev", mydir]
+        subprocess.check_call(cmd)
+
+        mydir = os.path.join(dest_dir, "dev/pts")
+        cmd = ["mount", "-t", "devpts", "/dev/pts", mydir]
+        subprocess.check_call(cmd)
+        os.chmod(mydir, 0o555)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
+
+    if os.path.exists(efi):
+        mydir = os.path.join(dest_dir, efi[1:])
+        try:
+            subprocess.check_call(["mount", "-o", "bind", efi, mydir])
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
 
     _special_dirs_mounted = True
 
@@ -82,7 +98,8 @@ def umount_special_dirs(dest_dir):
 
     # Do not umount if they're not mounted
     if not _special_dirs_mounted:
-        logging.debug(_("Special dirs are not mounted. Skipping."))
+        msg = _("Special dirs are not mounted. Skipping.")
+        logging.debug(msg)
         return
 
     efi = "/sys/firmware/efi"
@@ -105,9 +122,6 @@ def umount_special_dirs(dest_dir):
                 logging.warning(cmd)
                 out = _("Output : %s") % err.output
                 logging.warning(out)
-        except Exception as err:
-            logging.warning(_("Unable to umount %s"), mydir)
-            logging.error(err)
 
     _special_dirs_mounted = False
 

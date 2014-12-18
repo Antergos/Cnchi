@@ -183,6 +183,8 @@ class Bootloader(object):
         txt = _("Installing GRUB(2) BIOS boot loader in %s") % grub_location
         logging.info(txt)
 
+        # /dev and others need to be mounted (binded).
+        # We call mount_special_dirs here just to be sure
         chroot.mount_special_dirs(self.dest_dir)
 
         grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
@@ -208,8 +210,6 @@ class Bootloader(object):
             logging.error(_("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue."))
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
-
-        chroot.umount_special_dirs(self.dest_dir)
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_cfg:
@@ -291,6 +291,9 @@ class Bootloader(object):
 
         # Run grub-mkconfig last
         logging.info(_("Generating grub.cfg"))
+
+        # /dev and others need to be mounted (binded).
+        # We call mount_special_dirs here just to be sure
         chroot.mount_special_dirs(self.dest_dir)
 
         locale = self.settings.get("locale")
@@ -301,8 +304,6 @@ class Bootloader(object):
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
-
-        chroot.umount_special_dirs()
 
         paths = []
         paths.append(os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"))

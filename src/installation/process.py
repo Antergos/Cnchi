@@ -66,6 +66,9 @@ except ImportError as err:
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
+def chroot_run(cmd):
+    chroot.run(cmd, DEST_DIR)
+
 class InstallError(Exception):
     """ Exception class called upon an installer error """
     def __init__(self, value):
@@ -666,7 +669,7 @@ class InstallationProcess(multiprocessing.Process):
 
     def install_packages(self):
         """ Start pacman installation of packages """
-        chroot.mount_special_dirs(DEST_DIR)
+        #chroot.mount_special_dirs(DEST_DIR)
 
         txt = _("Installing packages...")
         logging.debug(txt)
@@ -678,7 +681,7 @@ class InstallationProcess(multiprocessing.Process):
             conflicts=self.conflicts,
             options=pacman_options)
 
-        chroot.umount_special_dirs(DEST_DIR)
+        #chroot.umount_special_dirs(DEST_DIR)
 
         if not result:
             raise InstallError(_("Can't install necessary packages. Cnchi can't continue."))
@@ -863,17 +866,15 @@ class InstallationProcess(multiprocessing.Process):
 
     def enable_services(self, services):
         """ Enables all services that are in the list 'services' """
-        chroot.mount_special_dirs(DEST_DIR)
         for name in services:
             path = os.path.join(
                 DEST_DIR,
                 "usr/lib/systemd/system/%s.service" % name)
             if os.path.exists(path):
-                chroot.run(['systemctl', '-f', 'enable', name], DEST_DIR)
+                chroot_run(['systemctl', '-f', 'enable', name])
                 logging.debug(_("Enabled %s service."), name)
             else:
                 logging.warning(_("Can't find service %s"), name)
-        chroot.umount_special_dirs(DEST_DIR)
 
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
@@ -884,7 +885,7 @@ class InstallationProcess(multiprocessing.Process):
             return False
 
         try:
-            chroot.run(['usermod', '-p', shadow_password, user], DEST_DIR)
+            chroot_run(['usermod', '-p', shadow_password, user])
         except:
             logging.warning(_("Error changing password for user %s"), user)
             return False
@@ -955,22 +956,14 @@ class InstallationProcess(multiprocessing.Process):
         """ Do all set up needed by the user's selected features """
         #if self.settings.get("feature_aur"):
         #    logging.debug(_("Configuring AUR..."))
-
-        chroot.mount_special_dirs(DEST_DIR)
+        
+        services = []
 
         if self.settings.get("feature_bluetooth"):
-            logging.debug(_("Configuring bluetooth..."))
-            self.enable_services(['bluetooth'])
+            services.append('bluetooth')
 
         if self.settings.get("feature_cups"):
-            logging.debug(_("Configuring CUPS..."))
-            self.enable_services(['org.cups.cupsd'])
-
-        #if self.settings.get("feature_office"):
-        #    logging.debug(_("Configuring libreoffice..."))
-
-        #if self.settings.get("feature_visual"):
-        #    logging.debug(_("Configuring Compositing manager..."))
+            services.append('org.cups.cupsd')
 
         if self.settings.get("feature_firewall"):
             logging.debug(_("Configuring firewall..."))
@@ -982,20 +975,18 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["allow", "Transmission"])
             firewall.run(["allow", "SSH"])
             firewall.run(["enable"])
-            # Enable firewall service
-            self.enable_services(['ufw'])
+            services.append('ufw')
 
         if self.settings.get("feature_lts"):
             # FIXME: Antergos doesn't boot if linux lts is selected
             # Is something wrong with the 10_antergos file ?
-            # POSSIBLE WORKAROUND: (needs testing!)
-            chroot.run(["chmod", "a-x", "/etc/grub.d/10_antergos"], DEST_DIR)
-            chroot.run(["chmod", "a+x", "/etc/grub.d/10_linux"], DEST_DIR)
-            chroot.run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"], DEST_DIR)
-            chroot.run(["chmod", "a-x", "/etc/grub.d/10_linux"], DEST_DIR)
-            chroot.run(["chmod", "a+x", "/etc/grub.d/10_antergos"], DEST_DIR)
-
-        chroot.umount_special_dirs(DEST_DIR)
+            chroot_run(["chmod", "a-x", "/etc/grub.d/10_antergos"])
+            chroot_run(["chmod", "a+x", "/etc/grub.d/10_linux"])
+            chroot_run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
+            chroot_run(["chmod", "a-x", "/etc/grub.d/10_linux"])
+            chroot_run(["chmod", "a+x", "/etc/grub.d/10_antergos"])
+        
+        self.enable_services(services)
 
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """
@@ -1105,9 +1096,6 @@ class InstallationProcess(multiprocessing.Process):
     def alsa_mixer_setup(self):
         """ Sets ALSA mixer settings """
 
-        # This function must be called inside the chroot
-        chroot.mount_special_dirs(DEST_DIR)
-
         cmds = [
             "Master 70% unmute",
             "Front 70% unmute"
@@ -1153,30 +1141,29 @@ class InstallationProcess(multiprocessing.Process):
             "SB Live Analog/Digital Output Jack off",
             "Audigy Analog/Digital Output Jack off"]
 
+
         for cmd in cmds:
-            chroot.run(['sh', '-c', 'amixer -c 0 sset %s' % cmd], DEST_DIR)
+            chroot_run(['sh', '-c', 'amixer -c 0 sset %s' % cmd])
 
         # Save settings
-        chroot.run(['alsactl', '-f', '/etc/asound.state', 'store'], DEST_DIR)
+        chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
 
     def set_fluidsynth(self):
         """ Sets fluidsynth configuration file """
 
-        # This function must be called inside the chroot
-        chroot.mount_special_dirs(DEST_DIR)
+        fluid_path = os.path.join(DEST_DIR, "etc/conf.d/fluidsynth"
 
-        fluid_name = "/etc/conf.d/fluidsynth"
-
-        if not os.path.exists(fluid_name):
+        if not os.path.exists(fluid_path):
             return
 
         audio_system = "alsa"
 
-        if os.path.exists("/usr/bin/pulseaudio"):
+        pulse_path = os.path.join(DEST_DIR, "usr/bin/pulseaudio")
+        if os.path.exists(pulse_path):
             audio_system = "pulse"
 
-        with open(fluid_name, "w") as fluid_conf:
-            fluid_conf.write("# Created by Cnchi, Antergos installer\n")
+        with open(fluid_path, "w") as fluid_conf:
+            fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a %s -m alsa_seq -r 48000"\n\n' % audio_system)
 
     def configure_system(self):
@@ -1189,6 +1176,9 @@ class InstallationProcess(multiprocessing.Process):
 
         self.queue_event('pulse', 'start')
         self.queue_event('info', _("Configuring your new system"))
+
+        # This mounts (binds) /dev and others to /DEST_DIR/dev and others
+        chroot.mount_special_dirs(DEST_DIR)
 
         self.auto_fstab()
         logging.debug(_("fstab file generated."))
@@ -1224,7 +1214,7 @@ class InstallationProcess(multiprocessing.Process):
             except FileExistsError:
                 pass
             # Enable our profile
-            chroot.run(['netctl', 'enable', profile], DEST_DIR)
+            chroot_run(['netctl', 'enable', profile])
             #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
 
         logging.debug(_("Network configuration copied."))
@@ -1258,7 +1248,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
-        chroot.run(['ln', '-s', zoneinfo_path, "/etc/localtime"], DEST_DIR)
+        chroot_run(['ln', '-s', zoneinfo_path, "/etc/localtime"])
 
         logging.debug(_("Timezone set."))
 
@@ -1284,7 +1274,6 @@ class InstallationProcess(multiprocessing.Process):
 
         # Configure detected hardware
         try:
-            chroot.mount_special_dirs(DEST_DIR)
             import hardware.hardware as hardware
             hardware_install = hardware.HardwareInstall()
             logging.debug(_("Running post-install scripts from hardware module..."))
@@ -1293,8 +1282,6 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s") % err)
-        finally:
-            chroot.umount_special_dirs(DEST_DIR)
 
         # Setup user
 
@@ -1302,26 +1289,26 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
-            chroot.run(['groupadd', 'vboxusers'], DEST_DIR)
+            chroot_run(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
-            chroot.run(['groupadd', 'autologin'], DEST_DIR)
+            chroot_run(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
         cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
-        chroot.run(cmd, DEST_DIR)
+        chroot_run(cmd)
 
         logging.debug(_("User %s added."), username)
 
         self.change_user_password(username, password)
 
         cmd = ['chfn', '-f', fullname, username]
-        chroot.run(cmd, DEST_DIR)
+        chroot_run(cmd)
 
         cmd = ['chown', '-R', '%s:users' % username, "/home/%s" % username]
-        chroot.run(cmd, DEST_DIR)
+        chroot_run(cmd)
 
         hostname_path = os.path.join(DEST_DIR, "etc/hostname")
         if not os.path.exists(hostname_path):
@@ -1342,7 +1329,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.uncomment_locale_gen(locale)
 
-        chroot.run(['locale-gen'], DEST_DIR)
+        chroot_run(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
             locale_conf.write('LANG=%s\n' % locale)
@@ -1377,11 +1364,8 @@ class InstallationProcess(multiprocessing.Process):
                 xorg_conf_xkb.write('EndSection\n')
             logging.debug(_("00-keyboard.conf written."))
 
-        # Mount dev directories in dest system
-        chroot.mount_special_dirs(DEST_DIR)
-
         # Install configs for root
-        chroot.run(['cp', '-av', '/etc/skel/.', '/root/'], DEST_DIR)
+        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
 
         self.queue_event('info', _("Configuring hardware ..."))
 
@@ -1395,14 +1379,11 @@ class InstallationProcess(multiprocessing.Process):
 
         # Set pulse
         if os.path.exists("/usr/bin/pulseaudio-ctl"):
-            chroot.run(['pulseaudio-ctl', 'normal'], DEST_DIR)
+            chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
         logging.debug(_("Updated fluidsynth configuration file"))
-
-        # Exit chroot system
-        chroot.umount_special_dirs(DEST_DIR)
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1452,6 +1433,9 @@ class InstallationProcess(multiprocessing.Process):
                 boot_loader.install()
             except Exception as err:
                 logging.warning(_("Couldn't install boot loader: %s"), err)
+
+        # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
+        chroot.umount_special_dirs(DEST_DIR)
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug(_("Copying install log to /var/log."))
