@@ -1674,7 +1674,7 @@ class InstallationProcess(multiprocessing.Process):
         if desktop != "nox":
             self.enable_services([self.desktop_manager, "ModemManager"])
 
-        self.enable_services([self.network_manager])
+        self.enable_services([self.network_manager, "haveged"])
 
         # Enable ntp service
         if self.settings.get("use_ntp"):
@@ -1830,7 +1830,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             logging.debug(_("Installing bootloader..."))
             self.install_bootloader()
-
+        
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug(_("Copying install log to /var/log."))
         self.copy_log()

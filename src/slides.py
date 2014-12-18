@@ -202,6 +202,7 @@ class Slides(GtkBaseBox):
                 # Show the error
                 show.fatal_error(event[1])
 
+                '''
                 # Ask if user wants to retry
                 res = show.question(_("Do you want to retry the installation using the same configuration?"))
                 if res == GTK_RESPONSE_YES:
@@ -219,6 +220,7 @@ class Slides(GtkBaseBox):
                 else:
                     self.fatal_error = True
                     return False
+                '''
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:
