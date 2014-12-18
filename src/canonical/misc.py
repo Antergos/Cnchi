@@ -922,6 +922,7 @@ def set_locale(mylocale):
 
 def gtk_refresh():
     """ Tell Gtk loop to run pending events """
+    from gi.repository import Gtk
     while Gtk.events_pending():
         Gtk.main_iteration()
 
