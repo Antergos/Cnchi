@@ -1151,7 +1151,7 @@ class InstallationProcess(multiprocessing.Process):
     def set_fluidsynth(self):
         """ Sets fluidsynth configuration file """
 
-        fluid_path = os.path.join(DEST_DIR, "etc/conf.d/fluidsynth"
+        fluid_path = os.path.join(DEST_DIR, "etc/conf.d/fluidsynth")
 
         if not os.path.exists(fluid_path):
             return
