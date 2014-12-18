@@ -41,10 +41,6 @@ try:
 except ImportError:
     import info
 
-def refresh():
-    while Gtk.events_pending():
-        Gtk.main_iteration()
-
 class Welcome(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page="language"):
         super().__init__(self, params, "welcome", prev_page, next_page)
@@ -100,22 +96,8 @@ class Welcome(GtkBaseBox):
         txt = _("Welcome to Antergos!")
         self.header.set_subtitle(txt)
 
-    @misc.raise_privileges
-    def remove_temp_files(self):
-        tmp_files = [
-            ".setup-running",
-            ".km-running",
-            "setup-pacman-running",
-            "setup-mkinitcpio-running",
-            ".tz-running",
-            ".setup" ]
-        for tmp_file in tmp_files:
-            path = os.path.join("/tmp", tmp_file)
-            if os.path.exists(path):
-                os.remove(path)
-
     def quit_cnchi(self):
-        self.remove_temp_files()
+        misc.remove_temp_files()
         self.settings.set('stop_all_threads', True)
         logging.shutdown()
         sys.exit(0)
@@ -146,8 +128,8 @@ class Welcome(GtkBaseBox):
             txt = ""
         self.labels['loading'].set_markup(txt)
         self.labels['loading'].queue_draw()
-        refresh()
-
+        misc.gtk_refresh()
+                        
     def store_values(self):
         self.forward_button.show()
         return True

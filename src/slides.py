@@ -178,20 +178,6 @@ class Slides(GtkBaseBox):
             self.should_pulse = True
             GLib.timeout_add(100, pbar_pulse)
 
-    @misc.raise_privileges
-    def remove_temp_files(self):
-        tmp_files = [
-            ".setup-running",
-            ".km-running",
-            "setup-pacman-running",
-            "setup-mkinitcpio-running",
-            ".tz-running",
-            ".setup"]
-        for tmp_file in tmp_files:
-            path = os.path.join("/tmp", tmp_file)
-            if os.path.exists(path):
-                os.remove(path)
-
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
@@ -250,7 +236,7 @@ class Slides(GtkBaseBox):
 
                 install_ok = _("Installation Complete!\nDo you want to restart your system now?")
                 response = show.question(self.get_toplevel(), install_ok)
-                self.remove_temp_files()
+                misc.remove_temp_files()
                 self.settings.set('stop_all_threads', True)
                 logging.shutdown()
                 if response == Gtk.ResponseType.YES:

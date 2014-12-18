@@ -61,18 +61,6 @@ import weakref
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
 
-# Some of these tmp files are created with sudo privileges
-# (this should be fixed) meanwhile, we need sudo privileges to remove them
-@misc.raise_privileges
-def remove_temp_files():
-    """ Remove Cnchi temporary files """
-    temp_files = [".setup-running", ".km-running", "setup-pacman-running", \
-        "setup-mkinitcpio-running", ".tz-running", ".setup", "Cnchi.log" ]
-    for temp in temp_files:
-        path = os.path.join("/tmp", temp)
-        if os.path.exists(path):
-            os.remove(path)
-
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
     def __init__(self, app, cmd_line):
@@ -146,8 +134,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
+        
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
+        
+        self.loading_progressbar = self.ui.get_object("loading_progressbar")
 
         self.forward_button = self.header_ui.get_object("forward_button")
         self.backwards_button = self.header_ui.get_object("backwards_button")
@@ -253,27 +244,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
         self.progressbar_step = 0
+        
+        # Hide loading progress bar
+        self.loading_progressbar.set_fraction(0)
+        self.loading_progressbar.hide()
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
 
-        self.refresh()
-
-    def refresh(self):
-        # Force Gtk to show the main screen
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-        
-    def set_cursor(self, cursor_type):
-        screen = Gdk.Screen.get_default()
-        window = Gdk.Screen.get_root_window(screen)
-        if window:
-            cursor = Gdk.Cursor(cursor_type)
-            window.set_cursor(cursor)
-            self.refresh()
+        misc.gtk_refresh()
 
     def load_pages(self):
-        self.set_cursor(Gdk.CursorType.WATCH)
+        misc.set_cursor(Gdk.CursorType.WATCH)
         self.pages["language"] = language.Language(self.params)
         self.pages["location"] = location.Location(self.params)
         self.pages["check"] = check.Check(self.params)
@@ -287,7 +269,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)       
-        self.set_cursor(Gdk.CursorType.ARROW)
+        misc.set_cursor(Gdk.CursorType.ARROW)
         
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
@@ -310,6 +292,7 @@ class MainWindow(Gtk.ApplicationWindow):
             del self.pages["installation_advanced"]
 
     def set_geometry(self):
+        """ Sets Cnchi windows's geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
@@ -326,8 +309,8 @@ class MainWindow(Gtk.ApplicationWindow):
         hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE
         self.set_geometry_hints(None, geom, hints)
 
-    #GtkWidget *widget, GdkEventKey *event, gpointer data
     def check_escape(self, widget, event, data=None):
+        """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
         if event.keyval == 65307:
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:
@@ -350,7 +333,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """
         try:
-            remove_temp_files()
+            misc.remove_temp_files()
             logging.info(_("Quiting installer..."))
             self.settings.set('stop_all_threads', True)
             logging.shutdown()
@@ -369,7 +352,6 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.progressbar.hide()
 
-    #@profiler.profile
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.get_current_page().get_next_page()
@@ -382,13 +364,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
             stored = self.get_current_page().store_values()
 
-            #objgraph.show_most_common_types()
-
             if stored != False:
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.get_current_page())
-
-                #objgraph.show_backrefs(self.pages[next_page], filename="/tmp/" + next_page + ".png")
 
                 self.get_current_page = weakref.ref(self.pages[next_page])
 
@@ -405,7 +383,6 @@ class MainWindow(Gtk.ApplicationWindow):
                         # We can't go back, hide back button
                         self.backwards_button.hide()
 
-    #@profiler.profile
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
         prev_page = self.get_current_page().get_prev_page()

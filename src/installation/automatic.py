@@ -167,10 +167,6 @@ class InstallationAutomatic(GtkBaseBox):
         self.start_installation()
         return True
 
-    def refresh(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
     def on_luks_password_changed(self, widget):
         luks_password = self.entry['luks_password'].get_text()
         luks_password_confirm = self.entry['luks_password_confirm'].get_text()

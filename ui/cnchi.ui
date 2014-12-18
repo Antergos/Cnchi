@@ -35,5 +35,18 @@
         <property name="position">2</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkProgressBar" id="loading_progressbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
+    </child>    
   </object>
 </interface>

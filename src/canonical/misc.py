@@ -18,6 +18,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" Some functions here are 'stolen' from Ubuntu's ubiquity.
+Many of them are not used and should be removed. """
+
 from collections import namedtuple
 import contextlib
 import grp
@@ -71,7 +74,6 @@ def set_groups_for_uid(uid):
         for line in traceback.format_exc().split('\n'):
             syslog.syslog(syslog.LOG_ERR, line)
 
-
 def drop_all_privileges():
     # gconf needs both the UID and effective UID set.
     global _dropped_privileges
@@ -90,7 +92,6 @@ def drop_all_privileges():
         os.environ['LOGNAME'] = pwd.getpwuid(uid).pw_name
     _dropped_privileges = None
 
-
 def drop_privileges():
     global _dropped_privileges
     assert _dropped_privileges is not None
@@ -107,7 +108,6 @@ def drop_privileges():
             os.seteuid(uid)
     _dropped_privileges += 1
 
-
 def regain_privileges():
     global _dropped_privileges
     assert _dropped_privileges is not None
@@ -116,7 +116,6 @@ def regain_privileges():
         os.seteuid(0)
         os.setegid(0)
         os.setgroups([])
-
 
 def drop_privileges_save():
     """Drop the real UID/GID as well, and hide them in saved IDs."""
@@ -134,14 +133,12 @@ def drop_privileges_save():
     if uid is not None:
         os.setresuid(uid, uid, 0)
 
-
 def regain_privileges_save():
     """Recover our real UID/GID after calling drop_privileges_save."""
     assert _dropped_privileges is not None and _dropped_privileges > 0
     os.setresuid(0, 0, 0)
     os.setresgid(0, 0, 0)
     os.setgroups([])
-
 
 @contextlib.contextmanager
 def raised_privileges():
@@ -151,7 +148,6 @@ def raised_privileges():
         yield
     finally:
         drop_privileges()
-
 
 def raise_privileges(func):
     """As raised_privileges, but as a function decorator."""
@@ -163,7 +159,6 @@ def raise_privileges(func):
             return func(*args, **kwargs)
 
     return helper
-
 
 @raise_privileges
 def grub_options():
@@ -214,7 +209,6 @@ def grub_options():
             syslog.syslog(syslog.LOG_ERR, line)
     return l
 
-
 @raise_privileges
 def boot_device():
     from ubiquity.parted_server import PartedServer
@@ -240,7 +234,6 @@ def boot_device():
     if boot:
         return boot
     return root
-
 
 def is_removable(device):
     if device is None:
@@ -281,9 +274,7 @@ def is_removable(device):
                         subp.communicate()[0].splitlines()[0].strip())
             except Exception:
                 pass
-
     return None
-
 
 def mount_info(path):
     """Return filesystem name, type, and ro/rw for a given mountpoint."""
@@ -299,7 +290,6 @@ def mount_info(path):
                 writable = line[3].split(',')[0]
     return fsname, fstype, writable
 
-
 def udevadm_info(args):
     fullargs = ['udevadm', 'info', '-q', 'property']
     fullargs.extend(args)
@@ -314,7 +304,6 @@ def udevadm_info(args):
         udevadm[name] = value
     return udevadm
 
-
 def partition_to_disk(partition):
     """Convert a partition device to its disk device, if any."""
     udevadm_part = udevadm_info(['-n', partition])
@@ -326,13 +315,11 @@ def partition_to_disk(partition):
     udevadm_disk = udevadm_info(['-p', disk_syspath])
     return udevadm_disk.get('DEVNAME', partition)
 
-
 def is_boot_device_removable(boot=None):
     if boot:
         return is_removable(boot)
     else:
         return is_removable(boot_device())
-
 
 def cdrom_mount_info():
     """Return mount information for /cdrom.
@@ -345,14 +332,12 @@ def cdrom_mount_info():
     cdsrc = partition_to_disk(cdsrc)
     return cdsrc, cdfs
 
-
 @raise_privileges
 def grub_device_map():
     """Return the contents of the default GRUB device map."""
     subp = subprocess.Popen(['grub-mkdevicemap', '--no-floppy', '-m', '-'],
                             stdout=subprocess.PIPE, universal_newlines=True)
     return subp.communicate()[0].splitlines()
-
 
 def grub_default(boot=None):
     """Return the default GRUB installation target."""
@@ -402,11 +387,9 @@ def grub_default(boot=None):
 
     return target
 
-
 _os_prober_oslist = {}
 _os_prober_osvers = {}
 _os_prober_called = False
-
 
 def find_in_os_prober(device, with_version=False):
     """Look for the device name in the output of os-prober.
@@ -437,7 +420,6 @@ def find_in_os_prober(device, with_version=False):
             syslog.syslog(syslog.LOG_ERR, line)
     return ''
 
-
 @raise_privileges
 def os_prober():
     global _os_prober_oslist
@@ -463,13 +445,11 @@ def os_prober():
                 _os_prober_oslist[res[0]] = res[1].replace(' (loader)', '')
     return _os_prober_oslist, _os_prober_osvers
 
-
 @raise_privileges
 def remove_os_prober_cache():
     osextras.unlink_force('/var/lib/ubiquity/os-prober-cache')
     shutil.rmtree('/var/lib/ubiquity/linux-boot-prober-cache',
                   ignore_errors=True)
-
 
 def windows_startup_folder(mount_path):
     locations = [
@@ -488,9 +468,7 @@ def windows_startup_folder(mount_path):
             return path
     return ''
 
-
 ReleaseInfo = namedtuple('ReleaseInfo', 'name, version')
-
 
 def get_release():
     if get_release.release_info is None:
@@ -511,7 +489,6 @@ def get_release():
     return get_release.release_info
 
 get_release.release_info = None
-
 
 def get_release_name():
     import warnings
@@ -540,7 +517,6 @@ def get_release_name():
 
 get_release_name.release_name = ''
 
-
 @raise_privileges
 def get_install_medium():
     if not get_install_medium.medium:
@@ -556,7 +532,6 @@ def get_install_medium():
     return get_install_medium.medium
 
 get_install_medium.medium = ''
-
 
 def execute(*args):
     """runs args* in shell mode. Output status is taken."""
@@ -578,11 +553,9 @@ def execute(*args):
         syslog.syslog(' '.join(log_args))
         return True
 
-
 @raise_privileges
 def execute_root(*args):
     return execute(*args)
-
 
 def format_size(size):
     """Format a partition size."""
@@ -603,11 +576,9 @@ def format_size(size):
         factor = 1000 * 1000 * 1000 * 1000
     return '%.1f %s' % (float(size) / factor, unit)
 
-
 def debconf_escape(text):
     escaped = text.replace('\\', '\\\\').replace('\n', '\\n')
     return re.sub(r'(\s)', r'\\\1', escaped)
-
 
 def create_bool(text):
     if text == 'true':
@@ -616,7 +587,6 @@ def create_bool(text):
         return False
     else:
         return text
-
 
 @raise_privileges
 def dmimodel():
@@ -662,7 +632,6 @@ def dmimodel():
         if 'stderr' in kwargs:
             kwargs['stderr'].close()
     return model
-
 
 def set_indicator_keymaps(lang):
     import xml.etree.cElementTree as ElementTree
@@ -817,7 +786,6 @@ def set_indicator_keymaps(lang):
 
     engine.lock_group(0)
 
-
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
@@ -919,8 +887,11 @@ def get_network():
     return ipran
 
 def sort_list(mylist, mylocale=""):
-    import locale
-    import functools
+    try:
+        import locale
+        import functools
+    except ImportError as err:
+        return mylist
 
     if mylocale != "":
         set_locale(mylocale)
@@ -948,3 +919,34 @@ def set_locale(mylocale):
                 logging.warning(_("Can't change to locale '%s'") % mylocale)
         else:
             logging.warning(_("Can't change to locale '%s'") % mylocale)
+
+def gtk_refresh():
+    """ Tell Gtk loop to run pending events """
+    while Gtk.events_pending():
+        Gtk.main_iteration()
+
+def remove_temp_files():
+    """ Remove Cnchi temporary files """
+    temp_files = [
+        ".setup-running",
+        ".km-running",
+        "setup-pacman-running",
+        "setup-mkinitcpio-running",
+        ".tz-running",
+        ".setup",
+        "Cnchi.log"]
+    for temp in temp_files:
+        path = os.path.join("/tmp", temp)
+        if os.path.exists(path):
+            # FIXME: Some of these tmp files are created with sudo privileges
+            with raised_privileges():
+                os.remove(path)
+
+def set_cursor(self, cursor_type):
+    """ Set mouse cursor """
+    screen = Gdk.Screen.get_default()
+    window = Gdk.Screen.get_root_window(screen)
+    if window:
+        cursor = Gdk.Cursor(cursor_type)
+        window.set_cursor(cursor)
+        gtk_refresh()

@@ -178,18 +178,6 @@ class Timezone(GtkBaseBox):
                 tree_model.append([r, r])
             self.old_zone = selected_zone
 
-    def refresh(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-    def set_cursor(self, cursor_type):
-        screen = Gdk.Screen.get_default()
-        window = Gdk.Screen.get_root_window(screen)
-        if window:
-            cursor = Gdk.Cursor(cursor_type)
-            window.set_cursor(cursor)
-            self.refresh()
-
     def prepare(self, direction):
         self.translate_ui()
         self.populate_zones()
