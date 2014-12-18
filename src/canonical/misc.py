@@ -945,6 +945,7 @@ def remove_temp_files():
 
 def set_cursor(cursor_type):
     """ Set mouse cursor """
+    from gi.repository import Gdk
     screen = Gdk.Screen.get_default()
     window = Gdk.Screen.get_root_window(screen)
     if window:
