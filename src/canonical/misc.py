@@ -943,7 +943,7 @@ def remove_temp_files():
             with raised_privileges():
                 os.remove(path)
 
-def set_cursor(self, cursor_type):
+def set_cursor(cursor_type):
     """ Set mouse cursor """
     screen = Gdk.Screen.get_default()
     window = Gdk.Screen.get_root_window(screen)

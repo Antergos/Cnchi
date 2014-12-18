@@ -1,3 +1,635 @@
+ - Forgot a necessary import
+ - Removed duplicated functions
+ - I'm sure Aidan doesn't want spam on his email account
+ - Modified pacman keyring generation. NEEDS TESTING
+ - Forgot to add these two __init__.py empty files
+ - Typo
+ - Cleaning up some functions in process.py and others. Do not call mount_special_dirs and umount_special dirs so frequently.
+ - Updated AUTHORS and icons
+ - Working on alongside
+ - Removed olsen_map_timezones const from timezonemap and load the info from timezones.xml
+ - Changed some data location files. Just for clean up it a bit.
+ - Renamed file to remember from where it can be obtained
+ - Use height request in slides.ui
+ - Finally the ugly white border is gone. It needs to be fully tested, though.
+ - Remove unused items from slides.ui
+ - It sort of works now (at least does not segfault)
+ - Ported new slides from stable, but it does not work here (segfaults). To test, change USE_WEBKIT constant value in slides.py
+ - Working on slides to be able to use webkit or a simple image changer function
+ - signal does not work ¿?
+ - Added parameter -f --force to run Cnchi even when it detects another instance
+ - Working on SIGTERM handler. Does not work yet.
+ - Show hour in timezonemap (I was "inspired" by Gnome3)
+ - try except for firewall module. I didn't realise ufw module is python2
+ - Do not crash if update.info file is not present
+ - Do not show wrong index when downloading with pac.py
+ - Cleaned mkinitcpio code, too
+ - Cleaned firewall.py code with pylint help
+ - Cleaned chroot.py
+ - Some code cleaning
+ - Fixed bootloader bugs
+ - Renamed cmd var
+ - New geoserver, coords in different order.
+ - Moved ufw code outside process.py into a new file.
+ - testing server pre-receive hook
+ - add versioned copy of pre-commit hook to be copied/linked after cloning
+ - Merge remote-tracking branch 'origin/master'
+ - testing auto version bump git hook
+ - setup automatic version bumping
+ - Some modifiactions in bootloader (I forgot to use chroot import)
+ - Working on ufw code
+ - Typo fixed. Also added try except
+ - Wrong import
+ - Another forgotten var
+ - Forgot import logging
+ - Removed unneeded continue
+ - Another forgotten self
+ - Add slider css and js files
+ - Fixed mkinitcpio module (was still using "self" vars)
+ - Ported slides from 0.6 (still needs a merge). Use global var in chroot
+ - Do not log from where we download a package.
+ - Fixed some imports
+ - Moving process.py code to several files
+ - updated changelog
+ - Fixed small issues in process.py
+ - Renamed NoX to Base
+ - Show downloads message
+ - removed unnecessary continue
+ - Comments
+ - Avoid trying to download url with value None. Problem is why I get None urls?
+ - store old slides
+ - Modified MATE description. Removed and added some packages
+ - Do not raise an exception when there's no connection
+ - When there's no connection do not check for remote version
+ - Forgot an import
+ - Some cleanup. Error "list index out of range" in aria2 persists
+ - Do not try to call aria2 xmlrpc if aria2 is not running
+ - Fix import (again)
+ - More import fixing.
+ - Fixed (and removed) a lot of imports
+ - fixed some import problems and typos
+ - Finally, something that seems to work. Aria2, with 4 concurrent download. Now I'll test a full installation in a VM.
+ - urllib downloads fixed. Need some testing, though
+ - Do not try this version, not finished
+ - Moving files to its own directory
+ - Added broadcom changes. Also rewriting download code (not finished)
+ - Try not to always use the privative wl driver
+ - Added catalyst file, not used
+ - Version bump. Also I'm skipping an error in aria2, but good news is that it works as it is now.
+ - Added lts feature and updated mkinitcpio and gummiboot loader. I'm not an expert, so I may have broken some things. I'll test it asap.
+ - Typo
+ - version bump
+ - Added lts feature
+ - aria2 code is doing strange things (as always)
+ - We're not sure if everything was ok, so do not tell it.
+ - Added debug messages to know how packages are downloaded
+ - Modified message. Also removed --needed
+ - Beautified check.py
+ - Renamed some images
+ - Stupid mistake in bootinfo. Solved.
+ - wrong loop in bootinfo
+ - Wrong mode
+ - use pythonic names
+ - In the middle of beautifying aria2
+ - Beautified cnchi.py
+ - Just cleaned some code
+ - Do not show full pathname when downloading with aria2
+ - New aria2 code deserves a version bump :)
+ - aria2 revamped! Testing with two files works. I'll test with Cnchi asap.
+ - Make hardware module return a list of detected drivers to show in debug log
+ - Store selected features by user when returns to the features screen
+ - Bug fixed in features (all features were shown)
+ - Do not try to update again when just updated (avoid update loop)
+ - Added some suggested gnome packages (not all! and of course not games!) Bumped version
+ - fix filepath for notify_user function in testing.sh
+ - Updated testing.sh
+ - slides css modified by Dustin
+ - New features, new version
+ - Added SMB and Firefox features
+ - Fixed listbox sorting in features
+ - Rewritten features. Now listbox is created in code, not in the ui. We won't forget updating it anymore because it won't exist anymore Also added nvidia file in hardware, but it's not used yet.
+ - last stable is still 0.6.23 (should we maintain this variable?)
+ - bumped version (now cups should install ok)
+ - updated update.info
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - if rewritten to avoid depending on tab
+ - cups service renamed
+ - Updated update.info
+ - Ported slides from stable
+ - Updated updater code.
+ - Show warning message if trying to install Antergos in a too small partition in alongside
+ - working on alongside
+ - Ported slides from stable
+ - Updated changelog
+ - Ported two mods from stable. Bumped versions and updated update.info
+ - Changed desktop icons to numix ones
+ - Fixed authors, removed monitor file
+ - new location deserves a version bump
+ - now locations can show all of them just in case the user wants to select a different location from the ones that the language selected allows
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Playing in location
+ - Removed text from labels (cnchi fills them)
+ - Always show location page avoiding GTK warning.
+ - Do not use C style in postinstall.sh
+ - Copy oblogout icons in Openbox edition
+ - is_room_available needs testing and dealing with logical shrink possibility
+ - In alongside, CSS working too.
+ - Working in alongside. Finally the slider works as it should.
+ - fix indent error
+ - Added url for GtkScale docs
+ - Another print... geeez...
+ - Remove a debug print
+ - Do not leave tmp dirs in /tmp
+ - working on alongside
+ - version bump
+ - wrong var name
+ - Fix typo
+ - Working on rank_mirrors
+ - Add margin to the timezonemap widget. I think it looks better
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - update update.info
+ - Fix typo
+ - Modified updater behaviour. Now it downloads master zip, uncompresses it and copies all files (specified in update.info) to their correct locations (checking md5, too).
+ - Fixed automatic ui, so that it has no deprecated warning and also dialog doesn't grow when showing icons
+ - Fixed if condition in 10_antergos, not sure if this is correct (Dustin?)
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - don't try to download "magic" files
+ - Added warning if not using gtk3
+ - Allow option to quit using escape key. This shoud work only in first screen and then stop working. This would allow us to remove the confirmation dialog I just added
+ - alongside does not show well
+ - Nothing important, little mods to alongside
+ - Show pyalpm error message correctly
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Modified showing errors in updater
+ - i had it right the first time (i think)
+ - fix exception handler in updater.py; update info.py
+ - Allow Cnchi run in debian systems (even it won't work, it's useful to develop in that platform)
+ - Fixed typo in 10_antergos
+ - Fix key error
+ - Fixed, wrong key was used
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Modified changelog
+ - Preparing to test aria2 again in the hope that now will not eat so much memory
+ - pm2ml is no longer necessary (needed code is in metalink.py)
+ - Fixed some bugs in download and metalink
+ - Fixed some pac errors
+ - Not finished. Will do later
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Solved memory problem in download (fingers crossed). Needs testing
+ - update packages.xml
+ - There's never been a release method in pyalpm (I dreamt it or what?)
+ - update testing.sh
+ - fix icon file names
+ - fix typo in desktop_environments.py; add kde 5 icons
+ - more work on plasma 5; still not done.
+ - working on kde plasma 5; bumped version num.
+ - pyalpm does not have a release method
+ - Importing pyalpm twice, duh.
+ - Error in pac.py
+ - removed original pm2ml.py
+ - Removing unused parts of pm2ml (as we were using it it caused a big memory problem)
+ - Memory problem is in metalink and pm2ml usage. This code must be adapted, as it was opening an alpm connection for each metalink creation
+ - Removed label text
+ - A new redo of pac.py hoping it will need less memory
+ - No size in metalink?
+ - Forgot an import
+ - print exception when timezone fails
+ - Added pyalpm and libalpm version check (it just prints versions, nothing else)
+ - version bump (new process pyalpm code)
+ - comments
+ - Fixed timezone default when it can't be detected
+ - Updated how we interact with pyalpm. Needs testing
+ - Check how we call pyalpm
+ - pacman_options is a dict not a list
+ - version bump
+ - Download with download.py Cleaned process.py
+ - Forgot an import
+ - Remove print
+ - More changes needed to auto_partition
+ - Prepare autopartition to run in test mode (alone)
+ - Change slideshow image each 10 minutes. Also changed time for manage_events_from_cb_queue to half a second
+ - slides without webkit. Not FADING
+ - Fixed import error
+ - Set timezonemap minimum size
+ - Added raise_privileges to encfs setup
+ - Added encfs dependencies to README.
+ - Start work in encfs
+ - Delete unused files
+ - The new timezonemap is working!
+ - math domain error
+ - Still working on it
+ - get_timezone_at_coords needs fixing
+ - Seems to be working now. Needs testing
+ - It's not working yet, same error with utc and daylight savings
+ - Added olsen_map for get_timezone_at_coords
+ - Not working
+ - utc_offset does not work
+ - Using canonical timezonemap as reference
+ - Gnome version has some code removed. I'll check Ximian version (used in Ubiquity)
+ - Check daylight, it's not working atm
+ - Simplified and removed some vars
+ - enable ctrl+alt+bkspc (xkill) shortcut
+ - Still working on timezonemap. Does not detect the timezone correctly yet.
+ - Still does not work as it should
+ - Ported more code, but still commented
+ - Store for later
+ - It's alive!
+ - More work done in timezonemap
+ - More progress in timezonemap
+ - More work done in timezonemap
+ - Worked on a new timezonemap, just for fun
+ - Removed gnome code
+ - Use Europe/London as default if Cnchi can't detect timezone. Needs testing
+ - Using canonical version of tz.py
+ - My intention is to update our timezone widget, as Canonical's one appears as obsolete in their page. We'll be using the Gnome one.
+ - Added datetime code from gnome-control-center
+ - Forgot an import
+ - Still working on download.py
+ - Revamped download.py
+ - Trying to fix download.py
+ - Fixed metalink.py and added a test case (meta4 file)
+ - Renamed NoX to base. Added fancy icons to desktop images in desktop screen
+ - Only run reflector once
+ - Forgot to remove memory profiler options
+ - metalink.py seems ok now. Needs testing in a real scenario
+ - working working... on metalink....
+ - Still working on metalink.py
+ - Removed objgraph
+ - Rewriting metalink.py (it consumes too much memory as it was)
+ - Testing memory things
+ - Added blank line
+ - Add some debug messages
+ - Added debug message to gtkbasebox
+ - check mirror score to exclude mirrors that are responsive but out of sync. also a small change in grub file.
+ - gezzz, wrong var! Fixed.
+ - Again, a global downloads bar (just added to download.py, if using alpm to download it will not be used, yet)
+ - Select English keyboard variant when selecting English language and Canada location
+ - Added transient_for for all dialogs in advanced
+ - Forgot lib var
+ - Fixed wrong var use
+ - Changed XML a lot. Changes need testing. Will try to move all possible code to packages.xml (future)
+ - In EFI systems, use Grub2 (only in advanced user can choose Gummiboot)
+ - Gummiboot code finished. Needs testing
+ - Allow Gummiboot usage when using UEFI (ui part done)
+ - Working on bootloaders. More needs to be done
+ - Saving changes. Start coding in gummiboot adition. Will continue later
+ - Little changes
+ - Use kde as example test
+ - forgot import
+ - Split download code in several files
+ - download.py needs testing with groups. Changed updater var names
+ - bumped version
+ - removed del_pages. There're many references to our pages so GC does not delete them.
+ - Fix bug when not giving a cache dir
+ - Working on del_pages
+ - Ups... user_info screen was being deleted. Fixed
+ - Use destroy
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Delete old pages
+ - Fixed rank_mirrors (all mirrors were tested as not ok)
+ - Fix message warning (we use current window as parent)
+ - Remove third-party row from features screen
+ - Added profile (memory), just to be able to do some tests
+ - Added profile options. Must be removed before release!
+ - Added requests to our dependencies list
+ - hide proprietary software from features screen. we already install codecs by default. added chromium-pepper-flash to default.
+ - check arch mirrorlist against mirror status data and comment out any bad mirrors we find.
+ - bumped version
+ - Use GtkMessage with a transient_for window (parent) to avoid Gtk complaining about it being None
+ - Added destroy to message
+ - Forgot removing a parenthesis
+ - show_message funcions need parent specification (to avoid gtk3 warning message). Still not done.
+ - Remove some logs
+ - Fixed deprecation warning
+ - Set correct icon size in advanced
+ - version bumped
+ - Avoid growing of features screen. Looks a bit cramped but it doesn't grow.
+ - Fixed check. StateBox does grow equally in spite of the language selected
+ - location does not grow anymore
+ - Do not show loading message if returning to welcome screen
+ - Fixed some locale names. Added a script to create and install all mo files
+ - Do not check md5 of update.info
+ - Working on updater. A few typos fixed
+ - Working on updater. Should download only new files
+ - Updated pkg-clean-zenity (still not used)
+ - Added desktop icons
+ - Added fix for Catalan
+ - Added desktop icons to desktop screen, just for fun (it can be removed if others don't like it)
+ - Do not update button images in translate function (advanced)
+ - Fixed label names and icons in buttons of advanced screen
+ - Added a changelog file just for reference (it's written from the git commits' comments)
+ - Nothing done. Just saving for working at home
+ - More work in alongside. I'm not proud of the whole idea.
+ - Do not quit when cli installer does not work
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Little changes to timezone ui
+ - Finally, welcome screen is centered
+ - Forgot decode bytes in hexdump call
+ - Allow hexdump to run as root
+ - More work in alongside. Far from finished
+ - Start working in alongside
+ - bootinfo done, but needs testing in a real environment
+ - Working (again) in bootinfo. Not done yet
+ - Forgot removing a print
+ - Fixed typo in var name
+ - Renamed mainwindow.py to main_window.py
+ - Fixed button icons in advanced.py
+ - Load screens before showing next button
+ - Little mods. Cleaning some code
+ - It's gnome-photos
+ - Load screens after showing first screen.
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Fix icon name
+ - Changed max gtk version. If not I can't test cnchi in other systems
+ - Removed copycache parameter. It doesn't make sense anymore
+ - Fixed typo and added some comments
+ - Working on using cache for downloading packages
+ - version bump
+ - label has no set_visibility. What was I thinking? :p
+ - Added label translation and hide/show fixing
+ - Added a warning message when entering luks password
+ - Added serbian options. Cnchi doesn't select the correct serbian keyboard (anyway it's easy for the user to do it)
+ - Removed a link from a label that was causing a CRITICAL gtk warning
+ - Changed scrolledwindow sizes of keymap screen
+ - Ported StateBox to Gtk 3.14 (without deprecation warnings, that is)
+ - Little changes in ask screen
+ - Forgot to hide alongside image
+ - Updated ask screen and others to comply to new Gtk 3.14 specs (no deprecation warnings!!!)
+ - Fixed advanced. gtkwidgets was based in GtkAlignment, so needs fixing.
+ - GtkButton's xalign property is deprecated Gtk 3.14 and will be lost in future versions.
+ - Add xalign to advanced again. It still does not display properly.
+ - user_info final test needs fixing.
+ - set_alignment is deprecated. Not fixing it, just removing. I like how the list looks with its contents centered.
+ - I removed wrong xaligns. Fixed
+ - Fixed a bunch of deprecation warnings from Gtk 3.14 (they've dropped GtkAlignment and GtkMisc, among other property changes). Still not finished.
+ - Fixed typo
+ - More user_info changes.
+ - Fixing user_info deprecation warnings. Needs testing
+ - bootinfo not working
+ - boot info rewrite
+ - Working on bootinfo
+ - Testing bootinfo, not done.
+ - Fixed typo
+ - Fix numix-icon-theme-square-kde problem
+ - Fixed typo in exception handling
+ - no no no no no no.... does not detect windows, works fine in linux
+ - Bootinfo does not work atm
+ - cleaned pac.py just a bit
+ - Some cleaning
+ - Cleaning code
+ - Fixed typo. Added deps file to help installing cnchi dependencies
+ - subprocess
+ - Do not use VESA and use new modesetting
+ - Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi
+ - Added modesetting. Now we must stop installing vesa driver and use this one.
+ - Just download needed packages. Needs testing
+ - Removed a forgotten print :p
+ - Swap shouldn't be mandatory
+ - Changed subprocess chown to os.chown
+ - Changed some subprocess calls to their pythonic equivalents
+ - Aesthetic changes only
+ - Removed old commented code
+ - More bugfixing in updater
+ - Moved logging start location to an earlier position. I hope this does not break anything
+ - Working on the updater
+ - Working on updater
+ - New download.py deserves a version bump
+ - Needs testing, I think download.py downloads old packages ¿?
+ - More work done in download.py It's now ready for testing
+ - More changes to download. Far from being finished
+ - Beautified auto_partition.py a bit
+ - Beautified download.py
+ - Beautified cnchi.py. Fixed a typo in download.py
+ - Cleaned download.py a bit.
+ - working on download to use urllib
+ - Playing with download. Nothing works atm
+ - Start work on using urllib to download packages in download.py (leave aria2 option intact) This doesn't mean we don't have to fix download counter in pacman/pac.py
+ - Fixed os-probe location (upstream change) Moved out from postinstall.sh some configuration files. Now they have their own directory (cleaner)
+ - Autopartition seems to work. LVM, LUKS and Home options need testing though.
+ - More changes in auto_partition
+ - mmmm swap logical can't be of same size as the extended partition
+ - small bug fixed in auto_partition
+ - Remove gnome-extra and rename razor to lxqt
+ - Added partition.py from pyparted (there's a bug and this file fixes it)
+ - auto_partition modified. Now it creates an extended partition for storing a logical swap partition. This way, when creating a separated home, we don't create 4 primary partitions (this wayt the user will be able to resize them and create new ones if necessary)
+ - Added antergos-welcome
+ - More in auto_partition
+ - another helper function. auto_partition will be more readable
+ - Helper function for parted mkpart
+ - Added helper function, more to come.
+ - Updated hardware module for the packaging changes for mesa.
+ - Removed gnome-extras. Added gnome-* to packages. In some DE's replaced xfburn with brasero
+ - More work done in auto_partition. Far from being finished
+ - Rewritting auto_partition. NOT FINISHED
+ - Cleaning GPT and os calls
+ - Cleaning GPT code
+ - GPT Fun (nothing done yet)
+ - Added simplejson (will be needed by antergos welcome screen)
+ - Added todo e19 to todo repo. Removed file  here.
+ - Changed all chmod subprocess calls to os.chmod calls.
+ - Octal in pyton3 is preceded by 0o
+ - Fixed a bug in process.py (chmod value must have a leading zero)
+ - We could replace Xnoise with Pragha (a lightweight GTK3 player) in GTK Desktops (Clementine in Qt ones). Added to packages.xml but commented waiting for approval.
+ - Not sure about the dark theme thingy
+ - Added Enlightenment TODO list
+ - Fixed "unclosed file" resource warning
+ - Added a GTK theme for Enlightenment
+ - Using luks_root_password also in automatic
+ - Move antergos motto downwards in check screen
+ - Getting ready for Enlightenment
+ - Some changes in postinstall. I hope everybody agrees, if not, just remove it.
+ - Working on process
+ - Fix issue with ext2/ext3/ext4 and existing labels
+ - Modified install-debian
+ - blivet is still no python3 ready
+ - "utopic" ubuntu has python3-parted at last.
+ - Do not try to write antergos-mirrorlist if it does not exist (just used in non Arch systems for testing)
+ - Forgot introspection typelib for libtimezonemap
+ - Forgot libtimezonemap
+ - Finished updating copyright notice. Moved some files. Added image in check screen (I'm not sure about this).
+ - Changed copyright notice (just added 2014 and program name 'Cnchi')
+ - Added ui validator script (validates xml)
+ - setup_luks freezes our UI completely. It's no use to try to use a progressbar
+ - GObject.timeout_add is deprecated! (I forgot it)
+ - Not sure it was a good idea (adding a progressbar)
+ - bugfixes
+ - Added a progress widget in advanced installation. Not tested yet!
+ - When creating a new partition it won't have a previous label...
+ - Show module name in logs (instead of filename)
+ - Added code to mount crypted partitions (crypttab). Not tested yet. Also, returned to version 7 (was 6 by mistake)
+ - Needed for writing fstab later
+ - Still fighting with LUKS
+ - sdfsdfds
+ - Little mess with Luks volume and the real partition (in tests /dev/sda3). Still some work needs to be done.
+ - More LUKS work in advanced. Not finished yet.
+ - Forgot to make mkinitcpio load the encryption module if using LUKS in advanced
+ - If LUKS is used in root partition, Grub must be modified accordingly
+ - Forgot a slash
+ - First encrypt it, then format it.
+ - This should fix mounting a LUKS encrypted partition in /install
+ - Added password verification to encryption properties dialog
+ - LEFT_PTR is the correct cursor...not ARROW :p
+ - Fixing mouse cursor
+ - Fixed "Yes" (was "yes" before, my mistake)
+ - Fixed some deprecation warnings. Also fixed wrong import.
+ - subprocess error fixed
+ - Fixed need_swap error
+ - More work done in advanced (LUKS encryption related). Now using setup_luks from auto_partition.
+ - Added debian install commands (just for testing purposes)
+ - Fixed encryption dialog storing options only when ok is clicked in both dialogs (encryption properties and create/edit partition)
+ - Fixed luks switch callback
+ - Fixed some errors and deprecation messages in advanced
+ - don't use ssl in .arcconfig
+ - add .arcconfig file for running phab daemon locally
+ - Fixed some wrong uids (my fault)
+ - Changed some uids in advanced.ui
+ - More advanced.ui work done
+ - Work done in luks dialog. Now the partition(s) selected must be encrypted (this part is not even started yet!)
+ - More polishing using pylint.
+ - Removed wrong identations
+ - Cleaning advanced code. Added pavucontrol to our desktop installations.
+ - Working on advanced. Just cleaning some code, preparing to add partition encryption to it.
+ - Removed some old code. Nothing important.
+ - Added fluidsynth patch to change ALSA for PULSEAUDIO if necessary. Not tested
+ - Removed xnoise as it is no longer developed. Should we add a new player?
+ - Added ffmpegthumbnailer to Openbox. Start working on LUKS in advanced installation
+ - Avoid finishing with an empty antergos-mirrorslist
+ - Fix identation bug. pyparted still does not work
+ - Merge branch 'master' of https://github.com/Antergos/Cnchi
+ - Merge pull request #224 from lots0logs/master
+ - Revert a previous change that isnt needed
+ - Merge branch 'master' of github.com:lots0logs/Cnchi
+ - [BUGFIX] Second call to do_install was incorrectly nested in the conditional that preceded it.
+ - Make sure message is always a string in show_message.py; Don't try to chmod 10-installer until the file exists--Github #223
+ - Make sure message is always a string in show_message.py; Don't try to chmod 10-installer until the file exists--Github #223
+ - Merge branch 'master' of http://github.com/Antergos/Cnchi
+ - update testing.sh script
+ - removed gimp
+ - Clean up packages.xml
+ - Merge pull request #222 from lots0logs/master
+ - [BUGFIX] Show antergos-wallpapers in cinnamon background settings tool
+ - [BUGFIX] Temp fix for alpm error on KDE install. Bumped Version.
+ - Merge branch 'master' of http://github.com/antergos/Cnchi
+ - Ref T6 : Temp work-around until we can address it properly. Still needs testing.
+ - Merge remote-tracking branch 'origin/master'
+ - use deadline scheduler for SSDs;
+ - Removed deprecated --quiet parameter
+ - Fixes issue 220
+ - Merge pull request #217 from sublimino/patch-1
+ - Update README.md formatting
+ - Merge branch 'master' of http://github.com/lots0logs/Cnchi
+ - [BUG FIX] Don't symlink adwaita icon directory.
+ - fixed rankmirrors script so that it ranks all mirrors instead of just the one auto selection url; Updated testing script to use notify-send for status updates if it is launched with the "cnchi-dev" command.
+ - Will do a wired.ui
+ - Will add a wired option
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #213 from lots0logs/master
+ - 	modified:   data/css/gtk-style.css
+ - KDE Tested. Right permissions in etc and usr. Update version
+ - Fixing postinstall script (KDE). Needs testing
+ - import tempfile
+ - Do not use /mnt as temporary mount point
+ - Merge pull request #212 from lots0logs/master
+ - this is it..we are ready. i will build the images shortly.
+ - remove fix for vbox that was already implemented elsewhere
+ - Merge branch 'master' of https://github.com/Antergos/Cnchi
+ - run depmod if system is vbox. stop slides.py from expanding the window. fix typo in CSS for progress bar text.
+ - Update version.
+ - virtualbox-guest-modules does not call depmod
+ - Version updated
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Enable services without using their extension
+ - Merge pull request #211 from lots0logs/master
+ - stop copying other files into user's home!
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #209 from lots0logs/master
+ - don't add label to button bc it can't be removed
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Try to fix /proc/cmdline not found error
+ - changes that are included in the iso..sorry im OCD :-/
+ - Merge pull request #208 from lots0logs/master
+ - Merge branch 'master' of https://github.com/Antergos/Cnchi
+ - 10_archlinux file is no longer added by upstream
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Fixed arrows mess. It still doesn't use GtkArrow though. Let's leave this for 0.7.x series, please...
+ - kdeutils-kwallet does not exist. Install kdeutils-kwalletmanager instead.
+ - Small changes in postinstall script
+ - Updating version.
+ - Added a file check in 10_antergos. Hope it is ok.
+ - Use a temporary dir instead of /mnt
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #206 from lots0logs/master
+ - progress bar percentage text change to white when the progress covers it.
+ - fix type error on postinstall. make cbatticon desktop file so cinnamon will launch at boot.
+ - Button order
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Modify run script to create cnchi link in /usr/share (useful when testing)
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #204 from lots0logs/master
+ - add missing setting to config.py
+ - don't copy entire /etc into user's home dir
+ - Depending on Gtk version, buttons get sorted diferently. How nice.
+ - Added plank numix theme to Openbox
+ - Fix button order
+ - Fix button order
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge branch 'master' of https://github.com/lots0logs/Cnchi
+ - Button animation now behaves more like pressing a button. This is good enough for this release.
+ - Don't change forward button type on ask.py for now.
+ - Updated update.info
+ - Restore file permissions
+ - Merge branch 'master' of ssh://dev.antergos.info/diffusion/CN/cnchi
+ - Do not show gui message (blocks cnchi)
+ - Also update antergos-mirrorlist
+ - Unused parameters
+ - Restored to 644 mode
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Do not show go-next image when showing "Install Now!" message in forward button
+ - Do not use css for prev/next buttons
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Added missing laptop config variable.
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Using go-back go-next again. I've left arrows in ui, so we can use them in the future.
+ - Merge pull request #200 from lots0logs/master
+ - fixed mistake in variable name
+ - Temporary solution for Cinnamon upower bug.
+ - Removed execution flag from ask.py
+ - Merge pull request #199 from lots0logs/master
+ - a few changes to the CSS including better style for the forward and back buttons.
+ - Added download counter. If cached packages exist this won't work.
+ - Some work in wireless. Far from done.
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #197 from lots0logs/master
+ - Set Cinnamon theme to "Numix Frost"
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Use finally to not duplicate code
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #196 from lots0logs/master
+ - Updated packages.xml (removed zukitwo from openbox)
+ - correct typo
+ - confirmed fix for launching CLI
+ - Merge branch 'master' of http://github.com/Antergos/Cnchi
+ - Merge branch 'master' of ssh://dev.antergos.info/diffusion/CN/cnchi
+ - Update info.py
+ - I didn't see a line already activating lockscreen extension
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Activate ligthdm-lockscreen and numix frost gnome shell on gnome installs
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Merge pull request #195 from lots0logs/master
+ - 	modified:   data/packages.xml
+ - Updated languages
+ - Numix gtk included and removed faenza icon theme
+ - Removed unnecessary css
+ - hwinfo won't be needed anymore
+ - Fixed typo
+ - Updated version
+ - Bugfix when changing lvm volume size in auto_partition
+ - Cleaned up some code
+ - Some changes in wireless screen. Stil not usable.
+ - Making some updates to installation files
+ - Started 0.8 development
+ - Merge branch 'master' of http://github.com/Antergos/Cnchi
+
 
 
 
