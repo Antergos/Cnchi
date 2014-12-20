@@ -191,7 +191,6 @@
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xscreensaver</pkgname>
         <pkgname>zukitwo-themes</pkgname>
       </packages>
     </edition>
