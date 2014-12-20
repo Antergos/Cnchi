@@ -199,6 +199,7 @@
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xscreensaver</pkgname>
         <pkgname>zukitwo-themes</pkgname>
       </packages>
     </edition>
@@ -232,6 +233,7 @@
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xfce4-screenshooter</pkgname>
         <pkgname>xfce4-taskmanager</pkgname>
+        <pkgname>xscreensaver</pkgname>
       </packages>
     </edition>
 
@@ -338,6 +340,7 @@
         <pkgname>volumeicon</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xfce4-notifyd</pkgname>
+        <pkgname>xscreensaver</pkgname>
       </packages>
     </edition>
 

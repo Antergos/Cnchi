@@ -1,5 +1,7 @@
 
 
+
+
  - removed unnecessary self
  - Forgot a necessary import
  - Removed duplicated functions
