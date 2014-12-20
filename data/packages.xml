@@ -203,6 +203,7 @@
         <pkgname>xfce4-screenshooter</pkgname>
         <pkgname>xfce4-taskmanager</pkgname>
         <pkgname>xnoise</pkgname>
+        <pkgname>xscreensaver</pkgname>
     </xfce_desktop>
 
     <lxqt_desktop>
