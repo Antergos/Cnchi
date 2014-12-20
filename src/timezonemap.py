@@ -139,7 +139,7 @@ class TimezoneMap(Gtk.Widget):
         self._tz_location = None
 
         self._bubble_text = ""
-        
+
         self.load_olsen_map_timezones()
 
         try:
@@ -169,7 +169,7 @@ class TimezoneMap(Gtk.Widget):
         except FileNotFoundError as err:
             logging.error(err)
             print(err)
-        
+
         self.olsen_map_timezones = []
 
         root = tree.getroot()
@@ -491,7 +491,7 @@ class TimezoneMap(Gtk.Widget):
     def set_bubble_text(self, location):
         tzinfo = location.get_info()
         dt_now = datetime.now(tzinfo)
-        current_time = "%d:%d" % (dt_now.hour, dt_now.minute)
+        current_time = "%02d:%02d" % (dt_now.hour, dt_now.minute)
         city_name = location.get_info().tzname("").split("/")[1]
         city_name = city_name.replace("_", " ")
         country_name = location.get_property('human_country')

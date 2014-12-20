@@ -24,7 +24,7 @@
 
 """ Main Cnchi Window """
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 import os
 import sys
@@ -134,29 +134,27 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
-        
+
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
-        
-        self.loading_progressbar = self.ui.get_object("loading_progressbar")
 
         self.forward_button = self.header_ui.get_object("forward_button")
         self.backwards_button = self.header_ui.get_object("backwards_button")
-        
+
         #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         #self.forward_button.set_label("")
         #self.forward_button.set_image(image1)
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_always_show_image(True)
         #self.forward_button.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE))
-        
+
         #image2 = Gtk.Image.new_from_icon_name("go-previous", Gtk.IconSize.LARGE_TOOLBAR)
         #self.backwards_button.set_label("")
         #self.backwards_button.set_image(image2)
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
-        #self.backwards_button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE)) 
-        
+        #self.backwards_button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE))
+
         # Create a queue. Will be used to report pacman messages (pacman/pac.py)
         # to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
@@ -165,7 +163,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.settings.set("use_aria2", cmd_line.aria2)
         if cmd_line.aria2:
             logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
-            
+
         self.set_titlebar(self.header)
 
         # Prepare params dict to pass common parameters to all screens
@@ -177,24 +175,24 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
-        
+
         if cmd_line.packagelist:
             self.params['alternate_package_list'] = cmd_line.packagelist
             logging.info(_("Using '%s' file as package list"), self.params['alternate_package_list'])
         else:
             self.params['alternate_package_list'] = ""
-        
+
         self.params['disable_tryit'] = cmd_line.disable_tryit
         self.params['testing'] = cmd_line.testing
 
         # Just load the first two screens (the other ones will be loaded later)
-        # We do this so the user has not to wait for all the screens to be loaded        
+        # We do this so the user has not to wait for all the screens to be loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.check_escape)
-        
+
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
@@ -203,9 +201,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_title(title)
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
-        
+
         self.set_geometry()
-        
+
         # Set window icon
         icon_path = os.path.join(data_dir, "images", "antergos", "antergos-icon.png")
         self.set_icon_from_file(icon_path)
@@ -244,10 +242,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar.hide()
         self.progressbar_step = 0
-        
-        # Hide loading progress bar
-        self.loading_progressbar.set_fraction(0)
-        self.loading_progressbar.hide()
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi %d\n" % 1234)
@@ -268,9 +262,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
-        self.pages["slides"] = slides.Slides(self.params)       
+        self.pages["slides"] = slides.Slides(self.params)
         misc.set_cursor(Gdk.CursorType.ARROW)
-        
+
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
@@ -329,7 +323,7 @@ class MainWindow(Gtk.ApplicationWindow):
         response = message.run()
         message.destroy()
         return response
-        
+
     def on_exit_button_clicked(self, widget, data=None):
         """ Quit Cnchi """
         try:
@@ -355,7 +349,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
         next_page = self.get_current_page().get_next_page()
-        
+
         if next_page != None:
             if next_page not in self.pages.keys():
                 # Load all pages
@@ -394,7 +388,7 @@ class MainWindow(Gtk.ApplicationWindow):
             # self.get_current_page().store_values()
 
             self.main_box.remove(self.get_current_page())
-             
+
             self.get_current_page = weakref.ref(self.pages[prev_page])
 
             if self.get_current_page() != None:
