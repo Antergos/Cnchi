@@ -87,19 +87,11 @@
     <edition name="base" description="Without X">
       <packages>
         <pkgname nm='true' name='netctl'>netctl</pkgname>
-        <!-- archivers -->
-        <pkgname>arj</pkgname>
         <pkgname>cabextract</pkgname>
         <pkgname>bzip2</pkgname>
-        <pkgname>fastjar</pkgname>
-        <pkgname>lz4</pkgname>
-        <pkgname>lzo</pkgname>
-        <pkgname>lzop</pkgname>
-        <pkgname>rpmextract</pkgname>
         <pkgname>sharutils</pkgname>
         <pkgname>unace</pkgname>
         <pkgname>uudeview</pkgname>
-        <pkgname>unrar</pkgname>
         <pkgname>xz</pkgname>
         <pkgname>zip</pkgname>
       </packages>
@@ -148,7 +140,8 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>orca</pkgname>
-        <pkgname>telepathy</pkgname>  <!-- Group -->
+        <pkgname>pidgin</pkgname>
+        <!-- <pkgname>telepathy</pkgname> --> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -195,7 +188,6 @@
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
-        <!--<pkgname>telepathy</pkgname> -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
