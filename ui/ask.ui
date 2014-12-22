@@ -5,16 +5,16 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="halign">center</property>
-    <property name="margin_start">20</property>
-    <property name="margin_end">20</property>
-    <property name="margin_top">14</property>
+    <property name="margin_start">10</property>
+    <property name="margin_end">10</property>
+    <property name="margin_top">10</property>
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkLabel" id="introduction">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
+        <property name="margin_bottom">10</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes"></property>
@@ -35,9 +35,9 @@
           <object class="GtkImage" id="automatic_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_start">1</property>
-            <property name="margin_end">20</property>
-            <property name="margin_top">5</property>
+            <property name="margin_start">0</property>
+            <property name="margin_end">10</property>
+            <property name="margin_top">7</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -75,7 +75,7 @@
       <object class="GtkLabel" id="automatic_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">75</property>
+        <property name="margin_start">65</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes"></property>
@@ -94,7 +94,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_start">68</property>
+        <property name="margin_start">58</property>
         <property name="margin_top">4</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
@@ -109,7 +109,7 @@
       <object class="GtkLabel" id="encrypt_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">95</property>
+        <property name="margin_start">85</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
@@ -126,7 +126,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_start">68</property>
+        <property name="margin_start">58</property>
         <property name="margin_top">4</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
@@ -141,7 +141,7 @@
       <object class="GtkLabel" id="lvm_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">95</property>
+        <property name="margin_start">85</property>
         <property name="xalign">0</property>
         <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
@@ -158,7 +158,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="margin_start">68</property>
+        <property name="margin_start">58</property>
         <property name="margin_top">4</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
@@ -173,7 +173,7 @@
       <object class="GtkLabel" id="home_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">95</property>
+        <property name="margin_start">85</property>
         <property name="xalign">0</property>
         <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
@@ -192,9 +192,9 @@
           <object class="GtkImage" id="alongside_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_start">1</property>
-            <property name="margin_end">20</property>
-            <property name="margin_top">5</property>
+            <property name="margin_start">0</property>
+            <property name="margin_end">10</property>
+            <property name="margin_top">7</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -209,7 +209,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="margin_top">8</property>
-            <!--<property name="image">alongside_image</property>-->
             <property name="halign">start</property>
             <property name="always_show_image">True</property>
             <property name="active">True</property>
@@ -234,7 +233,7 @@
       <object class="GtkLabel" id="alongside_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">75</property>
+        <property name="margin_start">65</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes"></property>
@@ -255,9 +254,9 @@
           <object class="GtkImage" id="advanced_image">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_start">1</property>
-            <property name="margin_end">20</property>
-            <property name="margin_top">5</property>
+            <property name="margin_start">0</property>
+            <property name="margin_end">10</property>
+            <property name="margin_top">7</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -267,12 +266,11 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="advanced_radiobutton">
-            <property name="label" translatable="yes">Choose exactly where Antergos should be installed. (advanced)</property>
+            <property name="label" translatable="yes"></property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="margin_top">8</property>
-            <!--<property name="image">advanced_image</property>-->
             <property name="halign">start</property>
             <property name="always_show_image">True</property>
             <property name="active">True</property>
@@ -297,10 +295,10 @@
       <object class="GtkLabel" id="advanced_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">75</property>
+        <property name="margin_start">65</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Edit partition table and choose mount points.&lt;/span&gt;</property>
+        <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
       </object>
