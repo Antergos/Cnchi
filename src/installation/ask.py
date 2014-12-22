@@ -65,7 +65,9 @@ class InstallationAsk(GtkBaseBox):
         image = self.ui.get_object("advanced_image")
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
-        
+
+        self.enable_alongside = False
+
         oses = {}
         oses = bootinfo.get_os_dict()
 
@@ -74,6 +76,9 @@ class InstallationAsk(GtkBaseBox):
             # We only check the first hard disk ¿?
             if "sda" in key and oses[key] not in ["unknown", "Swap"] and oses[key] not in self.other_oses:
                 self.other_oses.append(oses[key])
+
+        if len(self.other_oses) == 1 and "Windows" in self.other_oses:
+            self.enable_alongside = True
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
@@ -97,7 +102,7 @@ class InstallationAsk(GtkBaseBox):
         self.translate_ui()
         self.show_all()
 
-        if len(self.other_oses) is not 1:
+        if not self.enable_alongside:
             self.hide_alongside_option()
 
     def hide_alongside_option(self):
@@ -120,6 +125,7 @@ class InstallationAsk(GtkBaseBox):
         self.forward_button.set_sensitive(True)
 
         # Automatic Install
+        #self.enable_alongside
         radio = self.ui.get_object("automatic_radiobutton")
         if len(self.other_oses) > 0:
             if len(self.other_oses) > 1:

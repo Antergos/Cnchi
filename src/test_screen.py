@@ -119,9 +119,9 @@ def run(screen_name):
     screen = get_screen(screen_name, params)
 
     if screen != None:
-        screen.prepare('forward')
         window.add(screen)
         window.show_all()
+        screen.prepare('forward')
         Gtk.main()
     else:
         print("Unknown screen")
