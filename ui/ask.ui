@@ -11,6 +11,23 @@
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
+      <object class="GtkLabel" id="introduction">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">10</property>
+        <property name="halign">start</property>
+        <property name="valign">start</property>
+        <property name="label" translatable="yes"></property>
+        <property name="use_markup">True</property>
+        <property name="justify">fill</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
         <object class="GtkBox" id="automatic_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
@@ -30,7 +47,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="automatic_radiobutton">
-            <property name="label" translatable="yes">Erase disk and install Antergos</property>
+            <property name="label" translatable="yes"></property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -52,7 +69,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="position">1</property>
           </packing>
     </child>
     <child>
@@ -62,19 +79,19 @@
         <property name="margin_start">75</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Warning: This will erase ALL data on your disk.&lt;/span&gt;</property>
+        <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="position">1</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkCheckButton" id="encrypt_checkbutton">
-        <property name="label" translatable="yes">Encrypt this installation for increased security.</property>
+        <property name="label" translatable="yes"></property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
@@ -82,21 +99,6 @@
         <property name="margin_top">4</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="encrypt_label">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">95</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;You will be asked to create an encryption password in the next step.&lt;/span&gt;</property>
-        <property name="use_markup">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -105,15 +107,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkCheckButton" id="lvm_checkbutton">
-        <property name="label" translatable="yes">Use LVM with this installation.</property>
+      <object class="GtkLabel" id="encrypt_label">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="margin_start">68</property>
-        <property name="margin_top">4</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">95</property>
         <property name="halign">start</property>
-        <property name="draw_indicator">True</property>
+        <property name="label" translatable="yes"></property>
+        <property name="use_markup">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -122,23 +122,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="lvm_label">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">95</property>
-        <property name="xalign">0</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;This will setup LVM and allow you to easily manage partitions and create snapshots.&lt;/span&gt;</property>
-        <property name="use_markup">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">5</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkCheckButton" id="home_checkbutton">
-        <property name="label" translatable="yes">Set your Home in a different partition/volume</property>
+      <object class="GtkCheckButton" id="lvm_checkbutton">
+        <property name="label" translatable="yes"></property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
@@ -150,7 +135,39 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="position">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="lvm_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">95</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes"></property>
+        <property name="use_markup">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
         <property name="position">6</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkCheckButton" id="home_checkbutton">
+        <property name="label" translatable="yes"></property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="margin_start">68</property>
+        <property name="margin_top">4</property>
+        <property name="halign">start</property>
+        <property name="draw_indicator">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">7</property>
       </packing>
     </child>
     <child>
@@ -159,13 +176,13 @@
         <property name="can_focus">False</property>
         <property name="margin_start">95</property>
         <property name="xalign">0</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;This will setup you /home directory in a different partition or volume.&lt;/span&gt;</property>
+        <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">7</property>
+        <property name="position">8</property>
       </packing>
     </child>
     <child>
@@ -188,7 +205,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="alongside_radiobutton">
-            <property name="label" translatable="yes">Install Antergos alongside another OS</property>
+            <property name="label" translatable="yes"></property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -211,7 +228,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">8</property>
+            <property name="position">9</property>
           </packing>
     </child>
     <child>
@@ -221,14 +238,14 @@
         <property name="margin_start">75</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
-        <property name="label" translatable="yes">&lt;span weight="light" size="small"&gt;Install Antergos without changing existing operating systems.&lt;/span&gt;</property>
+        <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
         <property name="justify">fill</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="position">9</property>
+        <property name="position">10</property>
       </packing>
     </child>
     <child>
@@ -274,7 +291,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">10</property>
+            <property name="position">11</property>
           </packing>
     </child>
     <child>
@@ -291,7 +308,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="position">11</property>
+        <property name="position">12</property>
       </packing>
     </child>
   </object>

@@ -65,36 +65,39 @@ class InstallationAsk(GtkBaseBox):
         image = self.ui.get_object("advanced_image")
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
-
+        
         oses = {}
         oses = bootinfo.get_os_dict()
 
-        self.other_os = ""
+        self.other_oses = []
         for key in oses:
-            if "sda" in key and oses[key] != "unknown":
-                self.other_os = oses[key]
+            # We only check the first hard disk ¿?
+            if "sda" in key and oses[key] not in ["unknown", "Swap"] and oses[key] not in self.other_oses:
+                self.other_oses.append(oses[key])
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
-        names = ["encrypt_checkbutton", "encrypt_label",
-                 "lvm_checkbutton", "lvm_label",
-                 "home_checkbutton", "home_label"]
+        names = [
+            "encrypt_checkbutton",
+            "encrypt_label",
+            "lvm_checkbutton",
+            "lvm_label",
+            "home_checkbutton",
+            "home_label"]
+
         for name in names:
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
 
     def prepare(self, direction):
         """ Prepares screen """
-
         self.translate_ui()
         self.show_all()
 
-        # Always hide alongside option. It is not ready yet
-        # if "windows" not in self.other_os.lower():
-        if not self.settings.get('z_hidden'):
+        if len(self.other_oses) is not 1:
             self.hide_alongside_option()
 
     def hide_alongside_option(self):
@@ -118,9 +121,11 @@ class InstallationAsk(GtkBaseBox):
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
-        
-        if len(self.other_os) > 0:
-            txt = _("Replace %s with Antergos") % self.other_os
+        if len(self.other_oses) > 0:
+            if len(self.other_oses) > 1:
+                txt = _("Replace %s with Antergos") % ", ".join(self.other_oses)
+            else:
+                txt = _("Replace %s with Antergos") % self.other_oses[0]
         else:
             txt = _("Erase disk and install Antergos")
         radio.set_label(txt)
@@ -158,16 +163,31 @@ class InstallationAsk(GtkBaseBox):
         txt = '<span weight="light" size="small">%s</span>' % txt
         label.set_markup(txt)
 
-        # Alongside Install (not finished, DO NOT USE!)
-        if "windows" in self.other_os.lower():
+        # Alongside Install (For now, only works with Windows)
+        if len(self.other_oses) > 0:
+            if len(self.other_oses) > 1:
+                txt1 = _("Install Antergos alongside %s") % ", ".join(self.other_oses)
+                txt3 = _("This computer has %s installed.") % ", ".join(self.other_oses)
+            else:
+                txt1 = _("Install Antergos alongside %s") % self.other_oses[0]
+                txt3 = _("This computer has %s installed.") % self.other_oses[0]
+
             radio = self.ui.get_object("alongside_radiobutton")
-            radio.set_label(_("Install Antergos alongside %s") % self.other_os)
+            radio.set_label(txt1)
 
             label = self.ui.get_object("alongside_description")
-            txt = _("Install Antergos alongside %s") % self.other_os
-            txt = '<span weight="light" size="small">%s</span>' % txt
-            label.set_markup(txt)
+            txt2 = _("Installs Antergos without removing Windows")
+            txt2 = '<span weight="light" size="small">%s</span>'  % txt2
+            label.set_markup(txt2)
             label.set_line_wrap(True)
+            
+            txt3 += " " + _("What do you want to do?")
+        else:
+            txt3 = _("What do you want to do?")
+            
+
+        intro_label = self.ui.get_object("introduction")
+        intro_label.set_markup(txt3)
 
         # Advanced Install
         radio = self.ui.get_object("advanced_radiobutton")
