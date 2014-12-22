@@ -75,10 +75,24 @@ class InstallationAsk(GtkBaseBox):
             if "sda" in key and oses[key] not in ["unknown", "Swap"] and oses[key] not in self.other_oses:
                 self.other_oses.append(oses[key])
 
+        self.enable_alongside = False
+        self.check_alongside()
+ 
+        # By default, select automatic installation
+        self.next_page = "installation_automatic"
+
+    def check_alongside(self):
         # Check if alongside installation type must be enabled.
         # Alongside only works when Windows is installed on sda, and nothing else
         msg = ""
         self.enable_alongside = False
+        
+        # FIXME: Alongside does not work in UEFI systems
+        if os.path.exists("/sys/firmware/efi"):
+            msg = _("The 'alongside' installation mode does not work in UEFI systems")
+            logging.debug(msg)
+            return
+
         if len(self.other_oses) > 1:
             msg = _("Many OSes installed in device sda.")
         elif len(self.other_oses) == 0:
@@ -92,13 +106,10 @@ class InstallationAsk(GtkBaseBox):
         logging.debug(msg)
 
         if self.enable_alongside:
-            msg = _("Cnchi will enable the alongside installation.")
+            msg = _("Cnchi will enable the 'alongside' installation mode.")
         else:
-            msg = _("Cnchi will NOT enable the alongside installation.")
+            msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
         logging.debug(msg)
- 
-        # By default, select automatic installation
-        self.next_page = "installation_automatic"
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
