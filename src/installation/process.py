@@ -482,19 +482,19 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("Getting package list..."))
             data_dir = self.settings.get("data")
             local_pkg_xml = os.path.join(data_dir, 'packages.xml')
-            local_last_mod = os.path.getmtime(local_pkg_xml)
-            local_last_mod = time.gmtime(local_last_mod)
+            #local_last_mod = os.path.getmtime(local_pkg_xml)
+            #local_last_mod = time.gmtime(local_last_mod)
 
             try:
                 url = 'http://install.antergos.com/packages-%s.xml' % info.CNCHI_VERSION[:3]
                 packages_xml = urllib.request.urlopen(url, timeout=5)
-                remote_last_mod = packages_xml.getheader('Last-Modified')
-                remote_last_mod = time.strptime(remote_last_mod, '%a, %d %b %Y %H:%M:%S %Z')
-                if remote_last_mod < local_last_mod:
-                    logging.debug(_('Local package list is newer than remote, using local file.'))
-                    packages_xml = local_pkg_xml
-                else:
-                    logging.debug(_('Local package list is older than remote, using remote file.'))
+                #remote_last_mod = packages_xml.getheader('Last-Modified')
+                #remote_last_mod = time.strptime(remote_last_mod, '%a, %d %b %Y %H:%M:%S %Z')
+                #if remote_last_mod < local_last_mod:
+                #    logging.debug(_('Local package list is newer than remote, using local file.'))
+                #    packages_xml = local_pkg_xml
+                #else:
+                #    logging.debug(_('Local package list is older than remote, using remote file.'))
             except urllib.error.URLError as err:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
