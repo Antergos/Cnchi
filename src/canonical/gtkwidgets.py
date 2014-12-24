@@ -98,133 +98,6 @@ class StylizedFrame(Gtk.Alignment):
 
 GObject.type_register(StylizedFrame)
 
-class ResizeWidget(Gtk.Frame):
-    __gtype_name__ = 'ResizeWidget'
-    __gproperties__ = {
-        'part_size': (
-            GObject.TYPE_UINT64, 'Partition size',
-            'The size of the partition being resized',
-            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE),
-        'min_size': (
-            GObject.TYPE_UINT64, 'Minimum size',
-            'The minimum size that the existing partition can be resized to',
-            0, GObject.G_MAXUINT64, 0, GObject.PARAM_READWRITE),
-        'max_size': (
-            GObject.TYPE_UINT64, 'Maximum size',
-            'The maximum size that the existing partition can be resized to',
-            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE)
-    }
-
-    def do_get_property(self, prop):
-        if prop.name in ('part_size', 'min_size', 'max_size'):
-            return getattr(self, prop.name)
-        else:
-            return Gtk.Alignment.do_get_property(self, prop)
-
-    def do_set_property(self, prop, value):
-        if prop.name in ('part_size', 'min_size', 'max_size'):
-            setattr(self, prop.name, value)
-            self.queue_draw()
-        else:
-            Gtk.Alignment.do_set_property(self, prop, value)
-
-    def __init__(self, part_size, min_size, max_size):
-        """
-            part_size: The size (MB) of the existing partition.
-            min_size: The min size (MB) that the existing partition can be resized to.
-            max_size: The max size (MB) that the existing partition can be resized to.
-        """
-        Gtk.Frame.__init__(self)
-
-        assert min_size <= max_size <= part_size
-        assert part_size > 0
-
-        self.part_size = part_size
-        self.min_size = min_size
-        self.max_size = max_size
-
-        self.set_size_request(600, -1)
-
-        self.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-
-        self.existing_part = PartitionBox()
-        self.paned.pack1(self.existing_part, resize=True, shrink=False)
-
-        self.new_part = PartitionBox()
-        self.paned.pack2(self.new_part, resize=True, shrink=False)
-
-        self.add(self.paned)
-
-    def set_existing_part_label(self, title, label):
-        self.existing_part.set_property('title', title)
-        self.existing_part.set_property('extra', label)
-
-    def set_new_part_label(self, title, label):
-        self.new_part.set_property('title', title)
-        self.new_part.set_property('extra', label)
-
-    def do_realize(self):
-        # TEST: Make sure the value of the minimum size and maximum size
-        # equal the value of the widget when pushed to the min/max.
-
-        Gtk.Frame.do_realize(self)
-
-        #allocation = self.get_allocation()
-
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
-
-        tmp = float(self.min_size) / self.part_size
-        pixels = int(tmp * total_width)
-        self.existing_part.set_size_request(pixels, -1)
-
-        tmp = ((float(self.part_size) - self.max_size) / self.part_size)
-        pixels = int(tmp * total_width)
-        self.new_part.set_size_request(pixels, -1)
-
-        self.set_realized(True)
-
-    def do_draw(self, cr):
-        Gtk.Frame.do_draw(self, cr)
-
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
-
-        percent = (float(s1) / float(total_width))
-        self.existing_part.set_size_in_mb(percent * self.part_size)
-
-        percent = (float(s2) / float(total_width))
-        self.new_part.set_size_in_mb(percent * self.part_size)
-
-    def set_pref_size(self, size):
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
-
-        percent = (float(size) / float(self.part_size))
-        val = percent * total_width
-        self.paned.set_position(int(val))
-
-    def get_size(self):
-        """Returns the size of the old partition,
-           clipped to the minimum and maximum sizes."""
-
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
-
-        size = int(float(s1) * self.part_size / float(total_width))
-        if size < self.min_size:
-            return self.min_size
-        elif size > self.max_size:
-            return self.max_size
-        else:
-            return size
-
-GObject.type_register(ResizeWidget)
-
 class DiskBox(Gtk.Box):
     __gtype_name__ = 'DiskBox'
 
@@ -317,7 +190,7 @@ class PartitionBox(StylizedFrame):
         self.show_all()
 
     def set_size_in_mb(self, size):
-        self.set_size(size * 1000)
+        self.set_size(size * 1000.0)
 
     def set_size(self, size):
         size = misc.format_size(size)
@@ -351,6 +224,141 @@ class PartitionBox(StylizedFrame):
         c.fill_preserve()
 
 GObject.type_register(PartitionBox)
+
+class ResizeWidget(Gtk.Frame):
+    __gtype_name__ = 'ResizeWidget'
+    __gproperties__ = {
+        'part_size': (
+            GObject.TYPE_UINT64, 'Partition size',
+            'The size of the partition being resized',
+            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE),
+        'min_size': (
+            GObject.TYPE_UINT64, 'Minimum size',
+            'The minimum size that the existing partition can be resized to',
+            0, GObject.G_MAXUINT64, 0, GObject.PARAM_READWRITE),
+        'max_size': (
+            GObject.TYPE_UINT64, 'Maximum size',
+            'The maximum size that the existing partition can be resized to',
+            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE)
+    }
+
+    def do_get_property(self, prop):
+        if prop.name in ('part_size', 'min_size', 'max_size'):
+            return getattr(self, prop.name)
+        else:
+            return Gtk.Alignment.do_get_property(self, prop)
+
+    def do_set_property(self, prop, value):
+        if prop.name in ('part_size', 'min_size', 'max_size'):
+            setattr(self, prop.name, value)
+            self.queue_draw()
+        else:
+            Gtk.Alignment.do_set_property(self, prop, value)
+
+    def __init__(self, part_size, min_size, max_size):
+        """
+            part_size: The size (MB) of the existing partition.
+            min_size: The min size (MB) that the existing partition can be resized to.
+            max_size: The max size (MB) that the existing partition can be resized to.
+        """
+        Gtk.Frame.__init__(self)
+
+        assert min_size <= max_size <= part_size
+        assert part_size > 0
+
+        self.part_size = part_size
+        self.min_size = min_size
+        self.max_size = max_size
+
+        self.set_size_request(600, -1)
+
+        self.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+
+        self.existing_part = PartitionBox()
+        self.paned.pack1(self.existing_part, resize=True, shrink=False)
+
+        self.new_part = PartitionBox()
+        self.paned.pack2(self.new_part, resize=True, shrink=False)
+
+        self.add(self.paned)
+
+    def set_part_title(self, part, title, subtitle=None):
+        if part == 'new':
+            self.new_part.set_property('title', title)
+            if subtitle:
+                self.new_part.set_property('extra', subtitle)
+        else:
+            self.existing_part.set_property('title', title)
+            if subtitle:
+                self.existing_part.set_property('extra', subtitle)
+    
+    def set_part_icon_name(self, part, icon_name):
+        if part == 'new':
+            self.new_part.set_property('icon-name', icon_name)
+        else:
+            self.existing_part.set_property('icon-name', icon_name)
+
+    def do_realize(self):
+        # TEST: Make sure the value of the minimum size and maximum size
+        # equal the value of the widget when pushed to the min/max.
+
+        Gtk.Frame.do_realize(self)
+
+        #allocation = self.get_allocation()
+
+        s1 = self.existing_part.get_allocation().width
+        s2 = self.new_part.get_allocation().width
+        total_width = s1 + s2
+
+        tmp = float(self.min_size) / self.part_size
+        pixels = int(tmp * total_width)
+        self.existing_part.set_size_request(pixels, -1)
+
+        tmp = ((float(self.part_size) - self.max_size) / self.part_size)
+        pixels = int(tmp * total_width)
+        self.new_part.set_size_request(pixels, -1)
+
+        self.set_realized(True)
+
+    def do_draw(self, cr):
+        Gtk.Frame.do_draw(self, cr)
+
+        s1 = self.existing_part.get_allocation().width
+        s2 = self.new_part.get_allocation().width
+        total_width = s1 + s2
+
+        percent = (float(s1) / float(total_width))
+        self.existing_part.set_size_in_mb(percent * self.part_size)
+
+        percent = (float(s2) / float(total_width))
+        self.new_part.set_size_in_mb(percent * self.part_size)
+
+    def set_pref_size(self, size):
+        s1 = self.existing_part.get_allocation().width
+        s2 = self.new_part.get_allocation().width
+        total_width = s1 + s2
+
+        percent = (float(size) / float(self.part_size))
+        val = percent * total_width
+        self.paned.set_position(int(val))
+
+    def get_size(self):
+        """Returns the size of the old partition,
+           clipped to the minimum and maximum sizes."""
+
+        s1 = self.existing_part.get_allocation().width
+        s2 = self.new_part.get_allocation().width
+        total_width = s1 + s2
+
+        size = int(float(s1) * self.part_size / float(total_width))
+        if size < self.min_size:
+            return self.min_size
+        elif size > self.max_size:
+            return self.max_size
+        else:
+            return size
+
+GObject.type_register(ResizeWidget)
 
 class StateBox(StylizedFrame):
     __gtype_name__ = 'StateBox'

@@ -98,10 +98,11 @@ class InstallationAsk(GtkBaseBox):
         elif len(self.other_oses) == 0:
             msg = _("Can't detect any OS in device sda.")
         else:
-            if "Windows" in self.other_oses:
-                msg = _("Windows detected.")
-                self.enable_alongside = True
-            else:
+            for detected_os in self.other_oses:
+                if "Windows" in detected_os:
+                    msg = _("Windows detected.")
+                    self.enable_alongside = True
+            if not self.enable_alongside:
                 msg = _("Windows not detected.")
         logging.debug(msg)
 

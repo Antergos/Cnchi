@@ -65,18 +65,16 @@ def get_partition_size_info(partition_path, human=False):
     min_size = "0"
     part_size = "0"
 
-    # Is already mounted?
-
-    mounted = False
+    already_mounted = False
 
     with open("/proc/mounts") as mounts:
         if partition_path in mounts.read():
-            mounted = True
+            already_mounted = True
 
     tmp_dir = ""
 
     try:
-        if not mounted:
+        if not already_mounted:
             tmp_dir = tempfile.mkdtemp()
             subprocess.call(["mount", partition_path, tmp_dir])
         if human:
@@ -84,7 +82,7 @@ def get_partition_size_info(partition_path, human=False):
         else:
             cmd = ['df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
-        if not mounted:
+        if not already_mounted:
             subprocess.call(["umount", "-l", tmp_dir])
     except subprocess.CalledProcessError as err:
         logging.error(err)
@@ -99,8 +97,8 @@ def get_partition_size_info(partition_path, human=False):
             part_size = df_out[1]
             min_size = df_out[2]
         else:
-            part_size = float(df_out[1]) / 1000.0
-            min_size = float(df_out[2]) / 1000.0
+            part_size = float(df_out[1])
+            min_size = float(df_out[2])
 
     return (min_size, part_size)
 
@@ -125,23 +123,29 @@ class InstallationAlongside(GtkBaseBox):
             del oses[device]
         devices = []
 
-        if "Windows" in oses["/dev/sda2"]:
-            existing_device = "/dev/sda2"
-            new_device = "/dev/sda3"
-        else:
-            existing_device = "/dev/sda1"
-            new_device = "/dev/sda2"
+        for device in oses:
+            if "Windows" in oses[device]:
+                existing_device = device
+                val = int(device[len("/dev/sdX"):]) + 1
+                new_device = device[:len("/dev/sdX")] + str(val)
+
+        print("existing device: ", existing_device)
+        print("new device: ", new_device)
 
         (min_size, part_size) = get_partition_size_info(existing_device)
-        max_size = part_size - MIN_ROOT_SIZE
+        max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
+        
+        print(max_size)
+        
+        self.resize = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
 
-        self.resize = gtkwidgets.ResizeWidget(
-            part_size * 1000,
-            min_size * 1000,
-            max_size * 1000)
-
-        self.resize.set_existing_part_label(oses[existing_device], existing_device)
-        self.resize.set_new_part_label("Antergos", new_device)
+        self.resize.set_part_title("existing", oses[existing_device], existing_device)
+        self.resize.set_part_icon_name("existing", "distributor-logo")
+        
+        self.resize.set_part_title("new", "Antergos", new_device)
+        self.resize.set_part_icon_name("new", "distributor-logo")
+        
+        self.resize.set_pref_size(max_size)
 
         self.main_box = self.ui.get_object("alongside")
         self.main_box.pack_start(self.resize, True, False, 5)
