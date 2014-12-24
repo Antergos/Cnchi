@@ -232,10 +232,10 @@ class TimezoneMap(Gtk.Widget):
 
         if self.get_realized():
             self.get_window().move_resize(
-            allocation.x,
-            allocation.y,
-            allocation.width,
-            allocation.height)
+                allocation.x,
+                allocation.y,
+                allocation.width,
+                allocation.height)
 
     def do_realize(self):
         """ Called when the widget should create all of its
@@ -448,7 +448,6 @@ class TimezoneMap(Gtk.Widget):
                 small_dist = dist
 
         return nearest_tz_location
-
 
     def do_button_press_event(self, event):
         """ The button press event virtual method """

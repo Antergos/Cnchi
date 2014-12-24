@@ -206,7 +206,6 @@ def get_size_txt(length, sector_size):
 
     return size_txt
 
-
 @misc.raise_privileges
 def create_partition(diskob, part_type, geom):
     # A lot of this is similar to Anaconda, but customized to fit our needs
@@ -283,7 +282,8 @@ def get_used_space(part):
 
 def get_used_space_from_path(path):
     try:
-        result = subprocess.check_output(shlex.split('df -H %s' % path)).decode()
+        cmd = shlex.split('df -H %s' % path)
+        result = subprocess.check_output(cmd).decode()
         lines = result.split('\n')
         used_space = lines[1].split()[2]
     except subprocess.CalledProcessError as err:

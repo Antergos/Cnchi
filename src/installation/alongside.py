@@ -45,6 +45,7 @@ except ImportError as err:
     logging.error(_("Can't import parted module: %s"), str(err))
 
 import canonical.misc as misc
+import canonical.gtkwidgets as gtkwidgets
 import show_message as show
 import bootinfo
 
@@ -58,56 +59,97 @@ from gtkbasebox import GtkBaseBox
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
 
-def get_partition_size_info(partition_path, human):
+def get_partition_size_info(partition_path, human=False):
     """ Gets partition used and available space """
-    
-    tmp_dir = tempfile.mkdtemp()
+
     min_size = "0"
-    max_size = "0"
-    
+    part_size = "0"
+
+    # Is already mounted?
+
+    mounted = False
+
+    with open("/proc/mounts") as mounts:
+        if partition_path in mounts.read():
+            mounted = True
+
+    tmp_dir = ""
+
     try:
-        subprocess.call(["mount", partition_path, tmp_dir])
+        if not mounted:
+            tmp_dir = tempfile.mkdtemp()
+            subprocess.call(["mount", partition_path, tmp_dir])
         if human:
             cmd = ['df', '-h', partition_path]
         else:
             cmd = ['df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
-        subprocess.call(["umount", "-l", tmp_dir])
+        if not mounted:
+            subprocess.call(["umount", "-l", tmp_dir])
     except subprocess.CalledProcessError as err:
         logging.error(err)
-    finally:
+
+    if os.path.exists(tmp_dir):
         os.rmdir(tmp_dir)
 
     if len(df_out) > 0:
         df_out = df_out.split('\n')
         df_out = df_out[1].split()
         if human:
-            max_size = df_out[1]
+            part_size = df_out[1]
             min_size = df_out[2]
         else:
-            max_size = float(df_out[1]) / 1000.0
+            part_size = float(df_out[1]) / 1000.0
             min_size = float(df_out[2]) / 1000.0
 
-    return (min_size, max_size)
+    return (min_size, part_size)
 
 class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
-        self.ui.connect_signals(self)
-
         self.label = self.ui.get_object('label_info')
 
         oses = {}
         oses = bootinfo.get_os_dict()
-        for key in oses:
-            if "sda" in key and oses[key] != "unknown":
-                self.other_os = oses[key]
+
+        # In InstallationAsk (ask.py) we've already checked that the user has Windows OS installed
+
+        # Delete OSes outside sda
+        devices = []
+        for device in oses:
+            if "sda" not in device:
+                devices.append(device)
+        for device in devices:
+            del oses[device]
+        devices = []
+
+        if "Windows" in oses["/dev/sda2"]:
+            existing_device = "/dev/sda2"
+            new_device = "/dev/sda3"
+        else:
+            existing_device = "/dev/sda1"
+            new_device = "/dev/sda2"
+
+        (min_size, part_size) = get_partition_size_info(existing_device)
+        max_size = part_size - MIN_ROOT_SIZE
+
+        self.resize = gtkwidgets.ResizeWidget(
+            part_size * 1000,
+            min_size * 1000,
+            max_size * 1000)
+
+        self.resize.set_existing_part_label(oses[existing_device], existing_device)
+        self.resize.set_new_part_label("Antergos", new_device)
+
+        self.main_box = self.ui.get_object("alongside")
+        self.main_box.pack_start(self.resize, True, False, 5)
+
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("")
+        txt = _("Choose the new size of your installation")
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
@@ -173,9 +215,9 @@ class InstallationAlongside(GtkBaseBox):
     def start_installation(self):
         """ Alongside method shrinks selected partition
         and creates root and swap partition in the available space """
-        
+
         row = self.get_selected_row()
-        
+
         if row is None:
             return
 
@@ -215,7 +257,7 @@ class InstallationAlongside(GtkBaseBox):
             txt += _("Filesystem shrink succeeded but partition shrink failed.")
             logging.error(txt)
             return
-            
+
         txt = _("Partition %s shrink complete") % partition_path
         logging.debug(txt)
 
@@ -309,7 +351,7 @@ class InstallationAlongside(GtkBaseBox):
 
         # TODO: User should be able to choose if installing a bootloader or not (and which one)
         self.settings.set('bootloader_install', True)
-        
+
         if self.settings.get('bootloader_install'):
             self.settings.set('bootloader', "Grub2")
             self.settings.set('bootloader_device', device_path)

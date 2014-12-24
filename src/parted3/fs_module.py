@@ -38,7 +38,8 @@ COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 def get_info(part):
     """ Get partition info using blkid """
     try:
-        ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
+        cmd = shlex.split('blkid %s' % part)
+        ret = subprocess.check_output(cmd).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         ret = ''
@@ -53,7 +54,8 @@ def get_info(part):
 def get_type(part):
     """ Get filesystem type using blkid """
     try:
-        ret = subprocess.check_output(shlex.split('blkid -o value -s TYPE %s' % part)).decode().strip()
+        cmd = shlex.split('blkid -o value -s TYPE %s' % part)
+        ret = subprocess.check_output(cmd).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         ret = ''
@@ -79,7 +81,8 @@ def label_fs(fstype, part, label):
     # in a dictionary.  So 'part' and 'label' will be defined
     # and replaced in above dic
     try:
-        result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
+        cmd = shlex.split(ladic[fstype] % vars())
+        result = subprocess.check_output(cmd).decode()
         ret = (0, result)
     except subprocess.CalledProcessError as err:
         logging.error(err)
@@ -129,7 +132,8 @@ def create_fs(part, fstype, label='', other_opts=''):
              'swap':'mkswap -L "%(label)s" %(part)s'}
 
     try:
-        result = subprocess.check_output(shlex.split(comdic[fstype] % vars())).decode()
+        cmd = shlex.split(comdic[fstype] % vars())
+        result = subprocess.check_output(cmd).decode()
         ret = (0, result)
     except subprocess.CalledProcessError as err:
         logging.error(err)
@@ -141,8 +145,13 @@ def is_ssd(disk_path):
     """ Check if is sdd """
     ssd = False
     try:
-        process1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=process1.stdout, stdout=subprocess.PIPE)
+        process1 = subprocess.Popen(
+            ["hdparm", "-I", disk_path],
+            stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(
+            ["grep", "Rotation Rate"],
+            stdin=process1.stdout,
+            stdout=subprocess.PIPE)
         process1.stdout.close()
         output = process2.communicate()[0].decode()
         if "Solid State" in output:
@@ -181,10 +190,11 @@ def resize(part, fs_type, new_size_in_mb):
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     """ Resize a ntfs partition """
-    logging.debug("ntfsresize -P --size %s %s", str(new_size_in_mb)+"M", part)
+    logging.debug("ntfsresize -P --size %s %s", str(new_size_in_mb) + "M", part)
 
     try:
-        result = subprocess.check_output(["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb)+"M", part])
+        cmd = ["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb) + "M", part]
+        result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
         result = None
         logging.error(err)
@@ -207,7 +217,8 @@ def resize_ext(part, new_size_in_mb):
     logging.debug("resize2fs %s %sM", part, str(new_size_in_mb))
 
     try:
-        result = subprocess.check_output(["resize2fs", part, str(new_size_in_mb)+"M"])
+        cmd = ["resize2fs", part, str(new_size_in_mb) + "M"]
+        result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
         logging.error(err)
         return False
