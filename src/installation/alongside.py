@@ -86,6 +86,7 @@ def get_partition_size_info(partition_path, human=False):
             subprocess.call(["umount", "-l", tmp_dir])
     except subprocess.CalledProcessError as err:
         logging.error(err)
+        return
 
     if os.path.exists(tmp_dir):
         os.rmdir(tmp_dir)
@@ -123,33 +124,36 @@ class InstallationAlongside(GtkBaseBox):
             del oses[device]
         devices = []
 
+        existing_device = None
+        new_device = None
+
         for device in oses:
             if "Windows" in oses[device]:
                 existing_device = device
                 val = int(device[len("/dev/sdX"):]) + 1
                 new_device = device[:len("/dev/sdX")] + str(val)
 
-        print("existing device: ", existing_device)
-        print("new device: ", new_device)
+        if existing_device and new_device:
+            print("existing device: ", existing_device)
+            print("new device: ", new_device)
 
-        (min_size, part_size) = get_partition_size_info(existing_device)
-        max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
-        
-        print(max_size)
-        
-        self.resize = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
+            (min_size, part_size) = get_partition_size_info(existing_device)
+            max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
 
-        self.resize.set_part_title("existing", oses[existing_device], existing_device)
-        self.resize.set_part_icon_name("existing", "distributor-logo")
-        
-        self.resize.set_part_title("new", "Antergos", new_device)
-        self.resize.set_part_icon_name("new", "distributor-logo")
-        
-        self.resize.set_pref_size(max_size)
+            print(max_size)
 
-        self.main_box = self.ui.get_object("alongside")
-        self.main_box.pack_start(self.resize, True, False, 5)
+            self.resize = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
 
+            self.resize.set_part_title("existing", oses[existing_device], existing_device)
+            self.resize.set_part_icon_name("existing", "distributor-logo")
+
+            self.resize.set_part_title("new", "Antergos", new_device)
+            self.resize.set_part_icon_name("new", "distributor-logo")
+
+            self.resize.set_pref_size(max_size)
+
+            self.main_box = self.ui.get_object("alongside")
+            self.main_box.pack_start(self.resize, True, False, 5)
 
     def translate_ui(self):
         """ Translates all ui elements """
