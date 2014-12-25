@@ -103,7 +103,7 @@ def _get_partition_info(partition):
     bytes80_to_81 = _hexdump8081(partition)
 
     bst = {
-        '0000':'Swap',          # Data or swap partition
+        '0000':'Data or Swap',  # Data or swap partition
         '7405':'Windows 7',     # W7 Fat32
         '0734':'Dos_1.0',
         '0745':'Windows Vista', # WVista Fat32

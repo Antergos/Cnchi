@@ -27,7 +27,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -44,7 +43,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -104,7 +102,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -121,7 +118,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -165,7 +161,6 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <!--<property name="has_resize_grip">False</property>-->
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox7">
         <property name="visible">True</property>
@@ -297,8 +292,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="halign">start</property>
-                <!--<property name="use_stock">True</property>-->
-                <!--<property name="xalign">0</property>-->
                 <property name="draw_indicator">True</property>
               </object>
               <packing>
@@ -345,7 +338,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -364,7 +356,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -394,7 +385,6 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <!--<property name="has_resize_grip">False</property>-->
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox3">
         <property name="visible">True</property>
@@ -542,7 +532,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <!--<property name="xalign">0</property>-->
                     <property name="draw_indicator">True</property>
                     <property name="group">create_partition_create_place_beginning</property>
                   </object>
@@ -655,7 +644,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <!--<property name="xalign">0</property>-->
                     <property name="draw_indicator">True</property>
                     <property name="group">create_partition_create_type_primary</property>
                   </object>
@@ -674,7 +662,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <!--<property name="xalign">0</property>-->
                     <property name="draw_indicator">True</property>
                     <property name="group">create_partition_create_type_primary</property>
                     <signal name="toggled" handler="on_create_partition_create_type_extended_toggled" swapped="no"/>
@@ -757,7 +744,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -776,7 +762,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -842,7 +827,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <!--<property name="use_stock">True</property>-->
             <signal name="clicked" handler="on_partition_list_new_activate" swapped="no"/>
           </object>
           <packing>
@@ -858,7 +842,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <!--<property name="use_stock">True</property>-->
             <signal name="clicked" handler="on_partition_list_delete_activate" swapped="no"/>
           </object>
           <packing>
@@ -874,7 +857,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <!--<property name="use_stock">True</property>-->
             <signal name="clicked" handler="on_partition_list_edit_activate" swapped="no"/>
           </object>
           <packing>
@@ -899,7 +881,6 @@
         </child>
         <child>
           <object class="GtkButton" id="partition_button_new_label">
-            <!-- <property name="label">New partition table</property> -->
             <property name="label">edit-clear-all</property>
             <property name="use_action_appearance">False</property>
             <property name="visible">True</property>
@@ -935,7 +916,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <!--<property name="use_stock">True</property>-->
             <signal name="clicked" handler="on_partition_list_undo_activate" swapped="no"/>
           </object>
           <packing>
@@ -944,19 +924,6 @@
             <property name="position">6</property>
           </packing>
         </child>
-        <!--
-        <child>
-          <object class="GtkSpinner" id="partition_recalculating_spinner">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">7</property>
-          </packing>
-        </child>
-        -->
       </object>
       <packing>
         <property name="expand">False</property>
@@ -1046,7 +1013,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <!--<property name="xalign">0</property>-->
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
@@ -1097,9 +1063,6 @@
                 <property name="position">1</property>
               </packing>
             </child>
-
-
-
             <child>
               <object class="GtkLabel" id="bootloader_device_label">
                 <property name="visible">True</property>
@@ -1113,9 +1076,6 @@
                 <property name="position">2</property>
               </packing>
             </child>
-
-
-
             <child>
               <object class="GtkComboBoxText" id="bootloader_device_entry">
                 <property name="visible">True</property>
@@ -1144,12 +1104,6 @@
       </packing>
     </child>
   </object>
-  
-  
-  
-  
-  
-  
   <object class="GtkDialog" id="luks_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -1173,7 +1127,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1190,7 +1143,6 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <!--<property name="use_stock">True</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>

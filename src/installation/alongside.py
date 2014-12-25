@@ -110,55 +110,84 @@ class InstallationAlongside(GtkBaseBox):
 
         self.label = self.ui.get_object('label_info')
 
-        oses = {}
-        oses = bootinfo.get_os_dict()
+        self.choose_partition_label = self.ui.get_object('choose_partition_label')
+        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')
 
-        # In InstallationAsk (ask.py) we've already checked that the user has Windows OS installed
-
-        # Delete OSes outside sda
-        devices = []
-        for device in oses:
-            if "sda" not in device:
-                devices.append(device)
-        for device in devices:
-            del oses[device]
-        devices = []
+        self.oses = {}
+        self.oses = bootinfo.get_os_dict()
 
         existing_device = None
         new_device = None
+        self.resize_widget = None
 
-        for device in oses:
-            if "Windows" in oses[device]:
-                existing_device = device
-                val = int(device[len("/dev/sdX"):]) + 1
-                new_device = device[:len("/dev/sdX")] + str(val)
+    def set_resize_widget(self, device_to_shrink):
+        val = int(device_to_shrink[len("/dev/sdX"):]) + 1
+        new_device = device_to_shrink[:len("/dev/sdX")] + str(val)
 
-        if existing_device and new_device:
-            print("existing device: ", existing_device)
-            print("new device: ", new_device)
+        print("existing device: ", device_to_shrink)
+        print("new device: ", new_device)
 
-            (min_size, part_size) = get_partition_size_info(existing_device)
-            max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
+        (min_size, part_size) = get_partition_size_info(device_to_shrink)
+        max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
 
-            print(max_size)
+        if self.resize_widget:
+            self.resize_widget.set_property("part_size", part_size)
+            self.resize_widget.set_property("min_size", min_size)
+            self.resize_widget.set_property("max_size", max_size)
+        else:
+            self.resize_widget = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
+            main_box = self.ui.get_object("alongside")
+            main_box.pack_start(self.resize_widget, True, False, 5)
 
-            self.resize = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
+        self.resize_widget.set_part_title("existing", self.oses[device_to_shrink], device_to_shrink)
+        icon_file = self.get_distributor_icon_file(self.oses[device_to_shrink])
+        self.resize_widget.set_part_icon("existing", icon_file=icon_file)
 
-            self.resize.set_part_title("existing", oses[existing_device], existing_device)
-            self.resize.set_part_title("new", "Antergos", new_device)
+        self.resize_widget.set_part_title("new", "New Antergos", new_device)
+        icon_file = self.get_distributor_icon_file("Antergos")
+        self.resize_widget.set_part_icon("new", icon_file=icon_file)
 
-            icons_path = os.path.join(self.settings.get('data'), "icons/scalable")
-            icon_file = os.path.join(icons_path, "distributor-logo-windows.svg")
-            self.resize.set_part_icon("existing", icon_file=icon_file)
+        self.resize_widget.set_pref_size(max_size)
 
+    def get_distributor_icon_file(self, os_name):
+
+        os_name = os_name.lower()
+
+        if "antergos" in os_name:
             icons_path = os.path.join(self.settings.get('data'), "icons/48x48")
             icon_file = os.path.join(icons_path, "distributor-logo-antergos.png")
-            self.resize.set_part_icon("new", icon_file=icon_file)
+            return icon_file
 
-            self.resize.set_pref_size(max_size)
+        icon_names = [
+            "lfs",
+            "magiea",
+            "manjaro",
+            "mint",
+            "archlinux",
+            "chakra",
+            "debian",
+            "deepin",
+            "fedora",
+            "gentoo",
+            "opensuse",
+            "siduction",
+            "kubuntu",
+            "lubuntu",
+            "ubuntu",
+            "windows"]
+        prefix = "distributor-logo-"
+        sufix = ".svg"
 
-            self.main_box = self.ui.get_object("alongside")
-            self.main_box.pack_start(self.resize, True, False, 5)
+        icons_path = os.path.join(self.settings.get('data'), "icons/scalable")
+        default = os.path.join(icons_path, "distributor-logo.svg")
+
+        for name in icon_names:
+            print(name, os_name)
+            if name in os_name:
+                icon_file = os.path.join(icons_path, prefix + name + sufix)
+                return icon_file
+
+        return default
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -166,13 +195,49 @@ class InstallationAlongside(GtkBaseBox):
         txt = '<span size="large">%s</span>' % txt
         self.label.set_markup(txt)
 
+        txt = _("Choose the partition that you want to shrink:")
+        self.choose_partition_label.set_markup(txt)
+
         self.header.set_subtitle(_("Antergos Alongside Installation"))
+
+    def on_choose_partition_combo_changed(self, combobox):
+        txt = combobox.get_active_text()
+        device = txt.split("(")[1][:-1]
+        self.set_resize_widget(device)
+
+    def select_first_combobox_item(self, combobox):
+        """ Automatically select first entry """
+        tree_model = combobox.get_model()
+        tree_iter = tree_model.get_iter_first()
+        combobox.set_active_iter(tree_iter)
 
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        self.fill_choose_partition_combo()
         self.forward_button.set_sensitive(False)
-    
+
+    def fill_choose_partition_combo(self):
+        self.choose_partition_combo.remove_all()
+
+        devices = []
+
+        for device in sorted(self.oses.keys()):
+            if "Swap" not in self.oses[device]:
+                devices.append(device)
+
+        if len(devices) > 1:
+            for device in sorted(devices):
+                self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
+                self.select_first_combobox_item(self.choose_partition_combo)
+        elif len(devices) == 1:
+            self.set_resize_widget(devices[0])
+            self.show_all()
+            self.choose_partition_label.hide()
+            self.choose_partition_combo.hide()
+        else:
+            print("ERROR!")
+
     def store_values(self):
         self.start_installation()
         return True
