@@ -145,10 +145,15 @@ class InstallationAlongside(GtkBaseBox):
             self.resize = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
 
             self.resize.set_part_title("existing", oses[existing_device], existing_device)
-            self.resize.set_part_icon_name("existing", "distributor-logo")
-
             self.resize.set_part_title("new", "Antergos", new_device)
-            self.resize.set_part_icon_name("new", "distributor-logo")
+
+            icons_path = os.path.join(self.settings.get('data'), "icons/scalable")
+
+            icon_file = os.path.join(icons_path, "distributor-logo-windows.svg")
+            self.resize.set_part_icon("existing", icon_file=icon_file)
+
+            icon_file = os.path.join(icons_path, "distributor-logo-archlinux.svg")
+            self.resize.set_part_icon("new", icon_file=icon_file)
 
             self.resize.set_pref_size(max_size)
 
@@ -167,7 +172,7 @@ class InstallationAlongside(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.forward_button.set_sensitive(False)
-
+    
     def store_values(self):
         self.start_installation()
         return True

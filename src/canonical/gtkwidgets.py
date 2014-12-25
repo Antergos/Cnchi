@@ -119,6 +119,9 @@ class PartitionBox(StylizedFrame):
         'icon-name': (
             GObject.TYPE_STRING, 'Icon Name', None, 'distributor-logo',
             GObject.PARAM_READWRITE),
+        'icon-file': (
+            GObject.TYPE_STRING, 'Icon File', None, 'distributor-logo',
+            GObject.PARAM_READWRITE),
         'extra': (
             GObject.TYPE_STRING, 'Extra Text', None, '',
             GObject.PARAM_READWRITE),
@@ -129,6 +132,8 @@ class PartitionBox(StylizedFrame):
             return self.ostitle.get_text()
         elif prop.name == 'icon-name':
             return self.logo.get_icon_name()
+        elif prop.name == 'icon-file':
+            return self.icon_file
         elif prop.name == 'extra':
             return self.extra.get_text()
         return getattr(self, prop.name)
@@ -140,13 +145,17 @@ class PartitionBox(StylizedFrame):
         elif prop.name == 'icon-name':
             self.logo.set_from_icon_name(value, Gtk.IconSize.DIALOG)
             return
+        elif prop.name == 'icon-file':
+            self.icon_file = value
+            self.logo.set_from_file(value)
+            return
         elif prop.name == 'extra':
             self.extra.set_markup('<small>%s</small>' %
                                   (value and value or ' '))
             return
         setattr(self, prop.name, value)
 
-    def __init__(self, title='', extra='', icon_name='distributor-logo'):
+    def __init__(self, title="", extra="", icon_name="", icon_file=""):
         # 10 px above the topmost element
         # 6 px between the icon and the title
         # 4 px between the title and the extra heading
@@ -155,8 +164,14 @@ class PartitionBox(StylizedFrame):
         StylizedFrame.__init__(self)
         vbox = Gtk.Box()
         vbox.set_orientation(Gtk.Orientation.VERTICAL)
-        self.logo = Gtk.Image.new_from_icon_name(icon_name,
-                                                 Gtk.IconSize.DIALOG)
+
+        if len(icon_file) > 0:
+            self.logo = Gtk.Image.new_from_file(icon_file)
+        else:
+            self.logo = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.DIALOG)
+
+        self.icon_file = icon_file
+
         align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
         align.set_padding(10, 0, 0, 0)
         align.add(self.logo)
@@ -292,11 +307,17 @@ class ResizeWidget(Gtk.Frame):
             if subtitle:
                 self.existing_part.set_property('extra', subtitle)
     
-    def set_part_icon_name(self, part, icon_name):
-        if part == 'new':
-            self.new_part.set_property('icon-name', icon_name)
-        else:
-            self.existing_part.set_property('icon-name', icon_name)
+    def set_part_icon(self, part, icon_name=None, icon_file=None):
+        if icon_name:
+            if part == 'new':
+                self.new_part.set_property('icon-name', icon_name)
+            else:
+                self.existing_part.set_property('icon-name', icon_name)
+        elif icon_file:
+            if part == 'new':
+                self.new_part.set_property('icon-file', icon_file)
+            else:
+                self.existing_part.set_property('icon-file', icon_file)
 
     def do_realize(self):
         # TEST: Make sure the value of the minimum size and maximum size
