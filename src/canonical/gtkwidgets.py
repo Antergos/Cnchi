@@ -286,6 +286,8 @@ class ResizeWidget(Gtk.Frame):
         self.max_size = max_size
 
         self.set_size_request(600, -1)
+        
+        self.set_shadow_type(Gtk.ShadowType.NONE)
 
         self.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
 

@@ -148,11 +148,11 @@ class InstallationAlongside(GtkBaseBox):
             self.resize.set_part_title("new", "Antergos", new_device)
 
             icons_path = os.path.join(self.settings.get('data'), "icons/scalable")
-
             icon_file = os.path.join(icons_path, "distributor-logo-windows.svg")
             self.resize.set_part_icon("existing", icon_file=icon_file)
 
-            icon_file = os.path.join(icons_path, "distributor-logo-archlinux.svg")
+            icons_path = os.path.join(self.settings.get('data'), "icons/48x48")
+            icon_file = os.path.join(icons_path, "distributor-logo-antergos.png")
             self.resize.set_part_icon("new", icon_file=icon_file)
 
             self.resize.set_pref_size(max_size)
