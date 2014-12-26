@@ -243,31 +243,34 @@ GObject.type_register(PartitionBox)
 class ResizeWidget(Gtk.Frame):
     __gtype_name__ = 'ResizeWidget'
     __gproperties__ = {
-        'part_size': (
+        'part-size': (
             GObject.TYPE_UINT64, 'Partition size',
             'The size of the partition being resized',
             1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE),
-        'min_size': (
+        'min-size': (
             GObject.TYPE_UINT64, 'Minimum size',
             'The minimum size that the existing partition can be resized to',
             0, GObject.G_MAXUINT64, 0, GObject.PARAM_READWRITE),
-        'max_size': (
+        'max-size': (
             GObject.TYPE_UINT64, 'Maximum size',
             'The maximum size that the existing partition can be resized to',
             1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE)
     }
 
     def do_get_property(self, prop):
-        if prop.name in ('part_size', 'min_size', 'max_size'):
-            return getattr(self, prop.name)
+        if prop.name in ('part-size', 'min-size', 'max-size'):
+            name = prop.name.replace('-', '_')
+            return getattr(self, name)
         else:
             return Gtk.Alignment.do_get_property(self, prop)
 
     def do_set_property(self, prop, value):
-        if prop.name in ('part_size', 'min_size', 'max_size'):
-            setattr(self, prop.name, value)
+        if prop.name in ('part-size', 'min-size', 'max-size'):
+            name = prop.name.replace('-', '_')
+            setattr(self, name, value)
             self.queue_draw()
         else:
+            print(prop.name, value)
             Gtk.Alignment.do_set_property(self, prop, value)
 
     def __init__(self, part_size, min_size, max_size):

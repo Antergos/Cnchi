@@ -151,11 +151,24 @@ class InstallationAlongside(GtkBaseBox):
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
         max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
+        if max_size < 0:
+            # Full Antergos does not fit but maybe base fits... ask user.
+            txt = _("Cnchi recommends at least 6.5GB free to install Antergos.")
+            txt += "\n\n"
+            txt += _("New partition %s resulting of shrinking %s will not have enough free space for a full installation.") % (new_device, device_to_shrink)
+            txt += "\n\n"
+            txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.")
+            txt += "\n\n"
+            txt += _("Install at your own risk!")
+            show.warning(self.get_toplevel(), txt)
+            max_size = part_size
+
+        print(min_size, max_size, part_size)
 
         if self.resize_widget:
-            self.resize_widget.set_property("part_size", part_size)
-            self.resize_widget.set_property("min_size", min_size)
-            self.resize_widget.set_property("max_size", max_size)
+            self.resize_widget.set_property("part_size", int(part_size))
+            self.resize_widget.set_property("min_size", int(min_size))
+            self.resize_widget.set_property("max_size", int(max_size))
         else:
             self.resize_widget = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
             main_box = self.ui.get_object("alongside")
@@ -170,6 +183,8 @@ class InstallationAlongside(GtkBaseBox):
         self.resize_widget.set_part_icon("new", icon_file=icon_file)
 
         self.resize_widget.set_pref_size(max_size)
+        
+        self.resize_widget.show_all()
 
     def get_distributor_icon_file(self, os_name):
 
@@ -191,7 +206,6 @@ class InstallationAlongside(GtkBaseBox):
         default = os.path.join(icons_path, "distributor-logo.svg")
 
         for name in icon_names:
-            print(name, os_name)
             if name in os_name:
                 icon_file = os.path.join(icons_path, prefix + name + sufix)
                 return icon_file
@@ -212,6 +226,7 @@ class InstallationAlongside(GtkBaseBox):
     def on_choose_partition_combo_changed(self, combobox):
         txt = combobox.get_active_text()
         device = txt.split("(")[1][:-1]
+        print(device)
         self.set_resize_widget(device)
 
     def select_first_combobox_item(self, combobox):
@@ -238,14 +253,14 @@ class InstallationAlongside(GtkBaseBox):
         if len(devices) > 1:
             for device in sorted(devices):
                 self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
-                self.select_first_combobox_item(self.choose_partition_combo)
+            self.select_first_combobox_item(self.choose_partition_combo)
         elif len(devices) == 1:
             self.set_resize_widget(devices[0])
             self.show_all()
             self.choose_partition_label.hide()
             self.choose_partition_combo.hide()
         else:
-            print("ERROR!")
+            logging.error("Can't find any installed OS!")
 
     def store_values(self):
         self.start_installation()
