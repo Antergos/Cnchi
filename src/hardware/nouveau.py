@@ -44,7 +44,7 @@ class Nouveau(Hardware):
     def get_packages(self):
         pkgs = ["xf86-video-nouveau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-mesa-dri", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-mesa", "lib32-mesa-libgl"])
         return pkgs
 
     def post_install(self, dest_dir):
