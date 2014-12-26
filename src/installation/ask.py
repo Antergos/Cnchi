@@ -72,12 +72,12 @@ class InstallationAsk(GtkBaseBox):
         self.other_oses = []
         for key in oses:
             # We only check the first hard disk ¿?
-            if "sda" in key and oses[key] not in ["unknown", "Swap"] and oses[key] not in self.other_oses:
+            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
                 self.other_oses.append(oses[key])
 
         self.enable_alongside = False
         self.check_alongside()
- 
+
         # By default, select automatic installation
         self.next_page = "installation_automatic"
 
@@ -86,7 +86,7 @@ class InstallationAsk(GtkBaseBox):
         # Alongside only works when Windows is installed on sda, and nothing else
         msg = ""
         self.enable_alongside = False
-        
+
         # FIXME: Alongside does not work in UEFI systems
         if os.path.exists("/sys/firmware/efi"):
             msg = _("The 'alongside' installation mode does not work in UEFI systems")
@@ -219,7 +219,7 @@ class InstallationAsk(GtkBaseBox):
             txt = _("Install Antergos alongside %s") % oses_str
             radio = self.ui.get_object("alongside_radiobutton")
             radio.set_label(txt)
-    
+
             label = self.ui.get_object("alongside_description")
             txt = _("Installs Antergos without removing %s") % oses_str
             txt = description_style % txt
@@ -230,7 +230,7 @@ class InstallationAsk(GtkBaseBox):
             intro_txt += "\n" + _("What do you want to do?")
         else:
             intro_txt = _("What do you want to do?")
-            
+
         intro_label = self.ui.get_object("introduction")
         intro_txt = bold_style % intro_txt
         intro_label.set_markup(intro_txt)
