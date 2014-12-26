@@ -134,13 +134,19 @@ class InstallationAlongside(GtkBaseBox):
 
     def get_new_device(self, device_to_shrink):
         """ Get new device where Cnchi will install Antergos """
-        val = int(device_to_shrink[len("/dev/sdX"):]) + 1
-        new_device = device_to_shrink[:len("/dev/sdX")] + str(val)
+        number = int(device_to_shrink[len("/dev/sdX"):])
+        disk = device_to_shrink[:len("/dev/sdX")]
 
-        # Does new_device already exist?
+        new_number = number + 1
+        new_device =  disk + str(new_number)
 
-        if self.partition_exists(new_device):
-            print(new_device, "ALREADY EXISTS")
+        while self.partition_exists(new_device):
+            new_number += 1
+            new_device = disk + str(new_number)
+
+        if new_number > 4:
+            # No primary partitions left
+            print("NO PRIMARY PARTITIONS LEFT!")
 
         return new_device
 
