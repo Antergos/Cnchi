@@ -60,7 +60,7 @@ from gtkbasebox import GtkBaseBox
 MIN_ROOT_SIZE = 6500
 
 def get_partition_size_info(partition_path, human=False):
-    """ Gets partition used and available space """
+    """ Gets partition used and available space using df command """
 
     min_size = "0"
     part_size = "0"
@@ -120,12 +120,34 @@ class InstallationAlongside(GtkBaseBox):
         new_device = None
         self.resize_widget = None
 
-    def set_resize_widget(self, device_to_shrink):
+    def partition_exists(self, device):
+        """ Check if a partition already exists """
+        partition = device
+        if "/dev/" in partition:
+            partition = partition[len("/dev/"):]
+
+        exists = False
+        with open("/proc/partitions") as partitions:
+            if partition in partitions.read():
+                exists = True
+        return exists
+
+    def get_new_device(self, device_to_shrink):
+        """ Get new device where Cnchi will install Antergos """
         val = int(device_to_shrink[len("/dev/sdX"):]) + 1
         new_device = device_to_shrink[:len("/dev/sdX")] + str(val)
 
-        print("existing device: ", device_to_shrink)
-        print("new device: ", new_device)
+        # Does new_device already exist?
+
+        if self.partition_exists(new_device):
+            print(new_device, "ALREADY EXISTS")
+
+        return new_device
+
+    def set_resize_widget(self, device_to_shrink):
+        new_device  = self.get_new_device(device_to_shrink)
+
+        logging.debug("Will shrink device %s and create new device %s", device_to_shrink, new_device)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
         max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
@@ -159,22 +181,9 @@ class InstallationAlongside(GtkBaseBox):
             return icon_file
 
         icon_names = [
-            "lfs",
-            "magiea",
-            "manjaro",
-            "mint",
-            "archlinux",
-            "chakra",
-            "debian",
-            "deepin",
-            "fedora",
-            "gentoo",
-            "opensuse",
-            "siduction",
-            "kubuntu",
-            "lubuntu",
-            "ubuntu",
-            "windows"]
+            "lfs", "magiea", "manjaro", "mint", "archlinux", "chakra",
+            "debian", "deepin", "fedora", "gentoo", "opensuse", "siduction",
+            "kubuntu", "lubuntu", "ubuntu", "windows"]
         prefix = "distributor-logo-"
         sufix = ".svg"
 
