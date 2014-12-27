@@ -261,7 +261,7 @@ def update_cnchi():
 
     if upd.update():
         logging.info(_("Program updated! Restarting..."))
-        main_window.remove_temp_files()
+        misc.remove_temp_files()
         if cmd_line.update:
             # Remove -u and --update options from new call
             new_argv = []
@@ -291,9 +291,15 @@ def setup_gettext():
 
 def check_for_files():
     """ Check for some necessary files. Cnchi can't run without them """
-    if not os.path.exists("/usr/share/cnchi") or not os.path.exists("/usr/share/cnchi/ui"):
-        print(_("Cnchi files not found. Please, install Cnchi using pacman"))
-        return False
+    paths = [
+        "/usr/share/cnchi",
+        "/usr/share/cnchi/ui",
+        "/usr/share/cnchi/data"]
+
+    for path in paths:
+        if not os.path.exists(path):
+            print(_("Cnchi files not found. Please, install Cnchi using pacman"))
+            return False
 
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
         print(_("Please install %s before running this installer") % "hdparm")
@@ -315,7 +321,7 @@ def init_cnchi():
     cmd_line = parse_options()
 
     if cmd_line.force:
-        remove_temp_files()
+        misc.remove_temp_files()
 
     # Drop root privileges
     misc.drop_privileges()
@@ -341,24 +347,11 @@ def init_cnchi():
     # Init PyObject Threads
     threads_init()
 
-def remove_temp_files():
-    tmp_files = [
-        ".setup-running",
-        ".km-running",
-        "setup-pacman-running",
-        "setup-mkinitcpio-running",
-        ".tz-running",
-        ".setup" ]
-    for tmp_file in tmp_files:
-        path = os.path.join("/tmp", tmp_file)
-        if os.path.exists(path):
-            os.remove(path)
-
 '''
 def sigterm_handler(_signo, _stack_frame):
     print(_signo)
     print(_stack_frame)
-    remove_temp_files()
+    misc.remove_temp_files()
     logging.shutdown()
     sys.exit(0)
 '''

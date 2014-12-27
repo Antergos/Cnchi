@@ -98,19 +98,6 @@ class Location(GtkBaseBox):
         self.hide_all()
         self.fill_listbox()
 
-        '''
-        if self.listbox_items == 1:
-            # If we have only one option, don't bother our beloved user
-            self.store_values()
-            if direction == 'forwards':
-                GLib.idle_add(self.forward_button.clicked)
-            else:
-                GLib.idle_add(self.backwards_button.clicked)
-
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-        else:
-        '''
         self.select_first_listbox_item()
         self.translate_ui()
         self.show_all()
@@ -127,7 +114,6 @@ class Location(GtkBaseBox):
             tree = ET.parse(xml_path)
         except FileNotFoundError as err:
             logging.error(err)
-            print(err)
             sys.exit(1)
 
         root = tree.getroot()
@@ -147,7 +133,6 @@ class Location(GtkBaseBox):
             tree = ET.parse(xml_path)
         except FileNotFoundError as err:
             logging.error(err)
-            print(err)
             sys.exit(1)
 
         root = tree.getroot()
@@ -202,7 +187,7 @@ class Location(GtkBaseBox):
         if listbox_row is not None:
             label = listbox_row.get_children()[0]
             if label is not None:
-                print(label.get_text())
+                #print(label.get_text())
                 self.selected_country = label.get_text()
 
     def set_locale(self, mylocale):
