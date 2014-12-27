@@ -39,9 +39,9 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-import canonical.gtkwidgets as gtkwidgets
-import canonical.misc as misc
-import canonical.validation as validation
+import misc.gtkwidgets as gtkwidgets
+import misc.misc as misc
+import misc.validation as validation
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
@@ -82,12 +82,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.lv_partitions = []
         self.disks_changed = []
-        
+
         # Store here all LUKS options for each partition (if any)
         # stores tuple (use_luks, vol_name, password)
         # uses partition uid as index
         self.luks_options = {}
-        
+
         # Store here LUKS options for current partition (create/edit dialog)
         # (they will finally be stored in luks_options if user selects ok in create/edit partition dialog)
         # stores tuple (use_luks, vol_name, password)
@@ -177,12 +177,12 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list = self.ui.get_object('partition_list_treeview')
         self.partition_list_store = None
         self.prepare_partition_list()
-        
+
         self.partition_list.set_hexpand(True)
 
         # Get encryption (LUKS) options dialog
         self.luks_dialog = self.ui.get_object('luks_dialog')
-        
+
         switch = self.ui.get_object('luks_use_luks_switch')
         switch.connect('notify::active', self.on_luks_use_luks_switch_activate)
 
@@ -207,14 +207,14 @@ class InstallationAdvanced(GtkBaseBox):
             ("create_partition_ok", "dialog-apply"),
             ("luks_cancel_button", "dialog-cancel"),
             ("luks_ok_button", "dialog-apply")]
-        
+
         for grp in btns:
             (btn_id, icon) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
-        
+
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
         if path and not partition:
@@ -258,10 +258,10 @@ class InstallationAdvanced(GtkBaseBox):
             button["delete"] = self.ui.get_object('partition_button_delete')
             button["edit"] = self.ui.get_object('partition_button_edit')
             button["new_label"] = self.ui.get_object('partition_button_new_label')
-            
+
             for key in button:
                 button[key].set_sensitive(False)
-            
+
             if self.stage_opts:
                 button["undo"].set_sensitive(True)
 
@@ -319,7 +319,7 @@ class InstallationAdvanced(GtkBaseBox):
     def fill_bootloader_entry(self):
         """ Put the bootloaders for the user to choose """
         self.bootloader_entry.remove_all()
-        
+
         if os.path.exists('/sys/firmware/efi'):
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Gummiboot")
@@ -332,7 +332,7 @@ class InstallationAdvanced(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    def on_bootloader_device_check_toggled(self, checkbox):       
+    def on_bootloader_device_check_toggled(self, checkbox):
         status = checkbox.get_active()
 
         widget_ids = [
@@ -454,13 +454,13 @@ class InstallationAdvanced(GtkBaseBox):
                     mount_point = ""
                     used = ""
                     formatable = True
-                    
+
                     partition_path = "/dev/mapper/%s-%s" % (volume_group, logical_volume)
                     self.all_partitions.append(partition_path)
                     self.lv_partitions.append(partition_path)
-                    
+
                     uid = self.gen_partition_uid(path=partition_path)
-                    
+
                     if fs.get_type(partition_path):
                         fs_type = fs.get_type(partition_path)
                     elif used_space.is_btrfs(partition_path):
@@ -527,14 +527,14 @@ class InstallationAdvanced(GtkBaseBox):
                 row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0, False, is_ssd, True, True, False]
                 disk_parent = self.partition_list_store.append(None, row)
                 parent = disk_parent
-                
+
                 extended_parent = None
 
                 # Create a list of partitions for this device (/dev/sda for example)
                 partitions = pm.get_partitions(disk)
                 self.all_partitions.append(partitions)
                 partition_list = pm.order_partitions(partitions)
-                
+
                 # Append all partitions to our model
                 for partition_path in partition_list:
                     # Get partition size
@@ -669,7 +669,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list_store[path][COL_SSD_ACTIVE] = not self.partition_list_store[path][COL_SSD_ACTIVE]
         disk_path = self.partition_list_store[path][COL_PATH]
         self.ssd[disk_path] = self.partition_list_store[path][COL_SSD_ACTIVE]
-        
+
     def on_luks_password_changed(self, widget):
         """ User has introduced new information. Check it here. """
         luks_password_entry = self.ui.get_object('luks_password_entry')
@@ -677,7 +677,7 @@ class InstallationAdvanced(GtkBaseBox):
         luks_password_confirm_image = self.ui.get_object('luks_password_confirm_image')
         luks_password_status_label = self.ui.get_object('luks_password_status_label')
         luks_password_strength = self.ui.get_object('luks_password_strength')
-        
+
         if widget == luks_password_entry or widget == luks_password_confirm_entry:
             validation.check_password(
                 luks_password_entry,
@@ -781,7 +781,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
-                
+
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition (for process.py to know)
                     self.settings.set('use_luks_in_root', self.tmp_luks_options[0])
@@ -791,7 +791,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Update the partition list treeview
         self.update_view()
-    
+
     def update_view(self):
         """ Reloads widgets contents """
         self.fill_partition_list()
@@ -1127,13 +1127,13 @@ class InstallationAdvanced(GtkBaseBox):
     def partition_encryption_settings_clicked(self, widget):
         """ Show LUKS encryption options dialog """
         # TODO: Check Password confirmation (compare both entries)
-        
+
         entry_vol_name = self.ui.get_object('luks_vol_name_entry')
         entry_password = self.ui.get_object('luks_password_entry')
         entry_password_confirm = self.ui.get_object('luks_password_confirm_entry')
-        
+
         (use_luks, vol_name, password) = self.tmp_luks_options
-        
+
         entry_vol_name.set_text(vol_name)
         entry_password.set_text(password)
         entry_password_confirm.set_text(password)
@@ -1153,7 +1153,7 @@ class InstallationAdvanced(GtkBaseBox):
             password = entry_password.get_text()
             password_confirm = entry_password_confirm.get_text()
             self.tmp_luks_options = (use_luks, vol_name, password)
-        
+
         self.luks_dialog.hide()
 
     def on_luks_use_luks_switch_activate(self, widget, data):
@@ -1199,10 +1199,10 @@ class InstallationAdvanced(GtkBaseBox):
     def on_create_partition_use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
-        
+
         p_mount_combo = self.ui.get_object('create_partition_mount_combo')
         p_mount_label = self.ui.get_object('create_partition_mount_label')
-        
+
         if fs_selected == 'swap':
             p_mount_combo.hide()
             p_mount_label.hide()
@@ -1213,10 +1213,10 @@ class InstallationAdvanced(GtkBaseBox):
     def on_edit_partition_use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
-        
+
         p_mount_combo = self.ui.get_object('edit_partition_mount_combo')
         p_mount_label = self.ui.get_object('edit_partition_mount_label')
-        
+
         if fs_selected == 'swap':
             p_mount_combo.hide()
             p_mount_label.hide()
@@ -1281,7 +1281,7 @@ class InstallationAdvanced(GtkBaseBox):
         txt = "<span weight='bold' size='small'>%s</span>" % txt
         label = self.ui.get_object('bootloader_device_info_label')
         label.set_markup(txt)
-        
+
         txt = _("Bootloader:")
         label = self.ui.get_object('bootloader_label')
         label.set_markup(txt)
@@ -1452,7 +1452,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.translate_ui()
         self.update_view()
         self.show_all()
-        
+
         self.fill_bootloader_entry()
 
         #button = self.ui.get_object('create_partition_encryption_settings')
@@ -1608,7 +1608,7 @@ class InstallationAdvanced(GtkBaseBox):
         mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
-        
+
         if mem < 4096:
             return True
         return False
@@ -1888,7 +1888,7 @@ class InstallationAdvanced(GtkBaseBox):
         changelist_dialog = self.ui.get_object("changelist_dialog")
         changelist_dialog.set_title(_('These disks will have partition actions:'))
         changelist_dialog.show_all()
-        
+
         # Dialog windows should be set transient for the main application window they were spawned from.
         changelist_dialog.set_transient_for(self.get_toplevel())
 
@@ -1926,10 +1926,10 @@ class InstallationAdvanced(GtkBaseBox):
         self.set_cursor(Gdk.CursorType.WATCH)
         #self.stop_advanced_progressbar = False
         #self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
-        
+
         # Apply partition changes
         self.create_staged_partitions()
-        
+
         # Start the installation process
         self.start_installation()
 
@@ -2033,8 +2033,8 @@ class InstallationAdvanced(GtkBaseBox):
                                 txt = _("Encrypting %s, assigning volume name %s and formatting it...") % (partition_path, vol_name)
                                 logging.info(txt)
                                 if not self.testing:
-									# Do real encryption here!
-									# TODO: Show a progress dialog here as setup_luks is slow
+                                    # Do real encryption here!
+                                    # TODO: Show a progress dialog here as setup_luks is slow
                                     with misc.raised_privileges():
                                         ap.setup_luks(luks_device=partition_path, luks_name=vol_name, luks_pass=password)
                                     self.settings.set("use_luks", True)
@@ -2069,7 +2069,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def start_installation(self):
         """ Start installation process """
-        
+
         # Fill fs_devices and mount_devices dicts that are going to be used by InstallationProcess
         fs_devices = {}
         mount_devices = {}
@@ -2097,7 +2097,7 @@ class InstallationAdvanced(GtkBaseBox):
                         continue
                     mount_devices[mount_point] = partition_path
                     fs_devices[partition_path] = fs_type
-                
+
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
                     if use_luks and len(vol_name) > 0:
@@ -2113,7 +2113,7 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
-            
+
             self.settings.set('bootloader', self.bootloader)
             msg = _("Antergos will install the bootloader %s in %s")
             msg = msg % (self.bootloader, self.bootloader_device)

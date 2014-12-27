@@ -25,7 +25,7 @@
 from gi.repository import Gtk
 
 import os
-import canonical.validation as validation
+import misc.validation as validation
 import config
 import show_message as show
 
@@ -136,7 +136,7 @@ class UserInfo(GtkBaseBox):
         #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         #self.forward_button.set_image(image1)
         #self.forward_button.set_always_show_image(True)
-        
+
     def hide_widgets(self):
         """ Hide unused and message widgets """
         ok_widgets = self.image_is_ok.values()

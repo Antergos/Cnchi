@@ -27,7 +27,7 @@
 import os
 import shutil
 import subprocess
-import canonical.misc as misc
+import misc.misc as misc
 
 @misc.raise_privileges
 def setup(username, dest_dir):

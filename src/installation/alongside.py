@@ -44,8 +44,8 @@ try:
 except ImportError as err:
     logging.error(_("Can't import parted module: %s"), str(err))
 
-import canonical.misc as misc
-import canonical.gtkwidgets as gtkwidgets
+import misc.misc as misc
+import misc.gtkwidgets as gtkwidgets
 import show_message as show
 import bootinfo
 
@@ -189,7 +189,7 @@ class InstallationAlongside(GtkBaseBox):
         self.resize_widget.set_part_icon("new", icon_file=icon_file)
 
         self.resize_widget.set_pref_size(max_size)
-        
+
         self.resize_widget.show_all()
 
     def get_distributor_icon_file(self, os_name):

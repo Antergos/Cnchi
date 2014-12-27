@@ -26,8 +26,9 @@
 
 import subprocess
 import shlex
-import canonical.misc as misc
 import logging
+
+import misc.misc as misc
 
 # constants
 NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'swap', 'xfs']

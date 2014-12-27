@@ -38,7 +38,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 # Import functions
 import config
-import canonical.i18n as i18n
+import misc.i18n as i18n
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -103,7 +103,7 @@ class Language(GtkBaseBox):
             logging.error(err)
             print(err)
             sys.exit(1)
-        
+
         current_language = self.langcode_to_lang(display_map)
         for lang in sorted_choices:
             box = Gtk.VBox()

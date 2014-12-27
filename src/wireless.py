@@ -24,7 +24,7 @@
 import os
 import dbus
 from gi.repository import Gtk
-from canonical import misc, nm
+from misc import misc, nm
 
 from gtkbasebox import GtkBaseBox
 
@@ -40,12 +40,12 @@ class Wireless(GtkBaseBox):
         super().__init__(self, params, "wireless", prev_page, next_page)
 
         self.page = self.ui.get_object('wireless')
-        
+
         self.nmwidget = self.ui.get_object('nmwidget')
         self.nmwidget.connect('connection', self.state_changed)
         self.nmwidget.connect('selection_changed', self.selection_changed)
         self.nmwidget.connect('pw_validated', self.pw_validated)
-        
+
         self.no_wireless = self.ui.get_object('no_wireless')
         self.use_wireless = self.ui.get_object('use_wireless')
         self.use_wireless.connect('toggled', self.wireless_toggled)
@@ -61,13 +61,13 @@ class Wireless(GtkBaseBox):
     def translate_ui(self):
         lbl = self.ui.get_object('wireless_section_label')
         lbl.set_markup(_("Connecting this computer to a wi-fi network"))
-        
+
         btn = self.ui.get_object('no_wireless')
         btn.set_label(_("I don't want to connect to a wi-fi network right now"))
-        
+
         btn = self.ui.get_object('use_wireless')
         btn.set_label(_("Connect to this network"))
-        
+
         password_label_text = _("Password:")
         display_password_text = _("Display password")
         self.nmwidget.translate(password_label_text, display_password_text)
@@ -76,7 +76,7 @@ class Wireless(GtkBaseBox):
         self.have_selection = True
         self.use_wireless.set_active(True)
         assert self.state is not None
-        
+
         if self.state == nm.NM_STATE_CONNECTING:
             self.next_normal = True
             print("NM_SATE_CONNECTING")
@@ -90,7 +90,7 @@ class Wireless(GtkBaseBox):
 
     def wireless_toggled(self, unused):
         print("wireless_toggled")
-        
+
         if self.use_wireless.get_active():
             self.nmwidget.hbox.set_sensitive(True)
             if not self.have_selection:

@@ -42,7 +42,7 @@ import keymap
 import timezone
 import user_info
 import slides
-import canonical.misc as misc
+import misc.misc as misc
 import info
 import show_message as show
 import desktop_environments as desktops

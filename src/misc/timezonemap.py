@@ -28,12 +28,14 @@
 """ Custom widget to show world time zones """
 
 from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
-import canonical.tz as tz
 
 from datetime import datetime
+
 import os
 import math
 import sys
+
+import misc.tz as tz
 
 try:
     import xml.etree.cElementTree as ET

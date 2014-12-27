@@ -31,7 +31,7 @@ import os
 import info
 import logging
 import shutil
-import canonical.misc as misc
+import misc.misc as misc
 
 import download.download_urllib as download
 

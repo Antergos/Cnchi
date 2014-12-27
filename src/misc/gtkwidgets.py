@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 #
-# Copyright (C) 2012 Canonical Ltd.
+# Copyright (c) 2012 Canonical Ltd.
+# Copyright (c) 2013,2014 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +20,8 @@
 
 import cairo
 from gi.repository import Gtk, Gdk, GObject, Pango
-import canonical.misc as misc
+
+import misc.misc as misc
 
 def refresh():
     while Gtk.events_pending():
@@ -289,7 +291,7 @@ class ResizeWidget(Gtk.Frame):
         self.max_size = max_size
 
         self.set_size_request(600, -1)
-        
+
         self.set_shadow_type(Gtk.ShadowType.NONE)
 
         self.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
@@ -311,7 +313,7 @@ class ResizeWidget(Gtk.Frame):
             self.existing_part.set_property('title', title)
             if subtitle:
                 self.existing_part.set_property('extra', subtitle)
-    
+
     def set_part_icon(self, part, icon_name=None, icon_file=None):
         if icon_name:
             if part == 'new':

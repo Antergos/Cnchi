@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 #
 # Copyright (c) 2012 Canonical Ltd.
-# Copyright (c) 2013 Antergos
+# Copyright (c) 2013,2014 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-""" Some functions here are 'stolen' from Ubuntu's ubiquity.
-Many of them are not used and should be removed. """
-
 from collections import namedtuple
 import contextlib
 import grp
@@ -31,7 +28,7 @@ import shutil
 import subprocess
 import syslog
 import socket
-import canonical.osextras as osextras
+import misc.osextras as osextras
 import logging
 
 def copytree(src, dst, symlinks=False, ignore=None):

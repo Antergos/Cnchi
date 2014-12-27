@@ -35,7 +35,7 @@ from multiprocessing import Queue, Lock
 import show_message as show
 import logging
 import subprocess
-import canonical.misc as misc
+import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
 

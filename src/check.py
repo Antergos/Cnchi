@@ -28,8 +28,8 @@ from gi.repository import Gtk, GLib
 import subprocess
 import os
 import logging
-import canonical.gtkwidgets as gtkwidgets
-import canonical.misc as misc
+import misc.gtkwidgets as gtkwidgets
+import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
 

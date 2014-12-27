@@ -47,7 +47,7 @@ BASE_DIR = os.path.dirname(__file__) or '.'
 SRC_DIR = os.path.join(BASE_DIR, 'src')
 sys.path.insert(0, SRC_DIR)
 
-import canonical.misc as misc
+import misc.misc as misc
 import info
 import updater
 
@@ -306,14 +306,14 @@ def init_cnchi():
 
     # Sets SIGTERM handler, so Cnchi can clean up before exiting
     #signal.signal(signal.SIGTERM, sigterm_handler)
-    
+
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
 
     # Command line options
     global cmd_line
     cmd_line = parse_options()
-    
+
     if cmd_line.force:
         remove_temp_files()
 
@@ -354,7 +354,7 @@ def remove_temp_files():
         if os.path.exists(path):
             os.remove(path)
 
-'''    
+'''
 def sigterm_handler(_signo, _stack_frame):
     print(_signo)
     print(_stack_frame)

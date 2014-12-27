@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
-import canonical.misc as misc
+import misc.misc as misc
 from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed

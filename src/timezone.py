@@ -24,8 +24,6 @@
 
 from gi.repository import Gtk, Gdk
 
-import timezonemap as TimezoneMap
-
 import os
 import threading
 import multiprocessing
@@ -39,8 +37,9 @@ import logging
 import dbus
 import subprocess
 import hashlib
-import canonical.tz as tz
-import canonical.misc as misc
+import misc.tz as tz
+import misc.misc as misc
+import misc.timezonemap as TimezoneMap
 
 from gtkbasebox import GtkBaseBox
 

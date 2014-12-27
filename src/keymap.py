@@ -27,11 +27,12 @@ from gi.repository import Gtk, GLib
 # Import functions
 import config
 import os
-import canonical.keyboard_names as keyboard_names
 import logging
-import canonical.misc as misc
 import subprocess
-import keyboard_widget
+
+import misc.misc as misc
+import misc.keyboard_names as keyboard_names
+import misc.keyboard_widget as keyboard_widget
 
 from gtkbasebox import GtkBaseBox
 
@@ -45,7 +46,7 @@ class Keymap(GtkBaseBox):
 
         self.layout_treeview = self.ui.get_object("keyboardlayout")
         self.variant_treeview = self.ui.get_object("keyboardvariant")
-        
+
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
@@ -54,7 +55,7 @@ class Keymap(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
-        
+
         lbl = self.ui.get_object("label_layouts")
         lbl.set_markup(_("Keyboard Layouts"))
 
@@ -76,7 +77,7 @@ class Keymap(GtkBaseBox):
 
     def prepare(self, direction):
         self.translate_ui()
-        
+
         if direction == 'forwards':
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
@@ -98,7 +99,7 @@ class Keymap(GtkBaseBox):
                     self.select_value_in_treeview(self.variant_treeview, "Canada - English")
 
             logging.info(_("keyboard_layout is %s") % selected_country)
-        
+
         self.prepare_called = True
 
         self.show_all()
@@ -142,7 +143,7 @@ class Keymap(GtkBaseBox):
         # Add layouts (sorted)
         for layout in sorted_layouts:
             liststore.append([layout])
-        
+
         # Unblock signal
         self.layout_treeview.handler_unblock_by_func(self.on_keyboardlayout_cursor_changed)
 
@@ -201,7 +202,7 @@ class Keymap(GtkBaseBox):
                     sorted_variants.append(variant)
 
                 sorted_variants = misc.sort_list(sorted_variants, self.settings.get("locale"))
-                
+
                 # Block signal
                 self.variant_treeview.handler_block_by_func(self.on_keyboardvariant_cursor_changed)
 
@@ -248,17 +249,17 @@ class Keymap(GtkBaseBox):
             lang = "C"
 
         kbd_names._load(lang)
-        
+
         try:
             keyboard_layout_human = self.keyboard_layout_human
         except AttributeError:
             keyboard_layout_human = "USA"
             self.keyboard_layout_human = keyboard_layout_human
-        
+
         country_code = kbd_names._layout_by_human[self.keyboard_layout_human]
 
         self.keyboard_layout = country_code
-        
+
         self.keyboard_variant = kbd_names._variant_by_human[country_code][keyboard_variant_human]
 
         self.settings.set("keyboard_layout", self.keyboard_layout)

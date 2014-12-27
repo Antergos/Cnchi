@@ -26,8 +26,9 @@
 
 import subprocess
 import shlex
-import canonical.misc as misc
 import logging
+
+import misc.misc as misc
 
 @misc.raise_privileges
 def get_used_ntfs(part):
@@ -156,7 +157,7 @@ def get_used_reiser(part):
 
         # Added 'replace' parameter (not tested) as it fails decoding. See issue #90
         result = result.decode('utf-8', 'replace')
-        
+
         lines = result.split('\n')
         for line in lines:
             if "Count of blocks on the device" in line:

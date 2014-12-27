@@ -41,7 +41,7 @@ from mako.lookup import TemplateLookup
 
 import desktop_environments as desktops
 import parted3.fs_module as fs
-import canonical.misc as misc
+import misc.misc as misc
 import pacman.pac as pac
 import info
 import encfs
@@ -975,7 +975,7 @@ class InstallationProcess(multiprocessing.Process):
         """ Do all set up needed by the user's selected features """
         #if self.settings.get("feature_aur"):
         #    logging.debug(_("Configuring AUR..."))
-        
+
         services = []
 
         if self.settings.get("feature_bluetooth"):
@@ -1004,7 +1004,7 @@ class InstallationProcess(multiprocessing.Process):
             chroot_run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
             chroot_run(["chmod", "a-x", "/etc/grub.d/10_linux"])
             chroot_run(["chmod", "a+x", "/etc/grub.d/10_antergos"])
-        
+
         self.enable_services(services)
 
     def set_display_manager(self):

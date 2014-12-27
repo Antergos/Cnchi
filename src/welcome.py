@@ -26,7 +26,7 @@ from gi.repository import Gtk, Gdk
 import subprocess, sys, os
 import gettext
 import os
-import canonical.misc as misc
+import misc.misc as misc
 import logging
 import sys
 
@@ -129,7 +129,7 @@ class Welcome(GtkBaseBox):
         self.labels['loading'].set_markup(txt)
         self.labels['loading'].queue_draw()
         misc.gtk_refresh()
-                        
+
     def store_values(self):
         self.forward_button.show()
         return True

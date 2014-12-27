@@ -30,7 +30,7 @@ import logging
 import time
 import os
 import shutil
-import canonical.misc as misc
+import misc.misc as misc
 
 try:
     import requests

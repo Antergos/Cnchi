@@ -27,8 +27,9 @@
 import subprocess
 import shlex
 import os
-import canonical.misc as misc
 import logging
+
+import misc.misc as misc
 import show_message as show
 
 try:

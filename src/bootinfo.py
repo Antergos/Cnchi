@@ -37,7 +37,7 @@ except NameError as err:
     def _(message):
         return message
 
-import canonical.misc as misc
+import misc.misc as misc
 
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
