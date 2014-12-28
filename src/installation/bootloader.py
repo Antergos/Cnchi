@@ -40,6 +40,7 @@ except NameError as err:
     def _(message):
         return message
 
+
 class Bootloader(object):
     def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
@@ -201,6 +202,9 @@ class Bootloader(object):
 
         self.copy_grub2_theme_files()
 
+        # Add -l option to os-prober's umount call so that it does not hang
+        self.apply_osprober_patch()
+
         # Run grub-mkconfig last
         locale = self.settings.get("locale")
         try:
@@ -296,6 +300,9 @@ class Bootloader(object):
         # We call mount_special_dirs here just to be sure
         chroot.mount_special_dirs(self.dest_dir)
 
+        # Add -l option to os-prober's umount call so that it does not hang
+        self.apply_osprober_patch()
+
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
@@ -305,9 +312,8 @@ class Bootloader(object):
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
-        paths = []
-        paths.append(os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"))
-        paths.append(os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub%s.efi" % spec_uefi_arch))
+        paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
+                 os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub%s.efi" % spec_uefi_arch)]
 
         exists = False
 
@@ -321,6 +327,17 @@ class Bootloader(object):
         else:
             logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
             self.settings.set('bootloader_installation_successful', False)
+
+    def apply_osprober_patch(self):
+        # Add -l option to os-prober's umount call so that it does not hang
+        try:
+            osp_file = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
+            cmd = ['sed', '-i', "'s/umount/umount -l/g'", osp_file]
+            subprocess.check_call(cmd)
+            return True
+        except subprocess.CalledProcessError as err:
+            logging.error("Failed to patch 50mounted-tests. Error msg: %s" % err)
+            return False
 
     def copy_grub2_theme_files(self):
         """ Copy grub2 theme files to /boot """
