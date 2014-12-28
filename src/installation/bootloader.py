@@ -334,10 +334,8 @@ class Bootloader(object):
             osp_file = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
             cmd = ['sed', '-i', "'s/umount/umount -l/g'", osp_file]
             subprocess.check_call(cmd)
-            return True
         except subprocess.CalledProcessError as err:
             logging.error("Failed to patch 50mounted-tests. Error msg: %s" % err)
-            return False
 
     def copy_grub2_theme_files(self):
         """ Copy grub2 theme files to /boot """
