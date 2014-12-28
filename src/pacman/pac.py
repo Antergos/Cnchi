@@ -32,6 +32,8 @@ import math
 import logging
 import os
 
+import alpm
+
 if __name__ == "__main__":
     import gettext
     _ = gettext.gettext
@@ -96,13 +98,29 @@ class Pac(object):
         if self.handle is not None:
             if self.config is not None:
                 self.config.apply(self.handle)
+
             # Set callback functions
+
+            # Callback used for logging
             self.handle.logcb = self.cb_log
+
+            # Callback used to report download progress
             self.handle.dlcb = self.cb_dl
+
+            # Callback used to report total download size
             self.handle.totaldlcb = self.cb_totaldl
+
+            # Callback used for events
             self.handle.eventcb = self.cb_event
+
+            # Callback used for questions
             self.handle.questioncb = self.cb_question
+
+            # Callback used for operation progress
             self.handle.progresscb = self.cb_progress
+
+            # Downloading callback
+            self.handle.fetchcb = None
 
     def release(self):
         if self.handle is not None:
@@ -288,34 +306,44 @@ class Pac(object):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
         action = ""
 
-        if ID is 1:
+        if ID is alpm.ALPM_EVENT_CHECKDEPS_START:
             action = _('Checking dependencies...')
-        elif ID is 3:
+        elif ID is alpm.ALPM_EVENT_FILECONFLICTS_START:
             action = _('Checking file conflicts...')
-        elif ID is 5:
+        elif ID is alpm.ALPM_EVENT_RESOLVEDEPS_START:
             action = _('Resolving dependencies...')
-        elif ID is 7:
+        elif ID is alpm.ALPM_EVENT_INTERCONFLICTS_START:
             action = _('Checking inter conflicts...')
-        elif ID is 9:
-            # action = _('Installing...')
-            action = ""
-        elif ID is 11:
+        elif ID is alpm.ALPM_EVENT_ADD_START:
+            action = _('Package will be installed...')
+        elif ID is alpm.ALPM_EVENT_REMOVE_START:
             action = _('Removing...')
-        elif ID is 13:
+        elif ID is alpm.ALPM_EVENT_UPGRADE_START:
             action = _('Upgrading...')
-        elif ID is 15:
+        elif ID is alpm.ALPM_EVENT_DOWNGRADE_START:
             action = _('Checking integrity...')
-        elif ID is 17:
+        elif ID is alpm.ALPM_EVENT_REINSTALL_START:
             action = _('Loading packages files...')
-        elif ID is 26:
-            action = _('Configuring...')
-        elif ID is 27:
-            action = _('Downloading a file')
-        else:
-            action = ""
+        elif ID is alpm.ALPM_EVENT_INTEGRITY_START:
+            action = _('Checking integrity...')
+        elif ID is alpm.ALPM_EVENT_LOAD_START:
+            action = _('Loading package...')
+        elif ID is alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
+            action = _("Checking target delta's integrity...")
+        elif ID is alpm.ALPM_EVENT_DELTA_PATCHES_START:
+            action = _('Applying deltas to packages...')
+        elif ID is alpm.ALPM_EVENT_DELTA_PATCH_START:
+            action = _('Applying delta patch to target package...')
+        elif ID is alpm.ALPM_EVENT_RETRIEVE_START:
+            action = _('Downloading files from the repository...')
+        elif ID is alpm.ALPM_EVENT_DISKSPACE_START:
+            action = _('Checking disk space...')
+        elif ID is alpm.ALPM_EVENT_KEYRING_START:
+            action = _('Checking keys...')
+        elif ID is alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
+            action = _('Downloading missing keys into the keyring...')
 
-        if len(action) > 0:
-            self.queue_event('info', action)
+        self.queue_event('info', action)
 
     def cb_log(self, level, line):
         """ Log pyalpm warning and error messages.
