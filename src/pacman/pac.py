@@ -315,7 +315,8 @@ class Pac(object):
         elif ID is alpm.ALPM_EVENT_INTERCONFLICTS_START:
             action = _('Checking inter conflicts...')
         elif ID is alpm.ALPM_EVENT_ADD_START:
-            action = _('Package will be installed...')
+            #action = _('Package will be installed...')
+            pass
         elif ID is alpm.ALPM_EVENT_REMOVE_START:
             action = _('Removing...')
         elif ID is alpm.ALPM_EVENT_UPGRADE_START:
@@ -327,7 +328,7 @@ class Pac(object):
         elif ID is alpm.ALPM_EVENT_INTEGRITY_START:
             action = _('Checking integrity...')
         elif ID is alpm.ALPM_EVENT_LOAD_START:
-            action = _('Loading package...')
+            action = _('Loading packages...')
         elif ID is alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
             action = _("Checking target delta's integrity...")
         elif ID is alpm.ALPM_EVENT_DELTA_PATCHES_START:
@@ -343,7 +344,8 @@ class Pac(object):
         elif ID is alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
             action = _('Downloading missing keys into the keyring...')
 
-        self.queue_event('info', action)
+        if len(action) > 0:
+            self.queue_event('info', action)
 
     def cb_log(self, level, line):
         """ Log pyalpm warning and error messages.
@@ -360,14 +362,16 @@ class Pac(object):
         """ Shows install progress """
         if target:
             msg = _("Installing %s (%d/%d)") % (target, i, n)
+            self.queue_event('info', msg)
+
             percent = i / n
+            self.queue_event('percent', percent)
         else:
-            msg = _("Checking and loading packages... (%d targets)") % n
+            #msg = _("Checking and loading packages... (%d targets)") % n
+            #self.queue_event('info', msg)
+
             percent = percent / 100
-
-        self.queue_event('info', msg)
-        self.queue_event('percent', percent)
-
+            self.queue_event('percent', percent)
 
     def cb_dl(self, filename, tx, total):
         """ Shows downloading progress """

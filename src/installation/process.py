@@ -466,18 +466,30 @@ class InstallationProcess(multiprocessing.Process):
         # haveged is a daemon that generates system entropy; this speeds up
         # critical operations in cryptographic programs such as gnupg
         # (including the generation of new keyrings)
-        cmd = ["systemctl", "start", "haveged"]
-        subprocess.check_call(cmd)
+        try:
+            cmd = ["systemctl", "start", "haveged"]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
 
-        dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
-        cmd = ["rm", "-rf", dest_path]
-        subprocess.check_call(cmd)
+        # Delete old gnupg files
+        try:
+            dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
+            cmd = ["rm", "-rf", dest_path]
+            subprocess.check_call(cmd)
+            os.mkdir(dest_path)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
 
-        cmd = ["pacman-key", "--init"]
-        chroot_run(cmd)
+        # Tell pacman-key to regenerate gnupg files
+        try:
+            cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
+            subprocess.check_call(cmd)
 
-        cmd = ["pacman-key", "--populate", "archlinux", "antergos"]
-        chroot_run(cmd)
+            cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
 
         '''
         try:
@@ -1258,9 +1270,9 @@ class InstallationProcess(multiprocessing.Process):
         # Enable services
         services = []
         if desktop is not "base":
-            services.expand([self.desktop_manager, "ModemManager"])
+            services.extend([self.desktop_manager, "ModemManager"])
 
-        services.expand([self.network_manager, "remote-fs.target", "haveged"])
+        services.extend([self.network_manager, "remote-fs.target", "haveged"])
         self.enable_services(services)
 
         # Enable ntp service
