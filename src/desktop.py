@@ -79,7 +79,6 @@ class DesktopAsk(GtkBaseBox):
 
         if self.icon_desktop_image is None:
             if icon_exists:
-                #self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
                 self.icon_desktop_image = Gtk.Image.new_from_pixbuf(pixbuf)
             else:
@@ -95,7 +94,6 @@ class DesktopAsk(GtkBaseBox):
             overlay.add_overlay(self.icon_desktop_image)
         else:
             if icon_exists:
-                #self.icon_desktop_image.set_from_file(icon_path)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
                 self.icon_desktop_image.set_from_pixbuf(pixbuf)
             else:
@@ -118,38 +116,32 @@ class DesktopAsk(GtkBaseBox):
 
     def set_desktop_list(self):
         """ Set desktop list in the ListBox """
-        desktop_names = []
-        for desktop in self.enabled_desktops:
-            desktop_names.append(desktops.NAMES[desktop])
+        for desktop in sorted(desktops.NAMES):
+            if desktop in desktops.DESKTOPS:
+                box = Gtk.HBox()
 
-        desktop_names.sort()
-
-        for desktop_name in desktop_names:
-            box = Gtk.HBox()
-
-            filename = "desktop-environment-" + desktop_name.lower() + ".svg"
-            icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
-            if os.path.exists(icon_path):
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 24, 24)
-                image = Gtk.Image.new_from_pixbuf(pixbuf)
-                #image = Gtk.Image.new_from_file(icon_path)
-            else:
-                filename = desktop_name.lower() + ".png"
-                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
+                filename = "desktop-environment-" + desktop.lower() + ".svg"
+                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
                 if os.path.exists(icon_path):
-                    image = Gtk.Image.new_from_file(icon_path)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 24, 24)
+                    image = Gtk.Image.new_from_pixbuf(pixbuf)
                 else:
-                    image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
-            box.pack_start(image, False, False, 2)
+                    filename = desktop.lower() + ".png"
+                    icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
+                    if os.path.exists(icon_path):
+                        image = Gtk.Image.new_from_file(icon_path)
+                    else:
+                        image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
+                box.pack_start(image, False, False, 2)
 
-            label = Gtk.Label()
-            label.set_markup(desktop_name)
-            box.pack_start(label, False, False, 2)
+                label = Gtk.Label()
+                label.set_markup(desktops.NAMES[desktop])
+                box.pack_start(label, False, False, 2)
 
-            self.listbox.add(box)
-            # Set Gnome as default
-            if desktop_name == desktops.NAMES["gnome"]:
-                self.select_default_row(desktop_name)
+                self.listbox.add(box)
+
+        # Set Gnome as default
+        self.select_default_row(desktops.NAMES["gnome"])
 
     def select_default_row(self, desktop_name):
         """ Selects default row
