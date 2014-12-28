@@ -40,7 +40,7 @@ class DesktopAsk(GtkBaseBox):
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
         self.desktop_info = self.ui.get_object("desktop_info")
-        
+
         self.desktop_image = None
         self.icon_desktop_image = None
 
@@ -71,12 +71,12 @@ class DesktopAsk(GtkBaseBox):
             overlay.add(self.desktop_image)
         else:
             self.desktop_image.set_from_file(path)
-            
+
         # and this sets the icon
         filename = "desktop-environment-" + desktop.lower() + ".svg"
-        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)       
+        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
         icon_exists = os.path.exists(icon_path)
-        
+
         if self.icon_desktop_image is None:
             if icon_exists:
                 #self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
@@ -97,7 +97,7 @@ class DesktopAsk(GtkBaseBox):
             if icon_exists:
                 #self.icon_desktop_image.set_from_file(icon_path)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
-                self.icon_desktop_image.set_from_pixbuf(pixbuf)                
+                self.icon_desktop_image.set_from_pixbuf(pixbuf)
             else:
                 filename = desktop.lower() + ".png"
                 icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
@@ -177,13 +177,13 @@ class DesktopAsk(GtkBaseBox):
                 label = vbox.get_children()[1]
                 desktop = label.get_text()
                 self.set_desktop(desktop)
-    
+
     def store_values(self):
         """ Store desktop """
-        self.settings.set('desktop', self.desktop_choice)
-        logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice)
+        self.settings.set('desktop', self.desktop_choice.lower())
+        logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice.lower())
         return True
-    
+
     def scroll_to_cell(self, treeview, path):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)

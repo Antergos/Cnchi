@@ -336,7 +336,7 @@
       </packages>
     </edition>
 
-    <edition name="KDE" description="KDE Desktop">
+    <edition name="KDE4" description="KDE 4 Desktop">
       <packages>
         <pkgname>aspell-en</pkgname>
         <pkgname>breeze-kde4</pkgname>
@@ -390,7 +390,7 @@
       </packages>
     </edition>
 
-    <edition name="KDE Plasma 5" description="KDE Desktop - Plasma 5">
+    <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
           <pkgname>aspell-en</pkgname>
           <pkgname>breeze-kde4</pkgname>

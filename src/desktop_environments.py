@@ -26,8 +26,8 @@
 
 # Enabled desktops
 
-DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde", "plasma5", "mate", "base", "openbox", "lxqt", "xfce"]
-DESKTOPS = ["cinnamon", "gnome", "kde", "mate", "base", "openbox", "xfce"]
+DESKTOPS_DEV = ["cinnamon", "enlightenment", "gnome", "kde4", "plasma5", "mate", "base", "openbox", "lxqt", "xfce"]
+DESKTOPS = ["cinnamon", "gnome", "kde4", "mate", "base", "openbox", "xfce"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -49,14 +49,14 @@ NAMES = {
     'lxde' : "LXDE",
     'openbox' : "Openbox",
     'enlightenment' : "Enlightenment",
-    'kde' : "KDE",
+    'kde4' : "KDE 4",
     'plasma5' : "KDE Plasma 5",
     'lxqt' : "LXQt",
     'mate' : "MATE"}
 
 LIBS = {
     'gtk' : ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
-    'qt' : ["kde", "lxqt", "plasma5"]}
+    'qt' : ["kde4", "lxqt", "plasma5"]}
 
 ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
 
@@ -64,7 +64,7 @@ ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office",
 FEATURES = {
     'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'kde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
+    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
@@ -106,7 +106,7 @@ DESCRIPTIONS = {
                         "and others, but also a whole suite of libraries to help "
                         "you create beautiful user interfaces with much less work"),
 
-    'kde' : _("If you are looking for a familiar working environment, KDE's "
+    'kde4' : _("If you are looking for a familiar working environment, KDE's "
               "Plasma Desktop offers all the tools required for a modern desktop "
               "computing experience so you can be productive right from the start."),
 

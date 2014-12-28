@@ -544,7 +544,7 @@ class InstallationProcess(multiprocessing.Process):
                             if plib is None or (plib is not None and self.desktop in lib[plib]):
                                 self.packages.append(pkg.text)
                 # Add specific desktop packages
-                if edition.attrib.get("name").lower() == self.desktop.lower():
+                if edition.attrib.get("name").lower() == self.desktop:
                     logging.debug(_("Adding '%s' desktop packages"), self.desktop)
                     for pkg in edition.iter('pkgname'):
                         # If package is Network Manager, save the name to activate the correct service later
@@ -555,7 +555,7 @@ class InstallationProcess(multiprocessing.Process):
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
-        if self.desktop == 'kde':
+        if self.desktop == 'kde4' or self.desktop == 'plasma5':
             pkg = ""
             base_name = 'kde-l10n-'
             lang_name = self.settings.get("language_name").lower()
@@ -1019,110 +1019,57 @@ class InstallationProcess(multiprocessing.Process):
 
         self.enable_services(services)
 
-    def set_display_manager(self):
-        """ Configures the installed desktop manager, including autologin. """
-        self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
+    def setup_display_manager(self):
+        """ Configures LightDM desktop manager, including autologin. """
+        txt = _("Configuring LightDM desktop manager...")
+        self.queue_event('info', txt)
 
-        sessions = {'gnome': 'gnome', 'cinnamon': 'cinnamon', 'razor': 'razor-session', 'openbox': 'openbox',
-                    'xfce': 'xfce', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
-        desktop = self.settings.get('desktop')
-        username = self.settings.get('username')
+        sessions = {
+            'gnome': 'gnome',
+            'cinnamon': 'cinnamon',
+            'razor': 'razor-session',
+            'openbox': 'openbox',
+            'xfce': 'xfce',
+            'kde4': 'kde-plasma',
+            'plasma5': 'kde-plasma',
+            'mate': 'mate',
+            'enlightenment': 'enlightenment'}
 
-        if desktop in sessions:
+        if self.desktop in sessions:
             session = sessions[desktop]
         else:
             session = "default"
 
+        username = self.settings.get('username')
         autologin = not self.settings.get('require_password')
 
-        try:
-            if self.desktop_manager == 'lightdm':
-                self.setup_lightdm(desktop, username, session, autologin)
-            elif self.desktop_manager == 'gdm':
-                self.setup_gdm(desktop, username, session, autologin)
-            elif self.desktop_manager == 'kdm':
-                self.setup_kdm(desktop, username, session, autologin)
-            elif self.desktop_manager == 'lxdm':
-                self.setup_lxdm(desktop, username, session, autologin)
-            elif self.desktop_manager == 'slim':
-                self.setup_slim(desktop, username, session, autologin)
-
-            logging.debug(_("Completed %s display manager configuration."), self.desktop_manager)
-        except FileNotFoundError:
-            logging.debug(_("Error while trying to configure '%s' display manager"), self.desktop_manager)
-
-    def setup_lightdm(self, desktop, username, session, autologin):
-        # Systems with LightDM as Desktop Manager
         lightdm_conf_path = os.path.join(DEST_DIR, "etc/lightdm/lightdm.conf")
-        text = []
-        with open(lightdm_conf_path) as lightdm_conf:
-            text = lightdm_conf.readlines()
-        with open(lightdm_conf_path, "w") as lightdm_conf:
-            for line in text:
-                if autologin:
-                    # Enable automatic login
-                    if '#autologin-user=' in line:
-                        line = 'autologin-user=%s\n' % username
-                    if '#autologin-user-timeout=0' in line:
-                        line = 'autologin-user-timeout=0\n'
-                # Set correct DE session
-                if '#user-session=default' in line:
-                    line = 'user-session=%s\n' % session
-                lightdm_conf.write(line)
 
-    def setup_gdm(self, desktop, username, session, autologin):
-        # Systems with GDM as Desktop Manager
-        if autologin:
-            gdm_conf_path = os.path.join(DEST_DIR, "etc/gdm/custom.conf")
-            with open(gdm_conf_path, "w") as gdm_conf:
-                gdm_conf.write('# Cnchi - Enable automatic login for user\n')
-                gdm_conf.write('[daemon]\n')
-                gdm_conf.write('AutomaticLogin=%s\n' % username)
-                gdm_conf.write('AutomaticLoginEnable=True\n')
-
-    def setup_kdm(self, desktop, username, session, autologin):
-        # Systems with KDM as Desktop Manager
-        if autologin:
-            kdm_conf_path = os.path.join(DEST_DIR, "usr/share/config/kdm/kdmrc")
+        try:
+            # Setup LightDM as Desktop Manager
             text = []
-            with open(kdm_conf_path) as kdm_conf:
-                text = kdm_conf.readlines()
-            with open(kdm_conf_path, "w") as kdm_conf:
-                for line in text:
-                    if '#AutoLoginEnable=true' in line:
-                        line = 'AutoLoginEnable=true\n'
-                    if 'AutoLoginUser=' in line:
-                        line = 'AutoLoginUser=%s\n' % username
-                    kdm_conf.write(line)
 
-    def setup_lxdm(self, desktop, username, session, autologin):
-        # Systems with LXDM as Desktop Manager
-        if autologin:
-            lxdm_conf_path = os.path.join(DEST_DIR, "etc/lxdm/lxdm.conf")
-            text = []
-            with open(lxdm_conf_path) as lxdm_conf:
-                text = lxdm_conf.readlines()
-            with open(lxdm_conf_path, "w") as lxdm_conf:
-                for line in text:
-                    if '# autologin=dgod' in line:
-                        line = 'autologin=%s\n' % username
-                    lxdm_conf.write(line)
+            with open(lightdm_conf_path) as lightdm_conf:
+                text = lightdm_conf.readlines()
 
-    def setup_slim(self, desktop, username, session, autologin):
-        # Systems with SLiM as Desktop Manager
-        slim_conf_path = os.path.join(DEST_DIR, "etc/slim.conf")
-        text = []
-        with open(slim_conf_path) as slim_conf:
-            text = slim_conf.readlines()
-        with open(slim_conf_path, "w") as slim_conf:
-            for line in text:
-                if autologin and 'auto_login' in line:
-                    line = 'auto_login yes\n'
-                if 'default_user' in line:
-                    line = 'default_user %s\n' % username
-                if 'current_theme' in line:
-                    line = 'current_theme antergos-slim\n'
-                slim_conf.write(line)
+            with open(lightdm_conf_path, "w") as lightdm_conf:
+                for line in text:
+                    if autologin:
+                        # Enable automatic login
+                        if '#autologin-user=' in line:
+                            line = 'autologin-user=%s\n' % username
+                        if '#autologin-user-timeout=0' in line:
+                            line = 'autologin-user-timeout=0\n'
+                    # Set correct DE session
+                    if '#user-session=default' in line:
+                        line = 'user-session=%s\n' % session
+                    lightdm_conf.write(line)
+
+            txt = _("LightDM display manager configuration completed.")
+            logging.debug(txt)
+        except FileNotFoundError:
+            txt = _("Error while trying to configure the LightDM display manager")
+            logging.warning(txt)
 
     def alsa_mixer_setup(self):
         """ Sets ALSA mixer settings """
@@ -1222,10 +1169,9 @@ class InstallationProcess(multiprocessing.Process):
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
-
-        # Copy network profile when using netctl (and not networkmanager)
-        # netctl is used in the 'base' desktop option
         elif self.network_manager == 'netctl':
+            # Copy network profile when using netctl (and not networkmanager)
+            # netctl is used in the 'base' desktop option
             # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
             # edited by himself. Maybe we could ease this process?
             profile = 'ethernet-dhcp'
@@ -1265,14 +1211,11 @@ class InstallationProcess(multiprocessing.Process):
 
         logging.debug(_("Generated /etc/pacman.conf"))
 
-        desktop = self.settings.get('desktop')
-
         # Enable services
         services = []
-        if desktop is not "base":
-            services.extend([self.desktop_manager, "ModemManager"])
-
-        services.extend([self.network_manager, "remote-fs.target", "haveged"])
+        if self.desktop != "base":
+            services.append(self.desktop_manager)
+        services.extend(["ModemManager", self.network_manager, "remote-fs.target", "haveged"])
         self.enable_services(services)
 
         # Enable ntp service
@@ -1381,7 +1324,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
-        if desktop != "base":
+        if self.desktop != "base":
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
             logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_xkb_path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d/00-keyboard.conf")
@@ -1423,19 +1366,14 @@ class InstallationProcess(multiprocessing.Process):
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
         self.queue_event('info', _("Configuring System Startup..."))
-        mkinitcpio.run(
-            DEST_DIR,
-            self.settings,
-            self.mount_devices,
-            self.blvm)
+        mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
-            subprocess.check_call(
-                ["/usr/bin/bash", script_path_postinstall, username, DEST_DIR, self.desktop,
-                    keyboard_layout, keyboard_variant],
+            subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
+                username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant],
                 timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as err:
@@ -1443,9 +1381,9 @@ class InstallationProcess(multiprocessing.Process):
         except subprocess.TimeoutExpired as err:
             logging.error(err)
 
-        if desktop != "base":
+        if self.desktop != "base":
             # Set lightdm config including autologin if selected
-            self.set_display_manager()
+            self.setup_display_manager()
 
         # Configure user features (firewall, libreoffice language pack, ...)
         self.setup_features()
