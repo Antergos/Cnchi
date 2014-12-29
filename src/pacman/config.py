@@ -113,11 +113,9 @@ def pacman_conf_enumerator(path):
             filestack.extend(open(f) for f in glob.glob(value))
             continue
         if current_section != 'options':
-            # repos only have the Server option
-            if key == 'Server' and equal == '=':
-                yield (current_section, 'Server', value)
-            elif key == 'SigLevel' and equal == '=':
-                yield (current_section, 'SigLevel', value)
+            # repos only have the Server, SigLevel, Usage options
+            if key in ('Server', 'SigLevel', 'Usage') and equal == '=':
+                yield (current_section, key, value)
             else:
                 raise InvalidSyntax(f.name, 'invalid key for repository configuration', line)
             continue

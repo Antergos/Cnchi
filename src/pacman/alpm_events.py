@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  alpm.py
+#  alpm_events.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -26,134 +26,98 @@
 
 # Dependencies will be computed for a package.
 ALPM_EVENT_CHECKDEPS_START = 1
-
 # Dependencies were computed for a package.
 ALPM_EVENT_CHECKDEPS_DONE = 2
-
 # File conflicts will be computed for a package.
 ALPM_EVENT_FILECONFLICTS_START = 3
-
 # File conflicts were computed for a package.
 ALPM_EVENT_FILECONFLICTS_DONE = 4
-
 # Dependencies will be resolved for target package.
 ALPM_EVENT_RESOLVEDEPS_START = 5
-
 # Dependencies were resolved for target package.
 ALPM_EVENT_RESOLVEDEPS_DONE = 6
-
 # Inter-conflicts will be checked for target package.
 ALPM_EVENT_INTERCONFLICTS_START = 7
-
 # Inter-conflicts were checked for target package.
 ALPM_EVENT_INTERCONFLICTS_DONE = 8
-
-# Package will be installed.
-# A pointer to the target package is passed to the callback.
-ALPM_EVENT_ADD_START = 9
-
-# Package was installed.
-# A pointer to the new package is passed to the callback.
-ALPM_EVENT_ADD_DONE = 10
-
-# Package will be removed.
-# A pointer to the target package is passed to the callback.
-ALPM_EVENT_REMOVE_START = 11
-
-# Package was removed.
-# A pointer to the removed package is passed to the callback.
-ALPM_EVENT_REMOVE_DONE = 12
-
-# Package will be upgraded.
-# A pointer to the upgraded package is passed to the callback.
-ALPM_EVENT_UPGRADE_START = 13
-
-# Package was upgraded.
-# A pointer to the new package, and a pointer to the old package is passed to the callback, respectively.
-ALPM_EVENT_UPGRADE_DONE = 14
-
-# Package will be downgraded.
-# A pointer to the downgraded package is passed to the callback.
-ALPM_EVENT_DOWNGRADE_START = 15
-
-# Package was downgraded.
-# A pointer to the new package, and a pointer to the old package is passed to the callback, respectively.
-ALPM_EVENT_DOWNGRADE_DONE = 16
-
-# Package will be reinstalled.
-# A pointer to the reinstalled package is passed to the callback.
-ALPM_EVENT_REINSTALL_START = 17
-
-# Package was reinstalled.
-# A pointer to the new package, and a pointer to the old package is passed to the callback, respectively.
-ALPM_EVENT_REINSTALL_DONE = 18
-
+# Package will be installed/upgraded/downgraded/re-installed/removed
+ALPM_EVENT_PACKAGE_OPERATION_START = 9
+# Package was installed/upgraded/downgraded/re-installed/removed
+ALPM_EVENT_PACKAGE_OPERATION_DONE = 10
 # Target package's integrity will be checked.
-ALPM_EVENT_INTEGRITY_START = 19
-
+ALPM_EVENT_INTEGRITY_START = 11
 # Target package's integrity was checked.
-ALPM_EVENT_INTEGRITY_DONE = 20
-
+ALPM_EVENT_INTEGRITY_DONE = 12
 # Target package will be loaded.
-ALPM_EVENT_LOAD_START = 21
-
+ALPM_EVENT_LOAD_START = 13
 # Target package is finished loading.
-ALPM_EVENT_LOAD_DONE = 22
-
+ALPM_EVENT_LOAD_DONE = 14
 # Target delta's integrity will be checked.
-ALPM_EVENT_DELTA_INTEGRITY_START = 23
-
+ALPM_EVENT_DELTA_INTEGRITY_START = 15
 # Target delta's integrity was checked.
-ALPM_EVENT_DELTA_INTEGRITY_DONE = 24
-
+ALPM_EVENT_DELTA_INTEGRITY_DONE = 16
 # Deltas will be applied to packages.
-ALPM_EVENT_DELTA_PATCHES_START = 25
-
+ALPM_EVENT_DELTA_PATCHES_START = 17
 # Deltas were applied to packages.
-ALPM_EVENT_DELTA_PATCHES_DONE = 26
-
+ALPM_EVENT_DELTA_PATCHES_DONE = 18
 # Delta patch will be applied to target package.
 # The filename of the package and the filename of the patch is passed to the callback.
-ALPM_EVENT_DELTA_PATCH_START = 27
-
+ALPM_EVENT_DELTA_PATCH_START = 19
 # Delta patch was applied to target package.
-ALPM_EVENT_DELTA_PATCH_DONE = 28
-
+ALPM_EVENT_DELTA_PATCH_DONE = 20
 # Delta patch failed to apply to target package.
-ALPM_EVENT_DELTA_PATCH_FAILED = 29
-
+ALPM_EVENT_DELTA_PATCH_FAILED = 21
 # Scriptlet has printed information.
 # A line of text is passed to the callback.
-ALPM_EVENT_SCRIPTLET_INFO = 30
-
+ALPM_EVENT_SCRIPTLET_INFO = 22
 # Files will be downloaded from a repository.
 # The repository's tree name is passed to the callback.
-ALPM_EVENT_RETRIEVE_START = 31
-
+ALPM_EVENT_RETRIEVE_START = 23
+# Files will be downloaded from a repository.
+# The repository's tree name is passed to the callback.
+ALPM_EVENT_RETRIEVE_DONE = 24
+# Not all files were successfully downloaded from a repository.
+ALPM_EVENT_RETRIEVE_FAILED = 25
+# A file will be downloaded from a repository
+ALPM_EVENT_PKGDOWNLOAD_START = 26
+# A file was downloaded from a repository
+ALPM_EVENT_PKGDOWNLOAD_DONE = 27
+# A file failed to be downloaded from a repository
+ALPM_EVENT_PKGDOWNLOAD_FAILED = 28
 # Disk space usage will be computed for a package
-ALPM_EVENT_DISKSPACE_START = 32
-
+ALPM_EVENT_DISKSPACE_START = 29
 # Disk space usage was computed for a package
-ALPM_EVENT_DISKSPACE_DONE = 33
-
+ALPM_EVENT_DISKSPACE_DONE = 30
 # An optdepend for another package is being removed
 # The requiring package and its dependency are passed to the callback
-ALPM_EVENT_OPTDEP_REQUIRED = 34
-
+ALPM_EVENT_OPTDEP_REMOVAL = 31
 # A configured repository database is missing
-ALPM_EVENT_DATABASE_MISSING = 35
-
+ALPM_EVENT_DATABASE_MISSING = 32
 # Checking keys used to create signatures are in keyring.
-ALPM_EVENT_KEYRING_START = 36
-
+ALPM_EVENT_KEYRING_START = 33
 # Keyring checking is finished.
-ALPM_EVENT_KEYRING_DONE = 37
-
+ALPM_EVENT_KEYRING_DONE = 34
 # Downloading missing keys into keyring.
-ALPM_EVENT_KEY_DOWNLOAD_START = 38
-
+ALPM_EVENT_KEY_DOWNLOAD_START = 35
 # Key downloading is finished.
-ALPM_EVENT_KEY_DOWNLOAD_DONE = 39
+ALPM_EVENT_KEY_DOWNLOAD_DONE = 36
+# A .pacnew file was created
+ALPM_EVENT_PACNEW_CREATED = 37
+# A .pacsave file was created
+ALPM_EVENT_PACSAVE_CREATED = 38
+# A .pacorig file was created
+ALPM_EVENT_PACORIG_CREATED = 39
+
+# Package (to be) installed. (No oldpkg)
+ALPM_PACKAGE_INSTALL = 1,
+# Package (to be) upgraded
+ALPM_PACKAGE_UPGRADE = 2
+# Package (to be) re-installed.
+ALPM_PACKAGE_REINSTALL = 3
+# Package (to be) downgraded.
+ALPM_PACKAGE_DOWNGRADE = 4
+# Package (to be) removed. (No newpkg)
+ALPM_PACKAGE_REMOVE = 5
 
 # Progress
 ALPM_PROGRESS_ADD_START = 0

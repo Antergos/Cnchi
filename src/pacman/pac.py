@@ -32,7 +32,7 @@ import math
 import logging
 import os
 
-import pacman.alpm as alpm
+import pacman.alpm_events as alpm
 
 if __name__ == "__main__":
     import gettext
@@ -302,47 +302,40 @@ class Pac(object):
         """ Stores total download size for use in cb_progress """
         self.total_download_size = total_size
 
-    def cb_event(self, ID, event, tupel):
+    def cb_event(self, event_type, event_txt):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
-        action = ""
 
-        if ID is alpm.ALPM_EVENT_CHECKDEPS_START:
+        if event_type is alpm.ALPM_EVENT_CHECKDEPS_START:
             action = _('Checking dependencies...')
-        elif ID is alpm.ALPM_EVENT_FILECONFLICTS_START:
+        elif event_type is alpm.ALPM_EVENT_FILECONFLICTS_START:
             action = _('Checking file conflicts...')
-        elif ID is alpm.ALPM_EVENT_RESOLVEDEPS_START:
+        elif event_type is alpm.ALPM_EVENT_RESOLVEDEPS_START:
             action = _('Resolving dependencies...')
-        elif ID is alpm.ALPM_EVENT_INTERCONFLICTS_START:
+        elif event_type is alpm.ALPM_EVENT_INTERCONFLICTS_START:
             action = _('Checking inter conflicts...')
-        elif ID is alpm.ALPM_EVENT_ADD_START:
-            #action = _('Package will be installed...')
-            pass
-        elif ID is alpm.ALPM_EVENT_REMOVE_START:
-            action = _('Removing...')
-        elif ID is alpm.ALPM_EVENT_UPGRADE_START:
-            action = _('Upgrading...')
-        elif ID is alpm.ALPM_EVENT_DOWNGRADE_START:
+        elif event_type is alpm.ALPM_EVENT_PACKAGE_OPERATION_START:
+            # Shown in cb_progress
+            action = ""
+        elif event_type is alpm.ALPM_EVENT_INTEGRITY_START:
             action = _('Checking integrity...')
-        elif ID is alpm.ALPM_EVENT_REINSTALL_START:
-            action = _('Loading packages files...')
-        elif ID is alpm.ALPM_EVENT_INTEGRITY_START:
-            action = _('Checking integrity...')
-        elif ID is alpm.ALPM_EVENT_LOAD_START:
+        elif event_type is alpm.ALPM_EVENT_LOAD_START:
             action = _('Loading packages...')
-        elif ID is alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
+        elif event_type is alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
             action = _("Checking target delta's integrity...")
-        elif ID is alpm.ALPM_EVENT_DELTA_PATCHES_START:
+        elif event_type is alpm.ALPM_EVENT_DELTA_PATCHES_START:
             action = _('Applying deltas to packages...')
-        elif ID is alpm.ALPM_EVENT_DELTA_PATCH_START:
+        elif event_type is alpm.ALPM_EVENT_DELTA_PATCH_START:
             action = _('Applying delta patch to target package...')
-        elif ID is alpm.ALPM_EVENT_RETRIEVE_START:
+        elif event_type is alpm.ALPM_EVENT_RETRIEVE_START:
             action = _('Downloading files from the repository...')
-        elif ID is alpm.ALPM_EVENT_DISKSPACE_START:
+        elif event_type is alpm.ALPM_EVENT_DISKSPACE_START:
             action = _('Checking disk space...')
-        elif ID is alpm.ALPM_EVENT_KEYRING_START:
-            action = _('Checking keys...')
-        elif ID is alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
+        elif event_type is alpm.ALPM_EVENT_KEYRING_START:
+            action = _('Checking keys in keyring...')
+        elif event_type is alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
             action = _('Downloading missing keys into the keyring...')
+        else:
+            action = ""
 
         if len(action) > 0:
             self.queue_event('info', action)
