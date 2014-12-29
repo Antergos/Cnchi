@@ -47,6 +47,7 @@ class Settings(object):
             'data' : '/usr/share/cnchi/data/',
             'desktop' : 'gnome',
             'desktops' : [],
+            'enable_alongside' : True,
             'encrypt_home' : False,
             'f2fs' : False,
             'feature_aur' : False,

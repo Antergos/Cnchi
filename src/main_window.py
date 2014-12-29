@@ -259,7 +259,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["timezone"] = timezone.Timezone(self.params)
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
-        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+
+        if self.settings.get("alongside_enabled"):
+            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+        else:
+            self.pages["installation_alongside"] = None
+
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -282,7 +287,8 @@ class MainWindow(Gtk.ApplicationWindow):
             del self.pages["timezone"]
             del self.pages["installation_ask"]
             del self.pages["installation_automatic"]
-            del self.pages["installation_alongside"]
+            if self.pages["installation_alongside"] is not None:
+                del self.pages["installation_alongside"]
             del self.pages["installation_advanced"]
 
     def set_geometry(self):

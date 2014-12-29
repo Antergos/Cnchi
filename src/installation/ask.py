@@ -112,6 +112,8 @@ class InstallationAsk(GtkBaseBox):
             msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
         logging.debug(msg)
 
+        self.settings.set('enable_alongside', self.enable_alongside)
+
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
         names = [
