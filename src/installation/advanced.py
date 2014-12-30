@@ -878,7 +878,10 @@ class InstallationAdvanced(GtkBaseBox):
         if pm.check_mounted(part):
             # We unmount the partition. Should we ask first?
             logging.info(_("Unmounting %s..."), part.path)
-            subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
+            try:
+                subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
+            except subprocess.CalledProcessError as err:
+                logging.error(err)
 
         # Is it worth to show some warning message here?
         # No, created delete list as part of confirmation screen.
@@ -1469,6 +1472,7 @@ class InstallationAdvanced(GtkBaseBox):
         widget_ids = [
             'partition_button_new', 'partition_button_delete', 'partition_button_edit',
             'partition_button_new_label', 'partition_button_undo']
+
         for widget_id in widget_ids:
             button = self.ui.get_object(widget_id)
             button.set_sensitive(False)
@@ -1605,9 +1609,20 @@ class InstallationAdvanced(GtkBaseBox):
 
     def need_swap(self):
         """ Returns if having a swap partition is advisable """
-        mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
-        mem_total = int(mem_total.split()[1])
-        mem = mem_total / 1024
+        with open("/proc/meminfo") as mem_info:
+            mem_info_lines = mem_info.readlines()
+
+        mem_total = ""
+        for line in mem_info_lines:
+            if "MemTotal" in line:
+                mem_total = line
+                break
+
+        if len(mem_total) > 0:
+            mem = float(mem_total.split()[1]) / 1024.0
+            mem = int(mem)
+        else:
+            return True
 
         if mem < 4096:
             return True
@@ -1761,21 +1776,23 @@ class InstallationAdvanced(GtkBaseBox):
                                 #if "swap" in fs_type:
                                 swap_partition = self.get_swap_partition(partition_path)
                                 if swap_partition == partition_path:
-                                    msg = _(
-                                        "%s is mounted as swap.\nTo continue it has to be unmounted.\n"
+                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % partition_path
                                     mounted = True
                                 elif len(mount_point) > 0:
-                                    msg = _(
-                                        "%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
+                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
                                         "Click Yes to unmount, or No to return\n") % (partition_path, mount_point)
                                     mounted = True
 
                                 if "install" in mount_point:
                                     # If we're recovering from a failed/stopped install, there'll be
                                     # some mounted directories. Unmount them without asking.
-                                    subp = subprocess.Popen(['umount', '-l', partition_path], stdout=subprocess.PIPE)
-                                    logging.debug(_("%s unmounted"), mount_point)
+                                    try:
+                                        cmd = ['umount', '-l', partition_path]
+                                        subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                        logging.debug(_("%s unmounted"), mount_point)
+                                    except subprocess.CalledProcessError as err:
+                                        logging.error(err)
                                 elif mounted:
                                     response = show.question(self.get_toplevel(), msg)
                                     if response != Gtk.ResponseType.YES:
@@ -1784,12 +1801,19 @@ class InstallationAdvanced(GtkBaseBox):
                                     else:
                                         # unmount it!
                                         if swap_partition == partition_path:
-                                            subp = subprocess.Popen(
-                                                ['sh', '-c', 'swapoff %s' % partition_path], stdout=subprocess.PIPE)
-                                            logging.debug(_("Swap partition %s unmounted"), partition_path)
+                                            try:
+                                                cmd = ['sh', '-c', 'swapoff %s' % partition_path]
+                                                subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                logging.debug(_("Swap partition %s unmounted"), partition_path)
+                                            except subprocess.CalledProcessError as err:
+                                                logging.error(err)
                                         else:
-                                            subp = subprocess.Popen(['umount', partition_path], stdout=subprocess.PIPE)
-                                            logging.debug(_("%s unmounted"), mount_point)
+                                            try:
+                                                cmd = ['umount', partition_path]
+                                                subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                logging.debug(_("%s unmounted"), mount_point)
+                                            except subprocess.CalledProcessError as err:
+                                                logging.error(err)
                                 else:
                                     msg = _("%s shows as mounted (busy) but it has no mount point")
                                     logging.warning(msg, partition_path)
@@ -1943,7 +1967,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.enable_all_widgets(status=False)
 
     def enable_all_widgets(self, status=True):
-        for name in ["partition_list_scrolledwindow", "partition_list_treeview", "box2", "box3", "box4"]:
+        widgets = ["partition_list_scrolledwindow", "partition_list_treeview", "box2", "box3", "box4"]
+        for name in widgets:
             widget = self.ui.get_object(name)
             widget.set_sensitive(status)
         while Gtk.events_pending():
@@ -1964,10 +1989,15 @@ class InstallationAdvanced(GtkBaseBox):
     def create_staged_partitions(self):
         """ Create staged partitions """
         # Sometimes a swap partition can still be active at this point
-        swaps = subprocess.check_output(["swapon", "--show=NAME", "--noheadings"]).decode().split("\n")
-        for name in filter(None, swaps):
-            if "/dev/zram" not in name:
-                subp = subprocess.Popen(['sh', '-c', 'swapoff %s' % name], stdout=subprocess.PIPE)
+        try:
+            cmd = ["swapon", "--show=NAME", "--noheadings"]
+            swaps = subprocess.check_output(cmd).decode().split("\n")
+            for name in filter(None, swaps):
+                if "/dev/zram" not in name:
+                    cmd = ['sh', '-c', 'swapoff %s' % name]
+                    subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap
@@ -2003,9 +2033,13 @@ class InstallationAdvanced(GtkBaseBox):
                         if fisy == "extended" or fisy == "bios-gpt-boot":
                             continue
                         if len(lbl) > 0:
-                            logging.info(_("Creating new %s filesystem in %s labeled %s") % (fisy, partition_path, lbl))
+                            txt = _("Creating new %s filesystem in %s labeled %s")
+                            txt = txt % (fisy, partition_path, lbl)
                         else:
-                            logging.info(_("Creating new %s filesystem in %s") % (fisy, partition_path))
+                            txt = _("Creating new %s filesystem in %s")
+                            txt = txt % (fisy, partition_path)
+
+                        logging.info(txt)
 
                         if ((mnt == '/' and noboot) or (mnt == '/boot')) and ('/dev/mapper' not in partition_path):
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
@@ -2030,7 +2064,8 @@ class InstallationAdvanced(GtkBaseBox):
                         if uid in self.luks_options:
                             (use_luks, vol_name, password) = self.luks_options[uid]
                             if use_luks and len(vol_name) > 0 and len(password) > 0:
-                                txt = _("Encrypting %s, assigning volume name %s and formatting it...") % (partition_path, vol_name)
+                                txt = _("Encrypting %s, assigning volume name %s and formatting it...")
+                                txt = txt % (partition_path, vol_name)
                                 logging.info(txt)
                                 if not self.testing:
                                     # Do real encryption here!
@@ -2058,14 +2093,20 @@ class InstallationAdvanced(GtkBaseBox):
                                 if error == 0:
                                     logging.info(msg)
                                 else:
-                                    txt = _("Couldn't format partition '%s' with label '%s' as '%s'") % (partition_path, lbl, fisy)
+                                    txt = _("Couldn't format partition '%s' with label '%s' as '%s'")
+                                    txt = txt % (partition_path, lbl, fisy)
                                     logging.error(txt)
                                     logging.error(msg)
                                     show.error(self.get_toplevel(), txt)
                         elif partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] != lbl:
                                 if not self.testing:
-                                    fs.label_fs(fisy, partition_path, lbl)
+                                    try:
+                                        fs.label_fs(fisy, partition_path, lbl)
+                                    except Exception as err:
+                                        # Catch all exceptions because not being able to label
+                                        # a partition shouldn't be fatal
+                                        logging.error(err)
 
     def start_installation(self):
         """ Start installation process """
