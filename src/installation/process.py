@@ -1,26 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_process.py
+#  process.py
 #
-#  Copyright 2013 Antergos
+#  Copyright © 2013,2014 Antergos
 #
-#  This program is free software; you can redistribute it and/or modify
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
+#  Cnchi is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
+#  along with Cnchi; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Installation thread module. Where the real installation happens """
+""" Installation thread module. """
 
 import crypt
 import download
@@ -442,14 +444,37 @@ class InstallationProcess(multiprocessing.Process):
         except:
             raise InstallError("Can't initialize pyalpm.")
 
-    def prepare_pacman_keychain(self):
+    def prepare_pacman_keyring(self):
         """ Add gnupg pacman files to installed system """
+
+        # Be sure that haveged is running (liveCD)
+        # haveged is a daemon that generates system entropy; this speeds up
+        # critical operations in cryptographic programs such as gnupg
+        # (including the generation of new keyrings)
+        try:
+            cmd = ["systemctl", "start", "haveged"]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
+
+        # Delete old gnupg files
         dest_path = os.path.join(self.dest_dir, "etc/pacman.d/gnupg")
         try:
-            misc.copytree('/etc/pacman.d/gnupg', dest_path)
-        except (FileExistsError, shutil.Error, OSError) as err:
-            # log error but continue anyway
-            logging.exception(err)
+            cmd = ["rm", "-rf", dest_path]
+            subprocess.check_call(cmd)
+            os.mkdir(dest_path)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
+
+        # Tell pacman-key to regenerate gnupg files
+        try:
+            cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
+            subprocess.check_call(cmd)
+
+            cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
@@ -460,7 +485,7 @@ class InstallationProcess(multiprocessing.Process):
             if not os.path.exists(mydir):
                 os.makedirs(mydir)
 
-        self.prepare_pacman_keychain()
+        self.prepare_pacman_keyring()
 
         alpm = self.init_alpm()        
         alpm.do_refresh()      
