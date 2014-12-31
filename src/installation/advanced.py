@@ -170,7 +170,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.bootloader = "GRUB2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
-        self.bootloader_devices = dict()
+        self.bootloader_devices = {}
         self.bootloader_device = {}
 
         # Initialise our partition list treeview

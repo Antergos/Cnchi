@@ -60,8 +60,14 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
-        self.devices = dict()
+        self.devices = {}
         self.process = None
+
+        self.bootloader = "GRUB2"
+        self.bootloader_entry = self.ui.get_object('bootloader_entry')
+        self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
+        self.bootloader_devices = {}
+        self.bootloader_device = {}
 
     def translate_ui(self):
         txt = _("Select drive:")
@@ -72,8 +78,8 @@ class InstallationAutomatic(GtkBaseBox):
         txt = "<b>%s</b>" % txt
         label.set_markup(txt)
 
-        label = self.ui.get_object('text_automatic2')
-        txt = _("Select the drive we should use to install Antergos and then click below to start the process.")
+        label = self.ui.get_object('info_label')
+        txt = _("Select the drive we should use to install Antergos and then click above to start the process.")
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password')
@@ -85,23 +91,26 @@ class InstallationAutomatic(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password_warning')
-        txt = _("Do not use special chars or chars with accents!")
+        txt = _("LUKS Password. Do not use special characters or accents!")
         label.set_markup(txt)
 
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
 
-
-        #txt = _("Install Now!")
-        #self.forward_button.set_label(txt)
-        #self.forward_button.set_always_show_image(False)
-
-        #self.header.set_title("Cnchi")
         self.header.set_subtitle(_("Automatic Installation Mode"))
 
-        #txt = _("Automatic Installation Mode")
-        #txt = "<span weight='bold' size='large'>%s</span>" % txt
-        #self.title.set_markup(txt)
+        txt = _("Use the device below for boot loader installation:")
+        txt = "<span weight='bold' size='small'>%s</span>" % txt
+        label = self.ui.get_object('bootloader_device_info_label')
+        label.set_markup(txt)
+
+        txt = _("Bootloader:")
+        label = self.ui.get_object('bootloader_label')
+        label.set_markup(txt)
+
+        txt = _("Device:")
+        label = self.ui.get_object('bootloader_device_label')
+        label.set_markup(txt)
 
     def on_checkbutton_show_password_toggled(self, widget):
         """ show/hide LUKS passwords """
@@ -110,12 +119,15 @@ class InstallationAutomatic(GtkBaseBox):
         self.entry['luks_password'].set_visibility(show)
         self.entry['luks_password_confirm'].set_visibility(show)
 
-    @misc.raise_privileges
     def populate_devices(self):
-        device_list = parted.getAllDevices()
+        with misc.raised_privileges():
+            device_list = parted.getAllDevices()
 
         self.device_store.remove_all()
         self.devices = {}
+
+        self.bootloader_device_entry.remove_all()
+        self.bootloader_devices.clear()
 
         for dev in device_list:
             ## avoid cdrom and any raid, lvm volumes or encryptfs
@@ -126,9 +138,12 @@ class InstallationAutomatic(GtkBaseBox):
                 line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
                 self.device_store.append_text(line)
                 self.devices[line] = dev.path
+                self.bootloader_device_entry.append_text(line)
+                self.bootloader_devices[line] = dev.path
                 logging.debug(line)
 
         self.select_first_combobox_item(self.device_store)
+        self.select_first_combobox_item(self.bootloader_device_entry)
 
     def select_first_combobox_item(self, combobox):
         tree_model = combobox.get_model()
@@ -145,10 +160,10 @@ class InstallationAutomatic(GtkBaseBox):
         self.translate_ui()
         self.populate_devices()
         self.show_all()
+        self.fill_bootloader_entry()
 
-        if not self.settings.get('use_luks'):
-            f = self.ui.get_object('frame_luks')
-            f.hide()
+        luks_grid = self.ui.get_object('luks_grid')
+        luks_grid.set_sensitive(self.settings.get('use_luks'))
 
         #self.forward_button.set_sensitive(False)
 
@@ -185,6 +200,45 @@ class InstallationAutomatic(GtkBaseBox):
             self.image_password_ok.set_opacity(1)
 
         self.forward_button.set_sensitive(install_ok)
+
+    def fill_bootloader_entry(self):
+        """ Put the bootloaders for the user to choose """
+        self.bootloader_entry.remove_all()
+
+        if os.path.exists('/sys/firmware/efi'):
+            self.bootloader_entry.append_text("Grub2")
+            self.bootloader_entry.append_text("Gummiboot")
+            self.bootloader_entry.set_active(0)
+            self.bootloader_entry.show()
+        else:
+            self.bootloader_entry.hide()
+            widget_ids = ["bootloader_label", "bootloader_device_label"]
+            for widget_id in widget_ids:
+                widget = self.ui.get_object(widget_id)
+                widget.hide()
+
+    def on_bootloader_device_check_toggled(self, checkbox):
+        status = checkbox.get_active()
+
+        widget_ids = [
+            "bootloader_device_entry", "bootloader_entry",
+            "bootloader_label", "bootloader_device_label"]
+
+        for widget_id in widget_ids:
+            widget = self.ui.get_object(widget_id)
+            widget.set_sensitive(status)
+
+    def on_bootloader_device_entry_changed(self, widget):
+        """ Get new selected bootloader device """
+        line = self.bootloader_device_entry.get_active_text()
+        if line is not None:
+            self.bootloader_device = self.bootloader_devices[line]
+
+    def on_bootloader_entry_changed(self, widget):
+        """ Get new selected bootloader """
+        line = self.bootloader_entry.get_active_text()
+        if line is not None:
+            self.bootloader = line
 
     def show_warning(self):
         txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s")
