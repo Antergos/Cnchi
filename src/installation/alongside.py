@@ -463,7 +463,8 @@ class InstallationAlongside(GtkBaseBox):
         if self.settings.get('bootloader_install'):
             self.settings.set('bootloader', "Grub2")
             self.settings.set('bootloader_device', device_path)
-            msg = _("Cnchi will install the %s bootloader") % self.settings.get('bootloader')
+            msg = _("Antergos will install the bootloader %s in device %s")
+            msg = msg % (self.bootloader, self.bootloader_device)
             logging.info(msg)
         else:
             logging.info(_("Cnchi will not install any bootloader"))
@@ -474,7 +475,6 @@ class InstallationAlongside(GtkBaseBox):
                 self.callback_queue,
                 mount_devices,
                 fs_devices,
-                None,
                 self.alternate_package_list)
 
             self.process.start()

@@ -83,7 +83,7 @@ class InstallError(Exception):
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
     def __init__(self, settings, callback_queue, mount_devices,
-                 fs_devices, ssd=None, alternate_package_list="", blvm=False):
+                 fs_devices, alternate_package_list="", ssd=None, blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
 

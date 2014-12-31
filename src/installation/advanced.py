@@ -2156,7 +2156,7 @@ class InstallationAdvanced(GtkBaseBox):
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader %s in %s")
+            msg = _("Antergos will install the bootloader %s in device %s")
             msg = msg % (self.bootloader, self.bootloader_device)
             logging.info(msg)
 
@@ -2166,8 +2166,8 @@ class InstallationAdvanced(GtkBaseBox):
                 self.callback_queue,
                 mount_devices,
                 fs_devices,
-                self.ssd,
                 self.alternate_package_list,
+                self.ssd,
                 self.blvm)
 
             self.process.start()

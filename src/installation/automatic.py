@@ -168,7 +168,7 @@ class InstallationAutomatic(GtkBaseBox):
         #self.forward_button.set_sensitive(False)
 
     def store_values(self):
-        """ The user clicks 'Install now!' """
+        """ Let's do our installation! """
         response = self.show_warning()
         if response == Gtk.ResponseType.NO:
             return False
@@ -241,8 +241,8 @@ class InstallationAutomatic(GtkBaseBox):
             self.bootloader = line
 
     def show_warning(self):
-        txt = _("Do you really want to proceed and delete all your content on your hard drive?\n\n%s")
-        txt = txt % self.device_store.get_active_text()
+        txt = _("Do you really want to proceed and delete all your content on your hard drive?")
+        txt = txt + "\n\n" + self.device_store.get_active_text()
         message = Gtk.MessageDialog(
             transient_for=self.get_toplevel(),
             modal=True,
@@ -255,15 +255,21 @@ class InstallationAutomatic(GtkBaseBox):
         return response
 
     def start_installation(self):
-        logging.info(_("Cnchi will install Antergos on %s") % self.auto_device)
+        txt = _("Cnchi will install Antergos on device %s")
+        logging.info(txt, self.auto_device)
 
-        # In automatic installation we always install a bootloader
-        self.settings.set('bootloader_install', True)
-        self.settings.set('bootloader', "Grub2")
-        self.settings.set('bootloader_device', self.auto_device)
+        checkbox = self.ui.get_object("bootloader_device_check")
+        if checkbox.get_active() is False:
+            self.settings.set('bootloader_install', False)
+            logging.warning(_("Cnchi will not install any bootloader"))
+        else:
+            self.settings.set('bootloader_install', True)
+            self.settings.set('bootloader_device', self.bootloader_device)
 
-        msg = _("Antergos will install the Grub2 bootloader in %s") % self.auto_device
-        logging.info(msg)
+            self.settings.set('bootloader', self.bootloader)
+            msg = _("Antergos will install the bootloader %s in device %s")
+            msg = msg % (self.bootloader, self.bootloader_device)
+            logging.info(msg)
 
         # We don't need to pass which devices will be mounted nor which filesystems
         # the devices will be formatted with, as auto_partition.py takes care of everything
@@ -279,7 +285,6 @@ class InstallationAutomatic(GtkBaseBox):
                 self.callback_queue,
                 mount_devices,
                 fs_devices,
-                None,
                 self.alternate_package_list)
 
             self.process.start()
