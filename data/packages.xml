@@ -242,6 +242,12 @@
       </packages>
     </edition>
 
+    <edition name="lxqt" description="LXQT Desktop">
+      <packages>
+          <!-- TODO -->
+      </packages>
+    </edition>
+
     <edition name="Mate" description="MATE Desktop">
       <packages>
         <pkgname>atril</pkgname>

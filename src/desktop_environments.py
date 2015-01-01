@@ -26,9 +26,9 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "lxde", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["plasma5", "enlightenment"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxde", "lxqt", "plasma5" ]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -56,7 +56,7 @@ NAMES = {
     'mate' : "MATE"}
 
 LIBS = {
-    'gtk' : ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
+    'gtk' : ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
     'qt' : ["kde4", "lxqt", "plasma5"]}
 
 ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
@@ -71,6 +71,7 @@ FEATURES = {
     'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'base' : ["aur", "cups", "fonts", "lts"],
     'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb", "visual"],
+    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"]}
 

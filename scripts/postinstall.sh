@@ -92,10 +92,10 @@ cinnamon_settings()
     # Set Cinnamon in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
 
     # Temporary alternative until upower bug is fixed.
-    if [[ $6 -eq "True" ]]; then 
+    if [[ $6 -eq "True" ]]; then
         cp /usr/share/cnchi/scripts/postinstall/cbatticon.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
         #chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
     fi
@@ -136,14 +136,14 @@ xfce_settings()
     # Set xfce in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
 
-    echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment    
+    echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
 }
 
 openbox_settings()
 {
-    # copy antergos menu icon
+    # Copy antergos menu icon
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
@@ -157,7 +157,7 @@ openbox_settings()
 
     # Copy home files
     cp /tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0  
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0
     cp /tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
 
@@ -168,7 +168,61 @@ openbox_settings()
     # Copy /etc setup files
     cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
-    
+
+    # Copy oblogout icons
+    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
+    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
+
+    # Set settings
+    cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+    mkdir -p ${DESTDIR}/var/run/dbus
+    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    rm ${DESTDIR}/usr/bin/set-settings
+
+    # Set skel directory
+    cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+    ## Set defaults directories
+    #chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+    # Set openbox in .dmrc
+    echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+    echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+}
+
+lxde_settings()
+{
+    # FIXME: This is just a copy of openbox settings.
+    # TODO: Adapt this to LXDE
+
+    # Copy antergos menu icon
+    mkdir -p ${DESTDIR}/usr/share/antergos/
+    cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+    # Get zip file from github, unzip it and copy all setup files in their right places.
+    wget -q -O /tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
+    unzip -o -qq /tmp/master.zip -d /tmp
+
+    ## Copy slim theme
+    #mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
+    #cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
+
+    # Copy home files
+    cp /tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0
+    cp /tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
+
+    # Copy .config files
+    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
+    cp -R /tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
+
+    # Copy /etc setup files
+    cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
+
     # Copy oblogout icons
     mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
     cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
@@ -219,7 +273,7 @@ lxqt_settings()
     # Set Razor in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
 
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
@@ -299,7 +353,7 @@ mate_settings()
     # Set MATE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users	/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
 
     ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
