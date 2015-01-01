@@ -229,13 +229,16 @@
       </packages>
     </edition>
 
-    <edition name="lxqt" description="LXQT Desktop">
+    <edition name="lxde" description="LXDE Desktop">
       <packages>
-        <pkgname>clementine</pkgname>
-        <pkgname>openbox</pkgname>
-        <pkgname>pcmanfm-qt</pkgname>
-        <pkgname>transmission-qt</pkgname>
-        <pkgname>vlc</pkgname>
+        <pkgname>evince</pkgname>
+        <pkgname>audacious</pkgname>
+        <pkgname>file-roller</pkgname>
+        <pkgname>galculator</pkgname>
+        <pkgname>leafpad</pkgname>
+        <pkgname>lxde</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>gnome-mplayer</pkgname>
       </packages>
     </edition>
 
