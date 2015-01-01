@@ -40,7 +40,6 @@ except NameError as err:
     def _(message):
         return message
 
-
 class Bootloader(object):
     def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
@@ -308,7 +307,8 @@ class Bootloader(object):
             cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
             chroot.run(cmd, self.dest_dir, 45)
         except subprocess.TimeoutExpired:
-            logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
+            txt = _("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue.")
+            logging.error(txt)
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
@@ -322,20 +322,25 @@ class Bootloader(object):
                 exists = True
 
         if exists:
-            logging.info(_("GRUB(2) UEFI install completed successfully"))
+            txt = _("GRUB(2) UEFI install completed successfully")
+            logging.info(txt)
             self.settings.set('bootloader_installation_successful', True)
         else:
-            logging.warning(_("GRUB(2) UEFI install may not have completed successfully."))
+            txt = _("GRUB(2) UEFI install may not have completed successfully.")
+            logging.warning(txt)
             self.settings.set('bootloader_installation_successful', False)
 
     def apply_osprober_patch(self):
-        # Add -l option to os-prober's umount call so that it does not hang
-        try:
-            osp_file = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
-            cmd = ['sed', '-i', "'s/umount/umount -l/g'", osp_file]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
-            logging.error("Failed to patch 50mounted-tests. Error msg: %s" % err)
+        """ Adds -l option to os-prober's umount call so that it does not hang """
+        osp_file = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
+        if os.path.exists(osp_file):
+            try:
+                cmd = ['sed', '-i', "\'s/umount/umount -l/g\'", osp_file]
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as err:
+                logging.warning(_("Failed to patch 50mounted-tests. Error msg: %s"), err)
+        else:
+            logging.warning(_("Failed to patch 50mounted-tests, file not found."))
 
     def copy_grub2_theme_files(self):
         """ Copy grub2 theme files to /boot """
