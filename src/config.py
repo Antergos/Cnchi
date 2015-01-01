@@ -36,7 +36,7 @@ class Settings(object):
 
         self.settings.put({
             'auto_device' : '/dev/sda',
-            'bootloader' : 'Grub2',
+            'bootloader' : 'grub2',
             'bootloader_device' : '/dev/sda',
             'bootloader_install' : True,
             'bootloader_installation_successful' : False,

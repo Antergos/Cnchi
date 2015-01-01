@@ -461,7 +461,7 @@ class InstallationAlongside(GtkBaseBox):
         self.settings.set('bootloader_install', True)
 
         if self.settings.get('bootloader_install'):
-            self.settings.set('bootloader', "Grub2")
+            self.settings.set('bootloader', "grub2")
             self.settings.set('bootloader_device', device_path)
             msg = _("Antergos will install the bootloader %s in device %s")
             msg = msg % (self.bootloader, self.bootloader_device)

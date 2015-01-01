@@ -533,8 +533,14 @@
     <pkgname>ntp</pkgname>
   </ntp>
 
-  <grub>
-    <pkgname>grub</pkgname>
-    <pkgname>os-prober</pkgname>
-  </grub>
+  <bootloaders>
+    <bootloader name="grub2">
+      <pkgname>grub</pkgname>
+      <pkgname>os-prober</pkgname>
+    </bootloader>
+    <bootloader name="gummiboot">
+      <pkgname>gummiboot</pkgname>
+    </bootloader>
+  </bootloaders>
+
 </cnchi>

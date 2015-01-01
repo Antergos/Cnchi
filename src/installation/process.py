@@ -646,16 +646,20 @@ class InstallationProcess(multiprocessing.Process):
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
             boot_loader = self.settings.get('bootloader')
-            if boot_loader == "Grub2":
-                logging.debug(_("Adding Grub2 bootloader packages"))
-                for child in xml_root.iter('grub'):
+            # Search boot_loader in packages.xml
+            bootloader_found = False
+            for child in xml_root.iter('bootloader'):
+                if child.attrib.get('name') == boot_loader:
+                    txt = _("Adding '%s' bootloader packages")
+                    txt = txt % boot_loader
+                    logging.debug(txt)
+                    bootloader_found = True
                     for pkg in child.iter('pkgname'):
-                        uefi = pkg.attrib.get('uefi')
-                        if not uefi:
-                            self.packages.append(pkg.text)
-            elif boot_loader == "Gummiboot":
-                logging.debug(_("Adding Gummiboot bootloader package"))
-                self.packages.append("gummiboot")
+                        self.packages.append(pkg.text)
+            if not bootloader_found:
+                txt = _("Couldn't find %s bootloader packages!")
+                txt = txt % boot_loader
+                logging.warning(txt)
 
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """

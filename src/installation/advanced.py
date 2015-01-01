@@ -167,7 +167,7 @@ class InstallationAdvanced(GtkBaseBox):
             for mount_point in fs.COMMON_MOUNT_POINTS:
                 combo.append_text(mount_point)
 
-        self.bootloader = "GRUB2"
+        self.bootloader = "grub2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
@@ -359,7 +359,7 @@ class InstallationAdvanced(GtkBaseBox):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
         if line is not None:
-            self.bootloader = line
+            self.bootloader = line.lower()
 
     def prepare_partition_list(self):
         """ Create columns for our treeview """

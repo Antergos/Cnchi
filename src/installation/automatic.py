@@ -63,7 +63,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.devices = {}
         self.process = None
 
-        self.bootloader = "GRUB2"
+        self.bootloader = "grub2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
@@ -238,7 +238,7 @@ class InstallationAutomatic(GtkBaseBox):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
         if line is not None:
-            self.bootloader = line
+            self.bootloader = line.lower()
 
     def show_warning(self):
         txt = _("Do you really want to proceed and delete all your content on your hard drive?")
@@ -267,7 +267,7 @@ class InstallationAutomatic(GtkBaseBox):
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader %s in device %s")
+            msg = _("Antergos will install the bootloader '%s' in device '%s'")
             msg = msg % (self.bootloader, self.bootloader_device)
             logging.info(msg)
 
