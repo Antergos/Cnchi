@@ -28,7 +28,7 @@ from gi.repository import Gtk, GLib, GdkPixbuf
 import os
 import logging
 import desktop_environments as desktops
-
+import misc.misc as misc
 from gtkbasebox import GtkBaseBox
 
 class DesktopAsk(GtkBaseBox):
@@ -48,6 +48,7 @@ class DesktopAsk(GtkBaseBox):
         self.listbox = self.ui.get_object("listbox_desktop")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
 
         self.desktop_choice = 'gnome'
 
@@ -142,6 +143,27 @@ class DesktopAsk(GtkBaseBox):
 
         # Set Gnome as default
         self.select_default_row(desktops.NAMES["gnome"])
+
+    def listbox_sort_by_name(self, row1, row2, user_data):
+        """ Sort function for listbox
+            Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
+            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+        box1 = row1.get_child()
+        label1 = box1.get_children()[1]
+
+        box2 = row2.get_child()
+        label2 = box2.get_children()[1]
+
+        text = [label1.get_text(), label2.get_text()]
+        #sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        sorted_text = misc.sort_list(text)
+
+        # If strings are already well sorted return < 0
+        if text[0] == sorted_text[0]:
+            return -1
+
+        # Strings must be swaped, return > 0
+        return 1
 
     def select_default_row(self, desktop_name):
         """ Selects default row
