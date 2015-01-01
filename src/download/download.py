@@ -166,6 +166,7 @@ class DownloadPackages(object):
         except Exception as err:
             logging.error(_("Can't release pyalpm: %s"), err)
 
+        # Overwrite last event
         self.queue_event('info', "")
 
         return downloads

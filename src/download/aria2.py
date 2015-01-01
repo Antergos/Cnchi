@@ -125,7 +125,7 @@ class Aria2(object):
             "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
                                             # Set maximum number of parallel downloads for each metalink (default 5)
             "--max-concurrent-downloads=%d" % self.max_concurrent_downloads,
-            "--max-connection-per-server=1",# The maximum number of connections to one server for each download
+            "--max-connection-per-server=5",# The maximum number of connections to one server for each download
             "--max-tries=5",                # Set number of tries (default 5)
             "--no-conf=true",               # Disable loading aria2.conf file.
             "--quiet=true",                 # Make aria2 quiet (no console output).

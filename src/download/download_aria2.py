@@ -41,7 +41,7 @@ try:
 except NameError as err:
     def _(message): return message
 
-MAX_CONCURRENT_DOWNLOADS = 4
+MAX_CONCURRENT_DOWNLOADS = 5
 
 class Download(object):
     """ Class to download packages using Aria2
