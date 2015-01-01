@@ -75,6 +75,20 @@ FEATURES = {
     'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"]}
 
+# Session names for lightDM setup
+SESSIONS = {
+    'cinnamon': 'cinnamon',
+    'gnome': 'gnome',
+    'kde4': 'kde-plasma',
+    'plasma5': 'kde-plasma',
+    'mate': 'mate',
+    'enlightenment': 'enlightenment',
+    'openbox': 'openbox',
+    'lxde' : 'lx-session', # FIXME: check this!
+    'lxqt' : 'lxqt', # FIXME: check this!
+    'xfce': 'xfce'}
+
+
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message): return message
 

@@ -1024,19 +1024,8 @@ class InstallationProcess(multiprocessing.Process):
         txt = _("Configuring LightDM desktop manager...")
         self.queue_event('info', txt)
 
-        sessions = {
-            'gnome': 'gnome',
-            'cinnamon': 'cinnamon',
-            'razor': 'razor-session',
-            'openbox': 'openbox',
-            'xfce': 'xfce',
-            'kde4': 'kde-plasma',
-            'plasma5': 'kde-plasma',
-            'mate': 'mate',
-            'enlightenment': 'enlightenment'}
-
-        if self.desktop in sessions:
-            session = sessions[desktop]
+        if self.desktop in desktops.SESSIONS:
+            session = desktops.SESSIONS[self.desktop]
         else:
             session = "default"
 
