@@ -109,7 +109,7 @@ class Download(object):
             self.queue_event('percent', 0)
 
             txt = _("Downloading %s %s (%d/%d)...")
-            txt = txt % (element['identity'], element['version'], downloaded, total_downloads)
+            txt = txt % (element['identity'], element['version'], downloaded + 1, total_downloads)
             self.queue_event('info', txt)
 
             try:
@@ -124,24 +124,16 @@ class Download(object):
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
-                self.queue_event('percent', 1.0)
                 downloaded += 1
             elif os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
-                try:
-                    shutil.copy(dst_cache_path, dst_path)
-                    self.queue_event('percent', 1.0)
-                    downloaded += 1
-                except FileNotFoundError:
-                    pass
-                except FileExistsError:
-                    # print("File %s already exists" % element['filename'])
-                    pass
+                shutil.copy(dst_cache_path, dst_path)
+                downloaded += 1
             else:
                 # Let's download our filename using url
                 for url in element['urls']:
-                    msg = _("Downloading file from url %s") % url
+                    #msg = _("Downloading file from url %s") % url
                     #logging.debug(msg)
                     download_error = True
                     percent = 0
@@ -180,7 +172,8 @@ class Download(object):
                     # None of the mirror urls works.
                     # This is not a total disaster, maybe alpm will be able
                     # to download it for us later in pac.py
-                    msg = _("Can't download %s, even after trying all available mirrors") % element['filename']
+                    msg = _("Can't download %s, even after trying all available mirrors")
+                    msg = msg % element['filename']
                     logging.warning(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)

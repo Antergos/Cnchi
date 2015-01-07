@@ -245,7 +245,7 @@ class Features(GtkBaseBox):
         self.set_row_text('firewall', title, desc, tooltip)
 
         # Kernel LTS
-        title = _("Kernel LTS")
+        title = _("Kernel LTS - DOES NOT WORK!")
         title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Long term support (LTS) Linux kernel and modules.")
         desc = "<span size='small'>%s</span>" % desc

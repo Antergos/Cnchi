@@ -95,33 +95,24 @@ class Download(object):
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
                 identity, element = downloads.popitem()
 
-                dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+                src_cache_path = os.path.join(self.cache_dir, element['filename'])
                 dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
+
+                self.show_download_info(downloaded + 1, total_downloads)
 
                 if os.path.exists(dst_path):
                     # File already exists (previous install?) do not download
                     logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
                     downloaded += 1
-                elif os.path.exists(dst_cache_path):
+                elif os.path.exists(src_cache_path):
                     # We're lucky, the package is already downloaded in the cache the user has given us
                     # let's copy it to our destination
-                    try:
-                        shutil.copy(dst_cache_path, dst_path)
-                        downloaded += 1
-                    except FileNotFoundError:
-                        pass
-                    except FileExistsError:
-                        pass
+                    shutil.copy(src_cache_path, dst_path)
+                    downloaded += 1
                 else:
                     # Add file to aria2 downloads queue
                     gid = self.aria2.add_uris(element['urls'])
                     num_active = self.get_num_active()
-
-                percent = round(float(downloaded / total_downloads), 2)
-                self.queue_event('percent', percent)
-                txt = _("Downloading packages... (%d/%d)...")
-                txt = txt % (downloaded, total_downloads)
-                self.queue_event('info', txt)
 
             num_active = self.get_num_active()
             old_num_active = num_active
@@ -133,11 +124,7 @@ class Download(object):
                     downloaded += old_num_active - num_active
                     old_num_active = num_active
 
-                percent = round(float(downloaded / total_downloads), 2)
-                self.queue_event('percent', percent)
-                txt = _("Downloading packages... (%d/%d)...")
-                txt = txt % (downloaded, total_downloads)
-                self.queue_event('info', txt)
+                self.show_download_info(downloaded, total_downloads)
 
             # This method purges completed/error/removed downloads, in order to free memory
             self.aria2.purge_download_result()
@@ -145,6 +132,12 @@ class Download(object):
         # Finished, close aria2
         self.aria2.shutdown()
 
+    def show_download_info(self, downloaded, total_downloads):
+        percent = round(float(downloaded / total_downloads), 2)
+        self.queue_event('percent', percent)
+        txt = _("Downloading packages... (%d/%d)...")
+        txt = txt % (downloaded, total_downloads)
+        self.queue_event('info', txt)
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
