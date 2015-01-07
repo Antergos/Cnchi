@@ -35,7 +35,10 @@ import os
 import math
 import sys
 
-import misc.tz as tz
+try:
+    import misc.tz as tz
+except ImportError:
+    import tz
 
 try:
     import xml.etree.cElementTree as ET
@@ -163,7 +166,7 @@ class TimezoneMap(Gtk.Widget):
             print(err)
             sys.exit(1)
 
-        self._tzdb = tz.Database()
+        self.tzdb = tz.Database()
 
     def load_olsen_map_timezones(self):
         try:
@@ -433,7 +436,7 @@ class TimezoneMap(Gtk.Widget):
         # Impossible distance
         small_dist =  -1
 
-        for tz_location in self._tzdb.get_locations():
+        for tz_location in self.tzdb.get_locations():
             longitude = tz_location.get_property('longitude')
             latitude = tz_location.get_property('latitude')
 
@@ -468,24 +471,21 @@ class TimezoneMap(Gtk.Widget):
         return True
 
     def set_timezone(self, timezone):
-        real_tz = self._tzdb.get_loc(timezone)
+        real_tz = self.tzdb.get_loc(timezone)
 
         if real_tz is not None:
             tz_to_compare = real_tz
+
+            for tz_location in self.tzdb.get_locations():
+                if tz_location.get_property('zone') == tz_to_compare.get_property('zone'):
+                    self.set_bubble_text(tz_location)
+                    self.set_location(tz_location)
+                    self.queue_draw()
+                    ret = True
+                    break
         else:
-            tz_to_compare = timezone
-
-        ret = False
-
-        for tz_location in self._tzdb.get_locations():
-            if tz_location.get_property('zone') == tz_to_compare.get_property('zone'):
-                self.set_bubble_text(tz_location)
-                self.set_location(tz_location)
-                ret = True
-                break
-
-        if ret is True:
-            self.queue_draw()
+            # Unrecognised timezone
+            ret = False
 
         return ret
 
@@ -534,8 +534,15 @@ if __name__ == '__main__':
     tzmap = TimezoneMap()
     win.add(tzmap)
     win.show_all()
-    timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
+
+    # Test with Europe/London
+    #timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
+
+    # Test with America/Montreal
+    timezone = tzmap.get_timezone_at_coords(latitude=+45.31, longitude=-73.34)
+
     tzmap.set_timezone(timezone)
+
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()

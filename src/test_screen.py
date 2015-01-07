@@ -98,6 +98,7 @@ def run(screen_name):
     import config
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
+    settings.set('timezone_start', True)
 
     from desktop_environments import DESKTOPS
     settings.set('desktops', DESKTOPS)

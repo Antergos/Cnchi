@@ -187,7 +187,10 @@ class Timezone(GtkBaseBox):
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
             except queue.Empty:
-                logging.warning(_("Can't autodetect timezone coordinates"))
+                msg = _("Can't autodetect timezone coordinates, will use %s as default")
+                msg = msg % DEFAULT_TZ
+                logging.warning(msg)
+                self.autodetected_coords = DEFAULT_TZ_COORDS.split()
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords

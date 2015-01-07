@@ -29,6 +29,7 @@ import time
 import xml.dom.minidom
 import hashlib
 import sys
+import logging
 
 from gi.repository import GObject
 
@@ -77,7 +78,7 @@ class SystemTzInfo(datetime.tzinfo):
             return datetime.timedelta(minutes=int(dstminutes))
         finally:
             self._restore_tz(tzbackup)
-    
+
     def get_daylight(self):
         tzbackup = self._select_tz()
         daylight = time.daylight
@@ -178,24 +179,24 @@ class Location(object):
 
     def get_info(self):
         return self.info
-    
+
     def is_dst(self):
         return self.isdst
-    
+
     def get_utc_offset(self):
         return self.utc_offset
-    
+
     def get_raw_utc_offset(self):
         return self.raw_utc_offset
-        
+
     def __init__(self, zonetab_line, iso3166):
         bits = zonetab_line.rstrip().split('\t', 3)
         latlong = bits[1]
         latlongsplit = latlong.find('-', 1)
-        
+
         if latlongsplit == -1:
             latlongsplit = latlong.find('+', 1)
-        
+
         if latlongsplit != -1:
             latitude = latlong[:latlongsplit]
             longitude = latlong[latlongsplit:]
@@ -288,7 +289,7 @@ class _Database(object):
                 pass
 
             # If not found, oh well, just warn and move on.
-            print('Could not understand timezone', tz, file=sys.stderr)
+            logging.error('Could not understand timezone %s', tz)
             self.tz_to_loc[tz] = None  # save it for the future
             return None
 

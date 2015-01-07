@@ -28,8 +28,12 @@ import shutil
 import subprocess
 import syslog
 import socket
-import misc.osextras as osextras
 import logging
+
+try:
+    import misc.osextras as osextras
+except ImportError:
+    import osextras
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
