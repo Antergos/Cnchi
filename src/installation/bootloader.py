@@ -337,11 +337,14 @@ class Bootloader(object):
         """ Adds -l option to os-prober's umount call so that it does not hang """
         osp_file = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
         if os.path.exists(osp_file):
-            try:
-                cmd = ["sed", "-i", "'s/umount/umount -l/g'", osp_file]
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                logging.warning(_("Failed to patch 50mounted-tests. Error msg: %s"), err)
+            with open(osp_file) as osp:
+                lines = osp.readlines()
+            with open(osp_file, "w") as osp:
+                for line in lines:
+                    if "umount" in line:
+                        line = line.replace("umount", "umount -l")
+                    osp.write(line)
+            logging.debug(_("50mounted-tests file patched successfully"))
         else:
             logging.warning(_("Failed to patch 50mounted-tests, file not found."))
 
