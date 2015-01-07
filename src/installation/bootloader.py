@@ -190,7 +190,7 @@ class Bootloader(object):
         grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
                         '--boot-directory=/boot', '--recheck']
 
-        if len(grub_location) > 8:  # ex: /dev/sdXY > 8
+        if len(grub_location) > len("/dev/sdX"):  # ex: /dev/sdXY > 8
             grub_install.append("--force")
 
         grub_install.append(grub_location)
@@ -210,17 +210,20 @@ class Bootloader(object):
             cmd = ['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale]
             chroot.run(cmd, self.dest_dir, 45)
         except subprocess.TimeoutExpired as err:
-            logging.error(_("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue."))
+            msg = _("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue.")
+            logging.error(msg)
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_cfg:
             if "Antergos" in grub_cfg.read():
-                logging.info(_("GRUB(2) BIOS has been successfully installed."))
+                txt = _("GRUB(2) BIOS has been successfully installed.")
+                logging.info(txt)
                 self.settings.set('bootloader_installation_successful', True)
             else:
-                logging.warning(_("ERROR installing GRUB(2) BIOS."))
+                txt = _("ERROR installing GRUB(2) BIOS.")
+                logging.warning(txt)
                 self.settings.set('bootloader_installation_successful', False)
 
     def install_grub2_efi(self):
