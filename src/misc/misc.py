@@ -957,3 +957,50 @@ def set_cursor(cursor_type):
         cursor = Gdk.Cursor(cursor_type)
         window.set_cursor(cursor)
         gtk_refresh()
+
+def partition_exists(partition):
+    """ Check if a partition already exists """
+    if "/dev/" in partition:
+        partition = partition[len("/dev/"):]
+
+    exists = False
+    with open("/proc/partitions") as partitions:
+        if partition in partitions.read():
+            exists = True
+    return exists
+
+def is_partition_extended(partition):
+    """ Check if a partition is of extended type """
+    if "/dev/" in partition:
+        partition = partition[len("/dev/"):]
+
+    num = partition[len("sdX"):]
+    if len(num) == 0:
+        return False
+
+    num = int(num)
+
+    if num > 4:
+        return False
+
+    with open("/proc/partitions") as partitions:
+        lines = partitions.readlines()
+    for line in lines:
+        if "major" not in line:
+            info = line.split()
+            if len(info) > 0 and info[2] == "1" and info[3] == partition:
+                return True
+    return False
+
+def get_partitions():
+    partitions_list = []
+    with open("/proc/partitions") as partitions:
+        lines = partitions.readlines()
+    for line in lines:
+        if "major" not in line:
+            info = line.split()
+            if len(info) > 0:
+                if len(info[3]) > len("sdX"):
+                    logging.debug(info[3])
+                    partitions_list.append("/dev/" + info[3])
+    return partitions_list

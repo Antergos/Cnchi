@@ -128,18 +128,6 @@ class InstallationAlongside(GtkBaseBox):
         new_device = None
         self.resize_widget = None
 
-    def partition_exists(self, device):
-        """ Check if a partition already exists """
-        partition = device
-        if "/dev/" in partition:
-            partition = partition[len("/dev/"):]
-
-        exists = False
-        with open("/proc/partitions") as partitions:
-            if partition in partitions.read():
-                exists = True
-        return exists
-
     def get_new_device(self, device_to_shrink):
         """ Get new device where Cnchi will install Antergos
             returns an empty string if no device is available """
@@ -149,7 +137,7 @@ class InstallationAlongside(GtkBaseBox):
         new_number = number + 1
         new_device = disk + str(new_number)
 
-        while self.partition_exists(new_device):
+        while misc.partition_exists(new_device):
             new_number += 1
             new_device = disk + str(new_number)
 
@@ -185,7 +173,7 @@ class InstallationAlongside(GtkBaseBox):
             show.warning(self.get_toplevel(), txt)
             max_size = part_size
 
-        print(min_size, max_size, part_size)
+        #print(min_size, max_size, part_size)
 
         if self.resize_widget:
             self.resize_widget.set_property("part_size", int(part_size))
@@ -247,7 +235,7 @@ class InstallationAlongside(GtkBaseBox):
     def on_choose_partition_combo_changed(self, combobox):
         txt = combobox.get_active_text()
         device = txt.split("(")[1][:-1]
-        print(device)
+        #print(device)
         self.set_resize_widget(device)
 
     def select_first_combobox_item(self, combobox):
@@ -326,9 +314,10 @@ class InstallationAlongside(GtkBaseBox):
 
         if len(extended_path) > 0:
             # TODO: Allow shrink a logical partition and create inside two additional partitions (root and swap)
-            print("Extended present")
+            #print("Extended present")
+            pass
 
-        if len(primary_partitions) > 2:
+        if len(primary_partitions) > 3:
             # We only allow installing if only 2 partitions are already occupied,
             # otherwise there will be no room for root and swap partitions
             txt = _("There are too many primary partitions, can't create a new one")

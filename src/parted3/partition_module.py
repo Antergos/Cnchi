@@ -407,7 +407,8 @@ def example():
     # In this example just using /dev/sdb as the device
     # Any useable free space is returned as a partition object, only for 'fluency'
     # sake.  It's name will always be 'free#' where # is an incrementing number.
-    part_dic = get_partitions(disk_dic['/dev/sdb'])
+    (diskob, result) = disk_dic['/dev/sdb']
+    part_dic = get_partitions(diskob)
 
     # To delete a partition, pass to delete_partition the disk and the partition
     # object.  So, to delete /dev/sdb1, do this.

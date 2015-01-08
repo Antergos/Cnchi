@@ -45,6 +45,37 @@ import bootinfo
 import logging
 
 from gtkbasebox import GtkBaseBox
+import misc.misc as misc
+
+def check_alongside_disk_layout():
+    """ Alongside can only work if user has followed the recommended
+        BIOS-Based Disk-Partition Configurations shown in
+        http://technet.microsoft.com/en-us/library/dd744364(v=ws.10).aspx """
+
+    # TODO: Add more scenarios where alongside could work
+
+    partitions = misc.get_partitions()
+    logging.debug(partitions)
+    extended = False
+    for partition in partitions:
+        if misc.is_partition_extended(partition):
+            extended = True
+            break
+
+    if extended:
+        return False
+
+    # We just seek for sda partitions
+    partitions_sda = []
+    for partition in partitions:
+        if "sda" in partition:
+            partitions_sda.append(partition)
+
+    # There's no extended partition, so all partitions must be primary    
+    if len(partitions_sda) < 4:
+        return True
+
+    return False
 
 class InstallationAsk(GtkBaseBox):
     def __init__(self, params, prev_page="features", next_page=None):
@@ -67,7 +98,6 @@ class InstallationAsk(GtkBaseBox):
         image.set_from_file(path)
 
         self.other_oses = []
-
         self.enable_alongside = False
         self.check_alongside()
 
@@ -75,17 +105,10 @@ class InstallationAsk(GtkBaseBox):
         self.next_page = "installation_automatic"
 
     def check_alongside(self):
-        # Check if alongside installation type must be enabled.
-        # Alongside only works when Windows is installed on sda, and nothing else
-        msg = ""
-        self.enable_alongside = False
+        """ Check if alongside installation type must be enabled.
+        Alongside only works when Windows is installed on sda  """
 
-        oses = bootinfo.get_os_dict()
-        self.other_oses = []
-        for key in oses:
-            # FIXME: We only check the first hard disk ¿?
-            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
-                self.other_oses.append(oses[key])
+        self.enable_alongside = False
 
         # FIXME: Alongside does not work in UEFI systems
         if os.path.exists("/sys/firmware/efi"):
@@ -93,16 +116,27 @@ class InstallationAsk(GtkBaseBox):
             logging.debug(msg)
             return
 
+        oses = bootinfo.get_os_dict()
+        self.other_oses = []
+        for key in oses:
+            # We only check the first hard disk
+            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
+                self.other_oses.append(oses[key])
+
+        msg = ""
         if len(self.other_oses) > 0:
             for detected_os in self.other_oses:
-                if "Windows" in detected_os:
+                if "windows" in detected_os.lower():
                     msg = _("Windows detected.")
-                    if self.is_a_primary_partition_available("/dev/sda"):
-                        self.enable_alongside = True
+                    self.enable_alongside = True
             if not self.enable_alongside:
                 msg = _("Windows not detected.")
         else:
             msg = _("Can't detect any OS in device sda.")
+
+        if not check_alongside_disk_layout():
+            logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
+            self.enable_alongside = False
 
         logging.debug(msg)
 
@@ -113,24 +147,6 @@ class InstallationAsk(GtkBaseBox):
         logging.debug(msg)
 
         self.settings.set('enable_alongside', self.enable_alongside)
-
-    def is_a_primary_partition_available(self, device):
-        """ Check if a primary partition can be created """
-        partitions = ["1", "2", "3", "4"]
-        
-        with open("/proc/partitions") as partitions_file:
-            txt = partitions_file.read()
-
-        logging.debug(txt)
-
-        for part_number in partitions:
-            partition = device + part_number
-            if "/dev/" in partition:
-                partition = partition[len("/dev/"):]
-            if partition not in txt:
-                logging.debug(partition)
-                return True
-        return False
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
