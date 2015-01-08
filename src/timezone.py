@@ -298,8 +298,10 @@ class AutoTimezoneThread(threading.Thread):
             coords = 'error'
 
         if coords != 'error':
-            logging.debug(_("Timezone (%s) detected.") % coords)
             coords = coords.split()
+            msg = _("Timezone (latitude %s, longitude %s) detected.")
+            msg = msg % (coords[0], coords[1])
+            logging.debug(msg)
             self.coords_queue.put(coords)
 
 class GenerateMirrorListThread(threading.Thread):
@@ -348,7 +350,9 @@ class GenerateMirrorListThread(threading.Thread):
             coords = self.coords_queue.get(True)
             self.coords_queue.put_nowait(coords)
             tzmap = TimezoneMap.TimezoneMap()
-            timezone = tzmap.get_timezone_at_coords(float(coords[0]), float(coords[1]))
+            latitude = float(coords[0])
+            longitude = float(coords[1])
+            timezone = tzmap.get_timezone_at_coords(latitude, longitude)
             loc = self.tzdb.get_loc(timezone)
             country_code = ''
             if loc:

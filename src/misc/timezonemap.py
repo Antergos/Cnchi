@@ -502,7 +502,7 @@ class TimezoneMap(Gtk.Widget):
     def get_location(self):
         return self._tz_location
 
-    def get_timezone_at_coords(self, longitude, latitude):
+    def get_timezone_at_coords(self, latitude, longitude):
         x = int(2048.0 / 360.0 * (180.0 + longitude))
         y = int(1024.0 / 180.0 * (90.0 - latitude))
 
