@@ -142,7 +142,7 @@ class InstallationAlongside(GtkBaseBox):
 
     def get_new_device(self, device_to_shrink):
         """ Get new device where Cnchi will install Antergos
-            returns -1 if no device is available """
+            returns an empty string if no device is available """
         number = int(device_to_shrink[len("/dev/sdX"):])
         disk = device_to_shrink[:len("/dev/sdX")]
 
@@ -156,14 +156,14 @@ class InstallationAlongside(GtkBaseBox):
         if new_number > 4:
             # No primary partitions left
             logging.warning(_("There are no primary partitions available"))
-            new_device = -1
+            new_device = ""
 
         return new_device
 
     def set_resize_widget(self, device_to_shrink):
         new_device  = self.get_new_device(device_to_shrink)
-        
-        if new_device == -1:
+
+        if len(new_device) == 0:
             # No device is available
             return
 
@@ -273,7 +273,7 @@ class InstallationAlongside(GtkBaseBox):
 
         if len(devices) > 1:
             for device in sorted(devices):
-                if self.get_new_device(device) > 0:
+                if len(self.get_new_device(device)) > 0:
                     self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
             self.select_first_combobox_item(self.choose_partition_combo)
         elif len(devices) == 1:
@@ -287,7 +287,7 @@ class InstallationAlongside(GtkBaseBox):
     def store_values(self):
         self.start_installation()
         return True
-        
+
     # ######################################################################################################
 
     def is_room_available(self, row):
