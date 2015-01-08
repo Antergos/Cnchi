@@ -24,6 +24,8 @@
 
 """ Alongside installation module """
 
+# ******************* NO GPT SUPPORT, YET ***************************************
+
 from gi.repository import Gtk, Gdk
 
 import sys
@@ -139,12 +141,13 @@ class InstallationAlongside(GtkBaseBox):
         return exists
 
     def get_new_device(self, device_to_shrink):
-        """ Get new device where Cnchi will install Antergos """
+        """ Get new device where Cnchi will install Antergos
+            returns -1 if no device is available """
         number = int(device_to_shrink[len("/dev/sdX"):])
         disk = device_to_shrink[:len("/dev/sdX")]
 
         new_number = number + 1
-        new_device =  disk + str(new_number)
+        new_device = disk + str(new_number)
 
         while self.partition_exists(new_device):
             new_number += 1
@@ -152,14 +155,21 @@ class InstallationAlongside(GtkBaseBox):
 
         if new_number > 4:
             # No primary partitions left
-            print("NO PRIMARY PARTITIONS LEFT!")
+            logging.warning(_("There are no primary partitions available"))
+            new_device = -1
 
         return new_device
 
     def set_resize_widget(self, device_to_shrink):
         new_device  = self.get_new_device(device_to_shrink)
+        
+        if new_device == -1:
+            # No device is available
+            return
 
-        logging.debug("Will shrink device %s and create new device %s", device_to_shrink, new_device)
+        txt = _("Will shrink device %s and create new device %s")
+        txt = txt % (device_to_shrink, new_device)
+        logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
         max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
@@ -195,13 +205,13 @@ class InstallationAlongside(GtkBaseBox):
         self.resize_widget.set_part_icon("new", icon_file=icon_file)
 
         self.resize_widget.set_pref_size(max_size)
-
         self.resize_widget.show_all()
 
     def get_distributor_icon_file(self, os_name):
-
+        """ Gets an icon for the installed distribution """
         os_name = os_name.lower()
 
+        # No numix icon for Antergos, use our own.
         if "antergos" in os_name:
             icons_path = os.path.join(self.settings.get('data'), "icons/48x48")
             icon_file = os.path.join(icons_path, "distributor-logo-antergos.png")
@@ -219,8 +229,7 @@ class InstallationAlongside(GtkBaseBox):
 
         for name in icon_names:
             if name in os_name:
-                icon_file = os.path.join(icons_path, prefix + name + sufix)
-                return icon_file
+                return os.path.join(icons_path, prefix + name + sufix)
 
         return default
 
@@ -264,7 +273,8 @@ class InstallationAlongside(GtkBaseBox):
 
         if len(devices) > 1:
             for device in sorted(devices):
-                self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
+                if self.get_new_device(device) > 0:
+                    self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
             self.select_first_combobox_item(self.choose_partition_combo)
         elif len(devices) == 1:
             self.set_resize_widget(devices[0])
@@ -272,11 +282,13 @@ class InstallationAlongside(GtkBaseBox):
             self.choose_partition_label.hide()
             self.choose_partition_combo.hide()
         else:
-            logging.error("Can't find any installed OS!")
+            logging.warning(_("Can't find any installed OS!"))
 
     def store_values(self):
         self.start_installation()
         return True
+        
+    # ######################################################################################################
 
     def is_room_available(self, row):
         """ Checks that we really can shrink the partition and create a new one
@@ -309,8 +321,8 @@ class InstallationAlongside(GtkBaseBox):
 
         primary_partitions.sort()
 
-        logging.debug("extended partition: %s" % extended_path)
-        logging.debug("primary partitions: %s" % primary_partitions)
+        logging.debug("extended partition: %s", extended_path)
+        logging.debug("primary partitions: %s", primary_partitions)
 
         if len(extended_path) > 0:
             # TODO: Allow shrink a logical partition and create inside two additional partitions (root and swap)

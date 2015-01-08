@@ -66,14 +66,7 @@ class InstallationAsk(GtkBaseBox):
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
 
-        oses = {}
-        oses = bootinfo.get_os_dict()
-
         self.other_oses = []
-        for key in oses:
-            # We only check the first hard disk ¿?
-            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
-                self.other_oses.append(oses[key])
 
         self.enable_alongside = False
         self.check_alongside()
@@ -87,23 +80,30 @@ class InstallationAsk(GtkBaseBox):
         msg = ""
         self.enable_alongside = False
 
+        oses = bootinfo.get_os_dict()
+        self.other_oses = []
+        for key in oses:
+            # FIXME: We only check the first hard disk ¿?
+            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
+                self.other_oses.append(oses[key])
+
         # FIXME: Alongside does not work in UEFI systems
         if os.path.exists("/sys/firmware/efi"):
             msg = _("The 'alongside' installation mode does not work in UEFI systems")
             logging.debug(msg)
             return
 
-        if len(self.other_oses) > 1:
-            msg = _("Many OSes installed in device sda.")
-        elif len(self.other_oses) == 0:
-            msg = _("Can't detect any OS in device sda.")
-        else:
+        if len(self.other_oses) > 0:
             for detected_os in self.other_oses:
                 if "Windows" in detected_os:
                     msg = _("Windows detected.")
-                    self.enable_alongside = True
+                    if self.is_a_primary_partition_available("/dev/sda"):
+                        self.enable_alongside = True
             if not self.enable_alongside:
                 msg = _("Windows not detected.")
+        else:
+            msg = _("Can't detect any OS in device sda.")
+
         logging.debug(msg)
 
         if self.enable_alongside:
@@ -113,6 +113,24 @@ class InstallationAsk(GtkBaseBox):
         logging.debug(msg)
 
         self.settings.set('enable_alongside', self.enable_alongside)
+
+    def is_a_primary_partition_available(self, device):
+        """ Check if a primary partition can be created """
+        partitions = ["1", "2", "3", "4"]
+        
+        with open("/proc/partitions") as partitions_file:
+            txt = partitions_file.read()
+
+        logging.debug(txt)
+
+        for part_number in partitions:
+            partition = device + part_number
+            if "/dev/" in partition:
+                partition = partition[len("/dev/"):]
+            if partition not in txt:
+                logging.debug(partition)
+                return True
+        return False
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
@@ -159,8 +177,11 @@ class InstallationAsk(GtkBaseBox):
                     os_str = ", ".join(self.other_oses)
             else:
                 os_str = self.other_oses[0]
+        
+        # Truncate string if it's too large
         if len(os_str) > 40:
             os_str = os_str[:40] + "..."
+        
         return os_str
 
     def translate_ui(self):
