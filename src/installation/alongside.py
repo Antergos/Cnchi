@@ -39,6 +39,12 @@ if __name__ == '__main__':
     parent_dir = os.path.join(base_dir, '..')
     sys.path.insert(0, parent_dir)
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message): return message
+
 try:
     import parted
 except ImportError as err:
@@ -480,13 +486,6 @@ class InstallationAlongside(GtkBaseBox):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
-
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message): return message
 
 if __name__ == '__main__':
     from test_screen import _,run
