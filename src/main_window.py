@@ -259,7 +259,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["timezone"] = timezone.Timezone(self.params)
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
-        self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+
+        if self.settings.get("enable_alongside"):
+            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+        else:
+            self.pages["installation_alongside"] = None
+
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -267,6 +272,24 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if (len(self.pages) - 2) > 0:
             self.progressbar_step = 1.0 / (len(self.pages) - 2)
+
+    def del_pages(self):
+        """ When we get to user_info page we can't go back
+        therefore we can delete all previous pages for good """
+        if self.get_current_page == self.pages["user_info"]:
+            del self.pages["welcome"]
+            del self.pages["language"]
+            del self.pages["location"]
+            del self.pages["check"]
+            del self.pages["desktop"]
+            del self.pages["features"]
+            del self.pages["keymap"]
+            del self.pages["timezone"]
+            del self.pages["installation_ask"]
+            del self.pages["installation_automatic"]
+            if self.pages["installation_alongside"] is not None:
+                del self.pages["installation_alongside"]
+            del self.pages["installation_advanced"]
 
     def set_geometry(self):
         """ Sets Cnchi windows's geometry """
@@ -348,6 +371,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.get_current_page = weakref.ref(self.pages[next_page])
 
                 if self.get_current_page() != None:
+                    if next_page == "user_info":
+                        self.del_pages()
                     self.get_current_page().prepare('forwards')
                     self.main_box.add(self.get_current_page())
                     if self.get_current_page().get_prev_page() != None:

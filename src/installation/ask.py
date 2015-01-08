@@ -98,8 +98,13 @@ class InstallationAsk(GtkBaseBox):
         image.set_from_file(path)
 
         self.other_oses = []
-        self.enable_alongside = False
-        self.check_alongside()
+        enable_alongside = self.check_alongside()
+        self.settings.set('enable_alongside', enable_alongside)
+        if enable_alongside:
+            msg = _("Cnchi will enable the 'alongside' installation mode.")
+        else:
+            msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
+        logging.debug(msg)
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
@@ -108,13 +113,13 @@ class InstallationAsk(GtkBaseBox):
         """ Check if alongside installation type must be enabled.
         Alongside only works when Windows is installed on sda  """
 
-        self.enable_alongside = False
+        enable_alongside = False
 
         # FIXME: Alongside does not work in UEFI systems
         if os.path.exists("/sys/firmware/efi"):
             msg = _("The 'alongside' installation mode does not work in UEFI systems")
             logging.debug(msg)
-            return
+            return False
 
         oses = bootinfo.get_os_dict()
         self.other_oses = []
@@ -127,26 +132,17 @@ class InstallationAsk(GtkBaseBox):
         if len(self.other_oses) > 0:
             for detected_os in self.other_oses:
                 if "windows" in detected_os.lower():
-                    msg = _("Windows detected.")
-                    self.enable_alongside = True
-            if not self.enable_alongside:
-                msg = _("Windows not detected.")
+                    logging.debug(_("Windows detected."))
+                    enable_alongside = True
+            if not enable_alongside:
+                logging.debug(_("Windows not detected."))
         else:
-            msg = _("Can't detect any OS in device sda.")
+            logging.debug(_("Can't detect any OS in device sda."))
 
         if not check_alongside_disk_layout():
             logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
-            self.enable_alongside = False
-
-        logging.debug(msg)
-
-        if self.enable_alongside:
-            msg = _("Cnchi will enable the 'alongside' installation mode.")
-        else:
-            msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
-        logging.debug(msg)
-
-        self.settings.set('enable_alongside', self.enable_alongside)
+        
+        return enable_alongside
 
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
@@ -167,7 +163,7 @@ class InstallationAsk(GtkBaseBox):
         self.translate_ui()
         self.show_all()
 
-        if not self.enable_alongside:
+        if not self.settings.get('enable_alongside'):
             self.hide_alongside_option()
 
     def hide_alongside_option(self):
