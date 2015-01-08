@@ -46,9 +46,6 @@ from gtkbasebox import GtkBaseBox
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
-DEFAULT_TZ = "Europe/London"
-DEFAULT_TZ_COORDS = "51.3030 -0.00731"
-
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
         super().__init__(self, params, "timezone", prev_page, next_page)
@@ -137,8 +134,9 @@ class Timezone(GtkBaseBox):
 
     def set_timezone(self, timezone):
         self.timezone = timezone
-        self.tzmap.set_timezone(timezone)
-        self.forward_button.set_sensitive(True)
+        res = self.tzmap.set_timezone(timezone)
+        # res will be False if the timezone is unrecognised
+        self.forward_button.set_sensitive(res)
 
     def on_zone_combobox_changed(self, widget):
         new_zone = self.combobox_zone.get_active_text()
@@ -182,21 +180,19 @@ class Timezone(GtkBaseBox):
         self.populate_zones()
         self.timezone = None
         self.forward_button.set_sensitive(False)
-        tr = 0
+
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
             except queue.Empty:
-                msg = _("Can't autodetect timezone coordinates, will use %s as default")
-                msg = msg % DEFAULT_TZ
+                msg = _("Can't autodetect timezone coordinates")
                 logging.warning(msg)
-                self.autodetected_coords = DEFAULT_TZ_COORDS.split()
 
         if self.autodetected_coords != None:
             coords = self.autodetected_coords
-            timezone = self.tzmap.get_timezone_at_coords(
-                latitude=float(coords[0]),
-                longitude=float(coords[1]))
+            latitude = float(coords[0])
+            longitude = float(coords[1])
+            timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
             self.set_timezone(timezone)
             self.forward_button.set_sensitive(True)
 
@@ -235,7 +231,7 @@ class Timezone(GtkBaseBox):
             else:
                 self.settings.set("timezone_longitude", "")
 
-        # This way installer_process will know all info has been entered
+        # This way process.py will know that all info has been entered
         self.settings.set("timezone_done", True)
         return True
 
@@ -259,35 +255,6 @@ class AutoTimezoneThread(threading.Thread):
     def stop(self):
         self.stop_event.set()
 
-    def get_prop(self, obj, iface, prop):
-        try:
-            return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-        except dbus.DBusException as e:
-            if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-                return None
-            else:
-                raise
-
-    def has_connection(self):
-        try:
-            bus = dbus.SystemBus()
-            manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-            state = self.get_prop(manager, NM, 'state')
-        except dbus.exceptions.DBusException:
-            # Networkmanager is not responding, try open a well known ip site (google)
-            import urllib
-            from socket import timeout
-            try:
-                url = 'http://74.125.228.100'
-                packages_xml = urllib.request.urlopen(url, timeout=5)
-                return True
-            except urllib.error.URLError as err:
-                pass
-            except timeout as err:
-                pass
-            return False
-        return state == NM_STATE_CONNECTED_GLOBAL
-
     def run(self):
         # Calculate logo hash
         logo = "data/images/antergos/antergos-logo-mini2.png"
@@ -299,18 +266,18 @@ class AutoTimezoneThread(threading.Thread):
         logo_digest = logo_hasher.digest()
 
         # Wait until there is an Internet connection available
-        while not self.has_connection():
+        while not misc.has_connection():
             if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
-            time.sleep(1)  # Delay and try again
-            logging.warning(_("Can't get network status. Will try again later."))
+            time.sleep(2)  # Delay and try again
+            logging.warning(_("Can't get network status."))
 
         # Do not start looking for our timezone until we've reached the language screen
         # (welcome.py sets timezone_start to true when next is clicked)
         while self.settings.get('timezone_start') == False:
             if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
-            time.sleep(1)
+            time.sleep(2)
 
         # OK, now get our timezone
 
@@ -332,14 +299,8 @@ class AutoTimezoneThread(threading.Thread):
 
         if coords != 'error':
             logging.debug(_("Timezone (%s) detected.") % coords)
-        else:
-            msg = _("Can't detect user timezone. Cnchi will use %s as default")
-            msg = msg % DEFAULT_TZ
-            logging.debug(msg)
-            coords = DEFAULT_TZ_COORDS
-
-        coords = coords.split()
-        self.coords_queue.put(coords)
+            coords = coords.split()
+            self.coords_queue.put(coords)
 
 class GenerateMirrorListThread(threading.Thread):
     """ Creates a mirror list for pacman based on country code """

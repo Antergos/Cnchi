@@ -29,6 +29,7 @@ import subprocess
 import syslog
 import socket
 import logging
+import dbus
 
 try:
     import misc.osextras as osextras
@@ -791,37 +792,40 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 def get_prop(obj, iface, prop):
-    import dbus
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-    except (dbus.DBusException, dbus.exceptions.DBusException) as e:
-        if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
+    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
+        if err.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
             return None
         else:
             raise
 
 def is_wireless_enabled():
-    import dbus
     bus = dbus.SystemBus()
     manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
     return get_prop(manager, NM, 'WirelessEnabled')
 
 def has_connection():
-    import dbus
-    bus = dbus.SystemBus()
     try:
+        bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
         state = get_prop(manager, NM, 'state')
     except (dbus.DBusException, dbus.exceptions.DBusException) as err:
-        # We can't talk to NM, so no idea.  Wild guess: we're connected
-        # using ssh with X forwarding, and are therefore connected.  This
-        # allows us to proceed with a minimum of complaint.
-        return True
+        # Networkmanager is not responding, try open a well known ip site (google)
+        import urllib
+        from socket import timeout
+        try:
+            url = 'http://74.125.228.100'
+            packages_xml = urllib.request.urlopen(url, timeout=5)
+            return True
+        except urllib.error.URLError as err:
+            pass
+        except timeout as err:
+            pass
+        return False
     return state == NM_STATE_CONNECTED_GLOBAL
 
 def add_connection_watch(func):
-    import dbus
-
     def connection_cb(state):
         func(state == NM_STATE_CONNECTED_GLOBAL)
 
