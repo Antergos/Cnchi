@@ -177,6 +177,7 @@ class PartitionBox(StylizedFrame):
 
         self.icon_file = icon_file
 
+        # FIXME: Gtk.Alignment.new is deprecated
         align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
         align.set_padding(10, 0, 0, 0)
         align.add(self.logo)
