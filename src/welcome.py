@@ -143,11 +143,6 @@ class Welcome(GtkBaseBox):
         if direction == "backwards":
             self.show_loading_message(show=False)
 
-    def start_auto_timezone_thread(self):
-        import timezone
-        self.auto_timezone_thread = timezone.AutoTimezoneThread(self.auto_timezone_coords, self.settings)
-        self.auto_timezone_thread.start()
-
 # When testing, no _() is available
 try:
     _("")

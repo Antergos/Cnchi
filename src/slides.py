@@ -128,7 +128,7 @@ class Slides(GtkBaseBox):
                 self.scrolled_window.destroy()
                 self.scrolled_window = None
 
-        GLib.timeout_add(500, self.manage_events_from_cb_queue)
+        GLib.timeout_add(400, self.manage_events_from_cb_queue)
 
     def change_slideshow_image(self):
         if USE_WEBKIT:

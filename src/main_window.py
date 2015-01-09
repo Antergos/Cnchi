@@ -24,7 +24,7 @@
 
 """ Main Cnchi Window """
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk
 
 import os
 import sys

@@ -39,6 +39,7 @@ def get_screen(screen_name, params):
     elif screen_name == "Timezone":
         import timezone
         screen = timezone.Timezone(params)
+        params['settings'].set('timezone_start', True)
     elif screen_name == "Wireless":
         import wireless
         screen = wireless.Wireless(params)
@@ -98,7 +99,6 @@ def run(screen_name):
     import config
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
-    settings.set('timezone_start', True)
 
     from desktop_environments import DESKTOPS
     settings.set('desktops', DESKTOPS)
