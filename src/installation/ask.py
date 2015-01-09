@@ -60,7 +60,6 @@ def check_alongside_disk_layout():
     for partition in partitions:
         if misc.is_partition_extended(partition):
             extended = True
-            break
 
     if extended:
         return False
@@ -119,28 +118,31 @@ class InstallationAsk(GtkBaseBox):
         if os.path.exists("/sys/firmware/efi"):
             msg = _("The 'alongside' installation mode does not work in UEFI systems")
             logging.debug(msg)
-            return False
-
-        oses = bootinfo.get_os_dict()
-        self.other_oses = []
-        for key in oses:
-            # We only check the first hard disk
-            if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
-                self.other_oses.append(oses[key])
-
-        msg = ""
-        if len(self.other_oses) > 0:
-            for detected_os in self.other_oses:
-                if "windows" in detected_os.lower():
-                    logging.debug(_("Windows detected."))
-                    enable_alongside = True
-            if not enable_alongside:
-                logging.debug(_("Windows not detected."))
+            enable_alongside = False
         else:
-            logging.debug(_("Can't detect any OS in device sda."))
+            oses = bootinfo.get_os_dict()
+            self.other_oses = []
+            for key in oses:
+                # We only check the first hard disk
+                if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
+                    self.other_oses.append(oses[key])
 
-        if not check_alongside_disk_layout():
-            logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
+            msg = ""
+            if len(self.other_oses) > 0:
+                for detected_os in self.other_oses:
+                    if "windows" in detected_os.lower():
+                        logging.debug(_("Windows detected."))
+                        enable_alongside = True
+                if not enable_alongside:
+                    logging.debug(_("Windows not detected."))
+                    enable_alongside = False
+            else:
+                logging.debug(_("Can't detect any OS in device sda."))
+                enable_alongside = False
+
+            if not check_alongside_disk_layout():
+                logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
+                enable_alongside = False
         
         return enable_alongside
 

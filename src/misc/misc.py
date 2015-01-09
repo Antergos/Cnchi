@@ -981,6 +981,7 @@ def is_partition_extended(partition):
     num = int(num)
 
     if num > 4:
+        # logical partition
         return False
 
     with open("/proc/partitions") as partitions:
@@ -988,7 +989,7 @@ def is_partition_extended(partition):
     for line in lines:
         if "major" not in line:
             info = line.split()
-            if len(info) > 0 and info[2] == "1" and info[3] == partition:
+            if len(info) > 0 and info[2] == '1' and info[3] == partition:
                 return True
     return False
 
