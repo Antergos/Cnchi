@@ -193,7 +193,7 @@ class Timezone(GtkBaseBox):
                     msg = _("Can't autodetect timezone coordinates")
                     logging.warning(msg)
 
-        if self.autodetected_coords != None:
+        if self.autodetected_coords:
             coords = self.autodetected_coords
             latitude = float(coords[0])
             longitude = float(coords[1])
@@ -297,12 +297,12 @@ class AutoTimezoneThread(threading.Thread):
 
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
-                coords = 'error'
+                coords = None
         except Exception as err:
             logging.error(err)
-            coords = 'error'
+            coords = None
 
-        if coords != 'error':
+        if coords:
             coords = coords.split()
             msg = _("Timezone (latitude %s, longitude %s) detected.")
             msg = msg % (coords[0], coords[1])
