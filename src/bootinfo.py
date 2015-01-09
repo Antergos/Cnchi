@@ -48,19 +48,26 @@ SECEVENT_NAMES = ["SecEvent.Evt", "secevent.evt"]
 DOS_NAMES = ["IO.SYS", "io.sys"]
 LINUX_NAMES = ["issue", "slackware_version"]
 
-VISTA_MARKS = ["Windows Vista"]
-SEVEN_MARKS = ["Win7", "Windows 7"]
+VISTA_MARKS = ["Windows Vista", "W.i.n.d.o.w.s. .V.i.s.t.a."]
+SEVEN_MARKS = ["Win7", "Windows 7", "W.i.n.7.", "W.i.n.d.o.w.s. .7."]
 
-DOS_MARKS = ["MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0",
-             "MS-DOS 5.0", "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98",
-             "Windows 95"]
+DOS_MARKS = [
+    "MS-DOS",
+    "MS-DOS 6.22",
+    "MS-DOS 6.21",
+    "MS-DOS 6.0",
+    "MS-DOS 5.0",
+    "MS-DOS 4.01",
+    "MS-DOS 3.3",
+    "Windows 98",
+    "Windows 95"]
 
 # Possible locations for os-release. Do not put a trailing /
 OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
-    # FIXME: Windows Vista/7 detection does not work
+    # FIXME: Windows Vista/7 detection does not work! ##############################################################
 
     detected_os = _("unknown")
     for windows in WIN_DIRS:
@@ -71,15 +78,15 @@ def _check_windows(mount_name):
                 if os.path.exists(path):
                     with open(path, "rb") as system_file:
                         lines = system_file.readlines()
+                    for line in lines:
+                        for vista_mark in VISTA_MARKS:
+                            if vista_mark.encode('utf-8') in line:
+                                detected_os = "Windows Vista"
+                    if detected_os == _("unknown"):
                         for line in lines:
-                            for vista_mark in VISTA_MARKS:
-                                if vista_mark.encode('utf-8') in line:
-                                    detected_os = "Windows Vista"
-                        if detected_os == _("unknown"):
-                            for line in lines:
-                                for seven_mark in SEVEN_MARKS:
-                                    if seven_mark.encode('utf-8') in line:
-                                        detected_os = "Windows 7"
+                            for seven_mark in SEVEN_MARKS:
+                                if seven_mark.encode('utf-8') in line:
+                                    detected_os = "Windows 7"
             # Search for Windows XP
             if detected_os == _("unknown"):
                 for name in SECEVENT_NAMES:
@@ -91,8 +98,8 @@ def _check_windows(mount_name):
 @misc.raise_privileges
 def _hexdump8081(partition):
     try:
-        hexdump = subprocess.check_output(
-            ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]).decode()
+        cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
+        hexdump = subprocess.check_output(cmd).decode()
         return hexdump
     except subprocess.CalledProcessError as err:
         logging.warning(_("Error calling hexdump command"))
@@ -112,15 +119,16 @@ def _get_partition_info(partition):
         '0bd0':'MSWIN4.1',      # Fat32
         '2a00':'ReactOS',
         '2d5e':'Dos 1.1',
+        '3030':'W95 Extended (LBA)',
         '3a5e':'Recovery',      # Recovery Fat32
         '5c17':'Extended (do not use)',    # Extended partition
-        '55aa':'Windows Vista/7', # Vista/7 Ntfs
+        '55aa':'Windows Vista/7/8', # Vista/7 Ntfs (HPFS/NTFS/exFAT)
         '638b':'Freedos',       # FreeDos Fat32
         '7cc6':'MSWIN4.1',      # Fat32
         '8ec0':'Windows XP',    # WinXP Ntfs
         'b6d1':'Windows XP',    # WinXP Fat32
         'e2f7':'FAT32, Non Bootable',
-        'e9d8':'Windows Vista/7', # Vista/7 Ntfs
+        'e9d8':'Windows Vista/7/8', # Vista/7 Ntfs
         'fa33':'Windows XP'}    # WinXP Ntfs
 
     if bytes80_to_81 in bst.keys():

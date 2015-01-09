@@ -317,6 +317,17 @@ class ResizeWidget(Gtk.Frame):
             self.existing_part.set_property('title', title)
             if subtitle:
                 self.existing_part.set_property('extra', subtitle)
+    
+    def get_part_title_and_subtitle(self, part):
+        title = None
+        subtitle = None
+        if part == 'new':
+            title = self.new_part.get_property('title')
+            subtitle = self.new_part.get_property('extra')
+        else:
+            title = self.new_part.get_property('title')
+            subtitle = self.new_part.get_property('extra')
+        return (title, subtitle)
 
     def set_part_icon(self, part, icon_name=None, icon_file=None):
         if icon_name:

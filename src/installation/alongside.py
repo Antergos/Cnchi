@@ -91,7 +91,7 @@ def get_partition_size_info(partition_path, human=False):
             cmd = ['df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
         if not already_mounted:
-            subprocess.call(["umount", "-l", tmp_dir])
+            subprocess.call(['umount', '-l', tmp_dir])
     except subprocess.CalledProcessError as err:
         logging.error(err)
         return
@@ -119,13 +119,10 @@ class InstallationAlongside(GtkBaseBox):
         self.label = self.ui.get_object('label_info')
 
         self.choose_partition_label = self.ui.get_object('choose_partition_label')
-        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')
+        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')      
 
-        self.oses = {}
         self.oses = bootinfo.get_os_dict()
-
-        existing_device = None
-        new_device = None
+        #print(self.oses)
         self.resize_widget = None
 
     def get_new_device(self, device_to_shrink):
@@ -143,16 +140,16 @@ class InstallationAlongside(GtkBaseBox):
 
         if new_number > 4:
             # No primary partitions left
-            logging.warning(_("There are no primary partitions available"))
-            new_device = ""
+            new_device = None
 
         return new_device
 
     def set_resize_widget(self, device_to_shrink):
         new_device  = self.get_new_device(device_to_shrink)
 
-        if len(new_device) == 0:
+        if new_device is None:
             # No device is available
+            logging.warning(_("There are no primary partitions available"))
             return
 
         txt = _("Will shrink device %s and create new device %s")
@@ -176,21 +173,21 @@ class InstallationAlongside(GtkBaseBox):
         #print(min_size, max_size, part_size)
 
         if self.resize_widget:
-            self.resize_widget.set_property("part_size", int(part_size))
-            self.resize_widget.set_property("min_size", int(min_size))
-            self.resize_widget.set_property("max_size", int(max_size))
+            self.resize_widget.set_property('part_size', int(part_size))
+            self.resize_widget.set_property('min_size', int(min_size))
+            self.resize_widget.set_property('max_size', int(max_size))
         else:
             self.resize_widget = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
-            main_box = self.ui.get_object("alongside")
+            main_box = self.ui.get_object('alongside')
             main_box.pack_start(self.resize_widget, True, False, 5)
 
-        self.resize_widget.set_part_title("existing", self.oses[device_to_shrink], device_to_shrink)
+        self.resize_widget.set_part_title('existing', self.oses[device_to_shrink], device_to_shrink)
         icon_file = self.get_distributor_icon_file(self.oses[device_to_shrink])
-        self.resize_widget.set_part_icon("existing", icon_file=icon_file)
+        self.resize_widget.set_part_icon('existing', icon_file=icon_file)
 
-        self.resize_widget.set_part_title("new", "New Antergos", new_device)
-        icon_file = self.get_distributor_icon_file("Antergos")
-        self.resize_widget.set_part_icon("new", icon_file=icon_file)
+        self.resize_widget.set_part_title('new', 'New Antergos', new_device)
+        icon_file = self.get_distributor_icon_file('Antergos')
+        self.resize_widget.set_part_icon('new', icon_file=icon_file)
 
         self.resize_widget.set_pref_size(max_size)
         self.resize_widget.show_all()
@@ -260,10 +257,20 @@ class InstallationAlongside(GtkBaseBox):
                 devices.append(device)
 
         if len(devices) > 1:
+            new_device_found = False
             for device in sorted(devices):
-                if len(self.get_new_device(device)) > 0:
+                if self.get_new_device(device):
+                    new_device_found = True
                     self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
             self.select_first_combobox_item(self.choose_partition_combo)
+            self.show_all()
+            if not new_device_found:
+                txt = _("Can't find any spare partition number.\nAlongside installation can't continue.")
+                self.choose_partition_label.hide()
+                self.choose_partition_combo.hide()
+                self.label.set_markup(txt)
+                show.error(self.get_toplevel(), txt)
+
         elif len(devices) == 1:
             self.set_resize_widget(devices[0])
             self.show_all()
@@ -278,67 +285,17 @@ class InstallationAlongside(GtkBaseBox):
 
     # ######################################################################################################
 
-    def is_room_available(self, row):
-        """ Checks that we really can shrink the partition and create a new one
-        with the current hard disk layout """
-        partition_path = row[COL_DEVICE]
-        otherOS = row[COL_DETECTED_OS]
-        fs_type = row[COL_FILESYSTEM]
-
-        device_path = row[COL_DEVICE][:len("/dev/sdX")]
-
-        new_size = self.new_size
-
-        logging.debug("partition_path: %s" % partition_path)
-        logging.debug("device_path: %s" % device_path)
-        logging.debug("new_size: %s" % new_size)
-
-        # Find out how many primary partitions device has, and also
-        # if there's already an extended partition
-
-        extended_path = ""
-        primary_partitions = []
-
-        for path in self.partitions:
-            if device_path in path:
-                p = self.partitions[path]
-                if p.type == pm.PARTITION_EXTENDED:
-                    extended_path = path
-                elif p.type == pm.PARTITION_PRIMARY:
-                    primary_partitions.append(path)
-
-        primary_partitions.sort()
-
-        logging.debug("extended partition: %s", extended_path)
-        logging.debug("primary partitions: %s", primary_partitions)
-
-        if len(extended_path) > 0:
-            # TODO: Allow shrink a logical partition and create inside two additional partitions (root and swap)
-            #print("Extended present")
-            pass
-
-        if len(primary_partitions) > 3:
-            # We only allow installing if only 2 partitions are already occupied,
-            # otherwise there will be no room for root and swap partitions
-            txt = _("There are too many primary partitions, can't create a new one")
-            logging.error(txt)
-            show.error(self.get_toplevel(), txt)
-            return False
-
-        return True
-
     def start_installation(self):
         """ Alongside method shrinks selected partition
         and creates root and swap partition in the available space """
 
-        row = self.get_selected_row()
+        (existing_os, existing_device) = self.resize_widget.get_part_title_and_subtitle('existing')
+        (new_os, new_device) = self.resize_widget.get_part_title_and_subtitle('new')
 
-        if row is None:
-            return
+        print(existing_os, existing_device)
+        print(new_os, new_device)
 
-        if self.is_room_available(row) is False:
-            return
-
+        '''
         partition_path = row[COL_DEVICE]
         otherOS = row[COL_DETECTED_OS]
         fs_type = row[COL_FILESYSTEM]
@@ -487,6 +444,7 @@ class InstallationAlongside(GtkBaseBox):
             self.process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
+        '''
 
 if __name__ == '__main__':
     from test_screen import _,run
