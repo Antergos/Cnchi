@@ -1028,6 +1028,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.modify_grub_default()
         self.prepare_grub_d()
+        self.apply_osprober_patch()
         
         # Freeze and unfreeze xfs filesystems to enable grub(2) installation on xfs filesystems
         self.freeze_xfs()
@@ -1041,8 +1042,9 @@ class InstallationProcess(multiprocessing.Process):
         # Check grub.cfg for correct root UUID
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
+        ruuid_str = 'root=UUID=' + ruuid
 
-        if ruuid not in open(cfg).read():
+        if ruuid_str not in open(cfg).read():
             with open(cfg) as grub_cfg:
                 lines = [x.strip() for x in grub_cfg.readlines()]
             for i in range(len(lines)):
@@ -1143,6 +1145,18 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:
             pass
+    
+    def apply_osprober_patch(self):
+        """ Adds -l option to os-prober's umount call so that it does not hang """
+        osp_path = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
+        if os.path.exists(osp_path):
+            with open(osp_path) as osp:
+                text = osp.read().replace("umount", "umount -l")
+            with open(osp_path, "w") as osp:
+                osp.write(text)
+            logging.debug(_("50mounted-tests file patched successfully"))
+        else:
+            logging.warning(_("Failed to patch 50mounted-tests, file not found."))
 
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
