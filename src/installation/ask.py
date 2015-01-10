@@ -55,7 +55,7 @@ def check_alongside_disk_layout():
     # TODO: Add more scenarios where alongside could work
 
     partitions = misc.get_partitions()
-    logging.debug(partitions)
+    #logging.debug(partitions)
     extended = False
     for partition in partitions:
         if misc.is_partition_extended(partition):
@@ -131,10 +131,10 @@ class InstallationAsk(GtkBaseBox):
             if len(self.other_oses) > 0:
                 for detected_os in self.other_oses:
                     if "windows" in detected_os.lower():
-                        logging.debug(_("Windows detected."))
+                        logging.debug(_("Windows(tm) OS detected."))
                         enable_alongside = True
                 if not enable_alongside:
-                    logging.debug(_("Windows not detected."))
+                    logging.debug(_("Windows(tm) OS not detected."))
                     enable_alongside = False
             else:
                 logging.debug(_("Can't detect any OS in device sda."))

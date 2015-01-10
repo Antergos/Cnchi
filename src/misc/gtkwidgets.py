@@ -50,7 +50,7 @@ def gtk_to_cairo_color(c):
     b = color.blue * s
     return r, g, b
 
-class StylizedFrame(Gtk.Alignment):
+class StylizedFrame(Gtk.Bin):
     __gtype_name__ = 'StylizedFrame'
     __gproperties__ = {
         'radius': (
@@ -62,7 +62,8 @@ class StylizedFrame(Gtk.Alignment):
     }
 
     def __init__(self):
-        Gtk.Alignment.__init__(self)
+        #Gtk.Alignment.__init__(self)
+        Gtk.Bin.__init__(self)
         self.radius = 10
         self.width = 1
 
@@ -70,14 +71,16 @@ class StylizedFrame(Gtk.Alignment):
         if prop.name in ('radius', 'width'):
             return getattr(self, prop.name)
         else:
-            return Gtk.Alignment.do_get_property(self, prop)
+            #return Gtk.Alignment.do_get_property(self, prop)
+            return Gtk.Bin.do_get_property(self, prop)
 
     def do_set_property(self, prop, value):
         if prop.name in ('radius', 'width'):
             setattr(self, prop.name, value)
             self.queue_draw()
         else:
-            Gtk.Alignment.do_set_property(self, prop, value)
+            #Gtk.Alignment.do_set_property(self, prop, value)
+            Gtk.Bin.do_set_property(self, prop, value)
 
     def paint_background(self, c):
         c.set_source_rgb(*gtk_to_cairo_color('#fbfbfb'))
@@ -161,11 +164,6 @@ class PartitionBox(StylizedFrame):
         setattr(self, prop.name, value)
 
     def __init__(self, title="", extra="", icon_name="", icon_file=""):
-        # 10 px above the topmost element
-        # 6 px between the icon and the title
-        # 4 px between the title and the extra heading
-        # 5 px between the extra heading and the size
-        # 12 px below the bottom-most element
         StylizedFrame.__init__(self)
         vbox = Gtk.Box()
         vbox.set_orientation(Gtk.Orientation.VERTICAL)
@@ -177,35 +175,26 @@ class PartitionBox(StylizedFrame):
 
         self.icon_file = icon_file
 
-        # FIXME: Gtk.Alignment.new is deprecated
-        align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
-        align.set_padding(10, 0, 0, 0)
-        align.add(self.logo)
-        vbox.pack_start(align, False, True, 0)
+        self.logo.set_halign(Gtk.Align.CENTER)
+        vbox.pack_start(self.logo, False, True, 0)
 
         self.ostitle = Gtk.Label()
         self.ostitle.set_ellipsize(Pango.EllipsizeMode.END)
-        align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
-        align.set_padding(6, 0, 0, 0)
-        align.add(self.ostitle)
-        vbox.pack_start(align, False, True, 0)
+        vbox.pack_start(self.ostitle, False, True, 0)
 
         self.extra = Gtk.Label()
         self.extra.set_ellipsize(Pango.EllipsizeMode.END)
-        align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
-        align.set_padding(4, 0, 0, 0)
-        align.add(self.extra)
-        vbox.pack_start(align, False, True, 0)
+        self.extra.set_halign(Gtk.Align.CENTER)
+        vbox.pack_start(self.extra, False, True, 0)
 
         self.size = Gtk.Label()
         self.size.set_ellipsize(Pango.EllipsizeMode.END)
-        align = Gtk.Alignment.new(0.5, 0.5, 0.5, 0.5)
-        align.set_padding(5, 12, 0, 0)
-        align.add(self.size)
-        vbox.pack_start(align, False, True, 0)
+        self.size.set_halign(Gtk.Align.CENTER)
+        vbox.pack_start(self.size, False, True, 0)
         self.add(vbox)
 
         self.ostitle.set_markup('<b>%s</b>' % title)
+        
         # Take up the space that would otherwise be used to create symmetry.
         self.extra.set_markup('<small>%s</small>' % extra and extra or ' ')
         self.show_all()

@@ -1002,6 +1002,5 @@ def get_partitions():
             info = line.split()
             if len(info) > 0:
                 if len(info[3]) > len("sdX"):
-                    logging.debug(info[3])
                     partitions_list.append("/dev/" + info[3])
     return partitions_list
