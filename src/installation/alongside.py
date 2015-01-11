@@ -245,7 +245,6 @@ class InstallationAlongside(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.fill_choose_partition_combo()
-        self.forward_button.set_sensitive(False)
 
     def fill_choose_partition_combo(self):
         self.choose_partition_combo.remove_all()
@@ -292,8 +291,8 @@ class InstallationAlongside(GtkBaseBox):
         (existing_os, existing_device) = self.resize_widget.get_part_title_and_subtitle('existing')
         (new_os, new_device) = self.resize_widget.get_part_title_and_subtitle('new')
 
-        print(existing_os, existing_device)
-        print(new_os, new_device)
+        print("existing", existing_os, existing_device)
+        print("new", new_os, new_device)
 
         '''
         partition_path = row[COL_DEVICE]
