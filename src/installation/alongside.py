@@ -253,7 +253,8 @@ class InstallationAlongside(GtkBaseBox):
         devices = []
 
         for device in sorted(self.oses.keys()):
-            if "Swap" not in self.oses[device]:
+            #if "Swap" not in self.oses[device]:
+            if "windows" in self.oses[device].lower():
                 devices.append(device)
 
         if len(devices) > 1:
@@ -270,7 +271,6 @@ class InstallationAlongside(GtkBaseBox):
                 self.choose_partition_combo.hide()
                 self.label.set_markup(txt)
                 show.error(self.get_toplevel(), txt)
-
         elif len(devices) == 1:
             self.set_resize_widget(devices[0])
             self.show_all()

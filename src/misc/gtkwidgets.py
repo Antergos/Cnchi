@@ -122,17 +122,13 @@ class PartitionBox(StylizedFrame):
     __gtype_name__ = 'PartitionBox'
     __gproperties__ = {
         'title': (
-            GObject.TYPE_STRING, 'Title', None, 'Title',
-            GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Title', None, 'Title', GObject.PARAM_READWRITE),
         'icon-name': (
-            GObject.TYPE_STRING, 'Icon Name', None, 'distributor-logo',
-            GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Icon Name', None, 'distributor-logo', GObject.PARAM_READWRITE),
         'icon-file': (
-            GObject.TYPE_STRING, 'Icon File', None, 'distributor-logo',
-            GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Icon File', None, 'distributor-logo', GObject.PARAM_READWRITE),
         'extra': (
-            GObject.TYPE_STRING, 'Extra Text', None, '',
-            GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Extra Text', None, '', GObject.PARAM_READWRITE),
     }
 
     def do_get_property(self, prop):
@@ -149,19 +145,15 @@ class PartitionBox(StylizedFrame):
     def do_set_property(self, prop, value):
         if prop.name == 'title':
             self.ostitle.set_markup('<b>%s</b>' % value)
-            return
         elif prop.name == 'icon-name':
             self.logo.set_from_icon_name(value, Gtk.IconSize.DIALOG)
-            return
         elif prop.name == 'icon-file':
             self.icon_file = value
             self.logo.set_from_file(value)
-            return
         elif prop.name == 'extra':
-            self.extra.set_markup('<small>%s</small>' %
-                                  (value and value or ' '))
-            return
-        setattr(self, prop.name, value)
+            self.extra.set_markup('<small>%s</small>' % (value and value or ' '))
+        else:
+            setattr(self, prop.name, value)
 
     def __init__(self, title="", extra="", icon_name="", icon_file=""):
         StylizedFrame.__init__(self)
@@ -265,7 +257,7 @@ class ResizeWidget(Gtk.Frame):
             setattr(self, name, value)
             self.queue_draw()
         else:
-            print(prop.name, value)
+            #print(prop.name, value)
             Gtk.Alignment.do_set_property(self, prop, value)
 
     def __init__(self, part_size, min_size, max_size):
@@ -274,14 +266,17 @@ class ResizeWidget(Gtk.Frame):
             min_size: The min size (MB) that the existing partition can be resized to.
             max_size: The max size (MB) that the existing partition can be resized to.
         """
-        Gtk.Frame.__init__(self)
 
         assert min_size <= max_size <= part_size
         assert part_size > 0
+        
+        self.set_size_request_done = False
 
         self.part_size = part_size
         self.min_size = min_size
         self.max_size = max_size
+
+        Gtk.Frame.__init__(self)
 
         self.set_size_request(600, -1)
 
@@ -330,27 +325,25 @@ class ResizeWidget(Gtk.Frame):
             else:
                 self.existing_part.set_property('icon-file', icon_file)
 
-    def do_realize(self):
-        # TEST: Make sure the value of the minimum size and maximum size
-        # equal the value of the widget when pushed to the min/max.
+    def do_size_allocate(self, allocation):
+        Gtk.Frame.do_size_allocate(self, allocation)
 
-        Gtk.Frame.do_realize(self)
+        self.set_allocation(allocation)
 
-        #allocation = self.get_allocation()
+        if not self.set_size_request_done:
+            s1 = self.existing_part.get_allocation().width
+            s2 = self.new_part.get_allocation().width
+            total_width = s1 + s2
 
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
+            tmp = float(self.min_size) / self.part_size
+            pixels = int(tmp * total_width)
+            self.existing_part.set_size_request(pixels, -1)
 
-        tmp = float(self.min_size) / self.part_size
-        pixels = int(tmp * total_width)
-        self.existing_part.set_size_request(pixels, -1)
+            tmp = ((float(self.part_size) - self.max_size) / self.part_size)
+            pixels = int(tmp * total_width)
+            self.new_part.set_size_request(pixels, -1)
 
-        tmp = ((float(self.part_size) - self.max_size) / self.part_size)
-        pixels = int(tmp * total_width)
-        self.new_part.set_size_request(pixels, -1)
-
-        self.set_realized(True)
+            self.set_size_request_done = True
 
     def do_draw(self, cr):
         Gtk.Frame.do_draw(self, cr)
