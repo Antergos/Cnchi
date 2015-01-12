@@ -108,7 +108,7 @@ def create(pacman, package_name, pacman_conf_file):
     try:
         download_queue, not_found, missing_deps = build_download_queue(pacman=pacman, args=options)
     except Exception as err:
-        msg = _("Unable to create download queue for package %s") % package_name
+        msg = _("Unable to create download queue for package {0}").format(package_name)
         logging.error(msg)
         logging.exception(err)
         return None
@@ -218,7 +218,7 @@ class PkgSet(object):
             self.pkgs[pkg.name] = pkg
 
     def __repr__(self):
-        return 'PkgSet(%s)' % repr(self.pkgs)
+        return 'PkgSet({0})'.format(repr(self.pkgs))
 
     def add(self, pkg):
         self.pkgs[pkg.name] = pkg
@@ -301,7 +301,7 @@ def build_download_queue(pacman, args=None):
     try:
         pacman = pac.Pac(conf_path=conf_file, callback_queue=None)
     except Exception as err:
-        logging.error("Can't initialize pyalpm: %s" % err)
+        logging.error(_("Can't initialize pyalpm: %s"), err)
         return None, None, None
     '''
 
@@ -465,7 +465,7 @@ if __name__ == '__main__':
         del pacman
 
     except Exception as err:
-        logging.error("Can't initialize pyalpm: %s" % err)
+        logging.error(_("Can't initialize pyalpm: %s"), err)
 
 
     '''

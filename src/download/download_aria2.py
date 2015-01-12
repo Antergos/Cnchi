@@ -135,8 +135,8 @@ class Download(object):
     def show_download_info(self, downloaded, total_downloads):
         percent = round(float(downloaded / total_downloads), 2)
         self.queue_event('percent', percent)
-        txt = _("Downloading packages... (%d/%d)...")
-        txt = txt % (downloaded, total_downloads)
+        txt = _("Downloading packages... ({0}/{1})...")
+        txt = txt.format(downloaded, total_downloads)
         self.queue_event('info', txt)
 
     def queue_event(self, event_type, event_text=""):

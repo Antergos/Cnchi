@@ -70,7 +70,7 @@ class Aria2(object):
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())
                 gids = s.aria2.addMetalink(self.rpc_uid, binary_metalink)
             except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError, OverflowError) as err:
-                logging.error("Can't add metalink to Aria2. Error Output: %s", err)
+                logging.error(_("Can't add metalink to Aria2. Error Output: %s"), err)
             finally:
                 return gids
 
@@ -83,7 +83,7 @@ class Aria2(object):
             s = xmlrpc.client.ServerProxy(ARIA2_URL)
             gid = s.aria2.addUri(self.rpc_uid, uris)
         except (xmlrpc.client.Fault, ConnectionRefusedError, BrokenPipeError, OverflowError) as err:
-            logging.error("Can't add uris to Aria2. Error Output: %s", err)
+            logging.error(_("Can't add uris to Aria2. Error Output: %s"), err)
         finally:
             return gid
 

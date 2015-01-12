@@ -46,10 +46,10 @@ def url_open_read(urlp, chunk_size=8192):
         data = urlp.read(chunk_size)
         download_error = False
     except urllib.error.HTTPError as err:
-        msg = ' HTTPError : %s' % err.reason
+        msg = ' HTTP Error : {0}'.format(err.reason)
         logging.warning(msg)
     except urllib.error.URLError as err:
-        msg = ' URLError : %s' % err.reason
+        msg = ' URL Error : {0}'.format(err.reason)
         logging.warning(msg)
 
     return (data, download_error)
@@ -57,7 +57,7 @@ def url_open_read(urlp, chunk_size=8192):
 def url_open(url):
     """ Helper function to open a remote file """
 
-    msg = _('Error opening %s:') % url
+    msg = _('Error opening {0}:').format(url)
 
     if url is None:
         logging.warning(msg)
@@ -67,15 +67,15 @@ def url_open(url):
         urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
         urlp = None
-        msg += ' HTTPError : %s' % err.reason
+        msg += ' HTTP Error : {0}'.format(err.reason)
         logging.warning(msg)
     except urllib.error.URLError as err:
         urlp = None
-        msg += ' URLError : %s' % err.reason
+        msg += ' URL Error : {0}'.format(err.reason)
         logging.warning(msg)
     except AttributeError as err:
         urlp = None
-        msg += ' AttributeError : %s' % err
+        msg += ' Attribute Error : {0}'.format(err)
         logging.warning(msg)
 
     return urlp
@@ -108,8 +108,8 @@ class Download(object):
 
             self.queue_event('percent', 0)
 
-            txt = _("Downloading %s %s (%d/%d)...")
-            txt = txt % (element['identity'], element['version'], downloaded + 1, total_downloads)
+            txt = _("Downloading {0} {1} ({2}/{3})...")
+            txt = txt.format(element['identity'], element['version'], downloaded + 1, total_downloads)
             self.queue_event('info', txt)
 
             try:
@@ -133,7 +133,7 @@ class Download(object):
             else:
                 # Let's download our filename using url
                 for url in element['urls']:
-                    #msg = _("Downloading file from url %s") % url
+                    #msg = _("Downloading file from url {0}").format(url)
                     #logging.debug(msg)
                     download_error = True
                     percent = 0
@@ -161,19 +161,19 @@ class Download(object):
                             else:
                                 # try next mirror url
                                 completed_length = 0
-                                msg = _("Can't download %s, will try another mirror if available") % url
+                                msg = _("Can't download {0}, will try another mirror if available").format(url)
                                 logging.warning(msg)
                     else:
                         # try next mirror url
-                        msg = _("Can't open %s, will try another mirror if avaliable") % url
+                        msg = _("Can't open {0}, will try another mirror if avaliable").format(url)
                         logging.warning(msg)
 
                 if download_error:
                     # None of the mirror urls works.
                     # This is not a total disaster, maybe alpm will be able
                     # to download it for us later in pac.py
-                    msg = _("Can't download %s, even after trying all available mirrors")
-                    msg = msg % element['filename']
+                    msg = _("Can't download {0}, even after trying all available mirrors")
+                    msg = msg.format(element['filename'])
                     logging.warning(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
