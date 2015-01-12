@@ -407,13 +407,13 @@ class InstallationAdvanced(GtkBaseBox):
 
         if size >= 1000000000:
             size /= 1000000000
-            size_txt = "{0}G".format(size)
+            size_txt = "{0:.0f}G".format(size)
         elif size >= 1000000:
             size /= 1000000
-            size_txt = "{0}M".format(size)
+            size_txt = "{0:.0f}M".format(size)
         elif size >= 1000:
             size /= 1000
-            size_txt = "{0}K".format(size)
+            size_txt = "{0:.0f}K".format(size)
 
         return size_txt
 
