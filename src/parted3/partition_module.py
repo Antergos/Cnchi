@@ -35,7 +35,7 @@ import show_message as show
 try:
     import parted
 except ImportError as err:
-    logging.error(_("Can't import parted module: %s") % str(err))
+    logging.error(_("Can't import parted module: %s"), str(err))
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1
@@ -106,12 +106,12 @@ def get_devices():
                 diskob = parted.Disk(dev)
                 result = OK
             except parted.DiskLabelException as err:
-                #logging.warning(_('Unrecognised disk label in device %s.') % dev.path)
+                #logging.warning(_('Unrecognised disk label in device %s.'), dev.path)
                 diskob = None
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as err:
                 logging.error(err)
-                msg = _("Exception: %s.\nFor more information take a look at /tmp/cnchi.log") % err
+                msg = _("Exception: {0}.\nFor more information take a look at /tmp/cnchi.log").format(err)
                 show.error(None, msg)
                 diskob = None
                 result = UNKNOWN_ERROR
@@ -169,7 +169,8 @@ def get_partitions(diskob):
                 free.geometry.start = 2048
         if free.geometry.end - free.geometry.start < 2:
             continue
-        part_dic['free%s' % str(fcount)] = free
+        # Is this str conversion necessary?
+        part_dic['free{0}'.format(str(fcount))] = free
         fcount += 1
 
     return part_dic
@@ -179,10 +180,10 @@ def delete_partition(diskob, part):
     try:
         diskob.deletePartition(part)
     except Exception as err:
-        txt = _("Can't delete partition %s") % part
+        txt = _("Can't delete partition {0}").format(part)
         logging.error(txt)
         logging.error(e)
-        debug_txt = "%s\n%s" % (txt, err)
+        debug_txt = "{0}\n{1}".format(txt, err)
         show.error(None, debug_txt)
 
 def get_partition_size(diskob, part):
@@ -283,16 +284,16 @@ def get_used_space(part):
 
 def get_used_space_from_path(path):
     try:
-        cmd = shlex.split('df -H %s' % path)
+        cmd = ["df", "-H", path)
         result = subprocess.check_output(cmd).decode()
         lines = result.split('\n')
         used_space = lines[1].split()[2]
     except subprocess.CalledProcessError as err:
         used_space = 0
-        txt = _("Can't detect used space from %s") % path
+        txt = _("Can't detect used space from {0}").format(path)
         logging.error(txt)
         logging.error(err)
-        debug_txt = "%s\n%s" % (txt, err)
+        debug_txt = "{0}\n{1}".format(txt, err)
         show.error(debug_txt)
 
     return used_space

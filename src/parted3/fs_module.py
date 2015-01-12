@@ -38,13 +38,12 @@ COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 @misc.raise_privileges
 def get_info(part):
     """ Get partition info using blkid """
-    
+
     # Do not try to get extended partition info
     ret = ''
     if not misc.is_partition_extended(part):
         try:
-            cmd = shlex.split('blkid %s' % part)
-            ret = subprocess.check_output(cmd).decode().strip()
+            ret = subprocess.check_output(['blkid', part]).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
             ret = ''
@@ -62,7 +61,7 @@ def get_type(part):
     ret = ''
     if not misc.is_partition_extended(part):
         try:
-            cmd = shlex.split('blkid -o value -s TYPE %s' % part)
+            cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
@@ -198,10 +197,10 @@ def resize(part, fs_type, new_size_in_mb):
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     """ Resize a ntfs partition """
-    logging.debug("ntfsresize -P --size %s %s", str(new_size_in_mb) + "M", part)
+    logging.debug("ntfsresize -P --size {0}M {1}".format(new_size_in_mb, part))
 
     try:
-        cmd = ["ntfsresize", "-v", "-P", "--size", str(new_size_in_mb) + "M", part]
+        cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
         result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
         result = None
@@ -222,10 +221,10 @@ def resize_fat(part, new_size_in_mb):
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
     """ Resize an ext partition """
-    logging.debug("resize2fs %s %sM", part, str(new_size_in_mb))
+    logging.debug("resize2fs {0} {1}M".format(part, new_size_in_mb))
 
     try:
-        cmd = ["resize2fs", part, str(new_size_in_mb) + "M"]
+        cmd = ["resize2fs", part, "{0}M".format(new_size_in_mb)]
         result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
         logging.error(err)
