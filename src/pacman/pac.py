@@ -134,8 +134,8 @@ class Pac(object):
             transaction.prepare()
             transaction.commit()
         except pyalpm.error as err:
-            msg = _("Can't finalize alpm transaction: %s") % err
-            logging.error(msg)
+            msg = _("Can't finalize alpm transaction: %s")
+            logging.error(msg, err)
             all_ok = False
         finally:
             transaction.release()
@@ -158,8 +158,8 @@ class Pac(object):
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         except pyalpm.error as err:
-            msg = _("Can't init alpm transaction: %s") % err
-            logging.error(msg)
+            msg = _("Can't init alpm transaction: %s")
+            logging.error(msg, err)
             transaction = None
         finally:
             return transaction
@@ -244,7 +244,7 @@ class Pac(object):
             pkg = db.get_pkg(pkgname)
             if pkg is not None:
                 return True, pkg
-        return False, "Package '%s' was not found." % pkgname
+        return False, "Package '{0}' was not found.".format(pkgname)
 
     def get_group_pkgs(self, group):
         """ Get group packages """
@@ -272,7 +272,7 @@ class Pac(object):
             # Get the previous frame in the stack, otherwise it would be this function
             func = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
-            event_text = "%s: %s in %s:%i" % (event_text, func.co_name, func.co_filename, func.co_firstlineno)
+            event_text = "{0}: {1} in {3}:{4}".format(event_text, func.co_name, func.co_filename, func.co_firstlineno)
 
         if self.callback_queue is None:
             #print(event_type, event_text)
@@ -354,13 +354,13 @@ class Pac(object):
     def cb_progress(self, target, percent, n, i):
         """ Shows install progress """
         if target:
-            msg = _("Installing %s (%d/%d)") % (target, i, n)
+            msg = _("Installing {0} ({1}/{2})").format(target, i, n)
             self.queue_event('info', msg)
 
             percent = i / n
             self.queue_event('percent', percent)
         else:
-            #msg = _("Checking and loading packages... (%d targets)") % n
+            #msg = _("Checking and loading packages... ({0} targets)").format(n)
             #self.queue_event('info', msg)
 
             percent = percent / 100
@@ -379,7 +379,7 @@ class Pac(object):
                 ext = ".db"
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
-                text = _("Updating %s database") % filename
+                text = _("Updating {0} database").format(filename)
             else:
                 ext = ".pkg.tar.xz"
                 if filename.endswith(ext):
@@ -387,8 +387,8 @@ class Pac(object):
                 self.downloaded_packages = self.downloaded_packages + 1
                 i = self.downloaded_packages
                 n = self.total_packages_to_download
-                #text = _("Downloading %s... (%d/%d)") % (filename, i, n)
-                text = _("Downloading %s...") % filename
+                #text = _("Downloading {0}... ({1}/{2})").format(filename, i, n)
+                text = _("Downloading {0}...").format(filename)
 
             self.queue_event('info', text)
             self.queue_event('percent', 0)
@@ -424,13 +424,13 @@ if __name__ == "__main__":
     try:
         pacman = Pac("/etc/pacman.conf")
     except Exception as err:
-        print("Can't initialize pyalpm: %s" % err)
+        print("Can't initialize pyalpm: ", err)
         sys.exit(1)
 
     try:
         pacman.do_refresh()
     except pyalpm.error as err:
-        print("Can't update databases: %s" % err)
+        print("Can't update databases: ", err)
         sys.exit(1)
 
     pacman_options = {}

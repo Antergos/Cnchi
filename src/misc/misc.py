@@ -190,7 +190,7 @@ def grub_options():
             if dev and mod:
                 if size.isdigit():
                     size = format_size(int(size))
-                    l.append([dev, '%s (%s)' % (mod, size)])
+                    l.append([dev, '{0} ({1})'.format(mod, size)])
                 else:
                     l.append([dev, mod])
             for part in p.partitions():
@@ -244,8 +244,7 @@ def is_removable(device):
     devpath = None
     is_partition = False
     removable_bus = False
-    subp = subprocess.Popen(['udevadm', 'info', '-q', 'property',
-                             '-n', device],
+    subp = subprocess.Popen(['udevadm', 'info', '-q', 'property', '-n', device],
                             stdout=subprocess.PIPE, universal_newlines=True)
     for line in subp.communicate()[0].splitlines():
         line = line.strip()
@@ -261,19 +260,18 @@ def is_removable(device):
             devpath = os.path.dirname(devpath)
         is_removable = removable_bus
         try:
-            with open('/sys%s/removable' % devpath) as removable:
+            removable_path = '/sys{0}/removable'.format(devpath)
+            with open(removable_path) as removable:
                 if removable.readline().strip() != '0':
                     is_removable = True
         except IOError:
             pass
         if is_removable:
             try:
-                subp = subprocess.Popen(['udevadm', 'info', '-q', 'name',
-                                         '-p', devpath],
+                subp = subprocess.Popen(['udevadm', 'info', '-q', 'name', '-p', devpath],
                                         stdout=subprocess.PIPE,
                                         universal_newlines=True)
-                return ('/dev/%s' %
-                        subp.communicate()[0].splitlines()[0].strip())
+                return os.path.join('/dev', subp.communicate()[0].splitlines()[0].strip())
             except Exception:
                 pass
     return None
@@ -313,7 +311,7 @@ def partition_to_disk(partition):
             udevadm_part.get('DEVTYPE') != 'partition'):
         return partition
 
-    disk_syspath = '/sys%s' % udevadm_part['DEVPATH'].rsplit('/', 1)[0]
+    disk_syspath = os.path.join('/sys', udevadm_part['DEVPATH'].rsplit('/', 1)[0])
     udevadm_disk = udevadm_info(['-p', disk_syspath])
     return udevadm_disk.get('DEVNAME', partition)
 
@@ -405,7 +403,7 @@ def find_in_os_prober(device, with_version=False):
         elif is_swap(device):
             ret = 'swap'
         else:
-            syslog.syslog('Device %s not found in os-prober output' % device)
+            syslog.syslog('Device {0} not found in os-prober output'.format(device))
             ret = ''
         ret = utf8(ret, errors='replace')
         ver = utf8(osvers.get(device, ''), errors='replace')
@@ -545,8 +543,7 @@ def execute(*args):
         status = subprocess.call(log_args)
     except IOError as e:
         syslog.syslog(syslog.LOG_ERR, ' '.join(log_args))
-        syslog.syslog(syslog.LOG_ERR,
-                      "OS error(%s): %s" % (e.errno, e.strerror))
+        syslog.syslog(syslog.LOG_ERR, "OS error({0}): {1}".format(e.errno, e.strerror))
         return False
     else:
         if status != 0:
@@ -686,8 +683,7 @@ def set_indicator_keymaps(lang):
 
     def process_variant(*args):
         if hasattr(args[2], 'name'):
-            variants.append(
-                '%s\t%s' % (item_str(args[1].name), item_str(args[2].name)))
+            variants.append('{0}\t{1}'.format((item_str(args[1].name), item_str(args[2].name))))
         else:
             variants.append(item_str(args[1].name))
 
@@ -909,21 +905,21 @@ def set_locale(mylocale):
     try:
         import locale
         locale.setlocale(locale.LC_ALL, mylocale)
-        logging.info(_("locale changed to : %s") % mylocale)
+        logging.info(_("locale changed to : %s"), mylocale)
     except ImportError as err:
         logging.error(_("Can't import locale module"))
     except locale.Error as err:
-        logging.warning(_("Can't change to locale '%s'") % mylocale)
+        logging.warning(_("Can't change to locale '%s'"), mylocale)
         if mylocale.endswith(".UTF-8"):
             # Try without the .UTF-8 trailing
             mylocale = mylocale[:-len(".UTF-8")]
             try:
                 locale.setlocale(locale.LC_ALL, mylocale)
-                logging.info(_("locale changed to : %s") % mylocale)
+                logging.info(_("locale changed to : %s"), mylocale)
             except locale.Error as err:
-                logging.warning(_("Can't change to locale '%s'") % mylocale)
+                logging.warning(_("Can't change to locale '%s'"), mylocale)
         else:
-            logging.warning(_("Can't change to locale '%s'") % mylocale)
+            logging.warning(_("Can't change to locale '%s'"), mylocale)
 
 def gtk_refresh():
     """ Tell Gtk loop to run pending events """

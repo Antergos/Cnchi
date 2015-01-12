@@ -61,7 +61,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
         trans = trans.strip(" \ufeff")
 
         if only_installable:
-            pkg_name = 'language-pack-%s' % code
+            pkg_name = 'language-pack-{0}'.format(code)
             #special case these
             if pkg_name.endswith('_CN'):
                 pkg_name = 'language-pack-zh-hans'

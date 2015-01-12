@@ -62,7 +62,7 @@ def get_prop(obj, iface, prop):
 def get_vendor_and_model(udi):
     vendor = ''
     model = ''
-    cmd = ['udevadm', 'info', '--path=%s' % udi, '--query=property']
+    cmd = ['udevadm', 'info', '--path={0}'.format(udi), '--query=property']
     with open('/dev/null', 'w') as devnull:
         out = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=devnull,
@@ -397,7 +397,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         ssid = model[iterator][0]
 
         if not model.iter_parent(iterator):
-            txt = '%s %s' % (model[iterator][1], model[iterator][2])
+            txt = '{0} {1}'.format(model[iterator][1], model[iterator][2])
             cell.set_property('text', txt)
         else:
             cell.set_property('text', ssid)

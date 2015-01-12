@@ -43,7 +43,7 @@ class InvalidSyntax(Warning):
         self.arg = arg
 
     def __str__(self):
-        return "unable to parse %s, %s: %r" % (self.filename, self.problem, self.arg)
+        return "unable to parse {0}, {1}: {2}".format(self.filename, self.problem, self.arg)
 
 # Options that may occur several times in a section. Their values should be accumulated in a list.
 LIST_OPTIONS = (
@@ -215,14 +215,14 @@ class PacmanConfig(collections.OrderedDict):
     def __str__(self):
         conf = ''
         for section, options in self.items():
-            conf += '[%s]\n' % section
+            conf += '[{0}]\n'.format(section)
             for key, value in options.items():
                 if key in LIST_OPTIONS:
                     for v in value:
-                        conf += '%s = %s\n' % (key, v)
+                        conf += '{0} = {1}\n'.format(key, v)
                 elif key in BOOLEAN_OPTIONS:
                     conf += key + '\n'
                 else:
-                    conf += '%s = %s\n' % (key, value)
+                    conf += '{0} = {1}\n'.format(key, value)
             conf += '\n'
         return conf

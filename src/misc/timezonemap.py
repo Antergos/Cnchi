@@ -349,7 +349,7 @@ class TimezoneMap(Gtk.Widget):
             path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
             orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
         except Exception as err:
-            print("Can't load %s image file" % path)
+            print("Can't load {0} image file".format(path))
             return
 
         hilight = orig_hilight.scale_simple(
@@ -496,7 +496,7 @@ class TimezoneMap(Gtk.Widget):
         city_name = location.get_info().tzname("").split("/")[1]
         city_name = city_name.replace("_", " ")
         country_name = location.get_property('human_country')
-        self._bubble_text = "%s, %s\n%s" % (city_name, country_name, current_time)
+        self._bubble_text = "{0}, {1}\n{2}".format(city_name, country_name, current_time)
         self.queue_draw()
 
     def get_location(self):

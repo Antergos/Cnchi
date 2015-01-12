@@ -157,7 +157,7 @@ def check_password(password, verified_password, password_ok,
         password_ok.hide()
         if passw and (len(vpassw) / float(len(passw)) > 0.8):
             txt = _("Passwords do not match")
-            txt = '<small><span foreground="darkred"><b>%s</b></span></small>' % txt
+            txt = '<small><span foreground="darkred"><b>{0}</b></span></small>'.format(txt)
             password_error_label.set_markup(txt)
             password_error_label.show()
     else:
@@ -170,7 +170,7 @@ def check_password(password, verified_password, password_ok,
         complete = False
     else:
         (txt, color) = human_password_strength(passw)
-        txt = '<small><span foreground="%s"><b>%s</b></span></small>' % (color, txt)
+        txt = '<small><span foreground="{0}"><b>{1}</b></span></small>'.format(color, txt)
         password_strength.set_markup(txt)
         password_strength.show()
         if passw == vpassw:

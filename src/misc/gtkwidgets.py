@@ -144,14 +144,14 @@ class PartitionBox(StylizedFrame):
 
     def do_set_property(self, prop, value):
         if prop.name == 'title':
-            self.ostitle.set_markup('<b>%s</b>' % value)
+            self.ostitle.set_markup('<b>{0}</b>'.format(value))
         elif prop.name == 'icon-name':
             self.logo.set_from_icon_name(value, Gtk.IconSize.DIALOG)
         elif prop.name == 'icon-file':
             self.icon_file = value
             self.logo.set_from_file(value)
         elif prop.name == 'extra':
-            self.extra.set_markup('<small>%s</small>' % (value and value or ' '))
+            self.extra.set_markup('<small>{0}</small>'.format(value and value or ' '))
         else:
             setattr(self, prop.name, value)
 
@@ -185,10 +185,10 @@ class PartitionBox(StylizedFrame):
         vbox.pack_start(self.size, False, True, 0)
         self.add(vbox)
 
-        self.ostitle.set_markup('<b>%s</b>' % title)
-        
+        self.ostitle.set_markup('<b>{0}</b>'.format(title))
+
         # Take up the space that would otherwise be used to create symmetry.
-        self.extra.set_markup('<small>%s</small>' % extra and extra or ' ')
+        self.extra.set_markup('<small>{0}</small>'.format(extra and extra or ' '))
         self.show_all()
 
     def set_size_in_mb(self, size):
@@ -196,7 +196,7 @@ class PartitionBox(StylizedFrame):
 
     def set_size(self, size):
         size = misc.format_size(size)
-        self.size.set_markup('<span size="x-large">%s</span>' % size)
+        self.size.set_markup('<span size="x-large">{0}</span>'.format(size))
 
     def render_dots(self):
         # FIXME: Dots are rendered over the frame.
@@ -269,7 +269,7 @@ class ResizeWidget(Gtk.Frame):
 
         assert min_size <= max_size <= part_size
         assert part_size > 0
-        
+
         self.set_size_request_done = False
 
         self.part_size = part_size
@@ -301,7 +301,7 @@ class ResizeWidget(Gtk.Frame):
             self.existing_part.set_property('title', title)
             if subtitle:
                 self.existing_part.set_property('extra', subtitle)
-    
+
     def get_part_title_and_subtitle(self, part):
         title = None
         subtitle = None
