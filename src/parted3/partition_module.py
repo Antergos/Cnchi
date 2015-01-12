@@ -284,7 +284,7 @@ def get_used_space(part):
 
 def get_used_space_from_path(path):
     try:
-        cmd = ["df", "-H", path)
+        cmd = ["df", "-H", path]
         result = subprocess.check_output(cmd).decode()
         lines = result.split('\n')
         used_space = lines[1].split()[2]
