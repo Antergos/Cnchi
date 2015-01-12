@@ -92,7 +92,8 @@ class InstallationProcess(multiprocessing.Process):
         self.callback_queue = callback_queue
         self.settings = settings
         self.method = self.settings.get('partition_mode')
-        self.queue_event('info', _("Installing using the '%s' method") % self.method)
+        msg = _("Installing using the '{0}' method").format(self.method)
+        self.queue_event('info', msg)
 
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
@@ -164,7 +165,7 @@ class InstallationProcess(multiprocessing.Process):
                 # Already exists or can't create it
                 logging.warning(err.strerror)
                 if not os.path.exists(DEST_DIR):
-                    txt = _("Can't create %s directory, Cnchi can't continue") % DEST_DIR
+                    txt = _("Can't create the {0} directory, Cnchi can't continue").format(DEST_DIR)
                     logging.error(txt)
                     raise InstallError(txt)
         else:
@@ -201,9 +202,9 @@ class InstallationProcess(multiprocessing.Process):
             except subprocess.CalledProcessError as err:
                 txt = _("Error creating partitions and their filesystems")
                 logging.error(txt)
-                cmd = _("Command %s has failed.") % err.cmd
+                cmd = _("Command {0} has failed.").format(err.cmd)
                 logging.error(cmd)
-                out = _("Output : %s") % err.output
+                out = _("Output : {0}").format(err.output)
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return
@@ -236,22 +237,24 @@ class InstallationProcess(multiprocessing.Process):
         # Not doing this in automatic mode as AutoPartition class mounts the root and boot devices itself.
         if self.method == 'alongside' or self.method == 'advanced':
             try:
-                txt = _("Mounting partition %s into %s directory") % (root_partition, DEST_DIR)
+                txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
                 logging.debug(txt)
                 subprocess.check_call(['mount', root_partition, DEST_DIR])
                 # We also mount the boot partition if it's needed
-                if not os.path.exists('%s/boot' % DEST_DIR):
-                    os.makedirs('%s/boot' % DEST_DIR)
+                boot_path = os.path.join(DEST_DIR, "boot")
+                if not os.path.exists(boot_path):
+                    os.makedirs(boot_path)
                 if "/boot" in self.mount_devices:
-                    txt = _("Mounting partition %s into %s/boot directory") % (boot_partition, DEST_DIR)
+                    txt = _("Mounting partition {0} into {1}/boot directory")
+                    txt = txt.format(boot_partition, boot_path)
                     logging.debug(txt)
-                    subprocess.check_call(['mount', boot_partition, "%s/boot" % DEST_DIR])
+                    subprocess.check_call(['mount', boot_partition, boot_path])
             except subprocess.CalledProcessError as err:
                 txt = _("Couldn't mount root and boot partitions")
                 logging.error(txt)
-                cmd = _("Command %s has failed") % err.cmd
+                cmd = _("Command {0} has failed").format(err.cmd)
                 logging.error(cmd)
-                out = _("Output : %s") % err.output
+                out = _("Output : {0}").format(err.output)
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return False
@@ -268,28 +271,29 @@ class InstallationProcess(multiprocessing.Process):
                         mount_dir = os.path.join(DEST_DIR, path)
                         if not os.path.exists(mount_dir):
                             os.makedirs(mount_dir)
-                        txt = _("Mounting partition %s into %s directory") % (mount_part, mount_dir)
+                        txt = _("Mounting partition {0} into {1} directory")
+                        txt = txt.format(mount_part, mount_dir)
                         logging.debug(txt)
                         subprocess.check_call(['mount', mount_part, mount_dir])
                     except subprocess.CalledProcessError as err:
                         # We will continue as root and boot are already mounted
-                        txt = _("Can't mount %s in %s") % (mount_part, mount_dir)
+                        txt = _("Can't mount {0} in {1}").format(mount_part, mount_dir)
                         logging.warning(txt)
-                        cmd = _("Command %s has failed.") % err.cmd
+                        cmd = _("Command {0} has failed.").format(err.cmd)
                         logging.warning(cmd)
-                        out = _("Output : %s") % err.output
+                        out = _("Output : {0}").format(err.output)
                         logging.warning(out)
                 elif mount_part == swap_partition:
                     try:
-                        txt = _("Mounting swap %s") % mount_part
+                        txt = _("Mounting swap {0}").format(mount_part)
                         logging.warning(txt)
                         subprocess.check_call(['swapon', swap_partition])
                     except subprocess.CalledProcessError as err:
-                        txt = _("Can't mount %s") % mount_part
+                        txt = _("Can't mount {0}").format(mount_part)
                         logging.warning(txt)
-                        cmd = _("Command %s has failed.") % err.cmd
+                        cmd = _("Command {0} has failed.").format(err.cmd)
                         logging.warning(cmd)
-                        out = _("Output : %s") % err.output
+                        out = _("Output : {0}").format(err.output)
                         logging.warning(out)
 
         # Nasty workaround:
@@ -304,9 +308,9 @@ class InstallationProcess(multiprocessing.Process):
 
         # Create some needed folders
         folders = [
-            '%s/var/lib/pacman' % DEST_DIR,
-            '%s/etc/pacman.d/gnupg/' % DEST_DIR,
-            '%s/var/log/' % DEST_DIR]
+            os.path.join(DEST_DIR, 'var/lib/pacman'),
+            os.path.join(DEST_DIR, 'etc/pacman.d/gnupg'),
+            os.path.join(DEST_DIR, 'var/log')]
 
         for folder in folders:
             if not os.path.exists(folder):
@@ -352,9 +356,9 @@ class InstallationProcess(multiprocessing.Process):
 
             all_ok = True
         except subprocess.CalledProcessError as err:
-            cmd = _("Command %s has failed.") % err.cmd
+            cmd = _("Command {0} has failed.").format(err.cmd)
             logging.error(cmd)
-            out = _("Output : %s") % err.output
+            out = _("Output : {0}").format(err.output)
             logging.error(out)
             self.queue_fatal_event(cmd)
         except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
@@ -425,7 +429,8 @@ class InstallationProcess(multiprocessing.Process):
         """ Creates a temporary pacman.conf """
         myarch = os.uname()[-1]
 
-        self.queue_event('debug', "Creating a temporary pacman.conf for %s architecture" % myarch)
+        msg = _("Creating a temporary pacman.conf for {0} architecture").format(myarch)
+        self.queue_event('debug', msg)
 
         # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
@@ -512,7 +517,7 @@ class InstallationProcess(multiprocessing.Process):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = 'http://install.antergos.com/packages-%s.xml' % info.CNCHI_VERSION[:3]
+                url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
                 packages_xml = urllib.request.urlopen(url, timeout=5)
             except urllib.error.URLError as err:
                 # If the installer can't retrieve the remote file, try to install with a local
@@ -651,15 +656,13 @@ class InstallationProcess(multiprocessing.Process):
             for child in xml_root.iter('bootloader'):
                 if child.attrib.get('name') == boot_loader:
                     txt = _("Adding '%s' bootloader packages")
-                    txt = txt % boot_loader
-                    logging.debug(txt)
+                    logging.debug(txt, boot_loader)
                     bootloader_found = True
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
             if not bootloader_found:
                 txt = _("Couldn't find %s bootloader packages!")
-                txt = txt % boot_loader
-                logging.warning(txt)
+                logging.warning(txt, boot_loader)
 
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
@@ -694,12 +697,12 @@ class InstallationProcess(multiprocessing.Process):
                 locale = self.settings.get('locale').split('.')[0]
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
-                    pkg = "libreoffice-fresh-%s" % locale
+                    pkg = "libreoffice-fresh-{0}".format(locale)
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
-                pkg = "libreoffice-fresh-%s" % lang_code
+                pkg = "libreoffice-fresh-{0}".format(lang_code)
             self.packages.append(pkg)
 
     def install_packages(self):
@@ -735,7 +738,7 @@ class InstallationProcess(multiprocessing.Process):
     def copy_network_config(self):
         """ Copies Network Manager configuration """
         source_nm = "/etc/NetworkManager/system-connections/"
-        target_nm = "%s/etc/NetworkManager/system-connections/" % DEST_DIR
+        target_nm = os.path.join(DEST_DIR, "etc/NetworkManager/system-connections")
 
         # Sanity checks.  We don't want to do anything if a network
         # configuration already exists on the target
@@ -785,8 +788,9 @@ class InstallationProcess(multiprocessing.Process):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, mount_point, myfmt, opts, chk))
-                logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, mount_point, myfmt, opts, chk)
+                txt = "UUID={0} {1} {2} {3} 0 {4}".format(uuid, mount_point, myfmt, opts, chk)
+                all_lines.append(txt)
+                logging.debug(_("Added to fstab : %s"), txt)
                 continue
 
             crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
@@ -800,13 +804,14 @@ class InstallationProcess(multiprocessing.Process):
                     home_keyfile = "/etc/luks-keys/home"
                 os.chmod(crypttab_path, 0o666)
                 with open(crypttab_path, 'a') as crypttab_file:
-                    line = "cryptAntergosHome /dev/disk/by-uuid/%s %s luks\n" % (uuid, home_keyfile)
+                    line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(uuid, home_keyfile)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
-                all_lines.append("/dev/mapper/cryptAntergosHome %s %s %s 0 %s" % (mount_point, myfmt, opts, chk))
-                logging.debug(_("Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"), mount_point, myfmt, opts, chk)
+                txt = "/dev/mapper/cryptAntergosHome {0} {1} {2} 0 {3}".format(mount_point, myfmt, opts, chk)
+                all_lines.append(txt)
+                logging.debug(_("Added to fstab : %s"), txt)
                 continue
 
             # Add all LUKS partitions from Advanced Install (except root).
@@ -814,13 +819,14 @@ class InstallationProcess(multiprocessing.Process):
                 os.chmod(crypttab_path, 0o666)
                 vol_name = partition_path[len("/dev/mapper/"):]
                 with open(crypttab_path, 'a') as crypttab_file:
-                    line = "%s /dev/disk/by-uuid/%s none luks\n" % (vol_name, uuid)
+                    line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, uuid)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
-                all_lines.append("%s %s %s %s 0 %s" % (partition_path, mount_point, myfmt, opts, chk))
-                logging.debug(_("Added to fstab : %s %s %s %s 0 %s"), partition_path, mount_point, myfmt, opts, chk)
+                txt = "{0} {1} {2} {3} 0 {4}".format(partition_path, mount_point, myfmt, opts, chk)
+                all_lines.append(txt)
+                logging.debug(_("Added to fstab : %s"), txt)
                 continue
 
             # fstab uses vfat to mount fat16 and fat32 partitions
@@ -871,8 +877,9 @@ class InstallationProcess(multiprocessing.Process):
             if mount_point == "/":
                 self.settings.set('ruuid', uuid)
 
-            all_lines.append("UUID=%s %s %s %s 0 %s" % (uuid, mount_point, myfmt, opts, chk))
-            logging.debug(_("Added to fstab : UUID=%s %s %s %s 0 %s"), uuid, mount_point, myfmt, opts, chk)
+            txt = "UUID={0} {1} {2} {3} 0 {4}".format(uuid, mount_point, myfmt, opts, chk)
+            all_lines.append(txt)
+            logging.debug(_("Added to fstab : %s"), txt)
 
         # Create tmpfs line in fstab
         tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
@@ -882,7 +889,7 @@ class InstallationProcess(multiprocessing.Process):
         full_text = '\n'.join(all_lines)
         full_text += '\n'
 
-        fstab_path = '%s/etc/fstab' % DEST_DIR
+        fstab_path = os.path.join(DEST_DIR, 'etc/fstab')
         with open(fstab_path, 'w') as fstab_file:
             fstab_file.write(full_text)
 
@@ -902,9 +909,7 @@ class InstallationProcess(multiprocessing.Process):
     def enable_services(self, services):
         """ Enables all services that are in the list 'services' """
         for name in services:
-            path = os.path.join(
-                DEST_DIR,
-                "usr/lib/systemd/system/%s.service" % name)
+            path = os.path.join(DEST_DIR, "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
                 chroot_run(['systemctl', '-f', 'enable', name])
                 logging.debug(_("Enabled %s service."), name)
@@ -914,7 +919,7 @@ class InstallationProcess(multiprocessing.Process):
     def change_user_password(self, user, new_password):
         """ Changes the user's password """
         try:
-            shadow_password = crypt.crypt(new_password, "$6$%s$" % user)
+            shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
         except:
             logging.warning(_("Error creating password hash for user %s"), user)
             return False
@@ -930,7 +935,7 @@ class InstallationProcess(multiprocessing.Process):
     def auto_timesetting(self):
         """ Set hardware clock """
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
-        shutil.copy2("/etc/adjtime", "%s/etc/" % DEST_DIR)
+        shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     def update_pacman_conf(self):
         """ Add Antergos repo """
@@ -1050,12 +1055,12 @@ class InstallationProcess(multiprocessing.Process):
                     if autologin:
                         # Enable automatic login
                         if '#autologin-user=' in line:
-                            line = 'autologin-user=%s\n' % username
+                            line = 'autologin-user={0}\n'.format(username)
                         if '#autologin-user-timeout=0' in line:
                             line = 'autologin-user-timeout=0\n'
                     # Set correct DE session
                     if '#user-session=default' in line:
-                        line = 'user-session=%s\n' % session
+                        line = 'user-session={0}\n'.format(session)
                     lightdm_conf.write(line)
 
             txt = _("LightDM display manager configuration completed.")
@@ -1114,7 +1119,7 @@ class InstallationProcess(multiprocessing.Process):
 
 
         for cmd in cmds:
-            chroot_run(['sh', '-c', 'amixer -c 0 sset %s' % cmd])
+            chroot_run(['sh', '-c', 'amixer -c 0 sset {0}'.format(cmd)])
 
         # Save settings
         chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
@@ -1135,7 +1140,7 @@ class InstallationProcess(multiprocessing.Process):
 
         with open(fluid_path, "w") as fluid_conf:
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
-            fluid_conf.write('SYNTHOPTS="-is -a %s -m alsa_seq -r 48000"\n\n' % audio_system)
+            fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
 
     def configure_system(self):
         """ Final install steps
@@ -1185,7 +1190,7 @@ class InstallationProcess(multiprocessing.Process):
                 pass
             # Enable our profile
             chroot_run(['netctl', 'enable', profile])
-            #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.') % dst_path)
+            #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.'), dst_path)
 
         logging.debug(_("Network configuration copied."))
 
@@ -1234,7 +1239,7 @@ class InstallationProcess(multiprocessing.Process):
 
         sudoers_path = os.path.join(DEST_DIR, "etc/sudoers.d/10-installer")
         with open(sudoers_path, "w") as sudoers:
-            sudoers.write('%s ALL=(ALL) ALL\n' % username)
+            sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
         while not os.path.exists(sudoers_path):
             time.sleep(2)
         os.chmod(sudoers_path, 0o440)
@@ -1250,7 +1255,7 @@ class InstallationProcess(multiprocessing.Process):
         except ImportError:
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s") % err)
+            logging.warning(_("Unknown error in hardware module. Output: %s"), err)
 
         # Setup user
 
@@ -1276,7 +1281,7 @@ class InstallationProcess(multiprocessing.Process):
         cmd = ['chfn', '-f', fullname, username]
         chroot_run(cmd)
 
-        cmd = ['chown', '-R', '%s:users' % username, "/home/%s" % username]
+        cmd = ['chown', '-R', '{0}:users'.format(username), os.path.join("/home", username)]
         chroot_run(cmd)
 
         hostname_path = os.path.join(DEST_DIR, "etc/hostname")
@@ -1301,18 +1306,17 @@ class InstallationProcess(multiprocessing.Process):
         chroot_run(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
-            locale_conf.write('LANG=%s\n' % locale)
-            #locale_conf.write('LC_COLLATE=C\n')
-            locale_conf.write('LC_COLLATE=%s\n' % locale)
+            locale_conf.write('LANG={0}\n'.format(locale))
+            locale_conf.write('LC_COLLATE={0}\n'.format(locale))
 
         environment_path = os.path.join(DEST_DIR, "etc/environment")
         with open(environment_path, "w") as environment:
-            environment.write('LANG=%s\n' % locale)
+            environment.write('LANG={0}\n'.format(locale))
 
         # Set /etc/vconsole.conf
         vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
         with open(vconsole_conf_path, "w") as vconsole_conf:
-            vconsole_conf.write('KEYMAP=%s\n' % keyboard_layout)
+            vconsole_conf.write('KEYMAP={0}\n'.format(keyboard_layout))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
@@ -1327,9 +1331,9 @@ class InstallationProcess(multiprocessing.Process):
                 xorg_conf_xkb.write('Section "InputClass"\n')
                 xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
                 xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-                xorg_conf_xkb.write('        Option "XkbLayout" "%s"\n' % keyboard_layout)
-                if keyboard_variant != '':
-                    xorg_conf_xkb.write('        Option "XkbVariant" "%s"\n' % keyboard_variant)
+                xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
+                if len(keyboard_variant) > 0:
+                    xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                 xorg_conf_xkb.write('EndSection\n')
             logging.debug(_("00-keyboard.conf written."))
 

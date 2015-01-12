@@ -70,7 +70,7 @@ def check_alongside_disk_layout():
         if "sda" in partition:
             partitions_sda.append(partition)
 
-    # There's no extended partition, so all partitions must be primary    
+    # There's no extended partition, so all partitions must be primary
     if len(partitions_sda) < 4:
         return True
 
@@ -143,7 +143,7 @@ class InstallationAsk(GtkBaseBox):
             if not check_alongside_disk_layout():
                 logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
                 enable_alongside = False
-        
+
         return enable_alongside
 
     def enable_automatic_options(self, status):
@@ -191,11 +191,11 @@ class InstallationAsk(GtkBaseBox):
                     os_str = ", ".join(self.other_oses)
             else:
                 os_str = self.other_oses[0]
-        
+
         # Truncate string if it's too large
         if len(os_str) > 40:
             os_str = os_str[:40] + "..."
-        
+
         return os_str
 
     def translate_ui(self):
@@ -205,22 +205,22 @@ class InstallationAsk(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        description_style = '<span weight="light" size="small" style="italic">%s</span>'
-        bold_style = '<span weight="bold">%s</span>'
+        description_style = '<span weight="light" size="small" style="italic">{0}</span>'
+        bold_style = '<span weight="bold">{0}</span>'
 
         oses_str = self.get_os_list_str()
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
         if len(oses_str) > 0:
-            txt = _("Replace %s with Antergos") % oses_str
+            txt = _("Replace {0} with Antergos").format(oses_str)
         else:
             txt = _("Erase disk and install Antergos")
         radio.set_label(txt)
 
         label = self.ui.get_object("automatic_description")
         txt = _("Warning: This will erase ALL data on your disk.")
-        txt = description_style % txt
+        txt = description_style.format(txt)
         label.set_markup(txt)
         label.set_line_wrap(True)
 
@@ -230,7 +230,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the next step.")
-        txt = description_style % txt
+        txt = description_style.format(txt)
         label.set_markup(txt)
 
         button = self.ui.get_object("lvm_checkbutton")
@@ -239,7 +239,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
-        txt = description_style % txt
+        txt = description_style.format(txt)
         label.set_markup(txt)
 
         button = self.ui.get_object("home_checkbutton")
@@ -248,28 +248,28 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("home_label")
         txt = _("This will setup you /home directory in a different partition or volume.")
-        txt = description_style % txt
+        txt = description_style.format(txt)
         label.set_markup(txt)
 
         # Alongside Install (For now, only works with Windows)
         if len(oses_str) > 0:
-            txt = _("Install Antergos alongside %s") % oses_str
+            txt = _("Install Antergos alongside {0}").format(oses_str)
             radio = self.ui.get_object("alongside_radiobutton")
             radio.set_label(txt)
 
             label = self.ui.get_object("alongside_description")
-            txt = _("Installs Antergos without removing %s") % oses_str
-            txt = description_style % txt
+            txt = _("Installs Antergos without removing {0}").format(oses_str)
+            txt = description_style.format(txt)
             label.set_markup(txt)
             label.set_line_wrap(True)
 
-            intro_txt = _("This computer has %s installed.") % oses_str
+            intro_txt = _("This computer has {0} installed.").format(oses_str)
             intro_txt += "\n" + _("What do you want to do?")
         else:
             intro_txt = _("What do you want to do?")
 
         intro_label = self.ui.get_object("introduction")
-        intro_txt = bold_style % intro_txt
+        intro_txt = bold_style.format(intro_txt)
         intro_label.set_markup(intro_txt)
 
         # Advanced Install
@@ -278,7 +278,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("advanced_description")
         txt = _("Edit partition table and choose mount points.")
-        txt = description_style % txt
+        txt = description_style.format(txt)
         label.set_markup(txt)
         label.set_line_wrap(True)
 

@@ -36,7 +36,7 @@ class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
         pass
-        
+
     def get_packages(self):
         """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented")
@@ -48,16 +48,16 @@ class Hardware(object):
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
         raise NotImplementedError("check_device is not implemented")
-    
+
     def is_proprietary(self):
         """ Proprietary drivers are drivers for your hardware devices
             that are not freely-available or open source, and must be
             obtained from the hardware manufacturer. """
         return False
-    
+
     def get_name(self):
         raise NotImplementedError("get_name is not implemented")
-        
+
 
     def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
@@ -81,10 +81,10 @@ class HardwareInstall(object):
     def __init__(self):
         # All available objects
         self.all_objects = []
-        
+
         # All objects that support devices found (can have more than one object for each device)
         self.objects_found = {}
-        
+
         # All objects that are really used
         self.objects_used = []
 
@@ -105,9 +105,9 @@ class HardwareInstall(object):
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
                     self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError as err:
-                    logging.exception("Error importing %s from %s : %s", name, package, err)
+                    logging.error(_("Error importing %s from %s : %s"), name, package, err)
                 except Exception as err:
-                    logging.exception("Unexpected error importing %s: %s ", package, err)
+                    logging.error(_("Unexpected error importing %s: %s"), package, err)
 
         # Detect devices
         devices = []
@@ -165,7 +165,7 @@ class HardwareInstall(object):
         # Remove duplicates (not necessary but it's cleaner)
         packages = list(set(packages))
         return packages
-    
+
     def get_found_driver_names(self):
         driver_names = []
         for obj in self.objects_used:

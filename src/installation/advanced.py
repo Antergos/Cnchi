@@ -403,17 +403,17 @@ class InstallationAdvanced(GtkBaseBox):
     def get_size(self, length, sector_size):
         """ Helper function to get a disk/partition size in human format """
         size = length * sector_size
-        size_txt = "%db" % size
+        size_txt = "{0}b".format(size)
 
         if size >= 1000000000:
             size /= 1000000000
-            size_txt = "%dG" % size
+            size_txt = "{0}G".format(size)
         elif size >= 1000000:
             size /= 1000000
-            size_txt = "%dM" % size
+            size_txt = "{0}M".format(size)
         elif size >= 1000:
             size /= 1000
-            size_txt = "%dK" % size
+            size_txt = "{0}K".format(size)
 
         return size_txt
 
@@ -455,7 +455,7 @@ class InstallationAdvanced(GtkBaseBox):
                     used = ""
                     formatable = True
 
-                    partition_path = "/dev/mapper/%s-%s" % (volume_group, logical_volume)
+                    partition_path = "/dev/mapper/{0}-{1}".format(volume_group, logical_volume)
                     self.all_partitions.append(partition_path)
                     self.lv_partitions.append(partition_path)
 
@@ -1281,7 +1281,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.header.set_subtitle(_("Advanced Installation Mode"))
 
         txt = _("Use the device below for boot loader installation:")
-        txt = "<span weight='bold' size='small'>%s</span>" % txt
+        txt = "<span weight='bold' size='small'>{0}</span>".format(txt)
         label = self.ui.get_object('bootloader_device_info_label')
         label.set_markup(txt)
 
@@ -1294,7 +1294,7 @@ class InstallationAdvanced(GtkBaseBox):
         label.set_markup(txt)
 
         txt = _("Mount Checklist:")
-        txt = "<span weight='bold'>%s</span>" % txt
+        txt = "<span weight='bold'>{0}</span>".format(txt)
         label = self.ui.get_object('mnt_chklist')
         label.set_markup(txt)
 
@@ -1315,7 +1315,7 @@ class InstallationAdvanced(GtkBaseBox):
         part.props.label = txt
 
         #txt = _("TODO: Here goes a warning message")
-        #txt = "<span weight='bold'>%s</span>" % txt
+        #txt = "<span weight='bold'>{0}</span>".format(txt)
         #label = self.ui.get_object('part_advanced_warning_message')
         #label.set_markup(txt)
 
@@ -1515,7 +1515,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                logging.info(_("Creating a new %s partition table for disk %s") % (ptype, disk_path))
+                logging.info(_("Creating a new %s partition table for disk %s"), ptype, disk_path)
 
                 new_disk = pm.make_new_disk(disk_path, ptype)
                 self.disks[disk_path] = (new_disk, pm.OK)
@@ -1776,12 +1776,12 @@ class InstallationAdvanced(GtkBaseBox):
                                 #if "swap" in fs_type:
                                 swap_partition = self.get_swap_partition(partition_path)
                                 if swap_partition == partition_path:
-                                    msg = _("%s is mounted as swap.\nTo continue it has to be unmounted.\n"
-                                        "Click Yes to unmount, or No to return\n") % partition_path
+                                    msg = _("{0} is mounted as swap.\nTo continue it has to be unmounted.\n"
+                                        "Click Yes to unmount, or No to return\n").format(partition_path)
                                     mounted = True
                                 elif len(mount_point) > 0:
-                                    msg = _("%s is mounted in '%s'.\nTo continue it has to be unmounted.\n"
-                                        "Click Yes to unmount, or No to return\n") % (partition_path, mount_point)
+                                    msg = _("{0} is mounted in '{1}'.\nTo continue it has to be unmounted.\n"
+                                        "Click Yes to unmount, or No to return\n").format(partition_path, mount_point)
                                     mounted = True
 
                                 if "install" in mount_point:
@@ -1802,7 +1802,7 @@ class InstallationAdvanced(GtkBaseBox):
                                         # unmount it!
                                         if swap_partition == partition_path:
                                             try:
-                                                cmd = ['sh', '-c', 'swapoff %s' % partition_path]
+                                                cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
                                                 subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
                                                 logging.debug(_("Swap partition %s unmounted"), partition_path)
                                             except subprocess.CalledProcessError as err:
@@ -1857,7 +1857,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
                         changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                        msg = "Added to changelist: path[%s] createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
+                        msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
                         logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
             return changelist
@@ -1874,14 +1874,14 @@ class InstallationAdvanced(GtkBaseBox):
 
         margin = 8
 
-        bold = "<b>%s</b>"
+        bold = "<b>{0}</b>"
         y = 0
 
         self.to_be_deleted.sort()
 
         # First, show partitions that will be deleted
         for ea in self.to_be_deleted:
-            lbl_text = _("Partition %s will be deleted") % ea
+            lbl_text = _("Partition {0} will be deleted").format(ea)
             lbl = Gtk.Label(label=lbl_text, margin=margin)
             lbl.set_alignment(0, 0.5)
             grid.attach(lbl, 0, y, 4, 1)
@@ -1894,7 +1894,7 @@ class InstallationAdvanced(GtkBaseBox):
             x = 0
             for txt in labels:
                 lbl = Gtk.Label(margin=margin)
-                lbl.set_markup(bold % txt)
+                lbl.set_markup(bold.format(txt))
                 grid.attach(lbl, x, y, 1, 1)
                 x += 1
 
@@ -1994,7 +1994,7 @@ class InstallationAdvanced(GtkBaseBox):
             swaps = subprocess.check_output(cmd).decode().split("\n")
             for name in filter(None, swaps):
                 if "/dev/zram" not in name:
-                    cmd = ['sh', '-c', 'swapoff %s' % name]
+                    cmd = ['sh', '-c', 'swapoff {0}'.format(name)]
                     subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         except subprocess.CalledProcessError as err:
             logging.error(err)
@@ -2009,7 +2009,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # Only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
                     pm.finalize_changes(disk)
-                    logging.info(_("Finished saving changes in %s") % disk_path)
+                    logging.info(_("Finished saving changes in %s"), disk_path)
                 # Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
             apartitions = list(partitions) + self.lv_partitions
@@ -2033,11 +2033,11 @@ class InstallationAdvanced(GtkBaseBox):
                         if fisy == "extended" or fisy == "bios-gpt-boot":
                             continue
                         if len(lbl) > 0:
-                            txt = _("Creating new %s filesystem in %s labeled %s")
-                            txt = txt % (fisy, partition_path, lbl)
+                            txt = _("Creating new {0} filesystem in {1} labeled {2}")
+                            txt = txt.format(fisy, partition_path, lbl)
                         else:
-                            txt = _("Creating new %s filesystem in %s")
-                            txt = txt % (fisy, partition_path)
+                            txt = _("Creating new {0} filesystem in {2}")
+                            txt = txt.format(fisy, partition_path)
 
                         logging.info(txt)
 
@@ -2064,8 +2064,8 @@ class InstallationAdvanced(GtkBaseBox):
                         if uid in self.luks_options:
                             (use_luks, vol_name, password) = self.luks_options[uid]
                             if use_luks and len(vol_name) > 0 and len(password) > 0:
-                                txt = _("Encrypting %s, assigning volume name %s and formatting it...")
-                                txt = txt % (partition_path, vol_name)
+                                txt = _("Encrypting {0}, assigning volume name {1} and formatting it...")
+                                txt = txt.format(partition_path, vol_name)
                                 logging.info(txt)
                                 if not self.testing:
                                     # Do real encryption here!
@@ -2093,8 +2093,8 @@ class InstallationAdvanced(GtkBaseBox):
                                 if error == 0:
                                     logging.info(msg)
                                 else:
-                                    txt = _("Couldn't format partition '%s' with label '%s' as '%s'")
-                                    txt = txt % (partition_path, lbl, fisy)
+                                    txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}'")
+                                    txt = txt.format(partition_path, lbl, fisy)
                                     logging.error(txt)
                                     logging.error(msg)
                                     show.error(self.get_toplevel(), txt)
@@ -2156,8 +2156,8 @@ class InstallationAdvanced(GtkBaseBox):
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader %s in device %s")
-            msg = msg % (self.bootloader, self.bootloader_device)
+            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
         if not self.testing:

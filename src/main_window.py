@@ -244,7 +244,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar_step = 0
 
         with open(tmp_running, "w") as tmp_file:
-            tmp_file.write("Cnchi %d\n" % 1234)
+            tmp_file.write("Cnchi {0}\n".format(1234))
 
         misc.gtk_refresh()
 

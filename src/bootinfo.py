@@ -134,7 +134,7 @@ def _get_partition_info(partition):
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
     elif len(bytes80_to_81) > 0:
-        logging.debug("Unknown partition id %s", bytes80_to_81)
+        logging.debug(_("Unknown partition id %s"), bytes80_to_81)
     return _("unknown")
 
 def _check_reactos(mount_name):

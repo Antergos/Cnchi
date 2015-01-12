@@ -43,7 +43,7 @@ from installation import process as installation_process
 try:
     import parted
 except ImportError as err:
-    logging.error(_("Can't import parted module: %s") % str(err))
+    logging.error(_("Can't import parted module: %s"), str(err))
 
 from gtkbasebox import GtkBaseBox
 
@@ -75,7 +75,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         label = self.ui.get_object('text_automatic')
         txt = _("WARNING! This will overwrite everything currently on your drive!")
-        txt = "<b>%s</b>" % txt
+        txt = "<b>{0}</b>".format(txt)
         label.set_markup(txt)
 
         label = self.ui.get_object('info_label')
@@ -100,7 +100,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.header.set_subtitle(_("Automatic Installation Mode"))
 
         txt = _("Use the device below for boot loader installation:")
-        txt = "<span weight='bold' size='small'>%s</span>" % txt
+        txt = "<span weight='bold' size='small'>{0}</span>".format(txt)
         label = self.ui.get_object('bootloader_device_info_label')
         label.set_markup(txt)
 
@@ -178,7 +178,7 @@ class InstallationAutomatic(GtkBaseBox):
         if luks_password != "":
             logging.debug(_("A LUKS password has been set"))
 
-        logging.info(_("Automatic install on %s") % self.auto_device)
+        logging.info(_("Automatic install on %s"), self.auto_device)
         self.start_installation()
         return True
 
@@ -267,8 +267,8 @@ class InstallationAutomatic(GtkBaseBox):
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader '%s' in device '%s'")
-            msg = msg % (self.bootloader, self.bootloader_device)
+            msg = _("Antergos will install the bootloader '{0}' in device '{1}'")
+            msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
         # We don't need to pass which devices will be mounted nor which filesystems

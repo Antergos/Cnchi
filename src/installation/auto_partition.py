@@ -43,7 +43,8 @@ MIN_ROOT_SIZE = 6500
 def get_info(part):
     """ Get partition info using blkid """
     try:
-        ret = subprocess.check_output(shlex.split('blkid %s' % part)).decode().strip()
+        cmd = ['blkid', part]
+        ret = subprocess.check_output(cmd).decode().strip()
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         ret = ''
@@ -134,14 +135,14 @@ def unmount_all(dest_dir):
         if os.path.exists("/dev/mapper/cryptAntergosHome"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
     except subprocess.CalledProcessError as err:
-        txt = _("Can't close LUKS devices : %s") % err.output
+        txt = _("Can't close LUKS devices : {0}").format(err.output)
         logging.warning(txt)
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
     if (luks_pass == None or luks_pass == "") and luks_key == None:
-        txt = _("Can't setup LUKS in device %s. A password or a key file are needed") % luks_device
+        txt = _("Can't setup LUKS in device {0}. A password or a key file are needed").format(luks_device)
         logging.error(txt)
         return
 
@@ -185,24 +186,24 @@ def wipefs(device):
 def dd(input_device, output_device, bs=512, count=2048):
     """ Helper function to call dd """
     cmd = ['dd']
-    cmd.append('if=%s' % input_device)
-    cmd.append('of=%s' % output_device)
-    cmd.append('bs=%d' % bs)
-    cmd.append('count=%d' % count)
+    cmd.append('if={0}'.format(input_device))
+    cmd.append('of={0}'.format(output_device))
+    cmd.append('bs={0}'.format(bs))
+    cmd.append('count={0}'.format(count))
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
 
 def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
-    cmd.append('--set-alignment="%d"' % alignment)
-    cmd.append('--new=%s:+%dM' % (new, size))
-    cmd.append('--typecode=%s' % type_code)
+    cmd.append('--set-alignment="{0}"'.format(alignment))
+    cmd.append('--new={0}:+{1}M'.format(new, size))
+    cmd.append('--typecode={0}'.format(type_code))
 
     if attributes is not None:
-        cmd.append('--attributes=%s' % attributes)
+        cmd.append('--attributes={0}'.format(attributes))
 
-    cmd.append('--change-name=%s' % name)
+    cmd.append('--change-name={0}'.format(name))
     cmd.append(device)
     subprocess.check_call(cmd)
 
@@ -217,9 +218,9 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     if start < 0:
         start_str = "1"
     else:
-        start_str = "%dMiB" % start
+        start_str = "{0}MiB".format(start)
 
-    end_str = "%dMiB" % end
+    end_str = "{0}MiB".format(end)
 
     cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, filesystem, start_str, end_str]
     subprocess.check_call(cmd)
@@ -270,21 +271,21 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 logging.warning(err.output)
         else:
-            mkfs = {"xfs": "mkfs.xfs %s -L %s -f %s" % (fs_options, label_name, device),
-                    "jfs": "yes | mkfs.jfs %s -L %s %s" % (fs_options, label_name, device),
-                    "reiserfs": "yes | mkreiserfs %s -l %s %s" % (fs_options, label_name, device),
-                    "ext2": "mkfs.ext2 -q %s -F -L %s %s" % (fs_options, label_name, device),
-                    "ext3": "mkfs.ext3 -q %s -F -L %s %s" % (fs_options, label_name, device),
-                    "ext4": "mkfs.ext4 -q %s -F -L %s %s" % (fs_options, label_name, device),
-                    "btrfs": "mkfs.btrfs %s -L %s %s" % (fs_options, label_name, btrfs_devices),
-                    "nilfs2": "mkfs.nilfs2 %s -L %s %s" % (fs_options, label_name, device),
-                    "ntfs-3g": "mkfs.ntfs %s -L %s %s" % (fs_options, label_name, device),
-                    "vfat": "mkfs.vfat %s -n %s %s" % (fs_options, label_name, device),
-                    "f2fs": "mkfs.f2fs %s -l %s %s" % (fs_options, label_name, device)}
+            mkfs = {"xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
+                    "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
+                    "reiserfs": "yes | mkreiserfs {0} -l {1} {2}".format(fs_options, label_name, device),
+                    "ext2": "mkfs.ext2 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                    "ext3": "mkfs.ext3 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                    "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                    "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(fs_options, label_name, btrfs_devices),
+                    "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
+                    "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
+                    "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
+                    "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():
-                txt = _("Unknown filesystem type %s") % fs_type
+                txt = _("Unknown filesystem type {0}").format(fs_type)
                 logging.error(txt)
                 show.error(None, txt)
                 return
@@ -294,7 +295,7 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = _("Can't create filesystem %s") % fs_type
+                txt = _("Can't create filesystem {0}").format(fs_type)
                 logging.error(txt)
                 logging.error(err.cmd)
                 logging.error(err.output)
@@ -379,7 +380,7 @@ class AutoPartition(object):
 
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB
-        in modify_grub_default() in installation_process.py """
+        in modify_grub_default() in bootloader.py """
 
         devices = self.get_devices()
 
@@ -398,10 +399,7 @@ class AutoPartition(object):
         mount_devices['swap'] = devices['swap']
 
         for mount_device in mount_devices:
-            logging.debug(
-                _("%s will be mount as %s"),
-                mount_devices[mount_device],
-                mount_device)
+            logging.debug(_("%s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
 
@@ -511,15 +509,16 @@ class AutoPartition(object):
 
         # Get just the disk size in MiB
         device = self.auto_device
-        device_name = check_output("basename %s" % device)
-        base_path = "/sys/block/%s" % device_name
+        device_name = check_output("basename {0}".format(device))
+        base_path = os.path.join("/sys/block", device_name)
         disk_size = 0
-        if os.path.exists("%s/size" % base_path):
-            with open("%s/queue/logical_block_size" % base_path, 'r') as f:
+        size_path = os.path.join(base_path, "size")
+        if os.path.exists(size_path):
+            logical_path = os.path.join(base_path, "queue/logical_block_size")
+            with open(logical_path, 'r') as f:
                 logical_block_size = int(f.read())
-            with open("%s/size" % base_path, 'r') as f:
+            with open(size_path, 'r') as f:
                 size = int(f.read())
-
             disk_size = ((logical_block_size * size) / 1024) / 1024
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
@@ -581,7 +580,7 @@ class AutoPartition(object):
                 if self.home:
                     sgdisk(device, "6:ANTERGOS_HOME", "6:0", part_sizes['home'], "6:8300")
 
-            logging.debug(check_output("sgdisk --print %s" % device))
+            logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
@@ -636,12 +635,12 @@ class AutoPartition(object):
 
         devices = self.get_devices()
 
-        logging.debug("Boot: %s" % devices['boot'])
-        logging.debug("Swap: %s" % devices['swap'])
-        logging.debug("Root: %s" % devices['root'])
+        logging.debug("Boot: %s", devices['boot'])
+        logging.debug("Swap: %s", devices['swap'])
+        logging.debug("Root: %s", devices['root'])
 
         if self.home:
-            logging.debug("Home: %s" % devices['home'])
+            logging.debug("Home: %s", devices['home'])
 
         if self.luks:
             setup_luks(devices['luks'][0], "cryptAntergos", self.luks_password, key_files[0])
@@ -715,7 +714,8 @@ class AutoPartition(object):
             # (boot partition is not)
             os.chmod(key_files[0], 0o400)
 
-            subprocess.check_call(['mv', key_files[0], '%s/boot' % self.dest_dir])
+            cmd = ['mv', key_files[0], os.path.join(self.dest_dir, "boot")]
+            subprocess.check_call(cmd)
             if self.home and not self.lvm:
                 os.chmod(key_files[1], 0o400)
                 luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')

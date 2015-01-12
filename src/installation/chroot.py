@@ -53,7 +53,7 @@ def mount_special_dirs(dest_dir):
         mydir = os.path.join(dest_dir, s_dir)
         if not os.path.exists(mydir):
             os.makedirs(mydir)
-    
+
     efi = "/sys/firmware/efi"
     if os.path.exists(efi):
         mydir = os.path.join(dest_dir, efi[1:])
@@ -118,10 +118,10 @@ def umount_special_dirs(dest_dir):
                 subprocess.check_call(["umount", "-l", mydir])
             except subprocess.CalledProcessError as err:
                 logging.warning(_("Unable to umount %s"), mydir)
-                cmd = _("Command %s has failed.") % err.cmd
-                logging.warning(cmd)
-                out = _("Output : %s") % err.output
-                logging.warning(out)
+                cmd = _("Command %s has failed.")
+                logging.warning(cmd, err.cmd)
+                out = _("Output : %s")
+                logging.warning(out, err.output)
 
     _special_dirs_mounted = False
 

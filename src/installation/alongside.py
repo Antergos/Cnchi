@@ -119,7 +119,7 @@ class InstallationAlongside(GtkBaseBox):
         self.label = self.ui.get_object('label_info')
 
         self.choose_partition_label = self.ui.get_object('choose_partition_label')
-        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')      
+        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')
 
         self.oses = bootinfo.get_os_dict()
         #print(self.oses)
@@ -152,8 +152,8 @@ class InstallationAlongside(GtkBaseBox):
             logging.warning(_("There are no primary partitions available"))
             return
 
-        txt = _("Will shrink device %s and create new device %s")
-        txt = txt % (device_to_shrink, new_device)
+        txt = _("Will shrink device {0} and create new device {1}")
+        txt = txt.format(device_to_shrink, new_device)
         logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
@@ -162,7 +162,7 @@ class InstallationAlongside(GtkBaseBox):
             # Full Antergos does not fit but maybe base fits... ask user.
             txt = _("Cnchi recommends at least 6.5GB free to install Antergos.")
             txt += "\n\n"
-            txt += _("New partition %s resulting of shrinking %s will not have enough free space for a full installation.") % (new_device, device_to_shrink)
+            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink)
             txt += "\n\n"
             txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.")
             txt += "\n\n"
@@ -221,7 +221,7 @@ class InstallationAlongside(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         txt = _("Choose the new size of your installation")
-        txt = '<span size="large">%s</span>' % txt
+        txt = '<span size="large">{0}</span>'.format(txt)
         self.label.set_markup(txt)
 
         txt = _("Choose the partition that you want to shrink:")
@@ -261,7 +261,8 @@ class InstallationAlongside(GtkBaseBox):
             for device in sorted(devices):
                 if self.get_new_device(device):
                     new_device_found = True
-                    self.choose_partition_combo.append_text("%s (%s)" % (self.oses[device], device))
+                    line = "{0} ({1})".format(self.oses[device], device)
+                    self.choose_partition_combo.append_text(line)
             self.select_first_combobox_item(self.choose_partition_combo)
             self.show_all()
             if not new_device_found:
@@ -306,21 +307,21 @@ class InstallationAlongside(GtkBaseBox):
         # First, shrink filesystem
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
-            txt = _("Filesystem on %s shrunk.") % partition_path
+            txt = _("Filesystem on {0} shrunk.").format(partition_path)
             txt += "\n"
-            txt += _("Will recreate partition now on device %s partition %s") % (device_path, partition_path)
+            txt += _("Will recreate partition now on device {0} partition {1}").format(device_path, partition_path)
             logging.debug(txt)
             # Destroy original partition and create a new resized one
             res = pm.split_partition(device_path, partition_path, new_size)
         else:
-            txt = _("Can't shrink %s(%s) filesystem") % (otherOS, fs_type)
+            txt = _("Can't shrink {0}({1}) filesystem").format(otherOS, fs_type)
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
             return
 
         # res is either False or a parted.Geometry for the new free space
         if res is None:
-            txt = _("Can't shrink %s(%s) partition") % (otherOS, fs_type)
+            txt = _("Can't shrink {0}({1}) partition").format(otherOS, fs_type)
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
             txt = _("*** FILESYSTEM IN UNSAFE STATE ***")
@@ -329,7 +330,7 @@ class InstallationAlongside(GtkBaseBox):
             logging.error(txt)
             return
 
-        txt = _("Partition %s shrink complete") % partition_path
+        txt = _("Partition {0} shrink complete").format(partition_path)
         logging.debug(txt)
 
         devices = pm.get_devices()
@@ -426,8 +427,8 @@ class InstallationAlongside(GtkBaseBox):
         if self.settings.get('bootloader_install'):
             self.settings.set('bootloader', "grub2")
             self.settings.set('bootloader_device', device_path)
-            msg = _("Antergos will install the bootloader %s in device %s")
-            msg = msg % (self.bootloader, self.bootloader_device)
+            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
         else:
             logging.info(_("Cnchi will not install any bootloader"))

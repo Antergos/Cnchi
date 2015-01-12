@@ -87,9 +87,11 @@ def run(dest_dir, settings, mount_devices, blvm):
     # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
     locale = settings.get('locale')
     chroot.mount_special_dirs(dest_dir)
-    chroot.run(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux' % locale], dest_dir)
+    cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux'.format(locale)]
+    chroot.run(cmd, dest_dir)
     if settings.get('feature_lts'):
-        chroot.run(['sh', '-c', 'LANG=%s /usr/bin/mkinitcpio -p linux-lts' % locale], dest_dir)
+        cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux-lts'.format(locale)]
+        chroot.run(cmd, dest_dir)
     chroot.umount_special_dirs(dest_dir)
 
 def set_hooks_and_modules(dest_dir, hooks, modules):
@@ -103,9 +105,9 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
 
     for i in range(len(mklins)):
         if mklins[i].startswith("HOOKS"):
-            mklins[i] = 'HOOKS="%s"' % ' '.join(hooks)
+            mklins[i] = 'HOOKS="{0}"'.format(' '.join(hooks))
         elif mklins[i].startswith("MODULES"):
-            mklins[i] = 'MODULES="%s"' % ' '.join(modules)
+            mklins[i] = 'MODULES="{0}"'.format(' '.join(modules))
 
     path = os.path.join(dest_dir, "etc/mkinitcpio.conf")
     with open(path, "w") as mkinitcpio_file:
