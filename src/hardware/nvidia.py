@@ -52,7 +52,7 @@ class Nvidia(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        path = "%s/etc/modprobe.d/nouveau.conf" % dest_dir
+        path = os.path.join(dest_dir, "etc/modprobe.d/nouveau.conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options nouveau modeset=1\n")
     

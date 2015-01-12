@@ -45,7 +45,7 @@ class Via(Hardware):
         return ["xf86-video-openchrome"]
 
     def post_install(self, dest_dir):
-        path = "%s/etc/X11/xorg.conf.d/10-via.conf" % dest_dir
+        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/10-via.conf")
         with open(path, 'w') as video:
             video.write('Section "Device"\n')
             video.write('\tIdentifier     "Device0"\n')

@@ -98,7 +98,7 @@ class Keymap(GtkBaseBox):
                 if selected_country == "Canada" and self.settings.get("language_name") == "English":
                     self.select_value_in_treeview(self.variant_treeview, "Canada - English")
 
-            logging.info(_("keyboard_layout is %s") % selected_country)
+            logging.info(_("keyboard_layout is %s"), selected_country)
 
         self.prepare_called = True
 

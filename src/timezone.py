@@ -109,7 +109,7 @@ class Timezone(GtkBaseBox):
             self.timezone = None
             self.forward_button.set_sensitive(False)
         else:
-            logging.info(_("location changed to : %s") % self.timezone)
+            logging.info(_("location changed to : %s"), self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
 

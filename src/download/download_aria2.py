@@ -85,8 +85,8 @@ class Download(object):
         total_downloads = len(downloads)
         percent = 0
         self.queue_event('percent', percent)
-        txt = _("Downloading packages... (%d/%d)...")
-        txt = txt % (downloaded, total_downloads)
+        txt = _("Downloading packages... ({0}/{1})...")
+        txt = txt.format(downloaded, total_downloads)
         self.queue_event('info', txt)
 
         while len(downloads) > 0:

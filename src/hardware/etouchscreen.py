@@ -35,6 +35,7 @@ except ImportError:
     from hardware import Hardware
 
 import subprocess
+import os
 
 CLASS_NAME = "ETouchScreen"
 CLASS_ID = ""
@@ -51,12 +52,12 @@ class ETouchScreen(Hardware):
     def post_install(self, dest_dir):
         subprocess.check_call(["rmmod", "usbtouchscreen"])
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
-        path = "%s/etc/modprobe.d/blacklist-usbtouchscreen.conf" % dest_dir
+        path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")
         with open(path, 'w') as conf_file:
             conf_file.write("blacklist usbtouchscreen\n")
 
         # TODO: This should be computer specific
-        path = "%s/etc/X11/xorg.conf.d/99-calibration.conf" % dest_dir
+        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/99-calibration.conf")
         with open(path, 'w') as conf_file:
             conf_file.write('Section "InputClass"\n')
             conf_file.write('\tIdentifier      "calibration"\n')

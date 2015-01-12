@@ -116,7 +116,7 @@ class Aria2(object):
             "--always-resume=true",         # Always resume download.
             "--auto-file-renaming=false",   # Rename file name if the same file already exists.
             "--auto-save-interval=0",       # Save a control file(*.aria2) every SEC seconds.
-            "--dir=%s" % self.pacman_cache_dir,  # The directory to store the downloaded file(s).
+            "--dir={0}".format(self.pacman_cache_dir),  # The directory to store the downloaded file(s).
             "--enable-rpc=true",            # Enable XML-RPC server.
             "--file-allocation=prealloc",   # Specify file allocation method (default 'prealloc')
             "--log=/tmp/cnchi-aria2.log",   # The file name of the log file
@@ -124,7 +124,7 @@ class Aria2(object):
                                             # warn or error (default notice)
             "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
                                             # Set maximum number of parallel downloads for each metalink (default 5)
-            "--max-concurrent-downloads=%d" % self.max_concurrent_downloads,
+            "--max-concurrent-downloads={0}".format(self.max_concurrent_downloads),
             "--max-connection-per-server=5",# The maximum number of connections to one server for each download
             "--max-tries=5",                # Set number of tries (default 5)
             "--no-conf=true",               # Disable loading aria2.conf file.
@@ -133,7 +133,7 @@ class Aria2(object):
                                             # and if it is available, apply it to the local file.
             "--remove-control-file=true",   # Remove control file before download.
             "--retry-wait=0",               # Set the seconds to wait between retries (default 0)
-            "--rpc-secret=%s" % uid,        # Set RPC secret authorization token
+            "--rpc-secret={0}".format(uid),        # Set RPC secret authorization token
             "--rpc-secure=false",           # RPC transport will be encrypted by SSL/TLS
             "--rpc-listen-port=6800",
             "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
@@ -142,7 +142,7 @@ class Aria2(object):
                                             # than SIZE bytes, it drops connection (default 2M)
             "--show-console-readout=false", # Show console readout (default true)
             "--split=5",                    # Download a file using N connections (default 5)
-            "--stop-with-process=%d" % pid, # Stop aria2 if Cnchi ends unexpectedly
+            "--stop-with-process={0}".format(pid), # Stop aria2 if Cnchi ends unexpectedly
             "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
                                             # suppresses the output (default 60)
             "--timeout=60"]                 # Set timeout in seconds (default 60)

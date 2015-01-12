@@ -105,9 +105,9 @@ class HardwareInstall(object):
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
                     self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
                 except ImportError as err:
-                    logging.exception("Error importing %s from %s : %s" % (name, package, err))
+                    logging.exception("Error importing %s from %s : %s", name, package, err)
                 except Exception as err:
-                    logging.exception("Unexpected error importing %s: %s " % (package, err))
+                    logging.exception("Unexpected error importing %s: %s ", package, err)
 
         # Detect devices
         devices = []
@@ -184,4 +184,4 @@ if __name__ == "__main__":
     print(hardware_install.get_found_driver_names())
     if len(hardware_pkgs) > 0:
         txt = " ".join(hardware_pkgs)
-        print("Hardware module added these packages : %s" % txt)
+        print("Hardware module added these packages : ", txt)

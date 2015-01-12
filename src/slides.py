@@ -98,7 +98,7 @@ class Slides(GtkBaseBox):
         if not USE_WEBKIT:
             # load first slide show image
             self.slideshow_index = 1
-            path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
+            path = os.path.join(SLIDES_PATH, "{0}.png".format(self.slideshow_index))
             if os.path.exists(path):
                 self.slideshow_image.set_from_file(path)
                 GLib.timeout_add(60000*10, self.change_slideshow_image)
@@ -135,11 +135,11 @@ class Slides(GtkBaseBox):
             return False
 
         self.slideshow_index += 1
-        path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
+        path = os.path.join(SLIDES_PATH, "%s.png".format(self.slideshow_index))
         if not os.path.exists(path):
             # We've reached the last image, start again
             self.slideshow_index = 1
-            path = os.path.join(SLIDES_PATH, "%s.png" % self.slideshow_index)
+            path = os.path.join(SLIDES_PATH, "%s.png".format(self.slideshow_index))
 
         if os.path.exists(path):
             self.slideshow_image.set_from_file(path)
