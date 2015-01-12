@@ -74,13 +74,14 @@ class Check(GtkBaseBox):
         self.header.set_subtitle(txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least %dGB available storage space.") % int(MIN_ROOT_SIZE / 1000000000)
+        txt = _("has at least {0}GB available storage space.")
+        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
         txt += " (*)"
         self.prepare_enough_space.props.label = txt
 
         self.label_space = self.ui.get_object("label_space")
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
-        txt = "(*) <i>%s</i>" % txt
+        txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
@@ -93,7 +94,7 @@ class Check(GtkBaseBox):
 
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
-        txt = '<span weight="bold" size="large">%s</span>' % txt
+        txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
         self.prepare_best_results.set_markup(txt)
 
     def check_all(self):

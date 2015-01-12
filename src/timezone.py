@@ -157,8 +157,8 @@ class Timezone(GtkBaseBox):
         zones.sort()
         tree_model = self.combobox_zone.get_model()
         tree_model.clear()
-        for z in zones:
-            tree_model.append([z, z])
+        for zone in zones:
+            tree_model.append([zone, zone])
 
     def populate_cities(self, selected_zone):
         if self.old_zone != selected_zone:
@@ -170,8 +170,8 @@ class Timezone(GtkBaseBox):
             regions.sort()
             tree_model = self.combobox_region.get_model()
             tree_model.clear()
-            for r in regions:
-                tree_model.append([r, r])
+            for region in regions:
+                tree_model.append([region, region])
             self.old_zone = selected_zone
 
     def prepare(self, direction):
@@ -184,17 +184,20 @@ class Timezone(GtkBaseBox):
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
             except queue.Empty as err:
-                # Give 5 more seconds and try again just in case...
-                misc.set_cursor(Gdk.CursorType.WATCH)
-                import time
-                time.sleep(5)
-                try:
-                    self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-                except queue.Empty as err:
-                    msg = _("Can't autodetect timezone coordinates")
+                msg = _("Can't autodetect timezone coordinates")
+                if __name__ == '__main__':
+                    # When testing this screen, give 5 more seconds and try again just in case.
+                    misc.set_cursor(Gdk.CursorType.WATCH)
+                    import time
+                    time.sleep(5)
+                    try:
+                        self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
+                    except queue.Empty as err:
+                        logging.warning(msg)
+                    finally:
+                        misc.set_cursor(Gdk.CursorType.ARROW)
+                else:
                     logging.warning(msg)
-                finally:
-                    misc.set_cursor(Gdk.CursorType.ARROW)
 
         if self.autodetected_coords:
             coords = self.autodetected_coords

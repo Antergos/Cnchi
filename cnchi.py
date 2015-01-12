@@ -68,7 +68,7 @@ class CnchiApp(Gtk.Application):
         try:
             import main_window
         except ImportError as err:
-            msg = _("Can't create Cnchi main window: %s") % err
+            msg = _("Can't create Cnchi main window: {0}").format(err)
             logging.error(msg)
             sys.exit(1)
 
@@ -151,12 +151,12 @@ def check_gtk_version():
         wrong_gtk_version = True
 
     if wrong_gtk_version:
-        text = "Detected GTK version %d.%d.%d but version %s is needed."
-        text = text % (major, minor, micro, GTK_VERSION_NEEDED)
+        text = "Detected GTK version {0}.{1}.{2} but version {3} is needed."
+        text = text.format(major, minor, micro, GTK_VERSION_NEEDED)
         logging.info(text)
         return False
     else:
-        logging.info("Using GTK v%d.%d.%d", major, minor, micro)
+        logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
 
     return True
 
@@ -164,10 +164,9 @@ def check_pyalpm_version():
     """ Checks python alpm binding and alpm library versions """
     try:
         import pyalpm
-        logging.info(
-            _("Using pyalpm v%s as interface to libalpm v%s"),
-            pyalpm.version(),
-            pyalpm.alpmversion())
+        txt = _("Using pyalpm v{0} as interface to libalpm v{1}")
+        txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
+        logging.info(txt)
     except (NameError, ImportError) as err:
         logging.error(err)
         # We don't return false as we want to be able to run Cnchi
@@ -179,8 +178,8 @@ def parse_options():
 
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Cnchi v%s - Antergos Installer" % info.CNCHI_VERSION)
+    desc = _("Cnchi v{0} - Antergos Installer").format(info.CNCHI_VERSION)
+    parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument(
         "-a", "--aria2",
@@ -302,7 +301,8 @@ def check_for_files():
             return False
 
     if not os.path.exists("/usr/bin/hdparm") and not os.path.exists("/sbin/hdparm"):
-        print(_("Please install %s before running this installer") % "hdparm")
+        txt = _("Please install '{0}' before running this installer").format("hdparm")
+        print(txt)
         return False
 
     return True
