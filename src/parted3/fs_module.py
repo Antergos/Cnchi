@@ -38,12 +38,17 @@ COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 @misc.raise_privileges
 def get_info(part):
     """ Get partition info using blkid """
-    try:
-        cmd = shlex.split('blkid %s' % part)
-        ret = subprocess.check_output(cmd).decode().strip()
-    except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        ret = ''
+    
+    # Do not try to get extended partition info
+    ret = ''
+    if not misc.is_partition_extended(part):
+        try:
+            cmd = shlex.split('blkid %s' % part)
+            ret = subprocess.check_output(cmd).decode().strip()
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
+            ret = ''
+
     partdic = {}
     for info in ret.split():
         if '=' in info:
@@ -54,12 +59,14 @@ def get_info(part):
 @misc.raise_privileges
 def get_type(part):
     """ Get filesystem type using blkid """
-    try:
-        cmd = shlex.split('blkid -o value -s TYPE %s' % part)
-        ret = subprocess.check_output(cmd).decode().strip()
-    except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        ret = ''
+    ret = ''
+    if not misc.is_partition_extended(part):
+        try:
+            cmd = shlex.split('blkid -o value -s TYPE %s' % part)
+            ret = subprocess.check_output(cmd).decode().strip()
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
+            ret = ''
     return ret
 
 @misc.raise_privileges

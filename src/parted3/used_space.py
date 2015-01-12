@@ -35,7 +35,7 @@ def get_used_ntfs(part):
     """ Gets used space in a NTFS partition """
     used = 0
     try:
-        result = subprocess.check_output(shlex.split("ntfsinfo -m %s" % part))
+        result = subprocess.check_output(shlex.split("ntfsinfo -mf %s" % part))
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of NTFS partition %s") % part
@@ -245,6 +245,7 @@ def is_btrfs(part):
 
 def get_used_space(part, part_type):
     """ Get used space in a partition """
+    
     if 'ntfs' in part_type.lower():
         space = get_used_ntfs(part)
     elif 'ext' in part_type.lower():
