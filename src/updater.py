@@ -83,7 +83,6 @@ class Updater():
                 self.remote_version = updateInfo['version']
                 for remote_file in updateInfo['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
-
                 logging.info(_("Cnchi Internet version: %s"), self.remote_version)
                 self.force = force_update
 
@@ -132,7 +131,7 @@ class Updater():
 
         if update_cnchi:
             logging.debug(_("Downloading new version of Cnchi..."))
-            zip_path = "/tmp/cnchi-%s.zip" % self.remote_version
+            zip_path = "/tmp/cnchi-{0}.zip".format(self.remote_version)
             res = self.download_master_zip(zip_path)
             if not res:
                 logging.error(_("Can't download new Cnchi version."))

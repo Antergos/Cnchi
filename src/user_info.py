@@ -107,19 +107,19 @@ class UserInfo(GtkBaseBox):
 
         label = self.ui.get_object('hostname_extra_label')
         txt = _("Identifies your system to other computers and devices.")
-        txt = '<span size="small">%s</span>' % txt
+        txt = '<span size="small">{0}</span>'.format(txt)
         label.set_markup(txt)
 
         txt = _("You must enter a name")
-        txt = '<small><span color="darkred">%s</span></small>' % txt
+        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
         self.error_label['hostname'].set_markup(txt)
 
         txt = _("You must enter a username")
-        txt = '<small><span color="darkred">%s</span></small>' % txt
+        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
         self.error_label['username'].set_markup(txt)
 
         txt = _("You must enter a password")
-        txt = '<small><span color="darkred">%s</span></small>' % txt
+        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
         self.error_label['password'].set_markup(txt)
 
         self.login['auto'].set_label(_("Log in automatically"))
@@ -237,15 +237,15 @@ class UserInfo(GtkBaseBox):
 
                 if validation.NAME_BADCHAR in result:
                     txt = _("Invalid characters entered")
-                    txt = "<small><span color='darkred'>%s</span></small>" % txt
+                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
                     self.error_label[element].set_markup(txt)
                 elif validation.NAME_BADDOTS in result:
                     txt = _("Username can't contain dots")
-                    txt = "<small><span color='darkred'>%s</span></small>" % txt
+                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
                     self.error_label[element].set_markup(txt)
                 elif validation.NAME_LENGTH in result:
                     txt = _("Too many characters")
-                    txt = "<small><span color='darkred'>%s</span></small>" % txt
+                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
                     self.error_label[element].set_markup(txt)
 
                 self.error_label[element].show()

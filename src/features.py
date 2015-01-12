@@ -153,6 +153,8 @@ class Features(GtkBaseBox):
     def set_row_text(self, feature, title, desc, tooltip):
         """ Set translated text to our listbox feature row """
         if feature in self.listbox_rows:
+            title = "<span weight='bold' size='large'>{0}</span>".format(title)
+            desc = "<span size='small'>{0}</span>".format(desc)
             row = self.listbox_rows[feature]
             row[COL_TITLE].set_markup(title)
             row[COL_DESCRIPTION].set_markup(desc)
@@ -168,9 +170,7 @@ class Features(GtkBaseBox):
 
         # AUR
         title = _("Arch User Repository (AUR) Support")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("The AUR is a community-driven repository for Arch users.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Use yaourt to install AUR packages.\n"
             "The AUR was created to organize and share new packages\n"
             "from the community and to help expedite popular packages'\n"
@@ -179,9 +179,7 @@ class Features(GtkBaseBox):
 
         # Bluetooth
         title = _("Bluetooth Support")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Enables your system to make wireless connections via Bluetooth.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Bluetooth is a standard for the short-range wireless\n"
             "interconnection of cellular phones, computers, and\n"
             "other electronic devices. In Linux, the canonical\n"
@@ -190,9 +188,7 @@ class Features(GtkBaseBox):
 
         # Extra TTF Fonts
         title = _("Extra Truetype Fonts")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Installation of extra TrueType fonts")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("TrueType is an outline font standard developed by\n"
             "Apple and Microsoft in the late 1980s as a competitor\n"
             "to Adobe's Type 1 fonts used in PostScript. It has\n"
@@ -202,9 +198,7 @@ class Features(GtkBaseBox):
 
         # Printing support (cups)
         title = _("Printing Support")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Installation of printer drivers and management tools.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("CUPS is the standards-based, open source printing\n"
             "system developed by Apple Inc. for OS® X and other\n"
             "UNIX®-like operating systems.")
@@ -212,9 +206,7 @@ class Features(GtkBaseBox):
 
         # LibreOffice
         title = _("LibreOffice")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Open source office suite. Supports editing MS Office files.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("LibreOffice is the free power-packed Open Source\n"
             "personal productivity suite for Windows, Macintosh\n"
             "and Linux, that gives you six feature-rich applications\n"
@@ -224,9 +216,7 @@ class Features(GtkBaseBox):
 
         # Visual effects
         title = _("Visual Effects")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Enable transparency, shadows, and other desktop effects.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Compton is a lightweight, standalone composite manager,\n"
             "suitable for use with window managers that do not natively\n"
             "provide compositing functionality. Compton itself is a fork\n"
@@ -236,9 +226,7 @@ class Features(GtkBaseBox):
 
         # Firewall
         title = _("Uncomplicated Firewall")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Control the incoming and outgoing network traffic.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
             "managing a netfilter firewall. It provides a command line\n"
             "interface and aims to be uncomplicated and easy to use.")
@@ -246,9 +234,7 @@ class Features(GtkBaseBox):
 
         # Kernel LTS
         title = _("Kernel LTS - DOES NOT WORK!")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("Long term support (LTS) Linux kernel and modules.")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
             "based upon Linux kernel 3.14 and is available in the core repository.\n"
             "This particular kernel version enjoys long-term support from upstream,\n"
@@ -260,9 +246,7 @@ class Features(GtkBaseBox):
 
         # Firefox
         title = _("Firefox Web Browser")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("A popular open-source graphical web browser from Mozilla")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("Mozilla Firefox (known simply as Firefox) is a free and\n"
             "open-source web browser developed for Windows, OS X, and Linux,\n"
             "with a mobile version for Android, by the Mozilla Foundation and\n"
@@ -273,9 +257,7 @@ class Features(GtkBaseBox):
 
         # SMB
         title = _("Windows sharing SMB")
-        title = "<span weight='bold' size='large'>%s</span>" % title
         desc = _("SMB provides shared access to files and printers")
-        desc = "<span size='small'>%s</span>" % desc
         tooltip = _("In computer networking, Server Message Block (SMB)\n"
             "operates as an application-layer network protocol mainly used\n"
             "for providing shared access to files, printers, serial ports,\n"
@@ -345,10 +327,10 @@ class Features(GtkBaseBox):
             # Ufw rules info
             txt1 = _("Uncomplicated Firewall will be installed with these rules:")
             toallow = misc.get_network()
-            txt2 = _("ufw default deny\nufw allow from %s\nufw allow Transmission\nufw allow SSH") % toallow
+            txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\nufw allow SSH").format(toallow)
 
-        txt1 = "<big>%s</big>" % txt1
-        txt2 = "<i>%s</i>" % txt2
+        txt1 = "<big>{0}</big>".format(txt1)
+        txt2 = "<i>{0}</i>".format(txt2)
 
         info = Gtk.MessageDialog(
             transient_for=self.get_toplevel(),

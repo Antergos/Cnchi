@@ -81,7 +81,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 "If you are sure that the installer is not already running\n"
                 "you can run this installer using the --force option\n"
                 "or you can manually delete the offending file.\n\n"
-                "Offending file: '%s'") % tmp_running
+                "Offending file: '{0}'").format(tmp_running)
             show.error(self, msg)
             sys.exit(1)
 
@@ -196,7 +196,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
-        title = "Cnchi %s" % info.CNCHI_VERSION
+        title = "Cnchi {0}".format(info.CNCHI_VERSION)
         self.set_title(title)
         self.header.set_title(title)
         self.header.set_subtitle(_("Antergos Installer"))

@@ -59,7 +59,7 @@ class DesktopAsk(GtkBaseBox):
     def translate_ui(self, desktop):
         """ Translates all ui elements """
         label = self.ui.get_object("desktop_info")
-        txt = "<span weight='bold'>%s</span>\n" % desktops.NAMES[desktop]
+        txt = "<span weight='bold'>{0}</span>\n".format(desktops.NAMES[desktop])
         description = desktops.DESCRIPTIONS[desktop]
         txt += _(description)
         label.set_markup(txt)

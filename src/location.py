@@ -71,7 +71,7 @@ class Location(GtkBaseBox):
         self.label_help.set_markup(txt)
 
         txt = _("Country, territory or area:")
-        txt = "<span weight='bold'>%s</span>" % txt
+        txt = "<span weight='bold'>{0}</span>".format(txt)
         self.label_choose_country.set_markup(txt)
 
         check = self.ui.get_object('show_all_locations_checkbutton')
@@ -195,22 +195,22 @@ class Location(GtkBaseBox):
         try:
             import locale
             locale.setlocale(locale.LC_ALL, mylocale)
-            logging.info(_("locale changed to : %s") % mylocale)
+            logging.info(_("locale changed to : %s"), mylocale)
         except ImportError as err:
             logging.error(_("Can't import locale module"))
         except locale.Error as err:
-            logging.warning(_("Can't change to locale '%s'") % mylocale)
+            logging.warning(_("Can't change to locale '%s'"), mylocale)
             if mylocale.endswith(".UTF-8"):
                 # Try without the .UTF-8 trailing
                 mylocale = mylocale[:-len(".UTF-8")]
                 try:
                     locale.setlocale(locale.LC_ALL, mylocale)
-                    logging.info(_("locale changed to : %s") % mylocale)
+                    logging.info(_("locale changed to : %s"), mylocale)
                     self.settings.set("locale", mylocale)
                 except locale.Error as err:
-                    logging.warning(_("Can't change to locale '%s'") % mylocale)
+                    logging.warning(_("Can't change to locale '%s'"), mylocale)
             else:
-                logging.warning(_("Can't change to locale '%s'") % mylocale)
+                logging.warning(_("Can't change to locale '%s'"), mylocale)
 
     def store_values(self):
         country = self.selected_country

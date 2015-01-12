@@ -62,4 +62,4 @@ if __name__ == '__main__':
     except ImportError:
         print("Can't import hardware module.")
     except Exception as err:
-        print("Unknown error in hardware module. Output: %s" % err)
+        print("Unknown error in hardware module. Output: {0}".format(err))

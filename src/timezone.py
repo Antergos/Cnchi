@@ -310,8 +310,8 @@ class AutoTimezoneThread(threading.Thread):
 
         if coords:
             coords = coords.split()
-            msg = _("Timezone (latitude %s, longitude %s) detected.")
-            msg = msg % (coords[0], coords[1])
+            msg = _("Timezone (latitude {0}, longitude {1}) detected.")
+            msg = msg.format(coords[0], coords[1])
             logging.debug(msg)
             self.coords_queue.put(coords)
 

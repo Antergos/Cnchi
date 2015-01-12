@@ -81,7 +81,7 @@ class Welcome(GtkBaseBox):
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.") + "\n"
         txt += _("When you are ready to install Antergos simply choose which installer you prefer.")
-        txt = '<span weight="bold">%s</span>' % txt
+        txt = '<span weight="bold">{0}</span>'.format(txt)
         self.labels['info'].set_markup(txt)
 
         txt = _("Try It")

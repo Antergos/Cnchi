@@ -79,7 +79,7 @@ class Language(GtkBaseBox):
         "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
         "setups. Please proceed with caution as data loss is possible!\n\n"
         "If you find any bugs, please report them at http://bugs.antergos.com")
-        txt_markup = "<span weight='bold'>%s</span>\n\n%s" % (txt_bold, txt)
+        txt_markup = "<span weight='bold'>{0}</span>\n\n{1}".format(txt_bold, txt)
         label = self.ui.get_object("welcome_label")
         label.set_markup(txt_markup)
 
@@ -123,7 +123,7 @@ class Language(GtkBaseBox):
             lang.install()
             self.translate_ui()
         except IOError:
-            logging.warning(_("Can't find translation file for the %s language") % locale_code)
+            logging.warning(_("Can't find translation file for the %s language"), locale_code)
 
     def select_default_row(self, language):
         for listbox_row in self.listbox.get_children():
