@@ -250,13 +250,14 @@ class AutoPartition(object):
         self.callback_queue = callback_queue
 
         if os.path.exists("/sys/firmware/efi"):
-            self.uefi = True
-            # TODO: Let user choose between GPT and MBR.
-            # As it is now, Grub has some GPT issues.  For now always use MBR.
-            self.gpt = False
+            self.UEFI = True
+            # TODO: GPT Autopartition code needs to be tested
+            # If UEFI use GPT by default
+            self.GPT = True
         else:
-            self.uefi = False
-            self.gpt = False
+            self.UEFI = False
+            # If no UEFI, use MBR by default
+            self.GPT = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -410,7 +411,7 @@ class AutoPartition(object):
 
         fs_devices = {}
 
-        if self.gpt:
+        if self.GPT:
             fs_devices[devices['boot']] = "vfat"
         else:
             fs_devices[devices['boot']] = "ext2"
@@ -496,8 +497,8 @@ class AutoPartition(object):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
-        if self.gpt:
-            # TODO: Fix GPT
+        if self.GPT:
+            # TODO: Test this!
             gpt_bios_grub_part_size = 1
             efisys_part_size = 512
             empty_space_size = 2
@@ -541,7 +542,7 @@ class AutoPartition(object):
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
-        if self.gpt:
+        if self.GPT:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
 
             # Clean partition table to avoid issues!
@@ -557,14 +558,20 @@ class AutoPartition(object):
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
 
+            part_number = 1
+            
             # Create BIOS Boot Partition
-            # GPT: 21686148-6449-6E6F-744E-656564454649
-            # This partition is not required if the system is UEFI based, as there is no such embedding
-            # of the second-stage code in that case
-            sgdisk(device, "1:BIOS_GRUB", "1:1M", gpt_bios_grub_part_size, "1:EF02")
+            # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+            # This partition is not required if the system is UEFI based,
+            # as there is no such embedding of the second-stage code in that case
 
-            # Create EFI System Partition
-            # GPT: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+            #def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
+
+            #if not self.UEFI:
+            #sgdisk(device, part_num, "BIOS_BOOT".format(part_number), "{0}:0", gpt_bios_grub_part_size, "1:EF02")
+
+            # Create EFI System Partition (ESP)
+            # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
             # MBR: 0xEF
             sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
 
@@ -691,7 +698,7 @@ class AutoPartition(object):
         self.mkfs(devices['root'], "ext4", "/", "AntergosRoot")
         self.mkfs(devices['swap'], "swap", "", "AntergosSwap")
 
-        if self.gpt:
+        if self.GPT:
             # TODO: efi_device in get_devices
             # Format EFI System Partition with vfat
             # We use /boot/efi here as we'll have another partition as /boot
