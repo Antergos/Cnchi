@@ -110,16 +110,18 @@ class UserInfo(GtkBaseBox):
         txt = '<span size="small">{0}</span>'.format(txt)
         label.set_markup(txt)
 
+        small_dark_red = '<small><span color="darkred">{0}</span></small>'
+        
         txt = _("You must enter a name")
-        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
+        txt = small_dark_red.format(txt)
         self.error_label['hostname'].set_markup(txt)
 
         txt = _("You must enter a username")
-        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
+        txt = small_dark_red.format(txt)
         self.error_label['username'].set_markup(txt)
 
         txt = _("You must enter a password")
-        txt = '<small><span color="darkred">{0}</span></small>'.format(txt)
+        txt = small_dark_red.format(txt)
         self.error_label['password'].set_markup(txt)
 
         self.login['auto'].set_label(_("Log in automatically"))
