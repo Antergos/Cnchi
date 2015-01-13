@@ -345,89 +345,73 @@ class AutoPartition(object):
     def get_devices(self):
         """ Set (and return) all partitions on the device """
         devices = {'boot' : "", 'efi' : "", 'home' : "", 'lvm' : "", 'luks' : [], 'root' : "", 'swap' : ""}
-            
-        # TODO: GPT
+
+        device = self.auto_device
 
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
         if self.GPT:
-            #if not self.UEFI:
+            if not self.UEFI:
+                # Skip BIOS Boot Partition
+                part_num = 2
+            else:
+                part_num = 1
 
-            devices['boot'] = self.auto_device + "1"
-            devices['root'] = self.auto_device + "2"
+            devices['efi'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+            devices['boot'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+            devices['root'] = "{0}{1}".format(device, part_num)
             if self.home:
-                devices['home'] = self.auto_device + "3"
-
-            devices['swap'] = self.auto_device + "5"
-
-            if self.luks:
-                if self.lvm:
-                    # LUKS and LVM
-                    devices['luks'] = [devices['root']]
-                    devices['lvm'] = "/dev/mapper/cryptAntergos"
-                else:
-                    # LUKS and no LVM
-                    devices['luks'] = [devices['root']]
-                    devices['root'] = "/dev/mapper/cryptAntergos"
-                    if self.home:
-                        # In this case we'll have two LUKS devices, one for root
-                        # and the other one for /home
-                        devices['luks'].append(devices['home'])
-                        devices['home'] = "/dev/mapper/cryptAntergosHome"
-            elif self.lvm:
-                # No LUKS but using LVM
-                devices['lvm'] = devices['root']
-
-            if self.lvm:
-                devices['root'] = "/dev/AntergosVG/AntergosRoot"
-                devices['swap'] = "/dev/AntergosVG/AntergosSwap"
-                if self.home:
-                    devices['home'] = "/dev/AntergosVG/AntergosHome"
+                devices['home'] = "{0}{1}".format(device, part_num)
+                part_num += 1
+            devices['swap'] = "{0}{1}".format(device, part_num)
+            part_num += 1
         else:
-            devices['boot'] = self.auto_device + "1"
-            devices['root'] = self.auto_device + "2"
+            devices['boot'] = "{0}{1}".format(device, 1)
+            devices['root'] = "{0}{1}".format(device, 2)
             if self.home:
-                devices['home'] = self.auto_device + "3"
+                devices['home'] = "{0}{1}".format(device, 3)
+            devices['swap'] = "{0}{1}".format(device, 5)
 
-            devices['swap'] = self.auto_device + "5"
-
-            if self.luks:
-                if self.lvm:
-                    # LUKS and LVM
-                    devices['luks'] = [devices['root']]
-                    devices['lvm'] = "/dev/mapper/cryptAntergos"
-                else:
-                    # LUKS and no LVM
-                    devices['luks'] = [devices['root']]
-                    devices['root'] = "/dev/mapper/cryptAntergos"
-                    if self.home:
-                        # In this case we'll have two LUKS devices, one for root
-                        # and the other one for /home
-                        devices['luks'].append(devices['home'])
-                        devices['home'] = "/dev/mapper/cryptAntergosHome"
-            elif self.lvm:
-                # No LUKS but using LVM
-                devices['lvm'] = devices['root']
-
+        if self.luks:
             if self.lvm:
-                devices['root'] = "/dev/AntergosVG/AntergosRoot"
-                devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+                # LUKS and LVM
+                devices['luks'] = [devices['root']]
+                devices['lvm'] = "/dev/mapper/cryptAntergos"
+            else:
+                # LUKS and no LVM
+                devices['luks'] = [devices['root']]
+                devices['root'] = "/dev/mapper/cryptAntergos"
                 if self.home:
-                    devices['home'] = "/dev/AntergosVG/AntergosHome"
+                    # In this case we'll have two LUKS devices, one for root
+                    # and the other one for /home
+                    devices['luks'].append(devices['home'])
+                    devices['home'] = "/dev/mapper/cryptAntergosHome"
+        elif self.lvm:
+            # No LUKS but using LVM
+            devices['lvm'] = devices['root']
+
+        if self.lvm:
+            devices['root'] = "/dev/AntergosVG/AntergosRoot"
+            devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+            if self.home:
+                devices['home'] = "/dev/AntergosVG/AntergosHome"
 
         return devices
 
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB
         in modify_grub_default() in bootloader.py """
-        
-        # TODO: GPT
 
         devices = self.get_devices()
 
         mount_devices = {}
         mount_devices['/boot'] = devices['boot']
         mount_devices['/'] = devices['root']
+
+        if self.GPT:
+            mount_devices['/boot/efi'] = devices['efi']
 
         if self.home:
             mount_devices['/home'] = devices['home']
@@ -452,10 +436,9 @@ class AutoPartition(object):
         fs_devices = {}
 
         if self.GPT:
-            fs_devices[devices['boot']] = "vfat"
-        else:
-            fs_devices[devices['boot']] = "ext2"
+            fs_devices[devices['efi']] = "vfat"
 
+        fs_devices[devices['boot']] = "ext2"
         fs_devices[devices['swap']] = "swap"
 
         if self.luks:
@@ -482,6 +465,9 @@ class AutoPartition(object):
 
         part_sizes['disk'] = disk_size
         part_sizes['boot'] = 256
+
+        if self.GPT:
+            part_sizes['efi'] = 200
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
         mem_total = int(mem_total.split()[1])
@@ -568,6 +554,7 @@ class AutoPartition(object):
             show.warning(None, txt)
             return
 
+        # FIX THIS!
         start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.show_part_sizes(part_sizes)
