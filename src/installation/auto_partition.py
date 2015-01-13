@@ -193,16 +193,24 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
 
-def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
+            #def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
+            #sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
+
+#def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
+def sgdisk(device, part_num, label, size_in_mb, hex_code):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
-    cmd.append('--set-alignment="{0}"'.format(alignment))
-    cmd.append('--new={0}:+{1}M'.format(new, size))
+
+    # --new: Create a new partition, numbered partnum, starting at sector start and ending at sector end.
+    # Parameters: partnum:start:end
+    cmd.append('--new={0}:0:+{1}M'.format(part_num, size))
+
+    # --typecode: Change a partition's GUID type code to the one specified by hexcode. Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code. You can obtain a list of codes with the -L option.
+    # Parameters: partnum:hexcode
     cmd.append('--typecode={0}'.format(type_code))
 
-    if attributes is not None:
-        cmd.append('--attributes={0}'.format(attributes))
-
+    # --change-name: Change the name of the specified partition.
+    # Parameters: partnum:name
     cmd.append('--change-name={0}'.format(name))
     cmd.append(device)
     subprocess.check_call(cmd)
@@ -567,8 +575,8 @@ class AutoPartition(object):
 
             #def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
 
-            #if not self.UEFI:
-            #sgdisk(device, part_num, "BIOS_BOOT".format(part_number), "{0}:0", gpt_bios_grub_part_size, "1:EF02")
+            if not self.UEFI:
+                sgdisk(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
 
             # Create EFI System Partition (ESP)
             # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
