@@ -974,7 +974,7 @@ def is_partition_extended(partition):
     if len(num) == 0:
         return False
 
-    num = int(num)
+    num = int(num[1:])
 
     if num > 4:
         # logical partition
