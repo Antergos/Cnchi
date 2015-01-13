@@ -974,7 +974,7 @@ def is_partition_extended(partition):
     if len(num) == 0:
         return False
 
-    num = int(num[1:])
+    num = int(num)
 
     if num > 4:
         # logical partition
@@ -997,6 +997,6 @@ def get_partitions():
         if "major" not in line:
             info = line.split()
             if len(info) > 0:
-                if len(info[3]) > len("sdX"):
+                if len(info[3]) > len("sdX") and "loop" not in info[3]:
                     partitions_list.append("/dev/" + info[3])
     return partitions_list
