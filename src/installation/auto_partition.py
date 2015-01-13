@@ -193,25 +193,27 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
 
-            #def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
-            #sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
-
+#def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
+#sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
 #def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
-def sgdisk(device, part_num, label, size_in_mb, hex_code):
+
+def sgdisk(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
 
     # --new: Create a new partition, numbered partnum, starting at sector start and ending at sector end.
-    # Parameters: partnum:start:end
+    # Parameters: partnum:start:end (zero in start or end means using default value)
     cmd.append('--new={0}:0:+{1}M'.format(part_num, size))
 
-    # --typecode: Change a partition's GUID type code to the one specified by hexcode. Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code. You can obtain a list of codes with the -L option.
+    # --typecode: Change a partition's GUID type code to the one specified by hexcode.
+    #             Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code.
+    #             You can obtain a list of codes with the -L option.
     # Parameters: partnum:hexcode
-    cmd.append('--typecode={0}'.format(type_code))
+    cmd.append('--typecode={0}:{1}'.format(part_num, type_code))
 
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
-    cmd.append('--change-name={0}'.format(name))
+    cmd.append('--change-name={0}:{1}'.format(part_num, name))
     cmd.append(device)
     subprocess.check_call(cmd)
 
@@ -568,32 +570,35 @@ class AutoPartition(object):
 
             part_number = 1
             
-            # Create BIOS Boot Partition
-            # GPT GUID: 21686148-6449-6E6F-744E-656564454649
-            # This partition is not required if the system is UEFI based,
-            # as there is no such embedding of the second-stage code in that case
-
-            #def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
-
             if not self.UEFI:
+                # Create BIOS Boot Partition
+                # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+                # This partition is not required if the system is UEFI based,
+                # as there is no such embedding of the second-stage code in that case
                 sgdisk(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
+                part_num += 1
 
             # Create EFI System Partition (ESP)
             # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-            # MBR: 0xEF
-            sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
+            sgdisk(device, part_num, "UEFI_SYSTEM", efisys_part_size, "EF00")
+            part_num += 1
 
             # Create Boot partition
-            sgdisk(device, "3:ANTERGOS_BOOT", "3:0", part_sizes['boot'], "3:8300")
+            sgdisk(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+            part_num += 1
 
             if self.lvm:
-                sgdisk(device, "4:ANTERGOS_LVM", "4:0", part_sizes['lvm_pv'], "4:8E00")
+                sgdisk(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
+                part_num += 1
             else:
-                sgdisk(device, "4:ANTERGOS_SWAP", "4:0", part_sizes['swap'], "4:8200")
-                sgdisk(device, "5:ANTERGOS_ROOT", "5:0", part_sizes['root'], "5:8300")
+                sgdisk(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
+                part_num += 1
+                sgdisk(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
+                part_num += 1
 
                 if self.home:
-                    sgdisk(device, "6:ANTERGOS_HOME", "6:0", part_sizes['home'], "6:8300")
+                    sgdisk(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
+                    part_num += 1
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
@@ -603,7 +608,7 @@ class AutoPartition(object):
             dd("/dev/zero", device, bs=512, count=2048)
             wipefs(device)
 
-            # Create DOS MBR with parted
+            # Create DOS MBR
             parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
