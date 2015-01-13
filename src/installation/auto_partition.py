@@ -344,54 +344,84 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
-        # TODO: GPT efi_device
-        devices = {
-            'boot' : "",
-            'efi' : "",
-            'home' : "",
-            'lvm' : "",
-            'luks' : [],
-            'root' : "",
-            'swap' : ""}
+        devices = {'boot' : "", 'efi' : "", 'home' : "", 'lvm' : "", 'luks' : [], 'root' : "", 'swap' : ""}
+            
+        # TODO: GPT
 
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
-        devices['boot'] = self.auto_device + "1"
-        devices['root'] = self.auto_device + "2"
-        if self.home:
-            devices['home'] = self.auto_device + "3"
+        if self.GPT:
+            #if not self.UEFI:
 
-        devices['swap'] = self.auto_device + "5"
-
-        if self.luks:
-            if self.lvm:
-                # LUKS and LVM
-                devices['luks'] = [devices['root']]
-                devices['lvm'] = "/dev/mapper/cryptAntergos"
-            else:
-                # LUKS and no LVM
-                devices['luks'] = [devices['root']]
-                devices['root'] = "/dev/mapper/cryptAntergos"
-                if self.home:
-                    # In this case we'll have two LUKS devices, one for root
-                    # and the other one for /home
-                    devices['luks'].append(devices['home'])
-                    devices['home'] = "/dev/mapper/cryptAntergosHome"
-        elif self.lvm:
-            # No LUKS but using LVM
-            devices['lvm'] = devices['root']
-
-        if self.lvm:
-            devices['root'] = "/dev/AntergosVG/AntergosRoot"
-            devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+            devices['boot'] = self.auto_device + "1"
+            devices['root'] = self.auto_device + "2"
             if self.home:
-                devices['home'] = "/dev/AntergosVG/AntergosHome"
+                devices['home'] = self.auto_device + "3"
+
+            devices['swap'] = self.auto_device + "5"
+
+            if self.luks:
+                if self.lvm:
+                    # LUKS and LVM
+                    devices['luks'] = [devices['root']]
+                    devices['lvm'] = "/dev/mapper/cryptAntergos"
+                else:
+                    # LUKS and no LVM
+                    devices['luks'] = [devices['root']]
+                    devices['root'] = "/dev/mapper/cryptAntergos"
+                    if self.home:
+                        # In this case we'll have two LUKS devices, one for root
+                        # and the other one for /home
+                        devices['luks'].append(devices['home'])
+                        devices['home'] = "/dev/mapper/cryptAntergosHome"
+            elif self.lvm:
+                # No LUKS but using LVM
+                devices['lvm'] = devices['root']
+
+            if self.lvm:
+                devices['root'] = "/dev/AntergosVG/AntergosRoot"
+                devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+                if self.home:
+                    devices['home'] = "/dev/AntergosVG/AntergosHome"
+        else:
+            devices['boot'] = self.auto_device + "1"
+            devices['root'] = self.auto_device + "2"
+            if self.home:
+                devices['home'] = self.auto_device + "3"
+
+            devices['swap'] = self.auto_device + "5"
+
+            if self.luks:
+                if self.lvm:
+                    # LUKS and LVM
+                    devices['luks'] = [devices['root']]
+                    devices['lvm'] = "/dev/mapper/cryptAntergos"
+                else:
+                    # LUKS and no LVM
+                    devices['luks'] = [devices['root']]
+                    devices['root'] = "/dev/mapper/cryptAntergos"
+                    if self.home:
+                        # In this case we'll have two LUKS devices, one for root
+                        # and the other one for /home
+                        devices['luks'].append(devices['home'])
+                        devices['home'] = "/dev/mapper/cryptAntergosHome"
+            elif self.lvm:
+                # No LUKS but using LVM
+                devices['lvm'] = devices['root']
+
+            if self.lvm:
+                devices['root'] = "/dev/AntergosVG/AntergosRoot"
+                devices['swap'] = "/dev/AntergosVG/AntergosSwap"
+                if self.home:
+                    devices['home'] = "/dev/AntergosVG/AntergosHome"
 
         return devices
 
     def get_mount_devices(self):
         """ Mount_devices will be used when configuring GRUB
         in modify_grub_default() in bootloader.py """
+        
+        # TODO: GPT
 
         devices = self.get_devices()
 
@@ -713,7 +743,7 @@ class AutoPartition(object):
 
         if self.GPT:
             # TODO: efi_device in get_devices
-            # Format EFI System Partition with vfat
+            # Format EFI System Partition (ESP) with vfat
             # We use /boot/efi here as we'll have another partition as /boot
             #self.mkfs(devices['efi'], "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
             pass
