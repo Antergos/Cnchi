@@ -37,33 +37,35 @@ def get_md5(file_name):
 def get_files(path):
     """ Returns all files from a directory """
     all_files = []
-    for filename in os.listdir(path):
-        file_path = os.path.join(path, filename)
-        # Do not parse hidden files
-        if filename[0] != ".":
-            if os.path.isfile(file_path) and not file_path.endswith(".pyc"):
+    if os.path.exists(path):
+        for dpath, d, files in os.walk(path):
+            for f in files:
+                file_path = os.path.join(dpath, f)
                 print(file_path)
                 all_files.append(file_path)
-            elif os.path.isdir(file_path) and filename != "." and filename != "..":
-                all_files.extend(get_files(file_path))
+    else:
+        all_files = False
+
     return all_files
 
 def create_update_info():
     """ Creates update.info file """
 
-    myfiles = get_files("/usr/share/cnchi")
+    myfiles = get_files("/usr/share/cnchi") or get_files(".")
 
     txt = '{"version":"%s","files":[\n' % info.CNCHI_VERSION
 
     for filename in myfiles:
         md5 = get_md5(filename)
+        if "usr/share/cnchi" not in filename:
+            filename = filename.replace('./', '/usr/share/cnchi/')
         txt += '{"name":"%s","md5":"%s"},\n' % (filename, md5)
 
     # remove last comma and close
     txt = txt[:-3]
     txt += '}]}\n'
 
-    with open("/usr/share/cnchi/update.info", "w") as update_info:
+    with open("update.info", "w") as update_info:
         update_info.write(txt)
 
 if __name__ == '__main__':

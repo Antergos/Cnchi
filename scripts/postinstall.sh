@@ -89,16 +89,15 @@ cinnamon_settings()
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
     cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
+	# Copy panel-launchers@cinnamon.org.json to set launchers
+    mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
+    cp -f /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
+
     # Set Cinnamon in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
     chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
 
-    # Temporary alternative until upower bug is fixed.
-    if [[ $6 -eq "True" ]]; then
-        cp /usr/share/cnchi/scripts/postinstall/cbatticon.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
-        #chroot ${DESTDIR} chmod +x ${DESTDIR}/home/${USER_NAME}/.config/autostart/cbatticon.desktop
-    fi
 
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
