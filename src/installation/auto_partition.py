@@ -193,10 +193,6 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
 
-#def sgdisk(device, part_num, label, size, type_code, attributes=None, alignment=2048):
-#sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
-#def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
-
 def sgdisk(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
@@ -209,7 +205,7 @@ def sgdisk(device, part_num, label, size, hex_code):
     #             Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code.
     #             You can obtain a list of codes with the -L option.
     # Parameters: partnum:hexcode
-    cmd.append('--typecode={0}:{1}'.format(part_num, type_code))
+    cmd.append('--typecode={0}:{1}'.format(part_num, hex_code))
 
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
@@ -586,7 +582,7 @@ class AutoPartition(object):
             subprocess.check_call(["partprobe", device])
 
             part_number = 1
-            
+
             if not self.UEFI:
                 # Create BIOS Boot Partition
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
