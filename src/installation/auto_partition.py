@@ -193,17 +193,23 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('status=noxfer')
     subprocess.check_call(cmd)
 
-def sgdisk(device, name, new, size, type_code, attributes=None, alignment=2048):
+def sgdisk(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk']
-    cmd.append('--set-alignment="{0}"'.format(alignment))
-    cmd.append('--new={0}:+{1}M'.format(new, size))
-    cmd.append('--typecode={0}'.format(type_code))
 
-    if attributes is not None:
-        cmd.append('--attributes={0}'.format(attributes))
+    # --new: Create a new partition, numbered partnum, starting at sector start and ending at sector end.
+    # Parameters: partnum:start:end (zero in start or end means using default value)
+    cmd.append('--new={0}:0:+{1}M'.format(part_num, size))
 
-    cmd.append('--change-name={0}'.format(name))
+    # --typecode: Change a partition's GUID type code to the one specified by hexcode.
+    #             Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code.
+    #             You can obtain a list of codes with the -L option.
+    # Parameters: partnum:hexcode
+    cmd.append('--typecode={0}:{1}'.format(part_num, hex_code))
+
+    # --change-name: Change the name of the specified partition.
+    # Parameters: partnum:name
+    cmd.append('--change-name={0}:{1}'.format(part_num, name))
     cmd.append(device)
     subprocess.check_call(cmd)
 
@@ -250,13 +256,14 @@ class AutoPartition(object):
         self.callback_queue = callback_queue
 
         if os.path.exists("/sys/firmware/efi"):
-            self.uefi = True
-            # TODO: Let user choose between GPT and MBR.
-            # As it is now, Grub has some GPT issues.  For now always use MBR.
-            self.gpt = False
+            self.UEFI = True
+            # TODO: GPT Autopartition code needs to be tested
+            # If UEFI use GPT by default
+            self.GPT = True
         else:
-            self.uefi = False
-            self.gpt = False
+            self.UEFI = False
+            # If no UEFI, use MBR by default
+            self.GPT = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -333,24 +340,35 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
-        # TODO: GPT efi_device
-        devices = {
-            'boot' : "",
-            'efi' : "",
-            'home' : "",
-            'lvm' : "",
-            'luks' : [],
-            'root' : "",
-            'swap' : ""}
+        devices = {'boot' : "", 'efi' : "", 'home' : "", 'lvm' : "", 'luks' : [], 'root' : "", 'swap' : ""}
+
+        device = self.auto_device
 
         # self.auto_device is of type /dev/sdX or /dev/hdX
 
-        devices['boot'] = self.auto_device + "1"
-        devices['root'] = self.auto_device + "2"
-        if self.home:
-            devices['home'] = self.auto_device + "3"
+        if self.GPT:
+            if not self.UEFI:
+                # Skip BIOS Boot Partition
+                part_num = 2
+            else:
+                part_num = 1
 
-        devices['swap'] = self.auto_device + "5"
+            devices['efi'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+            devices['boot'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+            devices['root'] = "{0}{1}".format(device, part_num)
+            if self.home:
+                devices['home'] = "{0}{1}".format(device, part_num)
+                part_num += 1
+            devices['swap'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+        else:
+            devices['boot'] = "{0}{1}".format(device, 1)
+            devices['root'] = "{0}{1}".format(device, 2)
+            if self.home:
+                devices['home'] = "{0}{1}".format(device, 3)
+            devices['swap'] = "{0}{1}".format(device, 5)
 
         if self.luks:
             if self.lvm:
@@ -388,6 +406,9 @@ class AutoPartition(object):
         mount_devices['/boot'] = devices['boot']
         mount_devices['/'] = devices['root']
 
+        if self.GPT:
+            mount_devices['/boot/efi'] = devices['efi']
+
         if self.home:
             mount_devices['/home'] = devices['home']
 
@@ -410,11 +431,10 @@ class AutoPartition(object):
 
         fs_devices = {}
 
-        if self.gpt:
-            fs_devices[devices['boot']] = "vfat"
-        else:
-            fs_devices[devices['boot']] = "ext2"
+        if self.GPT:
+            fs_devices[devices['efi']] = "vfat"
 
+        fs_devices[devices['boot']] = "ext2"
         fs_devices[devices['swap']] = "swap"
 
         if self.luks:
@@ -441,6 +461,9 @@ class AutoPartition(object):
 
         part_sizes['disk'] = disk_size
         part_sizes['boot'] = 256
+
+        if self.GPT:
+            part_sizes['efi'] = 200
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
         mem_total = int(mem_total.split()[1])
@@ -496,8 +519,8 @@ class AutoPartition(object):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
-        if self.gpt:
-            # TODO: Fix GPT
+        if self.GPT:
+            # TODO: Test this!
             gpt_bios_grub_part_size = 1
             efisys_part_size = 512
             empty_space_size = 2
@@ -527,6 +550,7 @@ class AutoPartition(object):
             show.warning(None, txt)
             return
 
+        # FIX THIS!
         start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.show_part_sizes(part_sizes)
@@ -541,7 +565,7 @@ class AutoPartition(object):
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
-        if self.gpt:
+        if self.GPT:
             # GPT (GUID) is supported only by 'parted' or 'sgdisk'
 
             # Clean partition table to avoid issues!
@@ -557,28 +581,37 @@ class AutoPartition(object):
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
 
-            # Create BIOS Boot Partition
-            # GPT: 21686148-6449-6E6F-744E-656564454649
-            # This partition is not required if the system is UEFI based, as there is no such embedding
-            # of the second-stage code in that case
-            sgdisk(device, "1:BIOS_GRUB", "1:1M", gpt_bios_grub_part_size, "1:EF02")
+            part_number = 1
 
-            # Create EFI System Partition
-            # GPT: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-            # MBR: 0xEF
-            sgdisk(device, "2:UEFI_SYSTEM", "2:0", efisys_part_size, "2:EF00")
+            if not self.UEFI:
+                # Create BIOS Boot Partition
+                # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+                # This partition is not required if the system is UEFI based,
+                # as there is no such embedding of the second-stage code in that case
+                sgdisk(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
+                part_num += 1
+
+            # Create EFI System Partition (ESP)
+            # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+            sgdisk(device, part_num, "UEFI_SYSTEM", efisys_part_size, "EF00")
+            part_num += 1
 
             # Create Boot partition
-            sgdisk(device, "3:ANTERGOS_BOOT", "3:0", part_sizes['boot'], "3:8300")
+            sgdisk(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+            part_num += 1
 
             if self.lvm:
-                sgdisk(device, "4:ANTERGOS_LVM", "4:0", part_sizes['lvm_pv'], "4:8E00")
+                sgdisk(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
+                part_num += 1
             else:
-                sgdisk(device, "4:ANTERGOS_SWAP", "4:0", part_sizes['swap'], "4:8200")
-                sgdisk(device, "5:ANTERGOS_ROOT", "5:0", part_sizes['root'], "5:8300")
+                sgdisk(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
+                part_num += 1
+                sgdisk(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
+                part_num += 1
 
                 if self.home:
-                    sgdisk(device, "6:ANTERGOS_HOME", "6:0", part_sizes['home'], "6:8300")
+                    sgdisk(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
+                    part_num += 1
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
@@ -588,7 +621,7 @@ class AutoPartition(object):
             dd("/dev/zero", device, bs=512, count=2048)
             wipefs(device)
 
-            # Create DOS MBR with parted
+            # Create DOS MBR
             parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
@@ -691,9 +724,9 @@ class AutoPartition(object):
         self.mkfs(devices['root'], "ext4", "/", "AntergosRoot")
         self.mkfs(devices['swap'], "swap", "", "AntergosSwap")
 
-        if self.gpt:
+        if self.GPT:
             # TODO: efi_device in get_devices
-            # Format EFI System Partition with vfat
+            # Format EFI System Partition (ESP) with vfat
             # We use /boot/efi here as we'll have another partition as /boot
             #self.mkfs(devices['efi'], "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
             pass

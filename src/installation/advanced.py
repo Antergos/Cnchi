@@ -551,8 +551,8 @@ class InstallationAdvanced(GtkBaseBox):
 
                     path = partition.path
 
-                    # Skip lvm, LUKS, ...
-                    if '/dev/mapper' in path:
+                    # Skip lvm, LUKS, cdrom, ...
+                    if '/dev/mapper' in path or 'sr0' in path:
                         continue
 
                     # Get filesystem
