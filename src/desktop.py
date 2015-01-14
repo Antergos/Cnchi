@@ -118,7 +118,7 @@ class DesktopAsk(GtkBaseBox):
     def set_desktop_list(self):
         """ Set desktop list in the ListBox """
         for desktop in sorted(desktops.NAMES):
-            if desktop in desktops.DESKTOPS:
+            if desktop in self.enabled_desktops:
                 box = Gtk.HBox()
 
                 filename = "desktop-environment-" + desktop.lower() + ".svg"
