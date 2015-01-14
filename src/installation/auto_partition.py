@@ -339,8 +339,7 @@ class AutoPartition(object):
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
-        devices = {'boot' : "", 'efi' : "", 'home' : "", 'lvm' : "", 'luks' : [], 'root' : "", 'swap' : ""}
-
+        devices = {}
         device = self.auto_device
 
         # device is of type /dev/sdX or /dev/hdX
@@ -396,17 +395,16 @@ class AutoPartition(object):
         return devices
 
     def get_mount_devices(self):
-        """ Mount_devices will be used when configuring GRUB
-        in modify_grub_default() in bootloader.py """
+        """ Specify for each mount point which device we must mount there """
 
         devices = self.get_devices()
-
         mount_devices = {}
-        mount_devices['/boot'] = devices['boot']
-        mount_devices['/'] = devices['root']
 
         if self.GPT:
             mount_devices['/boot/efi'] = devices['efi']
+
+        mount_devices['/boot'] = devices['boot']
+        mount_devices['/'] = devices['root']
 
         if self.home:
             mount_devices['/home'] = devices['home']
@@ -418,13 +416,28 @@ class AutoPartition(object):
 
         mount_devices['swap'] = devices['swap']
 
-        for mount_device in mount_devices:
-            logging.debug(_("%s will be mounted as %s"), mount_devices[mount_device], mount_device)
+        #for mount_device in mount_devices:
+        #    logging.debug(_("%s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
 
+    def get_mount_points(self):
+        """ Returns a dict with mount points referenced by name (efi, boot, root, home, ...) """
+
+        devices = self.get_devices()
+        mount_devices = self.get_mount_devices()
+        mount_points = {}
+
+        for (mount_point, device) in mount_devices.items():
+            reversed_mount_devices[device] = mount_point
+
+        for (name, device) in devices.items():
+            mount_points[name] = reversed_mount_devices[device]
+
+        return mount_points
+        
     def get_fs_devices(self):
-        """ fs_devices will be used when configuring the fstab file in installation_process.py """
+        """ Return which filesystem is in a selected device """
 
         devices = self.get_devices()
 
@@ -450,8 +463,8 @@ class AutoPartition(object):
             if self.home:
                 fs_devices[devices['home']] = "ext4"
 
-        for f in fs_devices:
-            logging.debug(_("Device %s will have a %s filesystem"), f, fs_devices[f])
+        #for f in fs_devices:
+        #    logging.debug(_("Device %s will have a %s filesystem"), f, fs_devices[f])
 
         return fs_devices
 
@@ -545,7 +558,7 @@ class AutoPartition(object):
         if self.GPT:
             start_part_sizes = 0
         else:
-            # We start with a 1MiB offset before the first partition
+            # We start with a 1MiB offset before the first partition in MBR mode
             start_part_sizes = 1
 
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
@@ -562,8 +575,6 @@ class AutoPartition(object):
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
         if self.GPT:
-            # GPT (GUID) is supported only by 'parted' or 'sgdisk'
-
             # Clean partition table to avoid issues!
             subprocess.check_call(["sgdisk", "--zap-all", device])
 
@@ -720,21 +731,23 @@ class AutoPartition(object):
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
+        mount_points = self.get_mount_points()
+        fs_devices = self.get_fs_devices()
+
         # Note: Make sure the "root" partition is defined first!
-        self.mkfs(devices['root'], "ext4", "/", "AntergosRoot")
-        self.mkfs(devices['swap'], "swap", "", "AntergosSwap")
+        self.mkfs(devices['root'], fs_devices['root'], mount_points['root'], "AntergosRoot")
+        self.mkfs(devices['swap'], fs_devices['swap'], "", "AntergosSwap")
 
         if self.GPT:
             # TODO: efi_device in get_devices
-            # Format EFI System Partition (ESP) with vfat
+            # Format EFI System Partition (ESP) with vfat (fat32)
             # We use /boot/efi here as we'll have another partition as /boot
-            #self.mkfs(devices['efi'], "vfat", "/boot/efi", "UEFI_SYSTEM", "-F 32")
-            pass
+            self.mkfs(devices['efi'], fs_devices['efi'], mount_points['efi'], "UEFI_SYSTEM", "-F 32")
 
-        self.mkfs(devices['boot'], "ext2", "/boot", "AntergosBoot")
+        self.mkfs(devices['boot'], fs_devices['boot'], mount_points['boot'], "AntergosBoot")
 
         if self.home:
-            self.mkfs(devices['home'], "ext4", "/home", "AntergosHome")
+            self.mkfs(devices['home'], fs_devices['home'], mount_points['home'], "AntergosHome")
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
@@ -759,9 +772,7 @@ if __name__ == '__main__':
     import gettext
     _ = gettext.gettext
 
-    logging.basicConfig(
-        filename="/tmp/autopartition.log",
-        level=logging.DEBUG)
+    logging.basicConfig(filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
 
     auto = AutoPartition(
         dest_dir="/install",
