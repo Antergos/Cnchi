@@ -427,6 +427,7 @@ class AutoPartition(object):
         devices = self.get_devices()
         mount_devices = self.get_mount_devices()
         mount_points = {}
+        reversed_mount_devices = {}
 
         for (mount_point, device) in mount_devices.items():
             reversed_mount_devices[device] = mount_point
