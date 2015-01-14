@@ -371,16 +371,16 @@ class AutoPartition(object):
         if self.luks:
             if self.lvm:
                 # LUKS and LVM
-                devices['luks'] = [devices['root']]
+                devices['luks'] = devices['root']
                 devices['lvm'] = "/dev/mapper/cryptAntergos"
             else:
                 # LUKS and no LVM
-                devices['luks'] = [devices['root']]
+                devices['luks'] = devices['root']
                 devices['root'] = "/dev/mapper/cryptAntergos"
                 if self.home:
                     # In this case we'll have two LUKS devices, one for root
                     # and the other one for /home
-                    devices['luks'].append(devices['home'])
+                    devices['luks2'] = devices['home']
                     devices['home'] = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
@@ -410,9 +410,9 @@ class AutoPartition(object):
             mount_devices['/home'] = devices['home']
 
         if self.luks:
-            mount_devices['/'] = devices['luks'][0]
+            mount_devices['/'] = devices['luks']
             if self.home and not self.lvm:
-                mount_devices['/home'] = devices['luks'][1]
+                mount_devices['/home'] = devices['luks2']
 
         mount_devices['swap'] = devices['swap']
 
@@ -424,17 +424,18 @@ class AutoPartition(object):
     def get_mount_points(self):
         """ Returns a dict with mount points referenced by name (efi, boot, root, home, ...) """
 
-        devices = self.get_devices()
-        mount_devices = self.get_mount_devices()
         mount_points = {}
         reversed_mount_devices = {}
+
+        devices = self.get_devices()
+        mount_devices = self.get_mount_devices()
 
         for (mount_point, device) in mount_devices.items():
             reversed_mount_devices[device] = mount_point
 
         for (name, device) in devices.items():
             mount_points[name] = reversed_mount_devices[device]
-            logging.debug(_("%s (%s) will be mounted in %s"), name, device, reversed_mount_devices[device])
+            logging.debug(_("%s (%s) will be mounted in %s"), name, device, mount_points[name])
 
         return mount_points
         
@@ -452,14 +453,14 @@ class AutoPartition(object):
         fs_devices[devices['swap']] = "swap"
 
         if self.luks:
-            fs_devices[devices['luks'][0]] = "ext4"
+            fs_devices[devices['luks']] = "ext4"
             if self.home:
                 if self.lvm:
                     # luks, lvm, home
                     fs_devices[devices['home']] = "ext4"
                 else:
                     # luks, home
-                    fs_devices[devices['luks'][1]] = "ext4"
+                    fs_devices[devices['luks2']] = "ext4"
         else:
             fs_devices[devices['root']] = "ext4"
             if self.home:
@@ -690,9 +691,9 @@ class AutoPartition(object):
             logging.debug("Home: %s", devices['home'])
 
         if self.luks:
-            setup_luks(devices['luks'][0], "cryptAntergos", self.luks_password, key_files[0])
+            setup_luks(devices['luks'], "cryptAntergos", self.luks_password, key_files[0])
             if self.home and not self.lvm:
-                setup_luks(devices['luks'][1], "cryptAntergosHome", self.luks_password, key_files[1])
+                setup_luks(devices['luks2'], "cryptAntergosHome", self.luks_password, key_files[1])
 
         if self.lvm:
             logging.debug(_("Cnchi will setup LVM on device %s"), devices['lvm'])
