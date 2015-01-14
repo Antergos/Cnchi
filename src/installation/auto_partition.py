@@ -416,8 +416,8 @@ class AutoPartition(object):
 
         mount_devices['swap'] = devices['swap']
 
-        #for mount_device in mount_devices:
-        #    logging.debug(_("%s will be mounted as %s"), mount_devices[mount_device], mount_device)
+        for mount_device in mount_devices:
+            logging.debug(_("(get_mount_devices) : %s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
 
@@ -434,8 +434,10 @@ class AutoPartition(object):
             reversed_mount_devices[device] = mount_point
 
         for (name, device) in devices.items():
-            mount_points[name] = reversed_mount_devices[device]
-            logging.debug(_("%s (%s) will be mounted in %s"), name, device, mount_points[name])
+            # Not all devices will be mounted (swap, /dev/mapper/... , etc) so we need this condition here
+            if device in reversed_mount_devices:
+                mount_points[name] = reversed_mount_devices[device]
+                logging.debug(_("(get_mount_points) : %s (%s) will be mounted in %s"), name, device, mount_points[name])
 
         return mount_points
         
@@ -466,8 +468,8 @@ class AutoPartition(object):
             if self.home:
                 fs_devices[devices['home']] = "ext4"
 
-        #for f in fs_devices:
-        #    logging.debug(_("Device %s will have a %s filesystem"), f, fs_devices[f])
+        for f in fs_devices:
+            logging.debug(_("get_fs_devices() : Device %s will have a %s filesystem"), f, fs_devices[f])
 
         return fs_devices
 
