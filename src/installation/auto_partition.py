@@ -433,6 +433,7 @@ class AutoPartition(object):
 
         for (name, device) in devices.items():
             mount_points[name] = reversed_mount_devices[device]
+            logging.debug(_("%s (%s) will be mounted in %s"), name, device, reversed_mount_devices[device])
 
         return mount_points
         
@@ -678,7 +679,7 @@ class AutoPartition(object):
         devices = self.get_devices()
 
         if self.GPT:
-            logging.debug("EFI: %s", devices['boot'])
+            logging.debug("EFI: %s", devices['efi'])
 
         logging.debug("Boot: %s", devices['boot'])
         logging.debug("Swap: %s", devices['swap'])
@@ -739,9 +740,7 @@ class AutoPartition(object):
         self.mkfs(devices['swap'], fs_devices['swap'], "", "AntergosSwap")
 
         if self.GPT:
-            # TODO: efi_device in get_devices
             # Format EFI System Partition (ESP) with vfat (fat32)
-            # We use /boot/efi here as we'll have another partition as /boot
             self.mkfs(devices['efi'], fs_devices['efi'], mount_points['efi'], "UEFI_SYSTEM", "-F 32")
 
         self.mkfs(devices['boot'], fs_devices['boot'], mount_points['boot'], "AntergosBoot")
