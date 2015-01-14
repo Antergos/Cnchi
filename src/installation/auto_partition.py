@@ -484,6 +484,7 @@ class AutoPartition(object):
         if part_sizes['swap'] > max_swap:
             part_sizes['swap'] = max_swap
 
+        # FIX THIS!
         part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
 
         if self.home:
@@ -504,6 +505,8 @@ class AutoPartition(object):
 
     def show_part_sizes(self, part_sizes):
         logging.debug(_("Total disk size: %dMiB"), part_sizes['disk'])
+        if self.GPT:
+            logging.debug(_("EFI System Partition (ESP) size: %dMiB"), part_sizes['efi'])
         logging.debug(_("Boot partition size: %dMiB"), part_sizes['boot'])
 
         if self.lvm:
@@ -519,16 +522,6 @@ class AutoPartition(object):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
-        if self.GPT:
-            # TODO: Test this!
-            gpt_bios_grub_part_size = 1
-            efisys_part_size = 512
-            empty_space_size = 2
-        else:
-            gpt_bios_grub_part_size = 0
-            efisys_part_size = 0
-            # We start with a 1MiB offset before the first partition
-            empty_space_size = 1
 
         # Get just the disk size in MiB
         device = self.auto_device
@@ -550,8 +543,12 @@ class AutoPartition(object):
             show.warning(None, txt)
             return
 
-        # FIX THIS!
-        start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
+        if self.GPT:
+            start_part_sizes = 0
+        else:
+            # We start with a 1MiB offset before the first partition
+            start_part_sizes = 1
+
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.show_part_sizes(part_sizes)
 
@@ -593,7 +590,7 @@ class AutoPartition(object):
 
             # Create EFI System Partition (ESP)
             # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-            sgdisk(device, part_num, "UEFI_SYSTEM", efisys_part_size, "EF00")
+            sgdisk(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
             part_num += 1
 
             # Create Boot partition
@@ -696,7 +693,10 @@ class AutoPartition(object):
                     logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
+
+                    # FIX THIS!!!
                     start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
+
                     part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                     self.show_part_sizes(part_sizes)
             except Exception as err:
