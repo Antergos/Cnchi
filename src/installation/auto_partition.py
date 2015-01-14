@@ -256,13 +256,12 @@ class AutoPartition(object):
         self.callback_queue = callback_queue
 
         if os.path.exists("/sys/firmware/efi"):
-            self.UEFI = True
-            # TODO: GPT Autopartition code needs to be tested
             # If UEFI use GPT by default
+            self.UEFI = True
             self.GPT = True
         else:
-            self.UEFI = False
             # If no UEFI, use MBR by default
+            self.UEFI = False
             self.GPT = False
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
@@ -344,7 +343,7 @@ class AutoPartition(object):
 
         device = self.auto_device
 
-        # self.auto_device is of type /dev/sdX or /dev/hdX
+        # device is of type /dev/sdX or /dev/hdX
 
         if self.GPT:
             if not self.UEFI:
@@ -581,6 +580,8 @@ class AutoPartition(object):
             part_number = 1
 
             if not self.UEFI:
+                # We don't allow BIOS+GPT right now, so this code will be never executed
+                # We leave here just for future reference
                 # Create BIOS Boot Partition
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
@@ -665,6 +666,9 @@ class AutoPartition(object):
 
         devices = self.get_devices()
 
+        if self.GPT:
+            logging.debug("EFI: %s", devices['boot'])
+
         logging.debug("Boot: %s", devices['boot'])
         logging.debug("Swap: %s", devices['swap'])
         logging.debug("Root: %s", devices['root'])
@@ -693,10 +697,6 @@ class AutoPartition(object):
                     logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
-
-                    # FIX THIS!!!
-                    start_part_sizes = empty_space_size + gpt_bios_grub_part_size + efisys_part_size
-
                     part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                     self.show_part_sizes(part_sizes)
             except Exception as err:
