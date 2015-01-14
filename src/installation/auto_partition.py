@@ -420,27 +420,7 @@ class AutoPartition(object):
             logging.debug(_("(get_mount_devices) : %s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
-
-    def get_mount_points(self):
-        """ Returns a dict with mount points referenced by name (efi, boot, root, home, ...) """
-
-        mount_points = {}
-        reversed_mount_devices = {}
-
-        devices = self.get_devices()
-        mount_devices = self.get_mount_devices()
-
-        for (mount_point, device) in mount_devices.items():
-            reversed_mount_devices[device] = mount_point
-
-        for (name, device) in devices.items():
-            # Not all devices will be mounted (swap, /dev/mapper/... , etc) so we need this condition here
-            if device in reversed_mount_devices:
-                mount_points[name] = reversed_mount_devices[device]
-                logging.debug(_("(get_mount_points) : %s (%s) will be mounted in %s"), name, device, mount_points[name])
-
-        return mount_points
-        
+    
     def get_fs_devices(self):
         """ Return which filesystem is in a selected device """
 
@@ -736,21 +716,34 @@ class AutoPartition(object):
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
-        mount_points = self.get_mount_points()
+        mount_points = {
+            'efi':'/boot/efi',
+            'boot':'/boot',
+            'root':'/',
+            'home':'/home',
+            'swap':''}
+        
+        labels = {
+            'efi':'UEFI_SYSTEM',
+            'boot':'AntergosBoot',
+            'root':'AntergosRoot',
+            'home':'AntergosHome',
+            'swap':'AntergosSwap'}
+
         fs_devices = self.get_fs_devices()
 
         # Note: Make sure the "root" partition is defined first!
-        self.mkfs(devices['root'], fs_devices['root'], mount_points['root'], "AntergosRoot")
-        self.mkfs(devices['swap'], fs_devices['swap'], "", "AntergosSwap")
+        self.mkfs(devices['root'], fs_devices['root'], mount_points['root'], labels['root'])
+        self.mkfs(devices['swap'], fs_devices['swap'], mount_points['swap'], labels['swap'])
 
         if self.GPT:
             # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['efi'], fs_devices['efi'], mount_points['efi'], "UEFI_SYSTEM", "-F 32")
+            self.mkfs(devices['efi'], fs_devices['efi'], mount_points['efi'], labels['efi'], "-F 32")
 
-        self.mkfs(devices['boot'], fs_devices['boot'], mount_points['boot'], "AntergosBoot")
+        self.mkfs(devices['boot'], fs_devices['boot'], mount_points['boot'], labels['boot'])
 
         if self.home:
-            self.mkfs(devices['home'], fs_devices['home'], mount_points['home'], "AntergosHome")
+            self.mkfs(devices['home'], fs_devices['home'], mount_points['home'], labels['home'])
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
