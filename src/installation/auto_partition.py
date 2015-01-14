@@ -433,6 +433,10 @@ class AutoPartition(object):
 
         fs_devices[devices['boot']] = "ext2"
         fs_devices[devices['swap']] = "swap"
+        fs_devices[devices['root']] = "ext4"
+
+        if self.home:
+            fs_devices[devices['home']] = "ext4"
 
         if self.luks:
             fs_devices[devices['luks']] = "ext4"
@@ -443,10 +447,6 @@ class AutoPartition(object):
                 else:
                     # luks, home
                     fs_devices[devices['luks2']] = "ext4"
-        else:
-            fs_devices[devices['root']] = "ext4"
-            if self.home:
-                fs_devices[devices['home']] = "ext4"
 
         for device in fs_devices:
             logging.debug(_("get_fs_devices() : Device %s will have a %s filesystem"), device, fs_devices[device])
