@@ -417,7 +417,7 @@ class AutoPartition(object):
         mount_devices['swap'] = devices['swap']
 
         for mount_device in mount_devices:
-            logging.debug(_("(get_mount_devices) : %s will be mounted as %s"), mount_devices[mount_device], mount_device)
+            logging.debug(_("get_mount_devices() : %s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
     
@@ -448,8 +448,8 @@ class AutoPartition(object):
             if self.home:
                 fs_devices[devices['home']] = "ext4"
 
-        for f in fs_devices:
-            logging.debug(_("get_fs_devices() : Device %s will have a %s filesystem"), f, fs_devices[f])
+        for device in fs_devices:
+            logging.debug(_("get_fs_devices() : Device %s will have a %s filesystem"), device, fs_devices[device])
 
         return fs_devices
 
@@ -733,17 +733,17 @@ class AutoPartition(object):
         fs_devices = self.get_fs_devices()
 
         # Note: Make sure the "root" partition is defined first!
-        self.mkfs(devices['root'], fs_devices['root'], mount_points['root'], labels['root'])
-        self.mkfs(devices['swap'], fs_devices['swap'], mount_points['swap'], labels['swap'])
+        self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
+        self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
         if self.GPT:
             # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['efi'], fs_devices['efi'], mount_points['efi'], labels['efi'], "-F 32")
+            self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
 
-        self.mkfs(devices['boot'], fs_devices['boot'], mount_points['boot'], labels['boot'])
+        self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
 
         if self.home:
-            self.mkfs(devices['home'], fs_devices['home'], mount_points['home'], labels['home'])
+            self.mkfs(devices['home'], fs_devices[devices['home']], mount_points['home'], labels['home'])
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
