@@ -435,7 +435,7 @@ class InstallationProcess(multiprocessing.Process):
         # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
-        self.write_file(file_template.render(destDir=DEST_DIR, arch=myarch), os.path.join("/tmp", "pacman.conf"))
+        self.write_file(file_template.render(destDir=DEST_DIR, arch=myarch, desktop=self.desktop), os.path.join("/tmp", "pacman.conf"))
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """

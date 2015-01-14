@@ -12,6 +12,11 @@ LogFile = /tmp/pacman.log
 SigLevel = PackageRequired
 Include = /etc/pacman.d/mirrorlist
 
+% if desktop == 'plasma5':
+[kde-beta]
+SigLevel = PackageRequired
+Server = http://arojas.hol.es/repos/kde-beta/
+
 [extra]
 SigLevel = PackageRequired
 Include = /etc/pacman.d/mirrorlist
