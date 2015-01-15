@@ -170,8 +170,11 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
+        # https://code.google.com/p/cryptsetup/wiki/Cryptsetup160
+        # aes-xts-plain
+        # aes-cbc-essiv:sha256
         proc = subprocess.Popen(
-            ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", "--key-file=-", luks_device],
+            ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device],
             stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
         (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
