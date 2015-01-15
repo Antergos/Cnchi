@@ -58,7 +58,6 @@
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
         <pkgname>lightdm-webkit-greeter</pkgname>
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
-        <!--<pkgname>mesa-dri</pkgname>-->
         <pkgname>mesa</pkgname>
         <pkgname>mesa-vdpau</pkgname>
         <pkgname>numix-frost-themes</pkgname>
@@ -101,8 +100,8 @@
     <edition name="Gnome" description="Gnome Desktop">
       <packages>
         <pkgname>antergos-gnome-defaults-list</pkgname>
-        <!--<pkgname>baobab</pkgname>-->  <!-- Disk usage, pretty cool but necessary? -->
-        <!--<pkgname>bijiben</pkgname>--> <!-- notes app, necessary? -->
+        <pkgname>baobab</pkgname>  <!-- Disk usage -->
+        <pkgname>bijiben</pkgname> <!-- notes app -->
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>empathy</pkgname>
@@ -126,7 +125,6 @@
         <pkgname>gnome-shell-extensions</pkgname>
         <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
         <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
-        <!--<pkgname>gnome-software</pkgname>-->
         <pkgname>gnome-sound-recorder</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -142,7 +140,6 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>orca</pkgname>
         <pkgname>pidgin</pkgname>
-        <!-- <pkgname>telepathy</pkgname> --> <!-- Group -->
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -153,6 +150,8 @@
     <edition name="Cinnamon" description="Cinnamon desktop">
       <packages>
         <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>baobab</pkgname>  <!-- Disk usage -->
+        <pkgname>bijiben</pkgname> <!-- notes app -->
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>cinnamon</pkgname>
@@ -176,7 +175,6 @@
         <pkgname>gnome-music</pkgname>
         <pkgname>gnome-photos</pkgname>
         <pkgname>gnome-screenshot</pkgname>
-        <!--<pkgname>gnome-software</pkgname>-->
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
         <pkgname>gnome-themes-standard</pkgname>
@@ -204,7 +202,7 @@
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>lxpolkit</pkgname>
+        <pkgname>polkit-gnome</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -232,11 +230,11 @@
     <edition name="lxde" description="LXDE Desktop">
       <packages>
         <pkgname>evince</pkgname>
-        <pkgname>audacious</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>leafpad</pkgname>
         <pkgname>lxde</pkgname>
+        <pkgname>pragha</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>gnome-mplayer</pkgname>
       </packages>
@@ -290,7 +288,8 @@
         <pkgname>gksu</pkgname>
         <pkgname>gtk-theme-e17gtk</pkgname>
         <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
-        <pkgname>lxpolkit</pkgname>
+        <pkgname>polkit-gnome</pkgname>
+        <pkgname>pragha</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -310,13 +309,12 @@
         <pkgname>gnome-mplayer</pkgname>
         <pkgname>gpicview</pkgname>
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>leafpad</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>
-        <pkgname>lxpolkit</pkgname>
         <pkgname>lxtask</pkgname>
         <pkgname>lxterminal</pkgname>
-        <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -332,6 +330,7 @@
         <pkgname>plank</pkgname>
         <pkgname>plank-config</pkgname>
         <pkgname>plank-theme-numix</pkgname>
+        <pkgname>polkit-gnome</pkgname>
         <pkgname>pragha</pkgname>
         <pkgname>python2-xdg</pkgname>
         <pkgname>scrot</pkgname>
