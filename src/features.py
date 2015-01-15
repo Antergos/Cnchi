@@ -40,7 +40,8 @@ _features_icon_names = {
     'firefox' : 'firefox',
     'firewall' : 'network-server',
     'fonts' : 'preferences-desktop-font',
-    'lts' : 'applications-accessories',
+    # LTS DOES NOT WORK ATM
+    #'lts' : 'applications-accessories',
     'office' : 'accessories-text-editor',
     'smb' : 'gnome-mime-x-directory-smb-share',
     'visual' : 'video-display'}
@@ -233,6 +234,7 @@ class Features(GtkBaseBox):
         self.set_row_text('firewall', title, desc, tooltip)
 
         # Kernel LTS
+
         title = _("Kernel LTS - DOES NOT WORK!")
         desc = _("Long term support (LTS) Linux kernel and modules.")
         tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
@@ -242,7 +244,8 @@ class Features(GtkBaseBox):
             "package includes ext4 support. For Antergos users seeking a long-term\n"
             "support kernel, or who want a fallback kernel in case the latest kernel\n"
             "version causes problems, this option is the answer.")
-        self.set_row_text('lts', title, desc, tooltip)
+        # LTS DOES NOT WORK ATM
+        #self.set_row_text('lts', title, desc, tooltip)
 
         # Firefox
         title = _("Firefox Web Browser")

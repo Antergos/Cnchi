@@ -59,9 +59,13 @@ LIBS = {
     'gtk' : ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
     'qt' : ["kde4", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
+# LTS DOES NOT WORK ATM
+# ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
+# LTS DOES NOT WORK ATM
+'''
 FEATURES = {
     'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
@@ -74,6 +78,19 @@ FEATURES = {
     'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
     'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"]}
+'''
+FEATURES = {
+    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'base' : ["aur", "cups", "fonts"],
+    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb", "visual"],
+    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
+    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"]}
 
 # Session names for lightDM setup
 SESSIONS = {
