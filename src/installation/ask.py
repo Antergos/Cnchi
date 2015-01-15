@@ -97,13 +97,17 @@ class InstallationAsk(GtkBaseBox):
         image.set_from_file(path)
 
         self.other_oses = []
-        enable_alongside = self.check_alongside()
+        
+        # DISABLE ALONGSIDE INSTALLATION. IT'S NOT READY YET
+        #enable_alongside = self.check_alongside()
+        enable_alongside = False
+        
         self.settings.set('enable_alongside', enable_alongside)
         if enable_alongside:
             msg = _("Cnchi will enable the 'alongside' installation mode.")
         else:
             msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
-        logging.debug(msg)
+        #logging.debug(msg)
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
