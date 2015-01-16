@@ -102,13 +102,13 @@ class Timezone(GtkBaseBox):
 
         self.header.set_subtitle(_("Select Your Timezone"))
 
-    def on_location_changed(self, unused_widget, city):
-        self.timezone = city.get_property('zone')
-        loc = self.tzdb.get_loc(self.timezone)
-        if not loc:
+    def on_location_changed(self, tzmap, tz_location):
+        #loc = self.tzdb.get_loc(self.timezone)
+        if not tz_location:
             self.timezone = None
             self.forward_button.set_sensitive(False)
         else:
+            self.timezone = tz_location.get_property('zone')
             logging.info(_("location changed to : %s"), self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
@@ -146,7 +146,10 @@ class Timezone(GtkBaseBox):
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
         if new_zone != None and new_region != None:
-            self.set_timezone("{0}/{1}".format(new_zone, new_region))
+            new_timezone = "{0}/{1}".format(new_zone, new_region)
+            # Only set timezone if it has changed :p
+            if self.timezone != new_timezone:
+                self.set_timezone(new_timezone)
 
     def populate_zones(self):
         zones = []
