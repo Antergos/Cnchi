@@ -610,6 +610,8 @@ class InstallationProcess(multiprocessing.Process):
         # Add filesystem packages
         logging.debug(_("Adding filesystem packages"))
 
+        fs_types = ""
+
         try:
             cmd = ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]
             fs_types = subprocess.check_output(cmd).decode()
@@ -619,8 +621,8 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(err.output)
 
         fs_lib = (
-            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat32', 'f2fs', 'jfs',
-            'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'vfat', 'xfs')
+            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat16', 'fat32', 'vfat', 'f2fs', 'jfs',
+            'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'xfs')
 
         for fs_index in self.fs_devices:
             fs_types += self.fs_devices[fs_index]
@@ -832,6 +834,7 @@ class InstallationProcess(multiprocessing.Process):
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
+
             if "btrfs" in myfmt:
                 self.settings.set('btrfs', True)
 
