@@ -170,7 +170,7 @@ class Download(object):
                                 logging.warning(msg)
                     else:
                         # try next mirror url
-                        msg = _("Can't open {0}, will try another mirror if avaliable").format(url)
+                        msg = _("Can't open {0}, will try another mirror if available").format(url)
                         logging.warning(msg)
 
                 if download_error:
