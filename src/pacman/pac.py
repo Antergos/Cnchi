@@ -175,11 +175,15 @@ class Pac(object):
             raise pyalpm.error
 
         force = True
+        res = True
         for db in self.handle.get_syncdbs():
             transaction = self.init_transaction()
-            db.update(force)
-            transaction.release()
-        return True
+            if transaction:
+                db.update(force)
+                transaction.release()
+            else:
+                res = False
+        return res
 
     def do_install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
@@ -366,11 +370,12 @@ class Pac(object):
             Possible message types:
             LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
 
-        # Only manage error and warning messages
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
+        elif level & pyalpm.LOG_DEBUG:
+            logging.debug(line)
 
     def cb_progress(self, target, percent, n, i):
         """ Shows install progress """
