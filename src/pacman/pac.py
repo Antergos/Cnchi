@@ -131,14 +131,18 @@ class Pac(object):
         """ Commit a transaction """
         all_ok = True
         try:
+            logging.debug(_("Prepare alpm transaction..."))
             transaction.prepare()
+            logging.debug(_("Commit alpm transaction..."))
             transaction.commit()
         except pyalpm.error as err:
             msg = _("Can't finalize alpm transaction: %s")
             logging.error(msg, err)
             all_ok = False
         finally:
+            logging.debug(_("Releasing alpm transaction..."))
             transaction.release()
+            logging.debug(_("Alpm transaction done."))
             return all_ok
 
     def init_transaction(self, options={}):
@@ -182,11 +186,13 @@ class Pac(object):
         if self.handle is None:
             logging.error("alpm is not initialised")
             raise pyalpm.error
-
-        logging.debug(_("Cnchi will install a list of packages like pacman -S"))
+            return False
 
         if len(pkgs) == 0:
-            return []
+            logging.error(_("Package list is empty"))
+            return False
+
+        logging.debug(_("Cnchi will install a list of packages like pacman -S"))
 
         # Discard duplicates
         pkgs = list(set(pkgs))
@@ -216,6 +222,9 @@ class Pac(object):
                     # this error is fatal or not, we'll register it and we'll allow to continue.
                     logging.error(_("Can't find a package or group called '%s'"), name)
 
+        # We do not need pkgs anymore
+        pkgs = []
+
         # Discard duplicates
         targets = list(set(targets))
 
@@ -223,19 +232,31 @@ class Pac(object):
             logging.error(_("No targets found"))
             return False
 
+        # Maybe not all this packages will be downloaded, but it's how many have to be there
+        # before starting the installation
+        self.total_packages_to_download = len(targets)
+
         trans = self.init_transaction(options)
 
         if trans is None:
             return False
 
+        '''
         for name in targets:
             ok, pkg = self.find_sync_package(name, repos)
             logging.debug(_("Adding package '%s' to transaction"), pkg.name)
             trans.add_pkg(pkg)
+        '''
 
-        self.total_packages_to_download = len(targets)
+        num_targets = len(targets)
+        for i in range(1, num_targets):
+            ok, pkg = self.find_sync_package(targets.pop(), repos)
+            if ok:
+                logging.debug(_("Adding package '%s' to transaction"), pkg.name)
+                trans.add_pkg(pkg)
+            else:
+                logging.warning(pkg)
 
-        logging.debug(_("Run and finalize transaction..."))
         return self.finalize_transaction(trans)
 
     def find_sync_package(self, pkgname, syncdbs):
