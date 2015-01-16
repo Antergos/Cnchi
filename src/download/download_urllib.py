@@ -57,25 +57,23 @@ def url_open_read(urlp, chunk_size=8192):
 def url_open(url):
     """ Helper function to open a remote file """
 
-    msg = _('Error opening {0}:').format(url)
-
     if url is None:
-        logging.warning(msg)
+        logging.warning(_("Wrong url, will try another one if available."))
         return None
 
     try:
         urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
         urlp = None
-        msg += ' HTTP Error : {0}'.format(err.reason)
+        msg = 'Error opening {0} HTTP Error : {1}'.format(url, err.reason)
         logging.warning(msg)
     except urllib.error.URLError as err:
         urlp = None
-        msg += ' URL Error : {0}'.format(err.reason)
+        msg = 'Error opening {0} URL Error : {1}'.format(url, err.reason)
         logging.warning(msg)
     except AttributeError as err:
         urlp = None
-        msg += ' Attribute Error : {0}'.format(err)
+        msg = 'Error opening {0} Attribute Error : {1}'.format(url, err)
         logging.warning(msg)
 
     return urlp

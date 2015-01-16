@@ -889,8 +889,7 @@ class InstallationProcess(multiprocessing.Process):
         all_lines.append(tmpfs)
         logging.debug(_("Added to fstab : %s"), tmpfs)
 
-        full_text = '\n'.join(all_lines)
-        full_text += '\n'
+        full_text = '\n'.join(all_lines) + '\n'
 
         fstab_path = os.path.join(DEST_DIR, 'etc/fstab')
         with open(fstab_path, 'w') as fstab_file:
