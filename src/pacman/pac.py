@@ -171,7 +171,7 @@ class Pac(object):
     def do_refresh(self):
         """ Sync databases like pacman -Sy """
         if self.handle is None:
-            logging.error("alpm is not initialised")
+            logging.error(_("alpm is not initialised"))
             raise pyalpm.error
 
         force = True
@@ -188,7 +188,7 @@ class Pac(object):
     def do_install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
         if self.handle is None:
-            logging.error("alpm is not initialised")
+            logging.error(_("alpm is not initialised"))
             raise pyalpm.error
             return False
 
@@ -256,7 +256,7 @@ class Pac(object):
         for i in range(1, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
-                logging.debug(_("Adding package '%s' to transaction"), pkg.name)
+                #logging.debug(_("Adding package '%s' to transaction"), pkg.name)
                 trans.add_pkg(pkg)
             else:
                 logging.warning(pkg)
@@ -369,13 +369,20 @@ class Pac(object):
         """ Log pyalpm warning and error messages.
             Possible message types:
             LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
+        
+        # Strip ending '\n'
+        line = line.rstrip()
 
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
-            logging.debug(line)
+            # Errors get here ¿?
+            if "error" in line:
+                logging.error(line)
+            else:
+                logging.debug(line)
 
     def cb_progress(self, target, percent, n, i):
         """ Shows install progress """
