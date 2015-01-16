@@ -686,6 +686,8 @@ class InstallationProcess(multiprocessing.Process):
                         if plib is None or (plib is not None and desktop in lib[plib]):
                             if self.desktop is "plasma5" and pkg.text in ["bluedevil"]:
                                 continue
+                            elif self.desktop is not "plasma5" and qt5 == "True":
+                                continue
                             else:
                                 logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
                                 self.packages.append(pkg.text)
