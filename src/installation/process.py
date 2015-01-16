@@ -682,9 +682,13 @@ class InstallationProcess(multiprocessing.Process):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
                         plib = pkg.attrib.get('lib')
+                        qt5 = pkg.attrib.get('qt5')
                         if plib is None or (plib is not None and desktop in lib[plib]):
-                            logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
-                            self.packages.append(pkg.text)
+                            if self.desktop is "plasma5" and pkg.text in ["bluedevil"]:
+                                continue
+                            else:
+                                logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
+                                self.packages.append(pkg.text)
                         if pkg.attrib.get('conflicts'):
                             self.conflicts.append(pkg.attrib.get('conflicts'))
 

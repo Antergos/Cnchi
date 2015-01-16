@@ -453,6 +453,7 @@
     </feature>
     <feature name="bluetooth">
       <pkgname lib='qt'>bluedevil</pkgname>
+      <pkgname lib='qt' qt5="True">bluedevil-frameworks</pkgname>
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
     </feature>
@@ -472,7 +473,7 @@
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>
-      <pkgname lib='qt'>kcm-ufw</pkgname>
+      <!--<pkgname lib='qt'>kcm-ufw</pkgname>-->
       <pkgname>ufw</pkgname>
     </feature>
     <feature name="fonts">
