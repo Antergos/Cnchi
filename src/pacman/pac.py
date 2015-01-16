@@ -372,6 +372,11 @@ class Pac(object):
         
         # Strip ending '\n'
         line = line.rstrip()
+        
+        if "error 31 from alpm_db_get_pkg" in line:
+            # It's ok not to show this error because we search the package in all repos,
+            # and obviously it will only be in one of them, throwing errors for the other ones
+            return
 
         if level & pyalpm.LOG_ERROR:
             logging.error(line)

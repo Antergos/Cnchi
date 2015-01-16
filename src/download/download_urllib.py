@@ -46,11 +46,11 @@ def url_open_read(urlp, chunk_size=8192):
         data = urlp.read(chunk_size)
         download_error = False
     except urllib.error.HTTPError as err:
-        msg = ' HTTP Error : {0}'.format(err.reason)
-        logging.warning(msg)
+        msg = _('HTTP Error : {0}').format(err.reason)
+        logging.error(msg)
     except urllib.error.URLError as err:
-        msg = ' URL Error : {0}'.format(err.reason)
-        logging.warning(msg)
+        msg = _('URL Error : {0}').format(err.reason)
+        logging.error(msg)
 
     return (data, download_error)
 
@@ -61,19 +61,26 @@ def url_open(url):
         logging.warning(_("Wrong url, will try another one if available."))
         return None
 
+    # Remove trailing spaces or new lines at the end of the string
+    url = url.rstrip()
+
     try:
         urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
         urlp = None
-        msg = 'Error opening {0} HTTP Error : {1}'.format(url, err.reason)
+        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
         logging.warning(msg)
     except urllib.error.URLError as err:
         urlp = None
-        msg = 'Error opening {0} URL Error : {1}'.format(url, err.reason)
+        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+        logging.warning(msg)
+    except http.client.BadStatusLine as err:
+        urlp = None
+        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
         logging.warning(msg)
     except AttributeError as err:
         urlp = None
-        msg = 'Error opening {0} Attribute Error : {1}'.format(url, err)
+        msg = _("Can't open {0} - Reason: {1}").format(url, err)
         logging.warning(msg)
 
     return urlp
