@@ -576,7 +576,7 @@ class AutoPartition(object):
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             subprocess.check_call(["partprobe", device])
 
-            part_number = 1
+            part_num = 1
 
             if not self.UEFI:
                 # We don't allow BIOS+GPT right now, so this code will be never executed
