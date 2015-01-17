@@ -375,7 +375,7 @@ class Pac(object):
 
         if "error 31 from alpm_db_get_pkg" in line:
             # It's ok not to show this error because we search the package in all repos,
-            # and obviously it will only be in one of them, throwing errors for the other ones
+            # and obviously it will only be in one of them, throwing errors when searching in the other ones
             return
 
         if level & pyalpm.LOG_ERROR:
@@ -384,11 +384,11 @@ class Pac(object):
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
             # I get pyalpm errors here. Why?
-            # There are a lot of "extracting" messages. I do not show them.
             # Check against error 0 as it is not an error :p
+            # There are a lot of "extracting" messages (not very useful). I do not show them.
             if "error" in line and "error 0" not in line:
                 logging.error(line)
-            elif "extracting" not in line:
+            elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
 
     def cb_progress(self, target, percent, n, i):
