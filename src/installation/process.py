@@ -626,7 +626,7 @@ class InstallationProcess(multiprocessing.Process):
             'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'xfs')
 
         for fs_index in self.fs_devices:
-            fs_types = fstypes + self.fs_devices[fs_index]
+            fs_types = fs_types + self.fs_devices[fs_index]
 
         for fsys in fs_lib:
             if fsys in fs_types:
