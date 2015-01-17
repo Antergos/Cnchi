@@ -812,7 +812,8 @@ class InstallationProcess(multiprocessing.Process):
             # Fix for home + luks, no lvm (from Automatic Install)
             if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
-                if len(self.settings.get("luks_password")) > 0:
+                luks_root_password = self.settings.get("luks_root_password")
+                if luks_root_password and len(luks_root_password) > 0:
                     # Use password and not a keyfile
                     home_keyfile = "none"
                 else:
