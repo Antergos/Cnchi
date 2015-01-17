@@ -279,13 +279,17 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.settings.set('auto_device', self.auto_device)
 
+        ssd = {}
+        ssd[self.auto_device] = fs.is_ssd(self.auto_device)
+
         if not self.testing:
             self.process = installation_process.InstallationProcess(
                 self.settings,
                 self.callback_queue,
                 mount_devices,
                 fs_devices,
-                self.alternate_package_list)
+                self.alternate_package_list,
+                ssd)
 
             self.process.start()
         else:

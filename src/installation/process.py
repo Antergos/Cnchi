@@ -83,7 +83,7 @@ class InstallError(Exception):
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
     def __init__(self, settings, callback_queue, mount_devices,
-                 fs_devices, alternate_package_list="", ssd=None, blvm=False):
+                 fs_devices, alternate_package_list="", ssd={}, blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
 
@@ -773,11 +773,14 @@ class InstallationProcess(multiprocessing.Process):
     def auto_fstab(self):
         """ Create /etc/fstab file """
 
-        all_lines = ["# /etc/fstab: static file system information.", "#",
+        all_lines = ["# /etc/fstab: static file system information.",
+                     "#",
                      "# Use 'blkid' to print the universally unique identifier for a",
                      "# device; this may be used with UUID= as a more robust way to name devices",
-                     "# that works even if disks are added and removed. See fstab(5).", "#",
-                     "# <file system> <mount point>   <type>  <options>       <dump>  <pass>", "#"]
+                     "# that works even if disks are added and removed. See fstab(5).",
+                     "#",
+                     "# <file system> <mount point>   <type>  <options>       <dump>  <pass>",
+                     "#"]
 
         use_luks = self.settings.get("use_luks")
         use_lvm = self.settings.get("use_lvm")
@@ -827,6 +830,7 @@ class InstallationProcess(multiprocessing.Process):
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
+                # Add line to fstab
                 txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(mount_point, myfmt)
                 all_lines.append(txt)
                 logging.debug(_("Added to fstab : %s"), txt)
@@ -863,8 +867,14 @@ class InstallationProcess(multiprocessing.Process):
             if not os.path.exists(full_path):
                 os.makedirs(full_path)
 
+            # Is ssd ?
+            is_ssd = False
+            for ssd_device in self.ssd:
+                if ssd_device in partition_path:
+                    is_ssd = True
+
             # Add mount options parameters
-            if not self.ssd:
+            if not is_ssd:
                 opts = "defaults,rw,relatime"
                 if "btrfs" in myfmt:
                     opts = 'defaults,rw,relatime,space_cache,autodefrag,inode_cache'
@@ -873,15 +883,13 @@ class InstallationProcess(multiprocessing.Process):
                 elif "ext3" in myfmt or "ext4" in myfmt:
                     opts = 'defaults,rw,relatime,data=ordered'
             else:
-                opts = 'rw,defaults,noatime'
-                for ssd_device in self.ssd:
-                    if ssd_device in self.mount_devices[mount_point]:
-                        # As of linux kernel version 3.7, the following
-                        # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-                        if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs':
-                            opts = 'rw,defaults,noatime,discard'
-                        elif myfmt == 'btrfs':
-                            opts = 'rw,defaults,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+                opts = 'defaults,rw,noatime'
+                # As of linux kernel version 3.7, the following
+                # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
+                if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs':
+                    opts = 'defaults,rw,noatime,discard'
+                elif myfmt == 'btrfs':
+                    opts = 'defaults,rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
 
             no_check = ["btrfs", "f2fs"]
 
