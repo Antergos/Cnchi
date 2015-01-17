@@ -966,6 +966,10 @@ def partition_exists(partition):
 
 def is_partition_extended(partition):
     """ Check if a partition is of extended type """
+
+    if "/dev/mapper" in partition:
+        return False
+
     if "/dev/" in partition:
         partition = partition[len("/dev/"):]
 
@@ -973,7 +977,10 @@ def is_partition_extended(partition):
     if len(num) == 0:
         return False
 
-    num = int(num)
+    try:
+        num = int(num)
+    except ValueError as err:
+        return False
 
     if num > 4:
         # logical partition

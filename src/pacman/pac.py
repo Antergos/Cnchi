@@ -383,10 +383,12 @@ class Pac(object):
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
-            # Errors get here ¿?
+            # I get pyalpm errors here. Why?
+            # There are a lot of "extracting" messages. I do not show them.
+            # Check against error 0 as it is not an error :p
             if "error" in line and "error 0" not in line:
                 logging.error(line)
-            else:
+            elif "extracting" not in line:
                 logging.debug(line)
 
     def cb_progress(self, target, percent, n, i):
