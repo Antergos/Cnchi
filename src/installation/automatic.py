@@ -37,6 +37,7 @@ if __name__ == '__main__':
     sys.path.insert(0, parent_dir)
 
 import misc.misc as misc
+import parted3.fs_module as fs
 from installation import process as installation_process
 
 # To be able to test this installer in other systems that do not have pyparted3 installed

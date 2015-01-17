@@ -147,18 +147,14 @@ def create_fs(part, fstype, label='', other_opts=''):
         ret = (1, err)
     return ret
 
+'''
 @misc.raise_privileges
 def is_ssd(disk_path):
     """ Check if is sdd """
     ssd = False
     try:
-        process1 = subprocess.Popen(
-            ["hdparm", "-I", disk_path],
-            stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(
-            ["grep", "Rotation Rate"],
-            stdin=process1.stdout,
-            stdout=subprocess.PIPE)
+        process1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
+        process2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=process1.stdout, stdout=subprocess.PIPE)
         process1.stdout.close()
         output = process2.communicate()[0].decode()
         if "Solid State" in output:
@@ -166,8 +162,23 @@ def is_ssd(disk_path):
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
-
     return ssd
+'''
+
+@misc.raise_privileges
+def is_ssd(disk_path):
+    """ Check if disk is a Solid State Device """
+    ssd = False
+    try:
+        cmd = ["hdparm", "-I", disk_path]
+        result = subprocess.check_output(cmd).decode()
+        if "Solid State Device" in result:
+            ssd = True
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
+        logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
+    return ssd
+
 
 # To shrink a partition:
 # 1. Shrink fs
