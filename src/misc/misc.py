@@ -108,7 +108,7 @@ def drop_privileges():
             os.setegid(gid)
         if uid is not None:
             os.seteuid(uid)
-    _dropped_privileges += 1
+    _dropped_privileges = _dropped_privileges + 1
 
 def regain_privileges():
     global _dropped_privileges
@@ -478,9 +478,8 @@ def get_release():
                 if line:
                     line = line.split()
                     if line[2] == 'LTS':
-                        line[1] += ' LTS'
-                    get_release.release_info = ReleaseInfo(
-                        name=line[0], version=line[1])
+                        line[1] = line[1] + ' LTS'
+                    get_release.release_info = ReleaseInfo(name=line[0], version=line[1])
         except:
             syslog.syslog(syslog.LOG_ERR, 'Unable to determine the release.')
 
@@ -733,7 +732,7 @@ def set_indicator_keymaps(lang):
                     new_variants.append(entry)
                     variants.remove(entry)
         else:
-            new_variants += list(variants)
+            new_variants = new_variants + list(variants)
 
         # gsettings doesn't understand utf8
         new_variants = [str(variant) for variant in new_variants]

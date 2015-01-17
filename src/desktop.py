@@ -61,7 +61,7 @@ class DesktopAsk(GtkBaseBox):
         label = self.ui.get_object("desktop_info")
         txt = "<span weight='bold'>{0}</span>\n".format(desktops.NAMES[desktop])
         description = desktops.DESCRIPTIONS[desktop]
-        txt += _(description)
+        txt = txt + _(description)
         label.set_markup(txt)
 
         # This sets the desktop's image

@@ -179,7 +179,7 @@ def _check_linux(mount_name):
             elif len(os_id) > 0:
                 detected_os = os_id
                 if len(os_version) > 0:
-                    detected_os += " " + os_version
+                    detected_os = "{0} {1}".format(detected_os, os_version)
 
     detected_os = detected_os.replace('"', '').strip('\n')
 

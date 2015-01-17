@@ -1885,7 +1885,7 @@ class InstallationAdvanced(GtkBaseBox):
             lbl = Gtk.Label(label=lbl_text, margin=margin)
             lbl.set_alignment(0, 0.5)
             grid.attach(lbl, 0, y, 4, 1)
-            y += 1
+            y = y + 1
 
         if changelist != []:
             # Partitions that will be modified (header)
@@ -1896,9 +1896,9 @@ class InstallationAdvanced(GtkBaseBox):
                 lbl = Gtk.Label(margin=margin)
                 lbl.set_markup(bold.format(txt))
                 grid.attach(lbl, x, y, 1, 1)
-                x += 1
+                x = x + 1
 
-            y += 1
+            y = y + 1
 
             # Partitions that will be modified
             for ea in changelist:
@@ -1906,8 +1906,8 @@ class InstallationAdvanced(GtkBaseBox):
                 for txt in ea:
                     lbl = Gtk.Label(label=txt, margin=margin)
                     grid.attach(lbl, x, y, 1, 1)
-                    x += 1
-                y += 1
+                    x = x + 1
+                y = y + 1
 
         changelist_dialog = self.ui.get_object("changelist_dialog")
         changelist_dialog.set_title(_('These disks will have partition actions:'))

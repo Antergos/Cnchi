@@ -134,7 +134,7 @@ class Slides(GtkBaseBox):
         if USE_WEBKIT:
             return False
 
-        self.slideshow_index += 1
+        self.slideshow_index = self.slideshow_index + 1
         path = os.path.join(SLIDES_PATH, "{0}.png".format(self.slideshow_index))
         if not os.path.exists(path):
             # We've reached the last image, start again

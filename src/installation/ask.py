@@ -81,7 +81,7 @@ class InstallationAsk(GtkBaseBox):
         super().__init__(self, params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
-        #partitioner_dir = os.path.join(data_dir, "images", "partitioner")
+
         partitioner_dir = os.path.join(data_dir, "images", "partitioner", "small")
 
         image = self.ui.get_object("automatic_image")
@@ -97,11 +97,11 @@ class InstallationAsk(GtkBaseBox):
         image.set_from_file(path)
 
         self.other_oses = []
-        
+
         # DISABLE ALONGSIDE INSTALLATION. IT'S NOT READY YET
         #enable_alongside = self.check_alongside()
         enable_alongside = False
-        
+
         self.settings.set('enable_alongside', enable_alongside)
         if enable_alongside:
             msg = _("Cnchi will enable the 'alongside' installation mode.")
@@ -268,7 +268,7 @@ class InstallationAsk(GtkBaseBox):
             label.set_line_wrap(True)
 
             intro_txt = _("This computer has {0} installed.").format(oses_str)
-            intro_txt += "\n" + _("What do you want to do?")
+            intro_txt = intro_txt + "\n" + _("What do you want to do?")
         else:
             intro_txt = _("What do you want to do?")
 

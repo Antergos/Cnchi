@@ -215,14 +215,14 @@ class PacmanConfig(collections.OrderedDict):
     def __str__(self):
         conf = ''
         for section, options in self.items():
-            conf += '[{0}]\n'.format(section)
+            conf = '{0}[{1}]\n'.format(conf, section)
             for key, value in options.items():
                 if key in LIST_OPTIONS:
                     for v in value:
-                        conf += '{0} = {1}\n'.format(key, v)
+                        conf = '{0}{1} = {2}\n'.format(conf, key, v)
                 elif key in BOOLEAN_OPTIONS:
-                    conf += key + '\n'
+                    conf = '{0}{1}\n'.format(conf, key)
                 else:
-                    conf += '{0} = {1}\n'.format(key, value)
-            conf += '\n'
+                    conf = '{0}{1} = {2}\n'.format(conf, key, value)
+            conf = conf + '\n'
         return conf

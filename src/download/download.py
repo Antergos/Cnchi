@@ -107,7 +107,7 @@ class DownloadPackages(object):
                 cache_dir,
                 callback_queue)
         else:
-            logging.debug(_("Using urlib to download packages"))
+            logging.debug(_("Using urllib to download packages"))
             download = download_urllib.Download(
                 pacman_cache_dir,
                 cache_dir,

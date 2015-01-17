@@ -149,7 +149,7 @@ class InstallationProcess(multiprocessing.Process):
                 timeout = 1
             while tries < timeout and not self.callback_queue.empty():
                 time.sleep(1)
-                tries += 1
+                tries = tries + 1
 
     @misc.raise_privileges
     def run(self):
@@ -616,16 +616,17 @@ class InstallationProcess(multiprocessing.Process):
             cmd = ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]
             fs_types = subprocess.check_output(cmd).decode()
         except subprocess.CalledProcessError as err:
+            fs_types = ""
             txt = _("Error calling blkid")
             logging.error(txt)
             logging.error(err.output)
 
         fs_lib = (
-            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat16', 'fat32', 'vfat', 'f2fs', 'jfs',
-            'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'xfs')
+            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat16', 'fat32', 'vfat',
+            'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'xfs')
 
         for fs_index in self.fs_devices:
-            fs_types += self.fs_devices[fs_index]
+            fs_types = fstypes + self.fs_devices[fs_index]
 
         for fsys in fs_lib:
             if fsys in fs_types:
@@ -796,7 +797,12 @@ class InstallationProcess(multiprocessing.Process):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                txt = "UUID={0} {1} {2} {3} 0 {4}".format(uuid, mount_point, myfmt, opts, chk)
+                # If using a TRIM supported SSD, discard is a valid mount option for swap
+                if partition_path in self.ssd:
+                    opts = "defaults,discard"
+                else:
+                    opts = "defaults"
+                txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
                 all_lines.append(txt)
                 logging.debug(_("Added to fstab : %s"), txt)
                 continue
@@ -806,10 +812,13 @@ class InstallationProcess(multiprocessing.Process):
             # Fix for home + luks, no lvm (from Automatic Install)
             if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
                 # Modify the crypttab file
-                if self.settings.get("luks_password") != "":
+                if len(self.settings.get("luks_password")) > 0:
+                    # Use password and not a keyfile
                     home_keyfile = "none"
                 else:
+                    # Use a keyfile
                     home_keyfile = "/etc/luks-keys/home"
+
                 os.chmod(crypttab_path, 0o666)
                 with open(crypttab_path, 'a') as crypttab_file:
                     line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(uuid, home_keyfile)
@@ -817,7 +826,7 @@ class InstallationProcess(multiprocessing.Process):
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
-                txt = "/dev/mapper/cryptAntergosHome {0} {1} {2} 0 {3}".format(mount_point, myfmt, opts, chk)
+                txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(mount_point, myfmt)
                 all_lines.append(txt)
                 logging.debug(_("Added to fstab : %s"), txt)
                 continue
@@ -832,7 +841,7 @@ class InstallationProcess(multiprocessing.Process):
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
-                txt = "{0} {1} {2} {3} 0 {4}".format(partition_path, mount_point, myfmt, opts, chk)
+                txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
                 all_lines.append(txt)
                 logging.debug(_("Added to fstab : %s"), txt)
                 continue
@@ -844,8 +853,7 @@ class InstallationProcess(multiprocessing.Process):
             if "btrfs" in myfmt:
                 self.settings.set('btrfs', True)
 
-            # Avoid adding a partition to fstab when
-            # it has no mount point (swap has been checked above)
+            # Avoid adding a partition to fstab when it has no mount point (swap has been checked above)
             if mount_point == "":
                 continue
 
@@ -856,32 +864,30 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add mount options parameters
             if not self.ssd:
+                opts = "defaults,rw,relatime"
                 if "btrfs" in myfmt:
-                    opts += ',rw,relatime,space_cache,autodefrag,inode_cache'
+                    opts = 'defaults,rw,relatime,space_cache,autodefrag,inode_cache'
                 elif "f2fs" in myfmt:
-                    opts += ',rw,noatime'
-                elif "ext2" in myfmt:
-                    opts += ',rw,relatime'
+                    opts = 'defaults,rw,noatime'
                 elif "ext3" in myfmt or "ext4" in myfmt:
-                    opts += ',rw,relatime,data=ordered'
-                else:
-                    opts += ",rw,relatime"
+                    opts = 'defaults,rw,relatime,data=ordered'
             else:
-                for i in self.ssd:
-                    if i in self.mount_devices[mount_point]:
-                        opts = 'rw,defaults,noatime'
+                opts = 'rw,defaults,noatime'
+                for ssd_device in self.ssd:
+                    if ssd_device in self.mount_devices[mount_point]:
                         # As of linux kernel version 3.7, the following
                         # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-                        # If using a TRIM supported SSD, discard is a valid mount option for swap
-                        if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs' or myfmt == 'swap':
-                            opts += ',discard'
+                        if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs':
+                            opts = 'rw,defaults,noatime,discard'
                         elif myfmt == 'btrfs':
-                            opts += ',compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+                            opts = 'rw,defaults,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
 
             no_check = ["btrfs", "f2fs"]
 
             if mount_point == "/" and myfmt not in no_check:
                 chk = '1'
+            else:
+                chk = '0'
 
             if mount_point == "/":
                 self.settings.set('ruuid', uuid)
@@ -998,7 +1004,7 @@ class InstallationProcess(multiprocessing.Process):
                     shutil.copy2(source, destination)
                 except (FileExistsError, shutil.Error) as err:
                     logging.warning(err)
-                percent += step
+                percent = percent + step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
@@ -1272,12 +1278,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
             chroot_run(['groupadd', 'vboxusers'])
-            default_groups += ',vboxusers,vboxsf'
+            default_groups = default_groups + ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
+            # Prepare system for autologin. LightDM needs the user to be in the autologin group.
             chroot_run(['groupadd', 'autologin'])
-            default_groups += ',autologin'
+            default_groups = default_groups + ',autologin'
 
         cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
         chroot_run(cmd)

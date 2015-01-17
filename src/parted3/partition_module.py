@@ -171,7 +171,7 @@ def get_partitions(diskob):
             continue
         # Is this str conversion necessary?
         part_dic['free{0}'.format(str(fcount))] = free
-        fcount += 1
+        fcount = fcount + 1
 
     return part_dic
 
@@ -226,7 +226,7 @@ def create_partition(diskob, part_type, geom):
     if not nalign.isAligned(geom, nend):
         nend = nalign.alignDown(geom, nend)
     if part_type == 1:
-        nstart += nalign.grainSize
+        nstart = nstart + nalign.grainSize
     mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend-1)
     maxgeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
     if diskob.maxPartitionLength < maxgeom.length:

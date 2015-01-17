@@ -264,7 +264,8 @@ class _Database(object):
         for loc in self.locations:
             self.tz_to_loc[loc.zone] = loc
             if loc.country in self.cc_to_locs:
-                self.cc_to_locs[loc.country] += [loc]
+                #self.cc_to_locs[loc.country] += [loc]
+                self.cc_to_locs[loc.country].append(loc)
             else:
                 self.cc_to_locs[loc.country] = [loc]
 

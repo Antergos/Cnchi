@@ -390,7 +390,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         else:
             icon = 4
         if model[iterator][1]:
-            icon += 5
+            icon = icon + 5
         cell.set_property('pixbuf', self.icons[icon])
 
     def data_func(self, column, cell, model, iterator, data):

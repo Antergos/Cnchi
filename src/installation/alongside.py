@@ -135,8 +135,8 @@ class InstallationAlongside(GtkBaseBox):
         new_device = disk + str(new_number)
 
         while misc.partition_exists(new_device):
-            new_number += 1
-            new_device = disk + str(new_number)
+            new_number = new_number + 1
+            new_device = '{0}{1}'.format(disk, new_number)
 
         if new_number > 4:
             # No primary partitions left
@@ -160,13 +160,10 @@ class InstallationAlongside(GtkBaseBox):
         max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
         if max_size < 0:
             # Full Antergos does not fit but maybe base fits... ask user.
-            txt = _("Cnchi recommends at least 6.5GB free to install Antergos.")
-            txt += "\n\n"
-            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink)
-            txt += "\n\n"
-            txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.")
-            txt += "\n\n"
-            txt += _("Install at your own risk!")
+            txt = _("Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
+            txt = txt + _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink) + "\n\n"
+            txt = txt + _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
+            txt = txt + _("Install at your own risk!")
             show.warning(self.get_toplevel(), txt)
             max_size = part_size
 
@@ -308,8 +305,8 @@ class InstallationAlongside(GtkBaseBox):
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
             txt = _("Filesystem on {0} shrunk.").format(partition_path)
-            txt += "\n"
-            txt += _("Will recreate partition now on device {0} partition {1}").format(device_path, partition_path)
+            txt = txt + "\n"
+            txt = txt + _("Will recreate partition now on device {0} partition {1}").format(device_path, partition_path)
             logging.debug(txt)
             # Destroy original partition and create a new resized one
             res = pm.split_partition(device_path, partition_path, new_size)
@@ -325,8 +322,8 @@ class InstallationAlongside(GtkBaseBox):
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
             txt = _("*** FILESYSTEM IN UNSAFE STATE ***")
-            txt += "\n"
-            txt += _("Filesystem shrink succeeded but partition shrink failed.")
+            txt = txt + "\n"
+            txt = txt + _("Filesystem shrink succeeded but partition shrink failed.")
             logging.error(txt)
             return
 

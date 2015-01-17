@@ -68,17 +68,24 @@ class Bootloader(object):
         else:
             self.install_grub2_bios()
 
-        # Check grub.cfg for correct root UUID (just in case)
+        self.check_root_uuid_in_grub()
+
+    def check_root_uuid_in_grub(self):
+        ''' Checks grub.cfg for correct root UUID (just in case) '''
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
         ruuid_ok = False
+
+        if len(ruuid) == 0:
+            logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
+            return
 
         with open(cfg) as grub_cfg:
             if ruuid in grub_cfg.read():
                 ruuid_ok = True
 
         if not ruuid_ok:
-            # Wrong uuid in grub.cfg, let's fix it!
+            logging.debug("Wrong uuid in grub.cfg, let's fix it!")
             with open(cfg) as grub_cfg:
                 lines = [x.strip() for x in grub_cfg.readlines()]
             for i in range(len(lines)):
@@ -103,9 +110,11 @@ class Bootloader(object):
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
             swap_uuid = fs.get_info(swap_partition)['UUID']
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID={0} quiet {1}"'.format(swap_uuid, use_splash)
+            kernel_cmd = 'resume=UUID={0} quiet {1}'.format(swap_uuid, use_splash)
         else:
-            kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="quiet {0}"'.format(use_splash)
+            kernel_cmd = 'quiet {0}'.format(use_splash)
+
+        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="{0}"'.format(kernel_cmd)
 
         if not os.path.exists(default_dir):
             os.mkdir(default_dir)
@@ -131,11 +140,15 @@ class Bootloader(object):
 
             root_uuid = fs.get_info(root_device)['UUID']
 
+            default_line = 'cryptdevice=/dev/disk/by-uuid/{0}:{1}'.format(root_uuid, luks_root_volume)
+
             if self.settings.get("luks_root_password") == "":
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/{0}:{1} ' \
-                            'cryptkey=/dev/disk/by-uuid/{2}:ext2:/.keyfile-root"'.format(root_uuid, luks_root_volume, boot_uuid)
-            else:
-                default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/{0}:{1}"'.format(root_uuid, luks_root_volume)
+                # No luks password, so user wants to use a keyfile
+                default_line = default_line + ' cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root'.format(boot_uuid)
+
+            default_line = 'GRUB_CMDLINE_LINUX="{0}"'.format(default_line)
+
+            logging.debug(default_line)
 
             for i in range(len(lines)):
                 if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):

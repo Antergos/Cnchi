@@ -355,15 +355,15 @@ class AutoPartition(object):
                 part_num = 1
 
             devices['efi'] = "{0}{1}".format(device, part_num)
-            part_num += 1
+            part_num = part_num + 1
             devices['boot'] = "{0}{1}".format(device, part_num)
-            part_num += 1
+            part_num = part_num + 1
             devices['root'] = "{0}{1}".format(device, part_num)
             if self.home:
                 devices['home'] = "{0}{1}".format(device, part_num)
-                part_num += 1
+                part_num = part_num + 1
             devices['swap'] = "{0}{1}".format(device, part_num)
-            part_num += 1
+            part_num = part_num + 1
         else:
             devices['boot'] = "{0}{1}".format(device, 1)
             devices['root'] = "{0}{1}".format(device, 2)
@@ -423,7 +423,7 @@ class AutoPartition(object):
             logging.debug(_("get_mount_devices() : %s will be mounted as %s"), mount_devices[mount_device], mount_device)
 
         return mount_devices
-    
+
     def get_fs_devices(self):
         """ Return which filesystem is in a selected device """
 
@@ -586,29 +586,29 @@ class AutoPartition(object):
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
                 sgdisk(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
-                part_num += 1
+                part_num = part_num + 1
 
             # Create EFI System Partition (ESP)
             # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
             sgdisk(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
-            part_num += 1
+            part_num = part_num + 1
 
             # Create Boot partition
             sgdisk(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
-            part_num += 1
+            part_num = part_num + 1
 
             if self.lvm:
                 sgdisk(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
-                part_num += 1
+                part_num = part_num + 1
             else:
                 sgdisk(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
-                part_num += 1
+                part_num = part_num + 1
                 sgdisk(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
-                part_num += 1
+                part_num = part_num + 1
 
                 if self.home:
                     sgdisk(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
-                    part_num += 1
+                    part_num = part_num + 1
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
@@ -655,7 +655,7 @@ class AutoPartition(object):
                 end = start + part_sizes['swap']
                 parted_mkpart(device, "extended", start, end)
                 # Now create a logical swap partition
-                start += 1
+                start = start + 1
                 parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
@@ -725,7 +725,7 @@ class AutoPartition(object):
             'root':'/',
             'home':'/home',
             'swap':''}
-        
+
         labels = {
             'efi':'UEFI_SYSTEM',
             'boot':'AntergosBoot',

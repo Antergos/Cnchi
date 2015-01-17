@@ -50,7 +50,7 @@ class Welcome(GtkBaseBox):
 
         self.labels = {}
         self.labels['welcome'] = self.ui.get_object("welcome_label")
-        self.labels['info'] = self.ui.get_object("infowelcome_label")
+        self.labels['info'] = self.ui.get_object("info_welcome_label")
         self.labels['loading'] = self.ui.get_object("loading_label")
 
         self.buttons = {}
@@ -77,10 +77,12 @@ class Welcome(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = ""
         if not self.disable_tryit:
             txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.") + "\n"
-        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")
+        else:
+            txt = ""
+
+        txt = txt + _("When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">{0}</span>'.format(txt)
         self.labels['info'].set_markup(txt)
 
