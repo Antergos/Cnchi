@@ -369,10 +369,10 @@ class Pac(object):
         """ Log pyalpm warning and error messages.
             Possible message types:
             LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
-        
+
         # Strip ending '\n'
         line = line.rstrip()
-        
+
         if "error 31 from alpm_db_get_pkg" in line:
             # It's ok not to show this error because we search the package in all repos,
             # and obviously it will only be in one of them, throwing errors for the other ones
@@ -384,7 +384,7 @@ class Pac(object):
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
             # Errors get here ¿?
-            if "error" in line:
+            if "error" in line and "error 0" not in line:
                 logging.error(line)
             else:
                 logging.debug(line)
