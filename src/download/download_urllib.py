@@ -129,12 +129,12 @@ class Download(object):
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
-                downloaded += 1
+                downloaded = downloaded + 1
             elif os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
                 shutil.copy(dst_cache_path, dst_path)
-                downloaded += 1
+                downloaded = downloaded + 1
             else:
                 # Let's download our filename using url
                 for url in element['urls']:
@@ -148,30 +148,30 @@ class Download(object):
                         with open(dst_path, 'wb') as xzfile:
                             (data, download_error) = url_open_read(urlp)
 
-                            while len(data) > 0 and download_error == False:
+                            while download_error == False and len(data) > 0:
                                 xzfile.write(data)
-                                completed_length += len(data)
+                                completed_length = completed_length + len(data)
                                 old_percent = percent
                                 if total_length > 0:
                                     percent = round(float(completed_length / total_length), 2)
                                 else:
-                                    percent += 0.1
+                                    percent = percent + 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
                                 (data, download_error) = url_open_read(urlp)
 
                             if not download_error:
-                                downloaded += 1
+                                downloaded = downloaded + 1
                                 break
-                            else:
+                            #else:
                                 # try next mirror url
-                                completed_length = 0
-                                msg = _("Can't download {0}, will try another mirror if available").format(url)
-                                logging.warning(msg)
-                    else:
-                        # try next mirror url
-                        msg = _("Can't open {0}, will try another mirror if available").format(url)
-                        logging.warning(msg)
+                                #completed_length = 0
+                                #msg = _("Can't download {0}, will try another mirror if available").format(url)
+                                #logging.warning(msg)
+                    #else:
+                    #    # try next mirror url
+                    #    msg = _("Can't open {0}, will try another mirror if available").format(url)
+                    #    logging.warning(msg)
 
                 if download_error:
                     # None of the mirror urls works.
@@ -191,7 +191,7 @@ class Download(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug(event_type + " : " + str(event_text))
+                logging.debug("{0}: {1}".format(event_type, event_text))
             return
 
         if event_type in self.last_event:

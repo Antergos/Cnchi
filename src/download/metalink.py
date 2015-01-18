@@ -120,7 +120,7 @@ def create(pacman, package_name, pacman_conf_file):
         logging.warning(msg)
 
     if missing_deps:
-        msg = _("Warning! Can't resolve these dependencies: ")
+        msg = _("Can't resolve these dependencies: ")
         for missing in sorted(missing_deps):
             msg = msg + missing + " "
         logging.warning(msg)

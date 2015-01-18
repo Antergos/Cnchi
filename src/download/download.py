@@ -153,7 +153,7 @@ class DownloadPackages(object):
                         downloads[key] = metalink_info[key]
 
                 # Show progress to the user
-                processed_packages += 1
+                processed_packages = processed_packages + 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', percent)
         except Exception as err:
