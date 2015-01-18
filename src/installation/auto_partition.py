@@ -212,7 +212,7 @@ def sgdisk(device, part_num, label, size, hex_code):
 
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
-    cmd.append('--change-name={0}:{1}'.format(part_num, name))
+    cmd.append('--change-name={0}:{1}'.format(part_num, label))
     cmd.append(device)
     subprocess.check_call(cmd)
 
