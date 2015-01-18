@@ -47,7 +47,7 @@ start_cnchi () {
 	notify_user "Starting Cnchi..."
 	echo "Starting Cnchi..."
 	if [[ ${development} = "True" ]]; then
-		cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml &
+		cnchi -d -v -p /usr/share/cnchi/data/packages.xml &
 		exit 0;
 
 
