@@ -95,7 +95,12 @@ class Download(object):
             while num_active < MAX_CONCURRENT_DOWNLOADS and len(downloads) > 0:
                 identity, element = downloads.popitem()
 
-                src_cache_path = os.path.join(self.cache_dir, element['filename'])
+                # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
+                if self.cache_dir:
+                    src_cache_path = os.path.join(self.cache_dir, element['filename'])
+                else:
+                    src_cache_path = ""
+
                 dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
                 self.show_download_info(downloaded + 1, total_downloads)
@@ -104,7 +109,7 @@ class Download(object):
                     # File already exists (previous install?) do not download
                     logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
                     downloaded += 1
-                elif os.path.exists(src_cache_path):
+                elif self.cache_dir and os.path.exists(src_cache_path):
                     # We're lucky, the package is already downloaded in the cache the user has given us
                     # let's copy it to our destination
                     shutil.copy(src_cache_path, dst_path)

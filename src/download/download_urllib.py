@@ -123,14 +123,19 @@ class Download(object):
                 logging.warning(_("Metalink for package %s has no size info"), element['identity'])
                 total_length = 0
 
-            dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+            # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
+            if self.cache_dir:
+                dst_cache_path = os.path.join(self.cache_dir, element['filename'])
+            else:
+                dst_cache_path = ""
+
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
                 downloaded = downloaded + 1
-            elif os.path.exists(dst_cache_path):
+            elif self.cache_dir and os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
                 shutil.copy(dst_cache_path, dst_path)
