@@ -36,6 +36,8 @@ import time
 import urllib.request
 import urllib.error
 
+import traceback
+
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
@@ -286,7 +288,7 @@ class InstallationProcess(multiprocessing.Process):
                 elif mount_part == swap_partition:
                     try:
                         txt = _("Mounting swap {0}").format(mount_part)
-                        logging.warning(txt)
+                        logging.debug(txt)
                         subprocess.check_call(['swapon', swap_partition])
                     except subprocess.CalledProcessError as err:
                         txt = _("Can't mount {0}").format(mount_part)
@@ -362,7 +364,10 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(out)
             self.queue_fatal_event(cmd)
         except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             logging.error(err)
+            logging.error(trace)
             self.queue_fatal_event(err)
 
         self.running = False
