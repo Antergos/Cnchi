@@ -214,6 +214,9 @@ def sgdisk(device, part_num, label, size, hex_code):
     # Parameters: partnum:name
     cmd.append('--change-name={0}:{1}'.format(part_num, label))
     cmd.append(device)
+
+    logging.debug(" ".join(cmd))
+
     subprocess.check_call(cmd)
 
 def parted_set(device, number, flag, state):
@@ -484,7 +487,6 @@ class AutoPartition(object):
         if part_sizes['swap'] > max_swap:
             part_sizes['swap'] = max_swap
 
-        # FIX THIS!
         part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
 
         if self.home:
@@ -598,6 +600,7 @@ class AutoPartition(object):
             part_num = part_num + 1
 
             if self.lvm:
+                # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 sgdisk(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num = part_num + 1
             else:
@@ -654,6 +657,7 @@ class AutoPartition(object):
                 start = end
                 end = start + part_sizes['swap']
                 parted_mkpart(device, "extended", start, end)
+
                 # Now create a logical swap partition
                 start = start + 1
                 parted_mkpart(device, "logical", start, end, "linux-swap")
