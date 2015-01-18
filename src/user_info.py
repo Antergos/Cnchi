@@ -111,7 +111,7 @@ class UserInfo(GtkBaseBox):
         label.set_markup(txt)
 
         small_dark_red = '<small><span color="darkred">{0}</span></small>'
-        
+
         txt = _("You must enter a name")
         txt = small_dark_red.format(txt)
         self.error_label['hostname'].set_markup(txt)
@@ -162,6 +162,8 @@ class UserInfo(GtkBaseBox):
     def store_values(self):
         """ Store all user values in self.settings """
         # For developer testing
+        # Do not use this, is confusing for others when testing dev version
+        '''
         if self.settings.get('z_hidden'):
             self.settings.set('fullname', 'Antergos Testing')
             self.settings.set('hostname', 'Testing Machine')
@@ -169,11 +171,12 @@ class UserInfo(GtkBaseBox):
             self.settings.set('password', 'testing')
             self.settings.set('require_password', True)
         else:
-            self.settings.set('fullname', self.entry['fullname'].get_text())
-            self.settings.set('hostname', self.entry['hostname'].get_text())
-            self.settings.set('username', self.entry['username'].get_text())
-            self.settings.set('password', self.entry['password'].get_text())
-            self.settings.set('require_password', self.require_password)
+        '''
+        self.settings.set('fullname', self.entry['fullname'].get_text())
+        self.settings.set('hostname', self.entry['hostname'].get_text())
+        self.settings.set('username', self.entry['username'].get_text())
+        self.settings.set('password', self.entry['password'].get_text())
+        self.settings.set('require_password', self.require_password)
 
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
@@ -196,8 +199,8 @@ class UserInfo(GtkBaseBox):
             self.login['auto'].set_sensitive(True)
         else:
             self.login['auto'].set_sensitive(False)
-        if not self.settings.get('z_hidden'):
-            self.forward_button.set_sensitive(False)
+        #if not self.settings.get('z_hidden'):
+        self.forward_button.set_sensitive(False)
 
     def on_checkbutton_show_password_toggled(self, widget):
         """ show/hide user password """
