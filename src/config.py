@@ -54,6 +54,7 @@ class Settings(object):
             'feature_firewall' : False,
             'feature_third_party' : False,
             'fullname' : '',
+            'grub_default_line' : '',
             'hostname' : 'antergos',
             'install_bootloader' : True,
             'keyboard_layout' : '',

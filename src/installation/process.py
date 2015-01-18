@@ -47,6 +47,7 @@ import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
+import re
 
 try:
     import pyalpm
@@ -873,7 +874,8 @@ class InstallationProcess(multiprocessing.Process):
             proc = subprocess.Popen(run,
                                     stdin=stdin,
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT)
+                                    stderr=subprocess.STDOUT,
+                                    shell=True)
             out = proc.communicate(timeout=timeout)[0]
             txt = out.decode()
             if len(txt) > 0:
@@ -1043,18 +1045,18 @@ class InstallationProcess(multiprocessing.Process):
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
         ruuid_str = 'root=UUID=' + ruuid
+        boot_command = self.settings.get('grub_default_line')
+        boot_command = ruuid_str + ' ' + boot_command
+        pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
+        parse = open(cfg).read()
 
-        if ruuid_str not in open(cfg).read():
-            with open(cfg) as grub_cfg:
-                lines = [x.strip() for x in grub_cfg.readlines()]
-            for i in range(len(lines)):
-                if lines[i].startswith("linux	/vmlinuz-linux root="):
-                    old_line = lines[i]
-                    p1 = old_line[68:]
-                    p2 = old_line[:26]
-                    lines[i] = p1 + ruuid + p2
-            with open(cfg, 'w') as grub_file:
-                grub_file.write("\n".join(lines))
+        if ruuid_str not in parse:
+            entry = pattern.search(parse)
+            if entry:
+                new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
+
+                with open(cfg, 'w') as grub_file:
+                    grub_file.write(new_entry)
 
     def modify_grub_default(self):
         """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
@@ -1087,6 +1089,7 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
+            self.settings.set('grub_default_line', default_line)
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
@@ -1181,7 +1184,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 300)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1211,9 +1214,9 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+            self.chroot(['grub-install --target=%s-efi --efi-directory=/install/boot '
+                         '--bootloader-id=antergos_grub --boot-directory=/install/boot '
+                         '--recheck' % uefi_arch], 300)
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
         except subprocess.TimeoutExpired:
@@ -1265,7 +1268,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 300)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1274,7 +1277,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_umount_special_dirs()
 
         path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
-               ("boot/EFI/antergos_grub/" + grub_efi_old))))
+                ("boot/EFI/antergos_grub/" + grub_efi_old))))
         exists = []
         for p in path:
             if os.path.exists(p):
