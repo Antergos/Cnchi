@@ -874,8 +874,7 @@ class InstallationProcess(multiprocessing.Process):
             proc = subprocess.Popen(run,
                                     stdin=stdin,
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT,
-                                    shell=True)
+                                    stderr=subprocess.STDOUT)
             out = proc.communicate(timeout=timeout)[0]
             txt = out.decode()
             if len(txt) > 0:
