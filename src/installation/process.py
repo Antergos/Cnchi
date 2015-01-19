@@ -73,7 +73,7 @@ DEST_DIR = "/install"
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
 
-def write_file(self, filecontents, filename):
+def write_file(filecontents, filename):
     """ writes a string of data to disk """
     if not os.path.exists(os.path.dirname(filename)):
         os.makedirs(os.path.dirname(filename))
@@ -164,7 +164,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(_("Output: %s"), err.output)
             logging.error(trace)
             self.queue_fatal_event(err.output)
-        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, os.Error, IOError) as err:
+        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, OSError, IOError) as err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             logging.error(err)
