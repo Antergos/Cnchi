@@ -147,7 +147,8 @@ class InstallationProcess(multiprocessing.Process):
     def run(self):
         try:
             self.run_installation()
-        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
+        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError,
+                os.Error, subprocess.CalledProcessError) as err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             logging.error(err)
@@ -161,16 +162,8 @@ class InstallationProcess(multiprocessing.Process):
         self.packages = []
 
         if not os.path.exists(DEST_DIR):
-            try:
-                with misc.raised_privileges():
-                    os.makedirs(DEST_DIR)
-            except os.Error as err:
-                # Already exists or can't create it
-                logging.warning(err.strerror)
-                if not os.path.exists(DEST_DIR):
-                    txt = _("Can't create the {0} directory, Cnchi can't continue").format(DEST_DIR)
-                    logging.error(txt)
-                    raise InstallError(txt)
+            with misc.raised_privileges():
+                os.makedirs(DEST_DIR)
         else:
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
