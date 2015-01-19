@@ -282,18 +282,15 @@ class Bootloader(object):
                 msg = _("No OEM loader found in %s. Copying Grub(2) into dir.")
                 logging.info(msg, path)
                 os.makedirs(path)
-                msg_failed = _("Copying Grub(2) into OEM dir failed: ")
+                msg_failed = _("Copying Grub(2) into OEM dir failed: %s")
                 try:
                     shutil.copy(grub_path, grub_default)
                 except FileNotFoundError:
-                    msg_failed = msg_failed + _("File Not Found.")
-                    logging.warning(msg_failed)
+                    logging.warning(msg_failed, _("File not found."))
                 except FileExistsError:
-                    msg_failed = msg_failed + _("File already exists.")
-                    logging.warning(msg_failed)
+                    logging.warning(msg_failed, _("File already exists."))
                 except Exception as err:
-                    msg_failed = msg_failed + _("Unknown error.")
-                    logging.warning(msg_failed)
+                    logging.warning(msg_failed, err)
 
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
