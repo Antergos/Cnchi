@@ -133,7 +133,7 @@ class InstallationProcess(multiprocessing.Process):
             except queue.Full:
                 pass
         else:
-            print(event_type + ": " + event_text)
+            print("{0}: {1}".format(event_type, event_text))
 
     def wait_for_empty_queue(self, timeout):
         if self.callback_queue is not None:
@@ -144,8 +144,18 @@ class InstallationProcess(multiprocessing.Process):
                 time.sleep(1)
                 tries = tries + 1
 
-    @misc.raise_privileges
     def run(self):
+        try:
+            self.run_installation()
+        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError) as err:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            logging.error(err)
+            logging.error(trace)
+            self.queue_fatal_event(err)
+
+    @misc.raise_privileges
+    def run_installation(self):
         """ Run installation """
         # Common vars
         self.packages = []
@@ -452,7 +462,7 @@ class InstallationProcess(multiprocessing.Process):
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except:
             self.pacman = None
-            raise InstallError("Can't initialize pyalpm.")
+            raise InstallError(_("Can't initialize pyalpm."))
 
         # Refresh pacman databases
         result = self.pacman.do_refresh()
