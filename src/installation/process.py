@@ -153,6 +153,8 @@ class InstallationProcess(multiprocessing.Process):
                 tries = tries + 1
 
     def run(self):
+        """ Calls run_installation and takes care of exceptions """
+
         try:
             self.run_installation()
         except subprocess.CalledProcessError as err:
@@ -172,6 +174,14 @@ class InstallationProcess(multiprocessing.Process):
     @misc.raise_privileges
     def run_installation(self):
         """ Run installation """
+
+        '''
+        From this point, on a warning situation, Cnchi should try to continue, so we need to catch the exception here.
+        If we don't catch the exception here, it will be catched in run() and managed as a fatal error.
+        On the other hand, if we want to clarify the exception message we can catch it here
+        and then raise an InstallError exception.
+        '''
+
         # Common vars
         self.packages = []
 
@@ -379,12 +389,7 @@ class InstallationProcess(multiprocessing.Process):
             use_aria2 = False
 
         download.DownloadPackages(
-            self.packages,
-            use_aria2,
-            pacman_conf_file,
-            pacman_cache_dir,
-            cache_dir,
-            self.callback_queue)
+            self.packages, use_aria2, pacman_conf_file, pacman_cache_dir, cache_dir, self.callback_queue)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
@@ -423,7 +428,9 @@ class InstallationProcess(multiprocessing.Process):
         result = self.pacman.do_refresh()
 
         if not result:
-            logging.error(_("Can't refresh pacman databases."))
+            txt = _("Can't refresh pacman databases.")
+            logging.error(txt)
+            raise InstallError(txt)
 
     def prepare_pacman_keyring(self):
         """ Add gnupg pacman files to installed system """
@@ -741,7 +748,7 @@ class InstallationProcess(multiprocessing.Process):
             if partition_path in self.fs_devices:
                 myfmt = self.fs_devices[partition_path]
             else:
-                # It hasn't any filesystem defined skip it.
+                # It hasn't any filesystem defined, skip it.
                 continue
 
             # Take care of swap partitions
@@ -821,21 +828,23 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add mount options parameters
             if not is_ssd:
-                opts = "defaults,rw,relatime"
                 if "btrfs" in myfmt:
                     opts = 'defaults,rw,relatime,space_cache,autodefrag,inode_cache'
                 elif "f2fs" in myfmt:
                     opts = 'defaults,rw,noatime'
                 elif "ext3" in myfmt or "ext4" in myfmt:
                     opts = 'defaults,rw,relatime,data=ordered'
+                else:
+                    opts = "defaults,rw,relatime"
             else:
-                opts = 'defaults,rw,noatime'
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                 if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs':
                     opts = 'defaults,rw,noatime,discard'
                 elif myfmt == 'btrfs':
                     opts = 'defaults,rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+                else:
+                    opts = 'defaults,rw,noatime'
 
             no_check = ["btrfs", "f2fs"]
 
@@ -909,26 +918,32 @@ class InstallationProcess(multiprocessing.Process):
     def update_pacman_conf(self):
         """ Add Antergos repo """
         path = os.path.join(DEST_DIR, "etc/pacman.conf")
-        with open(path, "a") as pacman_conf:
-            pacman_conf.write("\n\n")
-            pacman_conf.write("[antergos]\n")
-            pacman_conf.write("SigLevel = PackageRequired\n")
-            pacman_conf.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+        if os.path.exists(path):
+            with open(path, "a") as pacman_conf:
+                pacman_conf.write("\n\n")
+                pacman_conf.write("[antergos]\n")
+                pacman_conf.write("SigLevel = PackageRequired\n")
+                pacman_conf.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+        else:
+            logging.warning(_("Can't find pacman configuration file"))
 
     def uncomment_locale_gen(self, locale):
         """ Uncomment selected locale in /etc/locale.gen """
         text = []
         path = os.path.join(DEST_DIR, "etc/locale.gen")
 
-        with open(path) as gen:
-            text = gen.readlines()
+        if os.path.exists(path):
+            with open(path) as gen:
+                text = gen.readlines()
 
-        with open(path, "w") as gen:
-            for line in text:
-                if locale in line and line[0] == "#":
-                    # remove trailing '#'
-                    line = line[1:]
-                gen.write(line)
+            with open(path, "w") as gen:
+                for line in text:
+                    if locale in line and line[0] == "#":
+                        # remove trailing '#'
+                        line = line[1:]
+                    gen.write(line)
+        else:
+            logging.warning(_("Can't find locale.gen file"))
 
     def check_output(self, command):
         """ Helper function to run a command """
