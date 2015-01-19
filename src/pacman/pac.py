@@ -386,7 +386,9 @@ class Pac(object):
             # I get pyalpm errors here. Why?
             # Check against error 0 as it is not an error :p
             # There are a lot of "extracting" messages (not very useful). I do not show them.
-            if "error" in line and "error 0" not in line:
+
+            # TODO: Check that we don't show normal debug messages as errors (or viceversa)
+            if " error " in line and "error 0" not in line:
                 logging.error(line)
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
