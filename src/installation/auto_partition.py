@@ -27,6 +27,8 @@ import subprocess
 import logging
 import shlex
 
+from misc.misc import InstallError
+
 try:
     import show_message as show
 except ImportError:
@@ -48,16 +50,25 @@ def get_info(part):
     except subprocess.CalledProcessError as err:
         logging.warning(err)
         ret = ''
+
+    ret = check_output("blkid {0}".format(part))
+
     partdic = {}
+
     for info in ret.split():
         if '=' in info:
             info = info.split('=')
             partdic[info[0]] = info[1].strip('"')
+
     return(partdic)
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
-    return subprocess.check_output(command.split()).decode().strip("\n")
+    try:
+        output = subprocess.check_output(command.split()).decode().strip("\n")
+    except subprocess.CalledProcessError as err:
+        logging.error(err)        
+    return output
 
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
@@ -71,18 +82,29 @@ def unmount(directory):
     logging.warning(_("Unmounting %s"), directory)
     try:
         subprocess.call(["umount", directory])
-    except Exception:
+    except subprocess.CalledProcessError as err:
         logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
-        subprocess.call(["umount", "-l", directory])
+        try:
+            subprocess.call(["umount", "-l", directory])
+        except subprocess.CalledProcessError as err:
+            logging.error(_("Unmounting %s failed."), directory)
 
 def unmount_all(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
-    swaps = subprocess.check_output(["swapon", "--show=NAME", "--noheadings"]).decode().split("\n")
-    for name in filter(None, swaps):
-        if "/dev/zram" not in name:
-            subprocess.check_call(["swapoff", name])
+    try:
+        cmd = ["swapon", "--show=NAME", "--noheadings"]
+        swaps = subprocess.check_output(cmd).decode().split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                subprocess.check_call(["swapoff", name])
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
-    mount_result = subprocess.check_output("mount").decode().split("\n")
+    try:
+        mount_result = subprocess.check_output("mount").decode().split("\n")
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
+        return
 
     # Umount all devices mounted inside dest_dir (if any)
     dirs = []
@@ -125,8 +147,8 @@ def unmount_all(dest_dir):
                 pvolume = pvolume.strip(" ")
                 subprocess.check_call(["pvremove", "-f", pvolume])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't delete existent LVM volumes (see below)"))
         logging.warning(err)
+        logging.warning(_("Can't delete existent LVM volumes"))
 
     # Close LUKS devices (they may have been left open because of a previous failed installation)
     try:
@@ -142,7 +164,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
     if (luks_pass == None or luks_pass == "") and luks_key == None:
-        txt = _("Can't setup LUKS in device {0}. A password or a key file are needed").format(luks_device)
+        txt = _("Can't setup LUKS in device {0}. A password or a key file are needed")
+        txt = txt.format(luks_device)
         logging.error(txt)
         return
 
@@ -161,10 +184,14 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         dd("/dev/urandom", luks_key, bs=1024, count=4)
 
         # Set up luks with a keyfile
-        subprocess.check_call(
-            ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key])
-        subprocess.check_call(
-            ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key])
+        try:
+            cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
+            subprocess.check_call(cmd)
+            cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+            logging.error(_("Can't format and open the LUKS device %s"), luks_device)
     else:
         # Set up luks with a password key
 
@@ -173,18 +200,23 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         # https://code.google.com/p/cryptsetup/wiki/Cryptsetup160
         # aes-xts-plain
         # aes-cbc-essiv:sha256
-        proc = subprocess.Popen(
-            ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device],
-            stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
+        try:
+            cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device]
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+            (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
 
-        proc = subprocess.Popen(
-            ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"],
-            stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
+            cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+            (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+            logging.error(_("Can't format and open the LUKS device %s"), luks_device)
 
 def wipefs(device):
-    subprocess.check_call(["wipefs", "-a", device])
+    try:
+        subprocess.check_call(["wipefs", "-a", device])
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 def dd(input_device, output_device, bs=512, count=2048):
     """ Helper function to call dd """
@@ -194,7 +226,10 @@ def dd(input_device, output_device, bs=512, count=2048):
     cmd.append('bs={0}'.format(bs))
     cmd.append('count={0}'.format(count))
     cmd.append('status=noxfer')
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 def sgdisk(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk (GPT) """
@@ -217,12 +252,18 @@ def sgdisk(device, part_num, label, size, hex_code):
 
     logging.debug(" ".join(cmd))
 
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 def parted_set(device, number, flag, state):
     """ Helper function to call set parted command """
     cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 def parted_mkpart(device, ptype, start, end, filesystem=""):
     """ Helper function to call mkpart parted command """
@@ -235,12 +276,18 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     end_str = "{0}MiB".format(end)
 
     cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, filesystem, start_str, end_str]
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 def parted_mktable(device, table_type="msdos"):
     """ Helper function to call mktable parted command """
     cmd = ["parted", "--align", "optimal", "--script", device, "mktable", table_type]
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        logging.error(err)
 
 ''' AutoPartition Class '''
 
@@ -299,7 +346,7 @@ class AutoPartition(object):
             if fs_type not in mkfs.keys():
                 txt = _("Unknown filesystem type {0}").format(fs_type)
                 logging.error(txt)
-                show.error(None, txt)
+                raise InstallError(txt)
                 return
 
             command = mkfs[fs_type]
@@ -307,15 +354,18 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = _("Can't create filesystem {0}").format(fs_type)
-                logging.error(txt)
                 logging.error(err.cmd)
                 logging.error(err.output)
-                show.error(None, txt)
+                txt = _("Can't create filesystem {0}").format(fs_type)
+                logging.error(txt)
+                raise InstallError(txt)
                 return
 
             # Flush filesystem buffers
-            subprocess.check_call(["sync"])
+            try:
+                subprocess.check_call(["sync"])
+            except subprocess.CalledProcessError as err:
+                logging.warning(err)
 
             # Create our mount directory
             path = self.dest_dir + mount_point
@@ -329,7 +379,11 @@ class AutoPartition(object):
                 mopts = "rw,relatime,data=ordered"
             elif fs_type == "btrfs":
                 mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
-            subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
+
+            try:
+                subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
+            except subprocess.CalledProcessError as err:
+                logging.warning(err)
 
             # Change permission of base directories to avoid btrfs issues
             mode = 0o755
@@ -505,7 +559,7 @@ class AutoPartition(object):
 
         return part_sizes
 
-    def show_part_sizes(self, part_sizes):
+    def log_part_sizes(self, part_sizes):
         logging.debug(_("Total disk size: %dMiB"), part_sizes['disk'])
         if self.GPT:
             logging.debug(_("EFI System Partition (ESP) size: %dMiB"), part_sizes['efi'])
@@ -552,7 +606,7 @@ class AutoPartition(object):
             start_part_sizes = 1
 
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
-        self.show_part_sizes(part_sizes)
+        self.log_part_sizes(part_sizes)
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
@@ -687,8 +741,17 @@ class AutoPartition(object):
         if self.lvm:
             logging.debug(_("Cnchi will setup LVM on device %s"), devices['lvm'])
 
-            subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
-            subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
+            try:
+                subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
+            except subprocess.CalledProcessError as err:
+                logging.error(err)
+                logging.error(_("Error creating LVM physical volume"))
+
+            try:                
+                subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
+            except subprocess.CalledProcessError as err:
+                logging.error(err)
+                logging.error(_("Error creating LVM volume group"))
 
             # Fix issue 180
             try:
@@ -701,7 +764,7 @@ class AutoPartition(object):
                     logging.debug("Reajusting logical volume sizes")
                     diff_size = part_sizes['lvm_pv'] - vg_size
                     part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
-                    self.show_part_sizes(part_sizes)
+                    self.log_part_sizes(part_sizes)
             except Exception as err:
                 logging.exception(err)
 

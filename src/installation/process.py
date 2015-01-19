@@ -55,6 +55,8 @@ from installation import chroot
 from installation import mkinitcpio
 from installation import firewall
 
+from misc.misc import InstallError
+
 try:
     import xml.etree.cElementTree as ET
 except ImportError as err:
@@ -70,17 +72,6 @@ DEST_DIR = "/install"
 
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
-
-class InstallError(Exception):
-    """ Exception class called upon an installer error """
-    def __init__(self, value):
-        """ Initialize exception class """
-        super().__init__(value)
-        self.value = value
-
-    def __str__(self):
-        """ Returns exception message """
-        return repr(self.value)
 
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """

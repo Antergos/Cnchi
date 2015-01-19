@@ -1006,3 +1006,14 @@ def get_partitions():
                 if len(info[3]) > len("sdX") and "loop" not in info[3]:
                     partitions_list.append("/dev/" + info[3])
     return partitions_list
+
+class InstallError(Exception):
+    """ Exception class called upon an installer error """
+    def __init__(self, message):
+        """ Initialize exception class """
+        super().__init__(message)
+        self.message = message
+
+    def __str__(self):
+        """ Returns exception message """
+        return repr(self.message)

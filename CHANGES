@@ -1,3 +1,5 @@
+
+
  - Do not show hidden options when running testing.sh (I removed -z parameter)
  - Do not set user and password automatically even when using dev version z_hidden parameter
  - Using wrong var name in auto_partition. Fixed.
