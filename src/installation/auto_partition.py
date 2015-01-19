@@ -48,10 +48,9 @@ def get_info(part):
         cmd = ['blkid', part]
         ret = subprocess.check_output(cmd).decode().strip()
     except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        ret = ''
-
-    ret = check_output("blkid {0}".format(part))
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(_("Error running blkid command"))
 
     partdic = {}
 
@@ -67,7 +66,10 @@ def check_output(command):
     try:
         output = subprocess.check_output(command.split()).decode().strip("\n")
     except subprocess.CalledProcessError as err:
-        logging.error(err)        
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(err.output)
+
     return output
 
 def printk(enable):
@@ -98,12 +100,14 @@ def unmount_all(dest_dir):
             if "/dev/zram" not in name:
                 subprocess.check_call(["swapoff", name])
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
 
     try:
         mount_result = subprocess.check_output("mount").decode().split("\n")
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
         return
 
     # Umount all devices mounted inside dest_dir (if any)
@@ -147,8 +151,9 @@ def unmount_all(dest_dir):
                 pvolume = pvolume.strip(" ")
                 subprocess.check_call(["pvremove", "-f", pvolume])
     except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        logging.warning(_("Can't delete existent LVM volumes"))
+        logging.error(_("Can't delete existent LVM volumes"))
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
 
     # Close LUKS devices (they may have been left open because of a previous failed installation)
     try:
@@ -157,8 +162,9 @@ def unmount_all(dest_dir):
         if os.path.exists("/dev/mapper/cryptAntergosHome"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
     except subprocess.CalledProcessError as err:
-        txt = _("Can't close LUKS devices : {0}").format(err.output)
-        logging.warning(txt)
+        logging.error(_("Can't close already opened LUKS devices"))
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
@@ -190,8 +196,10 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
-            logging.error(err)
             logging.error(_("Can't format and open the LUKS device %s"), luks_device)
+            logging.error(_("Command %s failed"), err.cmd)
+            logging.error(_("Output: %s"), err.output)
+            raise InstallError(err.output)
     else:
         # Set up luks with a password key
 
@@ -209,8 +217,10 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
         except subprocess.CalledProcessError as err:
-            logging.error(err)
             logging.error(_("Can't format and open the LUKS device %s"), luks_device)
+            logging.error(_("Command %s failed"), err.cmd)
+            logging.error(_("Output: %s"), err.output)
+            raise InstallError(err.output)
 
 def wipefs(device):
     try:
@@ -255,7 +265,9 @@ def sgdisk(device, part_num, label, size, hex_code):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(err.output)
 
 def parted_set(device, number, flag, state):
     """ Helper function to call set parted command """
@@ -263,7 +275,9 @@ def parted_set(device, number, flag, state):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(err.output)
 
 def parted_mkpart(device, ptype, start, end, filesystem=""):
     """ Helper function to call mkpart parted command """
@@ -279,7 +293,9 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(err.output)
 
 def parted_mktable(device, table_type="msdos"):
     """ Helper function to call mktable parted command """
@@ -287,7 +303,9 @@ def parted_mktable(device, table_type="msdos"):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error(_("Command %s failed"), err.cmd)
+        logging.error(_("Output: %s"), err.output)
+        raise InstallError(err.output)
 
 ''' AutoPartition Class '''
 
@@ -328,7 +346,8 @@ class AutoPartition(object):
                 subprocess.check_call(["mkswap", "-L", label_name, device])
                 subprocess.check_call(["swapon", device])
             except subprocess.CalledProcessError as err:
-                logging.warning(err.output)
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
         else:
             mkfs = {"xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
                     "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
@@ -345,27 +364,24 @@ class AutoPartition(object):
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():
                 txt = _("Unknown filesystem type {0}").format(fs_type)
-                logging.error(txt)
                 raise InstallError(txt)
-                return
 
             command = mkfs[fs_type]
 
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                logging.error(err.cmd)
-                logging.error(err.output)
-                txt = _("Can't create filesystem {0}").format(fs_type)
-                logging.error(txt)
-                raise InstallError(txt)
-                return
+                logging.error(_("Can't create filesystem %s"), fs_type)
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
+                raise InstallError(err.output)
 
             # Flush filesystem buffers
             try:
                 subprocess.check_call(["sync"])
             except subprocess.CalledProcessError as err:
-                logging.warning(err)
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
 
             # Create our mount directory
             path = self.dest_dir + mount_point
@@ -383,7 +399,10 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
             except subprocess.CalledProcessError as err:
-                logging.warning(err)
+                logging.error(_("Error trying to  mount %s in %s"), device, path)
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
+                raise InstallError(err.output)
 
             # Change permission of base directories to avoid btrfs issues
             mode = 0o755
@@ -744,45 +763,52 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                logging.error(err)
                 logging.error(_("Error creating LVM physical volume"))
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
+                raise InstallError(err.output)
 
-            try:                
+            try:
                 subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                logging.error(err)
                 logging.error(_("Error creating LVM volume group"))
-
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
+                raise InstallError(err.output)
+                
             # Fix issue 180
-            try:
-                # Check space we have now for creating logical volumes
-                vg_info = check_output("vgdisplay -c AntergosVG")
-                # Get column number 12: Size of volume group in kilobytes
-                vg_size = int(vg_info.split(":")[11]) / 1024
-                if part_sizes['lvm_pv'] > vg_size:
-                    logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
-                    logging.debug("Reajusting logical volume sizes")
-                    diff_size = part_sizes['lvm_pv'] - vg_size
-                    part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
-                    self.log_part_sizes(part_sizes)
-            except Exception as err:
-                logging.exception(err)
+            # Check space we have now for creating logical volumes
+            vg_info = check_output("vgdisplay -c AntergosVG")
+            # Get column number 12: Size of volume group in kilobytes
+            vg_size = int(vg_info.split(":")[11]) / 1024
+            if part_sizes['lvm_pv'] > vg_size:
+                logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
+                logging.debug("Reajusting logical volume sizes")
+                diff_size = part_sizes['lvm_pv'] - vg_size
+                part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
+                self.log_part_sizes(part_sizes)
 
-            size = str(int(part_sizes['root']))
-            subprocess.check_call(
-                ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"])
+            try:
+                size = str(int(part_sizes['root']))
+                cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as err:
+                logging.error(_("Error creating LVM logical volume"))
+                logging.error(_("Command %s failed"), err.cmd)
+                logging.error(_("Output: %s"), err.output)
+                raise InstallError(err.output)
 
             if not self.home:
                 # Use the remainig space for our swap volume
-                subprocess.check_call(
-                    ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"])
+                cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
+                subprocess.check_call(cmd)
             else:
                 size = str(int(part_sizes['swap']))
-                subprocess.check_call(
-                    ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"])
+                cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
+                subprocess.check_call(cmd)
                 # Use the remaining space for our home volume
-                subprocess.check_call(
-                    ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"])
+                cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
+                subprocess.check_call(cmd)
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
