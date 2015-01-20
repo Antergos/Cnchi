@@ -1474,7 +1474,11 @@ class InstallationProcess(multiprocessing.Process):
 
     def check_output(self, command):
         """ Helper function to run a command """
-        return subprocess.check_output(command.split()).decode().strip("\n")
+        try:
+            command = command.split()
+        except Exception:
+            command = command
+        return subprocess.check_output(command).decode().strip("\n")
 
     def copy_cached_packages(self, cache_dir):
         """ Copy all packages from specified directory to install's target """
