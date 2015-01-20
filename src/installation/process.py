@@ -47,6 +47,7 @@ import desktop_environments as desktops
 import parted3.fs_module as fs
 import canonical.misc as misc
 import pacman.pac as pac
+import re
 
 try:
     import pyalpm
@@ -878,6 +879,10 @@ class InstallationProcess(multiprocessing.Process):
             txt = out.decode()
             if len(txt) > 0:
                 logging.debug(txt)
+            if proc.returncode > 0:
+                return False
+            else:
+                return True
         except OSError as err:
             logging.exception(_("Error running command: %s"), err.strerror)
             raise
@@ -1028,6 +1033,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.modify_grub_default()
         self.prepare_grub_d()
+        self.apply_osprober_patch()
         
         # Freeze and unfreeze xfs filesystems to enable grub(2) installation on xfs filesystems
         self.freeze_xfs()
@@ -1041,18 +1047,19 @@ class InstallationProcess(multiprocessing.Process):
         # Check grub.cfg for correct root UUID
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
+        ruuid_str = 'root=UUID=' + ruuid
+        boot_command = self.settings.get('grub_default_line')
+        boot_command = ruuid_str + ' ' + boot_command
+        pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
+        parse = open(cfg).read()
 
-        if ruuid not in open(cfg).read():
-            with open(cfg) as grub_cfg:
-                lines = [x.strip() for x in grub_cfg.readlines()]
-            for i in range(len(lines)):
-                if lines[i].startswith("linux	/vmlinuz-linux root="):
-                    old_line = lines[i]
-                    p1 = old_line[68:]
-                    p2 = old_line[:26]
-                    lines[i] = p1 + ruuid + p2
-            with open(cfg, 'w') as grub_file:
-                grub_file.write("\n".join(lines))
+        if ruuid_str not in parse:
+            entry = pattern.search(parse)
+            if entry:
+                new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
+
+                with open(cfg, 'w') as grub_file:
+                    grub_file.write(new_entry)
 
     def modify_grub_default(self):
         """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
@@ -1085,6 +1092,7 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
+            self.settings.set('grub_default_line', default_line)
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
@@ -1143,6 +1151,18 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:
             pass
+    
+    def apply_osprober_patch(self):
+        """ Adds -l option to os-prober's umount call so that it does not hang """
+        osp_path = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
+        if os.path.exists(osp_path):
+            with open(osp_path) as osp:
+                text = osp.read().replace("umount", "umount -l")
+            with open(osp_path, "w") as osp:
+                osp.write(text)
+            logging.debug(_("50mounted-tests file patched successfully"))
+        else:
+            logging.warning(_("Failed to patch 50mounted-tests, file not found."))
 
     def install_bootloader_grub2_bios(self):
         """ Install bootloader in a BIOS system """
@@ -1151,7 +1171,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
         
-        grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
+        grub_install = ['/usr/bin/grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
                         '--boot-directory=/boot', '--recheck']
         
         if len(grub_location) > 8:  # ex: /dev/sdXY > 8
@@ -1167,7 +1187,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 300)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1197,9 +1217,12 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            subprocess.check_call(['grub-install --target=%s-efi --efi-directory=/install/boot '
-                                   '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                                   '--recheck' % uefi_arch], shell=True, timeout=45)
+            gcmd = ['/usr/bin/grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/boot',
+                    '--bootloader-id=antergos_grub', '--boot-directory=/boot', '--recheck']
+
+            self.chroot_mount_special_dirs()
+            self.chroot(gcmd, 300)
+
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
         except subprocess.TimeoutExpired:
@@ -1251,7 +1274,7 @@ class InstallationProcess(multiprocessing.Process):
 
         locale = self.settings.get("locale")
         try:
-            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 45)
+            self.chroot(['sh', '-c', 'LANG=%s grub-mkconfig -o /boot/grub/grub.cfg' % locale], 300)
         except subprocess.TimeoutExpired:
             logging.error(_("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue."))
             os.system("killall grub-mount")
@@ -1260,7 +1283,7 @@ class InstallationProcess(multiprocessing.Process):
         self.chroot_umount_special_dirs()
 
         path = ((os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi")), (os.path.join(self.dest_dir,
-               ("boot/EFI/antergos_grub/" + grub_efi_old))))
+                ("boot/EFI/antergos_grub/" + grub_efi_old))))
         exists = []
         for p in path:
             if os.path.exists(p):
@@ -1451,7 +1474,11 @@ class InstallationProcess(multiprocessing.Process):
 
     def check_output(self, command):
         """ Helper function to run a command """
-        return subprocess.check_output(command.split()).decode().strip("\n")
+        try:
+            command = command.split()
+        except Exception:
+            command = command
+        return subprocess.check_output(command).decode().strip("\n")
 
     def copy_cached_packages(self, cache_dir):
         """ Copy all packages from specified directory to install's target """
@@ -1495,9 +1522,10 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_cups"):
             logging.debug(_("Configuring CUPS..."))
-            service = os.path.join(self.dest_dir, "usr/lib/systemd/system/cups.service")
+            service = os.path.join(self.dest_dir,
+                                   "usr/lib/systemd/system/org.cups.cupsd.service")
             if os.path.exists(service):
-                self.enable_services(['cups'])
+                self.enable_services(['org.cups.cupsd'])
 
         #if self.settings.get("feature_office"):
         #    logging.debug(_("Configuring libreoffice..."))

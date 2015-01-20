@@ -123,6 +123,10 @@ cinnamon_settings(){
 	mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 	cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
+	# Copy panel-launchers@cinnamon.org.json to set launchers
+		mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
+		cp -f /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
+
 	# Set Cinnamon in .dmrc
 	echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
 	echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
