@@ -1213,9 +1213,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            self.chroot(['/usr/bin/grub-install --target=%s-efi --efi-directory=/install/boot '
-                         '--bootloader-id=antergos_grub --boot-directory=/install/boot '
-                         '--recheck' % uefi_arch], 300)
+            self.chroot(['/usr/bin/grub-install ', '--target=%s-efi ' % uefi_arch, '--efi-directory=/install/boot ',
+                         '--bootloader-id=antergos_grub ', '--boot-directory=/install/boot ', '--recheck'], 300)
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
         except subprocess.TimeoutExpired:
