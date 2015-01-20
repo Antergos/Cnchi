@@ -1220,10 +1220,8 @@ class InstallationProcess(multiprocessing.Process):
             gcmd = ['/usr/bin/grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/install/boot',
                     '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck']
 
-            run_gcmd = self.chroot(gcmd, 300)
-            if not run_gcmd:
-                run_gcmd = self.check_output(gcmd)
-                logging.debug(run_gcmd)
+            run_gcmd = self.check_output(gcmd)
+            logging.debug(run_gcmd)
 
         except subprocess.CalledProcessError as err:
             logging.error('Command grub-install failed. Error output: %s' % err.output)
