@@ -1167,7 +1167,7 @@ class InstallationProcess(multiprocessing.Process):
 
         self.chroot_mount_special_dirs()
         
-        grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
+        grub_install = ['/usr/bin/grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
                         '--boot-directory=/boot', '--recheck']
         
         if len(grub_location) > 8:  # ex: /dev/sdXY > 8
@@ -1213,7 +1213,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            self.chroot(['grub-install --target=%s-efi --efi-directory=/install/boot '
+            self.chroot(['/usr/bin/grub-install --target=%s-efi --efi-directory=/install/boot '
                          '--bootloader-id=antergos_grub --boot-directory=/install/boot '
                          '--recheck' % uefi_arch], 300)
         except subprocess.CalledProcessError as err:
