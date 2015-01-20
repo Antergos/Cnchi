@@ -1719,7 +1719,7 @@ class InstallationAdvanced(GtkBaseBox):
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
                             vgname = vgname.split('-')[0]
-                            if (mnt == '/' and noboot) or (mnt == '/boot'):
+                            if (mnt == '/') or (mnt == '/boot'):
                                 self.blvm = True
                                 for ee in pvs[vgname]:
                                     #print(partitions)
