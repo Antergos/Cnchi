@@ -1217,8 +1217,8 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) UEFI %s boot loader") % uefi_arch)
 
         try:
-            gcmd = ['/usr/bin/grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/install/boot',
-                    '--bootloader-id=antergos_grub', '--boot-directory=/install/boot', '--recheck']
+            gcmd = ['/usr/bin/grub-install', '--target=%s-efi' % uefi_arch, '--efi-directory=/boot',
+                    '--bootloader-id=antergos_grub', '--boot-directory=/boot', '--recheck']
 
             self.chroot_mount_special_dirs()
             self.chroot(gcmd, 300)

@@ -595,9 +595,9 @@ class AutoPartition(object):
         self.mkfs(swap_device, "swap", "", "AntergosSwap")
         if self.uefi:
             # Format /boot partition with vfat
-            self.mkfs(boot_device, "vfat", "/boot", "AntergosEFI", "-F 32")
+            self.mkfs(boot_device, "vfat", "/boot", "AntergosEFI", "-F32")
         else:
-            self.mkfs(boot_device, "ext2", "/boot", "AntergosBoot")
+            self.mkfs(boot_device, "ext2", "/boot", "AntBoot")
 
         if self.home:
             self.mkfs(home_device, "ext4", "/home", "AntergosHome")
