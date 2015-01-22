@@ -1053,7 +1053,7 @@ class InstallationProcess(multiprocessing.Process):
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
         parse = open(cfg).read()
 
-        if ruuid_str not in parse:
+        if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
             if entry:
                 new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
