@@ -1049,7 +1049,7 @@ class InstallationProcess(multiprocessing.Process):
         ruuid = self.settings.get('ruuid')
         ruuid_str = 'root=UUID=' + ruuid
         boot_command = self.settings.get('grub_default_line')
-        boot_command = ruuid_str + ' ' + boot_command
+        boot_command = ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
         parse = open(cfg).read()
 
@@ -1057,9 +1057,10 @@ class InstallationProcess(multiprocessing.Process):
             entry = pattern.search(parse)
             if entry:
                 new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
+                parse = parse.replace(entry.group(), new_entry)
 
                 with open(cfg, 'w') as grub_file:
-                    grub_file.write(new_entry)
+                    grub_file.write(parse)
 
     def modify_grub_default(self):
         """ If using LUKS, we need to modify GRUB_CMDLINE_LINUX to load our root encrypted partition
@@ -1092,7 +1093,7 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 default_line = 'GRUB_CMDLINE_LINUX="cryptdevice=/dev/disk/by-uuid/%s:cryptAntergos"' % root_uuid
 
-            self.settings.set('grub_default_line', default_line)
+            self.settings.set('grub_default_line', default_line[20:].replace('"', ''))
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
