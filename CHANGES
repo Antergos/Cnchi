@@ -1,3 +1,5 @@
+
+
  - Fix write_file params
  - Worked on try/exception management. Needs testing, as always.
  - try exception rewritting. Hope it will give us more info in logs when Cnchi fails
