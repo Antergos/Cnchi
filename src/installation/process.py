@@ -1049,7 +1049,7 @@ class InstallationProcess(multiprocessing.Process):
         ruuid = self.settings.get('ruuid')
         ruuid_str = 'root=UUID=' + ruuid
         boot_command = self.settings.get('grub_default_line')
-        boot_command = ruuid_str + ' ' + boot_command + '\n'
+        boot_command = 'linux	/vmlinuz-linux' + ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
         parse = open(cfg).read()
 
