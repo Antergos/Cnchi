@@ -1719,15 +1719,16 @@ class InstallationAdvanced(GtkBaseBox):
                             pvs = lvm.get_lvm_partitions()
                             vgname = partition_path.split("/")[-1]
                             vgname = vgname.split('-')[0]
-                            if (mnt == '/' and noboot) or (mnt == '/boot'):
+                            if (mnt == '/') or (mnt == '/boot'):
                                 self.blvm = True
-                                for ee in pvs[vgname]:
-                                    #print(partitions)
-                                    if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
-                                        if self.grub_device or self.grub_device is not None:
-                                            x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
-                                if not self.testing:
-                                    pm.finalize_changes(partitions[ee].disk)
+                                if noboot or (mnt == '/boot'):
+                                    for ee in pvs[vgname]:
+                                        #print(partitions)
+                                        if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
+                                            if self.grub_device or self.grub_device is not None:
+                                                x = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
+                                    if not self.testing:
+                                        pm.finalize_changes(partitions[ee].disk)
 
                         #if "swap" in fisy:
                         #    (res, err) = pm.set_flag(pm.PED_PARTITION_SWAP, partitions[partition_path])
