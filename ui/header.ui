@@ -12,8 +12,8 @@
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
                 <!-- <property name="halign">end</property> -->
-                <property name="margin_top">8</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
                 <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
                 <child>
                     <object class="GtkArrow" id="fwd_arrow">
@@ -47,8 +47,8 @@
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
                 <property name="halign">end</property>
-                <property name="margin_top">8</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
                 <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
                 <child>
                     <object class="GtkArrow" id="bk_arrow">
