@@ -106,6 +106,8 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.debug("Cnchi will use '%s' as a source directory for cached xz packages", cmd_line.cache)
             self.settings.set('cache', cmd_line.cache)
 
+        data_dir = self.settings.get('data')
+
         # For things we are not ready for users to test
         self.settings.set('z_hidden', cmd_line.z_hidden)
 
@@ -116,18 +118,19 @@ class MainWindow(Gtk.ApplicationWindow):
             self.settings.set("desktops", desktops.DESKTOPS)
 
         self.ui = Gtk.Builder()
-        self.ui.add_from_file(self.ui_dir + "cnchi.ui")
+        path = os.path.join(self.ui_dir, "cnchi.ui")
+        self.ui.add_from_file(path)
 
         self.add(self.ui.get_object("main"))
 
         self.header_ui = Gtk.Builder()
-        self.header_ui.add_from_file(self.ui_dir + "header.ui")
+        path = os.path.join(self.ui_dir, "header.ui")
+        self.header_ui.add_from_file(path)
         self.header = self.header_ui.get_object("header")
 
         self.logo = self.header_ui.get_object("logo")
-        data_dir = self.settings.get('data')
-        logo_path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
-        self.logo.set_from_file(logo_path)
+        path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
+        self.logo.set_from_file(path)
 
         # To honor our css
         self.header.set_name("header")
@@ -357,6 +360,7 @@ class MainWindow(Gtk.ApplicationWindow):
         next_page = self.get_current_page().get_next_page()
 
         if next_page != None:
+            self.logo.hide()
             if next_page not in self.pages.keys():
                 # Load all pages
                 self.load_pages()
@@ -404,3 +408,5 @@ class MainWindow(Gtk.ApplicationWindow):
                 if self.get_current_page().get_prev_page() == None:
                     # We're at the first page
                     self.backwards_button.hide()
+                    self.logo.show_all()
+                    self.progressbar.hide()
