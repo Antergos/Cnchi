@@ -342,9 +342,9 @@
         <pkgname>kdebase-kdepasswd</pkgname>
         <pkgname>kdebase-kdialog</pkgname>
         <pkgname>kdebase-kfind</pkgname>
-        <pkgname>kdebase-konsole</pkgname>
+        <pkgname>konsole</pkgname>
         <pkgname>kdebase-plasma</pkgname>
-        <pkgname>kdegraphics-gwenview</pkgname>
+        <pkgname>gwenview</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
@@ -356,7 +356,7 @@
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
-        <pkgname>kdesdk-kate</pkgname>
+        <pkgname>kate</pkgname>
         <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
         <pkgname>kdeutils-kcalc</pkgname>
