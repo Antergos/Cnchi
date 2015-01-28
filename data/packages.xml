@@ -432,7 +432,7 @@
           <pkgname>kwrited</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
           <pkgname>oxygen</pkgname>
-          <pkgname>plasma-next</pkgname>
+          <pkgname>plasma</pkgname>
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
           <pkgname>plasma-workspace-wallpapers</pkgname>
           <pkgname>transmission-qt</pkgname>
