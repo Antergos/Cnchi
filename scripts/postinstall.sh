@@ -285,24 +285,25 @@ kde_settings(){
 	chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
 	chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
-	# When applications transition to Qt5 they will look for config files in the standardized (XDG) locations. Create
-	# symlinks during the transitional period until all apps are updated to use the new config file paths.
-	 link_config() {
+    # When applications transition to Qt5 they will look for config files in the standardized (XDG) locations. Create
+    # symlinks during the transitional period until all apps are updated to use the new config file paths.
+    link_config() {
 
-	     if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
-	        app=${1:6}
-	        app_old="/home/${USER_NAME}/.kde4/share/apps/${app}"
+         if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
+            app=${1:6}
+            app_old="/home/${USER_NAME}/.kde4/share/apps/${app}"
             app_new="/home/${USER_NAME}/.local/share/${app}"
             chroot ${DESTDIR} "ln -s ${app_old} ${app_new}" ${USER_NAME}
-        fi
+         fi
          if [[ ${2} != "conf:" ]] && [[ ${2} != "" ]]; then
-	        conf=${2:6}
-	        conf_old="/home/${USER_NAME}/.kde4/share/config/${conf}"
+            conf=${2:6}
+            conf_old="/home/${USER_NAME}/.kde4/share/config/${conf}"
             conf_new="/home/${USER_NAME}/.config/${conf}"
             chroot ${DESTDIR} "ln -s ${conf_old} ${conf_new}" ${USER_NAME}
-        fi
+         fi
 
     }
+
     for i in konsole; do
         link_config apps:${i};
     done
@@ -310,9 +311,8 @@ kde_settings(){
         link_config apps: conf:kdeglobals;
     done
 
-}
-	## Set defaults directories
-	chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+    ## Set defaults directories
+    chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
 mate_settings() {
