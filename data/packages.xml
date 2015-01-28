@@ -42,7 +42,7 @@
       <packages>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
-        <pkgname>antergos-welcome</pkgname>
+        <!--<pkgname>antergos-welcome</pkgname> -->
         <pkgname>chromium</pkgname>
         <pkgname>chromium-pepper-flash</pkgname>
         <pkgname>gst-libav</pkgname>
