@@ -117,13 +117,15 @@ def create(pacman, package_name, pacman_conf_file):
         msg = _("Can't find these packages: ")
         for pkg_not_found in sorted(not_found):
             msg = msg + pkg_not_found + " "
-        logging.warning(msg)
+        logging.error(msg)
+        return None
 
     if missing_deps:
         msg = _("Can't resolve these dependencies: ")
         for missing in sorted(missing_deps):
             msg = msg + missing + " "
-        logging.warning(msg)
+        logging.error(msg)
+        return None
 
     metalink = download_queue_to_metalink(download_queue)
 

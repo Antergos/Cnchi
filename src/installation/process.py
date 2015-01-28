@@ -334,10 +334,6 @@ class InstallationProcess(multiprocessing.Process):
         self.select_packages()
         logging.debug(_("Packages selected"))
 
-        # Wait for all logs (logging and showing message to user is slower than just logging)
-        # if we don't wait, logs get mixed up
-        self.wait_for_empty_queue(timeout=10)
-
         logging.debug(_("Downloading packages..."))
         self.download_packages()
 

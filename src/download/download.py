@@ -48,6 +48,8 @@ except ImportError as err:
     import download_urllib
     import download_aria2
 
+from misc.misc import InstallError
+
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
         This class tries to previously download all necessary packages for
@@ -94,6 +96,7 @@ class DownloadPackages(object):
         downloads = self.get_downloads_list(package_names)
 
         if downloads is None:
+            raise InstallError(_("Can't create download package list. Check log output for details"))
             return
 
         if use_aria2:
@@ -118,7 +121,7 @@ class DownloadPackages(object):
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
         self.queue_event('percent', 0)
-        self.queue_event('info', _('Creating list of packages to download...'))
+        self.queue_event('info', _('Creating the list of packages to download...'))
         percent = 0
         processed_packages = 0
         total_packages = len(package_names)
@@ -133,6 +136,7 @@ class DownloadPackages(object):
                 callback_queue=self.callback_queue)
         except Exception as err:
             logging.error(_("Can't initialize pyalpm: %s"), err)
+            return None
 
         if pacman is None:
             return None
@@ -141,8 +145,8 @@ class DownloadPackages(object):
             for package_name in package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink == None:
-                    logging.error(_("Error creating metalink for package %s"), package_name)
-                    continue
+                    logging.error(_("Error creating metalink for package %s. Installation will stop"), package_name)
+                    return None
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
@@ -166,7 +170,7 @@ class DownloadPackages(object):
         except Exception as err:
             logging.error(_("Can't release pyalpm: %s"), err)
 
-        # Overwrite last event
+        # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")
 
         return downloads
@@ -176,7 +180,7 @@ class DownloadPackages(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug(event_type + " : " + str(event_text))
+                logging.debug("{0}:{1}".format(event_type, event_text))
             return
 
         if event_type in self.last_event:
