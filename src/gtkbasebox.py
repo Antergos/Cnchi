@@ -74,3 +74,6 @@ class GtkBaseBox(Gtk.Box):
 
     def store_values(self):
         raise NotImplementedError
+
+    def get_name(self):
+        return self.name
