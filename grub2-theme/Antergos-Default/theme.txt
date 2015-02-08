@@ -1,6 +1,6 @@
 # Antergos grub2 theme
 
-desktop-image: "background.jpg"
+desktop-image: "background.png"
 
 title-text: ""
 
