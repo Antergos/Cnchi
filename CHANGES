@@ -1,3 +1,197 @@
+ - Updated AUTHORS and icons (cherry picked from commit 4a78790)
+ - Merge pull request #259 from nagybence/master
+ - add gsimplecal to openbox install
+ - fix typo
+ - updated packages.xml and postinstall with upstream changes for kde/kde5
+ - fixed grub.cfg root uuid issue (finally!) really this time...
+ - fixed grub.cfg root uuid issue (finally!)
+ - always call notify-send as antergos user (testing.sh)
+ - don't replace the entire grub.cfg with a single menu entry *oops*
+ - Merge pull request #257 from ial-su3/lvm-advanced-fix
+ - Update test so boot flag is set on the boot partition only.
+ - Merge remote-tracking branch 'antergos/master' into lvm-advanced-fix
+ - mount special dirs before running grub-install
+ - mount special dirs before running grub-install
+ - catch exception in check_ouput command
+ - still working on grub install with luks
+ - still working on grub install with luks
+ - use list correctly for grub-install command
+ - use full path for grub-install command
+ - dont use shell=True
+ - version bump
+ - fix for grub issues. needs testing.
+ - forgot to add panel-launchers settings file
+ - adjust update_info script so it works when cnchi is not in /usr/share
+ - small fixes to postinstall. fix xups service name in process.py
+ - fix file permissions on 10_antergos
+ - make sure root partition is configured as such in grub.cfg. previously we only checked that the uuid was present in the file no matter where it appeared.
+ - backport upstream changes to 10_antergos script
+ - Enable lvm when / is on an lvm partition.
+ - backport pacman keyring fix from dev repo. bump version.
+ - version bump reflecting mesa-dri to mesa name change
+ - mesa-dri -> mesa
+ - Do not check packages.xml time
+ - enable haveged service
+ - Added -f --force parameter
+ - don't compare struct time to a float time.
+ - version bump
+ - check "last-modified" header value when downloading packages.xml and compare it to the local file. Use the most recent version.
+ - missed a spot of coord swapping
+ - FINALLY fixed the slider!
+ - nump version
+ - change slider script. this one works better.
+ - forgot to include a file for slider
+ - forgot to include a file for slider
+ - no need to hold version anymore
+ - Merge remote-tracking branch 'github/master' into github
+ - rewrite slider code. needs testing.
+ - Added Orca to the Gnome installation
+ - Merge remote-tracking branch 'github/master' into github
+ - working on slide zoom issue
+ - Avoids updating loop (so it's not really solving it)
+ - fix filepath for notify_user function in testing.sh
+ - fix typo in features.ui; only init/populate keyring if our keys are not found (this is done during iso boot so it shouldnt be needed but its a good backup plan)
+ - Merge remote-tracking branch 'github/master' into github
+ - fix typo in features.ui
+ - Added keyring initialisation.
+ - Merge remote-tracking branch 'github/master' into github
+ - fix for slide image being cut off. needs testing.
+ - Updated update.info
+ - forgot to update some files when I removed gnome-extra and third party features *oops*
+ - update cnchi-dev script
+ - few bug fixes before new iso build
+ - revert last commit so the current testing iso's dont break
+ - version bump to test updater.py
+ - smaller font size on slides, created a 3rd slide. will be doing one more asap.
+ - new slide images. not finished yet.
+ - forgot to comment out an old? function that was causing an exception
+ - Merge remote-tracking branch 'github/master' into github
+ - fix uncaught exception during pacman keyring prep
+ - Copy oblogout icons
+ - update.info
+ - backport updater.py changes from dev branch. it's working!
+ - bump version to test updater.py
+ - version bumped
+ - wrong var name
+ - Working on rank_mirrors, at least now should not stop cnchi
+ - It won't work without requests, but at least it won't fail miserably
+ - Update 10_antergos
+ - Update 10_antergos
+ - testing updater.py
+ - update.info
+ - fix version
+ - backport important fixes from dev branch
+ - Reverse position of lon/lat for new geo server
+ - Merge pull request #229 from adonm/patch-1
+ - update kdeutils-kwallet to kdeutils-kwalletmanager
+ - Fixed typo
+ - Updated update.info
+ - Fix numix-icon-theme-square-kde problem
+ - Use fresh branch of libreoffice
+ - Updated update.info
+ - Merge pull request #228 from lots0logs/master
+ - Updated location of os-release file to reflect upstream changes.
+ - Merge pull request #5 from Antergos/master
+ - Update radeon.py
+ - Update nouveau.py
+ - Update i915.py
+ - Merge pull request #227 from lots0logs/master
+ - removed pycharm directory
+ - version bump
+ - Updated hardware module  for the packaging changes for mesa.
+ - Merge pull request #4 from Antergos/master
+ - Octal in Python3 is preceded by 0o
+ - os.chmod value must have a leading zero (0755)
+ - Merge pull request #224 from lots0logs/master
+ - Revert a previous change that isnt needed
+ - Merge branch 'master' of github.com:lots0logs/Cnchi
+ - [BUGFIX] Second call to do_install was incorrectly nested in the conditional that preceded it.
+ - Make sure message is always a string in show_message.py; Don't try to chmod 10-installer until the file exists--Github #223
+ - update testing.sh script
+ - removed gimp
+ - Clean up packages.xml
+ - Merge pull request #222 from lots0logs/master
+ - [BUGFIX] Show antergos-wallpapers in cinnamon background settings tool
+ - [BUGFIX] Temp fix for alpm error on KDE install. Bumped Version.
+ - Merge branch 'master' of http://github.com/antergos/Cnchi
+ - Fixes issue 220
+ - Merge pull request #217 from sublimino/patch-1
+ - Update README.md formatting
+ - [BUG FIX] Don't symlink adwaita icon directory.
+ - Merge pull request #213 from lots0logs/master
+ - 	modified:   data/css/gtk-style.css
+ - KDE Tested. Right permissions in etc and usr. Update version
+ - Fixing postinstall script (KDE). Needs testing
+ - import tempfile
+ - Do not use /mnt as temporary mount point
+ - Merge pull request #212 from lots0logs/master
+ - this is it..we are ready. i will build the images shortly.
+ - remove fix for vbox that was already implemented elsewhere
+ - Merge branch 'master' of https://github.com/Antergos/Cnchi
+ - run depmod if system is vbox. stop slides.py from expanding the window. fix typo in CSS for progress bar text.
+ - Update version.
+ - virtualbox-guest-modules does not call depmod
+ - Version updated
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Enable services without using their extension
+ - Merge pull request #211 from lots0logs/master
+ - stop copying other files into user's home!
+ - Merge pull request #209 from lots0logs/master
+ - don't add label to button bc it can't be removed
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Try to fix /proc/cmdline not found error
+ - changes that are included in the iso..sorry im OCD :-/
+ - Merge pull request #208 from lots0logs/master
+ - Merge branch 'master' of https://github.com/Antergos/Cnchi
+ - 10_archlinux file is no longer added by upstream
+ - Fixed arrows mess. It still doesn't use GtkArrow though. Let's leave this for 0.7.x series, please...
+ - kdeutils-kwallet does not exist. Install kdeutils-kwalletmanager instead.
+ - Small changes in postinstall script
+ - Updating version.
+ - Added a file check in 10_antergos. Hope it is ok.
+ - Merge pull request #206 from lots0logs/master
+ - progress bar percentage text change to white when the progress covers it.
+ - fix type error on postinstall. make cbatticon desktop file so cinnamon will launch at boot.
+ - Modify run script to create cnchi link in /usr/share (useful when testing)
+ - Merge pull request #204 from lots0logs/master
+ - add missing setting to config.py
+ - don't copy entire /etc into user's home dir
+ - Depending on Gtk version, buttons get sorted diferently. How nice.
+ - Added plank numix theme to Openbox
+ - Fix button order
+ - Merge branch 'master' of https://github.com/lots0logs/Cnchi
+ - Button animation now behaves more like pressing a button. This is good enough for this release.
+ - Don't change forward button type on ask.py for now.
+ - Restored to 644 mode
+ - Do not show go-next image when showing "Install Now!" message in forward button
+ - Do not use css for prev/next buttons
+ - Added missing laptop config variable.
+ - Merge branch 'master' of https://github.com/Antergos/cnchi
+ - Using go-back go-next again. I've left arrows in ui, so we can use them in the future.
+ - Merge pull request #200 from lots0logs/master
+ - fixed mistake in variable name
+ - Temporary solution for Cinnamon upower bug.
+ - Removed execution flag from ask.py
+ - Merge pull request #199 from lots0logs/master
+ - a few changes to the CSS including better style for the forward and back buttons.
+ - Merge pull request #197 from lots0logs/master
+ - Set Cinnamon theme to "Numix Frost"
+ - Use finally to not duplicate code
+ - Merge pull request #196 from lots0logs/master
+ - Updated packages.xml (removed zukitwo from openbox)
+ - correct typo
+ - confirmed fix for launching CLI
+ - Update info.py
+ - I didn't see a line already activating lockscreen extension
+ - Activate ligthdm-lockscreen and numix frost gnome shell on gnome installs
+ - Merge pull request #195 from lots0logs/master
+ - 	modified:   data/packages.xml
+ - Updated languages
+ - Numix gtk included and removed faenza icon theme
+ - Removed unnecessary css
+ - Updated version
+ - Bugfix when changing lvm volume size in auto_partition
+
  - Merge pull request #259 from nagybence/master
  - add gsimplecal to openbox install
  - fix typo
