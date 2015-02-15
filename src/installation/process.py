@@ -334,6 +334,11 @@ class InstallationProcess(multiprocessing.Process):
         self.select_packages()
         logging.debug(_("Packages selected"))
 
+        # Fix bug #263 (v86d moved from [extra] to AUR)
+        if "v86d" in self.packages:
+            self.packages.remove("v86d")
+            logging.debug(_("Removed 'v86d' package from list"))
+
         logging.debug(_("Downloading packages..."))
         self.download_packages()
 
