@@ -28,6 +28,7 @@ import logging
 import os
 import shutil
 import subprocess
+import re
 
 import parted3.fs_module as fs
 
@@ -71,29 +72,27 @@ class Bootloader(object):
         self.check_root_uuid_in_grub()
 
     def check_root_uuid_in_grub(self):
-        ''' Checks grub.cfg for correct root UUID (just in case) '''
+        ''' Checks grub.cfg for correct root UUID '''
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
-        ruuid_ok = False
-
         if len(ruuid) == 0:
             logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
             return
+        ruuid_str = 'root=UUID=' + ruuid
+        boot_command = self.settings.get('grub_default_line')
+        boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
+        pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
+        parse = open(cfg).read()
 
-        with open(cfg) as grub_cfg:
-            if ruuid in grub_cfg.read():
-                ruuid_ok = True
+        if not self.settings.get('use_luks') and ruuid_str not in parse:
+            entry = pattern.search(parse)
+            if entry:
+                logging.debug("Wrong uuid in grub.cfg, let's fix it!")
+                new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
+                parse = parse.replace(entry.group(), new_entry)
 
-        if not ruuid_ok:
-            logging.debug("Wrong uuid in grub.cfg, let's fix it!")
-            with open(cfg) as grub_cfg:
-                lines = [x.strip() for x in grub_cfg.readlines()]
-            for i in range(len(lines)):
-                if lines[i].startswith("linux") and "/vmlinuz-linux root=" in lines[i]:
-                    old_line = lines[i]
-                    lines[i] = old_line[68:] + ruuid + old_line[:26]
-            with open(cfg, 'w') as grub_cfg:
-                grub_cfg.write("\n".join(lines))
+                with open(cfg) as grub_file:
+                    grub_file.write(parse)
 
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
@@ -101,6 +100,7 @@ class Bootloader(object):
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
+
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
         if os.path.exists(plymouth_bin):
             use_splash = 'splash'
@@ -145,6 +145,9 @@ class Bootloader(object):
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
                 default_line = default_line + ' cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root'.format(boot_uuid)
+
+            # Store grub default line, we'll use it later in check_root_uuid_in_grub()
+            self.settings.set('grub_default_line', default_line)
 
             default_line = 'GRUB_CMDLINE_LINUX="{0}"'.format(default_line)
 

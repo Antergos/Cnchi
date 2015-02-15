@@ -2041,7 +2041,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                         logging.info(txt)
 
-                        if ((mnt == '/' and noboot) or (mnt == '/boot')) and ('/dev/mapper' not in partition_path):
+                        if ((mnt == '/' and noboot) or mnt == '/boot') and '/dev/mapper' not in partition_path:
                             if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
                                 if self.bootloader_device or self.bootloader_device is not None:
                                     (res, err) = pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
