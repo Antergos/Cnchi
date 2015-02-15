@@ -42,13 +42,11 @@ from gtkbasebox import GtkBaseBox
 SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
-USE_WEBKIT = True
-
-if USE_WEBKIT:
-    try:
-        from gi.repository import WebKit
-    except ImportError:
-        USE_WEBKIT = False
+try:
+    from gi.repository import WebKit
+except ImportError:
+    print("Cnchi needs gi.repository.WebKit")
+    sys.exit(-1)
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -73,7 +71,6 @@ class Slides(GtkBaseBox):
         self.webview = None
 
         self.scrolled_window = self.ui.get_object("scrolledwindow")
-        self.slideshow_image = self.ui.get_object("slideshow_image")
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -84,7 +81,7 @@ class Slides(GtkBaseBox):
 
     def prepare(self, direction):
         ## We don't load webkit until we reach this screen
-        if USE_WEBKIT and self.webview == None:
+        if self.webview == None:
             # Add a webkit view and load our html file to show the slides
             try:
                 self.webview = WebKit.WebView()
@@ -94,14 +91,7 @@ class Slides(GtkBaseBox):
 
             self.scrolled_window.add(self.webview)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-
-        if not USE_WEBKIT:
-            # load first slide show image
-            self.slideshow_index = 1
-            path = os.path.join(SLIDES_PATH, "{0}.png".format(self.slideshow_index))
-            if os.path.exists(path):
-                self.slideshow_image.set_from_file(path)
-                GLib.timeout_add(60000*10, self.change_slideshow_image)
+            self.scrolled_window.set_size_request(800, 334)
 
         self.translate_ui()
         self.show_all()
@@ -119,32 +109,7 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-        if USE_WEBKIT:
-            if self.slideshow_image is not None:
-                self.slideshow_image.destroy()
-                self.slideshow_image = None
-        else:
-            if self.scrolled_window is not None:
-                self.scrolled_window.destroy()
-                self.scrolled_window = None
-
         GLib.timeout_add(400, self.manage_events_from_cb_queue)
-
-    def change_slideshow_image(self):
-        if USE_WEBKIT:
-            return False
-
-        self.slideshow_index = self.slideshow_index + 1
-        path = os.path.join(SLIDES_PATH, "{0}.png".format(self.slideshow_index))
-        if not os.path.exists(path):
-            # We've reached the last image, start again
-            self.slideshow_index = 1
-            path = os.path.join(SLIDES_PATH, "{0}.png".format(self.slideshow_index))
-
-        if os.path.exists(path):
-            self.slideshow_image.set_from_file(path)
-
-        return True
 
     def store_values(self):
         """ Nothing to be done here """
