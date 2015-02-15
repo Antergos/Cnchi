@@ -380,6 +380,7 @@ class Pac(object):
 
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
+            raise pyalpm.error
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
