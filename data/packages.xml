@@ -50,9 +50,9 @@
         <pkgname>gst-plugins-base</pkgname>
         <pkgname>gst-plugins-good</pkgname>
         <pkgname>gst-plugins-ugly</pkgname>
-        <pkgname>gst-vaapi</pkgname>
+        <pkgname>gstreamer-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <pkgname>gstreamer0.10-vaapi</pkgname>
+        <!--<pkgname>gstreamer0.10-vaapi</pkgname>-->
         <pkgname>libdvdcss</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
