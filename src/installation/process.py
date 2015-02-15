@@ -53,7 +53,7 @@ try:
     import pyalpm
 except ImportError:
     pass
-    
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 
 class InstallError(Exception):
@@ -213,7 +213,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(txt)
                 cmd = _("Command %s has failed.") % err.cmd
                 logging.error(cmd)
-                out = _("Output : %s") % err.output 
+                out = _("Output : %s") % err.output
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return
@@ -260,7 +260,7 @@ class InstallationProcess(multiprocessing.Process):
                 logging.error(txt)
                 cmd = _("Command %s has failed") % err.cmd
                 logging.error(cmd)
-                out = _("Output : %s") % err.output 
+                out = _("Output : %s") % err.output
                 logging.error(out)
                 self.queue_fatal_event(txt)
                 return False
@@ -286,7 +286,7 @@ class InstallationProcess(multiprocessing.Process):
                         logging.warning(txt)
                         cmd = _("Command %s has failed.") % err.cmd
                         logging.warning(cmd)
-                        out = _("Output : %s") % err.output 
+                        out = _("Output : %s") % err.output
                         logging.warning(out)
 
         # Nasty workaround:
@@ -309,7 +309,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(txt)
             cmd = _("Command %s has failed") % err.cmd
             logging.error(cmd)
-            out = _("Output : %s") % err.output 
+            out = _("Output : %s") % err.output
             logging.error(out)
             self.queue_fatal_event(txt)
             return False
@@ -328,6 +328,11 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Selecting packages..."))
             self.select_packages()
             logging.debug(_("Packages selected"))
+
+            # Fix bug #263 (v86d moved from [extra] to AUR)
+            if "v86d" in self.packages:
+                self.packages.remove("v86d")
+                logging.debug(_("Removed 'v86d' package from list"))
 
             if self.settings.get("use_aria2"):
                 logging.debug(_("Downloading packages using aria2..."))
@@ -352,12 +357,12 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Configuring system..."))
             self.configure_system()
             logging.debug(_("System configured."))
-            
+
             all_ok = True
         except subprocess.CalledProcessError as err:
             cmd = _("Command %s has failed.") % err.cmd
             logging.error(cmd)
-            out = _("Output : %s") % err.output 
+            out = _("Output : %s") % err.output
             logging.error(out)
             self.queue_fatal_event(cmd)
         except InstallError as err:
@@ -488,17 +493,17 @@ class InstallationProcess(multiprocessing.Process):
 
         self.prepare_pacman_keyring()
 
-        alpm = self.init_alpm()        
-        alpm.do_refresh()      
+        alpm = self.init_alpm()
+        alpm.do_refresh()
         del alpm
 
     def select_packages(self):
         """ Prepare pacman and get package list from Internet """
         self.create_pacman_conf()
         self.prepare_pacman()
-        
+
         self.packages = []
-        
+
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
         else:
@@ -531,7 +536,7 @@ class InstallationProcess(multiprocessing.Process):
 
         tree = etree.parse(packages_xml)
         root = tree.getroot()
-        
+
         # Add common packages
         logging.debug(_("Adding all desktops common packages"))
 
@@ -614,7 +619,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Can't import hardware module."))
         except Exception as err:
             logging.warning(_("Unknown error in hardware module. Output: %s"), err)
-            
+
         # By default, hardware module adds vesa driver but in a NoX install we don't want it
         if self.desktop == "nox":
             if "v86d" in self.packages:
@@ -681,7 +686,7 @@ class InstallationProcess(multiprocessing.Process):
         desktop = self.settings.get("desktop")
         lib = desktops.LIBS
         features = desktops.FEATURES
-        
+
         for feature in features[desktop]:
             # Add necessary packages for user desired features to our install list
             if self.settings.get("feature_" + feature):
@@ -696,7 +701,7 @@ class InstallationProcess(multiprocessing.Process):
                             self.packages.append(pkg.text)
                         #else:
                         #    logging.debug(_("Skipping a %s lib package: %s for feature %s"), plib, pkg.text, feature)
-                        
+
                         if pkg.attrib.get('conflicts'):
                             self.conflicts.append(pkg.attrib.get('conflicts'))
 
@@ -747,7 +752,7 @@ class InstallationProcess(multiprocessing.Process):
         except Exception as err:
             logging.error(err)
             raise InstallError("Can't initialize pyalpm: %s" % err)
-        return alpm       
+        return alpm
 
     def do_install(self, download_only=False, kde=False):
         pacman_options = {}
@@ -758,7 +763,7 @@ class InstallationProcess(multiprocessing.Process):
             pacman_options["needed"] = True
             txt = _("Installing packages...")
         logging.debug(txt)
-        
+
         alpm = self.init_alpm()
 
         if kde:
@@ -782,7 +787,7 @@ class InstallationProcess(multiprocessing.Process):
 
         # First try to download all necessary packages (download only)
         self.do_install(download_only=True)
-        
+
         # Ok, now we can install all downloaded packages
         # (alpm will try to download again those that couldn't download before)
         if self.desktop == "kde" or self.desktop == "KDE":
@@ -792,10 +797,10 @@ class InstallationProcess(multiprocessing.Process):
         self.do_install()
 
         self.chroot_umount_special_dirs()
-        
+
         # All downloading and installing has been done, so we hide progress bar
         self.queue_event('progress_bar', 'hide')
-        
+
     def chroot_mount_special_dirs(self):
         """ Mount special directories for our chroot """
         # Don't try to remount them
@@ -855,7 +860,7 @@ class InstallationProcess(multiprocessing.Process):
                     logging.warning(_("Unable to umount %s") % mydir)
                     cmd = _("Command %s has failed.") % err.cmd
                     logging.warning(cmd)
-                    out = _("Output : %s") % err.output 
+                    out = _("Output : %s") % err.output
                     logging.warning(out)
             except Exception as err:
                 logging.warning(_("Unable to umount %s") % mydir)
@@ -1025,7 +1030,7 @@ class InstallationProcess(multiprocessing.Process):
         fstab_path = '%s/etc/fstab' % self.dest_dir
         with open(fstab_path, 'w') as fstab_file:
             fstab_file.write(full_text)
-            
+
         logging.debug(_("fstab written."))
 
     def install_bootloader(self):
@@ -1034,10 +1039,10 @@ class InstallationProcess(multiprocessing.Process):
         self.modify_grub_default()
         self.prepare_grub_d()
         self.apply_osprober_patch()
-        
+
         # Freeze and unfreeze xfs filesystems to enable grub(2) installation on xfs filesystems
         self.freeze_xfs()
-        
+
         bootloader = self.settings.get('bootloader_type')
         if bootloader == "GRUB2":
             self.install_bootloader_grub2_bios()
@@ -1049,7 +1054,7 @@ class InstallationProcess(multiprocessing.Process):
         ruuid = self.settings.get('ruuid')
         ruuid_str = 'root=UUID=' + ruuid
         boot_command = self.settings.get('grub_default_line')
-        boot_command = 'linux	/vmlinuz-linux' + ruuid_str + ' ' + boot_command + '\n'
+        boot_command = 'linux   /vmlinuz-linux' + ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
         parse = open(cfg).read()
 
@@ -1069,7 +1074,7 @@ class InstallationProcess(multiprocessing.Process):
         default_dir = os.path.join(self.dest_dir, "etc/default")
         default_grub = os.path.join(default_dir, "grub")
         theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
-        
+
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
             swap_uuid = fs.get_info(swap_partition)['UUID']
@@ -1152,7 +1157,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.debug(_("Could not copy %s to grub.d"), script)
         except FileExistsError:
             pass
-    
+
     def apply_osprober_patch(self):
         """ Adds -l option to os-prober's umount call so that it does not hang """
         osp_path = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
@@ -1171,15 +1176,15 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Installing GRUB(2) BIOS boot loader in %s") % grub_location)
 
         self.chroot_mount_special_dirs()
-        
+
         grub_install = ['/usr/bin/grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
                         '--boot-directory=/boot', '--recheck']
-        
+
         if len(grub_location) > 8:  # ex: /dev/sdXY > 8
             grub_install.append("--force")
-        
+
         grub_install.append(grub_location)
-        
+
         self.chroot(grub_install)
 
         self.install_bootloader_grub2_locales()
@@ -1232,7 +1237,7 @@ class InstallationProcess(multiprocessing.Process):
             logging.error('Command grub-install failed. Unknown Error: %s' % err)
 
         self.install_bootloader_grub2_locales()
-        
+
         self.copy_bootloader_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they are empty.
@@ -1240,7 +1245,7 @@ class InstallationProcess(multiprocessing.Process):
                     (os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot/"), 'bootmgfw.efi')]
         grub_dir_src = os.path.join(self.dest_dir, "boot/EFI/antergos_grub/")
         grub_efi_old = ('grub' + spec_uefi_arch + '.efi')
-        
+
         for default in defaults:
             path, grub_efi_new = default
             if not os.path.exists(path):
@@ -1255,7 +1260,7 @@ class InstallationProcess(multiprocessing.Process):
                 except Exception as err:
                     logging.warning(_("Copying Grub(2) into OEM dir failed. Unknown Error."))
                     logging.warning(err)
-        
+
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
         shell_dst = os.path.join(self.dest_dir, "boot/EFI/")
@@ -1324,7 +1329,7 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             # Ignore if already exists
             pass
-    
+
     def freeze_xfs(self):
         """ Freeze and unfreeze xfs, as hack for grub(2) installing """
         if not os.path.exists("/usr/bin/xfs_freeze"):
@@ -1491,7 +1496,7 @@ class InstallationProcess(multiprocessing.Process):
         if not os.path.exists(dest_dir):
             os.makedirs(dest_dir)
         self.copy_files_progress(cache_dir, dest_dir)
-    
+
     def copy_files_progress(self, src, dst):
         """ Copy files updating the slides' progress bar """
         percent = 0.0
@@ -1514,7 +1519,7 @@ class InstallationProcess(multiprocessing.Process):
         #    logging.debug(_("Configuring AUR..."))
 
         self.chroot_mount_special_dirs()
-        
+
         if self.settings.get("feature_bluetooth"):
             logging.debug(_("Configuring bluetooth..."))
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/bluetooth.service")
@@ -1554,9 +1559,9 @@ class InstallationProcess(multiprocessing.Process):
             service = os.path.join(self.dest_dir, "usr/lib/systemd/system/ufw.service")
             if os.path.exists(service):
                 self.enable_services(['ufw'])
-        
+
         self.chroot_umount_special_dirs()
-        
+
     def set_display_manager(self):
         """ Configures the installed desktop manager, including autologin. """
         self.queue_event('info', _("%s: Configuring display manager.") % self.desktop_manager)
@@ -1565,7 +1570,7 @@ class InstallationProcess(multiprocessing.Process):
                     'xfce': 'xfce', 'kde': 'kde-plasma', 'mate': 'mate', 'enlightenment': 'enlightenment'}
         desktop = self.settings.get('desktop')
         username = self.settings.get('username')
-        
+
         if desktop in sessions:
             session = sessions[desktop]
         else:
@@ -1573,7 +1578,7 @@ class InstallationProcess(multiprocessing.Process):
 
         autologin = not self.settings.get('require_password')
 
-        try:        
+        try:
             if self.desktop_manager == 'lightdm':
                 self.setup_lightdm(desktop, username, session, autologin)
             elif self.desktop_manager == 'gdm':
@@ -1584,11 +1589,11 @@ class InstallationProcess(multiprocessing.Process):
                 self.setup_lxdm(desktop, username, session, autologin)
             elif self.desktop_manager == 'slim':
                 self.setup_slim(desktop, username, session, autologin)
-                
+
             logging.debug(_("Completed %s display manager configuration."), self.desktop_manager)
         except FileNotFoundError:
             logging.debug(_("Error while trying to configure '%s' display manager"), self.desktop_manager)
-    
+
     def setup_lightdm(self, desktop, username, session, autologin):
         # Systems with LightDM as Desktop Manager
         lightdm_conf_path = os.path.join(self.dest_dir, "etc/lightdm/lightdm.conf")
@@ -1721,7 +1726,7 @@ class InstallationProcess(multiprocessing.Process):
         self.generate_pacmanconf()
 
         logging.debug(_("Generated /etc/pacman.conf"))
-        
+
         desktop = self.settings.get('desktop')
 
         # Enable services
@@ -1770,11 +1775,11 @@ class InstallationProcess(multiprocessing.Process):
             logging.warning(_("Unknown error in hardware module. Output: %s") % err)
         finally:
             self.chroot_umount_special_dirs()
-            
+
         # Setup user
 
         default_groups = 'lp,video,network,storage,wheel,audio'
-        
+
         if self.vbox:
             # Why there is no vboxusers group?
             self.chroot(['groupadd', 'vboxusers'])
@@ -1884,7 +1889,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get('install_bootloader'):
             logging.debug(_("Installing bootloader..."))
             self.install_bootloader()
-        
+
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug(_("Copying install log to /var/log."))
         self.copy_log()
