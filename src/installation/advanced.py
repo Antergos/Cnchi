@@ -70,6 +70,7 @@ COL_SSD_VISIBLE = 13
 COL_SSD_SENSITIVE = 14
 COL_ENCRYPTED = 15
 
+
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
@@ -158,9 +159,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.select_first_combobox_item(combo)
 
         # Initialize our create and edit partition dialog mount points' combo.
-        mount_combos = []
-        mount_combos.append(self.ui.get_object('create_partition_mount_combo'))
-        mount_combos.append(self.ui.get_object('edit_partition_mount_combo'))
+        mount_combos = [self.ui.get_object('create_partition_mount_combo'),
+                        self.ui.get_object('edit_partition_mount_combo')]
 
         for combo in mount_combos:
             combo.remove_all()
@@ -173,7 +173,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.bootloader_devices = {}
         self.bootloader_device = {}
 
-        # Initialise our partition list treeview
+        # Initialise our partition list tree view
         self.partition_list = self.ui.get_object('partition_list_treeview')
         self.partition_list_store = None
         self.prepare_partition_list()
@@ -400,7 +400,8 @@ class InstallationAdvanced(GtkBaseBox):
             _("SSD"), ssd_toggle, active=COL_SSD_ACTIVE, visible=COL_SSD_VISIBLE, sensitive=COL_SSD_SENSITIVE)
         self.partition_list.append_column(col)
 
-    def get_size(self, length, sector_size):
+    @staticmethod
+    def get_size(length, sector_size):
         """ Helper function to get a disk/partition size in human format """
         size = length * sector_size
         size_txt = "{0}b".format(size)
