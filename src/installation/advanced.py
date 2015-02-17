@@ -2037,7 +2037,7 @@ class InstallationAdvanced(GtkBaseBox):
                             txt = _("Creating new {0} filesystem in {1} labeled {2}")
                             txt = txt.format(fisy, partition_path, lbl)
                         else:
-                            txt = _("Creating new {0} filesystem in {2}")
+                            txt = _("Creating new {0} filesystem in {1}")
                             txt = txt.format(fisy, partition_path)
 
                         logging.info(txt)
