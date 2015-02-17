@@ -124,7 +124,7 @@ class Timezone(GtkBaseBox):
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
 
-        while tree_iter != None:
+        while tree_iter is not None:
             value = tree_model.get_value(tree_iter, 0)
             if value == item:
                 combobox.set_active_iter(tree_iter)
@@ -146,7 +146,7 @@ class Timezone(GtkBaseBox):
     def on_region_combobox_changed(self, widget):
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
-        if new_zone != None and new_region != None:
+        if new_zone is not None and new_region is not None:
             new_timezone = "{0}/{1}".format(new_zone, new_region)
             # Only set timezone if it has changed :p
             if self.timezone != new_timezone:
@@ -252,9 +252,9 @@ class Timezone(GtkBaseBox):
 
     def stop_threads(self):
         logging.debug(_("Stoping timezone threads..."))
-        if self.auto_timezone_thread != None:
+        if self.auto_timezone_thread is not None:
             self.auto_timezone_thread.stop()
-        if self.mirrorlist_thread != None:
+        if self.mirrorlist_thread is not None:
             self.mirrorlist_thread.stop()
 
     def on_switch_ntp_activate(self, ntp_switch):
@@ -289,7 +289,7 @@ class AutoTimezoneThread(threading.Thread):
 
         # Do not start looking for our timezone until we've reached the language screen
         # (welcome.py sets timezone_start to true when next is clicked)
-        while self.settings.get('timezone_start') == False:
+        while not self.settings.get('timezone_start'):
             if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
             time.sleep(2)

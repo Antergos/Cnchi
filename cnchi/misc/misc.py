@@ -111,7 +111,7 @@ def drop_privileges():
             os.setegid(gid)
         if uid is not None:
             os.seteuid(uid)
-    _dropped_privileges = _dropped_privileges + 1
+    _dropped_privileges += 1
 
 def regain_privileges():
     global _dropped_privileges
@@ -481,7 +481,7 @@ def get_release():
                 if line:
                     line = line.split()
                     if line[2] == 'LTS':
-                        line[1] = line[1] + ' LTS'
+                        line[1] += ' LTS'
                     get_release.release_info = ReleaseInfo(name=line[0], version=line[1])
         except:
             syslog.syslog(syslog.LOG_ERR, 'Unable to determine the release.')
@@ -881,7 +881,7 @@ def get_network():
     elif spip[0] == '10':
         intip = True
     elif spip[0] == '172':
-        if int(spip[1]) > 15 and int(spip[1]) < 32:
+        if 15 < int(spip[1]) < 32:
             intip = True
     if intip:
         ipran = '.'.join(spip[:-1]) + ".0/24"

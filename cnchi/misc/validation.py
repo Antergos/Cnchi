@@ -94,13 +94,13 @@ def password_strength(password):
     upper = lower = digit = symbol = 0
     for char in password:
         if char.isdigit():
-            digit = digit + 1
+            digit += 1
         elif char.islower():
-            lower = lower + 1
+            lower += 1
         elif char.isupper():
-            upper = upper + 1
+            upper += 1
         else:
-            symbol = symbol + 1
+            symbol += 1
     length = len(password)
     if length > 5:
         length = 5

@@ -113,7 +113,7 @@ def convert_latitude_to_y(latitude, map_height):
     top_offset = full_range * top_per
     map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))) - top_offset)
     y = math.fabs(y - top_offset)
-    y = y / map_range
+    y /= map_range
     y = y * map_height
     return y
 
@@ -518,7 +518,7 @@ class TimezoneMap(Gtk.Widget):
             color1 = olsen_map_pixels[offset + 1]
             zone = ((color0 & 248) << 1) + ((color1 >> 4) & 15)
 
-        if zone >= 0 and zone < len(self.olsen_map_timezones):
+        if 0 <= zone < len(self.olsen_map_timezones):
             city = self.olsen_map_timezones[zone]
             return city
         else:

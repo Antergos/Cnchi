@@ -161,7 +161,7 @@ def unmount_all(dest_dir):
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
-    if (luks_pass == None or luks_pass == "") and luks_key == None:
+    if (luks_pass is None or luks_pass == "") and luks_key is None:
         txt = _("Can't setup LUKS in device {0}. A password or a key file are needed")
         txt = txt.format(luks_device)
         logging.error(txt)
@@ -177,7 +177,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # If in doubt, just be generous and overwrite the first 10MiB or so
     dd("/dev/zero", luks_device, bs=512, count=20480)
 
-    if luks_pass == None or luks_pass == "":
+    if luks_pass is None or luks_pass == "":
         # No key password given, let's create a random keyfile
         dd("/dev/urandom", luks_key, bs=1024, count=4)
 
@@ -423,6 +423,7 @@ class AutoPartition(object):
         fs_label = get_info(device)['LABEL']
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
+    @property
     def get_devices(self):
         """ Set (and return) all partitions on the device """
         devices = {}
@@ -438,15 +439,15 @@ class AutoPartition(object):
                 part_num = 1
 
             devices['efi'] = "{0}{1}".format(device, part_num)
-            part_num = part_num + 1
+            part_num += 1
             devices['boot'] = "{0}{1}".format(device, part_num)
-            part_num = part_num + 1
+            part_num += 1
             devices['root'] = "{0}{1}".format(device, part_num)
             if self.home:
                 devices['home'] = "{0}{1}".format(device, part_num)
-                part_num = part_num + 1
+                part_num += 1
             devices['swap'] = "{0}{1}".format(device, part_num)
-            part_num = part_num + 1
+            part_num += 1
         else:
             devices['boot'] = "{0}{1}".format(device, 1)
             devices['root'] = "{0}{1}".format(device, 2)
@@ -483,7 +484,7 @@ class AutoPartition(object):
     def get_mount_devices(self):
         """ Specify for each mount point which device we must mount there """
 
-        devices = self.get_devices()
+        devices = self.get_devices
         mount_devices = {}
 
         if self.GPT:
@@ -510,7 +511,7 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ Return which filesystem is in a selected device """
 
-        devices = self.get_devices()
+        devices = self.get_devices
 
         fs_devices = {}
 
@@ -540,10 +541,7 @@ class AutoPartition(object):
         return fs_devices
 
     def get_part_sizes(self, disk_size, start_part_sizes=0):
-        part_sizes = {}
-
-        part_sizes['disk'] = disk_size
-        part_sizes['boot'] = 256
+        part_sizes = {'disk': disk_size, 'boot': 256}
 
         if self.GPT:
             part_sizes['efi'] = 200
@@ -674,32 +672,31 @@ class AutoPartition(object):
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
                 sgdisk_new(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
-                part_num = part_num + 1
+                part_num += 1
 
             # Create EFI System Partition (ESP)
             # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
             sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
-            part_num = part_num + 1
+            part_num += 1
 
             # Create Boot partition
             sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
-            part_num = part_num + 1
+            part_num += 1
 
             if self.lvm:
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
                 sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
-                part_num = part_num + 1
+                part_num += 1
             else:
                 sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
-                part_num = part_num + 1
+                part_num += 1
                 sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
-                part_num = part_num + 1
+                part_num += 1
 
                 if self.home:
                     sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
-                    part_num = part_num + 1
+                    part_num += 1
 
-            cmd = []
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
             # DOS MBR partition table
@@ -746,7 +743,7 @@ class AutoPartition(object):
                 parted_mkpart(device, "extended", start, end)
 
                 # Now create a logical swap partition
-                start = start + 1
+                start += 1
                 parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
@@ -754,7 +751,7 @@ class AutoPartition(object):
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
 
-        devices = self.get_devices()
+        devices = self.get_devices
 
         if self.GPT:
             logging.debug("EFI: %s", devices['efi'])

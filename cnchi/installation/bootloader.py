@@ -88,7 +88,7 @@ class Bootloader(object):
             entry = pattern.search(parse)
             if entry:
                 logging.debug("Wrong uuid in grub.cfg, let's fix it!")
-                new_entry = re.sub("linux\t\/vmlinuz.*quiet\n", boot_command, entry.group())
+                new_entry = re.sub("linux\t/vmlinuz.*quiet\n", boot_command, entry.group())
                 parse = parse.replace(entry.group(), new_entry)
 
                 with open(cfg) as grub_file:

@@ -86,7 +86,7 @@ class Keymap(GtkBaseBox):
             selected_country = self.fix_countries(selected_country)
             found = self.select_value_in_treeview(self.layout_treeview, selected_country)
 
-            if found == False:
+            if not found:
                 # Country was not found, let's choose USA as default
                 selected_country = "USA"
                 self.select_value_in_treeview(self.layout_treeview, selected_country)
@@ -154,7 +154,7 @@ class Keymap(GtkBaseBox):
 
         found = False
 
-        while tree_iter != None:
+        while tree_iter is not None:
             if model[tree_iter][0] == value:
                 treeview.set_cursor(index)
                 path = model.get_path(tree_iter)
@@ -162,12 +162,13 @@ class Keymap(GtkBaseBox):
                 tree_iter = None
                 found = True
             else:
-                index = index + 1
+                index += 1
                 tree_iter = model.iter_next(tree_iter)
 
         return found
 
-    def scroll_to_cell(self, treeview, path):
+    @staticmethod
+    def scroll_to_cell(treeview, path):
         treeview.scroll_to_cell(path)
         return False
 

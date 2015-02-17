@@ -224,5 +224,5 @@ class PacmanConfig(collections.OrderedDict):
                     conf = '{0}{1}\n'.format(conf, key)
                 else:
                     conf = '{0}{1} = {2}\n'.format(conf, key, value)
-            conf = conf + '\n'
+            conf += '\n'
         return conf

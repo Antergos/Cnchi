@@ -70,6 +70,7 @@ PED_PARTITION_APPLE_TV_RECOVERY = 13
 PED_PARTITION_DIAG = 14
 PED_PARTITION_LEGACY_BOOT = 15
 
+
 @misc.raise_privileges
 def get_devices():
     device_list = parted.getAllDevices()
@@ -120,10 +121,12 @@ def get_devices():
 
     return disk_dic
 
+
 def make_new_disk(dev_path, new_type):
     new_dev = parted.Device(dev_path)
     new_disk = parted.freshDisk(new_dev, new_type)
     return(new_disk)
+
 
 @misc.raise_privileges
 def get_partitions(diskob):
@@ -171,9 +174,10 @@ def get_partitions(diskob):
             continue
         # Is this str conversion necessary?
         part_dic['free{0}'.format(str(fcount))] = free
-        fcount = fcount + 1
+        fcount += 1
 
     return part_dic
+
 
 @misc.raise_privileges
 def delete_partition(diskob, part):
@@ -186,6 +190,7 @@ def delete_partition(diskob, part):
         debug_txt = "{0}\n{1}".format(txt, err)
         show.error(None, debug_txt)
 
+
 def get_partition_size(diskob, part):
     dev = diskob.device
     sec_size = dev.sectorSize
@@ -193,6 +198,7 @@ def get_partition_size(diskob, part):
     return mbs
 
 # length : geometry length
+
 
 def get_size_txt(length, sector_size):
     size = length * sector_size
@@ -207,6 +213,7 @@ def get_size_txt(length, sector_size):
         size_txt = "%dG" % size
 
     return size_txt
+
 
 @misc.raise_privileges
 def create_partition(diskob, part_type, geom):
@@ -240,6 +247,7 @@ def create_partition(diskob, part_type, geom):
         ncont = diskob.addPartition(partition=npartition, constraint=nconstraint)
         return npartition
 
+
 def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
                  beginning=True):
     # OK, two new specs.  First, you must specify the first sector
@@ -272,6 +280,7 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)
     return ngeom
 
+
 def check_mounted(part):
     # Simple check to see if partition is mounted (or busy)
     if part.busy:
@@ -279,8 +288,10 @@ def check_mounted(part):
     else:
         return 0
 
+
 def get_used_space(part):
     return get_used_space_from_path(part.path)
+
 
 def get_used_space_from_path(path):
     try:

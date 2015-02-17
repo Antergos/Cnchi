@@ -104,22 +104,14 @@ def run(screen_name):
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
 
-    params = {}
-    params['title'] = "Cnchi"
-    params['ui_dir'] = "/usr/share/cnchi/ui"
-    params['disable_tryit'] = False
-    params['settings'] = settings
-    params['forward_button'] = Gtk.Button.new()
-    params['backwards_button'] = Gtk.Button.new()
-    params['main_progressbar'] = Gtk.ProgressBar.new()
-    params['header'] = Gtk.HeaderBar.new()
-    params['testing'] = True
-    params['callback_queue'] = None
-    params['alternate_package_list'] = ""
+    params = {'title': "Cnchi", 'ui_dir': "/usr/share/cnchi/ui", 'disable_tryit': False, 'settings': settings,
+              'forward_button': Gtk.Button.new(), 'backwards_button': Gtk.Button.new(),
+              'main_progressbar': Gtk.ProgressBar.new(), 'header': Gtk.HeaderBar.new(), 'testing': True,
+              'callback_queue': None, 'alternate_package_list': ""}
 
     screen = get_screen(screen_name, params)
 
-    if screen != None:
+    if screen is not None:
         window.add(screen)
         window.show_all()
         screen.prepare('forward')

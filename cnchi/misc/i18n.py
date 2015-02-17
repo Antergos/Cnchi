@@ -51,7 +51,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
             continue
         code, name, trans = line.strip('\n').split(':')[1:]
         if code in ('C', 'dz', 'km'):
-            i = i + 1
+            i += 1
             continue
         # KDE fails to round-trip strings containing U+FEFF ZERO WIDTH
         # NO-BREAK SPACE, and we don't care about the NBSP anyway, so strip
@@ -62,7 +62,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
 
         if only_installable:
             pkg_name = 'language-pack-{0}'.format(code)
-            #special case these
+            # special case these
             if pkg_name.endswith('_CN'):
                 pkg_name = 'language-pack-zh-hans'
             elif pkg_name.endswith('_TW'):
@@ -74,17 +74,17 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
             try:
                 pkg = cache[pkg_name]
                 if not (pkg.installed or pkg.candidate):
-                    i = i + 1
+                    i += 1
                     continue
             except KeyError:
-                i = i + 1
+                i += 1
                 continue
 
         language_display_map[trans] = (name, code)
         if i == current_language_index:
             current_language = trans
 
-        i = i + 1
+        i += 1
     languagelist.close()
 
     if only_installable:

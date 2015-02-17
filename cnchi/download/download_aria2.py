@@ -77,7 +77,7 @@ class Download(object):
         # Start Aria2
         self.aria2.run()
 
-        if self.aria2.rpc_uid == None:
+        if self.aria2.rpc_uid is None:
             logging.warning(_("Aria2 is not running."))
             return
 

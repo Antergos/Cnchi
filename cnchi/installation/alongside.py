@@ -135,7 +135,7 @@ class InstallationAlongside(GtkBaseBox):
         new_device = disk + str(new_number)
 
         while misc.partition_exists(new_device):
-            new_number = new_number + 1
+            new_number += 1
             new_device = '{0}{1}'.format(disk, new_number)
 
         if new_number > 4:

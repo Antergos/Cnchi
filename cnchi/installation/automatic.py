@@ -55,9 +55,8 @@ class InstallationAutomatic(GtkBaseBox):
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
 
-        self.entry = {}
-        self.entry['luks_password'] = self.ui.get_object('entry_luks_password')
-        self.entry['luks_password_confirm'] = self.ui.get_object('entry_luks_password_confirm')
+        self.entry = {'luks_password': self.ui.get_object('entry_luks_password'),
+                      'luks_password_confirm': self.ui.get_object('entry_luks_password_confirm')}
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
@@ -280,8 +279,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.settings.set('auto_device', self.auto_device)
 
-        ssd = {}
-        ssd[self.auto_device] = fs.is_ssd(self.auto_device)
+        ssd = {self.auto_device: fs.is_ssd(self.auto_device)}
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(

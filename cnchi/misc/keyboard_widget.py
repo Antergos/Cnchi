@@ -287,8 +287,8 @@ class KeyboardWidget(Gtk.DrawingArea):
 
                 rw = rw - space - kw
                 x = x + space + kw
-                i = i + 1
-            return (x, rw)
+                i += 1
+            return x, rw
 
         x = 6
         y = 6
@@ -304,7 +304,7 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         for i in range(0, rows):
             if first_key_w > 0:
-                first_key_w = first_key_w * 1.375
+                first_key_w *= 1.375
 
                 if self.kb == self.kb_105 and i == 3:
                     first_key_w = kw * 1.275

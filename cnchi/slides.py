@@ -81,7 +81,7 @@ class Slides(GtkBaseBox):
 
     def prepare(self, direction):
         ## We don't load webkit until we reach this screen
-        if self.webview == None:
+        if self.webview is None:
             # Add a webkit view and load our html file to show the slides
             try:
                 self.webview = WebKit.WebView()
@@ -143,6 +143,7 @@ class Slides(GtkBaseBox):
             self.should_pulse = True
             GLib.timeout_add(100, pbar_pulse)
 
+    @property
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """
@@ -153,7 +154,7 @@ class Slides(GtkBaseBox):
         if self.callback_queue is None:
             return True
 
-        while self.callback_queue.empty() == False:
+        while not self.callback_queue.empty():
             try:
                 event = self.callback_queue.get_nowait()
             except queue.Empty:
@@ -229,7 +230,7 @@ class Slides(GtkBaseBox):
 
     def empty_queue(self):
         """ Empties messages queue """
-        while self.callback_queue.empty() == False:
+        while not self.callback_queue.empty():
             try:
                 event = self.callback_queue.get_nowait()
                 self.callback_queue.task_done()

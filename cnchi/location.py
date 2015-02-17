@@ -91,7 +91,7 @@ class Location(GtkBaseBox):
 
         for name in names:
             control = self.ui.get_object(name)
-            if control != None:
+            if control is not None:
                 control.hide()
 
     def prepare(self, direction):

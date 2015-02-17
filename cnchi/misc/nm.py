@@ -24,6 +24,7 @@ import subprocess
 
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
+
 DBusGMainLoop(set_as_default=True)
 from gi.repository import Gtk, GObject, GLib
 
@@ -390,7 +391,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         else:
             icon = 4
         if model[iterator][1]:
-            icon = icon + 5
+            icon += 5
         cell.set_property('pixbuf', self.icons[icon])
 
     def data_func(self, column, cell, model, iterator, data):
@@ -432,6 +433,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         parent = model.iter_parent(iterator)
         if parent:
             self.wifi_model.connect_to_ap(model[parent][0], ssid, passphrase)
+
 
 GObject.type_register(NetworkManagerTreeView)
 
@@ -498,7 +500,7 @@ class NetworkManagerWidget(Gtk.Box):
 
     def password_is_valid(self):
         passphrase = self.password_entry.get_text()
-        if len(passphrase) >= 8 and len(passphrase) < 64:
+        if 7 < len(passphrase) < 64:
             return True
         if len(passphrase) == 64:
             for c in passphrase:
@@ -540,8 +542,8 @@ class NetworkManagerWidget(Gtk.Box):
             self.emit('pw_validated', True)
         self.emit('selection_changed')
 
-GObject.type_register(NetworkManagerWidget)
 
+GObject.type_register(NetworkManagerWidget)
 
 if __name__ == '__main__':
     window = Gtk.Window()

@@ -355,7 +355,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Show next screen """
         next_page = self.get_current_page.get_next_page()
 
-        if next_page != None:
+        if next_page is not None:
             self.logo.hide()
             if next_page not in self.pages.keys():
                 # Load all pages
@@ -364,18 +364,18 @@ class MainWindow(Gtk.ApplicationWindow):
 
             stored = self.get_current_page.store_values()
 
-            if stored != False:
+            if stored:
                 self.set_progressbar_step(self.progressbar_step)
                 self.main_box.remove(self.get_current_page)
 
                 self.get_current_page = self.pages[next_page]
 
-                if self.get_current_page != None:
+                if self.get_current_page is not None:
                     if next_page == "user_info":
                         self.del_pages()
                     self.get_current_page.prepare('forwards')
                     self.main_box.add(self.get_current_page)
-                    if self.get_current_page.get_prev_page() != None:
+                    if self.get_current_page.get_prev_page() is not None:
                         # There is a previous page, show back button
                         self.backwards_button.show()
                         self.backwards_button.set_sensitive(True)
@@ -390,7 +390,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Show previous screen """
         prev_page = self.get_current_page.get_prev_page()
 
-        if prev_page != None:
+        if prev_page is not None:
             self.set_progressbar_step(-self.progressbar_step)
 
             # If we go backwards, don't store user changes
@@ -400,11 +400,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.get_current_page = self.pages[prev_page]
 
-            if self.get_current_page != None:
+            if self.get_current_page is not None:
                 self.get_current_page.prepare('backwards')
                 self.main_box.add(self.get_current_page)
 
-                if self.get_current_page.get_prev_page() == None:
+                if self.get_current_page.get_prev_page() is None:
                     # We're at the first page
                     self.backwards_button.hide()
                     self.progressbar.hide()

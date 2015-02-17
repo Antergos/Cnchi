@@ -150,7 +150,7 @@ class InstallationProcess(multiprocessing.Process):
                 timeout = 1
             while tries < timeout and not self.callback_queue.empty():
                 time.sleep(1)
-                tries = tries + 1
+                tries += 1
 
     def run(self):
         """ Calls run_installation and takes care of exceptions """
@@ -975,7 +975,7 @@ class InstallationProcess(multiprocessing.Process):
                     shutil.copy2(source, destination)
                 except (FileExistsError, shutil.Error) as err:
                     logging.warning(err)
-                percent = percent + step
+                percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
@@ -1249,13 +1249,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
             chroot_run(['groupadd', 'vboxusers'])
-            default_groups = default_groups + ',vboxusers,vboxsf'
+            default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
             # Prepare system for autologin. LightDM needs the user to be in the autologin group.
             chroot_run(['groupadd', 'autologin'])
-            default_groups = default_groups + ',autologin'
+            default_groups += ',autologin'
 
         cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
         chroot_run(cmd)

@@ -194,7 +194,7 @@ def _check_linux(mount_name):
                 text = ""
                 for element in textlist:
                     if not "\\" in element:
-                        text = text + element
+                        text += element
                 detected_os = text
     return detected_os
 

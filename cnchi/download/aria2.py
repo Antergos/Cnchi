@@ -64,7 +64,7 @@ class Aria2(object):
     def add_metalink(self, metalink):
         """ This method adds a Metalink download by uploading a ".metalink" file. """
         gids = []
-        if metalink != None:
+        if metalink is not None:
             try:
                 s = xmlrpc.client.ServerProxy(ARIA2_URL)
                 binary_metalink = xmlrpc.client.Binary(str(metalink).encode())

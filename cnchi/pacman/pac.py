@@ -74,7 +74,7 @@ class Pac(object):
 
         self.last_event = {}
 
-        if conf_path != None and os.path.exists(conf_path):
+        if conf_path is not None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
             self.initialize_alpm()
         else:
@@ -213,7 +213,7 @@ class Pac(object):
             else:
                 # Couldn't find the package, check if it's a group
                 group_pkgs = self.get_group_pkgs(name)
-                if group_pkgs != None:
+                if group_pkgs is not None:
                     # It's a group
                     for group_pkg in group_pkgs:
                         # Check that added package is not in our conflicts list
@@ -403,10 +403,10 @@ class Pac(object):
             percent = i / n
             self.queue_event('percent', percent)
         else:
-            #msg = _("Checking and loading packages... ({0} targets)").format(n)
-            #self.queue_event('info', msg)
+            # msg = _("Checking and loading packages... ({0} targets)").format(n)
+            # self.queue_event('info', msg)
 
-            percent = percent / 100
+            percent /= 100
             self.queue_event('percent', percent)
 
     def cb_dl(self, filename, tx, total):
@@ -427,10 +427,10 @@ class Pac(object):
                 ext = ".pkg.tar.xz"
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
-                self.downloaded_packages = self.downloaded_packages + 1
+                self.downloaded_packages += 1
                 i = self.downloaded_packages
                 n = self.total_packages_to_download
-                #text = _("Downloading {0}... ({1}/{2})").format(filename, i, n)
+                # text = _("Downloading {0}... ({1}/{2})").format(filename, i, n)
                 text = _("Downloading {0}...").format(filename)
 
             self.queue_event('info', text)
@@ -476,7 +476,6 @@ if __name__ == "__main__":
         print("Can't update databases: ", err)
         sys.exit(1)
 
-    pacman_options = {}
-    pacman_options["downloadonly"] = True
-    #pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
+    pacman_options = {"downloadonly": True}
+    # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()

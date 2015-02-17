@@ -252,12 +252,11 @@ class InstallationAdvanced(GtkBaseBox):
             path = model[tree_iter][COL_PATH]
 
         if path is not None:
-            button = {}
-            button["undo"] = self.ui.get_object('partition_button_undo')
-            button["new"] = self.ui.get_object('partition_button_new')
-            button["delete"] = self.ui.get_object('partition_button_delete')
-            button["edit"] = self.ui.get_object('partition_button_edit')
-            button["new_label"] = self.ui.get_object('partition_button_new_label')
+            button = {"undo": self.ui.get_object('partition_button_undo'),
+                      "new": self.ui.get_object('partition_button_new'),
+                      "delete": self.ui.get_object('partition_button_delete'),
+                      "edit": self.ui.get_object('partition_button_edit'),
+                      "new_label": self.ui.get_object('partition_button_new_label')}
 
             for key in button:
                 button[key].set_sensitive(False)
@@ -968,10 +967,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Added extended, moving extended details up here
 
         # Get the objects from the dialog
-        radio = {}
-        radio["primary"] = self.ui.get_object('create_partition_create_type_primary')
-        radio["logical"] = self.ui.get_object('create_partition_create_type_logical')
-        radio["extended"] = self.ui.get_object('create_partition_create_type_extended')
+        radio = {"primary": self.ui.get_object('create_partition_create_type_primary'),
+                 "logical": self.ui.get_object('create_partition_create_type_logical'),
+                 "extended": self.ui.get_object('create_partition_create_type_extended')}
 
         radio["primary"].set_active(True)
         radio["logical"].set_active(False)
@@ -1184,13 +1182,12 @@ class InstallationAdvanced(GtkBaseBox):
 
     def on_create_partition_create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition, some widgets must be disabled """
-        wdgts = {}
-        wdgts['use_label'] = self.ui.get_object('create_partition_use_label')
-        wdgts['use_combo'] = self.ui.get_object('create_partition_use_combo')
-        wdgts['mount_label'] = self.ui.get_object('create_partition_mount_label')
-        wdgts['mount_combo'] = self.ui.get_object('create_partition_mount_combo')
-        wdgts['label_label'] = self.ui.get_object('create_partition_label_label')
-        wdgts['label_entry'] = self.ui.get_object('create_partition_label_entry')
+        wdgts = {'use_label': self.ui.get_object('create_partition_use_label'),
+                 'use_combo': self.ui.get_object('create_partition_use_combo'),
+                 'mount_label': self.ui.get_object('create_partition_mount_label'),
+                 'mount_combo': self.ui.get_object('create_partition_mount_combo'),
+                 'label_label': self.ui.get_object('create_partition_label_label'),
+                 'label_entry': self.ui.get_object('create_partition_label_entry')}
 
         sensitive = True
 
@@ -1886,9 +1883,9 @@ class InstallationAdvanced(GtkBaseBox):
             lbl = Gtk.Label(label=lbl_text, margin=margin)
             lbl.set_alignment(0, 0.5)
             grid.attach(lbl, 0, y, 4, 1)
-            y = y + 1
+            y += 1
 
-        if changelist != []:
+        if changelist:
             # Partitions that will be modified (header)
             labels = [_("Partition"), _("New"), _("Relabel"), _("Format"), _("Mount"), _("Encrypt")]
 
@@ -1897,9 +1894,9 @@ class InstallationAdvanced(GtkBaseBox):
                 lbl = Gtk.Label(margin=margin)
                 lbl.set_markup(bold.format(txt))
                 grid.attach(lbl, x, y, 1, 1)
-                x = x + 1
+                x += 1
 
-            y = y + 1
+            y += 1
 
             # Partitions that will be modified
             for ea in changelist:
@@ -1907,8 +1904,8 @@ class InstallationAdvanced(GtkBaseBox):
                 for txt in ea:
                     lbl = Gtk.Label(label=txt, margin=margin)
                     grid.attach(lbl, x, y, 1, 1)
-                    x = x + 1
-                y = y + 1
+                    x += 1
+                y += 1
 
         changelist_dialog = self.ui.get_object("changelist_dialog")
         changelist_dialog.set_title(_('These disks will have partition actions:'))
@@ -1927,15 +1924,15 @@ class InstallationAdvanced(GtkBaseBox):
     def set_cursor(self, cursor_type):
         """ Sets mouse cursor in root window """
         gdk_screen = Gdk.Screen.get_default()
-        if gdk_screen != None:
+        if gdk_screen is not None:
             gdk_window = gdk_screen.get_root_window()
-            if gdk_window != None:
+            if gdk_window is not None:
                 gdk_window.set_cursor(Gdk.Cursor(cursor_type))
 
     def store_values(self):
         """ The user clicks 'Install now!' """
         changelist = self.get_changes()
-        if changelist == []:
+        if not changelist:
             # Something wrong has happened or there's nothing to change
             return False
 

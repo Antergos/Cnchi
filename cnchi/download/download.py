@@ -67,17 +67,17 @@ class DownloadPackages(object):
         callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
-        if pacman_conf_file == None:
+        if pacman_conf_file is None:
             self.pacman_conf_file = "/etc/pacman.conf"
         else:
             self.pacman_conf_file = pacman_conf_file
 
-        if pacman_cache_dir == None:
+        if pacman_cache_dir is None:
             self.pacman_cache_dir = "/var/cache/pacman/pkg"
         else:
             self.pacman_cache_dir = pacman_cache_dir
 
-        if cache_dir == None:
+        if cache_dir is None:
             self.cache_dir = ""
         else:
             self.cache_dir = cache_dir
@@ -144,7 +144,7 @@ class DownloadPackages(object):
         try:
             for package_name in package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
-                if metalink == None:
+                if metalink is None:
                     logging.error(_("Error creating metalink for package %s. Installation will stop"), package_name)
                     return None
 
@@ -157,7 +157,7 @@ class DownloadPackages(object):
                         downloads[key] = metalink_info[key]
 
                 # Show progress to the user
-                processed_packages = processed_packages + 1
+                processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', percent)
         except Exception as err:

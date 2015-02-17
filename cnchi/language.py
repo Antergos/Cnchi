@@ -135,7 +135,7 @@ class Language(GtkBaseBox):
 
     def store_values(self):
         listbox_row = self.listbox.get_selected_row()
-        if listbox_row != None:
+        if listbox_row is not None:
             for vbox in listbox_row:
                 for label in vbox.get_children():
                     lang = label.get_text()

@@ -48,29 +48,22 @@ class Welcome(GtkBaseBox):
         data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
 
-        self.labels = {}
-        self.labels['welcome'] = self.ui.get_object("welcome_label")
-        self.labels['info'] = self.ui.get_object("info_welcome_label")
-        self.labels['loading'] = self.ui.get_object("loading_label")
+        self.labels = {'welcome': self.ui.get_object("welcome_label"), 'info': self.ui.get_object("info_welcome_label"),
+                       'loading': self.ui.get_object("loading_label")}
 
-        self.buttons = {}
-        self.buttons['tryit'] = self.ui.get_object("tryit_button")
-        self.buttons['cli'] = self.ui.get_object("cli_button")
-        self.buttons['graph'] = self.ui.get_object("graph_button")
+        self.buttons = {'tryit': self.ui.get_object("tryit_button"), 'cli': self.ui.get_object("cli_button"),
+                        'graph': self.ui.get_object("graph_button")}
 
         for key in self.buttons:
             btn = self.buttons[key]
             btn.set_name("welcome_btn")
 
-        self.images = {}
-        self.images['tryit'] = self.ui.get_object("tryit_image")
-        self.images['cli'] = self.ui.get_object("cli_image")
-        self.images['graph'] = self.ui.get_object("graph_image")
+        self.images = {'tryit': self.ui.get_object("tryit_image"), 'cli': self.ui.get_object("cli_image"),
+                       'graph': self.ui.get_object("graph_image")}
 
-        self.filenames = {}
-        self.filenames['tryit'] = os.path.join(welcome_dir, "tryit-icon.png")
-        self.filenames['cli'] = os.path.join(welcome_dir, "cliinstaller-icon.png")
-        self.filenames['graph'] = os.path.join(welcome_dir, "installer-icon.png")
+        self.filenames = {'tryit': os.path.join(welcome_dir, "tryit-icon.png"),
+                          'cli': os.path.join(welcome_dir, "cliinstaller-icon.png"),
+                          'graph': os.path.join(welcome_dir, "installer-icon.png")}
 
         for key in self.images:
             self.images[key].set_from_file(self.filenames[key])
