@@ -25,23 +25,20 @@
 """ Module to download packages using Aria2 """
 
 import os
-import subprocess
 import logging
 import queue
 import shutil
 
-try:
-    import download.aria2 as aria2
-except ImportError as err:
-    # when testing download.py
-    import aria2
+import download.aria2 as aria2
 
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 MAX_CONCURRENT_DOWNLOADS = 5
+
 
 class Download(object):
     """ Class to download packages using Aria2
@@ -84,7 +81,7 @@ class Download(object):
         downloaded = 0
         total_downloads = len(downloads)
         percent = 0
-        self.queue_event('percent', percent)
+        self.queue_event('percent', str(percent))
         txt = _("Downloading packages... ({0}/{1})...")
         txt = txt.format(downloaded, total_downloads)
         self.queue_event('info', txt)
@@ -139,7 +136,7 @@ class Download(object):
 
     def show_download_info(self, downloaded, total_downloads):
         percent = round(float(downloaded / total_downloads), 2)
-        self.queue_event('percent', percent)
+        self.queue_event('percent', str(percent))
         txt = _("Downloading packages... ({0}/{1})...")
         txt = txt.format(downloaded, total_downloads)
         self.queue_event('info', txt)

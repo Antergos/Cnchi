@@ -31,18 +31,16 @@ from datetime import datetime
 import os
 import math
 import sys
+import logging
 
 from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
 
-try:
-    import misc.tz as tz
-except ImportError:
-    import tz
+import misc.tz as tz
 
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.cElementTree as elementTree
 except ImportError:
-    import xml.etree.ElementTree as ET
+    import xml.etree.ElementTree as elementTree
 
 PIN_HOT_POINT_X = 8
 PIN_HOT_POINT_Y = 15
@@ -144,7 +142,7 @@ class TimezoneMap(Gtk.Widget):
 
     def load_olsen_map_timezones(self):
         try:
-            tree = ET.parse(OLSEN_MAP_TIMEZONES_PATH)
+            tree = elementTree.parse(OLSEN_MAP_TIMEZONES_PATH)
             self.olsen_map_timezones = []
             root = tree.getroot()
             for tz_name in root.iter("timezone_name"):
@@ -309,7 +307,7 @@ class TimezoneMap(Gtk.Widget):
         if not self._show_offset:
             return
 
-        # Paint hilight
+        # Paint highlight
         offset = self._selected_offset
 
         if self.is_sensitive():
@@ -319,22 +317,22 @@ class TimezoneMap(Gtk.Widget):
 
         path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
         try:
-            orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
+            orig_highlight = GdkPixbuf.Pixbuf.new_from_file(path)
         except Exception as err:
             print("Can't load {0} image file".format(path))
             print(err)
             return
 
-        hilight = orig_hilight.scale_simple(
+        highlight = orig_highlight.scale_simple(
             alloc.width,
             alloc.height,
             GdkPixbuf.InterpType.BILINEAR)
 
-        Gdk.cairo_set_source_pixbuf(cr, hilight, 0, 0)
+        Gdk.cairo_set_source_pixbuf(cr, highlight, 0, 0)
         cr.paint()
 
-        del hilight
-        del orig_hilight
+        del highlight
+        del orig_highlight
 
         if self._tz_location:
             longitude = self._tz_location.get_property('longitude')

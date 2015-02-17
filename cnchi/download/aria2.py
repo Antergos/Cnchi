@@ -26,11 +26,11 @@
 
 import os
 import subprocess
-import logging
 import xmlrpc.client
 import logging
 
 ARIA2_URL = 'http://localhost:6800/rpc'
+
 
 class Aria2(object):
     def __init__(self, pacman_cache_dir, max_concurrent_downloads):
@@ -125,7 +125,7 @@ class Aria2(object):
             "--min-split-size=20M",         # Do not split less than 2*SIZE byte range (default 20M)
                                             # Set maximum number of parallel downloads for each metalink (default 5)
             "--max-concurrent-downloads={0}".format(self.max_concurrent_downloads),
-            "--max-connection-per-server=5",# The maximum number of connections to one server for each download
+            "--max-connection-per-server=5",  # The maximum number of connections to one server for each download
             "--max-tries=5",                # Set number of tries (default 5)
             "--no-conf=true",               # Disable loading aria2.conf file.
             "--quiet=true",                 # Make aria2 quiet (no console output).
@@ -136,11 +136,11 @@ class Aria2(object):
             "--rpc-secret={0}".format(uid),        # Set RPC secret authorization token
             "--rpc-secure=false",           # RPC transport will be encrypted by SSL/TLS
             "--rpc-listen-port=6800",
-            "--rpc-save-upload-metadata=false", # Save the uploaded torrent or metalink metadata in the directory
-                                                # specified by --dir option.
+            "--rpc-save-upload-metadata=false",  # Save the uploaded torrent or metalink metadata in the directory
+                                                 # specified by --dir option.
             "--rpc-max-request-size=16M",   # Set max size of XML-RPC request. If aria2 detects the request is more
                                             # than SIZE bytes, it drops connection (default 2M)
-            "--show-console-readout=false", # Show console readout (default true)
+            "--show-console-readout=false",  # Show console readout (default true)
             "--split=5",                    # Download a file using N connections (default 5)
             "--stop-with-process={0}".format(pid), # Stop aria2 if Cnchi ends unexpectedly
             "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0

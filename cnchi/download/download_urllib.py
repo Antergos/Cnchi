@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download_urllib.py
+# download_urllib.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,60 +30,8 @@ import queue
 import shutil
 import urllib.request
 import urllib.error
+import http.client
 
-try:
-    _("")
-except NameError as err:
-    def _(message): return message
-
-def url_open_read(urlp, chunk_size=8192):
-    """ Helper function to download and read a fragment of a remote file """
-
-    download_error = True
-    data = None
-
-    try:
-        data = urlp.read(chunk_size)
-        download_error = False
-    except urllib.error.HTTPError as err:
-        msg = _('HTTP Error : {0}').format(err.reason)
-        logging.error(msg)
-    except urllib.error.URLError as err:
-        msg = _('URL Error : {0}').format(err.reason)
-        logging.error(msg)
-
-    return (data, download_error)
-
-def url_open(url):
-    """ Helper function to open a remote file """
-
-    if url is None:
-        logging.warning(_("Wrong url, will try another one if available."))
-        return None
-
-    # Remove trailing spaces or new lines at the end of the string
-    url = url.rstrip()
-
-    try:
-        urlp = urllib.request.urlopen(url)
-    except urllib.error.HTTPError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-        logging.warning(msg)
-    except urllib.error.URLError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-        logging.warning(msg)
-    except http.client.BadStatusLine as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-        logging.warning(msg)
-    except AttributeError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err)
-        logging.warning(msg)
-
-    return urlp
 
 class Download(object):
     """ Class to download packages using urllib
@@ -106,12 +54,12 @@ class Download(object):
         total_downloads = len(downloads)
 
         self.queue_event('downloads_progress_bar', 'show')
-        self.queue_event('downloads_percent', 0)
+        self.queue_event('downloads_percent', '0')
 
         while len(downloads) > 0:
             identity, element = downloads.popitem()
 
-            self.queue_event('percent', 0)
+            self.queue_event('percent', '0')
 
             txt = _("Downloading {0} {1} ({2}/{3})...")
             txt = txt.format(element['identity'], element['version'], downloaded + 1, total_downloads)
@@ -119,7 +67,7 @@ class Download(object):
 
             try:
                 total_length = int(element['size'])
-            except TypeError as err:
+            except TypeError:
                 logging.warning(_("Metalink for package %s has no size info"), element['identity'])
                 total_length = 0
 
@@ -142,18 +90,19 @@ class Download(object):
                 downloaded += 1
             else:
                 # Let's download our filename using url
+                download_error = True
                 for url in element['urls']:
                     # msg = _("Downloading file from url {0}").format(url)
                     # logging.debug(msg)
                     download_error = True
                     percent = 0
                     completed_length = 0
-                    urlp = url_open(url)
+                    urlp = self.url_open(url)
                     if urlp is not None:
                         with open(dst_path, 'wb') as xzfile:
-                            (data, download_error) = url_open_read(urlp)
+                            (data, download_error) = self.url_open_read(urlp)
 
-                            while download_error == False and len(data) > 0:
+                            while not download_error and len(data) > 0:
                                 xzfile.write(data)
                                 completed_length += len(data)
                                 old_percent = percent
@@ -163,20 +112,20 @@ class Download(object):
                                     percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
-                                (data, download_error) = url_open_read(urlp)
+                                (data, download_error) = self.url_open_read(urlp)
 
                             if not download_error:
                                 downloaded += 1
                                 break
-                            # else:
+                                # else:
                                 # try next mirror url
                                 # completed_length = 0
                                 # msg = _("Can't download {0}, will try another mirror if available").format(url)
                                 # logging.warning(msg)
-                    # else:
-                    #    # try next mirror url
-                    #    msg = _("Can't open {0}, will try another mirror if available").format(url)
-                    #    logging.warning(msg)
+                                # else:
+                                #    # try next mirror url
+                                #    msg = _("Can't open {0}, will try another mirror if available").format(url)
+                                #    logging.warning(msg)
 
                 if download_error:
                     # None of the mirror urls works.
@@ -187,7 +136,7 @@ class Download(object):
                     logging.warning(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
-            self.queue_event('downloads_percent', downloads_percent)
+            self.queue_event('downloads_percent', str(downloads_percent))
 
         self.queue_event('downloads_progress_bar', 'hide')
 
@@ -211,3 +160,54 @@ class Download(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
+
+    @staticmethod
+    def url_open_read(urlp, chunk_size=8192):
+        """ Helper function to download and read a fragment of a remote file """
+
+        download_error = True
+        data = None
+
+        try:
+            data = urlp.read(chunk_size)
+            download_error = False
+        except urllib.error.HTTPError as err:
+            msg = _('HTTP Error : {0}').format(err.reason)
+            logging.error(msg)
+        except urllib.error.URLError as err:
+            msg = _('URL Error : {0}').format(err.reason)
+            logging.error(msg)
+
+        return data, download_error
+
+    @staticmethod
+    def url_open(url):
+        """ Helper function to open a remote file """
+
+        if url is None:
+            logging.warning(_("Wrong url, will try another one if available."))
+            return None
+
+        # Remove trailing spaces or new lines at the end of the string
+        url = url.rstrip()
+
+        try:
+            urlp = urllib.request.urlopen(url)
+        except urllib.error.HTTPError as err:
+            urlp = None
+            msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+            logging.warning(msg)
+        except urllib.error.URLError as err:
+            urlp = None
+            msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+            logging.warning(msg)
+        except http.client.BadStatusLine as err:
+            urlp = None
+            msg = _("Can't open {0} - Reason: {1}").format(url, err)
+            logging.warning(msg)
+        except AttributeError as err:
+            urlp = None
+            msg = _("Can't open {0} - Reason: {1}").format(url, err)
+            logging.warning(msg)
+
+        return urlp

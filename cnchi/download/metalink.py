@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  metalink.py
+# metalink.py
 #
-#  Code from pm2ml Copyright (C) 2012-2013 Xyne
-#  Copyright © 2013,2014 Antergos
+# Code from pm2ml Copyright (C) 2012-2013 Xyne
+# Copyright © 2013,2014 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
+# Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
@@ -42,11 +42,12 @@ except ImportError as err:
     logging.error(err)
 
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.cElementTree as etree
 except ImportError:
-    import xml.etree.ElementTree as ET
+    import xml.etree.ElementTree as etree
 
 MAX_URLS = 5
+
 
 def get_info(metalink):
     """ Reads metalink xml info and returns it """
@@ -60,7 +61,7 @@ def get_info(metalink):
     metalink_info = {}
     element = {}
 
-    for event, elem in ET.iterparse(temp_file.name, events=('start', 'end')):
+    for event, elem in etree.iterparse(temp_file.name, events=('start', 'end')):
         if event == "start":
             if elem.tag.endswith("file"):
                 element['filename'] = elem.attrib['name']
@@ -77,7 +78,7 @@ def get_info(metalink):
             elif elem.tag.endswith("url"):
                 try:
                     element['urls'].append(elem.text)
-                except KeyError as err:
+                except KeyError:
                     element['urls'] = [elem.text]
         if event == "end":
             if elem.tag.endswith("file"):
@@ -94,11 +95,12 @@ def get_info(metalink):
 
     return metalink_info
 
+
 def create(pacman, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    #options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed" ]
-    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps" ]
+    # options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
+    options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
 
     if package_name is "databases":
         options.append("--refresh")
@@ -131,9 +133,11 @@ def create(pacman, package_name, pacman_conf_file):
 
     return metalink
 
+
 # From here comes modified code from pm2ml
 # pm2ml is Copyright (C) 2012-2013 Xyne
 # More info: http://xyne.archlinux.ca/projects/pm2ml
+
 
 def download_queue_to_metalink(download_queue):
     metalink = Metalink()
@@ -146,29 +150,30 @@ def download_queue_to_metalink(download_queue):
 
     return metalink
 
+
 class Metalink(object):
     def __init__(self):
         self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
         self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
         self.files = self.doc.documentElement
 
-    #def __del__(self):
+    # def __del__(self):
     #    self.doc.unlink()
 
     def __str__(self):
         return re.sub(
-          r'(?<=>)\n\s*([^\s<].*?)\s*\n\s*',
-          r'\1',
-          self.doc.toprettyxml(indent=' ')
+            r'(?<=>)\n\s*([^\s<].*?)\s*\n\s*',
+            r'\1',
+            self.doc.toprettyxml(indent=' ')
         )
 
     def add_urls(self, element, urls):
         """Add URL elements to the given element."""
         for url in urls:
-          url_tag = self.doc.createElement('url')
-          element.appendChild(url_tag)
-          url_val = self.doc.createTextNode(url)
-          url_tag.appendChild(url_val)
+            url_tag = self.doc.createElement('url')
+            element.appendChild(url_tag)
+            url_val = self.doc.createTextNode(url)
+            url_tag.appendChild(url_val)
 
     def add_sync_pkg(self, pkg, urls, sigs=False):
         """Add a sync db package."""
@@ -176,12 +181,12 @@ class Metalink(object):
         file_.setAttribute("name", pkg.filename)
         self.files.appendChild(file_)
         for tag, db_attr, attrs in (
-            ('identity', 'name', ()),
-            ('size', 'size', ()),
-            ('version', 'version', ()),
-            ('description', 'desc', ()),
-            ('hash', 'sha256sum', (('type','sha256'),)),
-            ('hash', 'md5sum', (('type','md5'),))):
+                ('identity', 'name', ()),
+                ('size', 'size', ()),
+                ('version', 'version', ()),
+                ('description', 'desc', ()),
+                ('hash', 'sha256sum', (('type', 'sha256'),)),
+                ('hash', 'md5sum', (('type', 'md5'),))):
             tag = self.doc.createElement(tag)
             file_.appendChild(tag)
             val = self.doc.createTextNode(str(getattr(pkg, db_attr)))
@@ -211,8 +216,10 @@ class Metalink(object):
         if sigs:
             self.add_file(name + '.sig', (u + '.sig' for u in urls))
 
+
 class PkgSet(object):
     """ Represents a set of packages """
+
     def __init__(self, pkgs=[]):
         """ Init our internal self.pkgs dict with all given packages in pkgs """
         self.pkgs = dict()
@@ -251,8 +258,10 @@ class PkgSet(object):
     def __len__(self):
         return len(self.pkgs)
 
+
 class DownloadQueue(object):
     """ Represents a download queue """
+
     def __init__(self):
         self.dbs = list()
         self.sync_pkgs = list()
@@ -274,23 +283,26 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('pkgs', nargs='*', default=[], metavar='<pkgname>',
-        help='Packages or groups to download.')
+                        help='Packages or groups to download.')
     parser.add_argument('--all-deps', action='store_true', dest='alldeps',
-        help='Include all dependencies even if they are already installed.')
+                        help='Include all dependencies even if they are already installed.')
     parser.add_argument('-c', '--conf', metavar='<path>', default='/etc/pacman.conf', dest='conf',
-        help='Use a different pacman.conf file.')
+                        help='Use a different pacman.conf file.')
     parser.add_argument('--noconfirm', action='store_true', dest='noconfirm',
-        help='Suppress user prompts.')
+                        help='Suppress user prompts.')
     parser.add_argument('-d', '--nodeps', action='store_true', dest='nodeps',
-        help='Skip dependencies.')
+                        help='Skip dependencies.')
     parser.add_argument('--needed', action='store_true', dest='needed',
-        help='Skip packages if they already exist in the cache.')
+                        help='Skip packages if they already exist in the cache.')
+    help_msg = '''Include signature files for repos with optional and required SigLevels.
+        Pass this flag twice to attempt to download signature for all databases and packages.'''
     parser.add_argument('-s', '--sigs', action='count', default=0, dest='sigs',
-        help='Include signature files for repos with optional and required SigLevels. Pass this flag twice to attempt to download signature for all databases and packages.')
+                        help=help_msg)
     parser.add_argument('-y', '--databases', '--refresh', action='store_true', dest='db',
-        help='Download databases.')
+                        help='Download databases.')
 
     return parser.parse_args(args)
+
 
 def build_download_queue(pacman, args=None):
     """ Function to build a download queue.
@@ -384,21 +396,23 @@ def build_download_queue(pacman, args=None):
 
     return download_queue, not_found, missing_deps
 
+
 def get_checksum(path, typ):
     """ Returns checksum of a file """
     new_hash = hashlib.new(typ)
     block_size = new_hash.block_size
     try:
         with open(path, 'rb') as f:
-          buf = f.read(block_size)
-          while buf:
-            new_hash.update(buf)
             buf = f.read(block_size)
+            while buf:
+                new_hash.update(buf)
+                buf = f.read(block_size)
         return new_hash.hexdigest()
-    except (FileNotFoundError) as err:
+    except FileNotFoundError as err:
         return -1
-    except (IOError) as err:
+    except IOError as err:
         logging.error(err)
+
 
 def check_cache(conf, pkgs):
     """ Checks package checksum in cache """
@@ -414,6 +428,7 @@ def check_cache(conf, pkgs):
             else:
                 continue
             break
+
 
 def needs_sig(siglevel, insistence, prefix):
     """ Determines if a signature should be downloaded.
@@ -434,6 +449,7 @@ def needs_sig(siglevel, insistence, prefix):
 ''' Test case '''
 if __name__ == '__main__':
     import gettext
+
     _ = gettext.gettext
 
     formatter = logging.Formatter(
@@ -446,7 +462,6 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    import sys
     import gc
     import pprint
     import pacman.pac as pac
@@ -454,7 +469,7 @@ if __name__ == '__main__':
     try:
         pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)
 
-        for i in range(1,10000):
+        for i in range(1, 10000):
             print("Creating metalink...")
             meta4 = create(pacman=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
             print(get_info(meta4))
@@ -468,9 +483,3 @@ if __name__ == '__main__':
 
     except Exception as err:
         logging.error(_("Can't initialize pyalpm: %s"), err)
-
-
-    '''
-    with open("/usr/share/cnchi/test/gnome-sudoku.meta4") as meta4:
-        print(get_info(meta4.read()))
-    '''

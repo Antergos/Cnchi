@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download.py
+# download.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -38,17 +38,12 @@ if __name__ == '__main__':
 
 import pacman.pac as pac
 
-try:
-    import download.metalink as ml
-    import download.download_urllib as download_urllib
-    import download.download_aria2 as download_aria2
-except ImportError as err:
-    # when testing download.py
-    import metalink as ml
-    import download_urllib
-    import download_aria2
+import download.metalink as ml
+import download.download_urllib as download_urllib
+import download.download_aria2 as download_aria2
 
 from misc.misc import InstallError
+
 
 class DownloadPackages(object):
     """ Class to download packages using Aria2 or urllib
@@ -58,13 +53,13 @@ class DownloadPackages(object):
         so until it's fixed it it's not advised to use it """
 
     def __init__(
-        self,
-        package_names,
-        use_aria2=False,
-        pacman_conf_file=None,
-        pacman_cache_dir=None,
-        cache_dir=None,
-        callback_queue=None):
+            self,
+            package_names,
+            use_aria2=False,
+            pacman_conf_file=None,
+            pacman_cache_dir=None,
+            cache_dir=None,
+            callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if pacman_conf_file is None:
@@ -97,13 +92,8 @@ class DownloadPackages(object):
 
         if downloads is None:
             raise InstallError(_("Can't create download package list. Check log output for details"))
-            return
 
         if use_aria2:
-            try:
-                import download.download_aria2 as download_aria2
-            except ImportError as err:
-                import download_aria2
             logging.debug(_("Using aria2 to download packages"))
             download = download_aria2.Download(
                 pacman_cache_dir,
@@ -120,25 +110,21 @@ class DownloadPackages(object):
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
-        self.queue_event('percent', 0)
+        self.queue_event('percent', '0')
         self.queue_event('info', _('Creating the list of packages to download...'))
-        percent = 0
         processed_packages = 0
         total_packages = len(package_names)
 
         downloads = {}
 
-        pacman = None
-
         try:
             pacman = pac.Pac(
                 conf_path=self.pacman_conf_file,
                 callback_queue=self.callback_queue)
+            if pacman is None:
+                return None
         except Exception as err:
             logging.error(_("Can't initialize pyalpm: %s"), err)
-            return None
-
-        if pacman is None:
             return None
 
         try:
@@ -159,7 +145,7 @@ class DownloadPackages(object):
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
-                self.queue_event('percent', percent)
+                self.queue_event('percent', str(percent))
         except Exception as err:
             logging.error(_("Can't create download set: %s"), err)
             return None
@@ -196,9 +182,11 @@ class DownloadPackages(object):
         except queue.Full:
             pass
 
+
 ''' Test case '''
 if __name__ == '__main__':
     import gettext
+
     _ = gettext.gettext
 
     formatter = logging.Formatter(
@@ -213,7 +201,7 @@ if __name__ == '__main__':
 
     DownloadPackages(
         package_names=["gnome-sudoku"],
-        #use_aria2=False,
+        # use_aria2=False,
         use_aria2=True,
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
