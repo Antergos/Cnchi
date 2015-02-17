@@ -28,6 +28,7 @@ from gi.repository import Gtk, GLib
 import subprocess
 import os
 import logging
+
 import misc.gtkwidgets as gtkwidgets
 import misc.misc as misc
 

@@ -29,4 +29,3 @@ CNCHI_WEBSITE = "http://www.antergos.com"
 
 if __name__ == '__main__':
     print(CNCHI_VERSION)
-    exit()

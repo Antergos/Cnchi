@@ -24,7 +24,6 @@
 
 from gi.repository import Gtk, GLib
 
-# Import functions
 import config
 import os
 import logging

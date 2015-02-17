@@ -30,7 +30,6 @@ LOCALE_DIR = "/usr/share/locale"
 
 import os
 import sys
-import signal
 import logging
 import gettext
 import locale
@@ -41,11 +40,6 @@ except ImportError as err:
     print(err)
     print("This program needs GTK3")
     sys.exit(1)
-
-# Insert the src directory at the front of the path
-BASE_DIR = os.path.dirname(__file__) or '.'
-SRC_DIR = os.path.join(BASE_DIR, 'src')
-sys.path.insert(0, SRC_DIR)
 
 import misc.misc as misc
 import info

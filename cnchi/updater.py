@@ -28,12 +28,12 @@ import urllib
 import json
 import hashlib
 import os
-import info
 import logging
 import shutil
-import misc.misc as misc
 
+import misc.misc as misc
 import download.download_urllib as download
+import info
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"

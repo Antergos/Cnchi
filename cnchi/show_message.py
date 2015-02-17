@@ -28,8 +28,9 @@ import sys
 import os
 import queue
 import logging
-import misc.misc as misc
 import multiprocessing
+
+import misc.misc as misc
 
 _show_event_queue_messages = True
 

@@ -28,13 +28,13 @@ from gi.repository import Gtk, GLib
 import config
 import os
 import sys
+import logging
+import subprocess
 
 import queue
 from multiprocessing import Queue, Lock
 
 import show_message as show
-import logging
-import subprocess
 import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox

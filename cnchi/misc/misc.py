@@ -34,7 +34,10 @@ import dbus
 try:
     import misc.osextras as osextras
 except ImportError:
-    import osextras
+    try:
+        import osextras
+    except ImportError:
+        import src.misc.osextras
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):

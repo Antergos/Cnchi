@@ -23,13 +23,13 @@
 #  MA 02110-1301, USA.
 
 from gi.repository import Gtk, Gdk
-import subprocess, sys, os
+import subprocess
 import gettext
 import os
-import misc.misc as misc
 import logging
 import sys
 
+import misc.misc as misc
 import show_message as show
 
 from gtkbasebox import GtkBaseBox

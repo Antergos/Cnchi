@@ -25,8 +25,9 @@
 from gi.repository import Gtk
 
 import os
-import misc.validation as validation
+
 import config
+import misc.validation as validation
 import show_message as show
 
 from gtkbasebox import GtkBaseBox
