@@ -102,6 +102,9 @@ class NetworkManager:
         self.active_connection = None
         self.active_device_obj = None
         self.active_conn = None
+        self.bus = None
+        self.manager = None
+        self.passphrases_cache = {}
 
     def start(self, state_changed=None):
         self.bus = dbus.SystemBus()

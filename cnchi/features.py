@@ -57,6 +57,8 @@ class Features(GtkBaseBox):
         """ Initializes features ui """
         super().__init__(self, params, "features", prev_page, next_page)
 
+        self.listbox_rows = {}
+
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -89,7 +91,7 @@ class Features(GtkBaseBox):
                 print(feature)
                 icon_name = "missing"
 
-            object_name= "image_" + feature
+            object_name = "image_" + feature
             image = Gtk.Image.new_from_icon_name(
                 icon_name,
                 Gtk.IconSize.DND)

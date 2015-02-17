@@ -52,6 +52,8 @@ class InstallationAutomatic(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "automatic", prev_page, next_page)
 
+        self.auto_device = None
+
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
 

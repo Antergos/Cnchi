@@ -62,6 +62,8 @@ class Check(GtkBaseBox):
         # Boolean variable to check if reflector has been run once or not
         self.reflector_launched = False
 
+        self.label_space = self.ui.get_object("label_space")
+
         '''
         data_dir = self.settings.get('data')
         image1 = self.ui.get_object('image1')
@@ -78,7 +80,6 @@ class Check(GtkBaseBox):
         txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
         self.prepare_enough_space.props.label = txt
 
-        self.label_space = self.ui.get_object("label_space")
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)

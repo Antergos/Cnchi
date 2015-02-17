@@ -27,13 +27,12 @@
 
 """ Custom widget to show world time zones """
 
-from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, cairo, Pango, PangoCairo
-
 from datetime import datetime
-
 import os
 import math
 import sys
+
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
 
 try:
     import misc.tz as tz
@@ -64,8 +63,8 @@ color_codes = [
     (-9.0, 128, 0, 0, 255),
     (-8.0, 170, 0, 0, 255),
     (-7.0, 212, 0, 0, 255),
-    (-6.0, 255, 0, 1, 255), # north
-    (-6.0, 255, 0, 0, 255), # south
+    (-6.0, 255, 0, 1, 255),  # north
+    (-6.0, 255, 0, 0, 255),  # south
     (-5.0, 255, 42, 42, 255),
     (-4.5, 192, 255, 0, 255),
     (-4.0, 255, 85, 85, 255),
@@ -74,7 +73,7 @@ color_codes = [
     (-2.0, 255, 170, 170, 255),
     (-1.0, 255, 213, 213, 255),
     (0.0, 43, 17, 0, 255),
-    (1.0, 85, 34, 0, 255), # eastern Europe
+    (1.0, 85, 34, 0, 255),  # eastern Europe
     (2.0, 128, 51, 0, 255),
     (3.0, 170, 68, 0, 255),
     (3.5, 0, 255, 102, 255),
@@ -97,37 +96,11 @@ color_codes = [
     (12.75, 254, 74, 100, 248),
     (13.0, 255, 85, 153, 250)]
 
-def convert_longitude_to_x(longitude, map_width):
-    xdeg_offset = -6.0
-    return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
-
-def convert_latitude_to_y(latitude, map_height):
-    bottom_lat = -59.0
-    top_lat = 81.0
-
-    top_per = top_lat / 180.0
-
-    y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(latitude)))
-
-    full_range = 4.6068250867599998
-    top_offset = full_range * top_per
-    map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))) - top_offset)
-    y = math.fabs(y - top_offset)
-    y /= map_range
-    y = y * map_height
-    return y
-
-def clamp(x, min_value, max_value):
-    if x < min_value:
-        x = min_value
-    elif x > max_value:
-        x = max_value
-    return x
 
 class TimezoneMap(Gtk.Widget):
     __gtype_name__ = 'TimezoneMap'
 
-    __gsignals__ = { 'location-changed' : (GObject.SignalFlags.RUN_LAST, None, (object,)) }
+    __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
     def __init__(self):
         Gtk.Widget.__init__(self)
@@ -145,6 +118,7 @@ class TimezoneMap(Gtk.Widget):
 
         self._bubble_text = ""
 
+        self.olsen_map_timezones = []
         self.load_olsen_map_timezones()
 
         try:
@@ -171,15 +145,13 @@ class TimezoneMap(Gtk.Widget):
     def load_olsen_map_timezones(self):
         try:
             tree = ET.parse(OLSEN_MAP_TIMEZONES_PATH)
+            self.olsen_map_timezones = []
+            root = tree.getroot()
+            for tz_name in root.iter("timezone_name"):
+                self.olsen_map_timezones.append(tz_name.text)
         except FileNotFoundError as err:
             logging.error(err)
             print(err)
-
-        self.olsen_map_timezones = []
-
-        root = tree.getroot()
-        for tz_name in root.iter("timezone_name"):
-            self.olsen_map_timezones.append(tz_name.text)
 
     def do_get_preferred_width(self):
         """ Retrieves a widget’s initial minimum and natural width. """
@@ -190,7 +162,7 @@ class TimezoneMap(Gtk.Widget):
         if width > 400:
             width = 400
 
-        return (width, width)
+        return width, width
 
     def do_get_preferred_height(self):
         """ Retrieves a widget’s initial minimum and natural height. """
@@ -201,7 +173,7 @@ class TimezoneMap(Gtk.Widget):
         if height > 200:
             height = 200
 
-        return (height, height)
+        return height, height
 
     def do_size_allocate(self, allocation):
         """ The do_size_allocate is called by when the actual size is known
@@ -232,8 +204,8 @@ class TimezoneMap(Gtk.Widget):
             allocation.height,
             GdkPixbuf.InterpType.BILINEAR)
 
-        #self._visible_map_pixels = self._color_map.get_pixels()
-        #self._visible_map_rowstride = self._color_map.get_rowstride()
+        # self._visible_map_pixels = self._color_map.get_pixels()
+        # self._visible_map_rowstride = self._color_map.get_rowstride()
 
         if self.get_realized():
             self.get_window().move_resize(
@@ -302,8 +274,8 @@ class TimezoneMap(Gtk.Widget):
         y = pointy - height / 2
 
         # Make sure it fits in the visible area
-        x = clamp(x, 0, alloc.width - width)
-        y = clamp(y, 0, alloc.height - height)
+        x = self.clamp(x, 0, alloc.width - width)
+        y = self.clamp(y, 0, alloc.height - height)
 
         cr.save()
         cr.translate(x, y)
@@ -345,11 +317,12 @@ class TimezoneMap(Gtk.Widget):
         else:
             filename = "timezone_%g_dim.png" % offset
 
+        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
         try:
-            path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
             orig_hilight = GdkPixbuf.Pixbuf.new_from_file(path)
         except Exception as err:
             print("Can't load {0} image file".format(path))
+            print(err)
             return
 
         hilight = orig_hilight.scale_simple(
@@ -367,11 +340,11 @@ class TimezoneMap(Gtk.Widget):
             longitude = self._tz_location.get_property('longitude')
             latitude = self._tz_location.get_property('latitude')
 
-            pointx = convert_longitude_to_x(longitude, alloc.width)
-            pointy = convert_latitude_to_y(latitude, alloc.height)
+            pointx = self.convert_longitude_to_x(longitude, alloc.width)
+            pointy = self.convert_latitude_to_y(latitude, alloc.height)
 
-            #pointx = clamp(math.floor(pointx), 0, alloc.width)
-            #pointy = clamp(math.floor(pointy), 0, alloc.height)
+            # pointx = self.clamp(math.floor(pointx), 0, alloc.width)
+            # pointy = self.clamp(math.floor(pointy), 0, alloc.height)
 
             if pointy > alloc.height:
                 pointy = alloc.height
@@ -434,17 +407,17 @@ class TimezoneMap(Gtk.Widget):
         nearest_tz_location = None
 
         # Impossible distance
-        small_dist =  -1
+        small_dist = -1
 
         for tz_location in self.tzdb.get_locations():
             longitude = tz_location.get_property('longitude')
             latitude = tz_location.get_property('latitude')
 
-            pointx = convert_longitude_to_x(longitude, width)
-            pointy = convert_latitude_to_y(latitude, height)
+            pointx = self.convert_longitude_to_x(longitude, width)
+            pointy = self.convert_latitude_to_y(latitude, height)
 
-            dx = pointx - x;
-            dy = pointy - y;
+            dx = pointx - x
+            dy = pointy - y
 
             dist = dx * dx + dy * dy
 
@@ -470,8 +443,10 @@ class TimezoneMap(Gtk.Widget):
                 self.queue_draw()
         return True
 
-    def set_timezone(self, timezone):
-        real_tz = self.tzdb.get_loc(timezone)
+    def set_timezone(self, time_zone):
+        real_tz = self.tzdb.get_loc(time_zone)
+
+        ret = False
 
         if real_tz is not None:
             tz_to_compare = real_tz
@@ -483,9 +458,6 @@ class TimezoneMap(Gtk.Widget):
                     self.queue_draw()
                     ret = True
                     break
-        else:
-            # Unrecognised timezone
-            ret = False
 
         return ret
 
@@ -523,11 +495,41 @@ class TimezoneMap(Gtk.Widget):
             return city
         else:
             alloc = self.get_allocation()
-            x = convert_longitude_to_x(longitude, alloc.width)
-            y = convert_latitude_to_y(latitude, alloc.height)
-            location = get_loc_for_xy(x, y)
+            x = self.convert_longitude_to_x(longitude, alloc.width)
+            y = self.convert_latitude_to_y(latitude, alloc.height)
+            location = self.get_loc_for_xy(x, y)
             zone = location.get_property('zone')
             return zone
+
+    @staticmethod
+    def convert_longitude_to_x(longitude, map_width):
+        xdeg_offset = -6.0
+        return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
+
+    @staticmethod
+    def convert_latitude_to_y(latitude, map_height):
+        bottom_lat = -59.0
+        top_lat = 81.0
+
+        top_per = top_lat / 180.0
+
+        y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(latitude)))
+
+        full_range = 4.6068250867599998
+        top_offset = full_range * top_per
+        map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))) - top_offset)
+        y = math.fabs(y - top_offset)
+        y /= map_range
+        y = y * map_height
+        return y
+
+    @staticmethod
+    def clamp(x, min_value, max_value):
+        if x < min_value:
+            x = min_value
+        elif x > max_value:
+            x = max_value
+        return x
 
 if __name__ == '__main__':
     win = Gtk.Window()
@@ -536,7 +538,7 @@ if __name__ == '__main__':
     win.show_all()
 
     # Test with Europe/London
-    #timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
+    # timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
 
     # Test with America/Montreal
     timezone = tzmap.get_timezone_at_coords(latitude=+45.31, longitude=-73.34)
