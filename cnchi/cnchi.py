@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  cnchi.py
+# cnchi.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -36,8 +36,8 @@ import locale
 
 try:
     from gi.repository import Gtk, GObject
-except ImportError as err:
-    print(err)
+except ImportError as gtk_error:
+    print(gtk_error)
     print("This program needs GTK3")
     sys.exit(1)
 
@@ -51,8 +51,10 @@ cmd_line = None
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.9.6"
 
+
 class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
+
     def __init__(self):
         """ Constructor. Call base class """
         Gtk.Application.__init__(self)
@@ -66,26 +68,27 @@ class CnchiApp(Gtk.Application):
             logging.error(msg)
             sys.exit(1)
 
-        #window = main_window.MainWindow(self, cmd_line)
+        # window = main_window.MainWindow(self, cmd_line)
         main_window.MainWindow(self, cmd_line)
 
         # Some tutorials show that this line is needed, some don't
         # It seems to work ok without
-        #self.add_window(window)
+        # self.add_window(window)
 
         # This is unnecessary as show_all is called in MainWindow
-        #window.show_all()
+        # window.show_all()
 
-    #def do_startup(self):
-        #""" Override the 'startup' signal of GLib.Application. """
-        #Gtk.Application.do_startup(self)
+        # def do_startup(self):
+        # """ Override the 'startup' signal of GLib.Application. """
+        # Gtk.Application.do_startup(self)
 
         # Application main menu (we don't need one atm)
         # Leaving this here for future reference
-        #menu = Gio.Menu()
-        #menu.append("About", "win.about")
-        #menu.append("Quit", "app.quit")
-        #self.set_app_menu(menu)
+        # menu = Gio.Menu()
+        # menu.append("About", "win.about")
+        # menu.append("Quit", "app.quit")
+        # self.set_app_menu(menu)
+
 
 def setup_logging():
     """ Configure our logger """
@@ -111,8 +114,8 @@ def setup_logging():
         file_handler.setLevel(log_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-    except PermissionError as err:
-        print("Can't open /tmp/cnchi.log : ", err)
+    except PermissionError as permission_error:
+        print("Can't open /tmp/cnchi.log : ", permission_error)
 
     if cmd_line.verbose:
         # Show log messages to stdout
@@ -120,6 +123,7 @@ def setup_logging():
         stream_handler.setLevel(log_level)
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
+
 
 def check_gtk_version():
     """ Check GTK version """
@@ -154,10 +158,12 @@ def check_gtk_version():
 
     return True
 
+
 def check_pyalpm_version():
     """ Checks python alpm binding and alpm library versions """
     try:
         import pyalpm
+
         txt = _("Using pyalpm v{0} as interface to libalpm v{1}")
         txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
         logging.info(txt)
@@ -166,6 +172,7 @@ def check_pyalpm_version():
         # We don't return false as we want to be able to run Cnchi
         # in non Antergos systems for testing purposes
     return True
+
 
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
@@ -222,6 +229,7 @@ def parse_options():
 
     return parser.parse_args()
 
+
 def threads_init():
     """
     For applications that wish to use Python threads to interact with the GNOME platform,
@@ -239,6 +247,7 @@ def threads_init():
         # which require a workaround to get threading working properly.
         # Workaround: Force GIL creation
         import threading
+
         threading.Thread(target=lambda: None).start()
 
     # Since version 3.10.2, calling threads_init is no longer needed.
@@ -246,7 +255,8 @@ def threads_init():
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
 
-    #Gdk.threads_init()
+        #Gdk.threads_init()
+
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
@@ -272,6 +282,7 @@ def update_cnchi():
             os.execl(sys.executable, *([sys.executable] + new_argv))
         sys.exit(0)
 
+
 def setup_gettext():
     """ This allows to translate all py texts (not the glade ones) """
 
@@ -281,6 +292,7 @@ def setup_gettext():
     locale_code, encoding = locale.getdefaultlocale()
     lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
     lang.install()
+
 
 def check_for_files():
     """ Check for some necessary files. Cnchi can't run without them """
@@ -300,6 +312,7 @@ def check_for_files():
         return False
 
     return True
+
 
 def init_cnchi():
     """ This function initialises Cnchi """
@@ -340,6 +353,7 @@ def init_cnchi():
 
     # Init PyObject Threads
     threads_init()
+
 
 '''
 def sigterm_handler(_signo, _stack_frame):
