@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  ask.py
+# ask.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -47,6 +47,7 @@ import logging
 from gtkbasebox import GtkBaseBox
 import misc.misc as misc
 
+
 def check_alongside_disk_layout():
     """ Alongside can only work if user has followed the recommended
         BIOS-Based Disk-Partition Configurations shown in
@@ -55,7 +56,7 @@ def check_alongside_disk_layout():
     # TODO: Add more scenarios where alongside could work
 
     partitions = misc.get_partitions()
-    #logging.debug(partitions)
+    # logging.debug(partitions)
     extended = False
     for partition in partitions:
         if misc.is_partition_extended(partition):
@@ -75,6 +76,7 @@ def check_alongside_disk_layout():
         return True
 
     return False
+
 
 class InstallationAsk(GtkBaseBox):
     def __init__(self, params, prev_page="features", next_page=None):
@@ -99,7 +101,7 @@ class InstallationAsk(GtkBaseBox):
         self.other_oses = []
 
         # DISABLE ALONGSIDE INSTALLATION. IT'S NOT READY YET
-        #enable_alongside = self.check_alongside()
+        # enable_alongside = self.check_alongside()
         enable_alongside = False
 
         self.settings.set('enable_alongside', enable_alongside)
@@ -107,7 +109,7 @@ class InstallationAsk(GtkBaseBox):
             msg = _("Cnchi will enable the 'alongside' installation mode.")
         else:
             msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
-        #logging.debug(msg)
+        # logging.debug(msg)
 
         # By default, select automatic installation
         self.next_page = "installation_automatic"
@@ -351,6 +353,8 @@ class InstallationAsk(GtkBaseBox):
             self.next_page = "installation_advanced"
             self.enable_automatic_options(False)
 
+
 if __name__ == '__main__':
     from test_screen import _, run
+
     run('InstallationAsk')

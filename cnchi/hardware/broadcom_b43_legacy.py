@@ -24,26 +24,23 @@
 
 """ Broadcom b43legacy driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
-CLASS_NAME = "Broadcom_b43_legacy"
+CLASS_NAME = "BroadcomB43Legacy"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-('0x4301', "BCM4301"),
-('0x4306', "BCM4306/2"),
-('0x4320', "BCM4306/2"),
-('0x4324', "BCM4306"),
-('0x4325', "BCM4306/2")]
+    ('0x4301', "BCM4301"),
+    ('0x4306', "BCM4306/2"),
+    ('0x4320', "BCM4306/2"),
+    ('0x4324', "BCM4306"),
+    ('0x4325', "BCM4306/2")]
 
-class Broadcom_b43_legacy(Hardware):
+
+class BroadcomB43Legacy(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["b43-firmware-legacy"]
@@ -51,7 +48,6 @@ class Broadcom_b43_legacy(Hardware):
     def post_install(self, dest_dir):
         with open("/etc/modprobe.d/blacklist", "a") as blacklist:
             blacklist.write("blacklist b43\n")
-
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """

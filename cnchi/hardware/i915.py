@@ -24,11 +24,7 @@
 
 """ Intel driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import os
 
@@ -37,9 +33,10 @@ CLASS_ID = "0x0300"
 VENDOR_ID = "0x8086"
 DEVICES = []
 
+
 class i915(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         pkgs = ["xf86-video-intel", "libva-intel-driver", "libtxc_dxtn"]

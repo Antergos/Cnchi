@@ -32,10 +32,11 @@ DEVICES = []
 
 CLASS_NAME = ""
 
+
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         """ Returns all necessary packages to install """
@@ -58,8 +59,8 @@ class Hardware(object):
     def get_name(self):
         raise NotImplementedError("get_name is not implemented")
 
-
-    def chroot(self, cmd, dest_dir, stdin=None, stdout=None):
+    @staticmethod
+    def chroot(cmd, dest_dir, stdin=None, stdout=None):
         """ Runs command inside the chroot """
         run = ['chroot', dest_dir]
 
@@ -74,7 +75,8 @@ class Hardware(object):
             out = proc.communicate()[0]
             logging.debug(out.decode())
         except OSError as err:
-            logging.exception(_("Error running command: %s"), err.strerror)
+            logging.error(_("Error running command: %s"), err.strerror)
+
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
@@ -95,6 +97,7 @@ class HardwareInstall(object):
         for filename in dirs:
             if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
                 filename = filename[:-len(".py")]
+                name = ""
                 try:
                     if __name__ == "__main__":
                         package = filename

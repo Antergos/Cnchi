@@ -26,35 +26,32 @@
 
 # Support for consumer fingerprint reader devices.
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 CLASS_NAME = "FingerPrint"
 CLASS_ID = ""
 VENDOR_ID = ""
 DEVICES = [
-('0x045e', '0x00bb', ""),
-('0x045e', '0x00bc', ""),
-('0x045e', '0x00bd', ""),
-('0x045e', '0x00ca', ""),
-('0x0483', '0x2015', ""),
-('0x0483', '0x2016', ""),
-('0x05ba', '0x000a', ""),
-('0x05ba', '0x0007', ""),
-('0x05ba', '0x0008', ""),
-('0x061a', '0x0110', ""),
-('0x08ff', '0x1600', ""),
-('0x08ff', '0x2550', ""),
-('0x08ff', '0x2580', ""),
-('0x08ff', '0x5501', ""),
-('0x147e', '0x2016', "")]
+    ('0x045e', '0x00bb', ""),
+    ('0x045e', '0x00bc', ""),
+    ('0x045e', '0x00bd', ""),
+    ('0x045e', '0x00ca', ""),
+    ('0x0483', '0x2015', ""),
+    ('0x0483', '0x2016', ""),
+    ('0x05ba', '0x000a', ""),
+    ('0x05ba', '0x0007', ""),
+    ('0x05ba', '0x0008', ""),
+    ('0x061a', '0x0110', ""),
+    ('0x08ff', '0x1600', ""),
+    ('0x08ff', '0x2550', ""),
+    ('0x08ff', '0x2580', ""),
+    ('0x08ff', '0x5501', ""),
+    ('0x147e', '0x2016', "")]
+
 
 class FingerPrint(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["fprintd"]

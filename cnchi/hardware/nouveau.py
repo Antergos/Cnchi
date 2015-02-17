@@ -24,11 +24,7 @@
 
 """ Nouveau (Nvidia) driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import os
 
@@ -37,9 +33,10 @@ CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 DEVICES = []
 
+
 class Nouveau(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         pkgs = ["xf86-video-nouveau"]

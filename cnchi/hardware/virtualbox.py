@@ -24,11 +24,7 @@
 
 """ Virtualbox driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import os
 
@@ -37,9 +33,10 @@ CLASS_ID = ""
 VENDOR_ID = "0x80ee"
 DEVICES = [('0xbeef', "InnoTek Systemberatung GmbH VirtualBox Graphics Adapter")]
 
+
 class Virtualbox(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["virtualbox-guest-modules", "virtualbox-guest-utils"]

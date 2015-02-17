@@ -24,20 +24,17 @@
 
 """ Firewire driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 CLASS_NAME = "Firewire"
 CLASS_ID = ""
 VENDOR_ID = "0x1180"
 DEVICES = [('0x0832', "Firewire")]
 
+
 class Firewire(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["libffado", "libraw1394"]

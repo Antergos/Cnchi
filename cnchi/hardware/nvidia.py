@@ -24,11 +24,7 @@
 
 """ Nvidia (propietary) driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import os
 
@@ -41,9 +37,10 @@ DEVICES = []
 # nvidia, nvidia-340xx, nvidia-304xx
 # lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
 
+
 class Nvidia(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau", "libcl"]

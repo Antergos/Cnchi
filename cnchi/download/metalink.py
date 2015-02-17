@@ -36,15 +36,12 @@ import argparse
 
 from collections import deque
 
-try:
-    import pyalpm
-except ImportError as err:
-    logging.error(err)
+import pyalpm
 
 try:
-    import xml.etree.cElementTree as etree
+    import xml.etree.cElementTree as eTree
 except ImportError:
-    import xml.etree.ElementTree as etree
+    import xml.etree.ElementTree as eTree
 
 MAX_URLS = 5
 
@@ -52,7 +49,7 @@ MAX_URLS = 5
 def get_info(metalink):
     """ Reads metalink xml info and returns it """
 
-    tag = "{urn:ietf:params:xml:ns:metalink}"
+    # tag = "{urn:ietf:params:xml:ns:metalink}"
 
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     temp_file.write(str(metalink).encode('UTF-8'))
@@ -61,7 +58,7 @@ def get_info(metalink):
     metalink_info = {}
     element = {}
 
-    for event, elem in etree.iterparse(temp_file.name, events=('start', 'end')):
+    for event, elem in eTree.iterparse(temp_file.name, events=('start', 'end')):
         if event == "start":
             if elem.tag.endswith("file"):
                 element['filename'] = elem.attrib['name']
@@ -96,7 +93,7 @@ def get_info(metalink):
     return metalink_info
 
 
-def create(pacman, package_name, pacman_conf_file):
+def create(alpm, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
     # options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
@@ -108,11 +105,11 @@ def create(pacman, package_name, pacman_conf_file):
         options.append(package_name)
 
     try:
-        download_queue, not_found, missing_deps = build_download_queue(pacman=pacman, args=options)
-    except Exception as err:
+        download_queue, not_found, missing_deps = build_download_queue(alpm, args=options)
+    except Exception as build_error:
         msg = _("Unable to create download queue for package {0}").format(package_name)
         logging.error(msg)
-        logging.exception(err)
+        logging.exception(build_error)
         return None
 
     if not_found:
@@ -304,30 +301,31 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def build_download_queue(pacman, args=None):
+def build_download_queue(alpm, args=None):
     """ Function to build a download queue.
         Needs a pkgname in args """
 
     pargs = parse_args(args)
-    conf_file = pargs.conf
 
     '''
     try:
-        pacman = pac.Pac(conf_path=conf_file, callback_queue=None)
+        conf_file = pargs.conf
+        alpm = pac.Pac(conf_path=conf_file, callback_queue=None)
     except Exception as err:
         logging.error(_("Can't initialize pyalpm: %s"), err)
         return None, None, None
     '''
 
-    handle = pacman.get_handle()
-    conf = pacman.get_config()
+    handle = alpm.get_handle()
+    conf = alpm.get_config()
 
     requested = set(pargs.pkgs)
     other = PkgSet()
-    foreign_names = set()
     missing_deps = list()
     found = set()
-    not_found = set()
+
+    # foreign_names = set()
+    # not_found = set()
 
     for pkg in requested:
         other_grp = PkgSet()
@@ -343,7 +341,7 @@ def build_download_queue(pacman, args=None):
         else:
             other |= other_grp
 
-    foreign_names = requested - set(x.name for x in other)
+    # foreign_names = requested - set(x.name for x in other)
 
     # Resolve dependencies.
     if other and not pargs.nodeps:
@@ -408,10 +406,10 @@ def get_checksum(path, typ):
                 new_hash.update(buf)
                 buf = f.read(block_size)
         return new_hash.hexdigest()
-    except FileNotFoundError as err:
+    except FileNotFoundError:
         return -1
-    except IOError as err:
-        logging.error(err)
+    except IOError as io_error:
+        logging.error(io_error)
 
 
 def check_cache(conf, pkgs):
@@ -471,7 +469,7 @@ if __name__ == '__main__':
 
         for i in range(1, 10000):
             print("Creating metalink...")
-            meta4 = create(pacman=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
+            meta4 = create(alpm=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
             print(get_info(meta4))
             meta4 = None
             n = gc.collect()

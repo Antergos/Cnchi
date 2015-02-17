@@ -27,22 +27,17 @@
 """ Hardware-agnostic DDX driver that (theoretically) works with
     any hardware having a DRM/KMS graphics driver """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
-
-import os
+from hardware.hardware import Hardware
 
 CLASS_NAME = "ModeSetting"
 CLASS_ID = "0x0300"
 
 DEVICES = []
 
+
 class ModeSetting(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["xf86-video-modesetting"]

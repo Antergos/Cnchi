@@ -24,21 +24,18 @@
 
 """ Vmware driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 CLASS_NAME = "Vmware"
 CLASS_ID = ""
 VENDOR_ID = "0x15ad"
 DEVICES = [('0x0405', "VMware Virtual SVGA II"), ('0x0710', "VMware Virtual SVGA")]
 
+
 class Vmware(Hardware):
     """ Vmware class definition """
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]

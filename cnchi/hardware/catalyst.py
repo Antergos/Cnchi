@@ -24,11 +24,7 @@
 
 """ AMD/ATI driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import os
 
@@ -47,9 +43,10 @@ Server = http://catalyst.wirephire.com/repo/catalyst/$arch
 SigLevel = Optional TrustAll
 '''
 
+
 class Catalyst(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         pkgs = ["catalyst-hook", "catalyst-libgl",  "catalyst-utils", "acpid", "qt4", "acpid"]

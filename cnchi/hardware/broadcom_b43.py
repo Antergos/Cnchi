@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  broadcom_b43.py
+# broadcom_b43.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,46 +24,44 @@
 
 """ Broadcom b43 driver installation """
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
 
-CLASS_NAME = "Broadcom_b43"
+from hardware.hardware import Hardware
+
+CLASS_NAME = "BroadcomB43"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-('0x0576', "BCM43224"), # not tested 
-('0x4307', "BCM4306/3"),
-('0x4311', "BCM4311"),
-('0x4312', "BCM4311"),
-('0x4315', "BCM4312"), # LP-PHY https://github.com/dbb/scripts/blob/master/b43-lp-installer
-('0x4318', "BCM4318"), 
-('0x4319', "BCM4318"), 
-('0x4320', "BCM4306/3"),
-('0x4322', "BCM4322"), # not tested 
-('0x4324', "BCM4306/3"),
-('0x432a', "BCM4321"), # not tested
-('0x432c', "BCM4322"), 
-('0x432d', "BCM4322"), # not tested
-('0x4331', "BCM4331"),
-('0x4350', "BCM43222"),
-('0x4353', "BCM43224"),
-('0x4357', "BCM43225"), 
-('0x4358', "BCM43227"), 
-('0x4359', "BCM43228"), 
-('0x43a9', "BCM43217"), 
-('0x43aa', "BCM43131"), 
-('0xa8d6', "BCM43222"), # not tested
-('0xa8d8', "BCM43224"),
-('0xa8db', "BCM43217"), # not tested
-('0xa99d', "BCM43421")] # not tested
+    ('0x0576', "BCM43224"),  # not tested
+    ('0x4307', "BCM4306/3"),
+    ('0x4311', "BCM4311"),
+    ('0x4312', "BCM4311"),
+    ('0x4315', "BCM4312"),  # LP-PHY https://github.com/dbb/scripts/blob/master/b43-lp-installer
+    ('0x4318', "BCM4318"),
+    ('0x4319', "BCM4318"),
+    ('0x4320', "BCM4306/3"),
+    ('0x4322', "BCM4322"),  # not tested
+    ('0x4324', "BCM4306/3"),
+    ('0x432a', "BCM4321"),  # not tested
+    ('0x432c', "BCM4322"),
+    ('0x432d', "BCM4322"),  # not tested
+    ('0x4331', "BCM4331"),
+    ('0x4350', "BCM43222"),
+    ('0x4353', "BCM43224"),
+    ('0x4357', "BCM43225"),
+    ('0x4358', "BCM43227"),
+    ('0x4359', "BCM43228"),
+    ('0x43a9', "BCM43217"),
+    ('0x43aa', "BCM43131"),
+    ('0xa8d6', "BCM43222"),  # not tested
+    ('0xa8d8', "BCM43224"),
+    ('0xa8db', "BCM43217"),  # not tested
+    ('0xa99d', "BCM43421")]  # not tested
 
-class Broadcom_b43(Hardware):
+
+class BroadcomB43(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["b43-firmware"]

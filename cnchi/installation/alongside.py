@@ -26,46 +26,29 @@
 
 # ******************* NO GPT SUPPORT, YET ***************************************
 
-from gi.repository import Gtk, Gdk
-
 import sys
 import os
 import logging
 import subprocess
 import tempfile
 
-if __name__ == '__main__':
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test this screen
-    base_dir = os.path.dirname(__file__) or '.'
-    parent_dir = os.path.join(base_dir, '..')
-    sys.path.insert(0, parent_dir)
-
 # When testing, no _() is available
 try:
     _("")
 except NameError as err:
-    def _(message): return message
-
-try:
-    import parted
-except ImportError as err:
-    logging.error(_("Can't import parted module: %s"), str(err))
+    def _(message):
+        return message
 
 import misc.misc as misc
 import misc.gtkwidgets as gtkwidgets
 import show_message as show
 import bootinfo
 
-import parted3.partition_module as pm
-import parted3.fs_module as fs
-import parted3.used_space as used_space
-
-from installation import process as installation_process
 from gtkbasebox import GtkBaseBox
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500
+
 
 def get_partition_size_info(partition_path, human=False):
     """ Gets partition used and available space using df command """
@@ -92,8 +75,8 @@ def get_partition_size_info(partition_path, human=False):
         df_out = subprocess.check_output(cmd).decode()
         if not already_mounted:
             subprocess.call(['umount', '-l', tmp_dir])
-    except subprocess.CalledProcessError as err:
-        logging.error(err)
+    except subprocess.CalledProcessError as process_error:
+        logging.error(process_error)
         return
 
     if os.path.exists(tmp_dir):
@@ -109,7 +92,8 @@ def get_partition_size_info(partition_path, human=False):
             part_size = float(df_out[1])
             min_size = float(df_out[2])
 
-    return (min_size, part_size)
+    return min_size, part_size
+
 
 class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
@@ -122,10 +106,11 @@ class InstallationAlongside(GtkBaseBox):
         self.choose_partition_combo = self.ui.get_object('choose_partition_combo')
 
         self.oses = bootinfo.get_os_dict()
-        #print(self.oses)
+        # print(self.oses)
         self.resize_widget = None
 
-    def get_new_device(self, device_to_shrink):
+    @staticmethod
+    def get_new_device(device_to_shrink):
         """ Get new device where Cnchi will install Antergos
             returns an empty string if no device is available """
         number = int(device_to_shrink[len("/dev/sdX"):])
@@ -145,7 +130,7 @@ class InstallationAlongside(GtkBaseBox):
         return new_device
 
     def set_resize_widget(self, device_to_shrink):
-        new_device  = self.get_new_device(device_to_shrink)
+        new_device = self.get_new_device(device_to_shrink)
 
         if new_device is None:
             # No device is available
@@ -167,7 +152,7 @@ class InstallationAlongside(GtkBaseBox):
             show.warning(self.get_toplevel(), txt)
             max_size = part_size
 
-        #print(min_size, max_size, part_size)
+        # print(min_size, max_size, part_size)
 
         if self.resize_widget:
             self.resize_widget.set_property('part_size', int(part_size))
@@ -229,10 +214,11 @@ class InstallationAlongside(GtkBaseBox):
     def on_choose_partition_combo_changed(self, combobox):
         txt = combobox.get_active_text()
         device = txt.split("(")[1][:-1]
-        #print(device)
+        # print(device)
         self.set_resize_widget(device)
 
-    def select_first_combobox_item(self, combobox):
+    @staticmethod
+    def select_first_combobox_item(combobox):
         """ Automatically select first entry """
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
@@ -249,7 +235,7 @@ class InstallationAlongside(GtkBaseBox):
         devices = []
 
         for device in sorted(self.oses.keys()):
-            #if "Swap" not in self.oses[device]:
+            # if "Swap" not in self.oses[device]:
             if "windows" in self.oses[device].lower():
                 devices.append(device)
 
@@ -444,5 +430,5 @@ class InstallationAlongside(GtkBaseBox):
         '''
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('InstallationAlongside')

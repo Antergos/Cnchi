@@ -26,27 +26,24 @@
 # Broadcom's driver for:
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-, BCM43227- and BCM43228-based hardware. 
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
-CLASS_NAME = "Broadcom_wl"
+CLASS_NAME = "BroadcomWl"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-('0x4311', "BCM4311"),
-('0x04B5', "BCM4312"),
-('0x4727', "BCM4313"),
-('0x1361', "BCM4313"),
-('0x4328', "BCM4321KFBG"),
-('0x432B', "BCM4322")]
+    ('0x4311', "BCM4311"),
+    ('0x04B5', "BCM4312"),
+    ('0x4727', "BCM4313"),
+    ('0x1361', "BCM4313"),
+    ('0x4328', "BCM4321KFBG"),
+    ('0x432B', "BCM4322")]
 
-class Broadcom_wl(Hardware):
+
+class BroadcomWl(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
         return ["broadcom-wl"]

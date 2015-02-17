@@ -28,11 +28,7 @@
 # - http://www.x.org/archive/X11R7.5/doc/man/man4/evdev.4.html
 # - https://bbs.archlinux.org/viewtopic.php?id=126208
 
-try:
-    from hardware.hardware import Hardware
-except ImportError:
-    # This is used when testing hardware module
-    from hardware import Hardware
+from hardware.hardware import Hardware
 
 import subprocess
 import os
@@ -42,12 +38,13 @@ CLASS_ID = ""
 VENDOR_ID = "0x0eef"
 DEVICES = [('0x0001', "ETouchScreen")]
 
+
 class ETouchScreen(Hardware):
     def __init__(self):
-        pass
+        Hardware.__init__(self)
 
     def get_packages(self):
-        return [ "xinput_calibrator", "xournal" ]
+        return ["xinput_calibrator", "xournal"]
 
     def post_install(self, dest_dir):
         subprocess.check_call(["rmmod", "usbtouchscreen"])
