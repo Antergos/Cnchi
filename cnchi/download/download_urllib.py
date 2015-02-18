@@ -33,6 +33,57 @@ import urllib.error
 import http.client
 
 
+def url_open(url):
+    """ Helper function to open a remote file """
+
+    if url is None:
+        logging.warning(_("Wrong url, will try another one if available."))
+        return None
+
+    # Remove trailing spaces or new lines at the end of the string
+    url = url.rstrip()
+
+    try:
+        urlp = urllib.request.urlopen(url)
+    except urllib.error.HTTPError as err:
+        urlp = None
+        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+        logging.warning(msg)
+    except urllib.error.URLError as err:
+        urlp = None
+        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+        logging.warning(msg)
+    except http.client.BadStatusLine as err:
+        urlp = None
+        msg = _("Can't open {0} - Reason: {1}").format(url, err)
+        logging.warning(msg)
+    except AttributeError as err:
+        urlp = None
+        msg = _("Can't open {0} - Reason: {1}").format(url, err)
+        logging.warning(msg)
+
+    return urlp
+
+
+def url_open_read(urlp, chunk_size=8192):
+    """ Helper function to download and read a fragment of a remote file """
+
+    download_error = True
+    data = None
+
+    try:
+        data = urlp.read(chunk_size)
+        download_error = False
+    except urllib.error.HTTPError as err:
+        msg = _('HTTP Error : {0}').format(err.reason)
+        logging.error(msg)
+    except urllib.error.URLError as err:
+        msg = _('URL Error : {0}').format(err.reason)
+        logging.error(msg)
+
+    return data, download_error
+
+
 class Download(object):
     """ Class to download packages using urllib
         This class tries to previously download all necessary packages for
@@ -97,10 +148,10 @@ class Download(object):
                     download_error = True
                     percent = 0
                     completed_length = 0
-                    urlp = self.url_open(url)
+                    urlp = url_open(url)
                     if urlp is not None:
                         with open(dst_path, 'wb') as xzfile:
-                            (data, download_error) = self.url_open_read(urlp)
+                            (data, download_error) = url_open_read(urlp)
 
                             while not download_error and len(data) > 0:
                                 xzfile.write(data)
@@ -112,7 +163,7 @@ class Download(object):
                                     percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
-                                (data, download_error) = self.url_open_read(urlp)
+                                (data, download_error) = url_open_read(urlp)
 
                             if not download_error:
                                 downloaded += 1
@@ -160,54 +211,3 @@ class Download(object):
             self.callback_queue.put_nowait((event_type, event_text))
         except queue.Full:
             pass
-
-    @staticmethod
-    def url_open_read(urlp, chunk_size=8192):
-        """ Helper function to download and read a fragment of a remote file """
-
-        download_error = True
-        data = None
-
-        try:
-            data = urlp.read(chunk_size)
-            download_error = False
-        except urllib.error.HTTPError as err:
-            msg = _('HTTP Error : {0}').format(err.reason)
-            logging.error(msg)
-        except urllib.error.URLError as err:
-            msg = _('URL Error : {0}').format(err.reason)
-            logging.error(msg)
-
-        return data, download_error
-
-    @staticmethod
-    def url_open(url):
-        """ Helper function to open a remote file """
-
-        if url is None:
-            logging.warning(_("Wrong url, will try another one if available."))
-            return None
-
-        # Remove trailing spaces or new lines at the end of the string
-        url = url.rstrip()
-
-        try:
-            urlp = urllib.request.urlopen(url)
-        except urllib.error.HTTPError as err:
-            urlp = None
-            msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-            logging.warning(msg)
-        except urllib.error.URLError as err:
-            urlp = None
-            msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-            logging.warning(msg)
-        except http.client.BadStatusLine as err:
-            urlp = None
-            msg = _("Can't open {0} - Reason: {1}").format(url, err)
-            logging.warning(msg)
-        except AttributeError as err:
-            urlp = None
-            msg = _("Can't open {0} - Reason: {1}").format(url, err)
-            logging.warning(msg)
-
-        return urlp

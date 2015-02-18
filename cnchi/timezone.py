@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  timezone.py
+# timezone.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -31,21 +31,18 @@ import queue
 import urllib.request
 import urllib.error
 import time
-import datetime
-import config
 import logging
-import dbus
-import subprocess
 import hashlib
 
 import misc.tz as tz
 import misc.misc as misc
-import misc.timezonemap as TimezoneMap
+import misc.timezonemap as timezonemap
 from mirrorlist import GenerateMirrorListThread
 from gtkbasebox import GtkBaseBox
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
+
 
 class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
@@ -76,10 +73,10 @@ class Timezone(GtkBaseBox):
         # Thread to generate a pacman mirrorlist based on country code
         # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
         self.mirrorlist_thread = None
-        #self.start_mirrorlist_thread()
+        # self.start_mirrorlist_thread()
 
         # Setup window
-        self.tzmap = TimezoneMap.TimezoneMap()
+        self.tzmap = timezonemap.TimezoneMap()
         self.tzmap.connect('location-changed', self.on_location_changed)
 
         # Strip .UTF-8 from locale, icu doesn't parse it
@@ -104,7 +101,7 @@ class Timezone(GtkBaseBox):
         self.header.set_subtitle(_("Select Your Timezone"))
 
     def on_location_changed(self, tzmap, tz_location):
-        #loc = self.tzdb.get_loc(self.timezone)
+        # loc = self.tzdb.get_loc(self.timezone)
         if not tz_location:
             self.timezone = None
             self.forward_button.set_sensitive(False)
@@ -120,7 +117,8 @@ class Timezone(GtkBaseBox):
         self.populate_cities(zone)
         self.select_combobox_item(self.combobox_region, region)
 
-    def select_combobox_item(self, combobox, item):
+    @staticmethod
+    def select_combobox_item(combobox, item):
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
 
@@ -156,7 +154,7 @@ class Timezone(GtkBaseBox):
         zones = []
         for loc in self.tzdb.locations:
             zone = loc.zone.split('/', 1)[0]
-            if not zone in zones:
+            if zone not in zones:
                 zones.append(zone)
         zones.sort()
         tree_model = self.combobox_zone.get_model()
@@ -187,7 +185,7 @@ class Timezone(GtkBaseBox):
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-            except queue.Empty as err:
+            except queue.Empty:
                 msg = _("Can't autodetect timezone coordinates")
                 if __name__ == '__main__':
                     # When testing this screen, give 5 more seconds and try again just in case.
@@ -196,7 +194,7 @@ class Timezone(GtkBaseBox):
                     time.sleep(5)
                     try:
                         self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-                    except queue.Empty as err:
+                    except queue.Empty:
                         logging.warning(msg)
                     finally:
                         misc.set_cursor(Gdk.CursorType.ARROW)
@@ -260,6 +258,7 @@ class Timezone(GtkBaseBox):
     def on_switch_ntp_activate(self, ntp_switch):
         self.settings['use_ntp'] = ntp_switch.get_active()
 
+
 class AutoTimezoneThread(threading.Thread):
     def __init__(self, coords_queue, settings):
         super(AutoTimezoneThread, self).__init__()
@@ -301,15 +300,15 @@ class AutoTimezoneThread(threading.Thread):
             url = urllib.request.Request(
                 url="http://geo.antergos.com",
                 data=logo_digest,
-                headers={"User-Agent":"Antergos Installer", "Connection":"close"})
+                headers={"User-Agent": "Antergos Installer", "Connection": "close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
 
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
-        except Exception as err:
-            logging.error(err)
+        except Exception as general_error:
+            logging.error(general_error)
             coords = None
 
         if coords:
@@ -323,8 +322,10 @@ class AutoTimezoneThread(threading.Thread):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Timezone')

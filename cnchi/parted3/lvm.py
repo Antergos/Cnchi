@@ -28,6 +28,8 @@ import subprocess
 import logging
 
 import misc.misc as misc
+import show_message as show
+
 
 @misc.raise_privileges
 def get_lvm_partitions():
@@ -45,6 +47,7 @@ def get_lvm_partitions():
                 vgmap[vgn] = [pvn]
     return vgmap
 
+
 @misc.raise_privileges
 def get_volume_groups():
     """ Get all volume groups """
@@ -54,6 +57,7 @@ def get_volume_groups():
         if "VG Name" in line:
             volume_groups.append(line.split()[-1])
     return volume_groups
+
 
 @misc.raise_privileges
 def get_logical_volumes(volume_group):
@@ -67,6 +71,7 @@ def get_logical_volumes(volume_group):
 
 # When removing, we use -f flag to avoid warnings and confirmation messages
 
+
 @misc.raise_privileges
 def remove_logical_volume(logical_volume):
     """ Removes a logical volume """
@@ -77,7 +82,8 @@ def remove_logical_volume(logical_volume):
         logging.error(txt)
         logging.error(err)
         debugtxt = "{0}\n{1}".format(txt, err)
-        show.error(debugtxt)
+        show.error(None, debugtxt)
+
 
 @misc.raise_privileges
 def remove_volume_group(volume_group):
@@ -95,7 +101,8 @@ def remove_volume_group(volume_group):
         logging.error(txt)
         logging.error(err)
         debugtxt = "{0}\n{1}".format(txt, err)
-        show.error(debugtxt)
+        show.error(None, debugtxt)
+
 
 @misc.raise_privileges
 def remove_physical_volume(physical_volume):
@@ -107,4 +114,4 @@ def remove_physical_volume(physical_volume):
         logging.error(txt)
         logging.error(err)
         debugtxt = "{0}\n{1}".format(txt, err)
-        show.error(debugtxt)
+        show.error(None, debugtxt)

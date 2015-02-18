@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  bootinfo.py
+# bootinfo.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -30,13 +30,6 @@ import re
 import tempfile
 import logging
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
 import misc.misc as misc
 
 # constants
@@ -64,6 +57,7 @@ DOS_MARKS = [
 
 # Possible locations for os-release. Do not put a trailing /
 OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
+
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
@@ -95,47 +89,50 @@ def _check_windows(mount_name):
                         detected_os = "Windows XP"
     return detected_os
 
+
 @misc.raise_privileges
 def _hexdump8081(partition):
     try:
         cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
         hexdump = subprocess.check_output(cmd).decode()
         return hexdump
-    except subprocess.CalledProcessError as err:
-        logging.warning(_("Error calling hexdump command"))
+    except subprocess.CalledProcessError as process_error:
+        logging.warning(_("Error calling hexdump command: %s"), process_error)
         return ""
+
 
 def _get_partition_info(partition):
     """ Get bytes 0x80-0x81 of VBR to identify Boot sectors. """
     bytes80_to_81 = _hexdump8081(partition)
 
     bst = {
-        '0000':'Data or Swap',  # Data or swap partition
-        '7405':'Windows 7',     # W7 Fat32
-        '0734':'Dos_1.0',
-        '0745':'Windows Vista', # WVista Fat32
-        '089e':'MSDOS5.0',      # Dos Fat16
-        '08cd':'Windows XP',    # WinXP Ntfs
-        '0bd0':'MSWIN4.1',      # Fat32
-        '2a00':'ReactOS',
-        '2d5e':'Dos 1.1',
-        '3030':'W95 Extended (LBA)',
-        '3a5e':'Recovery',      # Recovery Fat32
-        '5c17':'Extended (do not use)',    # Extended partition
-        '55aa':'Windows Vista/7/8', # Vista/7 Ntfs (HPFS/NTFS/exFAT)
-        '638b':'Freedos',       # FreeDos Fat32
-        '7cc6':'MSWIN4.1',      # Fat32
-        '8ec0':'Windows XP',    # WinXP Ntfs
-        'b6d1':'Windows XP',    # WinXP Fat32
-        'e2f7':'FAT32, Non Bootable',
-        'e9d8':'Windows Vista/7/8', # Vista/7 Ntfs
-        'fa33':'Windows XP'}    # WinXP Ntfs
+        '0000': 'Data or Swap',  # Data or swap partition
+        '7405': 'Windows 7',  # W7 Fat32
+        '0734': 'Dos_1.0',
+        '0745': 'Windows Vista',  # WVista Fat32
+        '089e': 'MSDOS5.0',  # Dos Fat16
+        '08cd': 'Windows XP',  # WinXP Ntfs
+        '0bd0': 'MSWIN4.1',  # Fat32
+        '2a00': 'ReactOS',
+        '2d5e': 'Dos 1.1',
+        '3030': 'W95 Extended (LBA)',
+        '3a5e': 'Recovery',  # Recovery Fat32
+        '5c17': 'Extended (do not use)',  # Extended partition
+        '55aa': 'Windows Vista/7/8',  # Vista/7 Ntfs (HPFS/NTFS/exFAT)
+        '638b': 'Freedos',  # FreeDos Fat32
+        '7cc6': 'MSWIN4.1',  # Fat32
+        '8ec0': 'Windows XP',  # WinXP Ntfs
+        'b6d1': 'Windows XP',  # WinXP Fat32
+        'e2f7': 'FAT32, Non Bootable',
+        'e9d8': 'Windows Vista/7/8',  # Vista/7 Ntfs
+        'fa33': 'Windows XP'}  # WinXP Ntfs
 
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
     elif len(bytes80_to_81) > 0:
         logging.debug(_("Unknown partition id %s"), bytes80_to_81)
     return _("unknown")
+
 
 def _check_reactos(mount_name):
     """ Checks for ReactOS """
@@ -144,6 +141,7 @@ def _check_reactos(mount_name):
     if os.path.exists(path):
         detected_os = "ReactOS"
     return detected_os
+
 
 def _check_dos(mount_name):
     """ Checks for DOS and W9x """
@@ -156,6 +154,7 @@ def _check_dos(mount_name):
                     if mark in system_file:
                         detected_os = mark
     return detected_os
+
 
 def _check_linux(mount_name):
     """ Checks for linux """
@@ -193,10 +192,11 @@ def _check_linux(mount_name):
                 textlist = line.split()
                 text = ""
                 for element in textlist:
-                    if not "\\" in element:
+                    if "\\" not in element:
                         text += element
                 detected_os = text
     return detected_os
+
 
 def _get_os(mount_name):
     """ Detect installed OSes """
@@ -215,6 +215,7 @@ def _get_os(mount_name):
         detected_os = _check_dos(mount_name)
 
     return detected_os
+
 
 def get_os_dict():
     """ Returns all detected OSes in a dict """
@@ -242,15 +243,16 @@ def get_os_dict():
 
                     if oses[device] == _("unknown"):
                         # As a last resort, try reading partition info with hexdump
-                        #print(device, _get_partition_info(device))
+                        # print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
 
     try:
         os.rmdir(tmp_dir)
-    except OSError as err:
+    except OSError:
         pass
 
     return oses
+
 
 if __name__ == '__main__':
     print(get_os_dict())

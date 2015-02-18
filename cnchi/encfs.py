@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  encfs.py
+# encfs.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -29,6 +29,9 @@ import shutil
 import subprocess
 
 import misc.misc as misc
+
+# TODO: This is unfinished and untested
+
 
 @misc.raise_privileges
 def setup(username, dest_dir):
@@ -86,18 +89,18 @@ def setup(username, dest_dir):
     # Setup finished
 
     # Move user home dir out of the way
-    mounted_dir = os.path.join(self.dest_dir, "home/", username)
-    backup_dir = os.path.join(self.dest_dir, "var/tmp/", username)
-    shutil.move(src_dir, backup_dir)
+    mounted_dir = os.path.join(dest_dir, "home/", username)
+    backup_dir = os.path.join(dest_dir, "var/tmp/", username)
+    shutil.move(mounted_dir, backup_dir)
 
     # Create necessary dirs, encrypted and mounted(unecrypted)
-    encrypted_dir = os.path.join(self.dest_dir, "home/.encfs/", username)
+    encrypted_dir = os.path.join(dest_dir, "home/.encfs/", username)
     os.makedirs(encrypted_dir)
     os.makedirs(mounted_dir)
 
     # Set owner
-    os.chown(encrypted_dir, username, "users")
-    os.chown(mounted_dir, username, "users")
+    shutil.chown(encrypted_dir, username, "users")
+    shutil.chown(mounted_dir, username, "users")
 
     # Create encrypted directory
     subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir])
@@ -110,6 +113,7 @@ def setup(username, dest_dir):
 
     # Delete home backup
     os.rmdir(backup_dir)
+
 
 if __name__ == '__main__':
     setup("karasu", "/")

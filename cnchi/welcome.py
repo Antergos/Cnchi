@@ -22,9 +22,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, Gdk
 import subprocess
-import gettext
+
 import os
 import logging
 import sys
@@ -34,12 +33,6 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
-# Import functions
-import config
-try:
-    import src.info as info
-except ImportError:
-    import info
 
 class Welcome(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page="language"):
@@ -104,8 +97,8 @@ class Welcome(GtkBaseBox):
         try:
             subprocess.Popen(["antergos-wrap"])
             self.quit_cnchi()
-        except Exception as err:
-            msg = str(err)
+        except Exception as general_error:
+            msg = str(general_error)
             logging.error(msg)
             show.error(self.get_toplevel(), msg)
 
@@ -116,8 +109,8 @@ class Welcome(GtkBaseBox):
         # Simulate a forward button click
         self.forward_button.clicked()
 
-    def show_loading_message(self, show=True):
-        if show:
+    def show_loading_message(self, do_show=True):
+        if do_show:
             txt = _("Loading, please wait...")
         else:
             txt = ""
@@ -136,14 +129,15 @@ class Welcome(GtkBaseBox):
         if self.disable_tryit:
             self.buttons['tryit'].set_sensitive(False)
         if direction == "backwards":
-            self.show_loading_message(show=False)
+            self.show_loading_message(do_show=False)
 
 # When testing, no _() is available
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('Welcome')

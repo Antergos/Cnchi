@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  updater.py
+# updater.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,7 +24,6 @@
 
 """ Module to update Cnchi """
 
-import urllib
 import json
 import hashlib
 import os
@@ -42,17 +41,20 @@ _update_info = "/usr/share/cnchi/update.info"
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
 
+
 def get_md5_from_file(filename):
     with open(filename, 'rb') as myfile:
         buf = myfile.read()
         md5 = get_md5_from_text(buf)
     return md5
 
+
 def get_md5_from_text(text):
     """ Gets md5 hash from str """
     md5 = hashlib.md5()
     md5.update(text)
     return md5.hexdigest()
+
 
 class Updater():
     def __init__(self, force_update):
@@ -70,8 +72,8 @@ class Updater():
         with open(_update_info, "r") as local_update_info:
             response = local_update_info.read()
             if len(response) > 0:
-                updateInfo = json.loads(response)
-                self.local_files = updateInfo['files']
+                update_info = json.loads(response)
+                self.local_files = update_info['files']
 
         # Download update.info (contains info of all Cnchi's files)
         request = download.url_open(_update_info_url)
@@ -79,9 +81,9 @@ class Updater():
         if request is not None:
             response = request.read().decode('utf-8')
             if len(response) > 0:
-                updateInfo = json.loads(response)
-                self.remote_version = updateInfo['version']
-                for remote_file in updateInfo['files']:
+                update_info = json.loads(response)
+                self.remote_version = update_info['version']
+                for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
                 logging.info(_("Cnchi Internet version: %s"), self.remote_version)
                 self.force = force_update
@@ -118,8 +120,8 @@ class Updater():
         return False
 
     def update(self):
-        ''' Check if a new version is available and
-            update all files only if necessary (or forced) '''
+        """ Check if a new version is available and
+            update all files only if necessary (or forced) """
         update_cnchi = False
 
         if self.is_remote_version_newer():
@@ -147,7 +149,8 @@ class Updater():
 
         return update_cnchi
 
-    def download_master_zip(self, zip_path):
+    @staticmethod
+    def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
         request = download.url_open(_master_zip_url)
 
@@ -158,12 +161,12 @@ class Updater():
             with open(zip_path, 'wb') as zip_file:
                 (data, error) = download.url_open_read(request)
 
-                while len(data) > 0 and error == False:
+                while len(data) > 0 and not error:
                     zip_file.write(data)
                     (data, error) = download.url_open_read(request)
 
                 if error:
-                     return False
+                    return False
         return True
 
     def unzip_and_copy(self, zip_path):
@@ -182,7 +185,8 @@ class Updater():
                         try:
                             with misc.raised_privileges():
                                 shutil.copyfile(full_path, dst_full_path)
-                        except FileNotFoundError as err:
+                        except FileNotFoundError as file_error:
                             logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                            logging.error(file_error)
                     else:
                         logging.warning(_("Wrong md5. Bad download or wrong file, won't update this one"))

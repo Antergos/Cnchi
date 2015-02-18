@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  user_info.py
+# user_info.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,9 +24,6 @@
 
 from gi.repository import Gtk
 
-import os
-
-import config
 import misc.validation as validation
 import show_message as show
 
@@ -35,8 +32,10 @@ from gtkbasebox import GtkBaseBox
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
+
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
+
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
 
@@ -135,10 +134,10 @@ class UserInfo(GtkBaseBox):
         self.header.set_subtitle(_("Create Your User Account"))
 
         # Restore forward button text (from install now! to go-next)
-        #self.forward_button.set_label("")
-        #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
-        #self.forward_button.set_image(image1)
-        #self.forward_button.set_always_show_image(True)
+        # self.forward_button.set_label("")
+        # image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
+        # self.forward_button.set_image(image1)
+        # self.forward_button.set_always_show_image(True)
 
     def hide_widgets(self):
         """ Hide unused and message widgets """
@@ -200,15 +199,15 @@ class UserInfo(GtkBaseBox):
             self.login['auto'].set_sensitive(True)
         else:
             self.login['auto'].set_sensitive(False)
-        #if not self.settings.get('z_hidden'):
+        # if not self.settings.get('z_hidden'):
         self.forward_button.set_sensitive(False)
 
     def on_checkbutton_show_password_toggled(self, widget):
         """ show/hide user password """
         btn = self.ui.get_object('checkbutton_show_password')
-        show = btn.get_active()
-        self.entry['password'].set_visibility(show)
-        self.entry['verified_password'].set_visibility(show)
+        shown = btn.get_active()
+        self.entry['password'].set_visibility(shown)
+        self.entry['verified_password'].set_visibility(shown)
 
     def on_authentication_toggled(self, widget):
         """ User has changed autologin or home encrypting """
@@ -302,8 +301,10 @@ class UserInfo(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('UserInfo')

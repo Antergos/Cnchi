@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  language.py
+# language.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -23,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 import gettext
 import locale
 import os
@@ -36,9 +35,8 @@ from gtkbasebox import GtkBaseBox
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-# Import functions
-import config
 import misc.i18n as i18n
+
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -52,7 +50,7 @@ class Language(GtkBaseBox):
         data_dir = self.settings.get('data')
 
         self.current_locale = locale.getdefaultlocale()[0]
-        self.language_list =  os.path.join(data_dir, "locale", "languagelist.txt.gz")
+        self.language_list = os.path.join(data_dir, "locale", "languagelist.txt.gz")
         self.set_languages_list()
 
         image1 = self.ui.get_object("image1")
@@ -76,9 +74,9 @@ class Language(GtkBaseBox):
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
         # FIXME: Can't use an a html tag in the label. Causes an accessible GTK Assertion
         txt = _("Cnchi is pre-release beta software that is under active development.\n"
-        "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
-        "setups. Please proceed with caution as data loss is possible!\n\n"
-        "If you find any bugs, please report them at http://bugs.antergos.com")
+                "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+                "setups. Please proceed with caution as data loss is possible!\n\n"
+                "If you find any bugs, please report them at http://bugs.antergos.com")
         txt_markup = "<span weight='bold'>{0}</span>\n\n{1}".format(txt_bold, txt)
         label = self.ui.get_object("welcome_label")
         label.set_markup(txt_markup)
@@ -99,9 +97,8 @@ class Language(GtkBaseBox):
         """ Load languages list """
         try:
             current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
-        except FileNotFoundError as err:
-            logging.error(err)
-            print(err)
+        except FileNotFoundError as file_error:
+            logging.error(file_error)
             sys.exit(1)
 
         current_language = self.langcode_to_lang(display_map)
@@ -134,6 +131,7 @@ class Language(GtkBaseBox):
                     return
 
     def store_values(self):
+        lang = ""
         listbox_row = self.listbox.get_selected_row()
         if listbox_row is not None:
             for vbox in listbox_row:
@@ -142,8 +140,9 @@ class Language(GtkBaseBox):
 
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
 
-        self.settings.set("language_name", display_map[lang][0])
-        self.settings.set("language_code", display_map[lang][1])
+        if len(lang) > 0:
+            self.settings.set("language_name", display_map[lang][0])
+            self.settings.set("language_code", display_map[lang][1])
 
         return True
 
@@ -155,8 +154,10 @@ class Language(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Language')

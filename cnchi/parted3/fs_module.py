@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  fs_module.py
+# fs_module.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -35,6 +35,7 @@ NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
 
+
 @misc.raise_privileges
 def get_info(part):
     """ Get partition info using blkid """
@@ -53,7 +54,8 @@ def get_info(part):
         if '=' in info:
             info = info.split('=')
             partdic[info[0]] = info[1].strip('"')
-    return(partdic)
+    return partdic
+
 
 @misc.raise_privileges
 def get_type(part):
@@ -68,21 +70,22 @@ def get_type(part):
             ret = ''
     return ret
 
+
 @misc.raise_privileges
 def label_fs(fstype, part, label):
     """ Get filesystem label """
-    ladic = {'ext2':'e2label %(part)s %(label)s',
-             'ext3':'e2label %(part)s %(label)s',
-             'ext4':'e2label %(part)s %(label)s',
-             'f2fs':'blkid -s LABEL -o value %(part)s %(label)s',
-             'fat':'mlabel -i %(part)s ::%(label)s',
-             'fat16':'mlabel -i %(part)s ::%(label)s',
-             'fat32':'mlabel -i %(part)s ::%(label)s',
-             'ntfs':'ntfslabel %(part)s %(label)s',
-             'jfs':'jfs_tune -L %(label)s %(part)s',
-             'reiserfs':'reiserfstune -l %(label)s %(part)s',
-             'xfs':'xfs_admin -l %(label)s %(part)s',
-             'btrfs':'btrfs filesystem label %(part)s %(label)s'}
+    ladic = {'ext2': 'e2label %(part)s %(label)s',
+             'ext3': 'e2label %(part)s %(label)s',
+             'ext4': 'e2label %(part)s %(label)s',
+             'f2fs': 'blkid -s LABEL -o value %(part)s %(label)s',
+             'fat': 'mlabel -i %(part)s ::%(label)s',
+             'fat16': 'mlabel -i %(part)s ::%(label)s',
+             'fat32': 'mlabel -i %(part)s ::%(label)s',
+             'ntfs': 'ntfslabel %(part)s %(label)s',
+             'jfs': 'jfs_tune -L %(label)s %(part)s',
+             'reiserfs': 'reiserfstune -l %(label)s %(part)s',
+             'xfs': 'xfs_admin -l %(label)s %(part)s',
+             'btrfs': 'btrfs filesystem label %(part)s %(label)s'}
     fstype = fstype.lower()
     # OK, the below is a quick cheat.  vars() returns all variables
     # in a dictionary.  So 'part' and 'label' will be defined
@@ -97,6 +100,7 @@ def label_fs(fstype, part, label):
         # check_call returns exit code.  0 should mean success
     return ret
 
+
 @misc.raise_privileges
 def create_fs(part, fstype, label='', other_opts=''):
     """ Create filesystem using mkfs """
@@ -110,33 +114,33 @@ def create_fs(part, fstype, label='', other_opts=''):
     # Secong arg is either output from call if successful
     # or exception if failure
 
-    opt_dic = {'ext2':'-m 1',
-               'ext3':'-m 1 -O dir_index',
-               'ext4':'-m 1 -O dir_index',
-               'f2fs':'',
-               'fat16':'',
-               'fat32':'',
-               'ntfs':'',
-               'jfs':'',
-               'reiserfs':'',
-               'btrfs':'',
-               'xfs':'',
-               'swap':''}
+    opt_dic = {'ext2': '-m 1',
+               'ext3': '-m 1 -O dir_index',
+               'ext4': '-m 1 -O dir_index',
+               'f2fs': '',
+               'fat16': '',
+               'fat32': '',
+               'ntfs': '',
+               'jfs': '',
+               'reiserfs': '',
+               'btrfs': '',
+               'xfs': '',
+               'swap': ''}
     fstype = fstype.lower()
     if not other_opts:
         other_opts = opt_dic[fstype]
-    comdic = {'ext2':'mkfs.ext2 -q -L "%(label)s" %(other_opts)s %(part)s',
-             'ext3':'mkfs.ext3 -q -L "%(label)s" %(other_opts)s %(part)s',
-             'ext4':'mkfs.ext4 -q -L "%(label)s" %(other_opts)s %(part)s',
-             'f2fs':'mkfs.f2fs -l "%(label)s" %(other_opts)s %(part)s',
-             'fat16':'mkfs.vfat -n "%(label)s" -F 16 %(other_opts)s %(part)s',
-             'fat32':'mkfs.vfat -n "%(label)s" -F 32 %(other_opts)s %(part)s',
-             'ntfs':'mkfs.ntfs -L "%(label)s" %(other_opts)s %(part)s',
-             'jfs':'mkfs.jfs -q -L "%(label)s" %(other_opts)s %(part)s',
-             'reiserfs':'mkfs.reiserfs -q -l "%(label)s" %(other_opts)s %(part)s',
-             'xfs':'mkfs.xfs -f -L "%(label)s" %(other_opts)s %(part)s',
-             'btrfs':'mkfs.btrfs -f -L "%(label)s" %(other_opts)s %(part)s',
-             'swap':'mkswap -L "%(label)s" %(part)s'}
+    comdic = {'ext2': 'mkfs.ext2 -q -L "%(label)s" %(other_opts)s %(part)s',
+              'ext3': 'mkfs.ext3 -q -L "%(label)s" %(other_opts)s %(part)s',
+              'ext4': 'mkfs.ext4 -q -L "%(label)s" %(other_opts)s %(part)s',
+              'f2fs': 'mkfs.f2fs -l "%(label)s" %(other_opts)s %(part)s',
+              'fat16': 'mkfs.vfat -n "%(label)s" -F 16 %(other_opts)s %(part)s',
+              'fat32': 'mkfs.vfat -n "%(label)s" -F 32 %(other_opts)s %(part)s',
+              'ntfs': 'mkfs.ntfs -L "%(label)s" %(other_opts)s %(part)s',
+              'jfs': 'mkfs.jfs -q -L "%(label)s" %(other_opts)s %(part)s',
+              'reiserfs': 'mkfs.reiserfs -q -l "%(label)s" %(other_opts)s %(part)s',
+              'xfs': 'mkfs.xfs -f -L "%(label)s" %(other_opts)s %(part)s',
+              'btrfs': 'mkfs.btrfs -f -L "%(label)s" %(other_opts)s %(part)s',
+              'swap': 'mkswap -L "%(label)s" %(part)s'}
 
     try:
         cmd = shlex.split(comdic[fstype] % vars())
@@ -146,6 +150,7 @@ def create_fs(part, fstype, label='', other_opts=''):
         logging.error(err)
         ret = (1, err)
     return ret
+
 
 '''
 @misc.raise_privileges
@@ -164,6 +169,7 @@ def is_ssd(disk_path):
         logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
     return ssd
 '''
+
 
 @misc.raise_privileges
 def is_ssd(disk_path):
@@ -205,6 +211,7 @@ def resize(part, fs_type, new_size_in_mb):
 
     return res
 
+
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     """ Resize a ntfs partition """
@@ -213,14 +220,13 @@ def resize_ntfs(part, new_size_in_mb):
     try:
         cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
         result = subprocess.check_output(cmd)
-    except subprocess.CalledProcessError as err:
-        result = None
-        logging.error(err)
+        logging.debug(result)
+    except subprocess.CalledProcessError as process_error:
+        logging.error(process_error)
         return False
 
-    logging.debug(result)
-
     return True
+
 
 @misc.raise_privileges
 def resize_fat(part, new_size_in_mb):
@@ -228,6 +234,7 @@ def resize_fat(part, new_size_in_mb):
     # https://bbs.archlinux.org/viewtopic.php?id=131728
     # the only Linux tool that was capable of resizing fat32, isn't capable of it anymore?
     return False
+
 
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):

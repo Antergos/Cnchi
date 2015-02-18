@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  keymap.py
+# keymap.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,16 +24,15 @@
 
 from gi.repository import Gtk, GLib
 
-import config
 import os
 import logging
 import subprocess
 
 import misc.misc as misc
 import misc.keyboard_names as keyboard_names
-import misc.keyboard_widget as keyboard_widget
 
 from gtkbasebox import GtkBaseBox
+
 
 class Keymap(GtkBaseBox):
     def __init__(self, params, prev_page="timezone", next_page="desktop"):
@@ -48,6 +47,10 @@ class Keymap(GtkBaseBox):
 
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
+
+        self.keyboard_layout = None
+        self.keyboard_layout_human = None
+        self.keyboard_variant = None
 
         self.create_treeviews()
 
@@ -103,7 +106,8 @@ class Keymap(GtkBaseBox):
 
         self.show_all()
 
-    def fix_countries(self, country):
+    @staticmethod
+    def fix_countries(country):
         # FIXME: There are some countries that do not match with 'kbdnames' so we convert them here manually.
         # I'm not sure if there're more countries that should be added here.
 
@@ -123,11 +127,11 @@ class Keymap(GtkBaseBox):
             lang = "C"
 
         kbd_names = keyboard_names.KeyboardNames(self.filename)
-        kbd_names._load(lang)
+        kbd_names.load(lang)
 
         sorted_layouts = []
 
-        for layout in kbd_names._layout_by_human:
+        for layout in kbd_names.layout_by_human:
             sorted_layouts.append(layout)
 
         sorted_layouts = misc.sort_list(sorted_layouts, self.settings.get("locale"))
@@ -176,9 +180,9 @@ class Keymap(GtkBaseBox):
         selected = self.layout_treeview.get_selection()
 
         if selected:
-            (ls, iter) = selected.get_selected()
-            if iter:
-                keyboard_layout = ls.get_value(iter, 0)
+            (ls, iterator) = selected.get_selected()
+            if iterator:
+                keyboard_layout = ls.get_value(iterator, 0)
 
                 # Store layout selected
                 self.keyboard_layout_human = keyboard_layout
@@ -189,12 +193,12 @@ class Keymap(GtkBaseBox):
                     lang = "C"
 
                 kbd_names = keyboard_names.KeyboardNames(self.filename)
-                kbd_names._load(lang)
+                kbd_names.load(lang)
 
-                country_code = kbd_names._layout_by_human[self.keyboard_layout_human]
+                country_code = kbd_names.layout_by_human[self.keyboard_layout_human]
                 self.keyboard_layout = country_code
 
-                variants = kbd_names._variant_by_human
+                variants = kbd_names.variant_by_human
 
                 sorted_variants = []
 
@@ -237,9 +241,9 @@ class Keymap(GtkBaseBox):
         keyboard_variant_human = "USA"
 
         if selected:
-            (ls, iter) = selected.get_selected()
-            if iter:
-                keyboard_variant_human = ls.get_value(iter, 0)
+            (ls, iterator) = selected.get_selected()
+            if iterator:
+                keyboard_variant_human = ls.get_value(iterator, 0)
 
         lang = self.settings.get("language_code")
 
@@ -248,7 +252,7 @@ class Keymap(GtkBaseBox):
         if not kbd_names.has_language(lang):
             lang = "C"
 
-        kbd_names._load(lang)
+        kbd_names.load(lang)
 
         try:
             keyboard_layout_human = self.keyboard_layout_human
@@ -256,11 +260,11 @@ class Keymap(GtkBaseBox):
             keyboard_layout_human = "USA"
             self.keyboard_layout_human = keyboard_layout_human
 
-        country_code = kbd_names._layout_by_human[self.keyboard_layout_human]
+        country_code = kbd_names.layout_by_human[keyboard_layout_human]
 
         self.keyboard_layout = country_code
 
-        self.keyboard_variant = kbd_names._variant_by_human[country_code][keyboard_variant_human]
+        self.keyboard_variant = kbd_names.variant_by_human[country_code][keyboard_variant_human]
 
         self.settings.set("keyboard_layout", self.keyboard_layout)
         self.settings.set("keyboard_variant", self.keyboard_variant)
@@ -278,7 +282,7 @@ class Keymap(GtkBaseBox):
             subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
 
     def set_keyboard_widget(self):
-        ''' Pass current keyboard layout to the keyboard widget. '''
+        """ Pass current keyboard layout to the keyboard widget. """
         self.keyboard_widget.set_layout(self.keyboard_layout)
         self.keyboard_widget.set_variant(self.keyboard_variant)
         self.keyboard_widget.show_all()
@@ -287,8 +291,10 @@ class Keymap(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Keymap')

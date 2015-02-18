@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  location.py
+# location.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -22,20 +22,21 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
 # Import functions
-import config
 import os
 import logging
 import sys
+import locale
 
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.cElementTree as eTree
 except ImportError:
-    import xml.etree.ElementTree as ET
+    import xml.etree.ElementTree as eTree
 
 from gtkbasebox import GtkBaseBox
+
 
 class Location(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="timezone"):
@@ -66,9 +67,9 @@ class Location(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("The location you select will be used to help determine the system locale.\n" \
-            "This should normally be the country in which you reside.\n" \
-            "Here is a shortlist of locations based on the language you selected.")
+        txt = _("The location you select will be used to help determine the system locale.\n"
+                "This should normally be the country in which you reside.\n"
+                "Here is a shortlist of locations based on the language you selected.")
         self.label_help.set_markup(txt)
 
         txt = _("Country, territory or area:")
@@ -112,9 +113,9 @@ class Location(GtkBaseBox):
         self.locales = {}
 
         try:
-            tree = ET.parse(xml_path)
-        except FileNotFoundError as err:
-            logging.error(err)
+            tree = eTree.parse(xml_path)
+        except FileNotFoundError as file_error:
+            logging.error(file_error)
             sys.exit(1)
 
         root = tree.getroot()
@@ -131,9 +132,9 @@ class Location(GtkBaseBox):
         countries = {}
 
         try:
-            tree = ET.parse(xml_path)
-        except FileNotFoundError as err:
-            logging.error(err)
+            tree = eTree.parse(xml_path)
+        except FileNotFoundError as file_error:
+            logging.error(file_error)
             sys.exit(1)
 
         root = tree.getroot()
@@ -188,18 +189,15 @@ class Location(GtkBaseBox):
         if listbox_row is not None:
             label = listbox_row.get_children()[0]
             if label is not None:
-                #print(label.get_text())
+                # print(label.get_text())
                 self.selected_country = label.get_text()
 
     def set_locale(self, mylocale):
         self.settings.set("locale", mylocale)
         try:
-            import locale
             locale.setlocale(locale.LC_ALL, mylocale)
             logging.info(_("locale changed to : %s"), mylocale)
-        except ImportError as err:
-            logging.error(_("Can't import locale module"))
-        except locale.Error as err:
+        except locale.Error:
             logging.warning(_("Can't change to locale '%s'"), mylocale)
             if mylocale.endswith(".UTF-8"):
                 # Try without the .UTF-8 trailing
@@ -208,14 +206,14 @@ class Location(GtkBaseBox):
                     locale.setlocale(locale.LC_ALL, mylocale)
                     logging.info(_("locale changed to : %s"), mylocale)
                     self.settings.set("locale", mylocale)
-                except locale.Error as err:
+                except locale.Error:
                     logging.warning(_("Can't change to locale '%s'"), mylocale)
             else:
                 logging.warning(_("Can't change to locale '%s'"), mylocale)
 
     def store_values(self):
         country = self.selected_country
-        lang_code = self.settings.get("language_code")
+        # lang_code = self.settings.get("language_code")
         for mylocale in self.locales:
             if self.locales[mylocale] == country:
                 self.set_locale(mylocale)
@@ -226,8 +224,10 @@ class Location(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Location')

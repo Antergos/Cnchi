@@ -34,12 +34,7 @@ import logging
 import gettext
 import locale
 
-try:
-    from gi.repository import Gtk, GObject
-except ImportError as gtk_error:
-    print(gtk_error)
-    print("This program needs GTK3")
-    sys.exit(1)
+from gi.repository import Gtk, GObject
 
 import misc.misc as misc
 import info
@@ -255,7 +250,7 @@ def threads_init():
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
 
-        #Gdk.threads_init()
+        # Gdk.threads_init()
 
 
 def update_cnchi():
@@ -318,7 +313,7 @@ def init_cnchi():
     """ This function initialises Cnchi """
 
     # Sets SIGTERM handler, so Cnchi can clean up before exiting
-    #signal.signal(signal.SIGTERM, sigterm_handler)
+    # signal.signal(signal.SIGTERM, sigterm_handler)
 
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()

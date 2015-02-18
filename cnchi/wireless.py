@@ -21,12 +21,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import os
 import dbus
-from gi.repository import Gtk
-from misc import misc, nm
 
+from misc import misc, nm
 from gtkbasebox import GtkBaseBox
+
 
 class Wireless(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="desktop"):
@@ -81,7 +80,7 @@ class Wireless(GtkBaseBox):
             self.next_normal = True
             print("NM_SATE_CONNECTING")
         else:
-            if (not self.nmwidget.is_row_an_ap() or self.nmwidget.is_row_connected()):
+            if not self.nmwidget.is_row_an_ap() or self.nmwidget.is_row_connected():
                 self.next_normal = True
                 print("is not an ap or is already connected")
             else:
@@ -124,6 +123,7 @@ class Wireless(GtkBaseBox):
             frontend.connecting_label.hide()
             return False
     '''
+
     def state_changed(self, unused, state):
         print("state_changed")
         self.state = state
@@ -158,8 +158,10 @@ class Wireless(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('Wireless')

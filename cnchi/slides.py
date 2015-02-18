@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  slides.py
+# slides.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,14 +25,12 @@
 """ Shows slides while installing. Also manages installing messages and progress bars """
 
 from gi.repository import Gtk, GLib
-import config
 import os
 import sys
 import logging
 import subprocess
 
 import queue
-from multiprocessing import Queue, Lock
 
 import show_message as show
 import misc.misc as misc
@@ -42,13 +40,10 @@ from gtkbasebox import GtkBaseBox
 SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
-try:
-    from gi.repository import WebKit
-except ImportError:
-    print("Cnchi needs gi.repository.WebKit")
-    sys.exit(-1)
+from gi.repository import WebKit
 
 # When we reach this page we can't go neither backwards nor forwards
+
 
 class Slides(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page=None):
@@ -80,14 +75,14 @@ class Slides(GtkBaseBox):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def prepare(self, direction):
-        ## We don't load webkit until we reach this screen
+        # We don't load webkit until we reach this screen
         if self.webview is None:
             # Add a webkit view and load our html file to show the slides
             try:
                 self.webview = WebKit.WebView()
                 self.webview.load_uri(SLIDES_URI)
-            except IOError as err:
-                logging.warning(err)
+            except IOError as io_error:
+                logging.warning(io_error)
 
             self.scrolled_window.add(self.webview)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
@@ -111,7 +106,8 @@ class Slides(GtkBaseBox):
 
         GLib.timeout_add(400, self.manage_events_from_cb_queue)
 
-    def store_values(self):
+    @staticmethod
+    def store_values():
         """ Nothing to be done here """
         return False
 
@@ -127,6 +123,7 @@ class Slides(GtkBaseBox):
 
     def start_pulse(self):
         """ Start pulsing progressbar """
+
         def pbar_pulse():
             """ Pulse progressbar """
             if self.should_pulse:
@@ -197,6 +194,7 @@ class Slides(GtkBaseBox):
                     response = show.question(self.get_toplevel(), boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
+
                         misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
@@ -232,7 +230,7 @@ class Slides(GtkBaseBox):
         """ Empties messages queue """
         while not self.callback_queue.empty():
             try:
-                event = self.callback_queue.get_nowait()
+                self.callback_queue.get_nowait()
                 self.callback_queue.task_done()
             except queue.Empty:
                 return
@@ -247,8 +245,10 @@ class Slides(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
     from test_screen import _, run
+
     run('Slides')

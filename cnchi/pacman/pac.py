@@ -26,7 +26,6 @@
 
 """ Module interface to pyalpm """
 
-import traceback
 import sys
 import math
 import logging
@@ -34,22 +33,12 @@ import os
 
 import pacman.alpm_events as alpm
 
-if __name__ == "__main__":
-    import gettext
-    _ = gettext.gettext
+import pyalpm
 
-try:
-    import pyalpm
-except ImportError as err:
-    pass
-
-try:
-    import pacman.config as config
-except ImportError as err:
-    # When testing pac.py
-    import config
+import pacman.pacman_conf as config
 
 import queue
+
 
 class Pac(object):
     """ Comunicates with libalpm using pyalpm """
@@ -127,7 +116,8 @@ class Pac(object):
             del self.handle
             self.handle = None
 
-    def finalize_transaction(self, transaction):
+    @staticmethod
+    def finalize_transaction(transaction):
         """ Commit a transaction """
         all_ok = True
         try:
@@ -135,9 +125,9 @@ class Pac(object):
             transaction.prepare()
             logging.debug(_("Commit alpm transaction..."))
             transaction.commit()
-        except pyalpm.error as err:
+        except pyalpm.error as pyalpm_error:
             msg = _("Can't finalize alpm transaction: %s")
-            logging.error(msg, err)
+            logging.error(msg, pyalpm_error)
             all_ok = False
         finally:
             logging.debug(_("Releasing alpm transaction..."))
@@ -147,6 +137,8 @@ class Pac(object):
 
     def init_transaction(self, options={}):
         """ Transaction initialization """
+        transaction = None
+
         try:
             transaction = self.handle.init_transaction(
                 cascade=options.get('cascade', False),
@@ -161,10 +153,9 @@ class Pac(object):
                 unneeded=options.get('unneeded', False),
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
-        except pyalpm.error as err:
+        except pyalpm.error as pyalpm_error:
             msg = _("Can't init alpm transaction: %s")
-            logging.error(msg, err)
-            transaction = None
+            logging.error(msg, pyalpm_error)
         finally:
             return transaction
 
@@ -190,7 +181,6 @@ class Pac(object):
         if self.handle is None:
             logging.error(_("alpm is not initialised"))
             raise pyalpm.error
-            return False
 
         if len(pkgs) == 0:
             logging.error(_("Package list is empty"))
@@ -226,9 +216,6 @@ class Pac(object):
                     # this error is fatal or not, we'll register it and we'll allow to continue.
                     logging.error(_("Can't find a package or group called '%s'"), name)
 
-        # We do not need pkgs anymore
-        pkgs = []
-
         # Discard duplicates
         targets = list(set(targets))
 
@@ -256,14 +243,15 @@ class Pac(object):
         for i in range(1, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
-                #logging.debug(_("Adding package '%s' to transaction"), pkg.name)
+                # logging.debug(_("Adding package '%s' to transaction"), pkg.name)
                 trans.add_pkg(pkg)
             else:
                 logging.warning(pkg)
 
         return self.finalize_transaction(trans)
 
-    def find_sync_package(self, pkgname, syncdbs):
+    @staticmethod
+    def find_sync_package(pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
         for db in syncdbs.values():
             pkg = db.get_pkg(pkgname)
@@ -300,7 +288,7 @@ class Pac(object):
             event_text = "{0}: {1} in {3}:{4}".format(event_text, func.co_name, func.co_filename, func.co_firstlineno)
 
         if self.callback_queue is None:
-            #print(event_type, event_text)
+            # print(event_type, event_text)
             if event_type == "error":
                 sys.exit(1)
             else:
@@ -308,7 +296,7 @@ class Pac(object):
 
         try:
             self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full as err:
+        except queue.Full:
             pass
 
         if event_type == "error":
@@ -365,7 +353,8 @@ class Pac(object):
         if len(action) > 0:
             self.queue_event('info', action)
 
-    def cb_log(self, level, line):
+    @staticmethod
+    def cb_log(level, line):
         """ Log pyalpm warning and error messages.
             Possible message types:
             LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
@@ -428,13 +417,13 @@ class Pac(object):
                 if filename.endswith(ext):
                     filename = filename[:-len(ext)]
                 self.downloaded_packages += 1
-                i = self.downloaded_packages
-                n = self.total_packages_to_download
+                # i = self.downloaded_packages
+                # n = self.total_packages_to_download
                 # text = _("Downloading {0}... ({1}/{2})").format(filename, i, n)
                 text = _("Downloading {0}...").format(filename)
 
             self.queue_event('info', text)
-            self.queue_event('percent', 0)
+            self.queue_event('percent', '0')
         else:
             # Compute a progress indicator
             if self.last_dl_total_size > 0:
@@ -445,7 +434,7 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
-                #logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
+                # logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('percent', progress)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  show_message.py
+# show_message.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -26,80 +26,76 @@ from gi.repository import Gtk
 
 import sys
 import os
-import queue
 import logging
-import multiprocessing
-
-import misc.misc as misc
+# import multiprocessing
 
 _show_event_queue_messages = True
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message): return message
 
-def fatal_error(parent, message):
+def fatal_error(parent, my_message):
     # Remove /tmp/.setup-running
     p = "/tmp/.setup-running"
     if os.path.exists(p):
         os.remove(p)
 
-    multiprocessing.active_children()
+    # multiprocessing.active_children()
 
-    error(parent, message)
+    error(parent, my_message)
     sys.exit(1)
 
-def error(parent, message):
-    message = str(message)
-    logging.error(message)
+
+def error(parent, my_message):
+    my_message = str(my_message)
+    logging.error(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.ERROR,
                                    buttons=Gtk.ButtonsType.CLOSE,
                                    text=_("Antergos Installer - Error"))
-    msg_dialog.format_secondary_text(message)
+    msg_dialog.format_secondary_text(my_message)
     msg_dialog.run()
     msg_dialog.destroy()
 
-def warning(parent, message):
-    message = str(message)
-    logging.warning(message)
+
+def warning(parent, my_message):
+    my_message = str(my_message)
+    logging.warning(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.WARNING,
                                    buttons=Gtk.ButtonsType.CLOSE,
                                    text=_("Antergos Installer - Warning"))
-    msg_dialog.format_secondary_text(message)
+    msg_dialog.format_secondary_text(my_message)
     msg_dialog.run()
     msg_dialog.destroy()
 
-def message(parent, message):
-    message = str(message)
-    logging.info(message)
+
+def message(parent, my_message):
+    my_message = str(my_message)
+    logging.info(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.INFO,
                                    buttons=Gtk.ButtonsType.CLOSE,
                                    text=_("Antergos Installer - Information"))
-    msg_dialog.format_secondary_text(message)
+    msg_dialog.format_secondary_text(my_message)
     msg_dialog.run()
     msg_dialog.destroy()
 
-def question(parent, message):
-    message = str(message)
-    logging.info(message)
+
+def question(parent, my_message):
+    my_message = str(my_message)
+    logging.info(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
                                    message_type=Gtk.MessageType.QUESTION,
                                    buttons=Gtk.ButtonsType.YES_NO,
                                    text=_("Antergos Installer - Confirmation"))
-    msg_dialog.format_secondary_text(message)
+    msg_dialog.format_secondary_text(my_message)
     response = msg_dialog.run()
     msg_dialog.destroy()
     return response

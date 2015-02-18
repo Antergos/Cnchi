@@ -22,10 +22,11 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk
 
 import os
 import logging
+
 
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """

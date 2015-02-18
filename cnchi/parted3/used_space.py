@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  used_space.py
+# used_space.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,6 +29,7 @@ import shlex
 import logging
 
 import misc.misc as misc
+
 
 @misc.raise_privileges
 def get_used_ntfs(part):
@@ -56,6 +57,7 @@ def get_used_ntfs(part):
         used = (vsize - fsize) / vsize
     return used
 
+
 @misc.raise_privileges
 def get_used_ext(part):
     """ Gets used space in an ext4 partition """
@@ -79,8 +81,10 @@ def get_used_ext(part):
                 fsize = int(line.split(':')[-1].strip())
             elif "Block size:" in line:
                 csize = int(line.split(':')[-1].strip())
+        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
+
 
 @misc.raise_privileges
 def get_used_fat(part):
@@ -137,8 +141,9 @@ def get_used_jfs(part):
                 vsize = int(line.split()[0].strip())
             elif "kilobytes are available for use" in line:
                 fsize = int(line.split()[0].strip())
-        used = (vsize-fsize) / vsize
+        used = (vsize - fsize) / vsize
     return used
+
 
 @misc.raise_privileges
 def get_used_reiser(part):
@@ -164,8 +169,9 @@ def get_used_reiser(part):
                 vsize = int(line.split()[-1].strip())
             elif "Free blocks (count of blocks" in line:
                 fsize = int(line.split()[-1].strip())
-        used = (vsize-fsize) / vsize
+        used = (vsize - fsize) / vsize
     return used
+
 
 @misc.raise_privileges
 def get_used_btrfs(part):
@@ -183,12 +189,11 @@ def get_used_btrfs(part):
         vsize, usize, umult, vmult = (1, 1, 1, 1)
         result = result.decode()
         result = result.split('\n')
-        szmap = {"K":1000,
-                 "M":1000000,
-                 "G":1000000000,
-                 "T":1000000000000,
-                 "P":1000000000000000,
-                }
+        szmap = {"K": 1000,
+                 "M": 1000000,
+                 "G": 1000000000,
+                 "T": 1000000000000,
+                 "P": 1000000000000000}
         for z in result:
             if part in z:
                 vsize = z.split()[3]
@@ -200,8 +205,9 @@ def get_used_btrfs(part):
                         umult = szmap[i]
                 usize = float(usize.strip("KMGTPBib")) * umult
                 vsize = float(vsize.strip("KMGTPBib")) * vmult
-        used = usize/vsize
+        used = usize / vsize
     return used
+
 
 @misc.raise_privileges
 def get_used_xfs(part):
@@ -225,13 +231,14 @@ def get_used_xfs(part):
                 fsize = int(line.split()[-1].strip())
             elif "dblocks" in line:
                 vsize = int(line.split()[-1].strip())
-        used = (vsize-fsize) / vsize
+        used = (vsize - fsize) / vsize
     return used
+
 
 @misc.raise_privileges
 def get_used_f2fs(part):
-    # Need to do a test install using f2fs so I can get the output format when getting part info.
-    used =  0
+    # TODO: Use a f2fs installation to check the output format when getting part info.
+    used = 0
     return used
 
 
@@ -242,6 +249,7 @@ def is_btrfs(part):
         return False
     else:
         return True
+
 
 def get_used_space(part, part_type):
     """ Get used space in a partition """
@@ -263,7 +271,7 @@ def get_used_space(part, part_type):
     elif 'xfs' in part_type:
         space = get_used_xfs(part)
     elif 'f2fs' in part_type:
-         space = get_used_f2fs(part)
+        space = get_used_f2fs(part)
     else:
         space = 0
     return space

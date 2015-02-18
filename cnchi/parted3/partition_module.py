@@ -25,17 +25,13 @@
 """ Interacts with pyparted """
 
 import subprocess
-import shlex
 import os
 import logging
 
 import misc.misc as misc
 import show_message as show
 
-try:
-    import parted
-except ImportError as err:
-    logging.error(_("Can't import parted module: %s"), str(err))
+import parted
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1
@@ -102,22 +98,21 @@ def get_devices():
         # Must create disk object to drill down
 
         # Skip cd drive and special devices like LUKS and LVM
+        disk_obj = None
         if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
             try:
-                diskob = parted.Disk(dev)
+                disk_obj = parted.Disk(dev)
                 result = OK
-            except parted.DiskLabelException as err:
-                #logging.warning(_('Unrecognised disk label in device %s.'), dev.path)
-                diskob = None
+            except parted.DiskLabelException:
+                # logging.warning(_('Unrecognised disk label in device %s.'), dev.path)
                 result = UNRECOGNISED_DISK_LABEL
-            except Exception as err:
-                logging.error(err)
-                msg = _("Exception: {0}.\nFor more information take a look at /tmp/cnchi.log").format(err)
+            except Exception as general_error:
+                logging.error(general_error)
+                msg = _("Exception: {0}.\nFor more information take a look at /tmp/cnchi.log").format(general_error)
                 show.error(None, msg)
-                diskob = None
                 result = UNKNOWN_ERROR
             finally:
-                disk_dic[dev.path] = (diskob, result)
+                disk_dic[dev.path] = (disk_obj, result)
 
     return disk_dic
 
@@ -125,7 +120,7 @@ def get_devices():
 def make_new_disk(dev_path, new_type):
     new_dev = parted.Device(dev_path)
     new_disk = parted.freshDisk(new_dev, new_type)
-    return(new_disk)
+    return new_disk
 
 
 @misc.raise_privileges
@@ -137,30 +132,30 @@ def get_partitions(diskob):
     if not diskob:
         return part_dic
     partition_list = diskob.partitions
-    dev = diskob.device
-    #limiter = 1000
+    # dev = diskob.device
+    # limiter = 1000
     for partition in partition_list:
         part_dic[partition.path] = partition
-        #this is start sector, end sector, and length
-        #startbyte = partition.geometry.start
-        #endbyte = partition.geometry.end
-        #plength = partition.geometry.length
-        #print(startbyte, endbyte)
-        #lets calcule its size in something ppl understand
-        #psize = plength * dev.sectorSize
-        #just calculating it in more sane formats
-        #should probably add in something like
-        #if psizemb < 1000 then display as MB, else as GB
-        #I can't think of a case of less than 1mb partition
-        #psizemb = psize / (limiter * limiter)
-        #psizegb = psizemb / limiter
-        #grabs the filesystem type
-        #if partition.fileSystem:
+        # this is start sector, end sector, and length
+        # startbyte = partition.geometry.start
+        # endbyte = partition.geometry.end
+        # plength = partition.geometry.length
+        # print(startbyte, endbyte)
+        # lets calcule its size in something ppl understand
+        # psize = plength * dev.sectorSize
+        # just calculating it in more sane formats
+        # should probably add in something like
+        # if psizemb < 1000 then display as MB, else as GB
+        # I can't think of a case of less than 1mb partition
+        # psizemb = psize / (limiter * limiter)
+        # psizegb = psizemb / limiter
+        # grabs the filesystem type
+        # if partition.fileSystem:
         #    ptype = partition.fileSystem.type
-        #else:
+        # else:
         #    ptype = None
-        #print(ptype)
-        #print(partition.type)
+        # print(ptype)
+        # print(partition.type)
     free_list = diskob.getFreeSpacePartitions()
     fcount = 0
     # Because I honestly don't know the right answer, let's reserve the first 2048 sectors.
@@ -183,11 +178,11 @@ def get_partitions(diskob):
 def delete_partition(diskob, part):
     try:
         diskob.deletePartition(part)
-    except Exception as err:
+    except Exception as general_error:
         txt = _("Can't delete partition {0}").format(part)
         logging.error(txt)
-        logging.error(e)
-        debug_txt = "{0}\n{1}".format(txt, err)
+        logging.error(general_error)
+        debug_txt = "{0}\n{1}".format(txt, general_error)
         show.error(None, debug_txt)
 
 
@@ -244,7 +239,7 @@ def create_partition(diskob, part_type, geom):
     else:
         npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
         nconstraint = parted.Constraint(minGeom=mingeom, maxGeom=maxgeom)
-        ncont = diskob.addPartition(partition=npartition, constraint=nconstraint)
+        diskob.addPartition(partition=npartition, constraint=nconstraint)
         return npartition
 
 
@@ -299,15 +294,16 @@ def get_used_space_from_path(path):
         result = subprocess.check_output(cmd).decode()
         lines = result.split('\n')
         used_space = lines[1].split()[2]
-    except subprocess.CalledProcessError as err:
+    except subprocess.CalledProcessError as process_error:
         used_space = 0
         txt = _("Can't detect used space from {0}").format(path)
         logging.error(txt)
-        logging.error(err)
-        debug_txt = "{0}\n{1}".format(txt, err)
-        show.error(debug_txt)
+        logging.error(process_error)
+        debug_txt = "{0}\n{1}".format(txt, process_error)
+        show.error(None, debug_txt)
 
     return used_space
+
 
 def get_largest_size(diskob, part):
     # Call this to set the initial size of new partition in frontend, but also
@@ -320,6 +316,8 @@ def get_largest_size(diskob, part):
 # The return value is tuple.  First arg is 0 for success, 1 for fail
 # Second arg is either None if successful
 # or exception if failure
+
+
 def set_flag(flagno, part):
     ret = (0, None)
     try:
@@ -327,6 +325,7 @@ def set_flag(flagno, part):
     except Exception as e:
         ret = (1, e)
     return ret
+
 
 def unset_flag(flagno, part):
     ret = (0, None)
@@ -336,20 +335,24 @@ def unset_flag(flagno, part):
         ret = (1, e)
     return ret
 
+
 def get_flags(part):
     return part.getFlagsAsString
 
+
 def get_flag(part, flag):
     return part.getFlag(flag)
+
 
 @misc.raise_privileges
 def finalize_changes(diskob):
     diskob.commit()
 
+
 def order_partitions(partdic):
     """ Pass the result of get_partitions here and it will return list
         of partitions in order as they are on disk """
-    return(sorted(partdic, key=lambda key: partdic[key].geometry.start))
+    return sorted(partdic, key=lambda key: partdic[key].geometry.start)
 
 # To shrink a partition:
 # 1. Shrink fs
@@ -358,6 +361,7 @@ def order_partitions(partdic):
 # To expand a partition:
 # 1. Expand partition
 # 2. Expand fs (resize)
+
 
 @misc.raise_privileges
 def split_partition(device_path, partition_path, new_size_in_mb):
@@ -387,7 +391,7 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     start_sector = part.geometry.start
     old_end_sector = part.gemotry.end
     old_length = part.geometry.length
-    old_size_in_mb =  old_length * sec_size / units
+    old_size_in_mb = old_length * sec_size / units
 
     # Create new partition (the one for the otherOS)
     new_length = int(new_size_in_mb * units / sec_size)
@@ -407,9 +411,10 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     finalize_changes(disk)
 
 # ----------------------------------------------------------------------------
-# Usage example
+
 
 def example():
+    """ Usage example """
     # This builds a dictionary to map disk objects to the common name
     # So for example, disk_dic['/dev/sda'] is that diskobject.
     # This should make it easy to translate from frontend to backend.

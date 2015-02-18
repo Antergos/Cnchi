@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-#  config.py
+#  pacman_conf.py
 #
 #  Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 #  Copyright © 2013,2014 Antergos
@@ -26,14 +26,9 @@
 
 import os
 import glob
-import argparse
 import collections
 import warnings
 
-try:
-    import pyalpm
-except ImportError as err:
-    pass
 
 class InvalidSyntax(Warning):
     """ Class to show warning when a pacman.conf parse error is issued """
@@ -81,6 +76,7 @@ BOOLEAN_OPTIONS = (
     'ILoveCandy',
     'Color'
 )
+
 
 def pacman_conf_enumerator(path):
     filestack = []
@@ -133,15 +129,16 @@ def pacman_conf_enumerator(path):
             else:
                 warnings.warn(InvalidSyntax(f.name, 'unrecognized option', key))
 
+
 class PacmanConfig(collections.OrderedDict):
-    def __init__(self, conf = None, options = None):
+    def __init__(self, conf=None, options=None):
         super(PacmanConfig, self).__init__()
         self['options'] = collections.OrderedDict()
         self.options = self['options']
         self.repos = collections.OrderedDict()
         self.options["RootDir"] = "/"
-        self.options["DBPath"]  = "/var/lib/pacman"
-        self.options["GPGDir"]  = "/etc/pacman.d/gnupg/"
+        self.options["DBPath"] = "/var/lib/pacman"
+        self.options["GPGDir"] = "/etc/pacman.d/gnupg/"
         self.options["LogFile"] = "/var/log/pacman.log"
         self.options["Architecture"] = os.uname()[-1]
         if conf is not None:
@@ -199,7 +196,7 @@ class PacmanConfig(collections.OrderedDict):
         if "IgnoreGroup" in self.options:
             handle.ignoregrps = self.options["IgnoreGroup"]
 
-        #h.logcb = cb_log
+        # h.logcb = cb_log
 
         # set sync databases
         for repo, servers in self.repos.items():
@@ -210,7 +207,6 @@ class PacmanConfig(collections.OrderedDict):
                 url = url.replace("$arch", self.options["Architecture"])
                 db_servers.append(url)
             db.servers = db_servers
-
 
     def __str__(self):
         conf = ''

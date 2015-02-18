@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  main_window.py
+# main_window.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -56,15 +56,17 @@ from installation import advanced as installation_advanced
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 500
 
+
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
+
     def __init__(self, app, cmd_line):
-        Gtk.Window.__init__(self, title="Cnchi", application=app)
+        Gtk.ApplicationWindow.__init__(self, title="Cnchi", application=app)
 
         # Check if we have administrative privileges
         if os.getuid() != 0:
             msg = _('This installer must be run with administrative privileges, '
-                'and cannot continue without them.')
+                    'and cannot continue without them.')
             show.error(self, msg)
             sys.exit(1)
 
@@ -73,10 +75,10 @@ class MainWindow(Gtk.ApplicationWindow):
         if os.path.exists(tmp_running):
             logging.error(_("File '%s' already exists."), tmp_running)
             msg = _("You cannot run two instances of this installer.\n\n"
-                "If you are sure that the installer is not already running\n"
-                "you can run this installer using the --force option\n"
-                "or you can manually delete the offending file.\n\n"
-                "Offending file: '{0}'").format(tmp_running)
+                    "If you are sure that the installer is not already running\n"
+                    "you can run this installer using the --force option\n"
+                    "or you can manually delete the offending file.\n\n"
+                    "Offending file: '{0}'").format(tmp_running)
             show.error(self, msg)
             sys.exit(1)
 
@@ -139,19 +141,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.forward_button = self.header_ui.get_object("forward_button")
         self.backwards_button = self.header_ui.get_object("backwards_button")
 
-        #image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
-        #self.forward_button.set_label("")
-        #self.forward_button.set_image(image1)
+        # image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
+        # self.forward_button.set_label("")
+        # self.forward_button.set_image(image1)
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_always_show_image(True)
-        #self.forward_button.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE))
+        # self.forward_button.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE))
 
-        #image2 = Gtk.Image.new_from_icon_name("go-previous", Gtk.IconSize.LARGE_TOOLBAR)
-        #self.backwards_button.set_label("")
-        #self.backwards_button.set_image(image2)
+        # image2 = Gtk.Image.new_from_icon_name("go-previous", Gtk.IconSize.LARGE_TOOLBAR)
+        # self.backwards_button.set_label("")
+        # self.backwards_button.set_image(image2)
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
-        #self.backwards_button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE))
+        # self.backwards_button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE))
 
         # Create a queue. Will be used to report pacman messages (pacman/pac.py)
         # to the main thread (installation/process.py)
@@ -336,7 +338,7 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.info(_("Quiting installer..."))
             self.settings.set('stop_all_threads', True)
             logging.shutdown()
-        except KeyboardInterrupt as err:
+        except KeyboardInterrupt:
             pass
 
     def set_progressbar_step(self, add_value):

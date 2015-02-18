@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  check.py
+# check.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,12 +24,11 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
-from gi.repository import Gtk, GLib
+from gi.repository import GLib
 import subprocess
 import os
 import logging
 
-import misc.gtkwidgets as gtkwidgets
 import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
@@ -43,8 +42,10 @@ UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 6000000000
 
+
 class Check(GtkBaseBox):
     """ Check class """
+
     def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
         super().__init__(self, params, "check", prev_page, next_page)
@@ -116,6 +117,7 @@ class Check(GtkBaseBox):
     def on_battery(self):
         """ Checks if we are on battery power """
         import dbus
+
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
@@ -137,7 +139,8 @@ class Check(GtkBaseBox):
                         return True
         return False
 
-    def has_enough_space(self):
+    @staticmethod
+    def has_enough_space():
         """ Check that we have a disk or partition with enough space """
         lsblk = subprocess.Popen(["lsblk", "-lnb"], stdout=subprocess.PIPE)
         output = lsblk.communicate()[0].decode("utf-8").split("\n")
@@ -197,8 +200,10 @@ class Check(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
     from test_screen import _, run
+
     run('Check')

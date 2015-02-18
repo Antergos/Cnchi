@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  rank_mirrors.py
+# rank_mirrors.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -33,15 +33,12 @@ import shutil
 
 import misc.misc as misc
 
-try:
-    import requests
-    _use_requests = True
-except ImportError as err:
-    logging.warning("Can't find requests module.")
-    _use_requests = False
+import requests
+
 
 class AutoRankmirrorsThread(threading.Thread):
     """ Thread class that downloads and sorts the mirrorlist """
+
     def __init__(self):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
@@ -51,7 +48,8 @@ class AutoRankmirrorsThread(threading.Thread):
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
 
-    def check_mirror_status(self, mirrors, url):
+    @staticmethod
+    def check_mirror_status(mirrors, url):
         for mirror in mirrors:
             if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] < 10:
                 return True
@@ -62,8 +60,6 @@ class AutoRankmirrorsThread(threading.Thread):
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
-            if self.settings.get('stop_all_threads'):
-                return
             time.sleep(1)  # Delay
 
         if not os.path.exists(self.reflector_script):
@@ -98,11 +94,12 @@ class AutoRankmirrorsThread(threading.Thread):
             with misc.raised_privileges():
                 self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
 
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             logging.error(_("Couldn't execute auto mirror selection"))
+            logging.error(process_error)
 
         # Check arch mirrorlist against mirror status data, remove any bad mirrors.
-        if _use_requests and os.path.exists(self.arch_mirrorlist):
+        if os.path.exists(self.arch_mirrorlist):
             # Use session to avoid silly warning
             # See https://github.com/kennethreitz/requests/issues/1882
             with requests.Session() as session:

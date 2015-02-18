@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  desktop.py
+# desktop.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,7 +24,7 @@
 
 """ Desktop screen """
 
-from gi.repository import Gtk, GLib, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
 import os
 import logging
 
@@ -32,8 +32,10 @@ import desktop_environments as desktops
 import misc.misc as misc
 from gtkbasebox import GtkBaseBox
 
+
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
+
     def __init__(self, params, prev_page="keymap", next_page="features"):
         super().__init__(self, params, "desktop", prev_page, next_page)
 
@@ -145,7 +147,8 @@ class DesktopAsk(GtkBaseBox):
         # Set Gnome as default
         self.select_default_row(desktops.NAMES["gnome"])
 
-    def listbox_sort_by_name(self, row1, row2, user_data):
+    @staticmethod
+    def listbox_sort_by_name(row1, row2, user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
             WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
@@ -156,7 +159,7 @@ class DesktopAsk(GtkBaseBox):
         label2 = box2.get_children()[1]
 
         text = [label1.get_text(), label2.get_text()]
-        #sorted_text = misc.sort_list(text, self.settings.get("locale"))
+        # sorted_text = misc.sort_list(text, self.settings.get("locale"))
         sorted_text = misc.sort_list(text)
 
         # If strings are already well sorted return < 0
@@ -199,7 +202,8 @@ class DesktopAsk(GtkBaseBox):
         logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice.lower())
         return True
 
-    def scroll_to_cell(self, treeview, path):
+    @staticmethod
+    def scroll_to_cell(treeview, path):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
         return False
@@ -208,8 +212,10 @@ class DesktopAsk(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
+
     run('DesktopAsk')

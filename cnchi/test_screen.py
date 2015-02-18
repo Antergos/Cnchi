@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  test_screen.py
+# test_screen.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -24,68 +24,88 @@
 
 """ Test screen (simulates main window to test a ui screen) """
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
-def _(message): return message
+
+def _(message):
+    return message
+
 
 def get_screen(screen_name, params):
     screen = None
     if screen_name == "DesktopAsk":
         import desktop
+
         screen = desktop.DesktopAsk(params)
     elif screen_name == "Check":
         import check
+
         screen = check.Check(params)
     elif screen_name == "Timezone":
         import timezone
+
         screen = timezone.Timezone(params)
         params['settings'].set('timezone_start', True)
     elif screen_name == "Wireless":
         import wireless
+
         screen = wireless.Wireless(params)
     elif screen_name == "Welcome":
         import welcome
+
         screen = welcome.Welcome(params)
     elif screen_name == "UserInfo":
         import user_info
+
         screen = user_info.UserInfo(params)
     elif screen_name == "Location":
         import location
+
         screen = location.Location(params)
     elif screen_name == "Language":
         import language
+
         screen = language.Language(params)
     elif screen_name == "Keymap":
         import keymap
+
         screen = keymap.Keymap(params)
     elif screen_name == "Features":
         import features
+
         screen = features.Features(params)
     elif screen_name == "Slides":
         import slides
+
         screen = slides.Slides(params)
     elif screen_name == "InstallationAsk":
         import ask
+
         screen = ask.InstallationAsk(params)
     elif screen_name == "InstallationAdvanced":
         import advanced
+
         screen = advanced.InstallationAdvanced(params)
     elif screen_name == "InstallationAlongside":
         import alongside
+
         screen = alongside.InstallationAlongside(params)
     elif screen_name == "InstallationAutomatic":
         import automatic
+
         screen = automatic.InstallationAutomatic(params)
     return screen
+
 
 def run(screen_name):
     window = Gtk.Window()
     window.connect('destroy', Gtk.main_quit)
-    #window.set_size_request(600, 500)
+    # window.set_size_request(600, 500)
     window.set_border_width(12)
     window.set_title("Cnchi - Test of {0} screen".format(screen_name))
 
     import logging
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
@@ -97,10 +117,12 @@ def run(screen_name):
     logger.addHandler(stream_handler)
 
     import config
+
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
 
     from desktop_environments import DESKTOPS
+
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
 
