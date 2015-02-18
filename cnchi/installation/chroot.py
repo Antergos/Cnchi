@@ -37,6 +37,7 @@ except NameError as err:
 
 _special_dirs_mounted = False
 
+
 def mount_special_dirs(dest_dir):
     """ Mount special directories for our chroot """
 
@@ -79,17 +80,18 @@ def mount_special_dirs(dest_dir):
         cmd = ["mount", "-t", "devpts", "/dev/pts", mydir]
         subprocess.check_call(cmd)
         os.chmod(mydir, 0o555)
-    except subprocess.CalledProcessError as err:
-        logging.error(err)
+    except subprocess.CalledProcessError as process_error:
+        logging.error(process_error)
 
     if os.path.exists(efi):
         mydir = os.path.join(dest_dir, efi[1:])
         try:
             subprocess.check_call(["mount", "-o", "bind", efi, mydir])
-        except subprocess.CalledProcessError as err:
-            logging.error(err)
+        except subprocess.CalledProcessError as process_error:
+            logging.error(process_error)
 
     _special_dirs_mounted = True
+
 
 def umount_special_dirs(dest_dir):
     """ Umount special directories for our chroot """
@@ -112,18 +114,19 @@ def umount_special_dirs(dest_dir):
         mydir = os.path.join(dest_dir, s_dir)
         try:
             subprocess.check_call(["umount", mydir])
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError:
             # Can't unmount. Try -l to force it.
             try:
                 subprocess.check_call(["umount", "-l", mydir])
-            except subprocess.CalledProcessError as err:
+            except subprocess.CalledProcessError as process_error:
                 logging.warning(_("Unable to umount %s"), mydir)
                 cmd = _("Command %s has failed.")
-                logging.warning(cmd, err.cmd)
+                logging.warning(cmd, process_error.cmd)
                 out = _("Output : %s")
-                logging.warning(out, err.output)
+                logging.warning(out, process_error.output)
 
     _special_dirs_mounted = False
+
 
 def run(cmd, dest_dir, timeout=None, stdin=None):
     """ Runs command inside the chroot """
@@ -132,6 +135,7 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
     for element in cmd:
         full_cmd.append(element)
 
+    proc = None
     try:
         proc = subprocess.Popen(full_cmd,
                                 stdin=stdin,
@@ -141,11 +145,12 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
         txt = outs.decode().strip()
         if len(txt) > 0:
             logging.debug(txt)
-    except subprocess.TimeoutExpired as err:
-        proc.kill()
-        outs, errs = proc.communicate()
-        logging.error(_("Timeout running the command %s"), err.cmd)
-        raise
-    except OSError as err:
-        logging.error(_("Error running command: %s"), err.strerror)
-        raise
+    except subprocess.TimeoutExpired as timeout_error:
+        if proc:
+            proc.kill()
+            proc.communicate()
+        logging.error(_("Timeout running the command %s"), timeout_error.cmd)
+        logging.error(_("Cnchi will try to continue anyways"))
+    except OSError as os_error:
+        logging.error(_("Error running command: %s"), os_error.strerror)
+        logging.error(_("Cnchi will try to continue anyways"))

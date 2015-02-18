@@ -40,13 +40,10 @@ import misc.misc as misc
 import parted3.fs_module as fs
 from installation import process as installation_process
 
-# To be able to test this installer in other systems that do not have pyparted3 installed
-try:
-    import parted
-except ImportError as err:
-    logging.error(_("Can't import parted module: %s"), str(err))
+import parted
 
 from gtkbasebox import GtkBaseBox
+
 
 class InstallationAutomatic(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
@@ -132,7 +129,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.bootloader_devices.clear()
 
         for dev in device_list:
-            ## avoid cdrom and any raid, lvm volumes or encryptfs
+            # avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
                 # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
@@ -147,7 +144,8 @@ class InstallationAutomatic(GtkBaseBox):
         self.select_first_combobox_item(self.device_store)
         self.select_first_combobox_item(self.bootloader_device_entry)
 
-    def select_first_combobox_item(self, combobox):
+    @staticmethod
+    def select_first_combobox_item(combobox):
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
@@ -167,7 +165,7 @@ class InstallationAutomatic(GtkBaseBox):
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
 
-        #self.forward_button.set_sensitive(False)
+        # self.forward_button.set_sensitive(False)
 
     def store_values(self):
         """ Let's do our installation! """
@@ -300,8 +298,9 @@ class InstallationAutomatic(GtkBaseBox):
 try:
     _("")
 except NameError as err:
-    def _(message): return message
+    def _(message):
+        return message
 
 if __name__ == '__main__':
-    from test_screen import _,run
+    from test_screen import _, run
     run('InstallationAutomatic')

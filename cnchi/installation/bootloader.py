@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  bootloader.py
+# bootloader.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -41,6 +41,9 @@ except NameError as err:
     def _(message):
         return message
 
+# TODO: root uuid is in ruuid var, but also in other config vars ¿? Code of obtaining it is duplicated, too
+
+
 class Bootloader(object):
     def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
@@ -72,7 +75,7 @@ class Bootloader(object):
         self.check_root_uuid_in_grub()
 
     def check_root_uuid_in_grub(self):
-        ''' Checks grub.cfg for correct root UUID '''
+        """ Checks grub.cfg for correct root UUID """
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         ruuid = self.settings.get('ruuid')
         if len(ruuid) == 0:
@@ -122,6 +125,7 @@ class Bootloader(object):
         with open(default_grub) as grub_file:
             lines = [x.strip() for x in grub_file.readlines()]
 
+        # FIXME: Duplicated code! This code is in install_gummiboot, too.
         if self.settings.get('use_luks'):
             boot_device = self.mount_devices["/boot"]
             boot_uuid = fs.get_info(boot_device)['UUID']
@@ -131,10 +135,12 @@ class Bootloader(object):
 
             logging.debug("Luks Root Volume: %s", luks_root_volume)
 
+            # In automatic mode, root_device is in self.mount_devices, as it should be
+            root_device = self.mount_devices["/"]
+
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
+                # Special case, in advanced when using luks in root device, we store it in luks_root_device
                 root_device = self.settings.get('luks_root_device')
-            elif self.method == "automatic":
-                root_device = self.mount_devices["/"]
 
             logging.debug("Root device: %s", root_device)
 
@@ -162,7 +168,8 @@ class Bootloader(object):
         for i in range(len(lines)):
             if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
                 lines[i] = theme
-            elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+            elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith(
+                    "GRUB_CMDLINE_LINUX_DEFAULT"):
                 lines[i] = kernel_cmd
             elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
                 lines[i] = "GRUB_DISTRIBUTOR=Antergos"
@@ -225,7 +232,7 @@ class Bootloader(object):
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
             chroot.run(cmd, self.dest_dir, 45)
-        except subprocess.TimeoutExpired as err:
+        except subprocess.TimeoutExpired:
             msg = _("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue.")
             logging.error(msg)
             subprocess.check_call(['killall', 'grub-mount'])
@@ -261,21 +268,20 @@ class Bootloader(object):
 
         try:
             subprocess.check_call(grub_install, shell=True, timeout=45)
-        except subprocess.CalledProcessError as err:
-            logging.error('Command grub-install failed. Error output: %s', err.output)
+        except subprocess.CalledProcessError as process_error:
+            logging.error('Command grub-install failed. Error output: %s', process_error.output)
         except subprocess.TimeoutExpired:
             logging.error('Command grub-install timed out.')
-        except Exception as err:
-            logging.error('Command grub-install failed. Unknown Error: %s', err)
+        except Exception as general_error:
+            logging.error('Command grub-install failed. Unknown Error: %s', general_error)
 
         self.install_grub2_locales()
 
         self.copy_grub2_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
-        grub_defaults = []
-        grub_defaults.append(os.path.join(self.dest_dir, "boot/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)))
-        grub_defaults.append(os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot", 'bootmgfw.efi'))
+        grub_defaults = [os.path.join(self.dest_dir, "boot/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
+                         os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot", 'bootmgfw.efi')]
 
         grub_path = os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))
 
@@ -292,8 +298,8 @@ class Bootloader(object):
                     logging.warning(msg_failed, _("File not found."))
                 except FileExistsError:
                     logging.warning(msg_failed, _("File already exists."))
-                except Exception as err:
-                    logging.warning(msg_failed, err)
+                except Exception as general_error:
+                    logging.warning(msg_failed, general_error)
 
         # Copy uefi shell if none exists in /boot/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
@@ -304,9 +310,9 @@ class Bootloader(object):
             logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
         except FileExistsError:
             pass
-        except Exception as err:
+        except Exception as general_error:
             logging.warning(_("UEFI Shell drop-in could not be copied."))
-            logging.warning(err)
+            logging.warning(general_error)
 
         # Run grub-mkconfig last
         logging.info(_("Generating grub.cfg"))
@@ -423,14 +429,16 @@ class Bootloader(object):
                 conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
                 conf.append("options\troot=UUID={0} rw\n\n".format(root_uuid))
         else:
+            # FIXME: Duplicated code!!! This exists also in modify_grub_default
             boot_device = self.mount_devices["/boot"]
             boot_uuid = fs.get_info(boot_device)['UUID']
             luks_root_volume = self.settings.get('luks_root_volume')
 
+            # In automatic mode, root_device is in self.mount_devices, as it should be
+            root_device = self.mount_devices["/"]
+
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
                 root_device = self.settings.get('luks_root_device')
-            elif self.method == "automatic":
-                root_device = self.mount_devices["/"]
 
             root_uuid = fs.get_info(root_device)['UUID']
 
@@ -473,8 +481,8 @@ class Bootloader(object):
             subprocess.check_call(cmd)
             logging.info(_("Gummiboot install completed successfully"))
             self.settings.set('bootloader_installation_successful', True)
-        except subprocess.CalledProcessError as err:
-            logging.error(err)
+        except subprocess.CalledProcessError as process_error:
+            logging.error(process_error)
             logging.warning(_("Gummiboot install has NOT completed successfully!"))
             self.settings.set('bootloader_installation_successful', False)
 
@@ -506,5 +514,6 @@ class Bootloader(object):
             if xfs_root:
                 subprocess.check_call(["xfs_freeze", "-f", self.dest_dir])
                 subprocess.check_call(["xfs_freeze", "-u", self.dest_dir])
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             logging.warning(_("Can't freeze/unfreeze xfs system"))
+            logging.warning(process_error)
