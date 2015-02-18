@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  auto_partition.py
+# auto_partition.py
 #
 #  Copyright © 2013,2014 Antergos
 #
@@ -25,7 +25,6 @@
 import os
 import subprocess
 import logging
-import shlex
 
 from misc.misc import InstallError
 
@@ -46,6 +45,7 @@ MAX_ROOT_SIZE = 30000
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
 
+
 def get_info(part):
     """ Get partition info using blkid """
     cmd = ['blkid', part]
@@ -58,11 +58,13 @@ def get_info(part):
             info = info.split('=')
             partdic[info[0]] = info[1].strip('"')
 
-    return(partdic)
+    return partdic
+
 
 def check_output(command):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
     return subprocess.check_output(command.split()).decode().strip("\n")
+
 
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
@@ -72,16 +74,18 @@ def printk(enable):
         else:
             fpk.write("0")
 
+
 def unmount(directory):
     logging.warning(_("Unmounting %s"), directory)
     try:
         subprocess.call(["umount", directory])
-    except subprocess.CalledProcessError as err:
+    except subprocess.CalledProcessError:
         logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
         try:
             subprocess.call(["umount", "-l", directory])
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError:
             logging.warning(_("Unmounting %s failed."), directory)
+
 
 def unmount_all(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
@@ -158,6 +162,7 @@ def unmount_all(dest_dir):
         logging.warning(_("Command %s failed"), err.cmd)
         logging.warning(_("Output: %s"), err.output)
 
+
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
@@ -205,17 +210,18 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         try:
             cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device]
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
+            proc.communicate(input=luks_pass_bytes)
 
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            (stdout_data, stderr_data) = proc.communicate(input=luks_pass_bytes)
+            proc.communicate(input=luks_pass_bytes)
         except subprocess.CalledProcessError as err:
             txt = _("Can't format and open the LUKS device {0}").format(luks_device)
             logging.error(txt)
             logging.error(_("Command %s failed"), err.cmd)
             logging.error(_("Output: %s"), err.output)
             raise InstallError(txt)
+
 
 def wipefs(device):
     try:
@@ -225,14 +231,11 @@ def wipefs(device):
         logging.warning(_("Command %s failed"), err.cmd)
         logging.warning(_("Output: %s"), err.output)
 
+
 def dd(input_device, output_device, bs=512, count=2048):
     """ Helper function to call dd """
-    cmd = ['dd']
-    cmd.append('if={0}'.format(input_device))
-    cmd.append('of={0}'.format(output_device))
-    cmd.append('bs={0}'.format(bs))
-    cmd.append('count={0}'.format(count))
-    cmd.append('status=noxfer')
+    cmd = ['dd', 'if={0}'.format(input_device), 'of={0}'.format(output_device), 'bs={0}'.format(bs),
+           'count={0}'.format(count), 'status=noxfer']
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
@@ -240,28 +243,25 @@ def dd(input_device, output_device, bs=512, count=2048):
         logging.warning(_("Command %s failed"), err.cmd)
         logging.warning(_("Output: %s"), err.output)
 
+
 def sgdisk(command, device):
     """ Helper function to call sgdisk (GPT) """
-    cmd = ['sgdisk']
-    cmd.append("--{0}".format(command))
-    cmd.append(device)
+    cmd = ['sgdisk', "--{0}".format(command), device]
     subprocess.check_call(cmd)
+
 
 def sgdisk_new(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk --new (GPT) """
-    cmd = ['sgdisk']
+    cmd = ['sgdisk', '--new={0}:0:+{1}M'.format(part_num, size), '--typecode={0}:{1}'.format(part_num, hex_code),
+           '--change-name={0}:{1}'.format(part_num, label), device]
     # --new: Create a new partition, numbered partnum, starting at sector start and ending at sector end.
     # Parameters: partnum:start:end (zero in start or end means using default value)
-    cmd.append('--new={0}:0:+{1}M'.format(part_num, size))
     # --typecode: Change a partition's GUID type code to the one specified by hexcode.
     #             Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code.
     #             You can obtain a list of codes with the -L option.
     # Parameters: partnum:hexcode
-    cmd.append('--typecode={0}:{1}'.format(part_num, hex_code))
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
-    cmd.append('--change-name={0}:{1}'.format(part_num, label))
-    cmd.append(device)
     logging.debug(" ".join(cmd))
 
     try:
@@ -273,10 +273,12 @@ def sgdisk_new(device, part_num, label, size, hex_code):
         logging.error(_("Output: %s"), err.output)
         raise InstallError(txt)
 
+
 def parted_set(device, number, flag, state):
     """ Helper function to call set parted command """
     cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
     subprocess.check_call(cmd)
+
 
 def parted_mkpart(device, ptype, start, end, filesystem=""):
     """ Helper function to call mkpart parted command """
@@ -299,6 +301,7 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         logging.error(_("Output: %s"), err.output)
         raise InstallError(txt)
 
+
 def parted_mktable(device, table_type="msdos"):
     """ Helper function to call mktable parted command """
     cmd = ["parted", "--align", "optimal", "--script", device, "mktable", table_type]
@@ -311,10 +314,13 @@ def parted_mktable(device, table_type="msdos"):
         logging.error(_("Output: %s"), err.output)
         raise InstallError(txt)
 
+
 ''' AutoPartition Class '''
+
 
 class AutoPartition(object):
     """ Class used by the automatic installation method """
+
     def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, callback_queue):
         """ Class initialization """
         self.dest_dir = dest_dir
@@ -607,7 +613,6 @@ class AutoPartition(object):
         device = self.auto_device
         device_name = check_output("basename {0}".format(device))
         base_path = os.path.join("/sys/block", device_name)
-        disk_size = 0
         size_path = os.path.join(base_path, "size")
         if os.path.exists(size_path):
             logical_path = os.path.join(base_path, "queue/logical_block_size")
@@ -618,7 +623,7 @@ class AutoPartition(object):
             disk_size = ((logical_block_size * size) / 1024) / 1024
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
-                "installation routine for partitioning and mounting devices.")
+                    "installation routine for partitioning and mounting devices.")
             logging.error(txt)
             raise InstallError(txt)
 
@@ -827,18 +832,18 @@ class AutoPartition(object):
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
         mount_points = {
-            'efi':'/boot/efi',
-            'boot':'/boot',
-            'root':'/',
-            'home':'/home',
-            'swap':''}
+            'efi': '/boot/efi',
+            'boot': '/boot',
+            'root': '/',
+            'home': '/home',
+            'swap': ''}
 
         labels = {
-            'efi':'UEFI_SYSTEM',
-            'boot':'AntergosBoot',
-            'root':'AntergosRoot',
-            'home':'AntergosHome',
-            'swap':'AntergosSwap'}
+            'efi': 'UEFI_SYSTEM',
+            'boot': 'AntergosBoot',
+            'root': 'AntergosRoot',
+            'home': 'AntergosHome',
+            'swap': 'AntergosSwap'}
 
         fs_devices = self.get_fs_devices()
 
@@ -880,8 +885,10 @@ class AutoPartition(object):
                 logging.warning(_("Command %s failed"), err.cmd)
                 logging.warning(_("Output: %s"), err.output)
 
+
 if __name__ == '__main__':
     import gettext
+
     _ = gettext.gettext
 
     logging.basicConfig(filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
