@@ -29,6 +29,7 @@ import os
 
 from installation import chroot
 
+
 def run(dest_dir, settings, mount_devices, blvm):
     """ Runs mkinitcpio """
 
@@ -94,6 +95,7 @@ def run(dest_dir, settings, mount_devices, blvm):
         chroot.run(cmd, dest_dir)
     chroot.umount_special_dirs(dest_dir)
 
+
 def set_hooks_and_modules(dest_dir, hooks, modules):
     """ Set up mkinitcpio.conf """
     logging.debug(_("Setting hooks and modules in mkinitcpio.conf"))
@@ -112,6 +114,7 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
     path = os.path.join(dest_dir, "etc/mkinitcpio.conf")
     with open(path, "w") as mkinitcpio_file:
         mkinitcpio_file.write("\n".join(mklins) + "\n")
+
 
 def get_cpu():
     """ Gets CPU string definition """

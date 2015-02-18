@@ -26,9 +26,11 @@ try:
 except ImportError:
     import misc
 
+
 def refresh():
     while Gtk.events_pending():
         Gtk.main_iteration()
+
 
 def draw_round_rect(c, r, x, y, w, h):
     c.move_to(x + r, y)
@@ -42,6 +44,7 @@ def draw_round_rect(c, r, x, y, w, h):
     c.curve_to(x, y, x, y, x + r, y)
     c.close_path()
 
+
 def gtk_to_cairo_color(c):
     color = Gdk.color_parse(c)
     s = 1.0 / 65535.0
@@ -49,6 +52,7 @@ def gtk_to_cairo_color(c):
     g = color.green * s
     b = color.blue * s
     return r, g, b
+
 
 class StylizedFrame(Gtk.Bin):
     __gtype_name__ = 'StylizedFrame'
@@ -62,7 +66,7 @@ class StylizedFrame(Gtk.Bin):
     }
 
     def __init__(self):
-        #Gtk.Alignment.__init__(self)
+        # Gtk.Alignment.__init__(self)
         Gtk.Bin.__init__(self)
         self.radius = 10
         self.width = 1
@@ -71,7 +75,7 @@ class StylizedFrame(Gtk.Bin):
         if prop.name in ('radius', 'width'):
             return getattr(self, prop.name)
         else:
-            #return Gtk.Alignment.do_get_property(self, prop)
+            # return Gtk.Alignment.do_get_property(self, prop)
             return Gtk.Bin.do_get_property(self, prop)
 
     def do_set_property(self, prop, value):
@@ -79,7 +83,7 @@ class StylizedFrame(Gtk.Bin):
             setattr(self, prop.name, value)
             self.queue_draw()
         else:
-            #Gtk.Alignment.do_set_property(self, prop, value)
+            # Gtk.Alignment.do_set_property(self, prop, value)
             Gtk.Bin.do_set_property(self, prop, value)
 
     def paint_background(self, c):
@@ -106,6 +110,7 @@ class StylizedFrame(Gtk.Bin):
 
 GObject.type_register(StylizedFrame)
 
+
 class DiskBox(Gtk.Box):
     __gtype_name__ = 'DiskBox'
 
@@ -117,6 +122,7 @@ class DiskBox(Gtk.Box):
         self.forall(lambda x: self.remove(x))
 
 GObject.type_register(DiskBox)
+
 
 class PartitionBox(StylizedFrame):
     __gtype_name__ = 'PartitionBox'
@@ -198,7 +204,8 @@ class PartitionBox(StylizedFrame):
         size = misc.format_size(size)
         self.size.set_markup('<span size="x-large">{0}</span>'.format(size))
 
-    def render_dots(self):
+    @staticmethod
+    def render_dots():
         # FIXME: Dots are rendered over the frame.
         s = cairo.ImageSurface(cairo.FORMAT_ARGB32, 2, 2)
         cr = cairo.Context(s)
@@ -226,6 +233,7 @@ class PartitionBox(StylizedFrame):
         c.fill_preserve()
 
 GObject.type_register(PartitionBox)
+
 
 class ResizeWidget(Gtk.Frame):
     __gtype_name__ = 'ResizeWidget'
@@ -257,7 +265,7 @@ class ResizeWidget(Gtk.Frame):
             setattr(self, name, value)
             self.queue_draw()
         else:
-            #print(prop.name, value)
+            # print(prop.name, value)
             Gtk.Alignment.do_set_property(self, prop, value)
 
     def __init__(self, part_size, min_size, max_size):
@@ -303,15 +311,13 @@ class ResizeWidget(Gtk.Frame):
                 self.existing_part.set_property('extra', subtitle)
 
     def get_part_title_and_subtitle(self, part):
-        title = None
-        subtitle = None
         if part == 'new':
             title = self.new_part.get_property('title')
             subtitle = self.new_part.get_property('extra')
         else:
             title = self.new_part.get_property('title')
             subtitle = self.new_part.get_property('extra')
-        return (title, subtitle)
+        return title, subtitle
 
     def set_part_icon(self, part, icon_name=None, icon_file=None):
         if icon_name:
@@ -385,6 +391,7 @@ class ResizeWidget(Gtk.Frame):
 
 GObject.type_register(ResizeWidget)
 
+
 class StateBox(StylizedFrame):
     __gtype_name__ = 'StateBox'
     __gproperties__ = {
@@ -435,23 +442,26 @@ class StateBox(StylizedFrame):
     def get_state(self):
         return self.status
 
-    def show(self):
+    @staticmethod
+    def show():
         super().show()
 
-    def hide(self):
+    @staticmethod
+    def hide():
         super().hide()
 
 GObject.type_register(StateBox)
 
-# GtkBuilder should have .get_object_ids() method
+
 class Builder(Gtk.Builder):
+    """ GtkBuilder should have .get_object_ids() method """
     def __init__(self):
         self._widget_ids = set()
         super().__init__()
 
     def add_from_file(self, filename):
-        import xml.etree.cElementTree as ET
-        tree = ET.parse(filename)
+        import xml.etree.cElementTree as eTree
+        tree = eTree.parse(filename)
         root = tree.getroot()
         for widgets in root.iter('object'):
             self._widget_ids.add(widgets.attrib['id'])

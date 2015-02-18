@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  process.py
+# process.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ import urllib.error
 import traceback
 
 from mako.template import Template
-from mako.lookup import TemplateLookup
 
 import desktop_environments as desktops
 import parted3.fs_module as fs
@@ -58,9 +57,9 @@ from installation import firewall
 from misc.misc import InstallError
 
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.cElementTree as eTree
 except ImportError as err:
-    import xml.etree.ElementTree as ET
+    import xml.etree.ElementTree as eTree
 
 try:
     import pyalpm
@@ -70,8 +69,10 @@ except ImportError as err:
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
+
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
+
 
 def write_file(filecontents, filename):
     """ writes a string of data to disk """
@@ -81,8 +82,10 @@ def write_file(filecontents, filename):
     with open(filename, "w") as fh:
         fh.write(filecontents)
 
+
 class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
+
     def __init__(self, settings, callback_queue, mount_devices,
                  fs_devices, alternate_package_list="", ssd={}, blvm=False):
         """ Initialize installation class """
@@ -132,7 +135,7 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('error', txt)
         self.callback_queue.join()
         # Is this really necessary?
-        os._exit(0)
+        sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
         if self.callback_queue is not None:
@@ -157,19 +160,21 @@ class InstallationProcess(multiprocessing.Process):
 
         try:
             self.run_installation()
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
-            logging.error(_("Error running command %s"), err.cmd)
-            logging.error(_("Output: %s"), err.output)
+            logging.error(_("Error running command %s"), process_error.cmd)
+            logging.error(_("Output: %s"), process_error.output)
             logging.error(trace)
-            self.queue_fatal_event(err.output)
-        except (InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, OSError, IOError) as err:
+            self.queue_fatal_event(process_error.output)
+        except (
+                InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, OSError,
+                IOError) as install_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
-            logging.error(err)
+            logging.error(install_error)
             logging.error(trace)
-            self.queue_fatal_event(err)
+            self.queue_fatal_event(install_error)
 
     @misc.raise_privileges
     def run_installation(self):
@@ -219,14 +224,18 @@ class InstallationProcess(multiprocessing.Process):
             self.mount_devices = auto.get_mount_devices()
             self.fs_devices = auto.get_fs_devices()
 
-        if self.method == 'advanced' or self.method == 'alongside':
+        # Create the directory where we will mount our new root partition
+        if not os.path.exists(DEST_DIR):
+            os.mkdir(DEST_DIR)
+
+        if self.method == 'alongside' or self.method == 'advanced':
             root_partition = self.mount_devices["/"]
 
             # NOTE: Advanced method formats root by default in installation_advanced
 
-            #if root_partition in self.fs_devices:
-            #    root_fs = self.fs_devices[root_partition]
-            #else:
+            # if root_partition in self.fs_devices:
+            #     root_fs = self.fs_devices[root_partition]
+            # else:
             #    root_fs = "ext4"
 
             if "/boot" in self.mount_devices:
@@ -239,13 +248,8 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 swap_partition = ""
 
-        # Create the directory where we will mount our new root partition
-        if not os.path.exists(DEST_DIR):
-            os.mkdir(DEST_DIR)
-
-        # Mount root and boot partitions (only if it's needed)
-        # Not doing this in automatic mode as AutoPartition class mounts the root and boot devices itself.
-        if self.method == 'alongside' or self.method == 'advanced':
+            # Mount root and boot partitions (only if it's needed)
+            # Not doing this in automatic mode as AutoPartition class mounts the root and boot devices itself.
             txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
             logging.debug(txt)
             subprocess.check_call(['mount', root_partition, DEST_DIR])
@@ -259,36 +263,36 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(txt)
                 subprocess.check_call(['mount', boot_partition, boot_path])
 
-        # In advanced mode, mount all partitions (root and boot are already mounted)
-        if self.method == 'advanced':
-            for path in self.mount_devices:
-                # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
-                if path == "":
-                    continue
-                mount_part = self.mount_devices[path]
-                if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
-                    try:
+            # In advanced mode, mount all partitions (root and boot are already mounted)
+            if self.method == 'advanced':
+                for path in self.mount_devices:
+                    # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
+                    if path == "":
+                        continue
+                    mount_part = self.mount_devices[path]
+                    if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
                         mount_dir = os.path.join(DEST_DIR, path)
-                        if not os.path.exists(mount_dir):
-                            os.makedirs(mount_dir)
-                        txt = _("Mounting partition {0} into {1} directory")
-                        txt = txt.format(mount_part, mount_dir)
-                        logging.debug(txt)
-                        subprocess.check_call(['mount', mount_part, mount_dir])
-                    except subprocess.CalledProcessError as err:
-                        # We will continue as root and boot are already mounted
-                        logging.warning(_("Can't mount %s in %s"), mount_part, mount_dir)
-                        logging.warning(_("Command %s has failed."), err.cmd)
-                        logging.warning(_("Output : %s"), err.output)
-                elif mount_part == swap_partition:
-                    try:
-                        logging.debug(_("Activating swap in %s"), mount_part)
-                        subprocess.check_call(['swapon', swap_partition])
-                    except subprocess.CalledProcessError as err:
-                        # We can continue even if no swap is on
-                        logging.warning(_("Can't activate swap in %s"), mount_part)
-                        logging.warning(_("Command %s has failed."), err.cmd)
-                        logging.warning(_("Output : %s"), err.output)
+                        try:
+                            if not os.path.exists(mount_dir):
+                                os.makedirs(mount_dir)
+                            txt = _("Mounting partition {0} into {1} directory")
+                            txt = txt.format(mount_part, mount_dir)
+                            logging.debug(txt)
+                            subprocess.check_call(['mount', mount_part, mount_dir])
+                        except subprocess.CalledProcessError as process_error:
+                            # We will continue as root and boot are already mounted
+                            logging.warning(_("Can't mount %s in %s"), mount_part, mount_dir)
+                            logging.warning(_("Command %s has failed."), process_error.cmd)
+                            logging.warning(_("Output : %s"), process_error.output)
+                    elif mount_part == swap_partition:
+                        try:
+                            logging.debug(_("Activating swap in %s"), mount_part)
+                            subprocess.check_call(['swapon', swap_partition])
+                        except subprocess.CalledProcessError as process_error:
+                            # We can continue even if no swap is on
+                            logging.warning(_("Can't activate swap in %s"), mount_part)
+                            logging.warning(_("Command %s has failed."), process_error.cmd)
+                            logging.warning(_("Output : %s"), process_error.output)
 
         # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
@@ -323,8 +327,6 @@ class InstallationProcess(multiprocessing.Process):
         for img in kernel_imgs:
             if os.path.exists(img):
                 os.remove(img)
-
-        all_ok = False
 
         logging.debug(_("Prepare pacman..."))
         self.prepare_pacman()
@@ -361,7 +363,8 @@ class InstallationProcess(multiprocessing.Process):
             self.error = False
             return True
 
-    def copy_log(self):
+    @staticmethod
+    def copy_log():
         # Copy Cnchi log to new installation
         datetime = "{0}-{1}".format(time.strftime("%Y%m%d"), time.strftime("%H%M%S"))
         dst = os.path.join(DEST_DIR, "var/log/cnchi-{0}.log".format(datetime))
@@ -421,7 +424,7 @@ class InstallationProcess(multiprocessing.Process):
         # Init pyalpm
         try:
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception as err:
+        except Exception:
             self.pacman = None
             raise InstallError(_("Can't initialize pyalpm."))
 
@@ -433,7 +436,8 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(txt)
             raise InstallError(txt)
 
-    def prepare_pacman_keyring(self):
+    @staticmethod
+    def prepare_pacman_keyring():
         """ Add gnupg pacman files to installed system """
 
         # Be sure that haveged is running (liveCD)
@@ -443,21 +447,21 @@ class InstallationProcess(multiprocessing.Process):
         try:
             cmd = ["systemctl", "start", "haveged"]
             subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             logging.warning(_("Can't start haveged service"))
-            logging.warning(_("Command %s failed"), err.cmd)
-            logging.warning(_("Output: %s"), err.output)
+            logging.warning(_("Command %s failed"), process_error.cmd)
+            logging.warning(_("Output: %s"), process_error.output)
 
         # Delete old gnupg files
+        dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
         try:
-            dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
             cmd = ["rm", "-rf", dest_path]
             subprocess.check_call(cmd)
             os.mkdir(dest_path)
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             logging.warning(_("Error deleting old gnupg files"))
-            logging.warning(_("Command %s failed"), err.cmd)
-            logging.warning(_("Output: %s"), err.output)
+            logging.warning(_("Command %s failed"), process_error.cmd)
+            logging.warning(_("Output: %s"), process_error.output)
 
         # Tell pacman-key to regenerate gnupg files
         try:
@@ -465,10 +469,10 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(cmd)
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
             subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             logging.warning(_("Error regenerating gnupg files with pacman-key"))
-            logging.warning(_("Command %s failed"), err.cmd)
-            logging.warning(_("Output: %s"), err.output)
+            logging.warning(_("Command %s failed"), process_error.cmd)
+            logging.warning(_("Output: %s"), process_error.output)
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -485,15 +489,15 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
                 packages_xml = urllib.request.urlopen(url, timeout=5)
-            except urllib.error.URLError as err:
+            except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
-                logging.warning(err)
+                logging.warning(url_error)
                 logging.debug(_("Can't retrieve remote package list, using a local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
 
-        xml_tree = ET.parse(packages_xml)
+        xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
 
         lib = desktops.LIBS
@@ -553,6 +557,7 @@ class InstallationProcess(multiprocessing.Process):
         # Get packages needed for detected hardware
         try:
             import hardware.hardware as hardware
+
             hardware_install = hardware.HardwareInstall()
             driver_names = hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
@@ -570,8 +575,8 @@ class InstallationProcess(multiprocessing.Process):
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
-        except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s"), err)
+        except Exception as general_error:
+            logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
 
         # Add filesystem packages
         logging.debug(_("Adding filesystem packages"))
@@ -591,7 +596,7 @@ class InstallationProcess(multiprocessing.Process):
                 if fsys == 'ext2' or fsys == 'ext3' or fsys == 'ext4':
                     fsys = 'ext'
                 if fsys == 'fat16' or fsys == 'fat32':
-                    fsys ='vfat'
+                    fsys = 'vfat'
                 for child in xml_root.iter(fsys):
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
@@ -629,7 +634,6 @@ class InstallationProcess(multiprocessing.Process):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
         lib = desktops.LIBS
-        features = desktops.FEATURES
 
         # Add necessary packages for user desired features to our install list
         for xml_features in xml_root.iter('features'):
@@ -698,7 +702,8 @@ class InstallationProcess(multiprocessing.Process):
         """ Checks if an error has been issued """
         return not self.error
 
-    def copy_network_config(self):
+    @staticmethod
+    def copy_network_config():
         """ Copies Network Manager configuration """
         source_nm = "/etc/NetworkManager/system-connections/"
         target_nm = os.path.join(DEST_DIR, "etc/NetworkManager/system-connections")
@@ -740,8 +745,6 @@ class InstallationProcess(multiprocessing.Process):
         use_lvm = self.settings.get("use_lvm")
 
         for mount_point in self.mount_devices:
-            opts = 'defaults'
-            chk = '0'
             partition_path = self.mount_devices[mount_point]
             part_info = fs.get_info(partition_path)
             uuid = part_info['UUID']
@@ -885,7 +888,8 @@ class InstallationProcess(multiprocessing.Process):
         except FileExistsError:
             pass
 
-    def enable_services(self, services):
+    @staticmethod
+    def enable_services(services):
         """ Enables all services that are in the list 'services' """
         for name in services:
             path = os.path.join(DEST_DIR, "usr/lib/systemd/system/{0}.service".format(name))
@@ -895,7 +899,8 @@ class InstallationProcess(multiprocessing.Process):
             else:
                 logging.warning(_("Can't find service %s"), name)
 
-    def change_user_password(self, user, new_password):
+    @staticmethod
+    def change_user_password(user, new_password):
         """ Changes the user's password """
         try:
             shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
@@ -911,12 +916,14 @@ class InstallationProcess(multiprocessing.Process):
 
         return True
 
-    def auto_timesetting(self):
+    @staticmethod
+    def auto_timesetting():
         """ Set hardware clock """
         subprocess.check_call(["hwclock", "--systohc", "--utc"])
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
-    def update_pacman_conf(self):
+    @staticmethod
+    def update_pacman_conf():
         """ Add Antergos repo """
         path = os.path.join(DEST_DIR, "etc/pacman.conf")
         if os.path.exists(path):
@@ -928,9 +935,10 @@ class InstallationProcess(multiprocessing.Process):
         else:
             logging.warning(_("Can't find pacman configuration file"))
 
-    def uncomment_locale_gen(self, locale):
+    @staticmethod
+    def uncomment_locale_gen(locale):
         """ Uncomment selected locale in /etc/locale.gen """
-        text = []
+
         path = os.path.join(DEST_DIR, "etc/locale.gen")
 
         if os.path.exists(path):
@@ -946,7 +954,8 @@ class InstallationProcess(multiprocessing.Process):
         else:
             logging.warning(_("Can't find locale.gen file"))
 
-    def check_output(self, command):
+    @staticmethod
+    def check_output(command):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
@@ -973,13 +982,13 @@ class InstallationProcess(multiprocessing.Process):
                 destination = os.path.join(dst, item)
                 try:
                     shutil.copy2(source, destination)
-                except (FileExistsError, shutil.Error) as err:
-                    logging.warning(err)
+                except (FileExistsError, shutil.Error) as file_error:
+                    logging.warning(file_error)
                 percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
-        #if self.settings.get("feature_aur"):
+        # if self.settings.get("feature_aur"):
         #    logging.debug(_("Configuring AUR..."))
 
         services = []
@@ -1030,7 +1039,6 @@ class InstallationProcess(multiprocessing.Process):
 
         try:
             # Setup LightDM as Desktop Manager
-            text = []
 
             with open(lightdm_conf_path) as lightdm_conf:
                 text = lightdm_conf.readlines()
@@ -1054,7 +1062,8 @@ class InstallationProcess(multiprocessing.Process):
             txt = _("Error while trying to configure the LightDM display manager")
             logging.warning(txt)
 
-    def alsa_mixer_setup(self):
+    @staticmethod
+    def alsa_mixer_setup():
         """ Sets ALSA mixer settings """
 
         cmds = [
@@ -1102,14 +1111,14 @@ class InstallationProcess(multiprocessing.Process):
             "SB Live Analog/Digital Output Jack off",
             "Audigy Analog/Digital Output Jack off"]
 
-
         for cmd in cmds:
             chroot_run(['sh', '-c', 'amixer -c 0 sset {0}'.format(cmd)])
 
         # Save settings
         chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
 
-    def set_fluidsynth(self):
+    @staticmethod
+    def set_fluidsynth():
         """ Sets fluidsynth configuration file """
 
         fluid_path = os.path.join(DEST_DIR, "etc/conf.d/fluidsynth")
@@ -1158,9 +1167,9 @@ class InstallationProcess(multiprocessing.Process):
             # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
             # edited by himself. Maybe we could ease this process?
             profile = 'ethernet-dhcp'
-            #if misc.is_wireless_enabled():
-            #    # TODO: We should port wifi-menu from netctl package here.
-            #    profile = 'wireless-wpa'
+            # if misc.is_wireless_enabled():
+            #     # TODO: We should port wifi-menu from netctl package here.
+            #     profile = 'wireless-wpa'
 
             # TODO: Just copying the default profile is NOT an elegant solution
             logging.debug(_("Cnchi will configure netctl using the %s profile"), profile)
@@ -1175,7 +1184,7 @@ class InstallationProcess(multiprocessing.Process):
                 pass
             # Enable our profile
             chroot_run(['netctl', 'enable', profile])
-            #logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.'), dst_path)
+            # logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.'), dst_path)
 
         logging.debug(_("Network configuration copied."))
 
@@ -1234,13 +1243,14 @@ class InstallationProcess(multiprocessing.Process):
         # Configure detected hardware
         try:
             import hardware.hardware as hardware
+
             hardware_install = hardware.HardwareInstall()
             logging.debug(_("Running post-install scripts from hardware module..."))
             hardware_install.post_install(DEST_DIR)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
-        except Exception as err:
-            logging.warning(_("Unknown error in hardware module. Output: %s"), err)
+        except Exception as general_error:
+            logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
 
         # Setup user
 
@@ -1356,16 +1366,16 @@ class InstallationProcess(multiprocessing.Process):
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
-                username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant],
-                timeout=300)
+                                   username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant],
+                                  timeout=300)
             logging.debug(_("Post install script completed successfully."))
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will try to continue with the installation.
             logging.error(_("Error running post-install script"))
-            logging.error(_("Command %s failed"), err.cmd)
-            logging.error(_("Output: %s"), err.output)
-        except subprocess.TimeoutExpired as err:
-            logging.error(err)
+            logging.error(_("Command %s failed"), process_error.cmd)
+            logging.error(_("Output: %s"), process_error.output)
+        except subprocess.TimeoutExpired as timeout_error:
+            logging.error(timeout_error)
 
         if self.desktop != "base":
             # Set lightdm config including autologin if selected
@@ -1386,10 +1396,11 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 logging.debug(_("Installing bootloader..."))
                 from installation import bootloader
+
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
-            except Exception as err:
-                logging.error(_("Couldn't install boot loader: %s"), err)
+            except Exception as general_error:
+                logging.error(_("Couldn't install boot loader: %s"), general_error)
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
         chroot.umount_special_dirs(DEST_DIR)

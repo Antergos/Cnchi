@@ -31,8 +31,9 @@ from installation import chroot
 try:
     import ufw
     _UFW = True
-except ImportError as err:
+except ImportError:
     _UFW = False
+
 
 def run(params, dest_dir="/install"):
     cmd = ["ufw"]
@@ -43,8 +44,8 @@ def run(params, dest_dir="/install"):
         # Will call ufw command directly
         try:
             chroot.run(cmd, dest_dir)
-        except OSError as err:
-            logging.warning(err)
+        except OSError as os_error:
+            logging.warning(os_error)
         finally:
             return
 
@@ -59,6 +60,7 @@ def run(params, dest_dir="/install"):
     if len(cmd) > idx and cmd[idx].lower() == "app":
         app_action = True
 
+    res = ""
     try:
         cmd_line = ufw.frontend.parse_command(cmd)
         ui = ufw.frontend.UFWFrontend(cmd_line.dryrun)
@@ -84,14 +86,14 @@ def run(params, dest_dir="/install"):
                         "",
                         "",
                         cmd_line.force)
-    except (ValueError, ufw.UFWError) as err:
-        logging.error(err)
+    except (ValueError, ufw.UFWError) as ufw_error:
+        logging.error(ufw_error)
         # Error using ufw module
         # Will call ufw command directly
         try:
             chroot.run(cmd, dest_dir)
-        except OSError as err:
-            logging.warning(err)
+        except OSError as os_error:
+            logging.warning(os_error)
         finally:
             return
 
