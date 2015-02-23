@@ -240,7 +240,7 @@ class Pac(object):
         '''
 
         num_targets = len(targets)
-        for i in range(1, num_targets):
+        for i in range(0, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
                 # logging.debug(_("Adding package '%s' to transaction"), pkg.name)
