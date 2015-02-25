@@ -71,18 +71,22 @@ def label_fs(fstype, part, label):
              'jfs':'jfs_tune -L %(label)s %(part)s',
              'reiserfs':'reiserfstune -l %(label)s %(part)s',
              'xfs':'xfs_admin -l %(label)s %(part)s',
-             'btrfs':'btrfs filesystem label %(part)s %(label)s'}
+             'btrfs':'btrfs filesystem label %(part)s %(label)s',
+             'swap':'swaplabel -L %(label)s %(part)s'}
     fstype = fstype.lower()
     # OK, the below is a quick cheat.  vars() returns all variables
     # in a dictionary.  So 'part' and 'label' will be defined
     # and replaced in above dic
-    try:
-        result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
-        ret = (0, result)
-    except subprocess.CalledProcessError as err:
-        logging.error(err)
-        ret = (1, err)
-        # check_call returns exit code.  0 should mean success
+    if fstype in ladic:
+        try:
+            result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
+            ret = (0, result)
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+            ret = (1, err)
+            # check_call returns exit code.  0 should mean success
+    else:
+        ret = (1, _("Can't label a {0} partition").format(fstype))
     return ret
 
 @misc.raise_privileges
