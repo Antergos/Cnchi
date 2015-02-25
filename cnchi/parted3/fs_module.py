@@ -71,35 +71,38 @@ def get_type(part):
     return ret
 
 
+
 @misc.raise_privileges
 def label_fs(fstype, part, label):
     """ Get filesystem label """
-    ladic = {'ext2': 'e2label %(part)s %(label)s',
-             'ext3': 'e2label %(part)s %(label)s',
-             'ext4': 'e2label %(part)s %(label)s',
-             'f2fs': 'blkid -s LABEL -o value %(part)s %(label)s',
-             'fat': 'mlabel -i %(part)s ::%(label)s',
-             'fat16': 'mlabel -i %(part)s ::%(label)s',
-             'fat32': 'mlabel -i %(part)s ::%(label)s',
-             'ntfs': 'ntfslabel %(part)s %(label)s',
-             'jfs': 'jfs_tune -L %(label)s %(part)s',
-             'reiserfs': 'reiserfstune -l %(label)s %(part)s',
-             'xfs': 'xfs_admin -l %(label)s %(part)s',
-             'btrfs': 'btrfs filesystem label %(part)s %(label)s'}
+    ladic = {'ext2':'e2label %(part)s %(label)s',
+             'ext3':'e2label %(part)s %(label)s',
+             'ext4':'e2label %(part)s %(label)s',
+             'f2fs':'blkid -s LABEL -o value %(part)s %(label)s',
+             'fat':'mlabel -i %(part)s ::%(label)s',
+             'fat16':'mlabel -i %(part)s ::%(label)s',
+             'fat32':'mlabel -i %(part)s ::%(label)s',
+             'ntfs':'ntfslabel %(part)s %(label)s',
+             'jfs':'jfs_tune -L %(label)s %(part)s',
+             'reiserfs':'reiserfstune -l %(label)s %(part)s',
+             'xfs':'xfs_admin -l %(label)s %(part)s',
+             'btrfs':'btrfs filesystem label %(part)s %(label)s',
+             'swap':'swaplabel -L %(label)s %(part)s'}
     fstype = fstype.lower()
     # OK, the below is a quick cheat.  vars() returns all variables
     # in a dictionary.  So 'part' and 'label' will be defined
     # and replaced in above dic
-    try:
-        cmd = shlex.split(ladic[fstype] % vars())
-        result = subprocess.check_output(cmd).decode()
-        ret = (0, result)
-    except subprocess.CalledProcessError as err:
-        logging.error(err)
-        ret = (1, err)
-        # check_call returns exit code.  0 should mean success
+    if fstype in ladic:
+        try:
+            result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
+            ret = (0, result)
+        except subprocess.CalledProcessError as err:
+            logging.error(err)
+            ret = (1, err)
+            # check_call returns exit code.  0 should mean success
+    else:
+        ret = (1, _("Can't label a {0} partition").format(fstype))
     return ret
-
 
 @misc.raise_privileges
 def create_fs(part, fstype, label='', other_opts=''):
