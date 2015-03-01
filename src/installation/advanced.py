@@ -863,9 +863,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
-        if primary_count >= disk.maxPrimaryPartitionCount:
-            # No room left for another primary partition
-            primary_radio.set_sensitive(False)
+        if isbase and primary_count >= disk.maxPrimaryPartitionCount:
+            if extended:
+                show.warning(_("Sorry, you already have 4 primary+extended partitions"))
+            else:
+                show.warning(_("Sorry, you already have 4 primary partitions"))
+            return
 
         beginning_radio = self.ui.get_object('partition_create_place_beginning')
         end_radio = self.ui.get_object('partition_create_place_end')
@@ -1673,7 +1676,7 @@ class InstallationAdvanced(GtkBaseBox):
         """ Create staged partitions """
         # Sometimes a swap partition can still be active at this point
         subp = subprocess.Popen(['sh', '-c', 'swapoff -a'], stdout=subprocess.PIPE)
-        
+
         partitions = {}
         if self.disks is not None:
             for disk_path in self.disks:
