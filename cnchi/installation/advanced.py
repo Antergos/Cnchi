@@ -999,9 +999,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Get how many primary partitions are already created on disk
         primary_count = disk.primaryPartitionCount
-        if primary_count >= disk.maxPrimaryPartitionCount:
-            # No room left for another primary partition
-            radio["primary"].set_sensitive(False)
+        if isbase and primary_count >= disk.maxPrimaryPartitionCount:
+            if extended:
+                show.warning(self.get_toplevel(), _("Sorry, you already have 4 primary+extended partitions"))
+            else:
+                show.warning(self.get_toplevel(), _("Sorry, you already have 4 primary partitions"))
+            return
 
         radio["begin"] = self.ui.get_object('create_partition_create_place_beginning')
         radio["end"] = self.ui.get_object('create_partition_create_place_end')
