@@ -861,14 +861,17 @@ class InstallationAdvanced(GtkBaseBox):
             primary_radio.set_visible(False)
             extended_radio.set_visible(False)
 
-        # Get how many primary partitions are already created on disk
-        primary_count = disk.primaryPartitionCount
-        if isbase and primary_count >= disk.maxPrimaryPartitionCount:
-            if extended:
-                show.warning(_("Sorry, you already have 4 primary+extended partitions"))
-            else:
-                show.warning(_("Sorry, you already have 4 primary partitions"))
-            return
+        if isbase:
+            # Get how many primary partitions are already created on disk
+            primary_count = disk.primaryPartitionCount
+            if primary_count == disk.maxPrimaryPartitionCount:
+                msg = _("Sorry, you already have {0} primary partitions created.").format(primary_count)
+                show.warning(msg)
+                return
+            elif primary_count >= (disk.maxPrimaryPartitionCount - 1) and extended:
+                msg = _("Sorry, you already have {0} primary and 1 extended partitions created.").format(primary_count)
+                show.warning(msg)
+                return
 
         beginning_radio = self.ui.get_object('partition_create_place_beginning')
         end_radio = self.ui.get_object('partition_create_place_end')
