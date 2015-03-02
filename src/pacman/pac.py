@@ -126,14 +126,14 @@ class Pac(object):
         if len(targets) == 0:
             logging.error(_("No targets found"))
             return 1
-        
+
         t = self.init_transaction(options)
 
         if t is None:
             return 1
 
         pkg_names = []
-        
+
         for pkg in targets:
             # Avoid duplicates
             if pkg.name not in pkg_names:
@@ -176,7 +176,7 @@ class Pac(object):
                     # No, it wasn't neither a package nor a group. Show error message and continue.
                     logging.error(_("Can't find a package or group called '%s'"), name)
 
-        return targets      
+        return targets
 
     def find_sync_package(self, pkgname, syncdbs):
         """ Finds a package name in a list of DBs """
@@ -213,7 +213,7 @@ class Pac(object):
             f = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "%s: %s in %s:%i" % (event_text, f.co_name, f.co_filename, f.co_firstlineno)
-        
+
         if self.callback_queue is None:
             print(event_type, event_text)
             if event_type == "error":
@@ -247,7 +247,7 @@ class Pac(object):
         """ Stores total download size for use in cb_progress """
         self.total_download_size = total_size
 
-    def cb_event(self, ID, event, tupel):
+    def cb_event(self, ID, event):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
         action = ""
 
@@ -305,7 +305,7 @@ class Pac(object):
         else:
             msg = _("Checking and loading packages... (%d targets)") % n
             percent = percent / 100
-        
+
         self.queue_event('info', msg)
         self.queue_event('percent', percent)
 
@@ -355,7 +355,7 @@ if __name__ == "__main__":
         alpm = Pac("/etc/pacman.conf")
     except Exception as err:
         logging.error(err)
-        raise InstallError("Can't initialize pyalpm: %s" % err)        
+        raise InstallError("Can't initialize pyalpm: %s" % err)
 
     #alpm.do_refresh()
     pacman_options = {}
