@@ -949,12 +949,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         if parent_part_type == pm.PARTITION_EXTENDED:
             # We're creating a partition inside an already created extended
-            # partition. Our drive won't be our father but our grandpa
+            # partition (a logical one, though). Our drive won't be our father but our grandpa
             # (we have to skip the extended partition we're in)
             parent_iter = model.iter_parent(parent_iter)
-            isbase = False
+            is_primary_or_extended = False
         else:
-            isbase = True
+            is_primary_or_extended = True
 
         disk_path = model[parent_iter][COL_PATH]
         self.disks_changed.append(disk_path)
@@ -987,24 +987,27 @@ class InstallationAdvanced(GtkBaseBox):
 
         extended = disk.getExtendedPartition()
 
-        if isbase and extended:
+        if is_primary_or_extended and extended:
             radio["logical"].set_visible(False)
             radio["extended"].set_visible(False)
-        elif isbase and not extended:
+        elif is_primary_or_extended and not extended:
             radio["logical"].set_visible(False)
-        elif not isbase:
+        elif not is_primary_or_extended:
             radio["primary"].set_visible(False)
             radio["logical"].set_active(True)
             radio["extended"].set_visible(False)
 
-        # Get how many primary partitions are already created on disk
-        primary_count = disk.primaryPartitionCount
-        if isbase and primary_count >= disk.maxPrimaryPartitionCount:
-            if extended:
-                show.warning(self.get_toplevel(), _("Sorry, you already have 4 primary+extended partitions"))
-            else:
-                show.warning(self.get_toplevel(), _("Sorry, you already have 4 primary partitions"))
-            return
+        if is_primary_or_extended:
+            # Get how many primary partitions are already created on disk
+            primary_count = disk.primaryPartitionCount
+            if primary_count == disk.maxPrimaryPartitionCount:
+                msg = _("Sorry, you already have {0} primary partitions created.").format(primary_count)
+                show.warning(self.get_toplevel(), msg)
+                return
+            elif primary_count >= (disk.maxPrimaryPartitionCount - 1) and extended:
+                msg = _("Sorry, you already have {0} primary and 1 extended partitions created.").format(primary_count)
+                show.warning(self.get_toplevel(), msg)
+                return
 
         radio["begin"] = self.ui.get_object('create_partition_create_place_beginning')
         radio["end"] = self.ui.get_object('create_partition_create_place_end')
