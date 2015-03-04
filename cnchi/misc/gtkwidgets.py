@@ -442,12 +442,10 @@ class StateBox(StylizedFrame):
     def get_state(self):
         return self.status
 
-    @staticmethod
-    def show():
+    def show(self):
         super().show()
 
-    @staticmethod
-    def hide():
+    def hide(self):
         super().hide()
 
 GObject.type_register(StateBox)
