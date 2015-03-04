@@ -3,7 +3,7 @@
 #
 #  info.py
 #
-#  Copyright 2014 Antergos
+#  Copyright 2014, 2015 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,5 +22,5 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.6.48"
+CNCHI_VERSION = "0.6.49"
 CNCHI_WEBSITE = "http://www.antergos.com"
