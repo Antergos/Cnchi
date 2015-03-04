@@ -224,7 +224,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_icon_from_file(icon_path)
 
         # Set the first page to show
-        self.current_page = self.pages["welcome"]
+        # If minimal iso is detected, skip the welcome page.
+        minimal = os.path.exists('/home/antergos/.config/openbox')
+        if minimal:
+            self.current_page = self.pages["language"]
+            self.settings.set('timezone_start', True)
+        else:
+            self.current_page = self.pages["welcome"]
 
         self.main_box.add(self.current_page)
 
@@ -257,8 +263,10 @@ class MainWindow(Gtk.ApplicationWindow):
         #self.get_window().set_decorations(Gdk.WMDecoration.BORDER)
 
         # Hide progress bar as it's value is zero
-        self.progressbar.set_fraction(0)
-        self.progressbar.hide()
+        # Don't hide it for minimal iso as it would break the widget alignment on language page.
+        if not minimal:
+            self.progressbar.set_fraction(0)
+            self.progressbar.hide()
         self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
         with open(tmp_running, "w") as tmp_file:
