@@ -210,9 +210,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Set the first page to show
 
-        self.get_current_page = self.pages["welcome"]
+        # If minimal iso is detected, skip the welcome page.
+        minimal = os.path.exists('/home/antergos/.config/openbox')
+        if minimal:
+            self.current_page = self.pages["language"]
+            self.settings.set('timezone_start', True)
+        else:
+            self.current_page = self.pages["welcome"]
 
-        self.main_box.add(self.get_current_page)
+        self.main_box.add(self.current_page)
 
         # Header style testing
 
@@ -233,15 +239,18 @@ class MainWindow(Gtk.ApplicationWindow):
         # Show main window
         self.show_all()
 
-        self.get_current_page.prepare('forwards')
+        self.current_page.prepare('forwards')
 
         # Hide backwards button
         self.backwards_button.hide()
 
-        # Hide progress bar
         self.progressbar.set_fraction(0)
-        self.progressbar.hide()
         self.progressbar_step = 0
+
+        # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.        
+        if not minimal:
+            # Hide progress bar
+            self.progressbar.hide()
 
         with open(tmp_running, "w") as tmp_file:
             tmp_file.write("Cnchi {0}\n".format(1234))
@@ -270,14 +279,17 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["slides"] = slides.Slides(self.params)
         misc.set_cursor(Gdk.CursorType.ARROW)
 
-        if (len(self.pages) - 2) > 0:
-            self.progressbar_step = 1.0 / (len(self.pages) - 2)
+        diff = 2
+        if minimal:
+            diff = 3
+        if (len(self.pages) - diff) > 0:
+            self.progressbar_step = 1.0 / (len(self.pages) - diff)
 
     def del_pages(self):
         """ When we get to user_info page we can't go back
         therefore we can delete all previous pages for good """
         # FIXME: As there are more references, this does nothing
-        if self.get_current_page == self.pages["user_info"]:
+        if self.current_page == self.pages["user_info"]:
             del self.pages["welcome"]
             del self.pages["language"]
             del self.pages["location"]
@@ -355,7 +367,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
-        next_page = self.get_current_page.get_next_page()
+        next_page = self.current_page.get_next_page()
 
         if next_page is not None:
             self.logo.hide()
@@ -364,49 +376,49 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.load_pages()
                 self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
-            stored = self.get_current_page.store_values()
+            stored = self.current_page.store_values()
 
             if stored:
                 self.set_progressbar_step(self.progressbar_step)
-                self.main_box.remove(self.get_current_page)
+                self.main_box.remove(self.current_page)
 
-                self.get_current_page = self.pages[next_page]
+                self.current_page = self.pages[next_page]
 
-                if self.get_current_page is not None:
+                if self.current_page is not None:
                     if next_page == "user_info":
                         self.del_pages()
-                    self.get_current_page.prepare('forwards')
-                    self.main_box.add(self.get_current_page)
-                    if self.get_current_page.get_prev_page() is not None:
+                    self.current_page.prepare('forwards')
+                    self.main_box.add(self.current_page)
+                    if self.current_page.get_prev_page() is not None:
                         # There is a previous page, show back button
                         self.backwards_button.show()
                         self.backwards_button.set_sensitive(True)
                     else:
                         # We can't go back, hide back button
                         self.backwards_button.hide()
-                        if self.get_current_page == "slides":
+                        if self.current_page == "slides":
                             # Show logo in slides screen
                             self.logo.show_all()
 
     def on_backwards_button_clicked(self, widget, data=None):
         """ Show previous screen """
-        prev_page = self.get_current_page.get_prev_page()
+        prev_page = self.current_page.get_prev_page()
 
         if prev_page is not None:
             self.set_progressbar_step(-self.progressbar_step)
 
             # If we go backwards, don't store user changes
-            # self.get_current_page.store_values()
+            # self.current_page.store_values()
 
-            self.main_box.remove(self.get_current_page)
+            self.main_box.remove(self.current_page)
 
-            self.get_current_page = self.pages[prev_page]
+            self.current_page = self.pages[prev_page]
 
-            if self.get_current_page is not None:
-                self.get_current_page.prepare('backwards')
-                self.main_box.add(self.get_current_page)
+            if self.current_page is not None:
+                self.current_page.prepare('backwards')
+                self.main_box.add(self.current_page)
 
-                if self.get_current_page.get_prev_page() is None:
+                if self.current_page.get_prev_page() is None:
                     # We're at the first page
                     self.backwards_button.hide()
                     self.progressbar.hide()
