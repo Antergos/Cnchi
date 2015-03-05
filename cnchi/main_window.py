@@ -211,8 +211,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Set the first page to show
 
         # If minimal iso is detected, skip the welcome page.
-        minimal = os.path.exists('/home/antergos/.config/openbox')
-        if minimal:
+        if os.path.exists('/home/antergos/.config/openbox'):
             self.current_page = self.pages["language"]
             self.settings.set('timezone_start', True)
         else:
@@ -248,7 +247,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar_step = 0
 
         # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.        
-        if not minimal:
+        if not os.path.exists('/home/antergos/.config/openbox'):
             # Hide progress bar
             self.progressbar.hide()
 
@@ -280,10 +279,14 @@ class MainWindow(Gtk.ApplicationWindow):
         misc.set_cursor(Gdk.CursorType.ARROW)
 
         diff = 2
-        if minimal:
+        if os.path.exists('/home/antergos/.config/openbox'):
+            # In minimal (openbox) we don't have a welcome screen
             diff = 3
-        if (len(self.pages) - diff) > 0:
-            self.progressbar_step = 1.0 / (len(self.pages) - diff)
+        
+        num_pages = len(self.pages) - diff
+        
+        if num_pages > 0:
+            self.progressbar_step = 1.0 / num_pages
 
     def del_pages(self):
         """ When we get to user_info page we can't go back
