@@ -63,7 +63,7 @@ class Slides(GtkBaseBox):
         self.fatal_error = False
         self.should_pulse = False
 
-        self.webview = None
+        self.web_view = None
 
         self.scrolled_window = self.ui.get_object("scrolledwindow")
 
@@ -76,15 +76,15 @@ class Slides(GtkBaseBox):
 
     def prepare(self, direction):
         # We don't load webkit until we reach this screen
-        if self.webview is None:
+        if self.web_view is None:
             # Add a webkit view and load our html file to show the slides
             try:
-                self.webview = WebKit.WebView()
-                self.webview.load_uri(SLIDES_URI)
+                self.web_view = WebKit.WebView()
+                self.web_view.load_uri(SLIDES_URI)
             except IOError as io_error:
                 logging.warning(io_error)
 
-            self.scrolled_window.add(self.webview)
+            self.scrolled_window.add(self.web_view)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
             self.scrolled_window.set_size_request(800, 334)
 
