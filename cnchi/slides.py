@@ -98,15 +98,11 @@ class Slides(GtkBaseBox):
         self.downloads_progress_bar.hide()
 
         # Hide backwards and forwards buttons
-        # self.backwards_button.hide()
-        # self.forward_button.hide()
-
-        # Disable backwards and forwards buttons
-        self.backwards_button.set_sensitive(False)
-        self.forward_button.set_sensitive(False)
+        self.backwards_button.hide()
+        self.forward_button.hide()
 
         # Hide close button (we've reached the point of no return)
-        # self.header.set_show_close_button(False)
+        self.header.set_show_close_button(False)
 
         GLib.timeout_add(400, self.manage_events_from_cb_queue)
 
