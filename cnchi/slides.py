@@ -140,7 +140,6 @@ class Slides(GtkBaseBox):
             self.should_pulse = True
             GLib.timeout_add(100, pbar_pulse)
 
-    @property
     def manage_events_from_cb_queue(self):
         """ We should do as less as possible here, we want to maintain our
             queue message as empty as possible """

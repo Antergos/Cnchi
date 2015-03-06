@@ -155,7 +155,7 @@ class UserInfo(GtkBaseBox):
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
 
-        # TODO: Fix home encryption and stop hidding its widget
+        # TODO: Fix home encryption and stop hiding its widget
         if not self.settings.get('z_hidden'):
             self.login['encrypt'].hide()
 
