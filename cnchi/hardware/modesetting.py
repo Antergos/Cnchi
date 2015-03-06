@@ -40,7 +40,9 @@ class ModeSetting(Hardware):
         Hardware.__init__(self)
 
     def get_packages(self):
-        return ["xf86-video-modesetting"]
+        # following ustream, xf86-video-modesetting is now provided with xorg-server package.
+        # return ["xf86-video-modesetting"]
+        return []
 
     def post_install(self, dest_dir):
         pass

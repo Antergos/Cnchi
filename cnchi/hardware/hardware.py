@@ -32,6 +32,7 @@ DEVICES = []
 
 CLASS_NAME = ""
 
+_HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
@@ -90,7 +91,7 @@ class HardwareInstall(object):
         # All objects that are really used
         self.objects_used = []
 
-        dirs = os.listdir('/usr/share/cnchi/src/hardware')
+        dirs = os.listdir(_HARDWARE_PATH)
 
         # We scan the folder for py files.
         # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
