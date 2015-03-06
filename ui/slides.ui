@@ -6,19 +6,24 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <property name="spacing">10</property>
+        <property name="halign">center</property>
+        <property name="hexpand">True</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="shadow_type">in</property>
         <property name="hexpand">False</property>
+        <property name="halign">center</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <child>
           <placeholder/>
         </child>
       </object>
       <packing>
         <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
     </child>

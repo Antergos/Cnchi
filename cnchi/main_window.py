@@ -219,21 +219,21 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.main_box.add(self.current_page)
 
-        # Header style testing
+        # Use our css file (not in minimal, looks better without)
+        if not os.path.exists('/home/antergos/.config/openbox'):
+            style_provider = Gtk.CssProvider()
 
-        style_provider = Gtk.CssProvider()
+            style_css = os.path.join(data_dir, "css", "gtk-style.css")
 
-        style_css = os.path.join(data_dir, "css", "gtk-style.css")
+            with open(style_css, 'rb') as css:
+                css_data = css.read()
 
-        with open(style_css, 'rb') as css:
-            css_data = css.read()
+            style_provider.load_from_data(css_data)
 
-        style_provider.load_from_data(css_data)
-
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(), style_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
 
         # Show main window
         self.show_all()
