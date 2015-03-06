@@ -246,7 +246,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.        
+        # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.
         if not os.path.exists('/home/antergos/.config/openbox'):
             # Hide progress bar
             self.progressbar.hide()
@@ -282,9 +282,9 @@ class MainWindow(Gtk.ApplicationWindow):
         if os.path.exists('/home/antergos/.config/openbox'):
             # In minimal (openbox) we don't have a welcome screen
             diff = 3
-        
+
         num_pages = len(self.pages) - diff
-        
+
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
 
@@ -334,14 +334,13 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.destroy()
 
     def confirm_quitting(self):
-        txt = _("Do you really want to quit the installer?")
         message = Gtk.MessageDialog(
             transient_for=self,
             modal=True,
             destroy_with_parent=True,
             message_type=Gtk.MessageType.QUESTION,
             buttons=Gtk.ButtonsType.YES_NO,
-            text=txt)
+            text=_("Do you really want to quit the installer?"))
         response = message.run()
         message.destroy()
         return response
