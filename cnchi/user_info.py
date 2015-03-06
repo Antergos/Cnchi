@@ -188,6 +188,8 @@ class UserInfo(GtkBaseBox):
         # Let installer_process know that all info has been entered
         self.settings.set('user_info_done', True)
 
+        return True
+
     def prepare(self, direction):
         """ Prepare screen """
         self.translate_ui()
