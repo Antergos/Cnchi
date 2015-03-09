@@ -463,7 +463,9 @@ postinstall()
 
     # Set Antergos name in filesystem files
     cp /etc/arch-release ${DESTDIR}/etc
-    cp -f /etc/os-release ${DESTDIR}/usr/lib/os-release
+    cp /etc/os-release ${DESTDIR}/etc
+    cp /etc/lsb-release ${DESTDIR}/etc
+    sed -i 's|Arch|Antergos|g' ${DESTDIR}/etc/issue
 
     # Set BROWSER var
     echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/environment
