@@ -34,14 +34,15 @@ import parted3.fs_module as fs
 
 from installation import chroot
 
+import random
+import string
+
 # When testing, no _() is available
 try:
     _("")
 except NameError as err:
     def _(message):
         return message
-
-# TODO: root uuid is in ruuid var, but also in other config vars ¿? Code of obtaining it is duplicated, too
 
 
 class Bootloader(object):
@@ -50,6 +51,12 @@ class Bootloader(object):
         self.settings = settings
         self.mount_devices = mount_devices
         self.method = settings.get("partition_mode")
+        self.root_device = self.mount_devices["/"]
+        self.root_uuid = fs.get_info(self.root_device)['UUID']
+        self.swap_partition = self.mount_devices["swap"]
+        self.swap_uuid = fs.get_info(self.swap_partition)['UUID']
+        self.boot_device = self.mount_devices["/boot"]
+        self.boot_uuid = fs.get_info(self.boot_device)['UUID']
 
     def install(self):
         """ Installs the bootloader """
@@ -77,11 +84,10 @@ class Bootloader(object):
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        ruuid = self.settings.get('ruuid')
-        if len(ruuid) == 0:
+        if len(self.root_uuid) == 0:
             logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
             return
-        ruuid_str = 'root=UUID=' + ruuid
+        ruuid_str = 'root=UUID=' + self.root_uuid
         boot_command = self.settings.get('grub_default_line')
         boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
@@ -111,9 +117,7 @@ class Bootloader(object):
             use_splash = ''
 
         if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            swap_uuid = fs.get_info(swap_partition)['UUID']
-            kernel_cmd = 'resume=UUID={0} quiet {1}'.format(swap_uuid, use_splash)
+            kernel_cmd = 'resume=UUID={0} quiet {1}'.format(self.swap_uuid, use_splash)
         else:
             kernel_cmd = 'quiet {0}'.format(use_splash)
 
@@ -127,30 +131,28 @@ class Bootloader(object):
 
         # FIXME: Duplicated code! This code is in install_gummiboot, too.
         if self.settings.get('use_luks'):
-            boot_device = self.mount_devices["/boot"]
-            boot_uuid = fs.get_info(boot_device)['UUID']
-
             # Let GRUB automatically add the kernel parameters for root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
             logging.debug("Luks Root Volume: %s", luks_root_volume)
 
-            # In automatic mode, root_device is in self.mount_devices, as it should be
-            root_device = self.mount_devices["/"]
+            root_device = self.root_device
 
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
                 # Special case, in advanced when using luks in root device, we store it in luks_root_device
                 root_device = self.settings.get('luks_root_device')
 
+            root_uuid = fs.get_info(root_device)['UUID']
+
             logging.debug("Root device: %s", root_device)
 
-            root_uuid = fs.get_info(root_device)['UUID']
 
             default_line = 'cryptdevice=/dev/disk/by-uuid/{0}:{1}'.format(root_uuid, luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
-                default_line = default_line + ' cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root'.format(boot_uuid)
+                default_line = \
+                    '{0} cryptkey=/dev/disk/by-uuid/{1}:ext2:/.keyfile-root'.format(default_line, self.boot_uuid)
 
             # Store grub default line, we'll use it later in check_root_uuid_in_grub()
             self.settings.set('grub_default_line', default_line)
@@ -231,7 +233,7 @@ class Bootloader(object):
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
-            chroot.run(cmd, self.dest_dir, 45)
+            chroot.run(cmd, self.dest_dir, 300)
         except subprocess.TimeoutExpired:
             msg = _("grub-mkconfig does not respond. Killing grub-mount and os-prober so we can continue.")
             logging.error(msg)
@@ -249,11 +251,18 @@ class Bootloader(object):
                 logging.warning(txt)
                 self.settings.set('bootloader_installation_successful', False)
 
+    @staticmethod
+    def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
+        """ Generates a random string to be used as an identifier for the UEFI bootloader_id """
+        return ''.join(random.choice(chars) for x in range(size))
+
     def install_grub2_efi(self):
         """ Install Grub2 bootloader in a UEFI system """
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
+        bootloader_id = 'antergos_grub' if not os.path.exists('/install/boot/EFI/antergos_grub') else \
+            'antergos_grub_{0}'.format(self.random_generator())
 
         txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
         logging.info(txt)
@@ -262,12 +271,12 @@ class Bootloader(object):
             'grub-install',
             '--target={0}-efi'.format(uefi_arch),
             '--efi-directory=/install/boot',
-            '--bootloader-id=antergos_grub',
+            '--bootloader-id={0}'.format(bootloader_id),
             '--boot-directory=/install/boot',
             '--recheck']
 
         try:
-            subprocess.check_call(grub_install, shell=True, timeout=45)
+            subprocess.check_call(grub_install, shell=True, timeout=120)
         except subprocess.CalledProcessError as process_error:
             logging.error('Command grub-install failed. Error output: %s', process_error.output)
         except subprocess.TimeoutExpired:
@@ -327,7 +336,7 @@ class Bootloader(object):
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
-            chroot.run(cmd, self.dest_dir, 45)
+            chroot.run(cmd, self.dest_dir, 300)
         except subprocess.TimeoutExpired:
             txt = _("grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can continue.")
             logging.error(txt)
@@ -335,13 +344,16 @@ class Bootloader(object):
             subprocess.check_call(['killall', 'os-prober'])
 
         paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
-                 os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))]
+                 os.path.join(self.dest_dir, "boot/EFI/{0}".format(bootloader_id),
+                              "grub{0}.efi".format(spec_uefi_arch))]
 
         exists = False
 
         for path in paths:
             if os.path.exists(path):
                 exists = True
+            else:
+                exists = False
 
         if exists:
             txt = _("GRUB(2) UEFI install completed successfully")
@@ -406,36 +418,31 @@ class Bootloader(object):
         # Setup boot entries
 
         if not self.settings.get('use_luks'):
-            root_device = self.mount_devices["/"]
-            root_uuid = fs.get_info(root_device)['UUID']
-
             conf = []
             conf.append("title\tAntergos\n")
             conf.append("linux\t/vmlinuz-linux\n")
             conf.append("initrd\t/initramfs-linux.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(root_uuid))
+            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
             conf.append("title\tAntergos (fallback)\n")
             conf.append("linux\t/vmlinuz-linux\n")
             conf.append("initrd\t/initramfs-linux-fallback.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(root_uuid))
+            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
 
             if self.settings.get('feature_lts'):
                 conf.append("title\tAntergos LTS\n")
                 conf.append("linux\t/vmlinuz-linux-lts\n")
                 conf.append("initrd\t/initramfs-linux-lts.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(root_uuid))
+                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
                 conf.append("title\tAntergos LTS (fallback)\n\n")
                 conf.append("linux\t/vmlinuz-linux-lts\n")
                 conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(root_uuid))
+                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
         else:
             # FIXME: Duplicated code!!! This exists also in modify_grub_default
-            boot_device = self.mount_devices["/boot"]
-            boot_uuid = fs.get_info(boot_device)['UUID']
             luks_root_volume = self.settings.get('luks_root_volume')
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
-            root_device = self.mount_devices["/"]
+            root_device = self.root_device
 
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
                 root_device = self.settings.get('luks_root_device')
@@ -444,7 +451,7 @@ class Bootloader(object):
 
             key = ""
             if self.settings.get("luks_root_password") == "":
-                key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(boot_uuid)
+                key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
             root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw"
             root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, root_uuid)
