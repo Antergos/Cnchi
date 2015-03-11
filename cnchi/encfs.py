@@ -52,7 +52,7 @@ def setup(username, dest_dir):
     lines[i] = "# " + lines[i]
 
     with open(name, "w") as pam_encfs:
-        pam_encfs.write(lines)
+        pam_encfs.writelines(lines)
         pam_encfs.write("\n# Added by Cnchi - Antergos Installer\n")
         # line in pam_encfs.conf is
         # USERNAME SOURCE TARGET_PATH ENCFS_Options FUSE_Options
