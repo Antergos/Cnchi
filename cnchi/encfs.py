@@ -34,7 +34,7 @@ import misc.misc as misc
 
 
 @misc.raise_privileges
-def setup(username, dest_dir):
+def setup(username, dest_dir, password):
     """ Encrypt user's home folder """
     # encfs pam_mount packages are needed
     # pam_encfs from AUR
@@ -103,7 +103,11 @@ def setup(username, dest_dir):
     shutil.chown(mounted_dir, username, "users")
 
     # Create encrypted directory
-    subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir])
+    extpass = "--extpass='/bin/echo \"{0}\"'".format(password)
+    try:
+        subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir, extpass])
+    except subprocess.CalledProcessError as process_error:
+        logging.error(process_error)
 
     # Restore user home files
     src = os.path.join(backup_dir, "*")
@@ -116,4 +120,4 @@ def setup(username, dest_dir):
 
 
 if __name__ == '__main__':
-    setup("karasu", "/")
+    setup("karasu", "/", "1234")
