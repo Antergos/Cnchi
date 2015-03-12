@@ -106,29 +106,32 @@ def setup(username, dest_dir, password):
         return False
 
     # Move user home dir out of the way
-    mounted_dir = os.path.join(dest_dir, "home/", username)
+    mount_dir = os.path.join(dest_dir, "home/", username)
     backup_dir = os.path.join(dest_dir, "var/tmp/", username)
-    shutil.move(mounted_dir, backup_dir)
+    shutil.move(mount_dir, backup_dir)
 
     # Create necessary dirs, encrypted and mounted(unencrypted)
     encrypted_dir = os.path.join(dest_dir, "home/.encfs/", username)
     os.makedirs(encrypted_dir)
-    os.makedirs(mounted_dir)
+    os.makedirs(mount_dir)
 
     # Set owner
     shutil.chown(encrypted_dir, username, "users")
-    shutil.chown(mounted_dir, username, "users")
+    shutil.chown(mount_dir, username, "users")
 
     # Create encrypted directory
     try:
+        #dd if=/dev/urandom of=~/.sync.key bs=256 count=1
+
+        # TODO: FIX THIS. IT DOES NOT PASS --extpass CORRECTLY
         external_password = "--extpass='/bin/echo \"{0}\"'".format(password)
-        subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir, external_password])
+        subprocess.check_call(['encfs', '-v', encrypted_dir, mount_dir, external_password])
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 
     # Restore user home files
     src = os.path.join(backup_dir, "*")
-    shutil.move(src, mounted_dir)
+    shutil.move(src, mount_dir)
     src = os.path.join(backup_dir, ".[A-Za-z0-9]*")
     shutil.move(src, mounted_dir)
 
