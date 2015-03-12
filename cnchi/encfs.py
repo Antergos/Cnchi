@@ -27,73 +27,90 @@
 import os
 import shutil
 import subprocess
-
+import logging
 import misc.misc as misc
 
 # TODO: This is unfinished and untested
 
 
 @misc.raise_privileges
-def setup(username, dest_dir, password):
-    """ Encrypt user's home folder """
-    # encfs pam_mount packages are needed
-    # pam_encfs from AUR
-    # https://wiki.debian.org/TransparentEncryptionForHomeFolder
+def backup_conf_files(dest_dir):
+    conf_files = [
+        "etc/security/pam_encfs.conf",
+        "etc/security/pam_env.conf",
+        "etc/fuse.conf",
+        "etc/pam.d/system-login",
+        "etc/pam.d/system-auth"]
+    for conf_file in conf_files:
+        path = os.path.join(dest_dir, conf_file)
+        if os.path.exists(path):
+            shutil.copy(path, path + ".cnchi")
+    os.system("sync")
 
-    # Edit configuration files
-    name = os.path.join(dest_dir, "etc/security/pam_encfs.conf")
-    shutil.copy(name, name + ".cnchi")
 
-    with open(name, "r") as pam_encfs:
-        lines = pam_encfs.readlines()
-
-    # Comment last line (it's only an example, shouldn't be left uncommented imho)
-    i = len(lines) - 1
-    lines[i] = "# " + lines[i]
-
-    with open(name, "w") as pam_encfs:
-        pam_encfs.writelines(lines)
-        pam_encfs.write("\n# Added by Cnchi - Antergos Installer\n")
-        # line in pam_encfs.conf is
+@misc.raise_privileges
+def setup_conf_files(dest_dir):
+    path = os.path.join(dest_dir, "etc/security/pam_encfs.conf")
+    with open(path, 'w') as pam_encfs:
+        pam_encfs.write("# File created by Cnchi (Antergos Installer)\n\n")
+        pam_encfs.write("# If this is specified program will attempt to drop permissions before running encfs.\n")
+        pam_encfs.write("drop_permissions\n\n")
+        pam_encfs.write("# This specifies which options to pass to encfs for every user.\n")
+        pam_encfs.write("# You can find encfs options by running encfs without any arguments\n")
+        pam_encfs.write("encfs_default --idle=1\n\n")
+        pam_encfs.write("# Same for fuse\n")
+        pam_encfs.write("# you can find fuse options with encfs -H\n")
+        pam_encfs.write("fuse_default allow_root,nonempty\n\n")
+        pam_encfs.write("# Added by Cnchi - Antergos Installer\n")
         # USERNAME SOURCE TARGET_PATH ENCFS_Options FUSE_Options
         pam_encfs.write("-\t/home/.encfs\t-\t-v\t-\n")
 
-    name = os.path.join(dest_dir, "etc/security/pam_env.conf")
-    # backup file
-    shutil.copy(name, name + ".cnchi")
-    with open(name, "a") as pam_env:
-        pam_env.write("# Added by Cnchi - Antergos Installer\n")
+    path = os.path.join(dest_dir, "etc/security/pam_env.conf")
+    with open(path, 'a') as pam_env:
+        pam_env.write("\n# Added by Cnchi - Antergos Installer\n")
         pam_env.write("# Set the ICEAUTHORITY file location to allow GNOME to start on encfs $HOME\n")
         pam_env.write("ICEAUTHORITY DEFAULT=/tmp/.ICEauthority_@{PAM_USER}\n")
 
-    name = os.path.join(dest_dir, "etc/fuse.conf")
-    shutil.copy(name, name + ".cnchi")
-    with open(name, "a") as fuse_conf:
-        fuse_conf.write("# Added by Cnchi - Antergos Installer\n")
+    path = os.path.join(dest_dir, "etc/fuse.conf")
+    with open(path, 'a') as fuse_conf:
+        fuse_conf.write("\n# Added by Cnchi - Antergos Installer\n")
         fuse_conf.write("user_allow_other\n")
 
-    name = os.path.join(dest_dir, "etc/pam.d/system-login")
-    shutil.copy(name, name + ".cnchi")
-    with open(name, "a") as system_login:
-        system_login.write("# Added by Cnchi - Antergos Installer\n")
+    path = os.path.join(dest_dir, "etc/pam.d/system-login")
+    with open(path, 'a') as system_login:
+        system_login.write("\n# Added by Cnchi - Antergos Installer\n")
         system_login.write("session required\tpam_encfs.so\n")
         system_login.write("session optional\tpam_mount.so\n")
 
-    name = os.path.join(dest_dir, "etc/pam.d/system-auth")
-    shutil.copy(name, name + ".cnchi")
-    with open(name, "a") as system_auth:
-        system_auth.write("# Added by Cnchi - Antergos Installer\n")
+    path = os.path.join(dest_dir, "etc/pam.d/system-auth")
+    with open(path, "a") as system_auth:
+        system_auth.write("\n# Added by Cnchi - Antergos Installer\n")
         system_auth.write("auth sufficient\tpam_encfs.so\n")
         system_auth.write("auth optional\tpam_mount.so\n")
 
-    # Setup finished
+
+@misc.raise_privileges
+def setup(username, dest_dir, password):
+    """ Encrypt user's home folder """
+    # encfs and pam_mount packages are needed
+    # and pam_encfs from AUR, too.
+    # Reference: https://wiki.debian.org/TransparentEncryptionForHomeFolder
+
+    try:
+        backup_conf_files(dest_dir)
+        setup_conf_files(dest_dir)
+    except Exception as general_error:
+        logging.error(_("Can't create and modify encfs configuration files."))
+        logging.error(general_error)
+        logging.error(_("Home directory won't be encrypted."))
+        return False
 
     # Move user home dir out of the way
     mounted_dir = os.path.join(dest_dir, "home/", username)
     backup_dir = os.path.join(dest_dir, "var/tmp/", username)
     shutil.move(mounted_dir, backup_dir)
 
-    # Create necessary dirs, encrypted and mounted(unecrypted)
+    # Create necessary dirs, encrypted and mounted(unencrypted)
     encrypted_dir = os.path.join(dest_dir, "home/.encfs/", username)
     os.makedirs(encrypted_dir)
     os.makedirs(mounted_dir)
@@ -103,9 +120,9 @@ def setup(username, dest_dir, password):
     shutil.chown(mounted_dir, username, "users")
 
     # Create encrypted directory
-    extpass = "--extpass='/bin/echo \"{0}\"'".format(password)
     try:
-        subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir, extpass])
+        external_password = "--extpass='/bin/echo \"{0}\"'".format(password)
+        subprocess.check_call(['encfs', '-v', encrypted_dir, mounted_dir, external_password])
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 
