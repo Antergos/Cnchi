@@ -1,3 +1,4 @@
+[2015-03-13 05:54:56 -0500]  really just testing commit hook                                        Dustin Falgout  {61e6b89}
 [2015-03-13 05:51:33 -0500]  fixed pre-commit hook. don't forget to copy it into your local .git..  Dustin Falgout  {50d7fde}
 [2015-03-13 05:38:38 -0500]  fixing pre-commit hook. first-clean up changes file                    Dustin Falgout  {d0fd4ce}
 [2015-03-13 05:38:38 -0500]  fixing pre-commit hook. first-clean up changes file                    Dustin Falgout  {d0fd4ce}
