@@ -121,20 +121,20 @@ def setup(username, dest_dir, password):
 
     # Create encrypted directory
     try:
-        #dd if=/dev/urandom of=~/.sync.key bs=256 count=1
-
         p1 = subprocess.Popen(["/bin/echo", "-e", '"p\n%s\n"'.format(password)],
             stdout=subprocess.PIPE)
         p2 = subprocess.Popen(['encfs', '-S', encrypted_dir, mount_dir, "--public"],
             stdin=p1.stdout, stdout=subprocess.PIPE)
+        p2.communicate()
+        if p2.poll() != 0:
+            logging.error(_("Can't run encfs. Bad password?"))
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 
     # Restore user home files
-    src = os.path.join(backup_dir, "*")
-    shutil.move(src, mount_dir)
-    src = os.path.join(backup_dir, ".[A-Za-z0-9]*")
-    shutil.move(src, mount_dir)
+    for name in os.listdir(backup_dir):
+        shutil.move(os.path.join(backup_dir, name),
+            os.path.join(mount_dir, name))
 
     # Delete home backup
     os.rmdir(backup_dir)
