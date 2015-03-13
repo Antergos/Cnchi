@@ -1,7 +1,10 @@
+[2015-03-13 06:23:40 -0500]  really last time                                                       Dustin Falgout  {a3390e3}
+[2015-03-13 06:22:11 -0500]  last time                                                              Dustin Falgout  {c6eb01c}
+[2015-03-13 06:17:10 -0500]  last time                                                              Dustin Falgout  {8521d2f}
+[2015-03-13 06:15:30 -0500]  I think i got it this time.                                            Dustin Falgout  {a15e312}
 [2015-03-13 06:05:19 -0500]  still testing commit hook                                              Dustin Falgout  {a75622d}
 [2015-03-13 05:54:56 -0500]  really just testing commit hook                                        Dustin Falgout  {61e6b89}
 [2015-03-13 05:51:33 -0500]  fixed pre-commit hook. don't forget to copy it into your local .git..  Dustin Falgout  {50d7fde}
-[2015-03-13 05:38:38 -0500]  fixing pre-commit hook. first-clean up changes file                    Dustin Falgout  {d0fd4ce}
 [2015-03-13 05:38:38 -0500]  fixing pre-commit hook. first-clean up changes file                    Dustin Falgout  {d0fd4ce}
 [2015-03-12 18:23:27 +0100]  EncFS is not ready xD                                                      karasu      {ebe1600}
 [2015-03-12 15:48:27 +0100]  Give encfs a bit more of love                                              karasu      {70f58a7}
