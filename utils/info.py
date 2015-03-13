@@ -1,1 +1,1 @@
-../src/info.py
+../cnchi/info.py
