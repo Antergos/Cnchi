@@ -21,6 +21,7 @@ else
     INFO_PY="False"
 fi
 
+
 if [[ ${INFO_PY} != "False" ]]; then
     BASE_STRING=$(python ${INFO_PY})
     BASE_LIST=($(echo $BASE_STRING | tr '.' ' '))
