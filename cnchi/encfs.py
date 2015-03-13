@@ -123,9 +123,10 @@ def setup(username, dest_dir, password):
     try:
         #dd if=/dev/urandom of=~/.sync.key bs=256 count=1
 
-        # TODO: FIX THIS. IT DOES NOT PASS --extpass CORRECTLY
-        external_password = "--extpass='/bin/echo \"{0}\"'".format(password)
-        subprocess.check_call(['encfs', '-v', encrypted_dir, mount_dir, external_password])
+        p1 = subprocess.Popen(["/bin/echo", "-e", '"p\n%s\n"'.format(password)],
+            stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(['encfs', '-S', encrypted_dir, mount_dir, "--public"],
+            stdin=p1.stdout, stdout=PIPE)
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 
@@ -133,11 +134,11 @@ def setup(username, dest_dir, password):
     src = os.path.join(backup_dir, "*")
     shutil.move(src, mount_dir)
     src = os.path.join(backup_dir, ".[A-Za-z0-9]*")
-    shutil.move(src, mounted_dir)
+    shutil.move(src, mount_dir)
 
     # Delete home backup
     os.rmdir(backup_dir)
 
 
 if __name__ == '__main__':
-    setup("karasu", "/", "1234")
+    setup("test", "/", "1234")

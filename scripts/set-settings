@@ -6,7 +6,7 @@ DESKTOP=$1
 if [[ ${DESKTOP} == 'gnome' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
+	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','es+cat')]"
 
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
@@ -30,7 +30,7 @@ fi
 if [[ ${DESKTOP} == 'cinnamon' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
+	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','es+cat')]"
 
 	# Set gtk theme
 	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme "Numix Frost Light"
