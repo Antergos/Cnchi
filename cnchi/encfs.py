@@ -126,7 +126,7 @@ def setup(username, dest_dir, password):
         p1 = subprocess.Popen(["/bin/echo", "-e", '"p\n%s\n"'.format(password)],
             stdout=subprocess.PIPE)
         p2 = subprocess.Popen(['encfs', '-S', encrypted_dir, mount_dir, "--public"],
-            stdin=p1.stdout, stdout=PIPE)
+            stdin=p1.stdout, stdout=subprocess.PIPE)
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 
