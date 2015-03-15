@@ -1,3 +1,4 @@
+[2015-03-13 23:30:01 +0100]  Encfs is working! But the pam setup is not... :(                           karasu      {7601cdd}
 [2015-03-13 23:00:51 +0100]  typo in encfs fixed                                                        karasu      {c2e4b95}
 [2015-03-13 22:58:43 +0100]  More encfs tests                                                           karasu      {44124ea}
 [2015-03-13 06:33:03 -0500]  Okay pre-commit hook should be okay now.                               Dustin Falgout  {00838e9}

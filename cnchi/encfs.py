@@ -3,7 +3,7 @@
 #
 # encfs.py
 #
-#  Copyright © 2013,2014 Antergos
+# Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -122,9 +122,9 @@ def setup(username, dest_dir, password):
     # Create encrypted directory
     try:
         p1 = subprocess.Popen(["/bin/echo", "-e", '"p\n%s\n"'.format(password)],
-            stdout=subprocess.PIPE)
+                              stdout=subprocess.PIPE)
         p2 = subprocess.Popen(['encfs', '-S', encrypted_dir, mount_dir, "--public"],
-            stdin=p1.stdout, stdout=subprocess.PIPE)
+                              stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()
         if p2.poll() != 0:
             logging.error(_("Can't run encfs. Bad password?"))
@@ -134,7 +134,7 @@ def setup(username, dest_dir, password):
     # Restore user home files
     for name in os.listdir(backup_dir):
         shutil.move(os.path.join(backup_dir, name),
-            os.path.join(mount_dir, name))
+                    os.path.join(mount_dir, name))
 
     # Delete home backup
     os.rmdir(backup_dir)
