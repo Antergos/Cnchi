@@ -1528,10 +1528,13 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_cups"):
             logging.debug(_("Configuring CUPS..."))
-            service = os.path.join(self.dest_dir,
-                                   "usr/lib/systemd/system/org.cups.cupsd.service")
+            service = os.path.join(self.dest_dir, "usr/lib/systemd/system/org.cups.cupsd.service")
+            avahi = os.path.join(self.dest_dir, "usr/lib/systemd/system/avahi-daemon.service")
+
             if os.path.exists(service):
                 self.enable_services(['org.cups.cupsd'])
+            if os.path.exists(avahi):
+                self.enable_services(['avahi-daemon'])
 
         #if self.settings.get("feature_office"):
         #    logging.debug(_("Configuring libreoffice..."))
