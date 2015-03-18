@@ -998,6 +998,7 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_cups"):
             services.append('org.cups.cupsd')
+            services.append('avahi-daemon')
 
         if self.settings.get("feature_firewall"):
             logging.debug(_("Configuring firewall..."))

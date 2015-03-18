@@ -460,7 +460,7 @@
     <feature name="cups">
       <pkgname>cups</pkgname>
       <pkgname>cups-pk-helper</pkgname>
-      <pkgname>foomatic-db-nonfree</pkgname>
+      <!--<pkgname>foomatic-db-nonfree</pkgname>-->
       <pkgname>gsfonts</pkgname>
       <pkgname>gutenprint</pkgname>
       <pkgname>hplip</pkgname>
