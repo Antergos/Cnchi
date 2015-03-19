@@ -1,3 +1,4 @@
+[2015-03-18 08:33:52 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {401e028}
 [2015-03-09 12:07:28 -0500]  changes to lsb-release files (to say Antergos instead of Arch)         Dustin Falgout  {62ec4e9}
 [2015-03-04 08:46:24 +0000]  Skip the welcome page for minimal iso. it works for me but would yo..  Dustin Falgout  {a66289e}
 [2015-03-04 07:45:57 +0000]  fix slide width issue for minimal ISO. version bump.                   Dustin Falgout  {5827644}
