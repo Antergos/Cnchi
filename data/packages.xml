@@ -130,6 +130,7 @@
         <pkgname>xfburn</pkgname>
         <pkgname>xnoise</pkgname>
         <pkgname>xscreensaver</pkgname>
+        <pkgname>gnome-font-viewer</pkgname>
     </gnome_desktop>
 
     <cinnamon_desktop>
