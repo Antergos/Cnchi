@@ -1,3 +1,4 @@
+[2015-03-20 09:45:22 -0500]  include User-Agent header in request when downloading packages.xml ..  Dustin Falgout  {8ec353b}
 [2015-03-18 22:57:33 -0500]  forgot to update packages.xml back when we moved to webkit2 greeter..  Dustin Falgout  {507d03e}
 [2015-03-18 08:33:52 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {401e028}
 [2015-03-09 12:07:28 -0500]  changes to lsb-release files (to say Antergos instead of Arch)         Dustin Falgout  {62ec4e9}
