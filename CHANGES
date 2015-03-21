@@ -1,3 +1,5 @@
+[2015-03-20 10:15:43 -0500]  include User-Agent header in request when downloading packages.xml ..  Dustin Falgout  {053de99}
+[2015-03-18 08:29:42 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {615d3a6}
 [2015-03-18 08:27:40 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {d04ed91}
 [2015-03-17 17:15:38 +0100]  iso-codes is a dependency (totally forgotten as it's always install..      karasu      {57075ff}
 [2015-03-15 20:34:18 +0100]  Fix identation (just for visual purposes).                                 karasu      {b7171a8}
