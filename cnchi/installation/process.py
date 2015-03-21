@@ -429,7 +429,7 @@ class InstallationProcess(multiprocessing.Process):
             raise InstallError(_("Can't initialize pyalpm."))
 
         # Refresh pacman databases
-        result = self.pacman.do_refresh()
+        result = self.pacman.refresh()
 
         if not result:
             txt = _("Can't refresh pacman databases.")
@@ -682,7 +682,7 @@ class InstallationProcess(multiprocessing.Process):
 
         pacman_options = {}
 
-        result = self.pacman.do_install(
+        result = self.pacman.install(
             pkgs=self.packages,
             conflicts=self.conflicts,
             options=pacman_options)
