@@ -8,7 +8,7 @@ check_keys="$(pacman-key -l | grep Antergos)"
 
 notify_user () {
 
-        sudo -u antergos notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
+       sudo -u antergos notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
 }
 
 do_update () {
@@ -47,7 +47,7 @@ start_cnchi () {
 	notify_user "Starting Cnchi..."
 	echo "Starting Cnchi..."
 	if [[ ${development} = "True" ]]; then
-		cnchi -d -v -z -p /usr/share/cnchi/data/packages.xml &
+		cnchi -d -v -p /usr/share/cnchi/data/packages.xml &
 		exit 0;
 
 

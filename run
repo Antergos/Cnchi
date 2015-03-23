@@ -10,7 +10,7 @@ sudo ln -s $cnchi_dir /usr/share/cnchi
 
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
-_CACHE="/pkg"
+_CACHE="/var/cache/pacman/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-dv"
 
@@ -18,5 +18,5 @@ if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi.py $_CNCHI_OPTIONS -c $_CACHE -p $_XML $1 $2 $3 $4
+sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -c $_CACHE -p $_XML $1 $2 $3 $4
 

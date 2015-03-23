@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Thu Oct 24 00:57:58 2013 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+<requires lib="gtk+" version="3.10"/>
   <object class="GtkBox" id="timezone">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -12,6 +11,8 @@
       <object class="GtkEventBox" id="timezone_map_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <child>
           <placeholder/>
         </child>
@@ -30,8 +31,8 @@
           <object class="GtkLabel" id="label_zone">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">100</property>
-            <property name="margin_right">5</property>
+            <property name="margin_start">100</property>
+            <property name="margin_end">5</property>
             <property name="label" translatable="yes">Zone:</property>
           </object>
           <packing>
@@ -58,8 +59,8 @@
             <property name="width_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">100</property>
+            <property name="margin_start">5</property>
+            <property name="margin_end">100</property>
             <signal name="changed" handler="on_region_combobox_changed" swapped="no"/>
           </object>
           <packing>
@@ -73,8 +74,8 @@
           <object class="GtkLabel" id="label_region">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">50</property>
-            <property name="margin_right">5</property>
+            <property name="margin_start">50</property>
+            <property name="margin_end">5</property>
             <property name="label" translatable="yes">Region:</property>
           </object>
           <packing>
@@ -95,6 +96,7 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="spacing">10</property>
         <child>
           <object class="GtkLabel" id="label_ntp">
             <property name="visible">True</property>

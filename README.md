@@ -28,13 +28,16 @@ We manage our translations in transifex:
  - python-dbus
  - python-gobject
  - python-mako
+ - python-requests
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
- - pyalpm (pacman)
- - libtimezonemap
+ - pyalpm (alpm)
+ - libtimezonemap (needed by Cnchi 0.6.x and older versions)
  - webkitgtk 
  - hdparm
- - hwinfo
+ - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
+ - encfs, pam_encfs
+ - iso-codes
  
 ## Unit tests
  - python-mock 

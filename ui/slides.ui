@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+<requires lib="gtk+" version="3.10"/>
   <object class="GtkBox" id="slides">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">12</property>
+    <property name="spacing">10</property>
+        <property name="halign">center</property>
+        <property name="hexpand">True</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow">
-        <!--<property name="width_request">797</property>-->
-        <property name="height_request">334</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can_focus">False</property>
         <property name="shadow_type">in</property>
+        <property name="hexpand">False</property>
+        <property name="halign">center</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <child>
           <placeholder/>
         </child>
@@ -25,25 +28,24 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox" id="eventbox1">
+      <object class="GtkProgressBar" id="downloads_progress_bar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
       </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkProgressBar" id="progressbar">
+      <object class="GtkProgressBar" id="progress_bar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -55,29 +57,15 @@
       <object class="GtkLabel" id="info_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <property name="xalign">0</property>
-        <property name="label" translatable="yes">label</property>
+        <property name="label" translatable="yes"></property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">4</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEventBox" id="eventbox2">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">5</property>
+        <property name="position">3</property>
       </packing>
     </child>
   </object>

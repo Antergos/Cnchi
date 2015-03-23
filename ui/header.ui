@@ -1,89 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Thu Nov  7 18:31:55 2013 -->
 <interface>
-    <!-- interface-requires gtk+ 3.10 -->
+  <requires lib="gtk+" version="3.10"/>
     <object class="GtkHeaderBar" id="header">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-            <object class="GtkImage" id="logo">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="xalign">0</property>
-                <property name="xpad">23</property>
-                <!--<property name="ypad">13</property>-->
-                <property name="stock">gtk-missing-image</property>
-            </object>
-        </child>
-        <child>
-            <object class="GtkButton" id="forward_button">
-                <!--<property name="label">gtk-go-forward</property>-->
-                <property name="use_action_appearance">False</property>
-                <!--<property name="width_request">115</property> -->
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="no_show_all">True</property>
-                <property name="halign">end</property>
-                <!--<property name="margin_left">10</property>-->
-                <!--<property name="margin_right">10</property>-->
-                <property name="margin_top">7</property>
-                <property name="margin_bottom">8</property>
-                <!--            <property name="use_stock">True</property>-->
-                <!--            <property name="image_position">right</property>-->
-                <!--            <property name="always_show_image">True</property>-->
-                <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
-                
-                <child>
-                    <object class="GtkArrow" id="bk_arrow">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="arrow_type">right</property>
-                        <property name="shadow_type">in</property>
-                        <property name="width_request">25</property>
-                        <property name="height_request">25</property>
-                    </object>
-                </child>
-               
-            </object>
-            <packing>
-                <property name="pack_type">end</property>
-            </packing>
-        </child>
-        <child>
             <object class="GtkButton" id="backwards_button">
-                <!--            <property name="label">gtk-go-back</property>-->
                 <property name="use_action_appearance">False</property>
-                <!--<property name="width_request">115</property>-->
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
-                <property name="halign">end</property>
-                <!--<property name="margin_left">10</property>-->
-                <!--<property name="margin_right">10</property>-->
-                <property name="margin_top">7</property>
-                <property name="margin_bottom">8</property>
-                <!--            <property name="use_stock">True</property>-->
-                <!--            <property name="always_show_image">True</property>-->
+                <!-- <property name="halign">end</property> -->
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
                 <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
-                
                 <child>
                     <object class="GtkArrow" id="fwd_arrow">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="arrow_type">left</property>
                         <property name="shadow_type">in</property>
-                        <property name="width_request">25</property>
+                        <property name="width_request">50</property>
                         <property name="height_request">25</property>
                     </object>
                 </child>
-               
+            </object>
+            <!--
+            <packing>
+                <property name="pack_type">end</property>
+            </packing>
+            -->
+        </child>
+        <child>
+            <object class="GtkImage" id="logo">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkButton" id="forward_button">
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
+                <property name="halign">end</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
+                <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
+                <child>
+                    <object class="GtkArrow" id="bk_arrow">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="arrow_type">right</property>
+                        <property name="shadow_type">in</property>
+                        <property name="width_request">50</property>
+                        <property name="height_request">25</property>
+                    </object>
+                </child>
             </object>
             <packing>
                 <property name="pack_type">end</property>
             </packing>
         </child>
     </object>
-
 </interface>

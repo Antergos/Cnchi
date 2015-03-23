@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkBox" id="welcome">
@@ -13,19 +12,22 @@
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="hexpand">true</property>
         <property name="spacing">40</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkBox" id="box_tryit">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">20</property>
+            <!--<property name="margin_start">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="tryit_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -63,7 +65,7 @@
               <object class="GtkImage" id="cli_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -96,13 +98,13 @@
           <object class="GtkBox" id="box_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_right">20</property>
+            <!--<property name="margin_end">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="graph_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
+                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -133,20 +135,35 @@
         </child>
       </object>
       <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="info_welcome_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes"></property>
+        <property name="justify">center</property>
+        <attributes>
+          <attribute name="font-desc" value="Sans Bold 8"/>
+        </attributes>
+      </object>
+      <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="infowelcome_label">
+      <object class="GtkLabel" id="loading_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">You can try Cinnarch without modify your hard drive, just click on "Try it".
-If you want to install the system to your PC, use one of the two installer options.</property>
+        <property name="label" translatable="yes"></property>
         <property name="justify">center</property>
         <attributes>
-          <attribute name="font-desc" value="Sans Bold 8"/>
+          <attribute name="font-desc" value="Sans Bold 6"/>
         </attributes>
       </object>
       <packing>

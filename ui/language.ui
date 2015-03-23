@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+<requires lib="gtk+" version="3.10"/>
   <object class="GtkBox" id="language">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_left">20</property>
-    <property name="margin_right">20</property>
+    <property name="margin_start">20</property>
+    <property name="margin_end">20</property>
     <property name="margin_bottom">10</property>
     <property name="hexpand">True</property>
     <child>
@@ -38,7 +37,6 @@
           <object class="GtkImage" id="image1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -50,15 +48,8 @@
           <object class="GtkLabel" id="welcome_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">20</property>
+            <property name="margin_start">20</property>
             <property name="yalign">1</property>
-            <property name="label" translatable="yes">&lt;span weight='bold'&gt;This is an Alpha version.&lt;/span&gt;
-
-
-Still undergoing development. It is known NOT to work yet with LVM, RAID, btrfs subvolumes, and other " advanced setups.
-Please proceed with caution as data loss is possible! 
-
-If you find any bug, please, visit &lt;a href='http://bugs.antergos.com'&gt;http://bugs.antergos.com&lt;/a&gt;</property>
             <property name="use_markup">True</property>
             <property name="justify">fill</property>
             <property name="wrap">True</property>

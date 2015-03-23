@@ -6,7 +6,7 @@ DESKTOP=$1
 if [[ ${DESKTOP} == 'gnome' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
+	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','es+cat')]"
 
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
@@ -30,7 +30,7 @@ fi
 if [[ ${DESKTOP} == 'cinnamon' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
+	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','es+cat')]"
 
 	# Set gtk theme
 	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme "Numix Frost Light"
@@ -45,10 +45,7 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	# Set overview corner to false
 	dbus-launch gsettings set org.cinnamon overview-corner "['false:false:false', 'false:false:false', 'false:false:false', 'false:false:false']"
 
-	# Set panel launchers
-	dbus-launch gsettings set org.cinnamon panel-launchers "['chromium.desktop', 'nemo.desktop', 'gnome-terminal.desktop']"
-
-	# Set panel orientation
+		# Set panel orientation
 	dbus-launch gsettings set org.cinnamon desktop-layout "flipped"
 
 	# Set enabled applets

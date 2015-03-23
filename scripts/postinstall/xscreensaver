@@ -1,0 +1,2 @@
+newLoginCommand: dm-tool switch-to-greeter
+timeout:	0:10:00
