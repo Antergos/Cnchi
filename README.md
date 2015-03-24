@@ -2,7 +2,10 @@
 
 **Graphical Installer for Antergos Linux**
 
-You are viewing the `master` branch. This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
+You are viewing the `master` branch.
+
+## Current Status
+This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
