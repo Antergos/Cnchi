@@ -91,7 +91,9 @@ class Bootloader(object):
         boot_command = self.settings.get('grub_default_line')
         boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
-        parse = open(cfg).read()
+
+        with open(cfg) as grub_file:
+            parse = grub_file.read()
 
         if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
@@ -102,6 +104,7 @@ class Bootloader(object):
 
                 with open(cfg) as grub_file:
                     grub_file.write(parse)
+
 
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
