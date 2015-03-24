@@ -2833,40 +2833,40 @@ select_packages() {
 
     wget --content-disposition -P /tmp/ "http://install.antergos.com/packages-${CNCHI_VERSION}.xml"
 
-    COMMON_PKG=`xmllint --xpath '//common/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
-    FILESYSTEMS_PKG=`xmllint --xpath '//filesystems/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
+    COMMON_PKG=`xmllint --xpath '//common/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
+    FILESYSTEMS_PKG=`xmllint --xpath '//filesystems/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g'`
     # Set Desktop Manager and select graphic packages
     if [[ "${DESKTOP_SELECTED}" == 'base' ]]; then
         DM_SELECTED='none'
         GRAPHIC_PKG=''
     else
         DM_SELECTED='lightdm'
-        GRAPHIC_PKG=`xmllint --xpath '//graphic/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname dm="true" name="lightdm">| |g'`
+        GRAPHIC_PKG=`xmllint --xpath '//graphic/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname dm="true" name="lightdm">| |g'`
     fi
 
     if [[ "${DESKTOP_SELECTED}" == 'gnome' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//gnome_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//gnome_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'cinnamon' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//cinnamon_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//cinnamon_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'xfce' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//xfce_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//xfce_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'openbox' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//openbox_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//openbox_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'razor' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//razor_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="connman" conflicts="netctl">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//razor_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="connman" conflicts="netctl">| |g'`
         NM_SELECTED='connman'
     elif [[ "${DESKTOP_SELECTED}" == 'base' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//nox_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="netctl">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//nox_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="netctl">| |g'`
         NM_SELECTED='netctl'
     elif [[ "${DESKTOP_SELECTED}" == 'kde' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//kde_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//kde_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     elif [[ "${DESKTOP_SELECTED}" == 'mate' ]];then
-        SYSTEM_PKG=`xmllint --xpath '//mate_desktop/pkgname' /tmp/packages-0.5.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
+        SYSTEM_PKG=`xmllint --xpath '//mate_desktop/pkgname' /tmp/packages-${CNCHI_VERSION}.xml | sed -e 's|^<pkgname>| |g' | sed -e 's|</pkgname><pkgname>| |g' | sed -e 's|</pkgname>| |g' | sed -e 's|<pkgname nm="true" name="NetworkManager">| |g'`
         NM_SELECTED='NetworkManager'
     fi
 
