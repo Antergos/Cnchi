@@ -1,8 +1,17 @@
 # Cnchi
 
-**Graphical Installer for Antergos Linux (FKA Cinnarch Linux)**
+**Graphical Installer for Antergos Linux**
 
-Usage:
+You are viewing the `master` branch. This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
+
+|Development Stage|Version| Code State|
+----------------- | -------------- | -------- |
+|*Cnchi Legacy*|*v0.6.53*|*Frozen*|
+|**Cnchi Stable**|**v0.8.x**|**Bug Fixes Only**|
+|Cnchi Next | v0.9.x | Active Development|
+
+## Usage:
+
 ```
 lang=sh
 sudo -E cnchi.py
