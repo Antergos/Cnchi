@@ -177,7 +177,7 @@ class Bootloader(object):
                 for i in range(len(lines)):
                     file_option = lines[i].split()[0]
                     if file_option == "#" + option or file_option == option:
-                        lines[i] = '{0} = "{1}"\n'.format(option, cmd))
+                        lines[i] = '{0} = "{1}"\n'.format(option, cmd)
                 with open(default_grub, 'w') as grub_file:
                     grub_file.write("\n".join(lines) + "\n")
             else:
