@@ -3,7 +3,7 @@
 #
 # bootloader.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013,2014 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -88,7 +88,7 @@ class Bootloader(object):
             logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
             return
         ruuid_str = 'root=UUID=' + self.root_uuid
-        boot_command = self.settings.get('GRUB_CMDLINE_LINUX')
+        boot_command = self.settings.get('grub_default_line')
         boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
 
@@ -107,14 +107,11 @@ class Bootloader(object):
 
 
     def modify_grub_default(self):
-        """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX
-        GRUB_CMDLINE_LINUX : Command-line arguments to add to menu entries for the Linux kernel.
-        GRUB_CMDLINE_LINUX_DEFAULT : Unless ‘GRUB_DISABLE_RECOVERY’ is set to ‘true’, two menu
-            entries will be generated for each Linux kernel: one default entry and one entry
-            for recovery mode. This option lists command-line arguments to add only to the default
-            menu entry, after those listed in ‘GRUB_CMDLINE_LINUX’. """
+        """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX """
 
-        cmd_linux_default = ""
+        default_dir = os.path.join(self.dest_dir, "etc/default")
+        default_grub = os.path.join(default_dir, "grub")
+        theme = 'GRUB_THEME="/boot/grub/themes/Antergos-Default/theme.txt"'
 
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
         if os.path.exists(plymouth_bin):
@@ -123,17 +120,20 @@ class Bootloader(object):
             use_splash = ''
 
         if "swap" in self.mount_devices:
-            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(self.swap_uuid, use_splash)
+            kernel_cmd = 'resume=UUID={0} quiet {1}'.format(self.swap_uuid, use_splash)
         else:
-            cmd_linux_default = 'quiet {0}'.format(use_splash)
+            kernel_cmd = 'quiet {0}'.format(use_splash)
 
-        self.set_grub_option("GRUB_THEME", "/boot/grub/themes/Antergos-Default/theme.txt")
-        self.set_grub_option("GRUB_CMDLINE_LINUX_DEFAULT", cmd_linux_default)
-        self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
+        kernel_cmd = 'GRUB_CMDLINE_LINUX_DEFAULT="{0}"'.format(kernel_cmd)
 
+        if not os.path.exists(default_dir):
+            os.mkdir(default_dir)
+
+        with open(default_grub) as grub_file:
+            lines = [x.strip() for x in grub_file.readlines()]
+
+        # FIXME: Duplicated code! This code is in install_gummiboot, too.
         if self.settings.get('use_luks'):
-            cmd_linux = ""
-
             # Let GRUB automatically add the kernel parameters for root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
@@ -149,45 +149,40 @@ class Bootloader(object):
 
             logging.debug("Root device: %s", root_device)
 
-            cmd_linux = 'cryptdevice=/dev/disk/by-uuid/{0}:{1}'.format(root_uuid, luks_root_volume)
+
+            default_line = 'cryptdevice=/dev/disk/by-uuid/{0}:{1}'.format(root_uuid, luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
-                cmd_linux = \
-                    '{0} cryptkey=/dev/disk/by-uuid/{1}:ext2:/.keyfile-root'.format(cmd_linux, self.boot_uuid)
+                default_line = \
+                    '{0} cryptkey=/dev/disk/by-uuid/{1}:ext2:/.keyfile-root'.format(default_line, self.boot_uuid)
 
-            # Store grub line, we'll use it later in check_root_uuid_in_grub()
-            self.settings.set('GRUB_CMDLINE_LINUX', cmd_linux)
+            # Store grub default line, we'll use it later in check_root_uuid_in_grub()
+            self.settings.set('grub_default_line', default_line)
 
-            self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
+            default_line = 'GRUB_CMDLINE_LINUX="{0}"'.format(default_line)
 
+            logging.debug(default_line)
+
+            for i in range(len(lines)):
+                if lines[i].startswith("#GRUB_CMDLINE_LINUX") or lines[i].startswith("GRUB_CMDLINE_LINUX"):
+                    if not lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT"):
+                        if not lines[i].startswith("GRUB_CMDLINE_LINUX_DEFAULT"):
+                            lines[i] = default_line
+
+        for i in range(len(lines)):
+            if lines[i].startswith("#GRUB_THEME") or lines[i].startswith("GRUB_THEME"):
+                lines[i] = theme
+            elif lines[i].startswith("#GRUB_CMDLINE_LINUX_DEFAULT") or lines[i].startswith(
+                    "GRUB_CMDLINE_LINUX_DEFAULT"):
+                lines[i] = kernel_cmd
+            elif lines[i].startswith("#GRUB_DISTRIBUTOR") or lines[i].startswith("GRUB_DISTRIBUTOR"):
+                lines[i] = "GRUB_DISTRIBUTOR=Antergos"
+
+        with open(default_grub, 'w') as grub_file:
+            grub_file.write("\n".join(lines) + "\n")
 
         logging.debug(_("/etc/default/grub configuration completed successfully."))
-
-
-    def set_grub_option(self, option, cmd):
-        """ Changes a grub setup option in /etc/default/grub """
-        try:
-            default_grub = os.path.join(self.dest_dir, "etc/default", "grub")
-
-            with open(default_grub) as grub_file:
-                lines = [x.strip() for x in grub_file.readlines()]
-
-            if option in lines:
-                for i in range(len(lines)):
-                    file_option = lines[i].split()[0]
-                    if file_option == "#" + option or file_option == option:
-                        lines[i] = '{0} = "{1}"\n'.format(option, cmd))
-                with open(default_grub, 'w') as grub_file:
-                    grub_file.write("\n".join(lines) + "\n")
-            else:
-                with open(default_grub, 'a') as grub_file:
-                    grub_file.write('{0} = "{1}"\n'.format(option, cmd))
-
-            logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
-        except Exception as general_error:
-            logging.error("Can't modify /etc/default/grub")
-        
 
     def prepare_grub_d(self):
         """ Copies 10_antergos script into /etc/grub.d/ """
@@ -446,6 +441,7 @@ class Bootloader(object):
                 conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
                 conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
         else:
+            # FIXME: Duplicated code!!! This exists also in modify_grub_default
             luks_root_volume = self.settings.get('luks_root_volume')
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
