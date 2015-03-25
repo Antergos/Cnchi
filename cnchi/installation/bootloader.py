@@ -165,16 +165,21 @@ class Bootloader(object):
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
-            if option in lines:
-                for i in range(len(lines)):
-                    file_option = lines[i].split()[0]
-                    if file_option == "#" + option or file_option == option:
-                        lines[i] = '{0} = "{1}"\n'.format(option, cmd)
+            option_found = False
+
+            for i in range(len(lines)):
+                if option + "=" in lines[i]:
+                    option_found = True
+                    lines[i] = '{0}="{1}"\n'.format(option, cmd)
+
+            if option_found:
+                # Option was found and changed, store our changes
                 with open(default_grub, 'w') as grub_file:
                     grub_file.write("\n".join(lines) + "\n")
             else:
+                # Option was not found. Thus, append new option
                 with open(default_grub, 'a') as grub_file:
-                    grub_file.write('{0} = "{1}"\n'.format(option, cmd))
+                    grub_file.write('{0}="{1}"\n'.format(option, cmd))
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as general_error:
