@@ -46,6 +46,7 @@ class Language(GtkBaseBox):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.listbox.
 
         data_dir = self.settings.get('data')
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+    <requires lib="gtk+" version="3.14"/>
     <object class="GtkHeaderBar" id="header">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -8,62 +8,66 @@
             <object class="GtkButton" id="backwards_button">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
+                <property name="sensitive">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="receives_default">False</property>
                 <property name="no_show_all">True</property>
-                <!-- <property name="halign">end</property> -->
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
+                <style>
+                    <class name="image-button"/>
+                </style>
                 <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
                 <child>
-                    <object class="GtkArrow" id="fwd_arrow">
+                    <object class="GtkImage" id="back_icon">
+                        <property name="icon-name">go-previous-symbolic</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="arrow_type">left</property>
-                        <property name="shadow_type">in</property>
-                        <property name="width_request">50</property>
-                        <property name="height_request">25</property>
+                        <property name="icon-size">1</property>
                     </object>
                 </child>
             </object>
-            <!--
             <packing>
                 <property name="pack_type">end</property>
             </packing>
-            -->
+
         </child>
+
         <child>
             <object class="GtkImage" id="logo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
             </object>
+            <packing>
+                <property name="pack_type">start</property>
+            </packing>
+
         </child>
         <child>
             <object class="GtkButton" id="forward_button">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
+                <property name="sensitive">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="no_show_all">True</property>
-                <property name="halign">end</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
+                <style>
+                    <class name="image-button"/>
+                </style>
                 <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
                 <child>
-                    <object class="GtkArrow" id="bk_arrow">
+                    <object class="GtkImage" id="forward_icon">
+                        <property name="icon-name">go-next-symbolic</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="arrow_type">right</property>
-                        <property name="shadow_type">in</property>
-                        <property name="width_request">50</property>
-                        <property name="height_request">25</property>
+                        <property name="icon-size">1</property>
                     </object>
                 </child>
             </object>
             <packing>
                 <property name="pack_type">end</property>
             </packing>
+
+
         </child>
+
     </object>
 </interface>
