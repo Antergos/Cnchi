@@ -75,6 +75,10 @@ GtkProgressBar.progressbar {
     padding-right: 5px;
 }
 
+.header-bar GtkSeparator {
+color: rgba(255,255,255,0.08);
+}
+
 .toolbar .separator, .separator,
 .header-bar GtkSeparatorToolItem,
 GtkSeparatorToolItem {
@@ -83,7 +87,7 @@ GtkSeparatorToolItem {
 
 #listbox {
 
-    background-color: shade(@theme_bg_color, 1.2);
+    background-color: #eee;
 
     color: @theme_fg_color;
 }
