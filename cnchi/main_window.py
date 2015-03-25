@@ -372,7 +372,7 @@ class MainWindow(Gtk.ApplicationWindow):
         next_page = self.current_page.get_next_page()
 
         if next_page is not None:
-            self.logo.hide()
+            #self.logo.hide()
             if next_page not in self.pages.keys():
                 # Load all pages
                 self.load_pages()

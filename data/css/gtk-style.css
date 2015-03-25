@@ -2,6 +2,10 @@
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
 }
 
+GtkWindow {
+    box-shadow: none;
+}
+
 #logo {
     background-color: transparent;
     margin-top: 0px;
@@ -15,10 +19,11 @@
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
 }
 
-.subheader {
+.subtitle {
     font-size: 13px;
     font-weight: 400;
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
+    color: #eee;
 }
 
 #header {
@@ -27,6 +32,7 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border-bottom: 0px;
+    border-color: transparent;
     font-family: Lato, 'DejaVu Sans', Helvetica, sans-serif;
     padding: 8px;
 }
@@ -45,6 +51,7 @@
 
 GtkProgressBar.progressbar {
     color: #2EA3F2;
+    background-image: linear-gradient(to bottom, #2EA3F2, #2EA3F2);
 }
 
 #fwd_btn, #bk_btn {
@@ -71,7 +78,7 @@ GtkProgressBar.progressbar {
 .toolbar .separator, .separator,
 .header-bar GtkSeparatorToolItem,
 GtkSeparatorToolItem {
-    padding-left: 9px;
+    margin-left: 5px;
 }
 
 #listbox {
@@ -81,6 +88,6 @@ GtkSeparatorToolItem {
     color: @theme_fg_color;
 }
 
-#listbox GtkListBoxRow:active {
+#listbox GtkListBoxRow:active, #listbox .list-row:active, #listbox .list-row:selected {
     background-color: #2EA3F2;
 }
