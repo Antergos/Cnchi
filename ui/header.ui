@@ -71,12 +71,14 @@
                         <property name="pack_type">start</property>
                         <property name="position">2</property>
                     </packing>
+
                 </child>
-                <packing>
-                    <property name="pack_type">start</property>
-                    <property name="position">-1</property>
-                </packing>
             </object>
+            <packing>
+                <property name="pack_type">start</property>
+                <property name="position">-1</property>
+            </packing>
+
         </child>
 
     </object>
