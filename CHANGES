@@ -1,3 +1,4 @@
+[2015-03-25 17:38:51 +0100]  Fixed typo                                                                 karasu      {2d7dc0b}
 [2015-03-25 16:49:21 +0100]  Fix bootloader bug (and cleaned some code). Needs testing.                 karasu      {9747124}
 [2015-03-25 09:21:00 -0500]  I think the header-bar is finished                                     Dustin Falgout  {2de21fa}
 [2015-03-25 09:07:56 -0500]  more work on header-bar                                                Dustin Falgout  {8ac8a57}

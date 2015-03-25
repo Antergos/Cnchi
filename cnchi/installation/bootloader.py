@@ -105,7 +105,6 @@ class Bootloader(object):
                 with open(cfg) as grub_file:
                     grub_file.write(parse)
 
-
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX
         GRUB_CMDLINE_LINUX : Command-line arguments to add to menu entries for the Linux kernel.
@@ -114,13 +113,11 @@ class Bootloader(object):
             for recovery mode. This option lists command-line arguments to add only to the default
             menu entry, after those listed in ‘GRUB_CMDLINE_LINUX’. """
 
-        cmd_linux_default = ""
-
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
         if os.path.exists(plymouth_bin):
-            use_splash = 'splash'
+            use_splash = "splash"
         else:
-            use_splash = ''
+            use_splash = ""
 
         if "swap" in self.mount_devices:
             cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(self.swap_uuid, use_splash)
@@ -132,8 +129,6 @@ class Bootloader(object):
         self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
 
         if self.settings.get('use_luks'):
-            cmd_linux = ""
-
             # Let GRUB automatically add the kernel parameters for root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
@@ -149,21 +144,18 @@ class Bootloader(object):
 
             logging.debug("Root device: %s", root_device)
 
-            cmd_linux = 'cryptdevice=/dev/disk/by-uuid/{0}:{1}'.format(root_uuid, luks_root_volume)
+            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}".format(root_uuid, luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
-                cmd_linux = \
-                    '{0} cryptkey=/dev/disk/by-uuid/{1}:ext2:/.keyfile-root'.format(cmd_linux, self.boot_uuid)
+                cmd_linux += " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
-            # Store grub line, we'll use it later in check_root_uuid_in_grub()
+            # Store grub line in settings, we'll use it later in check_root_uuid_in_grub()
             self.settings.set('GRUB_CMDLINE_LINUX', cmd_linux)
-
+            # Store grub line in /etc/default/grub file
             self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
 
-
         logging.debug(_("/etc/default/grub configuration completed successfully."))
-
 
     def set_grub_option(self, option, cmd):
         """ Changes a grub setup option in /etc/default/grub """
@@ -187,7 +179,6 @@ class Bootloader(object):
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as general_error:
             logging.error("Can't modify /etc/default/grub")
-        
 
     def prepare_grub_d(self):
         """ Copies 10_antergos script into /etc/grub.d/ """
