@@ -1,3 +1,4 @@
+[2015-03-25 03:37:24 -0500]  fix typo                                                               Dustin Falgout  {a3852c3}
 [2015-03-25 02:54:50 -0500]  working on #273                                                        Dustin Falgout  {d002915}
 [2015-03-24 23:59:48 +0100]  Version bump. Yes, I forgot again about the hook...                        karasu      {7aa5ac1}
 [2015-03-24 23:51:02 +0100]  A file descriptor was left open. There's still an error in bootload..      karasu      {12ad11c}
