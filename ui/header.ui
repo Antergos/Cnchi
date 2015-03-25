@@ -93,7 +93,7 @@
 
             </object>
             <packing>
-                <property name="padding">10</property>
+                <property name="margin-right">5</property>
                 <property name="pack_type">end</property>
                 <property name="position">1</property>
             </packing>

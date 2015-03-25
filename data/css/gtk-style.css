@@ -60,13 +60,11 @@ GtkProgressBar.progressbar {
 
 #fwd_btn:hover, #bk_btn:hover {
     color: #2EA3F2;
-    border-color: rgba(195, 195, 195, 1);
 }
 
 #fwd_btn:active, #bk_btn:active {
     color: #333A4C;
-    border-color: rgba(195, 195, 195, 1);
-    background-color: rgba(220, 220, 220, 1);
+    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
 
 }
 
@@ -85,13 +83,11 @@ GtkSeparatorToolItem {
     margin-left: 5px;
 }
 
-#listbox {
+.list {
 
     background-color: #eee;
-
-    color: @theme_fg_color;
 }
 
-#listbox GtkListBoxRow:active, #listbox .list-row:active, #listbox .list-row:selected {
+.list GtkListBoxRow:active, .list .list-row:active, .list .list-row:selected {
     background-color: #2EA3F2;
 }
