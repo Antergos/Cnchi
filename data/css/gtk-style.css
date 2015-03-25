@@ -54,10 +54,6 @@ GtkProgressBar.progressbar {
     background-image: linear-gradient(to bottom, #2EA3F2, #2EA3F2);
 }
 
-#fwd_btn, #bk_btn {
-    transition: 500ms linear;
-}
-
 #fwd_btn:hover, #bk_btn:hover {
     color: #2EA3F2;
 }
