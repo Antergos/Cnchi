@@ -1,3 +1,4 @@
+[2015-03-26 17:32:11 +0100]  Fixed warnings in header.ui                                                karasu      {c69e3e6}
 [2015-03-26 12:31:11 +0100]  Do not show so many error messages                                         karasu      {b0b7449}
 [2015-03-26 12:10:42 +0100]  There're two warnings that need fixing                                     karasu      {5ce16e4}
 [2015-03-25 18:48:35 +0100]  Fixing set_grub_option in bootloader                                       karasu      {6915bb3}

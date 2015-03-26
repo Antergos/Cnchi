@@ -87,7 +87,7 @@ class InstallationProcess(multiprocessing.Process):
     """ Installation process thread class """
 
     def __init__(self, settings, callback_queue, mount_devices,
-                 fs_devices, alternate_package_list="", ssd={}, blvm=False):
+                 fs_devices, alternate_package_list="", ssd=None, blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
 
@@ -106,7 +106,11 @@ class InstallationProcess(multiprocessing.Process):
         # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
         self.blvm = blvm
 
-        self.ssd = ssd
+        if ssd is not None:
+            self.ssd = ssd
+        else:
+            self.ssd = {}
+
         self.mount_devices = mount_devices
 
         # Set defaults

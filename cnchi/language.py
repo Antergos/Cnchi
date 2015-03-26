@@ -81,7 +81,7 @@ class Language(GtkBaseBox):
         label = self.ui.get_object("welcome_label")
         label.set_markup(txt_markup)
 
-        txt = _("Welcome to Antergos!")
+        txt = _("Choose your language")
         self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):
