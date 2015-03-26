@@ -41,21 +41,24 @@ class Welcome(GtkBaseBox):
         data_dir = self.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
 
-        self.labels = {'welcome': self.ui.get_object("welcome_label"), 'info': self.ui.get_object("info_welcome_label"),
+        self.labels = {'welcome': self.ui.get_object("welcome_label"),
+                       'info': self.ui.get_object("info_welcome_label"),
                        'loading': self.ui.get_object("loading_label")}
 
-        self.buttons = {'tryit': self.ui.get_object("tryit_button"), 'cli': self.ui.get_object("cli_button"),
+        self.buttons = {'tryit': self.ui.get_object("tryit_button"),
+                        # 'cli': self.ui.get_object("cli_button"),
                         'graph': self.ui.get_object("graph_button")}
 
         for key in self.buttons:
             btn = self.buttons[key]
             btn.set_name("welcome_btn")
 
-        self.images = {'tryit': self.ui.get_object("tryit_image"), 'cli': self.ui.get_object("cli_image"),
+        self.images = {'tryit': self.ui.get_object("tryit_image"),
+                       # 'cli': self.ui.get_object("cli_image"),
                        'graph': self.ui.get_object("graph_image")}
 
         self.filenames = {'tryit': os.path.join(welcome_dir, "tryit-icon.png"),
-                          'cli': os.path.join(welcome_dir, "cliinstaller-icon.png"),
+                          # 'cli': os.path.join(welcome_dir, "cliinstaller-icon.png"),
                           'graph': os.path.join(welcome_dir, "installer-icon.png")}
 
         for key in self.images:
@@ -68,15 +71,15 @@ class Welcome(GtkBaseBox):
         else:
             txt = ""
 
-        txt = txt + _("When you are ready to install Antergos simply choose which installer you prefer.")
+        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")
         txt = '<span weight="bold">{0}</span>'.format(txt)
         self.labels['info'].set_markup(txt)
 
         txt = _("Try It")
         self.buttons['tryit'].set_label(txt)
 
-        txt = _("CLI Installer")
-        self.buttons['cli'].set_label(txt)
+        # txt = _("CLI Installer")
+        # self.buttons['cli'].set_label(txt)
 
         txt = _("Graphical Installer")
         self.buttons['graph'].set_label(txt)
@@ -94,6 +97,8 @@ class Welcome(GtkBaseBox):
         self.quit_cnchi()
 
     def on_cli_button_clicked(self, widget, data=None):
+        pass
+        '''
         try:
             subprocess.Popen(["antergos-wrap"])
             self.quit_cnchi()
@@ -101,6 +106,7 @@ class Welcome(GtkBaseBox):
             msg = str(general_error)
             logging.error(msg)
             show.error(self.get_toplevel(), msg)
+        '''
 
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()

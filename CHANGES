@@ -1,3 +1,4 @@
+[2015-03-26 18:22:12 +0100]  Some PEP-8 changes and fixed copyright headers (no real code changes)      karasu      {9c48c21}
 [2015-03-26 17:35:23 +0100]  Show "Choose your language" in language screen                             karasu      {6150a36}
 [2015-03-26 17:32:11 +0100]  Fixed warnings in header.ui                                                karasu      {c69e3e6}
 [2015-03-26 12:31:11 +0100]  Do not show so many error messages                                         karasu      {b0b7449}
