@@ -3,7 +3,7 @@
 #
 #  alongside.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -146,9 +146,9 @@ class InstallationAlongside(GtkBaseBox):
         if max_size < 0:
             # Full Antergos does not fit but maybe base fits... ask user.
             txt = _("Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
-            txt = txt + _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink) + "\n\n"
-            txt = txt + _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
-            txt = txt + _("Install at your own risk!")
+            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink) + "\n\n"
+            txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
+            txt += _("Install at your own risk!")
             show.warning(self.get_toplevel(), txt)
             max_size = part_size
 

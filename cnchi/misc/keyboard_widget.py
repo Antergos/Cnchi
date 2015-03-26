@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# keyboard_widget.py
+#  keyboard_widget.py
 #
 #  Copyright 2013 Manjaro (QT version)
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos (GTK version)
 #
 #  This file is part of Cnchi.
 #

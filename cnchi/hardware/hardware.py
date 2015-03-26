@@ -3,7 +3,7 @@
 #
 #  hardware.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -33,6 +33,7 @@ DEVICES = []
 CLASS_NAME = ""
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
+
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """

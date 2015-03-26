@@ -3,7 +3,7 @@
 #
 #  download_aria2.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -63,8 +63,8 @@ class Download(object):
             global_stat = self.aria2.get_global_stat()
             if global_stat is not None and "numActive" in global_stat:
                 num_active = int(global_stat["numActive"])
-        except TypeError as err:
-            logging.error(err)
+        except TypeError as type_error:
+            logging.error(type_error)
         finally:
             return num_active
 

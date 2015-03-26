@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# location.py
+#  location.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -119,13 +119,16 @@ class Location(GtkBaseBox):
             sys.exit(1)
 
         root = tree.getroot()
+        locale_name = ""
+        language_name = ""
         for child in root.iter("language"):
             for item in child:
                 if item.tag == 'language_name':
                     language_name = item.text
                 elif item.tag == 'locale_name':
                     locale_name = item.text
-            self.locales[locale_name] = language_name
+            if len(locale_name) > 0 and len(language_name) > 0:
+                self.locales[locale_name] = language_name
 
         xml_path = os.path.join(data_dir, "locale", "iso3366-1.xml")
 

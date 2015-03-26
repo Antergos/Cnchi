@@ -3,23 +3,23 @@
 #
 #  tz.py
 #
-# Copyright (C) 2006, 2007 Canonical Ltd.
-# Written by Colin Watson <cjwatson@ubuntu.com>.
-# New modifications Copyright © 2013,2014 Antergos
+#  Copyright (C) 2006, 2007 Canonical Ltd.
+#  Written by Colin Watson <cjwatson@ubuntu.com>.
+#  New modifications Copyright © 2013-2015 Antergos
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 from __future__ import print_function
 
@@ -36,9 +36,11 @@ from gi.repository import GObject
 TZ_DATA_FILE = '/usr/share/zoneinfo/zone.tab'
 ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
 
+
 def _seconds_since_epoch(dt):
     # TODO cjwatson 2006-02-23: %s escape is not portable
     return int(dt.replace(tzinfo=None).strftime('%s'))
+
 
 class SystemTzInfo(datetime.tzinfo):
     def __init__(self, tz=None):
@@ -169,13 +171,14 @@ def _parse_position(position, wholedigits):
     else:
         return whole - fraction / pow(10.0, len(fractionstr))
 
+
 class Location(object):
     __gtype_name__ = "Location"
     __gproperties__ = {
-        'zone' : (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.PARAM_READWRITE),
-        'latitude' : (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
-        'longitude' : (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
-        'human_country' : (GObject.TYPE_STRING, 'human_country', None, 'human_country', GObject.PARAM_READWRITE)}
+        'zone': (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.PARAM_READWRITE),
+        'latitude': (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
+        'longitude': (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GObject.G_MAXFLOAT, 1, GObject.PARAM_READWRITE),
+        'human_country': (GObject.TYPE_STRING, 'human_country', None, 'human_country', GObject.PARAM_READWRITE)}
 
     def get_info(self):
         return self.info
@@ -248,6 +251,7 @@ class Location(object):
     def set_property(self, prop, value):
         setattr(self, prop, value)
 
+
 class _Database(object):
     def __init__(self):
         self.locations = []
@@ -264,7 +268,7 @@ class _Database(object):
         for loc in self.locations:
             self.tz_to_loc[loc.zone] = loc
             if loc.country in self.cc_to_locs:
-                #self.cc_to_locs[loc.country] += [loc]
+                # self.cc_to_locs[loc.country] += [loc]
                 self.cc_to_locs[loc.country].append(loc)
             else:
                 self.cc_to_locs[loc.country] = [loc]

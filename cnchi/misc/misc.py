@@ -1,22 +1,22 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 #
-# Copyright (c) 2012 Canonical Ltd.
-# Copyright (c) 2013,2014 Antergos
+#  Copyright (c) 2012 Canonical Ltd.
+#  Copyright (c) 2013-2015 Antergos
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 from collections import namedtuple
 import contextlib
@@ -28,6 +28,7 @@ import shutil
 import subprocess
 import syslog
 import socket
+import locale
 import logging
 import dbus
 
@@ -58,8 +59,8 @@ def is_swap(device):
             for line in fp:
                 if line.startswith(device + ' '):
                     return True
-    except Exception:
-        pass
+    except OSError as os_error:
+        logging.warning(os_error)
     return False
 
 
@@ -936,7 +937,6 @@ def get_network():
 
 def sort_list(mylist, mylocale=""):
     try:
-        import locale
         import functools
     except ImportError as err:
         return mylist
@@ -951,14 +951,10 @@ def sort_list(mylist, mylocale=""):
 
 def set_locale(mylocale):
     try:
-        import locale
-
         locale.setlocale(locale.LC_ALL, mylocale)
         logging.info(_("locale changed to : %s"), mylocale)
-    except ImportError as err:
-        logging.error(_("Can't import locale module"))
     except locale.Error as err:
-        logging.warning(_("Can't change to locale '%s'"), mylocale)
+        logging.warning(_("Can't change to locale '%s' : %s"), mylocale, err)
         if mylocale.endswith(".UTF-8"):
             # Try without the .UTF-8 trailing
             mylocale = mylocale[:-len(".UTF-8")]
