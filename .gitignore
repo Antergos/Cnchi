@@ -44,3 +44,4 @@ nosetests.xml
 # PyCharm Config Files
 .idea
 .idea*
+.idea/*.xml

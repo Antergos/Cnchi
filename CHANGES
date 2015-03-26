@@ -1,4 +1,30 @@
+[2015-03-25 18:00:40 +0100]  Cleaned bootloader a bit.                                                  karasu      {f116624}
+[2015-03-25 17:38:51 +0100]  Fixed typo                                                                 karasu      {2d7dc0b}
+[2015-03-25 16:49:21 +0100]  Fix bootloader bug (and cleaned some code). Needs testing.                 karasu      {9747124}
+[2015-03-25 09:21:00 -0500]  I think the header-bar is finished                                     Dustin Falgout  {2de21fa}
+[2015-03-25 09:07:56 -0500]  more work on header-bar                                                Dustin Falgout  {8ac8a57}
+[2015-03-25 09:06:29 -0500]  more work on header-bar                                                Dustin Falgout  {d7f8746}
+[2015-03-25 08:37:10 -0500]  more work on header-bar                                                Dustin Falgout  {8c13984}
+[2015-03-25 07:15:54 -0500]  finally figured out where the missing tag was in header.ui             Dustin Falgout  {bf18cfe}
+[2015-03-25 06:03:20 -0500]  another typo :grimmacing:                                              Dustin Falgout  {90c4ef2}
+[2015-03-25 05:59:08 -0500]  still working on #273, making good progress                            Dustin Falgout  {88380f6}
+[2015-03-25 03:44:04 -0500]  remove .idea dir from git index                                        Dustin Falgout  {611234c}
+[2015-03-25 03:37:24 -0500]  fix typo                                                               Dustin Falgout  {a3852c3}
+[2015-03-25 02:54:50 -0500]  working on #273                                                        Dustin Falgout  {d002915}
+[2015-03-24 23:59:48 +0100]  Version bump. Yes, I forgot again about the hook...                        karasu      {7aa5ac1}
+[2015-03-24 23:51:02 +0100]  A file descriptor was left open. There's still an error in bootload..      karasu      {12ad11c}
+[2015-03-24 02:03:40 -0500]  Update README.md                                                       Dustin Falgout  {937c213}
+[2015-03-24 01:59:57 -0500]  Update readme for master                                               Dustin Falgout  {da60b3f}
+[2015-03-23 22:39:38 +0100]  cli_installer was not added?                                               karasu      {57630a0}
+[2015-03-23 19:01:54 +0100]  Merge remote-tracking branch 'cnchi-phab/master'                           karasu      {7d0e983}
+[2015-03-21 20:46:12 +0100]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {1e49c15}
+[2015-03-21 20:45:19 +0100]  Added poodle changes (so we have the same files, even some function..      karasu      {9bd670b}
+[2015-03-20 10:19:55 -0500]  see previous commit msg                                                Dustin Falgout  {8c61424}
 [2015-03-20 10:15:43 -0500]  include User-Agent header in request when downloading packages.xml ..  Dustin Falgout  {053de99}
+[2015-03-20 09:45:57 -0500]  version bump                                                           Dustin Falgout  {88e15ce}
+[2015-03-20 09:45:22 -0500]  include User-Agent header in request when downloading packages.xml ..  Dustin Falgout  {8ec353b}
+[2015-03-18 22:57:33 -0500]  forgot to update packages.xml back when we moved to webkit2 greeter..  Dustin Falgout  {507d03e}
+[2015-03-18 08:33:52 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {401e028}
 [2015-03-18 08:29:42 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {615d3a6}
 [2015-03-18 08:27:40 -0500]  enable avahi with cups. don't install foomatic package (seems to ca..  Dustin Falgout  {d04ed91}
 [2015-03-17 17:15:38 +0100]  iso-codes is a dependency (totally forgotten as it's always install..      karasu      {57075ff}
@@ -20,6 +46,7 @@
 [2015-03-12 15:48:27 +0100]  Give encfs a bit more of love                                              karasu      {70f58a7}
 [2015-03-12 12:31:02 +0100]  playing with encfs                                                         karasu      {d319ed9}
 [2015-03-11 22:37:21 +0100]  Fixed bug in encfs                                                         karasu      {ae6c580}
+[2015-03-09 12:07:28 -0500]  changes to lsb-release files (to say Antergos instead of Arch)         Dustin Falgout  {62ec4e9}
 [2015-03-09 12:06:00 -0500]  changes to lsb-release files (to say Antergos instead of Arch)         Dustin Falgout  {54fb8c1}
 [2015-03-09 08:58:35 -0500]  i forgot to use the variable in pre-commit hook.                       Dustin Falgout  {5efcc61}
 [2015-03-09 08:56:23 -0500]  don't overwrite an existing antergos_grub bootloader for uefi syste..  Dustin Falgout  {4cb0f12}
@@ -34,9 +61,16 @@
 [2015-03-05 14:45:10 +0100]  Fix minimal usage outside its declaration                                  karasu      {b6412e5}
 [2015-03-05 10:03:40 +0100]  minimal                                                                    karasu      {3df78d9}
 [2015-03-04 11:52:29 +0100]  super() methods cannot be static                                           karasu      {6c99c8f}
+[2015-03-04 08:46:24 +0000]  Skip the welcome page for minimal iso. it works for me but would yo..  Dustin Falgout  {a66289e}
+[2015-03-04 07:45:57 +0000]  fix slide width issue for minimal ISO. version bump.                   Dustin Falgout  {5827644}
+[2015-03-02 19:15:35 +0100]  Check max primary partitions correctly                                     karasu      {77e0506}
 [2015-03-02 19:14:50 +0100]  Check max primary partitions correctly                                     karasu      {d096393}
+[2015-03-02 17:13:04 +0100]  Update cb_event declaration in pac.py                                      karasu      {51defed}
 [2015-03-01 11:51:58 +0100]  Fix keymap selection issue                                                 karasu      {b67fddc}
 [2015-03-01 11:28:30 +0100]  An import was missing                                                      karasu      {5180650}
+[2015-03-01 11:25:59 +0100]  Show warning message if no room for new partitions                         karasu      {1ce5e2c}
+[2015-02-25 07:10:54 +0100]  Version bump                                                               karasu      {0201de2}
+[2015-02-25 07:10:07 +0100]  Fixed labeling a swap partition                                            karasu      {2414d4a}
 [2015-02-25 07:08:59 +0100]  Ported swap labeling fix from stable                                       karasu      {40b8ed5}
 [2015-02-23 14:01:21 +0100]  Last package was never installed!                                          karasu      {08342c5}
 [2015-02-18 21:49:29 +0100]  Guess what? More code cleaning!                                            karasu      {66d63be}
@@ -52,25 +86,50 @@
 [2015-02-17 08:44:31 +0100]  Fix stupid bug in format                                                   karasu      {fbd14e4}
 [2015-02-16 14:23:40 +0100]  pycharm rules (yes, I know, I should have tried it long ago)               karasu      {3994879}
 [2015-02-15 19:09:25 +0100]  Fixes issue 263                                                            karasu      {32c45c6}
+[2015-02-15 19:06:46 +0100]  version bump                                                               karasu      {e9a8d95}
+[2015-02-15 19:05:52 +0100]  Remove v86d from package list                                              karasu      {241c0d3}
 [2015-02-15 18:19:13 +0100]  v86d moved from [extra] to AUR                                             karasu      {4e45cef}
+[2015-02-15 17:58:56 +0100]  v86d has been moved from [extra] to AUR                                    karasu      {644d0a7}
 [2015-02-15 15:36:25 +0100]  Trying to fix slides size for Openbox                                      karasu      {9c360e8}
 [2015-02-15 15:24:51 +0100]  Raise a pyalpm.error when logging an error from pac.py                     karasu      {b5bf61c}
 [2015-02-15 11:12:35 +0100]  Do not pull lightdm-webkit-greeter                                         karasu      {372874d}
 [2015-02-15 10:47:46 +0100]  Ported root uuid fixing from stable                                        karasu      {e107766}
 [2015-02-15 10:07:26 +0100]  update packages.xml with gstreamer changes                                 karasu      {a03297c}
+[2015-02-15 01:55:09 -0600]  update packages.xml with gstreamer changes                             Dustin Falgout  {3d6b9a7}
+[2015-02-08 13:12:10 -0600]  fix background image file extension in grub theme                      Dustin Falgout  {afb42ae}
+[2015-02-08 01:20:13 -0600]  spring cleaning....                                                    Dustin Falgout  {74e69de}
+[2014-12-17 08:04:17 -0600]  Updated AUTHORS and icons (cherry picked from commit 4a78790)          WokSearedBacon  {1e80238}
 [2015-02-04 23:20:22 +0100]  Add gsimplecal to the Openbox installation                                 karasu      {f211b3f}
+[2015-02-04 23:16:08 +0100]  Merge pull request #259 from nagybence/master                              karasu      {84bbdb6}
+[2015-02-04 22:57:37 +0100]  add gsimplecal to openbox install                                        Nagy Bence    {d5eae1b}
 [2015-01-29 08:32:12 +0100]  Show logo in slides (as a quick fix for headerbar)                         karasu      {6d8053b}
 [2015-01-28 18:15:30 +0100]  Comment antergos-welcome package                                           karasu      {6baa9c7}
 [2015-01-28 18:08:47 +0100]  Fail if some package is not found (or if dependencies are not met) ..      karasu      {ba966f0}
 [2015-01-28 04:26:35 -0600]  plsma-next group was renamed to "plasma"                               Dustin Falgout  {a520469}
 [2015-01-28 03:41:38 -0600]  removed packages from kde4 by mistake *oops*                           Dustin Falgout  {a388141}
 [2015-01-28 02:55:18 -0600]  remove some packages not needed for plsma5                             Dustin Falgout  {2d0cc2f}
+[2015-01-28 00:46:32 -0600]  fix typo                                                               Dustin Falgout  {62de004}
 [2015-01-28 00:44:34 -0600]  forgot to update pkgnames for plasma5 too                              Dustin Falgout  {1df8006}
 [2015-01-28 00:41:27 -0600]  updated packages.xml and postinstall with upstream changes for kde/..  Dustin Falgout  {10cf43e}
 [2015-01-28 00:21:44 -0600]  updated packages.xml and postinstall with upstream changes for kde/..  Dustin Falgout  {375d716}
+[2015-01-28 00:21:44 -0600]  updated packages.xml and postinstall with upstream changes for kde/..  Dustin Falgout  {318a9df}
 [2015-01-26 19:30:58 +0100]  Minor change in header.ui                                                  karasu      {9594288}
 [2015-01-26 19:27:57 +0100]  Put arrow icons far one from the other to avoid user mistakes              karasu      {54c34d5}
 [2015-01-22 12:20:31 +0100]  Fix lvm2 initcpio hook for advanced install (ported from stable)           karasu      {978b425}
+[2015-01-22 00:18:52 -0600]  fixed grub.cfg root uuid issue (finally!) really this time...          Dustin Falgout  {7fe7115}
+[2015-01-21 23:56:06 -0600]  fixed grub.cfg root uuid issue (finally!)                              Dustin Falgout  {0961cc4}
+[2015-01-21 21:47:50 -0600]  always call notify-send as antergos user (testing.sh)                  Dustin Falgout  {73bcdea}
+[2015-01-21 21:44:57 -0600]  don't replace the entire grub.cfg with a single menu entry *oops*      Dustin Falgout  {8092751}
+[2015-01-21 21:03:56 -0600]  Merge pull request #257 from ial-su3/lvm-advanced-fix                  Dustin Falgout  {ed4e3b0}
+[2015-01-21 21:19:56 +0000]  Update test so boot flag is set on the boot partition only.                Ian Lee     {e65773d}
+[2015-01-20 08:57:19 +0000]  Merge remote-tracking branch 'antergos/master' into lvm-advanced-fix       Ian Le      {4cdf500}
+[2015-01-20 01:09:37 -0600]  mount special dirs before running grub-install                         Dustin Falgout  {d93364c}
+[2015-01-20 00:08:26 -0600]  mount special dirs before running grub-install                         Dustin Falgout  {afc3b31}
+[2015-01-19 23:52:56 -0600]  catch exception in check_ouput command                                 Dustin Falgout  {2ec95dd}
+[2015-01-19 23:33:14 -0600]  still working on grub install with luks                                Dustin Falgout  {6b9751e}
+[2015-01-19 22:50:17 -0600]  still working on grub install with luks                                Dustin Falgout  {882791e}
+[2015-01-19 22:18:46 -0600]  use list correctly for grub-install command                            Dustin Falgout  {e8242f4}
+[2015-01-19 21:45:21 -0600]  use full path for grub-install command                                 Dustin Falgout  {7af79ea}
 [2015-01-19 23:12:48 +0100]  Changed logging in pac.py                                                  karasu      {8e7c9b4}
 [2015-01-19 23:01:25 +0100]  Fix write_file params                                                      karasu      {b3f8945}
 [2015-01-19 22:49:24 +0100]  Worked on try/exception management. Needs testing, as always.              karasu      {d580c84}
@@ -86,6 +145,9 @@
 [2015-01-18 12:50:28 +0100]  Using wrong var name in auto_partition. Fixed.                             karasu      {e76643b}
 [2015-01-18 12:43:39 +0100]  Fix self.cache_dir bug (when is None)                                      karasu      {4d4de6f}
 [2015-01-18 10:52:13 +0100]  Added trace info when catching an exception in process.py                  karasu      {2d19185}
+[2015-01-17 19:53:28 -0600]  dont use shell=True                                                    Dustin Falgout  {bdbe88e}
+[2015-01-17 18:48:43 -0600]  version bump                                                           Dustin Falgout  {8c1ec7e}
+[2015-01-17 18:48:05 -0600]  fix for grub issues. needs testing.                                    Dustin Falgout  {c46c4a0}
 [2015-01-18 01:28:45 +0100]  There's something wrong in download_urllib when downloading. Can't ..      karasu      {0682c36}
 [2015-01-18 00:51:51 +0100]  Do not show extracting alpm debug messages                                 karasu      {19bdc89}
 [2015-01-18 00:35:08 +0100]  Do not show alpm extracting debug messages and do not try to check ..      karasu      {ea91152}
@@ -142,6 +204,9 @@
 [2015-01-13 09:58:32 +0100]  Working on auto_partition                                                  karasu      {18ca8d0}
 [2015-01-13 01:59:32 -0600]  small fixes from github master                                         Dustin Falgout  {882b01a}
 [2015-01-13 01:41:10 -0600]  forgot to add panel-launchers settings file (cherry picked from com..  Dustin Falgout  {05e98ba}
+[2015-01-13 01:41:10 -0600]  forgot to add panel-launchers settings file                            Dustin Falgout  {088be9d}
+[2015-01-13 01:40:10 -0600]  adjust update_info script so it works when cnchi is not in /usr/share  Dustin Falgout  {6739cda}
+[2015-01-13 01:08:05 -0600]  small fixes to postinstall. fix xups service name in process.py        Dustin Falgout  {94b0729}
 [2015-01-13 07:53:05 +0100]  Use a var for formatting                                                   karasu      {fbf97d6}
 [2015-01-12 21:41:20 +0100]  Fixed sizes in advanced screen                                             karasu      {c00e9de}
 [2015-01-12 21:30:32 +0100]  Fix typo                                                                   karasu      {cde0106}
@@ -156,9 +221,12 @@
 [2015-01-12 09:20:14 +0100]  Show waiting mouse icon when no timezone is being detected and Cnch..      karasu      {d03c665}
 [2015-01-11 12:37:17 +0100]  UNRESOLVED BUG: Always shows new properties                                karasu      {b2878ea}
 [2015-01-11 12:34:13 +0100]  Set size request in alongside widget now works                             karasu      {733f6ce}
+[2015-01-10 16:01:50 -0600]  fix file permissions on 10_antergos                                    Dustin Falgout  {db9789e}
 [2015-01-10 15:56:21 -0600]  fix file permissions on 10_antergos                                    Dustin Falgout  {0c15e2d}
 [2015-01-10 21:53:10 +0100]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {eae0a4b}
 [2015-01-10 21:52:37 +0100]  GtkAlignment is deprecated. Removed from gtkwidgets                        karasu      {2e370d9}
+[2015-01-10 13:18:57 -0600]  make sure root partition is configured as such in grub.cfg. previou..  Dustin Falgout  {cb04a2d}
+[2015-01-10 13:07:32 -0600]  backport upstream changes to 10_antergos script                        Dustin Falgout  {1653832}
 [2015-01-10 13:02:46 -0600]  backport upstream changes to 10_antergos script                        Dustin Falgout  {babaaae}
 [2015-01-09 19:29:25 +0100]  Use None instead of "error". Not important.                                karasu      {dba7b86}
 [2015-01-09 19:21:19 +0100]  Fix code to allow testing timezone.py properly.                            karasu      {0d39a7c}
@@ -180,6 +248,7 @@
 [2015-01-07 17:15:23 +0100]  Changed box spacing in automatic.ui                                        karasu      {3b1c987}
 [2015-01-07 17:06:15 +0100]  Changed some strings, nothing really done.                                 karasu      {f2b0ecf}
 [2015-01-07 13:30:39 +0100]  Do not fail when a timezone is not found in zone.tab database              karasu      {fd6681b}
+[2014-12-30 13:08:45 +0000]  Enable lvm when / is on an lvm partition.                                  Ian Lee     {abcf4a9}
 [2015-01-01 19:48:54 +0100]  Added enlightenment_remote script. I don't even know if it will be ..      karasu      {d7aa8ae}
 [2015-01-01 17:37:40 +0100]  Trying to fix sed command in bootloader. Needs testing                     karasu      {fcb3f17}
 [2015-01-01 16:30:34 +0100]  Fix bootloader choosing (and xml format). NEEDS TESTING                    karasu      {bcc09d0}
@@ -191,6 +260,7 @@
 [2015-01-01 14:35:59 +0100]  Modified aria2 parameters to allow concurrent downloads. Needs test..      karasu      {b856674}
 [2014-12-31 15:24:24 +0100]  Now in automatic installation mode the user can choose whether inst..      karasu      {11cbd39}
 [2014-12-31 14:54:26 +0100]  Revamped automatic screen. UI is finished.                                 karasu      {776591e}
+[2014-12-30 12:25:36 -0600]  backport pacman keyring fix from dev repo. bump version.               Dustin Falgout  {ec9c647}
 [2014-12-30 12:57:26 +0100]  Do not fail if Cnchi can't label a partition. Added a bunch of try/..      karasu      {9be4294}
 [2014-12-29 20:21:14 +0100]  Do not load alongside screen if not needed                                 karasu      {83a017f}
 [2014-12-29 11:31:37 +0100]  Adapted to pyalpm 7 (and libalpm 9)                                        karasu      {014e919}
@@ -199,6 +269,11 @@
 [2014-12-28 15:06:55 +0100]  Now it seems that all icons are shown as it should                         karasu      {6fd18e7}
 [2014-12-28 14:39:42 +0100]  Renamed kde to kde4 to avoid confusion. Removed setup code for desk..      karasu      {e89e076}
 [2014-12-28 13:13:26 +0100]  Is extend!!!                                                               karasu      {111aeda}
+[2014-12-26 11:31:47 +0100]  version bump reflecting mesa-dri to mesa name change                       karasu      {1f45c43}
+[2014-12-26 11:31:01 +0100]  mesa-dri -> mesa                                                           karasu      {dd164c6}
+[2014-12-23 08:30:20 +0100]  Do not check packages.xml time                                             karasu      {709f865}
+[2014-12-18 08:19:42 +0100]  enable haveged service                                                     karasu      {d1d167d}
+[2014-12-15 09:54:44 +0100]  Added -f --force parameter                                                 karasu      {7d845b0}
 [2014-12-14 20:53:07 +0000]  Fixed import                                                               karasu      {938b0e3}
 [2014-12-28 12:39:24 +0100]  Working on alpm messages to the user                                       karasu      {67a9c60}
 [2014-12-27 17:44:26 +0100]  use remove_temp_files from misc module                                     karasu      {adc929a}
@@ -264,8 +339,12 @@
 [2014-12-12 00:19:08 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {58480c5}
 [2014-12-12 00:17:20 -0600]  testing auto version bump git hook                                     Dustin Falgout  {9c37fb7}
 [2014-12-12 00:09:30 -0600]  setup automatic version bumping                                        Dustin Falgout  {b7bdff7}
+[2014-12-11 01:37:51 -0600]  don't compare struct time to a float time.                             Dustin Falgout  {8ce828c}
+[2014-12-10 21:39:03 -0600]  version bump                                                           Dustin Falgout  {e148895}
+[2014-12-10 21:37:50 -0600]  check "last-modified" header value when downloading packages.xml an..  Dustin Falgout  {fdb8545}
 [2014-12-10 21:58:05 +0100]  Some modifiactions in bootloader (I forgot to use chroot import)           karasu      {0503eb7}
 [2014-12-10 10:03:38 +0100]  Working on ufw code                                                        karasu      {5278860}
+[2014-12-09 21:23:54 -0500]  missed a spot of coord swapping                                         Alex Skinner   {d787f21}
 [2014-12-08 21:31:05 +0100]  Typo fixed. Also added try except                                          karasu      {bded8cb}
 [2014-12-08 16:09:29 +0100]  Wrong import                                                               karasu      {9067b6c}
 [2014-12-08 14:56:51 +0100]  Another forgotten var                                                      karasu      {0ee6742}
@@ -279,6 +358,11 @@
 [2014-12-08 13:25:24 +0100]  Fixed some imports                                                         karasu      {62ea019}
 [2014-12-08 13:17:59 +0100]  Moving process.py code to several files                                    karasu      {5148d02}
 [2014-12-08 09:41:07 +0100]  updated changelog                                                          karasu      {63bff9b}
+[2014-12-06 11:48:28 -0600]  FINALLY fixed the slider!                                              Dustin Falgout  {4a60677}
+[2014-12-06 10:13:13 -0600]  nump version                                                           Dustin Falgout  {f3abbf4}
+[2014-12-06 10:12:24 -0600]  change slider script. this one works better.                           Dustin Falgout  {4af8335}
+[2014-12-06 09:08:03 -0600]  forgot to include a file for slider                                    Dustin Falgout  {d55b69c}
+[2014-12-06 09:07:21 -0600]  forgot to include a file for slider                                    Dustin Falgout  {469c867}
 [2014-12-06 13:26:41 +0100]  Fixed small issues in process.py                                           karasu      {2bc3015}
 [2014-12-06 13:15:20 +0100]  Renamed NoX to Base                                                        karasu      {037a330}
 [2014-12-06 11:54:51 +0100]  Show downloads message                                                     karasu      {ace053f}
@@ -291,6 +375,9 @@
 [2014-12-05 13:13:43 +0100]  When there's no connection do not check for remote version                 karasu      {1152334}
 [2014-12-05 13:05:23 +0100]  Forgot an import                                                           karasu      {95d7dd1}
 [2014-12-05 10:48:50 +0100]  Some cleanup. Error "list index out of range" in aria2 persists            karasu      {28bec5a}
+[2014-12-04 23:56:20 -0600]  no need to hold version anymore                                        Dustin Falgout  {4bb3c97}
+[2014-12-04 23:54:42 -0600]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {ffaa2fd}
+[2014-12-04 23:54:28 -0600]  rewrite slider code. needs testing.                                    Dustin Falgout  {02d78c7}
 [2014-12-04 22:49:03 +0100]  Do not try to call aria2 xmlrpc if aria2 is not running                    karasu      {49fdc11}
 [2014-12-04 22:04:30 +0100]  Fix import (again)                                                         karasu      {c501ce5}
 [2014-12-04 22:00:35 +0100]  More import fixing.                                                        karasu      {cdc42d4}
@@ -303,11 +390,14 @@
 [2014-12-04 12:04:14 +0100]  Added broadcom changes. Also rewriting download code (not finished)        karasu      {d1e0af3}
 [2014-12-04 09:59:17 +0100]  Try not to always use the privative wl driver                              karasu      {2c95a5a}
 [2014-12-03 23:14:26 +0100]  Added catalyst file, not used                                              karasu      {14c4c82}
+[2014-12-03 22:57:38 +0100]  Added Orca to the Gnome installation                                       karasu      {3eacca2}
 [2014-12-03 21:22:44 +0100]  Version bump. Also I'm skipping an error in aria2, but good news is..      karasu      {14ab6fe}
 [2014-12-03 21:21:44 +0100]  Added lts feature and updated mkinitcpio and gummiboot loader. I'm ..      karasu      {9c2ea0f}
 [2014-12-03 20:15:39 +0100]  Typo                                                                       karasu      {eb83e9d}
 [2014-12-03 20:12:14 +0100]  version bump                                                               karasu      {05b4eef}
 [2014-12-03 19:10:37 +0100]  Added lts feature                                                          karasu      {193d3e3}
+[2014-12-02 18:32:49 -0600]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {e298580}
+[2014-12-02 18:32:15 -0600]  working on slide zoom issue                                            Dustin Falgout  {3f04bdd}
 [2014-12-02 18:27:19 +0100]  aria2 code is doing strange things (as always)                             karasu      {f9e9de0}
 [2014-12-02 17:31:04 +0100]  We're not sure if everything was ok, so do not tell it.                    karasu      {3dce63d}
 [2014-12-02 17:11:27 +0100]  Added debug messages to know how packages are downloaded                   karasu      {2bd816d}
@@ -328,8 +418,14 @@
 [2014-11-30 19:32:59 +0100]  Store selected features by user when returns to the features screen        karasu      {11bbd10}
 [2014-11-30 19:11:46 +0100]  Bug fixed in features (all features were shown)                            karasu      {9f4ae42}
 [2014-11-30 18:28:26 +0100]  Do not try to update again when just updated (avoid update loop)           karasu      {c57c806}
+[2014-11-30 18:19:07 +0100]  Avoids updating loop (so it's not really solving it)                       karasu      {a6850b5}
 [2014-11-30 17:53:17 +0100]  Added some suggested gnome packages (not all! and of course not gam..      karasu      {6bfdfc3}
 [2014-11-30 02:03:16 -0600]  fix filepath for notify_user function in testing.sh                    Dustin Falgout  {604278e}
+[2014-11-30 01:56:15 -0600]  fix filepath for notify_user function in testing.sh                    Dustin Falgout  {a988aff}
+[2014-11-29 20:25:49 -0600]  fix typo in features.ui; only init/populate keyring if our keys are..  Dustin Falgout  {cac128c}
+[2014-11-29 20:20:48 -0600]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {376b8c5}
+[2014-11-29 20:20:17 -0600]  fix typo in features.ui                                                Dustin Falgout  {9c1aaad}
+[2014-11-29 20:22:43 +0100]  Added keyring initialisation.                                              karasu      {b834e10}
 [2014-11-29 20:21:39 +0100]  Updated testing.sh                                                         karasu      {9a91b5d}
 [2014-11-29 20:19:02 +0100]  slides css modified by Dustin                                              karasu      {a1c39f5}
 [2014-11-29 18:08:18 +0100]  New features, new version                                                  karasu      {2f61eff}
@@ -342,14 +438,27 @@
 [2014-11-29 10:48:43 +0100]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {f2a8e13}
 [2014-11-29 10:47:36 +0100]  if rewritten to avoid depending on tab                                     karasu      {d346383}
 [2014-11-29 10:45:20 +0100]  cups service renamed                                                       karasu      {671c6c5}
+[2014-11-28 11:56:53 -0600]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {cf05a57}
+[2014-11-28 11:56:35 -0600]  fix for slide image being cut off. needs testing.                      Dustin Falgout  {3944d1c}
+[2014-11-28 17:24:52 +0100]  Updated update.info                                                        karasu      {5aa2ef4}
 [2014-11-28 17:22:26 +0100]  Updated update.info                                                        karasu      {320045e}
+[2014-11-28 09:54:28 -0600]  forgot to update some files when I removed gnome-extra and third pa..  Dustin Falgout  {709a7a1}
 [2014-11-28 15:12:09 +0100]  Ported slides from stable                                                  karasu      {a2a7da8}
 [2014-11-28 15:06:51 +0100]  Updated updater code.                                                      karasu      {069a0f4}
+[2014-11-27 23:26:22 -0600]  update cnchi-dev script                                                Dustin Falgout  {e583253}
+[2014-11-27 21:26:44 -0600]  few bug fixes before new iso build                                     Dustin Falgout  {e7db8c1}
+[2014-11-27 16:15:29 -0600]  revert last commit so the current testing iso's dont break             Dustin Falgout  {7364ca5}
+[2014-11-27 16:04:09 -0600]  version bump to test updater.py                                        Dustin Falgout  {3d1363c}
+[2014-11-27 16:02:19 -0600]  smaller font size on slides, created a 3rd slide. will be doing one..  Dustin Falgout  {8564810}
 [2014-11-27 15:06:24 +0100]  Show warning message if trying to install Antergos in a too small p..      karasu      {330b619}
 [2014-11-27 12:31:52 +0100]  working on alongside                                                       karasu      {e734127}
 [2014-11-27 10:56:22 +0100]  Ported slides from stable                                                  karasu      {2015e5f}
+[2014-11-27 03:21:53 -0600]  new slide images. not finished yet.                                    Dustin Falgout  {dff0439}
 [2014-11-27 09:32:01 +0100]  Updated changelog                                                          karasu      {8fcf50e}
 [2014-11-26 20:37:02 +0100]  Ported two mods from stable. Bumped versions and updated update.info       karasu      {002fee3}
+[2014-11-25 17:39:09 -0600]  forgot to comment out an old? function that was causing an exception   Dustin Falgout  {94c1241}
+[2014-11-25 17:22:54 -0600]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {be06126}
+[2014-11-25 17:22:20 -0600]  fix uncaught exception during pacman keyring prep                      Dustin Falgout  {d6cdf8b}
 [2014-11-25 18:26:31 +0100]  Changed desktop icons to numix ones                                        karasu      {108ce93}
 [2014-11-25 17:36:15 +0100]  Fixed authors, removed monitor file                                        karasu      {815473f}
 [2014-11-25 17:33:09 +0100]  new location deserves a version bump                                       karasu      {2ded617}
@@ -360,19 +469,27 @@
 [2014-11-25 09:50:41 +0100]  Always show location page avoiding GTK warning.                            karasu      {c932a00}
 [2014-11-25 09:25:59 +0100]  Do not use C style in postinstall.sh                                       karasu      {63509be}
 [2014-11-25 08:20:16 +0100]  Copy oblogout icons in Openbox edition                                     karasu      {d76560e}
+[2014-11-25 08:19:58 +0100]  Copy oblogout icons                                                        karasu      {78439f1}
 [2014-11-24 23:12:43 +0100]  is_room_available needs testing and dealing with logical shrink pos..      karasu      {96b79e7}
 [2014-11-24 23:06:26 +0100]  In alongside, CSS working too.                                             karasu      {e1ec2d1}
 [2014-11-24 23:04:53 +0100]  Working in alongside. Finally the slider works as it should.               karasu      {0288a43}
 [2014-11-24 08:50:54 -0600]  fix indent error                                                       Dustin Falgout  {7f3dcd3}
+[2014-11-24 08:48:11 -0600]  update.info                                                            Dustin Falgout  {4bc8127}
+[2014-11-24 08:46:02 -0600]  backport updater.py changes from dev branch. it's working!             Dustin Falgout  {60abe59}
+[2014-11-24 07:19:06 -0600]  bump version to test updater.py                                        Dustin Falgout  {7e24782}
 [2014-11-24 10:59:55 +0100]  Added url for GtkScale docs                                                karasu      {71e37e8}
 [2014-11-24 10:49:10 +0100]  Another print... geeez...                                                  karasu      {6f280b1}
 [2014-11-24 10:44:39 +0100]  Remove a debug print                                                       karasu      {81e7d30}
 [2014-11-24 10:43:53 +0100]  Do not leave tmp dirs in /tmp                                              karasu      {e1e90b5}
 [2014-11-24 09:03:20 +0100]  working on alongside                                                       karasu      {4649859}
 [2014-11-23 11:44:31 +0100]  version bump                                                               karasu      {3dbed13}
+[2014-11-23 11:43:43 +0100]  version bumped                                                             karasu      {669733c}
+[2014-11-23 11:43:08 +0100]  wrong var name                                                             karasu      {101b5e5}
 [2014-11-23 11:42:42 +0100]  wrong var name                                                             karasu      {9e64c5d}
 [2014-11-23 11:41:01 +0100]  Fix typo                                                                   karasu      {e8a0f05}
+[2014-11-23 11:39:22 +0100]  Working on rank_mirrors, at least now should not stop cnchi                karasu      {709eb40}
 [2014-11-23 11:39:07 +0100]  Working on rank_mirrors                                                    karasu      {5b9f641}
+[2014-11-23 11:31:03 +0100]  It won't work without requests, but at least it won't fail miserably       karasu      {39c3127}
 [2014-11-22 21:00:19 +0100]  Add margin to the timezonemap widget. I think it looks better              karasu      {8032559}
 [2014-11-22 11:26:07 +0100]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {ab89792}
 [2014-11-21 20:13:33 +0100]  update update.info                                                         karasu      {3216514}
@@ -380,9 +497,12 @@
 [2014-11-21 20:09:54 +0100]  Modified updater behaviour. Now it downloads master zip, uncompress..      karasu      {dc68643}
 [2014-11-21 18:06:48 +0100]  Fixed automatic ui, so that it has no deprecated warning and also d..      karasu      {4560973}
 [2014-11-21 17:44:14 +0100]  Fixed if condition in 10_antergos, not sure if this is correct (Dus..      karasu      {418bfad}
+[2014-11-21 17:42:47 +0100]  Update 10_antergos                                                         karasu      {339f79b}
+[2014-11-21 17:40:30 +0100]  Update 10_antergos                                                         karasu      {597ff05}
 [2014-11-21 13:19:10 +0100]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {32b9370}
 [2014-11-21 05:13:34 -0600]  don't try to download "magic" files                                    Dustin Falgout  {6b7bbfb}
 [2014-11-21 12:06:49 +0100]  Added warning if not using gtk3                                            karasu      {0c86ce4}
+[2014-11-21 05:00:09 -0600]  testing updater.py                                                     Dustin Falgout  {79f76c7}
 [2014-11-21 11:03:55 +0100]  Allow option to quit using escape key. This shoud work only in firs..      karasu      {94bbb62}
 [2014-11-21 09:49:50 +0100]  alongside does not show well                                               karasu      {b162e66}
 [2014-11-21 09:28:25 +0100]  Nothing important, little mods to alongside                                karasu      {32a5153}
@@ -392,6 +512,9 @@
 [2014-11-21 01:50:34 -0600]  i had it right the first time (i think)                                Dustin Falgout  {272065b}
 [2014-11-21 01:46:21 -0600]  fix exception handler in updater.py; update info.py                    Dustin Falgout  {9d5c497}
 [2014-11-21 08:45:48 +0100]  Allow Cnchi run in debian systems (even it won't work, it's useful ..      karasu      {b779bcf}
+[2014-11-21 01:33:35 -0600]  update.info                                                            Dustin Falgout  {c87e566}
+[2014-11-21 01:28:24 -0600]  fix version                                                            Dustin Falgout  {6bc244d}
+[2014-11-21 01:23:31 -0600]  backport important fixes from dev branch                               Dustin Falgout  {e959b6d}
 [2014-11-20 23:21:24 +0100]  Fixed typo in 10_antergos                                                  karasu      {04b291c}
 [2014-11-20 17:48:54 +0100]  Fix key error                                                              karasu      {fe69f40}
 [2014-11-20 15:37:52 +0100]  Fixed, wrong key was used                                                  karasu      {7704973}
@@ -444,6 +567,7 @@
 [2014-11-15 12:49:40 +0100]  Start work in encfs                                                        karasu      {ca41b2e}
 [2014-11-15 12:38:37 +0100]  Delete unused files                                                        karasu      {880ef7d}
 [2014-11-15 11:05:04 +0100]  The new timezonemap is working!                                            karasu      {58bec1a}
+[2014-11-14 18:35:02 -0500]  Reverse position of lon/lat for new geo server                          Alex Skinner   {3ad8062}
 [2014-11-14 10:58:33 +0100]  math domain error                                                          karasu      {6da4c5a}
 [2014-11-14 10:01:27 +0100]  Still working on it                                                        karasu      {e2e89ee}
 [2014-11-14 08:00:12 +0100]  get_timezone_at_coords needs fixing                                        karasu      {6f18ae1}
@@ -540,6 +664,8 @@
 [2014-10-27 11:04:32 +0100]  Working on updater. A few typos fixed                                      karasu      {3e536ed}
 [2014-10-27 10:59:48 +0100]  Working on updater. Should download only new files                         karasu      {a123267}
 [2014-10-27 09:48:58 +0100]  Updated pkg-clean-zenity (still not used)                                  karasu      {1f796cb}
+[2014-10-27 09:42:19 +0100]  Merge pull request #229 from adonm/patch-1                                 karasu      {a9b365d}
+[2014-10-27 15:22:28 +0800]  update kdeutils-kwallet to kdeutils-kwalletmanager                      Adon Metcalfe  {3041339}
 [2014-10-26 13:51:56 +0100]  Added desktop icons                                                        karasu      {353472d}
 [2014-10-26 13:17:47 +0100]  Added fix for Catalan                                                      karasu      {729cb48}
 [2014-10-25 17:55:06 +0200]  Added desktop icons to desktop screen, just for fun (it can be remo..      karasu      {5244a50}
@@ -598,7 +724,11 @@
 [2014-10-17 10:48:18 +0200]  Working on bootinfo                                                        karasu      {8f658d1}
 [2014-10-16 12:31:07 +0200]  Testing bootinfo, not done.                                                karasu      {9c46eb9}
 [2014-10-15 21:37:20 +0200]  Fixed typo                                                                 karasu      {0e1f6fc}
+[2014-10-15 21:37:01 +0200]  Fixed typo                                                                 karasu      {bbeccae}
+[2014-10-15 21:33:39 +0200]  Updated update.info                                                        karasu      {fabce50}
+[2014-10-15 21:16:13 +0200]  Fix numix-icon-theme-square-kde problem                                    karasu      {95ec62a}
 [2014-10-15 21:15:35 +0200]  Fix numix-icon-theme-square-kde problem                                    karasu      {034ba57}
+[2014-10-15 20:53:34 +0200]  Use fresh branch of libreoffice                                            karasu      {bcb80cc}
 [2014-10-15 18:34:05 +0200]  Fixed typo in exception handling                                           karasu      {1b195c7}
 [2014-10-15 12:27:27 +0200]  no no no no no no.... does not detect windows, works fine in linux         karasu      {879c0ca}
 [2014-10-15 09:57:09 +0200]  Bootinfo does not work atm                                                 karasu      {1f888d3}
@@ -617,6 +747,7 @@
 [2014-10-13 11:01:28 +0200]  Changed some subprocess calls to their pythonic equivalents                karasu      {b4c991d}
 [2014-10-07 22:42:36 +0200]  Aesthetic changes only                                                     karasu      {f64ba85}
 [2014-10-07 22:11:38 +0200]  Removed old commented code                                                 karasu      {0717699}
+[2014-10-07 10:01:18 +0200]  Updated update.info                                                        karasu      {325ba8e}
 [2014-10-07 09:36:48 +0200]  More bugfixing in updater                                                  karasu      {a4dd461}
 [2014-10-07 09:27:36 +0200]  Moved logging start location to an earlier position. I hope this do..      karasu      {fa38a22}
 [2014-10-07 09:16:33 +0200]  Working on the updater                                                     karasu      {b3b5287}
@@ -633,6 +764,9 @@
 [2014-10-05 19:31:16 +0200]  Playing with download. Nothing works atm                                   karasu      {6e9ca12}
 [2014-10-05 15:37:49 +0200]  Start work on using urllib to download packages in download.py (lea..      karasu      {8c3fc0c}
 [2014-10-05 12:10:04 +0200]  Fixed os-probe location (upstream change) Moved out from postinstal..      karasu      {a7d0c66}
+[2014-10-05 11:51:08 +0200]  Merge pull request #228 from lots0logs/master                              karasu      {aaa1c29}
+[2014-10-04 23:40:28 -0500]  Updated location of os-release file to reflect upstream changes.       Dustin Falgout  {5f2bef2}
+[2014-10-04 23:38:16 -0500]  Merge pull request #5 from Antergos/master                             Dustin Falgout  {25529cc}
 [2014-10-05 00:07:35 +0200]  Autopartition seems to work. LVM, LUKS and Home options need testin..      karasu      {2deac6e}
 [2014-10-03 19:29:11 +0200]  More changes in auto_partition                                             karasu      {e8efae7}
 [2014-10-03 19:02:22 +0200]  mmmm swap logical can't be of same size as the extended partition          karasu      {348e607}
@@ -645,8 +779,16 @@
 [2014-10-03 12:31:51 +0200]  another helper function. auto_partition will be more readable              karasu      {fc9412f}
 [2014-10-03 11:02:01 +0200]  Helper function for parted mkpart                                          karasu      {90238f5}
 [2014-10-03 09:59:23 +0200]  Added helper function, more to come.                                       karasu      {4b07f48}
+[2014-10-03 09:06:53 +0200]  Update radeon.py                                                           karasu      {ddb8b9a}
+[2014-10-03 09:06:22 +0200]  Update nouveau.py                                                          karasu      {3f67608}
+[2014-10-03 09:05:45 +0200]  Update i915.py                                                             karasu      {5ae42a5}
 [2014-10-03 08:57:45 +0200]  Updated hardware module for the packaging changes for mesa.                karasu      {7689324}
 [2014-10-03 08:44:48 +0200]  Removed gnome-extras. Added gnome-* to packages. In some DE's repla..      karasu      {533a5b0}
+[2014-10-03 08:25:07 +0200]  Merge pull request #227 from lots0logs/master                              karasu      {b06b162}
+[2014-10-03 00:15:45 -0500]  removed pycharm directory                                              Dustin Falgout  {f9148ed}
+[2014-10-02 22:40:13 -0500]  version bump                                                           Dustin Falgout  {09ea6f8}
+[2014-10-02 22:38:45 -0500]  Updated hardware module  for the packaging changes for mesa.           Dustin Falgout  {d8b31f3}
+[2014-10-02 22:23:45 -0500]  Merge pull request #4 from Antergos/master                             Dustin Falgout  {6e9142d}
 [2014-10-02 13:28:40 +0200]  More work done in auto_partition. Far from being finished                  karasu      {8becb7c}
 [2014-10-02 12:29:19 +0200]  Rewritting auto_partition. NOT FINISHED                                    karasu      {01f1cff}
 [2014-10-02 11:00:26 +0200]  Cleaning GPT and os calls                                                  karasu      {5a76c3b}
@@ -655,7 +797,9 @@
 [2014-09-28 15:27:31 +0200]  Added simplejson (will be needed by antergos welcome screen)               karasu      {3c03eb1}
 [2014-09-28 15:14:55 +0200]  Added todo e19 to todo repo. Removed file  here.                           karasu      {f205a97}
 [2014-09-28 11:10:21 +0200]  Changed all chmod subprocess calls to os.chmod calls.                      karasu      {cdf9b53}
+[2014-09-28 11:03:02 +0200]  Octal in Python3 is preceded by 0o                                         karasu      {23cf377}
 [2014-09-28 11:02:30 +0200]  Octal in pyton3 is preceded by 0o                                          karasu      {a1f1628}
+[2014-09-28 10:57:08 +0200]  os.chmod value must have a leading zero (0755)                             karasu      {6095392}
 [2014-09-28 10:54:36 +0200]  Fixed a bug in process.py (chmod value must have a leading zero)           karasu      {44c9f68}
 [2014-09-27 20:31:40 +0200]  We could replace Xnoise with Pragha (a lightweight GTK3 player) in ..      karasu      {48dcd63}
 [2014-09-27 20:21:05 +0200]  Not sure about the dark theme thingy                                       karasu      {fbf88e2}
