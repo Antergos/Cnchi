@@ -164,8 +164,7 @@ def check_pyalpm_version():
         logging.info(txt)
     except (NameError, ImportError) as err:
         logging.error(err)
-        # We don't return false as we want to be able to run Cnchi
-        # in non Antergos systems for testing purposes
+
     return True
 
 

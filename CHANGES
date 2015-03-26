@@ -1,3 +1,5 @@
+[2015-03-26 12:10:42 +0100]  There're two warnings that need fixing                                     karasu      {5ce16e4}
+[2015-03-25 18:48:35 +0100]  Fixing set_grub_option in bootloader                                       karasu      {6915bb3}
 [2015-03-25 18:00:40 +0100]  Cleaned bootloader a bit.                                                  karasu      {f116624}
 [2015-03-25 17:38:51 +0100]  Fixed typo                                                                 karasu      {2d7dc0b}
 [2015-03-25 16:49:21 +0100]  Fix bootloader bug (and cleaned some code). Needs testing.                 karasu      {9747124}

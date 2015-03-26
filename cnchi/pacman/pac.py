@@ -36,12 +36,14 @@ try:
     import pacman.pkginfo as pkginfo
     import pacman.pacman_conf as config
 except ImportError as err:
-    logging.error(err)
+    #logging.error(err)
+    pass
 
 try:
     import pyalpm
 except ImportError as err:
-    logging.error(err)
+    #logging.error(err)
+    pass
 
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
