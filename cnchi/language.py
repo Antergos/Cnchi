@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# language.py
+#  language.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -81,7 +81,7 @@ class Language(GtkBaseBox):
         label = self.ui.get_object("welcome_label")
         label.set_markup(txt_markup)
 
-        txt = _("Welcome to Antergos!")
+        txt = _("Choose your language")
         self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):

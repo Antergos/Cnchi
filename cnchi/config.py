@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# pacman_conf.py
+#  pacman_conf.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #

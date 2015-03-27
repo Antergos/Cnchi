@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# slides.py
+#  slides.py
 #
-# Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
-# This file is part of Cnchi.
+#  This file is part of Cnchi.
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

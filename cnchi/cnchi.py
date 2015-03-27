@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# cnchi.py
+#  cnchi.py
 #
-# Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -164,8 +164,8 @@ def check_pyalpm_version():
         logging.info(txt)
     except (NameError, ImportError) as err:
         logging.error(err)
-        # We don't return false as we want to be able to run Cnchi
-        # in non Antergos systems for testing purposes
+        sys.exit(1)
+
     return True
 
 

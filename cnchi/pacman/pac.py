@@ -5,7 +5,7 @@
 #
 #  This code is based on previous work by Rémy Oudompheng <remy@archlinux.org>
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -36,12 +36,14 @@ try:
     import pacman.pkginfo as pkginfo
     import pacman.pacman_conf as config
 except ImportError as err:
-    logging.error(err)
+    # logging.error(err)
+    pass
 
 try:
     import pyalpm
 except ImportError as err:
-    logging.error(err)
+    # logging.error(err)
+    pass
 
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
@@ -149,8 +151,14 @@ class Pac(object):
             logging.debug(_("Alpm transaction done."))
             return all_ok
 
-    def init_transaction(self, options={}):
+    def init_transaction(self, options=None):
         """ Transaction initialization """
+
+        transaction = None
+
+        if options is None:
+            options = {}
+
         try:
             transaction = self.handle.init_transaction(
                 cascade=options.get('cascade', False),
@@ -168,7 +176,6 @@ class Pac(object):
         except pyalpm.error as pyalpm_error:
             msg = _("Can't init alpm transaction: %s")
             logging.error(msg, pyalpm_error)
-            transaction = None
         finally:
             return transaction
 

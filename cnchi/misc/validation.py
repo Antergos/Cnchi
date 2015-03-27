@@ -1,12 +1,12 @@
 # -*- coding: utf-8; Mode: Python; indent-tabs-mode: nil; tab-width: 4 -*-
 
-# «validation» - miscellaneous validation of user-entered data
+#  Miscellaneous validation of user-entered data
 #
-# Copyright (C) 2005 Junta de Andalucía
-# Copyright (C) 2005, 2006, 2007, 2008 Canonical Ltd.
+#  Copyright (C) 2005 Junta de Andalucía
+#  Copyright (C) 2005, 2006, 2007, 2008 Canonical Ltd.
 #
-# Validation library.
-# Created by Antonio Olmo <aolmo#emergya._info> on 26 jul 2005.
+#  Validation library.
+#  Created by Antonio Olmo <aolmo#emergya._info> on 26 jul 2005.
 
 
 def check_grub_device(device):
@@ -31,11 +31,13 @@ NAME_BADCHAR = 2
 NAME_BADHYPHEN = 3
 NAME_BADDOTS = 4
 
+
 def check(element, value):
     if element == 'username':
         return check_username(value)
     if element == 'hostname':
         return check_hostname(value)
+
 
 def check_username(name):
     """ Check the correctness of a proposed user name.
@@ -61,6 +63,7 @@ def check_username(name):
         result.add(NAME_BADDOTS)
 
     return sorted(result)
+
 
 def check_hostname(name):
     """ Check the correctness of a proposed host name.
@@ -89,6 +92,7 @@ def check_hostname(name):
 
 # Based on setPasswordStrength() in Mozilla Seamonkey, which is tri-licensed
 # under MPL 1.1, GPL 2.0, and LGPL 2.1.
+
 
 def password_strength(password):
     upper = lower = digit = symbol = 0
@@ -143,7 +147,7 @@ def human_password_strength(password):
     else:
         hint = _('Strong password')
         color = 'darkgreen'
-    return (hint, color)
+    return hint, color
 
 
 def check_password(password, verified_password, password_ok,

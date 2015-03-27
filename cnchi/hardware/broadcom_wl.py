@@ -3,7 +3,7 @@
 #
 #  broadcom_wl.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #

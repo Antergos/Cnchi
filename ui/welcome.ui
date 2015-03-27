@@ -21,13 +21,11 @@
           <object class="GtkBox" id="box_tryit">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <!--<property name="margin_start">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="tryit_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -56,6 +54,7 @@
             <property name="position">0</property>
           </packing>
         </child>
+        <!--
         <child>
           <object class="GtkBox" id="box_cli">
             <property name="visible">True</property>
@@ -65,7 +64,6 @@
               <object class="GtkImage" id="cli_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -94,17 +92,16 @@
             <property name="position">1</property>
           </packing>
         </child>
+        -->
         <child>
           <object class="GtkBox" id="box_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <!--<property name="margin_end">20</property>-->
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkImage" id="graph_image">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <!--<property name="stock">gtk-missing-image</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>

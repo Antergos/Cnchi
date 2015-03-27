@@ -3,7 +3,7 @@
 #
 #  aria2.py
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -142,7 +142,7 @@ class Aria2(object):
                                             # than SIZE bytes, it drops connection (default 2M)
             "--show-console-readout=false",  # Show console readout (default true)
             "--split=5",                    # Download a file using N connections (default 5)
-            "--stop-with-process={0}".format(pid), # Stop aria2 if Cnchi ends unexpectedly
+            "--stop-with-process={0}".format(pid),  # Stop aria2 if Cnchi ends unexpectedly
             "--summary-interval=0",         # Set interval in seconds to output download progress summary. Setting 0
                                             # suppresses the output (default 60)
             "--timeout=60"]                 # Set timeout in seconds (default 60)
