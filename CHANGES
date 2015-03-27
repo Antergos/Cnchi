@@ -1,3 +1,4 @@
+[2015-03-27 09:28:44 +0100]  Version bump                                                               karasu      {d6e490a}
 [2015-03-27 09:27:10 +0100]  If no pyalpm available, exit.                                              karasu      {3853350}
 [2015-03-26 18:28:57 +0100]  Removed cli button in welcome screen. It just works, maybe it shoul..      karasu      {f6eff6a}
 [2015-03-26 18:22:12 +0100]  Some PEP-8 changes and fixed copyright headers (no real code changes)      karasu      {9c48c21}
