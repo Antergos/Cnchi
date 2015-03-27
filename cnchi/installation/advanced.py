@@ -1316,7 +1316,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         part = self.ui.get_object('boot_efi_part')
         txt = _("EFI")
-        part.props.label = txt + " ( /boot/efi )"
+        part.props.label = txt + " ( /boot )"
 
         part = self.ui.get_object('swap_part')
         txt = _("Swap")
