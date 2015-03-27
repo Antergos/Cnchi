@@ -58,12 +58,12 @@ class Welcome(GtkBaseBox):
                        # 'cli': self.ui.get_object("cli_image"),
                        'graph': self.ui.get_object("graph_image")}
 
-        self.filenames = {'tryit': os.path.join(welcome_dir, "try-it.svg"),
-                          # 'cli': os.path.join(welcome_dir, "cliinstaller-icon.png"),
-                          'graph': os.path.join(welcome_dir, "install-it.svg")}
+        self.filenames = {'tryit': {'path': os.path.join(welcome_dir, "try-it.svg"), 'width': 150, 'height': 131},
+                          'graph': {'path': os.path.join(welcome_dir, "install-it.svg"), 'width': 150, 'height': 108}}
 
         for key in self.images:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(self.filenames[key], 96, 96)
+            image = self.filenames[key]
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(image['path'], image['width'], image['height'])
             self.images[key].set_from_pixbuf(pixbuf)
 
     def translate_ui(self):
