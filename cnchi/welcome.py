@@ -43,7 +43,8 @@ class Welcome(GtkBaseBox):
         welcome_dir = os.path.join(data_dir, "images", "welcome")
 
         self.labels = {'welcome': self.ui.get_object("welcome_label"),
-                       'info': self.ui.get_object("info_welcome_label"),
+                       'tryit': self.ui.get_object("tryit_welcome_label"),
+                       'installit': self.ui.get_object("installit_welcome_label"),
                        'loading': self.ui.get_object("loading_label")}
 
         self.buttons = {'tryit': self.ui.get_object("tryit_button"),
@@ -69,13 +70,13 @@ class Welcome(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         if not self.disable_tryit:
-            txt = _("You can try Antergos without making any changes to your system by selecting 'Try It'.") + "\n"
+            txt = _("Try Antergos without making any changes to your system.") + "\n"
         else:
             txt = ""
+        self.labels['tryit'].set_markup(txt)
 
-        txt += _("When you are ready to install Antergos simply choose which installer you prefer.")
-        txt = '<span weight="bold">{0}</span>'.format(txt)
-        self.labels['info'].set_markup(txt)
+        txt = _("Create a permanent place for Antergos on your system.")
+        self.labels['installit'].set_markup(txt)
 
         txt = _("Try It")
         self.buttons['tryit'].set_label(txt)
@@ -83,7 +84,7 @@ class Welcome(GtkBaseBox):
         # txt = _("CLI Installer")
         # self.buttons['cli'].set_label(txt)
 
-        txt = _("Graphical Installer")
+        txt = _("Install It")
         self.buttons['graph'].set_label(txt)
 
         txt = _("Welcome to Antergos!")
