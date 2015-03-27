@@ -32,6 +32,7 @@ import misc.misc as misc
 import show_message as show
 
 from gtkbasebox import GtkBaseBox
+from gi.repository import GdkPixbuf
 
 
 class Welcome(GtkBaseBox):
@@ -57,12 +58,13 @@ class Welcome(GtkBaseBox):
                        # 'cli': self.ui.get_object("cli_image"),
                        'graph': self.ui.get_object("graph_image")}
 
-        self.filenames = {'tryit': os.path.join(welcome_dir, "tryit-icon.png"),
+        self.filenames = {'tryit': os.path.join(welcome_dir, "try-it.svg"),
                           # 'cli': os.path.join(welcome_dir, "cliinstaller-icon.png"),
-                          'graph': os.path.join(welcome_dir, "installer-icon.png")}
+                          'graph': os.path.join(welcome_dir, "install-it.svg")}
 
         for key in self.images:
-            self.images[key].set_from_file(self.filenames[key])
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(self.filenames[key], 96, 96)
+            self.images[key].set_from_pixbuf(pixbuf)
 
     def translate_ui(self):
         """ Translates all ui elements """
