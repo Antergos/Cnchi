@@ -5,6 +5,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
+        <property name="expand">False</property>
         <property name="valign">center</property>
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
@@ -14,9 +15,9 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="hexpand">true</property>
+                <property name="hexpand">False</property>
                 <property name="spacing">95</property>
-                <property name="homogeneous">True</property>
+                <property name="homogeneous">False</property>
                 <child>
                     <object class="GtkBox" id="box_tryit">
                         <property name="visible">True</property>
@@ -26,6 +27,8 @@
                             <object class="GtkImage" id="tryit_image">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="margin-left">25</property>
+                                <property name="margin-right">25</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -40,6 +43,7 @@
                                 <property name="label" translatable="yes"></property>
                                 <property name="justify">center</property>
                                 <property name="margin-top">20</property>
+                                <property name="wrap">True</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -117,6 +121,8 @@
                             <object class="GtkImage" id="graph_image">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="margin-left">25</property>
+                                <property name="margin-right">25</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -131,6 +137,7 @@
                                 <property name="label" translatable="yes"></property>
                                 <property name="justify">center</property>
                                 <property name="margin-top">20</property>
+                                <property name="wrap">True</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
