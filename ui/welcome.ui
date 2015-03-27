@@ -34,20 +34,20 @@
                             </packing>
                         </child>
                         <child>
-                            <child>
-                                <object class="GtkLabel" id="tryit_welcome_label">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes"></property>
-                                    <property name="justify">center</property>
-                                    <property name="margin-top">20</property>
-                                </object>
-                                <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                </packing>
-                            </child>
+                            <object class="GtkLabel" id="tryit_welcome_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes"></property>
+                                <property name="justify">center</property>
+                                <property name="margin-top">20</property>
+                            </object>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                        <child>
                             <object class="GtkButton" id="tryit_button">
                                 <property name="label" translatable="yes">Try it</property>
                                 <property name="visible">True</property>
