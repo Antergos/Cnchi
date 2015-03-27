@@ -1,3 +1,4 @@
+[2015-03-27 05:01:23 -0500]  cinnamon icon for desktop selection screen                             Dustin Falgout  {1e6fd43}
 [2015-03-27 10:36:32 +0100]  Show /boot instead of /boot/efi tag in advanced screen                     karasu      {76fcbdb}
 [2015-03-27 10:15:28 +0100]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {08a2acb}
 [2015-03-27 09:51:10 +0100]  Removed margins in scrolled widget (slides screen). Needs real test..      karasu      {7f3b66a}
