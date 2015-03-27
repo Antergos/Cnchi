@@ -164,6 +164,7 @@ def check_pyalpm_version():
         logging.info(txt)
     except (NameError, ImportError) as err:
         logging.error(err)
+        sys.exit(1)
 
     return True
 
