@@ -52,14 +52,14 @@ class Welcome(GtkBaseBox):
 
         for key in self.buttons:
             btn = self.buttons[key]
-            btn.set_name("welcome_btn")
+            btn.set_name(key + "_btn")
 
         self.images = {'tryit': self.ui.get_object("tryit_image"),
                        # 'cli': self.ui.get_object("cli_image"),
                        'graph': self.ui.get_object("graph_image")}
 
-        self.filenames = {'tryit': {'path': os.path.join(welcome_dir, "try-it.svg"), 'width': 150, 'height': 131},
-                          'graph': {'path': os.path.join(welcome_dir, "install-it.svg"), 'width': 150, 'height': 108}}
+        self.filenames = {'tryit': {'path': os.path.join(welcome_dir, "try-it.svg"), 'width': 165, 'height': 189},
+                          'graph': {'path': os.path.join(welcome_dir, "install-it.svg"), 'width': 243, 'height': 174}}
 
         for key in self.images:
             image = self.filenames[key]

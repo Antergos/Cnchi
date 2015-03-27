@@ -103,3 +103,25 @@ GtkSeparatorToolItem {
 .list GtkListBoxRow:active, .list .list-row:active, .list .list-row:selected {
     background-color: #2EA3F2;
 }
+
+#tryit_btn, #graph_btn {
+padding: 12px 20px;
+border-radius: 3px;
+border-color: #2EA3F2;
+border-width: 2px;
+background: rgba(255,255,255,1);
+font-size: 15px;
+  font-weight: 500;
+color: #2EA3F2;
+transition: all 0.1s ease-in;
+}
+#tryit_btn:hover, #graph_btn:hover {
+padding-top: 9px;
+padding-bottom: 9px;
+background: #2EA3F2;
+color: #fff;
+border-radius: 0px;
+border-width: 0px;
+border-bottom-width: 1px;
+font-size: 20px;
+}
