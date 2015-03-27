@@ -5,7 +5,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="valign">center</property>
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
@@ -29,6 +29,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="margin-left">25</property>
                                 <property name="margin-right">25</property>
+				<property name="margin-top">14</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -42,7 +43,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes"></property>
                                 <property name="justify">center</property>
-                                <property name="margin-top">20</property>
+                                <property name="margin-top">15</property>
                                 <property name="wrap">True</property>
                                 <property name="max_width_chars">28</property>
                             </object>
@@ -58,7 +59,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="margin-top">10</property>
+                                <property name="margin-top">0</property>
                                 <signal name="clicked" handler="on_tryit_button_clicked" swapped="no"/>
                             </object>
                             <packing>
@@ -137,7 +138,8 @@
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes"></property>
                                 <property name="justify">center</property>
-                                <property name="margin-top">20</property>
+                                <property name="margin-top">10</property>
+<property name="margin-bottom">9</property>
                                 <property name="wrap">True</property>
                                 <property name="max_width_chars">29</property>
                             </object>
