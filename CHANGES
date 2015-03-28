@@ -1,3 +1,4 @@
+[2015-03-27 23:50:54 -0500]  forgot to include valign property                                      Dustin Falgout  {d055998}
 [2015-03-27 23:48:55 -0500]  fix alignment on the languages screen                                  Dustin Falgout  {7ae0b00}
 [2015-03-27 23:47:17 -0500]  welcome screen looks good on my system. let me know if it does for ..  Dustin Falgout  {83ca1c5}
 [2015-03-27 17:36:07 +0100]  Each time I clone the repo I forgot to add the version bump hook. S..      karasu      {4b93df4}
