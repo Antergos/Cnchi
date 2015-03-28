@@ -74,9 +74,11 @@ class Welcome(GtkBaseBox):
         else:
             txt = ""
         self.labels['tryit'].set_markup(txt)
+        self.labels['tryit'].set_name('tryit_label')
 
         txt = _("Create a permanent place for Antergos on your system.")
         self.labels['installit'].set_markup(txt)
+        self.labels['installit'].set_name('installit_label')
 
         txt = _("Try It")
         self.buttons['tryit'].set_label(txt)

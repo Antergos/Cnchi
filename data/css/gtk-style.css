@@ -17,7 +17,7 @@ GtkWindow {
     font-size: 11px;
     font-weight: 600;
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
-    text-shadow: 1px 1px 0 #000;
+    text-shadow: 1px 1px 0px #222;
 }
 
 .subtitle {
@@ -124,4 +124,8 @@ border-radius: 0px;
 border-width: 0px;
 border-bottom-width: 1px;
 font-size: 20px;
+}
+
+#tryit_label, #installit_label {
+    font-size: 11px;
 }
