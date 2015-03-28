@@ -54,6 +54,7 @@
             <property name="justify">fill</property>
             <property name="wrap">True</property>
               <property name="vexpand">True</property>
+              <property name="valign">Center</property>
           </object>
           <packing>
             <property name="expand">False</property>
