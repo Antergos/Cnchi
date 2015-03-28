@@ -278,8 +278,10 @@ class Bootloader(object):
             '--bootloader-id={0}'.format(bootloader_id),
             '--boot-directory=/install/boot',
             '--recheck']
+        load_module = ['modprobe', '-a', 'efivarfs']
 
         try:
+            subprocess.call(load_module, timeout=15)
             subprocess.check_call(grub_install, shell=True, timeout=120)
         except subprocess.CalledProcessError as process_error:
             logging.error('Command grub-install failed. Error output: %s', process_error.output)
