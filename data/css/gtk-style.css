@@ -1,5 +1,9 @@
 #main {
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
+    font-size: 11px;
+}
+#location {
+font-size: 11px;
 }
 
 GtkWindow {
