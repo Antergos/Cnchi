@@ -1324,9 +1324,9 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_timesetting()
 
         if self.desktop != "base":
-            # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
-            logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
-            xorg_conf_xkb_path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d/00-keyboard.conf")
+            # Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout
+            logging.debug(_("Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"))
+            xorg_conf_xkb_path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d/10-keyboard.conf")
             with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
                 xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
                 xorg_conf_xkb.write('# manually too freely.\n')
@@ -1337,7 +1337,7 @@ class InstallationProcess(multiprocessing.Process):
                 if len(keyboard_variant) > 0:
                     xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                 xorg_conf_xkb.write('EndSection\n')
-            logging.debug(_("00-keyboard.conf written."))
+            logging.debug(_("10-keyboard.conf written."))
 
         # Install configs for root
         chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
@@ -1353,7 +1353,7 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Updated Alsa mixer settings"))
 
         # Set pulse
-        if os.path.exists("/usr/bin/pulseaudio-ctl"):
+        if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
             chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
@@ -1391,7 +1391,7 @@ class InstallationProcess(multiprocessing.Process):
         self.setup_features()
 
         # Encrypt user's home directory if requested
-        # TODO: Test this!
+        # FIXME: This is not working atm
         if self.settings.get('encrypt_home'):
             logging.debug(_("Encrypting user home dir..."))
             encfs.setup(username, DEST_DIR)
