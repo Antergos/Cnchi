@@ -184,6 +184,7 @@ class Bootloader(object):
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as general_error:
             logging.error("Can't modify /etc/default/grub")
+            logging.error(general_error)
 
     def prepare_grub_d(self):
         """ Copies 10_antergos script into /etc/grub.d/ """

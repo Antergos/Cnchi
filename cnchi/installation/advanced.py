@@ -447,9 +447,7 @@ class InstallationAdvanced(GtkBaseBox):
                     fmt_enable = True
                     fmt_active = False
                     label = ""
-                    fs_type = ""
                     mount_point = ""
-                    used = ""
                     formatable = True
 
                     partition_path = "/dev/mapper/{0}-{1}".format(volume_group, logical_volume)
@@ -523,7 +521,6 @@ class InstallationAdvanced(GtkBaseBox):
                 # Append the device info to our model
                 row = [dev.path, "", "", "", False, False, size_txt, "", "", "", 0, False, is_ssd, True, True, False]
                 disk_parent = self.partition_list_store.append(None, row)
-                parent = disk_parent
 
                 extended_parent = None
 
@@ -537,13 +534,10 @@ class InstallationAdvanced(GtkBaseBox):
                     # Get partition size
                     partition = partitions[partition_path]
                     size_txt = self.get_size(partition.geometry.length, dev.sectorSize)
-                    fmt_enable = False
                     fmt_active = False
                     label = ""
-                    fs_type = ""
                     mount_point = ""
                     used = ""
-                    flags = ""
                     formatable = True
 
                     path = partition.path
@@ -577,9 +571,9 @@ class InstallationAdvanced(GtkBaseBox):
                         # Show 'free space' instead of /dev/sda-1
                         path = _("free space")
                         formatable = False
-                    else:
-                        # Get partition flags
-                        flags = pm.get_flags(partition)
+                    # else:
+                    #    # Get partition flags
+                    #    flags = pm.get_flags(partition)
 
                     uid = self.gen_partition_uid(partition=partition)
                     if uid in self.stage_opts:
@@ -733,12 +727,15 @@ class InstallationAdvanced(GtkBaseBox):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        # Get disk_path and disk
+        # Get disk path
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
+
+        '''
         try:
-            (disk, result) = self.disks[disk_path]
+            disk, result = self.disks[disk_path]
         except Exception:
             disk = None
+        '''
 
         uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
 
@@ -801,7 +798,7 @@ class InstallationAdvanced(GtkBaseBox):
         """ Helper function that returns the disk path where the selected partition is in """
         if tree_iter is not None and model is not None:
             row = model[tree_iter]
-            partition_path = row[COL_PARTITION_PATH]
+            # partition_path = row[COL_PARTITION_PATH]
 
             # Get partition type from the user selection
             part_type = row[COL_PARTITION_TYPE]
@@ -835,7 +832,7 @@ class InstallationAdvanced(GtkBaseBox):
         row = model[tree_iter]
 
         mount_point = row[COL_MOUNT_POINT]
-        size_available = row[COL_SIZE]
+        # size_available = row[COL_SIZE]
         partition_path = row[COL_PARTITION_PATH]
 
         if mount_point in self.diskdic['mounts']:
@@ -878,7 +875,7 @@ class InstallationAdvanced(GtkBaseBox):
             # We unmount the partition. Should we ask first?
             logging.info(_("Unmounting %s..."), part.path)
             try:
-                subp = subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
+                subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
             except subprocess.CalledProcessError as process_error:
                 logging.error(process_error)
 
@@ -940,7 +937,7 @@ class InstallationAdvanced(GtkBaseBox):
         if part_type not in (pm.PARTITION_FREESPACE, pm.PARTITION_FREESPACE_EXTENDED):
             return
 
-        size_available = row[COL_SIZE]
+        # size_available = row[COL_SIZE]
         partition_path = row[COL_PARTITION_PATH]
 
         # Get our parent drive
@@ -1156,12 +1153,15 @@ class InstallationAdvanced(GtkBaseBox):
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
-            # Save new choices
-            use_luks = switch_use_luks.get_active()
-            vol_name = entry_vol_name.get_text()
             password = entry_password.get_text()
             password_confirm = entry_password_confirm.get_text()
-            self.tmp_luks_options = (use_luks, vol_name, password)
+            if password == password_confirm:
+                # Save new choices
+                use_luks = switch_use_luks.get_active()
+                vol_name = entry_vol_name.get_text()
+                self.tmp_luks_options = (use_luks, vol_name, password)
+            else:
+                show.warning(self.get_toplevel(), _("LUKS passwords do not match!"))
 
         self.luks_dialog.hide()
 
@@ -1504,7 +1504,7 @@ class InstallationAdvanced(GtkBaseBox):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        (disk_sel, result) = self.disks[disk_path]
+        # disk_sel, result = self.disks[disk_path]
 
         dialog = self.ui.get_object("create_table_dialog")
 
@@ -1542,10 +1542,6 @@ class InstallationAdvanced(GtkBaseBox):
 
     def create_bios_gpt_boot_partition(self, disk_path):
         """ Create an unformatted partition with no filesystem and with a bios_grub flag on. """
-        # It won't be formated
-        formatme = False
-
-        part_type = pm.PARTITION_FREESPACE
 
         self.disks_changed.append(disk_path)
 
@@ -1554,7 +1550,6 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         (disk, result) = self.disks[disk_path]
-        dev = disk.device
 
         partitions = pm.get_partitions(disk)
         partition_list = pm.order_partitions(partitions)
@@ -1575,6 +1570,8 @@ class InstallationAdvanced(GtkBaseBox):
         mylabel = ""
         mymount = ""
         myfmt = "bios-gpt-boot"
+
+        # It won't be formated
         formatme = False
 
         # Size must be 2MiB
@@ -1589,7 +1586,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         part = pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
 
-        (res, myerr) = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
+        res, myerr = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
 
         if res:
             txt = _("Couldn't create BIOS GPT Boot partition")
@@ -1720,13 +1717,10 @@ class InstallationAdvanced(GtkBaseBox):
         if self.lv_partitions:
             for e in self.lv_partitions:
                 relabel = 'No'
-                fmt = 'No'
-                createme = 'No'
-                mnt = ''
                 encrypt = 'No'
                 uid = self.gen_partition_uid(path=e)
                 if uid in self.stage_opts:
-                    (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
+                    is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
                     if fmt:
                         fmt = 'Yes'
                     else:
@@ -1771,9 +1765,6 @@ class InstallationAdvanced(GtkBaseBox):
                 for partition_path in partitions:
                     # Init vars
                     relabel = 'No'
-                    fmt = 'No'
-                    createme = 'No'
-                    mnt = ''
                     encrypt = 'No'
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
@@ -1800,7 +1791,7 @@ class InstallationAdvanced(GtkBaseBox):
                                     # some mounted directories. Unmount them without asking.
                                     try:
                                         cmd = ['umount', '-l', partition_path]
-                                        subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                        subprocess.Popen(cmd, stdout=subprocess.PIPE)
                                         logging.debug(_("%s unmounted"), mount_point)
                                     except subprocess.CalledProcessError as process_error:
                                         logging.error(process_error)
@@ -1814,14 +1805,14 @@ class InstallationAdvanced(GtkBaseBox):
                                         if swap_partition == partition_path:
                                             try:
                                                 cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
-                                                subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
                                                 logging.debug(_("Swap partition %s unmounted"), partition_path)
                                             except subprocess.CalledProcessError as process_error:
                                                 logging.error(process_error)
                                         else:
                                             try:
                                                 cmd = ['umount', partition_path]
-                                                subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
                                                 logging.debug(_("%s unmounted"), mount_point)
                                             except subprocess.CalledProcessError as process_error:
                                                 logging.error(process_error)
@@ -2007,7 +1998,7 @@ class InstallationAdvanced(GtkBaseBox):
             for name in filter(None, swaps):
                 if "/dev/zram" not in name:
                     cmd = ['sh', '-c', 'swapoff {0}'.format(name)]
-                    subp = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                    subprocess.Popen(cmd, stdout=subprocess.PIPE)
         except subprocess.CalledProcessError as process_error:
             logging.error(process_error)
 
@@ -2024,103 +2015,109 @@ class InstallationAdvanced(GtkBaseBox):
                     logging.info(_("Finished saving changes in %s"), disk_path)
                 # Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
+
             apartitions = list(partitions) + self.lv_partitions
-            if True:
-                noboot = True
-                efiboot = False
-                # Check if a boot partition exists
-                for allopts in self.stage_opts:
-                    if self.stage_opts[allopts][2] == '/boot':
-                        noboot = False
-                    if self.stage_opts[allopts][2] == '/boot/efi':
-                        noboot = False
-                        efiboot = True
 
-                for partition_path in apartitions:
-                    # Get label, mount point and filesystem of staged partitions
-                    uid = self.gen_partition_uid(path=partition_path)
-                    if uid in self.stage_opts:
-                        (is_new, lbl, mnt, fisy, fmt) = self.stage_opts[uid]
-                        # Do not label or format extended or bios-gpt-boot partitions
-                        if fisy == "extended" or fisy == "bios-gpt-boot":
-                            continue
-                        if len(lbl) > 0:
-                            txt = _("Creating new {0} filesystem in {1} labeled {2}")
-                            txt = txt.format(fisy, partition_path, lbl)
-                        else:
-                            txt = _("Creating new {0} filesystem in {1}")
-                            txt = txt.format(fisy, partition_path)
+            # Checks if a boot partition exists
+            noboot = True
+            for allopts in self.stage_opts:
+                if self.stage_opts[allopts][2] == '/boot' or self.stage_opts[allopts][2] == '/boot/efi':
+                    noboot = False
 
-                        logging.info(txt)
+            for partition_path in apartitions:
+                # Get label, mount point and filesystem of staged partitions
+                uid = self.gen_partition_uid(path=partition_path)
+                if uid in self.stage_opts:
+                    is_new, lbl, mnt, fisy, fmt = self.stage_opts[uid]
+                    # Do not label or format extended or bios-gpt-boot partitions
+                    if fisy == "extended" or fisy == "bios-gpt-boot":
+                        continue
+                    if len(lbl) > 0:
+                        txt = _("Creating new {0} filesystem in {1} labeled {2}")
+                        txt = txt.format(fisy, partition_path, lbl)
+                    else:
+                        txt = _("Creating new {0} filesystem in {1}")
+                        txt = txt.format(fisy, partition_path)
 
-                        if ((mnt == '/' and noboot) or mnt == '/boot') and '/dev/mapper' not in partition_path:
-                            if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
-                                if self.bootloader_device or self.bootloader_device is not None:
-                                    pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
+                    logging.info(txt)
+
+                    if ((mnt == '/' and noboot) or mnt == '/boot') and '/dev/mapper' not in partition_path:
+                        if not pm.get_flag(partitions[partition_path], pm.PED_PARTITION_BOOT):
+                            if self.bootloader_device or self.bootloader_device is not None:
+                                pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
+                        if not self.testing:
+                            pm.finalize_changes(partitions[partition_path].disk)
+                    if "/dev/mapper" in partition_path:
+                        pvs = lvm.get_lvm_partitions()
+                        vgname = partition_path.split("/")[-1]
+                        vgname = vgname.split('-')[0]
+                        if mnt == '/' or mnt == '/boot':
+                            self.blvm = True
+                            if noboot or mnt == '/boot':
+                                for ee in pvs[vgname]:
+                                    # print(partitions)
+                                    if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
+                                        if self.bootloader_device or self.bootloader_device is not None:
+                                            pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
+                                    if not self.testing:
+                                        pm.finalize_changes(partitions[ee].disk)
+
+                    if uid in self.luks_options:
+                        (use_luks, vol_name, password) = self.luks_options[uid]
+                        if use_luks and len(vol_name) > 0 and len(password) > 0:
+                            txt = _("Encrypting {0}, assigning volume name {1} and formatting it...")
+                            txt = txt.format(partition_path, vol_name)
+                            logging.info(txt)
                             if not self.testing:
-                                pm.finalize_changes(partitions[partition_path].disk)
-                        if "/dev/mapper" in partition_path:
-                            pvs = lvm.get_lvm_partitions()
-                            vgname = partition_path.split("/")[-1]
-                            vgname = vgname.split('-')[0]
-                            if mnt == '/' or mnt == '/boot':
-                                self.blvm = True
-                                if noboot or mnt == '/boot':
-                                    for ee in pvs[vgname]:
-                                        # print(partitions)
-                                        if not pm.get_flag(partitions[ee], pm.PED_PARTITION_BOOT):
-                                            if self.bootloader_device or self.bootloader_device is not None:
-                                                pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
-                                        if not self.testing:
-                                            pm.finalize_changes(partitions[ee].disk)
-
-                        if uid in self.luks_options:
-                            (use_luks, vol_name, password) = self.luks_options[uid]
-                            if use_luks and len(vol_name) > 0 and len(password) > 0:
-                                txt = _("Encrypting {0}, assigning volume name {1} and formatting it...")
-                                txt = txt.format(partition_path, vol_name)
-                                logging.info(txt)
-                                if not self.testing:
-                                    # Do real encryption here!
-                                    # TODO: Show a progress dialog here as setup_luks is slow
-                                    with misc.raised_privileges():
-                                        ap.setup_luks(luks_device=partition_path, luks_name=vol_name,
-                                                      luks_pass=password)
-                                    self.settings.set("use_luks", True)
-                                    luks_device = "/dev/mapper/" + vol_name
-                                    (error, msg) = fs.create_fs(luks_device, fisy, lbl)
-                                    # Do not format (already done)
-                                    fmt = False
-                                    # Do not relabel (already done)
-                                    if partition_path in self.orig_label_dic:
-                                        lbl = self.orig_label_dic[partition_path]
-                                    if mnt == "/":
-                                        self.settings.set("luks_root_password", password)
-                                        self.settings.set("luks_root_device", partition_path)
-
-                        # Only format if they want formatting
-                        if fmt:
-                            # All of fs module takes paths, not partition objs
-                            if not self.testing:
-                                # Create filesystem using mkfs
-                                (error, msg) = fs.create_fs(partition_path, fisy, lbl)
-                                if error == 0:
+                                # Do real encryption here!
+                                # TODO: Show a progress dialog here as setup_luks is slow
+                                with misc.raised_privileges():
+                                    ap.setup_luks(luks_device=partition_path, luks_name=vol_name,
+                                                  luks_pass=password)
+                                self.settings.set("use_luks", True)
+                                luks_device = "/dev/mapper/" + vol_name
+                                error, msg = fs.create_fs(luks_device, fisy, lbl)
+                                if not error:
                                     logging.info(msg)
                                 else:
-                                    txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}'")
-                                    txt = txt.format(partition_path, lbl, fisy)
+                                    txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}'")
+                                    txt = txt.format(luks_device, lbl, fisy)
                                     logging.error(txt)
                                     logging.error(msg)
                                     show.error(self.get_toplevel(), txt)
-                        elif partition_path in self.orig_label_dic:
-                            if self.orig_label_dic[partition_path] != lbl:
-                                if not self.testing:
-                                    try:
-                                        fs.label_fs(fisy, partition_path, lbl)
-                                    except Exception as label_error:
-                                        # Catch all exceptions because not being able to label
-                                        # a partition shouldn't be fatal
-                                        logging.error(label_error)
+
+                                # Do not format (already done)
+                                fmt = False
+                                # Do not relabel (already done)
+                                if partition_path in self.orig_label_dic:
+                                    lbl = self.orig_label_dic[partition_path]
+                                if mnt == "/":
+                                    self.settings.set("luks_root_password", password)
+                                    self.settings.set("luks_root_device", partition_path)
+
+                    # Only format if they want formatting
+                    if fmt:
+                        # All of fs module takes paths, not partition objs
+                        if not self.testing:
+                            # Create filesystem using mkfs
+                            error, msg = fs.create_fs(partition_path, fisy, lbl)
+                            if not error:
+                                logging.info(msg)
+                            else:
+                                txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}'")
+                                txt = txt.format(partition_path, lbl, fisy)
+                                logging.error(txt)
+                                logging.error(msg)
+                                show.error(self.get_toplevel(), txt)
+                    elif partition_path in self.orig_label_dic:
+                        if self.orig_label_dic[partition_path] != lbl:
+                            if not self.testing:
+                                try:
+                                    fs.label_fs(fisy, partition_path, lbl)
+                                except Exception as label_error:
+                                    # Catch all exceptions because not being able to label
+                                    # a partition shouldn't be fatal
+                                    logging.error(label_error)
 
     def start_installation(self):
         """ Start installation process """

@@ -113,7 +113,7 @@ class Download(object):
                     downloaded += 1
                 else:
                     # Add file to aria2 downloads queue
-                    gid = self.aria2.add_uris(element['urls'])
+                    # gid = self.aria2.add_uris(element['urls'])
                     num_active = self.get_num_active()
 
             num_active = self.get_num_active()

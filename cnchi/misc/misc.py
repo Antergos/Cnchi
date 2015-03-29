@@ -31,8 +31,15 @@ import socket
 import locale
 import logging
 import dbus
+import urllib
+from socket import timeout
 
 import misc.osextras as osextras
+
+NM = 'org.freedesktop.NetworkManager'
+NM_STATE_CONNECTED_GLOBAL = 70
+
+_dropped_privileges = 0
 
 
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
@@ -62,9 +69,6 @@ def is_swap(device):
     except OSError as os_error:
         logging.warning(os_error)
     return False
-
-
-_dropped_privileges = 0
 
 
 def set_groups_for_uid(uid):
@@ -823,10 +827,6 @@ def set_indicator_keymaps(lang):
     engine.lock_group(0)
 
 
-NM = 'org.freedesktop.NetworkManager'
-NM_STATE_CONNECTED_GLOBAL = 70
-
-
 def get_prop(obj, iface, prop):
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
@@ -848,19 +848,19 @@ def has_connection():
         bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
         state = get_prop(manager, NM, 'state')
-    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
+    except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
         # Networkmanager is not responding, try open a well known ip site (google)
-        import urllib
-        from socket import timeout
 
         try:
             url = 'http://74.125.228.100'
-            packages_xml = urllib.request.urlopen(url, timeout=5)
+            urllib.request.urlopen(url, timeout=5)
             return True
         except urllib.error.URLError as err:
-            pass
+            logging.warning(dbus_err)
+            logging.warning(err)
         except timeout as err:
-            pass
+            logging.warning(dbus_err)
+            logging.warning(err)
         return False
     return state == NM_STATE_CONNECTED_GLOBAL
 
@@ -874,6 +874,7 @@ def add_connection_watch(func):
     try:
         func(has_connection())
     except (dbus.DBusException, dbus.exceptions.DBusException) as err:
+        logging.warning(err)
         # We can't talk to NM, so no idea.  Wild guess: we're connected
         # using ssh with X forwarding, and are therefore connected.  This
         # allows us to proceed with a minimum of complaint.
@@ -939,6 +940,7 @@ def sort_list(mylist, mylocale=""):
     try:
         import functools
     except ImportError as err:
+        logging.warning(err)
         return mylist
 
     if mylocale != "":
@@ -963,6 +965,7 @@ def set_locale(mylocale):
                 logging.info(_("locale changed to : %s"), mylocale)
             except locale.Error as err:
                 logging.warning(_("Can't change to locale '%s'"), mylocale)
+                logging.warning(err)
         else:
             logging.warning(_("Can't change to locale '%s'"), mylocale)
 
@@ -1033,6 +1036,7 @@ def is_partition_extended(partition):
     try:
         num = int(num)
     except ValueError as err:
+        logging.warning(err)
         return False
 
     if num > 4:
