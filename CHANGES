@@ -1,3 +1,4 @@
+[2015-03-29 12:52:14 +0200]  - Removed some unused variables (thanks to pycharm). - Show warning..      karasu      {0fd3bbe}
 [2015-03-29 11:39:50 +0200]  Updated pot file                                                           karasu      {6c288b1}
 [2015-03-29 11:18:46 +0200]  Do not set header text when loading desktop screen. Add '\n' to loc..      karasu      {6bedeb3}
 [2015-03-29 01:29:42 -0500]  just some small touchups to the UI. I am really getting the hang of..  Dustin Falgout  {6939507}

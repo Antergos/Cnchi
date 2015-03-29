@@ -31,6 +31,8 @@ import socket
 import locale
 import logging
 import dbus
+import urllib
+from socket import timeout
 
 import misc.osextras as osextras
 
@@ -848,19 +850,18 @@ def has_connection():
         bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
         state = get_prop(manager, NM, 'state')
-    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
-        logging.warning(err)
+    except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
         # Networkmanager is not responding, try open a well known ip site (google)
-        import urllib
-        from socket import timeout
 
         try:
             url = 'http://74.125.228.100'
             urllib.request.urlopen(url, timeout=5)
             return True
         except urllib.error.URLError as err:
+            logging.warning(dbus_err)
             logging.warning(err)
         except timeout as err:
+            logging.warning(dbus_err)
             logging.warning(err)
         return False
     return state == NM_STATE_CONNECTED_GLOBAL
