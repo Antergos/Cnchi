@@ -10,12 +10,14 @@
     <property name="margin_start">20</property>
     <property name="margin_end">20</property>
     <property name="margin_bottom">10</property>
+     <property name="halign">center</property>
     <child>
       <object class="GtkLabel" id="label_help">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes"></property>
-        <property name="use_markup">True</property>
+        <property name="wrap">True</property>
+        <property name="max_width_chars">85</property>
       </object>
       <packing>
         <property name="expand">False</property>

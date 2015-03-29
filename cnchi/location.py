@@ -67,10 +67,11 @@ class Location(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("The location you select will be used to help determine the system locale.\n"
-                "This should normally be the country in which you reside.\n"
+        txt = _("The location you select will be used to help determine the system locale. "
+                "It should normally be the country in which you reside. "
                 "Here is a shortlist of locations based on the language you selected.")
-        self.label_help.set_markup(txt)
+
+        self.label_help.set_text(txt)
 
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>{0}</span>".format(txt)

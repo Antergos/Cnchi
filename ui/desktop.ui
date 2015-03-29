@@ -10,11 +10,13 @@
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">63</property>
-        <property name="margin_end">20</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">0</property>        
+        <property name="margin_start">0</property>
+        <property name="margin_end">0</property>
+        <property name="margin_top">37</property>
+        <property name="margin_bottom">0</property>
         <property name="spacing">40</property>
+        <property name="hexpand">True</property>
+        <property name="halign">center</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="width_request">170</property>
@@ -60,20 +62,18 @@
       <object class="GtkLabel" id="desktop_info">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">64</property>
-        <property name="margin_end">20</property>
-        <property name="margin_top">0</property>        
-        <property name="xalign">0</property>
+        <property name="margin_left">70</property>
+        <property name="margin_end">0</property>
+        <property name="margin_top">0</property>
         <property name="label" translatable="yes">label</property>
-        <property name="use_markup">True</property>
-        <property name="justify">fill</property>
         <property name="wrap">True</property>
-       
-        <property name="max_width_chars">65</property>
+        <property name="max_width_chars">84</property>
+         <property name="hexpand">True</property>
+         <property name="halign">start</property>
       </object>
       <packing>
         <property name="expand">False</property>
-        <property name="fill">True</property>
+        <property name="fill">False</property>
         <property name="position">1</property>
       </packing>
     </child>

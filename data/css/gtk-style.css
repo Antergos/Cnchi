@@ -39,7 +39,7 @@ GtkWindow {
     border-bottom: 0px;
     border-color: transparent;
     font-family: Lato, 'DejaVu Sans', Helvetica, sans-serif;
-    padding: 8px;
+    padding: 8px 12px;
 }
 
 #process_progressbar, #i_progressbar, #a_progressbar {
@@ -86,7 +86,7 @@ GtkProgressBar.progressbar {
 
 .header-bar .close_button {
     padding-left: 5px;
-    padding-right: 5px;
+    padding-right: 0px;
 }
 
 .header-bar GtkSeparator {
