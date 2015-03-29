@@ -21,7 +21,7 @@ GtkWindow {
     font-size: 11px;
     font-weight: 600;
     font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
-    text-shadow: 1px 1px 0px #222;
+    text-shadow: 0px 1px 0px #222;
 }
 
 .subtitle {
@@ -56,6 +56,7 @@ GtkWindow {
 
 GtkProgressBar.progressbar {
     color: #2EA3F2;
+    border-color: shade(#2EA3F2, 0.9);
     background-image: linear-gradient(to bottom, #2EA3F2, #2EA3F2);
 }
 
@@ -104,7 +105,7 @@ GtkSeparatorToolItem {
     background-color: #eee;
 }
 
-.list GtkListBoxRow:active, .list .list-row:active, .list .list-row:selected {
+GtkListBoxRow:active, .list-row:active, .list-row:selected {
     background-color: #2EA3F2;
 }
 
@@ -132,4 +133,31 @@ font-size: 20px;
 
 #tryit_label, #installit_label {
     font-size: 11px;
+}
+
+GtkSwitch.trough:active {
+    border-color: shade(#2EA3F2, 0.9);
+    background-color: #2EA3F2;
+    background-image: none;
+}
+
+GtkTreeView row:selected  {
+background-color: #2EA3F2;
+border-color: shade(#2EA3F2, 0.9);
+}
+
+
+#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
+    font-size: 13px;
+    font-weight: 600;
+}
+#lvm_btn GtkLabel, #enc_btn GtkLabel, #home_btn GtkLabel {
+    font-size: 11px;
+}
+#lvm_label, #enc_label, #home_label  {
+    font-size: 10px;
+    font-style: italic;
+}
+#ask #intro_label {
+    font-size: 15px;
 }

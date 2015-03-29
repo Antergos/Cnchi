@@ -70,7 +70,7 @@ class Welcome(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         if not self.disable_tryit:
-            txt = _("Try Antergos without making any changes to your system.") + "\n"
+            txt = _("Use Antergos without making any changes to your system.") + "\n"
         else:
             txt = ""
         self.labels['tryit'].set_markup(txt)

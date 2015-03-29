@@ -232,7 +232,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
             Gtk.StyleContext.add_provider_for_screen(
                 Gdk.Screen.get_default(), style_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                Gtk.STYLE_PROVIDER_PRIORITY_USER
             )
 
         # Show main window

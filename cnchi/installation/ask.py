@@ -90,9 +90,9 @@ class InstallationAsk(GtkBaseBox):
         path = os.path.join(partitioner_dir, "automatic.png")
         image.set_from_file(path)
 
-        image = self.ui.get_object("alongside_image")
-        path = os.path.join(partitioner_dir, "alongside.png")
-        image.set_from_file(path)
+        # image = self.ui.get_object("alongside_image")
+        # path = os.path.join(partitioner_dir, "alongside.png")
+        # image.set_from_file(path)
 
         image = self.ui.get_object("advanced_image")
         path = os.path.join(partitioner_dir, "advanced.png")
@@ -211,7 +211,7 @@ class InstallationAsk(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        description_style = '<span weight="light" size="small" style="italic">{0}</span>'
+        description_style = '<span style="italic">{0}</span>'
         bold_style = '<span weight="bold">{0}</span>'
 
         oses_str = self.get_os_list_str()
@@ -223,70 +223,81 @@ class InstallationAsk(GtkBaseBox):
         else:
             txt = _("Erase disk and install Antergos")
         radio.set_label(txt)
+        radio.set_name('auto_radio_btn')
 
         label = self.ui.get_object("automatic_description")
         txt = _("Warning: This will erase ALL data on your disk.")
-        txt = description_style.format(txt)
-        label.set_markup(txt)
+        #txt = description_style.format(txt)
+        label.set_text(txt)
         label.set_line_wrap(True)
+        label.set_name("automatic_desc")
 
         button = self.ui.get_object("encrypt_checkbutton")
         txt = _("Encrypt this installation for increased security.")
         button.set_label(txt)
+        button.set_name("enc_btn")
 
         label = self.ui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the next step.")
-        txt = description_style.format(txt)
-        label.set_markup(txt)
+        #txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("enc_label")
 
         button = self.ui.get_object("lvm_checkbutton")
         txt = _("Use LVM with this installation.")
         button.set_label(txt)
+        button.set_name("lvm_btn")
 
         label = self.ui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
-        txt = description_style.format(txt)
-        label.set_markup(txt)
+        #txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("lvm_label")
 
         button = self.ui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
         button.set_label(txt)
+        button.set_name("home_btn")
 
         label = self.ui.get_object("home_label")
         txt = _("This will setup you /home directory in a different partition or volume.")
-        txt = description_style.format(txt)
-        label.set_markup(txt)
+        #txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("home_label")
 
         # Alongside Install (For now, only works with Windows)
-        if len(oses_str) > 0:
-            txt = _("Install Antergos alongside {0}").format(oses_str)
-            radio = self.ui.get_object("alongside_radiobutton")
-            radio.set_label(txt)
-
-            label = self.ui.get_object("alongside_description")
-            txt = _("Installs Antergos without removing {0}").format(oses_str)
-            txt = description_style.format(txt)
-            label.set_markup(txt)
-            label.set_line_wrap(True)
-
-            intro_txt = _("This computer has {0} installed.").format(oses_str)
-            intro_txt = intro_txt + "\n" + _("What do you want to do?")
-        else:
-            intro_txt = _("What do you want to do?")
+        # if len(oses_str) > 0:
+        #     txt = _("Install Antergos alongside {0}").format(oses_str)
+        #     radio = self.ui.get_object("alongside_radiobutton")
+        #     radio.set_label(txt)
+        #
+        #     label = self.ui.get_object("alongside_description")
+        #     txt = _("Installs Antergos without removing {0}").format(oses_str)
+        #     txt = description_style.format(txt)
+        #     label.set_markup(txt)
+        #     label.set_line_wrap(True)
+        #
+        #     intro_txt = _("This computer has {0} installed.").format(oses_str)
+        #     intro_txt = intro_txt + "\n" + _("What do you want to do?")
+        # else:
+        intro_txt = _("How would you like to proceed?")
 
         intro_label = self.ui.get_object("introduction")
-        intro_txt = bold_style.format(intro_txt)
-        intro_label.set_markup(intro_txt)
+        #intro_txt = bold_style.format(intro_txt)
+        intro_label.set_text(intro_txt)
+        intro_label.set_name("intro_label")
 
         # Advanced Install
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Choose exactly where Antergos should be installed."))
+        radio.set_name("advanced_radio_btn")
 
         label = self.ui.get_object("advanced_description")
         txt = _("Edit partition table and choose mount points.")
-        txt = description_style.format(txt)
-        label.set_markup(txt)
+        #txt = description_style.format(txt)
+        label.set_text(txt)
         label.set_line_wrap(True)
+        label.set_name("adv_desc_label")
 
     def store_values(self):
         """ Store selected values """

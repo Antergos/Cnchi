@@ -184,9 +184,6 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes"></property>
                 <property name="justify">center</property>
-                <attributes>
-                    <attribute name="font-desc" value="Sans Bold 6"/>
-                </attributes>
             </object>
             <packing>
                 <property name="expand">False</property>
