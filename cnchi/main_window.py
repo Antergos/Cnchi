@@ -308,7 +308,7 @@ class MainWindow(Gtk.ApplicationWindow):
             del self.pages["installation_advanced"]
 
     def set_geometry(self):
-        """ Sets Cnchi windows's geometry """
+        """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)

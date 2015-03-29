@@ -59,7 +59,7 @@ class DesktopAsk(GtkBaseBox):
 
         self.set_desktop_list()
 
-    def translate_ui(self, desktop):
+    def translate_ui(self, desktop, set_header=True):
         """ Translates all ui elements """
         label = self.ui.get_object("desktop_info")
         txt = "<span weight='bold'>{0}</span>\n".format(desktops.NAMES[desktop])
@@ -109,9 +109,10 @@ class DesktopAsk(GtkBaseBox):
                 else:
                     self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
-        # set header text
-        txt = _("Choose Your Desktop")
-        self.header.set_subtitle(txt)
+        if set_header:
+            # set header text
+            txt = _("Choose Your Desktop")
+            self.header.set_subtitle(txt)
 
     def prepare(self, direction):
         """ Prepare screen """
@@ -184,7 +185,7 @@ class DesktopAsk(GtkBaseBox):
         for key in desktops.NAMES.keys():
             if desktops.NAMES[key] == desktop:
                 self.desktop_choice = key
-                self.translate_ui(self.desktop_choice)
+                self.translate_ui(self.desktop_choice, set_header=False)
                 return
 
     def on_listbox_row_selected(self, listbox, listbox_row):
