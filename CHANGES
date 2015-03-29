@@ -1,3 +1,4 @@
+[2015-03-29 13:04:34 +0200]  Moved some vars to top of the file in misc.py (nothing important)          karasu      {4b0dc9f}
 [2015-03-29 12:59:44 +0200]  Avoid repeating log message in misc.py                                     karasu      {7d68f98}
 [2015-03-29 12:52:14 +0200]  - Removed some unused variables (thanks to pycharm). - Show warning..      karasu      {0fd3bbe}
 [2015-03-29 11:39:50 +0200]  Updated pot file                                                           karasu      {6c288b1}
