@@ -1,4 +1,11 @@
+[2015-03-29 09:27:15 -0500]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {fe50089}
 [2015-03-29 09:25:22 -0500]  styled ask.py screen                                                   Dustin Falgout  {a4af8e5}
+[2015-03-29 13:28:50 +0200]  Prepare to use CSS to style help label in location (set name to lab..      karasu      {b39256e}
+[2015-03-29 13:04:34 +0200]  Moved some vars to top of the file in misc.py (nothing important)          karasu      {4b0dc9f}
+[2015-03-29 12:59:44 +0200]  Avoid repeating log message in misc.py                                     karasu      {7d68f98}
+[2015-03-29 12:52:14 +0200]  - Removed some unused variables (thanks to pycharm). - Show warning..      karasu      {0fd3bbe}
+[2015-03-29 11:39:50 +0200]  Updated pot file                                                           karasu      {6c288b1}
+[2015-03-29 11:18:46 +0200]  Do not set header text when loading desktop screen. Add '\n' to loc..      karasu      {6bedeb3}
 [2015-03-29 01:29:42 -0500]  just some small touchups to the UI. I am really getting the hang of..  Dustin Falgout  {6939507}
 [2015-03-28 16:14:17 -0500]  load efivarfs kernel module in case it is somehow not loaded at thi..  Dustin Falgout  {e72fed6}
 [2015-03-28 13:50:26 +0100]  Set correct name to keyboard xorg file. Check in destination when s..      karasu      {e6540fb}

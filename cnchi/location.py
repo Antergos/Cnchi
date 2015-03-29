@@ -48,7 +48,6 @@ class Location(GtkBaseBox):
 
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
-        self.label_help.set_name("label_help")
 
         self.locales = {}
         self.load_locales()
