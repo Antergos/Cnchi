@@ -1,3 +1,4 @@
+[2015-03-29 11:18:46 +0200]  Do not set header text when loading desktop screen. Add '\n' to loc..      karasu      {6bedeb3}
 [2015-03-29 01:29:42 -0500]  just some small touchups to the UI. I am really getting the hang of..  Dustin Falgout  {6939507}
 [2015-03-28 16:14:17 -0500]  load efivarfs kernel module in case it is somehow not loaded at thi..  Dustin Falgout  {e72fed6}
 [2015-03-28 13:50:26 +0100]  Set correct name to keyboard xorg file. Check in destination when s..      karasu      {e6540fb}
