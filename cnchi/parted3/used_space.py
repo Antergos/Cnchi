@@ -49,11 +49,13 @@ def get_used_ntfs(part):
         lines = result.split('\n')
         for line in lines:
             if 'Cluster Size:' in line:
-                csize = int(line.split(':')[-1].strip())
+                # csize = int(line.split(':')[-1].strip())
+                pass
             elif 'Volume Size in Clusters' in line:
                 vsize = int(line.split(':')[-1].strip())
             elif 'Free Clusters:' in line:
                 fsize = int(line.strip().split()[2])
+        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
 
@@ -80,7 +82,8 @@ def get_used_ext(part):
             elif "Free blocks:" in line:
                 fsize = int(line.split(':')[-1].strip())
             elif "Block size:" in line:
-                csize = int(line.split(':')[-1].strip())
+                # csize = int(line.split(':')[-1].strip())
+                pass
         # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used

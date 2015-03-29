@@ -113,9 +113,11 @@ def create_fs(part, fstype, label='', other_opts=''):
     # newer bigger drives.
     # Also turn on dir_index for ext.  Not sure about other fs opts
 
-    # The return value is tuple.  First arg is 0 for success, 1 for fail
-    # Secong arg is either output from call if successful
-    # or exception if failure
+    # The return value is tuple.
+    # (failed, msg)
+    # First arg is False for success, True for fail
+    # Second arg is either output from call if successful
+    # or exception message error if failure
 
     opt_dic = {'ext2': '-m 1',
                'ext3': '-m 1 -O dir_index',
@@ -148,10 +150,10 @@ def create_fs(part, fstype, label='', other_opts=''):
     try:
         cmd = shlex.split(comdic[fstype] % vars())
         result = subprocess.check_output(cmd).decode()
-        ret = (0, result)
+        ret = (False, result)
     except subprocess.CalledProcessError as err:
         logging.error(err)
-        ret = (1, err)
+        ret = (True, err)
     return ret
 
 

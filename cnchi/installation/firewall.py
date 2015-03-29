@@ -50,7 +50,6 @@ def run(params, dest_dir="/install"):
             return
 
     app_action = False
-    cmd_line = None
 
     # Remember, will have to take --force into account if we use it with 'app'
     idx = 1
