@@ -44,7 +44,7 @@ We manage our translations in transifex:
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
  - libtimezonemap (needed by Cnchi 0.6.x and older versions)
- - webkitgtk 
+ - webkit2gtk 
  - hdparm
  - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower

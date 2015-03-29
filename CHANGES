@@ -1,3 +1,4 @@
+[2015-03-29 19:23:20 +0200]  Added '\n' on location 'label_help' until Dustin fixes it :)               karasu      {76c32db}
 [2015-03-29 19:02:49 +0200]  I didn't change anything, just beautified css file a little.               karasu      {f921953}
 [2015-03-29 09:27:15 -0500]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {fe50089}
 [2015-03-29 09:25:22 -0500]  styled ask.py screen                                                   Dustin Falgout  {a4af8e5}
