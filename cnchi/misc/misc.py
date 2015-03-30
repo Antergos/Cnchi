@@ -843,26 +843,30 @@ def is_wireless_enabled():
     return get_prop(manager, NM, 'WirelessEnabled')
 
 
-def has_connection():
+def get_nm_state():
     try:
         bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
         state = get_prop(manager, NM, 'state')
     except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
-        # Networkmanager is not responding, try open a well known ip site (google)
+        logging.warning(dbus_err)
+        state = False
+    finally:
+        return state
 
-        try:
-            url = 'http://74.125.228.100'
-            urllib.request.urlopen(url, timeout=5)
-            return True
-        except urllib.error.URLError as err:
-            logging.warning(dbus_err)
-            logging.warning(err)
-        except timeout as err:
-            logging.warning(dbus_err)
-            logging.warning(err)
+
+def has_connection():
+    # In a Virtualbox VM this returns true even when the host OS has no connection
+    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+    #    return True
+
+    try:
+        url = 'http://74.125.228.100'
+        urllib.request.urlopen(url, timeout=5)
+        return True
+    except (OSError, timeout, urllib.error.URLError) as err:
+        logging.warning(err)
         return False
-    return state == NM_STATE_CONNECTED_GLOBAL
 
 
 def add_connection_watch(func):

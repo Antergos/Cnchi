@@ -283,7 +283,7 @@ class AutoTimezoneThread(threading.Thread):
         while not misc.has_connection():
             if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
                 return
-            time.sleep(2)  # Delay and try again
+            time.sleep(5)  # Delay and try again
             logging.warning(_("Can't get network status."))
 
         # Do not start looking for our timezone until we've reached the language screen

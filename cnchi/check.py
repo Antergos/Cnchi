@@ -194,7 +194,7 @@ class Check(GtkBaseBox):
         self.forward_button.set_sensitive(self.check_all())
 
         # Set timer
-        self.timeout_id = GLib.timeout_add(1000, self.on_timer)
+        self.timeout_id = GLib.timeout_add(5000, self.on_timer)
 
 # When testing, no _() is available
 try:
