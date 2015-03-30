@@ -148,6 +148,8 @@ class Language(GtkBaseBox):
 
     def prepare(self, direction):
         self.translate_ui()
+        # Enable forward button
+        self.forward_button.set_sensitive(True)
         self.show_all()
 
 # When testing, no _() is available
