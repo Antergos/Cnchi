@@ -17,11 +17,7 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes"></property>
         <property name="wrap">True</property>
-      <!--
-        <attributes>
-            <attribute name="font-desc" value="Sans 10"/>
-        </attributes>
-      -->
+          <property name="max_width_chars">85</property>
       </object>
       <packing>
         <property name="expand">False</property>
