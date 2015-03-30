@@ -1,3 +1,4 @@
+[2015-03-29 19:44:22 -0500]  fix text wrapping                                                      Dustin Falgout  {5156655}
 [2015-03-29 09:27:15 -0500]  Merge remote-tracking branch 'github/master' into github               Dustin Falgout  {fe50089}
 [2015-03-29 09:25:22 -0500]  styled ask.py screen                                                   Dustin Falgout  {a4af8e5}
 [2015-03-29 13:28:50 +0200]  Prepare to use CSS to style help label in location (set name to lab..      karasu      {b39256e}
