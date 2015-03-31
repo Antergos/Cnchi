@@ -1,3 +1,4 @@
+[2015-03-29 19:49:00 -0500]  forgot something                                                       Dustin Falgout  {94147b3}
 [2015-03-29 19:45:22 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {cb0344f}
 [2015-03-29 19:44:22 -0500]  fix text wrapping                                                      Dustin Falgout  {5156655}
 [2015-03-29 21:26:58 +0200]  Use webkit2 instead of webkit1                                             karasu      {638584b}
