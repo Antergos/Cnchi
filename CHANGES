@@ -1,3 +1,4 @@
+[2015-04-03 14:27:25 +0200]  Move cli_installer out of the way                                          karasu      {a7b8d23}
 [2015-04-03 14:25:23 +0200]  Go back to webkit1, will move to webkit2 in 0.10                           karasu      {9ec83fe}
 [2015-03-31 19:03:06 +0200]  Merge CHANGES                                                              karasu      {10cc2fd}
 [2015-03-31 19:01:48 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {2da9764}

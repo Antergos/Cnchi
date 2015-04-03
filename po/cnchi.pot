@@ -4,10 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Cnchi\n"
+
+"Project-Id-Version: Cnchi 0.8\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
 "PO-Revision-Date: 2015-03-31 04:16-0600\n"
-"Last-Translator: \n"
+"Last-Translator: Antergos Developers <dev@antergos.com>\n"
 "Language-Team: Antergos Developers <dev@antergos.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -80,8 +81,7 @@ msgstr ""
 #: cnchi/installation/chroot.py:33 cnchi/keymap.py:288 cnchi/language.py:155
 #: cnchi/location.py:230 cnchi/slides.py:245 cnchi/timezone.py:323
 #: cnchi/user_info.py:304 cnchi/welcome.py:147 cnchi/wireless.py:159
-msgid ""
-msgstr ""
+
 
 #: cnchi/cnchi.py:62
 msgid "Can't create Cnchi main window: {0}"
