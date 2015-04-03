@@ -37,10 +37,9 @@ import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
 
-SLIDES_PATH = "/usr/share/cnchi/data/images/slides"
 SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
-from gi.repository import WebKit2
+from gi.repository import WebKit
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -79,7 +78,7 @@ class Slides(GtkBaseBox):
         if self.web_view is None:
             # Add a webkit view and load our html file to show the slides
             try:
-                self.web_view = WebKit2.WebView()
+                self.web_view = WebKit.WebView()
                 self.web_view.load_uri(SLIDES_URI)
             except IOError as io_error:
                 logging.warning(io_error)

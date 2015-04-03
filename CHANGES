@@ -1,3 +1,4 @@
+[2015-03-31 19:03:06 +0200]  Merge CHANGES                                                              karasu      {10cc2fd}
 [2015-03-31 19:01:48 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {2da9764}
 [2015-03-31 04:22:11 -0500]  correct meta info in POT file (hopefully fixes Transifex error         Dustin Falgout  {86fa9eb}
 [2015-03-30 23:05:09 +0200]  Always enable forward button in language                                   karasu      {2cb1398}

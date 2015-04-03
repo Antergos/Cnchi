@@ -101,7 +101,7 @@ def run(screen_name):
     window = Gtk.Window()
     window.connect('destroy', Gtk.main_quit)
     # window.set_size_request(600, 500)
-    window.set_border_width(12)
+    window.set_border_width(0)
     window.set_title("Cnchi - Test of {0} screen".format(screen_name))
 
     import logging
