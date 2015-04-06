@@ -54,7 +54,7 @@ from installation import advanced as installation_advanced
 
 # Constants (must be uppercase)
 MAIN_WINDOW_WIDTH = 825
-MAIN_WINDOW_HEIGHT = 500
+MAIN_WINDOW_HEIGHT = 510
 
 
 class MainWindow(Gtk.ApplicationWindow):
