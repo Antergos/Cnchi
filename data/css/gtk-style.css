@@ -169,3 +169,7 @@ GtkTreeView row:selected  {
 #slides GtkScrolledWindow {
     border: none;
 }
+
+#main_box {
+    margin-bottom: 0px;
+}
