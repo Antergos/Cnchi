@@ -166,3 +166,6 @@ GtkTreeView row:selected  {
 #ask #intro_label {
     font-size: 15px;
 }
+#slides GtkScrolledWindow {
+    border: none;
+}
