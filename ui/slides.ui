@@ -5,7 +5,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <property name="spacing">10</property>
+    <property name="spacing">0</property>
         <property name="halign">center</property>
         <property name="hexpand">True</property>
     <child>
@@ -31,8 +31,10 @@
       <object class="GtkProgressBar" id="downloads_progress_bar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
+        <!--<property name="margin_start">10</property>
+        <property name="margin_end">10</property>-->
+          <property name="width-request">780</property>
+                   <property name="halign">center</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -44,8 +46,10 @@
       <object class="GtkProgressBar" id="progress_bar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
+        <!--<property name="margin_start">10</property>
+        <property name="margin_end">10</property>-->
+          <property name="width-request">780</property>
+                   <property name="halign">center</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -57,9 +61,10 @@
       <object class="GtkLabel" id="info_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
-        <property name="xalign">0</property>
+        <!--<property name="margin_start">10</property>
+        <property name="margin_end">10</property>-->
+        <property name="width-request">780</property>
+          <property name="halign">center</property>
         <property name="label" translatable="yes"></property>
       </object>
       <packing>
