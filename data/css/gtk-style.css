@@ -166,6 +166,3 @@ GtkTreeView row:selected  {
 #ask #intro_label {
     font-size: 15px;
 }
-#downloads_progress_bar, #progress_bar, #info_label {
-    margin: 10px;
-}
