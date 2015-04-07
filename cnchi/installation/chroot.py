@@ -67,27 +67,6 @@ def mount_special_dirs(dest_dir):
         os.chmod(mydir, 0o755)
 
     try:
-        '''
-        mydir = os.path.join(dest_dir, "sys")
-        cmd = ["mount", "-t", "sysfs", "/sys", mydir]
-        subprocess.check_call(cmd)
-        os.chmod(mydir, 0o755)
-
-        mydir = os.path.join(dest_dir, "proc")
-        cmd = ["mount", "-t", "proc", "/proc", mydir]
-        subprocess.check_call(cmd)
-        os.chmod(mydir, 0o755)
-
-        mydir = os.path.join(dest_dir, "dev")
-        cmd = ["mount", "-o", "bind", "/dev", mydir]
-        subprocess.check_call(cmd)
-
-        mydir = os.path.join(dest_dir, "dev/pts")
-        cmd = ["mount", "-t", "devpts", "/dev/pts", mydir]
-        subprocess.check_call(cmd)
-        os.chmod(mydir, 0o755)
-        '''
-
         mydir = os.path.join(dest_dir, "sys")
         cmd = ["mount", "--bind", "/sys", mydir]
         subprocess.check_call(cmd)
