@@ -31,6 +31,7 @@ import subprocess
 import misc.misc as misc
 import misc.keyboard_names as keyboard_names
 import misc.keyboard_widget as keyboard_widget
+import misc.countries as countries
 
 from gtkbasebox import GtkBaseBox
 
@@ -54,6 +55,8 @@ class Keymap(GtkBaseBox):
         self.keyboard_variant = None
 
         self.create_treeviews()
+
+        self.countries = countries.Countries()
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -87,6 +90,7 @@ class Keymap(GtkBaseBox):
 
             # Select treeview with selected country in previous screen.
             #selected_country = self.settings.get("timezone_human_country")
+            # selected_country has the country name in English
             selected_country = self.settings.get('country')
             selected_country = self.fix_countries(selected_country)
             found = self.select_value_in_treeview(self.layout_treeview, selected_country)
