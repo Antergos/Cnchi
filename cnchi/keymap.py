@@ -31,7 +31,6 @@ import subprocess
 import misc.misc as misc
 import misc.keyboard_names as keyboard_names
 import misc.keyboard_widget as keyboard_widget
-import misc.countries as countries
 
 from gtkbasebox import GtkBaseBox
 
@@ -55,8 +54,6 @@ class Keymap(GtkBaseBox):
         self.keyboard_variant = None
 
         self.create_treeviews()
-
-        self.countries = countries.Countries()
 
     def translate_ui(self):
         """ Translates all ui elements """
