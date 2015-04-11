@@ -6,8 +6,8 @@
     <property name="can_focus">False</property>
     <property name="halign">left</property>
     <property name="margin-top">0</property>
-      <property name="margin-left">70</property>
-      <property name="margin-right">68</property>
+      <property name="margin-start">70</property>
+      <property name="margin-end">68</property>
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
@@ -297,7 +297,7 @@
       <object class="GtkLabel" id="advanced_description">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin-left">70</property>
+        <property name="margin-start">70</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes"></property>

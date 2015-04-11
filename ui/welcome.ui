@@ -27,8 +27,8 @@
                             <object class="GtkImage" id="tryit_image">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="margin-left">25</property>
-                                <property name="margin-right">25</property>
+                                <property name="margin-start">25</property>
+                                <property name="margin-end">25</property>
                                 <property name="margin-top">12</property>
                             </object>
                             <packing>
@@ -123,8 +123,8 @@
                             <object class="GtkImage" id="graph_image">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="margin-left">25</property>
-                                <property name="margin-right">25</property>
+                                <property name="margin-start">25</property>
+                                <property name="margin-end">25</property>
                             </object>
                             <packing>
                                 <property name="expand">False</property>

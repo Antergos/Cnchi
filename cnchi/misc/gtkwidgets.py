@@ -19,7 +19,7 @@
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import cairo
-from gi.repository import Gtk, Gdk, GObject, Pango
+from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 try:
     import misc.misc as misc
@@ -59,10 +59,10 @@ class StylizedFrame(Gtk.Bin):
     __gproperties__ = {
         'radius': (
             GObject.TYPE_INT, 'Radius', 'The radius of the rounded corners.',
-            0, GObject.G_MAXINT, 10, GObject.PARAM_READWRITE),
+            0, GLib.MAXINT, 10, GObject.ParamFlags.READWRITE),
         'width': (
             GObject.TYPE_INT, 'Width', 'The width of the outline.',
-            0, GObject.G_MAXINT, 1, GObject.PARAM_READWRITE),
+            0, GLib.MAXINT, 1, GObject.ParamFlags.READWRITE),
     }
 
     def __init__(self):
@@ -128,13 +128,13 @@ class PartitionBox(StylizedFrame):
     __gtype_name__ = 'PartitionBox'
     __gproperties__ = {
         'title': (
-            GObject.TYPE_STRING, 'Title', None, 'Title', GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Title', None, 'Title', GObject.ParamFlags.READWRITE),
         'icon-name': (
-            GObject.TYPE_STRING, 'Icon Name', None, 'distributor-logo', GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Icon Name', None, 'distributor-logo', GObject.ParamFlags.READWRITE),
         'icon-file': (
-            GObject.TYPE_STRING, 'Icon File', None, 'distributor-logo', GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Icon File', None, 'distributor-logo', GObject.ParamFlags.READWRITE),
         'extra': (
-            GObject.TYPE_STRING, 'Extra Text', None, '', GObject.PARAM_READWRITE),
+            GObject.TYPE_STRING, 'Extra Text', None, '', GObject.ParamFlags.READWRITE),
     }
 
     def do_get_property(self, prop):
@@ -241,15 +241,15 @@ class ResizeWidget(Gtk.Frame):
         'part-size': (
             GObject.TYPE_UINT64, 'Partition size',
             'The size of the partition being resized',
-            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE),
+            1, GLib.MAXUINT64, 100, GObject.ParamFlags.READWRITE),
         'min-size': (
             GObject.TYPE_UINT64, 'Minimum size',
             'The minimum size that the existing partition can be resized to',
-            0, GObject.G_MAXUINT64, 0, GObject.PARAM_READWRITE),
+            0, GLib.MAXUINT64, 0, GObject.ParamFlags.READWRITE),
         'max-size': (
             GObject.TYPE_UINT64, 'Maximum size',
             'The maximum size that the existing partition can be resized to',
-            1, GObject.G_MAXUINT64, 100, GObject.PARAM_READWRITE)
+            1, GLib.MAXUINT64, 100, GObject.ParamFlags.READWRITE)
     }
 
     def do_get_property(self, prop):
@@ -395,9 +395,7 @@ GObject.type_register(ResizeWidget)
 class StateBox(StylizedFrame):
     __gtype_name__ = 'StateBox'
     __gproperties__ = {
-        'label': (
-            GObject.TYPE_STRING, 'Label', None, 'label',
-            GObject.PARAM_READWRITE),
+        'label': (GObject.TYPE_STRING, 'Label', None, 'label', GObject.ParamFlags.READWRITE),
     }
 
     def do_get_property(self, prop):

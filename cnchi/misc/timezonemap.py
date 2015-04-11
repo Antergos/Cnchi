@@ -33,7 +33,10 @@ import math
 import sys
 import logging
 
-from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
+import gi
+gi.require_version('PangoCairo', '1.0')
+
+from gi.repository import GObject, GLib, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
 
 import misc.tz as tz
 
