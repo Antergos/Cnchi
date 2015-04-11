@@ -86,7 +86,8 @@ class Keymap(GtkBaseBox):
             self.forward_button.set_sensitive(False)
 
             # Select treeview with selected country in previous screen.
-            selected_country = self.settings.get("timezone_human_country")
+            #selected_country = self.settings.get("timezone_human_country")
+            selected_country = self.settings.get('country')
             selected_country = self.fix_countries(selected_country)
             found = self.select_value_in_treeview(self.layout_treeview, selected_country)
 

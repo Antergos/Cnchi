@@ -220,6 +220,21 @@ class Timezone(GtkBaseBox):
         self.mirrorlist_thread = GenerateMirrorListThread(self.auto_timezone_coords, scripts_dir)
         self.mirrorlist_thread.start()
 
+    def log_location(self, loc):
+        logging.debug("timezone human zone: %s", loc.human_zone)
+        logging.debug("timezone country: %s", loc.country)
+        logging.debug("timezone zone: %s", loc.zone)
+        logging.debug("timezone human country: %s", loc.human_country)
+
+        if loc.comment:
+            logging.debug("timezone comment: %s", loc.comment)
+
+        if loc.latitude:
+            logging.debug("timezone latitude: %s", loc.latitude)
+
+        if loc.longitude:
+            logging.debug("timezone longitude: %s", loc.longitude)
+        
     def store_values(self):
         loc = self.tzdb.get_loc(self.timezone)
 
@@ -243,9 +258,12 @@ class Timezone(GtkBaseBox):
                 self.settings.set("timezone_longitude", loc.longitude)
             else:
                 self.settings.set("timezone_longitude", "")
+            
+            self.log_location(loc)
 
         # This way process.py will know that all info has been entered
         self.settings.set("timezone_done", True)
+        
         return True
 
     def stop_threads(self):

@@ -1,3 +1,4 @@
+[2015-04-11 18:12:02 +0200]  Use require_version to avoid gtk warning                                   karasu      {54be3b6}
 [2015-04-11 13:24:25 +0200]  Fix some warnings due to GTK 3.16 changes                                  karasu      {f40fbf8}
 [2015-04-07 18:40:43 +0200]  Removed old commented code                                                 karasu      {5a6ca2f}
 [2015-04-07 18:09:14 +0200]  Trying to fix "grantpt" error. I hope Dustin does not kill me...           karasu      {31e831e}

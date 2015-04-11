@@ -171,7 +171,7 @@ class Location(GtkBaseBox):
             # Put all language codes (forced by the checkbox)
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
-
+        
         areas.sort()
 
         return areas
@@ -194,7 +194,6 @@ class Location(GtkBaseBox):
         if listbox_row is not None:
             label = listbox_row.get_children()[0]
             if label is not None:
-                # print(label.get_text())
                 self.selected_country = label.get_text()
 
     def set_locale(self, mylocale):
@@ -217,12 +216,18 @@ class Location(GtkBaseBox):
                 logging.warning(_("Can't change to locale '%s'"), mylocale)
 
     def store_values(self):
-        country = self.selected_country
-        # lang_code = self.settings.get("language_code")
+        location = self.selected_country
+        logging.debug("Selected location: %s", location)
+        self.settings.set('location', location)
         for mylocale in self.locales:
-            if self.locales[mylocale] == country:
+            if self.locales[mylocale] == location:
                 self.set_locale(mylocale)
-
+        if ',' in location:
+            country = location.split(',')[1].strip()
+        else:
+            country = 'USA'
+        logging.debug("Selected country: %s", country)
+        self.settings.set('country', country)
         return True
 
 # When testing, no _() is available

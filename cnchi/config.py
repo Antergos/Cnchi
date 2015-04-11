@@ -68,6 +68,7 @@ class Settings(object):
             'keyboard_variant': '',
             'language_name': '',
             'language_code': '',
+            'location': '',
             'laptop': 'False',
             'locale': '',
             'log_file': '/tmp/cnchi.log',
