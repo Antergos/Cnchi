@@ -1,3 +1,4 @@
+[2015-04-11 19:57:50 +0200]  Added countries info, it's not used yet. We'll wait until 0.9.x for..      karasu      {38f9271}
 [2015-04-11 19:09:14 +0200]  Country is not selected as it should. We still have a problem betwe..      karasu      {e8207d4}
 [2015-04-11 18:12:02 +0200]  Use require_version to avoid gtk warning                                   karasu      {54be3b6}
 [2015-04-11 13:24:25 +0200]  Fix some warnings due to GTK 3.16 changes                                  karasu      {f40fbf8}
