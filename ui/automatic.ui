@@ -20,7 +20,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="xalign">0.89999997615814209</property>
+            <!--<property name="xalign">0.89999997615814209</property>-->
             <property name="pixel_size">48</property>
             <property name="icon_name">dialog-warning</property>
             <property name="icon_size">6</property>
@@ -36,7 +36,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="xalign">0.10000000149011612</property>
+            <!--<property name="xalign">0.10000000149011612</property>-->
             <property name="label" translatable="yes">&lt;b&gt;WARNING! This installation mode will overwrite everything in your drive!&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
@@ -80,7 +80,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">end</property>
-            <property name="xalign">0</property>
+            <!--<property name="xalign">0</property>-->
             <property name="label" translatable="yes">Select drive:</property>
           </object>
           <packing>
@@ -121,7 +121,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="halign">center</property>
-            <property name="xalign">0.5</property>
+            <!--<property name="xalign">0.5</property>-->
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
@@ -277,7 +277,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="halign">start</property>
-            <property name="xalign">0.5</property>
+            <!--<property name="xalign">0.5</property>-->
             <property name="draw_indicator">True</property>
             <signal name="toggled" handler="on_checkbutton_show_password_toggled" swapped="no"/>
           </object>
