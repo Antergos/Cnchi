@@ -189,7 +189,7 @@ class Timezone(GtkBaseBox):
                 msg = _("Can't autodetect timezone coordinates")
                 if __name__ == '__main__':
                     # When testing this screen, give 5 more seconds and try again just in case.
-                    misc.set_cursor(Gdk.CursorType.WATCH)
+                    # misc.set_cursor(Gdk.CursorType.WATCH)
                     import time
                     time.sleep(5)
                     try:
@@ -197,7 +197,8 @@ class Timezone(GtkBaseBox):
                     except queue.Empty:
                         logging.warning(msg)
                     finally:
-                        misc.set_cursor(Gdk.CursorType.ARROW)
+                        # misc.set_cursor(Gdk.CursorType.ARROW)
+                        pass
                 else:
                     logging.warning(msg)
 
