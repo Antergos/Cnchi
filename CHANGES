@@ -1,3 +1,4 @@
+[2015-04-12 10:49:14 +0200]  Damn... I forgot about the pre-commit hook                                 karasu      {ca04b0b}
 [2015-04-12 10:48:08 +0200]  keyboard_names rewritten. It does not fix anything, yet.                   karasu      {f0d6b34}
 [2015-04-11 21:56:18 +0200]  Reaady to start Cnchi 0.9.x development (road to Cnchi 0.10)               karasu      {6ab7a6c}
 [2015-04-11 20:00:16 +0200]  Leave all this bug as it was, I do not want to change anything unti..      karasu      {bfaf7df}
