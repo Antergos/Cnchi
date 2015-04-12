@@ -3,6 +3,7 @@
 #
 #  Copyright (C) 2012 Canonical Ltd.
 #  Written by Colin Watson <cjwatson@ubuntu.com>.
+#  Copyright © 2013-2015 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,46 +25,47 @@ from collections import defaultdict
 import gzip
 import io
 
-# TODO: fix this as it's not clean to have a full path here
-# _default_filename = "/usr/lib/ubiquity/console-setup/kbdnames.gz"
-# _default_filename = "data/kbdnames.gz"
-_default_filename = '/usr/share/cnchi/data/kbdnames.gz'
+"""
+lang*layout*layout_code*layout_name
+lang*variant*layout_code*variant_code*variant_name
+
+C*layout*th*Thailand
+C*variant*th**Thailand
+C*variant*th*pat*Thailand - Pattachote
+C*variant*th*tis*Thailand - TIS-820.2538
+"""
 
 
-class KeyboardNames:
-    def __init__(self, filename):
+class KeyboardNames():
+    def __init__(self, filename):        
         self._current_lang = None
         self._filename = filename
         self._clear()
 
     def _clear(self):
-        self._layout_by_id = {}
-        self.layout_by_human = {}
-        self._variant_by_id = defaultdict(dict)
-        self.variant_by_human = defaultdict(dict)
+        self.layouts = {}
+        self.variants = defaultdict(dict)
+        self.models = {}
 
     def _load_file(self, lang, kbdnames):
-        # TODO cjwatson 2012-07-19: Work around
-        # http://bugs.python.org/issue10791 in Python 3.2.  When we can rely
-        # on 3.3, this should be:
-        #   for line in kbdnames:
-        #       line = line.rstrip("\n")
-
-        for line in kbdnames.read().splitlines():
-            got_lang, element, name, value = line.split("*", 3)
+        for line in kbdnames:
+            line = line.rstrip("\n")
+            got_lang, element, layout_code, value = line.split("*", 3)
+                
             if got_lang != lang:
                 continue
 
             if element == "layout":
-                self._layout_by_id[name] = value
-                self.layout_by_human[value] = name
+                self.layouts[layout_code] = value
             elif element == "variant":
-                variantname, variantdesc = value.split("*", 1)
-                self._variant_by_id[name][variantname] = variantdesc
-                self.variant_by_human[name][variantdesc] = variantname
+                variant_code, variant_name = value.split("*", 1)
+                self.variants[layout_code][variant_code] = variant_name
+            elif element == "model":
+                self.models[layout_code] = value
 
     def load(self, lang):
         if lang == self._current_lang:
+            # Already loaded
             return
 
         # Saving memory is more important than parsing time in the
@@ -79,94 +81,54 @@ class KeyboardNames:
             raw.close()
         self._current_lang = lang
 
+    '''
+    layout: layout_code : layout_name
+    variant: variant_code : variant_name
+    '''
+
+    def get_layouts(self, lang):
+        self.load(lang)
+        return self.layouts
+
+    def get_variants(self, lang, layout_code):
+        self.load(lang)
+        return self.variants[layout_code]
+
     def has_language(self, lang):
         self.load(lang)
-        return bool(self._layout_by_id)
-
-    def has_layout(self, lang, name):
+        return bool(self.layouts)
+    
+    def has_variants(self, lang, layout_code):
         self.load(lang)
-        return name in self._layout_by_id
+        return bool(self.variants[layout_code])
 
-    def layout_human(self, lang, name):
+    def has_layout(self, lang, layout_code):
         self.load(lang)
-        return self._layout_by_id[name]
-
-    def layout_id(self, lang, value):
+        return layout_code in self.layouts
+    
+    def get_layout_code(self, lang, layout_name):
+        """ Returns layout code from layout name """
         self.load(lang)
-        return self.layout_by_human[value]
-
-    def has_variants(self, lang, layout):
+        for code in self.layouts:
+            if self.layouts[code] == layout_name:
+                return code
+        return None
+    
+    def get_layout_name(self, lang, code):
+        """ Returns layout name from layout code """
         self.load(lang)
-        return layout in self._variant_by_id
-
-    def has_variant(self, lang, layout, name):
+        return self.layouts[code]
+    
+    def get_variant_code(self, lang, layout_code, variant_name):
+        """ Returns variant code from layout and variant names """
         self.load(lang)
-        return (layout in self._variant_by_id and
-                name in self._variant_by_id[layout])
-
-    def variant_human(self, lang, layout, name):
+        for variant_code in self.variants[layout_code]:
+            if self.variants[layout_code][variant_code] == variant_name:
+                return variant_code
+        return None
+    
+    def get_variant_name(self, lang, layout_code, variant_code):
+        """ Returns variant description from variant code """
         self.load(lang)
-        return self._variant_by_id[layout][name]
-
-    def variant_id(self, lang, layout, value):
-        self.load(lang)
-        return self.variant_by_human[layout][value]
-
-
-_keyboard_names = None
-
-
-def _get_keyboard_names():
-    """Return a singleton KeyboardNames instance."""
-    global _keyboard_names
-    if _keyboard_names is None:
-        _keyboard_names = KeyboardNames(filename=_default_filename)
-    return _keyboard_names
-
-
-def has_language(lang):
-    """Are there any keyboard names for this language?"""
-    kn = _get_keyboard_names()
-    return kn.has_language(lang)
-
-
-def has_layout(lang, name):
-    """Does this layout ID exist for this language?"""
-    kn = _get_keyboard_names()
-    return kn.has_layout(lang, name)
-
-
-def layout_human(lang, name):
-    """Return a human layout name given a layout ID."""
-    kn = _get_keyboard_names()
-    return kn.layout_human(lang, name)
-
-
-def layout_id(lang, value):
-    """Return a layout ID given a human layout name."""
-    kn = _get_keyboard_names()
-    return kn.layout_id(lang, value)
-
-
-def has_variants(lang, layout):
-    """Are there any variants for this language and layout ID?"""
-    kn = _get_keyboard_names()
-    return kn.has_variants(lang, layout)
-
-
-def has_variant(lang, layout, name):
-    """Does this variant ID exist for this language and layout ID?"""
-    kn = _get_keyboard_names()
-    return kn.has_variant(lang, layout, name)
-
-
-def variant_human(lang, layout, name):
-    """Return a human variant name given layout and variant IDs."""
-    kn = _get_keyboard_names()
-    return kn.variant_human(lang, layout, name)
-
-
-def variant_id(lang, layout, value):
-    """Return a variant ID given a layout ID and a human variant name."""
-    kn = _get_keyboard_names()
-    return kn.variant_id(lang, layout, value)
+        return self.variants[layout_code][variant_code]
+            
