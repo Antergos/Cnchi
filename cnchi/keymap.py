@@ -47,8 +47,8 @@ class Keymap(GtkBaseBox):
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
-        self.keyboard_layout = { 'name': None, 'value': None }
-        self.keyboard_variant  = { 'name': None, 'value': None }
+        self.keyboard_layout = { 'code': None, 'name': None }
+        self.keyboard_variant  = { 'code': None, 'name': None }
         
         self.kbd_names = keyboard_names.KeyboardNames(os.path.join(self.settings.get('data'), "kbdnames.gz"))
 
