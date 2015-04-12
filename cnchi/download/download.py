@@ -73,7 +73,7 @@ class DownloadPackages(object):
             self.pacman_cache_dir = pacman_cache_dir
 
         if cache_dir is None:
-            self.cache_dir = ""
+            self.cache_dir = "/var/cache/pacman/pkg"
         else:
             self.cache_dir = cache_dir
 
