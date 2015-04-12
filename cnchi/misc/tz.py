@@ -173,6 +173,7 @@ def _parse_position(position, wholedigits):
 
 
 class Location(object):
+    # TODO: Change GObject.G_MAXFLOAT to GLib.MAXFLOAT (Gtk 3.16)
     __gtype_name__ = "Location"
     __gproperties__ = {
         'zone': (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.ParamFlags.READWRITE),
