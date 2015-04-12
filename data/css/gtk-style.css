@@ -48,7 +48,7 @@ GtkWindow {
 }
 
 #process_progressbar {
-    -GtkProgressBar-min-horizontal-bar-height: 1;
+    -GtkProgressBar-min-horizontal-bar-height: 3;
 }
 
 #i_progressbar, #a_progressbar {
