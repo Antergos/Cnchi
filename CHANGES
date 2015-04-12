@@ -1,3 +1,4 @@
+[2015-04-12 11:16:10 +0200]  Load language screen at the same time we load welcome screen (minim..      karasu      {f2eb5f3}
 [2015-04-12 10:49:14 +0200]  Damn... I forgot about the pre-commit hook                                 karasu      {ca04b0b}
 [2015-04-12 10:48:08 +0200]  keyboard_names rewritten. It does not fix anything, yet.                   karasu      {f0d6b34}
 [2015-04-11 21:56:18 +0200]  Reaady to start Cnchi 0.9.x development (road to Cnchi 0.10)               karasu      {6ab7a6c}
