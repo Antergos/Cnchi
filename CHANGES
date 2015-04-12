@@ -1,3 +1,4 @@
+[2015-04-12 17:10:30 +0200]  xalign cannot be used anymore (I left it as it is, it doesn't look ..      karasu      {3da0c0e}
 [2015-04-12 17:08:24 +0200]  Fixed: Gtk-WARNING **: Failed to set property GtkBox.halign to left..      karasu      {385fc00}
 [2015-04-12 17:04:15 +0200]  Gdk.cursor.new is deprecated in Gtk 3.16. Needs fixing                     karasu      {ce5bd80}
 [2015-04-12 16:47:16 +0200]  Use GLib.MAXFLOAT in GTK 3.16                                              karasu      {2a3329a}
