@@ -189,6 +189,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # We do this so the user has not to wait for all the screens to be loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
+        self.pages["language"] = language.Language(self.params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.check_escape)
@@ -258,7 +259,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
         misc.set_cursor(Gdk.CursorType.WATCH)
-        self.pages["language"] = language.Language(self.params)
         self.pages["location"] = location.Location(self.params)
         self.pages["check"] = check.Check(self.params)
         self.pages["desktop"] = desktop.DesktopAsk(self.params)

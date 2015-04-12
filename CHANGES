@@ -1,3 +1,4 @@
+[2015-04-11 22:20:24 +0200]  Forgot to undo some changes, code that wasn't used.                        karasu      {db5c1d4}
 [2015-04-11 20:00:16 +0200]  Leave all this bug as it was, I do not want to change anything unti..      karasu      {bfaf7df}
 [2015-04-11 19:57:50 +0200]  Added countries info, it's not used yet. We'll wait until 0.9.x for..      karasu      {38f9271}
 [2015-04-11 19:09:14 +0200]  Country is not selected as it should. We still have a problem betwe..      karasu      {e8207d4}
