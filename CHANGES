@@ -1,3 +1,4 @@
+[2015-04-12 02:49:36 -0500]  use our stylesheet for minimal iso                                     Dustin Falgout  {18123c1}
 [2015-04-12 01:15:45 -0500]  load the language screen at the same time as the welcome screen (mi..  Dustin Falgout  {185f0ae}
 [2015-04-11 22:20:24 +0200]  Forgot to undo some changes, code that wasn't used.                        karasu      {db5c1d4}
 [2015-04-11 20:00:16 +0200]  Leave all this bug as it was, I do not want to change anything unti..      karasu      {bfaf7df}
