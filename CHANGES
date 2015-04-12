@@ -1,3 +1,4 @@
+[2015-04-12 03:24:00 -0500]  fix top progress bar                                                   Dustin Falgout  {7e83d45}
 [2015-04-12 02:56:44 -0500]  say hello to Cnchi 0.8 :smile:                                         Dustin Falgout  {eec0342}
 [2015-04-12 02:49:36 -0500]  use our stylesheet for minimal iso                                     Dustin Falgout  {18123c1}
 [2015-04-12 01:15:45 -0500]  load the language screen at the same time as the welcome screen (mi..  Dustin Falgout  {185f0ae}
