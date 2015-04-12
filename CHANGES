@@ -1,3 +1,4 @@
+[2015-04-12 12:02:03 +0200]  Suomi works now in keymap, Croatia does not                                karasu      {1d56f39}
 [2015-04-12 11:31:12 +0200]  Wrong dictionary names. Fixed                                              karasu      {65b99cb}
 [2015-04-12 11:18:58 +0200]  Fix progress bar                                                           karasu      {10f931c}
 [2015-04-12 11:17:49 +0200]  Use our stylesheet for minimal iso                                         karasu      {bc3b45e}

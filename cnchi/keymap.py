@@ -97,6 +97,8 @@ class Keymap(GtkBaseBox):
                 self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
             else:
                 lang = self.settings.get("language_code")
+                if not self.kbd_names.has_language(lang):
+                    lang = "C"
                 self.keyboard_layout['name'] = self.kbd_names.get_layout_name(lang, self.keyboard_layout['code'])
                 self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
                 
