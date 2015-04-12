@@ -1,3 +1,4 @@
+[2015-04-12 17:04:15 +0200]  Gdk.cursor.new is deprecated in Gtk 3.16. Needs fixing                     karasu      {ce5bd80}
 [2015-04-12 16:47:16 +0200]  Use GLib.MAXFLOAT in GTK 3.16                                              karasu      {2a3329a}
 [2015-04-12 16:02:35 +0200]  Use GObject.G_MAXFLOAT                                                     karasu      {2b8c917}
 [2015-04-12 12:05:45 +0200]  I think I got it! keymap chooses correct layout based on previously..      karasu      {53d7eed}

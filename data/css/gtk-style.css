@@ -95,6 +95,8 @@ GtkProgressBar.progressbar {
     color: rgba(255, 255, 255, 0.08);
 }
 
+/* Warning: The property GtkWidget:margin-left is deprecated and shouldn't be used anymore.
+ * It will be removed in a future version. */
 .toolbar .separator, .separator,
 .header-bar GtkSeparatorToolItem,
 GtkSeparatorToolItem {
