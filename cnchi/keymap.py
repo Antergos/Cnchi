@@ -84,29 +84,31 @@ class Keymap(GtkBaseBox):
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
 
-            # This is not working, as uses timezone country and not the location the user has chosen.
-            # We'll fix this in 0.9.x
-            # Select treeview with selected country in previous screen.
-            # selected_country = self.settings.get("timezone_human_country")
             # selected_country has the country name in English
             selected_country = self.settings.get('country')
-            
             selected_country = self.fix_countries(selected_country)
-            found = self.select_value_in_treeview(self.layout_treeview, selected_country)
+            self.keyboard_layout['code'] = self.kbd_names.get_layout_code("C", selected_country)
 
-            if not found:
+            if self.keyboard_layout['code'] is None:
                 # Country was not found, let's choose USA as default
                 logging.debug(_("Country was not found, let's choose USA as default"))
-                selected_country = "USA"
-                self.select_value_in_treeview(self.layout_treeview, selected_country)
+                self.keyboard_layout['code'] = "us"
+                self.keyboard_layout['name'] = "USA"
+                self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
             else:
+                lang = self.settings.get("language_code")
+                self.keyboard_layout['name'] = self.kbd_names.get_layout_name(lang, self.keyboard_layout['code'])
+                self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
+                
                 # Country was found, here we should put specific variant cases
                 if selected_country == "Spain" and self.settings.get("language_name") == "Catalan":
-                    self.select_value_in_treeview(self.variant_treeview, "Spain - Catalan variant with middle-dot L")
+                    self.keyboard_variant['code'] = "cat"
+                    self.keyboard_variant['name'] = "Spain - Catalan variant with middle-dot L"
+                    self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['name'])
                 if selected_country == "Canada" and self.settings.get("language_name") == "English":
-                    self.select_value_in_treeview(self.variant_treeview, "Canada - English")
-
-            logging.info(_("keyboard_layout is %s"), selected_country)
+                    self.keyboard_variant['code'] = "eng"
+                    self.keyboard_variant['name'] = "Canada - English"
+                    self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['name'])
 
         self.prepare_called = True
 
@@ -264,11 +266,11 @@ class Keymap(GtkBaseBox):
         self.settings.set("keyboard_variant", self.keyboard_variant['code'])
         
         if self.keyboard_variant['code'] is None or len(self.keyboard_variant['code']) == 0:
-            txt = _("Set keyboard to layout name '{0}' ('{1}')").format(
+            txt = _("Set keyboard to layout name '{0}' ({1})").format(
             self.keyboard_layout['name'],
             self.keyboard_layout['code'])
         else:
-            txt = _("Set keyboard to layout name '{0}' ('{1}') and variant name '{2}' ('{3}')").format(
+            txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
             self.keyboard_layout['name'],
             self.keyboard_layout['code'],
             self.keyboard_variant['name'],

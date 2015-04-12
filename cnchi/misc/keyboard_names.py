@@ -92,7 +92,10 @@ class KeyboardNames():
 
     def get_variants(self, lang, layout_code):
         self.load(lang)
-        return self.variants[layout_code]
+        try:
+            return self.variants[layout_code]
+        except KeyError:
+            return None
 
     def has_language(self, lang):
         self.load(lang)
@@ -117,7 +120,10 @@ class KeyboardNames():
     def get_layout_name(self, lang, code):
         """ Returns layout name from layout code """
         self.load(lang)
-        return self.layouts[code]
+        try:
+            return self.layouts[code]
+        except KeyError:
+            return None
     
     def get_variant_code(self, lang, layout_code, variant_name):
         """ Returns variant code from layout and variant names """
@@ -130,5 +136,8 @@ class KeyboardNames():
     def get_variant_name(self, lang, layout_code, variant_code):
         """ Returns variant description from variant code """
         self.load(lang)
-        return self.variants[layout_code][variant_code]
+        try:
+            return self.variants[layout_code][variant_code]
+        except KeyError:
+            return None
             

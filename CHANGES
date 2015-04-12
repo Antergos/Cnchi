@@ -1,3 +1,4 @@
+[2015-04-12 11:31:12 +0200]  Wrong dictionary names. Fixed                                              karasu      {65b99cb}
 [2015-04-12 11:18:58 +0200]  Fix progress bar                                                           karasu      {10f931c}
 [2015-04-12 11:17:49 +0200]  Use our stylesheet for minimal iso                                         karasu      {bc3b45e}
 [2015-04-12 11:16:10 +0200]  Load language screen at the same time we load welcome screen (minim..      karasu      {f2eb5f3}
