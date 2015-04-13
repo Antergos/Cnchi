@@ -1227,6 +1227,7 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Timezone set."))
 
         # Wait FOREVER until the user sets his params
+        # FIXME: We can wait here forever!
         while self.settings.get('user_info_done') is False:
             # Wait five seconds and try again
             time.sleep(5)
@@ -1237,13 +1238,14 @@ class InstallationProcess(multiprocessing.Process):
         password = self.settings.get('password')
         hostname = self.settings.get('hostname')
 
-        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d/")
+        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")
         if not os.path.exists(sudoers_dir):
             os.mkdir(sudoers_dir, 0o710)
-        sudoers_path = os.path.join(DEST_DIR, "etc/sudoers.d/10-installer")
+        sudoers_path = os.path.join(sudoers_dir, "10-installer")
         with open(sudoers_path, "w") as sudoers:
             sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
         while not os.path.exists(sudoers_path):
+            # FIXME: We can wait here forever!
             time.sleep(2)
         os.chmod(sudoers_path, 0o440)
 
@@ -1329,7 +1331,10 @@ class InstallationProcess(multiprocessing.Process):
         if self.desktop != "base":
             # Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout
             logging.debug(_("Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"))
-            xorg_conf_xkb_path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d/10-keyboard.conf")
+            xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
+            if not os.path.exists(xorg_conf_dir):
+                os.mkdir(xorg_conf_dir, 0o755)
+            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "10-keyboard.conf")
             with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
                 xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
                 xorg_conf_xkb.write('# manually too freely.\n')
@@ -1340,6 +1345,9 @@ class InstallationProcess(multiprocessing.Process):
                 if len(keyboard_variant) > 0:
                     xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                 xorg_conf_xkb.write('EndSection\n')
+            while not os.path.exists(xorg_conf_xkb_path):
+                # FIXME: We can wait here forever!
+                time.sleep(2)
             logging.debug(_("10-keyboard.conf written."))
 
         # Install configs for root
