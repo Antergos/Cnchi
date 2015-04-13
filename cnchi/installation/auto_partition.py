@@ -339,7 +339,8 @@ class AutoPartition(object):
         if os.path.exists("/sys/firmware/efi"):
             # If UEFI use GPT by default
             self.UEFI = True
-            self.GPT = True
+            # GPT is not working
+            self.GPT = False
         else:
             # If no UEFI, use MBR by default
             self.UEFI = False
