@@ -137,6 +137,7 @@ class Download(object):
             elif self.cache_dir and os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
+                logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
                 shutil.copy(dst_cache_path, dst_path)
                 downloaded += 1
             else:

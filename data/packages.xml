@@ -52,21 +52,18 @@
         <pkgname>gst-plugins-ugly</pkgname>
         <pkgname>gstreamer-vaapi</pkgname>
         <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
-        <!--<pkgname>gstreamer0.10-vaapi</pkgname>-->
         <pkgname>libdvdcss</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <!--<pkgname>lightdm-webkit-greeter</pkgname>-->
         <pkgname>lightdm-webkit-theme-antergos</pkgname>
         <pkgname>mesa</pkgname>
         <pkgname>mesa-vdpau</pkgname>
         <pkgname>numix-frost-themes</pkgname>
         <pkgname>numix-icon-theme</pkgname>
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
-        <pkgname>pacmanxg4</pkgname>
-        <!--<pkgname>pamac</pkgname>-->
+        <pkgname>pamac</pkgname>
         <pkgname>pavucontrol</pkgname>
-        <pkgname>python-simplejson</pkgname> <!-- Needed by Antergos Welcome screen -->
+        <!-- <pkgname>python-simplejson</pkgname>  Needed by Antergos Welcome screen -->
         <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
         <pkgname>ttf-dejavu</pkgname>
@@ -262,20 +259,19 @@
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-mint-menu</pkgname>
-        <pkgname>mate-mplayer</pkgname>
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname>mozo</pkgname>
-        <pkgname>mplayer</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>pragha</pkgname>
+        <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
@@ -462,7 +458,7 @@
       <pkgname>cups-pk-helper</pkgname>
       <!--<pkgname>foomatic-db-nonfree</pkgname>-->
       <pkgname>gsfonts</pkgname>
-      <pkgname>gutenprint</pkgname>
+      <!--<pkgname>gutenprint</pkgname>-->
       <pkgname>hplip</pkgname>
       <pkgname lib='qt'>kdeutils-print-manager</pkgname>
       <pkgname lib='gtk'>system-config-printer</pkgname>

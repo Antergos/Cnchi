@@ -6,11 +6,11 @@ DESKTOP=$1
 if [[ ${DESKTOP} == 'gnome' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','es+cat')]"
+	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set favorite apps
-	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'chromium.desktop', 'empathy.desktop', 'xnoise.desktop']"
-	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'lockscreen@dev.antergos.com']"
+	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', 'chromium.desktop', 'pidgin.desktop', 'gnome-music.desktop']"
+	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'lockscreen@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
 	# Change default wallpaper
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
@@ -30,7 +30,7 @@ fi
 if [[ ${DESKTOP} == 'cinnamon' ]];then
 
 	# Change keyboard layout
-	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','es+cat')]"
+	dbus-launch gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set gtk theme
 	dbus-launch gsettings set org.cinnamon.desktop.interface gtk-theme "Numix Frost Light"
@@ -40,7 +40,7 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos-menu.png"
 
 	# Set favorite apps
-	dbus-launch gsettings set org.cinnamon favorite-apps "['nemo.desktop', 'chromium.desktop', 'pacmanxg.desktop', 'gnome-terminal.desktop']"
+	dbus-launch gsettings set org.cinnamon favorite-apps "['nemo.desktop', 'chromium.desktop', 'pamac.desktop', 'gnome-terminal.desktop']"
 
 	# Set overview corner to false
 	dbus-launch gsettings set org.cinnamon overview-corner "['false:false:false', 'false:false:false', 'false:false:false', 'false:false:false']"
