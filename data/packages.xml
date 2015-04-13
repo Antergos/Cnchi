@@ -259,20 +259,19 @@
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-mint-menu</pkgname>
-        <!--<pkgname>mate-mplayer</pkgname>-->
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>
         <pkgname>mate-terminal</pkgname>
         <pkgname>mate-utils</pkgname>
         <pkgname>mozo</pkgname>
-        <pkgname>mplayer</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>pidgin</pkgname>
         <pkgname>pluma</pkgname>
         <pkgname>pragha</pkgname>
+        <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
