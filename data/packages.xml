@@ -259,7 +259,7 @@
         <pkgname>mate-applets</pkgname>
         <pkgname>mate-media-pulseaudio</pkgname>
         <pkgname>mate-mint-menu</pkgname>
-        <pkgname>mate-mplayer</pkgname>
+        <!--<pkgname>mate-mplayer</pkgname>-->
         <pkgname>mate-power-manager</pkgname>
         <pkgname>mate-screensaver</pkgname>
         <pkgname>mate-system-monitor</pkgname>

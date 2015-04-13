@@ -1,3 +1,6 @@
+[2015-04-13 11:27:31 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {f92ee53}
+[2015-04-13 11:27:15 -0500]  revert change to bootloader package selection                          Dustin Falgout  {d6a12de}
+[2015-04-13 18:21:40 +0200]  Nope, it's really bootloader                                               karasu      {22aa9b1}
 [2015-04-13 10:46:33 -0500]  revert some of the changes made trying to debug the packages issue     Dustin Falgout  {d956405}
 [2015-04-13 10:06:24 -0500]  checking to see if we are trying to configure the system before alp..  Dustin Falgout  {698ec59}
 [2015-04-13 09:39:34 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {5a1b4a6}
