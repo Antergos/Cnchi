@@ -624,7 +624,7 @@ class InstallationProcess(multiprocessing.Process):
             boot_loader = self.settings.get('bootloader')
             # Search boot_loader in packages.xml
             bootloader_found = False
-            for child in xml_root.iter('bootloader'):
+            for child in xml_root.iter('bootloaders'):
                 if child.attrib.get('name') == boot_loader:
                     txt = _("Adding '%s' bootloader packages")
                     logging.debug(txt, boot_loader)
