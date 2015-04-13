@@ -1,3 +1,4 @@
+[2015-04-13 08:48:56 +0200]  Add some "secure" measures to 10-keyboard.conf creation. It still s..      karasu      {3145bb1}
 [2015-04-12 22:40:59 -0500]  revert previous commit. create sudoers.d (looks like its not longer..  Dustin Falgout  {3747aee}
 [2015-04-12 22:14:38 -0500]  attempt to fix sudoers.d NOTFOUND error                                Dustin Falgout  {cd6fdb1}
 [2015-04-12 17:55:36 -0500]  use cache pkgs from the iso if they are available                      Dustin Falgout  {d77ec35}
