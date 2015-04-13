@@ -1227,6 +1227,7 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Timezone set."))
 
         # Wait FOREVER until the user sets his params
+        # FIXME: We can wait here forever!
         while self.settings.get('user_info_done') is False:
             # Wait five seconds and try again
             time.sleep(5)
@@ -1237,17 +1238,18 @@ class InstallationProcess(multiprocessing.Process):
         password = self.settings.get('password')
         hostname = self.settings.get('hostname')
 
-        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d/")
+        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")
         if not os.path.exists(sudoers_dir):
             os.mkdir(sudoers_dir, 0o710)
-        sudoers_path = os.path.join(DEST_DIR, "etc/sudoers.d/10-installer")
-        with open(sudoers_path, "w") as sudoers:
-            sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
-        while not os.path.exists(sudoers_path):
-            time.sleep(2)
-        os.chmod(sudoers_path, 0o440)
-
-        logging.debug(_("Sudo configuration for user %s done."), username)
+        sudoers_path = os.path.join(sudoers_dir, "10-installer")
+        try:
+            with open(sudoers_path, "w") as sudoers:
+                sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
+            os.chmod(sudoers_path, 0o440)
+            logging.debug(_("Sudo configuration for user %s done."), username)
+        except IOError as io_error:
+            # Do not fail if can't write 10-installer file. Something bad must be happening, though.
+            logging.error(io_error)
 
         # Configure detected hardware
         try:
@@ -1329,18 +1331,25 @@ class InstallationProcess(multiprocessing.Process):
         if self.desktop != "base":
             # Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout
             logging.debug(_("Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"))
-            xorg_conf_xkb_path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d/10-keyboard.conf")
-            with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
-                xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
-                xorg_conf_xkb.write('# manually too freely.\n')
-                xorg_conf_xkb.write('Section "InputClass"\n')
-                xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
-                xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-                xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                if len(keyboard_variant) > 0:
-                    xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
-                xorg_conf_xkb.write('EndSection\n')
-            logging.debug(_("10-keyboard.conf written."))
+            xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
+            if not os.path.exists(xorg_conf_dir):
+                os.mkdir(xorg_conf_dir, 0o755)
+            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "10-keyboard.conf")
+            try:
+                with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
+                    xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+                    xorg_conf_xkb.write('# manually too freely.\n')
+                    xorg_conf_xkb.write('Section "InputClass"\n')
+                    xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+                    xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+                    xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
+                    if len(keyboard_variant) > 0:
+                        xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
+                    xorg_conf_xkb.write('EndSection\n')
+                logging.debug(_("10-keyboard.conf written."))
+            except IOError as io_error:
+                # Do not fail if 10-keyboard.conf can't be created. Something bad must be happening, though.
+                logging.error(io_error)
 
         # Install configs for root
         chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
