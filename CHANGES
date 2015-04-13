@@ -1,4 +1,4 @@
-[2015-04-12 22:14:38 -0500]  attempt to fix sudoers.d NOTFOUND error\n@karasu is this okay? I am..  Dustin Falgout  {a564751}
+[2015-04-12 22:14:38 -0500]  attempt to fix sudoers.d NOTFOUND error                                Dustin Falgout  {cd6fdb1}
 [2015-04-12 17:55:36 -0500]  use cache pkgs from the iso if they are available                      Dustin Falgout  {d77ec35}
 [2015-04-12 12:05:32 -0500]  and this too? :dizzy_face:                                             Dustin Falgout  {3ab2937}
 [2015-04-12 12:00:54 -0500]  how did we miss this?                                                  Dustin Falgout  {284369a}

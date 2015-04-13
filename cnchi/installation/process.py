@@ -1142,8 +1142,6 @@ class InstallationProcess(multiprocessing.Process):
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
 
-    # Is this necessary, better yet is it correct (code-wise)?
-    @misc.raise_privileges
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1239,6 +1237,9 @@ class InstallationProcess(multiprocessing.Process):
         password = self.settings.get('password')
         hostname = self.settings.get('hostname')
 
+        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d/")
+        if not os.path.exists(sudoers_dir):
+            os.mkdir(sudoers_dir, 0o710)
         sudoers_path = os.path.join(DEST_DIR, "etc/sudoers.d/10-installer")
         with open(sudoers_path, "w") as sudoers:
             sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
