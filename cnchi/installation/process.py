@@ -1142,6 +1142,8 @@ class InstallationProcess(multiprocessing.Process):
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
 
+    # Is this necessary, better yet is it correct (code-wise)?
+    @misc.raise_privileges
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
