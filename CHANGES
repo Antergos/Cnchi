@@ -1,9 +1,31 @@
+[2015-04-13 20:28:35 +0200]  Merge branch 'cnchi-github-master'                                         karasu      {4d54d33}
+[2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}
+[2015-04-13 19:53:30 +0200]  GPT in auto_partition does not work, Cnchi will use always MBR             karasu      {94961db}
+[2015-04-13 12:52:28 -0500]  try to ensure iso pkg cache is used when no cache is provided by user  Dustin Falgout  {2cd54a1}
+[2015-04-13 12:34:36 -0500]  use totem for mate                                                     Dustin Falgout  {fb6c8fa}
+[2015-04-13 18:57:23 +0200]  mate-mplayer no longer exists                                              karasu      {92ae0e2}
+[2015-04-13 11:27:31 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {f92ee53}
+[2015-04-13 11:27:15 -0500]  revert change to bootloader package selection                          Dustin Falgout  {d6a12de}
+[2015-04-13 18:21:40 +0200]  Nope, it's really bootloader                                               karasu      {22aa9b1}
+[2015-04-13 10:46:33 -0500]  revert some of the changes made trying to debug the packages issue     Dustin Falgout  {d956405}
+[2015-04-13 10:06:24 -0500]  checking to see if we are trying to configure the system before alp..  Dustin Falgout  {698ec59}
+[2015-04-13 09:39:34 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {5a1b4a6}
+[2015-04-13 09:38:42 -0500]  working on issues reported in forum. fixed the bootloader package n..  Dustin Falgout  {db1bf2d}
+[2015-04-13 08:59:02 +0200]  Changed to try/except. This solves nothing but at least will not fa..      karasu      {d6f87b3}
+[2015-04-13 08:48:56 +0200]  Add some "secure" measures to 10-keyboard.conf creation. It still s..      karasu      {3145bb1}
+[2015-04-12 22:40:59 -0500]  revert previous commit. create sudoers.d (looks like its not longer..  Dustin Falgout  {3747aee}
+[2015-04-12 22:14:38 -0500]  attempt to fix sudoers.d NOTFOUND error                                Dustin Falgout  {cd6fdb1}
+[2015-04-12 17:55:36 -0500]  use cache pkgs from the iso if they are available                      Dustin Falgout  {d77ec35}
+[2015-04-12 12:05:32 -0500]  and this too? :dizzy_face:                                             Dustin Falgout  {3ab2937}
+[2015-04-12 12:00:54 -0500]  how did we miss this?                                                  Dustin Falgout  {284369a}
+[2015-04-12 18:27:45 +0200]  Leave a "remember" TODO note                                               karasu      {59ac4a8}
 [2015-04-12 17:26:13 +0200]  Fixed color_parse is deprecated                                            karasu      {76c2bf1}
 [2015-04-12 17:10:30 +0200]  xalign cannot be used anymore (I left it as it is, it doesn't look ..      karasu      {3da0c0e}
 [2015-04-12 17:08:24 +0200]  Fixed: Gtk-WARNING **: Failed to set property GtkBox.halign to left..      karasu      {385fc00}
 [2015-04-12 17:04:15 +0200]  Gdk.cursor.new is deprecated in Gtk 3.16. Needs fixing                     karasu      {ce5bd80}
 [2015-04-12 16:47:16 +0200]  Use GLib.MAXFLOAT in GTK 3.16                                              karasu      {2a3329a}
 [2015-04-12 16:02:35 +0200]  Use GObject.G_MAXFLOAT                                                     karasu      {2b8c917}
+[2015-04-12 16:01:30 +0200]  Use GObject.G_MAXFLOAT                                                     karasu      {63242f1}
 [2015-04-12 12:05:45 +0200]  I think I got it! keymap chooses correct layout based on previously..      karasu      {53d7eed}
 [2015-04-12 12:02:03 +0200]  Suomi works now in keymap, Croatia does not                                karasu      {1d56f39}
 [2015-04-12 11:31:12 +0200]  Wrong dictionary names. Fixed                                              karasu      {65b99cb}
@@ -12,6 +34,11 @@
 [2015-04-12 11:16:10 +0200]  Load language screen at the same time we load welcome screen (minim..      karasu      {f2eb5f3}
 [2015-04-12 10:49:14 +0200]  Damn... I forgot about the pre-commit hook                                 karasu      {ca04b0b}
 [2015-04-12 10:48:08 +0200]  keyboard_names rewritten. It does not fix anything, yet.                   karasu      {f0d6b34}
+[2015-04-12 03:24:00 -0500]  fix top progress bar                                                   Dustin Falgout  {7e83d45}
+[2015-04-12 02:56:44 -0500]  say hello to Cnchi 0.8 :smile:                                         Dustin Falgout  {eec0342}
+[2015-04-12 02:49:36 -0500]  use our stylesheet for minimal iso                                     Dustin Falgout  {18123c1}
+[2015-04-12 01:15:45 -0500]  load the language screen at the same time as the welcome screen (mi..  Dustin Falgout  {185f0ae}
+[2015-04-11 22:20:24 +0200]  Forgot to undo some changes, code that wasn't used.                        karasu      {db5c1d4}
 [2015-04-11 21:56:18 +0200]  Reaady to start Cnchi 0.9.x development (road to Cnchi 0.10)               karasu      {6ab7a6c}
 [2015-04-11 20:00:16 +0200]  Leave all this bug as it was, I do not want to change anything unti..      karasu      {bfaf7df}
 [2015-04-11 19:57:50 +0200]  Added countries info, it's not used yet. We'll wait until 0.9.x for..      karasu      {38f9271}
