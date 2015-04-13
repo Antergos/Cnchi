@@ -1,3 +1,4 @@
+[2015-04-13 10:46:33 -0500]  revert some of the changes made trying to debug the packages issue     Dustin Falgout  {d956405}
 [2015-04-13 10:06:24 -0500]  checking to see if we are trying to configure the system before alp..  Dustin Falgout  {698ec59}
 [2015-04-13 09:39:34 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {5a1b4a6}
 [2015-04-13 09:38:42 -0500]  working on issues reported in forum. fixed the bootloader package n..  Dustin Falgout  {db1bf2d}
