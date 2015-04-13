@@ -1,3 +1,4 @@
+[2015-04-13 12:34:36 -0500]  use totem for mate                                                     Dustin Falgout  {fb6c8fa}
 [2015-04-13 18:57:23 +0200]  mate-mplayer no longer exists                                              karasu      {92ae0e2}
 [2015-04-13 11:27:31 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {f92ee53}
 [2015-04-13 11:27:15 -0500]  revert change to bootloader package selection                          Dustin Falgout  {d6a12de}

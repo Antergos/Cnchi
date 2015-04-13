@@ -386,10 +386,10 @@ class InstallationProcess(multiprocessing.Process):
         pacman_conf_file = "/tmp/pacman.conf"
         pacman_cache_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
 
-        if self.settings.get("cache"):
+        if self.settings.get("cache") != '':
             cache_dir = self.settings.get("cache")
         else:
-            cache_dir = None
+            cache_dir = '/var/cache/pacman/pkg'
 
         if self.settings.get("use_aria2"):
             use_aria2 = True
