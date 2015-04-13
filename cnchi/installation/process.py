@@ -1150,13 +1150,6 @@ class InstallationProcess(multiprocessing.Process):
             Setup systemd services
             ... and more """
 
-        if os.path.exists('/install/var/lib/pacman/db.lck'):
-            logging.debug(_('ALPM transaction hasn not finished yet.'))
-            waiting = 0
-            while os.path.exists('/install/var/lib/pacman/db.lck'):
-                if waiting < 600:
-                    waiting += 1
-                    time.sleep(1)
         self.queue_event('pulse', 'start')
         self.queue_event('info', _("Configuring your new system"))
 
