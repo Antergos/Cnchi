@@ -679,6 +679,7 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-fresh-{0}".format(lang_code)
+
             self.packages.append(pkg)
 
     def install_packages(self):
@@ -686,6 +687,9 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Installing packages..."))
 
         pacman_options = {}
+
+        # Check the list of packages for empty strings and remove any that we find.
+        self.packages = [pkg for pkg in self.packages if pkg != '']
 
         result = self.pacman.install(
             pkgs=self.packages,
