@@ -1,3 +1,4 @@
+[2015-04-14 05:59:15 -0500]  increase timeout for packages.xml and dont bail if we cant retrieve..  Dustin Falgout  {6d9291e}
 [2015-04-14 05:35:33 -0500]  prevent empty strings in package list. fixes #283                      Dustin Falgout  {51bb5b5}
 [2015-04-14 05:09:24 -0500]  fix language screen margin                                             Dustin Falgout  {4084c1c}
 [2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}

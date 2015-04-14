@@ -635,6 +635,10 @@ class InstallationProcess(multiprocessing.Process):
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
 
+        # Check the list of packages for empty strings and remove any that we find.
+        self.packages = [pkg for pkg in self.packages if pkg != '']
+        logging.debug(self.packages)
+
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
@@ -680,16 +684,15 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-fresh-{0}".format(lang_code)
 
-            self.packages.append(pkg)
+            # This shouldn't be necessary but I want to be sure
+            if pkg != "":
+                self.packages.append(pkg)
 
     def install_packages(self):
         """ Start pacman installation of packages """
         logging.debug(_("Installing packages..."))
 
         pacman_options = {}
-
-        # Check the list of packages for empty strings and remove any that we find.
-        self.packages = [pkg for pkg in self.packages if pkg != '']
 
         result = self.pacman.install(
             pkgs=self.packages,
