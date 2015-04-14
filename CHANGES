@@ -1,3 +1,5 @@
+[2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}
+[2015-04-13 19:53:30 +0200]  GPT in auto_partition does not work, Cnchi will use always MBR             karasu      {94961db}
 [2015-04-13 12:52:28 -0500]  try to ensure iso pkg cache is used when no cache is provided by user  Dustin Falgout  {2cd54a1}
 [2015-04-13 12:34:36 -0500]  use totem for mate                                                     Dustin Falgout  {fb6c8fa}
 [2015-04-13 18:57:23 +0200]  mate-mplayer no longer exists                                              karasu      {92ae0e2}
