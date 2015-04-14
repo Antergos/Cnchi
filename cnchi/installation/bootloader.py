@@ -53,10 +53,12 @@ class Bootloader(object):
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
         self.root_uuid = fs.get_info(self.root_device)['UUID']
-        self.swap_partition = self.mount_devices["swap"]
-        self.swap_uuid = fs.get_info(self.swap_partition)['UUID']
-        self.boot_device = self.mount_devices["/boot"]
-        self.boot_uuid = fs.get_info(self.boot_device)['UUID']
+        if "swap" in self.mount_devices:
+            self.swap_partition = self.mount_devices["swap"]
+            self.swap_uuid = fs.get_info(self.swap_partition)['UUID']
+        if "/boot" in self.mount_devices:
+            self.boot_device = self.mount_devices["/boot"]
+            self.boot_uuid = fs.get_info(self.boot_device)['UUID']
 
     def install(self):
         """ Installs the bootloader """
