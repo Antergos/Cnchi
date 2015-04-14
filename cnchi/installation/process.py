@@ -493,11 +493,11 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml = urllib.request.urlopen(req, timeout=10)
+                packages_xml = urllib.request.urlopen(req, timeout=45)
             except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
-                logging.warning(url_error)
+                # logging.warning(url_error) # This bails out of the entire installation
                 logging.debug(_("Can't retrieve remote package list, using a local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
