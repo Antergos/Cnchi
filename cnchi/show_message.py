@@ -41,6 +41,8 @@ def fatal_error(parent, my_message):
     # multiprocessing.active_children()
 
     error(parent, my_message)
+    with open('/tmp/.setup-failed', 'w') as fail_file:
+        fail_file.write('failed')    
     sys.exit(1)
 
 

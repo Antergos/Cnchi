@@ -7,6 +7,7 @@
     <property name="margin_start">20</property>
     <property name="margin_end">20</property>
     <property name="margin_bottom">10</property>
+    <property name="margin_top">20</property>
     <property name="hexpand">True</property>
     <child>
         <object class="GtkScrolledWindow" id="scrolledwindow1">
