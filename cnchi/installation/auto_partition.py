@@ -25,6 +25,7 @@
 import os
 import subprocess
 import logging
+import math
 
 from misc.misc import InstallError
 
@@ -547,7 +548,7 @@ class AutoPartition(object):
         return fs_devices
 
     def get_part_sizes(self, disk_size, start_part_sizes=0):
-        part_sizes = {'disk': disk_size, 'boot': 256}
+        part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
         if self.GPT:
             part_sizes['efi'] = 200
@@ -562,7 +563,7 @@ class AutoPartition(object):
         elif 2048 <= mem < 8192:
             part_sizes['swap'] = mem
         elif 8192 <= mem < 65536:
-            part_sizes['swap'] = mem / 2
+            part_sizes['swap'] = mem // 2
         else:
             part_sizes['swap'] = 4096
 
@@ -571,11 +572,13 @@ class AutoPartition(object):
         if part_sizes['swap'] > max_swap:
             part_sizes['swap'] = max_swap
 
-        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
+        part_sizes['swap'] = math.ceil(part_sizes['swap'])
+
+        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap'])
 
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
-            new_root_part_size = part_sizes['root'] / 5
+            new_root_part_size = part_sizes['root'] // 5
             if new_root_part_size > MAX_ROOT_SIZE:
                 new_root_part_size = MAX_ROOT_SIZE
             elif new_root_part_size < MIN_ROOT_SIZE:
@@ -586,6 +589,9 @@ class AutoPartition(object):
             part_sizes['home'] = 0
 
         part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
+
+        for part in part_sizes:
+            part_sizes[part] = int(part_sizes[part])
 
         return part_sizes
 
