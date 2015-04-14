@@ -32,7 +32,7 @@ from misc.misc import InstallError
 NOTE: Exceptions in this file
 
 On a warning situation, Cnchi should try to continue, so we need to catch the exception here.
-If we don't catch the exception here, it will be catched in process.py and managed as a fatal error.
+If we don't catch the exception here, it will be caught in process.py and managed as a fatal error.
 On the other hand, if we want to clarify the exception message we can catch it here
 and then raise an InstallError exception.
 '''
@@ -446,12 +446,17 @@ class AutoPartition(object):
 
             devices['efi'] = "{0}{1}".format(device, part_num)
             part_num += 1
+
             devices['boot'] = "{0}{1}".format(device, part_num)
             part_num += 1
+
             devices['root'] = "{0}{1}".format(device, part_num)
+            part_num += 1
+
             if self.home:
                 devices['home'] = "{0}{1}".format(device, part_num)
                 part_num += 1
+
             devices['swap'] = "{0}{1}".format(device, part_num)
             part_num += 1
         else:
@@ -550,6 +555,7 @@ class AutoPartition(object):
         part_sizes = {'disk': disk_size, 'boot': 256}
 
         if self.GPT:
+            # Set a 200MB efi partition
             part_sizes['efi'] = 200
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
@@ -585,6 +591,12 @@ class AutoPartition(object):
         else:
             part_sizes['home'] = 0
 
+        # Truncate to MB
+        part_sizes['swap'] = int(part_sizes['swap'])
+        part_sizes['root'] = int(part_sizes['root'])
+        part_sizes['home'] = int(part_sizes['home'])
+
+        # Calculate LVM Volume size
         part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
 
         return part_sizes
@@ -693,14 +705,15 @@ class AutoPartition(object):
                 sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num += 1
             else:
-                sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
-                part_num += 1
                 sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
                 part_num += 1
 
                 if self.home:
                     sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
                     part_num += 1
+
+                sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
+                part_num += 1
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
@@ -723,7 +736,7 @@ class AutoPartition(object):
             parted_set(device, "1", "boot", "on")
 
             if self.lvm:
-                # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
+                # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
                 start = end
                 end = start + part_sizes['lvm_pv']
                 parted_mkpart(device, "primary", start, end)
@@ -762,11 +775,12 @@ class AutoPartition(object):
             logging.debug("EFI: %s", devices['efi'])
 
         logging.debug("Boot: %s", devices['boot'])
-        logging.debug("Swap: %s", devices['swap'])
         logging.debug("Root: %s", devices['root'])
 
         if self.home:
             logging.debug("Home: %s", devices['home'])
+
+        logging.debug("Swap: %s", devices['swap'])
 
         if self.luks:
             setup_luks(devices['luks'], "cryptAntergos", self.luks_password, key_files[0])
@@ -806,6 +820,7 @@ class AutoPartition(object):
                 part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                 self.log_part_sizes(part_sizes)
 
+            # Create LVM volumes
             try:
                 size = str(int(part_sizes['root']))
                 cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
