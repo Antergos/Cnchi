@@ -687,6 +687,9 @@ class InstallationProcess(multiprocessing.Process):
 
         pacman_options = {}
 
+        # Check the list of packages for empty strings and remove any that we find.
+        self.packages = [pkg for pkg in self.packages if pkg != '']
+
         result = self.pacman.install(
             pkgs=self.packages,
             conflicts=self.conflicts,
