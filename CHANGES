@@ -1,3 +1,4 @@
+[2015-04-13 20:33:04 +0200]  Changed to GLib.MAXFLOAT                                                   karasu      {c303d13}
 [2015-04-13 20:28:35 +0200]  Merge branch 'cnchi-github-master'                                         karasu      {4d54d33}
 [2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}
 [2015-04-13 19:53:30 +0200]  GPT in auto_partition does not work, Cnchi will use always MBR             karasu      {94961db}
