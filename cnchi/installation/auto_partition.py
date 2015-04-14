@@ -693,14 +693,12 @@ class AutoPartition(object):
                 sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num += 1
             else:
-                sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
-                part_num += 1
                 sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
                 part_num += 1
-
                 if self.home:
                     sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
                     part_num += 1
+                sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
