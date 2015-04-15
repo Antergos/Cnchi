@@ -108,6 +108,7 @@
         <pkgname>gedit</pkgname>
         <pkgname>gnome-backgrounds</pkgname>
         <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-calendar</pkgname>
         <pkgname>gnome-contacts</pkgname>
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-documents</pkgname>
