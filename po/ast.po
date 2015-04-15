@@ -1,0 +1,2210 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# 
+# Translators:
+# Ḷḷumex03 <tornes@opmbx.org>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: Antergos\n"
+"POT-Creation-Date: 2014-12-19 10:27+CET\n"
+"PO-Revision-Date: 2014-12-22 01:13+0000\n"
+"Last-Translator: Ḷḷumex03 <tornes@opmbx.org>\n"
+"Language-Team: Asturian (http://www.transifex.com/projects/p/antergos/language/ast/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+"Language: ast\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /usr/share/cnchi/cnchi.py:71
+msgid "Can't create Cnchi main window: %s"
+msgstr "Nun pue crase la ventana principal Cnchi: %s"
+
+#: /usr/share/cnchi/cnchi.py:168
+msgid "Using pyalpm v%s as interface to libalpm v%s"
+msgstr "Usando pyalpm v%s como interfaz pa libalpm v%s"
+
+#: /usr/share/cnchi/cnchi.py:187
+msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
+msgstr "Usa aria2 pa baxar los paquetes d'Antergos (ESPERIMENTAL)"
+
+#: /usr/share/cnchi/cnchi.py:191
+msgid "Use pre-downloaded xz packages when possible"
+msgstr "Usa paquetes xz baxaos d'enantes cuando sía posible"
+
+#: /usr/share/cnchi/cnchi.py:195
+msgid "Sets Cnchi log level to 'debug'"
+msgstr "Afita'l nivel de rexistru de Cnchi a 'debug'"
+
+#: /usr/share/cnchi/cnchi.py:199
+msgid "Runs cnchi even if it detects that another instance is running"
+msgstr "Executa Cnchi magar que se deteute otra instancia n'execución"
+
+#: /usr/share/cnchi/cnchi.py:203
+msgid "Disables first screen's 'try it' option"
+msgstr "Deshabilita la opción de la primer pantalla de 'Pruébalu'"
+
+#: /usr/share/cnchi/cnchi.py:207
+msgid ""
+"Install the packages referenced by a local xml instead of the default ones"
+msgstr "Instala paquetes referenciaos por un XML llocal en cuantes de los predeterminaos"
+
+#: /usr/share/cnchi/cnchi.py:211
+msgid "Do not perform any changes (useful for developers)"
+msgstr "Nun fai denguna camudancia (útil pa desendolcadores)"
+
+#: /usr/share/cnchi/cnchi.py:215
+msgid "Upgrade/downgrade Cnchi to the web version"
+msgstr "Anueva/Baxa de versión Cnchi a la versión na web"
+
+#: /usr/share/cnchi/cnchi.py:219
+msgid "Do not search for new Cnchi versions online"
+msgstr "Nun gueta por versiones nueves de Cnchi en llinia"
+
+#: /usr/share/cnchi/cnchi.py:223
+msgid "Show logging messages to stdout"
+msgstr "Amuesa mensaxes de rexistru a stdout"
+
+#: /usr/share/cnchi/cnchi.py:227
+msgid "Show options in development (for developers only, do not use this!)"
+msgstr "Amuesa opciones en desendolcu (namái pa desendolcadores, ¡nun uses esto!)"
+
+#: /usr/share/cnchi/cnchi.py:263
+msgid "Program updated! Restarting..."
+msgstr "¡Programa anováu! Reaniciando..."
+
+#: /usr/share/cnchi/cnchi.py:295
+msgid "Cnchi files not found. Please, install Cnchi using pacman"
+msgstr "Nun s'alcontraron los ficheros de Cnchi. Por favor, instala Cnchi usando pacman"
+
+#: /usr/share/cnchi/cnchi.py:299
+msgid "Please install %s before running this installer"
+msgstr "Por favor, instala %s enantes d'executar esti instalador"
+
+#: /usr/share/cnchi/src/bootinfo.py:65 /usr/share/cnchi/src/bootinfo.py:78
+#: /usr/share/cnchi/src/bootinfo.py:84 /usr/share/cnchi/src/bootinfo.py:130
+#: /usr/share/cnchi/src/bootinfo.py:134 /usr/share/cnchi/src/bootinfo.py:142
+#: /usr/share/cnchi/src/bootinfo.py:154 /usr/share/cnchi/src/bootinfo.py:179
+#: /usr/share/cnchi/src/bootinfo.py:200 /usr/share/cnchi/src/bootinfo.py:203
+#: /usr/share/cnchi/src/bootinfo.py:206 /usr/share/cnchi/src/bootinfo.py:235
+msgid "unknown"
+msgstr "desconocíu"
+
+#: /usr/share/cnchi/src/bootinfo.py:98
+msgid "Error calling hexdump command"
+msgstr "Fallu llamando'l comandu hexdump"
+
+#: /usr/share/cnchi/src/canonical/misc.py:907
+#: /usr/share/cnchi/src/canonical/misc.py:917
+#: /usr/share/cnchi/src/location.py:213 /usr/share/cnchi/src/location.py:223
+msgid "locale changed to : %s"
+msgstr "locale camudada a: %s"
+
+#: /usr/share/cnchi/src/canonical/misc.py:909
+#: /usr/share/cnchi/src/location.py:215
+msgid "Can't import locale module"
+msgstr "Nun pue importase'l módulu locale"
+
+#: /usr/share/cnchi/src/canonical/misc.py:911
+#: /usr/share/cnchi/src/canonical/misc.py:919
+#: /usr/share/cnchi/src/canonical/misc.py:921
+#: /usr/share/cnchi/src/location.py:217 /usr/share/cnchi/src/location.py:226
+#: /usr/share/cnchi/src/location.py:228
+msgid "Can't change to locale '%s'"
+msgstr "Nun pue camudase la locale a '%s'"
+
+#: /usr/share/cnchi/src/canonical/validation.py:132
+msgid "Password is too short"
+msgstr "La contraseña ye mui curtia"
+
+#: /usr/share/cnchi/src/canonical/validation.py:135
+msgid "Weak password"
+msgstr "Contraseña feble"
+
+#: /usr/share/cnchi/src/canonical/validation.py:138
+msgid "Fair password"
+msgstr "Contraseña cenciella"
+
+#: /usr/share/cnchi/src/canonical/validation.py:141
+msgid "Good password"
+msgstr "Contraseña bona"
+
+#: /usr/share/cnchi/src/canonical/validation.py:144
+msgid "Strong password"
+msgstr "Contraseña fuerte"
+
+#: /usr/share/cnchi/src/canonical/validation.py:159
+msgid "Passwords do not match"
+msgstr "Les contraseñes nun concasen"
+
+#: /usr/share/cnchi/src/check.py:73
+msgid "System Check"
+msgstr "Comprobación del sistema"
+
+#: /usr/share/cnchi/src/check.py:77
+msgid "has at least %dGB available storage space."
+msgstr "tien polo menos %dGB d'espaciu en discu disponible."
+
+#: /usr/share/cnchi/src/check.py:82
+msgid ""
+"This highly depends on which desktop environment you choose, so you might "
+"need more space."
+msgstr "Esto ta arreyao al entronu d'escritoriu qu'escueyas, asina que podríes necesitar más espaciu."
+
+#: /usr/share/cnchi/src/check.py:87
+msgid "is plugged in to a power source"
+msgstr "ta enchufáu a una fonte d'enerxía"
+
+#: /usr/share/cnchi/src/check.py:91
+msgid "is connected to the Internet"
+msgstr "ta coneutáu a internet"
+
+#: /usr/share/cnchi/src/check.py:95
+msgid "For best results, please ensure that this computer:"
+msgstr "Pa los meyores resultaos, asegúrate por favor qu'esti ordenador:"
+
+#: /usr/share/cnchi/src/check.py:170
+msgid "We have Internet connection."
+msgstr "Tenemos conexón a internet."
+
+#: /usr/share/cnchi/src/check.py:171
+msgid "We're connected to a power source."
+msgstr "Tamos coneutaos a una fonte d'enerxía."
+
+#: /usr/share/cnchi/src/check.py:172
+msgid "We have enough disk space."
+msgstr "Tenemos espaciu en discu abondo."
+
+#: /usr/share/cnchi/src/desktop.py:111
+msgid "Choose Your Desktop"
+msgstr "Escueyi'l to escritoriu"
+
+#: /usr/share/cnchi/src/desktop.py:184
+msgid "Cnchi will install Antergos with the '%s' desktop"
+msgstr "Cnchi instalará Antergos col escritoriu '%s'"
+
+#: /usr/share/cnchi/src/desktop_environments.py:80
+msgid ""
+"Gnome 3 is an easy and elegant way to use your computer. It features the "
+"Activities Overview which is an easy way to access all your basic tasks. "
+"GNOME 3 is the default desktop in Antergos."
+msgstr "Gnome 3 ye un mou cenciellu y elegante d'usar el to odenador. Inclúi la Vista previa d'Actividaes que ye un mou cenciellu d'acceder a toles tos xeres básiques. GNOME 3 ye l'escritoriu por defeutu n'Antergos."
+
+#: /usr/share/cnchi/src/desktop_environments.py:85
+msgid ""
+"Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
+" users a more traditional desktop interface along with the newest "
+"compositing techniques of GNOME 3. Cinnamon is for users of all experience "
+"levels. "
+msgstr "Cinnamon ye un deriváu de GNOME 3 desendolcáu por (y pa) Linux Mint. Apurre a los usuarios más qu'una interfaz d'escritoriu tradicional coles téuniques más nueves de composición de GNOME 3. Cinnamon ye pa usuarios de tolos niveles."
+
+#: /usr/share/cnchi/src/desktop_environments.py:90
+msgid ""
+"Xfce is a lightweight desktop environment. It aims to be fast and low on "
+"system resources, while remaining visually appealing and user friendly. It "
+"is a great option for use on older computers or those with low hardware "
+"specifications. "
+msgstr "Xfce ye un entornu d'escritoriu llixeru. Tien como oxetivu ser rápidu y baxu en recursos, entrín remana un aspeutu visual ya interfaz amigables. Ye una opción perfeuta pa usar n'ordenadores vieyos o que tengan especificaciones de hardware baxes."
+
+#: /usr/share/cnchi/src/desktop_environments.py:95
+msgid ""
+"LXDE is an extremely fast-performing and energy-saving desktop environment. "
+"It uses less CPU and RAM than other environments. LXDE is especially "
+"designed for cloud computers with low hardware specifications such as "
+"netbooks, mobile devices, and older computers."
+msgstr "LXDE ye un entornu d'escritoriu perrápidu y espertu n'aforrar recursos. Usa menos CPU y RAM qu'otros entornos. LXDE ta diseñáu especialmente pa ordenadores na ñube con especificaciones de hardware baxes como netbooks, preseos móviles, y otros ordenadores vieyos."
+
+#: /usr/share/cnchi/src/desktop_environments.py:100
+msgid ""
+"Openbox is a highly configurable, next generation window manager with "
+"extensive standards support. It's default theme is well known for its "
+"minimalistic appearance and flexibility. Your desktop becomes cleaner, "
+"faster. Perfect for low hardware specifications, too."
+msgstr "Openbox ye un alministrador de ventanes mui configurable y de nueva xeneración con sofitu a estándares estendíos. El so tema por defeutu ye bien conocíu pol so aspeutu minimalista y flexible. El to escritoriu sedrá llimpiu y más rápidu. Perfeutu pa especificaciones de hardware baxes, tamién."
+
+#: /usr/share/cnchi/src/desktop_environments.py:105
+msgid ""
+"Enlightenment is not just a window manager for Linux/X11 and others, but "
+"also a whole suite of libraries to help you create beautiful user interfaces"
+" with much less work"
+msgstr "Enlightenment nun ye namás qu'un xestor de ventanes pa Linux/X11 y otros, sinón tamién un conxuntu completu de biblioteques p'ayudate a crear interfaces d'usuariu perguapes con munchu menos trabayu."
+
+#: /usr/share/cnchi/src/desktop_environments.py:109
+msgid ""
+"If you are looking for a familiar working environment, KDE's Plasma Desktop "
+"offers all the tools required for a modern desktop computing experience so "
+"you can be productive right from the start."
+msgstr "Si tas guetando un entornu de trabayu familiar, l'escritoriu Plasma de KDE ufre toles ferramientes riquíes pa una esperiencia d'escritoriu moderna pa qu'asina puea ser productiva dende l'entamu."
+
+#: /usr/share/cnchi/src/desktop_environments.py:113
+msgid ""
+"Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
+"provides a visually updated core desktop experience that is easy to use and "
+"familiar to the user. "
+msgstr "Plasma 5.0 introduz una ufierta nueva na estaya de trabayu de KDE. Apurre una esperiencia d'escritoriu con un aspeutu anováu que ye cenciellu d'usar y familiar col usuariu."
+
+#: /usr/share/cnchi/src/desktop_environments.py:117
+msgid ""
+"LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
+"technologies. It has been tailored for users who value simplicity, speed, "
+"and an intuitive interface."
+msgstr "LXQt ye un entornu d'escritoriu avanzáu, cenciellu d'usar, y rápidu basáu nes teunoloxíes QT. Fíxose por usuarios que valoren la cenciellez, velocidá, y una interfaz intuitiva."
+
+#: /usr/share/cnchi/src/desktop_environments.py:121
+msgid ""
+"This option will install Antergos as command-line only system, without any "
+"type of graphical interface. After the installation you can customize "
+"Antergos by installing packages with the command-line package manager."
+msgstr "Esta opción instalará Antergos como un sistema per llinia comandos, ensin denguna triba d'interfaz gráfica. Dempués de la instalación pues personalizar Antergos instalando paquetes col xestor de paquetes en llinia comandos."
+
+#: /usr/share/cnchi/src/desktop_environments.py:125
+msgid ""
+"An intuitive, attractive and lightweight desktop environment, fork of GNOME "
+"2. MATE is one of the best options for use on older computers or those with "
+"low hardware specifications due to its lightweight yet very customizable set"
+" of features."
+msgstr "Un entornu d'escritoriu intuitivu, atractivu y llixeru deriváu de GNOME 2. MATE ye una de les meyores opciones pa usar ordenadores vieyos o p'aquellos con especificaciones de hardware baxes pola mor de la so variedá de carauterístiques llixeres y mui personalizables."
+
+#: /usr/share/cnchi/src/download/aria2.py:49
+#: /usr/share/cnchi/src/download/aria2.py:60
+#: /usr/share/cnchi/src/download/aria2.py:96
+#: /usr/share/cnchi/src/download/aria2.py:104
+msgid "Can't call Aria2. Error Output: %s"
+msgstr "Nun pue llamase a Aria2. Salida del fallu: %s"
+
+#: /usr/share/cnchi/src/download/aria2.py:157
+msgid "Can't run aria2: %s"
+msgstr "Nun pue executase aria2: %s"
+
+#: /usr/share/cnchi/src/download/download.py:104
+msgid "Using aria2 to download packages"
+msgstr "Usando Aria2 pa baxar los paquetes"
+
+#: /usr/share/cnchi/src/download/download.py:110
+msgid "Using urlib to download packages"
+msgstr "Usando urlib pa baxar los paquetes"
+
+#: /usr/share/cnchi/src/download/download.py:121
+msgid "Creating list of packages to download..."
+msgstr "Creando llista de paquetes pa baxar..."
+
+#: /usr/share/cnchi/src/download/download.py:135
+msgid "Can't initialize pyalpm: %s"
+msgstr "Nun pue aniciase pyalpm: %s"
+
+#: /usr/share/cnchi/src/download/download.py:144
+msgid "Error creating metalink for package %s"
+msgstr "Fallu creando l'enllaz meta pal paquete %s"
+
+#: /usr/share/cnchi/src/download/download.py:160
+msgid "Can't create download set: %s"
+msgstr "Nun pue crease'l conxuntu de descarga: %s"
+
+#: /usr/share/cnchi/src/download/download.py:167
+msgid "Can't release pyalpm: %s"
+msgstr "Nun pue llanzase pyalpm: %s"
+
+#: /usr/share/cnchi/src/download/download_aria2.py:81
+msgid "Aria2 is not running."
+msgstr "Aria2 nun ta executándose."
+
+#: /usr/share/cnchi/src/download/download_aria2.py:88
+#: /usr/share/cnchi/src/download/download_aria2.py:122
+#: /usr/share/cnchi/src/download/download_aria2.py:138
+msgid "Downloading packages... (%d/%d)..."
+msgstr "Baxando paquetes... (%d/%d)..."
+
+#: /usr/share/cnchi/src/download/download_aria2.py:103
+#: /usr/share/cnchi/src/download/download_urllib.py:126
+msgid "File %s already exists, Cnchi will not overwrite it"
+msgstr "El ficheru %s yá esiste, Cnchi nun lu sobrescribirá"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:60
+msgid "Error opening %s:"
+msgstr "Fallu abriendo %s:"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:111
+msgid "Downloading %s %s (%d/%d)..."
+msgstr "Baxando %s %s (%d/%d)..."
+
+#: /usr/share/cnchi/src/download/download_urllib.py:118
+msgid "Metalink for package %s has no size info"
+msgstr "L'enllaz meta pal paquete %s nun tien la información de tamañu"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:144
+msgid "Downloading file from url %s"
+msgstr "Baxando'l ficheru dende la url %s"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:172
+msgid "Can't download %s, will try another mirror if available"
+msgstr "Nun pue baxase %s, intentaráse con otru espeyu si ta disponible"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:176
+msgid "Can't open %s, will try another mirror if avaliable"
+msgstr "Nun pue abrise %s, intentaráse con otru espeyu si ta disponible"
+
+#: /usr/share/cnchi/src/download/download_urllib.py:183
+msgid "Can't download %s, even after trying all available mirrors"
+msgstr "Nun pue baxase %s, inclusu dempués d'intentalo con tolos espeyos disponibles"
+
+#: /usr/share/cnchi/src/download/metalink.py:111
+msgid "Unable to create download queue for package %s"
+msgstr "Nun pue crease la cola de descargues pal paquete %s"
+
+#: /usr/share/cnchi/src/download/metalink.py:117
+msgid "Can't find these packages: "
+msgstr "Nun puen alcontrase estos paquetes:"
+
+#: /usr/share/cnchi/src/download/metalink.py:123
+msgid "Warning! Can't resolve these dependencies: "
+msgstr "¡Avisu! Nun puen resolvese estes dependencies:"
+
+#: /usr/share/cnchi/src/features.py:166
+msgid "Feature Selection"
+msgstr "Esbilla de carauterístiques"
+
+#: /usr/share/cnchi/src/features.py:170
+msgid "Arch User Repository (AUR) Support"
+msgstr "Sofitu d'Arch User Repository (AUR)"
+
+#: /usr/share/cnchi/src/features.py:172
+msgid "The AUR is a community-driven repository for Arch users."
+msgstr "AUR ye un repositoriu fechu pola comunidá pa usuarios d'Arch."
+
+#: /usr/share/cnchi/src/features.py:174
+msgid ""
+"Use yaourt to install AUR packages.\n"
+"The AUR was created to organize and share new packages\n"
+"from the community and to help expedite popular packages'\n"
+"inclusion into the [community] repository."
+msgstr "Usa yaourt pa instalar paquetes d'AUR.\nL'AUR creóse pa organizar y compartir paquetes nuevos\nde la comunidá y p'ayudar a facilitar la so amestadura al\nrepositoriu [community]."
+
+#: /usr/share/cnchi/src/features.py:181
+msgid "Bluetooth Support"
+msgstr "Sofitu de Bluetooth"
+
+#: /usr/share/cnchi/src/features.py:183
+msgid "Enables your system to make wireless connections via Bluetooth."
+msgstr "Fai que'l to sistema puea afitar conexones inalámbriques per Bluetooth."
+
+#: /usr/share/cnchi/src/features.py:185
+msgid ""
+"Bluetooth is a standard for the short-range wireless\n"
+"interconnection of cellular phones, computers, and\n"
+"other electronic devices. In Linux, the canonical\n"
+"implementation of the Bluetooth protocol stack is BlueZ"
+msgstr "Bluetooth ye un estándar inalámbricu d'algame\ncurtiu pa interconeutar teléfonos móviles, ordenadores,\ny otros preseos electrónicos. En Linux, la implementación\ncanónica d'esti protocolu ye BlueZ"
+
+#: /usr/share/cnchi/src/features.py:192
+msgid "Extra Truetype Fonts"
+msgstr "Fontes Truetype estra"
+
+#: /usr/share/cnchi/src/features.py:194
+msgid "Installation of extra TrueType fonts"
+msgstr "Instalación de fontes TrueType estra"
+
+#: /usr/share/cnchi/src/features.py:196
+msgid ""
+"TrueType is an outline font standard developed by\n"
+"Apple and Microsoft in the late 1980s as a competitor\n"
+"to Adobe's Type 1 fonts used in PostScript. It has\n"
+"become the most common format for fonts on both the\n"
+"Mac OS and Microsoft Windows operating systems."
+msgstr "TrueType ye una fonte estándar desendolcada por\nApple y Microsoft en 1980 como una competidora de\nles fontes d'Adobe Type 1 usaes en PostScript.\nFíxose'l formatu más común pa fontes nos sistemes\noperativos de Mac OS y Microsoft Windows."
+
+#: /usr/share/cnchi/src/features.py:204
+msgid "Printing Support"
+msgstr "Sofitu d'imprentación"
+
+#: /usr/share/cnchi/src/features.py:206
+msgid "Installation of printer drivers and management tools."
+msgstr "Instalación de controladores d'imprentadores y ferramientes d'alministración."
+
+#: /usr/share/cnchi/src/features.py:208
+msgid ""
+"CUPS is the standards-based, open source printing\n"
+"system developed by Apple Inc. for OS\\302\\256 X and other\n"
+"UNIX\\302\\256-like operating systems."
+msgstr "CUPS ye'l sistema estándar y de códigu llibre desendolcáu por\nApple Inc. pa OS\\302\\256 X y otros sistemas operativos UNIX\\302\\256"
+
+#: /usr/share/cnchi/src/features.py:214
+msgid "LibreOffice"
+msgstr "LibreOffice"
+
+#: /usr/share/cnchi/src/features.py:216
+msgid "Open source office suite. Supports editing MS Office files."
+msgstr "Suit ofimática Open Source. Sofita la edición de ficheros MS Office."
+
+#: /usr/share/cnchi/src/features.py:218
+msgid ""
+"LibreOffice is the free power-packed Open Source\n"
+"personal productivity suite for Windows, Macintosh\n"
+"and Linux, that gives you six feature-rich applications\n"
+"for all your document production and data processing\n"
+"needs: Writer, Calc, Impress, Draw, Math and Base."
+msgstr "LibreOffice ye una suit ofimática llibre pa Windows,\nMacintosh y Linux, qu'apurre 6 aplicacioes pa toles tos\nnecesidaes de producción de documentos y procesamientu\nde datos: Write, Calc, Impress, Draw, Math y Base."
+
+#: /usr/share/cnchi/src/features.py:226
+msgid "Visual Effects"
+msgstr "Efeutos visuales"
+
+#: /usr/share/cnchi/src/features.py:228
+msgid "Enable transparency, shadows, and other desktop effects."
+msgstr "Habilita la tresparencia, solombres y otros efeutos d'escritoriu."
+
+#: /usr/share/cnchi/src/features.py:230
+msgid ""
+"Compton is a lightweight, standalone composite manager,\n"
+"suitable for use with window managers that do not natively\n"
+"provide compositing functionality. Compton itself is a fork\n"
+"of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
+"See the compton github page for further information."
+msgstr "Compton ye un alministrador de composición llixeru,\nperfeutu pa usar colos alministradores de ventanes que\nnun apurren nativamente fucionalidaes de composición.\nCompton ye una variante de xcompmgr-dana, qu'al\nmesmu tiempu ye variante de xcompmgr.\nMira la páxina Github de Compton pa más información."
+
+#: /usr/share/cnchi/src/features.py:238
+msgid "Uncomplicated Firewall"
+msgstr "Uncomplicated Firewall"
+
+#: /usr/share/cnchi/src/features.py:240
+msgid "Control the incoming and outgoing network traffic."
+msgstr "Controla'l tráficu de rede entrante y saliente."
+
+#: /usr/share/cnchi/src/features.py:242
+msgid ""
+"Ufw stands for Uncomplicated Firewall, and is a program for\n"
+"managing a netfilter firewall. It provides a command line\n"
+"interface and aims to be uncomplicated and easy to use."
+msgstr "Ufw son les sigles d'Uncomplicated Firewall, y ye un\nprograma p'alministrar los filtros de rede. Apurre una\ninterfaz de llinia de comandos y tien l'oxetivu de ser\ncenciellu d'usar."
+
+#: /usr/share/cnchi/src/features.py:248
+msgid "Kernel LTS"
+msgstr "Kernel LTS"
+
+#: /usr/share/cnchi/src/features.py:250
+msgid "Long term support (LTS) Linux kernel and modules."
+msgstr "Kernel y módulos de Linux LTS (Long Term Support)"
+
+#: /usr/share/cnchi/src/features.py:252
+msgid ""
+"The linux-lts package is an alternative Arch kernel package\n"
+"based upon Linux kernel 3.14 and is available in the core repository.\n"
+"This particular kernel version enjoys long-term support from upstream,\n"
+"including security fixes and some feature backports. Additionally, this\n"
+"package includes ext4 support. For Antergos users seeking a long-term\n"
+"support kernel, or who want a fallback kernel in case the latest kernel\n"
+"version causes problems, this option is the answer."
+msgstr "El paquete linux-lts ye una alternativa al paquete de kernel d'Arch Linux\nbasáu sobro'l kernel Linux 3.14 y ta disponible nel repositoriu core.\nEsta versión particular del kernel axunta sofitu a llargu plazu del upstream\nxunto con igues de seguridá y dalgunes carauterístiques de les verisiones\nnueves. Amás, esti paquete inclúi sofitu d'EXT4. Pa usuarios d'Antergos\nque gueten un kernel con sofitu a llargu plazu, o quieren baxalu de versión\nen casu de que les caberes versiones causen problemes, esta opción ye\nla rempuesta."
+
+#: /usr/share/cnchi/src/features.py:262
+msgid "Firefox Web Browser"
+msgstr "Restolador web Firefox"
+
+#: /usr/share/cnchi/src/features.py:264
+msgid "A popular open-source graphical web browser from Mozilla"
+msgstr "Un restolador web gráficu y libre de Mozilla"
+
+#: /usr/share/cnchi/src/features.py:266
+msgid ""
+"Mozilla Firefox (known simply as Firefox) is a free and\n"
+"open-source web browser developed for Windows, OS X, and Linux,\n"
+"with a mobile version for Android, by the Mozilla Foundation and\n"
+"its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
+"layout engine to render web pages, which implements current and\n"
+"anticipated web standards."
+msgstr "Mozilla Firefox (conocíu simplemente como Firefox) ye un\nrestolador web llibre y de baldre desendolcáu pa Windows,\nOS X, Linux y Android pola Mozilla Foundation y la so subsidiaria\nMozilla Corporation. Firefox usa la distribución del motor Gecko\npa renderizar páxines web, qu'anguaño implementa y anticipase\na los estándares web."
+
+#: /usr/share/cnchi/src/features.py:275
+msgid "Windows sharing SMB"
+msgstr "Comparticiones de Windows SMB"
+
+#: /usr/share/cnchi/src/features.py:277
+msgid "SMB provides shared access to files and printers"
+msgstr "SMB apurre accesu compartíu a ficheros ya imprentadores"
+
+#: /usr/share/cnchi/src/features.py:279
+msgid ""
+"In computer networking, Server Message Block (SMB)\n"
+"operates as an application-layer network protocol mainly used\n"
+"for providing shared access to files, printers, serial ports,\n"
+"and miscellaneous communications between nodes on a network.\n"
+"Most usage of SMB involves computers running Microsoft Windows."
+msgstr "Na rede d'ordenadores, Server Message Block (SMB)\nopera como una capa d'aplicación nel protocolu de rede usáu\nprincipalmente p'apurrir l'accesu compartíu a ficheros, imprentadores,\npuertos de serial, y otres somunicaciones ente nodos nuna rede.\nL'usu mayoritariu de SMB dase n'ordenadores executando Microsoft Windows."
+
+#: /usr/share/cnchi/src/features.py:320
+msgid "Selected '%s' feature to install"
+msgstr "Esbillóse pa instalar la carauterística '%s'"
+
+#: /usr/share/cnchi/src/features.py:340
+msgid "Arch User Repository - Disclaimer"
+msgstr "Arch User Repository - Alcuerdu"
+
+#: /usr/share/cnchi/src/features.py:341
+msgid ""
+"The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
+"that supplement software available from the official repositories.\n"
+"\n"
+"The AUR is community driven and NOT supported by Arch or Antergos.\n"
+msgstr "L'Arch User Repository ye una coleición de PKGBUILDs xubíos polos\nusuarios qu'apurren software disponible dende los repositorios oficiales.\n\nL'AUR ta fechu pola comunidá y NUN ta sofitáu por Arch o Antergos.\n"
+
+#: /usr/share/cnchi/src/features.py:346
+msgid "Uncomplicated Firewall will be installed with these rules:"
+msgstr "Uncomplicated Firewall instalaráse con estes regles:"
+
+#: /usr/share/cnchi/src/features.py:348
+msgid ""
+"ufw default deny\n"
+"ufw allow from %s\n"
+"ufw allow Transmission\n"
+"ufw allow SSH"
+msgstr "ufw por defeutu refugar\nufw permitir dende %s\nufw permitir Transmission\nufw permitir SSH"
+
+#: /usr/share/cnchi/src/hardware/hardware.py:77
+#: /usr/share/cnchi/src/installation/chroot.py:150
+msgid "Error running command: %s"
+msgstr "Fallu executando'l programa: %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:268
+#: /usr/share/cnchi/src/installation/advanced.py:581
+#: /usr/share/cnchi/src/installation/advanced.py:595
+msgid "free space"
+msgstr "espaciu llibre"
+
+#: /usr/share/cnchi/src/installation/advanced.py:368
+msgid "Device"
+msgstr "Preséu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:371
+msgid "Type"
+msgstr "Triba"
+
+#: /usr/share/cnchi/src/installation/advanced.py:374
+msgid "Mount point"
+msgstr "Puntu montaxe"
+
+#: /usr/share/cnchi/src/installation/advanced.py:377
+msgid "Label"
+msgstr "Etiqueta"
+
+#: /usr/share/cnchi/src/installation/advanced.py:384
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "Format"
+msgstr "Formatu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:387
+msgid "Size"
+msgstr "Tamañu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:390
+msgid "Used"
+msgstr "Usáu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:393
+msgid "Flags"
+msgstr "Banderes"
+
+#: /usr/share/cnchi/src/installation/advanced.py:400
+msgid "SSD"
+msgstr "SSD"
+
+#: /usr/share/cnchi/src/installation/advanced.py:563
+msgid "none"
+msgstr "dengún"
+
+#: /usr/share/cnchi/src/installation/advanced.py:704
+msgid "Can't edit a partition with LVM filesystem type"
+msgstr "Nun pue editase una partición cola triba del sistema ficheros LVM"
+
+#: /usr/share/cnchi/src/installation/advanced.py:763
+msgid "Can't use same mount point twice."
+msgstr "Nun pue usase'l mesmu puntu de montaxe dos vegaes."
+
+#: /usr/share/cnchi/src/installation/advanced.py:765
+msgid "Root partition must be formatted."
+msgstr "La partición root tien de formatiase."
+
+#: /usr/share/cnchi/src/installation/advanced.py:862
+msgid "You will delete the partition %s from disk %s"
+msgstr "Desaniciarás la partición %s del discu %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:880
+msgid "Unmounting %s..."
+msgstr "Desmontando %s..."
+
+#: /usr/share/cnchi/src/installation/advanced.py:1054
+msgid "Can't use same mount point twice..."
+msgstr "Nun pue usase'l mesmu puntu de montaxe dos vegaes..."
+
+#: /usr/share/cnchi/src/installation/advanced.py:1079
+msgid "Creating a primary partition"
+msgstr "Creando una partición primaria"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1090
+msgid "Creating an extended partition"
+msgstr "Creando una partición estendida"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1096
+msgid "Creating a logical partition"
+msgstr "Creando una partición llóxica"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1278
+msgid "Advanced Installation Mode"
+msgstr "Mou d'instalación avanzáu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1280
+msgid "Use the device below for boot loader installation:"
+msgstr "Usar el preséu d'embaxo pa la instalación del cargador d'arranque:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1285
+msgid "Bootloader:"
+msgstr "Cargador d'arranque:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1289
+msgid "Device:"
+msgstr "Preséu:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1293
+msgid "Mount Checklist:"
+msgstr "Comprobación de montaxes:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1299
+msgid "Root"
+msgstr "Root"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1303
+msgid "Boot"
+msgstr "Boot"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1307
+msgid "EFI"
+msgstr "EFI"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1311
+msgid "Swap"
+msgstr "Swap"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1321
+msgid "Undo"
+msgstr "Desfacer"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1324
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "New"
+msgstr "Nueva"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1327
+msgid "Delete"
+msgstr "Desaniciar"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1330
+msgid "Edit..."
+msgstr "Editar..."
+
+#: /usr/share/cnchi/src/installation/advanced.py:1333
+msgid "New partition table"
+msgstr "Tabla de particiones nueva"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1345
+msgid "_Cancel"
+msgstr "_Encaboxar"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1356
+msgid "_Apply"
+msgstr "_Aplicar"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1359
+msgid "Size:"
+msgstr "Tamañu:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1363
+msgid "Type:"
+msgstr "Triba:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1367
+msgid "Primary"
+msgstr "Primaria"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1371
+msgid "Logical"
+msgstr "Llóxica"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1375
+msgid "Extended"
+msgstr "Estendida"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1379
+msgid "Beginning of this space"
+msgstr "Al entamu d'esti espaciu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1383
+msgid "End of this space"
+msgstr "A la fin d'esti espaciu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1387
+#: /usr/share/cnchi/src/installation/advanced.py:1404
+msgid "Use As:"
+msgstr "Usar como:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1391
+#: /usr/share/cnchi/src/installation/advanced.py:1408
+msgid "Mount Point:"
+msgstr "Puntu montaxe:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1395
+#: /usr/share/cnchi/src/installation/advanced.py:1412
+msgid "Label (optional):"
+msgstr "Etiqueta (opcional):"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1399
+#: /usr/share/cnchi/src/installation/advanced.py:1420
+msgid "Encryption Options..."
+msgstr "Opciones de cifráu..."
+
+#: /usr/share/cnchi/src/installation/advanced.py:1416
+msgid "Format:"
+msgstr "Formatu:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1425
+msgid "Partition Table Type:"
+msgstr "Triba de tabla de particiones:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1430
+msgid "Create Partition Table"
+msgstr "Crear tabla de particiones"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1433
+msgid "Use LUKS encryption:"
+msgstr "Usar cifráu LUKS:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1437
+msgid "LUKS volume name:"
+msgstr "Nome de volume LUKS:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1441
+#: /usr/share/cnchi/src/wireless.py:71
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1445
+msgid "Confirm password:"
+msgstr "Confirmar contraseña:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1514
+msgid "Creating a new %s partition table for disk %s"
+msgstr "Creando una tabla de particiones %s nueva pal discu %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1523
+msgid ""
+"GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
+"\n"
+"Cnchi will create this BIOS Boot Partition for you."
+msgstr "GRUB rique una partición d'arranque BIOS nos sistemes BIOS pa embeber el so ficheru core.img pola mor d'una falta de güecu embebíu post-MBR nos discos GPT.\n\nCnchi creará esta partición d'arranque BIOS por ti."
+
+#: /usr/share/cnchi/src/installation/advanced.py:1556
+msgid "Can't create BIOS GPT Boot partition!"
+msgstr "¡Nun pue crease la partición d'arranque BIOS GPT!"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1583
+msgid "Couldn't create BIOS GPT Boot partition"
+msgstr "Nun pudo crease la partición d'arranque BIOS GPT"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1764
+msgid ""
+"%s is mounted as swap.\n"
+"To continue it has to be unmounted.\n"
+"Click Yes to unmount, or No to return\n"
+msgstr "%s ta montáu como SWAP.\nPa siguir tien de desmontase.\nPrimi Sí pa desmontalu, o Non pa tornar\n"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1769
+msgid ""
+"%s is mounted in '%s'.\n"
+"To continue it has to be unmounted.\n"
+"Click Yes to unmount, or No to return\n"
+msgstr "%s ta montáu en '%s'.\nPa siguir tien de desmontase.\nPrimi Sí pa desmontalu, o Non pa tornar\n"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1778
+#: /usr/share/cnchi/src/installation/advanced.py:1792
+msgid "%s unmounted"
+msgstr "%s desmontáu"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1789
+msgid "Swap partition %s unmounted"
+msgstr "Partición SWAP %s desmontada"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1794
+msgid "%s shows as mounted (busy) but it has no mount point"
+msgstr "%s amuésase como montáu (ocupáu) pero nun tien dengún puntu de montaxe"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1860
+msgid "Partition %s will be deleted"
+msgstr "La partición %s desaniciaráse"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "Encrypt"
+msgstr "Cifrar"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "Mount"
+msgstr "Montaxe"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "Partition"
+msgstr "Partición"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1868
+msgid "Relabel"
+msgstr "Reetiquetar"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1889
+msgid "These disks will have partition actions:"
+msgstr "Estos discos tendrán opciones de particionáu:"
+
+#: /usr/share/cnchi/src/installation/advanced.py:1982
+msgid "Finished saving changes in %s"
+msgstr "Finada la guarda de camudancies en %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2006
+msgid "Creating new %s filesystem in %s labeled %s"
+msgstr "Creando'l sistema de ficheros nuevu %s en %s etiquetáu como %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2008
+msgid "Creating new %s filesystem in %s"
+msgstr "Creando'l sistema de ficheros nuevu %s en %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2033
+msgid "Encrypting %s, assigning volume name %s and formatting it..."
+msgstr "Cifrando %s, asignándo-y el nome de volume %s y formatiándolu..."
+
+#: /usr/share/cnchi/src/installation/advanced.py:2061
+msgid "Couldn't format partition '%s' with label '%s' as '%s'"
+msgstr "Nun pudo formatease la partición '%s' cola etiqueta '%s' como '%s'"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2112
+#: /usr/share/cnchi/src/installation/alongside.py:319
+msgid "Cnchi will not install any bootloader"
+msgstr "Cnchi nun instalará dengún cargador d'arranque"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2118
+msgid "Antergos will install the bootloader %s in %s"
+msgstr "Antergos instalará'l cargador d'arranque %s en %s"
+
+#: /usr/share/cnchi/src/installation/advanced.py:2134
+#: /usr/share/cnchi/src/installation/alongside.py:332
+#: /usr/share/cnchi/src/installation/automatic.py:233
+msgid "Testing mode. Cnchi will not change anything!"
+msgstr "Mou Testing. ¡Cnchi nun camudará nada!"
+
+#: /usr/share/cnchi/src/installation/alongside.py:45
+#: /usr/share/cnchi/src/installation/automatic.py:46
+#: /usr/share/cnchi/src/parted3/partition_module.py:37
+msgid "Can't import parted module: %s"
+msgstr "Nun pue importase'l módulu parted: %s"
+
+#: /usr/share/cnchi/src/installation/alongside.py:114
+msgid "Antergos Alongside Installation"
+msgstr "Instalación d'Antergos co otros SO"
+
+#: /usr/share/cnchi/src/installation/alongside.py:166
+msgid "There are too many primary partitions, can't create a new one"
+msgstr "Hai milenta particiones primaries, nun pue crease una nueva"
+
+#: /usr/share/cnchi/src/installation/alongside.py:196
+msgid "Filesystem on %s shrunk."
+msgstr "Redimensionáu'l sistema de ficheros %s."
+
+#: /usr/share/cnchi/src/installation/alongside.py:198
+msgid "Will recreate partition now on device %s partition %s"
+msgstr "Agora recrearáse la partición nel preséu %s partición %s"
+
+#: /usr/share/cnchi/src/installation/alongside.py:203
+msgid "Can't shrink %s(%s) filesystem"
+msgstr "Nun pue redimensionase'l sistema de ficheros %s(%s)"
+
+#: /usr/share/cnchi/src/installation/alongside.py:210
+msgid "Can't shrink %s(%s) partition"
+msgstr "Nun pue redimensionase la partición %s(%s)"
+
+#: /usr/share/cnchi/src/installation/alongside.py:213
+msgid "*** FILESYSTEM IN UNSAFE STATE ***"
+msgstr "*** SISTEMA DE FICHEROS N'ESTÁU INSEGURU ***"
+
+#: /usr/share/cnchi/src/installation/alongside.py:215
+msgid "Filesystem shrink succeeded but partition shrink failed."
+msgstr "Pudo redimensionase con ésitu'l sistema de ficheros, pero la partición non."
+
+#: /usr/share/cnchi/src/installation/alongside.py:219
+msgid "Partition %s shrink complete"
+msgstr "Redimensionáu de la partición %s completáu"
+
+#: /usr/share/cnchi/src/installation/alongside.py:236
+msgid "Cannot create new swap partition. Not enough free space"
+msgstr "Nun pue crease la partición d'intercambéu. Nun hai espaciu abondo"
+
+#: /usr/share/cnchi/src/installation/alongside.py:246
+#: /usr/share/cnchi/src/installation/alongside.py:294
+msgid "Cannot create new partition."
+msgstr "Nun pue crease la partición nueva."
+
+#: /usr/share/cnchi/src/installation/alongside.py:282
+msgid "Cannot create new swap partition."
+msgstr "Nun pue crase la partición d'intercambéu nueva."
+
+#: /usr/share/cnchi/src/installation/alongside.py:316
+msgid "Cnchi will install the %s bootloader"
+msgstr "Cnchi instalará'l cargador d'arranque %s"
+
+#: /usr/share/cnchi/src/installation/ask.py:114
+msgid "Installation Type"
+msgstr "Triba d'instalación"
+
+#: /usr/share/cnchi/src/installation/ask.py:123
+msgid "Replace %s with Antergos"
+msgstr "Trocar %s con Antergos"
+
+#: /usr/share/cnchi/src/installation/ask.py:125
+msgid "Erase disk and install Antergos"
+msgstr "Desaniciar el discu ya instalar Antergos"
+
+#: /usr/share/cnchi/src/installation/ask.py:129
+msgid "Warning: This will erase ALL data on your disk."
+msgstr "Avisu: Esto desaniciará TOLOS datos nel to discu."
+
+#: /usr/share/cnchi/src/installation/ask.py:135
+msgid "Encrypt this installation for increased security."
+msgstr "Cifrar esta instalación pa medrar la seguridá."
+
+#: /usr/share/cnchi/src/installation/ask.py:139
+msgid "You will be asked to create an encryption password in the next step."
+msgstr "Entrugarásete pa crear una contraseña de cifráu nel pasu próximu."
+
+#: /usr/share/cnchi/src/installation/ask.py:144
+msgid "Use LVM with this installation."
+msgstr "Usar LVM con esta instalación."
+
+#: /usr/share/cnchi/src/installation/ask.py:148
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
+msgstr "Esto configurará LVM y permitiráte alministrar cenciellamente particiones y crear captures."
+
+#: /usr/share/cnchi/src/installation/ask.py:153
+msgid "Set your Home in a different partition/volume"
+msgstr "Afitar el to direutoriu personal nuna partición/volume xebráu"
+
+#: /usr/share/cnchi/src/installation/ask.py:157
+msgid ""
+"This will setup you /home directory in a different partition or volume."
+msgstr "Esto configurará'l to direutoriu /home una partición o volume xebraos."
+
+#: /usr/share/cnchi/src/installation/ask.py:164
+#: /usr/share/cnchi/src/installation/ask.py:167
+msgid "Install Antergos alongside %s"
+msgstr "Instalar Antergos co %s"
+
+#: /usr/share/cnchi/src/installation/ask.py:174
+msgid "Choose exactly where Antergos should be installed. (advanced)"
+msgstr "Escoyer exautamente u debería instalase Antergos. (Avanzáu)"
+
+#: /usr/share/cnchi/src/installation/ask.py:177
+msgid "Edit partition table and choose mount points."
+msgstr "Edita la tabla de particiones y escueyi los puntos de montaxe."
+
+#: /usr/share/cnchi/src/installation/ask.py:208
+msgid "Antergos installation will be encrypted using LUKS"
+msgstr "La instalación d'Antergos cifraráse usando LUKS"
+
+#: /usr/share/cnchi/src/installation/ask.py:211
+msgid "Antergos will be installed using LVM volumes"
+msgstr "Anteros instalaráse usando volúmenes LVM"
+
+#: /usr/share/cnchi/src/installation/ask.py:213
+msgid "Antergos will be installed using a separate /home volume."
+msgstr "Antergos instalaráse usando un volume /home separtáu."
+
+#: /usr/share/cnchi/src/installation/ask.py:215
+msgid "Antergos will be installed using a separate /home partition."
+msgstr "Antergos instalaráse usando una partición /home separtada."
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:70
+msgid "Unmounting %s"
+msgstr "Desmontando %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:74
+msgid "Unmounting %s failed. Trying lazy arg."
+msgstr "Desmontaxe de %s fallíu. Probando l'argumentu \"lazy\"."
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:127
+msgid "Can't delete existent LVM volumes (see below)"
+msgstr "Nun puen desaniciase los volúmenes LVM esistentes (mira embaxo)"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:137
+msgid "Can't close LUKS devices : %s"
+msgstr "Nun puen zarrase los preseos LUKS: %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:144
+msgid "Can't setup LUKS in device %s. A password or a key file are needed"
+msgstr "Nun pue configurase LUKS nel preséu %S. Necesítase una contraseña o un ficheru de clave"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:151
+msgid "Cnchi will setup LUKS on device %s"
+msgstr "Cnchi configurará LUKS nel preséu %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:262
+msgid "Will format device %s as %s"
+msgstr "Formatiaráse'l preséu %s como %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:287
+msgid "Unknown filesystem type %s"
+msgstr "Triba de sistema ficheros %s desconocida"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:297
+msgid "Can't create filesystem %s"
+msgstr "Nun pue crease'l sistema de ficheros %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:331
+msgid "Device details: %s UUID=%s LABEL=%s"
+msgstr "Detalles del preséu: %s UUID=%s ETIQUETA=%s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:402
+msgid "%s will be mount as %s"
+msgstr "%s montaráse como %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:437
+msgid "Device %s will have a %s filesystem"
+msgstr "El preséu %s tendrá un sistema ficheros %s"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:485
+msgid "Total disk size: %dMiB"
+msgstr "Tamañu total del discu: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:486
+msgid "Boot partition size: %dMiB"
+msgstr "Tamañu de la partición d'arranque: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:489
+msgid "LVM physical volume size: %dMiB"
+msgstr "Tamañu del volume físicu LVM: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:491
+msgid "Swap partition size: %dMiB"
+msgstr "Tamañu de la partición d'intercambéu: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:492
+msgid "Root partition size: %dMiB"
+msgstr "Tamañu de la partición root: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:495
+msgid "Home partition size: %dMiB"
+msgstr "Tamañu de la partición home: %dMiB"
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:525
+msgid ""
+"Setup cannot detect size of your device, please use advanced installation "
+"routine for partitioning and mounting devices."
+msgstr "La configuración nun pue deteutar el tamañu del to preséu, usa por favor la rutina d'instalación avanazada pal particionáu y montaxe de preseos."
+
+#: /usr/share/cnchi/src/installation/auto_partition.py:652
+msgid "Cnchi will setup LVM on device %s"
+msgstr "Cnchi configurará LVM nel preséu %s"
+
+#: /usr/share/cnchi/src/installation/automatic.py:67
+msgid "Select drive:"
+msgstr "Esbillar unidá:"
+
+#: /usr/share/cnchi/src/installation/automatic.py:71
+msgid "WARNING! This will overwrite everything currently on your drive!"
+msgstr "¡AVISU! ¡Esto sobrescribirá too nel to discu actual!"
+
+#: /usr/share/cnchi/src/installation/automatic.py:76
+msgid ""
+"Select the drive we should use to install Antergos and then click below to "
+"start the process."
+msgstr "Esbilla la unidá que deberiemos usar pa instalar Antergos y dempués primi enriba p'aniciar el procesu."
+
+#: /usr/share/cnchi/src/installation/automatic.py:80
+msgid "Encryption Password:"
+msgstr "Contraseña de cifráu:"
+
+#: /usr/share/cnchi/src/installation/automatic.py:84
+#: /usr/share/cnchi/src/user_info.py:101
+msgid "Confirm your password:"
+msgstr "Confirma la to contraseña"
+
+#: /usr/share/cnchi/src/installation/automatic.py:88
+msgid "Do not use special chars or chars with accents!"
+msgstr "¡Nun uses carauteres especiales o acentos!"
+
+#: /usr/share/cnchi/src/installation/automatic.py:92
+msgid "Show password"
+msgstr "Amosar contraseña"
+
+#: /usr/share/cnchi/src/installation/automatic.py:100
+msgid "Automatic Installation Mode"
+msgstr "Mou d'instalación automáticu"
+
+#: /usr/share/cnchi/src/installation/automatic.py:164
+msgid "A LUKS password has been set"
+msgstr "Afitóse una contraseña LUKS"
+
+#: /usr/share/cnchi/src/installation/automatic.py:166
+msgid "Automatic install on %s"
+msgstr "Instalación automática en %s"
+
+#: /usr/share/cnchi/src/installation/automatic.py:190
+msgid ""
+"Do you really want to proceed and delete all your content on your hard drive?\n"
+"\n"
+"%s"
+msgstr "¿De xuru que quies siguir y desaniciar tol conteníu nel to discu duru?\n\n%s"
+
+#: /usr/share/cnchi/src/installation/automatic.py:204
+msgid "Cnchi will install Antergos on %s"
+msgstr "Cnchi instalará Antergos en %s"
+
+#: /usr/share/cnchi/src/installation/automatic.py:211
+msgid "Antergos will install the Grub2 bootloader in %s"
+msgstr "Antergos instalará'l cargador d'arranque Grub2 en %s"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:157
+msgid "/etc/default/grub configuration completed successfully."
+msgstr "Configuración de /etc/default/grub completada con ésitu."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:174
+msgid "Could not copy %s to grub.d"
+msgstr "Nun pudo copiase %s a grub.d"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:183
+msgid "Installing GRUB(2) BIOS boot loader in %s"
+msgstr "Instalando'l cargador d'arranque GRUB(2) BIOS en %s"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:210
+msgid ""
+"grub-mkconfig does not respond. Killing grub-mount and os-prober so we can "
+"continue."
+msgstr "grub-mkconfig nun respuende. Amortiando grub-mount y os-prober pa qu'asina podamos siguir."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:217
+msgid "GRUB(2) BIOS has been successfully installed."
+msgstr "GRUB(2) BIOS instalóse con ésitu."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:220
+msgid "ERROR installing GRUB(2) BIOS."
+msgstr "FALLU instalando GRUB(2) BIOS."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:229
+msgid "Installing GRUB(2) UEFI %s boot loader"
+msgstr "Instalando'l cargador d'arranque GRUB(2) UEFI %s"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:263
+msgid "No OEM loader found in %s. Copying Grub(2) into dir."
+msgstr "Nun s'alcontró dengún cargador OEM en %s. Copiando Grub(2) al direutoriu."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:266
+msgid "Copying Grub(2) into OEM dir failed: "
+msgstr "Copia de Grub(2) al direutoriu OEM fallida:"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:270
+msgid "File Not Found."
+msgstr "Nun s'alcontró'l ficheru."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:273
+msgid "File already exists."
+msgstr "Yá esiste'l ficheru."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:276
+msgid "Unknown error."
+msgstr "Fallu desconocíu."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:285
+msgid "UEFI Shell drop-in not found at %s"
+msgstr "Nun pudo alcontrase l'UEFI Shell drop-in en %s"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:289
+msgid "UEFI Shell drop-in could not be copied."
+msgstr "Nun pudo copiase l'UEFI Shell drop-in "
+
+#: /usr/share/cnchi/src/installation/bootloader.py:293
+msgid "Generating grub.cfg"
+msgstr "Xenerando grub.cfg"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:304
+msgid ""
+"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+" continue."
+msgstr "grub-mkconfig paez tar colgáu. Matando grub-mount y os-prober pa qu'asina podamos siguir."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:319
+msgid "GRUB(2) UEFI install completed successfully"
+msgstr "Instalación de GRUB(2) UEFI completada con ésitu"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:322
+msgid "GRUB(2) UEFI install may not have completed successfully."
+msgstr "La instalación de GRUB(2) UEFI pudo nun completase con ésitu."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:327
+msgid "Copying GRUB(2) Theme Files"
+msgstr "Copiando ficheros de tema GRUB(2)"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:333
+msgid "Grub2 theme files not found"
+msgstr "Ficheros de tema Grub2 non alcontraos"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:335
+msgid "Grub2 theme files already exist."
+msgstr "Yá esisten los ficheros de tema Grub2"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:339
+msgid "Installing Grub2 locales."
+msgstr "Instalando locales de Grub2."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:350
+msgid "Can't install GRUB(2) locale."
+msgstr "Nun pue instalase la locale GRUB(2)."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:437
+msgid "Gummiboot install completed successfully"
+msgstr "Completada con ésitu la instalación de Gummiboot"
+
+#: /usr/share/cnchi/src/installation/bootloader.py:441
+msgid "Gummiboot install has not completed successfully."
+msgstr "Nun se completó con ésitu la instalación de Gummibot."
+
+#: /usr/share/cnchi/src/installation/bootloader.py:473
+msgid "Can't freeze/unfreeze xfs system"
+msgstr "Nun pue conxelase/desconxelase'l sistema XFS"
+
+#: /usr/share/cnchi/src/installation/chroot.py:47
+msgid "Special dirs are already mounted. Skipping."
+msgstr "Los direutorios especiales yá tán montaos. Saltando."
+
+#: /usr/share/cnchi/src/installation/chroot.py:101
+msgid "Special dirs are not mounted. Skipping."
+msgstr "Los direutorios especiales nun tán montaos. Saltando."
+
+#: /usr/share/cnchi/src/installation/chroot.py:120
+msgid "Unable to umount %s"
+msgstr "Nun pue desmotase %s"
+
+#: /usr/share/cnchi/src/installation/chroot.py:121
+#: /usr/share/cnchi/src/installation/process.py:204
+#: /usr/share/cnchi/src/installation/process.py:278
+#: /usr/share/cnchi/src/installation/process.py:290
+#: /usr/share/cnchi/src/installation/process.py:355
+msgid "Command %s has failed."
+msgstr "El comandu %s falló."
+
+#: /usr/share/cnchi/src/installation/chroot.py:123
+#: /usr/share/cnchi/src/installation/process.py:206
+#: /usr/share/cnchi/src/installation/process.py:254
+#: /usr/share/cnchi/src/installation/process.py:280
+#: /usr/share/cnchi/src/installation/process.py:292
+#: /usr/share/cnchi/src/installation/process.py:357
+msgid "Output : %s"
+msgstr "Salida: %s"
+
+#: /usr/share/cnchi/src/installation/chroot.py:147
+msgid "Timeout running the command %s"
+msgstr "Tiempu escosáu executándo'l comandu %s"
+
+#: /usr/share/cnchi/src/installation/firewall.py:71
+msgid "Aborted"
+msgstr "Albortáu"
+
+#: /usr/share/cnchi/src/installation/mkinitcpio.py:97
+msgid "Setting hooks and modules in mkinitcpio.conf"
+msgstr "Axustando ganchos y módulos en mkinitcpio.conf"
+
+#: /usr/share/cnchi/src/installation/process.py:95
+msgid "Installing using the '%s' method"
+msgstr "Instalando usando'l métodu '%s'"
+
+#: /usr/share/cnchi/src/installation/process.py:167
+msgid "Can't create %s directory, Cnchi can't continue"
+msgstr "Nun pue crease'l direutoriu %s, Cnchi nun pue continuar"
+
+#: /usr/share/cnchi/src/installation/process.py:181
+msgid "Creating partitions and their filesystems in %s"
+msgstr "Creando les particiones y los sos sistemes de ficheros en %s"
+
+#: /usr/share/cnchi/src/installation/process.py:202
+msgid "Error creating partitions and their filesystems"
+msgstr "Fallu creando les particiones y los sos sistemes de ficheros"
+
+#: /usr/share/cnchi/src/installation/process.py:239
+#: /usr/share/cnchi/src/installation/process.py:271
+msgid "Mounting partition %s into %s directory"
+msgstr "Montando partición %s nel direutoriu %s"
+
+#: /usr/share/cnchi/src/installation/process.py:246
+msgid "Mounting partition %s into %s/boot directory"
+msgstr "Montando partición %s nel direutoriu %s/boot"
+
+#: /usr/share/cnchi/src/installation/process.py:250
+msgid "Couldn't mount root and boot partitions"
+msgstr "Nun pudieron montase les particiones root y boot"
+
+#: /usr/share/cnchi/src/installation/process.py:252
+msgid "Command %s has failed"
+msgstr "El comandu %s falló"
+
+#: /usr/share/cnchi/src/installation/process.py:276
+msgid "Can't mount %s in %s"
+msgstr "Nun pue montase %s en %s"
+
+#: /usr/share/cnchi/src/installation/process.py:284
+msgid "Mounting swap %s"
+msgstr "Montando partición d'intercambéu %s"
+
+#: /usr/share/cnchi/src/installation/process.py:288
+msgid "Can't mount %s"
+msgstr "Nun pue montase %s"
+
+#: /usr/share/cnchi/src/installation/process.py:303
+msgid "%s deleted"
+msgstr "%s desaniciáu"
+
+#: /usr/share/cnchi/src/installation/process.py:332
+msgid "Prepare pacman..."
+msgstr "Tresnar pacman..."
+
+#: /usr/share/cnchi/src/installation/process.py:334
+msgid "Pacman ready"
+msgstr "Pacman llistu"
+
+#: /usr/share/cnchi/src/installation/process.py:336
+msgid "Selecting packages..."
+msgstr "Esbillando paquetes..."
+
+#: /usr/share/cnchi/src/installation/process.py:338
+msgid "Packages selected"
+msgstr "Paquetes esbillaos"
+
+#: /usr/share/cnchi/src/installation/process.py:344
+msgid "Downloading packages..."
+msgstr "Baxando paquetes..."
+
+#: /usr/share/cnchi/src/installation/process.py:347
+#: /usr/share/cnchi/src/installation/process.py:693
+msgid "Installing packages..."
+msgstr "Instalando paquetes..."
+
+#: /usr/share/cnchi/src/installation/process.py:350
+msgid "Configuring system..."
+msgstr "Configurando'l sistema..."
+
+#: /usr/share/cnchi/src/installation/process.py:371
+msgid "Installation finished"
+msgstr "Instalación finada"
+
+#: /usr/share/cnchi/src/installation/process.py:384
+msgid "Can't copy Cnchi log to %s"
+msgstr "Nun pue copiase'l rexistru Cnchi a %s"
+
+#: /usr/share/cnchi/src/installation/process.py:460
+msgid "Can't refresh pacman databases."
+msgstr "Nun puen refrescase les bases de datos pacman..."
+
+#: /usr/share/cnchi/src/installation/process.py:500
+msgid "Getting package list..."
+msgstr "Consiguiendo llista de paquetes..."
+
+#: /usr/share/cnchi/src/installation/process.py:509
+msgid "Can't retrieve remote package list, using a local file instead."
+msgstr "Nun pue recibise la llista de paquetes remota, usando nel so llugar un ficheru llocal."
+
+#: /usr/share/cnchi/src/installation/process.py:536
+msgid "Adding '%s' desktop packages"
+msgstr "Amestando paquetes d'escritoriu '%s'"
+
+#: /usr/share/cnchi/src/installation/process.py:561
+msgid "Selected kde language pack: %s"
+msgstr "Esbillóse'l paquete de llingua KDE: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:576
+msgid "Hardware module detected this drivers: %s"
+msgstr "El módulu de hardware deteutó estos controladores: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:580
+msgid "Hardware module added these packages : %s"
+msgstr "El módulu de hardware amestó estos paquetes: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:589
+#: /usr/share/cnchi/src/installation/process.py:1303
+msgid "Can't import hardware module."
+msgstr "Nun pue importase'l módulu de hardware."
+
+#: /usr/share/cnchi/src/installation/process.py:591
+#: /usr/share/cnchi/src/installation/process.py:1305
+msgid "Unknown error in hardware module. Output: %s"
+msgstr "Fallu desconocíu nel módulu de hardware. Salida: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:594
+msgid "Adding filesystem packages"
+msgstr "Amestando paquetes del sistema ficheros"
+
+#: /usr/share/cnchi/src/installation/process.py:600
+msgid "Error calling blkid"
+msgstr "Fallu llamando blkid"
+
+#: /usr/share/cnchi/src/installation/process.py:622
+msgid "Check for user desired features and add them to our installation"
+msgstr "Comprueba les carauterístiques deseyaes pol usuariu y amiéstales a la nuesa instalación"
+
+#: /usr/share/cnchi/src/installation/process.py:624
+msgid "All features needed packages have been added"
+msgstr "Amestáronse toles carauterístiques necesaries de paquetes"
+
+#: /usr/share/cnchi/src/installation/process.py:629
+msgid "Selecting chinese fonts."
+msgstr "Esbillando fontes chines."
+
+#: /usr/share/cnchi/src/installation/process.py:638
+msgid "Adding Grub2 bootloader packages"
+msgstr "Amestando paquetes del cargador d'arranque  Grub2"
+
+#: /usr/share/cnchi/src/installation/process.py:645
+msgid "Adding Gummiboot bootloader package"
+msgstr "Amestando'l paquete del cargador d'arranque Gummibot"
+
+#: /usr/share/cnchi/src/installation/process.py:659
+msgid "Adding packages for '%s' feature."
+msgstr "Amestando paquetes pa la carauterística '%s'."
+
+#: /usr/share/cnchi/src/installation/process.py:665
+msgid "Selecting package %s for feature %s"
+msgstr "Esbillando'l paquete %s pa la carauterística %s"
+
+#: /usr/share/cnchi/src/installation/process.py:672
+msgid "Add libreoffice language package"
+msgstr "Amestar paquete de llingua de Libreoffice"
+
+#: /usr/share/cnchi/src/installation/process.py:706
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr "Nun puen instalase los paquetes necesarios. Cnchi nun pue siguir."
+
+#: /usr/share/cnchi/src/installation/process.py:741
+msgid "Can't copy network configuration files"
+msgstr "Nun puen copiase los ficheros de configuración de rede"
+
+#: /usr/share/cnchi/src/installation/process.py:773
+#: /usr/share/cnchi/src/installation/process.py:859
+msgid "Added to fstab : UUID=%s %s %s %s 0 %s"
+msgstr "Amestáu a fstab: UUID=%s %s %s %s 0 %s"
+
+#: /usr/share/cnchi/src/installation/process.py:789
+#: /usr/share/cnchi/src/installation/process.py:803
+msgid "Added to crypttab : %s"
+msgstr "Amestáu a crypttab: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:793
+msgid "Added to fstab : /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+msgstr "Amestáu a fstab: /dev/mapper/cryptAntergosHome %s %s %s 0 %s"
+
+#: /usr/share/cnchi/src/installation/process.py:807
+msgid "Added to fstab : %s %s %s %s 0 %s"
+msgstr "Amestáu a fstab: %s %s %s %s 0 %s"
+
+#: /usr/share/cnchi/src/installation/process.py:864
+msgid "Added to fstab : %s"
+msgstr "Amestáu a fstab: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:873
+msgid "fstab written."
+msgstr "fstab escritu."
+
+#: /usr/share/cnchi/src/installation/process.py:882
+msgid "Could not copy udev rule for SSDs"
+msgstr "Nun pudo copiase la regla udev pa los SSDs"
+
+#: /usr/share/cnchi/src/installation/process.py:894
+msgid "Enabled %s service."
+msgstr "Habilitáu'l serviciu %s."
+
+#: /usr/share/cnchi/src/installation/process.py:896
+msgid "Can't find service %s"
+msgstr "Nun pue alcontrase'l serviciu %s"
+
+#: /usr/share/cnchi/src/installation/process.py:903
+msgid "Error creating password hash for user %s"
+msgstr "Fallu creadon l'hash de la contraseña pal usuariu %s"
+
+#: /usr/share/cnchi/src/installation/process.py:909
+msgid "Error changing password for user %s"
+msgstr "Fallu camudando la contraseña pal usuariu %s"
+
+#: /usr/share/cnchi/src/installation/process.py:952
+msgid "Copying xz files from cache..."
+msgstr "Copiando ficheros xz de la cahé..."
+
+#: /usr/share/cnchi/src/installation/process.py:988
+msgid "Configuring firewall..."
+msgstr "Configurando tornafueos..."
+
+#: /usr/share/cnchi/src/installation/process.py:1012
+msgid "%s: Configuring display manager."
+msgstr "%s: Configurando l'alministrador de pantalles."
+
+#: /usr/share/cnchi/src/installation/process.py:1038
+msgid "Completed %s display manager configuration."
+msgstr "Configuración del alministrador de pantalles %s completada."
+
+#: /usr/share/cnchi/src/installation/process.py:1040
+msgid "Error while trying to configure '%s' display manager"
+msgstr "Fallu al intentar configurar l'alministrador de pantalles '%s'"
+
+#: /usr/share/cnchi/src/installation/process.py:1197
+msgid "Configuring your new system"
+msgstr "Configurando'l to sistema nuevu"
+
+#: /usr/share/cnchi/src/installation/process.py:1203
+msgid "fstab file generated."
+msgstr "ficheru fstab xeneráu."
+
+#: /usr/share/cnchi/src/installation/process.py:1208
+msgid "SSD udev rule copied successfully"
+msgstr "Copióse con ésitu la regla udev SSD"
+
+#: /usr/share/cnchi/src/installation/process.py:1225
+msgid "Cnchi will configure netctl using the %s profile"
+msgstr "Cnchi configurará netctl usando'l perfil %s"
+
+#: /usr/share/cnchi/src/installation/process.py:1232
+msgid "Can't copy network configuration profiles"
+msgstr "Nun puen copiase los perfiles de configuración de rede"
+
+#: /usr/share/cnchi/src/installation/process.py:1239
+msgid "Network configuration copied."
+msgstr "Configuración de rede copiada."
+
+#: /usr/share/cnchi/src/installation/process.py:1245
+msgid "Mirror list copied."
+msgstr "Llista d'espeyos copiada."
+
+#: /usr/share/cnchi/src/installation/process.py:1247
+msgid "Can't copy mirrorlist file"
+msgstr "Nun pue copiase'l ficheru de llista d'espeyos"
+
+#: /usr/share/cnchi/src/installation/process.py:1254
+msgid "Generated /etc/pacman.conf"
+msgstr "Xeneráu /etc/pacman.conf"
+
+#: /usr/share/cnchi/src/installation/process.py:1274
+msgid "Timezone set."
+msgstr "Fusu horariu afitáu."
+
+#: /usr/share/cnchi/src/installation/process.py:1294
+msgid "Sudo configuration for user %s done."
+msgstr "Fecha la configuración Sudo pal usuariu %s."
+
+#: /usr/share/cnchi/src/installation/process.py:1300
+msgid "Running post-install scripts from hardware module..."
+msgstr "Executando scripts post-instalación dende los módulos de hardware..."
+
+#: /usr/share/cnchi/src/installation/process.py:1324
+msgid "User %s added."
+msgstr "Amestóse l'usuariu %s."
+
+#: /usr/share/cnchi/src/installation/process.py:1339
+msgid "Hostname set to %s."
+msgstr "Nome d'agospiu afitáu a %s."
+
+#: /usr/share/cnchi/src/installation/process.py:1343
+msgid "Set the same password to root."
+msgstr "Afitar la mesma contraseña pa root."
+
+#: /usr/share/cnchi/src/installation/process.py:1349
+msgid "Generating locales..."
+msgstr "Xenerando locales..."
+
+#: /usr/share/cnchi/src/installation/process.py:1369
+msgid "Adjusting hardware clock..."
+msgstr "Axustando'l reló de rede..."
+
+#: /usr/share/cnchi/src/installation/process.py:1374
+msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
+msgstr "Afitóse /etc/X11/xorg.conf.d/00-keyboard.conf pa xkblayout"
+
+#: /usr/share/cnchi/src/installation/process.py:1386
+msgid "00-keyboard.conf written."
+msgstr "00-keyboard.conf escritu."
+
+#: /usr/share/cnchi/src/installation/process.py:1391
+msgid "Configuring hardware ..."
+msgstr "Configurando'l hardware ..."
+
+#: /usr/share/cnchi/src/installation/process.py:1399
+msgid "Updated Alsa mixer settings"
+msgstr "Anovaos los axustes de ALSA Mixer"
+
+#: /usr/share/cnchi/src/installation/process.py:1407
+msgid "Updated fluidsynth configuration file"
+msgstr "Anováu'l ficheru de configuración fluidsynth"
+
+#: /usr/share/cnchi/src/installation/process.py:1413
+msgid "Configuring System Startup..."
+msgstr "Configurando l'aniciu'l sistema..."
+
+#: /usr/share/cnchi/src/installation/process.py:1420
+msgid "Call Cnchi post-install script"
+msgstr "Llama al script de post-instalación Cnchi"
+
+#: /usr/share/cnchi/src/installation/process.py:1428
+msgid "Post install script completed successfully."
+msgstr "Script de post instalación completáu con ésitu."
+
+#: /usr/share/cnchi/src/installation/process.py:1444
+msgid "Encrypting user home dir..."
+msgstr "Cifrando direutoriu Home d'usuariu..."
+
+#: /usr/share/cnchi/src/installation/process.py:1446
+msgid "User home dir encrypted"
+msgstr "Direutoriu Home d'usuariu cifráu"
+
+#: /usr/share/cnchi/src/installation/process.py:1451
+msgid "Installing bootloader..."
+msgstr "Instalando'l xestor d'arranque..."
+
+#: /usr/share/cnchi/src/installation/process.py:1456
+msgid "Couldn't install boot loader: %s"
+msgstr "Nun pudo instalase'l cargador d'arranque: %s"
+
+#: /usr/share/cnchi/src/installation/process.py:1462
+msgid "Copying install log to /var/log."
+msgstr "Copiando'l rexistru d'instalación a /var/log."
+
+#: /usr/share/cnchi/src/keymap.py:56
+msgid "Select Your Keyboard Layout"
+msgstr "Esbilla la to distribución de tecláu"
+
+#: /usr/share/cnchi/src/keymap.py:59
+msgid "Keyboard Layouts"
+msgstr "Distribuciones de tecláu"
+
+#: /usr/share/cnchi/src/keymap.py:62
+msgid "Keyboard Variants"
+msgstr "Variantes de tecláu"
+
+#: /usr/share/cnchi/src/keymap.py:66
+msgid "Layouts"
+msgstr "Distribuciones"
+
+#: /usr/share/cnchi/src/keymap.py:72
+msgid "Variants"
+msgstr "Variantes"
+
+#: /usr/share/cnchi/src/keymap.py:100
+msgid "keyboard_layout is %s"
+msgstr "keyboard_layout ye %s"
+
+#: /usr/share/cnchi/src/language.py:76
+msgid "Notice: The Cnchi Installer is beta software."
+msgstr "Nota: L'instalador Cnchi ye software en beta."
+
+#: /usr/share/cnchi/src/language.py:78
+msgid ""
+"Cnchi is pre-release beta software that is under active development.\n"
+"It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+"setups. Please proceed with caution as data loss is possible!\n"
+"\n"
+"If you find any bugs, please report them at http://bugs.antergos.com"
+msgstr "Cnchi ye software beta de pre llanzamientu que ta baxo desendolcu activu. Nun remana\nafayadizamente RAID, sovolúmenes BTRFS, u otres\nconfiguraciones avanzaes.\n¡Por favor, sigui con procuru porque ye dable una perda de datos!\n\nSi alcuentres cualesquier fallu, por favor informa d'ellos a <a href='http://bugs.antergos.com'>http://bugs.antergos.com</a>"
+
+#: /usr/share/cnchi/src/language.py:86 /usr/share/cnchi/src/welcome.py:96
+msgid "Welcome to Antergos!"
+msgstr "¡Bienllegáu a Antergos!"
+
+#: /usr/share/cnchi/src/language.py:126
+msgid "Can't find translation file for the %s language"
+msgstr "Nun pue alcontrase'l ficheru de traducción pa la llingua %s"
+
+#: /usr/share/cnchi/src/location.py:68
+msgid ""
+"The location you select will be used to help determine the system locale.\n"
+"This should normally be the country in which you reside.\n"
+"Here is a shortlist of locations based on the language you selected."
+msgstr "L'allugamientu qu'esbilles usaráse p'ayudar a determinar la locale del sistema.\nEsto debería ser davezu'l país nel que resides.\nEquí hai una llista d'allugamientos basaos na llingua qu'esbillesti."
+
+#: /usr/share/cnchi/src/location.py:73
+msgid "Country, territory or area:"
+msgstr "País, territoriu o area:"
+
+#: /usr/share/cnchi/src/location.py:78
+msgid "Show all locations"
+msgstr "Amosar tolos allugamientos"
+
+#: /usr/share/cnchi/src/location.py:81
+msgid "Select your location"
+msgstr "Esbilla'l to allugamientu"
+
+#: /usr/share/cnchi/src/main_window.py:71
+msgid ""
+"This installer must be run with administrative privileges, and cannot "
+"continue without them."
+msgstr "Esti instalador tien d'executase con drechos alministrativos, y nun pue siguir ensin ellos."
+
+#: /usr/share/cnchi/src/main_window.py:79
+msgid "File '%s' already exists."
+msgstr "El ficheru '%s' yá esiste."
+
+#: /usr/share/cnchi/src/main_window.py:80
+msgid ""
+"You cannot run two instances of this installer.\n"
+"\n"
+"If you are sure that the installer is not already running\n"
+"you can run this installer using the --force option\n"
+"or you can manually delete the offending file.\n"
+"\n"
+"Offending file: '%s'"
+msgstr "Nun pues executar dos instancies d'esti instalador.\n\nSi tas seguru qu'esti instalador nun ta yá executándose\npues executalu usando la opción --force o pues\ndesaniciar a mano'l ficheru de bloquéu.\n\nFicheru de bloquéu: '%s'"
+
+#: /usr/share/cnchi/src/main_window.py:88
+msgid "Cnchi installer version %s"
+msgstr "Versión del instalador Cnchi %s"
+
+#: /usr/share/cnchi/src/main_window.py:167
+msgid "Using Aria2 to download packages - EXPERIMENTAL"
+msgstr "Usando Aria2 pa baxar los paquetes - ESPERIMENTAL"
+
+#: /usr/share/cnchi/src/main_window.py:183
+msgid "Using '%s' file as package list"
+msgstr "Usando'l ficheru '%s' como llista de paquetes"
+
+#: /usr/share/cnchi/src/main_window.py:204
+msgid "Antergos Installer"
+msgstr "Instalador d'Antergos"
+
+#: /usr/share/cnchi/src/main_window.py:321
+msgid "Do you really want to quit the installer?"
+msgstr "¿De xuru que quies colar del instalador?"
+
+#: /usr/share/cnchi/src/main_window.py:337
+msgid "Quiting installer..."
+msgstr "Colando del instalador..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:119
+msgid "Can't finalize alpm transaction: %s"
+msgstr "Nun pue finase la transaición alpm: %s"
+
+#: /usr/share/cnchi/src/pacman/pac.py:143
+msgid "Can't init alpm transaction: %s"
+msgstr "Nun pue aniciase la transaición alpm: %s"
+
+#: /usr/share/cnchi/src/pacman/pac.py:168
+msgid "Cnchi will install a list of packages like pacman -S"
+msgstr "Cnchi instalará una llista de paquetes como pacman -S"
+
+#: /usr/share/cnchi/src/pacman/pac.py:199
+msgid "Can't find a package or group called '%s'"
+msgstr "Nun pue alcontrase un paquete o grupu llamáu '%s'"
+
+#: /usr/share/cnchi/src/pacman/pac.py:205
+msgid "No targets found"
+msgstr "Nun s'alcontraron oxetivos"
+
+#: /usr/share/cnchi/src/pacman/pac.py:215
+msgid "Adding package '%s' to transaction"
+msgstr "Amestando'l paquete '%s' a la transaición"
+
+#: /usr/share/cnchi/src/pacman/pac.py:220
+msgid "Run and finalize transaction..."
+msgstr "Executar y finar la transación..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:292
+msgid "Checking dependencies..."
+msgstr "Comprobando dependencies..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:294
+msgid "Checking file conflicts..."
+msgstr "Comprobando conflictos de ficheru..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:296
+msgid "Resolving dependencies..."
+msgstr "Iguando dependencies..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:298
+msgid "Checking inter conflicts..."
+msgstr "Comprobando conflictos inter..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:303
+msgid "Removing..."
+msgstr "Desaniciando..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:305
+msgid "Upgrading..."
+msgstr "Anovando..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:307
+msgid "Checking integrity..."
+msgstr "Comprobando integridá..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:309
+msgid "Loading packages files..."
+msgstr "Cargando ficheros de paquetes..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:311
+msgid "Configuring..."
+msgstr "Configurando..."
+
+#: /usr/share/cnchi/src/pacman/pac.py:313
+msgid "Downloading a file"
+msgstr "Baxando un ficheru"
+
+#: /usr/share/cnchi/src/pacman/pac.py:334
+msgid "Installing %s (%d/%d)"
+msgstr "Instalando %s (%d/%d)"
+
+#: /usr/share/cnchi/src/pacman/pac.py:337
+msgid "Checking and loading packages... (%d targets)"
+msgstr "Comprobando y cargando paquetes... (%d oxetivos)"
+
+#: /usr/share/cnchi/src/pacman/pac.py:357
+msgid "Updating %s database"
+msgstr "Anovando base de datos %s"
+
+#: /usr/share/cnchi/src/pacman/pac.py:366
+msgid "Downloading %s..."
+msgstr "Baxando %s..."
+
+#: /usr/share/cnchi/src/parted3/fs_module.py:152
+msgid "Can't verify if %s is a Solid State Drive or not"
+msgstr "Nun pue verificase si %s ye un SSD o non"
+
+#: /usr/share/cnchi/src/parted3/fs_module.py:177
+msgid "Sorry but filesystem %s can't be shrinked"
+msgstr "Perdón, pero'l sistema ficheros %s nun pue amenorgase"
+
+#: /usr/share/cnchi/src/parted3/lvm.py:75
+msgid "Can't remove logical volume %s"
+msgstr "Nun pue desaniciase'l volume llóxicu %s"
+
+#: /usr/share/cnchi/src/parted3/lvm.py:93
+msgid "Can't remove volume group %s"
+msgstr "Nun pue desaniciase'l grupu de volúmenes %s"
+
+#: /usr/share/cnchi/src/parted3/lvm.py:105
+msgid "Can't remove physical volume %s"
+msgstr "Nun pue desaniciase'l volume físicu %s"
+
+#: /usr/share/cnchi/src/parted3/partition_module.py:113
+msgid ""
+"Exception: %s.\n"
+"For more information take a look at /tmp/cnchi.log"
+msgstr "Esceición: %s\nPa más información écha-y un güeyu a /tmp/cnchi.log"
+
+#: /usr/share/cnchi/src/parted3/partition_module.py:181
+msgid "Can't delete partition %s"
+msgstr "Nun pue desaniciase la partición %s"
+
+#: /usr/share/cnchi/src/parted3/partition_module.py:232
+msgid "Partition is too large!"
+msgstr "¡La partición ye pergrande!"
+
+#: /usr/share/cnchi/src/parted3/partition_module.py:291
+msgid "Can't detect used space from %s"
+msgstr "Nun pue deteutase l'espaciu usáu de %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:40
+msgid "Can't detect used space of NTFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición NTFS %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:66
+msgid "Can't detect used space of EXTFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición EXTFS %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:95
+msgid "Can't detect used space of FAT partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición FAT %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:126
+msgid "Can't detect used space of JFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición JFS %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:150
+msgid "Can't detect used space of REISERFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición REISERFS %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:177
+msgid "Can't detect used space of BTRFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición BTRFS %s"
+
+#: /usr/share/cnchi/src/parted3/used_space.py:214
+msgid "Can't detect used space of XFS partition %s"
+msgstr "Nun pue deteutase l'espaciu usáu de la partición XFS %s"
+
+#: /usr/share/cnchi/src/rank_mirrors.py:69
+msgid "Can't find update mirrors script"
+msgstr "Nun pue alcontrase'l script d'espeyos d'anovamientu"
+
+#: /usr/share/cnchi/src/rank_mirrors.py:101
+msgid "Couldn't execute auto mirror selection"
+msgstr "Nun pudo executase la esbilla d'espeyu automática"
+
+#: /usr/share/cnchi/src/rank_mirrors.py:134
+msgid "Auto mirror selection has been run successfully"
+msgstr "Executóse con ésitu la esbilla automática d'espeyu"
+
+#: /usr/share/cnchi/src/show_message.py:61
+msgid "Antergos Installer - Error"
+msgstr "Instalador d'Antergos - Fallu"
+
+#: /usr/share/cnchi/src/show_message.py:74
+msgid "Antergos Installer - Warning"
+msgstr "Instalador d'Antergos - Avisu"
+
+#: /usr/share/cnchi/src/show_message.py:87
+msgid "Antergos Installer - Information"
+msgstr "Instalador d'Antergos - Información"
+
+#: /usr/share/cnchi/src/show_message.py:100
+msgid "Antergos Installer - Confirmation"
+msgstr "Instalador d'Antergos - Confirmación"
+
+#: /usr/share/cnchi/src/slides.py:81
+msgid "Please wait..."
+msgstr "Espera por favor..."
+
+#: /usr/share/cnchi/src/slides.py:83
+msgid "Installing Antergos..."
+msgstr "Instalando Antergos..."
+
+#: /usr/share/cnchi/src/slides.py:225
+msgid ""
+"IMPORTANT: There may have been a problem with the bootloader\n"
+"installation which could prevent your system from booting properly. Before\n"
+"rebooting, you may want to verify whether or not the bootloader is installed and\n"
+"configured. The Arch Linux Wiki contains troubleshooting information:\n"
+"\thttps://wiki.archlinux.org/index.php/GRUB\n"
+"\n"
+"Would you like to view the wiki page now?"
+msgstr "IMPORTANTE: Podría haber un problema cola instalación del cargador d'arranque que podría torgate l'arranque correutu del to sistema.\nEnantes de\nreaniciar, podríes querer verificar si'l cargador d'arranque s'instaló y configuró o non.\nLa wiki d'Arch Linux caltien información tocante a la igua de problemes:\n\thttps://wiki.archlinux.org/index.php/GRUB\n\n¿Prestaríate ver la páxina wiki agora?"
+
+#: /usr/share/cnchi/src/slides.py:237
+msgid ""
+"Installation Complete!\n"
+"Do you want to restart your system now?"
+msgstr "¡Instalación completada!\n¿Quies reaniciar el to sistema agora?"
+
+#: /usr/share/cnchi/src/timezone.py:97
+msgid "Zone:"
+msgstr "Zona:"
+
+#: /usr/share/cnchi/src/timezone.py:101
+msgid "Region:"
+msgstr "Rexón:"
+
+#: /usr/share/cnchi/src/timezone.py:105
+msgid "Use Network Time Protocol (NTP) for clock synchronization"
+msgstr "Usar NTP pa la sincronización del reló"
+
+#: /usr/share/cnchi/src/timezone.py:108
+msgid "Select Your Timezone"
+msgstr "Esbilla'l to fusu horariu"
+
+#: /usr/share/cnchi/src/timezone.py:117
+msgid "location changed to : %s"
+msgstr "allugamientu camudáu a: %s"
+
+#: /usr/share/cnchi/src/timezone.py:191
+msgid "Can't autodetect timezone coordinates"
+msgstr "Nun puen deteutase automáticamente les coordenaes del fusu horariu"
+
+#: /usr/share/cnchi/src/timezone.py:241
+msgid "Stoping timezone threads..."
+msgstr "Parando filos del fusu horariu..."
+
+#: /usr/share/cnchi/src/timezone.py:304
+msgid "Can't get network status. Will try again later."
+msgstr "Nun pue consiguise l'estáu la rede. Inténtalo de nueves sero."
+
+#: /usr/share/cnchi/src/timezone.py:315
+msgid "We have connection. Let's get our timezone"
+msgstr "Tenemos conexón. Vamos saber el to fusu horariu"
+
+#: /usr/share/cnchi/src/timezone.py:332
+msgid "Timezone (%s) detected."
+msgstr "Fusu horariu (%) deteutáu."
+
+#: /usr/share/cnchi/src/timezone.py:334
+msgid "Can't detect user timezone. Cnchi will use %s as default"
+msgstr "Nun pue deteutase'l fusu horariu del usuariu. Cnchi usará %s por defeutu"
+
+#: /usr/share/cnchi/src/timezone.py:370
+msgid "In timezone, can't get network status"
+msgstr "Nel fusu horariu, nun pue consiguise l'estáu la rede"
+
+#: /usr/share/cnchi/src/timezone.py:394
+msgid "Can't get the country code used to create a pacman mirrorlist"
+msgstr "Nun pue consiguise'l códigu de país usáu pa crear una llista d'espeyos pacman"
+
+#: /usr/share/cnchi/src/timezone.py:407 /usr/share/cnchi/src/timezone.py:419
+msgid "Couldn't generate mirrorlist for pacman based on country code"
+msgstr "Nun pudo xenerase una llista d'espeyos pa pacman basada nel códigu país"
+
+#: /usr/share/cnchi/src/timezone.py:417
+msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
+msgstr "Baxóse una llista d'espeyos específica pa pacman basada nel códigu de país %s"
+
+#: /usr/share/cnchi/src/updater.py:66
+msgid ""
+"Could not find 'update.info' file. Cnchi will not be able to update itself."
+msgstr "Nun pudo alcontrase'l ficheru 'update.info'. Cnchi nun podrá anovase a sí mesmu."
+
+#: /usr/share/cnchi/src/updater.py:87
+msgid "Cnchi Internet version: %s"
+msgstr "Versión n'internet de Cnchi: %s"
+
+#: /usr/share/cnchi/src/updater.py:127
+msgid "New version found. Updating installer..."
+msgstr "Alcontróse un anovamientu. Anovando instalador..."
+
+#: /usr/share/cnchi/src/updater.py:130
+msgid "No new version found. Updating anyways..."
+msgstr "Nun s'alcontró denguna versión nueva, Anovando de toes toes..."
+
+#: /usr/share/cnchi/src/updater.py:134
+msgid "Downloading new version of Cnchi..."
+msgstr "Baxando versión nueva de CNchi..."
+
+#: /usr/share/cnchi/src/updater.py:138
+msgid "Can't download new Cnchi version."
+msgstr "Nun pue baxase la versión nueva de Cnchi."
+
+#: /usr/share/cnchi/src/updater.py:142
+msgid "Uncompressing new version..."
+msgstr "Descomprimiendo la versión nueva..."
+
+#: /usr/share/cnchi/src/updater.py:187
+msgid "Can't copy %s to %s"
+msgstr "Nun pue copiase %s a %s"
+
+#: /usr/share/cnchi/src/updater.py:189
+msgid "Wrong md5. Bad download or wrong file, won't update this one"
+msgstr "MD5 incorreutu. Descarga non válida o ficheru incorreutu, esti nun s'anovará"
+
+#: /usr/share/cnchi/src/user_info.py:73
+msgid "Your name:"
+msgstr "El to nome:"
+
+#: /usr/share/cnchi/src/user_info.py:77
+msgid "Your name"
+msgstr "El to nome"
+
+#: /usr/share/cnchi/src/user_info.py:81
+msgid "Your computer's name:"
+msgstr "El nome del to ordenador:"
+
+#: /usr/share/cnchi/src/user_info.py:85
+msgid "Pick a username:"
+msgstr "Escueyi un nome d'usuariu:"
+
+#: /usr/share/cnchi/src/user_info.py:89
+msgid "Username"
+msgstr "Nome d'usuariu"
+
+#: /usr/share/cnchi/src/user_info.py:93
+msgid "Choose a password:"
+msgstr "Esbilla una contraseña:"
+
+#: /usr/share/cnchi/src/user_info.py:97
+msgid "Password"
+msgstr "Contraseña"
+
+#: /usr/share/cnchi/src/user_info.py:105
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+#: /usr/share/cnchi/src/user_info.py:109
+msgid "Identifies your system to other computers and devices."
+msgstr "Identifica al to sistema na rede"
+
+#: /usr/share/cnchi/src/user_info.py:113
+msgid "You must enter a name"
+msgstr "Tienes d'introducir un nome"
+
+#: /usr/share/cnchi/src/user_info.py:117
+msgid "You must enter a username"
+msgstr "Tienes d'introducir un nome d'usuariu"
+
+#: /usr/share/cnchi/src/user_info.py:121
+msgid "You must enter a password"
+msgstr "Tienes d'introducir una contraseña"
+
+#: /usr/share/cnchi/src/user_info.py:125
+msgid "Log in automatically"
+msgstr "Aniciar sesión automáticamente"
+
+#: /usr/share/cnchi/src/user_info.py:126
+msgid "Require my password to log in"
+msgstr "Riquir la mio contraseña nel aniciu sesión"
+
+#: /usr/share/cnchi/src/user_info.py:127
+msgid "Encrypt my home folder"
+msgstr "Cifrar la mio carpeta personal"
+
+#: /usr/share/cnchi/src/user_info.py:130
+msgid "show password"
+msgstr "amosar contraseña"
+
+#: /usr/share/cnchi/src/user_info.py:132
+msgid "Create Your User Account"
+msgstr "Crea la to cuenta d'usuariu"
+
+#: /usr/share/cnchi/src/user_info.py:178
+msgid "Are you sure you want to encrypt your home directory?"
+msgstr "¿De xuru que quies cifrar la to carpeta personal?"
+
+#: /usr/share/cnchi/src/user_info.py:239
+msgid "Invalid characters entered"
+msgstr "Introduxéronse carauteres non válidos"
+
+#: /usr/share/cnchi/src/user_info.py:243
+msgid "Username can't contain dots"
+msgstr "El nome d'usuariu nun pue contener puntos"
+
+#: /usr/share/cnchi/src/user_info.py:247
+msgid "Too many characters"
+msgstr "Milenta carauteres"
+
+#: /usr/share/cnchi/src/welcome.py:82
+msgid ""
+"You can try Antergos without making any changes to your system by selecting "
+"'Try It'."
+msgstr "Pues probar Antergos ensin facer denguna camudancia al to sistema esbillando 'Pruébalu'."
+
+#: /usr/share/cnchi/src/welcome.py:83
+msgid ""
+"When you are ready to install Antergos simply choose which installer you "
+"prefer."
+msgstr "Cuando teas preparáu pa instalar Antergos, namái escueyi qu'instalador prefieres."
+
+#: /usr/share/cnchi/src/welcome.py:87
+msgid "Try It"
+msgstr "Pruébalu"
+
+#: /usr/share/cnchi/src/welcome.py:90
+msgid "CLI Installer"
+msgstr "Instalador CLI"
+
+#: /usr/share/cnchi/src/welcome.py:93
+msgid "Graphical Installer"
+msgstr "Instalador gráficu"
+
+#: /usr/share/cnchi/src/welcome.py:126
+msgid "Loading, please wait..."
+msgstr "Cargando, por favor espera..."
+
+#: /usr/share/cnchi/src/wireless.py:63
+msgid "Connecting this computer to a wi-fi network"
+msgstr "Coneutando esti ordenador a una rede wifi"
+
+#: /usr/share/cnchi/src/wireless.py:66
+msgid "I don't want to connect to a wi-fi network right now"
+msgstr "Nun quiero coneutame a una rede wifi nesti momentu"
+
+#: /usr/share/cnchi/src/wireless.py:69
+msgid "Connect to this network"
+msgstr "Coneutase a esta rede"
+
+#: /usr/share/cnchi/src/wireless.py:72
+msgid "Display password"
+msgstr "Amosar contraseña"

@@ -497,7 +497,7 @@ class InstallationProcess(multiprocessing.Process):
             except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
-                #logging.warning(url_error)  # This bails out of the entire installation
+                # logging.warning(url_error) # This bails out of the entire installation
                 logging.debug(_("Can't retrieve remote package list, using a local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
@@ -634,7 +634,7 @@ class InstallationProcess(multiprocessing.Process):
             if not bootloader_found:
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
-        
+
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
         logging.debug(self.packages)
@@ -683,6 +683,8 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-fresh-{0}".format(lang_code)
+
+            # This shouldn't be necessary but I want to be sure
             if pkg != "":
                 self.packages.append(pkg)
 

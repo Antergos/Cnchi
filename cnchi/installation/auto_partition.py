@@ -25,6 +25,7 @@
 import os
 import subprocess
 import logging
+import math
 
 from misc.misc import InstallError
 
@@ -446,19 +447,14 @@ class AutoPartition(object):
 
             devices['efi'] = "{0}{1}".format(device, part_num)
             part_num += 1
-
             devices['boot'] = "{0}{1}".format(device, part_num)
             part_num += 1
-
             devices['root'] = "{0}{1}".format(device, part_num)
             part_num += 1
-
             if self.home:
                 devices['home'] = "{0}{1}".format(device, part_num)
                 part_num += 1
-
             devices['swap'] = "{0}{1}".format(device, part_num)
-            part_num += 1
         else:
             devices['boot'] = "{0}{1}".format(device, 1)
             devices['root'] = "{0}{1}".format(device, 2)
@@ -552,10 +548,9 @@ class AutoPartition(object):
         return fs_devices
 
     def get_part_sizes(self, disk_size, start_part_sizes=0):
-        part_sizes = {'disk': disk_size, 'boot': 256}
+        part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
         if self.GPT:
-            # Set a 200MB efi partition
             part_sizes['efi'] = 200
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
@@ -568,7 +563,7 @@ class AutoPartition(object):
         elif 2048 <= mem < 8192:
             part_sizes['swap'] = mem
         elif 8192 <= mem < 65536:
-            part_sizes['swap'] = mem / 2
+            part_sizes['swap'] = mem // 2
         else:
             part_sizes['swap'] = 4096
 
@@ -577,11 +572,13 @@ class AutoPartition(object):
         if part_sizes['swap'] > max_swap:
             part_sizes['swap'] = max_swap
 
-        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['boot'] + part_sizes['swap'])
+        part_sizes['swap'] = math.ceil(part_sizes['swap'])
+
+        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap'])
 
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
-            new_root_part_size = part_sizes['root'] / 5
+            new_root_part_size = part_sizes['root'] // 5
             if new_root_part_size > MAX_ROOT_SIZE:
                 new_root_part_size = MAX_ROOT_SIZE
             elif new_root_part_size < MIN_ROOT_SIZE:
@@ -591,13 +588,10 @@ class AutoPartition(object):
         else:
             part_sizes['home'] = 0
 
-        # Truncate to MB
-        part_sizes['swap'] = int(part_sizes['swap'])
-        part_sizes['root'] = int(part_sizes['root'])
-        part_sizes['home'] = int(part_sizes['home'])
-
-        # Calculate LVM Volume size
         part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
+
+        for part in part_sizes:
+            part_sizes[part] = int(part_sizes[part])
 
         return part_sizes
 
@@ -707,13 +701,10 @@ class AutoPartition(object):
             else:
                 sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
                 part_num += 1
-
                 if self.home:
                     sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
                     part_num += 1
-
-                sgdisk_new(device, part_num, "ANTERGOS_SWAP", part_sizes['swap'], "8200")
-                part_num += 1
+                sgdisk_new(device, part_num, "ANTERGOS_SWAP", 0, "8200")
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
