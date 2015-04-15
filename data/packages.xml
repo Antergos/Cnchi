@@ -138,6 +138,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>orca</pkgname>
         <pkgname>pidgin</pkgname>
+        <pkgname>seahorse</pkgname>
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
