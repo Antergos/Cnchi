@@ -112,6 +112,7 @@
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-documents</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-font-viewer</pkgname>
         <pkgname>gnome-keyring</pkgname>
         <pkgname>gnome-logs</pkgname>
         <pkgname>gnome-maps</pkgname>
