@@ -1,3 +1,9 @@
+[2015-04-15 10:29:46 +0200]  Merge pull request #289 from prescott66/patch-5                            karasu      {9155e38}
+[2015-04-15 10:17:12 +0200]  Add gnome calendar to Gnome DE                                           Dušan Kazik   {ddb95b0}
+[2015-04-15 09:51:23 +0200]  Merge branch 'master' of https://github.com/Antergos/Cnchi                 karasu      {137392c}
+[2015-04-15 09:50:25 +0200]  Add Seahorse to manage passwords in Gnome                                  karasu      {a3d6c00}
+[2015-04-15 09:46:30 +0200]  Merge pull request #288 from prescott66/patch-4                            karasu      {f7a8a84}
+[2015-04-15 09:38:00 +0200]  I hope this will fix #284                                                Dušan Kazik   {ebe7e22}
 [2015-04-15 09:34:37 +0200]  0.8.25                                                                     karasu      {3280759}
 [2015-04-15 08:36:12 +0200]  Merge branch 'github-master'                                               karasu      {9d9a152}
 [2015-04-15 07:15:51 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {c44a322}
