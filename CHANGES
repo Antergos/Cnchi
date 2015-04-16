@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-[2015-04-14 16:05:53 +0200]  fix language screen margin                                                 karasu      {ad5c18a}
-[2015-04-14 16:03:45 +0200]  Increase timeout for packages.xml and don't bail if we cant retriev..      karasu      {a718436}
-[2015-04-14 16:01:53 +0200]  Move package list filter to the correct place                              karasu      {f7f52a0}
-[2015-04-14 15:56:32 +0200]  Prevent empty strings in package list. Fixes #283                          karasu      {535e08a}
-[2015-04-14 15:53:17 +0200]  Remove link when running run script                                        karasu      {82e201a}
-[2015-04-13 20:33:04 +0200]  Changed to GLib.MAXFLOAT                                                   karasu      {c303d13}
-[2015-04-13 20:28:35 +0200]  Merge branch 'cnchi-github-master'                                         karasu      {4d54d33}
+[2015-04-16 13:28:15 +0200]  Add borrowed cheese code to learn libcheese on python                      karasu      {67490fe}
+[2015-04-15 08:36:12 +0200]  Merge branch 'github-master'                                               karasu      {9d9a152}
+[2015-04-15 07:15:51 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {c44a322}
+[2015-04-15 07:15:26 +0200]  Added gnome-font-viewer                                                    karasu      {f64b8dd}
+[2015-04-15 07:12:39 +0200]  Merge pull request #248 from Llumex03/master                               karasu      {64fbb2b}
 [2015-04-15 07:06:55 +0200]  Merge pull request #287 from Kirek/master                                  karasu      {ac616a7}
 [2015-04-14 19:08:09 +0200]  Use default value when creating last partition with sgdisk. "A star..    Ramon Buldó   {1ac3df7}
 [2015-04-14 18:44:23 +0200]  When calculating partition sizes, return integers. - sgdisk may cre..    Ramon Buldó   {fd3e84d}
@@ -13,10 +10,18 @@
 [2015-04-14 18:18:11 +0200]  Shell=True is used when check_call is used with a single string, no..    Ramon Buldó   {ee38529}
 [2015-04-14 18:16:33 +0200]  Use same order as get_devices function when formatting partitions w..    Ramon Buldó   {2877ffc}
 [2015-04-14 18:14:30 +0200]  Fix wrong device number in efi auto_partition                            Ramon Buldó   {3177105}
+[2015-04-14 18:14:28 +0200]  This should fix most of GPT problems. Needs testing (do not port to..      karasu      {0edc29b}
+[2015-04-14 16:05:53 +0200]  fix language screen margin                                                 karasu      {ad5c18a}
+[2015-04-14 16:03:45 +0200]  Increase timeout for packages.xml and don't bail if we cant retriev..      karasu      {a718436}
+[2015-04-14 16:01:53 +0200]  Move package list filter to the correct place                              karasu      {f7f52a0}
+[2015-04-14 15:56:32 +0200]  Prevent empty strings in package list. Fixes #283                          karasu      {535e08a}
+[2015-04-14 15:53:17 +0200]  Remove link when running run script                                        karasu      {82e201a}
 [2015-04-14 06:41:33 -0500]  move package list filter to the correct place                          Dustin Falgout  {b820b91}
 [2015-04-14 05:59:15 -0500]  increase timeout for packages.xml and dont bail if we cant retrieve..  Dustin Falgout  {6d9291e}
 [2015-04-14 05:35:33 -0500]  prevent empty strings in package list. fixes #283                      Dustin Falgout  {51bb5b5}
 [2015-04-14 05:09:24 -0500]  fix language screen margin                                             Dustin Falgout  {4084c1c}
+[2015-04-13 20:33:04 +0200]  Changed to GLib.MAXFLOAT                                                   karasu      {c303d13}
+[2015-04-13 20:28:35 +0200]  Merge branch 'cnchi-github-master'                                         karasu      {4d54d33}
 [2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}
 [2015-04-13 19:53:30 +0200]  GPT in auto_partition does not work, Cnchi will use always MBR             karasu      {94961db}
 [2015-04-13 12:52:28 -0500]  try to ensure iso pkg cache is used when no cache is provided by user  Dustin Falgout  {2cd54a1}
@@ -408,6 +413,7 @@
 [2014-12-26 11:31:47 +0100]  version bump reflecting mesa-dri to mesa name change                       karasu      {1f45c43}
 [2014-12-26 11:31:01 +0100]  mesa-dri -> mesa                                                           karasu      {dd164c6}
 [2014-12-23 08:30:20 +0100]  Do not check packages.xml time                                             karasu      {709f865}
+[2014-12-22 02:26:53 +0100]  Add Asturian support                                                      Llumex03     {1003bae}
 [2014-12-18 08:19:42 +0100]  enable haveged service                                                     karasu      {d1d167d}
 [2014-12-15 09:54:44 +0100]  Added -f --force parameter                                                 karasu      {7d845b0}
 [2014-12-14 20:53:07 +0000]  Fixed import                                                               karasu      {938b0e3}
