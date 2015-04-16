@@ -50,6 +50,7 @@ We manage our translations in transifex:
  - upower
  - encfs, pam_encfs
  - iso-codes
+ - cheese
  
 ## Unit tests
  - python-mock 
