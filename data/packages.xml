@@ -451,7 +451,7 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil</pkgname>
+      <pkgname lib='qt'>bluedevil4</pkgname>
       <pkgname lib='qt' qt5="True">bluedevil-frameworks</pkgname>
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
