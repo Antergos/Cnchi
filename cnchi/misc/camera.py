@@ -57,6 +57,7 @@ class CameraBox(GtkClutter.Embed):
         self.video_texture = Clutter.Texture.new()
         self.video_texture.set_keep_aspect_ratio(True)
         self.video_texture.set_size(width, height)
+        
         self.layout_manager.pack(
             self.video_texture,
             expand=False,
@@ -68,26 +69,38 @@ class CameraBox(GtkClutter.Embed):
         self.camera = Cheese.Camera.new(self.video_texture, None, 100, 100)
         
         try:
-            Cheese.Camera.setup(self.camera, None)
+            self.camera.setup()
+            self.camera_found = True
         except GLib.GError as error:
             logging.warning(error)
+            self.camera_found = False
             return
 
-        Cheese.Camera.play(self.camera)
+    def on(self):
+        if self.camera_found:
+            self.camera.play()
 
-        def added(signal, data):
-            uuid=data.get_uuid()
-            node=data.get_device_node()
-            print("uuid is ", str(uuid))
-            print("node is ", str(node))
-            self.camera.set_device_by_device_node(node)
-            self.camera.switch_camera_device()
+            def added(signal, data):
+                uuid = data.get_uuid()
+                node = data.get_device_node()
+                logging.debug("Camera uuid is %s", str(uuid))
+                logging.debug("Camera node is %s", str(node))
+                self.camera.set_device_by_device_node(node)
+                self.camera.switch_camera_device()
 
-        device_monitor = Cheese.CameraDeviceMonitor.new()
-        device_monitor.connect("added", added)
-        device_monitor.coldplug()
+            device_monitor = Cheese.CameraDeviceMonitor.new()
+            device_monitor.connect("added", added)
+            device_monitor.coldplug()
 
-        self.stage.show()
+            self.stage.show()
+    
+    def stop(self):
+        if self.camera_found:
+            self.camera.stop()
+
+    #def take_photo(self):
+    #return self.camera.take_photo()
+
 
 if __name__ == "__main__":
     camera_box_init()
@@ -101,9 +114,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     win.connect('delete-event', exit_button)
+    
+    camera_box.on()
 
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     Gtk.main()
-
