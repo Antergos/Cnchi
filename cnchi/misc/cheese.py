@@ -33,17 +33,17 @@ from gi.repository import Clutter, GObject, Gtk, Gst, GLib
 from gi.repository import Cheese
 
 
-class VideoBox(Gtk.Widget):
+class VideoBox(GtkClutter.Embed):
     __gtype_name__ = 'VideoBox'
 
     # __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
     def __init__(self, width=400, height=400):
-        Gtk.Widget.__init__(self)
+        GtkClutter.Embed.__init__(self)
 
         self.set_size_request(width, height)
 
-        self.stage = Clutter.Stage()
+        self.stage = self.get_stage()
         self.stage.set_size(width, height)
 
         self.layout_manager = Clutter.BoxLayout()
@@ -84,7 +84,7 @@ class VideoBox(Gtk.Widget):
         device_monitor.connect("added", added)
         device_monitor.coldplug()
 
-        # self.stage.show()
+        self.stage.show()
         # Clutter.main()
 
 if __name__ == "__main__":
@@ -101,6 +101,7 @@ if __name__ == "__main__":
 
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     Gtk.main()
 
 
