@@ -1,3 +1,4 @@
+[2015-04-17 18:35:49 +0200]  Fix a string                                                               karasu      {a20ec8f}
 [2015-04-17 09:40:03 -0500]  fix 10_antergos to ensure that grub identifies antergos as arch        Dustin Falgout  {3365f8c}
 [2015-04-17 14:20:44 +0200]  bluedevil package was renamed upstream. packages.xml in server need..      karasu      {28d1566}
 [2015-04-17 08:21:34 +0200]  Pushed some translations from Transifex                                    karasu      {0f4c086}
