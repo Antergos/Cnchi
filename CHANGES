@@ -1,5 +1,9 @@
+[2015-04-18 18:23:07 +0200]  Merge pull request #295 from Kirek/master                                  karasu      {fac1b14}
+[2015-04-18 18:21:56 +0200]  Try to fix grub install problems. GPT needs checking. Cleaned chroo..      karasu      {6ae1984}
 [2015-04-18 13:44:21 +0200]  Fixes /home (not root and boot) bug mounting problem in advnaced           karasu      {b1bae20}
 [2015-04-18 13:25:44 +0200]  Removed two unnused files                                                  karasu      {d239e6b}
+[2015-04-18 12:16:54 +0200]  Fix is_ssd function. The previous function crashes with an UnicodeD..    Ramon Buldó   {368e66a}
+[2015-04-18 12:12:01 +0200]  Merge pull request #1 from Antergos/master                               Ramon Buldó   {5457700}
 [2015-04-18 12:03:25 +0200]  Trap exception if setxkbmap can't be set (this was happening with A..      karasu      {70b6eef}
 [2015-04-17 18:35:49 +0200]  Fix a string                                                               karasu      {a20ec8f}
 [2015-04-17 09:40:03 -0500]  fix 10_antergos to ensure that grub identifies antergos as arch        Dustin Falgout  {3365f8c}
