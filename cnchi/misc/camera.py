@@ -33,7 +33,8 @@ from gi.repository import Clutter, GObject, Gtk, Gst, GLib
 from gi.repository import Cheese
 
 
-def camera_box_init():
+def cheese_init():
+    """ Initialize libcheese, by initializing Clutter and GStreamer. """
     Gst.init(None)
     GtkClutter.init([])
 
@@ -42,7 +43,7 @@ class CameraBox(GtkClutter.Embed):
 
     # __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
-    def __init__(self, width=400, height=400):
+    def __init__(self, width=128, height=100):
         GtkClutter.Embed.__init__(self)
 
         self.set_size_request(width, height)
@@ -66,7 +67,11 @@ class CameraBox(GtkClutter.Embed):
             x_align=Clutter.BoxAlignment.CENTER,
             y_align=Clutter.BoxAlignment.CENTER)
 
-        self.camera = Cheese.Camera.new(self.video_texture, None, 100, 100)
+        self.camera = Cheese.Camera.new(
+            video_texture = self.video_texture,
+            camera_device_node = None,
+            x_resolution = 640,
+            y_resolution = 480)
         
         try:
             self.camera.setup()
@@ -76,7 +81,7 @@ class CameraBox(GtkClutter.Embed):
             self.camera_found = False
             return
 
-    def on(self):
+    def play(self):
         if self.camera_found:
             self.camera.play()
 
@@ -98,24 +103,25 @@ class CameraBox(GtkClutter.Embed):
         if self.camera_found:
             self.camera.stop()
 
-    #def take_photo(self):
-    #return self.camera.take_photo()
+    def take_photo(self, filename):
+        return self.camera.take_photo(filename)
 
 
 if __name__ == "__main__":
-    camera_box_init()
-
+    cheese_init()
+    
     win = Gtk.Window()
     camera_box = CameraBox()
     win.add(camera_box)
     win.show_all()
 
     def exit_button(widget, data=None):
+        camera_box.stop()
         sys.exit(0)
 
     win.connect('delete-event', exit_button)
     
-    camera_box.on()
+    camera_box.play()
 
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
