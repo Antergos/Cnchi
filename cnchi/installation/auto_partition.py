@@ -857,11 +857,11 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
+        self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
+
         if self.GPT:
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
-
-        self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
 
         if self.home:
             self.mkfs(devices['home'], fs_devices[devices['home']], mount_points['home'], labels['home'])

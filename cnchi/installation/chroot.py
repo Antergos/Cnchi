@@ -38,6 +38,14 @@ except NameError as err:
 _special_dirs_mounted = False
 
 
+def get_special_dirs():
+    """ Get special dirs to be mounted or unmounted """
+    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]    
+    efi = "/sys/firmware/efi/efivars"
+    if os.path.exists(efi):
+        special_dirs.append(efi)
+    return special_dirs
+
 def mount_special_dirs(dest_dir):
     """ Mount special directories for our chroot (bind them)"""
 
@@ -53,42 +61,24 @@ def mount_special_dirs(dest_dir):
         msg = _("Special dirs are already mounted. Skipping.")
         logging.debug(msg)
         return
+    
+    special_dirs = []
+    special_dirs = get_special_dirs()
 
-    efi = "/sys/firmware/efi"
-    if os.path.exists(efi):
-        special_dirs = ["dev", "dev/pts", "proc", "sys", efi[1:]]
-    else:
-        special_dirs = ["dev", "dev/pts", "proc", "sys"]
-
-    for s_dir in special_dirs:
-        mydir = os.path.join(dest_dir, s_dir)
-        if not os.path.exists(mydir):
-            os.makedirs(mydir)
-        os.chmod(mydir, 0o755)
-
-    try:
-        mydir = os.path.join(dest_dir, "sys")
-        cmd = ["mount", "--bind", "/sys", mydir]
-        subprocess.check_call(cmd)
-
-        mydir = os.path.join(dest_dir, "proc")
-        cmd = ["mount", "--bind", "/proc", mydir]
-        subprocess.check_call(cmd)
-
-        mydir = os.path.join(dest_dir, "dev")
-        cmd = ["mount", "--bind", "/dev", mydir]
-        subprocess.check_call(cmd)
-
-        mydir = os.path.join(dest_dir, "dev/pts")
-        cmd = ["mount", "--bind", "/dev/pts", mydir]
-        subprocess.check_call(cmd)
-
-        if os.path.exists(efi):
-            mydir = os.path.join(dest_dir, efi[1:])
-            cmd = ["mount", "--bind", efi, mydir]
+    for special_dir in special_dirs:
+        mountpoint = os.path.join(dest_dir, special_dir[1:])
+        if not os.path.exists(mountpoint):
+            logging.debug("Making directory '{0}'".format(mountpoint))
+            os.makedirs(mountpoint)
+        os.chmod(mountpoint, 0o755)
+        cmd = ["mount", "--bind", special_dir, mountpoint]
+        logging.debug("Mounting special dir '{0}' to {1}".format(special_dir, mountpoint))
+        try:
             subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as process_error:
-        logging.error(process_error)
+        except subprocess.CalledProcessError as process_error:
+            logging.warning(_("Unable to mount {0}".format(mountpoint)))
+            logging.warning(_("Command {0} has failed.".format(process_error.cmd)))
+            logging.warning(_("Output : {0}".format(process_error.output)))
 
     _special_dirs_mounted = True
 
@@ -104,26 +94,22 @@ def umount_special_dirs(dest_dir):
         logging.debug(msg)
         return
 
-    efi = "/sys/firmware/efi"
-    if os.path.exists(efi):
-        special_dirs = ["dev/pts", "sys/firmware/efi", "sys", "proc", "dev"]
-    else:
-        special_dirs = ["dev/pts", "sys", "proc", "dev"]
+    special_dirs = []
+    special_dirs = get_special_dirs()
 
-    for s_dir in special_dirs:
-        mydir = os.path.join(dest_dir, s_dir)
-        try:
-            subprocess.check_call(["umount", mydir])
+    for special_dir in reversed(special_dirs):
+        mountpoint = os.path.join(dest_dir, special_dir[1:])
+        logging.debug("Unmounting special dir '{0}'".format(mountpoint))
+        try:            
+            subprocess.check_call(["umount", mountpoint])
         except subprocess.CalledProcessError:
-            # Can't unmount. Try -l to force it.
+            logging.debug("Can't unmount. Try -l to force it.")
             try:
-                subprocess.check_call(["umount", "-l", mydir])
+                subprocess.check_call(["umount", "-l", mountpoint])
             except subprocess.CalledProcessError as process_error:
-                logging.warning(_("Unable to umount %s"), mydir)
-                cmd = _("Command %s has failed.")
-                logging.warning(cmd, process_error.cmd)
-                out = _("Output : %s")
-                logging.warning(out, process_error.output)
+                logging.warning(_("Unable to umount {0}".format(mountpoint)))
+                logging.warning(_("Command {0} has failed.".format(process_error.cmd)))
+                logging.warning(_("Output : {0}".format(process_error.output)))
 
     _special_dirs_mounted = False
 

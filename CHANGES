@@ -1,3 +1,4 @@
+[2015-04-18 13:44:21 +0200]  Fixes /home (not root and boot) bug mounting problem in advnaced           karasu      {b1bae20}
 [2015-04-18 13:25:44 +0200]  Removed two unnused files                                                  karasu      {d239e6b}
 [2015-04-18 12:03:25 +0200]  Trap exception if setxkbmap can't be set (this was happening with A..      karasu      {70b6eef}
 [2015-04-17 18:35:49 +0200]  Fix a string                                                               karasu      {a20ec8f}

@@ -232,7 +232,14 @@ class Bootloader(object):
 
         grub_install.append(grub_location)
 
-        chroot.run(grub_install, self.dest_dir)
+        try:
+            chroot.run(grub_install, self.dest_dir)
+        except subprocess.CalledProcessError as process_error:
+            logging.error(_('Command grub-install failed. Error output: %s'), process_error.output)
+        except subprocess.TimeoutExpired:
+            logging.error(_('Command grub-install timed out.'))
+        except Exception as general_error:
+            logging.error(_('Command grub-install failed. Unknown Error: %s'), general_error)
 
         self.install_grub2_locales()
 
@@ -358,16 +365,14 @@ class Bootloader(object):
             subprocess.check_call(['killall', 'os-prober'])
 
         paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
-                 os.path.join(self.dest_dir, "boot/EFI/{0}".format(bootloader_id),
-                              "grub{0}.efi".format(spec_uefi_arch))]
+                 os.path.join(self.dest_dir, "boot/EFI/{0}".format(bootloader_id), "grub{0}.efi".format(spec_uefi_arch))]
 
-        exists = False
+        exists = True
 
         for path in paths:
-            if os.path.exists(path):
-                exists = True
-            else:
+            if not os.path.exists(path):
                 exists = False
+                logging.debug(_("Path '%s' doesn't exist, when it should"), path)
 
         if exists:
             txt = _("GRUB(2) UEFI install completed successfully")
