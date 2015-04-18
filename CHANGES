@@ -1,3 +1,4 @@
+[2015-04-18 19:27:24 +0200]  import re was missing                                                      karasu      {1298d2b}
 [2015-04-18 19:04:34 +0200]  import os was missing                                                      karasu      {2926972}
 [2015-04-18 18:42:56 +0200]  Update README                                                              karasu      {baec1ee}
 [2015-04-18 18:40:55 +0200]  Do not check for hdparm presence                                           karasu      {28045e2}

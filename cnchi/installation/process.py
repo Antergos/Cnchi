@@ -1436,7 +1436,7 @@ class InstallationProcess(multiprocessing.Process):
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:
-                logging.error(_("Couldn't install boot loader: %s"), general_error)
+                logging.error(_("Couldn't install boot loader: %s"), str(general_error))
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
         chroot.umount_special_dirs(DEST_DIR)

@@ -105,7 +105,7 @@ class Bootloader(object):
         if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
             if entry:
-                logging.debug("Wrong uuid in grub.cfg, let's fix it!")
+                logging.debug(_("Wrong uuid in grub.cfg, Cnchi will try to fix it."))
                 new_entry = re.sub("linux\t/vmlinuz.*quiet\n", boot_command, entry.group())
                 parse = parse.replace(entry.group(), new_entry)
 
