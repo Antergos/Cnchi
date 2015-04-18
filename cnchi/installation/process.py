@@ -270,17 +270,20 @@ class InstallationProcess(multiprocessing.Process):
             # In advanced mode, mount all partitions (root and boot are already mounted)
             if self.method == 'advanced':
                 for path in self.mount_devices:
-                    # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                     if path == "":
+                        # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                         continue
+                    
                     mount_part = self.mount_devices[path]
+                    
                     if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
+                        if path[0] == '/':
+                            path = path[1:]
                         mount_dir = os.path.join(DEST_DIR, path)
                         try:
                             if not os.path.exists(mount_dir):
                                 os.makedirs(mount_dir)
-                            txt = _("Mounting partition {0} into {1} directory")
-                            txt = txt.format(mount_part, mount_dir)
+                            txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
                             logging.debug(txt)
                             subprocess.check_call(['mount', mount_part, mount_dir])
                         except subprocess.CalledProcessError as process_error:
@@ -835,10 +838,19 @@ class InstallationProcess(multiprocessing.Process):
                 os.makedirs(full_path)
 
             # Is ssd ?
+            # Device list example: {'/dev/sdb': False, '/dev/sda': True}
+            
+            '''
             is_ssd = False
             for ssd_device in self.ssd:
                 if ssd_device in partition_path:
                     is_ssd = True
+            '''
+
+            logging.debug("Device list : {0}".format(self.ssd))
+            device = re.sub("[0-9]+$", "", partition_path)
+            is_ssd = self.ssd.get(device)
+            logging.debug("Device: {0}, SSD: {1}".format(device, is_ssd))
 
             # Add mount options parameters
             if not is_ssd:
