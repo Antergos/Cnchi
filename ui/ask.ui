@@ -4,7 +4,7 @@
   <object class="GtkBox" id="ask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">left</property>
+    <!--<property name="halign">left</property>-->
     <property name="margin-top">0</property>
       <property name="margin-start">70</property>
       <property name="margin-end">68</property>

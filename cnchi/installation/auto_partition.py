@@ -33,7 +33,7 @@ from misc.misc import InstallError
 NOTE: Exceptions in this file
 
 On a warning situation, Cnchi should try to continue, so we need to catch the exception here.
-If we don't catch the exception here, it will be catched in process.py and managed as a fatal error.
+If we don't catch the exception here, it will be caught in process.py and managed as a fatal error.
 On the other hand, if we want to clarify the exception message we can catch it here
 and then raise an InstallError exception.
 '''
@@ -727,7 +727,7 @@ class AutoPartition(object):
             parted_set(device, "1", "boot", "on")
 
             if self.lvm:
-                # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
+                # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
                 start = end
                 end = start + part_sizes['lvm_pv']
                 parted_mkpart(device, "primary", start, end)
@@ -766,11 +766,12 @@ class AutoPartition(object):
             logging.debug("EFI: %s", devices['efi'])
 
         logging.debug("Boot: %s", devices['boot'])
-        logging.debug("Swap: %s", devices['swap'])
         logging.debug("Root: %s", devices['root'])
 
         if self.home:
             logging.debug("Home: %s", devices['home'])
+
+        logging.debug("Swap: %s", devices['swap'])
 
         if self.luks:
             setup_luks(devices['luks'], "cryptAntergos", self.luks_password, key_files[0])
@@ -810,6 +811,7 @@ class AutoPartition(object):
                 part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
                 self.log_part_sizes(part_sizes)
 
+            # Create LVM volumes
             try:
                 size = str(int(part_sizes['root']))
                 cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]

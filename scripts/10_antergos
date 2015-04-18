@@ -39,6 +39,10 @@ export TEXTDOMAINDIR="${datarootdir}/locale"
 
 CLASS="--class gnu-linux --class gnu --class os"
 
+if [ "${GRUB_DISTRIBUTOR}" = "Antergos" ]; then
+  CLASS="--class arch ${CLASS}"
+fi
+
 if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
   OS=Linux
 else
@@ -91,7 +95,7 @@ linux_entry ()
   type="$3"
   args="$4"
 
-  if [ "$os" == "Antergos Linux" ] || [ "$os" == "Arch Linux" ]; then
+  if [ "$os" == "Antergos Linux" ] || [ "$os" == "Arch Linux" ] || [ "$os" == "Manjaro Linux" ]; then
       is_arch=True
   fi
 

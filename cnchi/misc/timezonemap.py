@@ -236,6 +236,7 @@ class TimezoneMap(Gtk.Widget):
         # Gtk+ needs a reference between the widget and the gdk window
         window.set_user_data(self)
 
+        # FIXME: DeprecationWarning: Gdk.Cursor.new is deprecated
         cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
         window.set_cursor(cursor)
 

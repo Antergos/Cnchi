@@ -46,12 +46,9 @@ def draw_round_rect(c, r, x, y, w, h):
 
 
 def gtk_to_cairo_color(c):
-    color = Gdk.color_parse(c)
-    s = 1.0 / 65535.0
-    r = color.red * s
-    g = color.green * s
-    b = color.blue * s
-    return r, g, b
+    color = Gdk.RGBA()
+    color.parse(c)
+    return color.red, color.green, color.blue
 
 
 class StylizedFrame(Gtk.Bin):

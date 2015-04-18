@@ -189,7 +189,10 @@ class MainWindow(Gtk.ApplicationWindow):
         # We do this so the user has not to wait for all the screens to be loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
-        self.pages["language"] = language.Language(self.params)
+
+        if os.path.exists('/home/antergos/.config/openbox'):
+            # In minimal iso, load language screen now
+            self.pages["language"] = language.Language(self.params)
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.check_escape)
@@ -220,8 +223,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.main_box.add(self.current_page)
 
-        # Use our css file (not in minimal, looks better without)
-        # Sorry, not anymore thanks to gtk 3.16
+        # Use our css file
         style_provider = Gtk.CssProvider()
 
         style_css = os.path.join(data_dir, "css", "gtk-style.css")
@@ -258,7 +260,8 @@ class MainWindow(Gtk.ApplicationWindow):
         misc.gtk_refresh()
 
     def load_pages(self):
-        misc.set_cursor(Gdk.CursorType.WATCH)
+        if not os.path.exists('/home/antergos/.config/openbox'):
+            self.pages["language"] = language.Language(self.params)
         self.pages["location"] = location.Location(self.params)
         self.pages["check"] = check.Check(self.params)
         self.pages["desktop"] = desktop.DesktopAsk(self.params)
@@ -276,7 +279,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
-        misc.set_cursor(Gdk.CursorType.ARROW)
 
         diff = 2
         if os.path.exists('/home/antergos/.config/openbox'):

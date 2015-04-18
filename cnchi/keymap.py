@@ -41,17 +41,16 @@ class Keymap(GtkBaseBox):
 
         self.prepare_called = False
 
-        self.filename = os.path.join(self.settings.get('data'), "kbdnames.gz")
-
         self.layout_treeview = self.ui.get_object("keyboardlayout")
         self.variant_treeview = self.ui.get_object("keyboardvariant")
 
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
-        self.keyboard_layout = None
-        self.keyboard_layout_human = None
-        self.keyboard_variant = None
+        self.keyboard_layout = { 'code': None, 'name': None }
+        self.keyboard_variant  = { 'code': None, 'name': None }
+        
+        self.kbd_names = keyboard_names.KeyboardNames(os.path.join(self.settings.get('data'), "kbdnames.gz"))
 
         self.create_treeviews()
 
@@ -85,28 +84,33 @@ class Keymap(GtkBaseBox):
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
 
-            # This is not working, as uses timezone country and not the location the user has chosen.
-            # We'll fix this in 0.9.x
-            # Select treeview with selected country in previous screen.
-            selected_country = self.settings.get("timezone_human_country")
             # selected_country has the country name in English
-            #selected_country = self.settings.get('country')
-            
+            selected_country = self.settings.get('country')
             selected_country = self.fix_countries(selected_country)
-            found = self.select_value_in_treeview(self.layout_treeview, selected_country)
+            self.keyboard_layout['code'] = self.kbd_names.get_layout_code("C", selected_country)
 
-            if not found:
+            if self.keyboard_layout['code'] is None:
                 # Country was not found, let's choose USA as default
-                selected_country = "USA"
-                self.select_value_in_treeview(self.layout_treeview, selected_country)
+                logging.debug(_("Country was not found, let's choose USA as default"))
+                self.keyboard_layout['code'] = "us"
+                self.keyboard_layout['name'] = "USA"
+                self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
             else:
+                lang = self.settings.get("language_code")
+                if not self.kbd_names.has_language(lang):
+                    lang = "C"
+                self.keyboard_layout['name'] = self.kbd_names.get_layout_name(lang, self.keyboard_layout['code'])
+                self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
+                
                 # Country was found, here we should put specific variant cases
                 if selected_country == "Spain" and self.settings.get("language_name") == "Catalan":
-                    self.select_value_in_treeview(self.variant_treeview, "Spain - Catalan variant with middle-dot L")
+                    self.keyboard_variant['code'] = "cat"
+                    self.keyboard_variant['name'] = "Spain - Catalan variant with middle-dot L"
+                    self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['name'])
                 if selected_country == "Canada" and self.settings.get("language_name") == "English":
-                    self.select_value_in_treeview(self.variant_treeview, "Canada - English")
-
-            logging.info(_("keyboard_layout is %s"), selected_country)
+                    self.keyboard_variant['code'] = "eng"
+                    self.keyboard_variant['name'] = "Canada - English"
+                    self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['name'])
 
         self.prepare_called = True
 
@@ -127,18 +131,16 @@ class Keymap(GtkBaseBox):
     def fill_layout_treeview(self):
         lang = self.settings.get("language_code")
 
-        keyboard_names._default_filename = self.filename
-
-        if not keyboard_names.has_language(lang):
+        if not self.kbd_names.has_language(lang):
             lang = "C"
-
-        kbd_names = keyboard_names.KeyboardNames(self.filename)
-        kbd_names.load(lang)
+        
+        self.kbd_names.load(lang)
 
         sorted_layouts = []
 
-        for layout in kbd_names.layout_by_human:
-            sorted_layouts.append(layout)
+        layouts = self.kbd_names.get_layouts(lang)
+        for layout_code in layouts:
+            sorted_layouts.append(layouts[layout_code])
 
         sorted_layouts = misc.sort_list(sorted_layouts, self.settings.get("locale"))
 
@@ -164,7 +166,7 @@ class Keymap(GtkBaseBox):
 
         found = False
 
-        while tree_iter is not None:
+        while tree_iter is not None and not found:
             if model[tree_iter][0] == value:
                 treeview.set_cursor(index)
                 path = model.get_path(tree_iter)
@@ -188,28 +190,25 @@ class Keymap(GtkBaseBox):
         if selected:
             (ls, iterator) = selected.get_selected()
             if iterator:
-                keyboard_layout = ls.get_value(iterator, 0)
-
                 # Store layout selected
-                self.keyboard_layout_human = keyboard_layout
+                self.keyboard_layout['name'] = ls.get_value(iterator, 0)
 
                 lang = self.settings.get("language_code")
-
-                if not keyboard_names.has_language(lang):
+                if not self.kbd_names.has_language(lang):
                     lang = "C"
+                
+                self.kbd_names.load(lang)
 
-                kbd_names = keyboard_names.KeyboardNames(self.filename)
-                kbd_names.load(lang)
-
-                country_code = kbd_names.layout_by_human[self.keyboard_layout_human]
-                self.keyboard_layout = country_code
-
-                variants = kbd_names.variant_by_human
+                self.keyboard_layout['code'] = self.kbd_names.get_layout_code(lang, self.keyboard_layout['name'])
 
                 sorted_variants = []
-
-                for variant in variants[country_code]:
-                    sorted_variants.append(variant)
+                
+                if self.kbd_names.has_variants(lang, self.keyboard_layout['code']):
+                    variants = self.kbd_names.get_variants(lang, self.keyboard_layout['code'])
+                    for variant in variants:
+                        sorted_variants.append(variants[variant])
+                else:
+                    logging.warning("Keyboard Layout %s has no variants", self.keyboard_layout['name'])
 
                 sorted_variants = misc.sort_list(sorted_variants, self.settings.get("locale"))
 
@@ -241,34 +240,44 @@ class Keymap(GtkBaseBox):
         self.set_keyboard_widget()
 
     def store_values(self):
-        if self.keyboard_layout_human is None:
+        if self.keyboard_layout['code'] is None or self.keyboard_layout['name'] is None:
             # We have not previously stored our layout
             return
 
         selected = self.variant_treeview.get_selection()
 
-        keyboard_variant_human = "USA"
+        self.keyboard_variant['name'] = None
 
         if selected:
             (ls, iterator) = selected.get_selected()
             if iterator:
-                keyboard_variant_human = ls.get_value(iterator, 0)
+                self.keyboard_variant['name'] = ls.get_value(iterator, 0)
 
         lang = self.settings.get("language_code")
 
-        kbd_names = keyboard_names.KeyboardNames(self.filename)
-
-        if not kbd_names.has_language(lang):
+        if not self.kbd_names.has_language(lang):
             lang = "C"
 
-        kbd_names.load(lang)
+        self.kbd_names.load(lang)
 
-        country_code = kbd_names.layout_by_human[self.keyboard_layout_human]
-        self.keyboard_layout = country_code
-        self.keyboard_variant = kbd_names.variant_by_human[country_code][keyboard_variant_human]
+        self.keyboard_variant['code'] = self.kbd_names.get_variant_code(lang,
+            self.keyboard_layout['code'],
+            self.keyboard_variant['name'])
 
-        self.settings.set("keyboard_layout", self.keyboard_layout)
-        self.settings.set("keyboard_variant", self.keyboard_variant)
+        self.settings.set("keyboard_layout", self.keyboard_layout['code'])
+        self.settings.set("keyboard_variant", self.keyboard_variant['code'])
+        
+        if self.keyboard_variant['code'] is None or len(self.keyboard_variant['code']) == 0:
+            txt = _("Set keyboard to layout name '{0}' ({1})").format(
+            self.keyboard_layout['name'],
+            self.keyboard_layout['code'])
+        else:
+            txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
+            self.keyboard_layout['name'],
+            self.keyboard_layout['code'],
+            self.keyboard_variant['name'],
+            self.keyboard_variant['code'])
+        logging.debug(txt)
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
@@ -277,15 +286,28 @@ class Keymap(GtkBaseBox):
         return True
 
     def setkb(self):
-        subprocess.check_call(['setxkbmap', '-layout', self.keyboard_layout, "-variant", self.keyboard_variant])
+        if len(self.keyboard_layout['code']) > 0:
+            cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
-        with misc.raised_privileges():
-            subprocess.check_call(['localectl', 'set-keymap', '--no-convert', self.keyboard_layout])
+            if len(self.keyboard_variant['code']) > 0:
+                cmd.extend(["-variant", self.keyboard_variant['code']])
+            
+            try:
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as process_error:
+                logging.warning(process_error)
+
+            with misc.raised_privileges():
+                cmd = ['localectl', 'set-keymap', '--no-convert', self.keyboard_layout['code']]
+                try:
+                    subprocess.check_call(cmd)
+                except subprocess.CalledProcessError as process_error:
+                    logging.warning(process_error)
 
     def set_keyboard_widget(self):
         """ Pass current keyboard layout to the keyboard widget. """
-        self.keyboard_widget.set_layout(self.keyboard_layout)
-        self.keyboard_widget.set_variant(self.keyboard_variant)
+        self.keyboard_widget.set_layout(self.keyboard_layout['code'])
+        self.keyboard_widget.set_variant(self.keyboard_variant['code'])
         self.keyboard_widget.show_all()
 
 # When testing, no _() is available

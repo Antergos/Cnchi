@@ -4,7 +4,7 @@
 # This script is a helper that the developers use to call Cnchi (testing purposes only)
 # Please, do not use if your intention is to do a "normal" installation
 
-# sudo rm -R /usr/share/cnchi
+sudo rm -R /usr/share/cnchi
 cnchi_dir=`pwd`
 sudo ln -s $cnchi_dir /usr/share/cnchi
 
