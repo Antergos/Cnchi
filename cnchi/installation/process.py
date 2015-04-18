@@ -33,6 +33,7 @@ import shutil
 import subprocess
 import sys
 import time
+import re
 import urllib.request
 import urllib.error
 
