@@ -34,7 +34,7 @@ if [[ ${INFO_PY} != "False" ]]; then
 
     echo "Will set new version to be $SUGGESTED_VERSION"
     sed -i "s|$BASE_STRING|$SUGGESTED_VERSION|g" ${INFO_PY}
-    git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.6"...HEAD > CHANGES
+    git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.8.0"...HEAD > CHANGES
     git add CHANGES ${INFO_PY}
     #git commit -m "Version bump to $INPUT_STRING"
     #git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"

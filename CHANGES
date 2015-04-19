@@ -1,3 +1,4 @@
+[2015-04-19 03:17:13 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {9948abf}
 [2015-04-19 03:16:25 -0500]  be more strict on the score for a mirror to be considered acceptble..  Dustin Falgout  {c30c2fc}
 [2015-04-18 10:03:49 +0200]  Polished some camera calls. Now what happens when no camera is found?      karasu      {8c46d4c}
 [2015-04-17 22:04:57 +0200]  take_photo needs to be implemented                                         karasu      {1d081a0}
