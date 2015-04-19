@@ -33,6 +33,7 @@ import shutil
 import subprocess
 import sys
 import time
+import re
 import urllib.request
 import urllib.error
 
@@ -270,17 +271,20 @@ class InstallationProcess(multiprocessing.Process):
             # In advanced mode, mount all partitions (root and boot are already mounted)
             if self.method == 'advanced':
                 for path in self.mount_devices:
-                    # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                     if path == "":
+                        # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                         continue
+                    
                     mount_part = self.mount_devices[path]
+                    
                     if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
+                        if path[0] == '/':
+                            path = path[1:]
                         mount_dir = os.path.join(DEST_DIR, path)
                         try:
                             if not os.path.exists(mount_dir):
                                 os.makedirs(mount_dir)
-                            txt = _("Mounting partition {0} into {1} directory")
-                            txt = txt.format(mount_part, mount_dir)
+                            txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
                             logging.debug(txt)
                             subprocess.check_call(['mount', mount_part, mount_dir])
                         except subprocess.CalledProcessError as process_error:
@@ -501,11 +505,11 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml = urllib.request.urlopen(req, timeout=45)
+                packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file, try to install with a local
                 # copy, that may not be updated
-                # logging.warning(url_error) # This bails out of the entire installation
+                logging.warning(url_error)
                 logging.debug(_("Can't retrieve remote package list, using a local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
@@ -642,7 +646,7 @@ class InstallationProcess(multiprocessing.Process):
             if not bootloader_found:
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
-
+        
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
         logging.debug(self.packages)
@@ -691,8 +695,6 @@ class InstallationProcess(multiprocessing.Process):
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-fresh-{0}".format(lang_code)
-
-            # This shouldn't be necessary but I want to be sure
             if pkg != "":
                 self.packages.append(pkg)
 
@@ -845,10 +847,19 @@ class InstallationProcess(multiprocessing.Process):
                 os.makedirs(full_path)
 
             # Is ssd ?
+            # Device list example: {'/dev/sdb': False, '/dev/sda': True}
+            
+            '''
             is_ssd = False
             for ssd_device in self.ssd:
                 if ssd_device in partition_path:
                     is_ssd = True
+            '''
+
+            logging.debug("Device list : {0}".format(self.ssd))
+            device = re.sub("[0-9]+$", "", partition_path)
+            is_ssd = self.ssd.get(device)
+            logging.debug("Device: {0}, SSD: {1}".format(device, is_ssd))
 
             # Add mount options parameters
             if not is_ssd:
@@ -1433,7 +1444,7 @@ class InstallationProcess(multiprocessing.Process):
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:
-                logging.error(_("Couldn't install boot loader: %s"), general_error)
+                logging.warning(_("While installing boot loader Cnchi encountered this error: %s"), general_error)
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
         chroot.umount_special_dirs(DEST_DIR)

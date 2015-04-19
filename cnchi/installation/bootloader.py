@@ -53,12 +53,14 @@ class Bootloader(object):
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
         self.root_uuid = fs.get_info(self.root_device)['UUID']
+        
         if "swap" in self.mount_devices:
-            self.swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_info(self.swap_partition)['UUID']
+            swap_partition = self.mount_devices["swap"]
+            self.swap_uuid = fs.get_info(swap_partition)['UUID']
+        
         if "/boot" in self.mount_devices:
-            self.boot_device = self.mount_devices["/boot"]
-            self.boot_uuid = fs.get_info(self.boot_device)['UUID']
+            boot_device = self.mount_devices["/boot"]
+            self.boot_uuid = fs.get_info(boot_device)['UUID']
 
     def install(self):
         """ Installs the bootloader """
@@ -70,6 +72,7 @@ class Bootloader(object):
         if bootloader == "grub2":
             self.install_grub()
         elif bootloader == "gummiboot":
+            logging.debug(_("Cnchi will install the Gummiboot loader"))
             self.install_gummiboot()
 
     def install_grub(self):
@@ -77,8 +80,10 @@ class Bootloader(object):
         self.prepare_grub_d()
 
         if os.path.exists('/sys/firmware/efi'):
+            logging.debug(_("Cnchi will install the Grub2 (efi) loader"))
             self.install_grub2_efi()
         else:
+            logging.debug(_("Cnchi will install the Grub2 (bios) loader"))
             self.install_grub2_bios()
 
         self.check_root_uuid_in_grub()
@@ -100,11 +105,11 @@ class Bootloader(object):
         if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
             if entry:
-                logging.debug("Wrong uuid in grub.cfg, let's fix it!")
+                logging.debug(_("Wrong uuid in grub.cfg, Cnchi will try to fix it."))
                 new_entry = re.sub("linux\t/vmlinuz.*quiet\n", boot_command, entry.group())
                 parse = parse.replace(entry.group(), new_entry)
 
-                with open(cfg) as grub_file:
+                with open(cfg, 'w') as grub_file:
                     grub_file.write(parse)
 
     def modify_grub_default(self):
@@ -227,7 +232,14 @@ class Bootloader(object):
 
         grub_install.append(grub_location)
 
-        chroot.run(grub_install, self.dest_dir)
+        try:
+            chroot.run(grub_install, self.dest_dir)
+        except subprocess.CalledProcessError as process_error:
+            logging.error(_('Command grub-install failed. Error output: %s'), process_error.output)
+        except subprocess.TimeoutExpired:
+            logging.error(_('Command grub-install timed out.'))
+        except Exception as general_error:
+            logging.error(_('Command grub-install failed. Unknown Error: %s'), general_error)
 
         self.install_grub2_locales()
 
@@ -268,7 +280,7 @@ class Bootloader(object):
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
-        bootloader_id = 'antergos_grub' if not os.path.exists('/install/boot/EFI/antergos_grub') else \
+        bootloader_id = 'antergos_grub' if not os.path.exists('/install/boot/efi/EFI/antergos_grub') else \
             'antergos_grub_{0}'.format(self.random_generator())
 
         txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
@@ -277,7 +289,7 @@ class Bootloader(object):
         grub_install = [
             'grub-install',
             '--target={0}-efi'.format(uefi_arch),
-            '--efi-directory=/install/boot',
+            '--efi-directory=/install/boot/efi',
             '--bootloader-id={0}'.format(bootloader_id),
             '--boot-directory=/install/boot',
             '--recheck']
@@ -298,10 +310,10 @@ class Bootloader(object):
         self.copy_grub2_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
-        grub_defaults = [os.path.join(self.dest_dir, "boot/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
-                         os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot", 'bootmgfw.efi')]
+        grub_defaults = [os.path.join(self.dest_dir, "boot/efi/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
+                         os.path.join(self.dest_dir, "boot/efi/EFI/Microsoft/Boot", 'bootmgfw.efi')]
 
-        grub_path = os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))
+        grub_path = os.path.join(self.dest_dir, "boot/efi/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))
 
         for grub_default in grub_defaults:
             path = grub_default.split()[0]
@@ -319,9 +331,9 @@ class Bootloader(object):
                 except Exception as general_error:
                     logging.warning(msg_failed, general_error)
 
-        # Copy uefi shell if none exists in /boot/EFI
+        # Copy uefi shell if none exists in /boot/efi/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/EFI/")
+        shell_dst = os.path.join(self.dest_dir, "boot/efi/EFI/")
         try:
             shutil.copy2(shell_src, shell_dst)
         except FileNotFoundError:
@@ -353,16 +365,14 @@ class Bootloader(object):
             subprocess.check_call(['killall', 'os-prober'])
 
         paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
-                 os.path.join(self.dest_dir, "boot/EFI/{0}".format(bootloader_id),
-                              "grub{0}.efi".format(spec_uefi_arch))]
+                 os.path.join(self.dest_dir, "boot/efi/EFI/{0}".format(bootloader_id), "grub{0}.efi".format(spec_uefi_arch))]
 
-        exists = False
+        exists = True
 
         for path in paths:
-            if os.path.exists(path):
-                exists = True
-            else:
+            if not os.path.exists(path):
                 exists = False
+                logging.debug(_("Path '%s' doesn't exist, when it should"), path)
 
         if exists:
             txt = _("GRUB(2) UEFI install completed successfully")
@@ -379,7 +389,7 @@ class Bootloader(object):
         if os.path.exists(osp_path):
             with open(osp_path) as osp:
                 text = osp.read().replace("umount", "umount -l")
-            with open(osp_path, "w") as osp:
+            with open(osp_path, 'w') as osp:
                 osp.write(text)
             logging.debug(_("50mounted-tests file patched successfully"))
         else:
@@ -421,7 +431,7 @@ class Bootloader(object):
         menu_dir = os.path.join(self.dest_dir, "boot/loader")
         os.makedirs(menu_dir)
         menu_path = os.path.join(menu_dir, "loader.conf")
-        with open(menu_path, "w") as menu_file:
+        with open(menu_path, 'w') as menu_file:
             menu_file.write("default antergos")
 
         # Setup boot entries
@@ -484,14 +494,14 @@ class Bootloader(object):
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
         os.makedirs(entries_dir)
         entry_path = os.path.join(entries_dir, "antergos.conf")
-        with open(entry_path, "w") as entry_file:
+        with open(entry_path, 'w') as entry_file:
             for line in conf:
                 entry_file.write(line)
 
         # Install bootloader
 
         try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot")
+            efi_system_partition = os.path.join(self.dest_dir, "boot/efi")
             cmd = ['gummiboot', '--path={0}'.format(efi_system_partition), 'install']
             subprocess.check_call(cmd)
             logging.info(_("Gummiboot install completed successfully"))
@@ -511,7 +521,7 @@ class Bootloader(object):
 
         try:
             subprocess.check_call(["sync"])
-            with open("/proc/mounts", "r") as mounts_file:
+            with open("/proc/mounts") as mounts_file:
                 mounts = mounts_file.readlines()
             # We leave a blank space in the end as we want to search exactly for this mount points
             boot_mount_point = self.dest_dir + "/boot "

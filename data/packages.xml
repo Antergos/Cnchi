@@ -108,6 +108,7 @@
         <pkgname>gedit</pkgname>
         <pkgname>gnome-backgrounds</pkgname>
         <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-calendar</pkgname>
         <pkgname>gnome-contacts</pkgname>
         <pkgname>gnome-control-center</pkgname>
         <pkgname>gnome-documents</pkgname>
@@ -138,6 +139,7 @@
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>orca</pkgname>
         <pkgname>pidgin</pkgname>
+        <pkgname>seahorse</pkgname>
         <pkgname>totem</pkgname>
         <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -449,7 +451,7 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil</pkgname>
+      <pkgname lib='qt'>bluedevil4</pkgname>
       <pkgname lib='qt' qt5="True">bluedevil-frameworks</pkgname>
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>

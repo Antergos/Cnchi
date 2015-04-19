@@ -471,10 +471,13 @@ postinstall()
     echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/environment
     echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/skel/.bashrc
     echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/profile
-    
+
     # Configure makepkg so that it doesn't compress packages after building.
     # Most users are building packages to install them locally so there's no need for compression.
     sed -i "s|^PKGEXT='.pkg.tar.xz'|PKGEXT='.pkg.tar'|g" /etc/makepkg.conf
+
+    # Set lightdm-webkit2-greeter in lightdm.conf. This should have been done here (not in the pkg) all along.
+    sed -i 's|#greeter-session=example-gtk-gnome|greeter-session=lightdm-webkit2-greeter|g' /etc/lightdm/lightdm.conf
 }
 
 touch /tmp/.postinstall.lock

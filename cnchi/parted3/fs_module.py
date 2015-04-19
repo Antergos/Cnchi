@@ -27,7 +27,7 @@
 import subprocess
 import shlex
 import logging
-
+import os
 import misc.misc as misc
 
 # constants
@@ -157,38 +157,20 @@ def create_fs(part, fstype, label='', other_opts=''):
     return ret
 
 
-'''
 @misc.raise_privileges
 def is_ssd(disk_path):
-    """ Check if is sdd """
-    ssd = False
-    try:
-        process1 = subprocess.Popen(["hdparm", "-I", disk_path], stdout=subprocess.PIPE)
-        process2 = subprocess.Popen(["grep", "Rotation Rate"], stdin=process1.stdout, stdout=subprocess.PIPE)
-        process1.stdout.close()
-        output = process2.communicate()[0].decode()
-        if "Solid State" in output:
-            ssd = True
-    except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
-    return ssd
-'''
-
-
-@misc.raise_privileges
-def is_ssd(disk_path):
-    """ Check if disk is a Solid State Device """
-    ssd = False
-    try:
-        cmd = ["hdparm", "-I", disk_path]
-        result = subprocess.check_output(cmd).decode()
-        if "Solid State Device" in result:
-            ssd = True
-    except subprocess.CalledProcessError as err:
-        logging.warning(err)
-        logging.warning(_("Can't verify if %s is a Solid State Drive or not"), disk_path)
-    return ssd
+    """ Checks if given disk is actually a ssd disk.
+    :param disk_name:
+    :return:
+    """
+    disk_name = disk_path.split('/')[-1]
+    filename = os.path.join("/sys/block", disk_name, "queue/rotational")
+    if not os.path.exists(filename):
+        # Should not happen unless sysfs changes, but better safe than sorry
+        logging.warning(_("Can't verify if {0} is a Solid State Drive or not".format(disk_path)))
+        return False
+    with open(filename) as f:
+        return f.read() == "0\n"
 
 
 # To shrink a partition:

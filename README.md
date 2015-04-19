@@ -45,7 +45,7 @@ We manage our translations in transifex:
  - pyalpm (alpm)
  - libtimezonemap (needed by Cnchi 0.6.x and older versions)
  - webkit2gtk 
- - hdparm
+ - hdparm (needed by Cnchi 0.8.35 and older versions)
  - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
  - encfs, pam_encfs

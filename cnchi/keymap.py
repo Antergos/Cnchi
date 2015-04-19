@@ -286,12 +286,23 @@ class Keymap(GtkBaseBox):
         return True
 
     def setkb(self):
-        cmd = ['setxkbmap', '-layout', self.keyboard_layout['code'], "-variant", self.keyboard_variant['code']]
-        subprocess.check_call(cmd)
+        if len(self.keyboard_layout['code']) > 0:
+            cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
-        with misc.raised_privileges():
-            cmd = ['localectl', 'set-keymap', '--no-convert', self.keyboard_layout['code']]
-            subprocess.check_call(cmd)
+            if len(self.keyboard_variant['code']) > 0:
+                cmd.extend(["-variant", self.keyboard_variant['code']])
+            
+            try:
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as process_error:
+                logging.warning(process_error)
+
+            with misc.raised_privileges():
+                cmd = ['localectl', 'set-keymap', '--no-convert', self.keyboard_layout['code']]
+                try:
+                    subprocess.check_call(cmd)
+                except subprocess.CalledProcessError as process_error:
+                    logging.warning(process_error)
 
     def set_keyboard_widget(self):
         """ Pass current keyboard layout to the keyboard widget. """
