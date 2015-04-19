@@ -1,3 +1,4 @@
+[2015-04-19 21:19:21 +0200]  Fix gummiboot entries                                                      karasu      {7fd19d4}
 [2015-04-19 21:05:20 +0200]  Efi partition only exist with efi and grub2                                karasu      {b514e6d}
 [2015-04-19 21:03:47 +0200]  Change advanced partition requirements                                     karasu      {b9983bc}
 [2015-04-19 20:54:59 +0200]  Use EFI partition or not, depending if we use grub2 or gummiboot           karasu      {f37a9e9}

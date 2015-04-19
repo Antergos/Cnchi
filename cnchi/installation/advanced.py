@@ -1679,27 +1679,27 @@ class InstallationAdvanced(GtkBaseBox):
         # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
-            if mnt == "/" and 
+            if (mnt == "/" and 
                 "fat" not in fsystem and 
-                "ntfs" not in fsystem:
+                "ntfs" not in fsystem):
                 has_part["root"] = True
                 part["root"].set_state(True)
-            elif is_uefi and 
+            elif (is_uefi and 
                   self.bootloader == "grub2" and 
                   mnt == "/boot/efi" and 
-                  "fat" in fsystem:
+                  "fat" in fsystem):
                 has_part["boot_efi"] = True
                 part["boot_efi"].set_state(True)
-            elif is_uefi and 
+            elif (is_uefi and 
                   self.bootloader == "gummiboot" and 
                   mnt == "/boot" and 
-                  "fat" in fsystem:
+                  "fat" in fsystem):
                 has_part["boot"] = True
                 part["boot"].set_state(True)                
-            elif mnt == "/boot" and 
+            elif (mnt == "/boot" and 
                   "f2fs" not in fsystem and 
                   "btrfs" not in fsystem and 
-                  self.lv_partitions:
+                  self.lv_partitions):
                 has_part["boot"] = True
                 part["boot"].set_state(True)
             elif mnt == "swap":
