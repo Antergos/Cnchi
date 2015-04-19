@@ -1,3 +1,4 @@
+[2015-04-19 18:39:04 -0500]  merged github master                                                   Dustin Falgout  {4376e18}
 [2015-04-19 21:31:11 +0200]  Parenthesis forgotten                                                      karasu      {c9553d6}
 [2015-04-19 21:19:21 +0200]  Fix gummiboot entries                                                      karasu      {7fd19d4}
 [2015-04-19 21:05:20 +0200]  Efi partition only exist with efi and grub2                                karasu      {b514e6d}

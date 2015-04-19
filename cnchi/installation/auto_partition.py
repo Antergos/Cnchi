@@ -567,8 +567,8 @@ class AutoPartition(object):
         else:
             part_sizes['swap'] = 4096
 
-        # Max swap size is 10% of all available disk size
-        max_swap = disk_size * 0.1
+
+        max_swap = 8192
         if part_sizes['swap'] > max_swap:
             part_sizes['swap'] = max_swap
 
