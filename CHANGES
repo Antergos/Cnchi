@@ -1,3 +1,4 @@
+[2015-04-19 13:12:55 +0200]  Updated Translations                                                       karasu      {6d4464a}
 [2015-04-19 03:10:19 -0500]  updated pre-commit hook                                                Dustin Falgout  {0ca69b4}
 [2015-04-19 03:05:42 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {93b2f43}
 [2015-04-19 02:28:31 -0500]  be more strict on the score for a mirror to be considered acceptble.   Dustin Falgout  {4163cf3}
