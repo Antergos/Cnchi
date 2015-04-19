@@ -1,3 +1,4 @@
+[2015-04-19 20:54:59 +0200]  Use EFI partition or not, depending if we use grub2 or gummiboot           karasu      {f37a9e9}
 [2015-04-19 20:14:59 +0200]  This should fix "Can't convert NoneType object to str" error               karasu      {96f7d0f}
 [2015-04-19 20:04:07 +0200]  Fix gummiboot installation                                                 karasu      {aeb23c6}
 [2015-04-19 06:36:45 -0500]  fix uefi bootloader installation                                       Dustin Falgout  {df200d2}
