@@ -1,3 +1,4 @@
+[2015-04-18 20:37:18 +0200]  Change exception message (as it could be mistaken for a fatal error)       karasu      {dee99cd}
 [2015-04-18 19:49:25 +0200]  There's an exception that reaches process.py even when bootloader i..      karasu      {ed706db}
 [2015-04-18 19:27:24 +0200]  import re was missing                                                      karasu      {1298d2b}
 [2015-04-18 19:04:34 +0200]  import os was missing                                                      karasu      {2926972}
