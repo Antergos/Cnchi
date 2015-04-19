@@ -498,7 +498,7 @@ class AutoPartition(object):
         devices = self.get_devices
         mount_devices = {}
 
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             mount_devices['/boot/efi'] = devices['efi']
 
         mount_devices['/boot'] = devices['boot']
