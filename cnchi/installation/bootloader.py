@@ -445,27 +445,33 @@ class Bootloader(object):
             menu_file.write("default antergos")
 
         # Setup boot entries
+        conf = {}
 
         if not self.settings.get('use_luks'):
-            conf = []
-            conf.append("title\tAntergos\n")
-            conf.append("linux\t/vmlinuz-linux\n")
-            conf.append("initrd\t/initramfs-linux.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
-            conf.append("title\tAntergos (fallback)\n")
-            conf.append("linux\t/vmlinuz-linux\n")
-            conf.append("initrd\t/initramfs-linux-fallback.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+            conf['default'] = []
+            conf['default'].append("title\tAntergos\n")
+            conf['default'].append("linux\t/vmlinuz-linux\n")
+            conf['default'].append("initrd\t/initramfs-linux.img\n")
+            conf['default'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+
+            conf['fallback'] = []
+            conf['fallback'].append("title\tAntergos (fallback)\n")
+            conf['fallback'].append("linux\t/vmlinuz-linux\n")
+            conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
+            conf['fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
 
             if self.settings.get('feature_lts'):
-                conf.append("title\tAntergos LTS\n")
-                conf.append("linux\t/vmlinuz-linux-lts\n")
-                conf.append("initrd\t/initramfs-linux-lts.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
-                conf.append("title\tAntergos LTS (fallback)\n\n")
-                conf.append("linux\t/vmlinuz-linux-lts\n")
-                conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+                conf['lts'] = []
+                conf['lts'].append("title\tAntergos LTS\n")
+                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
+                conf['lts'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+
+                conf['lts_fallback'] = []
+                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
+                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
+                conf['lts_fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
 
@@ -484,29 +490,51 @@ class Bootloader(object):
             root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw"
             root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, root_uuid)
 
-            conf = []
-            conf.append("title\tAntergos\n")
-            conf.append("linux\t/boot/vmlinuz-linux\n")
-            conf.append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
-            conf.append("title\tAntergos (fallback)\n")
-            conf.append("linux\t/boot/vmlinuz-linux\n")
-            conf.append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
+            conf['default'] = []
+            conf['default'].append("title\tAntergos\n")
+            conf['default'].append("linux\t/boot/vmlinuz-linux\n")
+            conf['default'].append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
+
+            conf['fallback'] = []
+            conf['fallback'].append("title\tAntergos (fallback)\n")
+            conf['fallback'].append("linux\t/boot/vmlinuz-linux\n")
+            conf['fallback'].append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
 
             if self.settings.get('feature_lts'):
-                conf.append("title\tAntergos LTS\n")
-                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf.append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
-                conf.append("title\tAntergos LTS (fallback)\n")
-                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf.append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
+                conf['lts'] = []
+                conf['lts'].append("title\tAntergos LTS\n")
+                conf['lts'].append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf['lts'].append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
+                
+                conf['lts_fallback'] = []
+                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
+                conf['lts_fallback'].append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
         os.makedirs(entries_dir)
+
         entry_path = os.path.join(entries_dir, "antergos.conf")
         with open(entry_path, 'w') as entry_file:
-            for line in conf:
+            for line in conf['default']:
                 entry_file.write(line)
+
+        entry_path = os.path.join(entries_dir, "antergos-fallback.conf")
+        with open(entry_path, 'w') as entry_file:
+            for line in conf['fallback']:
+                entry_file.write(line)
+
+        if self.settings.get('feature_lts'):
+            entry_path = os.path.join(entries_dir, "antergos-lts.conf")
+            with open(entry_path, 'w') as entry_file:
+                for line in conf['lts']:
+                    entry_file.write(line)
+
+            entry_path = os.path.join(entries_dir, "antergos-lts-fallback.conf")
+            with open(entry_path, 'w') as entry_file:
+                for line in conf['lts_fallback']:
+                    entry_file.write(line)
 
         # Install bootloader
 

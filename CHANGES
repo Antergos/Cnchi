@@ -1,3 +1,4 @@
+[2015-04-19 21:05:20 +0200]  Efi partition only exist with efi and grub2                                karasu      {b514e6d}
 [2015-04-19 21:03:47 +0200]  Change advanced partition requirements                                     karasu      {b9983bc}
 [2015-04-19 20:54:59 +0200]  Use EFI partition or not, depending if we use grub2 or gummiboot           karasu      {f37a9e9}
 [2015-04-19 20:14:59 +0200]  This should fix "Can't convert NoneType object to str" error               karasu      {96f7d0f}
