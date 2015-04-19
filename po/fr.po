@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-16 20:37+0000\n"
+"PO-Revision-Date: 2015-04-16 23:29+0000\n"
 "Last-Translator: Sylvain Lafrenière <sylvain.lafreniere@mailoo.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -939,7 +939,7 @@ msgstr ""
 
 #: cnchi/installation/alongside.py:263
 msgid "Can't find any installed OS!"
-msgstr ""
+msgstr "L'installateur n'a pas trouvé d'autre OS installé!"
 
 #: cnchi/installation/ask.py:109
 msgid "Cnchi will enable the 'alongside' installation mode."
@@ -1116,7 +1116,7 @@ msgstr ""
 
 #: cnchi/installation/auto_partition.py:150
 msgid "Can't delete existent LVM volumes"
-msgstr ""
+msgstr "Vous ne pouvez pas supprimer les volumes LVM existants"
 
 #: cnchi/installation/auto_partition.py:161
 msgid "Can't close already opened LUKS devices"
@@ -1228,7 +1228,7 @@ msgstr "Taille de la partition Home : %dMiB"
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "routine for partitioning and mounting devices."
-msgstr ""
+msgstr "Installation ne peut pas détecter la taille de votre disque dur, s'il vous plaît utiliser la procédure d'installation avancée pour le partitionnement et le montage."
 
 #: cnchi/installation/auto_partition.py:664
 msgid "Error informing the kernel of the partition change."
@@ -1240,11 +1240,11 @@ msgstr "Cnchi va configurer LVM sur le périphérique %s"
 
 #: cnchi/installation/auto_partition.py:782
 msgid "Error creating LVM physical volume"
-msgstr ""
+msgstr "Erreur de création du volume physique LVM"
 
 #: cnchi/installation/auto_partition.py:791
 msgid "Error creating LVM volume group"
-msgstr ""
+msgstr "Erreur de création du groupe de volumes LVM"
 
 #: cnchi/installation/auto_partition.py:826
 msgid "Error creating LVM logical volume"
@@ -1332,7 +1332,7 @@ msgstr ""
 msgid ""
 "grub-mkconfig does not respond. Killing grub-mount and os-prober so we can "
 "continue."
-msgstr ""
+msgstr "grub-mkconfig ne répond pas. Arrêter grub-monture et os-prober afin de pouvoir continuer."
 
 #: cnchi/installation/bootloader.py:250
 msgid "GRUB(2) BIOS has been successfully installed."
@@ -1684,11 +1684,11 @@ msgstr "Configuration du gestionnaire de bureau LightDM"
 
 #: cnchi/installation/process.py:1065
 msgid "LightDM display manager configuration completed."
-msgstr ""
+msgstr "La configuration du gestionnaire d'affichage LightDM est complétée"
 
 #: cnchi/installation/process.py:1068
 msgid "Error while trying to configure the LightDM display manager"
-msgstr ""
+msgstr "Erreur en essayant de configurer le gestionnaire d'affichage de LightDM"
 
 #: cnchi/installation/process.py:1154
 msgid "Configuring your new system"
@@ -1768,11 +1768,11 @@ msgstr ""
 
 #: cnchi/installation/process.py:1345
 msgid "Configuring hardware ..."
-msgstr ""
+msgstr "Configuration du matériel ..."
 
 #: cnchi/installation/process.py:1353
 msgid "Updated Alsa mixer settings"
-msgstr ""
+msgstr "Mise à jour des réglages de mixage d'Alsa"
 
 #: cnchi/installation/process.py:1361
 msgid "Updated fluidsynth configuration file"
@@ -1853,7 +1853,7 @@ msgstr ""
 
 #: cnchi/language.py:84
 msgid "Choose your language"
-msgstr ""
+msgstr "Choisissez votre langue"
 
 #: cnchi/language.py:123
 msgid "Can't find translation file for the %s language"

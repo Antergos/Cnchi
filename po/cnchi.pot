@@ -2316,7 +2316,7 @@ msgid "Too many characters"
 msgstr ""
 
 #: cnchi/welcome.py:73
-msgid "Try Antergos without making any changes to your system."
+msgid "Use Antergos without making any changes to your system."
 msgstr ""
 
 #: cnchi/welcome.py:79

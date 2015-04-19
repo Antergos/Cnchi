@@ -4,14 +4,15 @@
 # 
 # Translators:
 # zhqh100 <1483586698@qq.com>, 2014
-# Deane Chan <wsxy162@gmail.com>, 2015
+# Dean Chan <wsxy162@gmail.com>, 2015
+# Dean Chan <wsxy162@gmail.com>, 2015
 # deisiler <deisiler@sina.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-12 05:12+0000\n"
-"Last-Translator: Deane Chan <wsxy162@gmail.com>\n"
+"PO-Revision-Date: 2015-04-19 05:51+0000\n"
+"Last-Translator: Dean Chan <wsxy162@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/antergos/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +52,7 @@ msgstr "必须拥有至少 {0}GB 的可用存储空间。(*)"
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr "这非常依赖于你选择的桌面环境，所以你可能需要更多的空间."
+msgstr "这决定于你选择的桌面环境，所以你可能需要更多的空间."
 
 #: cnchi/check.py:89
 msgid "is plugged in to a power source"
@@ -114,16 +115,16 @@ msgstr "运行 Cnchi 不管是否检测到已有实例运行中"
 
 #: cnchi/cnchi.py:198
 msgid "Disables first screen's 'try it' option"
-msgstr "禁用首屏幕“尝试”选项。"
+msgstr "禁用首屏幕“试用”选项。"
 
 #: cnchi/cnchi.py:202
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
-msgstr "使用一个本地的xml而不是默认的来安装包"
+msgstr "参考本地的 xml 而不是默认的来安装包"
 
 #: cnchi/cnchi.py:206
 msgid "Do not perform any changes (useful for developers)"
-msgstr "不会执行任何修改(对开发人员很有用)"
+msgstr "不会执行任何修改(开发人员适用)"
 
 #: cnchi/cnchi.py:210
 msgid "Upgrade/downgrade Cnchi to the web version"
@@ -143,7 +144,7 @@ msgstr "显示开发选项(开发人员使用，其他人不要使用!)"
 
 #: cnchi/cnchi.py:261
 msgid "Program updated! Restarting..."
-msgstr "程序已更新！重新启动中…"
+msgstr "程序已更新！正在重新启动…"
 
 #: cnchi/cnchi.py:301
 msgid "Cnchi files not found. Please, install Cnchi using pacman"
@@ -205,35 +206,35 @@ msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
-msgstr "Enlightenment不仅是Linux/X11或其他系统的窗口管理器，同时也是一套可帮助你很方便创建漂亮UI的一套库。"
+msgstr "Enlightenment 不仅是 Linux/X11 或其他系统的窗口管理器，同时也是一套可帮助你很方便创建漂亮UI的完整套件。"
 
 #: cnchi/desktop_environments.py:144
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
-msgstr "如果你打算寻找一个熟悉的桌面环境.KDE的Plasma 桌面提供现代桌面需要的所有工具让你开机即可工作。"
+msgstr "如果你打算寻找一个熟悉的桌面环境。KDE 的 Plasma 桌面提供现代桌面需要的所有工具让你开机即可工作。"
 
 #: cnchi/desktop_environments.py:148
 msgid ""
 "Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
 "provides a visually updated core desktop experience that is easy to use and "
 "familiar to the user. "
-msgstr "Plasma 5.0是KDE工作空间提供的新的重要版本。它提供了核心桌面的外观升级，让用户拥有易于使用和熟悉的操作体验。"
+msgstr "Plasma 5.0 是 KDE 工作空间提供的新的重要版本。它提供了核心桌面的外观升级，让用户拥有易于使用和熟悉的操作体验。"
 
 #: cnchi/desktop_environments.py:152
 msgid ""
 "LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
 "technologies. It has been tailored for users who value simplicity, speed, "
 "and an intuitive interface."
-msgstr "LXQt是一个基于Qt技术开发的先进而易于使用的快速桌面环境。它为那些喜欢简洁，快速，直观界面的人所量身打造。"
+msgstr "LXQt 是一个基于 Qt 技术开发的先进而易于使用的快速桌面环境。它为那些喜欢简洁，快速，直观界面的人所量身打造。"
 
 #: cnchi/desktop_environments.py:156
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
-msgstr "该选项将会安装仅带有命令行的Antergos,没有任何图形界面.安装后你可以使用命令行下的包管理器安装包来自定义Antergos."
+msgstr "该选项将会安装仅带有命令行的 Antergos ，没有任何图形界面.安装后你可以使用命令行下的包管理器安装包来自定义 Antergos 。"
 
 #: cnchi/desktop_environments.py:160
 msgid ""
@@ -241,7 +242,7 @@ msgid ""
 "2. MATE is one of the best options for use on older computers or those with "
 "low hardware specifications due to its lightweight yet very customizable set"
 " of features."
-msgstr "一个直观而优雅的轻量级桌面环境，来自GNOME 2的修改。由于MATE的轻量却又拥有完全可定制的功能，它是那些老电脑或者低硬件规格电脑的最好桌面选择之一。"
+msgstr "一个直观而优雅的轻量级桌面环境，来自 GNOME 2 的修改。由于 MATE 的轻量却又拥有完全可定制的功能，它是那些老电脑或者低硬件规格电脑的最好桌面选择之一。"
 
 #: cnchi/download/aria2.py:49 cnchi/download/aria2.py:60
 #: cnchi/download/aria2.py:96 cnchi/download/aria2.py:104
@@ -391,15 +392,15 @@ msgid ""
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
-msgstr "蓝牙是一个标准的与手机、电脑\n和其他电子设备近距离无线通信\n的技术.BlueZ是Linux世界蓝牙\n协议栈的实现典范"
+msgstr "蓝牙是与手机、电脑和其他\n电子设备近距离无线通信技术\n的一个标准。BlueZ 是 Linux \n里蓝牙协议栈的实现典范"
 
 #: cnchi/features.py:196
 msgid "Extra Truetype Fonts"
-msgstr "补充全真字体"
+msgstr "补充 Truetype 字体"
 
 #: cnchi/features.py:197
 msgid "Installation of extra TrueType fonts"
-msgstr "补充全真字体安装"
+msgstr "补充 Truetype 字体安装"
 
 #: cnchi/features.py:198
 msgid ""
@@ -408,7 +409,7 @@ msgid ""
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
 "Mac OS and Microsoft Windows operating systems."
-msgstr "TrueType是由美国苹果公司和微软公司\n为了对抗Adobe公司的Type 1PostScript\n字体在1980年代共同开发的一种电脑轮廓\n字体类型标准。它已经成为苹果和微软公\n司最常用的字体标准。"
+msgstr "TrueType 是由美国苹果公司和微软公司\n为了对抗 Adobe 公司的 Type 1PostScript \n字体在1980年代共同开发的一种电脑轮廓\n字体类型标准。它已经成为苹果和微软公\n司最常用的字体标准。"
 
 #: cnchi/features.py:206
 msgid "Printing Support"
@@ -416,14 +417,14 @@ msgstr "打印支持"
 
 #: cnchi/features.py:207
 msgid "Installation of printer drivers and management tools."
-msgstr "安装打印机驱动和管理工具."
+msgstr "安装打印机驱动和管理工具。"
 
 #: cnchi/features.py:208
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
-msgstr "CUPS 是苹果公司为OS\\302\\256 X 和其\n他类 UNIX\\302\\256 的操作系统开发的\n基于标准的、开源的打印系统."
+msgstr "CUPS 是苹果公司为 OS\\302\\256 X 和其\n他类 UNIX\\302\\256 的操作系统开发的\n基于标准的、开源的打印系统。"
 
 #: cnchi/features.py:214
 msgid "LibreOffice"
@@ -431,7 +432,7 @@ msgstr "LibreOffice"
 
 #: cnchi/features.py:215
 msgid "Open source office suite. Supports editing MS Office files."
-msgstr "开源office 包.支持编辑MS Office 文件."
+msgstr "开源 office 套件。支持编辑 MS Office 文件。"
 
 #: cnchi/features.py:216
 msgid ""
@@ -440,7 +441,7 @@ msgid ""
 "and Linux, that gives you six feature-rich applications\n"
 "for all your document production and data processing\n"
 "needs: Writer, Calc, Impress, Draw, Math and Base."
-msgstr "LibreOffice是一套功能强大，面向个人生产的免费开源\n办公软件，支持Windows、Macintosh以及Linux平台。\n同时套件为用户提供了6个特色功能的应用程序，用来处\n理日常的文档处理和数据管理，包括：Writer, Calc, \nImpress, Draw, Math和Base。"
+msgstr "LibreOffice 是一套功能强大，面向个人生产的免费开源\n办公软件，支持 Windows、Macintosh 以及 Linux 平台。\n同时套件为用户提供了6个特色功能的应用程序，用来处\n理日常的文档处理和数据管理，包括：Writer, Calc, \nImpress, Draw, Math和Base。"
 
 #: cnchi/features.py:224
 msgid "Visual Effects"
@@ -448,7 +449,7 @@ msgstr "视觉效果"
 
 #: cnchi/features.py:225
 msgid "Enable transparency, shadows, and other desktop effects."
-msgstr "使能透明，阴影，和其他桌面功能."
+msgstr "启用透明，阴影，和其他桌面功能。"
 
 #: cnchi/features.py:226
 msgid ""
@@ -457,7 +458,7 @@ msgid ""
 "provide compositing functionality. Compton itself is a fork\n"
 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
 "See the compton github page for further information."
-msgstr "Compton是一个轻量级的，独立的复合管理器，适合\n和不能提供复合功能的管理器共同使用。Compton 本\n身是xcompmgr-dana的一个衍生版本，而xcompmgr\n-dana又是xcompmgr的一个衍生版本。更多信息请访\n问compton github页面."
+msgstr "Compton 是一个轻量级的，独立的复合管理器，适合\n和不能提供复合功能的管理器共同使用。Compton 本\n身是 xcompmgr-dana 的一个衍生版本，而 xcompmgr\n-dana 又是 xcompmgr 的一个衍生版本。更多信息请访\n问 compton github 页面。"
 
 #: cnchi/features.py:234
 msgid "Uncomplicated Firewall"
@@ -465,7 +466,7 @@ msgstr "简单防火墙（ufw）"
 
 #: cnchi/features.py:235
 msgid "Control the incoming and outgoing network traffic."
-msgstr "控制输入/输出网络流量."
+msgstr "控制输入/输出网络流量。"
 
 #: cnchi/features.py:236
 msgid ""
@@ -480,7 +481,7 @@ msgstr "Firefox 网页浏览器"
 
 #: cnchi/features.py:257
 msgid "A popular open-source graphical web browser from Mozilla"
-msgstr "来自Mozilla的流行的开源图形界面网页浏览器"
+msgstr "来自 Mozilla 的流行的开源图形界面网页浏览器"
 
 #: cnchi/features.py:258
 msgid ""
@@ -490,7 +491,7 @@ msgid ""
 "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
 "layout engine to render web pages, which implements current and\n"
 "anticipated web standards."
-msgstr "Mozilla Firefox （通常被简称为 Firefox）\n是一个自由及开源的网页浏览器，\n由Mozilla基金会与其子公司Mozilla共同开发，\n支持Windows，OS X，Linux和Android等操作系统。\nFirefox 使用 Gecko 排版引擎来渲染网页，\n实现了目前以及未来可能出现的网络标准。"
+msgstr "Mozilla Firefox （通常被简称为 Firefox）\n是一个自由及开源的网页浏览器，\n由 Mozilla 基金会与其子公司 Mozilla 共同开发，\n支持 Windows，OS X，Linux 和 Android 等操作系统。\nFirefox 使用 Gecko 排版引擎来渲染网页，\n实现了目前以及未来可能出现的网络标准。"
 
 #: cnchi/features.py:267
 msgid "Windows sharing SMB"
@@ -507,7 +508,7 @@ msgid ""
 "for providing shared access to files, printers, serial ports,\n"
 "and miscellaneous communications between nodes on a network.\n"
 "Most usage of SMB involves computers running Microsoft Windows."
-msgstr "在计算机网络中，服务器消息区块(SMB)作为应用层网络协议，主要为文件，打印机，串口和网络上各种各样各节点间的通信提供了一种共享方式。大多数SMB的使用都有运行Microsoft Windows的计算机参与。"
+msgstr "在计算机网络中，服务器消息区块(SMB)作为\n应用层网络协议，主要为文件，打印机，串口\n和网络上各种各样各节点间的通信提供了一种\n共享方式。大多数SMB的使用都有运行\nMicrosoft Windows的计算机参与。"
 
 #: cnchi/features.py:310
 msgid "Selected '%s' feature to install"
@@ -523,11 +524,11 @@ msgid ""
 "that supplement software available from the official repositories.\n"
 "\n"
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
-msgstr "Arch用户软件仓库由用户提交的 PKGBUILD 组成.\n这些补充软件可以从其官方库中获取.\n\nAUR是由社区驱动，不受Arch或Antergos支持.\n"
+msgstr "Arch 用户软件仓库由用户提交的 PKGBUILD 组成，\n这些补充软件可以从其官方库中获取。\n\nAUR 是由社区驱动，不受 Arch 或 Antergos 支持。\n"
 
 #: cnchi/features.py:336
 msgid "Uncomplicated Firewall will be installed with these rules:"
-msgstr "简单防火墙将会基于这些规则进行安装:"
+msgstr "简单防火墙将会基于这些规则进行安装："
 
 #: cnchi/features.py:338
 msgid ""
@@ -547,7 +548,7 @@ msgstr "从 %s 导入 %s 时出错： %s"
 
 #: cnchi/hardware/hardware.py:115
 msgid "Unexpected error importing %s: %s"
-msgstr "导入 %s 是发生意外错误: %s"
+msgstr "导入 %s 时发生意外错误: %s"
 
 #: cnchi/installation/advanced.py:259 cnchi/installation/advanced.py:578
 #: cnchi/installation/advanced.py:592
@@ -644,7 +645,7 @@ msgstr "高级安装模式"
 
 #: cnchi/installation/advanced.py:1291 cnchi/installation/automatic.py:101
 msgid "Use the device below for boot loader installation:"
-msgstr "boot loader将安装到下面设备上:"
+msgstr "boot loader将安装到以下设备上："
 
 #: cnchi/installation/advanced.py:1296 cnchi/installation/automatic.py:106
 msgid "Bootloader:"
@@ -692,7 +693,7 @@ msgstr "编辑..."
 
 #: cnchi/installation/advanced.py:1344
 msgid "New partition table"
-msgstr "新分区表"
+msgstr "新建分区表"
 
 #: cnchi/installation/advanced.py:1355
 msgid "_Cancel"
@@ -878,7 +879,7 @@ msgstr "Antergos 将在设备 {1} 中安装引导加载程序 {0}"
 
 #: cnchi/installation/advanced.py:2190 cnchi/installation/automatic.py:295
 msgid "Testing mode. Cnchi will not change anything!"
-msgstr "测试模式.Cnchi不会进行任何修改!"
+msgstr "测试模式，Cnchi 不会进行任何修改！"
 
 #: cnchi/installation/alongside.py:137
 msgid "There are no primary partitions available"
@@ -1249,17 +1250,17 @@ msgstr "选择驱动器:"
 
 #: cnchi/installation/automatic.py:76
 msgid "WARNING! This will overwrite everything currently on your drive!"
-msgstr "警告! 将覆盖你磁盘上当前所有的数据."
+msgstr "警告！将覆盖你磁盘上当前所有的数据！"
 
 #: cnchi/installation/automatic.py:81
 msgid ""
 "Select the drive we should use to install Antergos and then click above to "
 "start the process."
-msgstr "选择我们要用来安装Antergos的驱动器，然后点击下面开始。"
+msgstr "选择我们要用来安装 Antergos 的驱动器，然后点击下面开始。"
 
 #: cnchi/installation/automatic.py:85
 msgid "Encryption Password:"
-msgstr "加密密码:"
+msgstr "加密密码："
 
 #: cnchi/installation/automatic.py:89 cnchi/user_info.py:101
 msgid "Confirm your password:"
@@ -1367,7 +1368,7 @@ msgstr "正在生成grub.cfg"
 msgid ""
 "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
-msgstr "grub-mkconfig貌似已经被挂起，终止grub-mount和os-prober以继续。"
+msgstr "grub-mkconfig 貌似已经被挂起，终止 grub-mount 和 os-prober 以继续。"
 
 #: cnchi/installation/bootloader.py:365
 msgid "GRUB(2) UEFI install completed successfully"
@@ -1387,7 +1388,7 @@ msgstr "修补 50mounted-tests 失败，文件未找到。"
 
 #: cnchi/installation/bootloader.py:387
 msgid "Copying GRUB(2) Theme Files"
-msgstr "正在复制GRUB(2) Theme主题"
+msgstr "正在复制 GRUB(2) Theme主题"
 
 #: cnchi/installation/bootloader.py:393
 msgid "Grub2 theme files not found"
@@ -1399,11 +1400,11 @@ msgstr "Grub2 主题文件已存在"
 
 #: cnchi/installation/bootloader.py:399
 msgid "Installing Grub2 locales."
-msgstr "正在安装Grub2 语言环境"
+msgstr "正在安装 Grub2 语言环境"
 
 #: cnchi/installation/bootloader.py:410
 msgid "Can't install GRUB(2) locale."
-msgstr "无法安装GRUB(2) 的语言环境."
+msgstr "无法安装 GRUB(2) 的语言环境."
 
 #: cnchi/installation/bootloader.py:494
 msgid "Gummiboot install completed successfully"
@@ -1423,7 +1424,7 @@ msgstr "特殊目录已经安装。正在跳过。"
 
 #: cnchi/installation/chroot.py:103
 msgid "Special dirs are not mounted. Skipping."
-msgstr "特定的文件夹未挂载.正在跳过."
+msgstr "特定的文件夹未挂载。正在跳过。"
 
 #: cnchi/installation/chroot.py:122
 msgid "Unable to umount %s"
@@ -1515,7 +1516,7 @@ msgstr "安装已完成"
 
 #: cnchi/installation/process.py:380
 msgid "Can't copy Cnchi log to %s"
-msgstr "无法复制Cnchi 日志到 %s"
+msgstr "无法复制 Cnchi 日志到 %s"
 
 #: cnchi/installation/process.py:405
 msgid "Creating a temporary pacman.conf for {0} architecture"
@@ -1571,7 +1572,7 @@ msgstr "无法导入硬件模块。"
 
 #: cnchi/installation/process.py:584 cnchi/installation/process.py:1259
 msgid "Unknown error in hardware module. Output: %s"
-msgstr "硬件模块未知错误。输出: %s"
+msgstr "硬件模块未知错误。输出： %s"
 
 #: cnchi/installation/process.py:587
 msgid "Adding filesystem packages"
@@ -1621,15 +1622,15 @@ msgstr "无法复制网络配置文件"
 #: cnchi/installation/process.py:813 cnchi/installation/process.py:870
 #: cnchi/installation/process.py:875
 msgid "Added to fstab : %s"
-msgstr "已加入到fstab: %s"
+msgstr "已加入到 fstab： %s"
 
 #: cnchi/installation/process.py:792 cnchi/installation/process.py:808
 msgid "Added to crypttab : %s"
-msgstr "已添加至 crypttab: %s"
+msgstr "已添加至 crypttab： %s"
 
 #: cnchi/installation/process.py:883
 msgid "fstab written."
-msgstr "已写入 fstab."
+msgstr "已写入 fstab。"
 
 #: cnchi/installation/process.py:892
 msgid "Could not copy udev rule for SSDs"
@@ -1637,7 +1638,7 @@ msgstr "无法复制固态硬盘的 udev 规则"
 
 #: cnchi/installation/process.py:903
 msgid "Enabled %s service."
-msgstr "使能 %s 服务."
+msgstr "启用 %s 服务。"
 
 #: cnchi/installation/process.py:905
 msgid "Can't find service %s"
@@ -1645,7 +1646,7 @@ msgstr "找不到服务 %s"
 
 #: cnchi/installation/process.py:913
 msgid "Error creating password hash for user %s"
-msgstr "%s 用户创建hash密码错误"
+msgstr "%s 用户创建密码 hash 时出错"
 
 #: cnchi/installation/process.py:919
 msgid "Error changing password for user %s"
@@ -1685,7 +1686,7 @@ msgstr "配置你的新系统"
 
 #: cnchi/installation/process.py:1160
 msgid "fstab file generated."
-msgstr "fstab文件已生成."
+msgstr "fstab 文件已生成。"
 
 #: cnchi/installation/process.py:1165
 msgid "SSD udev rule copied successfully"
@@ -1693,7 +1694,7 @@ msgstr "固态硬盘 udev 规则已复制成功"
 
 #: cnchi/installation/process.py:1181
 msgid "Cnchi will configure netctl using the %s profile"
-msgstr "Cnchi将用 %s 参数配置netctl"
+msgstr "Cnchi 将用 %s 参数配置 netctl"
 
 #: cnchi/installation/process.py:1188
 msgid "Can't copy network configuration profiles"
@@ -1701,11 +1702,11 @@ msgstr "无法复制网络配置参数"
 
 #: cnchi/installation/process.py:1195
 msgid "Network configuration copied."
-msgstr "网络配置已复制."
+msgstr "网络配置已复制。"
 
 #: cnchi/installation/process.py:1201
 msgid "Mirror list copied."
-msgstr "镜像列表已复制."
+msgstr "镜像列表已复制。"
 
 #: cnchi/installation/process.py:1203
 msgid "Can't copy mirrorlist file"
@@ -1721,23 +1722,23 @@ msgstr "时区已设置."
 
 #: cnchi/installation/process.py:1247
 msgid "Sudo configuration for user %s done."
-msgstr "用户 %s 的sudo 配置已完成."
+msgstr "用户 %s 的 sudo 配置已完成."
 
 #: cnchi/installation/process.py:1254
 msgid "Running post-install scripts from hardware module..."
-msgstr "从硬件模块运行post-install脚本…"
+msgstr "从硬件模块运行 post-install 脚本…"
 
 #: cnchi/installation/process.py:1279
 msgid "User %s added."
-msgstr "已添加用户 %s."
+msgstr "已添加用户 %s 。"
 
 #: cnchi/installation/process.py:1294
 msgid "Hostname set to %s."
-msgstr "主机名设置为 %s."
+msgstr "主机名设置为 %s 。"
 
 #: cnchi/installation/process.py:1298
 msgid "Set the same password to root."
-msgstr "与root设置为相同的密码."
+msgstr "设置跟 root 相同的密码。"
 
 #: cnchi/installation/process.py:1304
 msgid "Generating locales..."
@@ -1777,23 +1778,23 @@ msgstr "调用Cnchi 的后续安装脚本"
 
 #: cnchi/installation/process.py:1377
 msgid "Post install script completed successfully."
-msgstr "Post-install脚本已成功完成。"
+msgstr "Post-install 脚本已成功执行。"
 
 #: cnchi/installation/process.py:1380
 msgid "Error running post-install script"
-msgstr "运行安装后脚本时出错"
+msgstr "运行 post-install 脚本时出错"
 
 #: cnchi/installation/process.py:1396
 msgid "Encrypting user home dir..."
-msgstr "加密用户home 目录..."
+msgstr "加密用户 home 目录..."
 
 #: cnchi/installation/process.py:1398
 msgid "User home dir encrypted"
-msgstr "用户home目录已加密"
+msgstr "用户 home 目录已加密"
 
 #: cnchi/installation/process.py:1403
 msgid "Installing bootloader..."
-msgstr "正在安装bootloader..."
+msgstr "正在安装 bootloader..."
 
 #: cnchi/installation/process.py:1409
 msgid "Couldn't install boot loader: %s"
@@ -1801,7 +1802,7 @@ msgstr "无法安装引导加载程序： %s"
 
 #: cnchi/installation/process.py:1415
 msgid "Copying install log to /var/log."
-msgstr "复制安装日志到/var/log。"
+msgstr "复制安装日志到 /var/log 。"
 
 #: cnchi/keymap.py:60
 msgid "Select Your Keyboard Layout"
@@ -1829,7 +1830,7 @@ msgstr "键盘布局是 %s"
 
 #: cnchi/language.py:74
 msgid "Notice: The Cnchi Installer is beta software."
-msgstr "注意: Cnchi 安装器尚处于 beta 版本."
+msgstr "注意： Cnchi 安装器尚处于 beta 版本。"
 
 #: cnchi/language.py:76
 msgid ""
@@ -1838,7 +1839,7 @@ msgid ""
 "setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at http://bugs.antergos.com"
-msgstr "Cnchi 是一个尚处于开发阶段的预发布beta版软件。\n它尚不能合理的处理RAID， btrfs子卷和其他高级安装。\n请小心丢失数据的可能！\n\n如果你发现任何bug,请报告给 http://bugs.antergos.com"
+msgstr "Cnchi 是一个尚处于开发阶段的预发布beta版软件。\n它还不能合理的处理RAID， btrfs子卷和其他高级安装。\n请小心丢失数据的可能！\n\n如果你发现任何 bug , 请报告给 http://bugs.antergos.com"
 
 #: cnchi/language.py:84
 msgid "Choose your language"
@@ -1870,7 +1871,7 @@ msgstr "选择你的位置"
 #: cnchi/location.py:204 cnchi/location.py:212 cnchi/misc/misc.py:955
 #: cnchi/misc/misc.py:963
 msgid "locale changed to : %s"
-msgstr "语言修改为: %s"
+msgstr "语言修改为： %s"
 
 #: cnchi/location.py:206 cnchi/location.py:215 cnchi/location.py:217
 #: cnchi/misc/misc.py:965 cnchi/misc/misc.py:967
@@ -1904,7 +1905,7 @@ msgstr "Cnchi 安装器版本 %s"
 
 #: cnchi/main_window.py:165
 msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "使用Aria2下载包 - 试验"
+msgstr "使用 Aria2 下载包 - 试验"
 
 #: cnchi/main_window.py:181
 msgid "Using '%s' file as package list"
@@ -1912,7 +1913,7 @@ msgstr "使用 '%s' 文件作为包列表"
 
 #: cnchi/main_window.py:202
 msgid "Antergos Installer"
-msgstr "Antergos安装器"
+msgstr "Antergos 安装器"
 
 #: cnchi/main_window.py:343
 msgid "Do you really want to quit the installer?"
@@ -1924,7 +1925,7 @@ msgstr "正在退出安装器..."
 
 #: cnchi/mirrorlist.py:73
 msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr "需要获取国家码来创建pacman的mirrorlist，但无法获取国家码"
+msgstr "需要获取国家码来创建 pacman 的 mirrorlist，但无法获取国家码"
 
 #: cnchi/mirrorlist.py:87
 msgid "Couldn't generate mirrorlist for pacman based on country code: %s"
@@ -1932,11 +1933,11 @@ msgstr "无法根据国家码为 pacman 生成 mirrorlist ：%s"
 
 #: cnchi/mirrorlist.py:95
 msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr "根据国家码 %s 下载特定的pacman mirrorlist"
+msgstr "根据国家码 %s 下载特定的 pacman mirrorlist"
 
 #: cnchi/mirrorlist.py:97
 msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr "无法根据国家码为pacman产生mirrorlist"
+msgstr "无法根据国家码为 pacman 生成 mirrorlist"
 
 #: cnchi/misc/misc.py:957
 msgid "Can't change to locale '%s' : %s"
@@ -2012,11 +2013,11 @@ msgstr "软件包列表为空"
 
 #: cnchi/pacman/pac.py:257
 msgid "Cnchi will install a list of packages like pacman -S"
-msgstr "Cnchi将安装像pacman -S那样的一连串软件包"
+msgstr "Cnchi 将安装像 pacman -S 那样的一连串软件包"
 
 #: cnchi/pacman/pac.py:285
 msgid "Can't find a package or group called '%s'"
-msgstr "无法找到名字为 '%s' 的包或组"
+msgstr "无法找到名字为 '%s' 的包或软件组"
 
 #: cnchi/pacman/pac.py:291
 msgid "No targets found"
@@ -2138,7 +2139,7 @@ msgstr "无法从 {0} 检测已使用空间"
 
 #: cnchi/parted3/used_space.py:42
 msgid "Can't detect used space of NTFS partition %s"
-msgstr "无法检测NTFS分区 %s 的已使用空间"
+msgstr "无法检测 NTFS 分区 %s 的已使用空间"
 
 #: cnchi/parted3/used_space.py:69
 msgid "Can't detect used space of EXTFS partition %s"
@@ -2194,11 +2195,11 @@ msgstr "Antergos 安装器 - 确认"
 
 #: cnchi/slides.py:73
 msgid "Please wait..."
-msgstr "请等待..."
+msgstr "请稍候..."
 
 #: cnchi/slides.py:75
 msgid "Installing Antergos..."
-msgstr "正在安装Antergos ..."
+msgstr "正在安装 Antergos ..."
 
 #: cnchi/slides.py:187
 msgid ""
@@ -2209,21 +2210,21 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr "重要提示： 引导装载程序安装可能有问题，\n这可能导致你的系统无法正常启动。\n启动前也许你需要验证是否引导装载程序已安装和已配置。\nArch Linux Wiki包含问题定位信息：\n⇥https://wiki.archlinux.org/index.php/GRUB\n\n你是否要现在查看wiki页面？"
+msgstr "重要提示： 引导装载程序安装可能有问题，\n这可能导致你的系统无法正常启动。\n启动前也许你需要验证是否引导装载程序已安装和已配置。\nArch Linux Wiki包含问题定位信息：\n⇥https://wiki.archlinux.org/index.php/GRUB\n\n你是否要现在查看 wiki 页面？"
 
 #: cnchi/slides.py:200
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
-msgstr "安装完成!\n你是否现在重启电脑？"
+msgstr "安装完成！\n您是否现在重启电脑？"
 
 #: cnchi/timezone.py:90
 msgid "Zone:"
-msgstr "时区:"
+msgstr "时区："
 
 #: cnchi/timezone.py:94
 msgid "Region:"
-msgstr "区域:"
+msgstr "区域："
 
 #: cnchi/timezone.py:98
 msgid "Use Network Time Protocol (NTP) for clock synchronization"
@@ -2255,7 +2256,7 @@ msgstr "已连接.让我们获取时区"
 
 #: cnchi/timezone.py:316
 msgid "Timezone (latitude {0}, longitude {1}) detected."
-msgstr "时区 （纬度 {0}，经度 {1}） 被检测到。"
+msgstr "检测到时区 （纬度 {0}，经度 {1}）。"
 
 #: cnchi/updater.py:68
 msgid ""
@@ -2272,7 +2273,7 @@ msgstr "发现新版本。更新安装器…"
 
 #: cnchi/updater.py:131
 msgid "No new version found. Updating anyways..."
-msgstr "没有发现新版本。更新中..."
+msgstr "没有发现新版本。依然更新中..."
 
 #: cnchi/updater.py:135
 msgid "Downloading new version of Cnchi..."
@@ -2292,7 +2293,7 @@ msgstr "无法复制 %s 到 %s"
 
 #: cnchi/updater.py:192
 msgid "Wrong md5. Bad download or wrong file, won't update this one"
-msgstr "错误的md5值。下载错误或文件错误，这一个将不会更新"
+msgstr "错误的 md5 值。下载错误或文件错误，这一个将不会更新"
 
 #: cnchi/user_info.py:73
 msgid "Your name:"
@@ -2384,7 +2385,7 @@ msgstr "尝试 Antergos 而不对您的系统做任何更改。"
 
 #: cnchi/welcome.py:79
 msgid "Create a permanent place for Antergos on your system."
-msgstr "在您的系统上，为 Antergos 创建永久的分区。"
+msgstr "在您的系统上，为 Antergos 创建永久的位置。"
 
 #: cnchi/welcome.py:83
 msgid "Try It"

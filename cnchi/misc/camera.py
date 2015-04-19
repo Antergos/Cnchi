@@ -81,6 +81,9 @@ class CameraBox(GtkClutter.Embed):
             self.camera_found = False
             return
 
+    def found(self):
+        return self.camera_found
+
     def play(self):
         if self.camera_found:
             self.camera.play()
