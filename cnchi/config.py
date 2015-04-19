@@ -52,6 +52,7 @@ class Settings(object):
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
+            'failed_download': False,
             'feature_aur': False,
             'feature_bluetooth': False,
             'feature_cups': False,

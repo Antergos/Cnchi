@@ -103,6 +103,7 @@ class Download(object):
 
         downloaded = 0
         total_downloads = len(downloads)
+        all_successful = True
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
@@ -185,12 +186,17 @@ class Download(object):
                     # to download it for us later in pac.py
                     msg = _("Can't download {0}, even after trying all available mirrors")
                     msg = msg.format(element['filename'])
+                    all_successful = False
                     logging.warning(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
 
         self.queue_event('downloads_progress_bar', 'hide')
+        if all_successful:
+            return True
+        else:
+            return False
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """

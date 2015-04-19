@@ -397,7 +397,7 @@ class InstallationProcess(multiprocessing.Process):
             use_aria2 = False
 
         download.DownloadPackages(
-            self.packages, use_aria2, pacman_conf_file, pacman_cache_dir, cache_dir, self.callback_queue)
+            self.packages, use_aria2, pacman_conf_file, pacman_cache_dir, cache_dir, self.callback_queue, self.settings)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
@@ -431,6 +431,14 @@ class InstallationProcess(multiprocessing.Process):
         except Exception:
             self.pacman = None
             raise InstallError(_("Can't initialize pyalpm."))
+
+        # If we failed to download any packages earlier, try refreshing our mirrorlist
+        # before ALPM attempts to download them.
+        if self.settings.get('failed_download'):
+            from rank_mirrors import AutoRankmirrorsThread
+            retry = AutoRankmirrorsThread()
+            retry.start()
+            retry.join()
 
         # Refresh pacman databases
         result = self.pacman.refresh()
