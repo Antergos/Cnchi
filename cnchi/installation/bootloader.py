@@ -501,7 +501,7 @@ class Bootloader(object):
         # Install bootloader
 
         try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot/efi")
+            efi_system_partition = os.path.join(self.dest_dir, "boot")
             cmd = ['gummiboot', '--path={0}'.format(efi_system_partition), 'install']
             subprocess.check_call(cmd)
             logging.info(_("Gummiboot install completed successfully"))
