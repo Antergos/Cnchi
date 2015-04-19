@@ -59,7 +59,8 @@ class DownloadPackages(object):
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
-            callback_queue=None):
+            callback_queue=None,
+            settings=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if pacman_conf_file is None:
@@ -87,6 +88,8 @@ class DownloadPackages(object):
 
         self.callback_queue = callback_queue
 
+        self.settings = settings
+
         # Create downloads list from package list
         downloads = self.get_downloads_list(package_names)
 
@@ -106,7 +109,10 @@ class DownloadPackages(object):
                 cache_dir,
                 callback_queue)
 
-        download.start(downloads)
+        all_successful = download.start(downloads)
+
+        if not all_successful:
+            self.settings.set('failed_download', True)
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
