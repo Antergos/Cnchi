@@ -511,14 +511,18 @@ class Bootloader(object):
         # Install bootloader
 
         try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot")
-            cmd = ['gummiboot', '--path={0}'.format(efi_system_partition), 'install']
-            subprocess.check_call(cmd)
+            cmd = ['gummiboot', '--path=/boot', 'install']
+            chroot.run(cmd, self.dest_dir, 300)
             logging.info(_("Gummiboot install completed successfully"))
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
-            logging.error(process_error)
-            logging.warning(_("Gummiboot install has NOT completed successfully!"))
+            logging.error(_('Command gummiboot failed. Error output: %s'), process_error.output)
+            self.settings.set('bootloader_installation_successful', False)
+        except subprocess.TimeoutExpired:
+            logging.error(_('Command gummiboot timed out.'))
+            self.settings.set('bootloader_installation_successful', False)
+        except Exception as general_error:
+            logging.error(_('Command gummiboot failed. Unknown Error: %s'), general_error)
             self.settings.set('bootloader_installation_successful', False)
 
     def freeze_unfreeze_xfs(self):
