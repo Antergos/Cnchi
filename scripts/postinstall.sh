@@ -477,7 +477,7 @@ postinstall()
     sed -i "s|^PKGEXT='.pkg.tar.xz'|PKGEXT='.pkg.tar'|g" /etc/makepkg.conf
 
     # Set lightdm-webkit2-greeter in lightdm.conf. This should have been done here (not in the pkg) all along.
-    sed -i 's|#greeter-session=example-gtk-gnome|greeter-session=lightdm-webkit2-greeter|g' ${DESTDIR}/etc/lightdm/lightdm.conf
+    sed -i 's|#greeter-session=example-gtk-gnome|greeter-session=lightdm-webkit2-greeter|g' /etc/lightdm/lightdm.conf
 }
 
 touch /tmp/.postinstall.lock
