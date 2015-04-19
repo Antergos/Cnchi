@@ -64,7 +64,6 @@ class Settings(object):
             'feature_smb': False,
             'feature_visual': False,
             'fullname': '',
-            'GRUB_CMDLINE_LINUX': '',
             'hostname': 'antergos',
             'keyboard_layout': '',
             'keyboard_variant': '',
