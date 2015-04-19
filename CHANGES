@@ -1,3 +1,4 @@
+[2015-04-19 13:13:52 +0200]  Updated Translations                                                       karasu      {cb70bae}
 [2015-04-19 03:17:41 -0500]  updated pre-commit hook (cherry picked from commit 0ca69b4)            Dustin Falgout  {f894203}
 [2015-04-19 03:17:13 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {9948abf}
 [2015-04-19 03:16:25 -0500]  be more strict on the score for a mirror to be considered acceptble..  Dustin Falgout  {c30c2fc}
