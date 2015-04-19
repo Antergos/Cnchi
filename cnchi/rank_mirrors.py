@@ -51,7 +51,7 @@ class AutoRankmirrorsThread(threading.Thread):
     @staticmethod
     def check_mirror_status(mirrors, url):
         for mirror in mirrors:
-            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] < 10:
+            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] < 4:
                 return True
         return False
 
@@ -117,6 +117,7 @@ class AutoRankmirrorsThread(threading.Thread):
                     check = self.check_mirror_status(mirrors, url)
                     if not check and server_uncommented:
                         # Bad mirror, comment it
+                        logging.debug('Removing bad mirror: {1}').format(lines[i])
                         lines[i] = "#" + lines[i]
                     if check and server_commented:
                         # It's a good mirror, uncomment it
