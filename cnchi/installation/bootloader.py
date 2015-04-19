@@ -90,15 +90,25 @@ class Bootloader(object):
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         if len(self.root_uuid) == 0:
             logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
             return
-        ruuid_str = 'root=UUID=' + self.root_uuid
-        boot_command = self.settings.get('GRUB_CMDLINE_LINUX')
-        boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
+
+        ruuid_str = 'root=UUID={0}'.format(self.root_uuid)
+        
+        cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
+        if cmdline_linux is None:
+            cmdline_linux = ""
+        
+        cmdline_linux_default = self.settings.get('GRUB_CMDLINE_LINUX_DEFAULT')
+        if cmdline_linux_default is None:
+            cmdline_linux_default = ""
+        
+        boot_command = 'linux /vmlinuz-linux {0} {1} {2}\n'.format(ruuid_str, cmdline_linux, cmdline_linux_default)
+
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
 
+        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_file:
             parse = grub_file.read()
 
