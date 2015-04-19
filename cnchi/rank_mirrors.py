@@ -117,7 +117,7 @@ class AutoRankmirrorsThread(threading.Thread):
                     check = self.check_mirror_status(mirrors, url)
                     if not check and server_uncommented:
                         # Bad mirror, comment it
-                        logging.debug('Removing bad mirror: {1}').format(lines[i])
+                        logging.debug('Removing bad mirror: {0}').format(lines[i])
                         lines[i] = "#" + lines[i]
                     if check and server_commented:
                         # It's a good mirror, uncomment it

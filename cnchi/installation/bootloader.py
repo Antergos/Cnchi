@@ -280,7 +280,7 @@ class Bootloader(object):
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
-        bootloader_id = 'antergos_grub' if not os.path.exists('/install/boot/EFI/antergos_grub') else \
+        bootloader_id = 'antergos_grub' if not os.path.exists('/install/boot/efi/EFI/antergos_grub') else \
             'antergos_grub_{0}'.format(self.random_generator())
 
         txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
@@ -289,7 +289,7 @@ class Bootloader(object):
         grub_install = [
             'grub-install',
             '--target={0}-efi'.format(uefi_arch),
-            '--efi-directory=/install/boot',
+            '--efi-directory=/install/boot/efi',
             '--bootloader-id={0}'.format(bootloader_id),
             '--boot-directory=/install/boot',
             '--recheck']
@@ -310,10 +310,10 @@ class Bootloader(object):
         self.copy_grub2_theme_files()
 
         # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
-        grub_defaults = [os.path.join(self.dest_dir, "boot/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
-                         os.path.join(self.dest_dir, "boot/EFI/Microsoft/Boot", 'bootmgfw.efi')]
+        grub_defaults = [os.path.join(self.dest_dir, "boot/efi/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
+                         os.path.join(self.dest_dir, "boot/efi/EFI/Microsoft/Boot", 'bootmgfw.efi')]
 
-        grub_path = os.path.join(self.dest_dir, "boot/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))
+        grub_path = os.path.join(self.dest_dir, "boot/efi/EFI/antergos_grub", "grub{0}.efi".format(spec_uefi_arch))
 
         for grub_default in grub_defaults:
             path = grub_default.split()[0]
@@ -331,9 +331,9 @@ class Bootloader(object):
                 except Exception as general_error:
                     logging.warning(msg_failed, general_error)
 
-        # Copy uefi shell if none exists in /boot/EFI
+        # Copy uefi shell if none exists in /boot/efi/EFI
         shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/EFI/")
+        shell_dst = os.path.join(self.dest_dir, "boot/efi/EFI/")
         try:
             shutil.copy2(shell_src, shell_dst)
         except FileNotFoundError:
@@ -365,7 +365,7 @@ class Bootloader(object):
             subprocess.check_call(['killall', 'os-prober'])
 
         paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
-                 os.path.join(self.dest_dir, "boot/EFI/{0}".format(bootloader_id), "grub{0}.efi".format(spec_uefi_arch))]
+                 os.path.join(self.dest_dir, "boot/efi/EFI/{0}".format(bootloader_id), "grub{0}.efi".format(spec_uefi_arch))]
 
         exists = True
 
@@ -501,7 +501,7 @@ class Bootloader(object):
         # Install bootloader
 
         try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot")
+            efi_system_partition = os.path.join(self.dest_dir, "boot/efi")
             cmd = ['gummiboot', '--path={0}'.format(efi_system_partition), 'install']
             subprocess.check_call(cmd)
             logging.info(_("Gummiboot install completed successfully"))

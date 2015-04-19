@@ -974,7 +974,7 @@
         <child>
           <object class="StateBox" id="boot_efi_part">
             <property name="visible">True</property>
-            <property name="label">EFI ( /boot )</property>
+            <property name="label">EFI ( /boot/efi )</property>
             <property name="no_show_all">True</property>
             </object>
           <packing>

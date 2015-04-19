@@ -1316,7 +1316,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         part = self.ui.get_object('boot_efi_part')
         txt = _("EFI")
-        part.props.label = txt + " ( /boot )"
+        part.props.label = txt + " ( /boot/efi )"
 
         part = self.ui.get_object('swap_part')
         txt = _("Swap")
@@ -1689,9 +1689,10 @@ class InstallationAdvanced(GtkBaseBox):
                     has_part["boot_efi"] = True
                     part["boot_efi"].set_state(True)
                 else:
-                    if "f2fs" not in fsystem and "btrfs" not in fsystem and self.lv_partitions:
+                    # I'm not sure why this was done, but I don't think its correct
+                    #if "f2fs" not in fsystem and "btrfs" not in fsystem and self.lv_partitions:
+                    if "f2fs" not in fsystem and "btrfs" not in fsystem:
                         has_part["boot"] = True
-                        # Not sure if this was an oversight or intended?
                         part["boot"].set_state(True)
             if mnt == "swap":
                 has_part["swap"] = True
