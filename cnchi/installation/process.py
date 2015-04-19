@@ -220,6 +220,7 @@ class InstallationProcess(multiprocessing.Process):
                                                 luks_password=self.settings.get("luks_root_password"),
                                                 use_lvm=self.settings.get("use_lvm"),
                                                 use_home=self.settings.get("use_home"),
+                                                bootloader=self.settings.get("bootloader"),
                                                 callback_queue=self.callback_queue)
             auto.run()
 

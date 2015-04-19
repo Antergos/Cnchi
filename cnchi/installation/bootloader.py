@@ -90,15 +90,25 @@ class Bootloader(object):
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         if len(self.root_uuid) == 0:
             logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
             return
-        ruuid_str = 'root=UUID=' + self.root_uuid
-        boot_command = self.settings.get('GRUB_CMDLINE_LINUX')
-        boot_command = 'linux /vmlinuz-linux ' + ruuid_str + ' ' + boot_command + '\n'
+
+        ruuid_str = 'root=UUID={0}'.format(self.root_uuid)
+        
+        cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
+        if cmdline_linux is None:
+            cmdline_linux = ""
+        
+        cmdline_linux_default = self.settings.get('GRUB_CMDLINE_LINUX_DEFAULT')
+        if cmdline_linux_default is None:
+            cmdline_linux_default = ""
+        
+        boot_command = 'linux /vmlinuz-linux {0} {1} {2}\n'.format(ruuid_str, cmdline_linux, cmdline_linux_default)
+
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
 
+        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_file:
             parse = grub_file.read()
 
@@ -435,27 +445,33 @@ class Bootloader(object):
             menu_file.write("default antergos")
 
         # Setup boot entries
+        conf = {}
 
         if not self.settings.get('use_luks'):
-            conf = []
-            conf.append("title\tAntergos\n")
-            conf.append("linux\t/vmlinuz-linux\n")
-            conf.append("initrd\t/initramfs-linux.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
-            conf.append("title\tAntergos (fallback)\n")
-            conf.append("linux\t/vmlinuz-linux\n")
-            conf.append("initrd\t/initramfs-linux-fallback.img\n")
-            conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+            conf['default'] = []
+            conf['default'].append("title\tAntergos\n")
+            conf['default'].append("linux\t/vmlinuz-linux\n")
+            conf['default'].append("initrd\t/initramfs-linux.img\n")
+            conf['default'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+
+            conf['fallback'] = []
+            conf['fallback'].append("title\tAntergos (fallback)\n")
+            conf['fallback'].append("linux\t/vmlinuz-linux\n")
+            conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
+            conf['fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
 
             if self.settings.get('feature_lts'):
-                conf.append("title\tAntergos LTS\n")
-                conf.append("linux\t/vmlinuz-linux-lts\n")
-                conf.append("initrd\t/initramfs-linux-lts.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
-                conf.append("title\tAntergos LTS (fallback)\n\n")
-                conf.append("linux\t/vmlinuz-linux-lts\n")
-                conf.append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf.append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+                conf['lts'] = []
+                conf['lts'].append("title\tAntergos LTS\n")
+                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
+                conf['lts'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+
+                conf['lts_fallback'] = []
+                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
+                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
+                conf['lts_fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
 
@@ -474,41 +490,67 @@ class Bootloader(object):
             root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw"
             root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, root_uuid)
 
-            conf = []
-            conf.append("title\tAntergos\n")
-            conf.append("linux\t/boot/vmlinuz-linux\n")
-            conf.append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
-            conf.append("title\tAntergos (fallback)\n")
-            conf.append("linux\t/boot/vmlinuz-linux\n")
-            conf.append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
+            conf['default'] = []
+            conf['default'].append("title\tAntergos\n")
+            conf['default'].append("linux\t/boot/vmlinuz-linux\n")
+            conf['default'].append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
+
+            conf['fallback'] = []
+            conf['fallback'].append("title\tAntergos (fallback)\n")
+            conf['fallback'].append("linux\t/boot/vmlinuz-linux\n")
+            conf['fallback'].append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
 
             if self.settings.get('feature_lts'):
-                conf.append("title\tAntergos LTS\n")
-                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf.append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
-                conf.append("title\tAntergos LTS (fallback)\n")
-                conf.append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf.append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
+                conf['lts'] = []
+                conf['lts'].append("title\tAntergos LTS\n")
+                conf['lts'].append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf['lts'].append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
+                
+                conf['lts_fallback'] = []
+                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
+                conf['lts_fallback'].append("linux\t/boot/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
         os.makedirs(entries_dir)
+
         entry_path = os.path.join(entries_dir, "antergos.conf")
         with open(entry_path, 'w') as entry_file:
-            for line in conf:
+            for line in conf['default']:
                 entry_file.write(line)
+
+        entry_path = os.path.join(entries_dir, "antergos-fallback.conf")
+        with open(entry_path, 'w') as entry_file:
+            for line in conf['fallback']:
+                entry_file.write(line)
+
+        if self.settings.get('feature_lts'):
+            entry_path = os.path.join(entries_dir, "antergos-lts.conf")
+            with open(entry_path, 'w') as entry_file:
+                for line in conf['lts']:
+                    entry_file.write(line)
+
+            entry_path = os.path.join(entries_dir, "antergos-lts-fallback.conf")
+            with open(entry_path, 'w') as entry_file:
+                for line in conf['lts_fallback']:
+                    entry_file.write(line)
 
         # Install bootloader
 
         try:
-            efi_system_partition = os.path.join(self.dest_dir, "boot/efi")
-            cmd = ['gummiboot', '--path={0}'.format(efi_system_partition), 'install']
-            subprocess.check_call(cmd)
+            cmd = ['gummiboot', '--path=/boot', 'install']
+            chroot.run(cmd, self.dest_dir, 300)
             logging.info(_("Gummiboot install completed successfully"))
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
-            logging.error(process_error)
-            logging.warning(_("Gummiboot install has NOT completed successfully!"))
+            logging.error(_('Command gummiboot failed. Error output: %s'), process_error.output)
+            self.settings.set('bootloader_installation_successful', False)
+        except subprocess.TimeoutExpired:
+            logging.error(_('Command gummiboot timed out.'))
+            self.settings.set('bootloader_installation_successful', False)
+        except Exception as general_error:
+            logging.error(_('Command gummiboot failed. Unknown Error: %s'), general_error)
             self.settings.set('bootloader_installation_successful', False)
 
     def freeze_unfreeze_xfs(self):
