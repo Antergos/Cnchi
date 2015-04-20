@@ -463,7 +463,7 @@
       <pkgname>gsfonts</pkgname>
       <!--<pkgname>gutenprint</pkgname>-->
       <pkgname>hplip</pkgname>
-      <pkgname lib='qt'>kdeutils-print-manager</pkgname>
+      <pkgname lib='qt'>print-manager</pkgname>
       <pkgname lib='gtk'>system-config-printer</pkgname>
       <pkgname>splix</pkgname>
     </feature>
