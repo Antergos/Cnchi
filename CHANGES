@@ -1,3 +1,4 @@
+[2015-04-20 20:18:53 +0200]  Fixed malformed string in rank_mirrors                                     karasu      {e538bc5}
 [2015-04-20 20:16:38 +0200]  Just added some comments                                                   karasu      {2669c14}
 [2015-04-19 18:45:27 -0500]  fix typo in postinstall                                                Dustin Falgout  {a1cb234}
 [2015-04-19 18:43:37 -0500]  Revert "merged github master"                                          Dustin Falgout  {acad3e9}

@@ -539,8 +539,10 @@ class Bootloader(object):
         # Install bootloader
 
         try:
+            chroot.mount_special_dirs(self.dest_dir)
             cmd = ['gummiboot', '--path=/boot', 'install']
             chroot.run(cmd, self.dest_dir, 300)
+            chroot.umount_special_dirs(self.dest_dir)
             logging.info(_("Gummiboot install completed successfully"))
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
