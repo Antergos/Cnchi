@@ -1639,7 +1639,8 @@ class InstallationAdvanced(GtkBaseBox):
         """
         Check that all necessary mount points are specified.
         At least root (/) partition must be defined and in UEFI systems
-        a fat partition mounted in /boot (gummiboot) or /boot/efi (grub2) must be defined too       
+        a fat partition mounted in /boot (gummiboot) or /boot/efi (grub2) must be defined too.
+        If using btrfs, a /boot partition must be defined
         """
 
         # Initialize our mount point check widgets
@@ -1653,6 +1654,17 @@ class InstallationAdvanced(GtkBaseBox):
         # Are we in a EFI system?
         is_uefi = os.path.exists('/sys/firmware/efi')
 
+        # Be sure to just call get_devices once
+        if self.disks is None:
+            self.disks = pm.get_devices()
+
+        is_root_btrfs = False
+        for part_path in self.stage_opts:
+            (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
+            if mnt == "/" and "btrfs" in fsystem:
+                is_root_btrfs = True
+
+        # Get check part labels
         part = {}
         for check_part in check_parts:
             part[check_part] = self.ui.get_object(check_part + "_part")
@@ -1662,19 +1674,16 @@ class InstallationAdvanced(GtkBaseBox):
         part["boot_efi"].hide()
         part["boot"].hide()
         part["swap"].hide()
-
         if is_uefi and self.bootloader == "grub2":
             part["boot_efi"].show()
         elif is_uefi and self.bootloader == "gummiboot":
             part["boot"].show()
         elif self.lv_partitions and not is_uefi:
             part["boot"].show()
+        elif is_root_btrfs:
+            part["boot"].show()
         elif self.need_swap():
             part["swap"].show()
-
-        # Be sure to just call get_devices once
-        if self.disks is None:
-            self.disks = pm.get_devices()
 
         # Check mount points and filesystems
         for part_path in self.stage_opts:
@@ -1712,12 +1721,10 @@ class InstallationAdvanced(GtkBaseBox):
             check_ok = has_part["root"] and has_part["boot"]
         elif self.lv_partitions and not is_uefi:
             check_ok = has_part["root"] and has_part["boot"]
+        elif is_root_btrfs:
+            check_ok = has_part["root"] and has_part["boot"]
         else:
             check_ok = has_part["root"]
-
-        # # If less than 4GB available a swap partition is advisable.
-        # if self.need_swap():
-        #     check_ok = check_ok and has_part["swap"]
 
         self.forward_button.set_sensitive(check_ok)
         if check_ok:
