@@ -200,6 +200,10 @@ def parse_options():
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
     parser.add_argument(
+        "-n", "--no-check",
+        help=_("Makes checks optional in check screen"),
+        action="store_true")
+    parser.add_argument(
         "-p", "--packagelist",
         help=_("Install the packages referenced by a local xml instead of the default ones"),
         nargs='?')

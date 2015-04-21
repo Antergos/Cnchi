@@ -65,6 +65,11 @@ class Check(GtkBaseBox):
 
         self.label_space = self.ui.get_object("label_space")
 
+        if 'checks_are_optional' in params:
+            self.checks_are_optional = params['checks_are_optional']
+        else:
+            self.checks_are_optional = False
+
         '''
         data_dir = self.settings.get('data')
         image1 = self.ui.get_object('image1')
@@ -108,6 +113,9 @@ class Check(GtkBaseBox):
 
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
+
+        if self.checks_are_optional:
+            return True
 
         if has_internet and space:
             return True
