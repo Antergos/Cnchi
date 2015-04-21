@@ -1674,15 +1674,20 @@ class InstallationAdvanced(GtkBaseBox):
         part["boot_efi"].hide()
         part["boot"].hide()
         part["swap"].hide()
+        
         if is_uefi and self.bootloader == "grub2":
             part["boot_efi"].show()
-        elif is_uefi and self.bootloader == "gummiboot":
+        
+        if is_uefi and self.bootloader == "gummiboot":
             part["boot"].show()
-        elif self.lv_partitions and not is_uefi:
+        
+        if self.lv_partitions and not is_uefi:
             part["boot"].show()
-        elif is_root_btrfs:
+        
+        if is_root_btrfs:
             part["boot"].show()
-        elif self.need_swap():
+        
+        if self.need_swap():
             part["swap"].show()
 
         # Check mount points and filesystems
@@ -1715,16 +1720,20 @@ class InstallationAdvanced(GtkBaseBox):
                 has_part["swap"] = True
                 part["swap"].set_state(True)
 
+        # In all cases a root partition must be defined
+        check_ok = has_part["root"]
+
         if is_uefi and self.bootloader == "grub2":
-            check_ok = has_part["root"] and has_part["boot_efi"]
-        elif is_uefi and self.bootloader == "gummiboot":
-            check_ok = has_part["root"] and has_part["boot"]
-        elif self.lv_partitions and not is_uefi:
-            check_ok = has_part["root"] and has_part["boot"]
-        elif is_root_btrfs:
-            check_ok = has_part["root"] and has_part["boot"]
-        else:
-            check_ok = has_part["root"]
+            check_ok = check_ok and has_part["root"] and has_part["boot_efi"]
+        
+        if is_uefi and self.bootloader == "gummiboot":
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
+        
+        if self.lv_partitions and not is_uefi:
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
+        
+        if is_root_btrfs:
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
 
         self.forward_button.set_sensitive(check_ok)
         if check_ok:

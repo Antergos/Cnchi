@@ -1,3 +1,4 @@
+[2015-04-21 09:38:05 +0200]  Enforce /boot partition when using btrfs                                   karasu      {55464ab}
 [2015-04-20 22:34:25 +0200]  Another KDE package was renamed (kdeutils-print-manager)                   karasu      {ee2f371}
 [2015-04-20 21:37:23 +0200]  kcalc package changed its name                                             karasu      {88144a4}
 [2015-04-20 21:12:18 +0200]  mount special dirs before running gummiboot install                        karasu      {29831cb}
