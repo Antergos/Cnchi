@@ -1,3 +1,28 @@
+[2015-04-22 18:45:53 +0200]  Merge branch 'github-master'                                               karasu      {64525f9}
+[2015-04-21 19:37:09 -0500]  Update README.md                                                       Dustin Falgout  {94d5ea2}
+[2015-04-21 19:29:54 -0500]  add codacy badge                                                       Dustin Falgout  {7747533}
+[2015-04-21 18:43:29 -0500]  add landscape.yaml                                                     Dustin Falgout  {d813e0b}
+[2015-04-21 18:37:44 -0500]  add requirements.txt file                                              Dustin Falgout  {6c05d75}
+[2015-04-21 13:10:22 +0200]  Add a --no-check parameter so that checks in check.py are not manda..      karasu      {384bc36}
+[2015-04-21 09:48:21 +0200]  Changed elif's for if's as partition layout must comply. See issue ..      karasu      {f33b946}
+[2015-04-21 09:38:05 +0200]  Enforce /boot partition when using btrfs                                   karasu      {55464ab}
+[2015-04-20 22:34:25 +0200]  Another KDE package was renamed (kdeutils-print-manager)                   karasu      {ee2f371}
+[2015-04-20 21:37:23 +0200]  kcalc package changed its name                                             karasu      {88144a4}
+[2015-04-20 21:12:18 +0200]  mount special dirs before running gummiboot install                        karasu      {29831cb}
+[2015-04-20 20:18:53 +0200]  Fixed malformed string in rank_mirrors                                     karasu      {e538bc5}
+[2015-04-20 20:16:38 +0200]  Just added some comments                                                   karasu      {2669c14}
+[2015-04-19 18:45:27 -0500]  fix typo in postinstall                                                Dustin Falgout  {a1cb234}
+[2015-04-19 18:43:37 -0500]  Revert "merged github master"                                          Dustin Falgout  {acad3e9}
+[2015-04-19 18:42:42 -0500]  Revert "fix typo in postinstall. set an abolsute value for max swap"   Dustin Falgout  {8fd0763}
+[2015-04-19 18:40:37 -0500]  fix typo in postinstall. set an abolsute value for max swap            Dustin Falgout  {adcdca0}
+[2015-04-19 18:39:04 -0500]  merged github master                                                   Dustin Falgout  {4376e18}
+[2015-04-19 21:31:11 +0200]  Parenthesis forgotten                                                      karasu      {c9553d6}
+[2015-04-19 21:19:21 +0200]  Fix gummiboot entries                                                      karasu      {7fd19d4}
+[2015-04-19 21:05:20 +0200]  Efi partition only exist with efi and grub2                                karasu      {b514e6d}
+[2015-04-19 21:03:47 +0200]  Change advanced partition requirements                                     karasu      {b9983bc}
+[2015-04-19 20:54:59 +0200]  Use EFI partition or not, depending if we use grub2 or gummiboot           karasu      {f37a9e9}
+[2015-04-19 20:14:59 +0200]  This should fix "Can't convert NoneType object to str" error               karasu      {96f7d0f}
+[2015-04-19 20:04:07 +0200]  Fix gummiboot installation                                                 karasu      {aeb23c6}
 [2015-04-19 19:28:28 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {7bc4246}
 [2015-04-19 06:36:45 -0500]  fix uefi bootloader installation                                       Dustin Falgout  {df200d2}
 [2015-04-19 13:14:05 +0200]  Updated Translations                                                       karasu      {be44010}

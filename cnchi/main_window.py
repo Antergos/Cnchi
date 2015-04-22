@@ -24,7 +24,7 @@
 
 """ Main Cnchi Window """
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Atk
 
 import os
 import sys
@@ -56,7 +56,12 @@ from installation import advanced as installation_advanced
 MAIN_WINDOW_WIDTH = 825
 MAIN_WINDOW_HEIGHT = 510
 
-
+def atk_set_image_description(widget, description):
+    """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
+    atk_widget = widget.get_accessible()
+    if atk_widget is not None:
+        atk_widget.set_image_description(description)
+ 
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
 
@@ -140,6 +145,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.forward_button = self.header_ui.get_object("forward_button")
         self.backwards_button = self.header_ui.get_object("backwards_button")
+        
+        atk_set_image_description(self.forward_button, _("Next step"))
+        atk_set_image_description(self.backwards_button, _("Previous step"))
 
         # image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
         # self.forward_button.set_label("")
