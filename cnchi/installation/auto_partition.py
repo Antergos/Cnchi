@@ -322,7 +322,7 @@ def parted_mktable(device, table_type="msdos"):
 class AutoPartition(object):
     """ Class used by the automatic installation method """
 
-    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, callback_queue):
+    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, bootloader, callback_queue):
         """ Class initialization """
         self.dest_dir = dest_dir
         self.auto_device = auto_device
@@ -333,6 +333,8 @@ class AutoPartition(object):
         self.lvm = use_lvm
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
+        
+        self.bootloader = bootloader.lower()
 
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
@@ -419,11 +421,12 @@ class AutoPartition(object):
                 raise InstallError(txt)
 
             # Change permission of base directories to avoid btrfs issues
-            mode = 0o755
             if mount_point == "/tmp":
                 mode = 0o1777
             elif mount_point == "/root":
                 mode = 0o750
+            else:
+                mode = 0o755
             os.chmod(path, mode)
 
         fs_uuid = get_info(device)['UUID']
@@ -441,12 +444,15 @@ class AutoPartition(object):
         if self.GPT:
             if not self.UEFI:
                 # Skip BIOS Boot Partition
+                # We'll never get here as we use UEFI+GPT or BIOS+MBR
                 part_num = 2
             else:
                 part_num = 1
 
-            devices['efi'] = "{0}{1}".format(device, part_num)
-            part_num += 1
+            if self.bootloader == "grub2":
+                devices['efi'] = "{0}{1}".format(device, part_num)
+                part_num += 1
+            
             devices['boot'] = "{0}{1}".format(device, part_num)
             part_num += 1
             devices['root'] = "{0}{1}".format(device, part_num)
@@ -494,7 +500,7 @@ class AutoPartition(object):
         devices = self.get_devices
         mount_devices = {}
 
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             mount_devices['/boot/efi'] = devices['efi']
 
         mount_devices['/boot'] = devices['boot']
@@ -522,10 +528,14 @@ class AutoPartition(object):
 
         fs_devices = {}
 
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             fs_devices[devices['efi']] = "vfat"
 
-        fs_devices[devices['boot']] = "ext2"
+        if self.GPT and self.bootloader == "gummiboot":
+            fs_devices[devices['boot']] = "vfat"
+        else:
+            fs_devices[devices['boot']] = "ext2"
+        
         fs_devices[devices['swap']] = "swap"
         fs_devices[devices['root']] = "ext4"
 
@@ -550,7 +560,7 @@ class AutoPartition(object):
     def get_part_sizes(self, disk_size, start_part_sizes=0):
         part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             part_sizes['efi'] = 200
 
         mem_total = check_output("grep MemTotal /proc/meminfo")
@@ -597,7 +607,7 @@ class AutoPartition(object):
 
     def log_part_sizes(self, part_sizes):
         logging.debug(_("Total disk size: %dMiB"), part_sizes['disk'])
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             logging.debug(_("EFI System Partition (ESP) size: %dMiB"), part_sizes['efi'])
         logging.debug(_("Boot partition size: %dMiB"), part_sizes['boot'])
 
@@ -685,13 +695,17 @@ class AutoPartition(object):
                 sgdisk_new(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
                 part_num += 1
 
-            # Create EFI System Partition (ESP)
-            # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-            sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
-            part_num += 1
+            if self.bootloader == "grub2":
+                # Create EFI System Partition (ESP)
+                # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+                sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+                part_num += 1
 
             # Create Boot partition
-            sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+            if self.bootloader == "gummiboot":
+                sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
+            else:
+                sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
             part_num += 1
 
             if self.lvm:
@@ -762,7 +776,7 @@ class AutoPartition(object):
 
         devices = self.get_devices
 
-        if self.GPT:
+        if self.GPT and self.bootloader == "grub2":
             logging.debug("EFI: %s", devices['efi'])
 
         logging.debug("Boot: %s", devices['boot'])
@@ -857,9 +871,14 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
-        self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
+        if self.GPT and self.bootloader == "gummiboot":
+            # Format EFI System Partition (ESP) with vfat (fat32)
+            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
+        else:
+            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
 
-        if self.GPT:
+        # Note: Make sure the "boot" partition is defined before the "efi" one!
+        if self.GPT and self.bootloader == "grub2":
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
 

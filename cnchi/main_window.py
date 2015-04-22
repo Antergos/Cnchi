@@ -182,6 +182,8 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.params['alternate_package_list'] = ""
 
+        self.params['checks_are_optional'] = cmd_line.no_check
+
         self.params['disable_tryit'] = cmd_line.disable_tryit
         self.params['testing'] = cmd_line.testing
 

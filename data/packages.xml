@@ -378,9 +378,9 @@
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesdk-dolphin-plugins</pkgname>
         <pkgname>kate</pkgname>
+        <pkgname>kcalc</pkgname>
         <pkgname>kdesudo</pkgname>
         <pkgname>kdeutils-ark</pkgname>
-        <pkgname>kdeutils-kcalc</pkgname>
         <pkgname>kdeutils-kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
@@ -463,7 +463,7 @@
       <pkgname>gsfonts</pkgname>
       <!--<pkgname>gutenprint</pkgname>-->
       <pkgname>hplip</pkgname>
-      <pkgname lib='qt'>kdeutils-print-manager</pkgname>
+      <pkgname lib='qt'>print-manager</pkgname>
       <pkgname lib='gtk'>system-config-printer</pkgname>
       <pkgname>splix</pkgname>
     </feature>

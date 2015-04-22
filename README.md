@@ -1,10 +1,13 @@
 # Cnchi
-
 **Graphical Installer for Antergos Linux**
+
+
+<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a>
 
 You are viewing the `master` branch.
 
 ## Current Status
+
 This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
 
 |Development Stage|Version| Code State|

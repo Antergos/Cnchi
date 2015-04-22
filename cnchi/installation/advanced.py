@@ -352,6 +352,7 @@ class InstallationAdvanced(GtkBaseBox):
         line = self.bootloader_entry.get_active_text()
         if line is not None:
             self.bootloader = line.lower()
+            self.check_mount_points()
 
     def prepare_partition_list(self):
         """ Create columns for our treeview """
@@ -1638,7 +1639,8 @@ class InstallationAdvanced(GtkBaseBox):
         """
         Check that all necessary mount points are specified.
         At least root (/) partition must be defined and in UEFI systems
-        a fat partition mounted in /boot or /boot/efi must be defined too
+        a fat partition mounted in /boot (gummiboot) or /boot/efi (grub2) must be defined too.
+        If using btrfs, a /boot partition must be defined
         """
 
         # Initialize our mount point check widgets
@@ -1652,6 +1654,17 @@ class InstallationAdvanced(GtkBaseBox):
         # Are we in a EFI system?
         is_uefi = os.path.exists('/sys/firmware/efi')
 
+        # Be sure to just call get_devices once
+        if self.disks is None:
+            self.disks = pm.get_devices()
+
+        is_root_btrfs = False
+        for part_path in self.stage_opts:
+            (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
+            if mnt == "/" and "btrfs" in fsystem:
+                is_root_btrfs = True
+
+        # Get check part labels
         part = {}
         for check_part in check_parts:
             part[check_part] = self.ui.get_object(check_part + "_part")
@@ -1661,55 +1674,71 @@ class InstallationAdvanced(GtkBaseBox):
         part["boot_efi"].hide()
         part["boot"].hide()
         part["swap"].hide()
-
-        if is_uefi:
+        
+        if is_uefi and self.bootloader == "grub2":
             part["boot_efi"].show()
-        elif self.lv_partitions and not is_uefi:
+        
+        if is_uefi and self.bootloader == "gummiboot":
             part["boot"].show()
-        elif self.need_swap():
+        
+        if self.lv_partitions and not is_uefi:
+            part["boot"].show()
+        
+        if is_root_btrfs:
+            part["boot"].show()
+        
+        if self.need_swap():
             part["swap"].show()
-
-        # Be sure to just call get_devices once
-        if self.disks is None:
-            self.disks = pm.get_devices()
 
         # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
-            if mnt == "/":
-                # Don't allow vfat as / filesystem, it will not work!
-                # Don't allow ntfs as / filesystem, this is stupid!
-                if "fat" not in fsystem and "ntfs" not in fsystem:
-                    has_part["root"] = True
-                    part["root"].set_state(True)
-            # /boot or /boot/efi
-            if mnt == "/boot":
-                if is_uefi and "fat" in fsystem:
-                    # Only fat partitions
-                    has_part["boot_efi"] = True
-                    part["boot_efi"].set_state(True)
-                else:
-                    # I'm not sure why this was done, but I don't think its correct
-                    #if "f2fs" not in fsystem and "btrfs" not in fsystem and self.lv_partitions:
-                    if "f2fs" not in fsystem and "btrfs" not in fsystem:
-                        has_part["boot"] = True
-                        part["boot"].set_state(True)
-            if mnt == "swap":
+            if (mnt == "/" and 
+                "fat" not in fsystem and 
+                "ntfs" not in fsystem):
+                has_part["root"] = True
+                part["root"].set_state(True)
+            elif (is_uefi and 
+                  self.bootloader == "grub2" and 
+                  mnt == "/boot/efi" and 
+                  "fat" in fsystem):
+                has_part["boot_efi"] = True
+                part["boot_efi"].set_state(True)
+            elif (is_uefi and 
+                  self.bootloader == "gummiboot" and 
+                  mnt == "/boot" and 
+                  "fat" in fsystem):
+                has_part["boot"] = True
+                part["boot"].set_state(True)                
+            elif (mnt == "/boot" and 
+                  "f2fs" not in fsystem and 
+                  "btrfs" not in fsystem and 
+                  self.lv_partitions):
+                has_part["boot"] = True
+                part["boot"].set_state(True)
+            elif mnt == "swap":
                 has_part["swap"] = True
                 part["swap"].set_state(True)
 
-        if is_uefi:
-            check_ok = has_part["root"] and has_part["boot_efi"]
-        elif self.lv_partitions and not is_uefi:
-            check_ok = has_part["root"] and has_part["boot"]
-        else:
-            check_ok = has_part["root"]
+        # In all cases a root partition must be defined
+        check_ok = has_part["root"]
 
-        # # If less than 4GB available a swap partition is advisable.
-        # if self.need_swap():
-        #     check_ok = check_ok and has_part["swap"]
+        if is_uefi and self.bootloader == "grub2":
+            check_ok = check_ok and has_part["root"] and has_part["boot_efi"]
+        
+        if is_uefi and self.bootloader == "gummiboot":
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
+        
+        if self.lv_partitions and not is_uefi:
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
+        
+        if is_root_btrfs:
+            check_ok = check_ok and has_part["root"] and has_part["boot"]
 
         self.forward_button.set_sensitive(check_ok)
+        if check_ok:
+            txt = _("Install now!")
+            self.forward_button.set_label(txt)    
 
     def get_changes(self):
         """ Grab all changes for confirmation """

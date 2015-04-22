@@ -857,8 +857,10 @@ def get_nm_state():
 
 def has_connection():
     # In a Virtualbox VM this returns true even when the host OS has no connection
-    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-    #    return True
+    # karasu: But the ip idea is not good too. It fails under too many circumstances
+    # (in this case is better a false positive than a false negative)
+    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+        return True
 
     try:
         url = 'http://74.125.228.100'

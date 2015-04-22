@@ -1,16 +1,49 @@
+[2015-04-19 19:28:28 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {7bc4246}
+[2015-04-19 06:36:45 -0500]  fix uefi bootloader installation                                       Dustin Falgout  {df200d2}
 [2015-04-19 13:14:05 +0200]  Updated Translations                                                       karasu      {be44010}
 [2015-04-19 13:13:52 +0200]  Updated Translations                                                       karasu      {cb70bae}
+[2015-04-19 13:13:21 +0200]  Updated Translations                                                       karasu      {66184bf}
+[2015-04-19 13:12:55 +0200]  Updated Translations                                                       karasu      {6d4464a}
 [2015-04-19 03:17:41 -0500]  updated pre-commit hook (cherry picked from commit 0ca69b4)            Dustin Falgout  {f894203}
 [2015-04-19 03:17:13 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {9948abf}
 [2015-04-19 03:16:25 -0500]  be more strict on the score for a mirror to be considered acceptble..  Dustin Falgout  {c30c2fc}
+[2015-04-19 03:10:19 -0500]  updated pre-commit hook                                                Dustin Falgout  {0ca69b4}
+[2015-04-19 03:05:42 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {93b2f43}
+[2015-04-19 02:28:31 -0500]  be more strict on the score for a mirror to be considered acceptble.   Dustin Falgout  {4163cf3}
+[2015-04-19 01:46:00 -0500]  configure lightdm webkit2 greeter in postinstall                       Dustin Falgout  {cca4dc3}
+[2015-04-18 20:37:18 +0200]  Change exception message (as it could be mistaken for a fatal error)       karasu      {dee99cd}
+[2015-04-18 19:49:25 +0200]  There's an exception that reaches process.py even when bootloader i..      karasu      {ed706db}
+[2015-04-18 19:27:24 +0200]  import re was missing                                                      karasu      {1298d2b}
+[2015-04-18 19:04:34 +0200]  import os was missing                                                      karasu      {2926972}
+[2015-04-18 18:42:56 +0200]  Update README                                                              karasu      {baec1ee}
+[2015-04-18 18:40:55 +0200]  Do not check for hdparm presence                                           karasu      {28045e2}
+[2015-04-18 18:23:07 +0200]  Merge pull request #295 from Kirek/master                                  karasu      {fac1b14}
+[2015-04-18 18:21:56 +0200]  Try to fix grub install problems. GPT needs checking. Cleaned chroo..      karasu      {6ae1984}
+[2015-04-18 13:44:21 +0200]  Fixes /home (not root and boot) bug mounting problem in advnaced           karasu      {b1bae20}
+[2015-04-18 13:25:44 +0200]  Removed two unnused files                                                  karasu      {d239e6b}
+[2015-04-18 12:16:54 +0200]  Fix is_ssd function. The previous function crashes with an UnicodeD..    Ramon Buldó   {368e66a}
+[2015-04-18 12:12:01 +0200]  Merge pull request #1 from Antergos/master                               Ramon Buldó   {5457700}
+[2015-04-18 12:03:25 +0200]  Trap exception if setxkbmap can't be set (this was happening with A..      karasu      {70b6eef}
 [2015-04-18 10:03:49 +0200]  Polished some camera calls. Now what happens when no camera is found?      karasu      {8c46d4c}
 [2015-04-17 22:04:57 +0200]  take_photo needs to be implemented                                         karasu      {1d081a0}
 [2015-04-17 19:32:38 +0200]  It works! Now it needs to be adapted (like timezonemap)                    karasu      {25e5012}
+[2015-04-17 18:35:49 +0200]  Fix a string                                                               karasu      {a20ec8f}
+[2015-04-17 09:40:03 -0500]  fix 10_antergos to ensure that grub identifies antergos as arch        Dustin Falgout  {3365f8c}
+[2015-04-17 14:20:44 +0200]  bluedevil package was renamed upstream. packages.xml in server need..      karasu      {28d1566}
 [2015-04-17 13:24:08 +0200]  More cheese                                                                karasu      {27a146b}
 [2015-04-17 09:55:58 +0200]  playing around with gtkclutter                                             karasu      {681425e}
+[2015-04-17 08:21:34 +0200]  Pushed some translations from Transifex                                    karasu      {0f4c086}
 [2015-04-16 23:49:09 +0200]  Added cheese dependency                                                    karasu      {3eceaea}
 [2015-04-16 23:31:57 +0200]  Updated translations                                                       karasu      {92fbb3b}
 [2015-04-16 13:28:15 +0200]  Add borrowed cheese code to learn libcheese on python                      karasu      {67490fe}
+[2015-04-16 12:30:26 +0200]  Fix an open entry in bootloader. Also added some debug messages.           karasu      {aef279f}
+[2015-04-15 10:29:46 +0200]  Merge pull request #289 from prescott66/patch-5                            karasu      {9155e38}
+[2015-04-15 10:17:12 +0200]  Add gnome calendar to Gnome DE                                           Dušan Kazik   {ddb95b0}
+[2015-04-15 09:51:23 +0200]  Merge branch 'master' of https://github.com/Antergos/Cnchi                 karasu      {137392c}
+[2015-04-15 09:50:25 +0200]  Add Seahorse to manage passwords in Gnome                                  karasu      {a3d6c00}
+[2015-04-15 09:46:30 +0200]  Merge pull request #288 from prescott66/patch-4                            karasu      {f7a8a84}
+[2015-04-15 09:38:00 +0200]  I hope this will fix #284                                                Dušan Kazik   {ebe7e22}
+[2015-04-15 09:34:37 +0200]  0.8.25                                                                     karasu      {3280759}
 [2015-04-15 08:36:12 +0200]  Merge branch 'github-master'                                               karasu      {9d9a152}
 [2015-04-15 07:15:51 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {c44a322}
 [2015-04-15 07:15:26 +0200]  Added gnome-font-viewer                                                    karasu      {f64b8dd}
