@@ -1,5 +1,4 @@
-# Cnchi
-
+# Cnchi  [![Codacy Badge](https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660](https://www.codacy.com/app/dustin/Cnchi)
 **Graphical Installer for Antergos Linux**
 
 You are viewing the `master` branch.
