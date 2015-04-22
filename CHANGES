@@ -1,3 +1,8 @@
+[2015-04-21 19:37:09 -0500]  Update README.md                                                       Dustin Falgout  {94d5ea2}
+[2015-04-21 19:29:54 -0500]  add codacy badge                                                       Dustin Falgout  {7747533}
+[2015-04-21 18:43:29 -0500]  add landscape.yaml                                                     Dustin Falgout  {d813e0b}
+[2015-04-21 18:37:44 -0500]  add requirements.txt file                                              Dustin Falgout  {6c05d75}
+[2015-04-21 13:10:22 +0200]  Add a --no-check parameter so that checks in check.py are not manda..      karasu      {384bc36}
 [2015-04-21 09:48:21 +0200]  Changed elif's for if's as partition layout must comply. See issue ..      karasu      {f33b946}
 [2015-04-21 09:38:05 +0200]  Enforce /boot partition when using btrfs                                   karasu      {55464ab}
 [2015-04-20 22:34:25 +0200]  Another KDE package was renamed (kdeutils-print-manager)                   karasu      {ee2f371}

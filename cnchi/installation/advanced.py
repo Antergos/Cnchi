@@ -1690,6 +1690,8 @@ class InstallationAdvanced(GtkBaseBox):
         if self.need_swap():
             part["swap"].show()
 
+        fs_not_allowed_for_boot = ["f2fs", "btrfs", "swap"]
+
         # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
@@ -1699,21 +1701,20 @@ class InstallationAdvanced(GtkBaseBox):
                 has_part["root"] = True
                 part["root"].set_state(True)
             elif (is_uefi and 
-                  self.bootloader == "grub2" and 
-                  mnt == "/boot/efi" and 
-                  "fat" in fsystem):
+                self.bootloader == "grub2" and 
+                mnt == "/boot/efi" and 
+                "fat" in fsystem):
                 has_part["boot_efi"] = True
                 part["boot_efi"].set_state(True)
             elif (is_uefi and 
-                  self.bootloader == "gummiboot" and 
-                  mnt == "/boot" and 
-                  "fat" in fsystem):
+                self.bootloader == "gummiboot" and 
+                mnt == "/boot" and 
+                "fat" in fsystem):
                 has_part["boot"] = True
                 part["boot"].set_state(True)                
-            elif (mnt == "/boot" and 
-                  "f2fs" not in fsystem and 
-                  "btrfs" not in fsystem and 
-                  self.lv_partitions):
+            elif (not is_uefi and
+                mnt == "/boot" and
+                fsystem not in fs_not_allowed_for_boot):
                 has_part["boot"] = True
                 part["boot"].set_state(True)
             elif mnt == "swap":
