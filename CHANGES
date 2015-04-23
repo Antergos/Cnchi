@@ -1,3 +1,4 @@
+[2015-04-23 21:56:11 +0200]  - Added atk labels to prev/next buttons (for Orca) - Fixed deprecat..      karasu      {01a914e}
 [2015-04-22 22:53:02 +0200]  Fixes #304                                                                 karasu      {d08f98f}
 [2015-04-21 19:37:09 -0500]  Update README.md                                                       Dustin Falgout  {94d5ea2}
 [2015-04-21 19:29:54 -0500]  add codacy badge                                                       Dustin Falgout  {7747533}
