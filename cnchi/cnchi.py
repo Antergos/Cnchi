@@ -46,7 +46,7 @@ import updater
 cmd_line = None
 
 # At least this GTK version is needed
-GTK_VERSION_NEEDED = "3.9.6"
+GTK_VERSION_NEEDED = "3.16.0"
 
 
 class CnchiApp(Gtk.Application):
