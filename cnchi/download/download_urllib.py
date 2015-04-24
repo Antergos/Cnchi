@@ -130,18 +130,28 @@ class Download(object):
                 dst_cache_path = ""
 
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
+            
+            needs_to_download = True
 
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
+                needs_to_download = False
                 downloaded += 1
             elif self.cache_dir and os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
                 logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
-                shutil.copy(dst_cache_path, dst_path)
-                downloaded += 1
-            else:
+                try:
+                    shutil.copy(dst_cache_path, dst_path)
+                    needs_to_download = False
+                    downloaded += 1
+                except OSError as os_error:
+                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
+                    logging.error(os_error)
+                    needs_to_download = True
+            
+            if needs_to_download:
                 # Let's download our filename using url
                 download_error = True
                 for url in element['urls']:
@@ -193,10 +203,7 @@ class Download(object):
             self.queue_event('downloads_percent', str(downloads_percent))
 
         self.queue_event('downloads_progress_bar', 'hide')
-        if all_successful:
-            return True
-        else:
-            return False
+        return all_successful
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
