@@ -492,24 +492,24 @@ class Bootloader(object):
 
             conf['default'] = []
             conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/boot/vmlinuz-linux\n")
-            conf['default'].append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
+            conf['default'].append("linux\t/vmlinuz-linux\n")
+            conf['default'].append("options\tinitrd=/initramfs-linux.img {0}\n\n".format(root_uuid_line))
 
             conf['fallback'] = []
             conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/boot/vmlinuz-linux\n")
-            conf['fallback'].append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
+            conf['fallback'].append("linux\t/vmlinuz-linux\n")
+            conf['fallback'].append("options\tinitrd=/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
 
             if self.settings.get('feature_lts'):
                 conf['lts'] = []
                 conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf['lts'].append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
-                
+                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts'].append("options\tinitrd=/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
+
                 conf['lts_fallback'] = []
                 conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
-                conf['lts_fallback'].append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
+                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("options\tinitrd=/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
