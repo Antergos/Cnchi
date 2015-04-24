@@ -487,8 +487,8 @@ class Bootloader(object):
             if self.settings.get("luks_root_password") == "":
                 key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
-            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root={3} rw"
-            root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, luks_root_device)
+            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=/dev/mapper/{3} rw"
+            root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, luks_root_volume)
 
             conf['default'] = []
             conf['default'].append("title\tAntergos\n")
