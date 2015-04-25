@@ -36,7 +36,7 @@ import locale
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject
+from gi.repository import Gio, Gtk, GObject
 
 import misc.misc as misc
 import info
@@ -54,7 +54,9 @@ class CnchiApp(Gtk.Application):
 
     def __init__(self):
         """ Constructor. Call base class """
-        Gtk.Application.__init__(self)
+        Gtk.Application.__init__(self,
+            application_id="com.antergos.cnchi",
+            flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
@@ -65,12 +67,9 @@ class CnchiApp(Gtk.Application):
             logging.error(msg)
             sys.exit(1)
 
-        # window = main_window.MainWindow(self, cmd_line)
-        main_window.MainWindow(self, cmd_line)
-
-        # Some tutorials show that this line is needed, some don't
-        # It seems to work ok without
-        # self.add_window(window)
+        window = main_window.MainWindow(self, cmd_line)
+        self.add_window(window)
+        window.show()
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()

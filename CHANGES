@@ -1,3 +1,4 @@
+[2015-04-24 20:58:56 +0200]  Download a package if an error is issued when trying to copy it fro..      karasu      {15c7371}
 [2015-04-23 22:30:07 +0200]  Cnchi needs Gtk 3.16                                                       karasu      {c06ea05}
 [2015-04-23 22:23:37 +0200]  Fix Gdk.Cursor.new deprecation                                             karasu      {0c4d504}
 [2015-04-23 21:56:11 +0200]  - Added atk labels to prev/next buttons (for Orca) - Fixed deprecat..      karasu      {01a914e}
