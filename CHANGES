@@ -1,3 +1,11 @@
+[2015-04-26 10:53:17 +0200]  Merge pull request #314 from plumpudding/master                            karasu      {19e6f4e}
+[2015-04-25 15:19:56 +0200]  Follow https://wiki.gnome.org/HowDoI/GtkApplication recommendations        karasu      {3b88ac9}
+[2015-04-25 00:02:47 +0200]  Update bootloader.py                                                     plumpudding   {a8560cf}
+[2015-04-24 23:28:23 +0200]  Update bootloader.py                                                     plumpudding   {cf187a9}
+[2015-04-24 23:10:19 +0200]  Update bootloader.py                                                     plumpudding   {467b8e7}
+[2015-04-24 22:54:38 +0200]  3rd part of the fix                                                      plumpudding   {c6367f1}
+[2015-04-24 22:29:25 +0200]  fix second problem with encryption and gummiboot                         plumpudding   {7037c57}
+[2015-04-24 22:04:32 +0200]  should fix encryption with gummiboot                                     plumpudding   {ebe03af}
 [2015-04-24 20:58:56 +0200]  Download a package if an error is issued when trying to copy it fro..      karasu      {15c7371}
 [2015-04-23 22:30:07 +0200]  Cnchi needs Gtk 3.16                                                       karasu      {c06ea05}
 [2015-04-23 22:23:37 +0200]  Fix Gdk.Cursor.new deprecation                                             karasu      {0c4d504}
