@@ -41,11 +41,11 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
 
     # Set gdm shell logo
     cp /usr/share/antergos/logo.png ${DESTDIR}/usr/share/antergos/
-    chroot ${DESTDIR} sudo -u gdm dbus-launch gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" > /dev/null 2 > &1
+    chroot ${DESTDIR} sudo -u gdm dbus-launch gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" > /dev/null 2>&1
 
     rm ${DESTDIR}/usr/bin/set-settings
 
@@ -81,7 +81,7 @@ cinnamon_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Copy menu@cinnamon.org.json to set menu icon
@@ -127,7 +127,7 @@ xfce_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -187,7 +187,7 @@ openbox_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -241,7 +241,7 @@ lxde_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -412,7 +412,7 @@ mate_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2 > &1
+    chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set MintMenu Favorites
@@ -460,7 +460,7 @@ postinstall()
     chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
     ## Unmute alsa channels
-    chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute > /dev/null 2 > &1
+    chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute > /dev/null 2>&1
 
     # Fix transmission leftover
     if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ]; then
@@ -500,5 +500,5 @@ postinstall()
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4 $5 $6 > /tmp/postinstall.log 2 > &1
+postinstall $1 $2 $3 $4 $5 $6 > /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
