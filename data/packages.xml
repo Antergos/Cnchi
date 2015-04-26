@@ -44,7 +44,7 @@
         <pkgname>antergos-wallpapers</pkgname>
         <!--<pkgname>antergos-welcome</pkgname> -->
         <pkgname>chromium</pkgname>
-        <pkgname>chromium-pepper-flash</pkgname>
+        <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -123,7 +123,7 @@
         <pkgname>gnome-shell</pkgname>
         <pkgname>gnome-shell-extensions</pkgname>
         <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
-        <pkgname>gnome-shell-extension-lockscreen-lightdm</pkgname>
+        <pkgname>gnome-shell-extension-status-menu-buttons</pkgname>
         <pkgname>gnome-sound-recorder</pkgname>
         <pkgname>gnome-system-monitor</pkgname>
         <pkgname>gnome-terminal</pkgname>
@@ -133,6 +133,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
+        <pkgname>light-locker</pkgname>
         <pkgname>nautilus</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -202,13 +203,14 @@
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>polkit-gnome</pkgname>
+        <pkgname>light-locker</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
         <pkgname>parole</pkgname>
         <pkgname>pidgin</pkgname>
+        <pkgname>polkit-gnome</pkgname>
         <pkgname>pragha</pkgname>
         <pkgname>ristretto</pkgname>
         <pkgname>thunar-archive-plugin</pkgname>
@@ -310,6 +312,7 @@
         <pkgname>gsimplecal</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>leafpad</pkgname>
+        <pkgname>light-locker</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>

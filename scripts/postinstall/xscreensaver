@@ -1,2 +1,2 @@
-newLoginCommand: dm-tool switch-to-greeter
+newLoginCommand: light-locker-command -l
 timeout:	0:10:00
