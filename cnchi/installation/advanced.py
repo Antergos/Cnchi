@@ -1690,14 +1690,12 @@ class InstallationAdvanced(GtkBaseBox):
         if self.need_swap():
             part["swap"].show()
 
-        fs_not_allowed_for_boot = ["f2fs", "btrfs", "swap"]
+        fs_not_allowed = { "/boot" : ["f2fs", "swap"], "/" :  ["fat", "ntfs", "swap"] }
 
         # Check mount points and filesystems
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
-            if (mnt == "/" and 
-                "fat" not in fsystem and 
-                "ntfs" not in fsystem):
+            if mnt == "/" and  fsystem not in fs_not_allowed[mnt]:
                 has_part["root"] = True
                 part["root"].set_state(True)
             elif (is_uefi and 
@@ -1714,7 +1712,7 @@ class InstallationAdvanced(GtkBaseBox):
                 part["boot"].set_state(True)                
             elif (not is_uefi and
                 mnt == "/boot" and
-                fsystem not in fs_not_allowed_for_boot):
+                fsystem not in fs_not_allowed[mnt]):
                 has_part["boot"] = True
                 part["boot"].set_state(True)
             elif mnt == "swap":

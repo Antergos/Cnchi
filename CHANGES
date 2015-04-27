@@ -1,3 +1,4 @@
+[2015-04-27 08:43:26 +0200]  Specify that we need a GTK version >= 3.16.0                               karasu      {7c69cd7}
 [2015-04-27 01:21:16 -0500]  fix wrong filepath from my last commit                                 Dustin Falgout  {db5d85a}
 [2015-04-26 08:42:28 -0500]  fix pycharms incorrect bash formatting!                                Dustin Falgout  {eb5e95e}
 [2015-04-26 08:37:18 -0500]  screen locking in gnome (finally!). also updated postinstall to pro..  Dustin Falgout  {7c28b84}
