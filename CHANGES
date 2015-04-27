@@ -1,3 +1,4 @@
+[2015-04-26 08:42:28 -0500]  fix pycharms incorrect bash formatting!                                Dustin Falgout  {eb5e95e}
 [2015-04-26 08:37:18 -0500]  screen locking in gnome (finally!). also updated postinstall to pro..  Dustin Falgout  {7c28b84}
 [2015-04-26 10:54:10 +0200]  Bump version                                                               karasu      {f0e4c06}
 [2015-04-26 10:53:17 +0200]  Merge pull request #314 from plumpudding/master                            karasu      {19e6f4e}

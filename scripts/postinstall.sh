@@ -62,7 +62,7 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver.desktop ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 
     # Ensure that Light Locker starts before gnome-shell
-    sed -i 's|echo "X|/usr/bin/light-locker &\necho "X|g' /etc/lightdm/Xsession
+    sed -i 's|echo "X|/usr/bin/light-locker &\nsleep 2; echo "X|g' ${DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings()
@@ -200,6 +200,10 @@ openbox_settings()
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+    # xscreensaver config
+        cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+        cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
 }
 
 lxde_settings()

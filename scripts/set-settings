@@ -9,8 +9,8 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set favorite apps
-
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', \"${_BROWSER}.desktop\", 'pidgin.desktop', 'gnome-music.desktop']"
+
 	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
 	# Change default wallpaper
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
@@ -25,6 +25,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
+	dbus-launch gsettings set org.gnome.desktop.screensaver lock-enabled false
+	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
 
 fi
 
