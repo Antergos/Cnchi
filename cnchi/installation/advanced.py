@@ -640,9 +640,6 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_list.set_model(self.partition_list_store)
         self.partition_list.expand_all()
 
-        # Check if correct mount points are already defined, so we can proceed with installation
-        self.check_mount_points()
-
     def on_format_cell_toggled(self, widget, path):
         """ Mark a partition to be formatted """
         self.partition_list_store[path][COL_FORMAT_ACTIVE] = not self.partition_list_store[path][COL_FORMAT_ACTIVE]
@@ -793,6 +790,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.fill_partition_list()
         self.fill_bootloader_device_entry()
         self.fill_bootloader_entry()
+        # Check if correct mount points are already defined, so we can proceed with installation
+        self.check_mount_points()
 
     @staticmethod
     def get_disk_path_from_selection(model, tree_iter):
