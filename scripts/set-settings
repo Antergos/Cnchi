@@ -29,6 +29,11 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.screensaver lock-enabled false
 	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
 
+	# Configure touchpad
+	gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+	gsettings set org.gnome.settings-daemon.peripherals.touchpad touchpad-enabled true
+	gsettings set org.gnome.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
+
 fi
 
 if [[ ${DESKTOP} == 'cinnamon' ]];then
@@ -72,6 +77,11 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences audible-bell false
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
+	# Configure touchpad
+	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad tap-to-click true
+	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad touchpad-enabled true
+	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
 	
 fi
 

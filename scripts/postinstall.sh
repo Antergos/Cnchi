@@ -59,10 +59,10 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
     cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
 
-    cp /usr/share/cnchi/scripts/postinstall/xscreensaver.desktop ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 
     # Ensure that Light Locker starts before gnome-shell
-    sed -i 's|echo "X|/usr/bin/light-locker &\nsleep 2; echo "X|g' ${DESTDIR}/etc/lightdm/Xsession
+    sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings()
@@ -147,7 +147,7 @@ xfce_settings()
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
     cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
 
-    cp /usr/share/cnchi/scripts/postinstall/xscreensaver.desktop ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 
 }
 
@@ -202,8 +202,9 @@ openbox_settings()
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
     # xscreensaver config
-        cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
-        cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+    cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 }
 
 lxde_settings()
@@ -487,7 +488,7 @@ postinstall()
     # Set Antergos name in filesystem files
     cp /etc/arch-release ${DESTDIR}/etc
     cp /etc/os-release ${DESTDIR}/etc
-    cp /etc/lsb-release ${DESTDIR}/etc
+    #cp /etc/lsb-release ${DESTDIR}/etc
     sed -i 's|Arch|Antergos|g' ${DESTDIR}/etc/issue
 
     # Set BROWSER var
