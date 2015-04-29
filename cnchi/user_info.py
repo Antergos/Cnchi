@@ -81,6 +81,10 @@ class UserInfo(GtkBaseBox):
         txt = _("Your computer's name:")
         label.set_markup(txt)
 
+        label = self.ui.get_object('hostname')
+        txt = _("Hostname")
+        label.set_placeholder_text(txt)
+
         label = self.ui.get_object('username_label')
         txt = _("Pick a username:")
         label.set_markup(txt)
@@ -202,6 +206,8 @@ class UserInfo(GtkBaseBox):
         else:
             self.login['auto'].set_sensitive(False)
         # if not self.settings.get('z_hidden'):
+        self.forward_button.set_label('')
+        self.forward_button.set_name('fwd_btn')
         self.forward_button.set_sensitive(False)
 
     def on_checkbutton_show_password_toggled(self, widget):
@@ -269,15 +275,15 @@ class UserInfo(GtkBaseBox):
                 self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok['fullname'].show()
 
-        if widget == self.entry['hostname']:
+        elif widget == self.entry['hostname']:
             hostname = self.entry['hostname'].get_text()
             self.validate('hostname', hostname)
 
-        if widget == self.entry['username']:
+        elif widget == self.entry['username']:
             username = self.entry['username'].get_text()
             self.validate('username', username)
 
-        if widget == self.entry['password'] or widget == self.entry['verified_password']:
+        elif widget == self.entry['password'] or widget == self.entry['verified_password']:
             validation.check_password(
                 self.entry['password'],
                 self.entry['verified_password'],
@@ -287,16 +293,14 @@ class UserInfo(GtkBaseBox):
 
         # Check if all fields are filled and ok
         all_ok = True
-        # FIXME: Whith latest changes (set_from_stock to set_from_icon_name) this does not work
-        '''
         ok_widgets = self.image_is_ok.values()
         if not self.settings.get('z_hidden'):
             for ok_widget in ok_widgets:
-                (icon_name, icon_size) = ok_widget.get_icon_name()
-                visible = ok_widget.get_visible()
-                if visible == False or icon_name != ICON_OK:
+                icon_name = ok_widget.get_property('icon-name')
+                visible = ok_widget.is_visible()
+                if not visible or icon_name != ICON_OK:
                     all_ok = False
-        '''
+
         self.forward_button.set_sensitive(all_ok)
 
 # When testing, no _() is available

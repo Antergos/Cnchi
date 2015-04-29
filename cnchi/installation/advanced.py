@@ -76,6 +76,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.lv_partitions = []
         self.disks_changed = []
 
+        self.check_ok_once = False
+
         # Store here all LUKS options for each partition (if any)
         # stores tuple (use_luks, vol_name, password)
         # uses partition uid as index
@@ -1727,8 +1729,14 @@ class InstallationAdvanced(GtkBaseBox):
         
         self.forward_button.set_sensitive(check_ok)
         if check_ok:
+            self.forward_button.set_name('fwd_btn_install_now')
             txt = _("Install now!")
-            self.forward_button.set_label(txt)    
+            self.forward_button.set_label(txt)
+            self.check_ok_once = True
+        elif self.check_ok_once:
+            self.forward_button.set_name('fwd_btn')
+            self.forward_button.set_label('')
+            self.check_ok_once = False
 
     def get_changes(self):
         """ Grab all changes for confirmation """

@@ -1,3 +1,4 @@
+[2015-04-29 02:45:27 -0500]  working on #317 and #318                                               Dustin Falgout  {dbbe3dd}
 [2015-04-29 00:41:33 -0500]  fix typo in postinstall, other small changes related to screen lock..  Dustin Falgout  {5e59c8e}
 [2015-04-29 07:03:22 +0200]  Tries to address issue #317                                                karasu      {5382fa2}
 [2015-04-27 11:01:43 +0200]  Cleaned advanced code. NEEDS TESTING                                       karasu      {3ae177b}

@@ -90,6 +90,20 @@ GtkProgressBar.progressbar {
     font-size: 11px;
 }
 
+#fwd_btn_install_now {
+    background-color: #2EA3F2;
+    color: #ffffff;
+}
+#fwd_btn_install_now .label {
+    font-size: 10px;
+    font-weight: 500;
+}
+#fwd_btn_install_now:active {
+    color: #333A4C;
+    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 0.4), inset 0 0px 3px rgba(95, 95, 95, 0.80);
+}
+
+
 .header-bar .close_button {
     padding-left: 5px;
     padding-right: 0px;
