@@ -1744,7 +1744,7 @@ class InstallationAdvanced(GtkBaseBox):
             self.check_ok_once = True
         elif self.check_ok_once:
             self.forward_button.set_name('fwd_btn')
-            self.forward_button.set_label('')
+            self.forward_button.set_label(None)
             self.check_ok_once = False
 
     def get_changes(self):

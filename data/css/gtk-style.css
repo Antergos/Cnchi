@@ -93,6 +93,11 @@ GtkProgressBar.progressbar {
 #fwd_btn_install_now {
     background-color: #2EA3F2;
     color: #ffffff;
+    border-radius: 0px 2px 2px 0px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 #fwd_btn_install_now .label {
     font-size: 10px;

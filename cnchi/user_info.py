@@ -29,6 +29,8 @@ import show_message as show
 
 from gtkbasebox import GtkBaseBox
 
+import logging
+
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
@@ -206,7 +208,7 @@ class UserInfo(GtkBaseBox):
         else:
             self.login['auto'].set_sensitive(False)
         # if not self.settings.get('z_hidden'):
-        self.forward_button.set_label('')
+        self.forward_button.set_label(None)
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_sensitive(False)
 
@@ -298,6 +300,7 @@ class UserInfo(GtkBaseBox):
             for ok_widget in ok_widgets:
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()
+                logging.info('icon_name is: %s. visible is: %s', (icon_name, visible))
                 if not visible or icon_name != ICON_OK:
                     all_ok = False
 
