@@ -1,3 +1,4 @@
+[2015-05-01 21:51:49 +0200]  Wrong logging message                                                      karasu      {cb0ddd5}
 [2015-05-01 21:48:14 +0200]  Button needs text                                                          karasu      {e5eac8d}
 [2015-05-01 21:37:39 +0200]  Do not add pycache files to update.info                                    karasu      {a1f7820}
 [2015-05-01 21:31:56 +0200]  set_label can't be None                                                    karasu      {74e01d0}
