@@ -1,3 +1,4 @@
+[2015-05-01 10:44:01 +0200]  Updated translations                                                       karasu      {efbe194}
 [2015-04-29 04:33:44 -0500]  should fix part of #317 and all of #318                                Dustin Falgout  {1ae5471}
 [2015-04-29 02:45:27 -0500]  working on #317 and #318                                               Dustin Falgout  {dbbe3dd}
 [2015-04-29 00:41:33 -0500]  fix typo in postinstall, other small changes related to screen lock..  Dustin Falgout  {5e59c8e}

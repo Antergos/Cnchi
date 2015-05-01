@@ -33,7 +33,7 @@ import misc.misc as misc
 # constants
 NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'swap', 'xfs']
 
-COMMON_MOUNT_POINTS = ['/', '/boot', '/home', '/usr', '/var']
+COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
 
 @misc.raise_privileges

@@ -1641,10 +1641,7 @@ class InstallationAdvanced(GtkBaseBox):
         Check that all necessary mount points are specified.
         At least root (/) partition must be defined and in UEFI systems
         a fat partition mounted in /boot (gummiboot) or /boot/efi (grub2) must be defined too.
-        If using btrfs, a /boot partition must be defined
         """
-
-        # Initialize our mount point check widgets
 
         check_parts = ["/", "/boot", "/boot/efi", "swap"]
 
@@ -1660,12 +1657,19 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         # Get check part labels
-        label_names = {"/" : "root_part", "/boot" : "boot_part", "/boot/efi" : "boot_efi_part", "swap" : "swap_part"}
+        label_names = {"/" : "root_part",
+            "/boot" : "boot_part",
+            "/boot/efi" : "boot_efi_part",
+            "swap" : "swap_part"}
+        
         part_label = {}
         for check_part in check_parts:
             part_label[check_part] = self.ui.get_object(label_names[check_part])
             part_label[check_part].set_state(False)
             part_label[check_part].hide()
+        
+        # Root is always necessary
+        part_label["/"].show()
         
         if is_uefi:
             if self.bootloader == "grub2":
@@ -1688,11 +1692,13 @@ class InstallationAdvanced(GtkBaseBox):
             if mnt == "/" and fsystem not in ["fat", "ntfs", "swap"]:
                 # Root partition
                 has_part["/"] = True
+                part_label["/"].show()
                 part_label["/"].set_state(True)
 
             if mnt == "swap":
                 # Swap partition
                 has_part["swap"] = True
+                part_label["swap"].show()
                 part_label["swap"].set_state(True)
 
             if is_uefi:
@@ -1701,15 +1707,18 @@ class InstallationAdvanced(GtkBaseBox):
                     if self.bootloader == "grub2" and mnt == "/boot/efi":
                         # Grub2 in UEFI
                         has_part["/boot/efi"] = True
+                        part_label["/boot/efi"].show()
                         part_label["/boot/efi"].set_state(True)
                     elif self.bootloader == "gummiboot" and mnt == "/boot":
                         # Gummiboot
                         has_part["/boot"] = True
+                        part_label["/boot"].show()
                         part_label["/boot"].set_state(True)
             else:
                 if mnt == "/boot" and fsystem not in ["f2fs", "swap"]:
                     # /boot in non UEFI systems
                     has_part["/boot"] = True
+                    part_label["/boot"].show()
                     part_label["/boot"].set_state(True)
 
         # In all cases a root partition must be defined
