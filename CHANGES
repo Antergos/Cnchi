@@ -1,3 +1,4 @@
+[2015-05-01 21:29:29 +0200]  set_label can't be None                                                    karasu      {c45cf2c}
 [2015-05-01 19:41:02 +0200]  New create_fs module. Not added in code cause it needs testing             karasu      {456a2e1}
 [2015-05-01 09:02:53 -0500]  working on #318                                                        Dustin Falgout  {1d8294b}
 [2015-05-01 12:14:00 +0200]  Fixes check labels disappearance in advanced                               karasu      {08b7f52}
