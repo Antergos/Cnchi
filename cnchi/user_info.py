@@ -208,7 +208,7 @@ class UserInfo(GtkBaseBox):
         else:
             self.login['auto'].set_sensitive(False)
         # if not self.settings.get('z_hidden'):
-        self.forward_button.set_label(None)
+        self.forward_button.set_label('')
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_sensitive(False)
 
