@@ -1,3 +1,4 @@
+[2015-05-01 21:48:14 +0200]  Button needs text                                                          karasu      {e5eac8d}
 [2015-05-01 21:37:39 +0200]  Do not add pycache files to update.info                                    karasu      {a1f7820}
 [2015-05-01 21:31:56 +0200]  set_label can't be None                                                    karasu      {74e01d0}
 [2015-05-01 21:29:29 +0200]  set_label can't be None                                                    karasu      {c45cf2c}

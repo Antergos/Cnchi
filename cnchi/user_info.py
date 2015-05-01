@@ -300,7 +300,7 @@ class UserInfo(GtkBaseBox):
             for ok_widget in ok_widgets:
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()
-                logging.info('icon_name is: %s. visible is: %s', (icon_name, visible))
+                logging.info('icon_name is: %s. visible is: %s', icon_name, visible)
                 if not visible or icon_name != ICON_OK:
                     all_ok = False
 
