@@ -11,6 +11,7 @@
 # Davide_IT <davide.mauri88@tiscali.it>, 2013
 # Davide_IT <davide.mauri88@tiscali.it>, 2013
 # Alexandre Filgueira <faidoc@gmail.com>, 2013
+# Giorgio, 2015
 # Luca Traversari <trave5@yahoo.it>, 2015
 # marco.g <marco.gabrielli94@gmail.com>, 2014
 # muflone <webreg@vbsimple.net>, 2014
@@ -22,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-17 19:07+0000\n"
-"Last-Translator: Luca Traversari <trave5@yahoo.it>\n"
+"PO-Revision-Date: 2015-04-20 18:45+0000\n"
+"Last-Translator: Giorgio\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/antergos/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1908,7 +1909,7 @@ msgid ""
 "or you can manually delete the offending file.\n"
 "\n"
 "Offending file: '{0}'"
-msgstr "Non è possibile eseguire due istanze di questo installer.\n\nSe sei sicuro che l'installer non è in esecuzione\npuoi eliminare manualmente il file {0}\ne rilanciare l'installer nuovamente."
+msgstr "Non è possibile eseguire due istanze di questo installer.\n\nSe sei sicuro che l'installer non sia in esecuzione\npuoi eliminare manualmente il file {0}\ne rilanciare l'installer nuovamente."
 
 #: cnchi/main_window.py:85
 msgid "Cnchi installer version %s"
@@ -2304,7 +2305,7 @@ msgstr "Impossibile copiare %s in %s"
 
 #: cnchi/updater.py:192
 msgid "Wrong md5. Bad download or wrong file, won't update this one"
-msgstr "Md5 errato. Il file è sbagliato o il download è andato incontro a errori, pertanto non sarà aggiornato"
+msgstr "Md5 errato. Il file è sbagliato o il download è andato incontro ad errori, pertanto non sarà aggiornato"
 
 #: cnchi/user_info.py:73
 msgid "Your name:"

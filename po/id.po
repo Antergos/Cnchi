@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Cahya Legawa <haridiva@gmail.com>, 2014-2015
+# Febrian <febrian.setianto@gmail.com>, 2015
 # Hasan Al Banna, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-04 21:57+0000\n"
-"Last-Translator: Cahya Legawa <haridiva@gmail.com>\n"
+"PO-Revision-Date: 2015-04-21 11:26+0000\n"
+"Last-Translator: Febrian <febrian.setianto@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/antergos/language/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -257,7 +258,7 @@ msgstr ""
 
 #: cnchi/download/aria2.py:157
 msgid "Can't run aria2: %s"
-msgstr ""
+msgstr "Tidak dapat menjalankan aria2: %s"
 
 #: cnchi/download/download.py:94
 msgid "Can't create download package list. Check log output for details"
@@ -265,7 +266,7 @@ msgstr ""
 
 #: cnchi/download/download.py:97
 msgid "Using aria2 to download packages"
-msgstr ""
+msgstr "Mengunduh paket dengan aria2"
 
 #: cnchi/download/download.py:103
 msgid "Using urllib to download packages"
@@ -293,44 +294,44 @@ msgstr ""
 
 #: cnchi/download/download_aria2.py:78
 msgid "Aria2 is not running."
-msgstr ""
+msgstr "Aria2 tidak berjalan."
 
 #: cnchi/download/download_aria2.py:85 cnchi/download/download_aria2.py:140
 msgid "Downloading packages... ({0}/{1})..."
-msgstr ""
+msgstr "Mengunduh paket... ({0}/{1})..."
 
 #: cnchi/download/download_aria2.py:107 cnchi/download/download_urllib.py:135
 msgid "File %s already exists, Cnchi will not overwrite it"
-msgstr ""
+msgstr "File %s sudah ada. Cnchi tidak akan menggantinya dengan yang baru"
 
 #: cnchi/download/download_urllib.py:40
 msgid "Wrong url, will try another one if available."
-msgstr ""
+msgstr "URL tidak benar, akan mencoba yang lain jika tersedia."
 
 #: cnchi/download/download_urllib.py:50 cnchi/download/download_urllib.py:54
 #: cnchi/download/download_urllib.py:58 cnchi/download/download_urllib.py:62
 msgid "Can't open {0} - Reason: {1}"
-msgstr ""
+msgstr "Tidak dapat membuka {0} - Alasan: {1}"
 
 #: cnchi/download/download_urllib.py:78
 msgid "HTTP Error : {0}"
-msgstr ""
+msgstr "Kesalahan pada HTTP: {0}"
 
 #: cnchi/download/download_urllib.py:81
 msgid "URL Error : {0}"
-msgstr ""
+msgstr "Kesalahan pada URL: {0}"
 
 #: cnchi/download/download_urllib.py:115
 msgid "Downloading {0} {1} ({2}/{3})..."
-msgstr ""
+msgstr "Sedang mengunduh {0} {1} ({2}/{3})"
 
 #: cnchi/download/download_urllib.py:122
 msgid "Metalink for package %s has no size info"
-msgstr ""
+msgstr "Tidak terdapat informasi mengenai metalink ukuran paket %s"
 
 #: cnchi/download/download_urllib.py:185
 msgid "Can't download {0}, even after trying all available mirrors"
-msgstr ""
+msgstr "Tidak dapat mengunduh {0} bahkan setelah mencoba segela sumber"
 
 #: cnchi/download/metalink.py:110
 msgid "Unable to create download queue for package {0}"
@@ -342,7 +343,7 @@ msgstr "Tidak bisa menemukan paket berikut:"
 
 #: cnchi/download/metalink.py:123
 msgid "Can't resolve these dependencies: "
-msgstr ""
+msgstr "Tidak bisa menemukan ketergantungan untuk paket ini: "
 
 #: cnchi/encfs.py:103
 msgid "Can't create and modify encfs configuration files."
@@ -350,7 +351,7 @@ msgstr ""
 
 #: cnchi/encfs.py:105
 msgid "Home directory won't be encrypted."
-msgstr ""
+msgstr "Direktori Home tidak akan dienkripsi."
 
 #: cnchi/encfs.py:130
 msgid "Can't run encfs. Bad password?"
@@ -475,11 +476,11 @@ msgstr "Ufw kependekan dari Uncomplicated Firewall, program untuk\nmengelola sua
 
 #: cnchi/features.py:256
 msgid "Firefox Web Browser"
-msgstr ""
+msgstr "Peramban Firefox"
 
 #: cnchi/features.py:257
 msgid "A popular open-source graphical web browser from Mozilla"
-msgstr ""
+msgstr "Peramban open-source terkenal berbasis grafis dari Mozilla"
 
 #: cnchi/features.py:258
 msgid ""
@@ -489,7 +490,7 @@ msgid ""
 "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
 "layout engine to render web pages, which implements current and\n"
 "anticipated web standards."
-msgstr ""
+msgstr "Mozilla Firefox (dikenal sebagai Firefox) adalah sebuah browser web gratis dan open source yang dikembangkan untuk Windows, OS X, dan Linux, dengan versi mobile untuk Android, oleh Mozilla Foundation dan perusahaannya, Mozilla Corporation. Firefox menggunakan Gecko layout engine untuk membuat halaman web, yang mengimplementasikan standar web saat ini."
 
 #: cnchi/features.py:267
 msgid "Windows sharing SMB"
@@ -497,7 +498,7 @@ msgstr ""
 
 #: cnchi/features.py:268
 msgid "SMB provides shared access to files and printers"
-msgstr ""
+msgstr "SMB menyediakan akses ke file dan printer yang dibagi pada jaringan"
 
 #: cnchi/features.py:269
 msgid ""
@@ -542,11 +543,11 @@ msgstr "Galat menjalankan perintah: %s"
 
 #: cnchi/hardware/hardware.py:113
 msgid "Error importing %s from %s : %s"
-msgstr ""
+msgstr "Galat mengimpor %s dari %s: %s"
 
 #: cnchi/hardware/hardware.py:115
 msgid "Unexpected error importing %s: %s"
-msgstr ""
+msgstr "Galat yang tidak diketahui saat mengimpor %s: %s"
 
 #: cnchi/installation/advanced.py:259 cnchi/installation/advanced.py:578
 #: cnchi/installation/advanced.py:592
@@ -905,7 +906,7 @@ msgstr ""
 
 #: cnchi/installation/alongside.py:151
 msgid "Install at your own risk!"
-msgstr ""
+msgstr "Pasang dengan resiko Anda sendiri!"
 
 #: cnchi/installation/alongside.py:205
 msgid "Choose the new size of your installation"
@@ -2287,7 +2288,7 @@ msgstr ""
 
 #: cnchi/updater.py:189
 msgid "Can't copy %s to %s"
-msgstr ""
+msgstr "Tidak dapat menyalin %s ke %s"
 
 #: cnchi/updater.py:192
 msgid "Wrong md5. Bad download or wrong file, won't update this one"
@@ -2399,7 +2400,7 @@ msgstr "Selamat Datang di Antergos!"
 
 #: cnchi/welcome.py:125
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "Sedang memuat, harap tunggu..."
 
 #: cnchi/wireless.py:62
 msgid "Connecting this computer to a wi-fi network"

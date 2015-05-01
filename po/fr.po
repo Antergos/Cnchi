@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-16 23:29+0000\n"
-"Last-Translator: Sylvain Lafrenière <sylvain.lafreniere@mailoo.org>\n"
+"PO-Revision-Date: 2015-04-27 12:06+0000\n"
+"Last-Translator: Daniel Coquette\n"
 "Language-Team: French (http://www.transifex.com/projects/p/antergos/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -881,11 +881,11 @@ msgstr ""
 
 #: cnchi/installation/advanced.py:2168 cnchi/installation/automatic.py:264
 msgid "Cnchi will not install any bootloader"
-msgstr ""
+msgstr "Cnchi n'installera aucun gestionnaire de démarrage"
 
 #: cnchi/installation/advanced.py:2174
 msgid "Antergos will install the bootloader {0} in device {1}"
-msgstr ""
+msgstr "Antergos installera le gestionnaire de démarrage {0} sur le périphérique {1}"
 
 #: cnchi/installation/advanced.py:2190 cnchi/installation/automatic.py:295
 msgid "Testing mode. Cnchi will not change anything!"
@@ -917,11 +917,11 @@ msgstr ""
 
 #: cnchi/installation/alongside.py:151
 msgid "Install at your own risk!"
-msgstr ""
+msgstr "Installez à vos risques et périls !"
 
 #: cnchi/installation/alongside.py:205
 msgid "Choose the new size of your installation"
-msgstr ""
+msgstr "Choisissez la nouvelle taille de votre installation"
 
 #: cnchi/installation/alongside.py:209
 msgid "Choose the partition that you want to shrink:"
@@ -963,7 +963,7 @@ msgstr "Système Windows(MC) non détecté"
 
 #: cnchi/installation/ask.py:146
 msgid "Can't detect any OS in device sda."
-msgstr ""
+msgstr "Aucun système d'exploitation détecté sur le périphérique sda."
 
 #: cnchi/installation/ask.py:150
 msgid "Unsuported disk layout for the 'alongside' installation mode"
@@ -1022,7 +1022,7 @@ msgstr ""
 
 #: cnchi/installation/ask.py:267
 msgid "Installs Antergos without removing {0}"
-msgstr ""
+msgstr "Installer Antergos en conservant {0}"
 
 #: cnchi/installation/ask.py:272
 msgid "This computer has {0} installed."
@@ -1066,7 +1066,7 @@ msgstr "Le émontage de %s a échoué. Essai avec l'argument « lazy »."
 
 #: cnchi/installation/auto_partition.py:87
 msgid "Unmounting %s failed."
-msgstr ""
+msgstr "Le démontage de %s a échoué."
 
 #: cnchi/installation/auto_partition.py:99
 #: cnchi/installation/auto_partition.py:105
@@ -1089,7 +1089,7 @@ msgstr ""
 #: cnchi/installation/process.py:467 cnchi/installation/process.py:478
 #: cnchi/installation/process.py:1381
 msgid "Command %s failed"
-msgstr ""
+msgstr "La commande %s a échoué"
 
 #: cnchi/installation/auto_partition.py:100
 #: cnchi/installation/auto_partition.py:106
@@ -1137,7 +1137,7 @@ msgstr ""
 
 #: cnchi/installation/auto_partition.py:230
 msgid "Can't wipe filesystem of device %s"
-msgstr ""
+msgstr "Impossible d'effacer le système de fichiers du périphérique %s"
 
 #: cnchi/installation/auto_partition.py:242
 msgid "Can't run dd command"
@@ -1174,7 +1174,7 @@ msgstr "Sortie : %s"
 
 #: cnchi/installation/auto_partition.py:377
 msgid "Unknown filesystem type {0}"
-msgstr ""
+msgstr "Système de fichiers de type {0} inconnu"
 
 #: cnchi/installation/auto_partition.py:385
 msgid "Can't create filesystem {0}"
@@ -1232,7 +1232,7 @@ msgstr "Installation ne peut pas détecter la taille de votre disque dur, s'il v
 
 #: cnchi/installation/auto_partition.py:664
 msgid "Error informing the kernel of the partition change."
-msgstr ""
+msgstr "Erreur en informant le noyau du changement de partition."
 
 #: cnchi/installation/auto_partition.py:777
 msgid "Cnchi will setup LVM on device %s"
@@ -1248,7 +1248,7 @@ msgstr "Erreur de création du groupe de volumes LVM"
 
 #: cnchi/installation/auto_partition.py:826
 msgid "Error creating LVM logical volume"
-msgstr ""
+msgstr "Erreur à la création du volume logique LVM"
 
 #: cnchi/installation/auto_partition.py:883
 msgid "Can't copy LUKS keyfile to the installation device"
@@ -1266,7 +1266,7 @@ msgstr "ATTENTION! Toutes les données actuellement sur votre disque seront effa
 msgid ""
 "Select the drive we should use to install Antergos and then click above to "
 "start the process."
-msgstr ""
+msgstr "Choisissez le lecteur à utiliser pour installer Antergos, puis cliquez ci-dessus pour lancer l'installation."
 
 #: cnchi/installation/automatic.py:85
 msgid "Encryption Password:"
@@ -1304,11 +1304,11 @@ msgstr "Voulez-vous vraiment continuer et supprimer tout le contenu sur votre di
 
 #: cnchi/installation/automatic.py:258
 msgid "Cnchi will install Antergos on device %s"
-msgstr ""
+msgstr "Cnchi installera Antergos sur le périphérique %s"
 
 #: cnchi/installation/automatic.py:270
 msgid "Antergos will install the bootloader '{0}' in device '{1}'"
-msgstr ""
+msgstr "Antergos installera le gestionnaire de démarrage '{0}' sur le périphérique '{1}'"
 
 #: cnchi/installation/bootloader.py:88
 msgid ""
@@ -1326,7 +1326,7 @@ msgstr "Ne peut copier %s vers grub.d"
 
 #: cnchi/installation/bootloader.py:212
 msgid "Installing GRUB(2) BIOS boot loader in {0}"
-msgstr ""
+msgstr "Installation du gestionnaire de démarrage BIOS GRUB(2) sur {0}"
 
 #: cnchi/installation/bootloader.py:242
 msgid ""
@@ -1344,7 +1344,7 @@ msgstr "ERREUR durant l'installation de GRUB(2) BIOS."
 
 #: cnchi/installation/bootloader.py:271
 msgid "Installing GRUB(2) UEFI {0} boot loader"
-msgstr ""
+msgstr "Installation du gestionnaire de démarrage UEFI GRUB(2) sur {0}"
 
 #: cnchi/installation/bootloader.py:306
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
@@ -1530,7 +1530,7 @@ msgstr "Ne peut copier le journal de Cnchi dans %s"
 
 #: cnchi/installation/process.py:405
 msgid "Creating a temporary pacman.conf for {0} architecture"
-msgstr ""
+msgstr "Création d'un fichier pacman.conf temporaire pour l'architecture {0}"
 
 #: cnchi/installation/process.py:433
 msgid "Can't initialize pyalpm."
@@ -1546,7 +1546,7 @@ msgstr "Vous ne pouvez pas démarrer le service haveged"
 
 #: cnchi/installation/process.py:466
 msgid "Error deleting old gnupg files"
-msgstr ""
+msgstr "Erreur pendant l'effacement des anciens fichiers gnupg"
 
 #: cnchi/installation/process.py:477
 msgid "Error regenerating gnupg files with pacman-key"

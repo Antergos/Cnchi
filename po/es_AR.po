@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-17 14:30+0000\n"
-"Last-Translator: juan <fedoryo@gmail.com>\n"
+"PO-Revision-Date: 2015-04-22 16:38+0000\n"
+"Last-Translator: Guillermo Schvartzman <guillermohs9@gmail.com>\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/antergos/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,13 +55,13 @@ msgstr "Comprobación del sistema"
 
 #: cnchi/check.py:81
 msgid "has at least {0}GB available storage space. (*)"
-msgstr "dispone de al menos {0}GB de espacio disponible(*)"
+msgstr "dispone de al menos {0}GB de espacio disponible. (*)"
 
 #: cnchi/check.py:84
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr "Depende en gran medida del entorno de escritorio elegido, por lo que es posible que necesites más espacio."
+msgstr "Depende en gran medida del entorno de escritorio elegido, por lo que es posible que necesite más espacio."
 
 #: cnchi/check.py:89
 msgid "is plugged in to a power source"
@@ -73,11 +73,11 @@ msgstr "está conectado a Internet."
 
 #: cnchi/check.py:97
 msgid "For best results, please ensure that this computer:"
-msgstr "Para obtener mejores resultados, por favor asegúrate de que el ordenador:"
+msgstr "Para obtener mejores resultados, por favor asegúrese de que el ordenador:"
 
 #: cnchi/check.py:174
 msgid "We have Internet connection."
-msgstr "está conectado a Internet."
+msgstr "Tiene conexión a Internet."
 
 #: cnchi/check.py:175
 msgid "We're connected to a power source."
@@ -85,7 +85,7 @@ msgstr "Está conectado a la corriente."
 
 #: cnchi/check.py:176
 msgid "We have enough disk space."
-msgstr "tiene suficiente espacio libre en el disco."
+msgstr "Tiene suficiente espacio libre en el disco."
 
 #: cnchi/check.py:201 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
 #: cnchi/features.py:382 cnchi/installation/advanced.py:2194
@@ -96,7 +96,7 @@ msgstr "tiene suficiente espacio libre en el disco."
 #: cnchi/user_info.py:304 cnchi/welcome.py:147 cnchi/wireless.py:159
 #: cnchi/cnchi.py:62
 msgid "Can't create Cnchi main window: {0}"
-msgstr "No se puede crear ventana principal Cnchi: {0}"
+msgstr "No se puede crear ventana principal de Cnchi: {0}"
 
 #: cnchi/cnchi.py:162
 msgid "Using pyalpm v{0} as interface to libalpm v{1}"
