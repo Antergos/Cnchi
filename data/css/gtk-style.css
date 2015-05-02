@@ -90,7 +90,7 @@ GtkProgressBar.progressbar {
     font-size: 11px;
 }
 
-#fwd_btn_install_now, {
+#fwd_btn_install_now {
     background-color: #2EA3F2;
     color: #ffffff;
     border-radius: 0px 2px 2px 0px;
