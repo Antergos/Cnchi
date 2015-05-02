@@ -303,7 +303,7 @@ class UserInfo(GtkBaseBox):
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()
                 logging.info('icon_name is: %s. visible is: %s', icon_name, visible)
-                if not visible or icon_name != ICON_OK:
+                if not visible or icon_name == ICON_WARNING:
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
