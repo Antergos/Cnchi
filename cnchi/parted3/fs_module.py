@@ -93,7 +93,8 @@ def label_fs(fstype, part, label):
     # and replaced in above dic
     if fstype in ladic:
         try:
-            result = subprocess.check_output(shlex.split(ladic[fstype] % vars())).decode()
+            cmd = shlex.split(ladic[fstype] % vars())
+            result = subprocess.check_output(cmd).decode()
             ret = (0, result)
         except subprocess.CalledProcessError as err:
             logging.error(err)
@@ -119,36 +120,63 @@ def create_fs(part, fstype, label='', other_opts=''):
     # Second arg is either output from call if successful
     # or exception message error if failure
 
-    opt_dic = {'ext2': '-m 1',
-               'ext3': '-m 1 -O dir_index',
-               'ext4': '-m 1 -O dir_index',
-               'f2fs': '',
-               'fat16': '',
-               'fat32': '',
-               'ntfs': '',
-               'jfs': '',
-               'reiserfs': '',
-               'btrfs': '',
-               'xfs': '',
-               'swap': ''}
     fstype = fstype.lower()
-    if not other_opts:
-        other_opts = opt_dic[fstype]
-    comdic = {'ext2': 'mkfs.ext2 -q -L "%(label)s" %(other_opts)s %(part)s',
-              'ext3': 'mkfs.ext3 -q -L "%(label)s" %(other_opts)s %(part)s',
-              'ext4': 'mkfs.ext4 -q -L "%(label)s" %(other_opts)s %(part)s',
-              'f2fs': 'mkfs.f2fs -l "%(label)s" %(other_opts)s %(part)s',
-              'fat16': 'mkfs.vfat -n "%(label)s" -F 16 %(other_opts)s %(part)s',
-              'fat32': 'mkfs.vfat -n "%(label)s" -F 32 %(other_opts)s %(part)s',
-              'ntfs': 'mkfs.ntfs -L "%(label)s" %(other_opts)s %(part)s',
-              'jfs': 'mkfs.jfs -q -L "%(label)s" %(other_opts)s %(part)s',
-              'reiserfs': 'mkfs.reiserfs -q -l "%(label)s" %(other_opts)s %(part)s',
-              'xfs': 'mkfs.xfs -f -L "%(label)s" %(other_opts)s %(part)s',
-              'btrfs': 'mkfs.btrfs -f -L "%(label)s" %(other_opts)s %(part)s',
-              'swap': 'mkswap -L "%(label)s" %(part)s'}
+
+    comdic = {'ext2': 'mkfs.ext2 -q',
+              'ext3': 'mkfs.ext3 -q',
+              'ext4': 'mkfs.ext4 -q',
+              'f2fs': 'mkfs.f2fs',
+              'fat16': 'mkfs.vfat -F 16',
+              'fat32': 'mkfs.vfat -F 32',
+              'ntfs': 'mkfs.ntfs',
+              'jfs': 'mkfs.jfs -q',
+              'reiserfs': 'mkfs.reiserfs -q',
+              'xfs': 'mkfs.xfs -f',
+              'btrfs': 'mkfs.btrfs -f',
+              'swap': 'mkswap'}
+
+    if fstype not in comdic.keys():
+        return True, _("Unknown filesystem {0}").format(fstype)
+
+    cmd = comdic[fstype]
+
+    if len(label) > 0:
+        lbldic = {'ext2': '-L "%(label)s"',
+                  'ext3': '-L "%(label)s"',
+                  'ext4': '-L "%(label)s"',
+                  'f2fs': '-l "%(label)s"',
+                  'fat16': '-n "%(label)s"',
+                  'fat32': '-n "%(label)s"',
+                  'ntfs': '-L "%(label)s"',
+                  'jfs': '-L "%(label)s"',
+                  'reiserfs': '-l "%(label)s"',
+                  'xfs': '-L "%(label)s"',
+                  'btrfs': '-L "%(label)s"',
+                  'swap': '-L "%(label)s"'}
+        cmd += " " + lbldic[fstype]
+
+    if len(other_opts) == 0:
+        default_opts = {'ext2': '-m 1',
+                        'ext3': '-m 1 -O dir_index',
+                        'ext4': '-m 1 -O dir_index',
+                        'f2fs': '',
+                        'fat16': '',
+                        'fat32': '',
+                        'ntfs': '',
+                        'jfs': '',
+                        'reiserfs': '',
+                        'btrfs': '',
+                        'xfs': '',
+                        'swap': ''}
+        other_opts = default_opts[fstype]
+
+    if len(other_opts) > 0:
+        cmd += " %(other_opts)s"
+
+    cmd += " %(part)s"
 
     try:
-        cmd = shlex.split(comdic[fstype] % vars())
+        cmd = shlex.split(cmd % vars())
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
@@ -159,10 +187,7 @@ def create_fs(part, fstype, label='', other_opts=''):
 
 @misc.raise_privileges
 def is_ssd(disk_path):
-    """ Checks if given disk is actually a ssd disk.
-    :param disk_name:
-    :return:
-    """
+    """ Checks if given disk is actually a ssd disk. """
     disk_name = disk_path.split('/')[-1]
     filename = os.path.join("/sys/block", disk_name, "queue/rotational")
     if not os.path.exists(filename):
