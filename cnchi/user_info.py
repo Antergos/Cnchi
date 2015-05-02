@@ -208,7 +208,7 @@ class UserInfo(GtkBaseBox):
         else:
             self.login['auto'].set_sensitive(False)
         
-        self.forward_button.set_label(_('Install now!'))
+        self.forward_button.set_label(_('Save'))
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_sensitive(False)
 
