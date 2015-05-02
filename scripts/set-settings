@@ -30,9 +30,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
 
 	# Configure touchpad
-	gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
-	gsettings set org.gnome.settings-daemon.peripherals.touchpad touchpad-enabled true
-	gsettings set org.gnome.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
+	gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+	gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+	gsettings set org.gnome.desktop.peripherals.touchpad scroll-method 'two-finger-scrolling'
 
 fi
 
