@@ -1,3 +1,4 @@
+[2015-05-02 06:41:28 -0500]  adjust the button styles for advanced and user_info screens            Dustin Falgout  {1c4c397}
 [2015-05-02 13:38:52 +0200]  grub-mkconfig stops again ¿?                                               karasu      {7ad4f87}
 [2015-05-02 10:07:55 +0200]  Allow format without label                                                 karasu      {4341bde}
 [2015-05-02 01:35:36 -0500]  fixes #318 - needs testing                                             Dustin Falgout  {1a174e1}

@@ -30,9 +30,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
 
 	# Configure touchpad
-	gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
-	gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
-	gsettings set org.gnome.desktop.peripherals.touchpad scroll-method 'two-finger-scrolling'
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad scroll-method 'two-finger-scrolling'
 
 fi
 
@@ -79,9 +79,9 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
 
 	# Configure touchpad
-	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad tap-to-click true
-	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad touchpad-enabled true
-	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad tap-to-click true
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad touchpad-enabled true
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
 	
 fi
 
