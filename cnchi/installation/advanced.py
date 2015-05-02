@@ -1690,13 +1690,11 @@ class InstallationAdvanced(GtkBaseBox):
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
 
             if mnt == "/" and fsystem not in ["fat", "ntfs", "swap"]:
-                # Root partition
                 has_part["/"] = True
                 part_label["/"].show()
                 part_label["/"].set_state(True)
 
             if mnt == "swap":
-                # Swap partition
                 has_part["swap"] = True
                 part_label["swap"].show()
                 part_label["swap"].set_state(True)
@@ -1737,6 +1735,7 @@ class InstallationAdvanced(GtkBaseBox):
                 check_ok = check_ok and has_part["/boot"]
         
         self.forward_button.set_sensitive(check_ok)
+
         if check_ok:
             self.forward_button.set_name('fwd_btn_install_now')
             txt = _("Install now!")
