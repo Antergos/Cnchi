@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download_urllib.py
+#  download_requests.py
 #
 #  Copyright © 2013-2015 Antergos
 #
