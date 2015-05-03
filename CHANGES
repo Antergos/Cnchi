@@ -1,3 +1,4 @@
+[2015-05-02 16:52:47 +0200]  Remove comma in css                                                        karasu      {14cdd7e}
 [2015-05-02 06:45:02 -0500]  fix typo in gsettings script                                           Dustin Falgout  {ce5f4b4}
 [2015-05-02 06:41:28 -0500]  adjust the button styles for advanced and user_info screens            Dustin Falgout  {1c4c397}
 [2015-05-02 13:38:52 +0200]  grub-mkconfig stops again ¿?                                               karasu      {7ad4f87}

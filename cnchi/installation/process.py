@@ -139,7 +139,6 @@ class InstallationProcess(multiprocessing.Process):
         self.running = False
         self.queue_event('error', txt)
         self.callback_queue.join()
-        # Is this really necessary?
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
@@ -170,15 +169,21 @@ class InstallationProcess(multiprocessing.Process):
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             logging.error(_("Error running command %s"), process_error.cmd)
             logging.error(_("Output: %s"), process_error.output)
-            logging.error(trace)
+            for line in trace:
+                logging.error(line)
             self.queue_fatal_event(process_error.output)
-        except (
-                InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, OSError,
+        except (InstallError,
+                pyalpm.error,
+                KeyboardInterrupt,
+                TypeError,
+                AttributeError,
+                OSError,
                 IOError) as install_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             logging.error(install_error)
-            logging.error(trace)
+            for line in trace:
+                logging.error(line)
             self.queue_fatal_event(install_error)
 
     @misc.raise_privileges
@@ -275,9 +280,9 @@ class InstallationProcess(multiprocessing.Process):
                     if path == "":
                         # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                         continue
-                    
+
                     mount_part = self.mount_devices[path]
-                    
+
                     if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
                         if path[0] == '/':
                             path = path[1:]
@@ -647,7 +652,7 @@ class InstallationProcess(multiprocessing.Process):
             if not bootloader_found:
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
-        
+
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
         logging.debug(self.packages)
@@ -849,7 +854,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
-            
+
             '''
             is_ssd = False
             for ssd_device in self.ssd:
