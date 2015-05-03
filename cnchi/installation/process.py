@@ -407,7 +407,13 @@ class InstallationProcess(multiprocessing.Process):
             use_aria2 = False
 
         download.DownloadPackages(
-            self.packages, use_aria2, pacman_conf_file, pacman_cache_dir, cache_dir, self.callback_queue, self.settings)
+            self.packages,
+            use_aria2,
+            pacman_conf_file,
+            pacman_cache_dir,
+            cache_dir,
+            self.callback_queue,
+            self.settings)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
