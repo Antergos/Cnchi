@@ -139,7 +139,6 @@ class InstallationProcess(multiprocessing.Process):
         self.running = False
         self.queue_event('error', txt)
         self.callback_queue.join()
-        # Is this really necessary?
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
@@ -167,18 +166,24 @@ class InstallationProcess(multiprocessing.Process):
             self.run_installation()
         except subprocess.CalledProcessError as process_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             logging.error(_("Error running command %s"), process_error.cmd)
             logging.error(_("Output: %s"), process_error.output)
-            logging.error(trace)
+            for line in trace:
+                logging.error(line)
             self.queue_fatal_event(process_error.output)
-        except (
-                InstallError, pyalpm.error, KeyboardInterrupt, TypeError, AttributeError, OSError,
+        except (InstallError,
+                pyalpm.error,
+                KeyboardInterrupt,
+                TypeError,
+                AttributeError,
+                OSError,
                 IOError) as install_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             logging.error(install_error)
-            logging.error(trace)
+            for line in trace:
+                logging.error(line)
             self.queue_fatal_event(install_error)
 
     @misc.raise_privileges
@@ -275,9 +280,9 @@ class InstallationProcess(multiprocessing.Process):
                     if path == "":
                         # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
                         continue
-                    
+
                     mount_part = self.mount_devices[path]
-                    
+
                     if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
                         if path[0] == '/':
                             path = path[1:]
@@ -402,7 +407,13 @@ class InstallationProcess(multiprocessing.Process):
             use_aria2 = False
 
         download.DownloadPackages(
-            self.packages, use_aria2, pacman_conf_file, pacman_cache_dir, cache_dir, self.callback_queue, self.settings)
+            self.packages,
+            use_aria2,
+            pacman_conf_file,
+            pacman_cache_dir,
+            cache_dir,
+            self.callback_queue,
+            self.settings)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
@@ -505,15 +516,17 @@ class InstallationProcess(multiprocessing.Process):
 
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
+                logging.debug(_("Getting url {0}...").format(url))
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
-                # If the installer can't retrieve the remote file, try to install with a local
-                # copy, that may not be updated
+                # If the installer can't retrieve the remote file Cnchi will use
+                # a local copy, which might be updated or not.
                 logging.warning(url_error)
-                logging.debug(_("Can't retrieve remote package list, using a local file instead."))
+                logging.debug(_("Can't retrieve remote package list, using the local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
+                logging.debug(_("Loading {0}").format(packages_xml))
 
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
@@ -522,22 +535,22 @@ class InstallationProcess(multiprocessing.Process):
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
+                name = edition.attrib.get("name").lower()
                 # Add common packages to all desktops (including base)
-                if edition.attrib.get("name").lower() == "common":
+                if name == "common":
                     for pkg in edition.iter('pkgname'):
                         self.packages.append(pkg.text)
                 # Add common graphical packages
-                if self.desktop != "base":
-                    if edition.attrib.get("name").lower() == "graphic":
-                        for pkg in edition.iter('pkgname'):
-                            # If package is Desktop Manager, save the name to activate the correct service later
-                            if pkg.attrib.get('dm'):
-                                self.desktop_manager = pkg.attrib.get('name')
-                            plib = pkg.attrib.get('lib')
-                            if plib is None or (plib is not None and self.desktop in lib[plib]):
-                                self.packages.append(pkg.text)
+                if name == "graphic" and self.desktop != "base":
+                    for pkg in edition.iter('pkgname'):
+                        # If package is Desktop Manager, save the name to activate the correct service later
+                        if pkg.attrib.get('dm'):
+                            self.desktop_manager = pkg.attrib.get('name')
+                        plib = pkg.attrib.get('lib')
+                        if plib is None or (plib is not None and self.desktop in lib[plib]):
+                            self.packages.append(pkg.text)
                 # Add specific desktop packages
-                if edition.attrib.get("name").lower() == self.desktop:
+                if name == self.desktop:
                     logging.debug(_("Adding '%s' desktop packages"), self.desktop)
                     for pkg in edition.iter('pkgname'):
                         # If package is Network Manager, save the name to activate the correct service later
@@ -647,7 +660,7 @@ class InstallationProcess(multiprocessing.Process):
             if not bootloader_found:
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
-        
+
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
         logging.debug(self.packages)
@@ -849,7 +862,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
-            
+
             '''
             is_ssd = False
             for ssd_device in self.ssd:

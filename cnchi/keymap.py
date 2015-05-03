@@ -49,7 +49,7 @@ class Keymap(GtkBaseBox):
 
         self.keyboard_layout = { 'code': None, 'name': None }
         self.keyboard_variant  = { 'code': None, 'name': None }
-        
+
         self.kbd_names = keyboard_names.KeyboardNames(os.path.join(self.settings.get('data'), "kbdnames.gz"))
 
         self.create_treeviews()
@@ -101,7 +101,7 @@ class Keymap(GtkBaseBox):
                     lang = "C"
                 self.keyboard_layout['name'] = self.kbd_names.get_layout_name(lang, self.keyboard_layout['code'])
                 self.select_value_in_treeview(self.layout_treeview, self.keyboard_layout['name'])
-                
+
                 # Country was found, here we should put specific variant cases
                 if selected_country == "Spain" and self.settings.get("language_name") == "Catalan":
                     self.keyboard_variant['code'] = "cat"
@@ -133,7 +133,7 @@ class Keymap(GtkBaseBox):
 
         if not self.kbd_names.has_language(lang):
             lang = "C"
-        
+
         self.kbd_names.load(lang)
 
         sorted_layouts = []
@@ -196,13 +196,13 @@ class Keymap(GtkBaseBox):
                 lang = self.settings.get("language_code")
                 if not self.kbd_names.has_language(lang):
                     lang = "C"
-                
+
                 self.kbd_names.load(lang)
 
                 self.keyboard_layout['code'] = self.kbd_names.get_layout_code(lang, self.keyboard_layout['name'])
 
                 sorted_variants = []
-                
+
                 if self.kbd_names.has_variants(lang, self.keyboard_layout['code']):
                     variants = self.kbd_names.get_variants(lang, self.keyboard_layout['code'])
                     for variant in variants:
@@ -266,7 +266,7 @@ class Keymap(GtkBaseBox):
 
         self.settings.set("keyboard_layout", self.keyboard_layout['code'])
         self.settings.set("keyboard_variant", self.keyboard_variant['code'])
-        
+
         if self.keyboard_variant['code'] is None or len(self.keyboard_variant['code']) == 0:
             txt = _("Set keyboard to layout name '{0}' ({1})").format(
             self.keyboard_layout['name'],
@@ -291,7 +291,7 @@ class Keymap(GtkBaseBox):
 
             if len(self.keyboard_variant['code']) > 0:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
-            
+
             try:
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as process_error:

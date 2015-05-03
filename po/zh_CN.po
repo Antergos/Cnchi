@@ -4,15 +4,15 @@
 # 
 # Translators:
 # zhqh100 <1483586698@qq.com>, 2014
-# Dean Chan <wsxy162@gmail.com>, 2015
-# Dean Chan <wsxy162@gmail.com>, 2015
+# Dean Chen <wsxy162@gmail.com>, 2015
+# Dean Chen <wsxy162@gmail.com>, 2015
 # deisiler <deisiler@sina.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-19 05:51+0000\n"
-"Last-Translator: Dean Chan <wsxy162@gmail.com>\n"
+"PO-Revision-Date: 2015-04-21 07:50+0000\n"
+"Last-Translator: Dean Chen <wsxy162@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/antergos/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,7 +52,7 @@ msgstr "必须拥有至少 {0}GB 的可用存储空间。(*)"
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr "这决定于你选择的桌面环境，所以你可能需要更多的空间."
+msgstr "这决定于你选择的桌面环境，所以你可能需要更多的空间。"
 
 #: cnchi/check.py:89
 msgid "is plugged in to a power source"
@@ -68,15 +68,15 @@ msgstr "为达到理想结果，请保证该电脑："
 
 #: cnchi/check.py:174
 msgid "We have Internet connection."
-msgstr "有互联网连接."
+msgstr "有互联网连接。"
 
 #: cnchi/check.py:175
 msgid "We're connected to a power source."
-msgstr "已连接到电源."
+msgstr "已连接到电源。"
 
 #: cnchi/check.py:176
 msgid "We have enough disk space."
-msgstr "拥有足够的磁盘空间."
+msgstr "拥有足够的磁盘空间。"
 
 #: cnchi/check.py:201 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
 #: cnchi/features.py:382 cnchi/installation/advanced.py:2194
@@ -167,7 +167,7 @@ msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
-msgstr "Gnome 3 让我们简洁优雅地使用电脑.GNOME 3采用了活动视图，为用户提供了简单的方法来访问所有任务.GNOME 3 是Antergos的默认桌面."
+msgstr "Gnome 3 让我们简洁优雅地使用电脑。GNOME 3 采用了活动视图，为用户提供了简单的方法来访问所有任务。GNOME 3 是Antergos的默认桌面。"
 
 #: cnchi/desktop_environments.py:120
 msgid ""
@@ -175,7 +175,7 @@ msgid ""
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
-msgstr "Cinnamon 是GNOME 3 的衍生版本，开发于(并用于)Linux Mint. 它基于GNOME 3的最新技术，向用户提供了一个传统的桌面.Cinnamon 为有经验用户使用."
+msgstr "Cinnamon 是 GNOME 3 的衍生版本，开发于(并用于) Linux Mint 。它基于 GNOME 3 的最新技术，向用户提供了一个传统的桌面。Cinnamon 为有经验用户使用。"
 
 #: cnchi/desktop_environments.py:125
 msgid ""
@@ -183,7 +183,7 @@ msgid ""
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
-msgstr "Xfce是一个轻量级的桌面环境.它致力于运行快速并占用很少的系统资源,但仍提供了吸引人的友好可视化界面.这是使用较旧电脑或低配电脑的极好选择."
+msgstr "Xfce 是一个轻量级的桌面环境。它致力于运行快速并占用很少的系统资源，但仍提供了吸引人的友好可视化界面。这是使用较旧电脑或低配电脑的极好选择。"
 
 #: cnchi/desktop_environments.py:130
 msgid ""
@@ -191,7 +191,7 @@ msgid ""
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
-msgstr "LXDE是一个性能极快，节省资源的桌面环境.它比其他桌面环境占用更少的CPU和RAM.LXDE是专为采用低硬件配置的云电脑设计的，如netbooks, 移动设备, 和较老的电脑."
+msgstr "LXDE 是一个性能极快，节省资源的桌面环境.它比其他桌面环境占用更少的 CPU 和 RAM。LXDE是专为采用低硬件配置的云电脑设计的，如上网本，移动设备，和较老的电脑。"
 
 #: cnchi/desktop_environments.py:135
 msgid ""
@@ -275,7 +275,7 @@ msgstr "使用 urllib 下载包"
 
 #: cnchi/download/download.py:114
 msgid "Creating the list of packages to download..."
-msgstr "创建包下载列表中..."
+msgstr "创建包下载列表中…"
 
 #: cnchi/download/download.py:127 cnchi/download/metalink.py:483
 msgid "Can't initialize pyalpm: %s"
@@ -368,7 +368,7 @@ msgstr "Arch 用户软件仓库(AUR) 支持"
 
 #: cnchi/features.py:179
 msgid "The AUR is a community-driven repository for Arch users."
-msgstr "AUR是一个为 Arch 用户提供的社区驱动的软件仓库."
+msgstr "AUR 是一个为 Arch 用户提供的社区驱动的软件仓库。"
 
 #: cnchi/features.py:180
 msgid ""
@@ -376,7 +376,7 @@ msgid ""
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
-msgstr "使用yaourt来安装AUR包.\n创建AUR是为了从社区中组织\n和共享新包，并帮助促进流行包\n进入[社区]库."
+msgstr "使用yaourt来安装AUR包。\n创建AUR是为了从社区中组织\n和共享新包，并帮助促进流行包\n进入[community]库。"
 
 #: cnchi/features.py:187
 msgid "Bluetooth Support"
@@ -384,7 +384,7 @@ msgstr "蓝牙支持"
 
 #: cnchi/features.py:188
 msgid "Enables your system to make wireless connections via Bluetooth."
-msgstr "使能系统中的无线蓝牙连接."
+msgstr "使能系统中的无线蓝牙连接。"
 
 #: cnchi/features.py:189
 msgid ""
@@ -540,7 +540,7 @@ msgstr "ufw 默认拒绝\nufw 允许来自 {0}\nufw 允许 Transmission\nufw 允
 
 #: cnchi/hardware/hardware.py:80 cnchi/installation/chroot.py:155
 msgid "Error running command: %s"
-msgstr "运行命令错误: %s"
+msgstr "运行命令错误： %s"
 
 #: cnchi/hardware/hardware.py:113
 msgid "Error importing %s from %s : %s"
@@ -548,7 +548,7 @@ msgstr "从 %s 导入 %s 时出错： %s"
 
 #: cnchi/hardware/hardware.py:115
 msgid "Unexpected error importing %s: %s"
-msgstr "导入 %s 时发生意外错误: %s"
+msgstr "导入 %s 时发生意外错误： %s"
 
 #: cnchi/installation/advanced.py:259 cnchi/installation/advanced.py:578
 #: cnchi/installation/advanced.py:592
@@ -605,7 +605,7 @@ msgstr "无法两次使用同一个挂载点..."
 
 #: cnchi/installation/advanced.py:763
 msgid "Root partition must be formatted."
-msgstr "根分区必须格式化."
+msgstr "根分区必须格式化。"
 
 #: cnchi/installation/advanced.py:861
 msgid "You will delete the partition %s from disk %s"
@@ -657,7 +657,7 @@ msgstr "设备："
 
 #: cnchi/installation/advanced.py:1304
 msgid "Mount Checklist:"
-msgstr "挂载列表:"
+msgstr "挂载列表："
 
 #: cnchi/installation/advanced.py:1310
 msgid "Root"
@@ -733,15 +733,15 @@ msgstr "空间终点"
 
 #: cnchi/installation/advanced.py:1397 cnchi/installation/advanced.py:1414
 msgid "Use As:"
-msgstr "用作:"
+msgstr "用作："
 
 #: cnchi/installation/advanced.py:1401 cnchi/installation/advanced.py:1418
 msgid "Mount Point:"
-msgstr "挂载点:"
+msgstr "挂载点："
 
 #: cnchi/installation/advanced.py:1405 cnchi/installation/advanced.py:1422
 msgid "Label (optional):"
-msgstr "标签(可选):"
+msgstr "标签(可选)："
 
 #: cnchi/installation/advanced.py:1409 cnchi/installation/advanced.py:1430
 msgid "Encryption Options..."
@@ -753,7 +753,7 @@ msgstr "格式化："
 
 #: cnchi/installation/advanced.py:1435
 msgid "Partition Table Type:"
-msgstr "分区表类型:"
+msgstr "分区表类型："
 
 #: cnchi/installation/advanced.py:1440
 msgid "Create Partition Table"
@@ -863,11 +863,11 @@ msgstr "正在创建新的 {0} 文件系统在 {1}  中"
 
 #: cnchi/installation/advanced.py:2080
 msgid "Encrypting {0}, assigning volume name {1} and formatting it..."
-msgstr "正在加密 {0}，分配卷名 {1} 并格式化......"
+msgstr "正在加密 {0}，分配卷名 {1} 并格式化…"
 
 #: cnchi/installation/advanced.py:2110
 msgid "Couldn't format partition '{0}' with label '{1}' as '{2}'"
-msgstr "无法带标签 '{1}' 格式化分区 '{0}' 因为 '{2}'"
+msgstr "无法以标签 '{1}' 格式化分区 '{0}' 因为 '{2}'"
 
 #: cnchi/installation/advanced.py:2168 cnchi/installation/automatic.py:264
 msgid "Cnchi will not install any bootloader"
@@ -919,13 +919,13 @@ msgstr "选择您想要压缩的分区："
 
 #: cnchi/installation/alongside.py:212
 msgid "Antergos Alongside Installation"
-msgstr "Antergos 双系统安装"
+msgstr "Antergos 并存安装"
 
 #: cnchi/installation/alongside.py:252
 msgid ""
 "Can't find any spare partition number.\n"
 "Alongside installation can't continue."
-msgstr "找不到任何空闲的分区号码。\n双系统安装无法继续。"
+msgstr "找不到任何空闲的分区号码。\n并存安装无法继续。"
 
 #: cnchi/installation/alongside.py:263
 msgid "Can't find any installed OS!"
@@ -933,7 +933,7 @@ msgstr "找不到任何已安装的操作系统！"
 
 #: cnchi/installation/ask.py:109
 msgid "Cnchi will enable the 'alongside' installation mode."
-msgstr "Cnchi 将启用“双系统”安装模式。"
+msgstr "Cnchi 将启用“并存”安装模式。"
 
 #: cnchi/installation/ask.py:111
 msgid "Cnchi will NOT enable the 'alongside' installation mode."
@@ -941,7 +941,7 @@ msgstr "Cnchi 将不会启用“双系统”安装模式。"
 
 #: cnchi/installation/ask.py:125
 msgid "The 'alongside' installation mode does not work in UEFI systems"
-msgstr "“双系统”安装模式无法适用于 UEFI 系统"
+msgstr "“并存”安装模式无法适用于 UEFI 系统"
 
 #: cnchi/installation/ask.py:140
 msgid "Windows(tm) OS detected."
@@ -957,7 +957,7 @@ msgstr "在设备 sda 中检测不到任何操作系统。"
 
 #: cnchi/installation/ask.py:150
 msgid "Unsuported disk layout for the 'alongside' installation mode"
-msgstr "不被“双系统”安装模式支持的磁盘布局"
+msgstr "不被“并存”安装模式支持的磁盘布局"
 
 #: cnchi/installation/ask.py:195
 msgid " and "
@@ -977,15 +977,15 @@ msgstr "清空磁盘并安装Antergos"
 
 #: cnchi/installation/ask.py:228
 msgid "Warning: This will erase ALL data on your disk."
-msgstr "警告: 将删除磁盘上的全部数据."
+msgstr "警告：将删除磁盘上的全部数据。"
 
 #: cnchi/installation/ask.py:234
 msgid "Encrypt this installation for increased security."
-msgstr "加密本次安装来提高安全性."
+msgstr "加密本次安装来提高安全性。"
 
 #: cnchi/installation/ask.py:238
 msgid "You will be asked to create an encryption password in the next step."
-msgstr "下一步你需要创建一个加密密码."
+msgstr "下一步你需要创建一个加密密码。"
 
 #: cnchi/installation/ask.py:243
 msgid "Use LVM with this installation."
@@ -995,7 +995,7 @@ msgstr "使用 LVM 来完成这次安装。"
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
-msgstr "这将会安装LVM，允许你便捷地管理分区并创建快照."
+msgstr "这将会安装LVM，允许你便捷地管理分区并创建快照。"
 
 #: cnchi/installation/ask.py:252
 msgid "Set your Home in a different partition/volume"
@@ -1028,7 +1028,7 @@ msgstr "手动选择 Antergos 的安装位置。"
 
 #: cnchi/installation/ask.py:286
 msgid "Edit partition table and choose mount points."
-msgstr "编辑分区表并选择挂载点."
+msgstr "编辑分区表并选择挂载点。"
 
 #: cnchi/installation/ask.py:317
 msgid "Antergos installation will be encrypted using LUKS"
@@ -1040,11 +1040,11 @@ msgstr "Antergos 将安装在LVM 卷上"
 
 #: cnchi/installation/ask.py:322
 msgid "Antergos will be installed using a separate /home volume."
-msgstr "Antergos将使用一个独立的/home卷进行安装."
+msgstr "Antergos 将使用一个独立的 /home 卷进行安装。"
 
 #: cnchi/installation/ask.py:324
 msgid "Antergos will be installed using a separate /home partition."
-msgstr "Antergos将使用一个独立的/home分区进行安装."
+msgstr "Antergos 将使用一个独立的 /home 分区进行安装。"
 
 #: cnchi/installation/auto_partition.py:79
 msgid "Unmounting %s"
@@ -1052,7 +1052,7 @@ msgstr "正在卸载 %s"
 
 #: cnchi/installation/auto_partition.py:83
 msgid "Unmounting %s failed. Trying lazy arg."
-msgstr "卸载 %s 失败。正在尝试 -l 参数."
+msgstr "卸载 %s 失败。正在尝试 -l 参数。"
 
 #: cnchi/installation/auto_partition.py:87
 msgid "Unmounting %s failed."
@@ -1154,13 +1154,13 @@ msgstr "无法激活 %s 中的交换分区"
 #: cnchi/installation/auto_partition.py:666 cnchi/installation/chroot.py:123
 #: cnchi/installation/process.py:289 cnchi/installation/process.py:298
 msgid "Command %s has failed."
-msgstr "命令 %s 失败."
+msgstr "命令 %s 失败。"
 
 #: cnchi/installation/auto_partition.py:361
 #: cnchi/installation/auto_partition.py:667 cnchi/installation/chroot.py:125
 #: cnchi/installation/process.py:290 cnchi/installation/process.py:299
 msgid "Output : %s"
-msgstr "输出: %s"
+msgstr "输出： %s"
 
 #: cnchi/installation/auto_partition.py:377
 msgid "Unknown filesystem type {0}"
@@ -1246,7 +1246,7 @@ msgstr "无法复制 LUKS 密钥文件到安装设备"
 
 #: cnchi/installation/automatic.py:72
 msgid "Select drive:"
-msgstr "选择驱动器:"
+msgstr "选择驱动器："
 
 #: cnchi/installation/automatic.py:76
 msgid "WARNING! This will overwrite everything currently on your drive!"
@@ -1304,7 +1304,7 @@ msgstr "Antergos 将在设备 '{1}' 中安装引导加载程序 '{0}'"
 msgid ""
 "'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope"
 " it's ok"
-msgstr "'ruuid' 变量未设置。我不能检查 grub.cfg 中的根 UUID，让我们希望它是正常的"
+msgstr "'ruuid' 变量未设置。无法检查 grub.cfg 中的根 UUID，希望它是正常的"
 
 #: cnchi/installation/bootloader.py:158
 msgid "/etc/default/grub configuration completed successfully."
@@ -1312,7 +1312,7 @@ msgstr "/etc/default/grub 配置已成功完成。"
 
 #: cnchi/installation/bootloader.py:203
 msgid "Could not copy %s to grub.d"
-msgstr "无法复制 %s 到grub.d"
+msgstr "无法复制 %s 到 grub.d"
 
 #: cnchi/installation/bootloader.py:212
 msgid "Installing GRUB(2) BIOS boot loader in {0}"
@@ -1338,7 +1338,7 @@ msgstr "安装 GRUB(2) UEFI {0} 的引导加载程序"
 
 #: cnchi/installation/bootloader.py:306
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
-msgstr "没有在 %s 发现OEM 加载器.正在复制 Grub(2) 到目录。"
+msgstr "没有在 %s 发现 OEM 加载器。正在复制 Grub(2) 到目录。"
 
 #: cnchi/installation/bootloader.py:309
 msgid "Copying Grub(2) into OEM dir failed: %s"
@@ -1358,11 +1358,11 @@ msgstr "UEFI Shell drop-in 未在 %s 找到"
 
 #: cnchi/installation/bootloader.py:329
 msgid "UEFI Shell drop-in could not be copied."
-msgstr "无法复制UEFI Shell drop-in ."
+msgstr "无法复制 UEFI Shell drop-in 。"
 
 #: cnchi/installation/bootloader.py:333
 msgid "Generating grub.cfg"
-msgstr "正在生成grub.cfg"
+msgstr "正在生成 grub.cfg"
 
 #: cnchi/installation/bootloader.py:347
 msgid ""
@@ -1376,7 +1376,7 @@ msgstr "GRUB(2) UEFI 安装成功完成"
 
 #: cnchi/installation/bootloader.py:369
 msgid "GRUB(2) UEFI install may not have completed successfully."
-msgstr "GRUB(2) UEFI 安装可能没有完全成功."
+msgstr "GRUB(2) UEFI 安装可能没有完全成功。"
 
 #: cnchi/installation/bootloader.py:381
 msgid "50mounted-tests file patched successfully"
@@ -1404,7 +1404,7 @@ msgstr "正在安装 Grub2 语言环境"
 
 #: cnchi/installation/bootloader.py:410
 msgid "Can't install GRUB(2) locale."
-msgstr "无法安装 GRUB(2) 的语言环境."
+msgstr "无法安装 GRUB(2) 的语言环境。"
 
 #: cnchi/installation/bootloader.py:494
 msgid "Gummiboot install completed successfully"
@@ -1548,7 +1548,7 @@ msgstr "正在获取包列表..."
 
 #: cnchi/installation/process.py:501
 msgid "Can't retrieve remote package list, using a local file instead."
-msgstr "无法获取远程包列表，使用本地文件代替."
+msgstr "无法获取远程包列表，使用本地文件代替。"
 
 #: cnchi/installation/process.py:528
 msgid "Adding '%s' desktop packages"
@@ -1556,7 +1556,7 @@ msgstr "添加桌面包 '%s'"
 
 #: cnchi/installation/process.py:553
 msgid "Selected kde language pack: %s"
-msgstr "已选中 kde 语言包: %s"
+msgstr "已选中 kde 语言包： %s"
 
 #: cnchi/installation/process.py:569
 msgid "Hardware module detected this drivers: %s"
@@ -1564,7 +1564,7 @@ msgstr "硬件模块检测到这个驱动： %s"
 
 #: cnchi/installation/process.py:573
 msgid "Hardware module added these packages : %s"
-msgstr "硬件模块添加这些包: %s"
+msgstr "硬件模块添加这些包：%s"
 
 #: cnchi/installation/process.py:582 cnchi/installation/process.py:1257
 msgid "Can't import hardware module."
@@ -1588,7 +1588,7 @@ msgstr "所有功能需要的包都已添加"
 
 #: cnchi/installation/process.py:617
 msgid "Selecting chinese fonts."
-msgstr "正在选择中文字体."
+msgstr "正在选择中文字体。"
 
 #: cnchi/installation/process.py:629
 msgid "Adding '%s' bootloader packages"
@@ -1718,11 +1718,11 @@ msgstr "已生成 "
 
 #: cnchi/installation/process.py:1227
 msgid "Timezone set."
-msgstr "时区已设置."
+msgstr "时区已设置。"
 
 #: cnchi/installation/process.py:1247
 msgid "Sudo configuration for user %s done."
-msgstr "用户 %s 的 sudo 配置已完成."
+msgstr "用户 %s 的 sudo 配置已完成。"
 
 #: cnchi/installation/process.py:1254
 msgid "Running post-install scripts from hardware module..."
@@ -2123,7 +2123,7 @@ msgstr "无法删除物理卷 {0}"
 msgid ""
 "Exception: {0}.\n"
 "For more information take a look at /tmp/cnchi.log"
-msgstr "异常： {0}。\n更多信息请查看 /tmp/cnchi.log "
+msgstr "异常： {0}。\n详情请查看 /tmp/cnchi.log "
 
 #: cnchi/parted3/partition_module.py:182
 msgid "Can't delete partition {0}"
@@ -2210,7 +2210,7 @@ msgid ""
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
 "\n"
 "Would you like to view the wiki page now?"
-msgstr "重要提示： 引导装载程序安装可能有问题，\n这可能导致你的系统无法正常启动。\n启动前也许你需要验证是否引导装载程序已安装和已配置。\nArch Linux Wiki包含问题定位信息：\n⇥https://wiki.archlinux.org/index.php/GRUB\n\n你是否要现在查看 wiki 页面？"
+msgstr "重要提示： 引导装载程序安装可能有问题，\n这可能导致你的系统无法正常启动。\n启动前也许你需要验证是否引导装载程序已安装和已配置。\nArch Linux Wiki包含问题定位信息：\n⇥https://wiki.archlinux.org/index.php/GRUB\n\n您是否要现在查看 wiki 页面？"
 
 #: cnchi/slides.py:200
 msgid ""
@@ -2252,7 +2252,7 @@ msgstr "无法获取网络状态。"
 
 #: cnchi/timezone.py:298
 msgid "We have connection. Let's get our timezone"
-msgstr "已连接.让我们获取时区"
+msgstr "已连接。让我们获取时区"
 
 #: cnchi/timezone.py:316
 msgid "Timezone (latitude {0}, longitude {1}) detected."
@@ -2285,7 +2285,7 @@ msgstr "无法下载新的 Cnchi 版本。"
 
 #: cnchi/updater.py:143
 msgid "Uncompressing new version..."
-msgstr "正在解压缩新的版本......"
+msgstr "正在解压缩新的版本…"
 
 #: cnchi/updater.py:189
 msgid "Can't copy %s to %s"
@@ -2329,7 +2329,7 @@ msgstr "确认密码"
 
 #: cnchi/user_info.py:109
 msgid "Identifies your system to other computers and devices."
-msgstr "认证你的系统到其他的电脑和设备上."
+msgstr "认证你的系统到其他的电脑和设备上。"
 
 #: cnchi/user_info.py:115
 msgid "You must enter a name"

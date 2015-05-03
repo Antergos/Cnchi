@@ -53,11 +53,11 @@ class Bootloader(object):
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
         self.root_uuid = fs.get_info(self.root_device)['UUID']
-        
+
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
             self.swap_uuid = fs.get_info(swap_partition)['UUID']
-        
+
         if "/boot" in self.mount_devices:
             boot_device = self.mount_devices["/boot"]
             self.boot_uuid = fs.get_info(boot_device)['UUID']
@@ -95,15 +95,15 @@ class Bootloader(object):
             return
 
         ruuid_str = 'root=UUID={0}'.format(self.root_uuid)
-        
+
         cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
         if cmdline_linux is None:
             cmdline_linux = ""
-        
+
         cmdline_linux_default = self.settings.get('GRUB_CMDLINE_LINUX_DEFAULT')
         if cmdline_linux_default is None:
             cmdline_linux_default = ""
-        
+
         boot_command = 'linux /vmlinuz-linux {0} {1} {2}\n'.format(ruuid_str, cmdline_linux, cmdline_linux_default)
 
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
@@ -234,10 +234,13 @@ class Bootloader(object):
         # We call mount_special_dirs here just to be sure
         chroot.mount_special_dirs(self.dest_dir)
 
-        grub_install = ['grub-install', '--directory=/usr/lib/grub/i386-pc', '--target=i386-pc',
-                        '--boot-directory=/boot', '--recheck']
+        grub_install = ['grub-install',
+                        '--directory=/usr/lib/grub/i386-pc',
+                        '--target=i386-pc',
+                        '--boot-directory=/boot',
+                        '--recheck']
 
-        if len(grub_location) > len("/dev/sdX"):  # ex: /dev/sdXY > 8
+        if len(grub_location) > len("/dev/sdX"):  # Use --force when installing in /dev/sdXY
             grub_install.append("--force")
 
         grub_install.append(grub_location)
@@ -259,6 +262,7 @@ class Bootloader(object):
         self.apply_osprober_patch()
 
         # Run grub-mkconfig last
+        logging.debug(_("Running grub-mkconfig..."))
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
@@ -364,6 +368,7 @@ class Bootloader(object):
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
 
+        logging.debug(_("Running grub-mkconfig..."))
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
@@ -452,28 +457,29 @@ class Bootloader(object):
             conf['default'].append("title\tAntergos\n")
             conf['default'].append("linux\t/vmlinuz-linux\n")
             conf['default'].append("initrd\t/initramfs-linux.img\n")
-            conf['default'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+            conf['default'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
 
             conf['fallback'] = []
             conf['fallback'].append("title\tAntergos (fallback)\n")
             conf['fallback'].append("linux\t/vmlinuz-linux\n")
             conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
-            conf['fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+            conf['fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
 
             if self.settings.get('feature_lts'):
                 conf['lts'] = []
                 conf['lts'].append("title\tAntergos LTS\n")
                 conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
                 conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
-                conf['lts'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+                conf['lts'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
 
                 conf['lts_fallback'] = []
                 conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
                 conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
                 conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf['lts_fallback'].append("options\troot=UUID={0} rw\n\n".format(self.root_uuid))
+                conf['lts_fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
+            luks_root_volume_uuid = fs.get_info(luks_root_volume)['UUID']
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
             root_device = self.root_device
@@ -487,29 +493,29 @@ class Bootloader(object):
             if self.settings.get("luks_root_password") == "":
                 key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
-            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw"
-            root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, root_uuid)
+            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
+            root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key, luks_root_volume_uuid)
 
             conf['default'] = []
             conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/boot/vmlinuz-linux\n")
-            conf['default'].append("options\tinitrd=/boot/initramfs-linux.img {0}\n\n".format(root_uuid_line))
+            conf['default'].append("linux\t/vmlinuz-linux\n")
+            conf['default'].append("options\tinitrd=/initramfs-linux.img {0}\n\n".format(root_uuid_line))
 
             conf['fallback'] = []
             conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/boot/vmlinuz-linux\n")
-            conf['fallback'].append("options\tinitrd=/boot/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
+            conf['fallback'].append("linux\t/vmlinuz-linux\n")
+            conf['fallback'].append("options\tinitrd=/initramfs-linux-fallback.img {0}\n\n".format(root_uuid_line))
 
             if self.settings.get('feature_lts'):
                 conf['lts'] = []
                 conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf['lts'].append("options\tinitrd=/boot/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
-                
+                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts'].append("options\tinitrd=/initramfs-linux-lts.img {0}\n\n".format(root_uuid_line))
+
                 conf['lts_fallback'] = []
                 conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
-                conf['lts_fallback'].append("linux\t/boot/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("options\tinitrd=/boot/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
+                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+                conf['lts_fallback'].append("options\tinitrd=/initramfs-linux-lts-fallback.img {0}\n\n".format(root_uuid_line))
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
@@ -537,7 +543,7 @@ class Bootloader(object):
                     entry_file.write(line)
 
         # Install bootloader
-
+        logging.debug(_("Installing gummiboot bootloader..."))
         try:
             chroot.mount_special_dirs(self.dest_dir)
             cmd = ['gummiboot', '--path=/boot', 'install']

@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+
 # -*- coding: utf-8 -*-
 #
 #  postinstall.sh
@@ -31,7 +32,7 @@ set_xorg()
 gnome_settings()
 {
     # Set gsettings input-source
-    if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+    if [[ "${KEYBOARD_VARIANT}" != '' ]]; then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
     else
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
@@ -40,11 +41,11 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
 
     # Set gdm shell logo
     cp /usr/share/antergos/logo.png ${DESTDIR}/usr/share/antergos/
-    chroot ${DESTDIR} sudo -u gdm dbus-launch gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" >/dev/null 2>&1
+    chroot ${DESTDIR} sudo -u gdm dbus-launch gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" > /dev/null 2>&1
 
     rm ${DESTDIR}/usr/bin/set-settings
 
@@ -58,18 +59,16 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
     cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
 
-    cp /usr/share/cnchi/scripts/postinstall/xscreensaver.desktop ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 
-    # I'm not sure about these (karasu)
-    #self.chroot(['glib-compile-schemas', '/usr/share/glib-2.0/schemas'])
-    #self.chroot(['gtk-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor'])
-    #self.chroot(['dconf', 'update'])
+    # Ensure that Light Locker starts before gnome-shell
+    sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings()
 {
     # Set gsettings input-source
-    if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+    if [[ "${KEYBOARD_VARIANT}" != '' ]]; then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
     else
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
@@ -82,21 +81,24 @@ cinnamon_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Copy menu@cinnamon.org.json to set menu icon
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
     cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
-	# Copy panel-launchers@cinnamon.org.json to set launchers
+    # Copy panel-launchers@cinnamon.org.json to set launchers
+    if [[ $_BROWSER = "firefox" ]]; then
+        sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json
+    fi
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
     cp -f /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
 
     # Set Cinnamon in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
 
     # Set skel directory
@@ -118,12 +120,14 @@ xfce_settings()
     # Set settings
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/xfce4/xfconf/xfce-perchannel-xml
     cp -R ${DESTDIR}/etc/xdg/xfce4/panel ${DESTDIR}/etc/xdg/xfce4/helpers.rc ${DESTDIR}/home/${USER_NAME}/.config/xfce4
-    sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${DESTDIR}/home/${USER_NAME}/.config/xfce4/helpers.rc
+    if [[ ${_BROWSER} = "chromium" ]]; then
+        sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${DESTDIR}/home/${USER_NAME}/.config/xfce4/helpers.rc
+    fi
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -135,9 +139,16 @@ xfce_settings()
     # Set xfce in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=xfce" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
     echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
+
+    # xscreensaver config
+    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+    cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+
 }
 
 openbox_settings()
@@ -176,7 +187,7 @@ openbox_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -189,6 +200,11 @@ openbox_settings()
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+    # xscreensaver config
+    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+    cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 }
 
 lxde_settings()
@@ -230,7 +246,7 @@ lxde_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -272,7 +288,7 @@ lxqt_settings()
     # Set Razor in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=razor" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
@@ -312,18 +328,18 @@ kde_settings()
     # symlinks during the transitional period until all apps are updated to use the new config file paths.
     link_config() {
 
-         if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
+        if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
             app=${1:6}
             app_old="/home/${USER_NAME}/.kde4/share/apps/${app}"
             app_new="/home/${USER_NAME}/.local/share/${app}"
-            chroot ${DESTDIR} "ln -s ${app_old} ${app_new}" ${USER_NAME}
-         fi
-         if [[ ${2} != "conf:" ]] && [[ ${2} != "" ]]; then
+            chroot ${DESTDIR} "ln -s ${app_old}${app_new}" ${USER_NAME}
+        fi
+        if [[ ${2} != "conf:" ]] && [[ ${2} != "" ]]; then
             conf=${2:6}
             conf_old="/home/${USER_NAME}/.kde4/share/config/${conf}"
             conf_new="/home/${USER_NAME}/.config/${conf}"
-            chroot ${DESTDIR} "ln -s ${conf_old} ${conf_new}" ${USER_NAME}
-         fi
+            chroot ${DESTDIR} "ln -s ${conf_old}${conf_new}" ${USER_NAME}
+        fi
 
     }
 
@@ -378,13 +394,13 @@ mate_settings()
     # Set MATE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=mate-session" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users  /home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
     ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Set gsettings input-source
-    if [[ "${KEYBOARD_VARIANT}" != '' ]];then
+    if [[ "${KEYBOARD_VARIANT}" != '' ]]; then
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}+${KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
     else
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
@@ -401,10 +417,13 @@ mate_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >/dev/null 2>&1
+    chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set MintMenu Favorites
+    if [[ $_BROWSER = "firefox" ]]; then
+        sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/applications.list
+    fi
     cp /usr/share/cnchi/scripts/postinstall/applications.list ${DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
 
     # Copy panel layout
@@ -430,6 +449,11 @@ postinstall()
     KEYBOARD_LAYOUT=$4
     KEYBOARD_VARIANT=$5
     # Specific user configurations
+    if [[ -f /usr/share/applications/firefox.desktop ]]; then
+        export _BROWSER=firefox
+    else
+        export _BROWSER=chromium
+    fi
 
     ## Set desktop-specific settings
     "${DESKTOP}_settings"
@@ -441,7 +465,7 @@ postinstall()
     chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
     ## Unmute alsa channels
-    chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute>/dev/null 2>&1
+    chroot ${DESTDIR} amixer -c 0 set Master playback 50% unmute > /dev/null 2>&1
 
     # Fix transmission leftover
     if [ -f ${DESTDIR}/usr/lib/tmpfiles.d/transmission.conf ]; then
@@ -464,13 +488,13 @@ postinstall()
     # Set Antergos name in filesystem files
     cp /etc/arch-release ${DESTDIR}/etc
     cp /etc/os-release ${DESTDIR}/etc
-    cp /etc/lsb-release ${DESTDIR}/etc
+    #cp /etc/lsb-release ${DESTDIR}/etc
     sed -i 's|Arch|Antergos|g' ${DESTDIR}/etc/issue
 
     # Set BROWSER var
-    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/environment
-    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/skel/.bashrc
-    echo "BROWSER=/usr/bin/chromium" >> ${DESTDIR}/etc/profile
+    echo "BROWSER=/usr/bin/${_BROWSER}" >> ${DESTDIR}/etc/environment
+    echo "BROWSER=/usr/bin/${_BROWSER}" >> ${DESTDIR}/etc/skel/.bashrc
+    echo "BROWSER=/usr/bin/${_BROWSER}" >> ${DESTDIR}/etc/profile
 
     # Configure makepkg so that it doesn't compress packages after building.
     # Most users are building packages to install them locally so there's no need for compression.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download_urllib.py
+#  download_requests.py
 #
 #  Copyright © 2013-2015 Antergos
 #
@@ -22,66 +22,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Module to download packages using urllib """
+""" Module to download packages using requests library """
 
 import os
 import logging
 import queue
 import shutil
-import urllib.request
-import urllib.error
-import http.client
-
-
-def url_open(url):
-    """ Helper function to open a remote file """
-
-    if url is None:
-        logging.warning(_("Wrong url, will try another one if available."))
-        return None
-
-    # Remove trailing spaces or new lines at the end of the string
-    url = url.rstrip()
-
-    try:
-        urlp = urllib.request.urlopen(url)
-    except urllib.error.HTTPError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-        logging.warning(msg)
-    except urllib.error.URLError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
-        logging.warning(msg)
-    except http.client.BadStatusLine as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err)
-        logging.warning(msg)
-    except AttributeError as err:
-        urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err)
-        logging.warning(msg)
-
-    return urlp
-
-
-def url_open_read(urlp, chunk_size=8192):
-    """ Helper function to download and read a fragment of a remote file """
-
-    download_error = True
-    data = None
-
-    try:
-        data = urlp.read(chunk_size)
-        download_error = False
-    except urllib.error.HTTPError as err:
-        msg = _('HTTP Error : {0}').format(err.reason)
-        logging.error(msg)
-    except urllib.error.URLError as err:
-        msg = _('URL Error : {0}').format(err.reason)
-        logging.error(msg)
-
-    return data, download_error
+import requests
 
 
 class Download(object):
@@ -99,7 +46,7 @@ class Download(object):
         self.last_event = {}
 
     def start(self, downloads):
-        """ Downloads using urllib """
+        """ Downloads using requests """
 
         downloaded = 0
         total_downloads = len(downloads)
@@ -130,7 +77,7 @@ class Download(object):
                 dst_cache_path = ""
 
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
-            
+
             needs_to_download = True
 
             if os.path.exists(dst_path):
@@ -150,23 +97,22 @@ class Download(object):
                     logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
                     logging.error(os_error)
                     needs_to_download = True
-            
+
             if needs_to_download:
                 # Let's download our filename using url
-                download_error = True
                 for url in element['urls']:
                     # msg = _("Downloading file from url {0}").format(url)
                     # logging.debug(msg)
-                    download_error = True
                     percent = 0
                     completed_length = 0
-                    urlp = url_open(url)
-                    if urlp is not None:
-                        with open(dst_path, 'wb') as xzfile:
-                            (data, download_error) = url_open_read(urlp)
 
-                            while not download_error and len(data) > 0:
-                                xzfile.write(data)
+                    r = requests.get(url, stream=True)
+                    if r.status_code == requests.codes.ok:
+                        with open(dst_path, 'wb') as xz_file:
+                            for data in r.iter_content(1024):
+                                if not data:
+                                    break
+                                xz_file.write(data)
                                 completed_length += len(data)
                                 old_percent = percent
                                 if total_length > 0:
@@ -175,20 +121,12 @@ class Download(object):
                                     percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
-                                (data, download_error) = url_open_read(urlp)
 
-                            if not download_error:
-                                downloaded += 1
-                                break
-                                # else:
-                                # try next mirror url
-                                # completed_length = 0
-                                # msg = _("Can't download {0}, will try another mirror if available").format(url)
-                                # logging.warning(msg)
-                                # else:
-                                #    # try next mirror url
-                                #    msg = _("Can't open {0}, will try another mirror if available").format(url)
-                                #    logging.warning(msg)
+                            download_error = False
+                            downloaded += 1
+                            break
+                    else:
+                        download_error = True
 
                 if download_error:
                     # None of the mirror urls works.

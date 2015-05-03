@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=xscreensaver
-Exec=/usr/bin/xscreensaver -no-splash &
+Exec=/usr/bin/xscreensaver -no-splash
 Terminal=false
 Type=Application
 Icon=screensaver

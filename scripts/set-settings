@@ -9,8 +9,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set favorite apps
-	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', 'chromium.desktop', 'pidgin.desktop', 'gnome-music.desktop']"
-	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'lockscreen@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
+	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', \"${_BROWSER}.desktop\", 'pidgin.desktop', 'gnome-music.desktop']"
+
+	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
 	# Change default wallpaper
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
@@ -24,6 +25,14 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
+	dbus-launch gsettings set org.gnome.desktop.screensaver lock-enabled false
+	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
+
+	# Configure touchpad
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+	dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad scroll-method 'two-finger-scrolling'
 
 fi
 
@@ -40,7 +49,7 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	dbus-launch gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos-menu.png"
 
 	# Set favorite apps
-	dbus-launch gsettings set org.cinnamon favorite-apps "['nemo.desktop', 'chromium.desktop', 'pamac.desktop', 'gnome-terminal.desktop']"
+	dbus-launch gsettings set org.cinnamon favorite-apps "['nemo.desktop', \"${_BROWSER}.desktop\", 'pamac.desktop', 'gnome-terminal.desktop']"
 
 	# Set overview corner to false
 	dbus-launch gsettings set org.cinnamon overview-corner "['false:false:false', 'false:false:false', 'false:false:false', 'false:false:false']"
@@ -68,6 +77,11 @@ if [[ ${DESKTOP} == 'cinnamon' ]];then
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.cinnamon.desktop.wm.preferences audible-bell false
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
+	# Configure touchpad
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad tap-to-click true
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad touchpad-enabled true
+	dbus-launch gsettings set org.cinnamon.settings-daemon.peripherals.touchpad scroll-method 'two-finger-scrolling'
 	
 fi
 
