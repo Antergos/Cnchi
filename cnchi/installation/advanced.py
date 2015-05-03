@@ -162,10 +162,10 @@ class InstallationAdvanced(GtkBaseBox):
                 combo.append_text(mount_point)
 
         self.bootloader = "grub2"
+        self.bootloader_device = ""
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
-        self.bootloader_device = {}
 
         # Initialise our partition list tree view
         self.partition_list = self.ui.get_object('partition_list_treeview')
@@ -306,8 +306,24 @@ class InstallationAdvanced(GtkBaseBox):
                     self.bootloader_device_entry.append_text(line)
                     self.bootloader_devices[line] = dev.path
 
-        # Automatically select first entry
-        self.select_first_combobox_item(self.bootloader_device_entry)
+        if not self.select_bootdevice(self.bootloader_device_entry, self.bootloader_device):
+            # Automatically select first entry
+            self.select_first_combobox_item(self.bootloader_device_entry)
+
+    def select_bootdevice(self, combobox, value):
+        model = combobox.get_model()
+        combo_iter = model.get_iter(0)
+        index = 0
+        found = False
+        while combo_iter is not None and not found:
+            if value.lower() in model[combo_iter][0].lower():
+                combobox.set_active_iter(combo_iter)
+                combo_iter = None
+                found = True
+            else:
+                index += 1
+                combo_iter = model.iter_next(combo_iter)
+        return found
 
     def fill_bootloader_entry(self):
         """ Put the bootloaders for the user to choose """
@@ -316,7 +332,9 @@ class InstallationAdvanced(GtkBaseBox):
         if os.path.exists('/sys/firmware/efi'):
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Gummiboot")
-            self.bootloader_entry.set_active(0)
+            if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
+                # Automatically select first entry
+                self.bootloader_entry.set_active(0)
             self.bootloader_entry.show()
         else:
             self.bootloader_entry.hide()
@@ -324,6 +342,21 @@ class InstallationAdvanced(GtkBaseBox):
             for widget_id in widget_ids:
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
+
+    def select_combobox_value(self, combobox, value):
+        model = combobox.get_model()
+        combo_iter = model.get_iter(0)
+        index = 0
+        found = False
+        while combo_iter is not None and not found:
+            if value.lower() == model[combo_iter][0].lower():
+                combobox.set_active_iter(combo_iter)
+                combo_iter = None
+                found = True
+            else:
+                index += 1
+                combo_iter = model.iter_next(combo_iter)
+        return found
 
     def on_bootloader_device_check_toggled(self, checkbox):
         status = checkbox.get_active()
@@ -342,6 +375,11 @@ class InstallationAdvanced(GtkBaseBox):
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
+
+    @staticmethod
+    def scroll_to_cell(treeview, path):
+        treeview.scroll_to_cell(path)
+        return False
 
     def on_bootloader_device_entry_changed(self, widget):
         """ Get new selected bootloader device """
@@ -1661,16 +1699,16 @@ class InstallationAdvanced(GtkBaseBox):
             "/boot" : "boot_part",
             "/boot/efi" : "boot_efi_part",
             "swap" : "swap_part"}
-        
+
         part_label = {}
         for check_part in check_parts:
             part_label[check_part] = self.ui.get_object(label_names[check_part])
             part_label[check_part].set_state(False)
             part_label[check_part].hide()
-        
+
         # Root is always necessary
         part_label["/"].show()
-        
+
         if is_uefi:
             if self.bootloader == "grub2":
                 part_label["/boot/efi"].show()
@@ -1680,7 +1718,7 @@ class InstallationAdvanced(GtkBaseBox):
             # LVM in non UEFI needs a /boot partition
             if self.lv_partitions:
                 part_label["/boot"].show()
-        
+
         if self.need_swap():
             # Low mem systems need a swap partition
             part_label["swap"].show()
@@ -1733,7 +1771,7 @@ class InstallationAdvanced(GtkBaseBox):
             if self.lv_partitions:
                 # LVM in non UEFI needs a boot partition
                 check_ok = check_ok and has_part["/boot"]
-        
+
         self.forward_button.set_sensitive(check_ok)
 
         if check_ok:
