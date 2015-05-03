@@ -510,15 +510,17 @@ class InstallationProcess(multiprocessing.Process):
 
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
+                logging.debug(_("Getting url {0}...").format(url))
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
-                # If the installer can't retrieve the remote file, try to install with a local
-                # copy, that may not be updated
+                # If the installer can't retrieve the remote file Cnchi will use
+                # a local copy, which might be updated or not.
                 logging.warning(url_error)
-                logging.debug(_("Can't retrieve remote package list, using a local file instead."))
+                logging.debug(_("Can't retrieve remote package list, using the local file instead."))
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
+                logging.debug(_("Loading {0}").format(packages_xml))
 
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
@@ -527,22 +529,22 @@ class InstallationProcess(multiprocessing.Process):
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
+                name = edition.attrib.get("name").lower()
                 # Add common packages to all desktops (including base)
-                if edition.attrib.get("name").lower() == "common":
+                if name == "common":
                     for pkg in edition.iter('pkgname'):
                         self.packages.append(pkg.text)
                 # Add common graphical packages
-                if self.desktop != "base":
-                    if edition.attrib.get("name").lower() == "graphic":
-                        for pkg in edition.iter('pkgname'):
-                            # If package is Desktop Manager, save the name to activate the correct service later
-                            if pkg.attrib.get('dm'):
-                                self.desktop_manager = pkg.attrib.get('name')
-                            plib = pkg.attrib.get('lib')
-                            if plib is None or (plib is not None and self.desktop in lib[plib]):
-                                self.packages.append(pkg.text)
+                if name == "graphic" and self.desktop != "base":
+                    for pkg in edition.iter('pkgname'):
+                        # If package is Desktop Manager, save the name to activate the correct service later
+                        if pkg.attrib.get('dm'):
+                            self.desktop_manager = pkg.attrib.get('name')
+                        plib = pkg.attrib.get('lib')
+                        if plib is None or (plib is not None and self.desktop in lib[plib]):
+                            self.packages.append(pkg.text)
                 # Add specific desktop packages
-                if edition.attrib.get("name").lower() == self.desktop:
+                if name == self.desktop:
                     logging.debug(_("Adding '%s' desktop packages"), self.desktop)
                     for pkg in edition.iter('pkgname'):
                         # If package is Network Manager, save the name to activate the correct service later
