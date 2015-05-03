@@ -166,7 +166,7 @@ class InstallationProcess(multiprocessing.Process):
             self.run_installation()
         except subprocess.CalledProcessError as process_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             logging.error(_("Error running command %s"), process_error.cmd)
             logging.error(_("Output: %s"), process_error.output)
             for line in trace:
@@ -180,7 +180,7 @@ class InstallationProcess(multiprocessing.Process):
                 OSError,
                 IOError) as install_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             logging.error(install_error)
             for line in trace:
                 logging.error(line)
