@@ -293,8 +293,6 @@ class UserInfo(GtkBaseBox):
                 self.error_label['password'],
                 self.password_strength)
 
-        # FIXME: THIS IS NOT WORKING
-
         # Check if all fields are filled and ok
         all_ok = True
         ok_widgets = self.image_is_ok.values()
@@ -308,7 +306,6 @@ class UserInfo(GtkBaseBox):
 
         self.forward_button.set_sensitive(all_ok)
 
-        # self.forward_button.set_sensitive(True)
 
 # When testing, no _() is available
 try:

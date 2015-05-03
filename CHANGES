@@ -1,3 +1,4 @@
+[2015-05-03 21:15:12 +0200]  Removed unused function                                                    karasu      {639fd40}
 [2015-05-03 21:11:21 +0200]  Fixes #297                                                                 karasu      {ef86d26}
 [2015-05-03 20:07:48 +0200]  Remove commented code                                                      karasu      {3edb6b7}
 [2015-05-03 20:03:37 +0200]  Forgot to change file name in the comments section                         karasu      {0d4d56c}
