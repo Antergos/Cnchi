@@ -376,11 +376,6 @@ class InstallationAdvanced(GtkBaseBox):
         tree_iter = tree_model.get_iter_first()
         combobox.set_active_iter(tree_iter)
 
-    @staticmethod
-    def scroll_to_cell(treeview, path):
-        treeview.scroll_to_cell(path)
-        return False
-
     def on_bootloader_device_entry_changed(self, widget):
         """ Get new selected bootloader device """
         line = self.bootloader_device_entry.get_active_text()
