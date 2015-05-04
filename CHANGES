@@ -1,4 +1,57 @@
+[2015-05-03 21:21:43 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {71938c7}
+[2015-05-03 21:15:12 +0200]  Removed unused function                                                    karasu      {639fd40}
+[2015-05-03 21:11:21 +0200]  Fixes #297                                                                 karasu      {ef86d26}
+[2015-05-03 20:07:48 +0200]  Remove commented code                                                      karasu      {3edb6b7}
+[2015-05-03 20:03:37 +0200]  Forgot to change file name in the comments section                         karasu      {0d4d56c}
+[2015-05-03 20:00:36 +0200]  Added new simpler download method using requests (still not used)          karasu      {8c28d59}
+[2015-05-03 17:32:13 +0200]  Added some debug messages in process.py                                    karasu      {0f33e1d}
+[2015-05-03 17:19:02 +0200]  Trying to log traceback                                                    karasu      {30c741d}
+[2015-05-03 17:14:24 +0200]  Too many messages                                                          karasu      {4517718}
+[2015-05-03 17:10:59 +0200]  Log trace as it should                                                     karasu      {d2a9215}
+[2015-05-02 16:52:47 +0200]  Remove comma in css                                                        karasu      {14cdd7e}
+[2015-05-02 06:45:02 -0500]  fix typo in gsettings script                                           Dustin Falgout  {ce5f4b4}
+[2015-05-02 06:41:28 -0500]  adjust the button styles for advanced and user_info screens            Dustin Falgout  {1c4c397}
+[2015-05-02 13:38:52 +0200]  grub-mkconfig stops again ¿?                                               karasu      {7ad4f87}
+[2015-05-02 10:07:55 +0200]  Allow format without label                                                 karasu      {4341bde}
+[2015-05-02 01:35:36 -0500]  fixes #318 - needs testing                                             Dustin Falgout  {1a174e1}
+[2015-05-01 22:59:46 -0500]  working on #318 again                                                  Dustin Falgout  {bcbefbb}
+[2015-05-01 22:57:41 -0500]  working on #318 again                                                  Dustin Falgout  {d8c4d15}
+[2015-05-01 22:56:21 -0500]  update gsettings keys that changed in 3.16                             Dustin Falgout  {efbbddf}
+[2015-05-01 21:56:07 +0200]  Comment faulty code in user_info.py. Needs fixing                          karasu      {eede3d1}
+[2015-05-01 21:51:49 +0200]  Wrong logging message                                                      karasu      {cb0ddd5}
+[2015-05-01 21:48:14 +0200]  Button needs text                                                          karasu      {e5eac8d}
+[2015-05-01 21:37:39 +0200]  Do not add pycache files to update.info                                    karasu      {a1f7820}
+[2015-05-01 21:31:56 +0200]  set_label can't be None                                                    karasu      {74e01d0}
+[2015-05-01 21:29:29 +0200]  set_label can't be None                                                    karasu      {c45cf2c}
+[2015-05-01 19:41:02 +0200]  New create_fs module. Not added in code cause it needs testing             karasu      {456a2e1}
+[2015-05-01 09:02:53 -0500]  working on #318                                                        Dustin Falgout  {1d8294b}
+[2015-05-01 12:14:00 +0200]  Fixes check labels disappearance in advanced                               karasu      {08b7f52}
+[2015-05-01 10:44:01 +0200]  Updated translations                                                       karasu      {efbe194}
+[2015-04-29 04:33:44 -0500]  should fix part of #317 and all of #318                                Dustin Falgout  {1ae5471}
+[2015-04-29 02:45:27 -0500]  working on #317 and #318                                               Dustin Falgout  {dbbe3dd}
+[2015-04-29 00:41:33 -0500]  fix typo in postinstall, other small changes related to screen lock..  Dustin Falgout  {5e59c8e}
+[2015-04-29 07:03:22 +0200]  Tries to address issue #317                                                karasu      {5382fa2}
+[2015-04-27 11:01:43 +0200]  Cleaned advanced code. NEEDS TESTING                                       karasu      {3ae177b}
+[2015-04-27 09:00:58 +0200]  Working on if                                                              karasu      {42bf2c0}
+[2015-04-27 08:43:26 +0200]  Specify that we need a GTK version >= 3.16.0                               karasu      {7c69cd7}
+[2015-04-27 01:21:16 -0500]  fix wrong filepath from my last commit                                 Dustin Falgout  {db5d85a}
+[2015-04-26 08:42:28 -0500]  fix pycharms incorrect bash formatting!                                Dustin Falgout  {eb5e95e}
+[2015-04-26 08:37:18 -0500]  screen locking in gnome (finally!). also updated postinstall to pro..  Dustin Falgout  {7c28b84}
+[2015-04-26 10:54:10 +0200]  Bump version                                                               karasu      {f0e4c06}
+[2015-04-26 10:53:17 +0200]  Merge pull request #314 from plumpudding/master                            karasu      {19e6f4e}
+[2015-04-25 15:19:56 +0200]  Follow https://wiki.gnome.org/HowDoI/GtkApplication recommendations        karasu      {3b88ac9}
+[2015-04-25 00:02:47 +0200]  Update bootloader.py                                                     plumpudding   {a8560cf}
+[2015-04-24 23:28:23 +0200]  Update bootloader.py                                                     plumpudding   {cf187a9}
+[2015-04-24 23:10:19 +0200]  Update bootloader.py                                                     plumpudding   {467b8e7}
+[2015-04-24 22:54:38 +0200]  3rd part of the fix                                                      plumpudding   {c6367f1}
+[2015-04-24 22:29:25 +0200]  fix second problem with encryption and gummiboot                         plumpudding   {7037c57}
+[2015-04-24 22:04:32 +0200]  should fix encryption with gummiboot                                     plumpudding   {ebe03af}
+[2015-04-24 20:58:56 +0200]  Download a package if an error is issued when trying to copy it fro..      karasu      {15c7371}
+[2015-04-23 22:30:07 +0200]  Cnchi needs Gtk 3.16                                                       karasu      {c06ea05}
+[2015-04-23 22:23:37 +0200]  Fix Gdk.Cursor.new deprecation                                             karasu      {0c4d504}
+[2015-04-23 21:56:11 +0200]  - Added atk labels to prev/next buttons (for Orca) - Fixed deprecat..      karasu      {01a914e}
 [2015-04-23 00:08:36 +0200]  Add atk code for accessibility                                             karasu      {59fd28b}
+[2015-04-22 22:53:02 +0200]  Fixes #304                                                                 karasu      {d08f98f}
 [2015-04-22 18:45:53 +0200]  Merge branch 'github-master'                                               karasu      {64525f9}
 [2015-04-21 19:37:09 -0500]  Update README.md                                                       Dustin Falgout  {94d5ea2}
 [2015-04-21 19:29:54 -0500]  add codacy badge                                                       Dustin Falgout  {7747533}

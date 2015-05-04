@@ -179,10 +179,6 @@ def parse_options():
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument(
-        "-a", "--aria2",
-        help=_("Use aria2 to download Antergos packages (EXPERIMENTAL)"),
-        action="store_true")
-    parser.add_argument(
         "-c", "--cache",
         help=_("Use pre-downloaded xz packages when possible"),
         nargs='?')
@@ -198,6 +194,11 @@ def parse_options():
         "-i", "--disable-tryit",
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
+    parser.add_argument(
+        "-l", "--library",
+        help=_("Choose which library to use when downloading packages."
+        " Possible options are 'urllib' (default), 'requests' and 'aria2'"),
+        nargs='?')
     parser.add_argument(
         "-n", "--no-check",
         help=_("Makes checks optional in check screen"),

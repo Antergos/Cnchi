@@ -134,6 +134,7 @@
         <pkgname>hicolor-icon-theme</pkgname>
         <pkgname>libgnomeui</pkgname>
         <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
         <pkgname>nautilus</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -204,6 +205,7 @@
         <pkgname>gnome-disk-utility</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
         <pkgname>mousepad</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -313,6 +315,7 @@
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>leafpad</pkgname>
         <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>

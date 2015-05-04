@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Module to download packages using Aria2 or urllib """
+""" Module to download packages """
 
 import os
 import logging
@@ -41,6 +41,7 @@ import pacman.pac as pac
 import download.metalink as ml
 import download.download_urllib as download_urllib
 import download.download_aria2 as download_aria2
+import download.download_requests as download_requests
 
 from misc.misc import InstallError
 
@@ -55,7 +56,7 @@ class DownloadPackages(object):
     def __init__(
             self,
             package_names,
-            use_aria2=False,
+            download_library='urllib',
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
@@ -96,14 +97,22 @@ class DownloadPackages(object):
         if downloads is None:
             raise InstallError(_("Can't create download package list. Check log output for details"))
 
-        if use_aria2:
-            logging.debug(_("Using aria2 to download packages"))
+        logging.debug(_("Using %s library to download packages"), download_library)
+
+        if download_library == "aria2":
             download = download_aria2.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
+        elif download_library == "requests":
+            download = download_requests.Download(
+                pacman_cache_dir,
+                cache_dir,
+                callback_queue)
         else:
-            logging.debug(_("Using urllib to download packages"))
+            if download_library != "urllib":
+                logging.warning(_("Unknown '%s' library, Cnchi will use the 'urllib' one as default"),
+                    download_library)
             download = download_urllib.Download(
                 pacman_cache_dir,
                 cache_dir,
@@ -207,8 +216,7 @@ if __name__ == '__main__':
 
     DownloadPackages(
         package_names=["gnome-sudoku"],
-        # use_aria2=False,
-        use_aria2=True,
+        download_library="urllib",
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
 
