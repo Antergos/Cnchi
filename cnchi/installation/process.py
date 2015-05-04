@@ -402,7 +402,7 @@ class InstallationProcess(multiprocessing.Process):
             cache_dir = '/var/cache/pacman/pkg'
 
         if self.settings.get("download_library"):
-            download_library = self.settings.get("download_library"):
+            download_library = self.settings.get("download_library")
         else:
             download_library = 'urllib'
 

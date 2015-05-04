@@ -1,3 +1,4 @@
+[2015-05-04 17:48:32 +0200]  Typo in main_window                                                        karasu      {d430cb7}
 [2015-05-04 12:54:30 +0200]  Prepare cnchi to be able to use requests library to download packag..      karasu      {f0925bc}
 [2015-05-03 23:11:28 -0500]  forgot to include light-locker-settings                                Dustin Falgout  {7020e7e}
 [2015-05-03 21:32:22 +0200]  Remove ugly hack by me                                                     karasu      {0deb0cc}
