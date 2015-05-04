@@ -1,3 +1,5 @@
+[2015-05-03 23:11:28 -0500]  forgot to include light-locker-settings                                Dustin Falgout  {7020e7e}
+[2015-05-03 21:32:22 +0200]  Remove ugly hack by me                                                     karasu      {0deb0cc}
 [2015-05-03 21:15:12 +0200]  Removed unused function                                                    karasu      {639fd40}
 [2015-05-03 21:11:21 +0200]  Fixes #297                                                                 karasu      {ef86d26}
 [2015-05-03 20:07:48 +0200]  Remove commented code                                                      karasu      {3edb6b7}

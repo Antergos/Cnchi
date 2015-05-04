@@ -160,10 +160,15 @@ class MainWindow(Gtk.ApplicationWindow):
         # to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
-        # Save in config if we have to use aria2 to download pacman packages
-        self.settings.set("use_aria2", cmd_line.aria2)
-        if cmd_line.aria2:
-            logging.info(_("Using Aria2 to download packages - EXPERIMENTAL"))
+        # Save in config which download method we have to use
+        if cmd_line.library:
+            self.settings.set("download_library", cmd_line.library)
+        else:
+            # Use urllib by default
+            self.settings.set("download_library", 'urllib')
+        logging.info(
+            _("Using %s to download packages"),
+            self.settings.get("download_library")
 
         self.set_titlebar(self.header)
 

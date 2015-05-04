@@ -392,7 +392,7 @@ class InstallationProcess(multiprocessing.Process):
             pass
 
     def download_packages(self):
-        """ Downloads necessary packages using urllib or Aria2 """
+        """ Downloads necessary packages """
         pacman_conf_file = "/tmp/pacman.conf"
         pacman_cache_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
 
@@ -401,14 +401,14 @@ class InstallationProcess(multiprocessing.Process):
         else:
             cache_dir = '/var/cache/pacman/pkg'
 
-        if self.settings.get("use_aria2"):
-            use_aria2 = True
+        if self.settings.get("download_library"):
+            download_library = self.settings.get("download_library"):
         else:
-            use_aria2 = False
+            download_library = 'urllib'
 
         download.DownloadPackages(
             self.packages,
-            use_aria2,
+            download_library,
             pacman_conf_file,
             pacman_cache_dir,
             cache_dir,
