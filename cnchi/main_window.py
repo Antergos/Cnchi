@@ -168,7 +168,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.settings.set("download_library", 'urllib')
         logging.info(
             _("Using %s to download packages"),
-            self.settings.get("download_library")
+            self.settings.get("download_library"))
 
         self.set_titlebar(self.header)
 
