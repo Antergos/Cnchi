@@ -25,6 +25,7 @@
 from gi.repository import Gtk
 
 import misc.validation as validation
+import misc.camera as camera
 import show_message as show
 
 from gtkbasebox import GtkBaseBox
@@ -34,6 +35,7 @@ import logging
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
+camera.cheese_init()
 
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
@@ -68,6 +70,17 @@ class UserInfo(GtkBaseBox):
 
         self.require_password = True
         self.encrypt_home = False
+        
+        self.camera_window = self.ui.get_object('cheese_box')
+        self.camera = camera.CameraBox()
+        
+        if self.camera.found():
+            self.camera_window.add(self.camera)
+            self.camera.show()
+        else:
+            # We do not have camera. Move all fields to the right (to center them).
+            user_info_grid = self.ui.get_object('user_info_grid')
+            user_info_grid.set_property('margin_start', 140)
 
     def translate_ui(self):
         """ Translates all ui elements """

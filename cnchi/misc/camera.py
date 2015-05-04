@@ -27,6 +27,8 @@ import logging
 
 import gi
 gi.require_version('Gst', '1.0')
+gi.require_version('GtkClutter', '1.0')
+gi.require_version('Cheese', '3.0')
 
 from gi.repository import GtkClutter
 from gi.repository import Clutter, GObject, Gtk, Gst, GLib
