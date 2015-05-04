@@ -40,6 +40,17 @@ def cheese_init():
     Gst.init(None)
     GtkClutter.init([])
 
+'''
+camera.py:58: DeprecationWarning: Clutter.Container.add_actor is deprecated
+  self.stage.add_actor(self.container)
+camera.py:60: DeprecationWarning: Clutter.Texture.new is deprecated
+  self.video_texture = Clutter.Texture.new()
+camera.py:61: DeprecationWarning: Clutter.Texture.set_keep_aspect_ratio is deprecated
+  self.video_texture.set_keep_aspect_ratio(True)
+camera.py:70: DeprecationWarning: Clutter.BoxLayout.pack is deprecated
+  y_align=Clutter.BoxAlignment.CENTER)
+'''
+
 class CameraBox(GtkClutter.Embed):
     __gtype_name__ = 'VideoBox'
 
