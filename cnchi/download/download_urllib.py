@@ -130,7 +130,7 @@ class Download(object):
                 dst_cache_path = ""
 
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
-            
+
             needs_to_download = True
 
             if os.path.exists(dst_path):
@@ -150,7 +150,7 @@ class Download(object):
                     logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
                     logging.error(os_error)
                     needs_to_download = True
-            
+
             if needs_to_download:
                 # Let's download our filename using url
                 download_error = True

@@ -159,6 +159,9 @@ class Slides(GtkBaseBox):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(float(event[1]))
+            elif event[0] == 'progress_bar_text':
+                self.progress_bar.set_text(event[1])
+                # self.progress_bar.set_show_text(True)
             elif event[0] == 'downloads_percent':
                 self.downloads_progress_bar.set_fraction(float(event[1]))
             elif event[0] == 'text':
