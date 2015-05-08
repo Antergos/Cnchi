@@ -1009,8 +1009,8 @@ def set_cursor(cursor_type):
     screen = Gdk.Screen.get_default()
     window = Gdk.Screen.get_root_window(screen)
     if window:
-        # FIXME: DeprecationWarning: Gdk.Cursor.new is deprecated
-        cursor = Gdk.Cursor.new(cursor_type)
+        display = Gdk.Display.get_default()
+        cursor = Gdk.Cursor.new_for_display(display, cursor_type)
         window.set_cursor(cursor)
         gtk_refresh()
 
