@@ -109,7 +109,7 @@ class Download(object):
                     completed_length = 0
                     start = time.clock()
                     r = requests.get(url, stream=True)
-                    total_length = r.headers.get('content-length')
+                    total_length = int(r.headers.get('content-length'))
                     if r.status_code == requests.codes.ok:
                         with open(dst_path, 'wb') as xz_file:
                             for data in r.iter_content(1024):
