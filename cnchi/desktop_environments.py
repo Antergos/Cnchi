@@ -163,4 +163,3 @@ DESCRIPTIONS = {
 
 # Delete previous _() dummy declaration
 del _
-

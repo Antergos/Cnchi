@@ -120,6 +120,13 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.settings.set("desktops", desktops.DESKTOPS)
 
+        if cmd_line.environment:
+            desktop = cmd_line.environment.lower()
+            if desktop in desktops.DESKTOPS:
+                self.settings.set('desktop', desktop)
+                self.settings.set('desktop_ask', False)
+                logging.debug("Cnchi will install the %s desktop environment", desktop)
+
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
         self.ui.add_from_file(path)
@@ -166,8 +173,8 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             # Use urllib by default
             self.settings.set("download_library", 'urllib')
-        logging.info(
-            _("Using %s to download packages"),
+
+        logging.info(_("Using %s to download packages"),
             self.settings.get("download_library"))
 
         self.set_titlebar(self.header)
@@ -270,12 +277,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["language"] = language.Language(self.params)
-        self.pages["location"] = location.Location(self.params)
         self.pages["check"] = check.Check(self.params)
-        self.pages["desktop"] = desktop.DesktopAsk(self.params)
-        self.pages["features"] = features.Features(self.params)
-        self.pages["keymap"] = keymap.Keymap(self.params)
+        self.pages["location"] = location.Location(self.params)
         self.pages["timezone"] = timezone.Timezone(self.params)
+
+        if self.settings.get('desktop_ask'):
+            self.pages["keymap"] = keymap.Keymap(self.params)
+            self.pages["desktop"] = desktop.DesktopAsk(self.params)
+            self.pages["features"] = features.Features(self.params)
+        else:
+            self.pages["keymap"] = keymap.Keymap(self.params, next_page='features')
+            self.pages["features"] = features.Features(self.params, prev_page='keymap')
+
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
 

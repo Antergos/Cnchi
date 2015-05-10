@@ -48,6 +48,7 @@ class Settings(object):
             'installer_thread_call': {},
             'data': '/usr/share/cnchi/data/',
             'desktop': 'gnome',
+            'desktop_ask' : True,
             'desktops': [],
             'download_library': 'urllib',
             'enable_alongside': True,

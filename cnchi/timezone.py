@@ -235,7 +235,7 @@ class Timezone(GtkBaseBox):
 
         if loc.longitude:
             logging.debug("timezone longitude: %s", loc.longitude)
-        
+
     def store_values(self):
         loc = self.tzdb.get_loc(self.timezone)
 
@@ -259,12 +259,12 @@ class Timezone(GtkBaseBox):
                 self.settings.set("timezone_longitude", loc.longitude)
             else:
                 self.settings.set("timezone_longitude", "")
-            
+
             self.log_location(loc)
 
         # This way process.py will know that all info has been entered
         self.settings.set("timezone_done", True)
-        
+
         return True
 
     def stop_threads(self):

@@ -171,7 +171,7 @@ class Location(GtkBaseBox):
             # Put all language codes (forced by the checkbox)
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
-        
+
         areas.sort()
 
         return areas

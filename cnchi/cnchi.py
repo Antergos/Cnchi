@@ -191,6 +191,10 @@ def parse_options():
         help=_("Sets Cnchi log level to 'debug'"),
         action="store_true")
     parser.add_argument(
+        "-e", "--environment",
+        help=_("Sets the Desktop Environment that will be installed"),
+        nargs='?')
+    parser.add_argument(
         "-f", "--force",
         help=_("Runs cnchi even if it detects that another instance is running"),
         action="store_true")

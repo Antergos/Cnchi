@@ -1,5 +1,12 @@
+[2015-05-10 18:24:15 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {d7c68f4}
+[2015-05-08 17:24:47 +0200]  total_length must be an int                                                karasu      {ab2215e}
+[2015-05-08 12:57:24 +0200]  Fix deprecation warning                                                    karasu      {8327d7c}
+[2015-05-08 09:55:16 +0200]  Show GTK wrong version error message in GUI (checked on an ubuntu s..      karasu      {c20c941}
+[2015-05-07 18:28:27 +0200]  Some changes in download_requests (that is still not used ;) )             karasu      {5943fb2}
 [2015-05-04 23:47:04 +0200]  Added deprecation warning messages to camera.py (for fixing them in..      karasu      {f532064}
 [2015-05-04 22:50:58 +0200]  Added camera to user_info dialog (needs testing with a camera) It s..      karasu      {9df8a8b}
+[2015-05-04 22:31:25 +0200]  Update update.info                                                         karasu      {d5f552b}
+[2015-05-04 22:29:14 +0200]  Update update.info                                                         karasu      {bca64f7}
 [2015-05-04 20:53:00 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {86e4b90}
 [2015-05-04 17:50:04 +0200]  Another typo... now in process.py                                          karasu      {3d1b665}
 [2015-05-04 17:48:32 +0200]  Typo in main_window                                                        karasu      {d430cb7}
