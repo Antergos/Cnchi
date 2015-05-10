@@ -1,3 +1,4 @@
+[2015-05-04 23:47:04 +0200]  Added deprecation warning messages to camera.py (for fixing them in..      karasu      {f532064}
 [2015-05-04 22:50:58 +0200]  Added camera to user_info dialog (needs testing with a camera) It s..      karasu      {9df8a8b}
 [2015-05-04 20:53:00 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {86e4b90}
 [2015-05-04 17:50:04 +0200]  Another typo... now in process.py                                          karasu      {3d1b665}

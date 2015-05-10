@@ -41,7 +41,7 @@ def get_files(path):
         for dpath, d, files in os.walk(path):
             for f in files:
                 file_path = os.path.join(dpath, f)
-                if "__pycache__" not in file_path:
+                if "__pycache__" not in file_path and ".git" not in file_path:
                     print(file_path)
                     all_files.append(file_path)
     else:

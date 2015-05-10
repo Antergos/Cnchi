@@ -29,7 +29,7 @@ import logging
 import queue
 import shutil
 import requests
-
+import time
 
 class Download(object):
     """ Class to download packages using urllib
@@ -67,8 +67,10 @@ class Download(object):
             try:
                 total_length = int(element['size'])
             except TypeError:
-                logging.warning(_("Metalink for package %s has no size info"), element['identity'])
-                total_length = 0
+                # We will get the total length from the requests GET
+                pass
+                # logging.warning(_("Metalink for package %s has no size info"), element['identity'])
+                # total_length = 0
 
             # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
             if self.cache_dir:
@@ -105,8 +107,9 @@ class Download(object):
                     # logging.debug(msg)
                     percent = 0
                     completed_length = 0
-
+                    start = time.clock()
                     r = requests.get(url, stream=True)
+                    total_length = int(r.headers.get('content-length'))
                     if r.status_code == requests.codes.ok:
                         with open(dst_path, 'wb') as xz_file:
                             for data in r.iter_content(1024):
@@ -122,11 +125,17 @@ class Download(object):
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
 
+                                progress_text = "{0} {1} bps".format(percent, completed_length // (time.clock() - start))
+                                self.queue_event('progress_bar_text', progress_text)
+
                             download_error = False
                             downloaded += 1
                             break
                     else:
                         download_error = True
+                        msg = _("Can't download {0}, Cnchi will try another mirror.").format(url)
+                        # completed_length = 0
+                        logging.warning(msg)
 
                 if download_error:
                     # None of the mirror urls works.
@@ -135,7 +144,7 @@ class Download(object):
                     msg = _("Can't download {0}, even after trying all available mirrors")
                     msg = msg.format(element['filename'])
                     all_successful = False
-                    logging.warning(msg)
+                    logging.error(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))

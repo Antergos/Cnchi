@@ -145,9 +145,13 @@ def check_gtk_version():
         wrong_gtk_version = True
 
     if wrong_gtk_version:
-        text = "Detected GTK version {0}.{1}.{2} but version>={3} is needed."
+        text = "Detected GTK version {0}.{1}.{2} but version >= {3} is needed."
         text = text.format(major, minor, micro, GTK_VERSION_NEEDED)
-        logging.info(text)
+        try:
+            import show_message as show
+            show.error(None, text)
+        except ImportError as import_error:
+            logging.info(text)
         return False
     else:
         logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
