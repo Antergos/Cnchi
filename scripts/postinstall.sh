@@ -27,6 +27,11 @@ set_xorg()
 {
     cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
     cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
+
+    # Fix sensitivity for chromebooks
+    if lsmod | grep -q chromeos_laptop; then
+        cp /usr/share/cnchi/scripts/postinstall/50-cros-touchpad.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-cros-touchpad.conf
+    fi
 }
 
 gnome_settings()
