@@ -29,7 +29,7 @@ set_xorg()
     cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
 
     # Fix sensitivity for chromebooks
-    if lsmod | grep -q chromeos_laptop; then
+    if lsmod | grep -q cyapa; then
         cp /usr/share/cnchi/scripts/postinstall/50-cros-touchpad.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-cros-touchpad.conf
     fi
 }
@@ -463,9 +463,6 @@ postinstall()
     ## Set desktop-specific settings
     "${DESKTOP}_settings"
 
-    ## Ensure user permissions are set in /home
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
-
     ## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
     chroot ${DESTDIR} sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
@@ -507,6 +504,9 @@ postinstall()
 
     # Set lightdm-webkit2-greeter in lightdm.conf. This should have been done here (not in the pkg) all along.
     sed -i 's|#greeter-session=example-gtk-gnome|greeter-session=lightdm-webkit2-greeter|g' ${DESTDIR}/etc/lightdm/lightdm.conf
+
+    ## Ensure user permissions are set in /home
+    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 }
 
 touch /tmp/.postinstall.lock
