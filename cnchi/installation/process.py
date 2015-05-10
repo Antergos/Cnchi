@@ -969,14 +969,25 @@ class InstallationProcess(multiprocessing.Process):
 
     @staticmethod
     def update_pacman_conf():
-        """ Add Antergos repo """
+        """ Add Antergos and multilib repos """
         path = os.path.join(DEST_DIR, "etc/pacman.conf")
         if os.path.exists(path):
-            with open(path, "a") as pacman_conf:
-                pacman_conf.write("\n\n")
-                pacman_conf.write("[antergos]\n")
-                pacman_conf.write("SigLevel = PackageRequired\n")
-                pacman_conf.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+            paclines = []
+            with open(path) as f:
+                paclines = f.readlines()
+
+            if os.uname()[-1] == "x86_64":
+                for i in range(0, len(paclines)):
+                    if paclines[i] == "#[multilib]\n":
+                        paclines[i] = "[multilib]\n"
+                        paclines[i+1] = "Include = /etc/pacman.d/mirrorlist\n"
+                        break
+            paclines.append("\n")
+            paclines.append("[antergos]\n")
+            paclines.append("SigLevel = PackageRequired\n")
+            paclines.append("Include = /etc/pacman.d/antergos-mirrorlist\n")
+            with open(path, "w") as f:
+                f.write("".join(paclines))
         else:
             logging.warning(_("Can't find pacman configuration file"))
 
