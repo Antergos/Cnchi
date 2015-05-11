@@ -11,7 +11,20 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	# Set favorite apps
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', \"${_BROWSER}.desktop\", 'pidgin.desktop', 'gnome-music.desktop']"
 
+	# Set extensions
 	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
+
+	# Set up dock settings
+	# disables custom theme, which locks settings below
+	dbus-launch gsettings set org.gnome.shell.extensions.dash-to-dock apply-custom-theme false
+	# make dock translucent
+	dbus-launch gsettings set org.gnome.shell.extensions.dash-to-dock opaque-background true
+	dbus-launch gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity 0.5
+	# shows a number of windows running as a dot next to icon
+	dbus-launch gsettings set org.gnome.shell.extensions.dash-to-dock custom-theme-running-dots true
+	# reduces padding a bit
+	dbus-launch gsettings set org.gnome.shell.extensions.dash-to-dock custom-theme-shrink true
+
 	# Change default wallpaper
 	dbus-launch gsettings set org.gnome.desktop.background picture-uri file:///usr/share/antergos/wallpapers/antergos-wallpaper.png
 
@@ -25,6 +38,9 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	
 	# Disable Terminal Bell
 	dbus-launch gsettings set org.gnome.desktop.wm.preferences audible-bell false
+
+	# Add minimize and maximize
+	dbus-launch gsettings set org.gnome.desktop.wm.preferences button-layout appmenu:minimize,maximize,close
 
 	dbus-launch gsettings set org.gnome.desktop.screensaver lock-enabled false
 	dbus-launch gsettings set org.gnome.desktop.session idle-delay 0
