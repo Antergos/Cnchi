@@ -486,7 +486,7 @@ class InstallationAdvanced(GtkBaseBox):
                     mount_point = ""
                     formatable = True
 
-                    partition_path = "/dev/mapper/{0}-{1}".format(volume_group, logical_volume)
+                    partition_path = "/dev/mapper/{0}-{1}".format(volume_group.replace("-","--"), logical_volume)
                     self.all_partitions.append(partition_path)
                     self.lv_partitions.append(partition_path)
 
