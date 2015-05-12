@@ -1,3 +1,4 @@
+[2015-05-12 01:39:14 -0500]  I think its okay now                                                   Dustin Falgout  {6e67874}
 [2015-05-12 01:27:25 -0500]  more spacing adjustments                                               Dustin Falgout  {983c624}
 [2015-05-12 01:12:31 -0500]  fix window size. it seems like gtk is measuring the size differentl..  Dustin Falgout  {10f2e84}
 [2015-05-08 17:24:47 +0200]  total_length must be an int                                                karasu      {ab2215e}

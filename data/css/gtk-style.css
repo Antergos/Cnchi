@@ -214,3 +214,7 @@ GtkTreeView row:selected {
 #main_box {
     margin-bottom: 0px;
 }
+
+StateBox {
+    border-radius: 2px;
+}
