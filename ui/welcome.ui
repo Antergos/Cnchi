@@ -18,6 +18,7 @@
                 <property name="column_spacing">95</property>
                 <property name="row_homogeneous">True</property>
                 <property name="column_homogeneous">True</property>
+                <property name="margin_top">14</property>
                 <child>
                     <object class="GtkBox" id="box_tryit">
                         <property name="visible">True</property>

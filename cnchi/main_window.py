@@ -53,8 +53,8 @@ from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
 # Constants (must be uppercase)
-MAIN_WINDOW_WIDTH = 825
-MAIN_WINDOW_HEIGHT = 510
+MAIN_WINDOW_WIDTH = 875
+MAIN_WINDOW_HEIGHT = 536
 
 def atk_set_image_description(widget, description):
     """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
