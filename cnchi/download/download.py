@@ -47,16 +47,16 @@ from misc.misc import InstallError
 
 
 class DownloadPackages(object):
-    """ Class to download packages using Aria2 or urllib
+    """ Class to download packages using Aria2, requests (default) or urllib
         This class tries to previously download all necessary packages for
-        Antergos installation using aria2 or urllib
+        Antergos installation using aria2, requests or urllib
         Aria2 is known to use too much memory (not Aria2's fault but ours)
         so until it's fixed it it's not advised to use it """
 
     def __init__(
             self,
             package_names,
-            download_library='urllib',
+            download_library='requests',
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
@@ -104,16 +104,16 @@ class DownloadPackages(object):
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
-        elif download_library == "requests":
-            download = download_requests.Download(
+        elif download_library == "urllib":
+            download = download_urllib.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
         else:
-            if download_library != "urllib":
-                logging.warning(_("Unknown '%s' library, Cnchi will use the 'urllib' one as default"),
+            if download_library != "requests":
+                logging.warning(_("Unknown '%s' library, Cnchi will use the 'requests' one as default"),
                     download_library)
-            download = download_urllib.Download(
+            download = download_requests.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)

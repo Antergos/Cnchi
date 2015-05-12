@@ -205,7 +205,7 @@ def parse_options():
     parser.add_argument(
         "-l", "--library",
         help=_("Choose which library to use when downloading packages."
-        " Possible options are 'urllib' (default), 'requests' and 'aria2'"),
+        " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
         nargs='?')
     parser.add_argument(
         "-n", "--no-check",
