@@ -101,7 +101,6 @@
         <pkgname>bijiben</pkgname> <!-- notes app -->
         <pkgname>brasero</pkgname>
         <pkgname>cdrkit</pkgname>
-        <pkgname>empathy</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>file-roller</pkgname>
@@ -165,7 +164,6 @@
         <pkgname>cinnamon-screensaver</pkgname>
         <pkgname>cinnamon-theme-nadia</pkgname>
         <pkgname>cjs</pkgname>
-        <pkgname>empathy</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
         <pkgname>file-roller</pkgname>
@@ -320,6 +318,7 @@
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>
         <pkgname>lxtask</pkgname>
+        <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>

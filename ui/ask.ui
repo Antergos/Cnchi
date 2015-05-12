@@ -4,18 +4,19 @@
   <object class="GtkBox" id="ask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <!--<property name="halign">left</property>-->
-    <property name="margin-top">0</property>
-      <property name="margin-start">70</property>
-      <property name="margin-end">68</property>
+    <property name="halign">fill</property>
+    <property name="margin_bottom">10</property>
+      <property name="margin_top">0</property>
+      <property name="margin_start">70</property>
+      <property name="margin_end">68</property>
     <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkLabel" id="introduction">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin-top">15</property>
-          <property name="margin-bottom">8</property>
+        <property name="margin_top">10</property>
+          <property name="margin_bottom">8</property>
         <property name="halign">center</property>
         <property name="valign">start</property>
         <property name="label" translatable="yes"></property>
@@ -32,7 +33,7 @@
         <object class="GtkBox" id="automatic_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
-            <property name="margin-top">15</property>
+            <property name="margin_top">5</property>
         <child>
           <object class="GtkImage" id="automatic_image">
             <property name="visible">True</property>
@@ -95,7 +96,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="margin_start">80</property>
-          <property name="margin-top">10</property>
+        <property name="margin_top">5</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
       </object>
@@ -128,7 +129,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="margin_start">80</property>
-          <property name="margin-top">10</property>
+          <property name="margin_top">5</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
       </object>
@@ -143,7 +144,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_start">104</property>
-          <property name="margin-top">4</property>
+          <property name="margin_top">4</property>
           <property name="halign">start</property>
         <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
@@ -161,7 +162,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="margin_start">80</property>
-          <property name="margin-top">10</property>
+          <property name="margin_top">5</property>
         <property name="halign">start</property>
         <property name="draw_indicator">True</property>
       </object>
@@ -176,7 +177,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_start">104</property>
-          <property name="margin-top">4</property>
+          <property name="margin_top">4</property>
           <property name="halign">start</property>
         <property name="label" translatable="yes"></property>
         <property name="use_markup">True</property>
@@ -191,7 +192,7 @@
         <object class="GtkBox" id="alongside_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
-            <property name="margin-top">5</property>
+            <property name="margin_top">5</property>
         <child>
           <object class="GtkImage" id="alongside_image">
             <property name="visible">True</property>
@@ -253,7 +254,7 @@
         <object class="GtkBox" id="advanced_box">
         <property name="hexpand">True</property>
         <property name="orientation">horizontal</property>
-            <property name="margin-top">10</property>
+            <property name="margin_top">10</property>
         <child>
           <object class="GtkImage" id="advanced_image">
             <property name="visible">True</property>
