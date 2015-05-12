@@ -12,7 +12,7 @@ if [[ ${DESKTOP} == 'gnome' ]];then
 	dbus-launch gsettings set org.gnome.shell favorite-apps "['nautilus.desktop', 'gnome-terminal.desktop', \"${_BROWSER}.desktop\", 'pidgin.desktop', 'gnome-music.desktop']"
 
 	# Set extensions
-	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']"
+	dbus-launch gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com', 'topIcons@adel.gadllah@gmail.com']"
 
 	# Set up dock settings
 	# disables custom theme, which locks settings below
