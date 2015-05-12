@@ -320,6 +320,7 @@
         <pkgname>lxinput</pkgname>
         <pkgname>lxmenu-data</pkgname>
         <pkgname>lxtask</pkgname>
+        <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
