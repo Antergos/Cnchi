@@ -67,30 +67,30 @@ ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "office", "visua
 # LTS DOES NOT WORK ATM
 '''
 FEATURES = {
-    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'base' : ["aur", "cups", "fonts", "lts"],
-    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb", "visual"],
-    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"],
-    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "smb"]}
+    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "graphic-drivers", "lamp", "smb"],
+    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'base' : ["aur", "cups", "fonts", "lamp", "lts"],
+    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb", "visual"],
+    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"],
+    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "lts", "office", "smb"]}
 '''
 FEATURES = {
-    'cinnamon': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'gnome': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'kde4': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'plasma5': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'mate': ["aur", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'base': ["aur", "cups", "fonts"],
-    'openbox': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb", "visual"],
-    'lxde': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'lxqt': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"],
-    'xfce': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "smb"]}
+    'cinnamon': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'gnome': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'kde4': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'plasma5': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'mate': ["aur", "cups", "firefox", "firewall", "fonts", "office", "graphic-drivers", "lamp", "smb"],
+    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "office", "graphic-drivers", "lamp", "smb"],
+    'base': ["aur", "cups", "fonts", "lamp"],
+    'openbox': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb", "visual"],
+    'lxde': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'lxqt': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"],
+    'xfce': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic-drivers", "lamp", "office", "smb"]}
 
 # Session names for lightDM setup
 SESSIONS = {

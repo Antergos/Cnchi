@@ -39,6 +39,8 @@ _features_icon_names = {
     'firefox': 'firefox',
     'firewall': 'network-server',
     'fonts': 'preferences-desktop-font',
+    'graphic-drivers' : 'gnome-system',
+    'lamp' : 'applications-internet',
     # LTS DOES NOT WORK ATM
     # 'lts' : 'applications-accessories',
     'office': 'accessories-text-editor',
