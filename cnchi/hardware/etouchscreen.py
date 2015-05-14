@@ -36,7 +36,7 @@ import os
 CLASS_NAME = "ETouchScreen"
 CLASS_ID = ""
 VENDOR_ID = "0x0eef"
-DEVICES = [('0x0001', "ETouchScreen")]
+DEVICES = ['0x0001']
 
 
 class ETouchScreen(Hardware):
@@ -66,11 +66,10 @@ class ETouchScreen(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
+        if vendor_id == VENDOR_ID and product_id in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME

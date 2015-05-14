@@ -29,13 +29,7 @@ from hardware.hardware import Hardware
 CLASS_NAME = "BroadcomB43Legacy"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
-
-DEVICES = [
-    ('0x4301', "BCM4301"),
-    ('0x4306', "BCM4306/2"),
-    ('0x4320', "BCM4306/2"),
-    ('0x4324', "BCM4306"),
-    ('0x4325', "BCM4306/2")]
+DEVICES = ['0x4301', '0x4306', '0x4320', '0x4324', '0x4325']
 
 
 class BroadcomB43Legacy(Hardware):
@@ -51,11 +45,10 @@ class BroadcomB43Legacy(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
+        if vendor_id == VENDOR_ID and product_id in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME

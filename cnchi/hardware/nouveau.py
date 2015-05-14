@@ -55,5 +55,8 @@ class Nouveau(Hardware):
             return True
         return False
 
+    def is_proprietary(self):
+        return False
+
     def get_name(self):
         return CLASS_NAME

@@ -1,4 +1,12 @@
+[2015-05-13 19:06:57 +0200]  Working on adding new features (unfinished)                                karasu      {565e19b}
+[2015-05-12 17:57:40 +0200]  Merge branch 'master' of cnchi 0.8                                         karasu      {0bcb7e8}
+[2015-05-12 08:34:48 -0500]  remove empathy from packages.xml (oversight)                           Dustin Falgout  {5796715}
+[2015-05-12 08:30:10 -0500]  add lxsession to openbox packages for polkit agent                     Dustin Falgout  {5fedfd1}
 [2015-05-12 10:00:58 +0200]  Use requests as default (also show Mbps)                                   karasu      {717929d}
+[2015-05-12 01:58:37 -0500]  so it appears that the window size is substansially larger than the..  Dustin Falgout  {3563a66}
+[2015-05-12 01:39:14 -0500]  I think its okay now                                                   Dustin Falgout  {6e67874}
+[2015-05-12 01:27:25 -0500]  more spacing adjustments                                               Dustin Falgout  {983c624}
+[2015-05-12 01:12:31 -0500]  fix window size. it seems like gtk is measuring the size differentl..  Dustin Falgout  {10f2e84}
 [2015-05-11 22:25:55 -0400]  add topIcons extension as default for gnome                                 axaxs      {6ae6d0c}
 [2015-05-11 15:58:06 -0400]  Gnome - make dock nicer, add min/max buttons to windows                     axaxs      {7476ae0}
 [2015-05-10 20:40:24 -0400]  replace - with -- in lvm vg partition path                                  axaxs      {37db04a}

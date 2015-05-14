@@ -39,10 +39,9 @@ _features_icon_names = {
     'firefox': 'firefox',
     'firewall': 'network-server',
     'fonts': 'preferences-desktop-font',
-    'graphic-drivers' : 'gnome-system',
+    'graphic_drivers' : 'gnome-system',
     'lamp' : 'applications-internet',
-    # LTS DOES NOT WORK ATM
-    # 'lts' : 'applications-accessories',
+    'lts' : 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
     'visual': 'video-display'}
@@ -76,6 +75,16 @@ class Features(GtkBaseBox):
         # Only load defaults the first time this screen is shown
         self.load_defaults = True
 
+    def is_nvidia():
+        from hardware.nvidia import Nvidia
+        nvidia = Nvidia()
+        return nvidia.check_device()
+
+    def is_amd():
+        from hardware.catalyst import Catalyst
+        catalyst = Catalyst()
+        return catalyst.check_device()
+
     def fill_listbox(self):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
@@ -83,6 +92,10 @@ class Features(GtkBaseBox):
         self.listbox_rows = {}
 
         for feature in self.features:
+            # Only add graphic-driver feature if an AMD or Nvidia is detected
+            if feature is "graphic-driver" and not self.is_amd() and not self.is_nvidia:
+                continue
+
             box = Gtk.Box(spacing=20)
             box.set_name(feature + "-row")
 
@@ -91,7 +104,7 @@ class Features(GtkBaseBox):
             if feature in _features_icon_names:
                 icon_name = _features_icon_names[feature]
             else:
-                print(feature)
+                logging.warning(_("No icon found for feature %s"), feature)
                 icon_name = "missing"
 
             object_name = "image_" + feature
@@ -204,6 +217,18 @@ class Features(GtkBaseBox):
                     "Mac OS and Microsoft Windows operating systems.")
         self.set_row_text('fonts', title, desc, tooltip)
 
+        # Graphic drivers
+        title = _("Graphic drivers (Proprietary)")
+        desc = _("Installs AMD or Nvidia proprietary graphic driver")
+        tooltip = _("Installs AMD or Nvidia proprietary graphic driver\n")
+        self.set_row_text('graphic_drivers', title, desc, tooltip)
+
+        # LAMP
+        title = _("Apache + Mysql + Php")
+        desc = _("")
+        tooltip = _("")
+        self.set_row_text('lamp', title, desc, tooltip)
+
         # Printing support (cups)
         title = _("Printing Support")
         desc = _("Installation of printer drivers and management tools.")
@@ -241,18 +266,16 @@ class Features(GtkBaseBox):
         self.set_row_text('firewall', title, desc, tooltip)
 
         # Kernel LTS
-
-        # title = _("Kernel LTS - DOES NOT WORK!")
-        # desc = _("Long term support (LTS) Linux kernel and modules.")
-        # tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
-        #            "based upon Linux kernel 3.14 and is available in the core repository.\n"
-        #            "This particular kernel version enjoys long-term support from upstream,\n"
-        #            "including security fixes and some feature backports. Additionally, this\n"
-        #            "package includes ext4 support. For Antergos users seeking a long-term\n"
-        #            "support kernel, or who want a fallback kernel in case the latest kernel\n"
-        #            "version causes problems, this option is the answer.")
-        # LTS DOES NOT WORK ATM
-        # self.set_row_text('lts', title, desc, tooltip)
+        title = _("Kernel (LTS version)")
+        desc = _("Long term support (LTS) Linux kernel and modules.")
+        tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
+                    "based upon Linux kernel 3.14 and is available in the core repository.\n"
+                    "This particular kernel version enjoys long-term support from upstream,\n"
+                    "including security fixes and some feature backports. Additionally, this\n"
+                    "package includes ext4 support. For Antergos users seeking a long-term\n"
+                    "support kernel, or who want a fallback kernel in case the latest kernel\n"
+                    "version causes problems, this option is the answer.")
+        self.set_row_text('lts', title, desc, tooltip)
 
         # Firefox
         title = _("Firefox Web Browser")

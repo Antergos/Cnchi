@@ -55,5 +55,11 @@ class i915(Hardware):
             return True
         return False
 
+    def is_proprietary(self):
+        return False
+
+    def is_graphic_driver(self):
+        return True
+
     def get_name(self):
         return CLASS_NAME

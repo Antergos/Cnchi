@@ -29,7 +29,7 @@ from hardware.hardware import Hardware
 CLASS_NAME = "Vmware"
 CLASS_ID = ""
 VENDOR_ID = "0x15ad"
-DEVICES = [('0x0405', "VMware Virtual SVGA II"), ('0x0710', "VMware Virtual SVGA")]
+DEVICES = ["0x0405", "0x0710"]
 
 
 class Vmware(Hardware):
@@ -45,11 +45,10 @@ class Vmware(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
+        if vendor_id == VENDOR_ID and product_id in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME

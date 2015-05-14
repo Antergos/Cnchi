@@ -502,6 +502,14 @@
         <pkgname lib='gtk'>gvfs-smb</pkgname>
         <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
     </feature>
+    <feature name="lamp">
+      <pkgname>apache</pkgname>
+      <pkgname>php</pkgname>
+      <pkgname>mariadb</pkgname>
+      <pkgname>phpmyadmin</pkgname>
+      <pkgname>php-mcrypt</pkgname>
+      <pkgname>php-apache</pkgname>
+    </feature>
   </features>
 
   <net>

@@ -51,5 +51,8 @@ class VesaFB(Hardware):
         else:
             return False
 
+    def is_proprietary(self):
+        return False
+
     def get_name(self):
         return CLASS_NAME

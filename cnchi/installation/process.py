@@ -633,6 +633,8 @@ class InstallationProcess(multiprocessing.Process):
                         self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
+        # The proprietary graphic drivers are an exception
+        # (the hardware module will tell us which packages are needed)
         logging.debug(_("Check for user desired features and add them to our installation"))
         self.add_features_packages(xml_root)
         logging.debug(_("All features needed packages have been added"))
@@ -1306,7 +1308,8 @@ class InstallationProcess(multiprocessing.Process):
         try:
             import hardware.hardware as hardware
 
-            hardware_install = hardware.HardwareInstall()
+            proprietary_graphic_drivers = self.settings.get('feature_graphic_drivers')
+            hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
             logging.debug(_("Running post-install scripts from hardware module..."))
             hardware_install.post_install(DEST_DIR)
         except ImportError:

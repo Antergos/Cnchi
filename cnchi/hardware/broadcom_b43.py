@@ -32,31 +32,10 @@ CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
 DEVICES = [
-    ('0x0576', "BCM43224"),  # not tested
-    ('0x4307', "BCM4306/3"),
-    ('0x4311', "BCM4311"),
-    ('0x4312', "BCM4311"),
-    ('0x4315', "BCM4312"),  # LP-PHY https://github.com/dbb/scripts/blob/master/b43-lp-installer
-    ('0x4318', "BCM4318"),
-    ('0x4319', "BCM4318"),
-    ('0x4320', "BCM4306/3"),
-    ('0x4322', "BCM4322"),  # not tested
-    ('0x4324', "BCM4306/3"),
-    ('0x432a', "BCM4321"),  # not tested
-    ('0x432c', "BCM4322"),
-    ('0x432d', "BCM4322"),  # not tested
-    ('0x4331', "BCM4331"),
-    ('0x4350', "BCM43222"),
-    ('0x4353', "BCM43224"),
-    ('0x4357', "BCM43225"),
-    ('0x4358', "BCM43227"),
-    ('0x4359', "BCM43228"),
-    ('0x43a9', "BCM43217"),
-    ('0x43aa', "BCM43131"),
-    ('0xa8d6', "BCM43222"),  # not tested
-    ('0xa8d8', "BCM43224"),
-    ('0xa8db', "BCM43217"),  # not tested
-    ('0xa99d', "BCM43421")]  # not tested
+    '0x0576', '0x4307', '0x4311', '0x4312', '0x4315', '0x4318', '0x4319',
+    '0x4320', '0x4322', '0x4324', '0x432a', '0x432c', '0x432d', '0x4331',
+    '0x4350', '0x4353', '0x4357', '0x4358', '0x4359', '0x43a9', '0x43aa',
+    '0xa8d6', '0xa8d8', '0xa8db', '0xa99d']
 
 
 class BroadcomB43(Hardware):
@@ -72,11 +51,10 @@ class BroadcomB43(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
+        if vendor_id == VENDOR_ID: and product_id in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME

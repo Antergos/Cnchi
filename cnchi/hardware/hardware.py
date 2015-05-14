@@ -31,6 +31,7 @@ import logging
 DEVICES = []
 
 CLASS_NAME = ""
+CLASS_ID = ""
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
@@ -58,6 +59,13 @@ class Hardware(object):
             obtained from the hardware manufacturer. """
         return False
 
+    def is_graphic_driver(self):
+        """ Tells us if this is a graphic driver or not """
+        if CLASS_ID == "0x0300":
+            return True
+        else:
+            return False
+
     def get_name(self):
         raise NotImplementedError("get_name is not implemented")
 
@@ -82,7 +90,9 @@ class Hardware(object):
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
-    def __init__(self):
+    def __init__(self, use_proprietary_graphic_drivers=False):
+        self.use_proprietary_graphic_drivers = use_proprietary_graphic_drivers
+
         # All available objects
         self.all_objects = []
 
@@ -153,12 +163,27 @@ class HardwareInstall(object):
             objects = self.objects_found[device]
             if len(objects) > 1:
                 # We have more than one driver for this device!
+                # We need to choose one
+                # TODO: What happends if there are more than two options?
                 for obj in objects:
-                    # As we have more than one driver, only add
-                    # non proprietary ones
-                    if not obj.is_proprietary(obj):
-                        self.objects_used.append(obj)
+                    if not obj.is_graphic_driver():
+                        # For non graphical drivers, we choose the
+                        # open one as default
+                        if not obj.is_proprietary(obj):
+                            self.objects_used.append(obj)
+                    else:
+                        # It's a graphic driver, we need to know which
+                        # one the user wants
+                        if not self.use_proprietary_graphic_drivers:
+                            # OK, we choose the open one
+                            if not obj.is_proprietary(obj):
+                                self.objects_used.append(obj)
+                        else:
+                            # User wants the proprietary one
+                            if obj.is_proprietary(obj):
+                                self.objects_used.append(obj)
             else:
+                # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(objects[0])
 
     def get_packages(self):

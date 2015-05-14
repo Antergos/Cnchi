@@ -31,11 +31,22 @@ import os
 CLASS_NAME = "Nvidia"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
-DEVICES = []
+DEVICES = ""
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 # nvidia, nvidia-340xx, nvidia-304xx
 # lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
+
+"""
+For GeForce 400 series cards and newer [NVCx and newer], install the nvidia or
+    nvidia-lts package along with nvidia-libgl, available in the official repositories.
+For GeForce 8000/9000 and 100-300 series cards [NV5x, NV8x, NV9x and NVAx] from
+    around 2006-2010, install the nvidia-340xx or nvidia-340xx-lts package along
+    with nvidia-340xx-libgl, available in the official repositories.
+For GeForce 6000/7000 series cards [NV4x and NV6x] from around 2004-2006, install
+    the nvidia-304xx or nvidia-304xx-lts package along with nvidia-304xx-libgl,
+    available in the official repositories.
+"""
 
 
 class Nvidia(Hardware):
@@ -52,7 +63,7 @@ class Nvidia(Hardware):
         path = os.path.join(dest_dir, "etc/modprobe.d/nouveau.conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options nouveau modeset=1\n")
-    
+
     def is_proprietary(self):
         return True
 

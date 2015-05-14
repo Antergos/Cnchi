@@ -30,23 +30,27 @@ from hardware.hardware import Hardware
 
 CLASS_NAME = "FingerPrint"
 CLASS_ID = ""
+
+# This driver works for different vendors
 VENDOR_ID = ""
+
+# Special case: (Vendor, Device)
 DEVICES = [
-    ('0x045e', '0x00bb', ""),
-    ('0x045e', '0x00bc', ""),
-    ('0x045e', '0x00bd', ""),
-    ('0x045e', '0x00ca', ""),
-    ('0x0483', '0x2015', ""),
-    ('0x0483', '0x2016', ""),
-    ('0x05ba', '0x000a', ""),
-    ('0x05ba', '0x0007', ""),
-    ('0x05ba', '0x0008', ""),
-    ('0x061a', '0x0110', ""),
-    ('0x08ff', '0x1600', ""),
-    ('0x08ff', '0x2550', ""),
-    ('0x08ff', '0x2580', ""),
-    ('0x08ff', '0x5501', ""),
-    ('0x147e', '0x2016', "")]
+    ('0x045e', '0x00bb'),
+    ('0x045e', '0x00bc'),
+    ('0x045e', '0x00bd'),
+    ('0x045e', '0x00ca'),
+    ('0x0483', '0x2015'),
+    ('0x0483', '0x2016'),
+    ('0x05ba', '0x000a'),
+    ('0x05ba', '0x0007'),
+    ('0x05ba', '0x0008'),
+    ('0x061a', '0x0110'),
+    ('0x08ff', '0x1600'),
+    ('0x08ff', '0x2550'),
+    ('0x08ff', '0x2580'),
+    ('0x08ff', '0x5501'),
+    ('0x147e', '0x2016')]
 
 
 class FingerPrint(Hardware):
@@ -61,10 +65,10 @@ class FingerPrint(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        for (vendor, product, description) in DEVICES:
-            if (vendor_id, product_id) == (vendor, product):
-                return True
-        return False
+        if (vendor_id, product_id) in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME

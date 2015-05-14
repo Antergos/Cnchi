@@ -31,7 +31,7 @@ import os
 CLASS_NAME = "Virtualbox"
 CLASS_ID = ""
 VENDOR_ID = "0x80ee"
-DEVICES = [('0xbeef', "InnoTek Systemberatung GmbH VirtualBox Graphics Adapter")]
+DEVICES = ['0xbeef']
 
 
 class Virtualbox(Hardware):
@@ -53,17 +53,16 @@ class Virtualbox(Hardware):
             modules.write("vboxvideo\n")
         super().chroot(self, ["systemctl", "disable", "openntpd"], dest_dir)
         super().chroot(self, ["systemctl", "-f", "enable", "vboxservice"], dest_dir)
-        
+
         # This fixes bug in virtualbox-guest-modules package
         super().chroot(self, ["depmod", "-a"], dest_dir)
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
+        if vendor_id == VENDOR_ID and product_id in DEVICES:
+            return True
+        else:
+            return False
 
     def get_name(self):
         return CLASS_NAME
