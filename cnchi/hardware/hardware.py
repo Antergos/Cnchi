@@ -113,7 +113,6 @@ class HardwareInstall(object):
                 try:
                     if __name__ == "__main__":
                         package = filename
-                        print(package)
                     else:
                         package = "hardware." + filename
                     name = filename.capitalize()

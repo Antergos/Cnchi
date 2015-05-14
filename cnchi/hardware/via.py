@@ -64,3 +64,6 @@ class Via(Hardware):
 
     def get_name(self):
         return CLASS_NAME
+
+    def is_graphic_driver(self):
+        return True

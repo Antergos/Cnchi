@@ -1,3 +1,4 @@
+[2015-05-14 18:22:56 +0200]  Still uses open drivers                                                    karasu      {098a7e9}
 [2015-05-14 17:25:01 +0200]  And more work on proprietary drivers...                                    karasu      {54225de}
 [2015-05-14 16:57:09 +0200]  modesetting is now installed with xorg (by default)                        karasu      {b839b6c}
 [2015-05-14 16:56:50 +0200]  Working on hardware module                                                 karasu      {0e41f20}
