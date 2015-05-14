@@ -24,11 +24,14 @@
 
 """ Nvidia (propietary) driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 import os
 
-CLASS_NAME = "Nvidia"
+CLASS_NAME = "Nvidia_340xx"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 
@@ -115,7 +118,7 @@ DEVICES=[
     "0x13ba", "0x13bb", "0x1140"]
 
 
-class Nvidia(Hardware):
+class Nvidia_340xx(Hardware):
     def __init__(self):
         Hardware.__init__(self)
 

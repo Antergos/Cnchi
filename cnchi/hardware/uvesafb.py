@@ -24,7 +24,10 @@
 
 """ VESA driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 CLASS_NAME = "VesaFB"
 CLASS_ID = "0x0300"

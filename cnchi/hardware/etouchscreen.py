@@ -28,7 +28,10 @@
 # - http://www.x.org/archive/X11R7.5/doc/man/man4/evdev.4.html
 # - https://bbs.archlinux.org/viewtopic.php?id=126208
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 import subprocess
 import os

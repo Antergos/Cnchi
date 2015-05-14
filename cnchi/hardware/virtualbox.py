@@ -24,7 +24,10 @@
 
 """ Virtualbox driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 import os
 

@@ -70,10 +70,10 @@ class UserInfo(GtkBaseBox):
 
         self.require_password = True
         self.encrypt_home = False
-        
+
         self.camera_window = self.ui.get_object('cheese_box')
         self.camera = camera.CameraBox()
-        
+
         if self.camera.found():
             self.camera_window.add(self.camera)
             self.camera.show()

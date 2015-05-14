@@ -25,9 +25,12 @@
 """ Broadcom b43 driver installation """
 
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
-CLASS_NAME = "BroadcomB43"
+CLASS_NAME = "Broadcom_b43"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
@@ -38,7 +41,7 @@ DEVICES = [
     '0xa8d6', '0xa8d8', '0xa8db', '0xa99d']
 
 
-class BroadcomB43(Hardware):
+class Broadcom_b43(Hardware):
     def __init__(self):
         Hardware.__init__(self)
 
@@ -51,7 +54,7 @@ class BroadcomB43(Hardware):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID: and product_id in DEVICES:
+        if vendor_id == VENDOR_ID and product_id in DEVICES:
             return True
         else:
             return False

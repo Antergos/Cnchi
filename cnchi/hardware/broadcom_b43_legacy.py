@@ -24,7 +24,10 @@
 
 """ Broadcom b43legacy driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 CLASS_NAME = "BroadcomB43Legacy"
 CLASS_ID = "0x0200"

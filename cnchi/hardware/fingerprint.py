@@ -26,7 +26,10 @@
 
 # Support for consumer fingerprint reader devices.
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 CLASS_NAME = "FingerPrint"
 CLASS_ID = ""

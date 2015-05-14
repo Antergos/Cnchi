@@ -113,6 +113,7 @@ class HardwareInstall(object):
                 try:
                     if __name__ == "__main__":
                         package = filename
+                        print(package)
                     else:
                         package = "hardware." + filename
                     name = filename.capitalize()
@@ -166,7 +167,7 @@ class HardwareInstall(object):
                 # We need to choose one
                 # TODO: What happends if there are more than two options?
                 for obj in objects:
-                    if not obj.is_graphic_driver():
+                    if not obj.is_graphic_driver(obj):
                         # For non graphical drivers, we choose the
                         # open one as default
                         if not obj.is_proprietary(obj):
@@ -209,7 +210,11 @@ class HardwareInstall(object):
 
 ''' Test case '''
 if __name__ == "__main__":
-    hardware_install = HardwareInstall()
+
+    def _(txt): return txt
+
+    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
+    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
     print(hardware_install.get_found_driver_names())
     if len(hardware_pkgs) > 0:
