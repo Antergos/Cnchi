@@ -195,6 +195,7 @@ class HardwareInstall(object):
                     for obj in objects_used:
                         if obj.get_priority(obj) == max(priorities):
                             self.objects_used.append(obj)
+                            break
                 else:
                     self.objects_used.append(objects_used)
             else:
