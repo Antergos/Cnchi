@@ -83,7 +83,6 @@
 
     <edition name="base" description="Without X">
       <packages>
-        <pkgname nm='true' name='netctl'>netctl</pkgname>
         <pkgname>cabextract</pkgname>
         <pkgname>bzip2</pkgname>
         <pkgname>sharutils</pkgname>
