@@ -730,12 +730,15 @@ my %xkbsym_table = (
     'uhorn' => '01b0',
     'Zstroke' => '01b5',
     'zstroke' => '01b6',
+    'EZH' => '01b7',
+    'Ezh' => '01b7',
     'Ocaron' => '01d1',
     'ocaron' => '01d2',
     'Gcaron' => '01e6', # Is this recognised by X ?
     'gcaron' => '01e7', # Is this recognised by X ?
     'schwa' => '0259', # Is this recognised by X ?
     'obarred' => '0275',
+    'ezh' => '0292',
     'caron' => '02c7',
     'breve' => '02d8',
     'abovedot' => '02d9',
@@ -1152,6 +1155,85 @@ my %xkbsym_table = (
     'Farsi_7' => '06f7',
     'Farsi_8' => '06f8',
     'Farsi_9' => '06f9',
+    'Sinh_ng' => '0d82',
+    'Sinh_h2' => '0d83',
+    'Sinh_a' => '0d85',
+    'Sinh_aa' => '0d86',
+    'Sinh_ae' => '0d87',
+    'Sinh_aee' => '0d88',
+    'Sinh_i' => '0d89',
+    'Sinh_ii' => '0d8a',
+    'Sinh_u' => '0d8b',
+    'Sinh_uu' => '0d8c',
+    'Sinh_ri' => '0d8d',
+    'Sinh_rii' => '0d8e',
+    'Sinh_lu' => '0d8f',
+    'Sinh_luu' => '0d90',
+    'Sinh_e' => '0d91',
+    'Sinh_ee' => '0d92',
+    'Sinh_ai' => '0d93',
+    'Sinh_o' => '0d94',
+    'Sinh_oo' => '0d95',
+    'Sinh_au' => '0d96',
+    'Sinh_ka' => '0d9a',
+    'Sinh_kha' => '0d9b',
+    'Sinh_ga' => '0d9c',
+    'Sinh_gha' => '0d9d',
+    'Sinh_ng2' => '0d9e',
+    'Sinh_nga' => '0d9f',
+    'Sinh_ca' => '0da0',
+    'Sinh_cha' => '0da1',
+    'Sinh_ja' => '0da2',
+    'Sinh_jha' => '0da3',
+    'Sinh_nya' => '0da4',
+    'Sinh_jnya' => '0da5',
+    'Sinh_nja' => '0da6',
+    'Sinh_tta' => '0da7',
+    'Sinh_ttha' => '0da8',
+    'Sinh_dda' => '0da9',
+    'Sinh_ddha' => '0daa',
+    'Sinh_nna' => '0dab',
+    'Sinh_ndda' => '0dac',
+    'Sinh_tha' => '0dad',
+    'Sinh_thha' => '0dae',
+    'Sinh_dha' => '0daf',
+    'Sinh_dhha' => '0db0',
+    'Sinh_na' => '0db1',
+    'Sinh_ndha' => '0db3',
+    'Sinh_pa' => '0db4',
+    'Sinh_pha' => '0db5',
+    'Sinh_ba' => '0db6',
+    'Sinh_bha' => '0db7',
+    'Sinh_ma' => '0db8',
+    'Sinh_mba' => '0db9',
+    'Sinh_ya' => '0dba',
+    'Sinh_ra' => '0dbb',
+    'Sinh_la' => '0dbd',
+    'Sinh_va' => '0dc0',
+    'Sinh_sha' => '0dc1',
+    'Sinh_ssha' => '0dc2',
+    'Sinh_sa' => '0dc3',
+    'Sinh_ha' => '0dc4',
+    'Sinh_lla' => '0dc5',
+    'Sinh_fa' => '0dc6',
+    'Sinh_al' => '0dca',
+    'Sinh_aa2' => '0dcf',
+    'Sinh_ae2' => '0dd0',
+    'Sinh_aee2' => '0dd1',
+    'Sinh_i2' => '0dd2',
+    'Sinh_ii2' => '0dd3',
+    'Sinh_u2' => '0dd4',
+    'Sinh_uu2' => '0dd6',
+    'Sinh_ru2' => '0dd8',
+    'Sinh_e2' => '0dd9',
+    'Sinh_ee2' => '0dda',
+    'Sinh_ai2' => '0ddb',
+    'Sinh_o2' => '0ddc',
+    'Sinh_oo2' => '0ddd',
+    'Sinh_au2' => '0dde',
+    'Sinh_lu2' => '0ddf',
+    'Sinh_ruu2' => '0df2',
+    'Sinh_luu2' => '0df3',
     'Thai_kokai' => '0e01',
     'Thai_khokhai' => '0e02',
     'Thai_khokhuat' => '0e03',
@@ -1442,6 +1524,7 @@ my %xkbsym_table = (
     'enfilledcircbullet' => '2022',
     'doubbaselinedot' => '2025',
     'ellipsis' => '2026',
+    'permille' => '2030',
     'minutes' => '2032',
     'seconds' => '2033',
     'caret' => '2038',
@@ -2088,6 +2171,7 @@ if ($freebsd) {
          'dead_horn' => '031b',           # ???? Greek
          'dead_psili' => 'nop',           # ???? Greek
          'dead_dasia' => 'nop',           # ???? Greek
+         'dead_greek' => 'fe8c',
 # Modifiers
          'Multi_key' => 'nop',
          'Mode_switch' => 'ashift',
@@ -3947,10 +4031,6 @@ sub flatten {
                 approximate (($coord | 0x08), $metasyms[$ascii], 1);
                 approximate (($coord | 0x04), $controlsyms[$ascii], 1);
                 approximate (($coord | 0x0c), $metacontrolsyms[$ascii], 1);
-            } elsif ($is_special) { # this includes being 'NoSymbol'
-                approximate (($coord | 0x08), $kernelkeysym, 2);
-                approximate (($coord | 0x04), $kernelkeysym, 2);
-                approximate (($coord | 0x0c), $kernelkeysym, 2);
             }
 	}
     }
@@ -3962,10 +4042,17 @@ sub flatten {
                         $quality[$coord] + $mask << 2);
         }
     }
+    for my $x (2..3) {
+        my $mask = 1 << $x;
+        for my $coord (0..63) {
+            next if (! defined $vector[$coord]);
+            approximate($coord | $mask, $vector[$coord],
+                        $quality[$coord] + $mask << 2);
+        }
+    }
     for my $coord (0..16) {
         next if (! defined $vector[$coord]);
-        for my $x (1..3) {
-            my $mask = $x << 4;
+        for my $mask (1<<4, 2<<4, 3<<4) {
             approximate($coord | $mask, $vector[$coord],
                         $quality[$coord] + 1 << 6);
         }

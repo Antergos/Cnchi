@@ -1,3 +1,6 @@
+[2015-05-15 22:17:36 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {6769ac1}
+[2015-05-15 15:35:31 +0200]  Size changes. I made the screen smaller and I think it works now           karasu      {4572cd3}
+[2015-05-15 15:07:03 +0200]  Update update.info                                                         karasu      {4fb2092}
 [2015-05-15 10:58:13 +0200]  Add break to stop for in                                                   karasu      {af790a5}
 [2015-05-15 10:57:08 +0200]  Working now on priorities                                                  karasu      {e9d0434}
 [2015-05-15 10:01:00 +0200]  Try to setup systemd-networkd for base installs                            karasu      {6961235}
