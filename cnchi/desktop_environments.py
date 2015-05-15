@@ -59,9 +59,7 @@ LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
-# LTS DOES NOT WORK ATM
-# ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "lts", "office", "visual", "firewall", "smb"]
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {

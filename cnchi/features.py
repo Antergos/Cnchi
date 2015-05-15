@@ -63,8 +63,9 @@ class Features(GtkBaseBox):
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
-        self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
+        self.listbox.connect("row-selected", self.on_listbox_row_selected)
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
@@ -84,6 +85,15 @@ class Features(GtkBaseBox):
         from hardware.catalyst import Catalyst
         catalyst = Catalyst()
         return catalyst.check_device()
+
+    def on_listbox_row_selected(self, listbox, listbox_row):
+        """ Someone selected a different row of the listbox
+            WARNING: IF LIST LAYOUT IS CHANGED THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+        if listbox_row is not None:
+            for vbox in listbox_row:
+                switch = vbox.get_children()[2]
+                if switch:
+                    switch.set_active(not switch.get_active())
 
     def fill_listbox(self):
         for listbox_row in self.listbox.get_children():
@@ -220,13 +230,13 @@ class Features(GtkBaseBox):
         # Graphic drivers
         title = _("Graphic drivers (Proprietary)")
         desc = _("Installs AMD or Nvidia proprietary graphic driver")
-        tooltip = _("Installs AMD or Nvidia proprietary graphic driver\n")
+        tooltip = _("Installs AMD or Nvidia proprietary graphic driver")
         self.set_row_text('graphic_drivers', title, desc, tooltip)
 
         # LAMP
-        title = _("Apache + Mysql + Php")
-        desc = _("")
-        tooltip = _("")
+        title = _("LAMP")
+        desc = _("Apache + Mysql + Php installation")
+        tooltip = _("This option installs the Apache web server")
         self.set_row_text('lamp', title, desc, tooltip)
 
         # Printing support (cups)
@@ -304,13 +314,16 @@ class Features(GtkBaseBox):
     def switch_defaults_on(self):
         """ Enable some features by default """
         if 'bluetooth' in self.features:
-            process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
-            process2 = subprocess.Popen(["grep", "-i", "bluetooth"], stdin=process1.stdout, stdout=subprocess.PIPE)
-            process1.stdout.close()
-            out, process_error = process2.communicate()
-            if out.decode() is not '':
-                row = self.listbox_rows['bluetooth']
-                row[COL_SWITCH].set_active(True)
+            try:
+                process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+                process2 = subprocess.Popen(["grep", "-i", "bluetooth"], stdin=process1.stdout, stdout=subprocess.PIPE)
+                process1.stdout.close()
+                out, process_error = process2.communicate()
+                if out.decode() is not '':
+                    row = self.listbox_rows['bluetooth']
+                    row[COL_SWITCH].set_active(True)
+            except subprocess.CalledProcessError as process_error:
+                logging.warning(process_error)
 
         # I do not think firewall should be enabled by default (karasu)
         # if 'firewall' in self.features:

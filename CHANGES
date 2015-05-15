@@ -1,4 +1,11 @@
+[2015-05-15 23:36:29 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {ffe0a6e}
+[2015-05-15 23:33:56 +0200]  Merge pull request #334 from Wyn10/patch-1                                 karasu      {060d768}
+[2015-05-15 23:30:44 +0200]  Undo last change. USA was shown as VSA ? Now I do not have time to ..      karasu      {8186c03}
+[2015-05-15 23:26:19 +0200]  Updated kbdnames                                                           karasu      {d58e210}
+[2015-05-15 17:14:52 -0400]  Update packages.xml                                                          Wyn       {c931e38}
 [2015-05-15 23:07:38 +0200]  Updated some keyboard related files (console-setup_1.126.tar.xz)           karasu      {7a07b0e}
+[2015-05-15 23:03:04 +0200]  Forgot to add this file (not used atm)                                     karasu      {5893706}
+[2015-05-15 22:52:08 +0200]  Updated some keyboard related files (console-setup_1.126.tar.xz)           karasu      {77fc2cb}
 [2015-05-15 22:17:36 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {6769ac1}
 [2015-05-15 15:35:31 +0200]  Size changes. I made the screen smaller and I think it works now           karasu      {4572cd3}
 [2015-05-15 15:07:03 +0200]  Update update.info                                                         karasu      {4fb2092}
