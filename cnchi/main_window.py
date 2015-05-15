@@ -53,8 +53,8 @@ from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
 # Constants (must be uppercase)
-MAIN_WINDOW_WIDTH = 912
-MAIN_WINDOW_HEIGHT = 613
+MAIN_WINDOW_WIDTH = 800
+MAIN_WINDOW_HEIGHT = 500
 
 def atk_set_image_description(widget, description):
     """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
@@ -331,8 +331,11 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.max_height = MAIN_WINDOW_HEIGHT
         geom.base_width = MAIN_WINDOW_WIDTH
         geom.base_height = MAIN_WINDOW_HEIGHT
+        geom.width_inc = 0
+        geom.height_inc = 0
 
-        hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE
+        hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE | Gdk.WindowHints.RESIZE_INC
+        
         self.set_geometry_hints(None, geom, hints)
 
     def check_escape(self, widget, event, data=None):
