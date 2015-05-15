@@ -405,27 +405,23 @@
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
           <pkgname>aspell-en</pkgname>
-          <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
           <pkgname>grub2-editor</pkgname>
           <pkgname>k3b</pkgname>
-          <pkgname>kdeartwork-desktopthemes</pkgname>
-          <pkgname>kdeartwork-iconthemes</pkgname>
           <pkgname>gwenview</pkgname>
           <pkgname>kdegraphics-ksnapshot</pkgname>
           <pkgname>kdegraphics-okular</pkgname>
           <pkgname>kdegraphics-thumbnailers</pkgname>
           <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-          <pkgname>kdemultimedia-kmix</pkgname>
+          <pkgname>kmix</pkgname>
           <pkgname>kdenetwork-filesharing</pkgname>
           <pkgname>kdenetwork-kopete</pkgname>
-          <pkgname>kdeplasma-addons-frameworks</pkgname>
           <pkgname>kate</pkgname>
           <pkgname>kdesudo</pkgname>
           <pkgname>kdeutils-ark</pkgname>
-          <pkgname>kdeutils-kcalc</pkgname>
+          <pkgname>kcalc</pkgname>
           <pkgname>kdeutils-kwalletmanager</pkgname>
           <pkgname>kdeutils-sweeper</pkgname>
           <pkgname>kf5</pkgname>
@@ -435,10 +431,8 @@
           <pkgname>konsole</pkgname>
           <pkgname>kwrited</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
-          <pkgname>oxygen</pkgname>
-          <pkgname>plasma</pkgname>
+          <pkgname>plasma</pkgname><!--plasma group-->
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
-          <pkgname>plasma-workspace-wallpapers</pkgname>
           <pkgname>transmission-qt</pkgname>
           <pkgname>vlc</pkgname>
           <pkgname>xdg-user-dirs</pkgname>
@@ -455,8 +449,8 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil4</pkgname>
-      <pkgname lib='qt' qt5="True">bluedevil-frameworks</pkgname>
+      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
+      <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
     </feature>
