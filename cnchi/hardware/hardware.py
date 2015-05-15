@@ -28,10 +28,10 @@ import subprocess
 import os
 import logging
 
-DEVICES = []
-
 CLASS_NAME = ""
 CLASS_ID = ""
+DEVICES = []
+PRIORITY = 0
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
@@ -68,6 +68,9 @@ class Hardware(object):
 
     def get_name(self):
         raise NotImplementedError("get_name is not implemented")
+
+    def get_priority(self):
+        return PRIORITY
 
     @staticmethod
     def chroot(cmd, dest_dir, stdin=None, stdout=None):
@@ -161,27 +164,39 @@ class HardwareInstall(object):
         self.objects_used = []
         for device in self.objects_found:
             objects = self.objects_found[device]
+            objects_used = []
             if len(objects) > 1:
                 # We have more than one driver for this device!
                 # We need to choose one
-                # TODO: What happends if there are more than two options?
                 for obj in objects:
                     if not obj.is_graphic_driver(obj):
                         # For non graphical drivers, we choose the
                         # open one as default
                         if not obj.is_proprietary(obj):
-                            self.objects_used.append(obj)
+                            objects_used.append(obj)
                     else:
                         # It's a graphic driver, we need to know which
                         # one the user wants
                         if not self.use_proprietary_graphic_drivers:
                             # OK, we choose the open one
                             if not obj.is_proprietary(obj):
-                                self.objects_used.append(obj)
+                                objects_used.append(obj)
                         else:
                             # User wants the proprietary one
                             if obj.is_proprietary(obj):
-                                self.objects_used.append(obj)
+                                objects_used.append(obj)
+
+                if len(objects_used) > 1:
+                    # We still have two or more options,
+                    # let's check their priority
+                    priorities = []
+                    for obj in objects_used:
+                        priorities.append(obj.get_priority(obj))
+                    for obj in objects_used:
+                        if obj.get_priority(obj) == max(priorities):
+                            self.objects_used.append(obj)
+                else:
+                    self.objects_used.append(objects_used)
             else:
                 # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(objects[0])

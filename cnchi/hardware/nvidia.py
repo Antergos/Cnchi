@@ -35,6 +35,10 @@ CLASS_NAME = "Nvidia"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 
+# Give this driver more priority so it is chosen instead of
+# nvidia-340xx or nvidia-304xx
+PRIORITY = 2
+
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 # nvidia, nvidia-340xx, nvidia-304xx
 # lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
@@ -112,3 +116,6 @@ class Nvidia(Hardware):
 
     def is_graphic_driver(self):
         return True
+
+    def get_priority(self):
+        return PRIORITY        

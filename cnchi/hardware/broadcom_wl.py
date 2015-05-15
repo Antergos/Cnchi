@@ -57,5 +57,8 @@ class BroadcomWl(Hardware):
         else:
             return False
 
+    def is_proprietary(self):
+        return True
+
     def get_name(self):
         return CLASS_NAME

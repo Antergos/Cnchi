@@ -53,6 +53,7 @@ We manage our translations in transifex:
  - upower
  - encfs, pam_encfs
  - iso-codes
+ - clutter, clutter-gtk, clutter-gst (user info screen)
  - cheese
  
 ## Unit tests

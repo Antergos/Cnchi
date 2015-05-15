@@ -66,4 +66,3 @@ class Nouveau(Hardware):
 
     def is_graphic_driver(self):
         return True
-        
