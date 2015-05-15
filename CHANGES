@@ -1,3 +1,4 @@
+[2015-05-15 15:35:31 +0200]  Size changes. I made the screen smaller and I think it works now           karasu      {4572cd3}
 [2015-05-15 15:07:03 +0200]  Update update.info                                                         karasu      {4fb2092}
 [2015-05-12 08:34:48 -0500]  remove empathy from packages.xml (oversight)                           Dustin Falgout  {5796715}
 [2015-05-12 08:30:10 -0500]  add lxsession to openbox packages for polkit agent                     Dustin Falgout  {5fedfd1}

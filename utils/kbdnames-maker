@@ -29,13 +29,6 @@ for my $layout (keys %KeyboardNames::layouts) {
     }
 }
 
-# Use a custom-generated locale. Taken from lintian.
-chop(my $cwd = `pwd`);
-my $locale_path = "$cwd/build-locale";
-system("mkdir $locale_path");
-system("localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias --quiet $locale_path/en_US.UTF-8");
-$ENV{'LOCPATH'} = "$locale_path";
-
 # Make sure we output UTF-8
 $ENV{'LC_ALL'} = "en_US.UTF-8";
 binmode STDOUT, ":utf8";
@@ -66,4 +59,3 @@ for my $mo (</usr/share/locale/*/LC_MESSAGES/xkeyboard-config.mo>) {
 	}
     }
 }
-system("rm -rf $locale_path");
