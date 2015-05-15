@@ -1,3 +1,7 @@
+[2015-05-15 10:58:13 +0200]  Add break to stop for in                                                   karasu      {af790a5}
+[2015-05-15 10:57:08 +0200]  Working now on priorities                                                  karasu      {e9d0434}
+[2015-05-15 10:01:00 +0200]  Try to setup systemd-networkd for base installs                            karasu      {6961235}
+[2015-05-14 18:33:10 +0200]  Ok, now if asked, hardware module chooses the proprietary driver           karasu      {a786f21}
 [2015-05-14 18:22:56 +0200]  Still uses open drivers                                                    karasu      {098a7e9}
 [2015-05-14 17:25:01 +0200]  And more work on proprietary drivers...                                    karasu      {54225de}
 [2015-05-14 16:57:09 +0200]  modesetting is now installed with xorg (by default)                        karasu      {b839b6c}
