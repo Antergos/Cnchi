@@ -406,6 +406,7 @@
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
           <pkgname>aspell-en</pkgname>
+          <pkgname>breeze-kde4</pkgname> <!--qt4 mimic qt5-->
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
