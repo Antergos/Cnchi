@@ -406,7 +406,7 @@
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
           <pkgname>aspell-en</pkgname>
-          <pkgname>breeze-kde4</pkgname> <!--qt4 mimic qt5-->
+          <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
@@ -451,7 +451,7 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4 (Shouldn't be installed if Plasma is selected)-->
+      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
       <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
