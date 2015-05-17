@@ -63,9 +63,11 @@ class Features(GtkBaseBox):
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
-        self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
-        self.listbox.connect("row-selected", self.on_listbox_row_selected)
+
+        # self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        # self.listbox.connect("row-selected", self.on_listbox_row_selected)
 
         # This is initialized each time this screen is shown in prepare()
         self.features = None
