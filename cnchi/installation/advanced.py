@@ -186,11 +186,11 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Assign images to buttons
         btns = [
-            ("partition_button_undo", "edit-undo"),
-            ("partition_button_new", "list-add"),
-            ("partition_button_delete", "list-remove"),
-            ("partition_button_edit", "system-run"),
-            ("partition_button_new_label", "edit-clear-all"),
+            ("partition_button_undo", "edit-undo-symbolic"),
+            ("partition_button_new", "list-add-symbolic"),
+            ("partition_button_delete", "list-remove-symbolic"),
+            ("partition_button_edit", "system-run-symbolic"),
+            ("partition_button_new_label", "edit-clear-all-symbolic"),
             ("changelist_cancelbutton", "dialog-cancel"),
             ("changelist_okbutton", "dialog-apply"),
             ("create_table_dialog_cancel", "dialog-cancel"),

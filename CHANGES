@@ -1,3 +1,4 @@
+[2015-05-16 22:26:40 -0500]  Update theme name in set-settings (i thought I did this already)       Dustin Falgout  {380796d}
 [2015-05-16 18:51:38 -0500]  fixes #336                                                             Dustin Falgout  {38b78aa}
 [2015-05-16 18:47:01 -0500]  Merge pull request #337 from Wyn10/patch-2                             Dustin Falgout  {780dd5a}
 [2015-05-16 19:36:06 -0400]  Update pacman.tmpl                                                           Wyn       {d7a5719}
