@@ -312,7 +312,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def select_bootdevice(self, combobox, value):
         model = combobox.get_model()
-        combo_iter = model.get_iter(0)
+        combo_iter = model.get_iter_first()
         index = 0
         found = False
         while combo_iter is not None and not found:

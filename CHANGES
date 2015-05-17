@@ -1,3 +1,4 @@
+[2015-05-17 18:07:06 +0200]  Use requests in updater.py                                                 karasu      {7c685ca}
 [2015-05-16 22:52:14 -0500]  use symbolic icons in advanced                                         Dustin Falgout  {c9082ec}
 [2015-05-16 22:26:40 -0500]  Update theme name in set-settings (i thought I did this already)       Dustin Falgout  {380796d}
 [2015-05-16 18:51:38 -0500]  fixes #336                                                             Dustin Falgout  {38b78aa}
