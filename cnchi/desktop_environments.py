@@ -26,9 +26,9 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "plasma5" "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxde", "lxqt", "plasma5"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxde", "lxqt"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
