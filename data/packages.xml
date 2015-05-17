@@ -413,6 +413,7 @@
           <pkgname>grub2-editor</pkgname>
           <pkgname>k3b</pkgname>
           <pkgname>gwenview</pkgname>
+          <pkgname>kdebase-dolphin</pkgname>
           <pkgname>kdegraphics-ksnapshot</pkgname>
           <pkgname>kdegraphics-okular</pkgname>
           <pkgname>kdegraphics-thumbnailers</pkgname>
