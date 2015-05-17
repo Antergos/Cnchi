@@ -31,7 +31,7 @@ import logging
 import shutil
 
 import misc.misc as misc
-import download.download_urllib as download
+import requests
 import info
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
@@ -75,13 +75,14 @@ class Updater():
                 update_info = json.loads(response)
                 self.local_files = update_info['files']
 
-        # Download update.info (contains info of all Cnchi's files)
-        request = download.url_open(_update_info_url)
-
-        if request is not None:
-            response = request.read().decode('utf-8')
-            if len(response) > 0:
-                update_info = json.loads(response)
+        r = requests.get(_update_info_url, stream=True)
+        if r.status_code == requests.codes.ok:
+            txt = ""
+            for chunk in r.iter_content(1024):
+                if chunk:
+                    txt += chunk.decode()
+            if len(txt) > 0:
+                update_info = json.loads(txt)
                 self.remote_version = update_info['version']
                 for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
