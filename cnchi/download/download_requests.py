@@ -30,6 +30,16 @@ import queue
 import shutil
 import requests
 import time
+import hashlib
+
+def get_md5(file_name):
+    """ Gets md5 hash from a file """
+    md5_hash = hashlib.md5()
+    with open(file_name, "rb") as myfile:
+        for line in myfile:
+            md5_hash.update(line)
+    return md5_hash.hexdigest()
+
 
 class Download(object):
     """ Class to download packages using urllib
@@ -83,12 +93,24 @@ class Download(object):
             needs_to_download = True
 
             if os.path.exists(dst_path):
-                # File already exists (previous install?) do not download
+                # File already exists (previous install?)
+                md5 = get_md5(dst_path)
+                if element['hash'] != md5:
+                    logging.warning("MD5 hash of %s does not match!", element['filename'])
+                    # TODO: Force to download it
+                
+                # Do not download it again
                 logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
                 needs_to_download = False
                 downloaded += 1
             elif self.cache_dir and os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
+                
+                md5 = get_md5(dst_cache_path)
+                if element['hash'] != md5:
+                    logging.warning("MD5 hash of %s does not match!", element['filename'])
+                    # TODO: Force to download it
+                
                 # let's copy it to our destination
                 logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
                 try:
@@ -111,11 +133,13 @@ class Download(object):
                     r = requests.get(url, stream=True)
                     total_length = int(r.headers.get('content-length'))
                     if r.status_code == requests.codes.ok:
+                        md5_hash = hashlib.md5()
                         with open(dst_path, 'wb') as xz_file:
                             for data in r.iter_content(1024):
                                 if not data:
                                     break
                                 xz_file.write(data)
+                                md5_hash.update(data)
                                 completed_length += len(data)
                                 old_percent = percent
                                 if total_length > 0:
@@ -129,6 +153,12 @@ class Download(object):
                                 progress_text = "{0}% {1} Mbps".format(percent, Mbps)
                                 self.queue_event('progress_bar_text', progress_text)
 
+                            md5 = md5_hash.hexdigest()
+                            
+                            if element['hash'] != md5:
+                                logging.warning("MD5 hash of %s does not match!", element['filename'])
+                                # TODO: Force to download it again
+                            
                             download_error = False
                             downloaded += 1
                             break

@@ -1,3 +1,5 @@
+[2015-05-18 10:54:20 +0200]  Run always with -d -v                                                      karasu      {91c0cf3}
+[2015-05-17 16:24:46 +0200]  Letting user change feature option just with one click is confusing..      karasu      {811cc1c}
 [2015-05-17 16:20:47 +0200]  Use requests to check Internet version                                     karasu      {b7fee53}
 [2015-05-16 00:03:32 +0200]  Fix features screen. Also select feature just with one mouse click         karasu      {593d672}
 [2015-05-15 23:36:29 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {ffe0a6e}
