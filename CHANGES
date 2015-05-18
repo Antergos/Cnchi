@@ -1,3 +1,4 @@
+[2015-05-18 08:40:07 +0200]  Updated pre-commit hook to create update.info automatically                karasu      {60de395}
 [2015-05-17 15:53:19 -0500]  Merge pull request #340 from Wyn10/patch-1                             Dustin Falgout  {02c1844}
 [2015-05-17 18:25:22 +0200]  Try to fix issue #341                                                      karasu      {6c8d5df}
 [2015-05-17 18:07:06 +0200]  Use requests in updater.py                                                 karasu      {7c685ca}
