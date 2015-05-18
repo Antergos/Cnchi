@@ -39,6 +39,10 @@ if [[ ${INFO_PY} != "False" ]]; then
     #git commit -m "Version bump to $INPUT_STRING"
     #git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
     #git push origin
+
+    echo "Generating update.info..."
+    utils/generate_update_info.py 
+
     exit 0;
 else
     echo "Could not find a VERSION file"
