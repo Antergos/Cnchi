@@ -174,7 +174,7 @@ class Download(object):
 
                             if element['hash'] != md5:
                                 logging.warning(
-                                    _("MD5 hash of %s does not match!",
+                                    _("MD5 hash of %s does not match!"),
                                     element['filename'])
                                 logging.warning(_("Cnchi will try another mirror."))
                                 # Force to download it again
