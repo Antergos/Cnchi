@@ -22,7 +22,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
@@ -34,6 +34,7 @@
     <property name="halign">baseline</property>
     <property name="valign">center</property>
     <!--<property name="margin_start">140</property>-->
+    <property name="margin_start">10</property>
     <property name="margin_end">20</property>
     <property name="margin_top">10</property>
     <property name="margin_bottom">10</property>
