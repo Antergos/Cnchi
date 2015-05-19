@@ -1,8 +1,11 @@
+[2015-05-19 16:38:57 +0200]  user_info grows when entering data. Needs fixing                           karasu      {724c319}
 [2015-05-19 16:26:35 +0200]  Leave camera code for 0.11                                                 karasu      {7373acc}
 [2015-05-19 12:39:02 +0200]  New window size                                                            karasu      {0940035}
 [2015-05-19 11:11:11 +0200]  Another typo                                                               karasu      {961614d}
 [2015-05-19 11:02:35 +0200]  Fix typo                                                                   karasu      {49d77bc}
 [2015-05-19 10:01:49 +0200]  Stop downloading process of all packages when just one can't be dow..      karasu      {7da0fa1}
+[2015-05-19 09:50:59 +0200]  Force to download a file if it's md5 sum is wrong                          karasu      {a53f5a5}
+[2015-05-18 22:31:21 +0200]  Start working on code to check each download against its md5 expect..      karasu      {7d70e03}
 [2015-05-18 10:54:20 +0200]  Run always with -d -v                                                      karasu      {91c0cf3}
 [2015-05-17 16:24:46 +0200]  Letting user change feature option just with one click is confusing..      karasu      {811cc1c}
 [2015-05-17 16:20:47 +0200]  Use requests to check Internet version                                     karasu      {b7fee53}

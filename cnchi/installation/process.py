@@ -684,9 +684,9 @@ class InstallationProcess(multiprocessing.Process):
                         plib = pkg.attrib.get('lib')
                         qt5 = pkg.attrib.get('qt5')
                         if plib is None or (plib is not None and desktop in lib[plib]):
-                            if self.desktop is "plasma5" and pkg.text in ["bluedevil"]:
+                            if self.desktop == "plasma5" and pkg.text == "bluedevil4":
                                 continue
-                            elif self.desktop is not "plasma5" and qt5 == "True":
+                            elif self.desktop != "plasma5" and qt5 == "True":
                                 continue
                             else:
                                 logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)

@@ -405,6 +405,7 @@
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
           <pkgname>aspell-en</pkgname>
+          <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
@@ -431,6 +432,7 @@
           <pkgname>konsole</pkgname>
           <pkgname>kwrited</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
+          <pkgname>pcmanfm-qt</pkgname> <!--Change to Dolphin on August 28-->
           <pkgname>plasma</pkgname><!--plasma group-->
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
           <pkgname>transmission-qt</pkgname>
