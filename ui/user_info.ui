@@ -1,37 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.10"/>
-    <object class="GtkBox" id="user_info">
+  <object class="GtkGrid" id="user_info">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
-    <property name="orientation">horizontal</property>
-    <property name="spacing">12</property>
-    <property name="margin_start">10</property>
-    <property name="margin_end">10</property>
-    <property name="margin_top">50</property>
-    <property name="margin_bottom">50</property>
-    <child>
-      <object class="GtkEventBox" id="cheese_box">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-<child>
-  <object class="GtkGrid" id="user_info_grid">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="halign">baseline</property>
+    <property name="halign">center</property>
     <property name="valign">center</property>
     <!--<property name="margin_start">140</property>-->
     <property name="margin_start">10</property>
@@ -502,11 +475,4 @@
       <placeholder/>
     </child>
   </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
-</child>  
-</object>
 </interface>
