@@ -171,8 +171,8 @@ class MainWindow(Gtk.ApplicationWindow):
         if cmd_line.library:
             self.settings.set("download_library", cmd_line.library)
         else:
-            # Use urllib by default
-            self.settings.set("download_library", 'urllib')
+            # Use requests by default
+            self.settings.set("download_library", 'requests')
 
         logging.info(_("Using %s to download packages"),
             self.settings.get("download_library"))
