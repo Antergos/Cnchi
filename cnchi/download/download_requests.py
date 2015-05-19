@@ -42,9 +42,9 @@ def get_md5(file_name):
 
 
 class Download(object):
-    """ Class to download packages using urllib
+    """ Class to download packages using requests
         This class tries to previously download all necessary packages for
-        Antergos installation using urllib """
+        Antergos installation using requests """
 
     def __init__(self, pacman_cache_dir, cache_dir, callback_queue):
         """ Initialize Download class. Gets default configuration """
@@ -102,6 +102,7 @@ class Download(object):
                         _("MD5 hash of %s does not match!"),
                         element['filename'])
                     # Wrong hash. Force to download it
+                    logging.warning(_("Cnchi will download it"))
                     needs_to_download = True
                 else:
                     # Hash ok. Do not download it
@@ -120,6 +121,7 @@ class Download(object):
                     logging.warning(
                         _("MD5 hash of %s does not match!"),
                         element['filename'])
+                    logging.warning(_("Cnchi will download it"))
                     # Wrong hash. Force to download it
                     needs_to_download = True
                 else:
@@ -131,9 +133,10 @@ class Download(object):
                         downloaded += 1
                     except OSError as os_error:
                         logging.warning(
-                            _("Error copying %s to %s. Cnchi will download it"),
+                            _("Error copying %s to %s."),
                             dst_cache_path,
                             dst_path)
+                        logging.warning(_("Cnchi will download it"))
                         logging.error(os_error)
                         needs_to_download = True
 
@@ -171,26 +174,31 @@ class Download(object):
                             md5 = md5_hash.hexdigest()
 
                             if element['hash'] != md5:
-                                logging.warning("MD5 hash of %s does not match!", element['filename'])
-                                # TODO: Force to download it again
-
-                            download_error = False
-                            downloaded += 1
-                            break
+                                logging.warning(
+                                    _("MD5 hash of %s does not match!",
+                                    element['filename'])
+                                logging.warning(_("Cnchi will try another mirror.")
+                                # Force to download it again
+                                download_error = True
+                            else:
+                                download_error = False
+                                downloaded += 1
+                                # Get out of the for loop, as we managed
+                                # to download the package
+                                break
                     else:
                         download_error = True
-                        msg = _("Can't download {0}, Cnchi will try another mirror.").format(url)
-                        # completed_length = 0
-                        logging.warning(msg)
+                        logging.warning(_("Can't download {0}").format(url))
+                        logging.warning(_("Cnchi will try another mirror.")
 
                 if download_error:
                     # None of the mirror urls works.
-                    # This is not a total disaster, maybe alpm will be able
-                    # to download it for us later in pac.py
+                    # Stop right here, so the user does not have to wait
+                    # to download the other packages.
                     msg = _("Can't download {0}, even after trying all available mirrors")
                     msg = msg.format(element['filename'])
-                    all_successful = False
                     logging.error(msg)
+                    return False
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
