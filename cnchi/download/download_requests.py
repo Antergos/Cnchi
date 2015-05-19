@@ -60,7 +60,6 @@ class Download(object):
 
         downloaded = 0
         total_downloads = len(downloads)
-        all_successful = True
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
@@ -177,7 +176,7 @@ class Download(object):
                                 logging.warning(
                                     _("MD5 hash of %s does not match!",
                                     element['filename'])
-                                logging.warning(_("Cnchi will try another mirror.")
+                                logging.warning(_("Cnchi will try another mirror."))
                                 # Force to download it again
                                 download_error = True
                             else:
@@ -189,14 +188,13 @@ class Download(object):
                     else:
                         download_error = True
                         logging.warning(_("Can't download {0}").format(url))
-                        logging.warning(_("Cnchi will try another mirror.")
+                        logging.warning(_("Cnchi will try another mirror."))
 
                 if download_error:
                     # None of the mirror urls works.
                     # Stop right here, so the user does not have to wait
                     # to download the other packages.
-                    msg = _("Can't download {0}, even after trying all available mirrors")
-                    msg = msg.format(element['filename'])
+                    msg = _("Can't download {0}, even after trying all available mirrors").format(element['filename'])
                     logging.error(msg)
                     return False
 
@@ -205,7 +203,7 @@ class Download(object):
 
         self.queue_event('progress_bar_show_text', '')
         self.queue_event('downloads_progress_bar', 'hide')
-        return all_successful
+        return True
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
