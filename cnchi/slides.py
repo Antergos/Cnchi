@@ -159,31 +159,30 @@ class Slides(GtkBaseBox):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(float(event[1]))
-            elif event[0] == 'progress_bar_text':
-                self.progress_bar.set_text(event[1])
-                # self.progress_bar.set_show_text(True)
             elif event[0] == 'downloads_percent':
                 self.downloads_progress_bar.set_fraction(float(event[1]))
-            elif event[0] == 'text':
-                if event[1] == 'hide':
-                    self.progress_bar.set_show_text(False)
-                    self.progress_bar.set_text("")
-                else:
+            elif event[0] == 'progress_bar_show_text':
+                if len(event[1]) > 0:
                     self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
+                else:
+                    self.progress_bar.set_show_text(False)
+                    self.progress_bar.set_text("")
+            elif event[0] == 'progress_bar':
+                if event[1] == 'hide':
+                    self.progress_bar.hide()
+                elif event[1] == 'show':
+                    self.progress_bar.show()
+            elif event[0] == 'downloads_progress_bar':
+                if event[1] == 'hide':
+                    self.downloads_progress_bar.hide()
+                elif event[1] == 'show':
+                    self.downloads_progress_bar.show()
             elif event[0] == 'pulse':
                 if event[1] == 'stop':
                     self.stop_pulse()
                 elif event[1] == 'start':
                     self.start_pulse()
-            elif event[0] == 'progress_bar':
-                if event[1] == 'hide':
-                    self.progress_bar.hide()
-            elif event[0] == 'downloads_progress_bar':
-                if event[1] == 'hide':
-                    self.downloads_progress_bar.hide()
-                if event[1] == 'show':
-                    self.downloads_progress_bar.show()
             elif event[0] == 'finished':
                 logging.info(event[1])
                 if not self.settings.get('bootloader_installation_successful'):

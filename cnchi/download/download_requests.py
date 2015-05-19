@@ -70,17 +70,18 @@ class Download(object):
 
             self.queue_event('percent', '0')
 
-            txt = _("Downloading {0} {1} ({2}/{3})...")
-            txt = txt.format(element['identity'], element['version'], downloaded + 1, total_downloads)
+            txt = _("Downloading {0} {1} ({2}/{3})...").format(
+                element['identity'],
+                element['version'],
+                downloaded + 1,
+                total_downloads)
             self.queue_event('info', txt)
 
             try:
                 total_length = int(element['size'])
             except TypeError:
-                # We will get the total length from the requests GET
+                # No problem, we will get the total length from the requests GET
                 pass
-                # logging.warning(_("Metalink for package %s has no size info"), element['identity'])
-                # total_length = 0
 
             # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
             if self.cache_dir:
@@ -94,33 +95,47 @@ class Download(object):
 
             if os.path.exists(dst_path):
                 # File already exists (previous install?)
+                # We check the file md5 hash
                 md5 = get_md5(dst_path)
                 if element['hash'] != md5:
-                    logging.warning("MD5 hash of %s does not match!", element['filename'])
-                    # TODO: Force to download it
-                
-                # Do not download it again
-                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
-                needs_to_download = False
-                downloaded += 1
-            elif self.cache_dir and os.path.exists(dst_cache_path):
-                # We're lucky, the package is already downloaded in the cache the user has given us
-                
-                md5 = get_md5(dst_cache_path)
-                if element['hash'] != md5:
-                    logging.warning("MD5 hash of %s does not match!", element['filename'])
-                    # TODO: Force to download it
-                
-                # let's copy it to our destination
-                logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
-                try:
-                    shutil.copy(dst_cache_path, dst_path)
+                    logging.warning(
+                        _("MD5 hash of %s does not match!"),
+                        element['filename'])
+                    # Wrong hash. Force to download it
+                    needs_to_download = True
+                else:
+                    # Hash ok. Do not download it
+                    logging.warning(
+                        _("File %s already exists, Cnchi will not overwrite it"),
+                        element['filename'])
                     needs_to_download = False
                     downloaded += 1
-                except OSError as os_error:
-                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
-                    logging.error(os_error)
+            elif os.path.exists(dst_cache_path):
+                # We're lucky, the package is already downloaded
+                # in the cache the user has given us
+
+                # We check the file md5 hash
+                md5 = get_md5(dst_cache_path)
+                if element['hash'] != md5:
+                    logging.warning(
+                        _("MD5 hash of %s does not match!"),
+                        element['filename'])
+                    # Wrong hash. Force to download it
                     needs_to_download = True
+                else:
+                    # let's copy it to our destination
+                    logging.debug(_('%s found in suplied pkg cache. Copying...'), element['filename'])
+                    try:
+                        shutil.copy(dst_cache_path, dst_path)
+                        needs_to_download = False
+                        downloaded += 1
+                    except OSError as os_error:
+                        logging.warning(
+                            _("Error copying %s to %s. Cnchi will download it"),
+                            dst_cache_path,
+                            dst_path)
+                        logging.error(os_error)
+                        needs_to_download = True
 
             if needs_to_download:
                 # Let's download our filename using url
@@ -148,17 +163,17 @@ class Download(object):
                                     percent += 0.1
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
-                                
+
                                 Mbps = (completed_length // (time.clock() - start)) / (1024 * 1024)
-                                progress_text = "{0}% {1} Mbps".format(percent, Mbps)
-                                self.queue_event('progress_bar_text', progress_text)
+                                progress_text = "{0}% {1:.2f} Mbps".format(percent, Mbps)
+                                self.queue_event('progress_bar_show_text', progress_text)
 
                             md5 = md5_hash.hexdigest()
-                            
+
                             if element['hash'] != md5:
                                 logging.warning("MD5 hash of %s does not match!", element['filename'])
                                 # TODO: Force to download it again
-                            
+
                             download_error = False
                             downloaded += 1
                             break
@@ -180,6 +195,7 @@ class Download(object):
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
 
+        self.queue_event('progress_bar_show_text', '')
         self.queue_event('downloads_progress_bar', 'hide')
         return all_successful
 

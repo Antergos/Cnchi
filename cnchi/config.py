@@ -50,7 +50,7 @@ class Settings(object):
             'desktop': 'gnome',
             'desktop_ask' : True,
             'desktops': [],
-            'download_library': 'urllib',
+            'download_library': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
