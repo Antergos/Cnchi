@@ -505,7 +505,7 @@ postinstall()
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
 
     # Start vbox client services if we are installed in vbox
-    if [[ $IS_VBOX ]] || [[ $IS_VBOX = 0 ]] || [[ $IS_VBOX = true ]]; then
+    if [[ $IS_VBOX ]] || [[ $IS_VBOX = 0 ]] || [[ $IS_VBOX = "True" ]]; then
         sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' ${DESTDIR}/etc/lightdm/Xsession
     fi
 

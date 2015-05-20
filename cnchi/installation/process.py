@@ -131,7 +131,7 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_device = ""
         self.packages = []
         self.pacman = None
-        self.vbox = False
+        self.vbox = "False"
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -598,7 +598,7 @@ class InstallationProcess(multiprocessing.Process):
                 txt = " ".join(hardware_pkgs)
                 logging.debug(_("Hardware module added these packages : %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
-                    self.vbox = True
+                    self.vbox = "True"
                 # By default, hardware module adds modesetting driver
                 # but in a 'base' install we don't want it
                 if self.desktop == "base" and "xf86-video-modesetting" in hardware_pkgs:
@@ -1307,7 +1307,7 @@ class InstallationProcess(multiprocessing.Process):
 
         default_groups = 'lp,video,network,storage,wheel,audio'
 
-        if self.vbox:
+        if self.vbox == "True":
             # Why there is no vboxusers group? Add it ourselves.
             chroot_run(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
