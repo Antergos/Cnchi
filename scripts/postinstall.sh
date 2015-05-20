@@ -448,6 +448,7 @@ postinstall()
     DESKTOP=$3
     KEYBOARD_LAYOUT=$4
     KEYBOARD_VARIANT=$5
+    IS_VBOX=$6
     # Specific user configurations
     if [[ -f /usr/share/applications/firefox.desktop ]]; then
         export _BROWSER=firefox
@@ -502,6 +503,12 @@ postinstall()
 
     ## Ensure user permissions are set in /home
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
+
+    # Start vbox client services if we are installed in vbox
+    if [[ $IS_VBOX ]] || [[ $IS_VBOX = 0 ]] || [[ $IS_VBOX = true ]]; then
+        sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' ${DESTDIR}/etc/lightdm/Xsession
+    fi
+
 }
 
 touch /tmp/.postinstall.lock

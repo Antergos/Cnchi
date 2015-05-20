@@ -1424,7 +1424,7 @@ class InstallationProcess(multiprocessing.Process):
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
             subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
-                                   username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant],
+                                   username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant, self.vbox],
                                   timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:

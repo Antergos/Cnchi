@@ -1,3 +1,7 @@
+[2015-05-19 10:28:50 +0200]  Merge pull request #343 from Wyn10/patch-2                                 karasu      {b2e93e5}
+[2015-05-19 03:41:58 -0400]  Update postinstall.sh                                                        Wyn       {9c1a527}
+[2015-05-18 10:20:00 -0500]  it makes no sense                                                      Dustin Falgout  {a8468b7}
+[2015-05-18 08:49:22 +0200]  Undo last commit                                                           karasu      {3160688}
 [2015-05-18 08:40:07 +0200]  Updated pre-commit hook to create update.info automatically                karasu      {60de395}
 [2015-05-17 15:53:19 -0500]  Merge pull request #340 from Wyn10/patch-1                             Dustin Falgout  {02c1844}
 [2015-05-17 18:25:22 +0200]  Try to fix issue #341                                                      karasu      {6c8d5df}
