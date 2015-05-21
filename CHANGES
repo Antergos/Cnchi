@@ -1,3 +1,4 @@
+[2015-05-19 18:26:04 +0200]  Center user_info.ui to avoid making the main_window bigger when ent..      karasu      {25921f4}
 [2015-05-19 16:46:41 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {389a4d0}
 [2015-05-19 16:38:57 +0200]  user_info grows when entering data. Needs fixing                           karasu      {724c319}
 [2015-05-19 16:26:35 +0200]  Leave camera code for 0.11                                                 karasu      {7373acc}

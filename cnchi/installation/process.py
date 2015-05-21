@@ -131,7 +131,7 @@ class InstallationProcess(multiprocessing.Process):
         self.auto_device = ""
         self.packages = []
         self.pacman = None
-        self.vbox = False
+        self.vbox = "False"
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -598,11 +598,7 @@ class InstallationProcess(multiprocessing.Process):
                 txt = " ".join(hardware_pkgs)
                 logging.debug(_("Hardware module added these packages : %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
-                    self.vbox = True
-                # By default, hardware module adds modesetting driver
-                # but in a 'base' install we don't want it
-                if self.desktop == "base" and "xf86-video-modesetting" in hardware_pkgs:
-                    hardware_pkgs.remove("xf86-video-modesetting")
+                    self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
         except ImportError:
             logging.warning(_("Can't import hardware module."))
@@ -1342,7 +1338,7 @@ class InstallationProcess(multiprocessing.Process):
 
         default_groups = 'lp,video,network,storage,wheel,audio'
 
-        if self.vbox:
+        if self.vbox == "True":
             # Why there is no vboxusers group? Add it ourselves.
             chroot_run(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
@@ -1355,7 +1351,6 @@ class InstallationProcess(multiprocessing.Process):
 
         cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
         chroot_run(cmd)
-
         logging.debug(_("User %s added."), username)
 
         self.change_user_password(username, password)
@@ -1458,9 +1453,16 @@ class InstallationProcess(multiprocessing.Process):
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
         try:
-            subprocess.check_call(["/usr/bin/bash", script_path_postinstall,
-                                   username, DEST_DIR, self.desktop, keyboard_layout, keyboard_variant],
-                                  timeout=300)
+            subprocess.check_call([
+                "/usr/bin/bash",
+                script_path_postinstall,
+                username,
+                DEST_DIR,
+                self.desktop,
+                keyboard_layout,
+                keyboard_variant,
+                self.vbox],
+                timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will try to continue with the installation.

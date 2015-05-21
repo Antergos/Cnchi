@@ -298,7 +298,7 @@ lxqt_settings()
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
 }
 
-kde_settings()
+kde4_settings()
 {
     # Set KDE in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
@@ -453,6 +453,7 @@ postinstall()
     DESKTOP=$3
     KEYBOARD_LAYOUT=$4
     KEYBOARD_VARIANT=$5
+    IS_VBOX=$6
     # Specific user configurations
     if [[ -f /usr/share/applications/firefox.desktop ]]; then
         export _BROWSER=firefox
@@ -507,6 +508,12 @@ postinstall()
 
     ## Ensure user permissions are set in /home
     chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}
+
+    # Start vbox client services if we are installed in vbox
+    if [[ $IS_VBOX ]] || [[ $IS_VBOX = 0 ]] || [[ $IS_VBOX = "True" ]]; then
+        sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' ${DESTDIR}/etc/lightdm/Xsession
+    fi
+
 }
 
 touch /tmp/.postinstall.lock
