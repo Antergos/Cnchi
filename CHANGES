@@ -1,3 +1,8 @@
+[2015-05-21 21:01:18 +0200]  Merge branch 'master' of cnchi-github                                      karasu      {65530ed}
+[2015-05-20 12:15:33 +0200]  This isn't necessary anymore                                               karasu      {ac7eeb8}
+[2015-05-20 04:41:30 -0500]  fix the bug I caused :grimacing: #347                                  Dustin Falgout  {9e2324a}
+[2015-05-19 21:15:51 -0500]  fix kde config issue reported in forum                                 Dustin Falgout  {28de3d2}
+[2015-05-19 20:05:17 -0500]  start vbox client services for vbox installs                           Dustin Falgout  {7500cd4}
 [2015-05-19 18:26:04 +0200]  Center user_info.ui to avoid making the main_window bigger when ent..      karasu      {25921f4}
 [2015-05-19 16:46:41 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {389a4d0}
 [2015-05-19 16:38:57 +0200]  user_info grows when entering data. Needs fixing                           karasu      {724c319}

@@ -142,6 +142,13 @@ class Download(object):
             if needs_to_download:
                 # Let's download our filename using url
                 for url in element['urls']:
+                    if url is None:
+                        # Something bad has happened
+                        logging.warning(
+                            _("Package %s v%s has an empty url for this mirror"),
+                            element['identity'],
+                            element['version'])
+                        continue
                     # msg = _("Downloading file from url {0}").format(url)
                     # logging.debug(msg)
                     percent = 0
