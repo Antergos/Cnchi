@@ -174,7 +174,7 @@ class Download(object):
                                     self.queue_event('percent', percent)
 
                                 Mbps = (completed_length // (time.clock() - start)) / (1024 * 1024)
-                                progress_text = "{0}% {1:.2f} Mbps".format(percent, Mbps)
+                                progress_text = "{0}% {1:.2f} Mbps".format(percent * 100, Mbps)
                                 self.queue_event('progress_bar_show_text', progress_text)
 
                             md5 = md5_hash.hexdigest()
