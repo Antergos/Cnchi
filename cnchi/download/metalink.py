@@ -43,7 +43,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as eTree
 
-MAX_URLS = 5
+MAX_URLS = 6
 
 
 def get_info(metalink):

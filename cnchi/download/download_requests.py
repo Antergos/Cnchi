@@ -96,9 +96,9 @@ class Download(object):
                 # File already exists (previous install?)
                 # We check the file md5 hash
                 md5 = get_md5(dst_path)
-                if element['hash'] != md5:
+                if element['hash'] is not None and element['hash'] != md5:
                     logging.warning(
-                        _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
                         element['hash'],
                         md5,
                         element['filename'])
@@ -106,7 +106,7 @@ class Download(object):
                     logging.warning(_("Cnchi will download it"))
                     needs_to_download = True
                 else:
-                    # Hash ok. Do not download it
+                    # Hash ok (or can't be checked). Do not download it
                     logging.warning(
                         _("File %s already exists, Cnchi will not overwrite it"),
                         element['filename'])
@@ -118,9 +118,9 @@ class Download(object):
 
                 # We check the file md5 hash
                 md5 = get_md5(dst_cache_path)
-                if element['hash'] != md5:
+                if element['hash'] is not None and element['hash'] != md5:
                     logging.warning(
-                        _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
                         element['hash'],
                         md5,
                         element['filename'])
@@ -187,9 +187,9 @@ class Download(object):
 
                             md5 = md5_hash.hexdigest()
 
-                            if element['hash'] != md5:
+                            if element['hash'] is not None and element['hash'] != md5:
                                 logging.warning(
-                                    _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                                    _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
                                     element['hash'],
                                     md5,
                                     element['filename'])
