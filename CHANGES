@@ -1,3 +1,4 @@
+[2015-05-21 23:12:03 +0200]  Percent was wrong when using simple text in a progress bar                 karasu      {a66060d}
 [2015-05-21 23:06:00 +0200]  Check that the url is not None. I need to find out why this is happ..      karasu      {283a85a}
 [2015-05-21 21:01:18 +0200]  Merge branch 'master' of cnchi-github                                      karasu      {65530ed}
 [2015-05-20 12:15:33 +0200]  This isn't necessary anymore                                               karasu      {ac7eeb8}

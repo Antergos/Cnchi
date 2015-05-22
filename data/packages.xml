@@ -496,6 +496,7 @@
     <feature name="smb">
         <pkgname lib='gtk'>gvfs-smb</pkgname>
         <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
+	<pkgname>python-pysmbc</pkgname>
     </feature>
     <feature name="lamp">
       <pkgname>apache</pkgname>
