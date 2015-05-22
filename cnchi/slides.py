@@ -163,10 +163,10 @@ class Slides(GtkBaseBox):
                 self.downloads_progress_bar.set_fraction(float(event[1]))
             elif event[0] == 'progress_bar_show_text':
                 if len(event[1]) > 0:
-                    self.progress_bar.set_show_text(True)
+                    # self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
                 else:
-                    self.progress_bar.set_show_text(False)
+                    # self.progress_bar.set_show_text(False)
                     self.progress_bar.set_text("")
             elif event[0] == 'progress_bar':
                 if event[1] == 'hide':

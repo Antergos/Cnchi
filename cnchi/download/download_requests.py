@@ -215,10 +215,11 @@ class Download(object):
                     logging.error(msg)
                     return False
 
+            self.queue_event('progress_bar_show_text', '')
+
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
 
-        self.queue_event('progress_bar_show_text', '')
         self.queue_event('downloads_progress_bar', 'hide')
         return True
 
