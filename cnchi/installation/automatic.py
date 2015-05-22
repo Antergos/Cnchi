@@ -230,7 +230,7 @@ class InstallationAutomatic(GtkBaseBox):
             widget = self.ui.get_object(widget_id)
             widget.set_sensitive(status)
 
-        self.settings.set('bootloader_install', status):
+        self.settings.set('bootloader_install', status)
 
     def on_bootloader_device_entry_changed(self, widget):
         """ Get new selected bootloader device """
