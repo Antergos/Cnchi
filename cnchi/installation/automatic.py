@@ -221,12 +221,16 @@ class InstallationAutomatic(GtkBaseBox):
         status = checkbox.get_active()
 
         widget_ids = [
-            "bootloader_device_entry", "bootloader_entry",
-            "bootloader_label", "bootloader_device_label"]
+            "bootloader_device_entry",
+            "bootloader_entry",
+            "bootloader_label",
+            "bootloader_device_label"]
 
         for widget_id in widget_ids:
             widget = self.ui.get_object(widget_id)
             widget.set_sensitive(status)
+
+        self.settings.set('bootloader_install', status):
 
     def on_bootloader_device_entry_changed(self, widget):
         """ Get new selected bootloader device """
@@ -259,7 +263,7 @@ class InstallationAutomatic(GtkBaseBox):
         logging.info(txt, self.auto_device)
 
         checkbox = self.ui.get_object("bootloader_device_check")
-        if checkbox.get_active() is False:
+        if not checkbox.get_active():
             self.settings.set('bootloader_install', False)
             logging.warning(_("Cnchi will not install any bootloader"))
         else:

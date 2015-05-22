@@ -1207,7 +1207,7 @@ class InstallationProcess(multiprocessing.Process):
             os.symlink(source, link_name)
         except OSError as os_error:
             logging.warning(os_error)
-        
+
         # Get wired interfaces
         links = []
         try:
@@ -1232,7 +1232,7 @@ class InstallationProcess(multiprocessing.Process):
                 wired_file.write("[Network]\n")
                 wired_file.write("DHCP=ipv4\n")
             logging.debug("Created %s configuration file", wired_path)
-            
+
 
     def configure_system(self):
         """ Final install steps
@@ -1261,7 +1261,7 @@ class InstallationProcess(multiprocessing.Process):
             self.copy_network_config()
         else:
             self.configure_networkd()
-        
+
         logging.debug(_("Network configuration done."))
 
         # Copy mirror list
