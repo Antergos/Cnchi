@@ -98,7 +98,9 @@ class Download(object):
                 md5 = get_md5(dst_path)
                 if element['hash'] != md5:
                     logging.warning(
-                        _("MD5 hash of %s does not match!"),
+                        _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                        element['hash'],
+                        md5,
                         element['filename'])
                     # Wrong hash. Force to download it
                     logging.warning(_("Cnchi will download it"))
@@ -118,7 +120,9 @@ class Download(object):
                 md5 = get_md5(dst_cache_path)
                 if element['hash'] != md5:
                     logging.warning(
-                        _("MD5 hash of %s does not match!"),
+                        _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                        element['hash'],
+                        md5,
                         element['filename'])
                     logging.warning(_("Cnchi will download it"))
                     # Wrong hash. Force to download it
@@ -185,7 +189,9 @@ class Download(object):
 
                             if element['hash'] != md5:
                                 logging.warning(
-                                    _("MD5 hash of %s does not match!"),
+                                    _("MD5 hash (url:%s, file:%s) of file %s does not match!"),
+                                    element['hash'],
+                                    md5,
                                     element['filename'])
                                 logging.warning(_("Cnchi will try another mirror."))
                                 # Force to download it again

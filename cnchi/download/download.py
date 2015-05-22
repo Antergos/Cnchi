@@ -118,10 +118,15 @@ class DownloadPackages(object):
                 cache_dir,
                 callback_queue)
 
-        all_successful = download.start(downloads)
-
-        if not all_successful:
+        if not download.start(downloads):
             self.settings.set('failed_download', True)
+            # New: When we can't download (even one package), we stop right here
+            # Pros: The user will be prompted immediately when a package fails
+            # to download
+            # Cons: We won't let alpm to try to download the package itself
+            txt = _("Can't install necessary packages. Cnchi can't continue.")
+            raise InstallError(txt)
+
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
