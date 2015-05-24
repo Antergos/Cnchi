@@ -1186,6 +1186,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Dialog windows should be set transient for the main application window they were spawned from.
         self.luks_dialog.set_transient_for(self.get_toplevel())
 
+        # Show warning message
+        show.warning(self.get_toplevel(), _("Using LUKS encryption will DELETE all partition contents!"))
+
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
             password = entry_password.get_text()
