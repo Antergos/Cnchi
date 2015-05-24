@@ -1067,14 +1067,10 @@ class InstallationProcess(multiprocessing.Process):
             services.append('ufw')
 
         if self.settings.get("feature_lts"):
-            # FIXME: Antergos doesn't boot if linux lts is selected
-            # Is something wrong with the 10_antergos file ?
             # TODO: Pythonify this
-            chroot_run(["chmod", "a-x", "/etc/grub.d/10_antergos"])
             chroot_run(["chmod", "a+x", "/etc/grub.d/10_linux"])
             chroot_run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
             chroot_run(["chmod", "a-x", "/etc/grub.d/10_linux"])
-            chroot_run(["chmod", "a+x", "/etc/grub.d/10_antergos"])
 
         # TODO: graphic driver setup (if proprietary is used)
 

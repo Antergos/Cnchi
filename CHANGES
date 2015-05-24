@@ -1,3 +1,4 @@
+[2015-05-24 20:28:56 +0200]  Use lamp only in base                                                      karasu      {6fa2cff}
 [2015-05-24 14:17:39 +0200]  Added warning message when using LUKS on a partition in advanced mode      karasu      {f302349}
 [2015-05-22 22:15:12 +0200]  Hope this fixes progress bars                                              karasu      {4881053}
 [2015-05-22 22:05:30 +0200]  As I suspected, sometimes there's no md5 hash to compare with              karasu      {4557abb}

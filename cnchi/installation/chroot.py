@@ -40,7 +40,7 @@ _special_dirs_mounted = False
 
 def get_special_dirs():
     """ Get special dirs to be mounted or unmounted """
-    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]    
+    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]
     efi = "/sys/firmware/efi/efivars"
     if os.path.exists(efi):
         special_dirs.append(efi)
@@ -61,7 +61,7 @@ def mount_special_dirs(dest_dir):
         msg = _("Special dirs are already mounted. Skipping.")
         logging.debug(msg)
         return
-    
+
     special_dirs = []
     special_dirs = get_special_dirs()
 
@@ -100,7 +100,7 @@ def umount_special_dirs(dest_dir):
     for special_dir in reversed(special_dirs):
         mountpoint = os.path.join(dest_dir, special_dir[1:])
         logging.debug("Unmounting special dir '{0}'".format(mountpoint))
-        try:            
+        try:
             subprocess.check_call(["umount", mountpoint])
         except subprocess.CalledProcessError:
             logging.debug("Can't unmount. Try -l to force it.")
