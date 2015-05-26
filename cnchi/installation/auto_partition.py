@@ -289,9 +289,13 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     else:
         start_str = "{0}MiB".format(start)
 
-    end_str = "{0}MiB".format(end)
+    # -1s means "end of disk"
+    if end == "-1s":
+        end_str = end
+    else:
+        end_str = "{0}MiB".format(end)
 
-    cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, filesystem, start_str, end_str]
+    cmd = ['parted', '--align', 'optimal', '--script', device, '--', 'mkpart', ptype, filesystem, start_str, end_str]
 
     try:
         subprocess.check_call(cmd)
@@ -636,7 +640,7 @@ class AutoPartition(object):
                 logical_block_size = int(f.read())
             with open(size_path, 'r') as f:
                 size = int(f.read())
-            disk_size = ((logical_block_size * size) / 1024) / 1024
+            disk_size = ((logical_block_size * (size - 68)) / 1024) / 1024
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
                     "installation routine for partitioning and mounting devices.")
@@ -743,7 +747,8 @@ class AutoPartition(object):
             if self.lvm:
                 # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
                 start = end
-                end = start + part_sizes['lvm_pv']
+                # end = start + part_sizes['lvm_pv']
+                end = "-1s"
                 parted_mkpart(device, "primary", start, end)
 
                 # Set lvm flag
@@ -762,11 +767,13 @@ class AutoPartition(object):
 
                 # Create an extended partition where we will put our swap partition
                 start = end
-                end = start + part_sizes['swap']
+                # end = start + part_sizes['swap']
+                end = "-1s"
                 parted_mkpart(device, "extended", start, end)
 
                 # Now create a logical swap partition
                 start += 1
+                end = "-1s"
                 parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
