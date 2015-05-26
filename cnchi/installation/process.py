@@ -77,8 +77,7 @@ def chroot_run(cmd):
 
 def write_file(filecontents, filename):
     """ writes a string of data to disk """
-    if not os.path.exists(os.path.dirname(filename)):
-        os.makedirs(os.path.dirname(filename))
+    os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
 
     with open(filename, "w") as fh:
         fh.write(filecontents)
@@ -202,7 +201,7 @@ class InstallationProcess(multiprocessing.Process):
 
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
-                os.makedirs(DEST_DIR)
+                os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
         else:
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
@@ -266,8 +265,7 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(['mount', root_partition, DEST_DIR])
             # We also mount the boot partition if it's needed
             boot_path = os.path.join(DEST_DIR, "boot")
-            if not os.path.exists(boot_path):
-                os.makedirs(boot_path)
+            os.makedirs(boot_path, mode=0o755, exist_ok=True)
             if "/boot" in self.mount_devices:
                 txt = _("Mounting partition {0} into {1}/boot directory")
                 txt = txt.format(boot_partition, boot_path)
@@ -288,8 +286,7 @@ class InstallationProcess(multiprocessing.Process):
                             path = path[1:]
                         mount_dir = os.path.join(DEST_DIR, path)
                         try:
-                            if not os.path.exists(mount_dir):
-                                os.makedirs(mount_dir)
+                            os.makedirs(mount_dir, mode=0o755, exist_ok=True)
                             txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
                             logging.debug(txt)
                             subprocess.check_call(['mount', mount_part, mount_dir])
@@ -325,8 +322,7 @@ class InstallationProcess(multiprocessing.Process):
             os.path.join(DEST_DIR, 'var/log')]
 
         for folder in folders:
-            if not os.path.exists(folder):
-                os.makedirs(folder)
+            os.makedirs(folder, mode=0o755, exist_ok=True)
 
         # If kernel images exists in /boot they are most likely from a failed install attempt and need
         # to be removed otherwise pyalpm will raise a fatal exception later on.
@@ -436,8 +432,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for pacman_dir in dirs:
             mydir = os.path.join(DEST_DIR, pacman_dir)
-            if not os.path.exists(mydir):
-                os.makedirs(mydir)
+            os.makedirs(mydir, mode=0o755, exist_ok=True)
 
         self.prepare_pacman_keyring()
 
@@ -855,8 +850,7 @@ class InstallationProcess(multiprocessing.Process):
 
             # Create mount point on destination system if it yet doesn't exist
             full_path = os.path.join(DEST_DIR, mount_point)
-            if not os.path.exists(full_path):
-                os.makedirs(full_path)
+            os.makedirs(full_path, mode=0o755, exist_ok=True)
 
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
@@ -1020,8 +1014,7 @@ class InstallationProcess(multiprocessing.Process):
             return
         self.queue_event('info', _('Copying xz files from cache...'))
         dest_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-        if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
+        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
         self.copy_files_progress(cache_dir, dest_dir)
 
     def copy_files_progress(self, src, dst):
@@ -1069,6 +1062,14 @@ class InstallationProcess(multiprocessing.Process):
         # TODO: graphic driver setup (if proprietary is used)
 
         # TODO: lamp setup
+        if self.settings.get("feature_lamp"):
+            logging.debug(_("Configuring LAMP..."))
+            try:
+                import lamp
+                lamp.setup()
+            except ImportError as error:
+                logging.warning(_("Can't import lamp module"))
+                logging.warning(error)
 
         self.enable_services(services)
 

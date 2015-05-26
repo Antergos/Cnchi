@@ -34,7 +34,7 @@ DEST_DIR = '/install'
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
 
-def setup_lamp():
+def setup():
     try:
         cmd = ["systemctl", "stop", "httpd"]
         subprocess.check_call(cmd)
@@ -68,11 +68,7 @@ def apache_setup():
 
     for path in dirs:
         path = os.path.join(DEST_DIR, path)
-        if not os.path.exists(path):
-            try:
-                os.mkdir(path)
-            except OSError:
-                pass
+        os.makedirs(path, mode=0o755, exist_ok=True)
 
     # Copy a2ensite and a2dissite scripts
     scripts = ["a2ensite", "a2dissite"]
