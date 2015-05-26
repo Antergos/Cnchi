@@ -1,3 +1,4 @@
+[2015-05-26 09:26:59 +0200]  Move a2 scripts to their correct location                                  karasu      {19f5285}
 [2015-05-26 09:16:36 +0200]  Fix disk size calculation. On last partition created with parted, u..      karasu      {fe06682}
 [2015-05-24 21:31:55 +0200]  Added lamp setup                                                           karasu      {4dcbf22}
 [2015-05-24 20:28:56 +0200]  Use lamp only in base                                                      karasu      {6fa2cff}
