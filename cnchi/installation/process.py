@@ -1066,13 +1066,9 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["enable"])
             services.append('ufw')
 
-        if self.settings.get("feature_lts"):
-            # TODO: Pythonify this
-            chroot_run(["chmod", "a+x", "/etc/grub.d/10_linux"])
-            chroot_run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
-            chroot_run(["chmod", "a-x", "/etc/grub.d/10_linux"])
-
         # TODO: graphic driver setup (if proprietary is used)
+
+        # TODO: lamp setup
 
         self.enable_services(services)
 

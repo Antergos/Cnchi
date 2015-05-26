@@ -81,11 +81,9 @@ def apache_setup():
             src = os.path.join("/usr/share/cnchi/scripts", script)
             dst = os.path.join(DEST_DIR, 'usr/local/bin', script)
             shutil.copy2(src, dst)
+            os.chmod(dst, 0o755)
         except (FileExistsError, shutil.Error) as file_error:
             logging.warning(file_error)
-
-    chroot_run(["chmod", "a+x", "/usr/local/bin/a2ensite"])
-    chroot_run(["chmod", "a+x", "/usr/local/bin/a2dissite"])
 
     # Create localhost.conf in /etc/httpd/conf/sites-available/
     localhost_path = os.path.join(DEST_DIR, "etc/httpd/conf/sites-available/localhost.conf")
