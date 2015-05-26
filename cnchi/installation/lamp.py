@@ -1,7 +1,31 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  lamp.py
+#
+#  Copyright © 2013-2015 Antergos
+#
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  Cnchi is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Cnchi; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
 
 import subprocess
 import os
 import sys
+import logging
 
 import chroot
 
@@ -51,11 +75,11 @@ def apache_setup():
 				pass
 
 	# Copy a2ensite and a2dissite scripts
-	files = ["a2ensite", "a2dissite"]
-	for filename in files:
+	scripts = ["a2ensite", "a2dissite"]
+	for script in scripts:
 	    try:
-			src = os.path.join("/usr/share/cnchi/data", filename)
-			dst = os.path.join(DEST_DIR, 'usr/local/bin')
+			src = os.path.join("/usr/share/cnchi/scripts", script)
+			dst = os.path.join(DEST_DIR, 'usr/local/bin', script)
 	        shutil.copy2(src, dst)
 	    except (FileExistsError, shutil.Error) as file_error:
 	        logging.warning(file_error)
