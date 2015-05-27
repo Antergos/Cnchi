@@ -1,3 +1,4 @@
+[2015-05-26 11:00:35 +0200]  Setup lamp. Also call makedirs with correct mode and exist_ok=True         karasu      {addcfaf}
 [2015-05-26 10:01:15 +0200]  use os.chmod                                                               karasu      {28dfffc}
 [2015-05-26 09:48:08 +0200]  Do not use TAB's!                                                          karasu      {ce1ecc1}
 [2015-05-26 09:26:59 +0200]  Move a2 scripts to their correct location                                  karasu      {19f5285}
