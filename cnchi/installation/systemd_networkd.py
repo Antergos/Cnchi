@@ -33,8 +33,8 @@ def setup(dest_dir):
 
     # For compatibility with resolv.conf, delete the existing file and
     # create the following symbolic link:
-    source = os.path.join(DEST_DIR, "run/systemd/resolve/resolv.conf")
-    link_name = os.path.join(DEST_DIR, "etc/resolv.conf")
+    source = os.path.join(dest_dir, "run/systemd/resolve/resolv.conf")
+    link_name = os.path.join(dest_dir, "etc/resolv.conf")
 
     # Delete /etc/resolv.conf if it already exists
     if os.path.exists(link_name):
@@ -64,10 +64,10 @@ def setup(dest_dir):
         logging.warning(_("systemd-networkd configuration failed."))
         return
 
-    # Setup wired DHCP by default for all interfaces found
+    # Setup DHCP by default for all interfaces found
     for link in links:
         fname = "etc/systemd/network/wired-{0}.network".format(link)
-        wired_path = os.path.join(DEST_DIR, fname)
+        wired_path = os.path.join(dest_dir, fname)
         with open(wired_path, 'w') as wired_file:
             wired_file.write("# {0} adapter using DHCP (written by Cnchi)\n".format(link))
             wired_file.write("[Match]\n")
@@ -80,3 +80,6 @@ def setup(dest_dir):
     # such as wpa_supplicant and the corresponding service is required to be enabled.
     # /etc/wpa_supplicant/wpa_supplicant-interface.conf.
     # systemctl enable wpa_supplicant@interface
+
+    for link_wireless in links_wireless:
+        pass

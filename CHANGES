@@ -1,3 +1,5 @@
+[2015-05-28 09:02:37 +0200]  working on systemd_networkd                                                karasu      {dc201a6}
+[2015-05-27 22:34:55 +0200]  There's no need to add a tmpfs line to fstab (systemd takes care of..      karasu      {9b9cb83}
 [2015-05-26 11:00:35 +0200]  Setup lamp. Also call makedirs with correct mode and exist_ok=True         karasu      {addcfaf}
 [2015-05-26 10:01:15 +0200]  use os.chmod                                                               karasu      {28dfffc}
 [2015-05-26 09:48:08 +0200]  Do not use TAB's!                                                          karasu      {ce1ecc1}
