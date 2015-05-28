@@ -924,10 +924,12 @@ class InstallationProcess(multiprocessing.Process):
     def enable_services(services):
         """ Enables all services that are in the list 'services' """
         for name in services:
-            path = os.path.join(DEST_DIR, "usr/lib/systemd/system/{0}.service".format(name))
+            path = os.path.join(
+                DEST_DIR,
+                "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
                 chroot_run(['systemctl', '-f', 'enable', name])
-                logging.debug(_("Enabled %s service."), name)
+                logging.debug(_("Service '%s' has been enabled."), name)
             else:
                 logging.warning(_("Can't find service %s"), name)
 
@@ -951,7 +953,10 @@ class InstallationProcess(multiprocessing.Process):
     @staticmethod
     def auto_timesetting():
         """ Set hardware clock """
-        subprocess.check_call(["hwclock", "--systohc", "--utc"])
+        try:
+            subprocess.check_call(["hwclock", "--systohc", "--utc"])
+        except subprocess.CalledProcessError as process_error:
+            logging.warning(_("Error adjusting hardware clock"))
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     @staticmethod
@@ -1182,46 +1187,6 @@ class InstallationProcess(multiprocessing.Process):
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
 
-    def configure_networkd(self):
-        # Configure system-networkd for base installs
-        self.enable_services(["systemd-networkd", "systemd-resolved"])
-        source = os.path.join(DEST_DIR, "run/systemd/resolve/resolv.conf")
-        link_name = os.path.join(DEST_DIR, "/etc/resolv.conf")
-        # Create a symbolic link named /etc/resolv.conf pointing to /run/systemd/resolve/resolv.conf
-        # Delete /etc/resolv.conf if it already exists
-        if os.path.exists(link_name):
-            os.unlink(link_name)
-        try:
-            os.symlink(source, link_name)
-        except OSError as os_error:
-            logging.warning(os_error)
-
-        # Get wired interfaces
-        links = []
-        try:
-            cmd = ['networkctl', 'list']
-            outp = subprocess.check_output(cmd).decode()
-            for line in outp:
-                link = line[1]
-                if link.startswith("eth") or link.startswith("enp"):
-                    links.append(link)
-        except subprocess.CalledProcessError as process_error:
-            logging.warning(process_error)
-            return
-
-        # Setup wired DHCP by default for all interfaces found
-        for link in links:
-            fname = "etc/systemd/network/wired-{0}.network".format(link)
-            wired_path = os.path.join(DEST_DIR, fname)
-            with open(wired_path, 'w') as wired_file:
-                wired_file.write("# Wired adapter using DHCP (written by Cnchi)\n")
-                wired_file.write("[Match]\n")
-                wired_file.write("Name={0}\n\n".format(link))
-                wired_file.write("[Network]\n")
-                wired_file.write("DHCP=ipv4\n")
-            logging.debug("Created %s configuration file", wired_path)
-
-
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1248,7 +1213,13 @@ class InstallationProcess(multiprocessing.Process):
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
         else:
-            self.configure_networkd()
+            # Setup systemd-networkd for systems that won't use the
+            # networkmanager daemon (atm is just base install)
+            # Enable systemd_networkd services
+            self.enable_services(["systemd-networkd", "systemd-resolved"])
+            # Setup systemd_networkd
+            import systemd_networkd
+            systemd_networkd.setup(DEST_DIR)
 
         logging.debug(_("Network configuration done."))
 

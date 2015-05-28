@@ -135,6 +135,6 @@ def php_setup():
             php_ini.write(line)
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf
-    file_name = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-available/localhost.conf')
-    link = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-enabled/localhost.conf')
-    chroot_run(["ln", "-s", file_name, link])
+    source = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-available/localhost.conf')
+    link_name = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-enabled/localhost.conf')
+    os.symlink(source, link_name)
