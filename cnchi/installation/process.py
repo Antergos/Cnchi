@@ -1218,8 +1218,10 @@ class InstallationProcess(multiprocessing.Process):
             # Enable systemd_networkd services
             self.enable_services(["systemd-networkd", "systemd-resolved"])
             # Setup systemd_networkd
+            # TODO: Ask user for SSID and passphrase if a wireless link is found
+            # (should this be done here or inside systemd_networkd.setup() ?)
             import systemd_networkd
-            systemd_networkd.setup(DEST_DIR)
+            systemd_networkd.setup()
 
         logging.debug(_("Network configuration done."))
 

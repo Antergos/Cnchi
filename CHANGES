@@ -1,5 +1,7 @@
+[2015-05-29 22:21:24 +0200]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {32a2142}
 [2015-05-29 22:20:12 +0200]  Didn't pull last change                                                    karasu      {bd0cc81}
 [2015-05-29 22:18:53 +0200]  systemd_networkd and lamp are finished but UNTESTED.                       karasu      {eda0dec}
+[2015-05-29 14:25:32 -0500]  Fixes antergos/cnchi#351                                               Dustin Falgout  {296b7a5}
 [2015-05-29 20:19:51 +0200]  Fixes #352                                                                 karasu      {a06904c}
 [2015-05-28 17:30:47 +0200]  Still working on systemd_networkd                                          karasu      {d443184}
 [2015-05-28 09:02:37 +0200]  working on systemd_networkd                                                karasu      {dc201a6}
