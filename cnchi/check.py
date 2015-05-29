@@ -24,6 +24,7 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
+
 from gi.repository import GLib
 import subprocess
 import os
