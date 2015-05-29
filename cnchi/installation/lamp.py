@@ -41,9 +41,13 @@ def setup():
     except subprocess.CalledProcessError as process_error:
         pass
 
+    logging.debug(_("Doing Mariadb setup..."))
     mariadb_setup()
+    logging.debug(_("Mariadb setup done. Doing Apache setup..."))
     apache_setup()
+    logging.debug(_("Apache setup done. Doing PHP setup..."))
     php_setup()
+    logging.debug(_("PHP setup done."))
 
 
 def mariadb_setup():
@@ -138,3 +142,7 @@ def php_setup():
     source = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-available/localhost.conf')
     link_name = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-enabled/localhost.conf')
     os.symlink(source, link_name)
+
+
+if __name__ == '__main__':
+    setup()

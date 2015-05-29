@@ -1,3 +1,4 @@
+[2015-05-29 20:19:51 +0200]  Fixes #352                                                                 karasu      {a06904c}
 [2015-05-28 17:30:47 +0200]  Still working on systemd_networkd                                          karasu      {d443184}
 [2015-05-28 09:02:37 +0200]  working on systemd_networkd                                                karasu      {dc201a6}
 [2015-05-27 22:34:55 +0200]  There's no need to add a tmpfs line to fstab (systemd takes care of..      karasu      {9b9cb83}

@@ -137,6 +137,6 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
             proc.communicate()
         logging.error(_("Timeout running the command %s"), timeout_error.cmd)
         logging.error(_("Cnchi will try to continue anyways"))
-    except OSError as os_error:
-        logging.error(_("Error running command: %s"), os_error.strerror)
+    except (subprocess.CalledProcessError, OSError) as err:
+        logging.error(_("Error running command: %s"), err)
         logging.error(_("Cnchi will try to continue anyways"))

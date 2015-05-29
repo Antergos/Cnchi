@@ -28,13 +28,20 @@
 # TODO: Setup wireless interfaces
 # https://wiki.archlinux.org/index.php/WPA_supplicant
 
-def setup(dest_dir):
+import chroot
+
+DEST_DIR = "/install"
+
+def chroot_run(cmd):
+    chroot.run(cmd, DEST_DIR)
+
+def setup(ssid=None, passphrase=None):
     """ Configure system-networkd for base installs """
 
     # For compatibility with resolv.conf, delete the existing file and
     # create the following symbolic link:
-    source = os.path.join(dest_dir, "run/systemd/resolve/resolv.conf")
-    link_name = os.path.join(dest_dir, "etc/resolv.conf")
+    source = os.path.join(DEST_DIR, "run/systemd/resolve/resolv.conf")
+    link_name = os.path.join(DEST_DIR, "etc/resolv.conf")
 
     # Delete /etc/resolv.conf if it already exists
     if os.path.exists(link_name):
@@ -66,8 +73,8 @@ def setup(dest_dir):
 
     # Setup DHCP by default for all interfaces found
     for link in links:
-        fname = "etc/systemd/network/wired-{0}.network".format(link)
-        wired_path = os.path.join(dest_dir, fname)
+        fname = "etc/systemd/network/{0}.network".format(link)
+        wired_path = os.path.join(DEST_DIR, fname)
         with open(wired_path, 'w') as wired_file:
             wired_file.write("# {0} adapter using DHCP (written by Cnchi)\n".format(link))
             wired_file.write("[Match]\n")
@@ -81,5 +88,25 @@ def setup(dest_dir):
     # /etc/wpa_supplicant/wpa_supplicant-interface.conf.
     # systemctl enable wpa_supplicant@interface
 
-    for link_wireless in links_wireless:
-        pass
+    # Setup wpa_supplicant. We need the SID and the passphrase
+    # TODO: Ask for different sid's or passphrases for each interface
+
+    if ssid is not None and passphrase is not None:
+        for link_wireless in links_wireless:
+            conf_path = os.path.join(
+                DEST_DIR,
+                "etc/wpa_supplicant/wpa_supplicant-{0}.conf".format(link))
+            try:
+                conf = subprocess.check_output(["wpa_passphrase", ssid, passphrase])
+                with open(conf_path, "w") as conf_file:
+                    conf.file.write(conf)
+            except subprocess.CalledProcessError as process_error:
+                logging.warning(process_error)
+            cmd = ["systemctl", "enable", "wpa_supplicant@{0}".format(link)]
+            chroot_run(cmd)
+            # cmd = ["systemctl", "enable", "dhcpcd@{0}".format(link)]
+            # chroot_run(cmd)
+
+
+if __name__ == '__main__':
+    setup()
