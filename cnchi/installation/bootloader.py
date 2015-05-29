@@ -146,6 +146,10 @@ class Bootloader(object):
         self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
 
         if self.settings.get('use_luks'):
+            # Should fix issue #352
+            # GRUB_ENABLE_CRYPTODISK=1
+            self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
+
             # Let GRUB automatically add the kernel parameters for root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
