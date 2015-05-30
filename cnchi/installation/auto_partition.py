@@ -588,7 +588,8 @@ class AutoPartition(object):
 
         part_sizes['swap'] = math.ceil(part_sizes['swap'])
 
-        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap'])
+        other_than_root_size = start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap']
+        part_sizes['root'] = disk_size - other_than_root_size
 
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
@@ -932,5 +933,6 @@ if __name__ == '__main__':
         luks_password="luks",
         use_lvm=True,
         use_home=True,
+        bootloader="grub2",
         callback_queue=None)
     auto.run()

@@ -22,25 +22,20 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import subprocess
 import os
-import sys
 import logging
+import shutil
 
 import chroot
 
 DEST_DIR = '/install'
 
+
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
 
-def setup():
-    try:
-        cmd = ["systemctl", "stop", "httpd"]
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as process_error:
-        pass
 
+def setup():
     logging.debug(_("Doing Mariadb setup..."))
     mariadb_setup()
     logging.debug(_("Mariadb setup done. Doing Apache setup..."))
@@ -58,9 +53,15 @@ def mariadb_setup():
         "--datadir=/var/lib/mysql"]
     chroot_run(cmd)
 
+    cmd = ["systemctl", "enable", "mariadb"]
+    chroot_run(cmd)
+
+    # TODO: Warn user to run mysql_secure_installation
+
+
 def apache_setup():
     # Allow site virtualization
-    with open('/etc/httpd/conf/httpd.conf','a') as httpd_conf:
+    with open('/etc/httpd/conf/httpd.conf', 'a') as httpd_conf:
         httpd_conf.write('IncludeOptional conf/sites-enabled/*.conf\n')
         httpd_conf.write('IncludeOptional conf/mods-enabled/*.conf\n')
 
@@ -99,6 +100,7 @@ def apache_setup():
     # We activate the virtual localhost site
     chroot_run(["a2ensite", "localhost"])
 
+
 def php_setup():
     # Comment mpm_event_module
     httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
@@ -132,15 +134,15 @@ def php_setup():
                 ext = ";extension={0}.so".format(so_ext)
                 if line.startswith(ext):
                     line = line[1:]
-			# Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
+            # Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
             # to make sure PHP can access and read files under those directories
             if "open_basedir =" in line:
-				line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
+                line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
             php_ini.write(line)
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf
-    source = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-available/localhost.conf')
-    link_name = os.path.join(DEST_PATH, 'etc/httpd/conf/sites-enabled/localhost.conf')
+    source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
+    link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
     os.symlink(source, link_name)
 
 

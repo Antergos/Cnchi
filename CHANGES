@@ -1,3 +1,4 @@
+[2015-05-29 22:26:19 +0200]  Call systemd_networkd.setup() without the dest_dir param                   karasu      {740238a}
 [2015-05-29 22:21:24 +0200]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {32a2142}
 [2015-05-29 22:20:12 +0200]  Didn't pull last change                                                    karasu      {bd0cc81}
 [2015-05-29 22:18:53 +0200]  systemd_networkd and lamp are finished but UNTESTED.                       karasu      {eda0dec}

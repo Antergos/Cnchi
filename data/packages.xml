@@ -496,7 +496,7 @@
     <feature name="smb">
         <pkgname lib='gtk'>gvfs-smb</pkgname>
         <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
-	<pkgname>python-pysmbc</pkgname>
+	      <pkgname>python-pysmbc</pkgname>
     </feature>
     <feature name="lamp">
       <pkgname>apache</pkgname>
@@ -505,6 +505,13 @@
       <pkgname>phpmyadmin</pkgname>
       <pkgname>php-mcrypt</pkgname>
       <pkgname>php-apache</pkgname>
+    </feature>
+    <feature name="lemp">
+      <pkgname>nginx</pkgname>
+      <pkgname>php-fpm</pkgname>
+      <pkgname>mariadb</pkgname>
+      <pkgname>phpmyadmin</pkgname>
+      <pkgname>php-mcrypt</pkgname>
     </feature>
   </features>
 

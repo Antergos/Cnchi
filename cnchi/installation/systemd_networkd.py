@@ -28,12 +28,18 @@
 # TODO: Setup wireless interfaces
 # https://wiki.archlinux.org/index.php/WPA_supplicant
 
+import os
+import subprocess
+import logging
+
 import chroot
 
 DEST_DIR = "/install"
 
+
 def chroot_run(cmd):
     chroot.run(cmd, DEST_DIR)
+
 
 def setup(ssid=None, passphrase=None):
     """ Configure system-networkd for base installs """
@@ -92,14 +98,14 @@ def setup(ssid=None, passphrase=None):
     # TODO: Ask for different sid's or passphrases for each interface
 
     if ssid is not None and passphrase is not None:
-        for link_wireless in links_wireless:
+        for link in links_wireless:
             conf_path = os.path.join(
                 DEST_DIR,
                 "etc/wpa_supplicant/wpa_supplicant-{0}.conf".format(link))
             try:
                 conf = subprocess.check_output(["wpa_passphrase", ssid, passphrase])
                 with open(conf_path, "w") as conf_file:
-                    conf.file.write(conf)
+                    conf_file.write(conf)
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
             cmd = ["systemctl", "enable", "wpa_supplicant@{0}".format(link)]
