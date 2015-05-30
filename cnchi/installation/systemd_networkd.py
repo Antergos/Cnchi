@@ -64,10 +64,11 @@ def setup(ssid=None, passphrase=None):
     links_wireless = []
     try:
         cmd = ['networkctl', 'list']
-        output = subprocess.check_output(cmd).decode()
+        output = subprocess.check_output(cmd).decode().split('\n')
         for line in output:
-            if len(line) > 0:
-                link = line[1:]
+            fields = line.split()
+            if len(fields) > 0:
+                link = fields[1]
                 if link.startswith("eth") or link.startswith("enp"):
                     links.append(link)
                 elif link.startswith("wlp"):
@@ -118,4 +119,6 @@ def setup(ssid=None, passphrase=None):
 
 
 if __name__ == '__main__':
+    def _(x): return x
+    DEST_DIR="/"
     setup()
