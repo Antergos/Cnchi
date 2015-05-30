@@ -66,12 +66,13 @@ def setup(ssid=None, passphrase=None):
         cmd = ['networkctl', 'list']
         output = subprocess.check_output(cmd).decode()
         for line in output:
-            link = line[1]
-            if link.startswith("eth") or link.startswith("enp"):
-                links.append(link)
-            elif link.startswith("wlp"):
-                links.append(link)
-                links_wireless.append(link)
+            if len(line) > 0:
+                link = line[1:]
+                if link.startswith("eth") or link.startswith("enp"):
+                    links.append(link)
+                elif link.startswith("wlp"):
+                    links.append(link)
+                    links_wireless.append(link)
     except subprocess.CalledProcessError as process_error:
         logging.warning(process_error)
         logging.warning(_("systemd-networkd configuration failed."))
