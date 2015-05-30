@@ -368,7 +368,7 @@ class Features(GtkBaseBox):
                 modal=True,
                 destroy_with_parent=True,
                 message_type=Gtk.MessageType.INFO,
-                buttons=Gtk.ButtonsType.YES|Gtk.ButtonsType.NO)
+                buttons=Gtk.ButtonsType.YES_NO)
             info.set_markup("LAMP")
             msg = _("Do you want to install the Nginx server instead of the Apache server?")
             info.format_secondary_markup(msg)
