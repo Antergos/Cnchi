@@ -504,9 +504,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if uid in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
 
-                    info = fs.get_info(partition_path)
-                    if 'LABEL' in info:
-                        label = info['LABEL']
+                    label = fs.get_label(partition_path)
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
@@ -633,9 +631,7 @@ class InstallationAdvanced(GtkBaseBox):
                                     used = self.used_dic[(disk_path, partition.geometry.start)]
                                 else:
                                     used = '0b'
-                            info = fs.get_info(partition_path)
-                            if 'LABEL' in info:
-                                label = info['LABEL']
+                            label = fs.get_label(partition_path)
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)

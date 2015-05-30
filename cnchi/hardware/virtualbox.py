@@ -46,8 +46,7 @@ class Virtualbox(Hardware):
 
     def post_install(self, dest_dir):
         path = os.path.join(dest_dir, "etc/modules-load.d")
-        if not os.path.exists(path):
-            os.makedirs(path)
+        os.makedirs(path, mode=0o755, exist_ok=True)
         path = os.path.join(dest_dir, "etc/modules-load.d/virtualbox-guest.conf")
         with open(path, 'w') as modules:
             modules.write('# Virtualbox modules added by Cnchi - Antergos Installer\n')

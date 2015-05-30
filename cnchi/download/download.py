@@ -79,9 +79,8 @@ class DownloadPackages(object):
         else:
             self.cache_dir = cache_dir
 
-        # Create pacman cache dir if it doesn't exist yet
-        if not os.path.exists(pacman_cache_dir):
-            os.makedirs(pacman_cache_dir)
+        # Create pacman cache dir (it's ok if it already exists)
+        os.makedirs(pacman_cache_dir, mode=0o755, exist_ok=True)
 
         # Stores last issued event for each event type
         # (to prevent repeating events)

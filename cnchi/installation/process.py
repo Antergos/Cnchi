@@ -775,8 +775,12 @@ class InstallationProcess(multiprocessing.Process):
 
         for mount_point in self.mount_devices:
             partition_path = self.mount_devices[mount_point]
-            part_info = fs.get_info(partition_path)
-            uuid = part_info['UUID']
+            uuid = fs.get_uuid(partition_path)
+            if uuid == "":
+                logging.warning(
+                    _("Can't get {0} partition UUID. It won't be added to fstab"),
+                    partition_path)
+                continue
 
             if partition_path in self.fs_devices:
                 myfmt = self.fs_devices[partition_path]

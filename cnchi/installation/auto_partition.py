@@ -29,6 +29,8 @@ import math
 
 from misc.misc import InstallError
 
+import parted3.fs_module as fs
+
 '''
 NOTE: Exceptions in this file
 
@@ -45,21 +47,6 @@ MAX_ROOT_SIZE = 30000
 
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
-
-
-def get_info(part):
-    """ Get partition info using blkid """
-    cmd = ['blkid', part]
-    ret = subprocess.check_output(cmd).decode().strip()
-
-    partdic = {}
-
-    for info in ret.split():
-        if '=' in info:
-            info = info.split('=')
-            partdic[info[0]] = info[1].strip('"')
-
-    return partdic
 
 
 def check_output(command):
@@ -337,7 +324,7 @@ class AutoPartition(object):
         self.lvm = use_lvm
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
-        
+
         self.bootloader = bootloader.lower()
 
         # Will use these queue to show progress info to the user
@@ -404,8 +391,7 @@ class AutoPartition(object):
 
             # Create our mount directory
             path = self.dest_dir + mount_point
-            if not os.path.exists(path):
-                os.makedirs(path, mode=0o755)
+            os.makedirs(path, mode=0o755, exist_ok=True)
 
             # Mount our new filesystem
 
@@ -416,7 +402,8 @@ class AutoPartition(object):
                 mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
 
             try:
-                subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
+                cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
+                subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
                 txt = _("Error trying to  mount {0} in {1}").format(device, path)
                 logging.error(txt)
@@ -433,8 +420,8 @@ class AutoPartition(object):
                 mode = 0o755
             os.chmod(path, mode)
 
-        fs_uuid = get_info(device)['UUID']
-        fs_label = get_info(device)['LABEL']
+        fs_uuid = fs.get_uuid(device)
+        fs_label = fs.get_label(device)
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
     @property
@@ -456,7 +443,7 @@ class AutoPartition(object):
             if self.bootloader == "grub2":
                 devices['efi'] = "{0}{1}".format(device, part_num)
                 part_num += 1
-            
+
             devices['boot'] = "{0}{1}".format(device, part_num)
             part_num += 1
             devices['root'] = "{0}{1}".format(device, part_num)
@@ -539,7 +526,7 @@ class AutoPartition(object):
             fs_devices[devices['boot']] = "vfat"
         else:
             fs_devices[devices['boot']] = "ext2"
-        
+
         fs_devices[devices['swap']] = "swap"
         fs_devices[devices['root']] = "ext4"
 

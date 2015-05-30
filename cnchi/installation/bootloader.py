@@ -52,15 +52,16 @@ class Bootloader(object):
         self.mount_devices = mount_devices
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
-        self.root_uuid = fs.get_info(self.root_device)['UUID']
+
+        self.root_uuid = fs.get_uuid(self.root_device)
 
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_info(swap_partition)['UUID']
+            self.swap_uuid = fs.get_uuid(swap_partition)
 
         if "/boot" in self.mount_devices:
             boot_device = self.mount_devices["/boot"]
-            self.boot_uuid = fs.get_info(boot_device)['UUID']
+            self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
         """ Installs the bootloader """
@@ -161,7 +162,7 @@ class Bootloader(object):
                 # Special case, in advanced when using luks in root device, we store it in luks_root_device
                 root_device = self.settings.get('luks_root_device')
 
-            root_uuid = fs.get_info(root_device)['UUID']
+            root_uuid = fs.get_uuid(root_device)
 
             logging.debug("Root device: %s", root_device)
 
@@ -213,8 +214,7 @@ class Bootloader(object):
         script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
         script = "10_antergos"
 
-        if not os.path.exists(grub_d_dir):
-            os.makedirs(grub_d_dir)
+        os.makedirs(grub_d_dir, mode=0o755, exist_ok=True)
 
         script_path = os.path.join(script_dir, script)
         if os.path.exists(script_path):
@@ -338,7 +338,7 @@ class Bootloader(object):
             if not os.path.exists(path):
                 msg = _("No OEM loader found in %s. Copying Grub(2) into dir.")
                 logging.info(msg, path)
-                os.makedirs(path)
+                os.makedirs(path, mode=0o755)
                 msg_failed = _("Copying Grub(2) into OEM dir failed: %s")
                 try:
                     shutil.copy(grub_path, grub_default)
@@ -431,8 +431,7 @@ class Bootloader(object):
         logging.info(_("Installing Grub2 locales."))
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
-        if not os.path.exists(dest_locale_dir):
-            os.makedirs(dest_locale_dir)
+        os.makedirs(dest_locale_dir, mode=0o755, exist_ok=True)
 
         grub_mo = os.path.join(self.dest_dir, "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
 
@@ -448,7 +447,7 @@ class Bootloader(object):
         """ Install Gummiboot bootloader to the EFI System Partition """
         # Setup bootloader menu
         menu_dir = os.path.join(self.dest_dir, "boot/loader")
-        os.makedirs(menu_dir)
+        os.makedirs(menu_dir, mode=0o755, exist_ok=True)
         menu_path = os.path.join(menu_dir, "loader.conf")
         with open(menu_path, 'w') as menu_file:
             menu_file.write("default antergos")
@@ -483,7 +482,7 @@ class Bootloader(object):
                 conf['lts_fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
-            luks_root_volume_uuid = fs.get_info(luks_root_volume)['UUID']
+            luks_root_volume_uuid = fs.get_uuid(luks_root_volume)
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
             root_device = self.root_device
@@ -491,7 +490,7 @@ class Bootloader(object):
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
                 root_device = self.settings.get('luks_root_device')
 
-            root_uuid = fs.get_info(root_device)['UUID']
+            root_uuid = fs.get_uuid(root_device)
 
             key = ""
             if self.settings.get("luks_root_password") == "":
@@ -523,7 +522,7 @@ class Bootloader(object):
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
-        os.makedirs(entries_dir)
+        os.makedirs(entries_dir, mode=0o755, exist_ok=True)
 
         entry_path = os.path.join(entries_dir, "antergos.conf")
         with open(entry_path, 'w') as entry_file:

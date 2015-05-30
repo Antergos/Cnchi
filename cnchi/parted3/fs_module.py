@@ -35,6 +35,21 @@ NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
+def get_uuid(part):
+    info = get_info(part)
+    if "UUID" in info.keys():
+        return info['UUID']
+    else:
+        logging.warning(_("Can't get partition %s UUID"), part)
+        return ""
+
+def get_label(part):
+    info = get_info(part)
+    if "LABEL" in info.keys():
+        return info['LABEL']
+    else:
+        logging.warning(_("Can't get partition %s LABEL"), part)
+        return ""
 
 @misc.raise_privileges
 def get_info(part):

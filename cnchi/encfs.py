@@ -112,8 +112,8 @@ def setup(username, dest_dir, password):
 
     # Create necessary dirs, encrypted and mounted(unencrypted)
     encrypted_dir = os.path.join(dest_dir, "home/.encfs/", username)
-    os.makedirs(encrypted_dir)
-    os.makedirs(mount_dir)
+    os.makedirs(encrypted_dir, mode=0o755)
+    os.makedirs(mount_dir, mode=0o755)
 
     # Set owner
     shutil.chown(encrypted_dir, username, "users")
