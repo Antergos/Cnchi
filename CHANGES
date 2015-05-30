@@ -1,3 +1,4 @@
+[2015-05-30 11:16:04 +0200]  Add debug messages                                                         karasu      {24563c2}
 [2015-05-30 11:11:21 +0200]  Check line len in systemd_networkd                                         karasu      {1d3c9d7}
 [2015-05-30 10:58:48 +0200]  Added lemp.py (and fixed some typos/identation/import mistakes in o..      karasu      {072d388}
 [2015-05-29 22:26:19 +0200]  Call systemd_networkd.setup() without the dest_dir param                   karasu      {740238a}

@@ -41,6 +41,7 @@ _features_icon_names = {
     'fonts': 'preferences-desktop-font',
     'graphic_drivers' : 'gnome-system',
     'lamp' : 'applications-internet',
+    'lemp' : 'applications-internet',
     'lts' : 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
@@ -240,6 +241,12 @@ class Features(GtkBaseBox):
         desc = _("Apache + Mysql + Php installation")
         tooltip = _("This option installs the Apache web server")
         self.set_row_text('lamp', title, desc, tooltip)
+
+        # LEMP
+        title = _("LEMP")
+        desc = _("Nginx + Mysql + Php installation")
+        tooltip = _("This option installs the Nginx web server")
+        self.set_row_text('lemp', title, desc, tooltip)
 
         # Printing support (cups)
         title = _("Printing Support")
