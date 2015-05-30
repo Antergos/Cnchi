@@ -1063,19 +1063,26 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["enable"])
             services.append('ufw')
 
-        # TODO: graphic driver setup (if proprietary is used)
-
-        # TODO: lamp setup
         if self.settings.get("feature_lamp"):
-            logging.debug(_("Configuring LAMP..."))
+            web_server = self.settings.get("feature_lamp_web_server")
+            logging.debug(_("Configuring LAMP (%s)..."), web_server)
             try:
-                import lamp
-                lamp.setup()
+                if web_server == "apache":
+                    import lamp
+                    lamp.setup()
+                    services.extend(["httpd", "mariadb"])
+                elif web_server == "nginx":
+                    import lemp
+                    lemp.setup()
+                    services.extend(["nginx", "mariadb", "php-fpm"])
+                else:
+                    logging.warning(_("Unknown web server: %s"), web_server)
             except ImportError as error:
                 logging.warning(_("Can't import lamp module"))
                 logging.warning(error)
 
         self.enable_services(services)
+        # TODO: graphic driver setup (if proprietary is used)
 
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """

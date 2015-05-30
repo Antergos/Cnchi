@@ -1,3 +1,4 @@
+[2015-05-30 19:14:35 +0200]  Some work done towards fixing https://github.com/Antergos/Cnchi/iss..      karasu      {82d5f8c}
 [2015-05-30 11:33:00 +0200]  Fixed systemd_networkd link finding                                        karasu      {d912383}
 [2015-05-30 11:18:09 +0200]  Added LEMP option                                                          karasu      {50f19b2}
 [2015-05-30 11:16:04 +0200]  Add debug messages                                                         karasu      {24563c2}

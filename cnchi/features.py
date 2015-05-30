@@ -41,7 +41,6 @@ _features_icon_names = {
     'fonts': 'preferences-desktop-font',
     'graphic_drivers' : 'gnome-system',
     'lamp' : 'applications-internet',
-    'lemp' : 'applications-internet',
     'lts' : 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
@@ -237,16 +236,12 @@ class Features(GtkBaseBox):
         self.set_row_text('graphic_drivers', title, desc, tooltip)
 
         # LAMP
-        title = _("LAMP")
-        desc = _("Apache + Mysql + Php installation")
-        tooltip = _("This option installs the Apache web server")
+        title = _("Apache (or Nginx) + Mariadb + PHP")
+        desc = _("(Apache or Nginx) + Mysql + Php installation")
+        tooltip = _("This option installs a web server (you can choose\n"
+                    "Apache or Nginx) plus a database server (Mariadb)\n"
+                    "and PHP")
         self.set_row_text('lamp', title, desc, tooltip)
-
-        # LEMP
-        title = _("LEMP")
-        desc = _("Nginx + Mysql + Php installation")
-        tooltip = _("This option installs the Nginx web server")
-        self.set_row_text('lemp', title, desc, tooltip)
 
         # Printing support (cups)
         title = _("Printing Support")
@@ -365,6 +360,24 @@ class Features(GtkBaseBox):
         if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
             self.show_info_dialog("aur")
             self.info_already_shown["aur"] = True
+
+        # LAMP: Ask user if he wants Apache or Nginx
+        if self.settings.get("feature_lamp"):
+            info = Gtk.MessageDialog(
+                transient_for=self.get_toplevel(),
+                modal=True,
+                destroy_with_parent=True,
+                message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.YES|Gtk.ButtonsType.NO)
+            info.set_markup("LAMP")
+            msg = _("Do you want to install the Nginx server instead of the Apache server?")
+            info.format_secondary_markup(msg)
+            response = info.run()
+            info.destroy()
+            if response == Gtk.ResponseType.YES:
+                self.settings.set("feature_lamp_web_server", "nginx")
+            else:
+                self.settings.set("feature_lamp_web_server", "apache")
 
         self.listbox_rows = {}
 
