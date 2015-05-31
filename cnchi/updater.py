@@ -153,17 +153,16 @@ class Updater():
     @staticmethod
     def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
-        if not os.path.exists(zip_path):
-            r = requests.get(_master_zip_url, stream=True)
-            if r.status_code == requests.codes.ok:
-                with open(zip_path, 'wb') as zip_file:
-                    for data in r.iter_content(1024):
-                        if not data:
-                            break
-                        zip_file.write(data)
-            else:
-                return False
-        return True
+        r = requests.get(_master_zip_url, stream=True)
+        if r.status_code == requests.codes.ok:
+            with open(zip_path, 'wb') as zip_file:
+                for data in r.iter_content(1024):
+                    if not data:
+                        break
+                    zip_file.write(data)
+            return True
+        else:
+            return False
 
     def unzip_and_copy(self, zip_path):
         """ Unzip (decompress) a zip file using zipfile standard module """
@@ -171,18 +170,32 @@ class Updater():
 
         dst_dir = "/tmp"
 
+        # First check all md5 signatures
+        all_md5_ok = True
         with zipfile.ZipFile(zip_path) as zip_file:
             for member in zip_file.infolist():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
                 dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
                 if os.path.isfile(dst_full_path) and dst_full_path in self.md5s:
-                    if self.md5s[dst_full_path] == get_md5_from_file(full_path):
-                        try:
-                            with misc.raised_privileges():
-                                shutil.copyfile(full_path, dst_full_path)
-                        except FileNotFoundError as file_error:
-                            logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
-                            logging.error(file_error)
-                    else:
-                        logging.warning(_("Wrong md5. Bad download or wrong file, won't update this one"))
+                    if self.md5s[dst_full_path] != get_md5_from_file(full_path):
+                        logging.warning(
+                            _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
+                            member.filename)
+                        all_md5_ok = False
+                        break
+                else:
+                    logging.warning(_("File %s is not in md5 signatures list"), member.filename)
+                    all_md5_ok = False
+                    break
+
+            if all_md5_ok:
+                for member in zip_file.infolist():
+                    full_path = os.path.join(dst_dir, member.filename)
+                    dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
+                    try:
+                        with misc.raised_privileges():
+                            shutil.copyfile(full_path, dst_full_path)
+                    except FileNotFoundError as file_error:
+                        logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                        logging.error(file_error)

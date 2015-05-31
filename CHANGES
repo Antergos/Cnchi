@@ -1,3 +1,4 @@
+[2015-05-31 19:25:43 +0200]  Updated update.info                                                        karasu      {ce97943}
 [2015-05-31 19:25:07 +0200]  Use requests instead of urllib in updater.py                               karasu      {a810dc0}
 [2015-05-31 19:04:08 +0200]  Subtract 1MB to LVM in GPT                                                 karasu      {57a4ebc}
 [2015-05-31 15:08:34 +0200]  updater is broken...                                                       karasu      {9876a9b}
