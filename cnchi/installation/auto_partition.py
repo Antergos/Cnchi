@@ -590,7 +590,7 @@ class AutoPartition(object):
         else:
             part_sizes['home'] = 0
 
-        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
+        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home'] - 1
 
         for part in part_sizes:
             part_sizes[part] = int(part_sizes[part])
