@@ -1,3 +1,4 @@
+[2015-05-31 19:47:34 +0200]  Do not check CHANGES and info.py md5 signatures                            karasu      {d89da7c}
 [2015-05-31 19:41:20 +0200]  Do not try to update directories                                           karasu      {389955e}
 [2015-05-31 19:37:27 +0200]  Playing with updater                                                       karasu      {b999e20}
 [2015-05-31 19:25:43 +0200]  Updated update.info                                                        karasu      {ce97943}
