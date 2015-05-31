@@ -1,3 +1,4 @@
+[2015-05-31 19:04:08 +0200]  Subtract 1MB to LVM in GPT                                                 karasu      {57a4ebc}
 [2015-05-31 15:08:34 +0200]  updater is broken...                                                       karasu      {9876a9b}
 [2015-05-31 00:41:28 +0200]  Fix buttonstype                                                            karasu      {b9aa901}
 [2015-05-30 21:08:46 +0200]  Still working on lamp/lemp features                                        karasu      {24c37c0}

@@ -34,9 +34,6 @@ import misc.misc as misc
 import requests
 import info
 
-import urllib.request
-import urllib.error
-
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
 _update_info = "/usr/share/cnchi/update.info"
@@ -157,14 +154,14 @@ class Updater():
     def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
         if not os.path.exists(zip_path):
-            try:
-                logging.debug(_("Getting url {0}...").format(_master_zip_url))
-                req = urllib.request.Request(_master_zip_url, headers={'User-Agent': 'Mozilla/5.0'})
-                data = urllib.request.urlopen(req, timeout=10)
+            r = requests.get(_master_zip_url, stream=True)
+            if r.status_code == requests.codes.ok:
                 with open(zip_path, 'wb') as zip_file:
-                    zip_file.write(data)
-            except urllib.error.URLError as url_error:
-                logging.error(url_error)
+                    for data in r.iter_content(1024):
+                        if not data:
+                            break
+                        zip_file.write(data)
+            else:
                 return False
         return True
 
