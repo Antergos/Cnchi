@@ -193,10 +193,13 @@ class Updater():
             if all_md5_ok:
                 for member in zip_file.infolist():
                     full_path = os.path.join(dst_dir, member.filename)
-                    dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
+                    dst_full_path = os.path.join(
+                        "/usr/share/cnchi",
+                        full_path.split("/tmp/Cnchi-master/")[1])
                     if os.path.isfile(dst_full_path):
                         try:
                             with misc.raised_privileges():
+                                logging.debug(_("Copying %s to %s..."), full_path, dst_full_path)
                                 shutil.copyfile(full_path, dst_full_path)
                         except FileNotFoundError as file_error:
                             logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)

@@ -1,3 +1,4 @@
+[2015-05-31 20:02:33 +0200]  Damn it. Update.info insists on check itself                               karasu      {9cf8801}
 [2015-05-31 19:53:34 +0200]  Update update.info                                                         karasu      {1579b17}
 [2015-05-31 19:47:34 +0200]  Do not check CHANGES and info.py md5 signatures                            karasu      {d89da7c}
 [2015-05-31 19:41:20 +0200]  Do not try to update directories                                           karasu      {389955e}
