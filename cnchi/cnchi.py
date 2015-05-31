@@ -269,7 +269,9 @@ def threads_init():
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(force_update=cmd_line.update)
+    upd = updater.Updater(
+        force_update=cmd_line.update,
+        local_cnchi_version=info.CNCHI_VERSION)
 
     if upd.update():
         logging.info(_("Program updated! Restarting..."))

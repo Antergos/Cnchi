@@ -32,7 +32,6 @@ import shutil
 
 import misc.misc as misc
 import requests
-import info
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
@@ -57,9 +56,9 @@ def get_md5_from_text(text):
 
 
 class Updater():
-    def __init__(self, force_update):
+    def __init__(self, local_cnchi_version, force_update):
         self.remote_version = ""
-
+        self.local_cnchi_version = local_cnchi_version
         self.md5s = {}
 
         self.force = force_update
@@ -96,7 +95,7 @@ class Updater():
             return False
 
         # Version is always: x.y.z
-        local_ver = info.CNCHI_VERSION.split(".")
+        local_ver = self.local_cnchi_version.split(".")
         remote_ver = self.remote_version.split(".")
 
         local = [int(local_ver[0]), int(local_ver[1]), int(local_ver[2])]
@@ -165,7 +164,8 @@ class Updater():
             return False
 
     def unzip_and_copy(self, zip_path):
-        """ Unzip (decompress) a zip file using zipfile standard module """
+        """ Unzip (decompress) a zip file using zipfile standard module
+            and copy cnchi's files to their destinations """
         import zipfile
 
         dst_dir = "/tmp"
@@ -173,6 +173,7 @@ class Updater():
         # First check all md5 signatures
         all_md5_ok = True
         with zipfile.ZipFile(zip_path) as zip_file:
+            # Check md5 sums
             for member in zip_file.infolist():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
@@ -188,9 +189,12 @@ class Updater():
                             all_md5_ok = False
                             break
                     else:
-                        logging.warning(_("File %s is not in md5 signatures list"), member.filename)
+                        logging.warning(
+                            _("File %s is not in md5 signatures list"),
+                            member.filename)
 
             if all_md5_ok:
+                # All md5 sums where ok. Let's copy all files
                 for member in zip_file.infolist():
                     full_path = os.path.join(dst_dir, member.filename)
                     dst_full_path = os.path.join(
@@ -199,8 +203,14 @@ class Updater():
                     if os.path.isfile(dst_full_path):
                         try:
                             with misc.raised_privileges():
-                                logging.debug(_("Copying %s to %s..."), full_path, dst_full_path)
+                                logging.debug(
+                                    _("Copying %s to %s..."),
+                                    full_path,
+                                    dst_full_path)
                                 shutil.copyfile(full_path, dst_full_path)
                         except FileNotFoundError as file_error:
-                            logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                            logging.error(
+                                _("Can't copy %s to %s"),
+                                full_path,
+                                dst_full_path)
                             logging.error(file_error)
