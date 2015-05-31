@@ -176,10 +176,12 @@ class Updater():
             for member in zip_file.infolist():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
-                dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
+                dst_full_path = os.path.join(
+                    "/usr/share/cnchi",
+                    full_path.split("/tmp/Cnchi-master/")[1])
                 if os.path.isfile(dst_full_path):
                     if dst_full_path in self.md5s:
-                        if self.md5s[dst_full_path] != get_md5_from_file(full_path):
+                        if "update.info" not in dst_full_path and self.md5s[dst_full_path] != get_md5_from_file(full_path):
                             logging.warning(
                                 _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
                                 member.filename)
