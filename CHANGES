@@ -1,3 +1,4 @@
+[2015-05-20 12:15:33 +0200]  This isn't necessary anymore                                               karasu      {ac7eeb8}
 [2015-05-20 04:41:30 -0500]  fix the bug I caused :grimacing: #347                                  Dustin Falgout  {9e2324a}
 [2015-05-19 21:15:51 -0500]  fix kde config issue reported in forum                                 Dustin Falgout  {28de3d2}
 [2015-05-19 20:05:17 -0500]  start vbox client services for vbox installs                           Dustin Falgout  {7500cd4}
