@@ -177,25 +177,25 @@ class Updater():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
                 dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
-                if os.path.isfile(dst_full_path) and dst_full_path in self.md5s:
-                    if self.md5s[dst_full_path] != get_md5_from_file(full_path):
-                        logging.warning(
-                            _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
-                            member.filename)
-                        all_md5_ok = False
-                        break
-                else:
-                    logging.warning(_("File %s is not in md5 signatures list"), member.filename)
-                    all_md5_ok = False
-                    break
+                if os.path.isfile(dst_full_path):
+                    if dst_full_path in self.md5s:
+                        if self.md5s[dst_full_path] != get_md5_from_file(full_path):
+                            logging.warning(
+                                _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
+                                member.filename)
+                            all_md5_ok = False
+                            break
+                    else:
+                        logging.warning(_("File %s is not in md5 signatures list"), member.filename)
 
             if all_md5_ok:
                 for member in zip_file.infolist():
                     full_path = os.path.join(dst_dir, member.filename)
                     dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
-                    try:
-                        with misc.raised_privileges():
-                            shutil.copyfile(full_path, dst_full_path)
-                    except FileNotFoundError as file_error:
-                        logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
-                        logging.error(file_error)
+                    if os.path.isfile(dst_full_path):
+                        try:
+                            with misc.raised_privileges():
+                                shutil.copyfile(full_path, dst_full_path)
+                        except FileNotFoundError as file_error:
+                            logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                            logging.error(file_error)
