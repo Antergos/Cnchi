@@ -479,7 +479,8 @@ class Bootloader(object):
                 conf['lts_fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
-            luks_root_volume_uuid = fs.get_info(luks_root_volume)['UUID']
+            luks_root_volume_device = "/dev/mapper/{0}".format(luks_root_volume)
+            luks_root_volume_uuid = fs.get_info(luks_root_volume_device)['UUID']
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
             root_device = self.root_device
