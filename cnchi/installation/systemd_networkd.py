@@ -78,7 +78,7 @@ def setup(ssid=None, passphrase=None):
         logging.warning(process_error)
         logging.warning(_("systemd-networkd configuration failed."))
         return
-    
+
     logging.debug(_("Found [%s] links and [%s] are wireless"), " ".join(links), " ".join(links_wireless))
 
     # Setup DHCP by default for all interfaces found

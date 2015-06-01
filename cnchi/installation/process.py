@@ -1223,7 +1223,8 @@ class InstallationProcess(multiprocessing.Process):
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
-        else:
+
+        if self.desktop == "base":
             # Setup systemd-networkd for systems that won't use the
             # networkmanager daemon (atm is just base install)
             # Enable systemd_networkd services
