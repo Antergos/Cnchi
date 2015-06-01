@@ -1232,7 +1232,7 @@ class InstallationProcess(multiprocessing.Process):
             # Setup systemd_networkd
             # TODO: Ask user for SSID and passphrase if a wireless link is found
             # (should this be done here or inside systemd_networkd.setup() ?)
-            import systemd_networkd
+            from installation import systemd_networkd
             systemd_networkd.setup()
 
         logging.debug(_("Network configuration done."))
