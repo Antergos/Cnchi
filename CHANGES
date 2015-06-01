@@ -1,3 +1,4 @@
+[2015-06-01 23:06:47 +0200]  Fix import                                                                 karasu      {2375bea}
 [2015-06-01 23:01:36 +0200]  Run systemd-networkd setup in base install                                 karasu      {4d32d63}
 [2015-06-01 20:13:21 +0200]  Just in case...                                                            karasu      {7adf572}
 [2015-06-01 17:49:48 +0200]  Working on issue https://github.com/Antergos/Cnchi/issues/351              karasu      {1107412}

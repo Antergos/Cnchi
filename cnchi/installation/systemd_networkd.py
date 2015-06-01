@@ -32,7 +32,7 @@ import os
 import subprocess
 import logging
 
-import chroot
+from installation import chroot
 
 DEST_DIR = "/install"
 
