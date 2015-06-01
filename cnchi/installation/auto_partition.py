@@ -548,7 +548,7 @@ class AutoPartition(object):
 
         return fs_devices
 
-    def get_part_sizes(self, disk_size, start_part_sizes):
+    def get_part_sizes(self, disk_size, start_part_sizes=1):
         part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
         if self.GPT and self.bootloader == "grub2":
