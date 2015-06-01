@@ -548,7 +548,7 @@ class AutoPartition(object):
 
         return fs_devices
 
-    def get_part_sizes(self, disk_size, start_part_sizes=0):
+    def get_part_sizes(self, disk_size, start_part_sizes):
         part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
         if self.GPT and self.bootloader == "grub2":
@@ -590,7 +590,7 @@ class AutoPartition(object):
         else:
             part_sizes['home'] = 0
 
-        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home'] - 1
+        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
 
         for part in part_sizes:
             part_sizes[part] = int(part_sizes[part])
@@ -635,11 +635,7 @@ class AutoPartition(object):
             logging.error(txt)
             raise InstallError(txt)
 
-        if self.GPT:
-            start_part_sizes = 0
-        else:
-            # We start with a 1MiB offset before the first partition in MBR mode
-            start_part_sizes = 1
+        start_part_sizes = 1
 
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.log_part_sizes(part_sizes)
