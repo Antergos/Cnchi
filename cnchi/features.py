@@ -237,7 +237,7 @@ class Features(GtkBaseBox):
 
         # LAMP
         title = _("Apache (or Nginx) + Mariadb + PHP")
-        desc = _("(Apache or Nginx) + Mysql + Php installation")
+        desc = _("Apache (or Nginx) + Mariadb + PHP installation and setup")
         tooltip = _("This option installs a web server (you can choose\n"
                     "Apache or Nginx) plus a database server (Mariadb)\n"
                     "and PHP")
