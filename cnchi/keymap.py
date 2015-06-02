@@ -298,12 +298,52 @@ class Keymap(GtkBaseBox):
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
 
+            keymap = self.check_keymap()
+
+            logging.debug(_("Will use localectl with keymap '{0}'").format(keymap))
+
             with misc.raised_privileges():
-                cmd = ['localectl', 'set-keymap', '--no-convert', self.keyboard_layout['code']]
+                cmd = ['localectl', 'set-keymap', '--no-convert', keymap]
                 try:
                     subprocess.check_call(cmd)
                 except subprocess.CalledProcessError as process_error:
                     logging.warning(process_error)
+
+    def check_keymap(self):
+        """ Checks that the keymap exists (using data from localectl) """
+        path = os.path.join(self.settings.get('data'), "keymaps.txt")
+
+        my_keymap = self.keyboard_layout['code']
+
+        if os.path.exists(path):
+            found = False
+            with open(path, 'r') as keymaps_file:
+                keymaps = keymaps_file.read().splitlines()
+                for keymap in keymaps:
+                    if my_keymap == keymap:
+                        found = True
+                        break
+                if not found:
+                    # Selected keymap is not available. There can be many
+                    # reasons, for instance there is no 'be' keymap but
+                    # a 'be-latin1' one.
+                    for keymap in keymaps:
+                        if my_keymap in keymap:
+                            my_keymap = keymap
+                            found = True
+                            logging.warning(
+                                _("Can't find keymap '%s' in keymaps file, will use '%s' instead."),
+                                self.keyboard_layout['code'],
+                                my_keymap)
+                            break
+                    if not found:
+                        logging.warning(_("Can't find keymap '%s' in keymaps file"), my_keymap)
+
+        else:
+            logging.warning(_("Can't find keymaps.txt file"))
+
+        return my_keymap
+
 
     def set_keyboard_widget(self):
         """ Pass current keyboard layout to the keyboard widget. """
