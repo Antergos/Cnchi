@@ -50,7 +50,8 @@ class Keymap(GtkBaseBox):
         self.keyboard_layout = { 'code': None, 'name': None }
         self.keyboard_variant  = { 'code': None, 'name': None }
 
-        self.kbd_names = keyboard_names.KeyboardNames(os.path.join(self.settings.get('data'), "kbdnames.gz"))
+        kbdnames_path = os.path.join(self.settings.get('data'), "kbdnames.gz")
+        self.kbd_names = keyboard_names.KeyboardNames(kbdnames_path)
 
         self.create_treeviews()
 

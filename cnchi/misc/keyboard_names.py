@@ -37,7 +37,7 @@ C*variant*th*tis*Thailand - TIS-820.2538
 
 
 class KeyboardNames():
-    def __init__(self, filename):        
+    def __init__(self, filename):
         self._current_lang = None
         self._filename = filename
         self._clear()
@@ -51,7 +51,7 @@ class KeyboardNames():
         for line in kbdnames:
             line = line.rstrip("\n")
             got_lang, element, layout_code, value = line.split("*", 3)
-                
+
             if got_lang != lang:
                 continue
 
@@ -100,7 +100,7 @@ class KeyboardNames():
     def has_language(self, lang):
         self.load(lang)
         return bool(self.layouts)
-    
+
     def has_variants(self, lang, layout_code):
         self.load(lang)
         return bool(self.variants[layout_code])
@@ -108,7 +108,7 @@ class KeyboardNames():
     def has_layout(self, lang, layout_code):
         self.load(lang)
         return layout_code in self.layouts
-    
+
     def get_layout_code(self, lang, layout_name):
         """ Returns layout code from layout name """
         self.load(lang)
@@ -116,7 +116,7 @@ class KeyboardNames():
             if self.layouts[code] == layout_name:
                 return code
         return None
-    
+
     def get_layout_name(self, lang, code):
         """ Returns layout name from layout code """
         self.load(lang)
@@ -124,7 +124,7 @@ class KeyboardNames():
             return self.layouts[code]
         except KeyError:
             return None
-    
+
     def get_variant_code(self, lang, layout_code, variant_name):
         """ Returns variant code from layout and variant names """
         self.load(lang)
@@ -132,7 +132,7 @@ class KeyboardNames():
             if self.variants[layout_code][variant_code] == variant_name:
                 return variant_code
         return None
-    
+
     def get_variant_name(self, lang, layout_code, variant_code):
         """ Returns variant description from variant code """
         self.load(lang)
@@ -140,4 +140,3 @@ class KeyboardNames():
             return self.variants[layout_code][variant_code]
         except KeyError:
             return None
-            
