@@ -1364,9 +1364,11 @@ class InstallationProcess(multiprocessing.Process):
             environment.write('LANG={0}\n'.format(locale))
 
         # Set /etc/vconsole.conf
+        my_keymap = misc.check_keymap(keyboard_layout, self.settings.get('data'))
         vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
         with open(vconsole_conf_path, "w") as vconsole_conf:
-            vconsole_conf.write('KEYMAP={0}\n'.format(keyboard_layout))
+            vconsole_conf.write('KEYMAP={0}\n'.format(my_keymap))
+            logging.debug(_("Set keymap '{0}' in vconsole.conf").format(my_keymap))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()

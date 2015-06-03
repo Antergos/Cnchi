@@ -1083,3 +1083,36 @@ class InstallError(Exception):
     def __str__(self):
         """ Returns exception message """
         return repr(self.message)
+
+def check_keymap(my_keymap, keymap_data_dir):
+    """ Checks that the keymap exists
+        (using data from localectl previously stored in keymaps.txt) """
+    path = os.path.join(keymap_data_dir, "keymaps.txt")
+
+    if os.path.exists(path):
+        found = False
+        with open(path, 'r') as keymaps_file:
+            keymaps = keymaps_file.read().splitlines()
+            for keymap in keymaps:
+                if my_keymap == keymap:
+                    found = True
+                    break
+            if not found:
+                # Selected keymap is not available. There can be many
+                # reasons, for instance there is no 'be' keymap but
+                # a 'be-latin1' one.
+                for keymap in keymaps:
+                    if my_keymap in keymap:
+                        my_keymap = keymap
+                        found = True
+                        logging.warning(
+                            _("Can't find keymap '%s' in keymaps file, will use '%s' instead."),
+                            self.keyboard_layout['code'],
+                            my_keymap)
+                        break
+                if not found:
+                    logging.warning(_("Can't find keymap '%s' in keymaps file"), my_keymap)
+    else:
+        logging.warning(_("Can't find keymaps.txt file"))
+
+    return my_keymap
