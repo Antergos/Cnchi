@@ -791,7 +791,11 @@ class InstallationAdvanced(GtkBaseBox):
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
 
-                new_label = label_entry.get_text()
+                new_label = label_entry.get_text().replace(" ", "")
+                if not new_label.isalpha():
+                    logging.warning(_("%s is not a valid label"), new_label)
+                    new_label = ""
+
                 new_fs = combo.get_active_text()
                 new_format = format_check.get_active()
 
@@ -1085,7 +1089,11 @@ class InstallationAdvanced(GtkBaseBox):
         # Finally, show the create partition dialog
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
-            mylabel = label_entry.get_text()
+            mylabel = label_entry.get_text().replace(" ", "")
+            if not mylabel.isalpha():
+                logging.warning(_("%s is not a valid label"), mylabel)
+                mylabel = ""
+
             mymount = mount_combo.get_text().strip()
             if mymount in self.diskdic['mounts']:
                 show.warning(self.get_toplevel(), _("Can't use same mount point twice..."))

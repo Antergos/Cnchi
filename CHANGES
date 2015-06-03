@@ -1,3 +1,4 @@
+[2015-06-03 20:19:14 +0200]  Fix link creation. Fixes https://github.com/Antergos/Cnchi/issues/349      karasu      {34b5b3d}
 [2015-06-03 18:08:51 +0200]  Write in vconsole.conf the correct keymap                                  karasu      {23bb941}
 [2015-06-03 02:18:32 -0500]  fix buggy Gtk window size with Openbox                                 Dustin Falgout  {6648f9f}
 [2015-06-02 21:12:52 +0200]  Fixes issue #331                                                           karasu      {3f1ded8}
