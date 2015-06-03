@@ -46,7 +46,7 @@ def setup(ssid=None, passphrase=None):
 
     # For compatibility with resolv.conf, delete the existing file and
     # create the following symbolic link:
-    source = os.path.join(DEST_DIR, "run/systemd/resolve/resolv.conf")
+    source = os.path.join("/run/systemd/resolve/resolv.conf")
     link_name = os.path.join(DEST_DIR, "etc/resolv.conf")
 
     # Delete /etc/resolv.conf if it already exists
