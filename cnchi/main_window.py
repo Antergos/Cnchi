@@ -52,9 +52,6 @@ from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
 
-# Constants (must be uppercase)
-MAIN_WINDOW_WIDTH = 875
-MAIN_WINDOW_HEIGHT = 550
 
 def atk_set_image_description(widget, description):
     """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
@@ -69,6 +66,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, cmd_line):
         Gtk.ApplicationWindow.__init__(self, title="Cnchi", application=app)
 
+        self.MAIN_WINDOW_WIDTH = 875
+        self.MAIN_WINDOW_HEIGHT = 550
         # Check if we have administrative privileges
         if os.getuid() != 0:
             msg = _('This installer must be run with administrative privileges, '
@@ -202,6 +201,10 @@ class MainWindow(Gtk.ApplicationWindow):
             # In minimal iso, load language screen now
             self.pages["language"] = language.Language(self.params)
 
+            # Fix bugy Gtk window size when using Openbox
+            self.MAIN_WINDOW_WIDTH = 750
+            self.MAIN_WINDOW_HEIGHT = 450
+
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.check_escape)
 
@@ -321,16 +324,16 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
-        self.set_size_request(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
-        self.set_default_size(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
+        self.set_size_request(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
+        self.set_default_size(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
 
         geom = Gdk.Geometry()
-        geom.min_width = MAIN_WINDOW_WIDTH
-        geom.min_height = MAIN_WINDOW_HEIGHT
-        geom.max_width = MAIN_WINDOW_WIDTH
-        geom.max_height = MAIN_WINDOW_HEIGHT
-        geom.base_width = MAIN_WINDOW_WIDTH
-        geom.base_height = MAIN_WINDOW_HEIGHT
+        geom.min_width = self.MAIN_WINDOW_WIDTH
+        geom.min_height = self.MAIN_WINDOW_HEIGHT
+        geom.max_width = self.MAIN_WINDOW_WIDTH
+        geom.max_height = self.MAIN_WINDOW_HEIGHT
+        geom.base_width = self.MAIN_WINDOW_WIDTH
+        geom.base_height = self.MAIN_WINDOW_HEIGHT
         geom.width_inc = 0
         geom.height_inc = 0
 
