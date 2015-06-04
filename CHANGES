@@ -1,3 +1,5 @@
+[2015-06-04 08:37:36 +0200]  Also add systemctl enable systemd-networkd-wait-online.service             karasu      {39ae51c}
+[2015-06-04 08:37:36 +0200]  Also add systemctl enable systemd-networkd-wait-online.service             karasu      {39ae51c}
 [2015-06-03 20:45:58 +0200]  Do not allow "strange" labels in advanced. Fixes https://github.com..      karasu      {7c30c14}
 [2015-06-03 20:45:58 +0200]  Do not allow "strange" labels in advanced. Fixes https://github.com..      karasu      {7c30c14}
 [2015-06-03 20:19:14 +0200]  Fix link creation. Fixes https://github.com/Antergos/Cnchi/issues/349      karasu      {34b5b3d}

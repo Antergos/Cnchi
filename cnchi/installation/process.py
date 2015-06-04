@@ -1228,6 +1228,7 @@ class InstallationProcess(multiprocessing.Process):
             # Setup systemd-networkd for systems that won't use the
             # networkmanager daemon (atm is just base install)
             # Enable systemd_networkd services
+            # See: https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
             self.enable_services([
                 "systemd-networkd",
                 "systemd-resolved",
