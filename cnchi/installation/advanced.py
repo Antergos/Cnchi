@@ -792,8 +792,8 @@ class InstallationAdvanced(GtkBaseBox):
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
 
                 new_label = label_entry.get_text().replace(" ", "")
-                if not new_label.isalpha():
-                    logging.warning(_("%s is not a valid label"), new_label)
+                if len(new_label) > 0 and not new_label.isalpha():
+                    logging.warning(_("'%s' is not a valid label"), new_label)
                     new_label = ""
 
                 new_fs = combo.get_active_text()
@@ -1090,8 +1090,8 @@ class InstallationAdvanced(GtkBaseBox):
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text().replace(" ", "")
-            if not mylabel.isalpha():
-                logging.warning(_("%s is not a valid label"), mylabel)
+            if len(mylabel) > 0 and not mylabel.isalpha():
+                logging.warning(_("'%s' is not a valid label"), mylabel)
                 mylabel = ""
 
             mymount = mount_combo.get_text().strip()
