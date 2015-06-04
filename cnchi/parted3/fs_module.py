@@ -40,7 +40,7 @@ def get_uuid(part):
     if "UUID" in info.keys():
         return info['UUID']
     else:
-        logging.warning(_("Can't get partition %s UUID"), part)
+        logging.error(_("Can't get partition %s UUID"), part)
         return ""
 
 def get_label(part):
@@ -48,7 +48,7 @@ def get_label(part):
     if "LABEL" in info.keys():
         return info['LABEL']
     else:
-        logging.warning(_("Can't get partition %s LABEL"), part)
+        logging.warning(_("Can't get partition %s label (or it does not have any)"), part)
         return ""
 
 @misc.raise_privileges
