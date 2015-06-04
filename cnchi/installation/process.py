@@ -1228,7 +1228,10 @@ class InstallationProcess(multiprocessing.Process):
             # Setup systemd-networkd for systems that won't use the
             # networkmanager daemon (atm is just base install)
             # Enable systemd_networkd services
-            self.enable_services(["systemd-networkd", "systemd-resolved"])
+            self.enable_services([
+                "systemd-networkd",
+                "systemd-resolved",
+                "systemd-networkd-wait-online.service"])
             # Setup systemd_networkd
             # TODO: Ask user for SSID and passphrase if a wireless link is found
             # (should this be done here or inside systemd_networkd.setup() ?)
