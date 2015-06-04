@@ -28,7 +28,7 @@ from gi.repository import Gtk, Gdk
 import subprocess
 import os
 import logging
-
+import re
 # import blivet
 
 import misc.misc as misc
@@ -485,8 +485,10 @@ class InstallationAdvanced(GtkBaseBox):
                     label = ""
                     mount_point = ""
                     formatable = True
-
-                    partition_path = "/dev/mapper/{0}-{1}".format(volume_group.replace("-","--"), logical_volume)
+                    # Fixes issue #278
+                    partition_path = "/dev/mapper/{0}-{1}".format(
+                        volume_group.replace("-","--"),
+                        logical_volume)
                     self.all_partitions.append(partition_path)
                     self.lv_partitions.append(partition_path)
 
@@ -2123,10 +2125,18 @@ class InstallationAdvanced(GtkBaseBox):
                                 pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                         if not self.testing:
                             pm.finalize_changes(partitions[partition_path].disk)
+
                     if "/dev/mapper" in partition_path:
                         pvs = lvm.get_lvm_partitions()
+                        # Remove "/dev/mapper/"
                         vgname = partition_path.split("/")[-1]
-                        vgname = vgname.split('-')[0]
+                        # Check that our vgname does not have a --
+                        # (- is used to diferenciate between vgname and lvname)
+                        if "--" in vgname:
+                            vgname = re.search('\w+--\w+', vgname)
+                        else:
+                            vgname = vgname.split('-')[0]
+                        logging.debug(_("Volume name is %s"), vgname)
                         if mnt == '/' or mnt == '/boot':
                             self.blvm = True
                             if noboot or mnt == '/boot':
