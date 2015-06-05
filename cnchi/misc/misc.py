@@ -1103,12 +1103,12 @@ def check_keymap(my_keymap, keymap_data_dir):
                 # a 'be-latin1' one.
                 for keymap in keymaps:
                     if my_keymap in keymap:
-                        my_keymap = keymap
                         found = True
                         logging.warning(
                             _("Can't find keymap '%s' in keymaps file, will use '%s' instead."),
-                            self.keyboard_layout['code'],
-                            my_keymap)
+                            my_keymap,
+                            keymap)
+                        my_keymap = keymap
                         break
                 if not found:
                     logging.warning(_("Can't find keymap '%s' in keymaps file"), my_keymap)
