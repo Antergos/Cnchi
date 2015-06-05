@@ -1352,6 +1352,8 @@ class InstallationProcess(multiprocessing.Process):
         # Generate locales
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
+        if not keyboard_variant:
+            keyboard_variant = ""
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales..."))
 
@@ -1366,13 +1368,6 @@ class InstallationProcess(multiprocessing.Process):
         environment_path = os.path.join(DEST_DIR, "etc/environment")
         with open(environment_path, "w") as environment:
             environment.write('LANG={0}\n'.format(locale))
-
-        # Set /etc/vconsole.conf
-        my_keymap = misc.check_console_keymap(keyboard_layout, self.settings.get('data'))
-        vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        with open(vconsole_conf_path, "w") as vconsole_conf:
-            vconsole_conf.write('KEYMAP={0}\n'.format(my_keymap))
-            logging.debug(_("Set keymap '{0}' in vconsole.conf").format(my_keymap))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
@@ -1397,17 +1392,30 @@ class InstallationProcess(multiprocessing.Process):
                     xorg_conf_xkb.write('EndSection\n')
                 logging.debug(_("10-keyboard.conf written."))
             except IOError as io_error:
-                # Do not fail if 10-keyboard.conf can't be created. Something bad must be happening, though.
+                # Do not fail if 10-keyboard.conf can't be created.
+                # Something bad must be happening, though.
                 logging.error(io_error)
 
+        # Set /etc/vconsole.conf
+        console_keymap = self.settings.get('keyboard_console')
+        #vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
+        #with open(vconsole_conf_path, "w") as vconsole_conf:
+        #    vconsole_conf.write('KEYMAP={0}\n'.format(console_keymap))
+        #    logging.debug(_("Set console keymap '{0}' in vconsole.conf").format(console_keymap))
+        cmd = ["localectl", "set-keymap", "--no-convert", console_keymap]
+        chroot_run(cmd)
+
         # Install configs for root
-        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
+        cmd = ['cp', '-av', '/etc/skel/.', '/root/']
+        chroot_run(cmd)
 
         self.queue_event('info', _("Configuring hardware ..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
-            shutil.copy2('/etc/X11/xorg.conf', os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
+            shutil.copy2(
+                "/etc/X11/xorg.conf",
+                os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
 
         # Configure ALSA
         self.alsa_mixer_setup()
@@ -1470,7 +1478,6 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 logging.debug(_("Installing bootloader..."))
                 from installation import bootloader
-
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:

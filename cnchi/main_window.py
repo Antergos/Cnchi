@@ -351,7 +351,7 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.height_inc = 0
 
         hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE | Gdk.WindowHints.RESIZE_INC
-        
+
         self.set_geometry_hints(None, geom, hints)
 
     def check_escape(self, widget, event, data=None):

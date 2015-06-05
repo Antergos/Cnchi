@@ -270,19 +270,6 @@ class Keymap(GtkBaseBox):
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
 
-            keymap = misc.check_console_keymap(
-                self.keyboard_layout['code'],
-                self.settings.get('data'))
-
-            logging.debug(_("Will use console keymap '{0}'").format(keymap))
-
-            with misc.raised_privileges():
-                cmd = ['localectl', 'set-keymap', '--no-convert', keymap]
-                try:
-                    subprocess.check_call(cmd)
-                except subprocess.CalledProcessError as process_error:
-                    logging.warning(process_error)
-
 
     def set_keyboard_widget(self):
         """ Pass current keyboard layout to the keyboard widget. """
