@@ -29,7 +29,7 @@ from gi.repository import Gtk, GObject
 import cairo
 import subprocess
 import math
-
+import logging
 
 def unicode_to_string(raw):
     """ U+ , or +U+ ... to string """
@@ -395,15 +395,19 @@ class KeyboardWidget(Gtk.DrawingArea):
         if self.layout is None:
             return
 
-        variant_param = ""
+        cmd = ["/usr/share/cnchi/scripts/ckbcomp", "-model", "pc106", "-layout", self.layout]
+
         if self.variant:
-            variant_param = "-variant {0}".format(self.variant)
+            cmd.extend(["-variant", self.variant])
 
-        cmd = "/usr/share/cnchi/scripts/ckbcomp -model pc106 -layout {0} {1} -compact".format(self.layout,
-                                                                                              variant_param)
+        cmd.append("-compact")
 
-        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
-        cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+        try:
+            #pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
+            #cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+            cfile = subprocess.check_output(cmd).decode().split('\n')
+        except subprocess.CalledProcessError as process_error:
+            logging.warning(process_error)
 
         # Clear current codes
         del self.codes[:]

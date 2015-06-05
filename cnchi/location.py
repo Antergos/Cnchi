@@ -29,6 +29,7 @@ import os
 import logging
 import sys
 import locale
+import re
 
 try:
     import xml.etree.cElementTree as eTree
@@ -224,10 +225,21 @@ class Location(GtkBaseBox):
                 self.set_locale(mylocale)
         if ',' in location:
             country = location.split(',')[1].strip()
+            match = re.search('\(\w+\)', location)
+            if match:
+                country_code = match.group()[1:-1].lower()
+            else:
+                logging.error(
+                    _("Can't get country code from %s location"),
+                    location)
+                country_code = 'us'
         else:
             country = 'USA'
+            country_code = 'us'
         logging.debug("Selected country: %s", country)
+        logging.debug("Selected country code: %s", country_code)
         self.settings.set('country', country)
+        self.settings.set('country_code', country_code)
         return True
 
 # When testing, no _() is available

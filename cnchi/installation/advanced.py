@@ -2140,7 +2140,9 @@ class InstallationAdvanced(GtkBaseBox):
                         # Check that our vgname does not have a --
                         # (- is used to diferenciate between vgname and lvname)
                         if "--" in vgname:
-                            vgname = re.search('\w+--\w+', vgname)
+                            match = re.search('\w+--\w+', vgname)
+                            if match:
+                                vgname = match.group()
                         else:
                             vgname = vgname.split('-')[0]
                         logging.debug(_("Volume name is %s"), vgname)

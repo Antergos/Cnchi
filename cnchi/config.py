@@ -45,6 +45,8 @@ class Settings(object):
             'btrfs': False,
             'cache': '',
             'cnchi': '/usr/share/cnchi/',
+            'country': '',
+            'country_code': '',
             'installer_thread_call': {},
             'data': '/usr/share/cnchi/data/',
             'desktop': 'gnome',
