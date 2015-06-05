@@ -1350,15 +1350,9 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Set the same password to root."))
 
         # Generate locales
-        keyboard_layout = self.settings.get("keyboard_layout")
-        keyboard_variant = self.settings.get("keyboard_variant")
-        if not keyboard_variant:
-            keyboard_variant = ""
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales..."))
-
         self.uncomment_locale_gen(locale)
-
         chroot_run(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
@@ -1372,44 +1366,22 @@ class InstallationProcess(multiprocessing.Process):
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
-        if self.desktop != "base":
-            # Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout
-            logging.debug(_("Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"))
-            xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
-            if not os.path.exists(xorg_conf_dir):
-                os.mkdir(xorg_conf_dir, 0o755)
-            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "10-keyboard.conf")
-            try:
-                with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
-                    xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
-                    xorg_conf_xkb.write('# manually too freely.\n')
-                    xorg_conf_xkb.write('Section "InputClass"\n')
-                    xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
-                    xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-                    xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                    if len(keyboard_variant) > 0:
-                        xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
-                    xorg_conf_xkb.write('EndSection\n')
-                logging.debug(_("10-keyboard.conf written."))
-            except IOError as io_error:
-                # Do not fail if 10-keyboard.conf can't be created.
-                # Something bad must be happening, though.
-                logging.error(io_error)
-
-        # Set /etc/vconsole.conf
-        console_keymap = self.settings.get('keyboard_console')
-        #vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        #with open(vconsole_conf_path, "w") as vconsole_conf:
-        #    vconsole_conf.write('KEYMAP={0}\n'.format(console_keymap))
-        #    logging.debug(_("Set console keymap '{0}' in vconsole.conf").format(console_keymap))
-        cmd = ["localectl", "set-keymap", "--no-convert", console_keymap]
+        self.queue_event('info', _("Configuring keymap..."))
+        # TODO: Check this in base install
+        # localectl will set console equivalent to the X settings
+        # if we set the X keymap via set-x11-keymap (see man localectl)
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
+        cmd = ["localectl", "set-x11-keymap", keyboard_layout]
+        if keyboard_variant:
+            cmd.append(keyboard_variant)
         chroot_run(cmd)
 
         # Install configs for root
         cmd = ['cp', '-av', '/etc/skel/.', '/root/']
         chroot_run(cmd)
 
-        self.queue_event('info', _("Configuring hardware ..."))
+        self.queue_event('info', _("Configuring hardware..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
@@ -1439,17 +1411,20 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Call Cnchi post-install script"))
         # Call post-install script to execute (g,k)settings commands or install openbox defaults
         script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
+        cmd = [
+            "/usr/bin/bash",
+            script_path_postinstall,
+            username,
+            DEST_DIR,
+            self.desktop,
+            keyboard_layout]
+        if keyboard_variant:
+            cmd.append(keyboard_variant)
+        else:
+            cmd.append("")
+        cmd.append(self.vbox)
         try:
-            subprocess.check_call([
-                "/usr/bin/bash",
-                script_path_postinstall,
-                username,
-                DEST_DIR,
-                self.desktop,
-                keyboard_layout,
-                keyboard_variant,
-                self.vbox],
-                timeout=300)
+            subprocess.check_call(cmd, timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will try to continue with the installation.
@@ -1459,8 +1434,8 @@ class InstallationProcess(multiprocessing.Process):
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 
+        # Set lightdm config including autologin if selected
         if self.desktop != "base":
-            # Set lightdm config including autologin if selected
             self.setup_display_manager()
 
         # Configure user features (firewall, libreoffice language pack, ...)

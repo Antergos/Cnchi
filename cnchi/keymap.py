@@ -240,7 +240,7 @@ class Keymap(GtkBaseBox):
         self.settings.set("keyboard_layout", self.keyboard_layout['code'])
         self.settings.set("keyboard_variant", self.keyboard_variant['code'])
 
-        if self.keyboard_variant['code'] is None or len(self.keyboard_variant['code']) == 0:
+        if self.keyboard_variant['code'] is None:
             txt = _("Set keyboard to layout name '{0}' ({1})").format(
                 self.keyboard_layout['description'],
                 self.keyboard_layout['code'])
@@ -259,17 +259,16 @@ class Keymap(GtkBaseBox):
         return True
 
     def setkb(self):
-        if len(self.keyboard_layout['code']) > 0:
+        if self.keyboard_layout['code']:
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
-            if self.keyboard_variant['code'] and len(self.keyboard_variant['code']) > 0:
+            if self.keyboard_variant['code']:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
 
             try:
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
-
 
     def set_keyboard_widget(self):
         """ Pass current keyboard layout to the keyboard widget. """
