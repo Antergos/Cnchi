@@ -91,6 +91,16 @@ class Keymap(GtkBaseBox):
         '''
 
         if direction == 'forwards':
+            # Clear layout treeview model
+            liststore = self.layout_treeview.get_model()
+            if liststore:
+                liststore.clear()
+
+            # Clear variant treeview model
+            liststore = self.variant_treeview.get_model()
+            if liststore:
+                liststore.clear()
+
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
 
@@ -209,7 +219,8 @@ class Keymap(GtkBaseBox):
                 self.variant_treeview.set_cursor(0)
         else:
             liststore = self.variant_treeview.get_model()
-            liststore.clear()
+            if liststore:
+                liststore.clear()
 
     def on_keyboardlayout_cursor_changed(self, widget):
         self.fill_variant_treeview()
@@ -236,24 +247,22 @@ class Keymap(GtkBaseBox):
                 self.keyboard_variant['description'] = variant_description
                 self.keyboard_variant['code'] = self.kbd_names.get_variant_name_by_description(variant_description)
 
-
-        self.settings.set("keyboard_layout", self.keyboard_layout['code'])
-        self.settings.set("keyboard_variant", self.keyboard_variant['code'])
-
-        if self.keyboard_variant['code'] is None:
-            txt = _("Set keyboard to layout name '{0}' ({1})").format(
-                self.keyboard_layout['description'],
-                self.keyboard_layout['code'])
-        else:
-            txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
-                self.keyboard_layout['description'],
-                self.keyboard_layout['code'],
-                self.keyboard_variant['description'],
-                self.keyboard_variant['code'])
-        logging.debug(txt)
-
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
+            self.settings.set("keyboard_layout", self.keyboard_layout['code'])
+            self.settings.set("keyboard_variant", self.keyboard_variant['code'])
+
+            if self.keyboard_variant['code'] is None:
+                txt = _("Set keyboard to layout name '{0}' ({1})").format(
+                    self.keyboard_layout['description'],
+                    self.keyboard_layout['code'])
+            else:
+                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
+                    self.keyboard_layout['description'],
+                    self.keyboard_layout['code'],
+                    self.keyboard_variant['description'],
+                    self.keyboard_variant['code'])
+            logging.debug(txt)
             self.setkb()
 
         return True
