@@ -809,6 +809,10 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_fs == 'swap':
                     new_mount = 'swap'
 
+                if os.path.exists('/sys/firmware/efi') and (new_mount == "/boot" or new_mount == "/boot/efi"):
+                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    new_fs = "fat"
+
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
 
@@ -1143,8 +1147,11 @@ class InstallationAdvanced(GtkBaseBox):
                         logging.debug(_("Creating a logical partition"))
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
-                # Store new stage partition info in self.stage_opts
+                if os.path.exists('/sys/firmware/efi') and (mymount == "/boot" or mymount == "/boot/efi"):
+                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    myfs = "fat"
 
+                # Store new stage partition info in self.stage_opts
                 old_parts = []
                 for y in self.all_partitions:
                     for z in y:
