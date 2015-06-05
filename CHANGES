@@ -1,3 +1,4 @@
+[2015-06-05 17:55:42 +0200]  Fix typo (not in a class anymore)                                          karasu      {0e5aecb}
 [2015-06-05 17:12:36 +0200]  Fixes https://github.com/Antergos/Cnchi/issues/324                         karasu      {3b1ffbb}
 [2015-06-04 22:10:51 +0200]  This should fix issue #278 (@axaxs was right, but I think the other..      karasu      {302fecc}
 [2015-06-04 19:04:35 +0200]  Just fix a warning message                                                 karasu      {91cd48b}

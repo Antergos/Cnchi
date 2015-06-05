@@ -1084,7 +1084,7 @@ class InstallError(Exception):
         """ Returns exception message """
         return repr(self.message)
 
-def check_keymap(my_keymap, keymap_data_dir):
+def check_console_keymap(my_keymap, keymap_data_dir):
     """ Checks that the keymap exists
         (using data from localectl previously stored in keymaps.txt) """
     path = os.path.join(keymap_data_dir, "keymaps.txt")
@@ -1105,14 +1105,14 @@ def check_keymap(my_keymap, keymap_data_dir):
                     if my_keymap in keymap:
                         found = True
                         logging.warning(
-                            _("Can't find keymap '%s' in keymaps file, will use '%s' instead."),
+                            _("Can't find keymap '%s' in console keymaps file, will use '%s' instead."),
                             my_keymap,
                             keymap)
                         my_keymap = keymap
                         break
                 if not found:
-                    logging.warning(_("Can't find keymap '%s' in keymaps file"), my_keymap)
+                    logging.warning(_("Can't find keymap '%s' in console keymaps file"), my_keymap)
     else:
-        logging.warning(_("Can't find keymaps.txt file"))
+        logging.warning(_("Can't find console keymaps file"))
 
     return my_keymap

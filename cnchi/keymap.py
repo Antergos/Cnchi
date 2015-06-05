@@ -298,11 +298,11 @@ class Keymap(GtkBaseBox):
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
 
-            keymap = misc.check_keymap(
+            keymap = misc.check_console_keymap(
                 self.keyboard_layout['code'],
                 self.settings.get('data'))
 
-            logging.debug(_("Will use localectl with keymap '{0}'").format(keymap))
+            logging.debug(_("Will use console keymap '{0}'").format(keymap))
 
             with misc.raised_privileges():
                 cmd = ['localectl', 'set-keymap', '--no-convert', keymap]
