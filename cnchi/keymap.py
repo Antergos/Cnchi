@@ -124,6 +124,8 @@ class Keymap(GtkBaseBox):
                     self.keyboard_variant['code'] = "eng"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "eng")
                     self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['description'])
+            else:
+                logging.debug(_("Can't match a keymap for country code '%s'"), country_code)
         self.prepare_called = True
         self.show_all()
 
