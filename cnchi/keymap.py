@@ -219,12 +219,6 @@ class Keymap(GtkBaseBox):
         self.store_values()
         self.set_keyboard_widget()
 
-
-
-
-
-
-    # TODO: FIX THIS!
     def store_values(self):
         if self.keyboard_layout['code'] is None or self.keyboard_layout['description'] is None:
             # We have not previously stored our layout

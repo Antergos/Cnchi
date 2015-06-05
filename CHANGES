@@ -1,3 +1,4 @@
+[2015-06-05 22:23:24 +0200]  Removed all ubiquity code related to keymap. Do not use kbd_names.g..      karasu      {f61d1c1}
 [2015-06-05 18:08:42 +0200]  Restore old kbdnames (new had languages messed up)                         karasu      {18c5370}
 [2015-06-05 17:55:42 +0200]  Fix typo (not in a class anymore)                                          karasu      {0e5aecb}
 [2015-06-05 17:12:36 +0200]  Fixes https://github.com/Antergos/Cnchi/issues/324                         karasu      {3b1ffbb}

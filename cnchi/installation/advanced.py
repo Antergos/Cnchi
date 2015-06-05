@@ -2143,10 +2143,13 @@ class InstallationAdvanced(GtkBaseBox):
                             match = re.search('\w+--\w+', vgname)
                             if match:
                                 vgname = match.group()
+                            else:
+                                # maybe the user has given an invalid name ¿?
+                                vgname = ""
                         else:
                             vgname = vgname.split('-')[0]
-                        logging.debug(_("Volume name is %s"), vgname)
-                        if mnt == '/' or mnt == '/boot':
+                        if len(vgname) > 0 and (mnt == '/' or mnt == '/boot'):
+                            logging.debug(_("Volume name is %s"), vgname)
                             self.blvm = True
                             if noboot or mnt == '/boot':
                                 for ee in pvs[vgname]:
