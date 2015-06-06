@@ -17,12 +17,12 @@
             <property name="can_focus">True</property>
             <property name="margin_start">10</property>
             <property name="margin_end">10</property>
-            <property name="hexpand">False</property>
-            <property name="width_request">255</property>            
+            <property name="hexpand">True</property>
+            <property name="width_request">255</property>
             <property name="vexpand">True</property>
             <property name="shadow_type">in</property>
             <child>
-              <object class="GtkTreeView" id="keyboardlayout">
+              <object class="GtkTreeView" id="keymap_treeview">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
@@ -40,6 +40,7 @@
             <property name="top_attach">1</property>
           </packing>
         </child>
+        <!--
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow2">
             <property name="visible">True</property>
@@ -68,6 +69,7 @@
             <property name="top_attach">1</property>
           </packing>
         </child>
+        -->
         <child>
           <object class="GtkLabel" id="label_layouts">
             <property name="visible">True</property>

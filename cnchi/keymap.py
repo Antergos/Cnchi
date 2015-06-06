@@ -41,9 +41,6 @@ class Keymap(GtkBaseBox):
 
         self.prepare_called = False
 
-        self.layout_treeview = self.ui.get_object("keyboardlayout")
-        self.variant_treeview = self.ui.get_object("keyboardvariant")
-
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
@@ -53,10 +50,23 @@ class Keymap(GtkBaseBox):
         base_xml_path = os.path.join(self.settings.get('data'), "base.xml")
         self.kbd_names = keyboard_names.KeyboardNames(base_xml_path)
 
-        self.create_treeviews()
+        self.keymap_treeview = self.ui.get_object("keymap_treeview")
+        tree_store = Gtk.TreeStore(str)
+        self.keymap_treeview.set_model(tree_store)
+
+    def clear(self):
+        logging.warning("*clear*")
+        # Clear layout treeview model
+        tree_store = self.keymap_treeview.get_model()
+        if tree_store:
+            tree_store.clear()
+
+        self.keyboard_layout = { 'code': None, 'description': None }
+        self.keyboard_variant  = { 'code': None, 'description': None }
 
     def translate_ui(self):
         """ Translates all ui elements """
+        logging.warning("*translate_ui*")
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
 
         lbl = self.ui.get_object("label_layouts")
@@ -65,46 +75,18 @@ class Keymap(GtkBaseBox):
         lbl = self.ui.get_object("label_variants")
         lbl.set_markup(_("Keyboard Variants"))
 
-    def create_treeviews(self):
-        render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(_("Layouts"), render, text=0)
-        liststore = Gtk.ListStore(str)
-        self.layout_treeview.append_column(col)
-        self.layout_treeview.set_model(liststore)
-
-        render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(_("Variants"), render, text=0)
-        liststore = Gtk.ListStore(str)
-        self.variant_treeview.append_column(col)
-        self.variant_treeview.set_model(liststore)
-
     def prepare(self, direction):
+        logging.warning("*prepare*")
         self.translate_ui()
 
-        '''
-        <name>us</name> <-- country code
-        <shortDescription>en</shortDescription>
-        <description>English (US)</description>
-        <languageList>
-          <iso639Id>eng</iso639Id> <-- language code
-        </languageList>
-        '''
+        country_code =  self.settings.get("country_code")
 
-        if direction == 'forwards':
-            # Clear layout treeview model
-            liststore = self.layout_treeview.get_model()
-            if liststore:
-                liststore.clear()
-
-            # Clear variant treeview model
-            liststore = self.variant_treeview.get_model()
-            if liststore:
-                liststore.clear()
+        if country_code != self.keyboard_layout['code']:
+            self.clear()
 
             self.fill_layout_treeview()
             self.forward_button.set_sensitive(False)
 
-            country_code =  self.settings.get("country_code")
             self.keyboard_layout['code'] = country_code
 
             layout_description = self.kbd_names.get_layout_description(country_code)
@@ -126,15 +108,25 @@ class Keymap(GtkBaseBox):
                     self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['description'])
             else:
                 logging.debug(_("Can't match a keymap for country code '%s'"), country_code)
+                self.keyboard_layout['description'] = None
+                self.keyboard_variant['code'] = None
+                self.keyboard_variant['description'] = None
+
         self.prepare_called = True
         self.show_all()
 
+
+
+#parent_iter = treestore.append(None, ["parent row"])
+#treestore.append(parent_iter, ["child row"])
+
     def fill_layout_treeview(self):
+        logging.warning("*fill_layout_treeview*")
+        tree_store = self.keymap_treeview.get_model()
         layouts = self.kbd_names.get_layouts()
-        sorted_descriptions = []
         for layout_name in layouts:
-            description = self.kbd_names.get_layout_description(layout_name)
-            sorted_descriptions.append(description)
+            (name, short_description, description, language_names) = layouts[layout_name]
+            parent_iter = tree_store.append(None, [description])
 
         sorted_descriptions = misc.sort_list(sorted_descriptions, self.settings.get("locale"))
 
@@ -153,11 +145,10 @@ class Keymap(GtkBaseBox):
         self.layout_treeview.handler_unblock_by_func(self.on_keyboardlayout_cursor_changed)
 
     def select_value_in_treeview(self, treeview, value):
+        logging.warning("*select_value_in_treeview*")
         model = treeview.get_model()
         tree_iter = model.get_iter(0)
-
         index = 0
-
         found = False
 
         while tree_iter is not None and not found:
@@ -179,6 +170,8 @@ class Keymap(GtkBaseBox):
         return False
 
     def fill_variant_treeview(self):
+        logging.warning("*fill_variant_treeview*")
+
         selected = self.layout_treeview.get_selection()
 
         if selected:
@@ -186,7 +179,8 @@ class Keymap(GtkBaseBox):
             if iterator:
                 # Store layout selected
                 layout_description = ls.get_value(iterator, 0)
-                self.keyboard_layout['description'] = ls.get_value(iterator, 0)
+                logging.warning("** %s **", layout_description)
+                self.keyboard_layout['description'] = layout_description
 
                 layout_name = self.kbd_names.get_layout_name_by_description(layout_description)
                 self.keyboard_layout['code'] = layout_name
@@ -195,14 +189,13 @@ class Keymap(GtkBaseBox):
 
                 if self.kbd_names.has_variants(layout_name):
                     sorted_variant_descriptions = self.kbd_names.get_variant_descriptions(layout_name)
+                    sorted_variant_descriptions = misc.sort_list(
+                        sorted_variant_descriptions,
+                        self.settings.get("locale"))
                 else:
                     logging.debug(
                         _("Keyboard layout '%s' has no variants"),
                         self.keyboard_layout['description'])
-
-                sorted_variant_descriptions = misc.sort_list(
-                    sorted_variant_descriptions,
-                    self.settings.get("locale"))
 
                 # Block signal
                 self.variant_treeview.handler_block_by_func(self.on_keyboardvariant_cursor_changed)
@@ -211,37 +204,34 @@ class Keymap(GtkBaseBox):
                 liststore = self.variant_treeview.get_model()
                 liststore.clear()
 
-                # Add keyboard variants (sorted)
+                # Add keyboard variants (if any, sorted)
                 for description in sorted_variant_descriptions:
                     liststore.append([description])
 
+                self.variant_treeview.set_cursor(0)
                 # Unblock signal
                 self.variant_treeview.handler_unblock_by_func(self.on_keyboardvariant_cursor_changed)
 
-                self.variant_treeview.set_cursor(0)
-        else:
-            liststore = self.variant_treeview.get_model()
-            if liststore:
-                liststore.clear()
 
     def on_keyboardlayout_cursor_changed(self, widget):
+        logging.warning("*on_keyboardlayout_cursor_changed*")
         self.fill_variant_treeview()
         self.forward_button.set_sensitive(True)
 
     def on_keyboardvariant_cursor_changed(self, widget):
+        logging.warning("*on_keyboardvariant_cursor_changed*")
         self.store_values()
         self.set_keyboard_widget()
 
     def store_values(self):
-        if self.keyboard_layout['code'] is None or self.keyboard_layout['description'] is None:
+        logging.warning("*store_values*")
+        if self.keyboard_layout['description'] is None:
             # We have not previously stored our layout
             return
 
+        self.keyboard_variant  = { 'code': None, 'description': None }
+
         selected = self.variant_treeview.get_selection()
-
-        self.keyboard_variant['code'] = None
-        self.keyboard_variant['description'] = None
-
         if selected:
             (ls, iterator) = selected.get_selected()
             if iterator:
@@ -265,11 +255,12 @@ class Keymap(GtkBaseBox):
                     self.keyboard_variant['description'],
                     self.keyboard_variant['code'])
             logging.debug(txt)
-            self.setkb()
+            self.set_keymap()
 
         return True
 
-    def setkb(self):
+    def set_keymap(self):
+        logging.warning("*set_keymap*")
         if self.keyboard_layout['code']:
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
@@ -282,6 +273,7 @@ class Keymap(GtkBaseBox):
                 logging.warning(process_error)
 
     def set_keyboard_widget(self):
+        logging.warning("*set_keyboard_widget*")
         """ Pass current keyboard layout to the keyboard widget. """
         self.keyboard_widget.set_layout(self.keyboard_layout['code'])
         self.keyboard_widget.set_variant(self.keyboard_variant['code'])

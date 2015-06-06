@@ -23,13 +23,56 @@
 
 import logging
 import os
-
-from collections import defaultdict
+from gi.repository import GObject
+from collections import OrderedDict
 
 try:
     import xml.etree.cElementTree as eTree
 except ImportError as err:
     import xml.etree.ElementTree as eTree
+
+
+class Model(GObject.GObject):
+    def __init__(self, name, description, vendor):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.description =  description
+        self.vendor = vendor
+
+    def __repr__(self):
+        return self.description
+
+
+class Variant(GObject.GObject):
+    def __init__(self, name, short_description, description, language_list):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.short_description = short_description
+        self.description = description
+        self.language_list = language_list
+
+    def __repr__(self):
+        return self.description
+
+
+class Layout(GObject.GObject):
+    def __init__(self, name, short_description, description, language_list):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.short_description = short_description
+        self.description = description
+        self.language_list = language_list
+        self.variants = {}
+
+    def __repr__(self):
+        return self.description
+
+    def add_variant(self, variant):
+        self.variants[variant.name] = variant
+
+    def sort_variants(self):
+        self.variants = OrderedDict(sorted(self.variants.items(), key=lambda t: str(t[1])))
+
 
 class KeyboardNames():
     def __init__(self, filename):
@@ -39,11 +82,10 @@ class KeyboardNames():
     def _clear(self):
         self.models = {}
         self.layouts = {}
-        self.variants = defaultdict(dict)
 
     def _load_file(self):
         if not os.path.exists(self._filename):
-            logging.error(_("Can't find %s"), self._filename)
+            logging.error(_("Can't find %s file!"), self._filename)
             return
 
         self._clear()
@@ -61,7 +103,10 @@ class KeyboardNames():
                     elif item.tag == "vendor":
                         model_vendor = item.text
                 # Store model
-                self.models[model_name] = (model_description, model_vendor)
+                self.models[model_name] = Model(
+                    model_name,
+                    model_description,
+                    model_vendor)
 
         for layout in xml_root.iter('layout'):
             for layout_item in layout:
@@ -77,7 +122,7 @@ class KeyboardNames():
                         elif item.tag == "languageList":
                             for lang in item:
                                 layout_language_list.append(lang.text)
-                    self.layouts[layout_name] = (
+                    self.layouts[layout_name] = Layout(
                         layout_name,
                         layout_short_description,
                         layout_description,
@@ -97,11 +142,19 @@ class KeyboardNames():
                                 elif item.tag == "languageList":
                                     for lang in item:
                                         variant_language_list.append(lang.text)
-                            self.variants[layout_name][variant_name] = (
-                                variant_name,
-                                variant_short_description,
-                                variant_description,
-                                variant_language_list)
+
+                            self.layouts[layout_name].add_variant(
+                                Variant(
+                                    variant_name,
+                                    variant_short_description,
+                                    variant_description,
+                                    variant_language_list))
+        self.sort_layouts()
+
+    def sort_layouts(self):
+        self.layouts = OrderedDict(sorted(self.layouts.items(), key=lambda t: str(t[1])))
+        for name in self.layouts:
+            self.layouts[name].sort_variants()
 
     def get_layout(self, name):
         if name in self.layouts:
@@ -112,47 +165,57 @@ class KeyboardNames():
     def get_layouts(self):
         return self.layouts
 
+    def get_layout_description(self, name):
+        if name in self.layouts:
+            return str(self.layouts[name])
+        else:
+            return None
+
     def get_layout_by_description(self, description):
-        for layout_name in self.layouts:
-            if description == self.get_layout_description(layout_name):
-                return self.layouts[layout_name]
+        for name in self.layouts:
+            if description == self.layouts[name]:
+                return self.layouts[name]
         return None
 
     def get_layout_name_by_description(self, description):
-        layout = self.get_layout_by_description(description)
-        if layout:
-            return layout[0]
-        else:
-            return None
-
-    def get_layout_description(self, name):
-        if name in self.layouts:
-            return self.layouts[name][2]
-        else:
-            return None
+        for name in self.layouts:
+            if description == self.layouts[name]:
+                return name
+        return None
 
     def has_variants(self, name):
-        return bool(self.variants[name])
+        return bool(self.layouts[name].variants)
 
     def get_variants(self, name):
-        return self.variants[name]
+        return self.layouts[name].variants
 
     def get_variant_description(self, name, variant_name):
         try:
-            return self.variants[name][variant_name][2]
+            return self.layouts[name].variants[variant_name]
         except KeyError as key_error:
             return None
 
     def get_variant_descriptions(self, name):
         descriptions = []
-        for variant_name in self.variants[name]:
-            description = self.get_variant_description(name, variant_name)
+        for variant_name in self.layouts[name].variants:
+            description = self.layouts[name].variants[variant_name]
             descriptions.append(description)
         return descriptions
 
     def get_variant_name_by_description(self, description):
-        for layout_name in self.variants:
-            for variant_name in self.variants[layout_name]:
-                if description == self.get_variant_description(layout_name, variant_name):
+        for layout_name in self.layouts:
+            for variant_name in self.layouts[layout_name].variants:
+                if description == self.layouts[layout_name].variants[variant_name]:
                     return variant_name
         return None
+
+
+if __name__ == '__main__':
+    base_xml_path = "/usr/share/cnchi/data/base.xml"
+    kbd_names = KeyboardNames(base_xml_path)
+
+    layouts = kbd_names.get_layouts()
+    for name in layouts:
+        print(name, layouts[name])
+        for variant_name in layouts[name].variants:
+            print(layouts[name], "-", layouts[name].variants[variant_name])
