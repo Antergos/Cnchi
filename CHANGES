@@ -1,3 +1,4 @@
+[2015-06-06 23:49:20 +0200]  More changes in keymap                                                     karasu      {ad970f4}
 [2015-06-06 13:35:48 +0200]  Rewriting keymap and keyboard_names                                        karasu      {f036235}
 [2015-06-06 01:48:26 +0200]  When no match is found, it tries all keymaps! This shouldn't be hap..      karasu      {297f526}
 [2015-06-06 01:44:02 +0200]  keymap                                                                     karasu      {4a8263b}

@@ -137,11 +137,11 @@ class Keymap(GtkBaseBox):
         layouts = self.kbd_names.get_layouts()
         for layout_name in layouts:
             layout = layouts[layout_name]
-            parent_iter = tree_store.insert_after(None, None)
+            parent_iter = tree_store.insert_before(None, None)
             tree_store.set_value(parent_iter, 0, str(layout))
             for variant_name in layout.variants:
                 variant = layout.variants[variant_name]
-                child_iter = tree_store.insert_after(parent_iter, None)
+                child_iter = tree_store.insert_before(parent_iter, None)
                 tree_store.set_value(child_iter, 0, str(variant))
 
         # Unblock signal
