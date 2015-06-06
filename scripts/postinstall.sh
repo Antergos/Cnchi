@@ -4,7 +4,7 @@
 #
 #  postinstall.sh
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -147,6 +147,9 @@ xfce_settings()
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
 
     echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
+
+    # Add lxpolkit to autostart apps
+    cp /etc/xdg/autostart/lxpolkit.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart
 
     # xscreensaver config
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver

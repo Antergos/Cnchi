@@ -81,7 +81,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         self.codes = []
 
         self.layout = "us"
-        self.variant = ""
+        self.variant = None
         self.font = "Helvetica"
 
         self.space = 6
@@ -224,6 +224,9 @@ class KeyboardWidget(Gtk.DrawingArea):
         # alloc = self.get_allocation()
         # real_width = alloc.width
         # real_height = alloc.height
+
+        if not self.kb:
+            return
 
         width = 460
         # height = 130
@@ -395,7 +398,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         if self.layout is None:
             return
 
-        cmd = ["/usr/share/cnchi/scripts/ckbcomp", "-model", "pc106", "-layout", self.layout]
+        cmd = [
+            "/usr/share/cnchi/scripts/ckbcomp",
+            "-model",
+            "pc106",
+            "-layout",
+            self.layout]
 
         if self.variant:
             cmd.extend(["-variant", self.variant])
@@ -430,6 +438,5 @@ class KeyboardWidget(Gtk.DrawingArea):
                 alt = ""
 
             self.codes.append((plain, shift, ctrl, alt))
-
 
 GObject.type_register(KeyboardWidget)
