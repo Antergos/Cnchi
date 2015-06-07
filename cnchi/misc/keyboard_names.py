@@ -149,6 +149,7 @@ class KeyboardNames():
                                     variant_short_description,
                                     variant_description,
                                     variant_language_list))
+
         self.sort_layouts()
 
     def sort_layouts(self):
@@ -207,13 +208,6 @@ class KeyboardNames():
             for variant_name in self.layouts[layout_name].variants:
                 if description == str(self.layouts[layout_name].variants[variant_name]):
                     return variant_name
-        return None
-
-    def get_layout_name_by_variant_description(self, description):
-        variant_name = self.get_variant_name_by_description(description)
-        for name in self.layouts:
-            if variant_name in self.layouts[name].variants.keys():
-                return name
         return None
 
 

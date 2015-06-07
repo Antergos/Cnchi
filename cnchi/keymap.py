@@ -188,14 +188,21 @@ class Keymap(GtkBaseBox):
 
     def get_selected_in_treeview(self, treeview):
         """ Gets selected value in treeview """
-        value = None
+        layout = None
+        variant = None
+        tree_model = treeview.get_model()
         selected = treeview.get_selection()
         if selected:
             (ls, iterator) = selected.get_selected()
             if iterator:
-                value = ls.get_value(iterator, 0)
+                layout = ls.get_value(iterator, 0)
+                iter_parent = tree_model.iter_parent(iterator)
+                if iter_parent:
+                    # A variant was selected
+                    variant = layout
+                    layout = tree_model[iter_parent][0]
 
-        return value
+        return (layout, variant)
 
     def on_keymap_cursor_changed(self, widget):
         """ Called when selection changes """
@@ -206,34 +213,31 @@ class Keymap(GtkBaseBox):
     def store_values(self):
         """ Store selected values """
 
-        # Read selected value from treeview
         self.keyboard_layout  = { 'code': None, 'description': None }
         self.keyboard_variant  = { 'code': None, 'description': None }
-        description = self.get_selected_in_treeview(self.keymap_treeview)
-        name = self.kbd_names.get_layout_name_by_description(description)
-        if name:
-            # A layout has been selected (no variant)
-            self.keyboard_layout['code'] = name
-            self.keyboard_layout['description'] = description
-        else:
-            # No layout with that description, let's check if there is a variant
-            # that has that description.
-            name = self.kbd_names.get_variant_name_by_description(description)
-            if name:
-                # A variant has been selected, store its values
-                self.keyboard_variant['code'] = name
-                self.keyboard_variant['description'] = description
-                # As a variant has been selected, let's find out its layout
-                name = self.kbd_names.get_layout_name_by_variant_description(description)
-                if name:
-                    self.keyboard_layout['code'] = name
-                    description = self.kbd_names.get_layout_description(name)
-                    if description:
-                        self.keyboard_layout['description'] = description
 
-        if not self.keyboard_layout['code']:
-            print("No selection found")
+        # Read selected value from treeview
+        (layout_description, variant_description) = self.get_selected_in_treeview(self.keymap_treeview)
+
+        if not layout_description:
             return
+
+        layout_name = self.kbd_names.get_layout_name_by_description(layout_description)
+
+        if not layout_name:
+            logging.warning(_("Unknown layout description %s"), layout_description)
+            return
+
+        self.keyboard_layout['code'] = layout_name
+        self.keyboard_layout['description'] = layout_description
+
+        if variant_description:
+            variant_name = self.kbd_names.get_variant_name_by_description(variant_description)
+            if variant_name:
+                self.keyboard_variant['code'] = variant_name
+                self.keyboard_variant['description'] = variant_description
+            else:
+                logging.warning(_("Unknown variant description %s"), variant_description)
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
