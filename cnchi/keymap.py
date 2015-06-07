@@ -113,6 +113,10 @@ class Keymap(GtkBaseBox):
                     self.keymap_treeview,
                     self.keyboard_layout['description'],
                     self.keyboard_variant['description'])
+
+                # Immediately set new keymap
+                # (this way entry widget will work as it should)
+                self.set_keymap()
             else:
                 logging.debug(
                     _("Can't match a keymap for country code '%s'"),
@@ -241,26 +245,15 @@ class Keymap(GtkBaseBox):
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
-            self.settings.set("keyboard_layout", self.keyboard_layout['code'])
-            self.settings.set("keyboard_variant", self.keyboard_variant['code'])
-
-            if self.keyboard_variant['code'] is None:
-                txt = _("Set keyboard to layout name '{0}' ({1})").format(
-                    self.keyboard_layout['description'],
-                    self.keyboard_layout['code'])
-            else:
-                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
-                    self.keyboard_layout['description'],
-                    self.keyboard_layout['code'],
-                    self.keyboard_variant['description'],
-                    self.keyboard_variant['code'])
-            logging.debug(txt)
             self.set_keymap()
         return True
 
     def set_keymap(self):
         """ Uses selected keymap """
         if self.keyboard_layout['code']:
+            self.settings.set("keyboard_layout", self.keyboard_layout['code'])
+            self.settings.set("keyboard_variant", self.keyboard_variant['code'])
+
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
             if self.keyboard_variant['code']:
@@ -270,6 +263,20 @@ class Keymap(GtkBaseBox):
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
+
+            # Show logs to inform of keymap change
+            if self.keyboard_variant['code']:
+                cmd.extend(["-variant", self.keyboard_variant['code']])
+                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
+                    self.keyboard_layout['description'],
+                    self.keyboard_layout['code'],
+                    self.keyboard_variant['description'],
+                    self.keyboard_variant['code'])
+            else:
+                txt = _("Set keyboard to layout name '{0}' ({1})").format(
+                    self.keyboard_layout['description'],
+                    self.keyboard_layout['code'])
+            logging.debug(txt)
 
     def set_keyboard_widget_keymap(self):
         """ Pass current keyboard layout to the keyboard widget. """

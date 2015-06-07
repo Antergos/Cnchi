@@ -1,3 +1,4 @@
+[2015-06-07 16:26:10 +0200]  Fixed bug when selecting a variant with the same name as another on..      karasu      {dd09913}
 [2015-06-07 15:03:40 +0200]  Variant selection does not work (see slovak sk variants)                   karasu      {02c2589}
 [2015-06-07 14:54:53 +0200]  Now widget draws ok. Changed keymap screen layout, too.                    karasu      {33dd634}
 [2015-06-07 14:01:44 +0200]  Forgot to remove unuseful code                                             karasu      {74a2885}
