@@ -54,8 +54,7 @@ class Keymap(GtkBaseBox):
 
     def init_keymap_treeview(self):
         self.keymap_treeview = self.ui.get_object("keymap_treeview")
-        tree_store = Gtk.TreeStore(str)
-        self.keymap_treeview.set_model(tree_store)
+        self.keymap_treeview.set_model(Gtk.TreeStore(str))
         column = Gtk.TreeViewColumn("Layouts")
         self.keymap_treeview.append_column(column)
         cell = Gtk.CellRendererText()
@@ -82,28 +81,28 @@ class Keymap(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
 
-        country_code =  self.settings.get("country_code")
-
-        if country_code != self.keyboard_layout['code']:
+        if self.keyboard_layout['code'] is None:
+            country_code =  self.settings.get("country_code")
             self.clear()
 
             self.populate_keymap_treeview()
             self.forward_button.set_sensitive(False)
 
             self.keyboard_layout['code'] = country_code
-
-            layout_description = self.kbd_names.get_layout_description(country_code)
-            if layout_description:
-                self.keyboard_layout['description'] = layout_description
+            description = self.kbd_names.get_layout_description(country_code)
+            if description:
+                self.keyboard_layout['description'] = description
 
                 # specific variant cases
-                country = self.settings.get("country")
+                country_name = self.settings.get("country_name")
                 language_name = self.settings.get("language_name")
                 language_code = self.settings.get("language_code")
-                if country == "Spain" and language_name == "Catalan":
+                if country_name == "Spain" and language_name == "Catalan":
+                    self.keyboard_layout['code'] = "es"
+                    self.keyboard_layout['description'] = self.kbd_names.get_layout_description("es")
                     self.keyboard_variant['code'] = "cat"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "cat")
-                if country == "Canada" and language_name == "English":
+                elif country_name == "Canada" and language_name == "English":
                     self.keyboard_variant['code'] = "eng"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "eng")
 

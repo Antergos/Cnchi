@@ -224,7 +224,7 @@ class Location(GtkBaseBox):
             if self.locales[mylocale] == location:
                 self.set_locale(mylocale)
         if ',' in location:
-            country = location.split(',')[1].strip()
+            country_name = location.split(',')[1].strip()
             match = re.search('\(\w+\)', location)
             if match:
                 country_code = match.group()[1:-1].lower()
@@ -234,11 +234,11 @@ class Location(GtkBaseBox):
                     location)
                 country_code = 'us'
         else:
-            country = 'USA'
+            country_name = 'USA'
             country_code = 'us'
-        logging.debug("Selected country: %s", country)
+        logging.debug("Selected country name: %s", country_name)
         logging.debug("Selected country code: %s", country_code)
-        self.settings.set('country', country)
+        self.settings.set('country_name', country_name)
         self.settings.set('country_code', country_code)
         return True
 
