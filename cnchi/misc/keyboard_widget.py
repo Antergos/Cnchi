@@ -229,7 +229,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             return
 
         width = 460
-        # height = 130
+        height = 130
 
         usable_width = width - 6
         key_w = (usable_width - 14 * self.space) / 15
@@ -241,7 +241,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         cr.set_source_rgb(0.84, 0.84, 0.84)
         cr.set_line_width(2)
 
-        cr.rectangle(0, 0, 640, 640)
+        cr.rectangle(0, 0, width, height)
         cr.stroke()
 
         cr.set_source_rgb(0.22, 0.22, 0.22)
