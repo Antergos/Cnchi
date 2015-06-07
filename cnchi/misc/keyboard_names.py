@@ -173,13 +173,13 @@ class KeyboardNames():
 
     def get_layout_by_description(self, description):
         for name in self.layouts:
-            if description == self.layouts[name]:
+            if description == str(self.layouts[name]):
                 return self.layouts[name]
         return None
 
     def get_layout_name_by_description(self, description):
         for name in self.layouts:
-            if description == self.layouts[name]:
+            if description == str(self.layouts[name]):
                 return name
         return None
 
@@ -191,22 +191,29 @@ class KeyboardNames():
 
     def get_variant_description(self, name, variant_name):
         try:
-            return self.layouts[name].variants[variant_name]
+            return str(self.layouts[name].variants[variant_name])
         except KeyError as key_error:
             return None
 
     def get_variant_descriptions(self, name):
         descriptions = []
         for variant_name in self.layouts[name].variants:
-            description = self.layouts[name].variants[variant_name]
+            description = str(self.layouts[name].variants[variant_name])
             descriptions.append(description)
         return descriptions
 
     def get_variant_name_by_description(self, description):
         for layout_name in self.layouts:
             for variant_name in self.layouts[layout_name].variants:
-                if description == self.layouts[layout_name].variants[variant_name]:
+                if description == str(self.layouts[layout_name].variants[variant_name]):
                     return variant_name
+        return None
+
+    def get_layout_name_by_variant_description(self, description):
+        variant_name = self.get_variant_name_by_description(description)
+        for name in self.layouts:
+            if variant_name in self.layouts[name].variants.keys():
+                return name
         return None
 
 

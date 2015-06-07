@@ -163,7 +163,7 @@ class Keymap(GtkBaseBox):
                 tree_iter = tree_model.iter_next(tree_iter)
 
         if not found:
-            logging.warning(_("Can't find value %s in treeview"), value0)
+            logging.warning(_("Can't find value '%s' in treeview"), value0)
             return
 
         if value1 and tree_iter and tree_model.iter_has_child(tree_iter):
@@ -177,7 +177,7 @@ class Keymap(GtkBaseBox):
                 else:
                     child_iter = tree_model.iter_next(child_iter)
             if not found:
-                logging.warning(_("Can't find value %s in treeview"), value1)
+                logging.warning(_("Can't find value '%s' in treeview"), value1)
 
         if path:
             treeview.set_cursor(path)
@@ -188,31 +188,53 @@ class Keymap(GtkBaseBox):
         treeview.scroll_to_cell(path)
         return False
 
-    def on_keymap_cursor_changed(self, widget):
-        logging.warning("*on_keymap_cursor_changed*")
-        #self.fill_variant_treeview()
-        #self.forward_button.set_sensitive(True)
-
-    #def on_keyboardvariant_cursor_changed(self, widget):
-    #    logging.warning("*on_keyboardvariant_cursor_changed*")
-        #self.store_values()
-        #self.set_keyboard_widget()
-
-    def store_values(self):
-        logging.warning("*store_values*")
-        if self.keyboard_layout['description'] is None:
-            # We have not previously stored our layout
-            return
-
-        self.keyboard_variant  = { 'code': None, 'description': None }
-
-        selected = self.variant_treeview.get_selection()
+    def get_selected_in_treeview(self, treeview):
+        value = None
+        selected = treeview.get_selection()
         if selected:
             (ls, iterator) = selected.get_selected()
             if iterator:
-                variant_description = ls.get_value(iterator, 0)
-                self.keyboard_variant['description'] = variant_description
-                self.keyboard_variant['code'] = self.kbd_names.get_variant_name_by_description(variant_description)
+                value = ls.get_value(iterator, 0)
+
+        return value
+
+
+    def on_keymap_cursor_changed(self, widget):
+        logging.warning("*on_keymap_cursor_changed*")
+        self.forward_button.set_sensitive(True)
+        self.store_values()
+        self.set_keyboard_widget_keymap()
+
+    def store_values(self):
+        logging.warning("*store_values*")
+
+        # Read selected value from treeview
+        self.keyboard_layout  = { 'code': None, 'description': None }
+        self.keyboard_variant  = { 'code': None, 'description': None }
+        description = self.get_selected_in_treeview(self.keymap_treeview)
+        print("Selected: ", description)
+        name = self.kbd_names.get_layout_name_by_description(description)
+        print("*** name:  ", name)
+        if name:
+            # A layout has been selected (no variant)
+            self.keyboard_layout['code'] = name
+            self.keyboard_layout['description'] = description
+        else:
+            name = self.kbd_names.get_variant_name_by_description(description)
+            print("*** variant name:  ", name)
+            if name:
+                # A variant has been selected
+                self.keyboard_variant['code'] = name
+                self.keyboard_variant['description'] = description
+                name = self.kbd_names.get_layout_name_by_variant_description(description)
+                if name:
+                    description = self.kbd_names.get_layout_description(name)
+                    self.keyboard_layout['code'] = name
+                    self.keyboard_layout['description'] = description
+
+        if not self.keyboard_layout['code']:
+            print("No selection found")
+            return
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
@@ -231,7 +253,6 @@ class Keymap(GtkBaseBox):
                     self.keyboard_variant['code'])
             logging.debug(txt)
             self.set_keymap()
-
         return True
 
     def set_keymap(self):
@@ -247,7 +268,7 @@ class Keymap(GtkBaseBox):
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
 
-    def set_keyboard_widget(self):
+    def set_keyboard_widget_keymap(self):
         logging.warning("*set_keyboard_widget*")
         """ Pass current keyboard layout to the keyboard widget. """
         self.keyboard_widget.set_layout(self.keyboard_layout['code'])
