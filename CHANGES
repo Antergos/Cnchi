@@ -1,3 +1,4 @@
+[2015-06-07 14:00:39 +0200]  English+Canada=Canada location with English variant ;)                     karasu      {cf06aea}
 [2015-06-07 13:30:19 +0200]  Cleaned up a bit. There's a bug when comming back to keymap screen         karasu      {edaafca}
 [2015-06-07 13:22:08 +0200]  New keymap.py is working. Keyboard Widget needs some love, though.         karasu      {0765fbe}
 [2015-06-07 11:51:30 +0200]  select in treeview works                                                   karasu      {9f9da38}

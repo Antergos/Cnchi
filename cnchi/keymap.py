@@ -98,8 +98,6 @@ class Keymap(GtkBaseBox):
                 language_name = self.settings.get("language_name")
                 language_code = self.settings.get("language_code")
                 if country_name == "Spain" and language_name == "Catalan":
-                    self.keyboard_layout['code'] = "es"
-                    self.keyboard_layout['description'] = self.kbd_names.get_layout_description("es")
                     self.keyboard_variant['code'] = "cat"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "cat")
                 elif country_name == "Canada" and language_name == "English":
