@@ -1,3 +1,4 @@
+[2015-06-07 13:22:08 +0200]  New keymap.py is working. Keyboard Widget needs some love, though.         karasu      {0765fbe}
 [2015-06-07 11:51:30 +0200]  select in treeview works                                                   karasu      {9f9da38}
 [2015-06-07 01:37:54 +0200]  New keymap screen layout                                                   karasu      {f6e61e5}
 [2015-06-06 23:49:20 +0200]  More changes in keymap                                                     karasu      {ad970f4}
