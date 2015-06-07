@@ -50,9 +50,7 @@ class Keymap(GtkBaseBox):
         base_xml_path = os.path.join(self.settings.get('data'), "base.xml")
         self.kbd_names = keyboard_names.KeyboardNames(base_xml_path)
 
-        self.init_keymap_treeview()
-
-    def init_keymap_treeview(self):
+        # Init keymap treeview
         self.keymap_treeview = self.ui.get_object("keymap_treeview")
         self.keymap_treeview.set_model(Gtk.TreeStore(str))
         column = Gtk.TreeViewColumn("Layouts")
@@ -60,6 +58,9 @@ class Keymap(GtkBaseBox):
         cell = Gtk.CellRendererText()
         column.pack_start(cell, False)
         column.add_attribute(cell, "text", 0)
+
+        self.keymap_treeview.set_activate_on_single_click(True)
+        self.keymap_treeview.connect("row-activated", self.on_keymap_row_activated)
 
     def clear(self):
         """ Clears treeview model """
@@ -132,9 +133,6 @@ class Keymap(GtkBaseBox):
         tree_store = self.keymap_treeview.get_model()
         tree_store.clear()
 
-        # Block signal
-        self.keymap_treeview.handler_block_by_func(self.on_keymap_cursor_changed)
-
         # Populate keymap treeview
         layouts = self.kbd_names.get_layouts()
         for layout_name in layouts:
@@ -146,11 +144,9 @@ class Keymap(GtkBaseBox):
                 child_iter = tree_store.insert_before(parent_iter, None)
                 tree_store.set_value(child_iter, 0, str(variant))
 
-        # Unblock signal
-        self.keymap_treeview.handler_unblock_by_func(self.on_keymap_cursor_changed)
-
     def select_in_treeview(self, treeview, value0, value1=None):
         """ Simulates the selection of a value in the treeview """
+
         tree_model = treeview.get_model()
         tree_iter = tree_model.get_iter(0)
         found = False
@@ -183,6 +179,8 @@ class Keymap(GtkBaseBox):
 
         if path:
             treeview.set_cursor(path)
+            # Simulate row activation
+            self.on_keymap_row_activated(self.keymap_treeview, tree_iter, path)
             GLib.idle_add(self.scroll_to_cell, treeview, path)
 
     @staticmethod
@@ -208,8 +206,8 @@ class Keymap(GtkBaseBox):
 
         return (layout, variant)
 
-    def on_keymap_cursor_changed(self, widget):
-        """ Called when selection changes """
+    def on_keymap_row_activated(self, treeview, iter, path):
+        """ Set selected keymap """
         self.forward_button.set_sensitive(True)
         self.store_values()
         self.set_keyboard_widget_keymap()
