@@ -77,8 +77,9 @@ class Keymap(GtkBaseBox):
         logging.warning("*translate_ui*")
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
 
-        #lbl = self.ui.get_object("label_layouts")
-        #lbl.set_markup(_("Keyboard Layouts"))
+        lbl = self.ui.get_object("label_layouts")
+        if lbl:
+            lbl.set_markup(_("Keyboard Layouts"))
 
     def prepare(self, direction):
         logging.warning("*prepare*")
@@ -94,11 +95,9 @@ class Keymap(GtkBaseBox):
 
             self.keyboard_layout['code'] = country_code
 
-            '''
             layout_description = self.kbd_names.get_layout_description(country_code)
             if layout_description:
                 self.keyboard_layout['description'] = layout_description
-                self.select_value_in_treeview(self.keymap_treeview, layout_description)
 
                 # specific variant cases
                 country = self.settings.get("country")
@@ -107,19 +106,20 @@ class Keymap(GtkBaseBox):
                 if country == "Spain" and language_name == "Catalan":
                     self.keyboard_variant['code'] = "cat"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "cat")
-                    #self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['description'])
                 if country == "Canada" and language_name == "English":
                     self.keyboard_variant['code'] = "eng"
                     self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "eng")
-                    #self.select_value_in_treeview(self.variant_treeview, self.keyboard_variant['description'])
+
+                self.select_in_treeview(
+                    self.keymap_treeview,
+                    self.keyboard_layout['description'],
+                    self.keyboard_variant['description'])
             else:
                 logging.debug(
                     _("Can't match a keymap for country code '%s'"),
                     country_code)
-                self.keyboard_layout['description'] = None
-                self.keyboard_variant['code'] = None
-                self.keyboard_variant['description'] = None
-            '''
+                self.keyboard_layout = { 'code': None, 'description': None }
+                self.keyboard_variant  = { 'code': None, 'description': None }
 
         self.prepare_called = True
         self.show_all()
@@ -147,28 +147,41 @@ class Keymap(GtkBaseBox):
         # Unblock signal
         self.keymap_treeview.handler_unblock_by_func(self.on_keymap_cursor_changed)
 
-    def select_value_in_treeview(self, treeview, value):
-        pass
-        '''
+    def select_in_treeview(self, treeview, value0, value1=None):
         logging.warning("*select_value_in_treeview*")
-        model = treeview.get_model()
-        tree_iter = model.get_iter(0)
-        index = 0
+        tree_model = treeview.get_model()
+        tree_iter = tree_model.get_iter(0)
         found = False
+        path = None
 
-        while tree_iter is not None and not found:
-            if model[tree_iter][0] == value:
-                treeview.set_cursor(index)
-                path = model.get_path(tree_iter)
-                GLib.idle_add(self.scroll_to_cell, treeview, path)
-                tree_iter = None
+        while tree_iter and not found:
+            if tree_model[tree_iter][0] == value0:
+                path = tree_model.get_path(tree_iter)
+                treeview.expand_row(path, False)
                 found = True
             else:
-                index += 1
-                tree_iter = model.iter_next(tree_iter)
+                tree_iter = tree_model.iter_next(tree_iter)
 
-        return found
-        '''
+        if not found:
+            logging.warning(_("Can't find value %s in treeview"), value0)
+            return
+
+        if value1 and tree_iter and tree_model.iter_has_child(tree_iter):
+            found = False
+            tree_iter = tree_model.get_iter(path)
+            child_iter = tree_model.iter_children(tree_iter)
+            while child_iter and not found:
+                if str(tree_model[child_iter][0]) == str(value1):
+                    path = tree_model.get_path(child_iter)
+                    found = True
+                else:
+                    child_iter = tree_model.iter_next(child_iter)
+            if not found:
+                logging.warning(_("Can't find value %s in treeview"), value1)
+
+        if path:
+            treeview.set_cursor(path)
+            GLib.idle_add(self.scroll_to_cell, treeview, path)
 
     @staticmethod
     def scroll_to_cell(treeview, path):
