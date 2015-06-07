@@ -1,3 +1,4 @@
+[2015-06-07 14:54:53 +0200]  Now widget draws ok. Changed keymap screen layout, too.                    karasu      {33dd634}
 [2015-06-07 14:01:44 +0200]  Forgot to remove unuseful code                                             karasu      {74a2885}
 [2015-06-07 14:00:39 +0200]  English+Canada=Canada location with English variant ;)                     karasu      {cf06aea}
 [2015-06-07 13:30:19 +0200]  Cleaned up a bit. There's a bug when comming back to keymap screen         karasu      {edaafca}

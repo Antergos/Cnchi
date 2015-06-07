@@ -76,7 +76,12 @@ class Keymap(GtkBaseBox):
 
         lbl = self.ui.get_object("label_layouts")
         if lbl:
-            lbl.set_markup(_("Keyboard Layouts"))
+            lbl.set_markup(
+                _("Choose your keyboard layout and variant (if applies).\n"
+                "For instance, the default Slovak variant is qwertz, but you\n"
+                "can manually specify qwerty, etc.\n\n"
+                "You can use the entry below the keyboard to test your\n"
+                "layout selection."))
 
     def prepare(self, direction):
         self.translate_ui()
