@@ -137,7 +137,7 @@ class InstallationProcess(multiprocessing.Process):
         self.error = True
         self.running = False
         self.queue_event('error', txt)
-        self.callback_queue.join()
+        # self.callback_queue.join()
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):

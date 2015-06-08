@@ -178,6 +178,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         try:
             cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
             subprocess.check_call(cmd)
+
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
@@ -792,7 +793,7 @@ class AutoPartition(object):
                 txt = _("Error creating LVM physical volume")
                 logging.error(txt)
                 logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                # logging.error(_("Output: %s"), err.output)
                 raise InstallError(txt)
 
             try:
