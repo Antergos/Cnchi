@@ -574,12 +574,6 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Selected kde language pack: %s"), pkg)
                 self.packages.append(pkg)
 
-        # Add ntp package if user selected it in timezone screen
-        if self.settings.get('use_ntp'):
-            for child in xml_root.iter('ntp'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
         # Get packages needed for detected hardware
         try:
             import hardware.hardware as hardware
@@ -1263,9 +1257,14 @@ class InstallationProcess(multiprocessing.Process):
         services.extend(["ModemManager", self.network_manager, "remote-fs.target", "haveged"])
         self.enable_services(services)
 
-        # Enable ntp service
-        if self.settings.get("use_ntp"):
-            self.enable_services(["ntpd"])
+        # Enable timesyncd service
+        if self.settings.get("use_timesyncd"):
+            timesyncd_path = os.path.join(DEST_DIR, "etc/systemd/timesyncd.conf")
+            with open(timesyncd_path, 'w') as timesyncd:
+                timesyncd.write("[Time]\n")
+                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
+                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org\n")
+            chroot_run(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))

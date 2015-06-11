@@ -105,7 +105,7 @@ class Settings(object):
             'use_luks': False,
             'use_luks_in_root': False,
             'use_lvm': False,
-            'use_ntp': True,
+            'use_timesyncd': True,
             'user_info_done': False,
             'username': '',
             'z_hidden': False})

@@ -542,10 +542,6 @@
     </chinese>
   </locale_fonts>
 
-  <ntp>
-    <pkgname>ntp</pkgname>
-  </ntp>
-
   <bootloaders>
     <bootloader name="grub2">
       <pkgname>grub</pkgname>

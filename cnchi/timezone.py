@@ -275,7 +275,7 @@ class Timezone(GtkBaseBox):
             self.mirrorlist_thread.stop()
 
     def on_switch_ntp_activate(self, ntp_switch):
-        self.settings['use_ntp'] = ntp_switch.get_active()
+        self.settings['use_timesyncd'] = ntp_switch.get_active()
 
 
 class AutoTimezoneThread(threading.Thread):
