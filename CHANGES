@@ -1,3 +1,4 @@
+[2015-06-11 12:09:04 +0200]  Use systemd-timesyncd                                                      karasu      {ce4e13a}
 [2015-06-08 18:14:24 +0200]  LVM+LUKS is broken                                                         karasu      {af429a5}
 [2015-06-07 19:54:56 +0200]  Merge branch 'github-master'                                               karasu      {aeedb7b}
 [2015-06-07 17:18:40 +0200]  Update CHANGES                                                             karasu      {9027298}

@@ -1032,6 +1032,10 @@ def is_partition_extended(partition):
     if "/dev/mapper" in partition:
         return False
 
+    # In automatic LVM volume is called AntergosVG
+    if "/dev/AntergosVG" in partition:
+        return False
+
     if "/dev/" in partition:
         partition = partition[len("/dev/"):]
 
