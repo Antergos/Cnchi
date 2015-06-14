@@ -863,7 +863,7 @@ def has_connection():
         return True
 
     try:
-        url = 'http://74.125.228.100'
+        url = 'http://130.206.13.20'
         urllib.request.urlopen(url, timeout=5)
         return True
     except (OSError, timeout, urllib.error.URLError) as err:

@@ -78,15 +78,23 @@ class Features(GtkBaseBox):
         # Only load defaults the first time this screen is shown
         self.load_defaults = True
 
-    def is_nvidia():
+    @staticmethod
+    def nvidia_detected():
         from hardware.nvidia import Nvidia
-        nvidia = Nvidia()
-        return nvidia.check_device()
+        if Nvidia().detect():
+            return True
+        from hardware.nvidia_340xx import Nvidia_340xx
+        if Nvidia_340xx().detect():
+            return True
+        from hardware.Nvidia_304xx import Nvidia_304xx
+        if Nvidia_304xx().detect():
+            return True
+        return False
 
-    def is_amd():
+    @staticmethod
+    def amd_detected():
         from hardware.catalyst import Catalyst
-        catalyst = Catalyst()
-        return catalyst.check_device()
+        return Catalyst().detect()
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox
@@ -103,11 +111,13 @@ class Features(GtkBaseBox):
 
         self.listbox_rows = {}
 
-        for feature in self.features:
-            # Only add graphic-driver feature if an AMD or Nvidia is detected
-            if feature is "graphic-driver" and not self.is_amd() and not self.is_nvidia:
-                continue
+        # Only add graphic-driver feature if an AMD or Nvidia is detected
+        if "graphic_drivers" in self.features:
+            if not self.amd_detected() and not self.nvidia_detected():
+                logging.debug("Neither nvidia nor amd have been detected. Removing proprietary graphic driver feature")
+                self.features.remove("graphic_drivers")
 
+        for feature in self.features:
             box = Gtk.Box(spacing=20)
             box.set_name(feature + "-row")
 
@@ -230,10 +240,11 @@ class Features(GtkBaseBox):
         self.set_row_text('fonts', title, desc, tooltip)
 
         # Graphic drivers
-        title = _("Graphic drivers (Proprietary)")
-        desc = _("Installs AMD or Nvidia proprietary graphic driver")
-        tooltip = _("Installs AMD or Nvidia proprietary graphic driver")
-        self.set_row_text('graphic_drivers', title, desc, tooltip)
+        if self.amd_detected() or self.nvidia_detected():
+            title = _("Graphic drivers (Proprietary)")
+            desc = _("Installs AMD or Nvidia proprietary graphic driver")
+            tooltip = _("Installs AMD or Nvidia proprietary graphic driver")
+            self.set_row_text('graphic_drivers', title, desc, tooltip)
 
         # LAMP
         title = _("Apache (or Nginx) + Mariadb + PHP")

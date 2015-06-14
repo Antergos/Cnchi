@@ -39,7 +39,8 @@ _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
     def __init__(self):
-        Hardware.__init__(self)
+        #Hardware.__init__(self)
+        pass
 
     def get_packages(self):
         """ Returns all necessary packages to install """
@@ -128,22 +129,7 @@ class HardwareInstall(object):
                     logging.error(_("Unexpected error importing %s: %s"), package, err)
 
         # Detect devices
-        devices = []
-
-        # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
-        for line in lines:
-            if len(line) > 0:
-                class_id = line.split()[1].rstrip(":")
-                dev = line.split()[2].split(":")
-                devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
-
-        # Get USB devices
-        lines = subprocess.check_output(["lsusb"]).decode().split("\n")
-        for line in lines:
-            if len(line) > 0:
-                dev = line.split()[5].split(":")
-                devices.append(("0", "0x" + dev[0], "0x" + dev[1]))
+        devices = self.get_devices()
 
         # Find objects that support the devices we've found.
         self.objects_found = {}
@@ -201,6 +187,24 @@ class HardwareInstall(object):
             else:
                 # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(objects[0])
+
+    def get_devices(self):
+        devices = []
+
+        # Get PCI devices
+        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                class_id = line.split()[1].rstrip(":")
+                dev = line.split()[2].split(":")
+                devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
+
+        # Get USB devices
+        lines = subprocess.check_output(["lsusb"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                dev = line.split()[5].split(":")
+                devices.append(("0", "0x" + dev[0], "0x" + dev[1]))
 
     def get_packages(self):
         """ Get pacman package list for all detected devices """

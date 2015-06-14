@@ -30,6 +30,7 @@ except ImportError:
     from hardware import Hardware
 
 import os
+import subprocess
 
 CLASS_NAME = "Catalyst"
 CLASS_ID = "0x0300"
@@ -122,6 +123,18 @@ class Catalyst(Hardware):
             return True
         else:
             return False
+
+    def detect(self):
+        """ Tries to guess if a device suitable for this driver is present """
+        # Get PCI devices
+        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                class_id = line.split()[1].rstrip(":")
+                dev = line.split()[2].split(":")
+                if self.check_device("0x" + class_id, "0x" + dev[0], "0x" + dev[1]):
+                    return True
+        return False
 
     def get_name(self):
         return CLASS_NAME

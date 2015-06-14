@@ -30,6 +30,7 @@ except ImportError:
     from hardware import Hardware
 
 import os
+import subprocess
 
 CLASS_NAME = "Nvidia_340xx"
 CLASS_ID = "0x0300"
@@ -144,6 +145,21 @@ class Nvidia_340xx(Hardware):
             return True
         else:
             return False
+
+    def detect(self):
+        """ Tries to guess if a device suitable for this driver is present """
+        # Get PCI devices
+        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                class_id = "0x{0}".format(line.split()[1].rstrip(":"))
+                if class_id == CLASS_ID:
+                    dev = line.split()[2].split(":")
+                    vendor_id = "0x{0}".format(dev[0])
+                    product_id = "0x{0}".format(dev[1])
+                    if vendor_id == VENDOR_ID and product_id in DEVICES:
+                        return True
+        return False
 
     def get_name(self):
         return CLASS_NAME
