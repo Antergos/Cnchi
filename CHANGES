@@ -1,3 +1,4 @@
+[2015-06-14 08:42:57 -0500]  bin/cnchi should be executable                                         Dustin Falgout  {49b8944}
 [2015-06-14 06:10:48 -0500]  update packages.xml. fix file permissions on some  files (they were..  Dustin Falgout  {23e4a84}
 [2015-06-03 02:22:16 -0500]  fix buggy Gtk window size with Openbox (cherry picked from commit 6..  Dustin Falgout  {301d2dc}
 [2015-06-01 20:12:03 +0200]  Backported LVM fix from dev version (issue #355)                           karasu      {8c812c7}
