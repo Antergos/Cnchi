@@ -1,3 +1,4 @@
+[2015-06-03 02:22:16 -0500]  fix buggy Gtk window size with Openbox (cherry picked from commit 6..  Dustin Falgout  {301d2dc}
 [2015-06-01 20:12:03 +0200]  Backported LVM fix from dev version (issue #355)                           karasu      {8c812c7}
 [2015-06-01 18:01:32 +0200]  Fixes https://github.com/Antergos/Cnchi/issues/351                         karasu      {0132a68}
 [2015-05-31 19:53:56 +0200]  Update update.info                                                         karasu      {2b8bd80}
