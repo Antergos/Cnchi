@@ -34,6 +34,9 @@ import os
 CLASS_NAME = "Catalyst"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x1002"
+
+POST_INSTALL_SCRIPT = "/usr/share/cnchi/scripts/catalyst.sh"
+
 DEVICES=[
     "0x1304", "0x1305", "0x1306", "0x1307", "0x1309", "0x130A", "0x130B",
     "0x130C", "0x130D", "0x130E", "0x130F", "0x1310", "0x1311", "0x1312",
@@ -114,8 +117,9 @@ class Catalyst(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        # TODO
-        pass
+        # As post installation tasks change so often,
+        # it makes no sense to code it here.
+        super().call_script(self, POST_INSTALL_SCRIPT, dest_dir)
 
     def is_proprietary(self):
         return True

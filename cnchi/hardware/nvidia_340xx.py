@@ -39,6 +39,8 @@ VENDOR_ID = "0x10de"
 # (when both are possible)
 PRIORITY = 1
 
+POST_INSTALL_SCRIPT = "/usr/share/cnchi/scripts/nvidia.sh"
+
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 # nvidia, nvidia-340xx, nvidia-304xx
 # lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
@@ -133,8 +135,9 @@ class Nvidia_340xx(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        # TODO
-        pass
+        # As post installation tasks change so often,
+        # it makes no sense to code it here.
+        super().call_script(self, POST_INSTALL_SCRIPT, dest_dir)
 
     def is_proprietary(self):
         return True

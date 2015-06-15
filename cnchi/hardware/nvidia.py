@@ -31,6 +31,7 @@ except ImportError:
 
 import os
 import logging
+import subprocess
 
 CLASS_NAME = "Nvidia"
 CLASS_ID = "0x0300"
@@ -39,6 +40,8 @@ VENDOR_ID = "0x10de"
 # Give this driver more priority so it is chosen instead of
 # nvidia-340xx or nvidia-304xx
 PRIORITY = 2
+
+POST_INSTALL_SCRIPT = "/usr/share/cnchi/scripts/nvidia.sh"
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 # nvidia, nvidia-340xx, nvidia-304xx
@@ -100,8 +103,9 @@ class Nvidia(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        # TODO
-        pass
+        # As post installation tasks change so often,
+        # it makes no sense to code it here.
+        super().call_script(self, POST_INSTALL_SCRIPT, dest_dir)
 
     def is_proprietary(self):
         return True

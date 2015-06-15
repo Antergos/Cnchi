@@ -24,6 +24,8 @@
 
 """ Broadcom-wl driver installation """
 
+import os
+
 try:
     from hardware.hardware import Hardware
 except ImportError:
@@ -52,7 +54,10 @@ class BroadcomWl(Hardware):
         return ["broadcom-wl"]
 
     def post_install(self, dest_dir):
-        pass
+        path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
+        with open(path, "w") as blacklist:
+            blacklist.write("blacklist b43\n")
+            blacklist.write("blacklist b43_legacy\n")
 
     def is_proprietary(self):
         return True

@@ -122,6 +122,26 @@ class Hardware(object):
             self.vendor_id,
             self.product_id)
 
+    @staticmethod
+    def call_script(self, path, dest_dir):
+        if os.path.exists(path):
+            cmd = [
+                "/usr/bin/bash",
+                path,
+                dest_dir,
+                self.class_name]
+            try:
+                subprocess.check_call(cmd, timeout=300)
+                logging.debug(_("Nvidia post-install script completed successfully."))
+            except subprocess.CalledProcessError as process_error:
+                # Even though Post-install script call has failed we will try to continue with the installation.
+                logging.error(_("Error running nvidia post-install script"))
+                logging.error(_("Command %s failed"), process_error.cmd)
+                logging.error(_("Output: %s"), process_error.output)
+            except subprocess.TimeoutExpired as timeout_error:
+                logging.error(timeout_error)
+
+
 
 class HardwareInstall(object):
     """ This class checks user's hardware """
@@ -263,10 +283,14 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             obj.post_install(obj, dest_dir)
 
+try:
+    _("test")
+except NameError:
+    def _(txt): return txt
+
+
 ''' Test case '''
 if __name__ == "__main__":
-
-    def _(txt): return txt
 
 
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
@@ -275,13 +299,17 @@ if __name__ == "__main__":
     print(hardware_install.get_found_driver_names())
     if len(hardware_pkgs) > 0:
         txt = " ".join(hardware_pkgs)
-        print("Hardware module added these packages : ", txt)
+        print("Hardware module added these packages :")
+        print(txt)
 
-    """
     from nvidia import Nvidia
     if Nvidia().detect():
         print("Nvidia detected")
 
+    # TEST POSTINSTALL SCRIPT!!!!
+    Nvidia().post_install("/")
+
+    """
     from nvidia_340xx import Nvidia_340xx
     if Nvidia_340xx().detect():
         print("Nvidia-340xx detected")

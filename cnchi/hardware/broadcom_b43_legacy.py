@@ -24,6 +24,8 @@
 
 """ Broadcom b43legacy driver installation """
 
+import os
+
 try:
     from hardware.hardware import Hardware
 except ImportError:
@@ -43,5 +45,7 @@ class BroadcomB43Legacy(Hardware):
         return ["b43-firmware-legacy"]
 
     def post_install(self, dest_dir):
-        with open("/etc/modprobe.d/blacklist", "a") as blacklist:
+        path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
+        with open(path, "w") as blacklist:
             blacklist.write("blacklist b43\n")
+            blacklist.write("blacklist wl\n")

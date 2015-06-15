@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/bin/bash
 # -*- coding: utf-8 -*-
 #
-#  info.py
+#  nvidia.sh
 #
 #  Copyright © 2013-2015 Antergos
 #
@@ -22,10 +22,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.9.170"
-CNCHI_WEBSITE = "http://www.antergos.com"
+DEST_DIR=$1
+CLASS_NAME=$2
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+echo ${DEST_DIR}
+echo ${CLASS_NAME}
+
