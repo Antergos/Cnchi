@@ -1,3 +1,4 @@
+[2015-06-15 19:24:52 +0200]  Removed duplicated code. It seems to work, now. Features must be ch..      karasu      {ec405f5}
 [2015-06-14 22:11:55 +0200]  Fixed detection of amd/nvidia graphic cards (need rewriting as I us..      karasu      {7b55c5c}
 [2015-06-11 12:22:15 +0200]  Do not check if a LVM volume is an extended partition (this just av..      karasu      {03c453d}
 [2015-06-11 12:09:04 +0200]  Use systemd-timesyncd                                                      karasu      {ce4e13a}

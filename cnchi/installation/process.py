@@ -577,8 +577,8 @@ class InstallationProcess(multiprocessing.Process):
         # Get packages needed for detected hardware
         try:
             import hardware.hardware as hardware
-
-            hardware_install = hardware.HardwareInstall()
+            proprietary_graphic_drivers = self.settings.get('feature_graphic_drivers')
+            hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
             driver_names = hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
                 logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
