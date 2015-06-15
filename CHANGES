@@ -1,3 +1,4 @@
+[2015-06-15 21:08:55 +0200]  Post script nvidia/amd installation needs to be written                    karasu      {9423df1}
 [2015-06-15 19:32:27 +0200]  Add proprietary graphic drivers if the user desires so                     karasu      {92ac1a8}
 [2015-06-15 19:24:52 +0200]  Removed duplicated code. It seems to work, now. Features must be ch..      karasu      {ec405f5}
 [2015-06-14 22:11:55 +0200]  Fixed detection of amd/nvidia graphic cards (need rewriting as I us..      karasu      {7b55c5c}

@@ -117,9 +117,7 @@ class Catalyst(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        # As post installation tasks change so often,
-        # it makes no sense to code it here.
-        super().call_script(self, POST_INSTALL_SCRIPT, dest_dir)
+        super().chroot(self, ["aticonfig", "--initial"], dest_dir)
 
     def is_proprietary(self):
         return True

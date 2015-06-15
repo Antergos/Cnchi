@@ -138,9 +138,14 @@ class Nvidia_304xx(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
-        # As post installation tasks change so often,
-        # it makes no sense to code it here.
-        super().call_script(self, POST_INSTALL_SCRIPT, dest_dir)
+        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
+        with open(path, 'w') as nvidia:
+            nvidia.write('Section "Device"\n')
+            nvidia.write('    Identifier "Nvidia Card"\n')
+            nvidia.write('    Driver "nvidia"\n')
+            nvidia.write('    VendorName "NVIDIA Corporation"\n')
+            nvidia.write('    Option "NoLogo" "true"\n')
+            nvidia.write('EndSection\n')
 
     def is_proprietary(self):
         return True
