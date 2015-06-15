@@ -36,10 +36,13 @@ CLASS_ID = "0x0300"
 VENDOR_ID = "0x1002"
 DEVICES = []
 
+# Give this driver more priority so it is chosen instead of the catalyst one
+PRIORITY = 2
+
 
 class Radeon(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     def get_packages(self):
         pkgs = ["xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
@@ -51,18 +54,3 @@ class Radeon(Hardware):
         path = os.path.join(dest_dir, "etc/modprobe.d/radeon.conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options radeon modeset=1\n")
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-            return True
-        return False
-
-    def is_proprietary(self):
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
-
-    def is_graphic_driver(self):
-        return True

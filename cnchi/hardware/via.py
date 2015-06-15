@@ -39,7 +39,7 @@ DEVICES = []
 
 class Via(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["xf86-video-openchrome"]
@@ -52,18 +52,3 @@ class Via(Hardware):
             video.write('\tDriver         "openchrome"\n')
             video.write('\tVendorName     "VIA"\n')
             video.write('EndSection\n')
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-            return True
-        return False
-
-    def is_proprietary(self):
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
-
-    def is_graphic_driver(self):
-        return True

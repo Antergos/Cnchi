@@ -38,20 +38,10 @@ DEVICES = ["0x0405", "0x0710"]
 class Vmware(Hardware):
     """ Vmware class definition """
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]
 
     def post_install(self, dest_dir):
         pass
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def get_name(self):
-        return CLASS_NAME

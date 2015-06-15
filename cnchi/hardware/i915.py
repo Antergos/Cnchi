@@ -39,7 +39,7 @@ DEVICES = []
 
 class i915(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         pkgs = ["xf86-video-intel", "libva-intel-driver", "libtxc_dxtn"]
@@ -52,17 +52,5 @@ class i915(Hardware):
         with open(path, 'w') as modprobe:
             modprobe.write("options i915 modeset=1\n")
 
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-            return True
-        return False
-
     def is_proprietary(self):
         return False
-
-    def is_graphic_driver(self):
-        return True
-
-    def get_name(self):
-        return CLASS_NAME

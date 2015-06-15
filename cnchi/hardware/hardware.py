@@ -24,23 +24,23 @@
 
 """ Hardware related packages installation """
 
-import subprocess
-import os
 import logging
-
-CLASS_NAME = ""
-CLASS_ID = ""
-DEVICES = []
-PRIORITY = 0
+import os
+import subprocess
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
-    def __init__(self):
-        #Hardware.__init__(self)
-        pass
+    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1):
+        self.class_name = class_name
+        self.class_id = class_id
+        self.vendor_id = vendor_id
+        self.devices = devices
+        self.priority = priority
+
+        self.product_id = ""
 
     def get_packages(self):
         """ Returns all necessary packages to install """
@@ -52,7 +52,31 @@ class Hardware(object):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        raise NotImplementedError("check_device is not implemented")
+        if not class_id == self.class_id:
+            return False
+
+        if len(self.vendor_id) > 0 and vendor_id != self.vendor_id:
+            return False
+
+        if len(self.devices) > 0 and product_id not in self.devices:
+            return False
+
+        return True
+
+    def detect(self):
+        """ Tries to guess if a device suitable for this driver is present """
+        # Get PCI devices
+        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        for line in lines:
+            if len(line) > 0:
+                class_id = "0x{0}".format(line.split()[1].rstrip(":"))
+                if class_id == self.class_id:
+                    dev = line.split()[2].split(":")
+                    vendor_id = "0x{0}".format(dev[0])
+                    product_id = "0x{0}".format(dev[1])
+                    if vendor_id == self.vendor_id and product_id in self.devices:
+                        return True
+        return False
 
     def is_proprietary(self):
         """ Proprietary drivers are drivers for your hardware devices
@@ -62,16 +86,16 @@ class Hardware(object):
 
     def is_graphic_driver(self):
         """ Tells us if this is a graphic driver or not """
-        if CLASS_ID == "0x0300":
+        if self.class_id == "0x0300":
             return True
         else:
             return False
 
     def get_name(self):
-        raise NotImplementedError("get_name is not implemented")
+        return self.class_name
 
     def get_priority(self):
-        return PRIORITY
+        return self.priority
 
     @staticmethod
     def chroot(cmd, dest_dir, stdin=None, stdout=None):
@@ -90,6 +114,13 @@ class Hardware(object):
             logging.debug(out.decode())
         except OSError as err:
             logging.error(_("Error running command: %s"), err.strerror)
+
+    def __str__(self):
+        return "class name: {0}, class id: {1}, vendor id: {2}, product id: {3}".format(
+            self.class_name,
+            self.class_id,
+            self.vendor_id,
+            self.product_id)
 
 
 class HardwareInstall(object):
@@ -122,7 +153,8 @@ class HardwareInstall(object):
                     name = filename.capitalize()
                     # This instruction is the same as "from package import name"
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
-                    self.all_objects.append(getattr(__import__(package, fromlist=[class_name]), class_name))
+                    obj = getattr(__import__(package, fromlist=[class_name]), class_name)()
+                    self.all_objects.append(obj)
                 except ImportError as err:
                     logging.error(_("Error importing %s from %s : %s"), name, package, err)
                 except Exception as err:
@@ -131,13 +163,17 @@ class HardwareInstall(object):
         # Detect devices
         devices = self.get_devices()
 
+        logging.debug(
+            _("Cnchi will test %d drivers for %d hardware devices"),
+            len(self.all_objects),
+            len(devices))
+
         # Find objects that support the devices we've found.
         self.objects_found = {}
         for obj in self.all_objects:
             for device in devices:
                 (class_id, vendor_id, product_id) = device
                 check = obj.check_device(
-                    self=obj,
                     class_id=class_id,
                     vendor_id=vendor_id,
                     product_id=product_id)
@@ -153,23 +189,21 @@ class HardwareInstall(object):
             objects_used = []
             if len(objects) > 1:
                 # We have more than one driver for this device!
-                # We need to choose one
+                # We'll need to choose one
                 for obj in objects:
-                    if not obj.is_graphic_driver(obj):
-                        # For non graphical drivers, we choose the
-                        # open one as default
-                        if not obj.is_proprietary(obj):
+                    if not obj.is_graphic_driver():
+                        # For non graphical drivers, we choose the open one as default
+                        if not obj.is_proprietary():
                             objects_used.append(obj)
                     else:
-                        # It's a graphic driver, we need to know which
-                        # one the user wants
+                        # It's a graphic driver, we need to know which one the user wants
                         if not self.use_proprietary_graphic_drivers:
                             # OK, we choose the open one
-                            if not obj.is_proprietary(obj):
+                            if not obj.is_proprietary():
                                 objects_used.append(obj)
                         else:
                             # User wants the proprietary one
-                            if obj.is_proprietary(obj):
+                            if obj.is_proprietary():
                                 objects_used.append(obj)
 
                 if len(objects_used) > 1:
@@ -177,9 +211,9 @@ class HardwareInstall(object):
                     # let's check their priority
                     priorities = []
                     for obj in objects_used:
-                        priorities.append(obj.get_priority(obj))
+                        priorities.append(obj.get_priority())
                     for obj in objects_used:
-                        if obj.get_priority(obj) == max(priorities):
+                        if obj.get_priority() == max(priorities):
                             self.objects_used.append(obj)
                             break
                 else:
@@ -206,11 +240,13 @@ class HardwareInstall(object):
                 dev = line.split()[5].split(":")
                 devices.append(("0", "0x" + dev[0], "0x" + dev[1]))
 
+        return devices
+
     def get_packages(self):
         """ Get pacman package list for all detected devices """
         packages = []
         for obj in self.objects_used:
-            packages.extend(obj.get_packages(obj))
+            packages.extend(obj.get_packages())
 
         # Remove duplicates (not necessary but it's cleaner)
         packages = list(set(packages))
@@ -219,7 +255,7 @@ class HardwareInstall(object):
     def get_found_driver_names(self):
         driver_names = []
         for obj in self.objects_used:
-            driver_names.append(obj.get_name(obj))
+            driver_names.append(obj.get_name())
         return driver_names
 
     def post_install(self, dest_dir):
@@ -232,6 +268,7 @@ if __name__ == "__main__":
 
     def _(txt): return txt
 
+
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
@@ -239,3 +276,22 @@ if __name__ == "__main__":
     if len(hardware_pkgs) > 0:
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages : ", txt)
+
+    """
+    from nvidia import Nvidia
+    if Nvidia().detect():
+        print("Nvidia detected")
+
+    from nvidia_340xx import Nvidia_340xx
+    if Nvidia_340xx().detect():
+        print("Nvidia-340xx detected")
+
+    from nvidia_304xx import Nvidia_304xx
+    if Nvidia_304xx().detect():
+        print("nvidia-304xx detected")
+
+
+    from catalyst import Catalyst
+    if Catalyst().detect():
+        print("Catalyst detected")
+    """

@@ -31,6 +31,7 @@ except ImportError:
 
 CLASS_NAME = "VesaFB"
 CLASS_ID = "0x0300"
+VENDOR_ID = ""
 
 # All modern cards support Vesa. This will be used as a fallback.
 DEVICES = []
@@ -38,27 +39,10 @@ DEVICES = []
 
 class VesaFB(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["xf86-video-vesa"]
 
     def post_install(self, dest_dir):
         pass
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID:
-            # Now we use modesetting and never VESA
-            return False
-        else:
-            return False
-
-    def is_proprietary(self):
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
-
-    def is_graphic_driver(self):
-        return True

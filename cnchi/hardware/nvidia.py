@@ -30,7 +30,6 @@ except ImportError:
     from hardware import Hardware
 
 import os
-import subprocess
 import logging
 
 CLASS_NAME = "Nvidia"
@@ -92,7 +91,7 @@ DEVICES=[
 
 class Nvidia(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     def get_packages(self):
         pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau", "libcl"]
@@ -101,39 +100,8 @@ class Nvidia(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
+        # TODO
         pass
 
     def is_proprietary(self):
         return True
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        logging.warning(class_id, vendor_id, product_id)
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def detect(self):
-        """ Tries to guess if a device suitable for this driver is present """
-        # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
-        for line in lines:
-            if len(line) > 0:
-                class_id = "0x{0}".format(line.split()[1].rstrip(":"))
-                if class_id == CLASS_ID:
-                    dev = line.split()[2].split(":")
-                    vendor_id = "0x{0}".format(dev[0])
-                    product_id = "0x{0}".format(dev[1])
-                    if vendor_id == VENDOR_ID and product_id in DEVICES:
-                        return True
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
-
-    def is_graphic_driver(self):
-        return True
-
-    def get_priority(self):
-        return PRIORITY

@@ -58,20 +58,10 @@ DEVICES = [
 
 class FingerPrint(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["fprintd"]
 
     def post_install(self, dest_dir):
         pass
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if (vendor_id, product_id) in DEVICES:
-            return True
-        else:
-            return False
-
-    def get_name(self):
-        return CLASS_NAME

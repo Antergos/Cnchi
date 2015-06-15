@@ -37,7 +37,7 @@ DEVICES = ['0x4301', '0x4306', '0x4320', '0x4324', '0x4325']
 
 class BroadcomB43Legacy(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["b43-firmware-legacy"]
@@ -45,13 +45,3 @@ class BroadcomB43Legacy(Hardware):
     def post_install(self, dest_dir):
         with open("/etc/modprobe.d/blacklist", "a") as blacklist:
             blacklist.write("blacklist b43\n")
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def get_name(self):
-        return CLASS_NAME

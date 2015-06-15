@@ -1,3 +1,4 @@
+[2015-06-14 22:11:55 +0200]  Fixed detection of amd/nvidia graphic cards (need rewriting as I us..      karasu      {7b55c5c}
 [2015-06-11 12:22:15 +0200]  Do not check if a LVM volume is an extended partition (this just av..      karasu      {03c453d}
 [2015-06-11 12:09:04 +0200]  Use systemd-timesyncd                                                      karasu      {ce4e13a}
 [2015-06-08 18:14:24 +0200]  LVM+LUKS is broken                                                         karasu      {af429a5}

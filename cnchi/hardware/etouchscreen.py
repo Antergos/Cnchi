@@ -44,7 +44,7 @@ DEVICES = ['0x0001']
 
 class ETouchScreen(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["xinput_calibrator", "xournal"]
@@ -66,13 +66,3 @@ class ETouchScreen(Hardware):
             conf_file.write('\tOption          "InvertY" "1"\n')
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def get_name(self):
-        return CLASS_NAME

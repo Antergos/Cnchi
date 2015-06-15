@@ -30,7 +30,6 @@ except ImportError:
     from hardware import Hardware
 
 import os
-import subprocess
 
 CLASS_NAME = "Catalyst"
 CLASS_ID = "0x0300"
@@ -97,7 +96,7 @@ SigLevel = Optional TrustAll
 
 class Catalyst(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         pkgs = [
@@ -115,32 +114,8 @@ class Catalyst(Hardware):
         return pkgs
 
     def post_install(self, dest_dir):
+        # TODO
         pass
 
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def detect(self):
-        """ Tries to guess if a device suitable for this driver is present """
-        # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
-        for line in lines:
-            if len(line) > 0:
-                class_id = line.split()[1].rstrip(":")
-                dev = line.split()[2].split(":")
-                if self.check_device("0x" + class_id, "0x" + dev[0], "0x" + dev[1]):
-                    return True
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
-
     def is_proprietary(self):
-        return True
-
-    def is_graphic_driver(self):
         return True

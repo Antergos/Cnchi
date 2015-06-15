@@ -39,10 +39,14 @@ VENDOR_ID = "0x14e4"
 
 DEVICES = ['0x4311', '0x04B5', '0x4727', '0x1361', '0x4328', '0x432B']
 
+# Give this driver more priority so it is chosen instead of
+# broadcom_b43 or Broadcom_b43_legacy
+PRIORITY = 2
+
 
 class BroadcomWl(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     def get_packages(self):
         return ["broadcom-wl"]
@@ -50,15 +54,5 @@ class BroadcomWl(Hardware):
     def post_install(self, dest_dir):
         pass
 
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
     def is_proprietary(self):
         return True
-
-    def get_name(self):
-        return CLASS_NAME

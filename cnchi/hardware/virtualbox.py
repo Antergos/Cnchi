@@ -39,7 +39,7 @@ DEVICES = ['0xbeef']
 
 class Virtualbox(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["virtualbox-guest-modules", "virtualbox-guest-utils"]
@@ -58,13 +58,3 @@ class Virtualbox(Hardware):
 
         # This fixes bug in virtualbox-guest-modules package
         super().chroot(self, ["depmod", "-a"], dest_dir)
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID and product_id in DEVICES:
-            return True
-        else:
-            return False
-
-    def get_name(self):
-        return CLASS_NAME

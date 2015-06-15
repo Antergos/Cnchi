@@ -86,7 +86,7 @@ class Features(GtkBaseBox):
         from hardware.nvidia_340xx import Nvidia_340xx
         if Nvidia_340xx().detect():
             return True
-        from hardware.Nvidia_304xx import Nvidia_304xx
+        from hardware.nvidia_304xx import Nvidia_304xx
         if Nvidia_304xx().detect():
             return True
         return False
