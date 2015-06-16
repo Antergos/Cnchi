@@ -1,3 +1,4 @@
+[2015-06-16 22:02:01 +0200]  Use new antergos-openbox-setup package                                     karasu      {8eaed94}
 [2015-06-15 21:21:45 +0200]  It turns out no script was necessary :p                                    karasu      {6efaf58}
 [2015-06-15 21:08:55 +0200]  Post script nvidia/amd installation needs to be written                    karasu      {9423df1}
 [2015-06-15 19:32:27 +0200]  Add proprietary graphic drivers if the user desires so                     karasu      {92ac1a8}
