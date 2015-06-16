@@ -158,7 +158,14 @@ class Download(object):
                     percent = 0
                     completed_length = 0
                     start = time.clock()
-                    r = requests.get(url, stream=True)
+                    try:
+                        r = requests.get(url, stream=True)
+                    except requests.exceptions.ConnectionError as connection_error:
+                        logging.warning(_("Can't download {0}").format(url))
+                        logging.warning(connection_error)
+                        logging.warning(_("Cnchi will try another mirror."))
+                        continue
+                        
                     total_length = int(r.headers.get('content-length'))
                     if r.status_code == requests.codes.ok:
                         md5_hash = hashlib.md5()
