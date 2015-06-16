@@ -165,9 +165,17 @@ class Download(object):
                         logging.warning(connection_error)
                         logging.warning(_("Cnchi will try another mirror."))
                         continue
-                        
-                    total_length = int(r.headers.get('content-length'))
+
                     if r.status_code == requests.codes.ok:
+                        # Get total file length
+                        try:
+                            total_length = int(r.headers.get('content-length'))
+                        except TypeError:
+                            total_length = 0
+                            logging.warning(
+                                _("Metalink for package %s has no size info"),
+                                element['identity'])
+
                         md5_hash = hashlib.md5()
                         with open(dst_path, 'wb') as xz_file:
                             for data in r.iter_content(1024):
