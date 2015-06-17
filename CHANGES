@@ -1,3 +1,4 @@
+[2015-06-16 22:19:45 +0200]  Do not fail when file size is unknown                                      karasu      {0e5c29d}
 [2015-06-16 22:05:49 +0200]  Try to trap connection errors                                              karasu      {9686075}
 [2015-06-16 22:03:02 +0200]  Add antergos-openbox-setup package to the Openbox installation             karasu      {79c3884}
 [2015-06-16 22:02:01 +0200]  Use new antergos-openbox-setup package                                     karasu      {8eaed94}

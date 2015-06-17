@@ -281,7 +281,7 @@ class HardwareInstall(object):
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """
         for obj in self.objects_used:
-            obj.post_install(obj, dest_dir)
+            obj.post_install(dest_dir)
 
 try:
     _("test")
