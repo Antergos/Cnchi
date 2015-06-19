@@ -346,6 +346,7 @@
         <pkgname>xfburn</pkgname>
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xscreensaver</pkgname>
+        <pkgname>waldorf-ui-theme</pkgname>
       </packages>
     </edition>
 
