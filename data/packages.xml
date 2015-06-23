@@ -13,7 +13,7 @@
         <pkgname>base-devel</pkgname> <!-- Group -->
         <pkgname>bash-completion</pkgname>
         <pkgname>crda</pkgname>
-        <pkgname>dnsutils</pkgname>
+        <pkgname>bind-tools</pkgname>
         <pkgname>dosfstools</pkgname>
         <pkgname>haveged</pkgname>
         <pkgname>gzip</pkgname>
