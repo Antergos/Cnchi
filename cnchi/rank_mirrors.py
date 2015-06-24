@@ -51,7 +51,7 @@ class AutoRankmirrorsThread(threading.Thread):
     @staticmethod
     def check_mirror_status(mirrors, url):
         for mirror in mirrors:
-            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] < 4:
+            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] <= 4:
                 return True
         return False
 
@@ -69,6 +69,13 @@ class AutoRankmirrorsThread(threading.Thread):
         # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
 
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
+
+        # Make sure we have the latest antergos-mirrorlist
+        with misc.raised_privileges:
+            try:
+                subprocess.check_call(['pacman', '-Syy', 'antergos-mirrorlist'])
+            except subprocess.CalledProcessError as err:
+                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s', err))
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:
