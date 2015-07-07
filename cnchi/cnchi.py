@@ -31,9 +31,10 @@ LOCALE_DIR = "/usr/share/locale"
 import os
 import sys
 import logging
+import logging.handlers
 import gettext
 import locale
-
+import uuid
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
@@ -48,6 +49,15 @@ cmd_line = None
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.16.0"
 
+
+#ba97d14c-24a7-11e5-a5b1-c8600054c883
+#bebf9156-24a7-11e5-8619-c8600054c883
+
+class ContextFilter(logging.Filter):
+    def filter(self, record):
+        uid = str(uuid.uuid1()).split("-")
+        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        return True
 
 class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
@@ -99,10 +109,13 @@ def setup_logging():
 
     logger.setLevel(log_level)
 
+    filter = ContextFilter()
+    logger.addFilter(filter)
+
     # Log format
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
 
     # Create file handler
     try:
@@ -120,6 +133,18 @@ def setup_logging():
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
 
+    # Socket logger
+    socket_handler = logging.handlers.SocketHandler(
+        'localhost',
+        #'192.168.1.200',
+        logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+    # Don't bother with a formatter, since a socket handler sends the event as
+    # an unformatted pickle
+    logger.addHandler(socket_handler)
+
+    # Also add uuid filter to requests logs
+    logger = logging.getLogger("requests.packages.urllib3.connectionpool")
+    logger.addFilter(filter)
 
 def check_gtk_version():
     """ Check GTK version """

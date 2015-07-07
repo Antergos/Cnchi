@@ -29,6 +29,7 @@ import hashlib
 import os
 import logging
 import shutil
+import uuid
 
 import misc.misc as misc
 import requests
@@ -39,7 +40,6 @@ _update_info = "/usr/share/cnchi/update.info"
 
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
-
 
 def get_md5_from_file(filename):
     with open(filename, 'rb') as myfile:
