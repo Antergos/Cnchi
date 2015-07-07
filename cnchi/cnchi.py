@@ -50,9 +50,6 @@ cmd_line = None
 GTK_VERSION_NEEDED = "3.16.0"
 
 
-#ba97d14c-24a7-11e5-a5b1-c8600054c883
-#bebf9156-24a7-11e5-8619-c8600054c883
-
 class ContextFilter(logging.Filter):
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")

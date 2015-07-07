@@ -28,7 +28,6 @@ import logging.handlers
 import socketserver
 import struct
 
-
 class LogRecordStreamHandler(socketserver.StreamRequestHandler):
     """Handler for a streaming logging request.
 
@@ -97,9 +96,15 @@ class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
                 self.handle_request()
             abort = self.abort
 
+class ContextFilter(logging.Filter):
+    def filter(self, record):
+        uid = str(uuid.uuid1()).split("-")
+        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        return True
+
 def main():
     logging.basicConfig(
-        format='[%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+        format='[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
     tcpserver = LogRecordSocketReceiver()
     print('About to start TCP server...')
     tcpserver.serve_until_stopped()
