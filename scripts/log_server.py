@@ -96,15 +96,22 @@ class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
                 self.handle_request()
             abort = self.abort
 
-class ContextFilter(logging.Filter):
-    def filter(self, record):
-        uid = str(uuid.uuid1()).split("-")
-        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        return True
-
 def main():
-    logging.basicConfig(
-        format='[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+    logger = logging.getLogger()
+    formatter = logging.Formatter(
+        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+    # Create file handler
+    try:
+        file_handler = logging.handlers.RotatingFileHandler(
+            '/tmp/cnchi-server.log',
+            maxBytes=1000000, backupCount=5)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    except PermissionError as permission_error:
+        print("Can't open /tmp/cnchi-server.log : ", permission_error)
+
     tcpserver = LogRecordSocketReceiver()
     print('About to start TCP server...')
     tcpserver.serve_until_stopped()
