@@ -71,7 +71,7 @@ class AutoRankmirrorsThread(threading.Thread):
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
         # Make sure we have the latest antergos-mirrorlist
-        with misc.raised_privileges:
+        with misc.raised_privileges():
             try:
                 subprocess.check_call(['pacman', '-Syy', 'antergos-mirrorlist'])
             except subprocess.CalledProcessError as err:
