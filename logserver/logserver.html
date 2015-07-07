@@ -1,0 +1,67 @@
+<!--
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  logserver.html
+#
+#  Copyright © 2013-2015 Antergos
+#
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  Cnchi is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Cnchi; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+    <meta http-equiv="refresh" content="5">
+    <title>Logging Server Status Page</title>
+    <link rel="stylesheet" type="text/css" href="/default.css">
+  </head>
+  <body>
+    <table class="vtable">
+      <caption>Logging Server Status Page</caption>
+      <tr>
+        <th class="heading">Logging Server Start Time</th>
+        <td class="info">%(starttime)s</td>
+      </tr>
+      <tr>
+        <th class="heading">Logging Server Up Time</th>
+        <td class="info">%(uptime)s</td>
+      </tr>
+      <tr>
+        <th class="heading">Log Records Total</th>
+        <td class="info">%(logrecordstotal)s</td>
+      </tr>
+    </table>
+    <table class="htable">
+      <caption>Most Recent Log Records</caption>
+      <tr class="heading"><th>User</th><th>Date</th><th>Module</th><th>Level</th><th>Message</th></tr>
+      %(records)s
+    </table>
+    <p style="text-align:right">
+    <a href="http://jigsaw.w3.org/css-validator/check/referer">
+        <img style="border:0;width:88px;height:31px"
+            src="http://jigsaw.w3.org/css-validator/images/vcss"
+            alt="Valid CSS">
+    </a>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-html401"
+        alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+    </p>
+  </body>
+</html>
