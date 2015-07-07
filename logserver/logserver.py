@@ -32,12 +32,27 @@ import datetime
 import time
 import sys
 import cgi
+import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from collections import deque
 import socket
 
+from pymongo import MongoClient
+from bson import InvalidDocument
+
+class ContextFilter(logging.Filter):
+    def filter(self, record):
+        uid = str(uuid.uuid1()).split("-")
+        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        return True
+
 # Taken from the logging package documentation by Vinay Sajip
 # Also fragments of code by Gabriel A. Genellina and doug farrell
+# MongodbHandler taken from mongodb-log from Jorge Puente Sarrín
+
+# Create collection:
+# > use cnchi
+# > db.createCollection('log', {capped:true, size:100000})
 
 class LogRecordStreamHandler(socketserver.StreamRequestHandler):
     """
@@ -107,37 +122,57 @@ class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
                 self.handle_request()
             abort = self.abort
 
-# Idea and page layout taken from python-loggingserver by doug.farrell
-# http://code.google.com/p/python-loggingserver/
-
-class MostRecentHandler(logging.Handler):
+class MongoHandler(logging.Handler):
     """
-    A Handler which keeps the most recent logging records in memory.
+    Custom log handler
+    Logs all messages to a mongo collection. This  handler is
+    designed to be used with the standard python logging mechanism.
     """
 
-    def __init__(self, max_records=200):
-        logging.Handler.__init__(self)
-        self.logrecordstotal = 0
-        self.max_records = max_records
-        self.db = deque([], max_records)
+    @classmethod
+    def to(cls, collection, db='mongolog', host='localhost', port=None,
+        username=None, password=None, level=logging.NOTSET):
+        """ Create a handler for a given  """
+        return cls(collection, db, host, port, username, password, level)
+
+    def __init__(self, collection, db='mongolog', host='localhost', port=None,
+        username=None, password=None, level=logging.NOTSET):
+        """ Init log handler and store the collection handle """
+        logging.Handler.__init__(self, level)
+
+        if isinstance(collection, str):
+            connection = MongoClient(host, port)
+            if username and password:
+                connection[db].authenticate(username, password)
+            self.collection = connection[db][collection]
+        elif isinstance(collection, Collection):
+            self.collection = collection
+        else:
+            raise TypeError('collection must be an instance of basestring or '
+                             'Collection')
+        self.formatter = logging.Formatter(
+            fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+
+    def count(self):
+        return self.collection.count()
+
+    def find(self):
+        return self.collection.find()
 
     def emit(self, record):
-        self.logrecordstotal += 1
+        """ Store the record to the collection. Async insert """
         try:
-            self.db.append(record)
-            # pre 2.6
-            while len(self.db) > self.max_records:
-                self.db.popleft()
-        except Exception:
-            self.handleError(record)
+            self.collection.insert_one(record.__dict__)
+        except TypeError as type_error:
+            logging.error(type_error)
+        except InvalidDocument as invalid_error:
+            logging.error(
+                "Unable to save log record: %s",
+                invalid_error.message,
+                exc_info=True)
 
 class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
-    datefmt = '%Y-%m-%d %H:%M:%S'
-    formatter = logging.Formatter(
-            # fmt='%(asctime)s\n%(name)s\n%(levelname)s\n%(funcName)s (%(filename)s:%(lineno)d)\n%(message)s',
-            fmt="%(uuid)s\n%(asctime)s\n%(module)s\n%(levelname)s\n%(message)s",
-            datefmt=datefmt)
-
     with open("logserver.css", 'r') as css:
         default_css = css.read()
 
@@ -174,25 +209,24 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
 
     def summary_page(self):
         escape = cgi.escape
-        mostrecent = self.server.mostrecent
-
-        starttime = escape(self.server.starttime.strftime(self.datefmt))
+        handler = self.server.handler
+        datefmt = "%Y-%m-%d %H:%M:%S"
+        starttime = escape(self.server.starttime.strftime(datefmt))
         uptime = datetime.datetime.now() - self.server.starttime
         uptime = escape(str(datetime.timedelta(uptime.days, uptime.seconds)))
-        logrecordstotal = escape(str(mostrecent.logrecordstotal))
+        logrecordstotal = handler.count()
 
-        formatter = self.formatter
         items = []
-        for record in reversed(list(mostrecent.db)):
+        keys = ["uuid", "asctime", "module", "levelname", "message"]
+        for record in handler.find():
             try:
-                cells = escape(formatter.format(record)).split('\n', 4)
-                cells = ['<td>%s</td>' % cell for cell in cells]
-                cells[-1] = cells[-1].replace('\n', '<br>\n') # message & stack trace
-                items.append('<tr class="%s">%s\n</tr>' %
-                    (escape(record.levelname.lower()), ''.join(cells)))
+                cells = ""
+                for key in keys:
+                    cells += "<td>{0}</td>".format(record[key])
+                items.append('<tr class="{0}">{1}\n</tr>'.format(escape(record['levelname'].lower()), cells))
             except Exception:
                 import traceback
-                print >>sys.stderr, 'While generating %r:' % record
+                print('While generating %r:' % record)
                 traceback.print_exc(file=sys.stderr)
         records = '\n'.join(items)
         d = dict(starttime=starttime,
@@ -218,35 +252,24 @@ class LoggingWebMonitor(HTTPServer):
 
 
 def main():
-    logger = logging.getLogger()
-
-    mostrecent = MostRecentHandler()
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(mostrecent)
-
-    formatter = logging.Formatter(
-        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S")
-    # Create file handler
-    try:
-        file_handler = logging.handlers.RotatingFileHandler(
-            '/tmp/cnchi-server.log',
-            maxBytes=1000000, backupCount=5)
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
-    except PermissionError as permission_error:
-        print("Can't open /tmp/cnchi-server.log : ", permission_error)
-
-
-
+    # Get server IP address
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(('8.8.8.8', 0))  # connecting to a UDP address doesn't send packets
     myip = s.getsockname()[0]
 
+    logger = logging.getLogger()
+
+    filter = ContextFilter()
+    logger.addFilter(filter)
+
+    # Create Mongodb handler
+    mongo_handler = MongoHandler.to(db='cnchi', collection='log')
+    mongo_handler.setLevel(logging.DEBUG)
+    logger.addHandler(mongo_handler)
+
     # Web monitor
     webmonitor = LoggingWebMonitor(host=myip)
-    webmonitor.mostrecent = mostrecent
+    webmonitor.handler = mongo_handler
     webmonitor_thread = threading.Thread(target=webmonitor.serve_forever)
     webmonitor_thread.daemon = True
     print("{0} started at {1}".format(webmonitor.__class__.__name__, webmonitor.server_address))
