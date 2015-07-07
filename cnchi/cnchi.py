@@ -131,9 +131,13 @@ def setup_logging():
         logger.addHandler(stream_handler)
 
     # Socket logger
+    if cmd_line.log_server:
+        log_server = cmd_line.log_server
+    else:
+        log_server = "localhost"
+
     socket_handler = logging.handlers.SocketHandler(
-        'localhost',
-        #'192.168.1.200',
+        log_server,
         logging.handlers.DEFAULT_TCP_LOGGING_PORT)
     # Don't bother with a formatter, since a socket handler sends the event as
     # an unformatted pickle
@@ -142,6 +146,8 @@ def setup_logging():
     # Also add uuid filter to requests logs
     logger = logging.getLogger("requests.packages.urllib3.connectionpool")
     logger.addFilter(filter)
+
+    logging.info(_("Sending Cnchi logs to {0}").format(log_server))
 
 def check_gtk_version():
     """ Check GTK version """
@@ -236,6 +242,11 @@ def parse_options():
     parser.add_argument(
         "-p", "--packagelist",
         help=_("Install the packages referenced by a local xml instead of the default ones"),
+        nargs='?')
+    parser.add_argument(
+        "-s", "--log-server",
+        help=_("Choose to which log server send Cnchi logs."
+        " Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
         "-t", "--testing",

@@ -34,6 +34,7 @@ import sys
 import cgi
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from collections import deque
+import socket
 
 # Taken from the logging package documentation by Vinay Sajip
 # Also fragments of code by Gabriel A. Genellina and doug farrell
@@ -237,8 +238,14 @@ def main():
     except PermissionError as permission_error:
         print("Can't open /tmp/cnchi-server.log : ", permission_error)
 
+
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 0))  # connecting to a UDP address doesn't send packets
+    myip = s.getsockname()[0]
+
     # Web monitor
-    webmonitor = LoggingWebMonitor()
+    webmonitor = LoggingWebMonitor(host=myip)
     webmonitor.mostrecent = mostrecent
     webmonitor_thread = threading.Thread(target=webmonitor.serve_forever)
     webmonitor_thread.daemon = True
@@ -246,13 +253,13 @@ def main():
     webmonitor_thread.start()
 
     # Log server
-    logserver = LogRecordSocketReceiver()
+    logserver = LogRecordSocketReceiver(host=myip)
     logserver_thread = threading.Thread(target=logserver.serve_forever)
     logserver_thread.daemon = True
     logserver_thread.start()
 
-    import webbrowser
-    webbrowser.open('http://%s:%s/' % webmonitor.server_address)
+    # import webbrowser
+    # webbrowser.open('http://%s:%s/' % webmonitor.server_address)
 
     while True:
         try:
