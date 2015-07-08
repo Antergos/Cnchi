@@ -27,7 +27,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="5">
+    <meta http-equiv="refresh" content="20">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -45,65 +45,75 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script>
+    var QueryString = function () {
+      // This function is anonymous, is executed immediately and
+      // the return value is assigned to QueryString!
+      var query_string = {};
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+            // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+          query_string[pair[0]] = pair[1];
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+          var arr = [ query_string[pair[0]], pair[1] ];
+          query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+          query_string[pair[0]].push(pair[1]);
+        }
+      }
+        return query_string;
+    } ();
+
+    function GotoPage(page) {
+      newURL = window.location.pathname + "?page=" + page;
+      window.location.href = newURL;
+    }
+
+    function GotoFirstPage() {
+      GotoPage(0);
+    }
+
+    function GotoNextPage() {
+      nextPage = parseInt(QueryString.page, 10) + 1;
+      if (nextPage <= %(numpages)s) {
+        GotoPage(nextPage);
+      }
+    }
+
+    function GotoPrevPage() {
+      new_page = parseInt(QueryString.page, 10) - 1;
+      if (new_page < 0) {
+        new_page = 0;
+      }
+      GotoPage(new_page);
+    }
+
+    function GotoLastPage() {
+      GotoPage(%(numpages)s);
+    }
+    </script>
   </head>
   <body>
 
-
-    <button type="button" class="btn btn-default btn-lg">
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+    <button type="button" class="btn btn-default btn-lg" onclick="window.location.reload();">
       <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-      <span class="glyphicon-class">glyphicon glyphicon-refresh</span>
     </button>
-    <!-- window.location.reload(); -->
+    </div>
+      <div class="col-md-8">
+      <h1>Cnchi Logging Viewer</h1>
+    </div>
+  </div>
 
-
-    <li>
-      <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-step-backward</span>
-      </button>
-      </li>
-
-      <li>
-        <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-fast-backward</span>
-      </button>
-      </li>
-
-      <li>
-      <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-backward</span>
-      </button>
-      </li>
-
-
-      <li>
-      <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-forward</span>
-      </button>
-      </li>
-
-      <li>
-      <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-fast-forward</span>
-      </button>
-      </li>
-
-      <li>
-      <button type="button" class="btn btn-default" aria-label="Left Align">
-        <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
-        <span class="glyphicon-class">glyphicon glyphicon-step-forward</span>
-      </button>
-      </li>
-
-
-
-
-    <h1>Cnchi Logging Viewer</h1>
-
+  <div class="row">
     <table class="table table-bordered">
       <caption>Logging Server Status Page</caption>
       <tr>
@@ -124,7 +134,24 @@
       <tr class="heading"><th>User Id</th><th>Run Id</th><th>Time</th><th>Module</th><th>Level</th><th>Message</th></tr>
       %(records)s
     </table>
-
+  </div>
+  <div class="row">
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoFirstPage();">
+        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoPrevPage();">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoNextPage();">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoLastPage();">
+        <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

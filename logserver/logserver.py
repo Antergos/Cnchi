@@ -200,8 +200,23 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             ("/fonts/glyphicons-halflings-regular.ttf", "application/x-font-ttf")]
 
         try:
+            get_vars_dict = None
+
+            if '?' in path:
+                try:
+                    get_vars = path.split('?')[1]
+                    if '&' in get_vars:
+                        get_vars = get_vars.split('&')
+                        for get_var in get_vars:
+                            get_vars_dict =  {get_var.split('=')[0]: get_var.split('=')[1]}
+                    else:
+                        get_vars_dict = {get_vars.split('=')[0]:get_vars.split('=')[1]}
+                except IndexError as index_error:
+                    get_vars_dict = None
+                path = path.split('?')[0]
+
             if path == '/index.html' or path == "/summary.html":
-                return 200, self.summary_page().encode(), 'text/html'
+                return 200, self.summary_page(get_vars_dict).encode(), 'text/html'
 
             # Redirects to our index.html
             if path == '/':
@@ -229,14 +244,13 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             traceback.print_exc(file=sys.stderr)
             return 500, None, None
 
-    def summary_page(self):
+    def summary_page(self, get_vars_dict):
         escape = cgi.escape
         handler = self.server.handler
         datefmt = "%Y-%m-%d %H:%M:%S"
         starttime = escape(self.server.starttime.strftime(datefmt))
         uptime = datetime.datetime.now() - self.server.starttime
         uptime = escape(str(datetime.timedelta(uptime.days, uptime.seconds)))
-        logrecordstotal = handler.count()
 
         items = []
         keys = ["uuid", "asctime", "module", "levelname", "message"]
@@ -246,7 +260,31 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             "warning":"warning",
             "error":"danger"}
 
-        for record in handler.find():
+        num_page = 0
+        items_per_page = 10
+        num_items = handler.count()
+        if get_vars_dict:
+            if "page" in get_vars_dict.keys():
+                try:
+                    num_page = int(get_vars_dict["page"])
+                except ValueError as value_error:
+                    num_page = 0
+
+        if num_page < 0:
+            num_page = 0
+
+        max_num_pages = num_items // items_per_page
+
+        if num_page > max_num_pages:
+            num_page = max_num_pages
+
+        start = num_page * items_per_page
+        end = start + items_per_page
+
+        if end > num_items:
+            end = num_items
+
+        for record in handler.find()[start:end]:
             try:
                 cells = ""
                 for key in keys:
@@ -267,9 +305,10 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
                 print('While generating %r:' % record)
                 traceback.print_exc(file=sys.stderr)
         records = '\n'.join(items)
-        d = dict(starttime=starttime,
+        d = dict(numpages=max_num_pages,
+                starttime=starttime,
                  uptime=uptime,
-                 logrecordstotal=logrecordstotal,
+                 logrecordstotal=num_items,
                  records=records)
         return self.summary_html % d
 
