@@ -187,28 +187,41 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Length', str(len(response)))
         self.end_headers()
         if response:
-            self.wfile.write(response.encode())
+            self.wfile.write(response)
 
     def build_response(self, path):
         valid_files = [
-            "/css/bootstrap.min.css",
-            "/js/bootstrap.min.js",
-            "/js/bootstrap.min.js"]
+            ("/css/bootstrap.min.css", "text/css"),
+            ("/js/bootstrap.min.js", "text/javascript"),
+            ("/js/bootstrap.min.js", "text/javascript"),
+            ("/js/bootstrap-theme.min.css", "text/javascript"),
+            ("/fonts/glyphicons-halflings-regular.woff2", "application/font-woff"),
+            ("/fonts/glyphicons-halflings-regular.woff", "application/font-woff"),
+            ("/fonts/glyphicons-halflings-regular.ttf", "application/x-font-ttf")]
 
         try:
             if path == '/index.html' or path == "/summary.html":
-                return 200, self.summary_page(), 'text/html'
-
-            if path in valid_files:
-                # Remove starting slash
-                path = path[1:]
-                with open(path, 'r') as data_file:
-                    data = data_file.read()
-                return 200, data, None
+                return 200, self.summary_page().encode(), 'text/html'
 
             # Redirects to our index.html
             if path == '/':
                 return 301, '/index.html', 'text/html'
+
+            for valid_file in valid_files:
+                (valid_path, mime) = valid_file
+                if path == valid_path:
+                    # Remove starting slash
+                    path = path[1:]
+
+                    if "text" in mime:
+                        with open(path, 'r') as data_file:
+                            data = data_file.read().encode()
+                    else:
+                        with open(path, 'rb') as data_file:
+                            data = data_file.read()
+
+                    return 200, data, mime
+            # Not found
             return 404, None, None
         except Exception:
             import traceback
