@@ -147,7 +147,9 @@ def setup_logging():
     logger = logging.getLogger("requests.packages.urllib3.connectionpool")
     logger.addFilter(filter)
 
-    logging.info(_("Sending Cnchi logs to {0}").format(log_server))
+    uid = str(uuid.uuid1()).split("-")
+    myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+    logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
 def check_gtk_version():
     """ Check GTK version """
