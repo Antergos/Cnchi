@@ -232,11 +232,18 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             "debug":"success",
             "warning":"warning",
             "error":"danger"}
+
         for record in handler.find():
             try:
                 cells = ""
                 for key in keys:
-                    cells += "<td>{0}</td>".format(record[key])
+                    if key == "uuid":
+                        uuid_split = record["uuid"].split("-")
+                        run = uuid_split[0] + "-" + uuid_split[1]
+                        user = uuid_split[2] + "-" + uuid_split[3]
+                        cells += "<td>{0}</td><td>{1}</td>".format(user, run)
+                    else:
+                        cells += "<td>{0}</td>".format(record[key])
                 level = escape(record['levelname'].lower())
                 item = '<tr class="{0}">{1}\n</tr>'.format(
                     classes[level],
