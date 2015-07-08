@@ -173,9 +173,6 @@ class MongoHandler(logging.Handler):
                 exc_info=True)
 
 class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
-    with open("logserver.css", 'r') as css:
-        default_css = css.read()
-
     with open("logserver.html", 'r') as html:
         summary_html = html.read()
 
@@ -193,13 +190,25 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(response.encode())
 
     def build_response(self, path):
+        valid_files = [
+            "/css/bootstrap.min.css",
+            "/js/bootstrap.min.js",
+            "/js/bootstrap.min.js"]
+
         try:
-            if path == '/summary.html':
+            if path == '/index.html' or path == "/summary.html":
                 return 200, self.summary_page(), 'text/html'
-            if path == '/default.css':
-                return 200, self.default_css, 'text/css'
+
+            if path in valid_files:
+                # Remove starting slash
+                path = path[1:]
+                with open(path, 'r') as data_file:
+                    data = data_file.read()
+                return 200, data, None
+
+            # Redirects to our index.html
             if path == '/':
-                return 301, '/summary.html', 'text/html'
+                return 301, '/index.html', 'text/html'
             return 404, None, None
         except Exception:
             import traceback
@@ -218,12 +227,21 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
 
         items = []
         keys = ["uuid", "asctime", "module", "levelname", "message"]
+        classes = {
+            "info":"info",
+            "debug":"success",
+            "warning":"warning",
+            "error":"danger"}
         for record in handler.find():
             try:
                 cells = ""
                 for key in keys:
                     cells += "<td>{0}</td>".format(record[key])
-                items.append('<tr class="{0}">{1}\n</tr>'.format(escape(record['levelname'].lower()), cells))
+                level = escape(record['levelname'].lower())
+                item = '<tr class="{0}">{1}\n</tr>'.format(
+                    classes[level],
+                    cells)
+                items.append(item)
             except Exception:
                 import traceback
                 print('While generating %r:' % record)
