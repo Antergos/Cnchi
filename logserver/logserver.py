@@ -37,6 +37,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from collections import deque
 import socket
 
+from pymongo import CursorType
 from pymongo import MongoClient
 from bson import InvalidDocument
 
@@ -157,8 +158,8 @@ class MongoHandler(logging.Handler):
     def count(self):
         return self.collection.count()
 
-    def find(self):
-        return self.collection.find()
+    def find(self, filter=None):
+        return self.collection.find(filter=filter)
 
     def emit(self, record):
         """ Store the record to the collection. Async insert """
@@ -207,8 +208,9 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
                     get_vars = path.split('?')[1]
                     if '&' in get_vars:
                         get_vars = get_vars.split('&')
+                        get_vars_dict = {}
                         for get_var in get_vars:
-                            get_vars_dict =  {get_var.split('=')[0]: get_var.split('=')[1]}
+                            get_vars_dict[get_var.split('=')[0]] = get_var.split('=')[1]
                     else:
                         get_vars_dict = {get_vars.split('=')[0]:get_vars.split('=')[1]}
                 except IndexError as index_error:
@@ -262,13 +264,25 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
 
         num_page = 0
         items_per_page = 10
-        num_items = handler.count()
+        search_text = None
+
         if get_vars_dict:
             if "page" in get_vars_dict.keys():
                 try:
                     num_page = int(get_vars_dict["page"])
                 except ValueError as value_error:
                     num_page = 0
+            if "search" in get_vars_dict.keys():
+                search_text = get_vars_dict["search"]
+
+        if search_text:
+            query = {"uuid": search_text}
+            cursor = handler.find(filter=query)
+        else:
+            cursor = handler.find()
+
+        num_items = cursor.count()
+        # print("num_items", num_items)
 
         if num_page < 0:
             num_page = 0
@@ -284,29 +298,27 @@ class LogginWebMonitorRequestHandler(BaseHTTPRequestHandler):
         if end > num_items:
             end = num_items
 
-        for record in handler.find()[start:end]:
+        # print("start", start, "end", end)
+
+        for record in cursor[start:end]:
             try:
                 cells = ""
                 for key in keys:
-                    if key == "uuid":
-                        uuid_split = record["uuid"].split("-")
-                        run = uuid_split[0] + "-" + uuid_split[1]
-                        user = uuid_split[2] + "-" + uuid_split[3]
-                        cells += "<td>{0}</td><td>{1}</td>".format(user, run)
-                    else:
-                        cells += "<td>{0}</td>".format(record[key])
+                    cells += "<td>{0}</td>".format(record[key])
                 level = escape(record['levelname'].lower())
                 item = '<tr class="{0}">{1}\n</tr>'.format(
                     classes[level],
                     cells)
                 items.append(item)
-            except Exception:
+            except Exception as fatal_error:
+                print(fatal_error)
                 import traceback
                 print('While generating %r:' % record)
                 traceback.print_exc(file=sys.stderr)
+
         records = '\n'.join(items)
-        d = dict(numpages=max_num_pages,
-                starttime=starttime,
+        d = dict(numpages=max_num_pages + 1,
+                 starttime=starttime,
                  uptime=uptime,
                  logrecordstotal=num_items,
                  records=records)
