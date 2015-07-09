@@ -81,6 +81,9 @@
 
     function GotoNextPage() {
       nextPage = parseInt(QueryString.page, 10) + 1;
+      if (isNaN(nextPage)) {
+        nextPage = 1;
+      }
       if (nextPage <= %(numpages)s) {
         GotoPage(nextPage);
       }
