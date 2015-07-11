@@ -67,13 +67,13 @@ class AutoRankmirrorsThread(threading.Thread):
             return
 
         # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
-
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
         # Make sure we have the latest antergos-mirrorlist
         with misc.raised_privileges():
             try:
-                subprocess.check_call(['pacman', '-Syy', 'antergos-mirrorlist'])
+                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', 'antergos-mirrorlist']
+                subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
                 logging.debug(_('Update of antergos-mirrorlist package failed with error: %s', err))
 
