@@ -216,6 +216,8 @@ class InstallationAsk(GtkBaseBox):
 
         oses_str = self.get_os_list_str()
 
+        max_width_chars = 100
+
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
         if len(oses_str) > 0:
@@ -229,13 +231,18 @@ class InstallationAsk(GtkBaseBox):
         txt = _("Warning: This will erase ALL data on your disk.")
         #txt = description_style.format(txt)
         label.set_text(txt)
-        label.set_line_wrap(True)
         label.set_name("automatic_desc")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("encrypt_checkbutton")
         txt = _("Encrypt this installation for increased security.")
         button.set_label(txt)
         button.set_name("enc_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the next step.")
@@ -244,12 +251,15 @@ class InstallationAsk(GtkBaseBox):
         label.set_name("enc_label")
         label.set_hexpand(False)
         label.set_line_wrap(True)
-        label.set_max_width_chars(100)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("lvm_checkbutton")
         txt = _("Use LVM with this installation.")
         button.set_label(txt)
         button.set_name("lvm_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
@@ -258,12 +268,15 @@ class InstallationAsk(GtkBaseBox):
         label.set_name("lvm_label")
         label.set_hexpand(False)
         label.set_line_wrap(True)
-        label.set_max_width_chars(100)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
         button.set_label(txt)
         button.set_name("home_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("home_label")
         txt = _("This will setup you /home directory in a different partition or volume.")
@@ -272,7 +285,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_name("home_label")
         label.set_hexpand(False)
         label.set_line_wrap(True)
-        label.set_max_width_chars(100)
+        label.set_max_width_chars(max_width_chars)
 
         # Alongside Install (For now, only works with Windows)
         # if len(oses_str) > 0:
@@ -295,6 +308,9 @@ class InstallationAsk(GtkBaseBox):
         #intro_txt = bold_style.format(intro_txt)
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
+        intro_label.set_hexpand(False)
+        intro_label.set_line_wrap(True)
+        intro_label.set_max_width_chars(max_width_chars)
 
         # Advanced Install
         radio = self.ui.get_object("advanced_radiobutton")
@@ -305,8 +321,10 @@ class InstallationAsk(GtkBaseBox):
         txt = _("Edit partition table and choose mount points.")
         #txt = description_style.format(txt)
         label.set_text(txt)
-        label.set_line_wrap(True)
         label.set_name("adv_desc_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
     def store_values(self):
         """ Store selected values """

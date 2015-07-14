@@ -75,7 +75,7 @@ class AutoRankmirrorsThread(threading.Thread):
                 cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', 'antergos-mirrorlist']
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
-                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s', err))
+                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), err)
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:

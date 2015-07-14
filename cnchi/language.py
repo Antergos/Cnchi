@@ -84,7 +84,7 @@ class Language(GtkBaseBox):
 
         label.set_hexpand(False)
         label.set_line_wrap(True)
-        label.set_max_width_chars(60)
+        label.set_max_width_chars(50)
 
         txt = _("Choose your language")
         self.header.set_subtitle(txt)
