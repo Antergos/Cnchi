@@ -106,6 +106,9 @@ class Check(GtkBaseBox):
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
         self.prepare_best_results.set_markup(txt)
+        self.prepare_best_results.set_hexpand(False)
+        self.prepare_best_results.set_line_wrap(True)
+        self.prepare_best_results.set_max_width_chars(80)
 
     def check_all(self):
         """ Check that all requirements are meet """
