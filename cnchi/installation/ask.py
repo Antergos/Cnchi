@@ -216,7 +216,7 @@ class InstallationAsk(GtkBaseBox):
 
         oses_str = self.get_os_list_str()
 
-        max_width_chars = 100
+        max_width_chars = 80
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
