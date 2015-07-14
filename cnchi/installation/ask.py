@@ -242,6 +242,9 @@ class InstallationAsk(GtkBaseBox):
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("enc_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(100)
 
         button = self.ui.get_object("lvm_checkbutton")
         txt = _("Use LVM with this installation.")
@@ -253,6 +256,9 @@ class InstallationAsk(GtkBaseBox):
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("lvm_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(100)
 
         button = self.ui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
@@ -264,6 +270,9 @@ class InstallationAsk(GtkBaseBox):
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(100)
 
         # Alongside Install (For now, only works with Windows)
         # if len(oses_str) > 0:

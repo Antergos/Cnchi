@@ -90,6 +90,9 @@ class Check(GtkBaseBox):
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)
+        self.label_space.set_hexpand(False)
+        self.label_space.set_line_wrap(True)
+        self.label_space.set_max_width_chars(100)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")

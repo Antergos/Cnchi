@@ -74,7 +74,12 @@ class Updater():
                 update_info = json.loads(response)
                 self.local_files = update_info['files']
 
-        r = requests.get(_update_info_url, stream=True)
+        try:
+            r = requests.get(_update_info_url, stream=True)
+        except requests.exceptions.ConnectionError as conn_error:
+            logging.error(conn_error)
+            return
+
         if r.status_code == requests.codes.ok:
             txt = ""
             for chunk in r.iter_content(1024):
