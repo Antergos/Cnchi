@@ -30,10 +30,9 @@ import logging
 import time
 import os
 import shutil
+import requests
 
 import misc.misc as misc
-
-import requests
 
 
 class AutoRankmirrorsThread(threading.Thread):
@@ -100,7 +99,6 @@ class AutoRankmirrorsThread(threading.Thread):
         try:
             with misc.raised_privileges():
                 self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
-
         except subprocess.CalledProcessError as process_error:
             logging.error(_("Couldn't execute auto mirror selection"))
             logging.error(process_error)

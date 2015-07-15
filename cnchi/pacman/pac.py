@@ -97,7 +97,12 @@ class Pac(object):
             db_path = _DEFAULT_DB_PATH
 
         self.handle = pyalpm.Handle(root_dir, db_path)
-        
+
+        logging.debug(
+            _("alpm init with root dir '{0}' and db path '{1}'").format(
+                root_dir,
+                db_path))
+
         if self.handle is None:
             raise pyalpm.error
 
@@ -316,7 +321,7 @@ class Pac(object):
 
     @staticmethod
     def find_sync_package(pkgname, syncdbs):
-        """ Finds a package name in a list of DBs 
+        """ Finds a package name in a list of DBs
         :rtype : tuple (True/False, package or error message)
         """
         for db in syncdbs.values():
@@ -370,7 +375,7 @@ class Pac(object):
         if event_type == "percent":
             # Limit percent to two decimal
             event_text = "{0:.2f}".format(event_text)
-        
+
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:
                 # Do not enqueue the same event twice

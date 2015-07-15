@@ -1,12 +1,13 @@
 [options]
 Architecture = auto
 SigLevel = PackageOptional
-            
+
 RootDir = ${destDir}
 DBPath = ${destDir}/var/lib/pacman/
+#DBPath = /var/lib/pacman/
 CacheDir = ${destDir}/var/cache/pacman/pkg
 LogFile = /tmp/pacman.log
-                       
+
 # Repositories
 [core]
 SigLevel = PackageRequired
@@ -27,6 +28,6 @@ SigLevel = PackageRequired
 Include = /etc/pacman.d/mirrorlist
 % endif
 
-[antergos] 
+[antergos]
 SigLevel = PackageRequired
 Include = /etc/pacman.d/antergos-mirrorlist
