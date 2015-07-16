@@ -85,8 +85,10 @@ class AutoRankmirrorsThread(threading.Thread):
                     # Comment out auto selection
                     lines[i] = "#" + lines[i]
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
-                    # Uncomment Antergos mirror
-                    lines[i] = lines[i].lstrip("#")
+                    # sourceforge server does not get updated as often as necessary
+                    if "sourceforge" not in lines[i]:
+                        # Uncomment Antergos mirror
+                        lines[i] = lines[i].lstrip("#")
 
             with misc.raised_privileges():
                 # Backup original file
