@@ -65,9 +65,6 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.warning(_("Can't find update mirrors script"))
             return
 
-        # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
-        autoselect = "http://mirrors.antergos.com/$repo/$arch"
-
         # Make sure we have the latest antergos-mirrorlist
         with misc.raised_privileges():
             try:
@@ -75,6 +72,9 @@ class AutoRankmirrorsThread(threading.Thread):
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
                 logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), err)
+
+        # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
+        autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:
@@ -85,10 +85,12 @@ class AutoRankmirrorsThread(threading.Thread):
                     # Comment out auto selection
                     lines[i] = "#" + lines[i]
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
-                    # sourceforge server does not get updated as often as necessary
-                    if "sourceforge" not in lines[i]:
-                        # Uncomment Antergos mirror
-                        lines[i] = lines[i].lstrip("#")
+                    # Uncomment Antergos mirror
+                    lines[i] = lines[i].lstrip("#")
+
+                # sourceforge server does not get updated as often as necessary
+                if "sourceforge" in lines[i]:
+                    lines[i] = "#" + lines[i]
 
             with misc.raised_privileges():
                 # Backup original file
