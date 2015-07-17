@@ -60,7 +60,7 @@ def mariadb_setup():
         "--datadir=/var/lib/mysql"]
     chroot_run(cmd)
 
-    cmd = ["systemctl", "enable", "mariadb"]
+    cmd = ["systemctl", "enable", "mysqld"]
     chroot_run(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
@@ -88,7 +88,7 @@ def nginx_setup():
                 nginx_conf.write("        location ~ \.php$ {\n")
                 nginx_conf.write("            fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;\n")
                 nginx_conf.write("            fastcgi_index  index.php;\n")
-                nginx_conf.write("            root   /srv/http;\n")
+                nginx_conf.write("            root   /usr/share/nginx/html;\n")
                 nginx_conf.write("            include        fastcgi.conf;\n")
                 nginx_conf.write("        }\n\n")
                 sections = {"http": False, "server": False, "location": False}

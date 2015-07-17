@@ -53,7 +53,7 @@ def mariadb_setup():
         "--datadir=/var/lib/mysql"]
     chroot_run(cmd)
 
-    cmd = ["systemctl", "enable", "mariadb"]
+    cmd = ["systemctl", "enable", "mysqld"]
     chroot_run(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
@@ -99,6 +99,9 @@ def apache_setup():
 
     # We activate the virtual localhost site
     chroot_run(["a2ensite", "localhost"])
+
+    cmd = ["systemctl", "enable", "httpd"]
+    chroot_run(cmd)
 
 
 def php_setup():
