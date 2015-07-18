@@ -30,6 +30,7 @@ import sys
 import math
 import logging
 import os
+import queue
 
 try:
     import pacman.alpm_events as alpm
@@ -44,11 +45,11 @@ except ImportError as err:
         _ = gettext.gettext
     except ImportError as err:
         logging.error(err)
-        pass
 
 try:
     import pyalpm
 except ImportError as err:
+    # This is already logged elsewhere
     # logging.error(err)
     pass
 
@@ -407,7 +408,7 @@ class Pac(object):
         else:
             try:
                 self.callback_queue.put_nowait((event_type, event_text))
-            except self.callback_queue.Full:
+            except queue.Full:
                 logging.warning("Callback queue is full")
 
             if event_type == "error":
