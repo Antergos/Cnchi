@@ -1358,23 +1358,45 @@ class InstallationProcess(multiprocessing.Process):
             locale_conf.write('LANG={0}\n'.format(locale))
             locale_conf.write('LC_COLLATE={0}\n'.format(locale))
 
-        environment_path = os.path.join(DEST_DIR, "etc/environment")
-        with open(environment_path, "w") as environment:
-            environment.write('LANG={0}\n'.format(locale))
+        #environment_path = os.path.join(DEST_DIR, "etc/environment")
+        #with open(environment_path, "w") as environment:
+        #    environment.write('LANG={0}\n'.format(locale))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
         self.queue_event('info', _("Configuring keymap..."))
-        # TODO: Check this in base install
-        # localectl will set console equivalent to the X settings
-        # if we set the X keymap via set-x11-keymap (see man localectl)
+
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
-        cmd = ["localectl", "set-x11-keymap", keyboard_layout]
-        if keyboard_variant:
-            cmd.append(keyboard_variant)
-        chroot_run(cmd)
+
+        if self.desktop != "base":
+            # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+            logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
+            xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
+            if not os.path.exists(xorg_conf_dir):
+                os.mkdir(xorg_conf_dir, 0o755)
+            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
+            try:
+                with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
+                    xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+                    xorg_conf_xkb.write('# manually too freely.\n')
+                    xorg_conf_xkb.write('Section "InputClass"\n')
+                    xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
+                    xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
+                    xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
+                    if len(keyboard_variant) > 0:
+                        xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
+                    xorg_conf_xkb.write('EndSection\n')
+                logging.debug(_("00-keyboard.conf written."))
+            except IOError as io_error:
+                # Do not fail if 00-keyboard.conf can't be created. Something bad must be happening, though.
+                logging.error(io_error)
+
+        # Set vconsole.conf for console keymap
+        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
+        with open(vconsole_path, 'w') as vconsole:
+            vconsole.write("KEYMAP={0}\n".format(keyboard_layout))
 
         # Install configs for root
         cmd = ['cp', '-av', '/etc/skel/.', '/root/']
