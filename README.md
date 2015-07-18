@@ -67,4 +67,3 @@ We manage our translations in transifex:
  - ttf-myanmar3
  - ttf-thaana-fonts
  - ttf-tlwg
-
