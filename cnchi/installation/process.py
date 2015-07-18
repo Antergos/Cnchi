@@ -1059,20 +1059,21 @@ class InstallationProcess(multiprocessing.Process):
 
         if self.settings.get("feature_lamp"):
             web_server = self.settings.get("feature_lamp_web_server")
-            logging.debug(_("Configuring LAMP (%s)..."), web_server)
             try:
                 if web_server == "apache":
-                    import lamp
+                    from installation import lamp
+                    logging.debug(_("Configuring LAMP (%s)..."), web_server)
                     lamp.setup()
-                    services.extend(["httpd", "mariadb"])
+                    services.extend(["httpd", "mysqld"])
                 elif web_server == "nginx":
-                    import lemp
+                    from installation import lemp
+                    logging.debug(_("Configuring LEMP (%s)..."), web_server)
                     lemp.setup()
-                    services.extend(["nginx", "mariadb", "php-fpm"])
+                    services.extend(["nginx", "mysqld", "php-fpm"])
                 else:
                     logging.warning(_("Unknown web server: %s"), web_server)
             except ImportError as error:
-                logging.warning(_("Can't import lamp module"))
+                logging.warning(_("Can't import lamp/lemp module"))
                 logging.warning(error)
 
         self.enable_services(services)
