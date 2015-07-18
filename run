@@ -13,7 +13,7 @@ _PYTHON_OPTIONS="-Wall"
 _CACHE="/var/cache/pacman/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-d -v"
-_LOG_SERVER="-s logserver"
+# _LOG_SERVER="-s logserver"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
