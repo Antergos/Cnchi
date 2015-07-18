@@ -111,7 +111,7 @@ class DownloadPackages(object):
         else:
             if download_library != "requests":
                 logging.warning(_("Unknown '%s' library, Cnchi will use the 'requests' one as default"),
-                    download_library)
+                                download_library)
             download = download_requests.Download(
                 pacman_cache_dir,
                 cache_dir,
@@ -125,7 +125,6 @@ class DownloadPackages(object):
             # Cons: We won't let alpm to try to download the package itself
             txt = _("Can't install necessary packages. Cnchi can't continue.")
             raise InstallError(txt)
-
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """

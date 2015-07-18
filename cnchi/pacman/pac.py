@@ -36,8 +36,15 @@ try:
     import pacman.pkginfo as pkginfo
     import pacman.pacman_conf as config
 except ImportError as err:
-    # logging.error(err)
-    pass
+    try:
+        import cnchi.pacman.alpm_events as alpm
+        import cnchi.pacman.pkginfo as pkginfo
+        import cnchi.pacman.pacman_conf as config
+        import gettext
+        _ = gettext.gettext
+    except ImportError as err:
+        logging.error(err)
+        pass
 
 try:
     import pyalpm
@@ -400,7 +407,7 @@ class Pac(object):
         else:
             try:
                 self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
+            except self.callback_queue.Full:
                 logging.warning("Callback queue is full")
 
             if event_type == "error":

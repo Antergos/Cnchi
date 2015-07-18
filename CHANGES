@@ -1,0 +1,413 @@
+[2015-07-18 13:04:05 +0200]  Fix import typo                                                            karasu      {bb12d8f}
+[2015-07-18 12:54:25 +0200]  Edit 00-keyboard.conf and vconsole.conf manually (old method) inste..      karasu      {418cf94}
+[2015-07-17 18:35:20 +0200]  Trying to fix lamp/lemp installation                                       karasu      {393bad8}
+[2015-07-16 13:58:48 +0200]  Still problems with sourceforge                                            karasu      {9cf5326}
+[2015-07-16 13:46:27 +0200]  Do not use sourceforge mirror even if it is present in antergos-mir..      karasu      {a79b420}
+[2015-07-16 13:36:11 +0200]  Fix halign in ask screen                                                   karasu      {a565f1a}
+[2015-07-15 18:04:38 +0200]  New bug? antergos.db database is not updated at destination (/insta..      karasu      {92a4f89}
+[2015-07-14 18:53:02 +0200]  Forgot this string (in some languages is too long)                         karasu      {7b1274f}
+[2015-07-14 18:45:55 +0200]  Deutsch looks nice now                                                     karasu      {fda019a}
+[2015-07-14 18:41:37 +0200]  It seems that with the right numbers works                                 karasu      {ff712f4}
+[2015-07-14 18:00:36 +0200]  Prevent labels to grow too much (so window does not grow, too)             karasu      {1c224a9}
+[2015-07-11 17:54:04 +0200]  Added lxqt packages (but lxqt is disabled atm!)                            karasu      {9e94bdd}
+[2015-07-11 15:04:08 +0200]  Do not wait for confirmation in rank_mirrors                               karasu      {adb3edb}
+[2015-07-10 01:45:27 +0200]  There are still some minor errors, but it is useable enough. Won't ..      karasu      {7891d66}
+[2015-07-09 20:54:36 +0200]  NextPage=1 when no page is on address url                                  karasu      {876e922}
+[2015-07-09 01:22:55 +0200]  Show to the user the uuid so he can refer it to us easely                  karasu      {28f02bc}
+[2015-07-09 01:12:03 +0200]  Show log per pages                                                         karasu      {652a5aa}
+[2015-07-08 22:11:04 +0200]  Serving binary files, too.                                                 karasu      {1d1e6d0}
+[2015-07-08 19:32:35 +0200]  Show uuid split in two (user, run)                                         karasu      {6fd7fa8}
+[2015-07-08 19:18:47 +0200]  I was bored and added bootstrap to the logserver.                          karasu      {81df09d}
+[2015-07-08 00:38:43 +0200]  Insted of logging to a file now logs to a MongoDB database                 karasu      {078aee0}
+[2015-07-07 22:22:03 +0200]  Add log-server param to run script                                         karasu      {0bcb1ab}
+[2015-07-07 22:19:04 +0200]  Fix typo in rank_mirrors                                                   karasu      {2b1850d}
+[2015-07-07 22:14:32 +0200]  Use ip address instead of localhost                                        karasu      {6886381}
+[2015-07-07 20:02:17 +0200]  Now logserver also serves a page that shows latest loggins (just fo..      karasu      {a21f889}
+[2015-07-07 15:26:43 +0200]  log_server now logs to a rotating file (in /tmp, this should be cha..      karasu      {c7c6bae}
+[2015-07-07 15:15:19 +0200]  log_server modified to show who is logging                                 karasu      {a79b4cb}
+[2015-07-07 15:06:20 +0200]  version bump                                                               karasu      {cf13488}
+[2015-07-07 15:03:33 +0200]  Added simple log server                                                    karasu      {901ad05}
+[2015-07-07 15:02:44 +0200]  Add unique identifier to our logs. Also can log to a server.               karasu      {322eb57}
+[2015-07-01 16:43:06 +0200]  Use thunar instead of pcmanfm                                              karasu      {056fcdf}
+[2015-06-23 19:30:53 -0500]  update antergos mirrorlist package before we rank the mirrors. remo..  Dustin Falgout  {97b2ec4}
+[2015-06-23 14:44:40 +0200]  Update packages.xml                                                        karasu      {c2b6c5e}
+[2015-06-19 07:47:40 +0200]  Added waldorf theme                                                        karasu      {b145a77}
+[2015-06-17 19:15:59 +0200]  It is no longer necessary to pass the object                               karasu      {f76ef47}
+[2015-06-16 22:19:45 +0200]  Do not fail when file size is unknown                                      karasu      {0e5c29d}
+[2015-06-16 22:05:49 +0200]  Try to trap connection errors                                              karasu      {9686075}
+[2015-06-16 22:03:02 +0200]  Add antergos-openbox-setup package to the Openbox installation             karasu      {79c3884}
+[2015-06-16 22:02:01 +0200]  Use new antergos-openbox-setup package                                     karasu      {8eaed94}
+[2015-06-15 21:21:45 +0200]  It turns out no script was necessary :p                                    karasu      {6efaf58}
+[2015-06-15 21:08:55 +0200]  Post script nvidia/amd installation needs to be written                    karasu      {9423df1}
+[2015-06-15 19:32:27 +0200]  Add proprietary graphic drivers if the user desires so                     karasu      {92ac1a8}
+[2015-06-15 19:24:52 +0200]  Removed duplicated code. It seems to work, now. Features must be ch..      karasu      {ec405f5}
+[2015-06-14 22:11:55 +0200]  Fixed detection of amd/nvidia graphic cards (need rewriting as I us..      karasu      {7b55c5c}
+[2015-06-11 12:22:15 +0200]  Do not check if a LVM volume is an extended partition (this just av..      karasu      {03c453d}
+[2015-06-11 12:09:04 +0200]  Use systemd-timesyncd                                                      karasu      {ce4e13a}
+[2015-06-08 18:14:24 +0200]  LVM+LUKS is broken                                                         karasu      {af429a5}
+[2015-06-07 19:54:56 +0200]  Merge branch 'github-master'                                               karasu      {aeedb7b}
+[2015-06-07 17:18:40 +0200]  Update CHANGES                                                             karasu      {9027298}
+[2015-06-07 17:10:39 +0200]  Use row-activated signal in keymap.py                                      karasu      {7f9c004}
+[2015-06-07 16:42:02 +0200]  It sets keymap twice, one when selected and then when we leave keym..      karasu      {5e39452}
+[2015-06-07 16:26:10 +0200]  Fixed bug when selecting a variant with the same name as another on..      karasu      {dd09913}
+[2015-06-07 15:03:40 +0200]  Variant selection does not work (see slovak sk variants)                   karasu      {02c2589}
+[2015-06-07 14:54:53 +0200]  Now widget draws ok. Changed keymap screen layout, too.                    karasu      {33dd634}
+[2015-06-07 14:01:44 +0200]  Forgot to remove unuseful code                                             karasu      {74a2885}
+[2015-06-07 14:00:39 +0200]  English+Canada=Canada location with English variant ;)                     karasu      {cf06aea}
+[2015-06-07 13:30:19 +0200]  Cleaned up a bit. There's a bug when comming back to keymap screen         karasu      {edaafca}
+[2015-06-07 13:22:08 +0200]  New keymap.py is working. Keyboard Widget needs some love, though.         karasu      {0765fbe}
+[2015-06-07 11:51:30 +0200]  select in treeview works                                                   karasu      {9f9da38}
+[2015-06-07 01:37:54 +0200]  New keymap screen layout                                                   karasu      {f6e61e5}
+[2015-06-06 23:49:20 +0200]  More changes in keymap                                                     karasu      {ad970f4}
+[2015-06-06 13:35:48 +0200]  Rewriting keymap and keyboard_names                                        karasu      {f036235}
+[2015-06-06 01:48:26 +0200]  When no match is found, it tries all keymaps! This shouldn't be hap..      karasu      {297f526}
+[2015-06-06 01:44:02 +0200]  keymap                                                                     karasu      {4a8263b}
+[2015-06-06 01:25:09 +0200]  A lot of changes. This needs testing. I hope now console keymap wil..      karasu      {22fbf71}
+[2015-06-06 01:01:44 +0200]  I will get this sorted out                                                 karasu      {3dd7364}
+[2015-06-05 22:32:35 +0200]  Removed unused code and files. Advanced needs testing, too...              karasu      {648b97d}
+[2015-06-05 22:23:24 +0200]  Removed all ubiquity code related to keymap. Do not use kbd_names.g..      karasu      {f61d1c1}
+[2015-06-05 18:08:42 +0200]  Restore old kbdnames (new had languages messed up)                         karasu      {18c5370}
+[2015-06-05 17:55:42 +0200]  Fix typo (not in a class anymore)                                          karasu      {0e5aecb}
+[2015-06-05 17:12:36 +0200]  Fixes https://github.com/Antergos/Cnchi/issues/324                         karasu      {3b1ffbb}
+[2015-06-04 22:10:51 +0200]  This should fix issue #278 (@axaxs was right, but I think the other..      karasu      {302fecc}
+[2015-06-04 19:04:35 +0200]  Just fix a warning message                                                 karasu      {91cd48b}
+[2015-06-04 18:54:43 +0200]  An empty label is a valid label ;)                                         karasu      {9ad4a6a}
+[2015-06-04 08:42:57 +0200]  https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026        karasu      {bba2190}
+[2015-06-04 08:37:36 +0200]  Also add systemctl enable systemd-networkd-wait-online.service             karasu      {39ae51c}
+[2015-06-03 20:45:58 +0200]  Do not allow "strange" labels in advanced. Fixes https://github.com..      karasu      {7c30c14}
+[2015-06-03 20:19:14 +0200]  Fix link creation. Fixes https://github.com/Antergos/Cnchi/issues/349      karasu      {34b5b3d}
+[2015-06-03 18:08:51 +0200]  Write in vconsole.conf the correct keymap                                  karasu      {23bb941}
+[2015-06-03 02:22:16 -0500]  fix buggy Gtk window size with Openbox (cherry picked from commit 6..  Dustin Falgout  {301d2dc}
+[2015-06-03 02:18:32 -0500]  fix buggy Gtk window size with Openbox                                 Dustin Falgout  {6648f9f}
+[2015-06-02 21:12:52 +0200]  Fixes issue #331                                                           karasu      {3f1ded8}
+[2015-06-02 18:24:40 +0200]  Updated keyboard names (kbdnames.gz)                                       karasu      {2f3f216}
+[2015-06-01 23:13:25 +0200]  Another import fix                                                         karasu      {f7edf9b}
+[2015-06-01 23:06:47 +0200]  Fix import                                                                 karasu      {2375bea}
+[2015-06-01 23:01:36 +0200]  Run systemd-networkd setup in base install                                 karasu      {4d32d63}
+[2015-06-01 20:13:21 +0200]  Just in case...                                                            karasu      {7adf572}
+[2015-06-01 20:12:03 +0200]  Backported LVM fix from dev version (issue #355)                           karasu      {8c812c7}
+[2015-06-01 18:01:32 +0200]  Fixes https://github.com/Antergos/Cnchi/issues/351                         karasu      {0132a68}
+[2015-06-01 17:49:48 +0200]  Working on issue https://github.com/Antergos/Cnchi/issues/351              karasu      {1107412}
+[2015-06-01 17:29:42 +0200]  Fix lamp feature text                                                      karasu      {fa17d64}
+[2015-06-01 12:24:55 +0200]  Trying to fix GPT auto partition                                           karasu      {ef4ae69}
+[2015-05-31 20:31:16 +0200]  info.py does not get updated correctly                                     karasu      {292852f}
+[2015-05-31 20:09:16 +0200]  info.py is overwritten with a string.                                      karasu      {4b34159}
+[2015-05-31 20:02:33 +0200]  Damn it. Update.info insists on check itself                               karasu      {9cf8801}
+[2015-05-31 19:53:56 +0200]  Update update.info                                                         karasu      {2b8bd80}
+[2015-05-31 19:53:34 +0200]  Update update.info                                                         karasu      {1579b17}
+[2015-05-31 19:51:53 +0200]  Update update.info md5 sums                                                karasu      {faa7704}
+[2015-05-31 19:49:45 +0200]  Updated generate_update_info script                                        karasu      {26b6d0b}
+[2015-05-31 19:47:34 +0200]  Do not check CHANGES and info.py md5 signatures                            karasu      {d89da7c}
+[2015-05-31 19:41:20 +0200]  Do not try to update directories                                           karasu      {389955e}
+[2015-05-31 19:37:27 +0200]  Playing with updater                                                       karasu      {b999e20}
+[2015-05-31 19:25:43 +0200]  Updated update.info                                                        karasu      {ce97943}
+[2015-05-31 19:25:07 +0200]  Use requests instead of urllib in updater.py                               karasu      {a810dc0}
+[2015-05-31 19:04:08 +0200]  Subtract 1MB to LVM in GPT                                                 karasu      {57a4ebc}
+[2015-05-31 15:08:34 +0200]  updater is broken...                                                       karasu      {9876a9b}
+[2015-05-31 00:41:28 +0200]  Fix buttonstype                                                            karasu      {b9aa901}
+[2015-05-30 21:08:46 +0200]  Still working on lamp/lemp features                                        karasu      {24c37c0}
+[2015-05-30 19:14:35 +0200]  Some work done towards fixing https://github.com/Antergos/Cnchi/iss..      karasu      {82d5f8c}
+[2015-05-30 11:33:00 +0200]  Fixed systemd_networkd link finding                                        karasu      {d912383}
+[2015-05-30 11:18:09 +0200]  Added LEMP option                                                          karasu      {50f19b2}
+[2015-05-30 11:16:04 +0200]  Add debug messages                                                         karasu      {24563c2}
+[2015-05-30 11:11:21 +0200]  Check line len in systemd_networkd                                         karasu      {1d3c9d7}
+[2015-05-30 10:58:48 +0200]  Added lemp.py (and fixed some typos/identation/import mistakes in o..      karasu      {072d388}
+[2015-05-29 22:26:19 +0200]  Call systemd_networkd.setup() without the dest_dir param                   karasu      {740238a}
+[2015-05-29 22:21:24 +0200]  Merge branch 'master' of ssh://dev.antergos.org/diffusion/CN/cnchi         karasu      {32a2142}
+[2015-05-29 22:20:12 +0200]  Didn't pull last change                                                    karasu      {bd0cc81}
+[2015-05-29 22:18:53 +0200]  systemd_networkd and lamp are finished but UNTESTED.                       karasu      {eda0dec}
+[2015-05-29 14:25:32 -0500]  Fixes antergos/cnchi#351                                               Dustin Falgout  {296b7a5}
+[2015-05-29 20:19:51 +0200]  Fixes #352                                                                 karasu      {a06904c}
+[2015-05-28 17:30:47 +0200]  Still working on systemd_networkd                                          karasu      {d443184}
+[2015-05-28 09:02:37 +0200]  working on systemd_networkd                                                karasu      {dc201a6}
+[2015-05-27 22:34:55 +0200]  There's no need to add a tmpfs line to fstab (systemd takes care of..      karasu      {9b9cb83}
+[2015-05-26 11:00:35 +0200]  Setup lamp. Also call makedirs with correct mode and exist_ok=True         karasu      {addcfaf}
+[2015-05-26 10:01:15 +0200]  use os.chmod                                                               karasu      {28dfffc}
+[2015-05-26 09:48:08 +0200]  Do not use TAB's!                                                          karasu      {ce1ecc1}
+[2015-05-26 09:26:59 +0200]  Move a2 scripts to their correct location                                  karasu      {19f5285}
+[2015-05-26 09:16:36 +0200]  Fix disk size calculation. On last partition created with parted, u..      karasu      {fe06682}
+[2015-05-24 21:31:55 +0200]  Added lamp setup                                                           karasu      {4dcbf22}
+[2015-05-24 20:28:56 +0200]  Use lamp only in base                                                      karasu      {6fa2cff}
+[2015-05-24 14:17:39 +0200]  Added warning message when using LUKS on a partition in advanced mode      karasu      {f302349}
+[2015-05-22 22:15:12 +0200]  Hope this fixes progress bars                                              karasu      {4881053}
+[2015-05-22 22:05:30 +0200]  As I suspected, sometimes there's no md5 hash to compare with              karasu      {4557abb}
+[2015-05-22 21:56:07 +0200]  Abort if a package can't be downloaded. MD5 code must be checked, t..      karasu      {965cd01}
+[2015-05-22 21:33:24 +0200]  Do not show warning message when bootloader is not installed as use..      karasu      {98185f4}
+[2015-05-22 21:24:32 +0200]  Do not show decimals                                                       karasu      {e9e4bd2}
+[2015-05-22 21:20:45 +0200]  Fix typo                                                                   karasu      {373be45}
+[2015-05-22 20:56:17 +0200]  Do not install bootloader if the user doesn't want to in automatic         karasu      {bed56ec}
+[2015-05-22 20:43:45 +0200]  Adds python-pysmbc when using SMB shares                                   karasu      {4a66211}
+[2015-05-21 23:12:03 +0200]  Percent was wrong when using simple text in a progress bar                 karasu      {a66060d}
+[2015-05-21 23:06:00 +0200]  Check that the url is not None. I need to find out why this is happ..      karasu      {283a85a}
+[2015-05-21 21:01:18 +0200]  Merge branch 'master' of cnchi-github                                      karasu      {65530ed}
+[2015-05-20 12:15:33 +0200]  This isn't necessary anymore                                               karasu      {ac7eeb8}
+[2015-05-20 04:41:30 -0500]  fix the bug I caused :grimacing: #347                                  Dustin Falgout  {9e2324a}
+[2015-05-19 21:15:51 -0500]  fix kde config issue reported in forum                                 Dustin Falgout  {28de3d2}
+[2015-05-19 20:05:17 -0500]  start vbox client services for vbox installs                           Dustin Falgout  {7500cd4}
+[2015-05-19 18:26:04 +0200]  Center user_info.ui to avoid making the main_window bigger when ent..      karasu      {25921f4}
+[2015-05-19 16:46:41 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {389a4d0}
+[2015-05-19 16:38:57 +0200]  user_info grows when entering data. Needs fixing                           karasu      {724c319}
+[2015-05-19 16:26:35 +0200]  Leave camera code for 0.11                                                 karasu      {7373acc}
+[2015-05-19 12:39:02 +0200]  New window size                                                            karasu      {0940035}
+[2015-05-19 11:11:11 +0200]  Another typo                                                               karasu      {961614d}
+[2015-05-19 11:02:35 +0200]  Fix typo                                                                   karasu      {49d77bc}
+[2015-05-19 10:28:50 +0200]  Merge pull request #343 from Wyn10/patch-2                                 karasu      {b2e93e5}
+[2015-05-19 10:01:49 +0200]  Stop downloading process of all packages when just one can't be dow..      karasu      {7da0fa1}
+[2015-05-19 09:50:59 +0200]  Force to download a file if it's md5 sum is wrong                          karasu      {a53f5a5}
+[2015-05-19 03:41:58 -0400]  Update postinstall.sh                                                        Wyn       {9c1a527}
+[2015-05-18 22:31:21 +0200]  Start working on code to check each download against its md5 expect..      karasu      {7d70e03}
+[2015-05-18 10:20:00 -0500]  it makes no sense                                                      Dustin Falgout  {a8468b7}
+[2015-05-18 10:54:20 +0200]  Run always with -d -v                                                      karasu      {91c0cf3}
+[2015-05-18 08:49:22 +0200]  Undo last commit                                                           karasu      {3160688}
+[2015-05-18 08:40:07 +0200]  Updated pre-commit hook to create update.info automatically                karasu      {60de395}
+[2015-05-17 15:53:19 -0500]  Merge pull request #340 from Wyn10/patch-1                             Dustin Falgout  {02c1844}
+[2015-05-17 18:25:22 +0200]  Try to fix issue #341                                                      karasu      {6c8d5df}
+[2015-05-17 18:07:06 +0200]  Use requests in updater.py                                                 karasu      {7c685ca}
+[2015-05-17 16:24:46 +0200]  Letting user change feature option just with one click is confusing..      karasu      {811cc1c}
+[2015-05-17 16:20:47 +0200]  Use requests to check Internet version                                     karasu      {b7fee53}
+[2015-05-17 00:05:08 -0400]  Update packages.xml                                                          Wyn       {e587ee8}
+[2015-05-16 22:52:14 -0500]  use symbolic icons in advanced                                         Dustin Falgout  {c9082ec}
+[2015-05-16 22:26:40 -0500]  Update theme name in set-settings (i thought I did this already)       Dustin Falgout  {380796d}
+[2015-05-16 18:51:38 -0500]  fixes #336                                                             Dustin Falgout  {38b78aa}
+[2015-05-16 18:47:01 -0500]  Merge pull request #337 from Wyn10/patch-2                             Dustin Falgout  {780dd5a}
+[2015-05-16 19:36:06 -0400]  Update pacman.tmpl                                                           Wyn       {d7a5719}
+[2015-05-16 06:27:29 -0500]  Merge pull request #335 from Wyn10/patch-1                             Dustin Falgout  {48e8622}
+[2015-05-16 00:22:39 -0400]  Update packages.xml                                                          Wyn       {7e97e07}
+[2015-05-16 00:06:15 -0400]  Update packages.xml                                                          Wyn       {6ceb04a}
+[2015-05-16 00:03:32 +0200]  Fix features screen. Also select feature just with one mouse click         karasu      {593d672}
+[2015-05-15 17:37:10 -0400]  Update packages.xml                                                          Wyn       {5d009d3}
+[2015-05-15 23:36:29 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {ffe0a6e}
+[2015-05-15 23:33:56 +0200]  Merge pull request #334 from Wyn10/patch-1                                 karasu      {060d768}
+[2015-05-15 23:30:44 +0200]  Undo last change. USA was shown as VSA ? Now I do not have time to ..      karasu      {8186c03}
+[2015-05-15 23:26:19 +0200]  Updated kbdnames                                                           karasu      {d58e210}
+[2015-05-15 17:14:52 -0400]  Update packages.xml                                                          Wyn       {c931e38}
+[2015-05-15 23:07:38 +0200]  Updated some keyboard related files (console-setup_1.126.tar.xz)           karasu      {7a07b0e}
+[2015-05-15 23:03:04 +0200]  Forgot to add this file (not used atm)                                     karasu      {5893706}
+[2015-05-15 22:52:08 +0200]  Updated some keyboard related files (console-setup_1.126.tar.xz)           karasu      {77fc2cb}
+[2015-05-15 22:17:36 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {6769ac1}
+[2015-05-15 15:35:31 +0200]  Size changes. I made the screen smaller and I think it works now           karasu      {4572cd3}
+[2015-05-15 15:07:03 +0200]  Update update.info                                                         karasu      {4fb2092}
+[2015-05-15 10:58:13 +0200]  Add break to stop for in                                                   karasu      {af790a5}
+[2015-05-15 10:57:08 +0200]  Working now on priorities                                                  karasu      {e9d0434}
+[2015-05-15 10:01:00 +0200]  Try to setup systemd-networkd for base installs                            karasu      {6961235}
+[2015-05-14 18:33:10 +0200]  Ok, now if asked, hardware module chooses the proprietary driver           karasu      {a786f21}
+[2015-05-14 18:22:56 +0200]  Still uses open drivers                                                    karasu      {098a7e9}
+[2015-05-14 17:25:01 +0200]  And more work on proprietary drivers...                                    karasu      {54225de}
+[2015-05-14 16:57:09 +0200]  modesetting is now installed with xorg (by default)                        karasu      {b839b6c}
+[2015-05-14 16:56:50 +0200]  Working on hardware module                                                 karasu      {0e41f20}
+[2015-05-13 19:06:57 +0200]  Working on adding new features (unfinished)                                karasu      {565e19b}
+[2015-05-12 17:57:40 +0200]  Merge branch 'master' of cnchi 0.8                                         karasu      {0bcb7e8}
+[2015-05-12 08:34:48 -0500]  remove empathy from packages.xml (oversight)                           Dustin Falgout  {5796715}
+[2015-05-12 08:30:10 -0500]  add lxsession to openbox packages for polkit agent                     Dustin Falgout  {5fedfd1}
+[2015-05-12 10:00:58 +0200]  Use requests as default (also show Mbps)                                   karasu      {717929d}
+[2015-05-12 01:58:37 -0500]  so it appears that the window size is substansially larger than the..  Dustin Falgout  {3563a66}
+[2015-05-12 01:39:14 -0500]  I think its okay now                                                   Dustin Falgout  {6e67874}
+[2015-05-12 01:27:25 -0500]  more spacing adjustments                                               Dustin Falgout  {983c624}
+[2015-05-12 01:12:31 -0500]  fix window size. it seems like gtk is measuring the size differentl..  Dustin Falgout  {10f2e84}
+[2015-05-11 22:25:55 -0400]  add topIcons extension as default for gnome                                 axaxs      {6ae6d0c}
+[2015-05-11 15:58:06 -0400]  Gnome - make dock nicer, add min/max buttons to windows                     axaxs      {7476ae0}
+[2015-05-10 20:40:24 -0400]  replace - with -- in lvm vg partition path                                  axaxs      {37db04a}
+[2015-05-10 18:38:11 -0400]  add multilib repo on 64 bit system                                          axaxs      {310459a}
+[2015-05-10 18:02:09 -0400]  change chromeos_laptop to cyapa just in case, move chown of home di..       axaxs      {6d601af}
+[2015-05-10 17:42:37 -0400]  add support for chromebook touchpad settings to postinstall script          axaxs      {5094e80}
+[2015-05-10 18:46:09 +0200]  Added -e option to select DE from command line (not that useful, bu..      karasu      {b8c8fd8}
+[2015-05-10 18:24:15 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {d7c68f4}
+[2015-05-08 17:24:47 +0200]  total_length must be an int                                                karasu      {ab2215e}
+[2015-05-08 12:57:24 +0200]  Fix deprecation warning                                                    karasu      {8327d7c}
+[2015-05-08 09:55:16 +0200]  Show GTK wrong version error message in GUI (checked on an ubuntu s..      karasu      {c20c941}
+[2015-05-07 18:28:27 +0200]  Some changes in download_requests (that is still not used ;) )             karasu      {5943fb2}
+[2015-05-04 23:47:04 +0200]  Added deprecation warning messages to camera.py (for fixing them in..      karasu      {f532064}
+[2015-05-04 22:50:58 +0200]  Added camera to user_info dialog (needs testing with a camera) It s..      karasu      {9df8a8b}
+[2015-05-04 22:31:25 +0200]  Update update.info                                                         karasu      {d5f552b}
+[2015-05-04 22:29:14 +0200]  Update update.info                                                         karasu      {bca64f7}
+[2015-05-04 20:53:00 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {86e4b90}
+[2015-05-04 17:50:04 +0200]  Another typo... now in process.py                                          karasu      {3d1b665}
+[2015-05-04 17:48:32 +0200]  Typo in main_window                                                        karasu      {d430cb7}
+[2015-05-04 12:54:30 +0200]  Prepare cnchi to be able to use requests library to download packag..      karasu      {f0925bc}
+[2015-05-03 23:11:28 -0500]  forgot to include light-locker-settings                                Dustin Falgout  {7020e7e}
+[2015-05-03 21:32:22 +0200]  Remove ugly hack by me                                                     karasu      {0deb0cc}
+[2015-05-03 21:21:43 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {71938c7}
+[2015-05-03 21:15:12 +0200]  Removed unused function                                                    karasu      {639fd40}
+[2015-05-03 21:11:21 +0200]  Fixes #297                                                                 karasu      {ef86d26}
+[2015-05-03 20:07:48 +0200]  Remove commented code                                                      karasu      {3edb6b7}
+[2015-05-03 20:03:37 +0200]  Forgot to change file name in the comments section                         karasu      {0d4d56c}
+[2015-05-03 20:00:36 +0200]  Added new simpler download method using requests (still not used)          karasu      {8c28d59}
+[2015-05-03 17:32:13 +0200]  Added some debug messages in process.py                                    karasu      {0f33e1d}
+[2015-05-03 17:19:02 +0200]  Trying to log traceback                                                    karasu      {30c741d}
+[2015-05-03 17:14:24 +0200]  Too many messages                                                          karasu      {4517718}
+[2015-05-03 17:10:59 +0200]  Log trace as it should                                                     karasu      {d2a9215}
+[2015-05-02 16:52:47 +0200]  Remove comma in css                                                        karasu      {14cdd7e}
+[2015-05-02 06:45:02 -0500]  fix typo in gsettings script                                           Dustin Falgout  {ce5f4b4}
+[2015-05-02 06:41:28 -0500]  adjust the button styles for advanced and user_info screens            Dustin Falgout  {1c4c397}
+[2015-05-02 13:38:52 +0200]  grub-mkconfig stops again ¿?                                               karasu      {7ad4f87}
+[2015-05-02 10:07:55 +0200]  Allow format without label                                                 karasu      {4341bde}
+[2015-05-02 01:35:36 -0500]  fixes #318 - needs testing                                             Dustin Falgout  {1a174e1}
+[2015-05-01 22:59:46 -0500]  working on #318 again                                                  Dustin Falgout  {bcbefbb}
+[2015-05-01 22:57:41 -0500]  working on #318 again                                                  Dustin Falgout  {d8c4d15}
+[2015-05-01 22:56:21 -0500]  update gsettings keys that changed in 3.16                             Dustin Falgout  {efbbddf}
+[2015-05-01 21:56:07 +0200]  Comment faulty code in user_info.py. Needs fixing                          karasu      {eede3d1}
+[2015-05-01 21:51:49 +0200]  Wrong logging message                                                      karasu      {cb0ddd5}
+[2015-05-01 21:48:14 +0200]  Button needs text                                                          karasu      {e5eac8d}
+[2015-05-01 21:37:39 +0200]  Do not add pycache files to update.info                                    karasu      {a1f7820}
+[2015-05-01 21:31:56 +0200]  set_label can't be None                                                    karasu      {74e01d0}
+[2015-05-01 21:29:29 +0200]  set_label can't be None                                                    karasu      {c45cf2c}
+[2015-05-01 19:41:02 +0200]  New create_fs module. Not added in code cause it needs testing             karasu      {456a2e1}
+[2015-05-01 09:02:53 -0500]  working on #318                                                        Dustin Falgout  {1d8294b}
+[2015-05-01 12:14:00 +0200]  Fixes check labels disappearance in advanced                               karasu      {08b7f52}
+[2015-05-01 10:44:01 +0200]  Updated translations                                                       karasu      {efbe194}
+[2015-04-29 04:33:44 -0500]  should fix part of #317 and all of #318                                Dustin Falgout  {1ae5471}
+[2015-04-29 02:45:27 -0500]  working on #317 and #318                                               Dustin Falgout  {dbbe3dd}
+[2015-04-29 00:41:33 -0500]  fix typo in postinstall, other small changes related to screen lock..  Dustin Falgout  {5e59c8e}
+[2015-04-29 07:03:22 +0200]  Tries to address issue #317                                                karasu      {5382fa2}
+[2015-04-27 11:01:43 +0200]  Cleaned advanced code. NEEDS TESTING                                       karasu      {3ae177b}
+[2015-04-27 09:00:58 +0200]  Working on if                                                              karasu      {42bf2c0}
+[2015-04-27 08:43:26 +0200]  Specify that we need a GTK version >= 3.16.0                               karasu      {7c69cd7}
+[2015-04-27 01:21:16 -0500]  fix wrong filepath from my last commit                                 Dustin Falgout  {db5d85a}
+[2015-04-26 08:42:28 -0500]  fix pycharms incorrect bash formatting!                                Dustin Falgout  {eb5e95e}
+[2015-04-26 08:37:18 -0500]  screen locking in gnome (finally!). also updated postinstall to pro..  Dustin Falgout  {7c28b84}
+[2015-04-26 10:54:10 +0200]  Bump version                                                               karasu      {f0e4c06}
+[2015-04-26 10:53:17 +0200]  Merge pull request #314 from plumpudding/master                            karasu      {19e6f4e}
+[2015-04-25 15:19:56 +0200]  Follow https://wiki.gnome.org/HowDoI/GtkApplication recommendations        karasu      {3b88ac9}
+[2015-04-25 00:02:47 +0200]  Update bootloader.py                                                     plumpudding   {a8560cf}
+[2015-04-24 23:28:23 +0200]  Update bootloader.py                                                     plumpudding   {cf187a9}
+[2015-04-24 23:10:19 +0200]  Update bootloader.py                                                     plumpudding   {467b8e7}
+[2015-04-24 22:54:38 +0200]  3rd part of the fix                                                      plumpudding   {c6367f1}
+[2015-04-24 22:29:25 +0200]  fix second problem with encryption and gummiboot                         plumpudding   {7037c57}
+[2015-04-24 22:04:32 +0200]  should fix encryption with gummiboot                                     plumpudding   {ebe03af}
+[2015-04-24 20:58:56 +0200]  Download a package if an error is issued when trying to copy it fro..      karasu      {15c7371}
+[2015-04-23 22:30:07 +0200]  Cnchi needs Gtk 3.16                                                       karasu      {c06ea05}
+[2015-04-23 22:23:37 +0200]  Fix Gdk.Cursor.new deprecation                                             karasu      {0c4d504}
+[2015-04-23 21:56:11 +0200]  - Added atk labels to prev/next buttons (for Orca) - Fixed deprecat..      karasu      {01a914e}
+[2015-04-23 00:08:36 +0200]  Add atk code for accessibility                                             karasu      {59fd28b}
+[2015-04-22 22:53:02 +0200]  Fixes #304                                                                 karasu      {d08f98f}
+[2015-04-22 18:45:53 +0200]  Merge branch 'github-master'                                               karasu      {64525f9}
+[2015-04-21 19:37:09 -0500]  Update README.md                                                       Dustin Falgout  {94d5ea2}
+[2015-04-21 19:29:54 -0500]  add codacy badge                                                       Dustin Falgout  {7747533}
+[2015-04-21 18:43:29 -0500]  add landscape.yaml                                                     Dustin Falgout  {d813e0b}
+[2015-04-21 18:37:44 -0500]  add requirements.txt file                                              Dustin Falgout  {6c05d75}
+[2015-04-21 13:10:22 +0200]  Add a --no-check parameter so that checks in check.py are not manda..      karasu      {384bc36}
+[2015-04-21 09:48:21 +0200]  Changed elif's for if's as partition layout must comply. See issue ..      karasu      {f33b946}
+[2015-04-21 09:38:05 +0200]  Enforce /boot partition when using btrfs                                   karasu      {55464ab}
+[2015-04-20 22:34:25 +0200]  Another KDE package was renamed (kdeutils-print-manager)                   karasu      {ee2f371}
+[2015-04-20 21:37:23 +0200]  kcalc package changed its name                                             karasu      {88144a4}
+[2015-04-20 21:12:18 +0200]  mount special dirs before running gummiboot install                        karasu      {29831cb}
+[2015-04-20 20:18:53 +0200]  Fixed malformed string in rank_mirrors                                     karasu      {e538bc5}
+[2015-04-20 20:16:38 +0200]  Just added some comments                                                   karasu      {2669c14}
+[2015-04-19 18:45:27 -0500]  fix typo in postinstall                                                Dustin Falgout  {a1cb234}
+[2015-04-19 18:43:37 -0500]  Revert "merged github master"                                          Dustin Falgout  {acad3e9}
+[2015-04-19 18:42:42 -0500]  Revert "fix typo in postinstall. set an abolsute value for max swap"   Dustin Falgout  {8fd0763}
+[2015-04-19 18:40:37 -0500]  fix typo in postinstall. set an abolsute value for max swap            Dustin Falgout  {adcdca0}
+[2015-04-19 18:39:04 -0500]  merged github master                                                   Dustin Falgout  {4376e18}
+[2015-04-19 21:31:11 +0200]  Parenthesis forgotten                                                      karasu      {c9553d6}
+[2015-04-19 21:19:21 +0200]  Fix gummiboot entries                                                      karasu      {7fd19d4}
+[2015-04-19 21:05:20 +0200]  Efi partition only exist with efi and grub2                                karasu      {b514e6d}
+[2015-04-19 21:03:47 +0200]  Change advanced partition requirements                                     karasu      {b9983bc}
+[2015-04-19 20:54:59 +0200]  Use EFI partition or not, depending if we use grub2 or gummiboot           karasu      {f37a9e9}
+[2015-04-19 20:14:59 +0200]  This should fix "Can't convert NoneType object to str" error               karasu      {96f7d0f}
+[2015-04-19 20:04:07 +0200]  Fix gummiboot installation                                                 karasu      {aeb23c6}
+[2015-04-19 19:28:28 +0200]  Merge branch 'master' of ../cnchi-github                                   karasu      {7bc4246}
+[2015-04-19 06:36:45 -0500]  fix uefi bootloader installation                                       Dustin Falgout  {df200d2}
+[2015-04-19 13:14:05 +0200]  Updated Translations                                                       karasu      {be44010}
+[2015-04-19 13:13:52 +0200]  Updated Translations                                                       karasu      {cb70bae}
+[2015-04-19 13:13:21 +0200]  Updated Translations                                                       karasu      {66184bf}
+[2015-04-19 13:12:55 +0200]  Updated Translations                                                       karasu      {6d4464a}
+[2015-04-19 03:17:41 -0500]  updated pre-commit hook (cherry picked from commit 0ca69b4)            Dustin Falgout  {f894203}
+[2015-04-19 03:17:13 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {9948abf}
+[2015-04-19 03:16:25 -0500]  be more strict on the score for a mirror to be considered acceptble..  Dustin Falgout  {c30c2fc}
+[2015-04-19 03:10:19 -0500]  updated pre-commit hook                                                Dustin Falgout  {0ca69b4}
+[2015-04-19 03:05:42 -0500]  if we fail to download any packages, refresh the mirrorlist before ..  Dustin Falgout  {93b2f43}
+[2015-04-19 02:28:31 -0500]  be more strict on the score for a mirror to be considered acceptble.   Dustin Falgout  {4163cf3}
+[2015-04-19 01:46:00 -0500]  configure lightdm webkit2 greeter in postinstall                       Dustin Falgout  {cca4dc3}
+[2015-04-18 20:37:18 +0200]  Change exception message (as it could be mistaken for a fatal error)       karasu      {dee99cd}
+[2015-04-18 19:49:25 +0200]  There's an exception that reaches process.py even when bootloader i..      karasu      {ed706db}
+[2015-04-18 19:27:24 +0200]  import re was missing                                                      karasu      {1298d2b}
+[2015-04-18 19:04:34 +0200]  import os was missing                                                      karasu      {2926972}
+[2015-04-18 18:42:56 +0200]  Update README                                                              karasu      {baec1ee}
+[2015-04-18 18:40:55 +0200]  Do not check for hdparm presence                                           karasu      {28045e2}
+[2015-04-18 18:23:07 +0200]  Merge pull request #295 from Kirek/master                                  karasu      {fac1b14}
+[2015-04-18 18:21:56 +0200]  Try to fix grub install problems. GPT needs checking. Cleaned chroo..      karasu      {6ae1984}
+[2015-04-18 13:44:21 +0200]  Fixes /home (not root and boot) bug mounting problem in advnaced           karasu      {b1bae20}
+[2015-04-18 13:25:44 +0200]  Removed two unnused files                                                  karasu      {d239e6b}
+[2015-04-18 12:16:54 +0200]  Fix is_ssd function. The previous function crashes with an UnicodeD..    Ramon Buldó   {368e66a}
+[2015-04-18 12:12:01 +0200]  Merge pull request #1 from Antergos/master                               Ramon Buldó   {5457700}
+[2015-04-18 12:03:25 +0200]  Trap exception if setxkbmap can't be set (this was happening with A..      karasu      {70b6eef}
+[2015-04-18 10:03:49 +0200]  Polished some camera calls. Now what happens when no camera is found?      karasu      {8c46d4c}
+[2015-04-17 22:04:57 +0200]  take_photo needs to be implemented                                         karasu      {1d081a0}
+[2015-04-17 19:32:38 +0200]  It works! Now it needs to be adapted (like timezonemap)                    karasu      {25e5012}
+[2015-04-17 18:35:49 +0200]  Fix a string                                                               karasu      {a20ec8f}
+[2015-04-17 09:40:03 -0500]  fix 10_antergos to ensure that grub identifies antergos as arch        Dustin Falgout  {3365f8c}
+[2015-04-17 14:20:44 +0200]  bluedevil package was renamed upstream. packages.xml in server need..      karasu      {28d1566}
+[2015-04-17 13:24:08 +0200]  More cheese                                                                karasu      {27a146b}
+[2015-04-17 09:55:58 +0200]  playing around with gtkclutter                                             karasu      {681425e}
+[2015-04-17 08:21:34 +0200]  Pushed some translations from Transifex                                    karasu      {0f4c086}
+[2015-04-16 23:49:09 +0200]  Added cheese dependency                                                    karasu      {3eceaea}
+[2015-04-16 23:31:57 +0200]  Updated translations                                                       karasu      {92fbb3b}
+[2015-04-16 13:28:15 +0200]  Add borrowed cheese code to learn libcheese on python                      karasu      {67490fe}
+[2015-04-16 12:30:26 +0200]  Fix an open entry in bootloader. Also added some debug messages.           karasu      {aef279f}
+[2015-04-15 10:29:46 +0200]  Merge pull request #289 from prescott66/patch-5                            karasu      {9155e38}
+[2015-04-15 10:17:12 +0200]  Add gnome calendar to Gnome DE                                           Dušan Kazik   {ddb95b0}
+[2015-04-15 09:51:23 +0200]  Merge branch 'master' of https://github.com/Antergos/Cnchi                 karasu      {137392c}
+[2015-04-15 09:50:25 +0200]  Add Seahorse to manage passwords in Gnome                                  karasu      {a3d6c00}
+[2015-04-15 09:46:30 +0200]  Merge pull request #288 from prescott66/patch-4                            karasu      {f7a8a84}
+[2015-04-15 09:38:00 +0200]  I hope this will fix #284                                                Dušan Kazik   {ebe7e22}
+[2015-04-15 09:34:37 +0200]  0.8.25                                                                     karasu      {3280759}
+[2015-04-15 08:36:12 +0200]  Merge branch 'github-master'                                               karasu      {9d9a152}
+[2015-04-15 07:15:51 +0200]  Merge branch 'master' of https://github.com/Antergos/cnchi                 karasu      {c44a322}
+[2015-04-15 07:15:26 +0200]  Added gnome-font-viewer                                                    karasu      {f64b8dd}
+[2015-04-15 07:12:39 +0200]  Merge pull request #248 from Llumex03/master                               karasu      {64fbb2b}
+[2015-04-15 07:06:55 +0200]  Merge pull request #287 from Kirek/master                                  karasu      {ac616a7}
+[2015-04-14 19:08:09 +0200]  Use default value when creating last partition with sgdisk. "A star..    Ramon Buldó   {1ac3df7}
+[2015-04-14 18:44:23 +0200]  When calculating partition sizes, return integers. - sgdisk may cre..    Ramon Buldó   {fd3e84d}
+[2015-04-14 18:22:32 +0200]  swap and /boot dont necessarilly exist in advanced install. Note: p..    Ramon Buldó   {9c9d323}
+[2015-04-14 18:18:11 +0200]  Shell=True is used when check_call is used with a single string, no..    Ramon Buldó   {ee38529}
+[2015-04-14 18:16:33 +0200]  Use same order as get_devices function when formatting partitions w..    Ramon Buldó   {2877ffc}
+[2015-04-14 18:14:30 +0200]  Fix wrong device number in efi auto_partition                            Ramon Buldó   {3177105}
+[2015-04-14 18:14:28 +0200]  This should fix most of GPT problems. Needs testing (do not port to..      karasu      {0edc29b}
+[2015-04-14 16:05:53 +0200]  fix language screen margin                                                 karasu      {ad5c18a}
+[2015-04-14 16:03:45 +0200]  Increase timeout for packages.xml and don't bail if we cant retriev..      karasu      {a718436}
+[2015-04-14 16:01:53 +0200]  Move package list filter to the correct place                              karasu      {f7f52a0}
+[2015-04-14 15:56:32 +0200]  Prevent empty strings in package list. Fixes #283                          karasu      {535e08a}
+[2015-04-14 15:53:17 +0200]  Remove link when running run script                                        karasu      {82e201a}
+[2015-04-14 06:41:33 -0500]  move package list filter to the correct place                          Dustin Falgout  {b820b91}
+[2015-04-14 05:59:15 -0500]  increase timeout for packages.xml and dont bail if we cant retrieve..  Dustin Falgout  {6d9291e}
+[2015-04-14 05:35:33 -0500]  prevent empty strings in package list. fixes #283                      Dustin Falgout  {51bb5b5}
+[2015-04-14 05:09:24 -0500]  fix language screen margin                                             Dustin Falgout  {4084c1c}
+[2015-04-13 20:33:04 +0200]  Changed to GLib.MAXFLOAT                                                   karasu      {c303d13}
+[2015-04-13 20:28:35 +0200]  Merge branch 'cnchi-github-master'                                         karasu      {4d54d33}
+[2015-04-13 20:11:36 +0200]  Leave GPT for UEFI for the time being. Let's see if we have to adju..      karasu      {a9c84d9}
+[2015-04-13 19:53:30 +0200]  GPT in auto_partition does not work, Cnchi will use always MBR             karasu      {94961db}
+[2015-04-13 12:52:28 -0500]  try to ensure iso pkg cache is used when no cache is provided by user  Dustin Falgout  {2cd54a1}
+[2015-04-13 12:34:36 -0500]  use totem for mate                                                     Dustin Falgout  {fb6c8fa}
+[2015-04-13 18:57:23 +0200]  mate-mplayer no longer exists                                              karasu      {92ae0e2}
+[2015-04-13 11:27:31 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {f92ee53}
+[2015-04-13 11:27:15 -0500]  revert change to bootloader package selection                          Dustin Falgout  {d6a12de}
+[2015-04-13 18:21:40 +0200]  Nope, it's really bootloader                                               karasu      {22aa9b1}
+[2015-04-13 10:46:33 -0500]  revert some of the changes made trying to debug the packages issue     Dustin Falgout  {d956405}
+[2015-04-13 10:06:24 -0500]  checking to see if we are trying to configure the system before alp..  Dustin Falgout  {698ec59}
+[2015-04-13 09:39:34 -0500]  Merge branch 'master' of github.com:antergos/cnchi into github         Dustin Falgout  {5a1b4a6}
+[2015-04-13 09:38:42 -0500]  working on issues reported in forum. fixed the bootloader package n..  Dustin Falgout  {db1bf2d}
+[2015-04-13 08:59:02 +0200]  Changed to try/except. This solves nothing but at least will not fa..      karasu      {d6f87b3}
+[2015-04-13 08:48:56 +0200]  Add some "secure" measures to 10-keyboard.conf creation. It still s..      karasu      {3145bb1}
+[2015-04-12 22:40:59 -0500]  revert previous commit. create sudoers.d (looks like its not longer..  Dustin Falgout  {3747aee}
+[2015-04-12 22:14:38 -0500]  attempt to fix sudoers.d NOTFOUND error                                Dustin Falgout  {cd6fdb1}
+[2015-04-12 17:55:36 -0500]  use cache pkgs from the iso if they are available                      Dustin Falgout  {d77ec35}
+[2015-04-12 12:05:32 -0500]  and this too? :dizzy_face:                                             Dustin Falgout  {3ab2937}
+[2015-04-12 12:00:54 -0500]  how did we miss this?                                                  Dustin Falgout  {284369a}
+[2015-04-12 18:27:45 +0200]  Leave a "remember" TODO note                                               karasu      {59ac4a8}
+[2015-04-12 17:26:13 +0200]  Fixed color_parse is deprecated                                            karasu      {76c2bf1}
+[2015-04-12 17:10:30 +0200]  xalign cannot be used anymore (I left it as it is, it doesn't look ..      karasu      {3da0c0e}
+[2015-04-12 17:08:24 +0200]  Fixed: Gtk-WARNING **: Failed to set property GtkBox.halign to left..      karasu      {385fc00}
+[2015-04-12 17:04:15 +0200]  Gdk.cursor.new is deprecated in Gtk 3.16. Needs fixing                     karasu      {ce5bd80}
+[2015-04-12 16:47:16 +0200]  Use GLib.MAXFLOAT in GTK 3.16                                              karasu      {2a3329a}
+[2015-04-12 16:02:35 +0200]  Use GObject.G_MAXFLOAT                                                     karasu      {2b8c917}
+[2015-04-12 16:01:30 +0200]  Use GObject.G_MAXFLOAT                                                     karasu      {63242f1}
+[2015-04-12 12:05:45 +0200]  I think I got it! keymap chooses correct layout based on previously..      karasu      {53d7eed}
+[2015-04-12 12:02:03 +0200]  Suomi works now in keymap, Croatia does not                                karasu      {1d56f39}
+[2015-04-12 11:31:12 +0200]  Wrong dictionary names. Fixed                                              karasu      {65b99cb}
+[2015-04-12 11:18:58 +0200]  Fix progress bar                                                           karasu      {10f931c}
+[2015-04-12 11:17:49 +0200]  Use our stylesheet for minimal iso                                         karasu      {bc3b45e}
+[2015-04-12 11:16:10 +0200]  Load language screen at the same time we load welcome screen (minim..      karasu      {f2eb5f3}
+[2015-04-12 10:49:14 +0200]  Damn... I forgot about the pre-commit hook                                 karasu      {ca04b0b}
+[2015-04-12 10:48:08 +0200]  keyboard_names rewritten. It does not fix anything, yet.                   karasu      {f0d6b34}
+[2015-04-11 21:56:18 +0200]  Reaady to start Cnchi 0.9.x development (road to Cnchi 0.10)               karasu      {6ab7a6c}
+[2014-12-22 02:26:53 +0100]  Add Asturian support                                                      Llumex03     {1003bae}
