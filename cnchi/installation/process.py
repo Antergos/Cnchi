@@ -1391,7 +1391,8 @@ class InstallationProcess(multiprocessing.Process):
                     xorg_conf_xkb.write('EndSection\n')
                 logging.debug(_("00-keyboard.conf written."))
             except IOError as io_error:
-                # Do not fail if 00-keyboard.conf can't be created. Something bad must be happening, though.
+                # Do not fail if 00-keyboard.conf can't be created.
+                # Something bad must be happening, though.
                 logging.error(io_error)
 
         # Set vconsole.conf for console keymap
@@ -1431,10 +1432,12 @@ class InstallationProcess(multiprocessing.Process):
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
         logging.debug(_("Call Cnchi post-install script"))
-        # Call post-install script to execute (g,k)settings commands or install openbox defaults
-        script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
-        cmd = [
-            "/usr/bin/bash",
+        # Call post-install script to fine tune our setup
+        script_path_postinstall = os.path.join(
+            self.settings.get('cnchi'),
+            "scripts",
+            POSTINSTALL_SCRIPT)
+        cmd = ["/usr/bin/bash",
             script_path_postinstall,
             username,
             DEST_DIR,
@@ -1449,7 +1452,7 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(cmd, timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:
-            # Even though Post-install script call has failed we will try to continue with the installation.
+            # Even though Post-install script call has failed we will go on
             logging.error(_("Error running post-install script"))
             logging.error(_("Command %s failed"), process_error.cmd)
             logging.error(_("Output: %s"), process_error.output)
