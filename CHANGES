@@ -1,3 +1,6 @@
+[2015-07-18 11:00:10 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {5f3d378}
+[2015-07-18 10:57:52 -0500]  just a few minor fixes I found while reviewing the download code       Dustin Falgout  {135d143}
+[2015-07-18 17:20:38 +0200]  Try to update pacman-mirrorlist, too (in rankmirrors)                      karasu      {422f32d}
 [2015-07-18 13:04:05 +0200]  Fix import typo                                                            karasu      {bb12d8f}
 [2015-07-18 12:54:25 +0200]  Edit 00-keyboard.conf and vconsole.conf manually (old method) inste..      karasu      {418cf94}
 [2015-07-17 18:35:20 +0200]  Trying to fix lamp/lemp installation                                       karasu      {393bad8}
