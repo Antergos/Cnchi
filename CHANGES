@@ -1,3 +1,4 @@
+[2015-07-18 11:04:12 -0500]  we can use sourceforge now that I updated the mirrorlist               Dustin Falgout  {bc95f93}
 [2015-07-18 11:00:10 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {5f3d378}
 [2015-07-18 10:57:52 -0500]  just a few minor fixes I found while reviewing the download code       Dustin Falgout  {135d143}
 [2015-07-18 17:20:38 +0200]  Try to update pacman-mirrorlist, too (in rankmirrors)                      karasu      {422f32d}
