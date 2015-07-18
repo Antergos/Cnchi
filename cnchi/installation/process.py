@@ -1387,7 +1387,7 @@ class InstallationProcess(multiprocessing.Process):
                     xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
                     xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
                     xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                    if len(keyboard_variant) > 0:
+                    if keyboard_variant and len(keyboard_variant) > 0:
                         xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                     xorg_conf_xkb.write('EndSection\n')
                 logging.debug(_("00-keyboard.conf written."))

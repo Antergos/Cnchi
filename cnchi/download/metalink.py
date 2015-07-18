@@ -43,7 +43,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as eTree
 
-MAX_URLS = 6
+MAX_URLS = 10
 
 
 def get_info(metalink):
@@ -238,7 +238,7 @@ class PkgSet(object):
         return self
 
     def __or__(self, other):
-        copy = PkgSet(self.pkgs.values())
+        copy = PkgSet(list(self.pkgs.values()))
         return copy.__ior__(other)
 
     def __ior__(self, other):
@@ -367,7 +367,7 @@ def build_download_queue(alpm, args=None):
     found |= set(other.pkgs)
     not_found = requested - found
     if pargs.needed:
-        other = PkgSet(check_cache(conf, other))
+        other = PkgSet(list(check_cache(conf, other)))
 
     download_queue = DownloadQueue()
 
@@ -462,7 +462,7 @@ if __name__ == '__main__':
 
     import gc
     import pprint
-    import pacman.pac as pac
+    import cnchi.pacman.pac as pac
 
     try:
         pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)

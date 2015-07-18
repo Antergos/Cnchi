@@ -147,7 +147,8 @@ class Download(object):
                     needs_to_download = False
                     downloaded += 1
                 except OSError as os_error:
-                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
+                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"),
+                                    dst_cache_path, dst_path)
                     logging.error(os_error)
                     needs_to_download = True
 
