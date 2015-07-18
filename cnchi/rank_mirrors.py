@@ -65,13 +65,22 @@ class AutoRankmirrorsThread(threading.Thread):
             logging.warning(_("Can't find update mirrors script"))
             return
 
-        # Make sure we have the latest antergos-mirrorlist
+        # Make sure we have the latest mirrorlist and antergos-mirrorlist files
         with misc.raised_privileges():
             try:
-                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', 'antergos-mirrorlist']
+                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
                 subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), err)
+                # Use the new downloaded mirrorlist (.pacnew) files (if any)
+                files = ['mirrorlist', 'antergos-mirrorlist']
+                for filename in files:
+                    path = os.path.join("/etc/pacman.d", filename)
+                    pacnew_path = path + ".pacnew"
+                    if os.path.exists(pacnew_path):
+                        shutil.copy(pacnew_path, path)
+            except subprocess.CalledProcessError as why:
+                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), why)
+            except OSError as why:
+                logging.debug(_('Error copying new mirrorlist files: %s'), why)
 
         # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
