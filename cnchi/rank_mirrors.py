@@ -109,7 +109,7 @@ class AutoRankmirrorsThread(threading.Thread):
                     mirrors.write("\n".join(lines) + "\n")
 
         # Run rankmirrors command
-            try:
+        try:
             with misc.raised_privileges():
                 self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
         except subprocess.CalledProcessError as process_error:
