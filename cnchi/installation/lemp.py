@@ -33,7 +33,10 @@ part is taken care of.
 import os
 import logging
 
-import chroot
+try:
+    from installation import chroot
+except ImportError:
+    import chroot
 
 DEST_DIR = '/install'
 

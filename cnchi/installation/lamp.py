@@ -22,11 +22,22 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+"""
+LAMP stack is a group of open source software to get web servers up
+and running. The acronym stands for Linux, Apache, MySQL, and PHP.
+Since the server is already running Antergos, the linux
+part is taken care of.
+"""
+
+
 import os
 import logging
 import shutil
 
-import chroot
+try:
+    from installation import chroot
+except ImportError:
+    import chroot
 
 DEST_DIR = '/install'
 
