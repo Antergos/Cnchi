@@ -100,7 +100,8 @@ def apache_setup():
 
     # Create localhost.conf in /etc/httpd/conf/sites-available/
     localhost_path = os.path.join(DEST_DIR, "etc/httpd/conf/sites-available/localhost.conf")
-    with open(localhost_path, 'w') as localhost_conf:
+    with open(localhost_path, 'a') as localhost_conf:
+        localhost_conf.write('\n# phpmyadmin alias and directory setup\n')
         localhost_conf.write('Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"\n')
         localhost_conf.write('<Directory "/usr/share/webapps/phpMyAdmin">\n')
         localhost_conf.write('    DirectoryIndex index.html index.php\n')
