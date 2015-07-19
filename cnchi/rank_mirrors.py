@@ -97,6 +97,10 @@ class AutoRankmirrorsThread(threading.Thread):
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
 
+                # sourceforge server does not get updated as often as necessary
+                if "sourceforge" in lines[i]:
+                    lines[i] = "#" + lines[i]
+
             with misc.raised_privileges():
                 # Backup original file
                 shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi_backup")
@@ -105,7 +109,7 @@ class AutoRankmirrorsThread(threading.Thread):
                     mirrors.write("\n".join(lines) + "\n")
 
         # Run rankmirrors command
-        try:
+            try:
             with misc.raised_privileges():
                 self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
         except subprocess.CalledProcessError as process_error:
