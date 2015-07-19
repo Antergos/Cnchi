@@ -51,7 +51,7 @@ def setup():
     logging.debug(_("Mariadb setup done. Doing Nginx setup..."))
     nginx_setup()
     logging.debug(_("Nginx setup done. Doing PHP-fpm setup..."))
-    php_fpm_setup()
+    php_setup()
     logging.debug(_("PHP-fpm setup done."))
 
 
@@ -99,7 +99,28 @@ def nginx_setup():
             nginx_conf.write(line)
 
 
-def php_fpm_setup():
+def php_setup():
+    # Setup /etc/php/php.ini
+    php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
+    with open(php_ini_path, 'r') as php_ini:
+        lines = php_ini.readlines()
+
+    # PHP extensions that will be activated
+    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
+
+    with open(php_ini_path, 'w') as php_ini:
+        for line in lines:
+            # Uncomment extensions
+            for so_ext in so_extensions:
+                ext = ";extension={0}.so".format(so_ext)
+                if line.startswith(ext):
+                    line = line[1:]
+            # Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
+            # to make sure PHP can access and read files under those directories
+            if "open_basedir =" in line:
+                line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
+            php_ini.write(line)
+
     cmd = ["systemctl", "enable", "php-fpm"]
     chroot_run(cmd)
 

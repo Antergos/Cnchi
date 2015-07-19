@@ -72,7 +72,8 @@ def mariadb_setup():
 
 def apache_setup():
     # Allow site virtualization
-    with open('/etc/httpd/conf/httpd.conf', 'a') as httpd_conf:
+    httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
+    with open(httpd_path, 'a') as httpd_conf:
         httpd_conf.write('IncludeOptional conf/sites-enabled/*.conf\n')
         httpd_conf.write('IncludeOptional conf/mods-enabled/*.conf\n')
 
@@ -127,14 +128,14 @@ def php_setup():
             load_module.write(line)
 
     # Add mpm_prefork_module and php5_module
-    php_path = os.path.join(DEST_DIR, '/etc/httpd/conf/mods-enabled/php.conf')
+    php_path = os.path.join(DEST_DIR, 'etc/httpd/conf/mods-enabled/php.conf')
     with open(php_path, 'w') as php_conf:
         php_conf.write("LoadModule mpm_prefork_module /etc/httpd/modules/mod_mpm_prefork.so\n")
         php_conf.write("LoadModule php5_module /etc/httpd/modules/libphp5.so\n")
         php_conf.write("Include conf/extra/php5_module.conf\n")
 
     # Setup /etc/php/php.ini
-    php_ini_path = os.path.join(DEST_DIR, '/etc/php/php.ini')
+    php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
     with open(php_ini_path, 'r') as php_ini:
         lines = php_ini.readlines()
 
