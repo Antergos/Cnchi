@@ -178,11 +178,6 @@ class UserInfo(GtkBaseBox):
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
 
-        # Disable autologin if using 'base' desktop
-        if self.settings.get('desktop') == "base":
-            login_auto = self.ui.get_object('login_auto')
-            login_auto.set_sensitive(False)
-
         # TODO: Fix home encryption and stop hiding its widget
         if not self.settings.get('z_hidden'):
             self.login['encrypt'].hide()
@@ -224,10 +219,8 @@ class UserInfo(GtkBaseBox):
         self.show_all()
         self.hide_widgets()
 
-        desktop = self.settings.get('desktop')
-        if desktop != "nox" and self.login['auto']:
-            self.login['auto'].set_sensitive(True)
-        else:
+        # Disable autologin if using 'base' desktop
+        if self.settings.get('desktop') == "base":
             self.login['auto'].set_sensitive(False)
 
         self.forward_button.set_label(_('Save'))
