@@ -1057,7 +1057,6 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["enable"])
             services.append('ufw')
 
-        # TODO: Fix this! It's not working at all
         if self.settings.get("feature_lamp"):
             web_server = self.settings.get("feature_lamp_web_server")
             try:
