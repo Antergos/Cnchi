@@ -135,13 +135,12 @@ def php_setup():
         php_conf.write("LoadModule php5_module /etc/httpd/modules/libphp5.so\n")
         php_conf.write("Include conf/extra/php5_module.conf\n")
 
-    # Setup /etc/php/php.ini
+    # PHP extensions that will be activated
+    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
+
     php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
     with open(php_ini_path, 'r') as php_ini:
         lines = php_ini.readlines()
-
-    # PHP extensions that will be activated
-    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
 
     with open(php_ini_path, 'w') as php_ini:
         for line in lines:
@@ -157,9 +156,10 @@ def php_setup():
             php_ini.write(line)
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf
-    source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
-    link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
-    os.symlink(source, link_name)
+    # Not necessary, a2ensite does this for us
+    #source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
+    #link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
+    #os.symlink(source, link_name)
 
 
 if __name__ == '__main__':

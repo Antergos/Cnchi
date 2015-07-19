@@ -108,6 +108,10 @@ def php_setup():
     # PHP extensions that will be activated
     so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
 
+    php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
+    with open(php_ini_path, 'r') as php_ini:
+        lines = php_ini.readlines()
+
     with open(php_ini_path, 'w') as php_ini:
         for line in lines:
             # Uncomment extensions
