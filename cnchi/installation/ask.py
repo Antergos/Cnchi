@@ -369,11 +369,54 @@ class InstallationAsk(GtkBaseBox):
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
 
-        logging.debug(_("Waiting for all external processes to finish"))
+
+
+        # Check if there are still processes running...
+        must_wait = False
         for proc in self.process_list:
             # This waits until process finishes, no matter the time.
-            proc.join()
-        logging.debug(_("All external processes are finished. Installation can go on"))
+            if proc.is_alive():
+                must_wait = True
+                break
+
+        if must_wait:
+            from gi.repository import Gtk
+            txt1 = _("Ranking mirrors")
+            txt2 = _("Cnchi is still updating and optimizing your mirrorlists.\n"
+                     "Please be patient...")
+            txt1 = "<big>{0}</big>".format(txt1)
+            txt2 = "<i>{0}</i>".format(txt2)
+            wait_ui = Gtk.Builder()
+            ui_file = os.path.join(self.ui_dir, "wait.ui")
+            wait_ui.add_from_file(ui_file)
+            lbl1 = wait_ui.get_object("label1")
+            lbl1.set_markup(txt1)
+            lbl2 = wait_ui.get_object("label2")
+            lbl2.set_markup(txt2)
+            progress_bar = wait_ui.get_object("progressbar")
+            wait_window = wait_ui.get_object("wait_window")
+            wait_window.set_modal(True)
+            wait_window.set_transient_for(self.get_toplevel())
+            wait_window.set_default_size(320, 240)
+            wait_window.set_position(Gtk.WindowPosition.CENTER)
+            wait_window.show_all()
+
+            import time
+            logging.debug(_("Waiting for all external processes to finish..."))
+            while must_wait:
+                must_wait = False
+                for proc in self.process_list:
+                    # This waits until process finishes, no matter the time.
+                    if proc.is_alive():
+                        must_wait = True
+                # Just wait...
+                time.sleep(0.1)
+                # Update our progressbar dialog
+                progress_bar.pulse()
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+            logging.debug(_("All external processes are finished. Installation can go on"))
+            wait_window.hide()
 
         return True
 

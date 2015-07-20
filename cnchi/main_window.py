@@ -384,10 +384,9 @@ class MainWindow(Gtk.ApplicationWindow):
             misc.remove_temp_files()
             logging.info(_("Quiting installer..."))
             for proc in self.process_list:
-                # Wait 'timeout' seconds at most for all processes to end
-                proc.join(timeout=5)
                 if proc.is_alive():
                     proc.terminate()
+                    proc.join()
             logging.shutdown()
         except KeyboardInterrupt:
             pass
