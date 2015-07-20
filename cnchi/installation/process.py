@@ -661,6 +661,9 @@ class InstallationProcess(multiprocessing.Process):
         for xml_features in xml_root.iter('features'):
             for xml_feature in xml_features.iter('feature'):
                 feature = xml_feature.attrib.get("name")
+                # If LEMP is selected, do not install lamp even if it's selected
+                if feature == "lamp" and self.settings.get("feature_lemp"):
+                    continue
                 if self.settings.get("feature_" + feature):
                     logging.debug(_("Adding packages for '%s' feature."), feature)
                     for pkg in xml_feature.iter('pkgname'):
@@ -1057,23 +1060,23 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["enable"])
             services.append('ufw')
 
-        if self.settings.get("feature_lamp"):
-            web_server = self.settings.get("feature_lamp_web_server")
+        if self.settings.get("feature_lamp") and not self.settings.get("feature_lemp"):
             try:
-                if web_server == "apache":
-                    from installation import lamp
-                    logging.debug(_("Configuring LAMP (%s)..."), web_server)
-                    lamp.setup()
-                    services.extend(["httpd", "mysqld"])
-                elif web_server == "nginx":
-                    from installation import lemp
-                    logging.debug(_("Configuring LEMP (%s)..."), web_server)
-                    lemp.setup()
-                    services.extend(["nginx", "mysqld", "php-fpm"])
-                else:
-                    logging.warning(_("Unknown web server: %s"), web_server)
+                from installation import lamp
+                logging.debug(_("Configuring LAMP (%s)..."), web_server)
+                lamp.setup()
+                services.extend(["httpd", "mysqld"])
             except ImportError as error:
-                logging.warning(_("Can't import lamp/lemp module"))
+                logging.warning(_("Can't import LAMP module"))
+                logging.warning(error)
+        elif self.settings.get("feature_lemp"):
+            try:
+                from installation import lemp
+                logging.debug(_("Configuring LEMP (%s)..."), web_server)
+                lemp.setup()
+                services.extend(["nginx", "mysqld", "php-fpm"])
+            except ImportError as error:
+                logging.warning(_("Can't import LEMP module"))
                 logging.warning(error)
 
         self.enable_services(services)

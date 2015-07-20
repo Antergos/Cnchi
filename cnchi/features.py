@@ -380,15 +380,15 @@ class Features(GtkBaseBox):
                 destroy_with_parent=True,
                 message_type=Gtk.MessageType.INFO,
                 buttons=Gtk.ButtonsType.YES_NO)
-            info.set_markup("LAMP")
+            info.set_markup("LAMP / LEMP")
             msg = _("Do you want to install the Nginx server instead of the Apache server?")
             info.format_secondary_markup(msg)
             response = info.run()
             info.destroy()
             if response == Gtk.ResponseType.YES:
-                self.settings.set("feature_lamp_web_server", "nginx")
+                self.settings.set("feature_lemp", True)
             else:
-                self.settings.set("feature_lamp_web_server", "apache")
+                self.settings.set("feature_lemp", False)
 
         self.listbox_rows = {}
 

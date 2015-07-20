@@ -64,7 +64,7 @@ class Settings(object):
             'feature_firewall': False,
             'feature_fonts': False,
             'feature_lamp': False,
-            'feature_lamp_web_server': 'apache',
+            'feature_lemp': False,
             'feature_lts': False,
             'feature_office': False,
             'feature_smb': False,

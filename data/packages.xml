@@ -518,10 +518,10 @@
     <feature name="lamp">
       <pkgname>apache</pkgname>
       <pkgname>php</pkgname>
+      <pkgname>php-apache</pkgname>
       <pkgname>mariadb</pkgname>
       <pkgname>phpmyadmin</pkgname>
       <pkgname>php-mcrypt</pkgname>
-      <pkgname>php-apache</pkgname>
     </feature>
     <feature name="lemp">
       <pkgname>nginx</pkgname>
