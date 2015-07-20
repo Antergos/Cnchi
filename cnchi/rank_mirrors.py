@@ -31,6 +31,7 @@ import time
 import os
 import shutil
 import requests
+import tempfile
 
 import misc.misc as misc
 
@@ -42,7 +43,6 @@ class AutoRankmirrorsThread(threading.Thread):
         """ Initialize thread class """
         super(AutoRankmirrorsThread, self).__init__()
         self.rankmirrors_pid = None
-        self.reflector_script = "/usr/share/cnchi/scripts/update-mirrors.sh"
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
@@ -54,21 +54,24 @@ class AutoRankmirrorsThread(threading.Thread):
                 return True
         return False
 
-    def run(self):
-        """ Run thread """
-
-        # Wait until there is an Internet connection available
-        while not misc.has_connection():
-            time.sleep(1)  # Delay
-
-        if not os.path.exists(self.reflector_script):
-            logging.warning(_("Can't find update mirrors script"))
-            return
-
-        # Make sure we have the latest mirrorlist and antergos-mirrorlist files
+    def sync(self, files_to_sync=None):
+        """ Synchronize cached writes to persistent storage """
         with misc.raised_privileges():
             try:
-                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
+                cmd = ['sync']
+                if files_to_sync:
+                    cmd.extend(files_to_sync)
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as why:
+                logging.warning(_("Can't synchronize cached writes to persistent storage: %s"), why)
+
+    def update_mirrorlists(self):
+        """ Make sure we have the latest mirrorlist and antergos-mirrorlist files """
+        with misc.raised_privileges():
+            try:
+                cmd = [
+                    'pacman', '-Syy', '--noconfirm', '--noprogressbar',
+                    '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
                 subprocess.check_call(cmd)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
                 files = ['mirrorlist', 'antergos-mirrorlist']
@@ -81,8 +84,29 @@ class AutoRankmirrorsThread(threading.Thread):
                 logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), why)
             except OSError as why:
                 logging.debug(_('Error copying new mirrorlist files: %s'), why)
+        self.sync([self.arch_mirrorlist, self.antergos_mirrorlist])
 
-        # Uncomment Antergos mirrors and comment out auto selection so rankmirrors can find the best mirror.
+    def run_reflector(self):
+        """
+        Reflector actually does perform speed tests when called and doesn't use speed results
+        from Arch's main server like we originally thought. If you monitor your network I/O
+        while running reflector command, you will see it is doing much more than
+        downloading the 4kb mirrorlist file. If ran with --verbose and without --save param it
+        will output the speed test results to STDOUT.
+        """
+        if os.path.exists("/usr/bin/reflector"):
+            with misc.raised_privileges():
+                try:
+                    cmd = ['reflector', '-l', '30', '-p', 'http', '-f', '20', '--save', self.arch_mirrorlist]
+                    subprocess.check_call(cmd)
+                except subprocess.CalledProcessError as why:
+                    logging.debug(_('Error running reflector on Arch mirrorlist: %s'), why)
+            self.sync([self.arch_mirrorlist])
+
+    def uncomment_antergos_mirrors(self):
+        """ Uncomment Antergos mirrors and comment out auto selection so
+        rankmirrors can find the best mirror. """
+
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
 
         if os.path.exists(self.antergos_mirrorlist):
@@ -102,21 +126,32 @@ class AutoRankmirrorsThread(threading.Thread):
                     lines[i] = "#" + lines[i]
 
             with misc.raised_privileges():
-                # Backup original file
-                shutil.copy(self.antergos_mirrorlist, self.antergos_mirrorlist + ".cnchi_backup")
                 # Write new one
                 with open(self.antergos_mirrorlist, 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
+            self.sync([self.antergos_mirrorlist])
 
-        # Run rankmirrors command
-        try:
+    def run_rankmirrors(self):
+        if os.path.exists("/usr/bin/rankmirrors"):
+            # Uncomment Antergos mirrors and comment out auto selection so
+            # rankmirrors can find the best mirror.
+            self.uncomment_antergos_mirrors()
+
             with misc.raised_privileges():
-                self.rankmirrors_pid = subprocess.Popen([self.reflector_script]).pid
-        except subprocess.CalledProcessError as process_error:
-            logging.error(_("Couldn't execute auto mirror selection"))
-            logging.error(process_error)
+                try:
+                    # Store rankmirrors output in a temporary file
+                    with tempfile.TemporaryFile(mode='w+t') as temp_file:
+                        cmd = ['rankmirrors', '-n', '0', '-r', 'antergos', self.antergos_mirrorlist]
+                        subprocess.call(cmd, stdout=temp_file)
+                        temp_file.seek(0)
+                        # Copy new mirrorlist to the old one
+                        with open(self.antergos_mirrorlist, 'w') as antergos_mirrorlist_file:
+                            antergos_mirrorlist_file.write(temp_file.read())
+                except subprocess.CalledProcessError as why:
+                    logging.debug(_('Error running rankmirrors on Antergos mirrorlist: %s'), why)
+            self.sync([self.antergos_mirrorlist])
 
-        # Check arch mirrorlist against mirror status data, remove any bad mirrors.
+    def remove_bad_mirrors(self):
         if os.path.exists(self.arch_mirrorlist):
             # Use session to avoid silly warning
             # See https://github.com/kennethreitz/requests/issues/1882
@@ -141,11 +176,36 @@ class AutoRankmirrorsThread(threading.Thread):
                         # It's a good mirror, uncomment it
                         lines[i] = lines[i].lstrip("#")
 
+            # Write modified Arch mirrorlist
             with misc.raised_privileges():
-                # Backup original file
-                shutil.copy(self.arch_mirrorlist, self.arch_mirrorlist + ".cnchi_backup")
-                # Write new one
                 with open(self.arch_mirrorlist, 'w') as arch_mirrors:
                     arch_mirrors.write("\n".join(lines) + "\n")
+            self.sync([self.arch_mirrorlist])
+
+    def run(self):
+        """ Run thread """
+
+        # Wait until there is an Internet connection available
+        while not misc.has_connection():
+            time.sleep(4)  # Delay, try again after 4 seconds
+
+        logging.debug(_("Update both mirrorlists (Arch and Antergos)"))
+        self.update_mirrorlists()
+
+        logging.debug(_("Run reflector command to sort Arch mirrors"))
+        self.run_reflector()
+
+        logging.debug(_("Run rankmirrors command to sort Antergos mirrors"))
+        self.run_rankmirrors()
+
+        logging.debug(_("Check Arch mirrorlist against mirror status data and remove any bad mirrors."))
+        self.remove_bad_mirrors()
 
         logging.debug(_("Auto mirror selection has been run successfully"))
+
+
+if __name__ == '__main__':
+    def _(x): return x
+
+    rank_mirrors = AutoRankmirrorsThread()
+    rank_mirrors.start()
