@@ -72,7 +72,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 cmd = [
                     'pacman', '-Syy', '--noconfirm', '--noprogressbar',
                     '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
-                with open (os.devnull, 'w') as fnull:
+                with open(os.devnull, 'w') as fnull:
                     subprocess.call(cmd, stdout=fnull, stderr=subprocess.STDOUT)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
                 files = ['mirrorlist', 'antergos-mirrorlist']
@@ -190,19 +190,19 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         while not misc.has_connection():
             time.sleep(4)  # Delay, try again after 4 seconds
 
-        logging.debug(_("Update both mirrorlists (Arch and Antergos)"))
+        logging.debug(_("Updating both mirrorlists (Arch and Antergos)..."))
         self.update_mirrorlists()
 
-        logging.debug(_("Run reflector command to sort Arch mirrors"))
+        logging.debug(_("Running reflector command to sort Arch mirrors..."))
         self.run_reflector()
 
-        logging.debug(_("Run rankmirrors command to sort Antergos mirrors"))
+        logging.debug(_("Running rankmirrors command to sort Antergos mirrors..."))
         self.run_rankmirrors()
 
-        logging.debug(_("Check Arch mirrorlist against mirror status data and remove any bad mirrors."))
+        logging.debug(_("Checking Arch mirrorlist against mirror status data..."))
         self.remove_bad_mirrors()
 
-        logging.debug(_("Auto mirror selection has been run successfully"))
+        logging.debug(_("Auto mirror selection has been run successfully."))
 
 
 if __name__ == '__main__':
