@@ -207,8 +207,10 @@ class Timezone(GtkBaseBox):
     def start_auto_timezone_process(self):
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
-        self.global_process_queue.put(proc)
+        self.process_list.append(proc)
+        # self.global_process_queue.put(proc)
         proc.start()
+
 
     def log_location(self, loc):
         logging.debug("timezone human zone: %s", loc.human_zone)

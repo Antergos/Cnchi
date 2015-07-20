@@ -41,7 +41,7 @@ class GtkBaseBox(Gtk.Box):
         self.settings = params['settings']
         self.testing = params['testing']
         self.ui_dir = params['ui_dir']
-        self.global_process_queue = params['global_process_queue']
+        self.process_list = params['process_list']
 
         self.prev_page = prev_page
         self.next_page = next_page

@@ -369,13 +369,11 @@ class InstallationAsk(GtkBaseBox):
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
 
-        while not self.global_process_queue.empty():
-            try:
-                proc = self.global_process_queue.get_nowait()
-                # This waits until process finishes, no matter the time.
-                proc.join()
-            except queue.Empty:
-                pass
+        logging.debug(_("Waiting for all external processes to finish"))
+        for proc in self.process_list:
+            # This waits until process finishes, no matter the time.
+            proc.join()
+        logging.debug(_("All external processes are finished. Installation can go on"))
 
         return True
 

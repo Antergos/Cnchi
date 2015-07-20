@@ -166,8 +166,8 @@ class MainWindow(Gtk.ApplicationWindow):
         # to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
-        # This queue will have all processes (rankmirrors, autotimezone...)
-        self.global_process_queue = multiprocessing.Queue()
+        # This list will have all processes (rankmirrors, autotimezone...)
+        self.process_list = []
 
         # Save in config which download method we have to use
         if cmd_line.library:
@@ -190,7 +190,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
-        self.params['global_process_queue'] = self.global_process_queue
+        self.params['process_list'] = self.process_list
 
         if cmd_line.packagelist:
             self.params['alternate_package_list'] = cmd_line.packagelist
@@ -383,16 +383,11 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files()
             logging.info(_("Quiting installer..."))
-            # Wait 'timeout' seconds at most for all processes to end
-            timeout = 5
-            while not self.global_process_queue.empty():
-                try:
-                    proc = self.global_process_queue.get_nowait()
-                    proc.join(timeout)
-                    if proc.is_alive():
-                        proc.terminate()
-                except queue.Empty:
-                    pass
+            for proc in self.process_list:
+                # Wait 'timeout' seconds at most for all processes to end
+                proc.join(timeout=5)
+                if proc.is_alive():
+                    proc.terminate()
             logging.shutdown()
         except KeyboardInterrupt:
             pass

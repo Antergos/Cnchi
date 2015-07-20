@@ -164,8 +164,10 @@ class Language(GtkBaseBox):
         if not self.testing and not self.rank_mirrors_launched:
             proc = AutoRankmirrorsProcess()
             proc.daemon = True
-            self.global_process_queue.put(proc)
             proc.start()
+            # ERROR: Pickling an AuthenticationString object is disallowed for security reasons
+            self.process_list.append(proc)
+
             self.rank_mirrors_launched = True
 
 # When testing, no _() is available

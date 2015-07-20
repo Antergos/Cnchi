@@ -72,7 +72,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 cmd = [
                     'pacman', '-Syy', '--noconfirm', '--noprogressbar',
                     '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
-                subprocess.check_call(cmd)
+                with open (os.devnull, 'w') as fnull:
+                    subprocess.call(cmd, stdout=fnull, stderr=subprocess.STDOUT)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
                 files = ['mirrorlist', 'antergos-mirrorlist']
                 for filename in files:

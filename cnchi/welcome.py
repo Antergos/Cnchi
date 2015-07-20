@@ -93,19 +93,12 @@ class Welcome(GtkBaseBox):
 
     def quit_cnchi(self):
         misc.remove_temp_files()
-        # We give 5 seconds to each process to finish
-        timeout = 5
-
-        while not self.global_process_queue.empty():
-            try:
-                proc = self.global_process_queue.get_nowait()
-                proc.join(timeout)
-                if proc.is_alive():
-                    proc.terminate()
-                    proc.join()
-            except queue.Empty:
-                pass
-
+        for proc in self.process_list:
+            # Wait 'timeout' seconds at most for all processes to end
+            proc.join(timeout=5)
+            if proc.is_alive():
+                proc.terminate()
+                proc.join()
         logging.shutdown()
         sys.exit(0)
 
